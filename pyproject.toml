@@ -1,0 +1,27 @@
+[project]
+name = "deepresearch-workspace"
+version = "0.1.0"
+description = "Evidence-first research workspace with LangGraph, Milvus and SSE"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+  "fastapi>=0.115,<1", "uvicorn>=0.34,<1", "pydantic-settings>=2.7,<3",
+  "httpx>=0.28,<1", "aiosqlite>=0.21,<1", "langgraph>=1.0,<2",
+  "langgraph-checkpoint-sqlite>=3,<4", "pymilvus>=2.6,<4",
+  "python-multipart>=0.0.20,<1", "pypdf>=5,<7", "beautifulsoup4>=4.13,<5",
+  "python-docx>=1.1,<2", "rank-bm25>=0.2,<1",
+]
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "pytest-asyncio>=1,<2", "ruff>=0.11,<1"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]

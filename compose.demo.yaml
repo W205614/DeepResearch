@@ -1,0 +1,8 @@
+# Use a separate project: docker compose -p deepresearch-demo -f compose.yaml -f compose.demo.yaml up -d --build
+services:
+  backend:
+    environment:
+      DEMO_MODE: "true"
+      LLM_API_KEY: ""
+      EMBEDDING_API_KEY: ""
+      BOCHA_API_KEY: ""

@@ -1,0 +1,115 @@
+name: deepresearch
+services:
+  web:
+    build:
+      context: ./frontend
+    ports:
+      - "127.0.0.1:${APP_PORT:-8080}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/healthz"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+  backend:
+    build: .
+    environment:
+      LLM_MODEL_ID: ${LLM_MODEL_ID:-deepseek-v4-flash}
+      LLM_BASE_URL: ${LLM_BASE_URL:-https://api.deepseek.com}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_EXTRA_BODY: '${LLM_EXTRA_BODY:-}'
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-text-embedding-3-large}
+      EMBEDDING_BASE_URL: ${EMBEDDING_BASE_URL:-https://api.openai-proxy.org/v1}
+      EMBEDDING_API_KEY: ${EMBEDDING_API_KEY:-}
+      EMBEDDING_DIMENSION: ${EMBEDDING_DIMENSION:-3072}
+      SEND_EMBEDDING_DIMENSIONS: ${SEND_EMBEDDING_DIMENSIONS:-false}
+      WEB_SEARCH_PROVIDER: ${WEB_SEARCH_PROVIDER:-deepseek}
+      BOCHA_BASE_URL: ${BOCHA_BASE_URL:-https://api.bochaai.com/v1}
+      BOCHA_API_KEY: ${BOCHA_API_KEY:-}
+      APP_ACCESS_TOKEN: ${APP_ACCESS_TOKEN:-}
+      SOURCE_TRUST_OVERRIDES: '${SOURCE_TRUST_OVERRIDES:-{}}'
+      WEB_CACHE_TTL_HOURS: ${WEB_CACHE_TTL_HOURS:-168}
+      AUTO_SAVE_SEMANTIC_MEMORY: ${AUTO_SAVE_SEMANTIC_MEMORY:-false}
+      DEMO_MODE: ${DEMO_MODE:-false}
+      MAX_REFLECTION_ROUNDS: ${MAX_REFLECTION_ROUNDS:-2}
+      MAX_SEARCH_CALLS: ${MAX_SEARCH_CALLS:-12}
+      WEB_RESULTS_PER_QUERY: ${WEB_RESULTS_PER_QUERY:-8}
+      MAX_WEB_CANDIDATES: ${MAX_WEB_CANDIDATES:-24}
+      MAX_RUN_SECONDS: ${MAX_RUN_SECONDS:-600}
+      MAX_CONCURRENT_RUNS: ${MAX_CONCURRENT_RUNS:-2}
+      MAX_LLM_CONCURRENCY: ${MAX_LLM_CONCURRENCY:-3}
+      TASK_LOG_LEVEL: ${TASK_LOG_LEVEL:-INFO}
+      SEMANTIC_MEMORY_MIN_SCORE: ${SEMANTIC_MEMORY_MIN_SCORE:-0.35}
+      CONVERSATION_RECENT_RUNS: ${CONVERSATION_RECENT_RUNS:-6}
+      CONVERSATION_TURN_LIMIT: ${CONVERSATION_TURN_LIMIT:-30}
+      REQUEST_TIMEOUT_SECONDS: ${REQUEST_TIMEOUT_SECONDS:-90}
+      MILVUS_URI: http://milvus:19530
+      DATA_DIR: /data
+    volumes:
+      - research-data:/data
+    depends_on:
+      milvus:
+        condition: service_healthy
+    restart: unless-stopped
+    stop_grace_period: 30s
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.25
+    environment:
+      ETCD_AUTO_COMPACTION_MODE: revision
+      ETCD_AUTO_COMPACTION_RETENTION: "1000"
+      ETCD_QUOTA_BACKEND_BYTES: "4294967296"
+      ETCD_SNAPSHOT_COUNT: "50000"
+    command: etcd -advertise-client-urls=http://etcd:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
+    volumes:
+      - etcd-data:/etcd
+    healthcheck:
+      test: ["CMD", "etcdctl", "endpoint", "health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+  minio:
+    image: minio/minio:RELEASE.2024-05-28T17-19-04Z
+    environment:
+      MINIO_ROOT_USER: deepresearch
+      MINIO_ROOT_PASSWORD: deepresearch-local-storage
+    command: minio server /minio_data --console-address :9001
+    volumes:
+      - minio-data:/minio_data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+  milvus:
+    image: milvusdb/milvus:v3.0.0
+    command: ["milvus", "run", "standalone"]
+    environment:
+      ETCD_ENDPOINTS: etcd:2379
+      MINIO_ADDRESS: minio:9000
+      MINIO_REGION: us-east-1
+      MINIO_ACCESS_KEY_ID: deepresearch
+      MINIO_SECRET_ACCESS_KEY: deepresearch-local-storage
+    volumes:
+      - milvus-data:/var/lib/milvus
+    depends_on:
+      etcd:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 15s
+      timeout: 10s
+      start_period: 90s
+      retries: 10
+    restart: unless-stopped
+volumes:
+  research-data:
+  etcd-data:
+  minio-data:
+  milvus-data:
