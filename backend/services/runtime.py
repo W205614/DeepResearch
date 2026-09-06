@@ -3,6 +3,7 @@ import io
 import json
 import sqlite3
 import statistics
+import time
 import zipfile
 from contextlib import AsyncExitStack
 
@@ -218,6 +219,7 @@ class Runtime:
             await self.db.event(run["id"], "warning", {"message": "报告已生成，语义记忆保存失败：" + str(exc)})
 
     async def execute_run(self, run_id, resume=False):
+        started = time.monotonic()
         try:
             async with self.gate:
                 run = await self.db.one("SELECT * FROM runs WHERE id=?", (run_id,))
@@ -249,7 +251,8 @@ class Runtime:
                                          json.dumps(validation, ensure_ascii=False), run_id))
                     await self.db.event(run_id, "done", {"status": status})
                     usage = await self.db.one("SELECT llm_calls,search_calls FROM counters WHERE run_id=?", (run_id,)) or {}
-                    RUNS.labels(status=status).inc(); RUN_SECONDS.observe(time.monotonic() - started)
+                    RUNS.labels(status=status).inc()
+                    RUN_SECONDS.observe(time.monotonic() - started)
                     self.logger.info("run=%s phase=completed status=%s sources=%d llm_calls=%d search_calls=%d",
                                      run_label(run_id), status, len(result.get("evidence", [])),
                                      usage.get("llm_calls", 0), usage.get("search_calls", 0))
@@ -263,7 +266,8 @@ class Runtime:
             await self.fail(run_id, "达到任务时限，已停止外部调用；可从检查点继续", "interrupted")
         except Exception as exc:
             FAILURES.labels(category=error_category(exc)).inc()
-            RUNS.labels(status="failed").inc(); RUN_SECONDS.observe(time.monotonic() - started)
+            RUNS.labels(status="failed").inc()
+            RUN_SECONDS.observe(time.monotonic() - started)
             self.logger.error("run=%s phase=failed category=%s", run_label(run_id), error_category(exc))
             await self.fail(run_id, str(exc) if isinstance(exc, ServiceError) else "研究执行失败，请检查服务配置或重试")
 

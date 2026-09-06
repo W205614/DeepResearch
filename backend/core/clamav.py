@@ -12,9 +12,11 @@ async def scan(settings, content: bytes) -> None:
         for index in range(0, len(content), 65536):
             part = content[index:index + 65536]
             writer.write(struct.pack("!I", len(part)) + part)
-        writer.write(struct.pack("!I", 0)); await writer.drain()
+        writer.write(struct.pack("!I", 0))
+        await writer.drain()
         result = (await asyncio.wait_for(reader.read(1024), 15)).decode("utf-8", "replace")
-        writer.close(); await writer.wait_closed()
+        writer.close()
+        await writer.wait_closed()
     except Exception as exc:
         raise ServiceError("文件扫描服务不可用，资料未被接收") from exc
     if "OK" not in result:

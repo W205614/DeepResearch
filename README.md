@@ -154,3 +154,15 @@ docker compose -f compose.yaml -f compose.enterprise.yaml up -d --build --wait
 
 首次启用企业版时，Keycloak 的 `keycloak-data` 命名卷会保存本机注册账号和管理台改动；不要用 `docker compose down -v` 停止演示环境。
 Grafana 仅映射到 `http://localhost:3000`，使用 `.env` 的 `GRAFANA_ADMIN_PASSWORD` 登录；Prometheus 数据源会在启动时自动连接到容器内的 Prometheus。
+
+## 企业演示验证
+
+企业版使用 Keycloak、PostgreSQL、Redis Worker、Milvus、Prometheus、Grafana 与 ClamAV。启动后打开 `http://localhost:8080` 登录；监控面板在 `http://localhost:3000` 的 **Dashboards → DeepResearch**。Grafana 仅监听本机。
+
+```powershell
+.\scripts\smoke-enterprise.ps1
+```
+
+资料上传在企业版会先经 ClamAV 扫描；扫描服务不可用时上传会被拒绝。连续会话中的每条历史研究都有“查看来源 N”入口，可切换并查看该次研究保存的引用与本地资料来源。
+
+`migrate` 是一次性 Alembic 迁移任务，显示 `Exited (0)` 表示成功完成，应保留；不要执行 `docker compose down -v`，否则会删除本机演示数据卷。
