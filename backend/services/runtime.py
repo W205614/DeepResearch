@@ -10,9 +10,11 @@ from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
 from ..core.config import Settings
 from ..core.db import Database, now, uid
+from ..core.postgres import PostgresDatabase
 from .documents import Documents
 from ..research.graph import ResearchGraph
 from ..core.observability import configure_task_logger, error_category, run_label
+from ..core.metrics import QUEUE_DEPTH, RUNS, RUN_SECONDS, FAILURES
 from ..infrastructure.providers import Providers, ServiceError
 from ..research.routing import decide
 from ..infrastructure.vectors import VectorIndex
@@ -25,10 +27,10 @@ class ConflictError(Exception):
 
 
 class Runtime:
-    def __init__(self, settings: Settings):
+    def __init__(self, settings: Settings, *, worker_mode: bool = False):
         self.settings = settings
         settings.prepare()
-        self.db = Database(settings.data_dir / "research.sqlite3")
+        self.db = PostgresDatabase(settings.database_url) if settings.database_url else Database(settings.data_dir / "research.sqlite3")
         self.providers = Providers(settings, self.db)
         self.vectors = VectorIndex(settings, self.db)
         self.documents = Documents(settings, self.db, self.providers, self.vectors)
@@ -40,11 +42,18 @@ class Runtime:
         self.gate = asyncio.Semaphore(settings.max_concurrent_runs)
         self.stopping = False
 
+        self.worker_mode = worker_mode
+        self.queue = None
     async def start(self):
         await self.db.init()
         self.checkpointer = await self.stack.enter_async_context(
             AsyncSqliteSaver.from_conn_string(str(self.settings.data_dir / "checkpoints.sqlite3")))
         self.graph = ResearchGraph(self.settings, self.db, self.providers, self.vectors, self.documents).build(self.checkpointer)
+        if self.settings.queue_backend == "redis" and not self.worker_mode:
+            from arq import create_pool
+            from arq.connections import RedisSettings
+            self.queue = await create_pool(RedisSettings.from_dsn(self.settings.redis_url))
+            await self.recover_queued_runs()
         return self
 
     async def close(self):
@@ -58,6 +67,10 @@ class Runtime:
         await self.providers.close()
         await self.vectors.close()
 
+        if hasattr(self.db, "close"):
+            await self.db.close()
+        if self.queue:
+            await self.queue.aclose()
     async def find_thread(self, thread_ref: str, user: str):
         return await self.db.one(
             "SELECT * FROM threads WHERE user_id=? AND (id=? OR thread_key=?)", (user, thread_ref, thread_ref))
@@ -100,6 +113,18 @@ class Runtime:
 
     async def create(self, user, request):
         async with self.lock:
+            limits = await self.db.workspace_limits(user)
+            if limits:
+                active = await self.db.one("SELECT COUNT(*) AS total FROM runs WHERE user_id=? AND status IN ('queued','running')", (user,))
+                if int(active["total"]) >= int(limits["concurrent_run_limit"]):
+                    raise ConflictError("工作空间正在执行的研究已达到并发上限")
+                usage = await self.db.one("""SELECT COALESCE(SUM(c.search_calls),0) AS searches,
+                    COALESCE(SUM(c.prompt_tokens+c.completion_tokens),0) AS tokens FROM counters c JOIN runs r ON r.id=c.run_id
+                    WHERE r.user_id=? AND substr(r.created_at,1,10)=substr(?,1,10)""", (user, now())) or {}
+                if int(usage.get("searches", 0)) >= int(limits["daily_search_limit"]):
+                    raise ConflictError("工作空间今日搜索预算已用完")
+                if int(usage.get("tokens", 0)) >= int(limits["daily_token_limit"]):
+                    raise ConflictError("工作空间今日 Token 预算已用完")
             previous = await self.db.one("SELECT id,topic,mode FROM runs WHERE user_id=? AND client_request_id=?",
                                          (user, request.client_request_id))
             if previous:
@@ -122,11 +147,15 @@ class Runtime:
             except sqlite3.IntegrityError:
                 raise ConflictError("同一会话已有正在执行的研究") from None
             await self.db.event(run_id, "queued", {"message": "研究任务已创建"})
-            self.schedule(run_id)
+            QUEUE_DEPTH.inc()
+            await self.schedule(run_id)
             return await self.db.owned_run(run_id, user)
 
-    def schedule(self, run_id, resume=False):
+    async def schedule(self, run_id, resume=False):
         self.logger.info("run=%s phase=scheduled resume=%s", run_label(run_id), resume)
+        if self.queue:
+            await self.queue.enqueue_job("run_research", run_id, resume=resume)
+            return
         task = asyncio.create_task(self.execute_run(run_id, resume), name=f"research-{run_id}")
         self.tasks[run_id] = task
         task.add_done_callback(lambda _: self.tasks.pop(run_id, None))
@@ -193,6 +222,8 @@ class Runtime:
             async with self.gate:
                 run = await self.db.one("SELECT * FROM runs WHERE id=?", (run_id,))
                 self.logger.info("run=%s phase=started mode=%s resumed=%s", run_label(run_id), run["mode"], resume)
+                await self.db.execute("UPDATE runs SET attempt_count=attempt_count+1,last_attempt_at=? WHERE id=?",
+                                      (now(), run_id))
                 await self.db.execute("UPDATE runs SET status='running',updated_at=?,error='' WHERE id=?", (now(), run_id))
                 await self.db.event(run_id, "running", {"resumed": resume})
                 config = {"configurable": {"thread_id": run_id}, "recursion_limit": 80}
@@ -218,6 +249,7 @@ class Runtime:
                                          json.dumps(validation, ensure_ascii=False), run_id))
                     await self.db.event(run_id, "done", {"status": status})
                     usage = await self.db.one("SELECT llm_calls,search_calls FROM counters WHERE run_id=?", (run_id,)) or {}
+                    RUNS.labels(status=status).inc(); RUN_SECONDS.observe(time.monotonic() - started)
                     self.logger.info("run=%s phase=completed status=%s sources=%d llm_calls=%d search_calls=%d",
                                      run_label(run_id), status, len(result.get("evidence", [])),
                                      usage.get("llm_calls", 0), usage.get("search_calls", 0))
@@ -230,6 +262,8 @@ class Runtime:
             self.logger.error("run=%s phase=failed category=timeout", run_label(run_id))
             await self.fail(run_id, "达到任务时限，已停止外部调用；可从检查点继续", "interrupted")
         except Exception as exc:
+            FAILURES.labels(category=error_category(exc)).inc()
+            RUNS.labels(status="failed").inc(); RUN_SECONDS.observe(time.monotonic() - started)
             self.logger.error("run=%s phase=failed category=%s", run_label(run_id), error_category(exc))
             await self.fail(run_id, str(exc) if isinstance(exc, ServiceError) else "研究执行失败，请检查服务配置或重试")
 
@@ -259,7 +293,7 @@ class Runtime:
                 await self.db.execute("UPDATE runs SET status='queued',updated_at=? WHERE id=?", (now(), run_id))
             except sqlite3.IntegrityError:
                 raise ConflictError("当前会话已有其他研究任务") from None
-            self.schedule(run_id, resume=True)
+            await self.schedule(run_id, resume=True)
             return await self.db.owned_run(run_id, user)
 
     async def status(self):
@@ -273,10 +307,25 @@ class Runtime:
                 "llm_model": self.settings.llm_model_id, "embedding_model": self.settings.embedding_model,
                 "embedding_dimension": self.settings.embedding_dimension,
                 "web_search_provider": self.settings.web_search_provider,
-                "identity_mode": "local_demo", "max_reflection_rounds": self.settings.max_reflection_rounds,
+                "identity_mode": self.settings.auth_mode, "max_reflection_rounds": self.settings.max_reflection_rounds,
                 "max_search_calls": self.settings.max_search_calls,
                 "web_results_per_query": self.settings.web_results_per_query,
                 "max_web_candidates": self.settings.max_web_candidates}
+
+    async def recover_queued_runs(self):
+        """Re-enqueue persisted work after an API restart."""
+        rows = await self.db.rows("SELECT id,status FROM runs WHERE status IN ('queued','interrupted')")
+        for row in rows:
+            if row["id"] not in self.tasks:
+                await self.queue.enqueue_job("run_research", row["id"], resume=row["status"] == "interrupted")
+
+    async def ready(self):
+        try:
+            await self.vectors.ping()
+            if self.queue:
+                await self.queue.ping()
+        except Exception as exc:
+            raise ServiceError("依赖服务未就绪") from exc
 
     async def save_run_memory(self, run_id: str, user: str):
         run = await self.db.owned_run(run_id, user)

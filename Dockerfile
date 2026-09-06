@@ -7,6 +7,8 @@ WORKDIR /app
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev --no-install-project --no-python-downloads --link-mode=copy \
     && useradd -u 10001 -m researcher && mkdir /data && chown researcher:researcher /data
+COPY alembic.ini ./
+COPY migrations ./migrations
 COPY backend ./backend
 USER researcher
 EXPOSE 8000

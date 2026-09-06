@@ -3,7 +3,7 @@ import json
 
 import httpx
 import pytest
-from pydantic import SecretStr
+from backend.core.auth import issue_development_token
 
 from backend.api.app import create_app
 from backend.core.db import uid
@@ -125,10 +125,10 @@ async def test_status_never_exposes_keys(app_client):
     assert 'api_key' not in response.text.lower()
 
 
-async def test_optional_access_token(settings):
-    settings.app_access_token = SecretStr('access-secret')
+async def test_api_requires_a_jwt(settings):
     app = create_app(settings)
     async with app.router.lifespan_context(app):
         async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app),base_url='http://test') as client:
             assert (await client.get('/api/threads')).status_code == 401
-            assert (await client.get('/api/threads',headers={'Authorization':'Bearer access-secret'})).status_code == 200
+            token = issue_development_token(settings, 'alice')
+            assert (await client.get('/api/threads',headers={'Authorization':'Bearer ' + token})).status_code == 200

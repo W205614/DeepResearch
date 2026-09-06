@@ -134,3 +134,23 @@ docker compose exec -T backend python -m backend.commands.cli --base-url http://
 ```
 
 它在固定资料上输出路由正确率、来源数、引用检查、时延与 Token 基线到 `.cache/eval/`，不代表真实行业研究质量。
+
+## 企业演示版
+
+企业演示使用独立覆盖文件启动：
+
+```powershell
+docker compose -f compose.yaml -f compose.enterprise.yaml up -d --build --wait
+```
+
+该配置增加 PostgreSQL、Redis Worker、Keycloak、OpenTelemetry Collector、Prometheus 和 Grafana。后端只接受 OIDC JWT；浏览器提供的 `X-User-ID` 不作为生产身份。工作空间成员角色为 admin、researcher、viewer，审计日志不记录研究正文、来源地址或密钥。
+
+当前 Compose 适合单机演示；运行、备份和恢复说明见 [docs/operations.md](docs/operations.md)。
+使用下面的命令执行不涉及模型调用的集成冒烟检查。它会验证 Web、Keycloak OIDC 发现、PostgreSQL 迁移版本、Redis、Worker、后端 `/readyz` 和 OpenTelemetry Collector 的连通性：
+
+```powershell
+.\scripts\smoke-enterprise.ps1
+```
+
+首次启用企业版时，Keycloak 的 `keycloak-data` 命名卷会保存本机注册账号和管理台改动；不要用 `docker compose down -v` 停止演示环境。
+Grafana 仅映射到 `http://localhost:3000`，使用 `.env` 的 `GRAFANA_ADMIN_PASSWORD` 登录；Prometheus 数据源会在启动时自动连接到容器内的 Prometheus。

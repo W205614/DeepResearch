@@ -3,15 +3,24 @@ export type Source = { id: string; kind: 'web'|'local'; title: string; url: stri
 export type Run = { id: string; thread_id: string; topic: string; status: string; report: string; sources: Source[]; error: string; created_at: string; validation: Record<string, any>; usage: Record<string, number> }
 export const terminal = (status: string) => ['completed','insufficient','failed','cancelled','interrupted'].includes(status)
 export function headers(): Record<string,string> {
-  const h: Record<string,string> = {'X-User-ID': localStorage.getItem('dr-user') || 'local-user'}
+  const h: Record<string,string> = {}
   const token = sessionStorage.getItem('dr-token')
   if(token) h.Authorization = `Bearer ${token}`
+  else {
+    const workspace = localStorage.getItem('dr-user')
+    if(workspace) h['X-Workspace-ID'] = workspace
+  }
   return h
 }
 export async function api<T=any>(path: string, init: RequestInit = {}): Promise<T> {
   const response = await fetch(path, {...init, headers: {...headers(), ...(init.body instanceof FormData ? {} : {'Content-Type':'application/json'}), ...init.headers}})
   if(!response.ok) {
     const body = await response.json().catch(()=>({detail:'服务暂时不可用'}))
+    if (response.status === 401) {
+      sessionStorage.removeItem('dr-token')
+      window.dispatchEvent(new Event('deepresearch-auth-expired'))
+      throw new Error('登录已过期，请重新登录')
+    }
     throw new Error(typeof body.detail === 'string' ? body.detail : `请求参数无效（${response.status}）`)
   }
   return response.json()

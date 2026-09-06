@@ -52,10 +52,18 @@ async def main_async(args):
         f"- {row['id']}: 路由 {'通过' if row['route_match'] else '失败'}，来源 {row['sources']}，耗时 {row['elapsed_ms']} ms"
         for row in results), encoding="utf-8")
     print(json.dumps(summary, ensure_ascii=False, indent=2))
+    if args.verify:
+        failures = [row["id"] for row in results if not row["route_match"] or
+                    row["sources"] < int(next(case.get("expected_sources", 0) for case in cases if case["id"] == row["id"]))]
+        if failures:
+            raise RuntimeError("冻结评测失败：" + ", ".join(failures))
+        if any(row["checked_claims"] and row["supported_claims"] > row["checked_claims"] for row in results):
+            raise RuntimeError("引用校验计数无效")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--cases", default="eval/cases.json")
+    parser.add_argument("--cases", default="eval/frozen_cases.json")
+    parser.add_argument("--verify", action="store_true", help="非零退出码表示冻结基线退化")
     parser.add_argument("--output", default=".cache/eval/baseline.json")
     raise SystemExit(asyncio.run(main_async(parser.parse_args())))

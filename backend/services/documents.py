@@ -10,6 +10,7 @@ from pypdf import PdfReader
 from rank_bm25 import BM25Okapi
 
 from ..core.db import Database, now, uid
+from ..core.clamav import scan
 from ..infrastructure.providers import ServiceError
 
 
@@ -93,6 +94,7 @@ class Documents:
         name = Path(name.replace("\\", "/")).name[:160]
         if len(content) > 10 * 1024 * 1024:
             raise ServiceError("文件不能超过 10 MB")
+        await scan(self.settings, content)
         chunks = await asyncio.to_thread(split_document, name, content)
         digest = hashlib.sha256(content).hexdigest()
         existing = await self.db.one("SELECT * FROM documents WHERE user_id=? AND hash=?", (user, digest))

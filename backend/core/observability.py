@@ -41,3 +41,25 @@ def error_category(error: Exception) -> str:
     if "时限" in text:
         return "timeout"
     return type(error).__name__.lower()
+
+def configure_telemetry(app, endpoint: str) -> None:
+    """Instrument HTTP boundaries without recording prompts, URLs, or report text."""
+    from opentelemetry import trace
+    from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+    from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+    from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
+    from opentelemetry.sdk.resources import Resource
+    from opentelemetry.sdk.trace import TracerProvider
+    from opentelemetry.sdk.trace.export import BatchSpanProcessor
+
+    provider = TracerProvider(resource=Resource.create({"service.name": "deepresearch-api"}))
+    if endpoint:
+        provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter(endpoint=endpoint, insecure=True)))
+    trace.set_tracer_provider(provider)
+    FastAPIInstrumentor.instrument_app(app, excluded_urls="healthz,livez,readyz,metrics")
+    HTTPXClientInstrumentor().instrument()
+
+
+def tracer():
+    from opentelemetry import trace
+    return trace.get_tracer("deepresearch")

@@ -22,6 +22,22 @@ class Settings(BaseSettings):
     bocha_base_url: str = "https://api.bochaai.com/v1"
     bocha_api_key: SecretStr = SecretStr("")
     app_access_token: SecretStr = SecretStr("")
+    auth_mode: Literal["oidc", "development"] = "development"
+    oidc_issuer: str = ""
+    oidc_audience: str = "deepresearch-api"
+    oidc_jwks_url: str = ""
+    development_jwt_secret: SecretStr = SecretStr("development-only-secret-must-be-32-bytes")
+    database_url: str = ""
+    redis_url: str = "redis://127.0.0.1:6379/0"
+    queue_backend: Literal["redis", "local"] = "local"
+    max_job_retries: int = Field(2, ge=0, le=10)
+    otel_exporter_otlp_endpoint: str = ""
+    workspace_daily_search_limit: int = Field(120, ge=1, le=10000)
+    workspace_daily_token_limit: int = Field(1_000_000, ge=1, le=100_000_000)
+    workspace_concurrent_run_limit: int = Field(2, ge=1, le=20)
+    document_scan_mode: Literal["disabled", "clamav"] = "disabled"
+    clamav_host: str = "clamav"
+    clamav_port: int = Field(3310, ge=1, le=65535)
     source_trust_overrides: str = '{}'
     web_cache_ttl_hours: int = Field(168, ge=1, le=24 * 90)
     auto_save_semantic_memory: bool = False
@@ -86,6 +102,7 @@ class Settings(BaseSettings):
     def prepare(self) -> None:
         self.data_dir.mkdir(parents=True, exist_ok=True)
         (self.data_dir / "uploads").mkdir(exist_ok=True)
+        (self.data_dir / "quarantine").mkdir(exist_ok=True)
 
 
 def endpoint(base: str, path: str) -> str:

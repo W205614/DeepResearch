@@ -22,6 +22,20 @@ class DocumentSearchRequest(BaseModel):
 class ThreadRequest(BaseModel):
     title: str = Field(default="新的研究", min_length=1, max_length=100)
 
+class WorkspaceRequest(BaseModel):
+    name: str = Field(min_length=1, max_length=100)
+
+
+class MembershipRequest(BaseModel):
+    subject: str = Field(min_length=1, max_length=128, pattern=r"^[a-zA-Z0-9._:@-]+$")
+    role: Literal["admin", "researcher", "viewer"]
+
+
+class WorkspaceLimitRequest(BaseModel):
+    daily_search_limit: int = Field(ge=1, le=10000)
+    daily_token_limit: int = Field(ge=1, le=100_000_000)
+    concurrent_run_limit: int = Field(ge=1, le=20)
+
 
 class Route(BaseModel):
     mode: Literal["chat", "quick", "deep"]
