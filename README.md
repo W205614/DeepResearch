@@ -1,6 +1,6 @@
 # DeepResearch 多 Agent 行业研究助手
 
-面向中文行业研究的本地 Web 应用。它把研究任务拆为路由、规划、联网检索、本地资料检索、证据审查、分析、反思、写作和引用校验等 LangGraph 节点，并以 SQLite 保存任务、事件、报告与记忆，以 Milvus 保存向量索引。
+面向中文行业研究的本地 Web 应用与企业化演示后端。系统以 LangGraph 编排路由、规划、联网检索、本地资料检索、证据审查、分析、反思、写作和引用校验等节点，并以来源约束与 SSRF 防护降低不可核查结论的风险。基础模式使用 SQLite 与 Milvus；企业演示模式切换至 PostgreSQL、Redis Worker 和 Keycloak OIDC，提供工作空间角色权限、审计日志、ClamAV 资料隔离、可恢复任务、OpenTelemetry、Prometheus/Grafana 观测，以及数据导出与备份恢复能力。
 
 ## 本地启动
 
