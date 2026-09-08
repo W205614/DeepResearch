@@ -19,7 +19,6 @@ from ..research.graph import ResearchGraph
 from ..core.observability import configure_task_logger, error_category, inject_trace_context, run_label
 from ..core.metrics import FAILURES, QUEUE_DEPTH, RUNS, RUN_SECONDS
 from ..infrastructure.providers import Providers, ServiceError
-from ..research.routing import decide
 from ..infrastructure.vectors import VectorIndex
 
 TERMINAL = {"completed", "insufficient", "failed", "cancelled", "interrupted"}
