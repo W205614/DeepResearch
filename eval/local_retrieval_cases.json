@@ -1,0 +1,18 @@
+[
+  {"id":"orchestration","query":"行业问题如何被拆成子问题并交给两个检索角色？","relevant_documents":["01_orchestration.md"]},
+  {"id":"web-access","query":"网络来源正文取不到时，能否当作已阅读全文来引用？","relevant_documents":["02_web_research.md"]},
+  {"id":"local-locator","query":"本地 PDF 建索引后为什么需要保留页码和片段位置？","relevant_documents":["03_local_knowledge.md"]},
+  {"id":"hybrid","query":"为什么要把关键词检索和 Milvus 语义向量结合？","relevant_documents":["04_hybrid_retrieval.md"]},
+  {"id":"diversity","query":"TopK 怎样避免相邻重复段落占满结果？","relevant_documents":["05_ranking_diversity.md"]},
+  {"id":"cache","query":"重复提问时，如何避免再次调用查询 embedding？","relevant_documents":["06_cache_latency.md"]},
+  {"id":"evidence","query":"证据裁决如何处理不同年份和统计口径的冲突？","relevant_documents":["07_evidence_judge.md"]},
+  {"id":"memory","query":"用户偏好与会话历史应该按什么范围隔离？","relevant_documents":["08_memory_scope.md"]},
+  {"id":"multimodal","query":"图片和 PDF 中的图表怎样进入本地可检索知识库？","relevant_documents":["09_multimodal_ingestion.md","03_local_knowledge.md"]},
+  {"id":"auth","query":"用户如何登录退出并保证资料不会被其他账号读取？","relevant_documents":["10_authentication.md"]},
+  {"id":"metrics","query":"Recall、Precision、nDCG 和 MRR 分别说明什么，能代表回答正确率吗？","relevant_documents":["11_evaluation_metrics.md"]},
+  {"id":"observability","query":"系统如何展示 Agent 执行过程并记录本地检索阶段耗时？","relevant_documents":["12_observability.md"]},
+  {"id":"reflection","query":"证据不足时如何决定继续补搜，以及怎样防止无限循环？","relevant_documents":["13_reflection.md"]},
+  {"id":"citation","query":"如何验证报告结论真的被它标出的引用片段支持？","relevant_documents":["14_citation_validation.md"]},
+  {"id":"rag-boundary","query":"检索质量的召回率提高，是否等于最终生成答案准确？","relevant_documents":["11_evaluation_metrics.md","14_citation_validation.md"]},
+  {"id":"research-boundary","query":"网页信息和用户 Thread 记忆能否都作为报告事实证据？","relevant_documents":["02_web_research.md","08_memory_scope.md"]}
+]

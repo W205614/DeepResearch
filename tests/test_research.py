@@ -32,7 +32,13 @@ async def test_complete_research_has_real_events_and_citations(runtime):
         "evidence_levels": ["secondary"], "trusted_sources": 0}
     events = await runtime.db.rows("SELECT type,data FROM events WHERE run_id=?", (result["id"],))
     starts = [json.loads(e["data"])["node"] for e in events if e["type"] == "node_start"]
+    agent_starts = [json.loads(e["data"]) for e in events if e["type"] == "agent_start"]
+    handoffs = [json.loads(e["data"]) for e in events if e["type"] == "agent_handoff"]
     assert {"web_scout", "local_scout", "judge", "reflect", "validator"} <= set(starts)
+    assert any(event["agent"] == "web_scout" and event["tools"] == ["web_fetch", "web_search"]
+               for event in agent_starts)
+    assert any(event["from"] == "planner" and event["to"] == ["web_scout", "local_scout"]
+               for event in handoffs)
     assert starts.count("web_scout") == 2
     assert result["usage"]["search_calls"] == 2
     assert not await runtime.db.one("SELECT id FROM memories WHERE run_id=?", (result["id"],))

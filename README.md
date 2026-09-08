@@ -1,6 +1,23 @@
 # DeepResearch 多 Agent 行业研究助手
 
-面向中文行业研究的本地 Web 应用与企业化演示后端。系统以 LangGraph 编排路由、规划、联网检索、本地资料检索、证据审查、分析、反思、写作和引用校验等节点，并以来源约束与 SSRF 防护降低不可核查结论的风险。基础模式使用 SQLite 与 Milvus；企业演示模式切换至 PostgreSQL、Redis Worker 和 Keycloak OIDC，提供工作空间角色权限、审计日志、ClamAV 资料隔离、可恢复任务、OpenTelemetry、Prometheus/Grafana 观测，以及数据导出与备份恢复能力。
+面向中文行业研究的本地 Web 应用与企业化演示后端。系统以 LangGraph 编排多个具备独立职责、工具权限和结构化交接物的研究 Agent，并以来源约束与 SSRF 防护降低不可核查结论的风险。基础模式使用 SQLite 与 Milvus；企业演示模式切换至 PostgreSQL、Redis Worker 和 Keycloak OIDC，提供工作空间角色权限、审计日志、ClamAV 资料隔离、可恢复任务、OpenTelemetry、Prometheus/Grafana 观测，以及数据导出与备份恢复能力。
+
+## 多 Agent 协作边界
+
+这不是把同一条提示词改成多个名称：协调器和八类专业 Agent 在同一进程、共享当前配置的模型端点运行，但每个 Agent 进入受限工具作用域，且把输入输出通过 `ResearchState` 和 `agent_handoff` 事件交接。它不是多个独立模型服务的分布式群体，部署成本和调度复杂度也因此较低。
+
+| Agent | 允许工具 | 交接物 |
+| --- | --- | --- |
+| 协调路由 | 结构化模型、用户档案 | 路由模式或本地记忆动作 |
+| 研究规划 | 结构化模型 | 问题、范围、差异化查询 |
+| 网络调研 | 网页搜索、安全正文读取 | 网络证据 |
+| 本地资料 | 用户资料混合检索 | 带位置的本地证据 |
+| 证据裁决 | 结构化模型 | 接受来源、冲突、局限 |
+| 分析与补搜 | 结构化模型 | 带来源的结论、缺口、补充查询 |
+| 报告撰写 | 结构化模型 | 结构化草稿 |
+| 引用核验 | 结构化模型 | 支撑判定与修订后的报告 |
+
+执行过程通过 SSE 展示 Agent 启动、允许工具和交接记录；权限测试会拒绝规划 Agent 直接联网、网络调研 Agent 直接调用模型等越权调用。
 
 ## 本地启动
 
@@ -34,7 +51,7 @@ docker compose down
 docker compose -f compose.yaml -f compose.dev.yaml up -d --build
 ```
 
-默认 Compose 使用本地 development 身份模式：页面会自动取得仅供本机使用的开发会话，不会跳转 Keycloak。需要账号注册、OIDC 和企业服务时，使用企业 Compose 覆盖层；不要混用默认后端与遗留 Keycloak 容器，否则 OIDC token 无法被 development 后端验证。
+默认 Compose 使用 Keycloak OIDC：页面先显示登录入口，用户可以登录、注册、退出并切换账号。`compose.demo.yaml` 才使用固定数据与本地开发身份；不要把开发身份模式用于需要账号隔离的演示。
 
 不配置外部 API 时可运行固定数据的演示模式。若主服务正在运行，先执行 `docker compose down` 释放 8080 端口：
 
@@ -87,13 +104,13 @@ Python 依赖安装在项目内 `.venv`，不会写入系统 Python：
 
 ## 本地 RAG 评测与观测
 
-`eval/frozen_cases.json` 只验证研究流程、路由和来源数量目标，`source_target_rate` 不是检索召回率。真实 RAG 质量使用带相关资料标注的独立语料：复制 `eval/local_retrieval_corpus.template.json` 与 `eval/local_retrieval_cases.template.json`，填入固定文件版本和每个问题的 `relevant_documents`，再运行：
+`eval/frozen_cases.json` 只验证研究流程、路由和来源数量目标，`source_target_rate` 不是检索召回率。仓库包含一套冻结的内部回归语料：14 份资料、16 个问题，并为每个问题人工标注 `relevant_documents`。运行以下命令可在同一索引上对照单向量基线和当前 BM25 + 向量融合：
 
 ```powershell
 .\.venv\Scripts\python.exe .\scripts\evaluate_retrieval.py --corpus .\eval\local_retrieval_corpus.json --cases .\eval\local_retrieval_cases.json
 ```
 
-输出包含文档级 Recall@3/5/10、nDCG@3/5/10、MRR，以及同一查询的冷缓存与热缓存检索耗时。它衡量资料检索，不代表最终答案正确率；答案质量仍需单独标注证据支撑、完整性和正确性。研究任务的 SSE 事件还会写入 `local_retrieval`，记录缓存、BM25、query embedding、向量搜索、融合和总耗时。当前界面并不流式返回模型 token，因此不能把这些数据称为模型 TTFT。
+最新真实嵌入测量与边界见 [eval/benchmark_results.md](eval/benchmark_results.md)。输出包含文档级 Recall、Precision、nDCG、MRR、冷/热查询时延和嵌入请求成本代理。它衡量资料检索，不代表最终答案正确率；答案质量仍需单独标注证据支撑、完整性和正确性。研究任务的 SSE 事件还会写入 `local_retrieval`，记录缓存、BM25、query embedding、向量搜索、融合和总耗时。当前界面并不流式返回模型 token，因此不能把这些数据称为模型 TTFT。
 
 ## 后端目录
 
