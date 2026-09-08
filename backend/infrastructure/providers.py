@@ -11,7 +11,8 @@ from pydantic import BaseModel, ValidationError
 
 from ..core.config import Settings, endpoint
 from ..core.db import Database
-from ..core.observability import error_category, get_task_logger, run_label
+from ..core.metrics import LLM_CALLS, SEARCHES, TOKENS
+from ..core.observability import error_category, get_task_logger, run_label, tracer
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -58,6 +59,9 @@ class Providers:
         if self.settings.demo_mode:
             from .demo import generate
             await self.db.usage(run_id)
+            LLM_CALLS.inc()
+            TOKENS.labels(kind="prompt").inc(0)
+            TOKENS.labels(kind="completion").inc(0)
             result = schema.model_validate(generate(role, data))
             self.logger.info("run=%s component=llm role=%s phase=end duration_ms=%d",
                              run_label(run_id), role, round((time.monotonic() - started) * 1000))
@@ -72,26 +76,32 @@ class Providers:
         )
         messages = [{"role": "system", "content": system},
                     {"role": "user", "content": json.dumps(data, ensure_ascii=False)}]
-        async with self.gate:
-            for attempt in range(2):
-                payload = {"model": self.settings.llm_model_id, "messages": messages,
-                           "max_tokens": 5000, "response_format": {"type": "json_object"},
-                           **json.loads(self.settings.llm_extra_body)}
-                result = await self.post(endpoint(self.settings.llm_base_url, "chat/completions"),
-                    self.settings.llm_api_key.get_secret_value(), payload, "对话模型")
-                usage = result.get("usage") or {}
-                await self.db.usage(run_id, int(usage.get("prompt_tokens", 0)), int(usage.get("completion_tokens", 0)))
-                try:
-                    content = result["choices"][0]["message"]["content"]
-                    content = re.sub(r"^```(?:json)?\s*|\s*```$", "", content.strip())
-                    parsed = schema.model_validate_json(content)
-                    self.logger.info("run=%s component=llm role=%s phase=end duration_ms=%d",
-                                     run_label(run_id), role, round((time.monotonic() - started) * 1000))
-                    return parsed
-                except (KeyError, IndexError, TypeError, AttributeError, ValidationError):
-                    if attempt:
-                        raise ServiceError(f"{role} 未返回有效的结构化结果，已重试一次") from None
-                    messages.append({"role": "user", "content": "上次结果不符合 JSON schema。请重新输出完整、有效的 JSON。"})
+        with tracer().start_as_current_span("llm.structured"):
+            async with self.gate:
+                for attempt in range(2):
+                    payload = {"model": self.settings.llm_model_id, "messages": messages,
+                               "max_tokens": 5000, "response_format": {"type": "json_object"},
+                               **json.loads(self.settings.llm_extra_body)}
+                    result = await self.post(endpoint(self.settings.llm_base_url, "chat/completions"),
+                                             self.settings.llm_api_key.get_secret_value(), payload, "对话模型")
+                    usage = result.get("usage") or {}
+                    prompt_tokens = int(usage.get("prompt_tokens", 0))
+                    completion_tokens = int(usage.get("completion_tokens", 0))
+                    await self.db.usage(run_id, prompt_tokens, completion_tokens)
+                    LLM_CALLS.inc()
+                    TOKENS.labels(kind="prompt").inc(prompt_tokens)
+                    TOKENS.labels(kind="completion").inc(completion_tokens)
+                    try:
+                        content = result["choices"][0]["message"]["content"]
+                        content = re.sub(r"^```(?:json)?\s*|\s*```$", "", content.strip())
+                        parsed = schema.model_validate_json(content)
+                        self.logger.info("run=%s component=llm role=%s phase=end duration_ms=%d",
+                                         run_label(run_id), role, round((time.monotonic() - started) * 1000))
+                        return parsed
+                    except (KeyError, IndexError, TypeError, AttributeError, ValidationError):
+                        if attempt:
+                            raise ServiceError(f"{role} 未返回有效的结构化结果，已重试一次") from None
+                        messages.append({"role": "user", "content": "上次结果不符合 JSON schema。请重新输出完整、有效的 JSON。"})
         raise ServiceError("模型输出校验失败")
 
     async def embed(self, texts: list[str]) -> list[list[float]]:
@@ -134,6 +144,7 @@ class Providers:
             self.logger.warning("run=%s component=web_search phase=skipped reason=budget_exhausted", run_label(run_id))
             return []
         provider = self.settings.web_search_provider
+        SEARCHES.inc()
         started = time.monotonic()
         self.logger.info("run=%s component=web_search provider=%s phase=start", run_label(run_id), provider)
         try:

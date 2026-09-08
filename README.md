@@ -166,3 +166,30 @@ Grafana 仅映射到 `http://localhost:3000`，使用 `.env` 的 `GRAFANA_ADMIN_
 资料上传在企业版会先经 ClamAV 扫描；扫描服务不可用时上传会被拒绝。连续会话中的每条历史研究都有“查看来源 N”入口，可切换并查看该次研究保存的引用与本地资料来源。
 
 `migrate` 是一次性 Alembic 迁移任务，显示 `Exited (0)` 表示成功完成，应保留；不要执行 `docker compose down -v`，否则会删除本机演示数据卷。
+
+## 企业演示强化说明
+
+企业版上传资料时先写入 `/data/quarantine`，再交由 ClamAV 扫描。只有 `ready` 状态的资料可检索、用于研究或导出：`scanning` 表示正在扫描，`indexing` 表示已通过扫描且正在建立索引，`quarantined` 表示扫描拒绝，`scan_failed` 表示扫描服务不可用。后两种状态保留最少的文件记录和错误说明，不能通过重建索引绕过扫描；管理员删除后会同时删除隔离文件，并写入不含正文的审计记录。
+
+研究与资料索引均有持久化状态。企业版研究任务由 Redis Worker 消费；资料索引在 API 或 Worker 重启后会重新入队，已通过扫描的原始文件不会因进程内任务丢失而被视为可检索。任务、指标和追踪不使用用户、工作空间、主题、文件名、来源 URL 或错误正文作为 Prometheus 标签或 OpenTelemetry 属性。
+
+Grafana 自动配置六个全局匿名面板：API/Worker 可用性、队列深度、任务成功率、失败类别、节点 P95 时延和 Token 消耗。刚重建容器且尚未运行研究时，计数器为零；运行一次研究后 Prometheus 的 15 秒抓取周期内会出现数据。
+
+企业 Compose 冒烟在本机和 GitHub Actions 复用标准库脚本：
+
+```powershell
+.\scripts\smoke-enterprise.ps1 -Start
+```
+
+它不会调用模型或联网搜索，检查 Web、OIDC、迁移、Redis、`/readyz`、Worker 指标、Prometheus 两个抓取目标、Grafana 与 OTel Collector。
+
+备份和恢复应在停止演示服务后执行。备份同时导出 PostgreSQL 逻辑 SQL 与研究附件、Milvus、Redis、Keycloak、Grafana 等命名卷，并生成 SHA-256 清单：
+
+```powershell
+.\scripts\backup.ps1
+.\scripts\restore.ps1 -Input .cache\backup\deepresearch-时间戳 -ReplaceVolumes
+```
+
+恢复会替换当前项目的命名卷，完成后重新启动企业 Compose 并运行企业冒烟检查。不要将备份文件、`.env` 或密钥提交到 Git。
+
+前端工具链依赖通过 Dependabot 分组升级，并以 `npm ci`、Vitest 和生产构建作为合并门槛。当前 Vue TSC 3.3.11 与 TypeScript 7.0.2 实际不兼容，因此项目固定 TypeScript 6.0.3，并暂时忽略 TypeScript 7 的自动升级；只有完成兼容性验证后才解除该限制。

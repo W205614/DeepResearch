@@ -94,7 +94,6 @@ class Database:
                 await conn.execute("UPDATE threads SET thread_key=? WHERE id=?", (thread_key, row["id"]))
             await conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS one_thread_key_per_user ON threads(user_id,thread_key)")
             await conn.execute("UPDATE runs SET status='interrupted' WHERE status IN ('running','queued')")
-            await conn.execute("UPDATE documents SET status='failed',error='上次导入被中断，请重试' WHERE status='indexing'")
             await conn.commit()
 
     async def execute(self, sql: str, args=()):

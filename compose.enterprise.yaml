@@ -14,6 +14,8 @@ services:
       postgres: { condition: service_healthy }
       redis: { condition: service_healthy }
       keycloak: { condition: service_started }
+      clamav: { condition: service_started }
+      otel-collector: { condition: service_started }
       migrate: { condition: service_completed_successfully }
   worker:
     build: .
@@ -66,6 +68,8 @@ services:
       postgres: { condition: service_healthy }
       redis: { condition: service_healthy }
       milvus: { condition: service_healthy }
+      clamav: { condition: service_started }
+      otel-collector: { condition: service_started }
       migrate: { condition: service_completed_successfully }
   migrate:
     build: .

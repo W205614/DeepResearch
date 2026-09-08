@@ -35,8 +35,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - run: docker compose -f compose.yaml -f compose.enterprise.yaml up -d --build --wait --wait-timeout 300
-      - run: curl --fail --retry 20 --retry-connrefused http://127.0.0.1:8180/realms/deepresearch/.well-known/openid-configuration
-      - run: docker compose -f compose.yaml -f compose.enterprise.yaml exec -T postgres psql -U deepresearch -d deepresearch -tAc 'SELECT version_num FROM alembic_version' | grep 0001_enterprise_workspace
+      - run: python scripts/smoke-enterprise.py --start
       - if: always()
-        run: docker compose -f compose.yaml -f compose.enterprise.yaml down
+        run: docker compose -f compose.yaml -f compose.enterprise.yaml logs --no-color && docker compose -f compose.yaml -f compose.enterprise.yaml down

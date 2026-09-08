@@ -77,7 +77,6 @@ class PostgresDatabase:
         async with self.pool.acquire() as conn:
             await conn.execute(POSTGRES_SCHEMA)
             await conn.execute("UPDATE runs SET status='interrupted' WHERE status IN ('running','queued')")
-            await conn.execute("UPDATE documents SET status='failed',error='上次导入被中断，请重试' WHERE status='indexing'")
 
     @asynccontextmanager
     async def connection(self):

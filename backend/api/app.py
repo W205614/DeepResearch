@@ -312,11 +312,19 @@ def create_app(settings: Settings | None = None):
             "Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
     @app.post("/api/documents", status_code=202)
-    async def upload(file: UploadFile = File(), runtime=Depends(rt), user=Depends(researcher)):
+    async def upload(request: Request, file: UploadFile = File(), runtime=Depends(rt), user=Depends(researcher)):
         content = await file.read(10 * 1024 * 1024 + 1)
         await file.close()
         async with runtime.upload_lock:
-            return await runtime.documents.add(user, file.filename or "document", content)
+            try:
+                document = await runtime.upload_document(user, file.filename or "document", content)
+            except ServiceError as exc:
+                await runtime.db.audit(user, request.state.principal.subject, "document.upload", "document",
+                                       str(getattr(exc, "document_id", "upload")), "rejected")
+                raise
+        await runtime.db.audit(user, request.state.principal.subject, "document.upload", "document",
+                               document["id"], document["status"])
+        return document
 
     @app.get("/api/documents")
     async def documents(runtime=Depends(rt), user=Depends(identity)):
@@ -335,11 +343,13 @@ def create_app(settings: Settings | None = None):
         return await runtime.documents.search(user, [body.query], limit=body.limit)
 
     @app.post("/api/documents/{document_id}/reindex", status_code=202)
-    async def reindex_document(document_id: str, runtime=Depends(rt), user=Depends(researcher)):
+    async def reindex_document(document_id: str, request: Request, runtime=Depends(rt), user=Depends(researcher)):
         try:
-            return await runtime.documents.reindex(document_id, user)
+            document = await runtime.reindex_document(document_id, user)
         except LookupError as exc:
             raise HTTPException(404, str(exc)) from None
+        await runtime.db.audit(user, request.state.principal.subject, "document.reindex", "document", document_id)
+        return document
 
     @app.delete("/api/documents/{document_id}")
     async def delete_document(document_id: str, request: Request, runtime=Depends(rt), user=Depends(administrator)):

@@ -12,7 +12,8 @@ from ..core.db import now
 from .evidence_policy import validate_claim
 from ..domain.models import (Analysis, ChatAnswer, Evidence, Judgment, Plan, Reflection, ReportDraft,
                      ResearchState, Route, Verification)
-from ..core.observability import error_category, get_task_logger, run_label
+from ..core.metrics import NODE_SECONDS
+from ..core.observability import error_category, get_task_logger, run_label, tracer
 from ..infrastructure.providers import ServiceError
 from .routing import assistant_name_setting, decide
 from ..core.security import canonical_url, fetch_text
@@ -171,21 +172,25 @@ class ResearchGraph:
             start = time.monotonic()
             await self.db.event(state["run_id"], "node_start", {"node": name, "round": state.get("round", 0)})
             self.logger.info("run=%s node=%s phase=start round=%d", run_label(state["run_id"]), name, state.get("round", 0))
-            try:
-                result = await operation(state)
-                duration = round((time.monotonic() - start) * 1000)
-                await self.db.event(state["run_id"], "node_end", {"node": name, "duration_ms": duration})
-                self.logger.info("run=%s node=%s phase=end duration_ms=%d", run_label(state["run_id"]), name, duration)
-                return result
-            except asyncio.CancelledError:
-                await self.db.event(state["run_id"], "node_cancelled", {"node": name})
-                self.logger.warning("run=%s node=%s phase=cancelled", run_label(state["run_id"]), name)
-                raise
-            except Exception as exc:
-                await self.db.event(state["run_id"], "node_error", {"node": name})
-                self.logger.error("run=%s node=%s phase=error category=%s",
-                                  run_label(state["run_id"]), name, error_category(exc))
-                raise
+            with tracer().start_as_current_span(f"research.node.{name}"):
+                try:
+                    result = await operation(state)
+                    duration = round((time.monotonic() - start) * 1000)
+                    NODE_SECONDS.labels(node=name).observe(duration / 1000)
+                    await self.db.event(state["run_id"], "node_end", {"node": name, "duration_ms": duration})
+                    self.logger.info("run=%s node=%s phase=end duration_ms=%d", run_label(state["run_id"]), name, duration)
+                    return result
+                except asyncio.CancelledError:
+                    NODE_SECONDS.labels(node=name).observe(time.monotonic() - start)
+                    await self.db.event(state["run_id"], "node_cancelled", {"node": name})
+                    self.logger.warning("run=%s node=%s phase=cancelled", run_label(state["run_id"]), name)
+                    raise
+                except Exception as exc:
+                    NODE_SECONDS.labels(node=name).observe(time.monotonic() - start)
+                    await self.db.event(state["run_id"], "node_error", {"node": name})
+                    self.logger.error("run=%s node=%s phase=error category=%s",
+                                      run_label(state["run_id"]), name, error_category(exc))
+                    raise
         return node
 
     async def warning(self, state, text):

@@ -14,8 +14,8 @@ from ..core.db import Database, now, uid
 from ..core.postgres import PostgresDatabase
 from .documents import Documents
 from ..research.graph import ResearchGraph
-from ..core.observability import configure_task_logger, error_category, run_label
-from ..core.metrics import QUEUE_DEPTH, RUNS, RUN_SECONDS, FAILURES
+from ..core.observability import configure_task_logger, error_category, inject_trace_context, run_label
+from ..core.metrics import FAILURES, QUEUE_DEPTH, RUNS, RUN_SECONDS
 from ..infrastructure.providers import Providers, ServiceError
 from ..research.routing import decide
 from ..infrastructure.vectors import VectorIndex
@@ -50,11 +50,13 @@ class Runtime:
         self.checkpointer = await self.stack.enter_async_context(
             AsyncSqliteSaver.from_conn_string(str(self.settings.data_dir / "checkpoints.sqlite3")))
         self.graph = ResearchGraph(self.settings, self.db, self.providers, self.vectors, self.documents).build(self.checkpointer)
-        if self.settings.queue_backend == "redis" and not self.worker_mode:
-            from arq import create_pool
-            from arq.connections import RedisSettings
-            self.queue = await create_pool(RedisSettings.from_dsn(self.settings.redis_url))
-            await self.recover_queued_runs()
+        if not self.worker_mode:
+            if self.settings.queue_backend == "redis":
+                from arq import create_pool
+                from arq.connections import RedisSettings
+                self.queue = await create_pool(RedisSettings.from_dsn(self.settings.redis_url))
+                await self.recover_queued_runs()
+            await self.recover_indexing_documents()
         return self
 
     async def close(self):
@@ -72,6 +74,28 @@ class Runtime:
             await self.db.close()
         if self.queue:
             await self.queue.aclose()
+    async def schedule_document(self, document_id: str) -> None:
+        key = f"document:{document_id}"
+        if self.queue:
+            await self.queue.enqueue_job("ingest_document", document_id, trace_context=inject_trace_context())
+            return
+        if key in self.tasks:
+            return
+        task = asyncio.create_task(self.documents.ingest(document_id), name=key)
+        self.tasks[key] = task
+        task.add_done_callback(lambda _: self.tasks.pop(key, None))
+
+    async def upload_document(self, user: str, name: str, content: bytes) -> dict:
+        document = await self.documents.add(user, name, content)
+        if document["status"] == "indexing":
+            await self.schedule_document(document["id"])
+        return document
+
+    async def reindex_document(self, document_id: str, user: str) -> dict:
+        document = await self.documents.reindex(document_id, user)
+        await self.schedule_document(document["id"])
+        return document
+
     async def find_thread(self, thread_ref: str, user: str):
         return await self.db.one(
             "SELECT * FROM threads WHERE user_id=? AND (id=? OR thread_key=?)", (user, thread_ref, thread_ref))
@@ -148,14 +172,14 @@ class Runtime:
             except sqlite3.IntegrityError:
                 raise ConflictError("同一会话已有正在执行的研究") from None
             await self.db.event(run_id, "queued", {"message": "研究任务已创建"})
-            QUEUE_DEPTH.inc()
+            await self.refresh_queue_depth()
             await self.schedule(run_id)
             return await self.db.owned_run(run_id, user)
 
     async def schedule(self, run_id, resume=False):
         self.logger.info("run=%s phase=scheduled resume=%s", run_label(run_id), resume)
         if self.queue:
-            await self.queue.enqueue_job("run_research", run_id, resume=resume)
+            await self.queue.enqueue_job("run_research", run_id, resume=resume, trace_context=inject_trace_context())
             return
         task = asyncio.create_task(self.execute_run(run_id, resume), name=f"research-{run_id}")
         self.tasks[run_id] = task
@@ -227,6 +251,7 @@ class Runtime:
                 await self.db.execute("UPDATE runs SET attempt_count=attempt_count+1,last_attempt_at=? WHERE id=?",
                                       (now(), run_id))
                 await self.db.execute("UPDATE runs SET status='running',updated_at=?,error='' WHERE id=?", (now(), run_id))
+                await self.refresh_queue_depth()
                 await self.db.event(run_id, "running", {"resumed": resume})
                 config = {"configurable": {"thread_id": run_id}, "recursion_limit": 80}
                 async with asyncio.timeout(self.settings.max_run_seconds):
@@ -274,6 +299,7 @@ class Runtime:
     async def fail(self, run_id, message, status="failed"):
         await self.db.execute("UPDATE runs SET status=?,error=?,updated_at=? WHERE id=?", (status, message, now(), run_id))
         await self.db.event(run_id, "error", {"message": message, "status": status})
+        await self.refresh_queue_depth()
 
     async def cancel(self, run_id, user):
         if not await self.db.owned_run(run_id, user):
@@ -297,6 +323,7 @@ class Runtime:
                 await self.db.execute("UPDATE runs SET status='queued',updated_at=? WHERE id=?", (now(), run_id))
             except sqlite3.IntegrityError:
                 raise ConflictError("当前会话已有其他研究任务") from None
+            await self.refresh_queue_depth()
             await self.schedule(run_id, resume=True)
             return await self.db.owned_run(run_id, user)
 
@@ -322,6 +349,16 @@ class Runtime:
         for row in rows:
             if row["id"] not in self.tasks:
                 await self.queue.enqueue_job("run_research", row["id"], resume=row["status"] == "interrupted")
+
+    async def recover_indexing_documents(self):
+        """Resume persisted, clean documents after an API restart."""
+        rows = await self.db.rows("SELECT id FROM documents WHERE status='indexing'")
+        for row in rows:
+            await self.schedule_document(row["id"])
+
+    async def refresh_queue_depth(self) -> None:
+        row = await self.db.one("SELECT COUNT(*) AS total FROM runs WHERE status='queued'")
+        QUEUE_DEPTH.set(int((row or {}).get("total", 0)))
 
     async def ready(self):
         try:
@@ -361,7 +398,7 @@ class Runtime:
     async def export_user(self, user: str) -> bytes:
         runs = await self.db.rows("SELECT * FROM runs WHERE user_id=?", (user,))
         memories = await self.db.rows("SELECT id,kind,content,run_id,created_at FROM memories WHERE user_id=?", (user,))
-        documents = await self.db.rows("SELECT * FROM documents WHERE user_id=?", (user,))
+        documents = await self.db.rows("SELECT * FROM documents WHERE user_id=? AND status='ready'", (user,))
         output = io.BytesIO()
         with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as archive:
             archive.writestr("research.json", json.dumps(runs, ensure_ascii=False, indent=2))
