@@ -18,6 +18,7 @@ export async function api<T=any>(path: string, init: RequestInit = {}): Promise<
     const body = await response.json().catch(()=>({detail:'服务暂时不可用'}))
     if (response.status === 401) {
       sessionStorage.removeItem('dr-token')
+      sessionStorage.removeItem('dr-id-token')
       window.dispatchEvent(new Event('deepresearch-auth-expired'))
       throw new Error('登录已过期，请重新登录')
     }
