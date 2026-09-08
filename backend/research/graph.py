@@ -238,7 +238,12 @@ class ResearchGraph:
                 "只判断下一步，不回答问题。chat 用于一般对话、简短说明和不需要外部事实的问题；"
                 "quick 用于需要查资料的明确单点问题；deep 用于多维度、对比、行业或歧义研究请求。",
                 {"topic": topic, "context": state.get("context", "")}, Route, state["run_id"])
-            mode, reason, strategy, signals = route.mode, route.reason, "llm", []
+            # Only explicit local operations may bypass evidence collection. A
+            # model's "chat" label is not enough to answer a user question from
+            # parametric knowledge, because it would skip local and web sources.
+            mode = "quick" if route.mode == "chat" else route.mode
+            reason = "普通问题默认检索本地资料和网页来源" if route.mode == "chat" else route.reason
+            strategy, signals = "llm", []
         await self.db.event(state["run_id"], "route", {"mode": mode, "reason": reason,
                             "strategy": strategy, "signals": signals})
         self.logger.info("run=%s node=router decision=%s strategy=%s", run_label(state["run_id"]), mode, strategy)
@@ -336,7 +341,7 @@ class ResearchGraph:
             return {"local_results": []}
         evidence = []
         try:
-            hits = await self.documents.search(state["user_id"], state["queries"], limit=6)
+            hits = await self.documents.search(state["user_id"], state["queries"], limit=6, run_id=state["run_id"])
             for hit in hits:
                 evidence.append(Evidence(id="L-" + hit["id"][:12], kind="local", title=hit["title"],
                     text=hit["text"], locator=hit["locator"], document_id=hit["document_id"],

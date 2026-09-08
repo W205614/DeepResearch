@@ -34,3 +34,16 @@ async def test_jwt_workspace_roles_and_audit(settings):
             audit = await client.get("/api/workspaces/alice/audit", headers=alice)
             actions = [row["action"] for row in audit.json()]
             assert "membership.upsert" in actions and "research.create" in actions
+
+
+@pytest.mark.asyncio
+async def test_workspace_limits_do_not_expose_or_enforce_a_token_budget(settings):
+    app = create_app(settings)
+    async with app.router.lifespan_context(app):
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+            alice = bearer(settings, "alice")
+            response = await client.put("/api/workspaces/alice/limits", headers=alice,
+                                        json={"daily_search_limit": 7, "concurrent_run_limit": 1,
+                                              "daily_token_limit": 1})
+            assert response.status_code == 200
+            assert response.json() == {"daily_search_limit": 7, "concurrent_run_limit": 1}

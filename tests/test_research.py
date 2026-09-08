@@ -188,8 +188,9 @@ async def test_current_user_preference_is_local_and_does_not_search(runtime):
     assert not result["sources"]
 
 
-async def test_llm_chat_does_not_search(runtime):
+async def test_llm_chat_route_is_upgraded_to_evidence_retrieval(runtime):
     original = runtime.providers.structured
+    local_search = AsyncMock(return_value=[])
 
     async def chat_route(role, *args, **kwargs):
         if role == "router":
@@ -197,11 +198,16 @@ async def test_llm_chat_does_not_search(runtime):
         return await original(role, *args, **kwargs)
 
     runtime.providers.structured = chat_route
-    result = await finish(runtime, await runtime.create("alice", RunRequest(topic="用一句话介绍你自己", client_request_id=uid())))
+    runtime.documents.search = local_search
+    await runtime.db.execute("""INSERT INTO documents(id,user_id,name,hash,status,created_at)
+        VALUES('local-ready','alice','local.md','local-hash','ready','today')""")
+    result = await finish(runtime, await runtime.create("alice", RunRequest(
+        topic="用一句话介绍你自己", client_request_id=uid())))
     assert result["status"] == "completed"
-    assert result["validation"]["kind"] == "chat"
-    assert result["usage"].get("search_calls", 0) == 0
-    assert not result["sources"]
+    assert result["validation"].get("kind") != "chat"
+    assert result["usage"].get("search_calls", 0) >= 1
+    assert result["sources"]
+    local_search.assert_awaited_once()
 
 
 async def test_user_profile_name_is_shared_between_threads(runtime):

@@ -44,6 +44,9 @@ CREATE TABLE IF NOT EXISTS search_cache(
  run_id TEXT,query TEXT,result TEXT,PRIMARY KEY(run_id,query));
 CREATE TABLE IF NOT EXISTS web_cache(
  url TEXT PRIMARY KEY,text TEXT NOT NULL,fetched_at TEXT NOT NULL,access TEXT NOT NULL,error TEXT DEFAULT '');
+CREATE TABLE IF NOT EXISTS document_search_cache(
+ user_id TEXT NOT NULL,corpus_hash TEXT NOT NULL,query_hash TEXT NOT NULL,limit_value INTEGER NOT NULL,
+ result TEXT NOT NULL,created_at TEXT NOT NULL,PRIMARY KEY(user_id,corpus_hash,query_hash,limit_value));
 CREATE TABLE IF NOT EXISTS metadata(key TEXT PRIMARY KEY,value TEXT);
 CREATE TABLE IF NOT EXISTS workspaces(id TEXT PRIMARY KEY,name TEXT NOT NULL,created_by TEXT NOT NULL,created_at TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS memberships(workspace_id TEXT NOT NULL,subject TEXT NOT NULL,role TEXT NOT NULL,
@@ -138,7 +141,7 @@ class Database:
             row["validation"] = json.loads(row["validation"])
             row["usage"] = await self.one("SELECT * FROM counters WHERE run_id=?", (run_id,)) or {}
         return row
-    async def create_workspace(self, subject: str, name: str, limits: tuple[int, int, int], workspace_id: str | None = None) -> dict:
+    async def create_workspace(self, subject: str, name: str, limits: tuple[int, int], workspace_id: str | None = None) -> dict:
         workspace = {"id": workspace_id or uid(), "name": name.strip()[:100], "created_by": subject, "created_at": now()}
         async with self.connection() as conn:
             await conn.execute("INSERT INTO workspaces(id,name,created_by,created_at) VALUES(?,?,?,?)",
@@ -146,7 +149,7 @@ class Database:
             await conn.execute("INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES(?,?,?,?)",
                                (workspace["id"], subject, "admin", workspace["created_at"]))
             await conn.execute("""INSERT INTO workspace_limits(workspace_id,daily_search_limit,daily_token_limit,concurrent_run_limit)
-                               VALUES(?,?,?,?)""", (workspace["id"], *limits))
+                               VALUES(?,?,0,?)""", (workspace["id"], *limits))
             await conn.commit()
         return workspace
 
@@ -174,4 +177,4 @@ class Database:
                                WHERE workspace_id=? ORDER BY created_at DESC LIMIT ?""", (workspace_id, limit))
 
     async def workspace_limits(self, workspace_id: str) -> dict | None:
-        return await self.one("SELECT * FROM workspace_limits WHERE workspace_id=?", (workspace_id,))
+        return await self.one("SELECT daily_search_limit,concurrent_run_limit FROM workspace_limits WHERE workspace_id=?", (workspace_id,))

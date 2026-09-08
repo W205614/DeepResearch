@@ -46,8 +46,10 @@ docker compose -f compose.yaml -f compose.demo.yaml up -d --build --wait
 
 ```dotenv
 LLM_MODEL_ID=deepseek-v4-flash
+# 图片资料解析复用同一 LLM_BASE_URL 和 LLM_API_KEY
+VISION_MODEL_ID=deepseek-v4-flash-vision-exp
 LLM_BASE_URL=https://api.deepseek.com
-LLM_API_KEY=你的对话模型密钥
+LLM_API_KEY=你的 DeepSeek API Key
 
 EMBEDDING_MODEL=text-embedding-3-large
 EMBEDDING_BASE_URL=https://你的嵌入服务/v1
@@ -80,6 +82,17 @@ Python 依赖安装在项目内 `.venv`，不会写入系统 Python：
 
 前端位于 `frontend`，生产镜像会在构建时执行类型检查与 Vite 打包。
 
+
+## 本地 RAG 评测与观测
+
+`eval/frozen_cases.json` 只验证研究流程、路由和来源数量目标，`source_target_rate` 不是检索召回率。真实 RAG 质量使用带相关资料标注的独立语料：复制 `eval/local_retrieval_corpus.template.json` 与 `eval/local_retrieval_cases.template.json`，填入固定文件版本和每个问题的 `relevant_documents`，再运行：
+
+```powershell
+.\.venv\Scripts\python.exe .\scripts\evaluate_retrieval.py --corpus .\eval\local_retrieval_corpus.json --cases .\eval\local_retrieval_cases.json
+```
+
+输出包含文档级 Recall@3/5/10、nDCG@3/5/10、MRR，以及同一查询的冷缓存与热缓存检索耗时。它衡量资料检索，不代表最终答案正确率；答案质量仍需单独标注证据支撑、完整性和正确性。研究任务的 SSE 事件还会写入 `local_retrieval`，记录缓存、BM25、query embedding、向量搜索、融合和总耗时。当前界面并不流式返回模型 token，因此不能把这些数据称为模型 TTFT。
+
 ## 后端目录
 
 后端按职责拆分，避免将接口、研究图、存储和第三方适配器平铺在同一个目录：
@@ -109,17 +122,17 @@ docker compose exec -T backend python -m backend.commands.cli --base-url http://
 
 报告中的每条正文结论必须关联已接受的来源，并经过一次独立的模型辅助支持校验；不通过的结论会删除或修订。该机制降低无引用结论的风险，但不替代重要决策所需的人工原文核查。网页抓取还会验证协议、DNS 地址、跳转和响应大小，以阻断本机与内网地址访问。
 
-路由会优先采用可解释的规则处理用户指定模式、问候、功能帮助、助手名称和明确的研究信号。功能帮助直接由本地说明回答；一般对话交给模型简答，但不会触发网页或本地资料检索。只有需要可核查外部事实的问题才进入研究链路。同一 Thread 是一条连续研究会话：页面按时间连续显示提问与报告；后端注入最多 `CONVERSATION_TURN_LIMIT` 个历史问题和 `CONVERSATION_RECENT_RUNS` 份最近报告，避免长会话无限占用上下文。这两个值默认是 30 和 6，可在 `.env` 调整。会话历史、用户设定及历史研究摘要只用于理解上下文，不能作为本次研究事实来源。每次证据审查会记录来源数量、网页域名数、来源类型和正文/摘要状态，便于后续测量覆盖度与来源多样性。
+路由会优先采用可解释的规则处理用户指定模式、问候、功能帮助、助手名称和明确的研究信号。问候、功能帮助、个人设定与已保存偏好是仅限本地操作；除此之外，任何普通问题即使模型初判为聊天，也会进入快速研究，尝试同时检索网页与当前用户的本地资料库，避免直接使用模型参数知识回答。同一 Thread 是一条连续研究会话：页面按时间连续显示提问与报告；后端注入最多 `CONVERSATION_TURN_LIMIT` 个历史问题和 `CONVERSATION_RECENT_RUNS` 份最近报告，避免长会话无限占用上下文。这两个值默认是 30 和 6，可在 `.env` 调整。会话历史、用户设定及历史研究摘要只用于理解上下文，不能作为本次研究事实来源。每次证据审查会记录来源数量、网页域名数、来源类型和正文/摘要状态，便于后续测量覆盖度与来源多样性。
 
 “当前用户的研究偏好是什么”“你保存了哪些研究偏好”等问题会直接读取当前 User ID 保存的偏好，不调用模型或联网搜索；“AI 行业研究偏好”等行业主题仍会进入研究流程。用户也可以说“以后叫你小研”设置助手名称；同一 User ID 下的任意新 Thread 问“你叫什么名字？”都会直接读取该个人设定，不联网、不调用模型。
 
 重要的数字、日期、比例、金额和法规结论必须有正文或本地资料支持，并需要两个独立网页域名，或一个在 `SOURCE_TRUST_OVERRIDES` 中明确配置的可信域名。搜索摘要可以用于背景，但不能单独支撑这类结论。网页正文会安全缓存 `WEB_CACHE_TTL_HOURS` 指定的时长；缓存和重试不会绕过 DNS、跳转和内网地址限制。
 
-深度研究默认每条查询取得最多 8 个结果，在全部查询间轮转选择最多 24 个不同网页候选，再读取可访问正文和筛选证据。可用 `.env` 中的 `WEB_RESULTS_PER_QUERY`、`MAX_WEB_CANDIDATES` 调整覆盖范围；提高它们会增加时延、模型上下文和搜索调用成本。它是多源抽样与可核查综合，不是对整个互联网的穷尽抓取。
+深度研究默认每条查询取得最多 8 个结果，在全部查询间轮转选择最多 24 个不同网页候选，再读取可访问正文和筛选证据。可用 `.env` 中的 `WEB_RESULTS_PER_QUERY`、`MAX_WEB_CANDIDATES` 调整覆盖范围；提高它们会增加时延、模型上下文和搜索调用成本。工作空间只限制搜索次数和并发研究数；Token 使用会被记录用于成本观测，但不会作为“今日 Token 预算”拒绝用户请求。它是多源抽样与可核查综合，不是对整个互联网的穷尽抓取。
 
 运行任务时，后端会向容器标准输出记录任务短 ID、节点开始/结束与耗时、模型调用、搜索结果数量、候选/可读网页数量、证据筛选数量和错误类别。查看命令为 `docker compose logs -f backend`。日志默认不记录问题文本、用户偏好、提示词、模型输入输出、URL 或网页正文；用 `TASK_LOG_LEVEL=WARNING` 可减少正常进度日志。
 
-本地资料支持 TXT、Markdown、DOCX 和文字型 PDF。系统以标题或页码定位资料，再结合向量与 BM25 混合检索、去重选择片段；扫描 PDF 需要先完成 OCR。资料库页面可以查看 Chunk 定位、手动重建索引，并通过检索调试工作台查看向量、BM25 与融合分数。
+本地资料支持 TXT、Markdown、DOCX、文字型 PDF，以及 JPG/JPEG、PNG、GIF、WebP 图片。文本资料按标题、页码与 DOCX 表格结构切块；图片会先校验真实文件签名，再由 `VISION_MODEL_ID` 指定的 DeepSeek 视觉模型提取可检索文字、表格标题和图表事实，之后进入同一向量与 BM25 混合检索。扫描 PDF 仅在其嵌入图像可被安全提取时尝试视觉解析；PPT、Excel、复杂公式和通用版面理解仍不在当前范围。资料库页面可以查看 Chunk 定位、手动重建索引，并通过检索调试工作台查看向量、BM25 与融合分数。
 
 默认不会自动把报告写入语义记忆。完成报告后可在界面点击“保存为语义记忆”，或设置 `AUTO_SAVE_SEMANTIC_MEMORY=true` 恢复自动保存。用户偏好和个人设定按 User ID 共享；报告语义记忆只会在保存它的 Thread 内被检索。工作台设置页可导出当前用户 ZIP 数据，或在确认后清理本地报告、记忆和资料。
 

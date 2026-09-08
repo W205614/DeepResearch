@@ -98,3 +98,17 @@ async def test_deepseek_no_native_citation_is_rejected(tmp_path):
     with pytest.raises(ServiceError, match="来源 URL"):
         await p.search("query", "search-run")
     await p.close()
+
+
+async def test_vision_request_uses_the_configured_model_and_same_provider_credentials(tmp_path):
+    def response(request):
+        assert request.url.path == "/chat/completions"
+        body = json.loads(request.content)
+        assert body["model"] == "deepseek-v4-flash-vision-exp"
+        image = body["messages"][0]["content"][1]["image_url"]["url"]
+        assert image.startswith("data:image/png;base64,")
+        return httpx.Response(200, json={"choices": [{"message": {"content": "图表文字"}}]})
+
+    p = await make_provider(tmp_path, response)
+    assert await p.describe_image(b"png-bytes", "image/png") == "图表文字"
+    await p.close()

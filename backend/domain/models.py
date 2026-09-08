@@ -33,7 +33,6 @@ class MembershipRequest(BaseModel):
 
 class WorkspaceLimitRequest(BaseModel):
     daily_search_limit: int = Field(ge=1, le=10000)
-    daily_token_limit: int = Field(ge=1, le=100_000_000)
     concurrent_run_limit: int = Field(ge=1, le=20)
 
 

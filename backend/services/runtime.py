@@ -152,13 +152,10 @@ class Runtime:
                 active = await self.db.one("SELECT COUNT(*) AS total FROM runs WHERE user_id=? AND status IN ('queued','running')", (user,))
                 if int(active["total"]) >= int(limits["concurrent_run_limit"]):
                     raise ConflictError("工作空间正在执行的研究已达到并发上限")
-                usage = await self.db.one("""SELECT COALESCE(SUM(c.search_calls),0) AS searches,
-                    COALESCE(SUM(c.prompt_tokens+c.completion_tokens),0) AS tokens FROM counters c JOIN runs r ON r.id=c.run_id
+                usage = await self.db.one("""SELECT COALESCE(SUM(c.search_calls),0) AS searches FROM counters c JOIN runs r ON r.id=c.run_id
                     WHERE r.user_id=? AND substr(r.created_at,1,10)=substr(?,1,10)""", (user, now())) or {}
                 if int(usage.get("searches", 0)) >= int(limits["daily_search_limit"]):
                     raise ConflictError("工作空间今日搜索预算已用完")
-                if int(usage.get("tokens", 0)) >= int(limits["daily_token_limit"]):
-                    raise ConflictError("工作空间今日 Token 预算已用完")
             previous = await self.db.one("SELECT id,topic,mode FROM runs WHERE user_id=? AND client_request_id=?",
                                          (user, request.client_request_id))
             if previous:

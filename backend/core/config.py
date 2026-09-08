@@ -10,6 +10,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore", populate_by_name=True)
     llm_model_id: str = Field("deepseek-v4-flash", validation_alias=AliasChoices("LLM_MODEL_ID", "LLM_MODEL"))
+    vision_model_id: str = "deepseek-v4-flash-vision-exp"
     llm_base_url: str = "https://api.deepseek.com"
     llm_api_key: SecretStr = SecretStr("")
     llm_extra_body: str = '{}'
@@ -33,7 +34,6 @@ class Settings(BaseSettings):
     max_job_retries: int = Field(2, ge=0, le=10)
     otel_exporter_otlp_endpoint: str = ""
     workspace_daily_search_limit: int = Field(120, ge=1, le=10000)
-    workspace_daily_token_limit: int = Field(1_000_000, ge=1, le=100_000_000)
     workspace_concurrent_run_limit: int = Field(2, ge=1, le=20)
     document_scan_mode: Literal["disabled", "clamav"] = "disabled"
     clamav_host: str = "clamav"

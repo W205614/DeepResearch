@@ -1,5 +1,6 @@
 import asyncio
 import io
+import json
 import zipfile
 
 import pytest
@@ -83,3 +84,41 @@ def test_long_unpunctuated_text_keeps_its_tail_in_the_index():
 
     assert all(len(part["text"]) <= 1100 for part in parts)
     assert "UNIQUE_END_MARKER" in "".join(part["text"] for part in parts)
+
+
+async def test_image_upload_uses_vision_extraction_before_indexing(api_client):
+    _, client = api_client
+    image = b"\x89PNG\r\n\x1a\n" + b"minimal-image-content"
+    response = await client.post("/api/documents", files={"file": ("chart.png", image, "image/png")})
+    assert response.status_code == 202, response.text
+    document = await wait_for_status(client, response.json()["id"], "ready")
+    chunks = (await client.get(f"/api/documents/{document['id']}/chunks")).json()
+    assert chunks and "图片解析" in chunks[0]["text"]
+
+
+def test_image_extension_and_signature_must_match():
+    with pytest.raises(document_service.ServiceError, match="签名"):
+        document_service.validate_upload("not-a-chart.png", b"not an image")
+
+
+async def test_local_retrieval_cache_is_scoped_invalidated_and_timed(runtime):
+    document = await runtime.documents.add("alice", "cache.md", "缓存命中应避免重复向量查询。".encode())
+    await runtime.documents.ingest(document["id"])
+    original = runtime.providers.embed
+    calls = 0
+
+    async def counted(texts):
+        nonlocal calls
+        calls += len(texts)
+        return await original(texts)
+
+    runtime.providers.embed = counted
+    first = await runtime.documents.search("alice", ["缓存命中"], run_id="retrieval-run")
+    second = await runtime.documents.search("alice", ["缓存命中"], run_id="retrieval-run")
+    assert first == second and calls == 1
+    events = await runtime.db.rows("SELECT data FROM events WHERE run_id='retrieval-run' ORDER BY id")
+    payloads = [json.loads(row["data"]) for row in events]
+    assert payloads[0]["cache_hit"] is False and "embedding_ms" in payloads[0]
+    assert payloads[1]["cache_hit"] is True and "total_ms" in payloads[1]
+    await runtime.documents.delete(document["id"], "alice")
+    assert not await runtime.db.one("SELECT * FROM document_search_cache WHERE user_id='alice'")

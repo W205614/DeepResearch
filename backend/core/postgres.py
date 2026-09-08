@@ -25,6 +25,9 @@ CREATE TABLE IF NOT EXISTS memories(id TEXT PRIMARY KEY,user_id TEXT,kind TEXT,c
 CREATE TABLE IF NOT EXISTS counters(run_id TEXT PRIMARY KEY,search_calls INTEGER DEFAULT 0,llm_calls INTEGER DEFAULT 0,prompt_tokens INTEGER DEFAULT 0,completion_tokens INTEGER DEFAULT 0);
 CREATE TABLE IF NOT EXISTS search_cache(run_id TEXT,query TEXT,result TEXT,PRIMARY KEY(run_id,query));
 CREATE TABLE IF NOT EXISTS web_cache(url TEXT PRIMARY KEY,text TEXT NOT NULL,fetched_at TEXT NOT NULL,access TEXT NOT NULL,error TEXT DEFAULT '');
+CREATE TABLE IF NOT EXISTS document_search_cache(
+ user_id TEXT NOT NULL,corpus_hash TEXT NOT NULL,query_hash TEXT NOT NULL,limit_value INTEGER NOT NULL,
+ result TEXT NOT NULL,created_at TEXT NOT NULL,PRIMARY KEY(user_id,corpus_hash,query_hash,limit_value));
 CREATE TABLE IF NOT EXISTS metadata(key TEXT PRIMARY KEY,value TEXT);
 CREATE TABLE IF NOT EXISTS workspaces(id TEXT PRIMARY KEY,name TEXT NOT NULL,created_by TEXT NOT NULL,created_at TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS memberships(workspace_id TEXT NOT NULL,subject TEXT NOT NULL,role TEXT NOT NULL,created_at TEXT NOT NULL,PRIMARY KEY(workspace_id,subject),CHECK(role IN ('admin','researcher','viewer')));
@@ -134,7 +137,7 @@ class PostgresDatabase:
             await conn.execute("INSERT INTO workspaces(id,name,created_by,created_at) VALUES(?,?,?,?)", tuple(workspace.values()))
             await conn.execute("INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES(?,?,?,?)",
                                (workspace["id"], subject, "admin", workspace["created_at"]))
-            await conn.execute("INSERT INTO workspace_limits(workspace_id,daily_search_limit,daily_token_limit,concurrent_run_limit) VALUES(?,?,?,?)",
+            await conn.execute("INSERT INTO workspace_limits(workspace_id,daily_search_limit,daily_token_limit,concurrent_run_limit) VALUES(?,?,0,?)",
                                (workspace["id"], *limits))
         return workspace
 
@@ -154,7 +157,7 @@ class PostgresDatabase:
         return await self.rows("SELECT action,target_type,target_id,result,actor_subject,created_at FROM audit_logs WHERE workspace_id=? ORDER BY created_at DESC LIMIT ?", (workspace_id, limit))
 
     async def workspace_limits(self, workspace_id):
-        return await self.one("SELECT * FROM workspace_limits WHERE workspace_id=?", (workspace_id,))
+        return await self.one("SELECT daily_search_limit,concurrent_run_limit FROM workspace_limits WHERE workspace_id=?", (workspace_id,))
 
     async def close(self):
         if self.pool:

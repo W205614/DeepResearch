@@ -46,8 +46,7 @@ def create_app(settings: Settings | None = None):
         if not memberships:
             workspace = await runtime.db.create_workspace(
                 principal.subject, principal.display_name + " 的工作空间",
-                (settings.workspace_daily_search_limit, settings.workspace_daily_token_limit,
-                 settings.workspace_concurrent_run_limit), principal.subject)
+                (settings.workspace_daily_search_limit, settings.workspace_concurrent_run_limit), principal.subject)
             membership = {**workspace, "role": "admin"}
         elif x_workspace_id:
             membership = await runtime.db.membership(x_workspace_id, principal.subject)
@@ -106,8 +105,7 @@ def create_app(settings: Settings | None = None):
     async def create_workspace(body: WorkspaceRequest, request: Request, runtime=Depends(rt), user=Depends(identity)):
         workspace = await runtime.db.create_workspace(
             request.state.principal.subject, body.name,
-            (settings.workspace_daily_search_limit, settings.workspace_daily_token_limit,
-             settings.workspace_concurrent_run_limit))
+            (settings.workspace_daily_search_limit, settings.workspace_concurrent_run_limit))
         await runtime.db.audit(workspace["id"], request.state.principal.subject, "workspace.create",
                                "workspace", workspace["id"])
         return workspace
@@ -142,9 +140,9 @@ def create_app(settings: Settings | None = None):
         if workspace_id != user:
             raise HTTPException(403, "请先切换到目标工作空间")
         require_role(request, "admin")
-        await runtime.db.execute("""UPDATE workspace_limits SET daily_search_limit=?,daily_token_limit=?,concurrent_run_limit=?
+        await runtime.db.execute("""UPDATE workspace_limits SET daily_search_limit=?,concurrent_run_limit=?
                                  WHERE workspace_id=?""",
-                                 (body.daily_search_limit, body.daily_token_limit, body.concurrent_run_limit, user))
+                                 (body.daily_search_limit, body.concurrent_run_limit, user))
         await runtime.db.audit(user, request.state.principal.subject, "workspace.limits.update", "workspace", user)
         return await runtime.db.workspace_limits(user)
     @app.get("/api/status")

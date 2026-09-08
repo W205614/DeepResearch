@@ -34,13 +34,13 @@ async def main_async(args):
                 "route_match": route == case["expected_route"], "status": result["status"],
                 "sources": len(result["sources"]), "supported_claims": result["validation"].get("supported_claims", 0),
                 "checked_claims": result["validation"].get("checked_claims", 0), "usage": result["usage"],
-                "recall_at_3": min(len(result["sources"]), expected_sources) / expected_sources if expected_sources else 1.0,
+                "source_target_rate": min(len(result["sources"]), expected_sources) / expected_sources if expected_sources else 1.0,
                 "elapsed_ms": round((time.perf_counter() - started) * 1000, 1)})
         metrics = await runtime.metrics("evaluator")
     finally:
         await runtime.close()
     summary = {"cases": results, "route_accuracy": sum(row["route_match"] for row in results) / len(results),
-        "mean_recall_at_3": sum(row["recall_at_3"] for row in results) / len(results),
+        "mean_source_target_rate": sum(row["source_target_rate"] for row in results) / len(results),
         "avg_sources": sum(row["sources"] for row in results) / len(results),
         "total_prompt_tokens": sum(row["usage"].get("prompt_tokens", 0) for row in results),
         "total_completion_tokens": sum(row["usage"].get("completion_tokens", 0) for row in results),
