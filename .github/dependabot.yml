@@ -6,6 +6,12 @@ updates:
   - package-ecosystem: npm
     directory: /frontend
     schedule: { interval: weekly }
+    groups:
+      frontend-toolchain:
+        patterns: ["vite", "@vitejs/plugin-vue", "vitest", "vue-tsc", "typescript"]
+    ignore:
+      - dependency-name: typescript
+        versions: [">=7.0.0"]
   - package-ecosystem: github-actions
     directory: /
     schedule: { interval: weekly }

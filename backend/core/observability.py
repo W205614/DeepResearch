@@ -1,4 +1,4 @@
-"""Privacy-safe task logging for the local backend container."""
+"""Privacy-safe task logging and OpenTelemetry setup."""
 import logging
 
 
@@ -26,7 +26,6 @@ def run_label(run_id: str) -> str:
 
 
 def error_category(error: Exception) -> str:
-    """Return stable diagnostics without logging user content or remote URLs."""
     text = str(error)
     if "超时" in text or "网络" in text or "连接" in text:
         return "network"
@@ -42,8 +41,9 @@ def error_category(error: Exception) -> str:
         return "timeout"
     return type(error).__name__.lower()
 
-def configure_telemetry(app, endpoint: str) -> None:
-    """Instrument HTTP boundaries without recording prompts, URLs, or report text."""
+
+def configure_telemetry(app=None, endpoint: str = "", *, service_name: str = "deepresearch-api") -> None:
+    """Instrument service boundaries without prompts, URLs, users, or report text."""
     from opentelemetry import trace
     from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
     from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
@@ -52,14 +52,27 @@ def configure_telemetry(app, endpoint: str) -> None:
     from opentelemetry.sdk.trace import TracerProvider
     from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
-    provider = TracerProvider(resource=Resource.create({"service.name": "deepresearch-api"}))
+    provider = TracerProvider(resource=Resource.create({"service.name": service_name}))
     if endpoint:
         provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter(endpoint=endpoint, insecure=True)))
     trace.set_tracer_provider(provider)
-    FastAPIInstrumentor.instrument_app(app, excluded_urls="healthz,livez,readyz,metrics")
+    if app is not None:
+        FastAPIInstrumentor.instrument_app(app, excluded_urls="healthz,livez,readyz,metrics")
     HTTPXClientInstrumentor().instrument()
 
 
 def tracer():
     from opentelemetry import trace
     return trace.get_tracer("deepresearch")
+
+
+def inject_trace_context() -> dict[str, str]:
+    from opentelemetry.propagate import inject
+    carrier: dict[str, str] = {}
+    inject(carrier)
+    return carrier
+
+
+def extract_trace_context(carrier: dict | None):
+    from opentelemetry.propagate import extract
+    return extract(carrier or {})
