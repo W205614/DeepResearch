@@ -6,8 +6,10 @@ import statistics
 import time
 import zipfile
 from contextlib import AsyncExitStack
+from datetime import datetime, timezone
 
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
+from arq.jobs import Job
 
 from ..core.config import Settings
 from ..core.db import Database, now, uid
@@ -21,6 +23,8 @@ from ..research.routing import decide
 from ..infrastructure.vectors import VectorIndex
 
 TERMINAL = {"completed", "insufficient", "failed", "cancelled", "interrupted"}
+RUN_HEARTBEAT_SECONDS = 10
+RUN_STALE_SECONDS = 45
 
 
 class ConflictError(Exception):
@@ -45,6 +49,7 @@ class Runtime:
 
         self.worker_mode = worker_mode
         self.queue = None
+        self.recovery_task = None
     async def start(self):
         await self.db.init()
         self.checkpointer = await self.stack.enter_async_context(
@@ -56,11 +61,15 @@ class Runtime:
                 from arq.connections import RedisSettings
                 self.queue = await create_pool(RedisSettings.from_dsn(self.settings.redis_url))
                 await self.recover_queued_runs()
+                self.recovery_task = asyncio.create_task(self.recover_stale_runs_loop(), name="run-recovery")
             await self.recover_indexing_documents()
         return self
 
     async def close(self):
         self.stopping = True
+        if self.recovery_task:
+            self.recovery_task.cancel()
+            await asyncio.gather(self.recovery_task, return_exceptions=True)
         tasks = list(self.tasks.values())
         for task in tasks:
             task.cancel()
@@ -179,11 +188,21 @@ class Runtime:
     async def schedule(self, run_id, resume=False):
         self.logger.info("run=%s phase=scheduled resume=%s", run_label(run_id), resume)
         if self.queue:
-            await self.queue.enqueue_job("run_research", run_id, resume=resume, trace_context=inject_trace_context())
+            run = await self.db.one("SELECT attempt_count FROM runs WHERE id=?", (run_id,))
+            if not run:
+                return
+            await self.queue.enqueue_job("run_research", run_id, resume=resume, trace_context=inject_trace_context(),
+                                         _job_id=self.run_job_id(run_id, int(run.get("attempt_count") or 0), next_attempt=True))
             return
         task = asyncio.create_task(self.execute_run(run_id, resume), name=f"research-{run_id}")
         self.tasks[run_id] = task
         task.add_done_callback(lambda _: self.tasks.pop(run_id, None))
+
+    @staticmethod
+    def run_job_id(run_id: str, attempt_count: int, *, next_attempt: bool) -> str:
+        """Use one queue job per persisted attempt, so recovery is idempotent."""
+        number = attempt_count + 1 if next_attempt else attempt_count
+        return f"research:{run_id}:{max(1, number)}"
 
     async def context(self, run):
         preferences = await self.db.rows("SELECT content FROM memories WHERE user_id=? AND kind='preference' ORDER BY created_at DESC LIMIT 20", (run["user_id"],))
@@ -244,13 +263,18 @@ class Runtime:
 
     async def execute_run(self, run_id, resume=False):
         started = time.monotonic()
+        heartbeat = None
         try:
             async with self.gate:
+                eligible = "('queued','interrupted')" if resume else "('queued')"
+                claimed = await self.db.execute(f"""UPDATE runs SET status='running',updated_at=?,error='',
+                    attempt_count=attempt_count+1,last_attempt_at=? WHERE id=? AND status IN {eligible}""",
+                                                (now(), now(), run_id))
+                if not claimed:
+                    return
                 run = await self.db.one("SELECT * FROM runs WHERE id=?", (run_id,))
                 self.logger.info("run=%s phase=started mode=%s resumed=%s", run_label(run_id), run["mode"], resume)
-                await self.db.execute("UPDATE runs SET attempt_count=attempt_count+1,last_attempt_at=? WHERE id=?",
-                                      (now(), run_id))
-                await self.db.execute("UPDATE runs SET status='running',updated_at=?,error='' WHERE id=?", (now(), run_id))
+                heartbeat = asyncio.create_task(self.heartbeat(run_id), name=f"heartbeat-{run_id}")
                 await self.refresh_queue_depth()
                 await self.db.event(run_id, "running", {"resumed": resume})
                 config = {"configurable": {"thread_id": run_id}, "recursion_limit": 80}
@@ -271,9 +295,12 @@ class Runtime:
                             and validation.get("kind") not in {"greeting", "help", "preference", "chat"}):
                         await self.save_summary(run, report)
                     status = "insufficient" if validation.get("insufficient") else "completed"
-                    await self.db.execute("""UPDATE runs SET status=?,updated_at=?,report=?,sources=?,validation=?,error=''
-                        WHERE id=?""", (status, now(), report, json.dumps(result.get("evidence", []), ensure_ascii=False),
-                                         json.dumps(validation, ensure_ascii=False), run_id))
+                    completed = await self.db.execute("""UPDATE runs SET status=?,updated_at=?,report=?,sources=?,validation=?,error=''
+                        WHERE id=? AND status='running'""", (status, now(), report,
+                                                              json.dumps(result.get("evidence", []), ensure_ascii=False),
+                                                              json.dumps(validation, ensure_ascii=False), run_id))
+                    if not completed:
+                        return
                     await self.db.event(run_id, "done", {"status": status})
                     usage = await self.db.one("SELECT llm_calls,search_calls FROM counters WHERE run_id=?", (run_id,)) or {}
                     RUNS.labels(status=status).inc()
@@ -282,10 +309,15 @@ class Runtime:
                                      run_label(run_id), status, len(result.get("evidence", [])),
                                      usage.get("llm_calls", 0), usage.get("search_calls", 0))
         except asyncio.CancelledError:
-            status = "interrupted" if self.stopping else "cancelled"
-            await self.db.execute("UPDATE runs SET status=?,updated_at=? WHERE id=?", (status, now(), run_id))
-            await self.db.event(run_id, status, {"message": "任务已停止，可从检查点继续"})
-            self.logger.warning("run=%s phase=cancelled status=%s", run_label(run_id), status)
+            current = await self.db.one("SELECT status FROM runs WHERE id=?", (run_id,))
+            if current and current["status"] == "cancelled":
+                self.logger.warning("run=%s phase=cancelled status=cancelled", run_label(run_id))
+            else:
+                status = "interrupted" if self.stopping else "cancelled"
+                if await self.db.execute("UPDATE runs SET status=?,updated_at=? WHERE id=? AND status='running'",
+                                         (status, now(), run_id)):
+                    await self.db.event(run_id, status, {"message": "任务已停止，可从检查点继续"})
+                self.logger.warning("run=%s phase=cancelled status=%s", run_label(run_id), status)
         except TimeoutError:
             self.logger.error("run=%s phase=failed category=timeout", run_label(run_id))
             await self.fail(run_id, "达到任务时限，已停止外部调用；可从检查点继续", "interrupted")
@@ -295,19 +327,38 @@ class Runtime:
             RUN_SECONDS.observe(time.monotonic() - started)
             self.logger.error("run=%s phase=failed category=%s", run_label(run_id), error_category(exc))
             await self.fail(run_id, str(exc) if isinstance(exc, ServiceError) else "研究执行失败，请检查服务配置或重试")
+        finally:
+            if heartbeat:
+                heartbeat.cancel()
+                await asyncio.gather(heartbeat, return_exceptions=True)
 
     async def fail(self, run_id, message, status="failed"):
-        await self.db.execute("UPDATE runs SET status=?,error=?,updated_at=? WHERE id=?", (status, message, now(), run_id))
-        await self.db.event(run_id, "error", {"message": message, "status": status})
+        changed = await self.db.execute("UPDATE runs SET status=?,error=?,updated_at=? WHERE id=? AND status='running'",
+                                        (status, message, now(), run_id))
+        if changed:
+            await self.db.event(run_id, "error", {"message": message, "status": status})
         await self.refresh_queue_depth()
 
     async def cancel(self, run_id, user):
-        if not await self.db.owned_run(run_id, user):
-            raise LookupError("任务不存在")
+        async with self.lock:
+            run = await self.db.owned_run(run_id, user)
+            if not run:
+                raise LookupError("任务不存在")
+            changed = await self.db.execute("""UPDATE runs SET status='cancelled',updated_at=? WHERE id=? AND user_id=?
+                                            AND status IN ('queued','running','interrupted')""", (now(), run_id, user))
+            if changed:
+                await self.db.event(run_id, "cancelled", {"message": "任务已停止"})
+                await self.refresh_queue_depth()
         task = self.tasks.get(run_id)
         if task:
             task.cancel()
             await asyncio.gather(task, return_exceptions=True)
+        if changed and self.queue:
+            try:
+                await asyncio.wait_for(Job(self.run_job_id(run_id, int(run.get("attempt_count") or 0), next_attempt=False), self.queue).abort(), 1)
+            except Exception:
+                # The persisted cancellation state still prevents a late worker from claiming this run.
+                pass
         return await self.db.owned_run(run_id, user)
 
     async def resume(self, run_id, user):
@@ -348,7 +399,38 @@ class Runtime:
         rows = await self.db.rows("SELECT id,status FROM runs WHERE status IN ('queued','interrupted')")
         for row in rows:
             if row["id"] not in self.tasks:
-                await self.queue.enqueue_job("run_research", row["id"], resume=row["status"] == "interrupted")
+                await self.schedule(row["id"], resume=row["status"] == "interrupted")
+
+    async def heartbeat(self, run_id: str) -> None:
+        while True:
+            await asyncio.sleep(RUN_HEARTBEAT_SECONDS)
+            changed = await self.db.execute("UPDATE runs SET last_attempt_at=?,updated_at=? WHERE id=? AND status='running'",
+                                            (now(), now(), run_id))
+            if not changed:
+                return
+
+    async def recover_stale_runs_loop(self) -> None:
+        while not self.stopping:
+            await asyncio.sleep(RUN_HEARTBEAT_SECONDS)
+            await self.recover_stale_runs()
+
+    async def recover_stale_runs(self) -> None:
+        """Resume only workers whose heartbeat has actually expired."""
+        cutoff = time.time() - RUN_STALE_SECONDS
+        rows = await self.db.rows("SELECT id,last_attempt_at FROM runs WHERE status='running'")
+        for row in rows:
+            try:
+                heartbeat_at = datetime.fromisoformat(row["last_attempt_at"]).astimezone(timezone.utc).timestamp()
+            except (TypeError, ValueError):
+                heartbeat_at = 0
+            if heartbeat_at >= cutoff:
+                continue
+            changed = await self.db.execute("""UPDATE runs SET status='interrupted',updated_at=? WHERE id=?
+                                            AND status='running' AND last_attempt_at=?""",
+                                            (now(), row["id"], row["last_attempt_at"]))
+            if changed:
+                await self.db.event(row["id"], "interrupted", {"message": "Worker 心跳超时，正在从检查点恢复"})
+                await self.schedule(row["id"], resume=True)
 
     async def recover_indexing_documents(self):
         """Resume persisted, clean documents after an API restart."""

@@ -1,6 +1,7 @@
 import asyncio
 import json
 import logging
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
@@ -276,3 +277,68 @@ async def test_restart_preserves_reports_and_preferences(settings):
         assert not await rt2.db.owned_run(result["id"], "bob")
     finally:
         await rt2.close()
+
+async def test_queue_cancel_is_persisted_and_blocks_a_late_worker(settings):
+    runtime = await Runtime(settings).start()
+    runtime.queue = AsyncMock()
+    aborted = []
+
+    class FakeJob:
+        def __init__(self, job_id, _queue):
+            self.job_id = job_id
+
+        async def abort(self):
+            aborted.append(self.job_id)
+            return True
+
+    try:
+        run = await runtime.create("alice", RunRequest(topic="queued cancellation", client_request_id=uid()))
+        scheduled = runtime.queue.enqueue_job.call_args.kwargs
+        assert scheduled["_job_id"] == runtime.run_job_id(run["id"], 0, next_attempt=True)
+
+        with patch("backend.services.runtime.Job", FakeJob):
+            cancelled = await runtime.cancel(run["id"], "alice")
+
+        assert cancelled["status"] == "cancelled"
+        assert aborted == [runtime.run_job_id(run["id"], 0, next_attempt=False)]
+        await runtime.execute_run(run["id"])
+        assert (await runtime.db.owned_run(run["id"], "alice"))["status"] == "cancelled"
+    finally:
+        await runtime.close()
+
+
+async def test_recovery_reuses_a_queue_job_and_only_one_worker_claims(runtime):
+    runtime.queue = AsyncMock()
+    thread = await runtime.new_thread("alice", "queue recovery")
+    await runtime.db.execute("""INSERT INTO runs(id,user_id,thread_id,topic,mode,status,created_at,updated_at,
+        client_request_id) VALUES('queue-run','alice',?,'research workflow','quick','queued','today','today','queue-request')""",
+                             (thread["id"],))
+
+    await runtime.recover_queued_runs()
+    await runtime.recover_queued_runs()
+    job_ids = [call.kwargs["_job_id"] for call in runtime.queue.enqueue_job.call_args_list]
+    assert job_ids == ["research:queue-run:1", "research:queue-run:1"]
+
+    runtime.queue = None
+    await asyncio.gather(runtime.execute_run("queue-run"), runtime.execute_run("queue-run"))
+    run = await runtime.db.owned_run("queue-run", "alice")
+    assert run["status"] == "completed"
+    assert run["attempt_count"] == 1
+
+
+async def test_stale_worker_run_is_interrupted_then_requeued(settings):
+    runtime = await Runtime(settings).start()
+    runtime.queue = AsyncMock()
+    thread = await runtime.new_thread("alice", "stale worker")
+    await runtime.db.execute("""INSERT INTO runs(id,user_id,thread_id,topic,mode,status,created_at,updated_at,
+        client_request_id,attempt_count,last_attempt_at) VALUES('stale-run','alice',?,'research workflow','quick',
+        'running','today','today','stale-request',1,'2000-01-01T00:00:00+00:00')""", (thread["id"],))
+    try:
+        await runtime.recover_stale_runs()
+        run = await runtime.db.owned_run("stale-run", "alice")
+        assert run["status"] == "interrupted"
+        scheduled = runtime.queue.enqueue_job.call_args.kwargs
+        assert scheduled["_job_id"] == "research:stale-run:2"
+        assert scheduled["resume"] is True
+    finally:
+        await runtime.close()

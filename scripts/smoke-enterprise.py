@@ -61,7 +61,7 @@ def main() -> int:
     parser.add_argument("--start", action="store_true", help="Build and start the enterprise Compose profile first")
     args = parser.parse_args()
     if args.start:
-        run("up", "-d", "--build", "--wait", "--wait-timeout", "300")
+        run("up", "-d", "--build", "--force-recreate", "--wait", "--wait-timeout", "300")
     wait_for("web", lambda: read_json("http://127.0.0.1:8080/healthz"))
     wait_for("Keycloak OIDC", lambda: read_json(
         "http://127.0.0.1:8180/realms/deepresearch/.well-known/openid-configuration"))

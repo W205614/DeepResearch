@@ -54,18 +54,30 @@ def semantic_chunks(locator: str, text: str) -> list[dict]:
     text = text.strip().replace("\x00", "")
     sentences = re.split(r"(?<=[。！？!?；;])\s*", text)
     output, current, start = [], "", 1
+
+    def flush() -> str:
+        nonlocal start
+        output.append({"text": current, "locator": f"{locator} · 字符 {start}–{start + len(current) - 1}"})
+        overlap = current[-180:]
+        start += len(current) - len(overlap)
+        return overlap
+
     for sentence in sentences:
         if not sentence:
             continue
-        if current and len(current) + len(sentence) > 1100:
-            output.append({"text": current, "locator": f"{locator} · 字符 {start}–{start + len(current) - 1}"})
-            overlap = current[-180:]
-            start += max(1, len(current) - len(overlap))
-            current = overlap + sentence
-        else:
-            current += sentence
+        while sentence:
+            available = 1100 - len(current)
+            if available <= 0:
+                current = flush()
+                continue
+            if len(sentence) <= available:
+                current += sentence
+                break
+            current += sentence[:available]
+            sentence = sentence[available:]
+            current = flush()
     if current:
-        output.append({"text": current[:1500], "locator": f"{locator} · 字符 {start}–{start + len(current[:1500]) - 1}"})
+        output.append({"text": current, "locator": f"{locator} · 字符 {start}–{start + len(current) - 1}"})
     return output
 
 

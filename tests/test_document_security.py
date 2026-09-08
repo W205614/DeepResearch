@@ -76,3 +76,10 @@ async def test_indexing_document_recovers_after_runtime_restart(settings):
         assert row["status"] == "ready"
     finally:
         await second.close()
+
+
+def test_long_unpunctuated_text_keeps_its_tail_in_the_index():
+    parts = document_service.semantic_chunks("正文", "A" * 1600 + "UNIQUE_END_MARKER")
+
+    assert all(len(part["text"]) <= 1100 for part in parts)
+    assert "UNIQUE_END_MARKER" in "".join(part["text"] for part in parts)
