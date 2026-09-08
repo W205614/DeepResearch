@@ -279,12 +279,9 @@ class Runtime:
                     initial = None
                     checkpoint = await self.graph.aget_state(config) if resume else None
                     if not resume or not checkpoint.values:
-                        decision = decide(run["mode"], run["topic"])
-                        static_response = decision and decision.signals in {("greeting",), ("help",), ("preference",),
-                                                                              ("assistant_name_set",), ("assistant_name_query",)}
                         initial = {"run_id": run_id, "user_id": run["user_id"], "thread_id": run["thread_id"],
                                    "topic": run["topic"], "requested_mode": run["mode"],
-                                   "context": "" if static_response else await self.context(run)}
+                                   "context": await self.context(run)}
                     result = await self.graph.ainvoke(initial, config)
                     report = result.get("report", "")
                     validation = result.get("validation", {})

@@ -159,18 +159,34 @@ async def test_budget_is_atomic_and_survives_resume(runtime):
     assert not await runtime.db.reserve_search("budget", 3)
 
 
-async def test_greeting_does_not_search(runtime):
+async def test_semantic_chat_route_does_not_search(runtime):
+    original = runtime.providers.structured
+
+    async def semantic_chat(role, *args, **kwargs):
+        if role == "router":
+            return Route(mode="chat", reason="普通交流不需要外部事实")
+        return await original(role, *args, **kwargs)
+
+    runtime.providers.structured = semantic_chat
     result = await finish(runtime, await runtime.create("alice", RunRequest(topic="你好", client_request_id=uid())))
     assert result["status"] == "completed"
-    assert result["validation"]["kind"] == "greeting"
+    assert result["validation"]["kind"] == "chat"
     assert result["usage"].get("search_calls", 0) == 0
+    assert not result["sources"]
 
 
-async def test_help_does_not_search(runtime):
+async def test_contextual_product_question_does_not_search(runtime):
+    original = runtime.providers.structured
+
+    async def semantic_chat(role, *args, **kwargs):
+        if role == "router":
+            return Route(mode="chat", reason="产品使用咨询不需要外部事实")
+        return await original(role, *args, **kwargs)
+
+    runtime.providers.structured = semantic_chat
     result = await finish(runtime, await runtime.create("alice", RunRequest(topic="你有什么功能？", client_request_id=uid())))
     assert result["status"] == "completed"
-    assert result["validation"]["kind"] == "help"
-    assert "本地资料库" in result["report"]
+    assert result["validation"]["kind"] == "chat"
     assert result["usage"].get("search_calls", 0) == 0
     assert not result["sources"]
 
@@ -178,6 +194,13 @@ async def test_help_does_not_search(runtime):
 async def test_current_user_preference_is_local_and_does_not_search(runtime):
     await runtime.db.execute("""INSERT INTO memories(id,user_id,kind,content,run_id,created_at)
         VALUES('preference-query','alice','preference','优先关注中国市场与中文输出','pref','today')""")
+
+    async def preference_route(role, *args, **kwargs):
+        if role == "router":
+            return Route(mode="chat", reason="查询用户档案", memory_action="get_preferences")
+        raise AssertionError(f"unexpected model role: {role}")
+
+    runtime.providers.structured = preference_route
     result = await finish(runtime, await runtime.create(
         "alice", RunRequest(topic="当前用户的研究偏好是什么？", client_request_id=uid())))
     assert result["status"] == "completed"
@@ -188,7 +211,7 @@ async def test_current_user_preference_is_local_and_does_not_search(runtime):
     assert not result["sources"]
 
 
-async def test_llm_chat_route_is_upgraded_to_evidence_retrieval(runtime):
+async def test_llm_chat_route_uses_context_without_evidence_retrieval(runtime):
     original = runtime.providers.structured
     local_search = AsyncMock(return_value=[])
 
@@ -204,23 +227,51 @@ async def test_llm_chat_route_is_upgraded_to_evidence_retrieval(runtime):
     result = await finish(runtime, await runtime.create("alice", RunRequest(
         topic="用一句话介绍你自己", client_request_id=uid())))
     assert result["status"] == "completed"
-    assert result["validation"].get("kind") != "chat"
-    assert result["usage"].get("search_calls", 0) >= 1
-    assert result["sources"]
-    local_search.assert_awaited_once()
+    assert result["validation"].get("kind") == "chat"
+    assert result["usage"].get("search_calls", 0) == 0
+    assert not result["sources"]
+    local_search.assert_not_awaited()
 
 
-async def test_user_profile_name_is_shared_between_threads(runtime):
+async def test_semantic_name_memory_is_shared_between_threads(runtime):
+    async def name_route(role, instruction, data, *_args):
+        if role != "router":
+            raise AssertionError(f"unexpected model role: {role}")
+        if "名字" in data["topic"]:
+            return Route(mode="chat", reason="查询用户档案", memory_action="get_assistant_name")
+        return Route(mode="chat", reason="用户为助手命名", memory_action="set_assistant_name", assistant_name="DeepResearch")
+
+    runtime.providers.structured = name_route
     named = await finish(runtime, await runtime.create(
-        "alice", RunRequest(topic="以后叫你小研", client_request_id=uid())))
+        "alice", RunRequest(topic="现在开始你叫 DeepResearch", client_request_id=uid())))
     assert named["validation"]["kind"] == "profile"
     recalled = await finish(runtime, await runtime.create(
         "alice", RunRequest(topic="你叫什么名字？", client_request_id=uid())))
     assert recalled["thread_id"] != named["thread_id"]
-    assert "小研" in recalled["report"]
+    assert "DeepResearch" in recalled["report"]
     assert recalled["usage"].get("search_calls", 0) == 0
     profile = await runtime.db.one("SELECT content FROM memories WHERE user_id='alice' AND kind='profile'")
-    assert profile["content"] == "助手名称：小研"
+    assert profile["content"] == "助手名称：DeepResearch"
+
+
+async def test_semantic_previous_question_uses_current_thread_without_search(runtime):
+    thread = await runtime.new_thread("alice", "记忆测试")
+    first = await finish(runtime, await runtime.create(
+        "alice", RunRequest(topic="第一个需要记住的问题", thread_id=thread["id"], client_request_id=uid())))
+
+    async def previous_question_route(role, *args, **kwargs):
+        if role == "router":
+            return Route(mode="chat", reason="查询当前会话", memory_action="get_previous_topic")
+        raise AssertionError(f"unexpected model role: {role}")
+
+    runtime.providers.structured = previous_question_route
+    recalled = await finish(runtime, await runtime.create(
+        "alice", RunRequest(topic="上一个问题是什么？", thread_id=first["thread_id"], client_request_id=uid())))
+    assert recalled["validation"]["kind"] == "conversation_memory"
+    assert "第一个需要记住的问题" in recalled["report"]
+    assert recalled["usage"].get("search_calls", 0) == 0
+    assert recalled["usage"].get("llm_calls", 0) == 0
+    assert not recalled["sources"]
 
 
 async def test_semantic_memory_requires_relevance_and_is_observable(runtime):

@@ -39,6 +39,8 @@ class WorkspaceLimitRequest(BaseModel):
 class Route(BaseModel):
     mode: Literal["chat", "quick", "deep"]
     reason: str = Field(max_length=300)
+    memory_action: Literal["none", "set_assistant_name", "get_assistant_name", "get_preferences", "get_previous_topic"] = "none"
+    assistant_name: str = Field(default="", max_length=24)
 
 
 class ChatAnswer(BaseModel):
