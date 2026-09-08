@@ -22,6 +22,10 @@ def search(query):
 
 def generate(role, data):
     if role == "router":
+        topic = str(data.get("topic", "")).strip().lower()
+        if topic in {"你好", "您好", "hi", "hello", "谢谢", "感谢"} or any(
+                phrase in topic for phrase in ("能做什么", "有什么功能", "怎么使用", "如何使用")):
+            return {"mode": "chat", "reason": "测试模式：普通交流不需要外部证据"}
         return {"mode": "deep", "reason": "测试模式：展示完整研究流程"}
     if role == "chat":
         return {"answer": "我是 DeepResearch，可以帮助你组织带来源的行业研究；需要外部事实时，请告诉我研究主题、地区和时间范围。"}
