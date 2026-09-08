@@ -30,6 +30,11 @@ services:
       BOCHA_BASE_URL: ${BOCHA_BASE_URL:-https://api.bochaai.com/v1}
       BOCHA_API_KEY: ${BOCHA_API_KEY:-}
       APP_ACCESS_TOKEN: ${APP_ACCESS_TOKEN:-}
+      AUTH_MODE: ${AUTH_MODE:-development}
+      OIDC_ISSUER: ${OIDC_ISSUER:-}
+      OIDC_AUDIENCE: ${OIDC_AUDIENCE:-deepresearch-api}
+      OIDC_JWKS_URL: ${OIDC_JWKS_URL:-}
+      DEVELOPMENT_JWT_SECRET: ${DEVELOPMENT_JWT_SECRET:-development-only-secret-must-be-32-bytes}
       SOURCE_TRUST_OVERRIDES: '${SOURCE_TRUST_OVERRIDES:-{}}'
       WEB_CACHE_TTL_HOURS: ${WEB_CACHE_TTL_HOURS:-168}
       AUTO_SAVE_SEMANTIC_MEMORY: ${AUTO_SAVE_SEMANTIC_MEMORY:-false}

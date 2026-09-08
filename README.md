@@ -34,6 +34,8 @@ docker compose down
 docker compose -f compose.yaml -f compose.dev.yaml up -d --build
 ```
 
+默认 Compose 使用本地 development 身份模式：页面会自动取得仅供本机使用的开发会话，不会跳转 Keycloak。需要账号注册、OIDC 和企业服务时，使用企业 Compose 覆盖层；不要混用默认后端与遗留 Keycloak 容器，否则 OIDC token 无法被 development 后端验证。
+
 不配置外部 API 时可运行固定数据的演示模式。若主服务正在运行，先执行 `docker compose down` 释放 8080 端口：
 
 ```powershell

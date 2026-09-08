@@ -4,7 +4,7 @@ import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import { ArrowUp, ArrowUpRight, BookOpen, Brain, Check, ChevronRight, CircleHelp, Compass, Download, FileText, FolderOpen, Globe2, Layers3, LoaderCircle, Menu, MessageSquare, Plus, RefreshCw, Search, Settings2, ShieldCheck, LogIn, LogOut, UserPlus, Sparkles, Square, Trash2, X } from 'lucide-vue-next'
 import { api, headers, subscribe, terminal, type Run, type Source, type EventItem } from './api'
-import { completeLogin, currentUser, login, logout, register } from './auth'
+import { completeLogin, currentUser, login, loginDevelopment, logout, register } from './auth'
 
 type View = 'research'|'documents'|'memories'|'settings'
 const view = ref<View>('research'), navOpen = ref(false)
@@ -15,7 +15,7 @@ const status = ref<any>(null), documents = ref<any[]>([]), memories = ref<any[]>
 const preference = ref(''), editingMemory = ref(''), source = ref<Source|null>(null)
 const selectedDocument = ref<any|null>(null), documentChunks = ref<any[]>([]), documentQuery = ref(''), documentResults = ref<any[]>([]), documentSearchBusy = ref(false)
 const userId = ref('')
-const authenticated = ref(false), threadSwitchId = ref(localStorage.getItem('dr-thread') || '')
+const authenticated = ref(false), authMode = ref<'oidc'|'development'>('oidc'), threadSwitchId = ref(localStorage.getItem('dr-thread') || '')
 const connection = ref<Record<string,any>|null>(null), checking = ref(false), uploadBusy = ref(false)
 const uploadInput = ref<HTMLInputElement|null>(null), logOpen = ref(false), rename = ref(false), newTitle = ref('')
 let controller: AbortController|null = null, poll: ReturnType<typeof setInterval>|undefined, generation = 0
@@ -40,7 +40,15 @@ function nodeState(key: string) {
 }
 const warnings = computed(()=>[...new Set(events.value.filter(e=>e.type==='warning').map(e=>e.data.message))])
 async function safely(fn: ()=>Promise<void>) { try{error.value='';await fn()}catch(e){error.value=e instanceof Error?e.message:'操作失败'} }
-async function beginLogin(){ await login() }
+async function activateUser(user: ReturnType<typeof currentUser>){
+  if(!user)throw new Error('未取得有效登录凭证')
+  authenticated.value=true;userId.value=user.name;await refreshThreads();await refreshStatus()
+  if(threadId.value&&threads.value.some(t=>t.id===threadId.value))await openThread(threadId.value);else newResearch()
+}
+async function beginLogin(){
+  if(authMode.value==='development'){await activateUser(await loginDevelopment());return}
+  await login()
+}
 async function beginRegistration(){ await register() }
 function signOut(){ logout() }
 function handleAuthExpired(){
@@ -132,7 +140,15 @@ async function deleteThread(thread: any){
 function inspectCitation(event: MouseEvent){const target=event.target as HTMLElement;const text=target.textContent||'';const id=text.match(/\[(W-[a-f0-9]+|L-[a-f0-9]+)\]/)?.[1];if(id)source.value=selected.value?.sources.find(s=>s.id===id)||null}
 onMounted(async()=>{
   window.addEventListener('deepresearch-auth-expired', handleAuthExpired)
-  await safely(async()=>{const user=await completeLogin() || currentUser();if(!user)return;authenticated.value=true;userId.value=user.name;await refreshThreads();await refreshStatus();if(threadId.value&&threads.value.some(t=>t.id===threadId.value))await openThread(threadId.value);else newResearch()})
+  await safely(async()=>{
+    const config=await fetch('/api/auth/config').then(async response=>{
+      if(!response.ok)throw new Error('无法读取登录配置')
+      return response.json() as Promise<{mode:'oidc'|'development'}>
+    })
+    authMode.value=config.mode
+    const user=config.mode==='development'?await loginDevelopment():(await completeLogin()||currentUser())
+    if(user)await activateUser(user)
+  })
   poll=setInterval(()=>{if(view.value==='documents'&&documents.value.some(d=>d.status==='indexing'))void safely(async()=>{documents.value=await api('/api/documents')});if(selected.value&&!terminal(selected.value.status))void refreshRun(selected.value.id,generation).catch(()=>{})},2500)
 })
 onUnmounted(()=>{controller?.abort();clearInterval(poll);window.removeEventListener('deepresearch-auth-expired', handleAuthExpired)})
@@ -140,7 +156,7 @@ onUnmounted(()=>{controller?.abort();clearInterval(poll);window.removeEventListe
 
 <template>
   <section v-if="!authenticated" class="auth-landing">
-    <div class="auth-card"><div class="auth-mark"><Layers3 :size="30"/></div><span class="eyebrow"><span></span> DEEPRESEARCH WORKSPACE</span><h1>让研究有据可循。</h1><p>登录后开始研究、保存资料，并保留可追溯的证据链。</p><button class="auth-primary" @click="safely(beginLogin)"><LogIn :size="18"/>登录并开始研究</button><button class="auth-secondary" @click="safely(beginRegistration)"><UserPlus :size="17"/>创建本地账号</button><small>账号由本机 Keycloak 管理；注册后会自动回到工作台。</small></div>
+    <div class="auth-card"><div class="auth-mark"><Layers3 :size="30"/></div><span class="eyebrow"><span></span> DEEPRESEARCH WORKSPACE</span><h1>让研究有据可循。</h1><p>{{authMode==='development'?'当前为本地开发工作空间。':'登录后开始研究、保存资料，并保留可追溯的证据链。'}}</p><button class="auth-primary" @click="safely(beginLogin)"><LogIn :size="18"/>{{authMode==='development'?'进入本地工作空间':'登录并开始研究'}}</button><button v-if="authMode==='oidc'" class="auth-secondary" @click="safely(beginRegistration)"><UserPlus :size="17"/>创建本地账号</button><small>{{authMode==='development'?'本地部署会自动建立开发会话。':'账号由本机 Keycloak 管理；注册后会自动回到工作台。'}}</small></div>
   </section>
   <div v-else class="workspace">
     <div v-if="navOpen" class="nav-backdrop" @click="navOpen=false"></div>

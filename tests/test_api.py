@@ -132,3 +132,14 @@ async def test_api_requires_a_jwt(settings):
             assert (await client.get('/api/threads')).status_code == 401
             token = issue_development_token(settings, 'alice')
             assert (await client.get('/api/threads',headers={'Authorization':'Bearer ' + token})).status_code == 200
+
+
+async def test_development_login_issues_a_local_token_without_oidc_redirect(api_client):
+    _, client = api_client
+    config = await client.get("/api/auth/config")
+    assert config.json() == {"mode": "development", "issuer": ""}
+    login = await client.post("/api/auth/development/login")
+    assert login.status_code == 200
+    token = login.json()["access_token"]
+    threads = await client.get("/api/threads", headers={"Authorization": f"Bearer {token}"})
+    assert threads.status_code == 200

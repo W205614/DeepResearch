@@ -85,6 +85,18 @@ def create_app(settings: Settings | None = None):
     async def health():
         return {"status": "ok"}
 
+    @app.get("/api/auth/config")
+    async def auth_config():
+        """Public mode metadata; it never exposes a key, token, or issuer secret."""
+        return {"mode": settings.auth_mode, "issuer": settings.oidc_issuer if settings.auth_mode == "oidc" else ""}
+
+    @app.post("/api/auth/development/login")
+    async def development_login():
+        if settings.auth_mode != "development":
+            raise HTTPException(404, "本地开发登录不可用")
+        token = issue_development_token(settings, "local-user")
+        return {"access_token": token, "token_type": "Bearer"}
+
     @app.get("/livez")
     async def livez():
         return {"status": "ok"}
