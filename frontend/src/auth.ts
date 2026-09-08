@@ -1,9 +1,10 @@
 export type AuthUser = { id: string; name: string; email?: string }
 
-const issuer = import.meta.env.VITE_OIDC_ISSUER || 'http://localhost:8180/realms/deepresearch'
+let issuer = import.meta.env.VITE_OIDC_ISSUER || 'http://localhost:8180/realms/deepresearch'
 const clientId = import.meta.env.VITE_OIDC_CLIENT_ID || 'deepresearch-web'
 const redirectUri = `${window.location.origin}/`
 const tokenKey = 'dr-token'
+const idTokenKey = 'dr-id-token'
 const verifierKey = 'dr-pkce-verifier'
 const stateKey = 'dr-pkce-state'
 
@@ -20,8 +21,12 @@ export function currentUser(): AuthUser | null {
   const token = sessionStorage.getItem(tokenKey)
   if (!token) return null
   const claims = decodeClaims(token), expiresAt = Number(claims?.exp || 0) * 1000
-  if (!claims?.sub || expiresAt <= Date.now()) { sessionStorage.removeItem(tokenKey); return null }
+  if (!claims?.sub || expiresAt <= Date.now()) { sessionStorage.removeItem(tokenKey); sessionStorage.removeItem(idTokenKey); return null }
   return { id: String(claims.sub), name: String(claims.preferred_username || claims.name || claims.sub), email: typeof claims.email === 'string' ? claims.email : undefined }
+}
+
+export function configureIssuer(value?: string) {
+  if (value) issuer = value.replace(/\/$/, '')
 }
 
 async function startAuthorization(action?: 'register') {
@@ -29,7 +34,7 @@ async function startAuthorization(action?: 'register') {
   sessionStorage.setItem(verifierKey, verifier); sessionStorage.setItem(stateKey, state)
   const url = new URL(`${issuer}/protocol/openid-connect/auth`)
   url.search = new URLSearchParams({ client_id: clientId, response_type: 'code', redirect_uri: redirectUri, scope: 'openid profile email', state, code_challenge: await challenge(verifier), code_challenge_method: 'S256' }).toString()
-  if (action === 'register') url.searchParams.set('kc_action', 'register')
+  if (action === 'register') url.searchParams.set('prompt', 'create')
   window.location.assign(url.toString())
 }
 export async function login() { await startAuthorization() }
@@ -49,14 +54,19 @@ export async function completeLogin() {
   if (!state || state !== expectedState || !verifier) throw new Error('登录状态校验失败，请重新登录')
   const response = await fetch(`${issuer}/protocol/openid-connect/token`, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ grant_type: 'authorization_code', client_id: clientId, code, redirect_uri: redirectUri, code_verifier: verifier }) })
   if (!response.ok) throw new Error('Keycloak 未能完成登录令牌交换')
-  const body = await response.json() as { access_token: string }
-  sessionStorage.setItem(tokenKey, body.access_token); sessionStorage.removeItem(verifierKey); sessionStorage.removeItem(stateKey)
+  const body = await response.json() as { access_token: string; id_token?: string }
+  sessionStorage.setItem(tokenKey, body.access_token)
+  if (body.id_token) sessionStorage.setItem(idTokenKey, body.id_token)
+  sessionStorage.removeItem(verifierKey); sessionStorage.removeItem(stateKey)
   history.replaceState({}, document.title, window.location.pathname)
   return currentUser()
 }
 export function logout() {
-  sessionStorage.removeItem(tokenKey); sessionStorage.removeItem(verifierKey); sessionStorage.removeItem(stateKey)
+  const idToken = sessionStorage.getItem(idTokenKey)
+  sessionStorage.removeItem(tokenKey); sessionStorage.removeItem(idTokenKey); sessionStorage.removeItem(verifierKey); sessionStorage.removeItem(stateKey)
   const url = new URL(`${issuer}/protocol/openid-connect/logout`)
-  url.search = new URLSearchParams({ client_id: clientId, post_logout_redirect_uri: redirectUri }).toString()
+  const params = new URLSearchParams({ client_id: clientId, post_logout_redirect_uri: redirectUri })
+  if (idToken) params.set('id_token_hint', idToken)
+  url.search = params.toString()
   window.location.assign(url.toString())
 }

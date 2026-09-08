@@ -140,7 +140,7 @@ docker compose exec -T backend python -m backend.commands.cli --base-url http://
 
 左侧“最近研究”中每个会话都可删除。删除会停止该会话仍在运行的任务，并一并清除该会话的报告、事件、计数和检查点；本地资料、用户偏好和个人设定不会受影响。已单独保存的报告语义记忆仍会保留在数据导出中，但由于原 Thread 已删除，不会再被注入后续研究。
 
-工作台的“演示工作空间”使用 User ID 隔离本地资料、记忆和会话；每个用户的新会话自动使用 `thread01`、`thread02` 等短 Thread ID，可直接用于切换。内部 UUID 仅用于数据库关联与检查点，不会显示在工作台。`APP_ACCESS_TOKEN` 是仅在 `.env` 中显式设置时启用的服务访问保护，不是演示身份，也不会显示在工作台界面。
+默认 Compose 启动本机 Keycloak。打开工作台后，已有账号可登录，新用户可注册；右上角“退出”会结束浏览器和 Keycloak 会话，因此可以切换账号。每个账号的新会话自动使用 `thread01`、`thread02` 等短 Thread ID；内部 UUID 仅用于数据库关联与检查点，不会显示在工作台。`APP_ACCESS_TOKEN` 是仅在 `.env` 中显式设置时启用的服务访问保护，不是用户身份，也不会显示在工作台界面。认证流程详见 [docs/local-keycloak-login.md](docs/local-keycloak-login.md)。
 
 运行无需外部 API 的评测基线：
 
@@ -158,7 +158,7 @@ docker compose exec -T backend python -m backend.commands.cli --base-url http://
 docker compose -f compose.yaml -f compose.enterprise.yaml up -d --build --wait
 ```
 
-该配置增加 PostgreSQL、Redis Worker、Keycloak、OpenTelemetry Collector、Prometheus 和 Grafana。后端只接受 OIDC JWT；浏览器提供的 `X-User-ID` 不作为生产身份。工作空间成员角色为 admin、researcher、viewer，审计日志不记录研究正文、来源地址或密钥。
+该配置增加 PostgreSQL、Redis Worker、OpenTelemetry Collector、Prometheus 和 Grafana；Keycloak 由默认 Compose 提供。后端只接受 OIDC JWT；浏览器提供的 `X-User-ID` 不作为生产身份。工作空间成员角色为 admin、researcher、viewer，审计日志不记录研究正文、来源地址或密钥。
 
 当前 Compose 适合单机演示；运行、备份和恢复说明见 [docs/operations.md](docs/operations.md)。
 使用下面的命令执行不涉及模型调用的集成冒烟检查。它会验证 Web、Keycloak OIDC 发现、PostgreSQL 迁移版本、Redis、Worker、后端 `/readyz` 和 OpenTelemetry Collector 的连通性：

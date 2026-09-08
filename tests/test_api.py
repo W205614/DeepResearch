@@ -143,3 +143,19 @@ async def test_development_login_issues_a_local_token_without_oidc_redirect(api_
     token = login.json()["access_token"]
     threads = await client.get("/api/threads", headers={"Authorization": f"Bearer {token}"})
     assert threads.status_code == 200
+
+
+async def test_oidc_mode_exposes_issuer_but_refuses_development_auto_login(tmp_path):
+    from backend.core.config import Settings
+
+    settings = Settings(
+        _env_file=None, demo_mode=True, data_dir=tmp_path, auth_mode="oidc",
+        oidc_issuer="http://localhost:8180/realms/deepresearch",
+        oidc_jwks_url="http://keycloak:8080/realms/deepresearch/protocol/openid-connect/certs",
+    )
+    app = create_app(settings)
+    async with app.router.lifespan_context(app):
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+            config = await client.get("/api/auth/config")
+            assert config.json() == {"mode": "oidc", "issuer": settings.oidc_issuer}
+            assert (await client.post("/api/auth/development/login")).status_code == 404

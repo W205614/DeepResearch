@@ -4,7 +4,7 @@ import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import { ArrowUp, ArrowUpRight, BookOpen, Brain, Check, ChevronRight, CircleHelp, Compass, Download, FileText, FolderOpen, Globe2, Layers3, LoaderCircle, Menu, MessageSquare, Plus, RefreshCw, Search, Settings2, ShieldCheck, LogIn, LogOut, UserPlus, Sparkles, Square, Trash2, X } from 'lucide-vue-next'
 import { api, headers, subscribe, terminal, type Run, type Source, type EventItem } from './api'
-import { completeLogin, currentUser, login, loginDevelopment, logout, register } from './auth'
+import { completeLogin, configureIssuer, currentUser, login, loginDevelopment, logout, register } from './auth'
 
 type View = 'research'|'documents'|'memories'|'settings'
 const view = ref<View>('research'), navOpen = ref(false)
@@ -143,10 +143,11 @@ onMounted(async()=>{
   await safely(async()=>{
     const config=await fetch('/api/auth/config').then(async response=>{
       if(!response.ok)throw new Error('无法读取登录配置')
-      return response.json() as Promise<{mode:'oidc'|'development'}>
+      return response.json() as Promise<{mode:'oidc'|'development',issuer:string}>
     })
     authMode.value=config.mode
-    const user=config.mode==='development'?await loginDevelopment():(await completeLogin()||currentUser())
+    configureIssuer(config.issuer)
+    const user=await completeLogin()||currentUser()
     if(user)await activateUser(user)
   })
   poll=setInterval(()=>{if(view.value==='documents'&&documents.value.some(d=>d.status==='indexing'))void safely(async()=>{documents.value=await api('/api/documents')});if(selected.value&&!terminal(selected.value.status))void refreshRun(selected.value.id,generation).catch(()=>{})},2500)
@@ -156,7 +157,7 @@ onUnmounted(()=>{controller?.abort();clearInterval(poll);window.removeEventListe
 
 <template>
   <section v-if="!authenticated" class="auth-landing">
-    <div class="auth-card"><div class="auth-mark"><Layers3 :size="30"/></div><span class="eyebrow"><span></span> DEEPRESEARCH WORKSPACE</span><h1>让研究有据可循。</h1><p>{{authMode==='development'?'当前为本地开发工作空间。':'登录后开始研究、保存资料，并保留可追溯的证据链。'}}</p><button class="auth-primary" @click="safely(beginLogin)"><LogIn :size="18"/>{{authMode==='development'?'进入本地工作空间':'登录并开始研究'}}</button><button v-if="authMode==='oidc'" class="auth-secondary" @click="safely(beginRegistration)"><UserPlus :size="17"/>创建本地账号</button><small>{{authMode==='development'?'本地部署会自动建立开发会话。':'账号由本机 Keycloak 管理；注册后会自动回到工作台。'}}</small></div>
+    <div class="auth-card"><div class="auth-mark"><Layers3 :size="30"/></div><span class="eyebrow"><span></span> DEEPRESEARCH WORKSPACE</span><h1>让研究有据可循。</h1><p>{{authMode==='development'?'当前为本地开发工作空间。':'登录后开始研究、保存资料，并保留可追溯的证据链。'}}</p><button class="auth-primary" @click="safely(beginLogin)"><LogIn :size="18"/>{{authMode==='development'?'进入本地工作空间':'登录并开始研究'}}</button><button v-if="authMode==='oidc'" class="auth-secondary" @click="safely(beginRegistration)"><UserPlus :size="17"/>创建本地账号</button><small>{{authMode==='development'?'开发会话须由你手动启动。':'账号由本机 Keycloak 管理；注册、退出或切换账号后会回到这里。'}}</small></div>
   </section>
   <div v-else class="workspace">
     <div v-if="navOpen" class="nav-backdrop" @click="navOpen=false"></div>
@@ -170,7 +171,7 @@ onUnmounted(()=>{controller?.abort();clearInterval(poll);window.removeEventListe
       </nav>
       <div class="history-label">最近研究 <span>{{threads.length}}</span></div>
       <div class="thread-list"><p v-if="!threads.length" class="empty-history">你的研究会保存在这里</p><div v-for="thread in threads" :key="thread.id" :class="['thread-item',{chosen:thread.id===threadId}]"><button class="thread-select" @click="safely(()=>openThread(thread.id))"><MessageSquare :size="15"/><div><span>{{thread.title}}</span><small>{{thread.thread_key}}</small></div></button><button class="thread-delete icon-button" :aria-label="`删除研究 ${thread.title}`" title="删除研究" @click.stop="deleteThread(thread)"><Trash2 :size="15"/></button></div></div>
-      <div class="sidebar-bottom"><div class="local-badge"><span class="status-dot"></span>本地工作空间 <ShieldCheck :size="14"/></div><button @click="navigate('settings')"><Settings2 :size="17"/>工作台设置</button><div class="profile"><div class="avatar">研</div><div>{{userId}}<small>本地演示用户</small></div></div></div>
+      <div class="sidebar-bottom"><div class="local-badge"><span class="status-dot"></span>本地工作空间 <ShieldCheck :size="14"/></div><button @click="navigate('settings')"><Settings2 :size="17"/>工作台设置</button><div class="profile"><div class="avatar">研</div><div>{{userId}}<small>已登录用户</small></div></div></div>
     </aside>
     <main>
       <header class="topbar"><div class="breadcrumb"><button class="mobile-menu icon-button" aria-label="打开导航" @click="navOpen=true"><Menu :size="20"/></button><span>工作空间</span><ChevronRight :size="14"/><strong>{{viewTitle}}</strong></div><div class="top-status"><span :class="['status-dot',{'amber':!status||status.missing?.length}]"></span>{{status?.mode==='demo'?'测试模式':status?.missing?.length?'部分服务待配置':'已连接'}}<span class="divider"></span><span>本地部署</span></div><button v-if="!authenticated" class="text-button" @click="safely(beginLogin)"><LogIn :size="15"/>登录</button><button v-else class="text-button" @click="signOut"><LogOut :size="15"/>退出 {{userId}}</button></header>

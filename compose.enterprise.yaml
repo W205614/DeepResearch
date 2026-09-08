@@ -103,19 +103,6 @@ services:
   clamav:
     image: clamav/clamav:1.4.2_base
     restart: unless-stopped
-  keycloak:
-    image: quay.io/keycloak/keycloak:26.4.0
-    command: start-dev --import-realm
-    environment:
-      KC_HOSTNAME: http://localhost:8180
-      KC_BOOTSTRAP_ADMIN_USERNAME: admin
-      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-change-before-sharing}
-    ports: ["127.0.0.1:8180:8080"]
-    # Keep local users and realm changes across rebuilds. The checked-in realm
-    # remains read-only and is used only to bootstrap an empty Keycloak volume.
-    volumes:
-      - keycloak-data:/opt/keycloak/data
-      - ./keycloak:/opt/keycloak/data/import:ro
   otel-collector:
     image: otel/opentelemetry-collector-contrib:0.120.0
     command: ["--config=/etc/otelcol-contrib/config.yaml"]
@@ -135,4 +122,3 @@ volumes:
   postgres-data:
   redis-data:
   grafana-data:
-  keycloak-data:
