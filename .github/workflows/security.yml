@@ -9,13 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions: { contents: read, security-events: write }
     steps:
-<<<<<<< HEAD
       - uses: actions/checkout@v7
-      - uses: aquasecurity/trivy-action@0.33.1
-=======
-      - uses: actions/checkout@v4
-      - uses: aquasecurity/trivy-action@v0.36.0
->>>>>>> origin/dependabot/github_actions/aquasecurity/trivy-action-0.36.0
+      - uses: aquasecurity/trivy-action@0.36.0
         with: { scan-type: fs, format: sarif, output: trivy-fs.sarif, severity: HIGH,CRITICAL, exit-code: "1" }
       - uses: github/codeql-action/upload-sarif@v4
         with: { sarif_file: trivy-fs.sarif }
