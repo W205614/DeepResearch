@@ -214,3 +214,7 @@ Grafana 自动配置六个全局匿名面板：API/Worker 可用性、队列深�
 恢复会替换当前项目的命名卷，完成后重新启动企业 Compose 并运行企业冒烟检查。不要将备份文件、`.env` 或密钥提交到 Git。
 
 前端工具链依赖通过 Dependabot 分组升级，并以 `npm ci`、Vitest 和生产构建作为合并门槛。当前 Vue TSC 3.3.11 与 TypeScript 7.0.2 实际不兼容，因此项目固定 TypeScript 6.0.3，并暂时忽略 TypeScript 7 的自动升级；只有完成兼容性验证后才解除该限制。
+
+## 死信、追踪与告警
+
+最终失败的研究任务会进入 PostgreSQL 死信表，管理员可通过 GET /api/workspaces/{workspace_id}/dead-letters 查看，并以 POST /api/workspaces/{workspace_id}/dead-letters/{run_id}/recover 从检查点重新入队；恢复动作写入审计日志。运行日志为 JSON，包含稳定错误类别、任务短 ID 与 OpenTelemetry Trace ID，但不写入研究正文、URL 或密钥。Prometheus 内置队列积压、死信和失败率三条告警规则；scripts/probe_queue.py 可验证不调用模型的队列指标接线。告警规则需要在部署环境接入 Alertmanager、企业 webhook 或值班平台后才能实际通知。

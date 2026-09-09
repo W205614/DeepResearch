@@ -136,6 +136,25 @@ def create_app(settings: Settings | None = None):
         require_role(request, "admin")
         return await runtime.db.audit_rows(user)
 
+    @app.get("/api/workspaces/{workspace_id}/dead-letters")
+    async def dead_letters(workspace_id: str, request: Request, runtime=Depends(rt), user=Depends(identity)):
+        if workspace_id != user:
+            raise HTTPException(403, "请先切换到目标工作空间")
+        require_role(request, "admin")
+        return await runtime.dead_letters(user)
+
+    @app.post("/api/workspaces/{workspace_id}/dead-letters/{run_id}/recover", status_code=202)
+    async def recover_dead_letter(workspace_id: str, run_id: str, request: Request, runtime=Depends(rt), user=Depends(identity)):
+        if workspace_id != user:
+            raise HTTPException(403, "请先切换到目标工作空间")
+        require_role(request, "admin")
+        try:
+            run = await runtime.recover_dead_letter(run_id, user)
+        except LookupError as exc:
+            raise HTTPException(404, str(exc)) from None
+        await runtime.db.audit(user, request.state.principal.subject, "dead_letter.recover", "run", run_id)
+        return run
+
     @app.put("/api/workspaces/{workspace_id}/limits")
     async def update_limits(workspace_id: str, body: WorkspaceLimitRequest, request: Request,
                             runtime=Depends(rt), user=Depends(identity)):

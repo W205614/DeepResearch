@@ -32,6 +32,8 @@ CREATE TABLE IF NOT EXISTS metadata(key TEXT PRIMARY KEY,value TEXT);
 CREATE TABLE IF NOT EXISTS workspaces(id TEXT PRIMARY KEY,name TEXT NOT NULL,created_by TEXT NOT NULL,created_at TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS memberships(workspace_id TEXT NOT NULL,subject TEXT NOT NULL,role TEXT NOT NULL,created_at TEXT NOT NULL,PRIMARY KEY(workspace_id,subject),CHECK(role IN ('admin','researcher','viewer')));
 CREATE TABLE IF NOT EXISTS workspace_limits(workspace_id TEXT PRIMARY KEY,daily_search_limit INTEGER NOT NULL,daily_token_limit INTEGER NOT NULL,concurrent_run_limit INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS dead_letter_runs(run_id TEXT PRIMARY KEY,user_id TEXT NOT NULL,category TEXT NOT NULL,message TEXT NOT NULL,failed_at TEXT NOT NULL,recovered_at TEXT DEFAULT '');
+CREATE INDEX IF NOT EXISTS dead_letter_user ON dead_letter_runs(user_id,failed_at DESC);
 CREATE TABLE IF NOT EXISTS audit_logs(id TEXT PRIMARY KEY,workspace_id TEXT NOT NULL,actor_subject TEXT NOT NULL,action TEXT NOT NULL,target_type TEXT NOT NULL,target_id TEXT NOT NULL,result TEXT NOT NULL,created_at TEXT NOT NULL);
 CREATE INDEX IF NOT EXISTS audit_workspace ON audit_logs(workspace_id,created_at DESC);
 """

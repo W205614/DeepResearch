@@ -68,7 +68,7 @@ def main() -> int:
     wait_for("Grafana and Prometheus targets", targets_ready)
     version = run("exec", "-T", "postgres", "psql", "-U", "deepresearch", "-d", "deepresearch", "-tAc",
                   "SELECT version_num FROM alembic_version", capture=True).strip()
-    if version != "0001_enterprise_workspace":
+    if version != "0002_dead_letter_runs":
         raise RuntimeError(f"Unexpected Alembic version: {version}")
     output = run("exec", "-T", "redis", "redis-cli", "ping", capture=True).strip()
     if output != "PONG":

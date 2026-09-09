@@ -19,7 +19,7 @@ from ..core.postgres import PostgresDatabase
 from .documents import Documents
 from ..research.graph import ResearchGraph
 from ..core.observability import configure_task_logger, error_category, inject_trace_context, run_label
-from ..core.metrics import FAILURES, QUEUE_DEPTH, RUNS, RUN_SECONDS
+from ..core.metrics import DLQ_DEPTH, DLQ_EVENTS, FAILURES, QUEUE_DEPTH, RUNS, RUN_SECONDS
 from ..infrastructure.providers import Providers, ServiceError
 from ..infrastructure.vectors import VectorIndex
 
@@ -351,7 +351,31 @@ class Runtime:
                                         (status, message, now(), run_id))
         if changed:
             await self.db.event(run_id, "error", {"message": message, "status": status})
+            if status == "failed":
+                run = await self.db.one("SELECT user_id FROM runs WHERE id=?", (run_id,))
+                category = "runtime_failure"
+                await self.db.execute("DELETE FROM dead_letter_runs WHERE run_id=?", (run_id,))
+                await self.db.execute("INSERT INTO dead_letter_runs(run_id,user_id,category,message,failed_at,recovered_at) VALUES(?,?,?,?,?,'' )", (run_id, run["user_id"], category, message[:240], now()))
+                DLQ_EVENTS.labels(action="created", category=category).inc()
+                await self.refresh_dead_letter_depth()
         await self.refresh_queue_depth()
+
+    async def dead_letters(self, user):
+        return await self.db.rows("SELECT run_id,category,message,failed_at FROM dead_letter_runs WHERE user_id=? AND recovered_at='' ORDER BY failed_at DESC", (user,))
+
+    async def recover_dead_letter(self, run_id, user):
+        row = await self.db.one("SELECT run_id FROM dead_letter_runs WHERE run_id=? AND user_id=? AND recovered_at=''", (run_id, user))
+        if not row:
+            raise LookupError("死信任务不存在或已恢复")
+        run = await self.resume(run_id, user)
+        await self.db.execute("UPDATE dead_letter_runs SET recovered_at=? WHERE run_id=?", (now(), run_id))
+        DLQ_EVENTS.labels(action="recovered", category="runtime_failure").inc()
+        await self.refresh_dead_letter_depth()
+        return run
+
+    async def refresh_dead_letter_depth(self):
+        row = await self.db.one("SELECT COUNT(*) AS total FROM dead_letter_runs WHERE recovered_at='' ")
+        DLQ_DEPTH.set(int((row or {}).get("total", 0)))
 
     async def cancel(self, run_id, user):
         async with self.lock:

@@ -1,5 +1,12 @@
 """Privacy-safe task logging and OpenTelemetry setup."""
 import logging
+import json
+
+class JsonFormatter(logging.Formatter):
+    def format(self, record):
+        from opentelemetry import trace
+        context = trace.get_current_span().get_span_context()
+        return json.dumps({"timestamp": self.formatTime(record, "%Y-%m-%dT%H:%M:%SZ"), "level": record.levelname, "logger": record.name, "message": record.getMessage(), "trace_id": f"{context.trace_id:032x}" if context and context.is_valid else None}, ensure_ascii=False)
 
 
 LOGGER_NAME = "deepresearch.task"
@@ -10,8 +17,7 @@ def configure_task_logger(level: str) -> logging.Logger:
     logger.setLevel(getattr(logging, level.upper(), logging.INFO))
     if not logger.handlers:
         handler = logging.StreamHandler()
-        handler.setFormatter(logging.Formatter(
-            "%(asctime)s %(levelname)s [task] %(message)s", datefmt="%Y-%m-%d %H:%M:%S"))
+        handler.setFormatter(JsonFormatter())
         logger.addHandler(handler)
     logger.propagate = False
     return logger

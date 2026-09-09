@@ -1,0 +1,18 @@
+groups:
+  - name: deepresearch-enterprise
+    rules:
+      - alert: DeepResearchQueueBacklog
+        expr: deepresearch_queue_depth > 10
+        for: 5m
+        labels: {severity: warning}
+        annotations: {summary: "Research queue backlog exceeds 10 for five minutes"}
+      - alert: DeepResearchDeadLetters
+        expr: deepresearch_dead_letter_depth > 0
+        for: 1m
+        labels: {severity: warning}
+        annotations: {summary: "Dead-letter research runs require administrator recovery"}
+      - alert: DeepResearchFailureRate
+        expr: increase(deepresearch_failures_total[10m]) > 5
+        for: 2m
+        labels: {severity: warning}
+        annotations: {summary: "More than five categorized failures in ten minutes"}

@@ -224,7 +224,7 @@ services:
     restart: unless-stopped
   prometheus:
     image: prom/prometheus:v3.2.1
-    volumes: [./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro]
+    volumes: [./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro, ./observability/alerts.yml:/etc/prometheus/alerts.yml:ro]
     restart: unless-stopped
   grafana:
     image: grafana/grafana:11.5.2
