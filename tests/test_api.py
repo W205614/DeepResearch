@@ -154,3 +154,11 @@ async def test_oidc_mode_exposes_issuer_but_refuses_development_auto_login(tmp_p
             config = await client.get("/api/auth/config")
             assert config.json() == {"mode": "oidc", "issuer": settings.oidc_issuer}
             assert (await client.post("/api/auth/development/login")).status_code == 404
+
+async def test_alert_forwarding_is_disabled_without_webhook(settings):
+    app = create_app(settings)
+    async with app.router.lifespan_context(app):
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+            response = await client.post("/internal/alerts", json={"alerts": [{"annotations": {"summary": "test"}}]})
+    assert response.status_code == 200
+    assert response.json() == {"delivered": False, "reason": "not_configured"}

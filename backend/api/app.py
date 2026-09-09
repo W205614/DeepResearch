@@ -1,5 +1,6 @@
 import asyncio
 import json
+import httpx
 from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, File, Header, HTTPException, Request, UploadFile
@@ -11,6 +12,7 @@ from ..core.auth import TokenVerifier
 from ..core.db import now, uid
 from ..domain.models import DocumentSearchRequest, MemoryRequest, RunRequest, ThreadRequest
 from ..core.observability import configure_telemetry
+from ..core.metrics import ALERT_DELIVERIES
 from ..domain.models import MembershipRequest, WorkspaceLimitRequest, WorkspaceRequest
 from ..infrastructure.providers import ServiceError
 from ..services.runtime import ConflictError, Runtime, TERMINAL
@@ -78,6 +80,23 @@ def create_app(settings: Settings | None = None):
     async def lookup_error(request, exc):
         return JSONResponse({"detail": str(exc)}, status_code=404)
 
+    @app.post("/internal/alerts")
+    async def forward_alert(payload: dict):
+        webhook = settings.feishu_webhook_url.get_secret_value()
+        if not webhook:
+            ALERT_DELIVERIES.labels("disabled").inc()
+            return {"delivered": False, "reason": "not_configured"}
+        alerts = payload.get("alerts", [])
+        summary = "; ".join(str(a.get("annotations", {}).get("summary", a.get("labels", {}).get("alertname", "alert"))) for a in alerts)[:1500]
+        try:
+            async with httpx.AsyncClient(timeout=8) as client:
+                response = await client.post(webhook, json={"msg_type":"text","content":{"text":"DeepResearch Alert: " + summary}})
+                response.raise_for_status()
+        except httpx.HTTPError as exc:
+            ALERT_DELIVERIES.labels("failed").inc()
+            raise HTTPException(502, "alert delivery failed") from exc
+        ALERT_DELIVERIES.labels("succeeded").inc()
+        return {"delivered": True, "count": len(alerts)}
     @app.get("/healthz")
     async def health():
         return {"status": "ok"}

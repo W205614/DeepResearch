@@ -33,6 +33,7 @@ class Settings(BaseSettings):
     queue_backend: Literal["redis", "local"] = "redis"
     max_job_retries: int = Field(2, ge=0, le=10)
     otel_exporter_otlp_endpoint: str = ""
+    feishu_webhook_url: SecretStr = SecretStr("")
     workspace_daily_search_limit: int = Field(120, ge=1, le=10000)
     workspace_concurrent_run_limit: int = Field(2, ge=1, le=20)
     document_scan_mode: Literal["disabled", "clamav"] = "clamav"

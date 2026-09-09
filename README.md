@@ -23,7 +23,7 @@
 
 ## 企业单机演示启动
 
-1. 复制 `.env.example` 为 `.env`，填写模型密钥，以及 `POSTGRES_PASSWORD`、`KEYCLOAK_DB_PASSWORD`、`KEYCLOAK_ADMIN_PASSWORD`、`MINIO_ROOT_PASSWORD` 和 `GRAFANA_ADMIN_PASSWORD`。这些值不得提交。
+1. 复制 `.env.example` 为 `.env`，填写模型密钥，以及 `POSTGRES_PASSWORD`、`KEYCLOAK_DB_PASSWORD`、`KEYCLOAK_ADMIN_PASSWORD`、`MINIO_ROOT_PASSWORD` 和 `GRAFANA_ADMIN_PASSWORD`。如需飞书告警，另外填写可选的 `FEISHU_WEBHOOK_URL`。这些值不得提交。
 2. 启动 Docker Desktop 后运行：
 
    ```powershell
@@ -174,7 +174,7 @@ docker compose up -d --build --wait
 ```
 
 首次启用企业单机演示环境时，Keycloak 的 `keycloak-data` 命名卷会保存本机注册账号和管理台改动；不要用 `docker compose down -v` 停止演示环境。
-Grafana 仅映射到 `http://localhost:3000`，使用 `.env` 的 `GRAFANA_ADMIN_PASSWORD` 登录；Prometheus 数据源会在启动时自动连接到容器内的 Prometheus。
+Grafana 仅映射到 `http://localhost:3000`，使用 `.env` 的 `GRAFANA_ADMIN_PASSWORD` 登录；Prometheus 数据源会在启动时自动连接到容器内的 Prometheus。Alertmanager 也只映射到本机的 `http://localhost:9093`。
 
 ## 企业演示验证
 
@@ -194,7 +194,7 @@ Grafana 仅映射到 `http://localhost:3000`，使用 `.env` 的 `GRAFANA_ADMIN_
 
 研究与资料索引均有持久化状态。企业单机演示环境研究任务由 Redis Worker 消费，每次尝试使用固定的队列任务编号；重复恢复不会并行执行同一研究。点击停止会先将研究持久化为 `cancelled`，再向 Worker 发送中止信号，因此排队任务和已开始的任务都会停止，晚到的 Worker 也不能重新领取它。Worker 每 10 秒更新一次心跳；只有连续 45 秒未更新的运行中任务才会被标记为中断并从检查点重新入队。资料索引在 API 或 Worker 重启后会重新入队，已通过扫描的原始文件不会因进程内任务丢失而被视为可检索。任务、指标和追踪不使用用户、工作空间、主题、文件名、来源 URL 或错误正文作为 Prometheus 标签或 OpenTelemetry 属性。
 
-Grafana 自动配置六个全局匿名面板：API/Worker 可用性、队列深度、任务成功率、失败类别、节点 P95 时延和 Token 消耗。刚重建容器且尚未运行研究时，计数器为零；运行一次研究后 Prometheus 的 15 秒抓取周期内会出现数据。
+Grafana 自动配置六个全局匿名面板：API/Worker 可用性、队列深度、任务成功率、失败类别、节点 P95 时延和 Token 消耗。任务成功率只计算最近 5 分钟内有终态任务的窗口；无样本时显示 `N/A`，不再误显示为 0%。刚重建容器且尚未运行研究时，其余计数器为零；运行一次研究后 Prometheus 的 15 秒抓取周期内会出现数据。
 
 企业 Compose 冒烟在本机和 GitHub Actions 复用标准库脚本：
 
@@ -217,7 +217,7 @@ Grafana 自动配置六个全局匿名面板：API/Worker 可用性、队列深�
 
 ## 死信、追踪与告警
 
-最终失败的研究任务会进入 PostgreSQL 死信表，管理员可通过 GET /api/workspaces/{workspace_id}/dead-letters 查看，并以 POST /api/workspaces/{workspace_id}/dead-letters/{run_id}/recover 从检查点重新入队；恢复动作写入审计日志。运行日志为 JSON，包含稳定错误类别、任务短 ID 与 OpenTelemetry Trace ID，但不写入研究正文、URL 或密钥。Prometheus 内置队列积压、死信和失败率三条告警规则；scripts/probe_queue.py 可验证不调用模型的队列指标接线。告警规则需要在部署环境接入 Alertmanager、企业 webhook 或值班平台后才能实际通知。
+最终失败的研究任务会进入 PostgreSQL 死信表；管理员可在网页的“工作台设置 → 死信任务治理”查看不含研究正文的失败摘要，并从检查点恢复。API 仍提供 GET /api/workspaces/{workspace_id}/dead-letters 和 POST /api/workspaces/{workspace_id}/dead-letters/{run_id}/recover，恢复动作写入审计日志。运行日志为 JSON，包含稳定错误类别、任务短 ID 与 OpenTelemetry Trace ID，但不写入研究正文、URL 或密钥。Prometheus 内置队列积压、死信和失败率三条告警规则，Prometheus 会发送到 Compose 内部的 Alertmanager，再由后端内部入口转换为飞书群机器人文本消息；`deepresearch_alert_deliveries_total{result="succeeded|failed|disabled"}` 可审计投递结果。`.env` 中可选的 `FEISHU_WEBHOOK_URL` 留空即禁用外发；它只应写入被忽略的本机 `.env`，不要放入 README、截图、提交或工单。Alertmanager 的验证可向 `http://localhost:9093/api/v2/alerts` 提交一条临时告警，随后检查飞书群是否收到“DeepResearch Alert”消息。
 
 ## 压测与故障演练
 
