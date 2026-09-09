@@ -12,8 +12,10 @@ from backend.core.db import uid
 @pytest.fixture
 async def app_client(settings):
     app = create_app(settings)
+    async def attach_test_identity(request):
+        request.headers["Authorization"] = "Bearer " + issue_development_token(settings, request.headers.get("X-User-ID", "alice"))
     async with app.router.lifespan_context(app):
-        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app),base_url="http://test",headers={"X-User-ID":"alice"}) as client:
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test", event_hooks={"request": [attach_test_identity]}) as client:
             yield app, client
 
 
@@ -134,16 +136,9 @@ async def test_api_requires_a_jwt(settings):
             assert (await client.get('/api/threads',headers={'Authorization':'Bearer ' + token})).status_code == 200
 
 
-async def test_development_login_issues_a_local_token_without_oidc_redirect(api_client):
+async def test_runtime_never_exposes_development_login(api_client):
     _, client = api_client
-    config = await client.get("/api/auth/config")
-    assert config.json() == {"mode": "development", "issuer": ""}
-    login = await client.post("/api/auth/development/login")
-    assert login.status_code == 200
-    token = login.json()["access_token"]
-    threads = await client.get("/api/threads", headers={"Authorization": f"Bearer {token}"})
-    assert threads.status_code == 200
-
+    assert (await client.post("/api/auth/development/login")).status_code == 404
 
 async def test_oidc_mode_exposes_issuer_but_refuses_development_auto_login(tmp_path):
     from backend.core.config import Settings

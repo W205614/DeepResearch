@@ -8,7 +8,7 @@ import sys
 import time
 import urllib.request
 
-COMPOSE = ["docker", "compose", "-f", "compose.yaml", "-f", "compose.enterprise.yaml"]
+COMPOSE = ["docker", "compose"]
 
 
 def run(*arguments: str, capture: bool = False) -> str:
@@ -58,7 +58,7 @@ def targets_ready() -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--start", action="store_true", help="Build and start the enterprise Compose profile first")
+    parser.add_argument("--start", action="store_true", help="Build and start the default enterprise Compose environment first")
     args = parser.parse_args()
     if args.start:
         run("up", "-d", "--build", "--force-recreate", "--wait", "--wait-timeout", "300")

@@ -39,13 +39,6 @@ async function startAuthorization(action?: 'register') {
   window.location.assign(url.toString())
 }
 export async function login() { await startAuthorization() }
-export async function loginDevelopment() {
-  const response = await fetch('/api/auth/development/login', { method: 'POST' })
-  if (!response.ok) throw new Error('本地工作空间登录不可用')
-  const body = await response.json() as { access_token: string }
-  sessionStorage.setItem(tokenKey, body.access_token)
-  return currentUser()
-}
 export async function register() { await startAuthorization('register') }
 
 export async function completeLogin() {

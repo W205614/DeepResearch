@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse, PlainTextResponse, Response, Streami
 
 from prometheus_client import make_asgi_app
 from ..core.config import Settings
-from ..core.auth import TokenVerifier, issue_development_token
+from ..core.auth import TokenVerifier
 from ..core.db import now, uid
 from ..domain.models import DocumentSearchRequest, MemoryRequest, RunRequest, ThreadRequest
 from ..core.observability import configure_telemetry
@@ -36,10 +36,7 @@ def create_app(settings: Settings | None = None):
     def rt(request: Request) -> Runtime:
         return request.app.state.runtime
 
-    async def identity(request: Request, authorization: str = Header(""), x_workspace_id: str = Header(""),
-                       x_user_id: str = Header("")):
-        if settings.demo_mode and not authorization and x_user_id:
-            authorization = "Bearer " + issue_development_token(settings, x_user_id)
+    async def identity(request: Request, authorization: str = Header(""), x_workspace_id: str = Header("")):
         principal = await app.state.token_verifier.verify(authorization)
         runtime = rt(request)
         memberships = await runtime.db.memberships(principal.subject)
@@ -89,13 +86,6 @@ def create_app(settings: Settings | None = None):
     async def auth_config():
         """Public mode metadata; it never exposes a key, token, or issuer secret."""
         return {"mode": settings.auth_mode, "issuer": settings.oidc_issuer if settings.auth_mode == "oidc" else ""}
-
-    @app.post("/api/auth/development/login")
-    async def development_login():
-        if settings.auth_mode != "development":
-            raise HTTPException(404, "本地开发登录不可用")
-        token = issue_development_token(settings, "local-user")
-        return {"access_token": token, "token_type": "Bearer"}
 
     @app.get("/livez")
     async def livez():

@@ -9,6 +9,8 @@ from contextlib import AsyncExitStack
 from datetime import datetime, timezone
 
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
+from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
+from psycopg.errors import UniqueViolation
 from arq.jobs import Job
 
 from ..core.config import Settings
@@ -33,6 +35,8 @@ class ConflictError(Exception):
 class Runtime:
     def __init__(self, settings: Settings, *, worker_mode: bool = False):
         self.settings = settings
+        if not settings.database_url and not settings.demo_mode:
+            raise RuntimeError("DATABASE_URL is required outside isolated offline tests")
         settings.prepare()
         self.db = PostgresDatabase(settings.database_url) if settings.database_url else Database(settings.data_dir / "research.sqlite3")
         self.providers = Providers(settings, self.db)
@@ -51,8 +55,25 @@ class Runtime:
         self.recovery_task = None
     async def start(self):
         await self.db.init()
-        self.checkpointer = await self.stack.enter_async_context(
-            AsyncSqliteSaver.from_conn_string(str(self.settings.data_dir / "checkpoints.sqlite3")))
+        await self.documents.start()
+        if self.settings.database_url:
+            # Workers can resume a run started by another replica, so checkpoints
+            # live in the durable PostgreSQL source of truth in enterprise mode.
+            checkpoint_url = self.settings.database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
+            self.checkpointer = await self.stack.enter_async_context(
+                AsyncPostgresSaver.from_conn_string(checkpoint_url))
+            for attempt in range(3):
+                try:
+                    await self.checkpointer.setup()
+                    break
+                except UniqueViolation:
+                    if attempt == 2:
+                        raise
+                    await asyncio.sleep(0.5 * (attempt + 1))
+        else:
+            # Explicit offline fixtures retain the small SQLite implementation only.
+            self.checkpointer = await self.stack.enter_async_context(
+                AsyncSqliteSaver.from_conn_string(str(self.settings.data_dir / "checkpoints.sqlite3")))
         self.graph = ResearchGraph(self.settings, self.db, self.providers, self.vectors, self.documents).build(self.checkpointer)
         if not self.worker_mode:
             if self.settings.queue_backend == "redis":
@@ -480,9 +501,8 @@ class Runtime:
             archive.writestr("memories.json", json.dumps(memories, ensure_ascii=False, indent=2))
             archive.writestr("documents.json", json.dumps(documents, ensure_ascii=False, indent=2))
             for document in documents:
-                path = self.settings.data_dir / "uploads" / document["id"]
-                if path.is_file():
-                    archive.writestr("uploads/" + document["name"], path.read_bytes())
+                if await self.documents.store.exists("uploads", document["id"]):
+                    archive.writestr("uploads/" + document["name"], await self.documents.store.get("uploads", document["id"]))
         return output.getvalue()
 
     async def purge_user(self, user: str, scope: str):

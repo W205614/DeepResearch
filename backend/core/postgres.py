@@ -58,8 +58,14 @@ class PostgresDatabase:
     def _sql(self, sql: str) -> str:
         ignore_conflict = "INSERT OR IGNORE INTO" in sql
         sql = sql.replace("INSERT OR IGNORE INTO", "INSERT INTO")
-        replacements = {"search_cache": "run_id,query", "web_cache": "url", "metadata": "key", "memories": "id"}
-        match = re.match(r"\s*INSERT OR REPLACE INTO (\w+)\(([^)]+)\) VALUES\(([^)]+)\)", sql, re.S)
+        replacements = {
+            "search_cache": "run_id,query",
+            "web_cache": "url",
+            "document_search_cache": "user_id,corpus_hash,query_hash,limit_value",
+            "metadata": "key",
+            "memories": "id",
+        }
+        match = re.match(r"\s*INSERT OR REPLACE INTO (\w+)\s*\(([^)]+)\)\s*VALUES\s*\(([^)]+)\)", sql, re.S)
         if match:
             table, columns, values = match.groups()
             keys = replacements[table].split(",")
@@ -76,9 +82,8 @@ class PostgresDatabase:
         return re.sub(r"\?", placeholder, sql)
 
     async def init(self):
+        """Open the application pool; Alembic owns PostgreSQL schema creation."""
         self.pool = await asyncpg.create_pool(self.dsn, min_size=1, max_size=8)
-        async with self.pool.acquire() as conn:
-            await conn.execute(POSTGRES_SCHEMA)
 
     @asynccontextmanager
     async def connection(self):

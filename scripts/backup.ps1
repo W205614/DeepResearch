@@ -4,7 +4,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$compose = @('-f', 'compose.yaml', '-f', 'compose.enterprise.yaml')
+$compose = @()
 $volumeNames = @('research-data', 'milvus-data', 'etcd-data', 'minio-data', 'redis-data', 'keycloak-data', 'grafana-data')
 $destination = [System.IO.Path]::GetFullPath($Output)
 New-Item -ItemType Directory -Force -Path $destination | Out-Null

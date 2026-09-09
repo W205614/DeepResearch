@@ -16,7 +16,7 @@ services:
       retries: 5
   backend:
     build: .
-    environment:
+    environment: &runtime-environment
       LLM_MODEL_ID: ${LLM_MODEL_ID:-deepseek-v4-flash}
       LLM_BASE_URL: ${LLM_BASE_URL:-https://api.deepseek.com}
       LLM_API_KEY: ${LLM_API_KEY:-}
@@ -30,15 +30,14 @@ services:
       BOCHA_BASE_URL: ${BOCHA_BASE_URL:-https://api.bochaai.com/v1}
       BOCHA_API_KEY: ${BOCHA_API_KEY:-}
       APP_ACCESS_TOKEN: ${APP_ACCESS_TOKEN:-}
-      AUTH_MODE: ${AUTH_MODE:-oidc}
+      AUTH_MODE: oidc
       OIDC_ISSUER: ${OIDC_ISSUER:-http://localhost:8180/realms/deepresearch}
       OIDC_AUDIENCE: ${OIDC_AUDIENCE:-deepresearch-api}
       OIDC_JWKS_URL: ${OIDC_JWKS_URL:-http://keycloak:8080/realms/deepresearch/protocol/openid-connect/certs}
-      DEVELOPMENT_JWT_SECRET: ${DEVELOPMENT_JWT_SECRET:-development-only-secret-must-be-32-bytes}
       SOURCE_TRUST_OVERRIDES: '${SOURCE_TRUST_OVERRIDES:-{}}'
       WEB_CACHE_TTL_HOURS: ${WEB_CACHE_TTL_HOURS:-168}
       AUTO_SAVE_SEMANTIC_MEMORY: ${AUTO_SAVE_SEMANTIC_MEMORY:-false}
-      DEMO_MODE: ${DEMO_MODE:-false}
+      DEMO_MODE: "false"
       MAX_REFLECTION_ROUNDS: ${MAX_REFLECTION_ROUNDS:-2}
       MAX_SEARCH_CALLS: ${MAX_SEARCH_CALLS:-12}
       WEB_RESULTS_PER_QUERY: ${WEB_RESULTS_PER_QUERY:-8}
@@ -53,13 +52,31 @@ services:
       REQUEST_TIMEOUT_SECONDS: ${REQUEST_TIMEOUT_SECONDS:-90}
       MILVUS_URI: http://milvus:19530
       DATA_DIR: /data
-    volumes:
-      - research-data:/data
+      DATABASE_URL: "postgresql://deepresearch:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@postgres:5432/deepresearch"
+      REDIS_URL: redis://redis:6379/0
+      QUEUE_BACKEND: redis
+      DOCUMENT_SCAN_MODE: clamav
+      OBJECT_STORE_BACKEND: s3
+      OBJECT_STORE_ENDPOINT: http://minio:9000
+      OBJECT_STORE_BUCKET: deepresearch-documents
+      OBJECT_STORE_ACCESS_KEY: ${MINIO_ROOT_USER:-deepresearch}
+      OBJECT_STORE_SECRET_KEY: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in .env}
+      OTEL_EXPORTER_OTLP_ENDPOINT: otel-collector:4317
     depends_on:
       milvus:
         condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
       keycloak:
         condition: service_started
+      clamav:
+        condition: service_started
+      otel-collector:
+        condition: service_started
+      migrate:
+        condition: service_completed_successfully
     restart: unless-stopped
     stop_grace_period: 30s
   etcd:
@@ -81,8 +98,8 @@ services:
   minio:
     image: minio/minio:RELEASE.2024-05-28T17-19-04Z
     environment:
-      MINIO_ROOT_USER: deepresearch
-      MINIO_ROOT_PASSWORD: deepresearch-local-storage
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-deepresearch}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in .env}
     command: minio server /minio_data --console-address :9001
     volumes:
       - minio-data:/minio_data
@@ -99,8 +116,8 @@ services:
       ETCD_ENDPOINTS: etcd:2379
       MINIO_ADDRESS: minio:9000
       MINIO_REGION: us-east-1
-      MINIO_ACCESS_KEY_ID: deepresearch
-      MINIO_SECRET_ACCESS_KEY: deepresearch-local-storage
+      MINIO_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-deepresearch}
+      MINIO_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in .env}
     volumes:
       - milvus-data:/var/lib/milvus
     depends_on:
@@ -117,16 +134,107 @@ services:
     restart: unless-stopped
   keycloak:
     image: quay.io/keycloak/keycloak:26.4.0
-    command: start-dev --import-realm
+    command: start --import-realm --http-enabled=true --hostname-strict=false
     environment:
       KC_HOSTNAME: http://localhost:8180
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?Set KEYCLOAK_DB_PASSWORD in .env}
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
-      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-change-before-sharing}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?Set KEYCLOAK_ADMIN_PASSWORD in .env}
     ports: ["127.0.0.1:8180:8080"]
     # Keep local user accounts and realm changes across normal rebuilds.
     volumes:
       - keycloak-data:/opt/keycloak/data
       - ./keycloak:/opt/keycloak/data/import:ro
+    depends_on:
+      keycloak-postgres:
+        condition: service_healthy
+    restart: unless-stopped
+  worker:
+    build: .
+    command: arq backend.worker.WorkerSettings
+    expose: ["8001"]
+    healthcheck:
+      test: ["CMD-SHELL", "kill -0 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    environment: *runtime-environment
+    volumes: [research-data:/data]
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      milvus: { condition: service_healthy }
+      clamav: { condition: service_started }
+      otel-collector: { condition: service_started }
+      migrate: { condition: service_completed_successfully }
+    restart: unless-stopped
+  migrate:
+    build: .
+    command: alembic upgrade head
+    environment:
+      DATABASE_URL: "postgresql+asyncpg://deepresearch:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@postgres:5432/deepresearch"
+    depends_on:
+      postgres: { condition: service_healthy }
+    restart: "no"
+  postgres:
+    image: postgres:17.6-alpine
+    environment:
+      POSTGRES_DB: deepresearch
+      POSTGRES_USER: deepresearch
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes: [postgres-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U deepresearch -d deepresearch"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  keycloak-postgres:
+    image: postgres:17.6-alpine
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?Set KEYCLOAK_DB_PASSWORD in .env}
+    volumes: [keycloak-postgres-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak -d keycloak"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  redis:
+    image: redis:7.4.2-alpine
+    command: redis-server --appendonly yes
+    volumes: [redis-data:/data]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  clamav:
+    image: clamav/clamav:1.4.2_base
+    restart: unless-stopped
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.120.0
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    volumes: [./observability/otel-collector.yaml:/etc/otelcol-contrib/config.yaml:ro]
+    restart: unless-stopped
+  prometheus:
+    image: prom/prometheus:v3.2.1
+    volumes: [./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro]
+    restart: unless-stopped
+  grafana:
+    image: grafana/grafana:11.5.2
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: "${GRAFANA_ADMIN_PASSWORD:?Set GRAFANA_ADMIN_PASSWORD in .env}"
+    ports: ["127.0.0.1:3000:3000"]
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
     restart: unless-stopped
 volumes:
   research-data:
@@ -134,3 +242,7 @@ volumes:
   minio-data:
   milvus-data:
   keycloak-data:
+  postgres-data:
+  keycloak-postgres-data:
+  redis-data:
+  grafana-data:

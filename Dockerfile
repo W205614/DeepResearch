@@ -10,6 +10,7 @@ RUN uv sync --frozen --no-dev --no-install-project --no-python-downloads --link-
 COPY alembic.ini ./
 COPY migrations ./migrations
 COPY backend ./backend
+COPY scripts/migrate_legacy_sqlite.py ./scripts/migrate_legacy_sqlite.py
 USER researcher
 EXPOSE 8000
 HEALTHCHECK --interval=15s --timeout=5s --start-period=20s --retries=5 \

@@ -4,7 +4,7 @@ import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import { ArrowUp, ArrowUpRight, BookOpen, Brain, Check, ChevronRight, CircleHelp, Compass, Download, FileText, FolderOpen, Globe2, Layers3, LoaderCircle, Menu, MessageSquare, Plus, RefreshCw, Search, Settings2, ShieldCheck, LogIn, LogOut, UserPlus, Sparkles, Square, Trash2, X } from 'lucide-vue-next'
 import { api, headers, subscribe, terminal, type Run, type Source, type EventItem } from './api'
-import { completeLogin, configureIssuer, currentUser, login, loginDevelopment, logout, register } from './auth'
+import { completeLogin, configureIssuer, currentUser, login, logout, register } from './auth'
 
 type View = 'research'|'documents'|'memories'|'settings'
 const view = ref<View>('research'), navOpen = ref(false)
@@ -15,7 +15,7 @@ const status = ref<any>(null), documents = ref<any[]>([]), memories = ref<any[]>
 const preference = ref(''), editingMemory = ref(''), source = ref<Source|null>(null)
 const selectedDocument = ref<any|null>(null), documentChunks = ref<any[]>([]), documentQuery = ref(''), documentResults = ref<any[]>([]), documentSearchBusy = ref(false)
 const userId = ref('')
-const authenticated = ref(false), authMode = ref<'oidc'|'development'>('oidc'), threadSwitchId = ref(localStorage.getItem('dr-thread') || '')
+const authenticated = ref(false), authMode = ref<'oidc'>('oidc'), threadSwitchId = ref(localStorage.getItem('dr-thread') || '')
 const connection = ref<Record<string,any>|null>(null), checking = ref(false), uploadBusy = ref(false)
 const uploadInput = ref<HTMLInputElement|null>(null), logOpen = ref(false), rename = ref(false), newTitle = ref('')
 let controller: AbortController|null = null, poll: ReturnType<typeof setInterval>|undefined, generation = 0
@@ -45,10 +45,7 @@ async function activateUser(user: ReturnType<typeof currentUser>){
   authenticated.value=true;userId.value=user.name;await refreshThreads();await refreshStatus()
   if(threadId.value&&threads.value.some(t=>t.id===threadId.value))await openThread(threadId.value);else newResearch()
 }
-async function beginLogin(){
-  if(authMode.value==='development'){await activateUser(await loginDevelopment());return}
-  await login()
-}
+async function beginLogin(){ await login() }
 async function beginRegistration(){ await register() }
 function signOut(){ logout() }
 function handleAuthExpired(){
@@ -143,7 +140,7 @@ onMounted(async()=>{
   await safely(async()=>{
     const config=await fetch('/api/auth/config').then(async response=>{
       if(!response.ok)throw new Error('无法读取登录配置')
-      return response.json() as Promise<{mode:'oidc'|'development',issuer:string}>
+      return response.json() as Promise<{mode:'oidc',issuer:string}>
     })
     authMode.value=config.mode
     configureIssuer(config.issuer)
@@ -157,7 +154,7 @@ onUnmounted(()=>{controller?.abort();clearInterval(poll);window.removeEventListe
 
 <template>
   <section v-if="!authenticated" class="auth-landing">
-    <div class="auth-card"><div class="auth-mark"><Layers3 :size="30"/></div><span class="eyebrow"><span></span> DEEPRESEARCH WORKSPACE</span><h1>让研究有据可循。</h1><p>{{authMode==='development'?'当前为本地开发工作空间。':'登录后开始研究、保存资料，并保留可追溯的证据链。'}}</p><button class="auth-primary" @click="safely(beginLogin)"><LogIn :size="18"/>{{authMode==='development'?'进入本地工作空间':'登录并开始研究'}}</button><button v-if="authMode==='oidc'" class="auth-secondary" @click="safely(beginRegistration)"><UserPlus :size="17"/>创建本地账号</button><small>{{authMode==='development'?'开发会话须由你手动启动。':'账号由本机 Keycloak 管理；注册、退出或切换账号后会回到这里。'}}</small></div>
+    <div class="auth-card"><div class="auth-mark"><Layers3 :size="30"/></div><span class="eyebrow"><span></span> DEEPRESEARCH WORKSPACE</span><h1>让研究有据可循。</h1><p>登录后开始研究、保存资料，并保留可追溯的证据链。</p><button class="auth-primary" @click="safely(beginLogin)"><LogIn :size="18"/>登录并开始研究</button><button class="auth-secondary" @click="safely(beginRegistration)"><UserPlus :size="17"/>创建本地账号</button><small>账号由本机 Keycloak 管理；注册、退出或切换账号后会回到这里。</small></div>
   </section>
   <div v-else class="workspace">
     <div v-if="navOpen" class="nav-backdrop" @click="navOpen=false"></div>
@@ -174,7 +171,7 @@ onUnmounted(()=>{controller?.abort();clearInterval(poll);window.removeEventListe
       <div class="sidebar-bottom"><div class="local-badge"><span class="status-dot"></span>本地工作空间 <ShieldCheck :size="14"/></div><button @click="navigate('settings')"><Settings2 :size="17"/>工作台设置</button><div class="profile"><div class="avatar">研</div><div>{{userId}}<small>已登录用户</small></div></div></div>
     </aside>
     <main>
-      <header class="topbar"><div class="breadcrumb"><button class="mobile-menu icon-button" aria-label="打开导航" @click="navOpen=true"><Menu :size="20"/></button><span>工作空间</span><ChevronRight :size="14"/><strong>{{viewTitle}}</strong></div><div class="top-status"><span :class="['status-dot',{'amber':!status||status.missing?.length}]"></span>{{status?.mode==='demo'?'测试模式':status?.missing?.length?'部分服务待配置':'已连接'}}<span class="divider"></span><span>本地部署</span></div><button v-if="!authenticated" class="text-button" @click="safely(beginLogin)"><LogIn :size="15"/>登录</button><button v-else class="text-button" @click="signOut"><LogOut :size="15"/>退出 {{userId}}</button></header>
+      <header class="topbar"><div class="breadcrumb"><button class="mobile-menu icon-button" aria-label="打开导航" @click="navOpen=true"><Menu :size="20"/></button><span>工作空间</span><ChevronRight :size="14"/><strong>{{viewTitle}}</strong></div><div class="top-status"><span :class="['status-dot',{'amber':!status||status.missing?.length}]"></span>{{status?.mode==='demo'?'测试模式':status?.missing?.length?'部分服务待配置':'已连接'}}<span class="divider"></span><span>企业单机演示</span></div><button v-if="!authenticated" class="text-button" @click="safely(beginLogin)"><LogIn :size="15"/>登录</button><button v-else class="text-button" @click="signOut"><LogOut :size="15"/>退出 {{userId}}</button></header>
       <div v-if="error" class="error-banner" role="alert">{{error}}<button aria-label="关闭提示" @click="error=''"><X :size="16"/></button></div>
       <div v-if="status?.mode==='demo'" class="demo-banner">当前为固定数据测试模式，报告用于验证功能，不代表真实研究结论。</div>
 

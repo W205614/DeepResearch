@@ -1,6 +1,8 @@
-# DeepResearch 多 Agent 行业研究助手
+# DeepResearch 企业研究工作台
 
-面向中文行业研究的本地 Web 应用与企业化演示后端。系统以 LangGraph 编排多个具备独立职责、工具权限和结构化交接物的研究 Agent，并以来源约束与 SSRF 防护降低不可核查结论的风险。基础模式使用 SQLite 与 Milvus；企业演示模式切换至 PostgreSQL、Redis Worker 和 Keycloak OIDC，提供工作空间角色权限、审计日志、ClamAV 资料隔离、可恢复任务、OpenTelemetry、Prometheus/Grafana 观测，以及数据导出与备份恢复能力。
+面向中文行业研究的企业单机演示环境。默认 Docker 部署以 PostgreSQL、Redis Worker、Milvus、Keycloak OIDC、ClamAV、OpenTelemetry、Prometheus 和 Grafana 组成一条受权限约束、可恢复、可审计的研究链路；它用于复现企业能力，不等同于多副本、高可用生产集群。
+
+系统以 LangGraph 编排多个具备独立职责、工具权限和结构化交接物的研究 Agent，并以来源约束与 SSRF 防护降低不可核查结论风险。默认企业单机演示环境使用 PostgreSQL、Redis Worker、Milvus、Keycloak OIDC、MinIO 对象存储、ClamAV、OpenTelemetry、Prometheus/Grafana，提供工作空间权限、审计、隔离扫描、可恢复任务、数据导出与备份恢复能力。
 
 ## 多 Agent 协作边界
 
@@ -19,46 +21,24 @@
 
 执行过程通过 SSE 展示 Agent 启动、允许工具和交接记录；权限测试会拒绝规划 Agent 直接联网、网络调研 Agent 直接调用模型等越权调用。
 
-## 本地启动
+## 企业单机演示启动
 
-1. 复制 `.env.example` 为 `.env`，填写自己的 API 配置。`.env` 已被 Git 忽略，不能提交。
-2. 安装并启动 Docker Desktop。
-3. 在项目根目录运行：
+1. 复制 `.env.example` 为 `.env`，填写模型密钥，以及 `POSTGRES_PASSWORD`、`KEYCLOAK_DB_PASSWORD`、`KEYCLOAK_ADMIN_PASSWORD`、`MINIO_ROOT_PASSWORD` 和 `GRAFANA_ADMIN_PASSWORD`。这些值不得提交。
+2. 启动 Docker Desktop 后运行：
 
    ```powershell
    .\scripts\start.ps1
    ```
 
-   或直接运行：
+   或：
 
    ```powershell
    docker compose up -d --build --wait
    ```
 
-4. 打开 `http://localhost:8080`。
+3. 打开 `http://localhost:8080`，通过内置 Keycloak 登录；Grafana 位于 `http://localhost:3000`。
 
-仅 Web 服务绑定到 `127.0.0.1:8080`；后端、Milvus、etcd 和 MinIO 不暴露主机端口。数据保存在 Docker 命名卷中。
-
-停止服务：
-
-```powershell
-docker compose down
-```
-
-开发模式允许暴露 Milvus 端口：
-
-```powershell
-docker compose -f compose.yaml -f compose.dev.yaml up -d --build
-```
-
-默认 Compose 使用 Keycloak OIDC：页面先显示登录入口，用户可以登录、注册、退出并切换账号。`compose.demo.yaml` 才使用固定数据与本地开发身份；不要把开发身份模式用于需要账号隔离的演示。
-
-不配置外部 API 时可运行固定数据的演示模式。若主服务正在运行，先执行 `docker compose down` 释放 8080 端口：
-
-```powershell
-docker compose -f compose.yaml -f compose.demo.yaml up -d --build --wait
-```
-
+所有服务仅在 Docker 网络内互通，Web、Keycloak 与 Grafana 仅绑定本机回环地址。停止服务使用 `docker compose down`；不要使用 `down -v`，否则会删除演示数据卷。旧的 `compose.enterprise.yaml`、`compose.demo.yaml` 与 `compose.dev.yaml` 仅为兼容旧命令保留，不再改变运行拓扑。
 ## API 配置
 
 最小配置如下：
@@ -102,7 +82,7 @@ Python 依赖安装在项目内 `.venv`，不会写入系统 Python：
 前端位于 `frontend`，生产镜像会在构建时执行类型检查与 Vite 打包。
 
 
-## 本地 RAG 评测与观测
+## 检索评测与观测
 
 `eval/frozen_cases.json` 只验证研究流程、路由和来源数量目标，`source_target_rate` 不是检索召回率。仓库包含一套冻结的内部回归语料：14 份资料、16 个问题，并为每个问题人工标注 `relevant_documents`。运行以下命令可在同一索引上对照单向量基线和当前 BM25 + 向量融合：
 
@@ -120,7 +100,7 @@ Python 依赖安装在项目内 `.venv`，不会写入系统 Python：
 backend/
 ├── api/              # FastAPI 路由、SSE 和应用入口
 ├── commands/         # CLI 命令
-├── core/             # 配置、SQLite、日志与网络安全
+├── core/             # 配置、认证、数据库、观测与网络安全
 ├── domain/           # 请求、响应和工作流数据模型
 ├── infrastructure/   # 模型搜索提供方、Milvus 与演示数据
 ├── research/         # 意图路由、证据规则和 LangGraph 编排
@@ -167,15 +147,15 @@ docker compose exec -T backend python -m backend.commands.cli --base-url http://
 
 它在固定资料上输出路由正确率、来源数、引用检查、时延与 Token 基线到 `.cache/eval/`，不代表真实行业研究质量。
 
-## 企业演示版
+## 企业单机演示环境
 
-企业演示使用独立覆盖文件启动：
+企业单机演示环境使用默认 Compose 启动：
 
 ```powershell
-docker compose -f compose.yaml -f compose.enterprise.yaml up -d --build --wait
+docker compose up -d --build --wait
 ```
 
-该配置增加 PostgreSQL、Redis Worker、OpenTelemetry Collector、Prometheus 和 Grafana；Keycloak 由默认 Compose 提供。后端只接受 OIDC JWT；浏览器提供的 `X-User-ID` 不作为生产身份。工作空间成员角色为 admin、researcher、viewer，审计日志不记录研究正文、来源地址或密钥。
+默认编排直接包含 PostgreSQL、Redis Worker、OpenTelemetry Collector、Prometheus、Grafana、Keycloak 与 MinIO；不再存在功能较低的本地运行拓扑。后端只接受 OIDC JWT；浏览器提供的 `X-User-ID` 不作为生产身份。工作空间成员角色为 admin、researcher、viewer，审计日志不记录研究正文、来源地址或密钥。
 
 当前 Compose 适合单机演示；运行、备份和恢复说明见 [docs/operations.md](docs/operations.md)。
 使用下面的命令执行不涉及模型调用的集成冒烟检查。它会验证 Web、Keycloak OIDC 发现、PostgreSQL 迁移版本、Redis、Worker、后端 `/readyz` 和 OpenTelemetry Collector 的连通性：
@@ -184,26 +164,26 @@ docker compose -f compose.yaml -f compose.enterprise.yaml up -d --build --wait
 .\scripts\smoke-enterprise.ps1
 ```
 
-首次启用企业版时，Keycloak 的 `keycloak-data` 命名卷会保存本机注册账号和管理台改动；不要用 `docker compose down -v` 停止演示环境。
+首次启用企业单机演示环境时，Keycloak 的 `keycloak-data` 命名卷会保存本机注册账号和管理台改动；不要用 `docker compose down -v` 停止演示环境。
 Grafana 仅映射到 `http://localhost:3000`，使用 `.env` 的 `GRAFANA_ADMIN_PASSWORD` 登录；Prometheus 数据源会在启动时自动连接到容器内的 Prometheus。
 
 ## 企业演示验证
 
-企业版使用 Keycloak、PostgreSQL、Redis Worker、Milvus、Prometheus、Grafana 与 ClamAV。启动后打开 `http://localhost:8080` 登录；监控面板在 `http://localhost:3000` 的 **Dashboards → DeepResearch**。Grafana 仅监听本机。
+企业单机演示环境使用 Keycloak、PostgreSQL、Redis Worker、Milvus、Prometheus、Grafana 与 ClamAV。启动后打开 `http://localhost:8080` 登录；监控面板在 `http://localhost:3000` 的 **Dashboards → DeepResearch**。Grafana 仅监听本机。
 
 ```powershell
 .\scripts\smoke-enterprise.ps1
 ```
 
-资料上传在企业版会先经 ClamAV 扫描；扫描服务不可用时上传会被拒绝。连续会话中的每条历史研究都有“查看来源 N”入口，可切换并查看该次研究保存的引用与本地资料来源。
+资料上传在企业单机演示环境会先经 ClamAV 扫描；扫描服务不可用时上传会被拒绝。连续会话中的每条历史研究都有“查看来源 N”入口，可切换并查看该次研究保存的引用与本地资料来源。
 
 `migrate` 是一次性 Alembic 迁移任务，显示 `Exited (0)` 表示成功完成，应保留；不要执行 `docker compose down -v`，否则会删除本机演示数据卷。
 
 ## 企业演示强化说明
 
-企业版上传资料时先写入 `/data/quarantine`，再交由 ClamAV 扫描。只有 `ready` 状态的资料可检索、用于研究或导出：`scanning` 表示正在扫描，`indexing` 表示已通过扫描且正在建立索引，`quarantined` 表示扫描拒绝，`scan_failed` 表示扫描服务不可用。后两种状态保留最少的文件记录和错误说明，不能通过重建索引绕过扫描；管理员删除后会同时删除隔离文件，并写入不含正文的审计记录。
+企业单机演示环境上传资料时先写入 `/data/quarantine`，再交由 ClamAV 扫描。只有 `ready` 状态的资料可检索、用于研究或导出：`scanning` 表示正在扫描，`indexing` 表示已通过扫描且正在建立索引，`quarantined` 表示扫描拒绝，`scan_failed` 表示扫描服务不可用。后两种状态保留最少的文件记录和错误说明，不能通过重建索引绕过扫描；管理员删除后会同时删除隔离文件，并写入不含正文的审计记录。
 
-研究与资料索引均有持久化状态。企业版研究任务由 Redis Worker 消费，每次尝试使用固定的队列任务编号；重复恢复不会并行执行同一研究。点击停止会先将研究持久化为 `cancelled`，再向 Worker 发送中止信号，因此排队任务和已开始的任务都会停止，晚到的 Worker 也不能重新领取它。Worker 每 10 秒更新一次心跳；只有连续 45 秒未更新的运行中任务才会被标记为中断并从检查点重新入队。资料索引在 API 或 Worker 重启后会重新入队，已通过扫描的原始文件不会因进程内任务丢失而被视为可检索。任务、指标和追踪不使用用户、工作空间、主题、文件名、来源 URL 或错误正文作为 Prometheus 标签或 OpenTelemetry 属性。
+研究与资料索引均有持久化状态。企业单机演示环境研究任务由 Redis Worker 消费，每次尝试使用固定的队列任务编号；重复恢复不会并行执行同一研究。点击停止会先将研究持久化为 `cancelled`，再向 Worker 发送中止信号，因此排队任务和已开始的任务都会停止，晚到的 Worker 也不能重新领取它。Worker 每 10 秒更新一次心跳；只有连续 45 秒未更新的运行中任务才会被标记为中断并从检查点重新入队。资料索引在 API 或 Worker 重启后会重新入队，已通过扫描的原始文件不会因进程内任务丢失而被视为可检索。任务、指标和追踪不使用用户、工作空间、主题、文件名、来源 URL 或错误正文作为 Prometheus 标签或 OpenTelemetry 属性。
 
 Grafana 自动配置六个全局匿名面板：API/Worker 可用性、队列深度、任务成功率、失败类别、节点 P95 时延和 Token 消耗。刚重建容器且尚未运行研究时，计数器为零；运行一次研究后 Prometheus 的 15 秒抓取周期内会出现数据。
 

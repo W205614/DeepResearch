@@ -1,4 +1,4 @@
-# DeepResearch 企业演示版运维说明
+# DeepResearch 企业单机演示环境运维说明
 
 ## 边界
 
@@ -7,7 +7,7 @@
 ## 启动与检查
 
 1. 从 `.env.example` 创建 `.env`，为企业演示设置 OIDC、数据库和模型配置。
-2. 启动企业编排：`docker compose -f compose.yaml -f compose.enterprise.yaml up -d --build --wait`。
+2. 启动默认企业编排：`docker compose up -d --build --wait`。
 3. 执行 `.\scripts\smoke-enterprise.ps1`。该检查不会调用模型或搜索服务，会验证 Web、Keycloak OIDC、Alembic、Redis、`/readyz`、Worker 指标、Prometheus、Grafana 与 OTel Collector。
 4. 首次登录会创建个人工作空间管理员。管理员可管理成员、审计、导出和删除；researcher 可研究与上传；viewer 只读。
 5. `migrate` 显示 `Exited (0)` 表示 Alembic 已成功完成，必须保留。停止服务使用 `docker compose down`，不要使用 `down -v`，否则会删除本机账号与研究数据。
@@ -20,7 +20,7 @@
 
 - 在停止演示服务后运行 `scripts/backup.ps1`。它导出 PostgreSQL SQL、研究附件、Milvus、Redis、Keycloak 和 Grafana 卷，并写入 SHA-256 清单。
 - 先在隔离环境验证备份，再使用 `scripts/restore.ps1 -Input <备份目录> -ReplaceVolumes` 恢复。该参数是显式确认，会替换当前 DeepResearch 命名卷。
-- 恢复后启动企业编排并运行 `scripts/smoke-enterprise.ps1`。每季度至少演练一次恢复。
+- 恢复后启动默认企业编排并运行 `scripts/smoke-enterprise.ps1`。每季度至少演练一次恢复。
 - 发布前执行迁移；应用回滚可回退镜像。数据库回滚只在该迁移明确提供 downgrade 且已验证时进行。
 
 ## 容量与告警起点

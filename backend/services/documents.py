@@ -2,7 +2,6 @@ import asyncio
 import hashlib
 import io
 import json
-import os
 import re
 import time
 import zipfile
@@ -16,6 +15,7 @@ from ..core.clamav import ScanRejected, ScanUnavailable, scan
 from ..core.db import Database, now, uid
 from ..core.metrics import RAG_RETRIEVAL_SECONDS
 from ..infrastructure.providers import ServiceError
+from ..infrastructure.object_store import ObjectStore
 
 
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
@@ -181,10 +181,11 @@ class Documents:
     def __init__(self, settings, db: Database, providers, vectors):
         self.settings, self.db, self.providers, self.vectors = settings, db, providers, vectors
         self.gate = asyncio.Semaphore(1)
+        self.store = ObjectStore(settings)
         self._corpora: dict[str, tuple[str, list[dict], dict[str, dict], BM25Okapi]] = {}
 
-    def _path(self, directory: str, doc_id: str) -> Path:
-        return self.settings.data_dir / directory / doc_id
+    async def start(self) -> None:
+        await self.store.start()
 
     async def add(self, user: str, name: str, content: bytes):
         name = Path(name.replace("\\", "/")).name[:160]
@@ -201,8 +202,7 @@ class Documents:
         else:
             await self.db.execute("INSERT INTO documents(id,user_id,name,hash,status,created_at) VALUES(?,?,?,?,?,?)",
                                   (doc_id, user, name, digest, "scanning", now()))
-        quarantine = self._path("quarantine", doc_id)
-        await asyncio.to_thread(quarantine.write_bytes, content)
+        await self.store.put("quarantine", doc_id, content)
         try:
             await scan(self.settings, content)
         except ScanRejected as exc:
@@ -213,8 +213,7 @@ class Documents:
             await self.db.execute("UPDATE documents SET status='scan_failed',error=? WHERE id=?", (str(exc), doc_id))
             exc.document_id = doc_id
             raise
-        target = self._path("uploads", doc_id)
-        await asyncio.to_thread(os.replace, quarantine, target)
+        await self.store.move("quarantine", "uploads", doc_id)
         await self.invalidate_search_cache(user)
         await self.db.execute("UPDATE documents SET status='indexing',error='' WHERE id=?", (doc_id,))
         return await self.db.one("SELECT * FROM documents WHERE id=?", (doc_id,))
@@ -254,10 +253,7 @@ class Documents:
             return
         async with self.gate:
             try:
-                path = self._path("uploads", doc_id)
-                if not path.is_file():
-                    raise ServiceError("原始上传文件不存在，无法建立索引")
-                content = await asyncio.to_thread(path.read_bytes)
+                content = await self.store.get("uploads", doc_id)
                 chunks = await self.split_for_index(document["name"], content)
                 vectors = await self.providers.embed([part["text"] for part in chunks])
                 rows = [dict(part, id=hashlib.sha256(f"{doc_id}:{i}".encode()).hexdigest()[:32],
@@ -389,9 +385,7 @@ class Documents:
         await self.db.execute("UPDATE documents SET status='deleted' WHERE id=? AND user_id=?", (doc_id, user))
         await self.db.execute("DELETE FROM chunks WHERE document_id=? AND user_id=?", (doc_id, user))
         for directory in ("uploads", "quarantine"):
-            path = self._path(directory, doc_id)
-            if path.is_file():
-                await asyncio.to_thread(path.unlink)
+            await self.store.delete(directory, doc_id)
         await self.vectors.delete("documents", user, "document_id", doc_id)
 
     async def reindex(self, doc_id: str, user: str):
@@ -400,8 +394,7 @@ class Documents:
             raise LookupError("资料不存在")
         if document["status"] not in {"ready", "failed"}:
             raise ServiceError("资料当前不可重建索引；隔离或扫描失败的文件不能进入资料库")
-        path = self._path("uploads", doc_id)
-        if not path.is_file():
+        if not await self.store.exists("uploads", doc_id):
             raise ServiceError("原始上传文件不存在，无法重建索引")
         await self.db.execute("UPDATE documents SET status='indexing',error='' WHERE id=?", (doc_id,))
         return await self.db.one("SELECT * FROM documents WHERE id=?", (doc_id,))
