@@ -144,7 +144,7 @@ async def test_oidc_mode_exposes_issuer_but_refuses_development_auto_login(tmp_p
     from backend.core.config import Settings
 
     settings = Settings(
-        _env_file=None, demo_mode=True, data_dir=tmp_path, auth_mode="oidc",
+        _env_file=None, demo_mode=True, data_dir=tmp_path, auth_mode="oidc", queue_backend="local", document_scan_mode="disabled",
         oidc_issuer="http://localhost:8180/realms/deepresearch",
         oidc_jwks_url="http://keycloak:8080/realms/deepresearch/protocol/openid-connect/certs",
     )

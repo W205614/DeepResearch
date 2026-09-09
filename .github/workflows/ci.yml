@@ -25,9 +25,15 @@ jobs:
         working-directory: frontend
   compose-smoke:
     runs-on: ubuntu-latest
+    env:
+      POSTGRES_PASSWORD: ci-postgres-password
+      KEYCLOAK_DB_PASSWORD: ci-keycloak-db-password
+      KEYCLOAK_ADMIN_PASSWORD: ci-keycloak-admin-password
+      MINIO_ROOT_PASSWORD: ci-minio-password
+      GRAFANA_ADMIN_PASSWORD: ci-grafana-password
     steps:
       - uses: actions/checkout@v7
-      - run: POSTGRES_PASSWORD=ci-postgres-password KEYCLOAK_DB_PASSWORD=ci-keycloak-db-password KEYCLOAK_ADMIN_PASSWORD=ci-keycloak-admin-password MINIO_ROOT_PASSWORD=ci-minio-password GRAFANA_ADMIN_PASSWORD=ci-grafana-password docker compose up -d --build --wait --wait-timeout 300
+      - run: docker compose up -d --build --wait --wait-timeout 300
       - run: curl --fail --retry 15 --retry-connrefused http://127.0.0.1:8080/livez
       - if: always()
         run: docker compose logs --no-color && docker compose down -v
