@@ -1,6 +1,5 @@
 import asyncio
 import json
-import httpx
 from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, File, Header, HTTPException, Request, UploadFile
@@ -12,7 +11,8 @@ from ..core.auth import TokenVerifier
 from ..core.db import now, uid
 from ..domain.models import DocumentSearchRequest, MemoryRequest, RunRequest, ThreadRequest
 from ..core.observability import configure_telemetry
-from ..core.metrics import ALERT_DELIVERIES
+from ..core.metrics import ALERT_DELIVERIES, ALERT_SUPPRESSED
+from ..core.alerts import AlertRelay, deliver_with_retry, format_alert_message, post_alert
 from ..domain.models import MembershipRequest, WorkspaceLimitRequest, WorkspaceRequest
 from ..infrastructure.providers import ServiceError
 from ..services.runtime import ConflictError, Runtime, TERMINAL
@@ -33,6 +33,8 @@ def create_app(settings: Settings | None = None):
     app = FastAPI(title="DeepResearch", version="0.1.0", lifespan=lifespan)
 
     app.state.token_verifier = TokenVerifier(settings)
+    app.state.alert_relay = AlertRelay()
+    app.state.alert_sender = post_alert
     configure_telemetry(app, settings.otel_exporter_otlp_endpoint)
     app.mount("/metrics", make_asgi_app())
     def rt(request: Request) -> Runtime:
@@ -82,21 +84,22 @@ def create_app(settings: Settings | None = None):
 
     @app.post("/internal/alerts")
     async def forward_alert(payload: dict):
+        events = app.state.alert_relay.pending(payload)
+        if not events:
+            ALERT_SUPPRESSED.inc()
+            return {"delivered": False, "reason": "deduplicated"}
         webhook = settings.feishu_webhook_url.get_secret_value()
         if not webhook:
             ALERT_DELIVERIES.labels("disabled").inc()
             return {"delivered": False, "reason": "not_configured"}
-        alerts = payload.get("alerts", [])
-        summary = "; ".join(str(a.get("annotations", {}).get("summary", a.get("labels", {}).get("alertname", "alert"))) for a in alerts)[:1500]
         try:
-            async with httpx.AsyncClient(timeout=8) as client:
-                response = await client.post(webhook, json={"msg_type":"text","content":{"text":"DeepResearch Alert: " + summary}})
-                response.raise_for_status()
+            await deliver_with_retry(app.state.alert_sender, webhook, format_alert_message(events))
         except httpx.HTTPError as exc:
             ALERT_DELIVERIES.labels("failed").inc()
             raise HTTPException(502, "alert delivery failed") from exc
+        app.state.alert_relay.mark_delivered(events)
         ALERT_DELIVERIES.labels("succeeded").inc()
-        return {"delivered": True, "count": len(alerts)}
+        return {"delivered": True, "count": len(events), "statuses": sorted({event["status"] for event in events})}
     @app.get("/healthz")
     async def health():
         return {"status": "ok"}
