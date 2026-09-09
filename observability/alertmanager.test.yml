@@ -1,0 +1,13 @@
+global:
+  resolve_timeout: 30s
+route:
+  receiver: deepresearch-internal
+  group_by: [alertname, severity]
+  group_wait: 1s
+  group_interval: 1s
+  repeat_interval: 1h
+receivers:
+  - name: deepresearch-internal
+    webhook_configs:
+      - url: http://backend:8000/internal/alerts
+        send_resolved: true

@@ -1,0 +1,14 @@
+services:
+  backend:
+    environment:
+      FEISHU_WEBHOOK_URL: http://webhook-recorder:8090/webhook
+  alertmanager:
+    volumes:
+      - ./observability/alertmanager.test.yml:/etc/alertmanager/alertmanager.yml:ro
+  webhook-recorder:
+    image: python:3.13-alpine
+    command: ["python", "/app/mock_webhook.py"]
+    volumes:
+      - ./scripts/mock_webhook.py:/app/mock_webhook.py:ro
+    ports: ["127.0.0.1:18090:8090"]
+    restart: "no"

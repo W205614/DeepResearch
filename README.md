@@ -171,6 +171,16 @@ docker compose exec -T backend python -m backend.commands.cli --base-url http://
 ```
 
 它在固定资料上输出路由正确率、来源数、引用检查、时延与 Token 基线到 `.cache/eval/`，不代表真实行业研究质量。
+### 最终回答质量门禁
+
+`eval/answer_quality_cases.json` 是脱敏、版本化的最终回答黄金集，不复用检索 Recall 或离线路由分数。它覆盖单/多来源引用、无资料拒答、资料冲突、禁止编造和推断边界。每条关键安全、拒答和冲突题必须通过；全部 7 题至少通过 85%。门禁使用当前配置的真实模型并强制 `temperature=0`，只保存题号、通过状态、结构性失败原因和统计，不保存模型回答正文、来源片段或密钥。
+
+```powershell
+# 要求 .env 中已有 LLM_API_KEY；缺失密钥会失败，而不是跳过。
+.\.venv\Scripts\python.exe .\scripts\evaluate_answers.py
+```
+
+GitHub Actions 的 **Answer Quality Gate** 从仓库 Secret 读取 `LLM_API_KEY`、可选 `LLM_MODEL_ID` 和 `LLM_BASE_URL`。在分支保护中将该检查设为 Required 后，未配置密钥或质量退化都会阻断合并。
 
 ## 企业单机演示环境
 
@@ -225,6 +235,8 @@ Grafana 自动配置六个全局匿名面板：API/Worker 可用性、队列深�
 ```powershell
 .\scripts\backup.ps1
 .\scripts\restore.ps1 -Input .cache\backup\deepresearch-时间戳 -ReplaceVolumes
+# 安装本机每日 02:00 备份与最近 7 份保留（首次需手动执行）
+.\scripts\install-backup-task.ps1
 ```
 
 恢复会替换当前项目的命名卷，完成后重新启动企业 Compose 并运行企业冒烟检查。不要将备份文件、`.env` 或密钥提交到 Git。
@@ -233,7 +245,7 @@ Grafana 自动配置六个全局匿名面板：API/Worker 可用性、队列深�
 
 ## 死信、追踪与告警
 
-最终失败的研究任务会进入 PostgreSQL 死信表；管理员可在网页的“工作台设置 → 死信任务治理”查看不含研究正文的失败摘要，并从检查点恢复。API 仍提供 GET /api/workspaces/{workspace_id}/dead-letters 和 POST /api/workspaces/{workspace_id}/dead-letters/{run_id}/recover，恢复动作写入审计日志。运行日志为 JSON，包含稳定错误类别、任务短 ID 与 OpenTelemetry Trace ID，但不写入研究正文、URL 或密钥。Prometheus 内置队列积压、死信和失败率三条告警规则，Prometheus 会发送到 Compose 内部的 Alertmanager，再由后端内部入口转换为飞书群机器人文本消息；`deepresearch_alert_deliveries_total{result="succeeded|failed|disabled"}` 可审计投递结果。`.env` 中可选的 `FEISHU_WEBHOOK_URL` 留空即禁用外发；它只应写入被忽略的本机 `.env`，不要放入 README、截图、提交或工单。Alertmanager 的验证可向 `http://localhost:9093/api/v2/alerts` 提交一条临时告警，随后检查飞书群是否收到“DeepResearch Alert”消息。
+最终失败的研究任务会进入 PostgreSQL 死信表；管理员可在网页的“工作台设置 → 死信任务治理”查看不含研究正文的失败摘要，并从检查点恢复。API 仍提供 GET /api/workspaces/{workspace_id}/dead-letters 和 POST /api/workspaces/{workspace_id}/dead-letters/{run_id}/recover，恢复动作写入审计日志。运行日志为 JSON，包含稳定错误类别、任务短 ID 与 OpenTelemetry Trace ID，但不写入研究正文、URL 或密钥。Prometheus 内置队列积压、死信和失败率三条告警规则，Prometheus 会发送到 Compose 内部的 Alertmanager，再由后端内部入口转换为飞书群机器人文本消息。应用层对同一告警状态去重、对短暂 Webhook 错误最多重试两次，并保留已恢复事件；`deepresearch_alert_deliveries_total{result="succeeded|failed|disabled"}` 与 `deepresearch_alert_suppressed_total` 可审计投递与去重结果。`.env` 中可选的 `FEISHU_WEBHOOK_URL` 留空即禁用外发；它只应写入被忽略的本机 `.env`，不要放入 README、截图、提交或工单。Alertmanager 的验证可向 `http://localhost:9093/api/v2/alerts` 提交一条临时告警，随后检查飞书群是否收到“DeepResearch Alert”消息。
 
 ## 持久化日志、追踪与浏览器回归
 
@@ -290,4 +302,11 @@ npm run test:e2e:enterprise
 因此简历或面试应表述为“完成企业单机演示基线及可恢复、可观测、权限闭环验证”，不要表述为“已上线高可用生产集群”或“达到 SLA”。
 ## 压测与故障演练
 
-运行 docker run --rm -i -e BASE_URL=http://host.docker.internal:8080 grafana/k6 run - < scripts/load-health.js 可对健康端点执行默认 10 VU、30 秒并发压测，并校验错误率低于 1%、P95 低于 500 ms；这是本机环境基线，不是 SLA。运行 scripts/drill-dependency-recovery.ps1 会短暂停止 Milvus，确认就绪检查拒绝流量，再恢复依赖、后端与 Worker 并执行企业冒烟。死信表会按 timeout、network、source_blocked、provider_configuration、model_response 等稳定类别记录最终失败。
+`load-health.js` 只用于连通性；业务读链路应使用真实 OIDC Bearer Token 运行 `load-authenticated-read.js`：
+
+```powershell
+# 令牌只保存在当前 shell；默认 10 VU、5 分钟，错误率 <1%、P95 <2 秒。
+docker run --rm -i -e BASE_URL=http://host.docker.internal:8080 -e AUTHORIZATION="Bearer <OIDC token>" grafana/k6 run - < scripts/load-authenticated-read.js
+```
+
+这只是本机、固定数据和读接口的容量基线，不是 SLA。`scripts/drill-dependency-recovery.ps1` 会短暂停止 Milvus；`scripts/drill-worker-restart.ps1` 会重启 Worker 并执行企业冒烟。使用本地告警接收器演练时，运行 `docker compose -f compose.yaml -f compose.test.yaml up -d --build --wait` 后执行 `python scripts/drill-alert-relay.py`；它不会向真实飞书群发消息。死信表会按 timeout、network、source_blocked、provider_configuration、model_response 等稳定类别记录最终失败。
