@@ -16,7 +16,7 @@ from backend.services.runtime import Runtime
 
 async def main_async(args):
     cases = json.loads(Path(args.cases).read_text(encoding="utf-8"))
-    settings = Settings(_env_file=None, demo_mode=True, data_dir=Path(args.output).parent / "eval-data")
+    settings = Settings(_env_file=None, demo_mode=True, data_dir=Path(args.output).parent / "eval-data", queue_backend="local", document_scan_mode="disabled", object_store_backend="filesystem")
     runtime = await Runtime(settings).start()
     results = []
     try:
