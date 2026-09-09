@@ -1,13 +1,21 @@
 """Deterministic checks for redacted, real-model answer-quality evaluations."""
 from __future__ import annotations
 
-from backend.domain.models import ReportDraft
+from pydantic import BaseModel, Field
+
+from backend.domain.models import Claim
 
 
-def evaluate_draft(case: dict, draft: ReportDraft) -> dict:
+class QualityDraft(BaseModel):
+    """Minimal real-model contract: claims, source IDs, and explicit limitations."""
+    claims: list[Claim] = Field(default_factory=list, max_length=8)
+    limitations: list[str] = Field(default_factory=list, max_length=8)
+
+
+def evaluate_draft(case: dict, draft: QualityDraft) -> dict:
     """Return a content-free verdict; raw model answers are never persisted by the gate."""
-    claims = [claim for section in draft.sections for claim in section.claims]
-    rendered = "\n".join([draft.title, *[claim.text for claim in claims], *draft.limitations]).lower()
+    claims = draft.claims
+    rendered = "\n".join([*[claim.text for claim in claims], *draft.limitations]).lower()
     allowed_sources = {source["id"] for source in case["evidence"]}
     failures: list[str] = []
     if any(source_id not in allowed_sources for claim in claims for source_id in claim.source_ids):
@@ -16,13 +24,16 @@ def evaluate_draft(case: dict, draft: ReportDraft) -> dict:
         if term.lower() not in rendered:
             failures.append("missing_required_term")
             break
+    alternatives = case.get("required_any_terms", [])
+    if alternatives and not any(term.lower() in rendered for term in alternatives):
+        failures.append("missing_required_alternative")
     for term in case.get("forbidden_terms", []):
         if term.lower() in rendered:
             failures.append("forbidden_term")
             break
     required_sources = set(case.get("required_source_ids", []))
     cited_sources = {source_id for claim in claims for source_id in claim.source_ids}
-    if not required_sources.issubset(cited_sources):
+    if not required_sources.issubset(cited_sources) and not (case.get("allow_refusal") and not claims):
         failures.append("missing_required_source")
     if case.get("must_refuse") and claims:
         failures.append("unsafe_claim_when_refusal_required")

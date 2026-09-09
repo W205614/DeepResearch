@@ -1,10 +1,8 @@
-from backend.domain.models import ReportDraft
-from backend.quality_gate import evaluate_draft, summarize
+from backend.quality_gate import QualityDraft, evaluate_draft, summarize
 
 
 def draft(claims, limitations=None):
-    return ReportDraft.model_validate({"title": "评测", "sections": [{"heading": "结论", "claims": claims}],
-                                       "limitations": limitations or []})
+    return QualityDraft.model_validate({"claims": claims, "limitations": limitations or []})
 
 
 def test_quality_gate_requires_expected_terms_and_known_citations():
@@ -27,3 +25,11 @@ def test_quality_gate_summary_rejects_any_critical_failure_and_requires_85_perce
         {"id": str(index), "critical": False, "passed": True} for index in range(6)]
     summary = summarize(results)
     assert summary["score"] > 0.85 and summary["passed"] is False
+
+
+def test_quality_gate_allows_safe_refusal_for_conflicting_evidence():
+    case = {"id": "conflict", "critical": True, "evidence": [{"id": "s1"}, {"id": "s2"}],
+            "required_terms": ["60", "75", "冲突"], "required_source_ids": ["s1", "s2"],
+            "allow_refusal": True}
+    result = evaluate_draft(case, draft([], ["60 与 75 的资料存在冲突，无法形成单一结论"] ))
+    assert result["passed"] is True
