@@ -4,12 +4,14 @@ from prometheus_client import start_http_server
 
 from .core.config import Settings
 from .core.observability import configure_telemetry, extract_trace_context, tracer
+from .core.metrics import initialize_run_terminal_metrics
 from .services.runtime import Runtime
 
 
 async def startup(ctx):
     settings = Settings()
     configure_telemetry(None, settings.otel_exporter_otlp_endpoint, service_name="deepresearch-worker")
+    initialize_run_terminal_metrics()
     start_http_server(8001)
     runtime = await Runtime(settings, worker_mode=True).start()
     ctx["runtime"] = runtime

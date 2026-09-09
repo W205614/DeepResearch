@@ -1,6 +1,7 @@
 from prometheus_client import generate_latest
 
 from backend.core.db import uid
+from backend.core.metrics import RUN_TERMINAL_STATUSES, initialize_run_terminal_metrics
 
 
 async def test_worker_metrics_expose_anonymous_run_node_and_token_series(api_client):
@@ -13,3 +14,8 @@ async def test_worker_metrics_expose_anonymous_run_node_and_token_series(api_cli
     assert "deepresearch_llm_calls_total" in metrics
     assert 'deepresearch_tokens_total{kind="prompt"}' in metrics
     assert "user_id" not in metrics and "topic" not in metrics
+def test_terminal_run_metrics_have_zero_baselines_before_work():
+    initialize_run_terminal_metrics()
+    metrics = generate_latest().decode("utf-8")
+    for status in RUN_TERMINAL_STATUSES:
+        assert f'deepresearch_runs_total{{status="{status}"}}' in metrics

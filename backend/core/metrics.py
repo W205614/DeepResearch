@@ -2,6 +2,13 @@
 from prometheus_client import Counter, Gauge, Histogram
 
 RUNS = Counter("deepresearch_runs_total", "Research runs by terminal state", ["status"])
+RUN_TERMINAL_STATUSES = ("completed", "insufficient", "failed")
+
+def initialize_run_terminal_metrics() -> None:
+    """Expose zero-valued terminal counters before the first completed job."""
+    for status in RUN_TERMINAL_STATUSES:
+        RUNS.labels(status=status)
+
 RUN_SECONDS = Histogram("deepresearch_run_duration_seconds", "Research task duration")
 NODE_SECONDS = Histogram("deepresearch_node_duration_seconds", "Graph node duration", ["node"])
 FAILURES = Counter("deepresearch_failures_total", "Stable task failure categories", ["category"])
