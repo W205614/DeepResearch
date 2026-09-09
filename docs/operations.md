@@ -18,7 +18,7 @@
 
 ## 备份、恢复与回滚
 
-- 在停止演示服务后运行 `scripts/backup.ps1`。它导出 PostgreSQL SQL、研究附件、Milvus、Redis、Keycloak 和 Grafana 卷，并写入 SHA-256 清单。
+- 在停止演示服务后运行 `scripts/backup.ps1`。它导出 PostgreSQL SQL，以及保存研究附件的 MinIO、Milvus、Redis、Keycloak 和 Grafana 卷，并写入 SHA-256 清单。
 - 先在隔离环境验证备份，再使用 `scripts/restore.ps1 -Input <备份目录> -ReplaceVolumes` 恢复。该参数是显式确认，会替换当前 DeepResearch 命名卷。
 - 恢复后启动默认企业编排并运行 `scripts/smoke-enterprise.ps1`。每季度至少演练一次恢复。
 - 发布前执行迁移；应用回滚可回退镜像。数据库回滚只在该迁移明确提供 downgrade 且已验证时进行。

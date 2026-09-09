@@ -48,6 +48,7 @@ class Settings(BaseSettings):
     auto_save_semantic_memory: bool = False
     data_dir: Path = Path("data")
     milvus_uri: str = "http://127.0.0.1:19530"
+    vector_collection_prefix: str = "dr"
     demo_mode: bool = False
     max_reflection_rounds: int = Field(2, ge=0, le=5)
     max_search_calls: int = Field(12, ge=1, le=30)

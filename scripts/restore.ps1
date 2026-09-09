@@ -14,7 +14,7 @@ foreach ($file in $manifest.files) {
   if (-not (Test-Path $path) -or (Get-FileHash $path -Algorithm SHA256).Hash -ne $file.sha256) { throw "Backup checksum failed: $($file.name)" }
 }
 $compose = @()
-$volumeNames = @('research-data', 'milvus-data', 'etcd-data', 'minio-data', 'redis-data', 'keycloak-data', 'grafana-data')
+$volumeNames = @('milvus-data', 'etcd-data', 'minio-data', 'redis-data', 'keycloak-data', 'grafana-data')
 
 function Invoke-Compose {
   param([Parameter(ValueFromRemainingArguments = $true)][string[]]$Arguments)

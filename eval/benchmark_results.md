@@ -35,8 +35,9 @@
 # 离线回归，不调用外部嵌入服务
 .\\.venv\\Scripts\\python.exe .\\scripts\\evaluate_retrieval.py --demo --corpus .\\eval\\local_retrieval_corpus.json --cases .\\eval\\local_retrieval_cases.json
 
-# 真实嵌入：需从能访问 Milvus 的 Docker 网络执行，或使用 compose.dev.yaml 暴露 19530 端口
-.\\.venv\\Scripts\\python.exe .\\scripts\\evaluate_retrieval.py --corpus .\\eval\\local_retrieval_corpus.json --cases .\\eval\\local_retrieval_cases.json
+# 真实嵌入：只在 Docker 私有网络执行；状态使用临时 SQLite，Milvus 使用并在结束后删除 dr_eval_* 集合
+$workspace = (Get-Location).Path
+docker compose run --rm --no-deps -v "${workspace}:/workspace:ro" backend python /workspace/scripts/evaluate_retrieval.py --corpus /workspace/eval/local_retrieval_corpus.json --cases /workspace/eval/local_retrieval_cases.json --output /tmp/retrieval-result.json
 ```
 
 要得到“回答准确率”，需要另建问题、参考答案和证据标注集，并由人工或双盲判定答案事实正确性、完整性和引用支撑；本评测不会用检索指标替代它。

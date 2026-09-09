@@ -11,6 +11,7 @@ import math
 import statistics
 import sys
 import time
+import uuid
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -89,8 +90,11 @@ async def main_async(args):
     data_dir = output.parent / "retrieval-eval-data"
     if data_dir.exists():
         raise ValueError(f"评测数据目录已存在：{data_dir}；请更换 --output 或手动确认后清理")
-    settings = (Settings(_env_file=None, demo_mode=True, data_dir=data_dir) if args.demo
-                else Settings(demo_mode=False, data_dir=data_dir))
+    settings = (Settings(_env_file=None, demo_mode=True, data_dir=data_dir, database_url='',
+                         queue_backend='local', object_store_backend='filesystem', document_scan_mode='disabled')
+                if args.demo else Settings(demo_mode=False, data_dir=data_dir, database_url='', queue_backend='local',
+                                               object_store_backend='filesystem', document_scan_mode='disabled',
+                                               vector_collection_prefix=f"dr_eval_{uuid.uuid4().hex[:12]}"))
     if not args.demo and settings.missing():
         raise ValueError("真实评测缺少配置：" + "、".join(settings.missing()))
     runtime = await Runtime(settings).start()
@@ -122,7 +126,11 @@ async def main_async(args):
             row.update({f"hybrid_{key}": value for key, value in metrics(hybrid, expected, args.cutoffs).items()})
             rows.append(row)
     finally:
-        await runtime.close()
+        try:
+            if not args.demo:
+                await runtime.vectors.drop_collections()
+        finally:
+            await runtime.close()
     baseline, optimized = aggregate(rows, "vector", args.cutoffs), aggregate(rows, "hybrid", args.cutoffs)
     comparable = [f"recall_at_{k}" for k in args.cutoffs] + [f"precision_at_{k}" for k in args.cutoffs] + [
         f"ndcg_at_{k}" for k in args.cutoffs] + ["mrr_at_max_k"]

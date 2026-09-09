@@ -33,7 +33,7 @@ class VectorIndex:
 
     def ensure(self, kind: str):
         client = self.client()
-        name = f"dr_{kind}"
+        name = f"{self.settings.vector_collection_prefix}_{kind}"
         with self._lock:
             if name not in self._ready:
                 if not client.has_collection(name):
@@ -115,6 +115,18 @@ class VectorIndex:
             # SQL tombstones are checked after vector retrieval; an orphan is never returned.
             raise ServiceError("资料已停止参与检索，但向量清理失败；可再次执行删除重试") from None
 
+    async def drop_collections(self):
+        """Remove only this index instance's named collections (evaluation cleanup)."""
+        if self.settings.demo_mode or not self._ready:
+            return
+        names = tuple(self._ready)
+        def operation():
+            client = self.client()
+            for name in names:
+                if client.has_collection(name):
+                    client.drop_collection(name)
+        await asyncio.to_thread(operation)
+        self._ready.clear()
     async def close(self):
         if self._client:
             await asyncio.to_thread(self._client.close)

@@ -87,10 +87,19 @@ Python 依赖安装在项目内 `.venv`，不会写入系统 Python：
 `eval/frozen_cases.json` 只验证研究流程、路由和来源数量目标，`source_target_rate` 不是检索召回率。仓库包含一套冻结的内部回归语料：14 份资料、16 个问题，并为每个问题人工标注 `relevant_documents`。运行以下命令可在同一索引上对照单向量基线和当前 BM25 + 向量融合：
 
 ```powershell
-.\.venv\Scripts\python.exe .\scripts\evaluate_retrieval.py --corpus .\eval\local_retrieval_corpus.json --cases .\eval\local_retrieval_cases.json
+# 真实嵌入只在 Docker 私有网络中执行；使用临时 SQLite 状态和自动清理的 dr_eval_* Milvus 集合
+$workspace = (Get-Location).Path
+docker compose run --rm --no-deps -v "${workspace}:/workspace:ro" backend python /workspace/scripts/evaluate_retrieval.py --corpus /workspace/eval/local_retrieval_corpus.json --cases /workspace/eval/local_retrieval_cases.json --output /tmp/retrieval-result.json
 ```
 
 最新真实嵌入测量与边界见 [eval/benchmark_results.md](eval/benchmark_results.md)。输出包含文档级 Recall、Precision、nDCG、MRR、冷/热查询时延和嵌入请求成本代理。它衡量资料检索，不代表最终答案正确率；答案质量仍需单独标注证据支撑、完整性和正确性。研究任务的 SSE 事件还会写入 `local_retrieval`，记录缓存、BM25、query embedding、向量搜索、融合和总耗时。当前界面并不流式返回模型 token，因此不能把这些数据称为模型 TTFT。
+
+### 可核验的作品集数据
+
+- 在 14 份冻结资料、16 个人工标注中文查询与真实 `text-embedding-3-large` 服务上，BM25 + 向量融合的 Recall@5 为 **1.0000**，单向量对照为 **0.9688**；nDCG@5 为 **0.9676**，对照为 **0.9446**。
+- 同一测试中，混合检索平均冷查询为 **1257.78 ms**；缓存命中后的平均热查询为 **94.87 ms**，热查询缓存命中率为 **100%**。
+
+以上为 2026-09-07 的项目自有检索回归结果，适合写成“固定语料检索评测”；不能写成通用数据集成绩、回答准确率或生产 SLA。
 
 ## 后端目录
 
@@ -181,7 +190,7 @@ Grafana 仅映射到 `http://localhost:3000`，使用 `.env` 的 `GRAFANA_ADMIN_
 
 ## 企业演示强化说明
 
-企业单机演示环境上传资料时先写入 `/data/quarantine`，再交由 ClamAV 扫描。只有 `ready` 状态的资料可检索、用于研究或导出：`scanning` 表示正在扫描，`indexing` 表示已通过扫描且正在建立索引，`quarantined` 表示扫描拒绝，`scan_failed` 表示扫描服务不可用。后两种状态保留最少的文件记录和错误说明，不能通过重建索引绕过扫描；管理员删除后会同时删除隔离文件，并写入不含正文的审计记录。
+企业单机演示环境将原始资料先写入 MinIO 的 `quarantine/<document-id>` 对象键，再交由 ClamAV 扫描；通过后原子移动至 `uploads/<document-id>`。只有 `ready` 状态的资料可检索、用于研究或导出：`scanning` 表示正在扫描，`indexing` 表示已通过扫描且正在建立索引，`quarantined` 表示扫描拒绝，`scan_failed` 表示扫描服务不可用。后两种状态保留最少的文件记录和错误说明，不能通过重建索引绕过扫描；管理员删除后会同时删除对应对象，并写入不含正文的审计记录。
 
 研究与资料索引均有持久化状态。企业单机演示环境研究任务由 Redis Worker 消费，每次尝试使用固定的队列任务编号；重复恢复不会并行执行同一研究。点击停止会先将研究持久化为 `cancelled`，再向 Worker 发送中止信号，因此排队任务和已开始的任务都会停止，晚到的 Worker 也不能重新领取它。Worker 每 10 秒更新一次心跳；只有连续 45 秒未更新的运行中任务才会被标记为中断并从检查点重新入队。资料索引在 API 或 Worker 重启后会重新入队，已通过扫描的原始文件不会因进程内任务丢失而被视为可检索。任务、指标和追踪不使用用户、工作空间、主题、文件名、来源 URL 或错误正文作为 Prometheus 标签或 OpenTelemetry 属性。
 
@@ -195,7 +204,7 @@ Grafana 自动配置六个全局匿名面板：API/Worker 可用性、队列深�
 
 它不会调用模型或联网搜索，检查 Web、OIDC、迁移、Redis、`/readyz`、Worker 指标、Prometheus 两个抓取目标、Grafana 与 OTel Collector。
 
-备份和恢复应在停止演示服务后执行。备份同时导出 PostgreSQL 逻辑 SQL 与研究附件、Milvus、Redis、Keycloak、Grafana 等命名卷，并生成 SHA-256 清单：
+备份和恢复应在停止演示服务后执行。备份同时导出 PostgreSQL 逻辑 SQL，以及保存资料原件的 MinIO、Milvus、Redis、Keycloak、Grafana 等命名卷，并生成 SHA-256 清单：
 
 ```powershell
 .\scripts\backup.ps1

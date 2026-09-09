@@ -162,7 +162,6 @@ services:
       timeout: 5s
       retries: 3
     environment: *runtime-environment
-    volumes: [research-data:/data]
     depends_on:
       postgres: { condition: service_healthy }
       redis: { condition: service_healthy }
@@ -237,7 +236,6 @@ services:
       - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
     restart: unless-stopped
 volumes:
-  research-data:
   etcd-data:
   minio-data:
   milvus-data:
