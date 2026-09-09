@@ -218,3 +218,7 @@ Grafana 自动配置六个全局匿名面板：API/Worker 可用性、队列深�
 ## 死信、追踪与告警
 
 最终失败的研究任务会进入 PostgreSQL 死信表，管理员可通过 GET /api/workspaces/{workspace_id}/dead-letters 查看，并以 POST /api/workspaces/{workspace_id}/dead-letters/{run_id}/recover 从检查点重新入队；恢复动作写入审计日志。运行日志为 JSON，包含稳定错误类别、任务短 ID 与 OpenTelemetry Trace ID，但不写入研究正文、URL 或密钥。Prometheus 内置队列积压、死信和失败率三条告警规则；scripts/probe_queue.py 可验证不调用模型的队列指标接线。告警规则需要在部署环境接入 Alertmanager、企业 webhook 或值班平台后才能实际通知。
+
+## 压测与故障演练
+
+运行 docker run --rm -i -e BASE_URL=http://host.docker.internal:8080 grafana/k6 run - < scripts/load-health.js 可对健康端点执行默认 10 VU、30 秒并发压测，并校验错误率低于 1%、P95 低于 500 ms；这是本机环境基线，不是 SLA。运行 scripts/drill-dependency-recovery.ps1 会短暂停止 Milvus，确认就绪检查拒绝流量，再恢复依赖、后端与 Worker 并执行企业冒烟。死信表会按 timeout、network、source_blocked、provider_configuration、model_response 等稳定类别记录最终失败。

@@ -334,26 +334,25 @@ class Runtime:
                 self.logger.warning("run=%s phase=cancelled status=%s", run_label(run_id), status)
         except TimeoutError:
             self.logger.error("run=%s phase=failed category=timeout", run_label(run_id))
-            await self.fail(run_id, "达到任务时限，已停止外部调用；可从检查点继续", "interrupted")
+            await self.fail(run_id, "达到任务时限，已停止外部调用；可从检查点继续", "interrupted", "timeout")
         except Exception as exc:
             FAILURES.labels(category=error_category(exc)).inc()
             RUNS.labels(status="failed").inc()
             RUN_SECONDS.observe(time.monotonic() - started)
             self.logger.error("run=%s phase=failed category=%s", run_label(run_id), error_category(exc))
-            await self.fail(run_id, str(exc) if isinstance(exc, ServiceError) else "研究执行失败，请检查服务配置或重试")
+            await self.fail(run_id, str(exc) if isinstance(exc, ServiceError) else "研究执行失败，请检查服务配置或重试", category=error_category(exc))
         finally:
             if heartbeat:
                 heartbeat.cancel()
                 await asyncio.gather(heartbeat, return_exceptions=True)
 
-    async def fail(self, run_id, message, status="failed"):
+    async def fail(self, run_id, message, status="failed", category="runtime_failure"):
         changed = await self.db.execute("UPDATE runs SET status=?,error=?,updated_at=? WHERE id=? AND status='running'",
                                         (status, message, now(), run_id))
         if changed:
             await self.db.event(run_id, "error", {"message": message, "status": status})
             if status == "failed":
                 run = await self.db.one("SELECT user_id FROM runs WHERE id=?", (run_id,))
-                category = "runtime_failure"
                 await self.db.execute("DELETE FROM dead_letter_runs WHERE run_id=?", (run_id,))
                 await self.db.execute("INSERT INTO dead_letter_runs(run_id,user_id,category,message,failed_at,recovered_at) VALUES(?,?,?,?,?,'' )", (run_id, run["user_id"], category, message[:240], now()))
                 DLQ_EVENTS.labels(action="created", category=category).inc()
@@ -364,12 +363,12 @@ class Runtime:
         return await self.db.rows("SELECT run_id,category,message,failed_at FROM dead_letter_runs WHERE user_id=? AND recovered_at='' ORDER BY failed_at DESC", (user,))
 
     async def recover_dead_letter(self, run_id, user):
-        row = await self.db.one("SELECT run_id FROM dead_letter_runs WHERE run_id=? AND user_id=? AND recovered_at=''", (run_id, user))
+        row = await self.db.one("SELECT run_id,category FROM dead_letter_runs WHERE run_id=? AND user_id=? AND recovered_at=''", (run_id, user))
         if not row:
             raise LookupError("死信任务不存在或已恢复")
         run = await self.resume(run_id, user)
         await self.db.execute("UPDATE dead_letter_runs SET recovered_at=? WHERE run_id=?", (now(), run_id))
-        DLQ_EVENTS.labels(action="recovered", category="runtime_failure").inc()
+        DLQ_EVENTS.labels(action="recovered", category=row.get("category", "runtime_failure")).inc()
         await self.refresh_dead_letter_depth()
         return run
 
