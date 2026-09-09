@@ -54,7 +54,8 @@ class Providers:
             except (ValueError, httpx.RemoteProtocolError):
                 raise ServiceError(f"{label} 返回了无法解析的响应") from None
 
-    async def structured(self, role: str, instruction: str, data: dict, schema: type[T], run_id: str) -> T:
+    async def structured(self, role: str, instruction: str, data: dict, schema: type[T], run_id: str,
+                         *, temperature: float | None = None) -> T:
         started = time.monotonic()
         self.logger.info("run=%s component=llm role=%s phase=start", run_label(run_id), role)
         if self.settings.demo_mode:
@@ -83,6 +84,8 @@ class Providers:
                     payload = {"model": self.settings.llm_model_id, "messages": messages,
                                "max_tokens": 5000, "response_format": {"type": "json_object"},
                                **json.loads(self.settings.llm_extra_body)}
+                    if temperature is not None:
+                        payload["temperature"] = temperature
                     result = await self.post(endpoint(self.settings.llm_base_url, "chat/completions"),
                                              self.settings.llm_api_key.get_secret_value(), payload, "对话模型")
                     usage = result.get("usage") or {}
