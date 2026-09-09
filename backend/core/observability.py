@@ -10,6 +10,7 @@ class JsonFormatter(logging.Formatter):
 
 
 LOGGER_NAME = "deepresearch.task"
+_otlp_log_handler: logging.Handler | None = None
 
 
 def configure_task_logger(level: str) -> logging.Logger:
@@ -19,7 +20,12 @@ def configure_task_logger(level: str) -> logging.Logger:
         handler = logging.StreamHandler()
         handler.setFormatter(JsonFormatter())
         logger.addHandler(handler)
+    if _otlp_log_handler is not None and _otlp_log_handler not in logger.handlers:
+        logger.addHandler(_otlp_log_handler)
     logger.propagate = False
+    if not getattr(logger, "_deepresearch_observability_logged", False):
+        logger.info("task logger initialized")
+        logger._deepresearch_observability_logged = True
     return logger
 
 
@@ -49,23 +55,37 @@ def error_category(error: Exception) -> str:
 
 
 def configure_telemetry(app=None, endpoint: str = "", *, service_name: str = "deepresearch-api") -> None:
-    """Instrument service boundaries without prompts, URLs, users, or report text."""
+    """Export safe service spans and task logs without prompts, URLs, or user data."""
+    global _otlp_log_handler
     from opentelemetry import trace
+    from opentelemetry.trace import ProxyTracerProvider
     from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
     from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
-    from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
     from opentelemetry.sdk.resources import Resource
     from opentelemetry.sdk.trace import TracerProvider
     from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
-    provider = TracerProvider(resource=Resource.create({"service.name": service_name}))
-    if endpoint:
-        provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter(endpoint=endpoint, insecure=True)))
-    trace.set_tracer_provider(provider)
+    resource = Resource.create({"service.name": service_name})
+    if isinstance(trace.get_tracer_provider(), ProxyTracerProvider):
+        provider = TracerProvider(resource=resource)
+        if endpoint:
+            provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter(endpoint=endpoint, insecure=True)))
+        trace.set_tracer_provider(provider)
+
+    if endpoint and _otlp_log_handler is None:
+        from opentelemetry import _logs as otel_logs
+        from opentelemetry.exporter.otlp.proto.grpc._log_exporter import OTLPLogExporter
+        from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler
+        from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
+
+        log_provider = LoggerProvider(resource=resource)
+        log_provider.add_log_record_processor(BatchLogRecordProcessor(OTLPLogExporter(endpoint=endpoint, insecure=True)))
+        otel_logs.set_logger_provider(log_provider)
+        _otlp_log_handler = LoggingHandler(level=logging.NOTSET, logger_provider=log_provider)
+        _otlp_log_handler.setFormatter(JsonFormatter())
+
     if app is not None:
         FastAPIInstrumentor.instrument_app(app, excluded_urls="healthz,livez,readyz,metrics")
-    HTTPXClientInstrumentor().instrument()
-
 
 def tracer():
     from opentelemetry import trace

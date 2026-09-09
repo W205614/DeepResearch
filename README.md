@@ -1,8 +1,24 @@
 # DeepResearch 企业研究工作台
 
-面向中文行业研究的企业单机演示环境。默认 Docker 部署以 PostgreSQL、Redis Worker、Milvus、Keycloak OIDC、ClamAV、OpenTelemetry、Prometheus 和 Grafana 组成一条受权限约束、可恢复、可审计的研究链路；它用于复现企业能力，不等同于多副本、高可用生产集群。
+面向中文行业研究的企业单机演示环境。默认 Docker 部署以 PostgreSQL、Redis Worker、Milvus、Keycloak OIDC、ClamAV、OpenTelemetry、Prometheus、Grafana、Tempo 和 Loki 组成一条受权限约束、可恢复、可审计的研究链路；它用于复现企业能力，不等同于多副本、高可用生产集群。
 
-系统以 LangGraph 编排多个具备独立职责、工具权限和结构化交接物的研究 Agent，并以来源约束与 SSRF 防护降低不可核查结论风险。默认企业单机演示环境使用 PostgreSQL、Redis Worker、Milvus、Keycloak OIDC、MinIO 对象存储、ClamAV、OpenTelemetry、Prometheus/Grafana，提供工作空间权限、审计、隔离扫描、可恢复任务、数据导出与备份恢复能力。
+系统以 LangGraph 编排多个具备独立职责、工具权限和结构化交接物的研究 Agent，并以来源约束与 SSRF 防护降低不可核查结论风险。默认企业单机演示环境使用 PostgreSQL、Redis Worker、Milvus、Keycloak OIDC、MinIO 对象存储、ClamAV、OpenTelemetry、Prometheus/Grafana、Tempo/Loki，提供工作空间权限、审计、隔离扫描、可恢复任务、数据导出与备份恢复能力。
+
+## 企业能力清单
+
+| 领域 | 当前企业单机演示能力 | 验证入口 |
+| --- | --- | --- |
+| 身份与权限 | Keycloak OIDC 授权码 + PKCE；后端只校验 JWT；工作空间 `admin / researcher / viewer` 角色和资源级服务端校验 | `scripts/smoke-enterprise.py`、Playwright E2E |
+| 租户数据与审计 | 会话、研究、资料、检索、导出和死信恢复均按工作空间归属校验；关键管理动作写入不含正文的审计日志 | 权限单测、工作台设置页 |
+| 研究执行 | 同进程职责受限的 LangGraph Agent 协作、SSE 进度、来源约束、引用核验、SSRF 防护和会话上下文边界 | 后端回归、冻结评测 |
+| 资料安全 | MinIO 隔离区、ClamAV 扫描、扫描失败拒绝、异步索引、仅 `ready` 资料可检索 | 文档安全测试、页面状态 |
+| 异步可恢复性 | Redis ARQ Worker、去重、检查点、重试、取消、心跳中断恢复、PostgreSQL 死信表与管理员恢复入口 | 故障演练、死信回归 |
+| 数据服务 | PostgreSQL 为事务源、Milvus 向量检索、BM25 + 向量融合、MinIO 原件保存 | 检索冻结集与恢复脚本 |
+| 可观测性 | Prometheus 指标、Grafana 面板、OTel Trace → Tempo、脱敏 JSON 应用日志 → Loki、Alertmanager → 可选飞书机器人 | 企业冒烟、Grafana Explore |
+| 质量门禁 | Python 单测/静态检查、Vue 单测/生产构建、真实 OIDC 浏览器 E2E、Compose 冒烟、离线流程评测 | GitHub Actions `CI` |
+| 迁移与恢复 | 幂等旧 SQLite 迁移、逻辑 SQL + 命名卷备份、恢复后冒烟验证 | `migrate_legacy_sqlite.py`、备份/恢复脚本 |
+
+下文给出每项能力的边界和操作方式。这里的“企业”指架构与治理链路的单机复现，不代表多副本生产集群或 SLA。
 
 ## 多 Agent 协作边界
 
@@ -164,7 +180,7 @@ docker compose exec -T backend python -m backend.commands.cli --base-url http://
 docker compose up -d --build --wait
 ```
 
-默认编排直接包含 PostgreSQL、Redis Worker、OpenTelemetry Collector、Prometheus、Grafana、Keycloak 与 MinIO；不再存在功能较低的本地运行拓扑。后端只接受 OIDC JWT；浏览器提供的 `X-User-ID` 不作为生产身份。工作空间成员角色为 admin、researcher、viewer，审计日志不记录研究正文、来源地址或密钥。
+默认编排直接包含 PostgreSQL、Redis Worker、OpenTelemetry Collector、Prometheus、Grafana、Tempo、Loki、Keycloak 与 MinIO；不再存在功能较低的本地运行拓扑。后端只接受 OIDC JWT；浏览器提供的 `X-User-ID` 不作为生产身份。工作空间成员角色为 admin、researcher、viewer，审计日志不记录研究正文、来源地址或密钥。
 
 当前 Compose 适合单机演示；运行、备份和恢复说明见 [docs/operations.md](docs/operations.md)。
 使用下面的命令执行不涉及模型调用的集成冒烟检查。它会验证 Web、Keycloak OIDC 发现、PostgreSQL 迁移版本、Redis、Worker、后端 `/readyz` 和 OpenTelemetry Collector 的连通性：
@@ -219,6 +235,59 @@ Grafana 自动配置六个全局匿名面板：API/Worker 可用性、队列深�
 
 最终失败的研究任务会进入 PostgreSQL 死信表；管理员可在网页的“工作台设置 → 死信任务治理”查看不含研究正文的失败摘要，并从检查点恢复。API 仍提供 GET /api/workspaces/{workspace_id}/dead-letters 和 POST /api/workspaces/{workspace_id}/dead-letters/{run_id}/recover，恢复动作写入审计日志。运行日志为 JSON，包含稳定错误类别、任务短 ID 与 OpenTelemetry Trace ID，但不写入研究正文、URL 或密钥。Prometheus 内置队列积压、死信和失败率三条告警规则，Prometheus 会发送到 Compose 内部的 Alertmanager，再由后端内部入口转换为飞书群机器人文本消息；`deepresearch_alert_deliveries_total{result="succeeded|failed|disabled"}` 可审计投递结果。`.env` 中可选的 `FEISHU_WEBHOOK_URL` 留空即禁用外发；它只应写入被忽略的本机 `.env`，不要放入 README、截图、提交或工单。Alertmanager 的验证可向 `http://localhost:9093/api/v2/alerts` 提交一条临时告警，随后检查飞书群是否收到“DeepResearch Alert”消息。
 
+## 持久化日志、追踪与浏览器回归
+
+默认 Compose 将后端和 Worker 已有的脱敏 JSON 任务日志通过 OpenTelemetry Collector 写入 Loki，将 FastAPI 请求和 Worker 任务 Span 写入 Tempo；Grafana 自动配置 `Prometheus`、`Loki`、`Tempo` 三个内部数据源。Tempo 与 Loki 不映射宿主机端口；日常通过 Grafana 的 Explore 查询。日志链路不挂载 Docker Socket，不采集其他容器、浏览器流量、资料正文、提示词、来源 URL 或密钥。
+
+在 Grafana 的 **Explore** 中选择 Loki，可使用：
+
+```logql
+{service_name=~"deepresearch-api|deepresearch-worker"}
+```
+
+选择 Tempo 后按服务 `deepresearch-api` 或 `deepresearch-worker` 查询 Trace。任务日志中的 `trace_id` 可跳转到 Tempo；Tempo 也会根据服务名回查 Loki。Tempo 的本地文件块和 Loki 的本地 TSDB 是为了单机演示保留，生产多副本必须改为共享对象存储、鉴权代理、保留期与容量策略。
+
+真实浏览器回归不使用开发身份头，也不需要模型调用。启动 Compose 后运行：
+
+```powershell
+Set-Location frontend
+npm run test:e2e:enterprise
+```
+
+脚本只从被忽略的本机 `.env` 读取 `KEYCLOAK_ADMIN_PASSWORD`（或读取同名环境变量），临时创建随机 Keycloak 用户，验证匿名 API 返回 `401`、Keycloak 授权码 + PKCE 登录、受保护工作台和设置页，随后删除临时身份和成员关系；为避免自动删除本机演示数据，临时身份创建的空工作空间需由管理员在工作台中确认后清理。失败时本机保留 `frontend/test-results/` 中的截图、视频与 Trace 供排查；该目录被忽略，CI 不会上传这些产物。
+
+## 重建、验证与恢复操作手册
+
+日常重建与最小验收：
+
+```powershell
+docker compose up -d --build --wait
+.\scripts\smoke-enterprise.ps1
+Set-Location frontend
+npm ci
+npm run test:e2e:enterprise
+```
+
+企业冒烟会验证 Web、OIDC 发现、迁移、Redis、后端就绪、Worker 指标、Prometheus 抓取目标、Grafana、OTel Collector、Tempo Trace，以及经受控脱敏探针确认可写入的 Loki 日志。E2E 额外验证真实浏览器认证边界。首次安装 Playwright 时运行 `npx playwright install chromium`；GitHub Actions 会安装 Chromium 后执行同一 E2E。
+
+故障与数据恢复按下面顺序进行：
+
+1. 任务或资料异常：在“工作台设置 → 死信任务治理”查看失败类别；管理员从检查点恢复，恢复动作会写入审计日志。
+2. 依赖短暂失败：运行 `.\scripts\drill-dependency-recovery.ps1`，它会短暂停止 Milvus、确认就绪检查拒绝流量、恢复依赖与 Worker，再执行企业冒烟。
+3. 数据备份与恢复：停止演示服务后运行 `.\scripts\backup.ps1`；需要替换本机演示卷时运行 `.\scripts\restore.ps1 -Input .cache\backup\deepresearch-时间戳 -ReplaceVolumes`，再执行 `docker compose up -d --build --wait` 和企业冒烟。恢复会替换本项目命名卷，操作前确认备份路径。
+4. 观测排查：先看 Grafana 的队列深度、近 5 分钟成功率、失败类别和 P95；再在 Loki 以服务名过滤日志，最后按 Trace ID 在 Tempo 定位节点链路。无终态任务的成功率显示 `N/A` 是预期行为，不是失败。
+
+停止环境使用 `docker compose down`。不要使用 `docker compose down -v`，除非明确要删除所有本机演示数据卷。
+
+## 后续生产化优化
+
+已完成的是企业单机演示基线。以下是下一阶段可按实际条件推进的事项，不能倒推为当前已具备：
+
+- 本机即可完成：PostgreSQL RLS 策略与数据库角色、反向代理 TLS/本地 CA、密钥托管替代 `.env`、备份定时与恢复演练记录、Trace/日志保留策略和更细粒度的浏览器 E2E 场景。
+- 需要真实基础设施才能证明：多副本 API/Worker、共享对象存储、高可用 PostgreSQL/Redis/Milvus、容量压测、跨机故障转移、外部 KMS/Vault、集中身份目录（SAML/SCIM）和真实值班升级体系。
+- 需要组织流程才能证明：告警分级、飞书/钉钉/企业微信的轮值人员路由、RPO/RTO 承诺、变更审批、数据分级与合规审计。
+
+因此简历或面试应表述为“完成企业单机演示基线及可恢复、可观测、权限闭环验证”，不要表述为“已上线高可用生产集群”或“达到 SLA”。
 ## 压测与故障演练
 
 运行 docker run --rm -i -e BASE_URL=http://host.docker.internal:8080 grafana/k6 run - < scripts/load-health.js 可对健康端点执行默认 10 VU、30 秒并发压测，并校验错误率低于 1%、P95 低于 500 ms；这是本机环境基线，不是 SLA。运行 scripts/drill-dependency-recovery.ps1 会短暂停止 Milvus，确认就绪检查拒绝流量，再恢复依赖、后端与 Worker 并执行企业冒烟。死信表会按 timeout、network、source_blocked、provider_configuration、model_response 等稳定类别记录最终失败。

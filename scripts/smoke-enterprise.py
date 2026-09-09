@@ -42,6 +42,34 @@ def backend_get(url: str) -> None:
     ), capture=True)
 
 
+def telemetry_backends_ready() -> None:
+    backend_get("http://tempo:3200/ready")
+    backend_get("http://loki:3100/ready")
+
+
+def emit_telemetry_probe() -> None:
+    """Emit one sanitized record so the smoke test exercises the live log pipeline."""
+    command = (
+        "from backend.core.config import Settings; "
+        "from backend.core.observability import configure_task_logger,configure_telemetry; "
+        "from opentelemetry import _logs; "
+        "settings=Settings(); "
+        "configure_telemetry(None,settings.otel_exporter_otlp_endpoint); "
+        "configure_task_logger(settings.task_log_level).info('observability smoke probe'); "
+        "assert _logs.get_logger_provider().force_flush(5000)"
+    )
+    run("exec", "-T", "backend", "python", "-c", command, capture=True)
+
+def telemetry_records_ready() -> None:
+    command = (
+        "import json,urllib.parse,urllib.request; "
+        "logs=json.load(urllib.request.urlopen('http://loki:3100/loki/api/v1/query_range?'+urllib.parse.urlencode({'query':'{service_name=\"deepresearch-api\"}','limit':'1'}),timeout=5)); "
+        "assert logs['data']['result']; "
+        "traces=json.load(urllib.request.urlopen('http://tempo:3200/api/search?'+urllib.parse.urlencode({'tags':'service.name=deepresearch-api','limit':'1'}),timeout=5)); "
+        "assert traces.get('traces')"
+    )
+    run("exec", "-T", "backend", "python", "-c", command, capture=True)
+
 def targets_ready() -> None:
     payload = read_json("http://127.0.0.1:3000/api/health")
     if payload.get("database") != "ok":
@@ -66,6 +94,10 @@ def main() -> int:
     wait_for("Keycloak OIDC", lambda: read_json(
         "http://127.0.0.1:8180/realms/deepresearch/.well-known/openid-configuration"))
     wait_for("Grafana and Prometheus targets", targets_ready)
+    wait_for("Tempo and Loki", telemetry_backends_ready)
+    read_json("http://127.0.0.1:8080/api/auth/config")
+    emit_telemetry_probe()
+    wait_for("stored application telemetry", telemetry_records_ready)
     version = run("exec", "-T", "postgres", "psql", "-U", "deepresearch", "-d", "deepresearch", "-tAc",
                   "SELECT version_num FROM alembic_version", capture=True).strip()
     if version != "0002_dead_letter_runs":
@@ -76,7 +108,7 @@ def main() -> int:
     wait_for("backend readiness", lambda: backend_get("http://127.0.0.1:8000/readyz"))
     wait_for("worker metrics", lambda: backend_get("http://worker:8001/metrics"))
     run("exec", "-T", "backend", "python", "-c", "import socket; socket.create_connection(('otel-collector',4317),timeout=5).close()")
-    print("Enterprise smoke passed: web, OIDC, migration, Redis, backend, worker, Prometheus, Grafana, and OTel.")
+    print("Enterprise smoke passed: web, OIDC, migration, Redis, backend, worker, Prometheus, Grafana, Tempo, Loki, and OTel.")
     return 0
 
 
