@@ -10,8 +10,8 @@ jobs:
   answer-quality:
     runs-on: ubuntu-latest
     env:
-      LLM_MODEL_ID: ${{ secrets.LLM_MODEL_ID }}
-      LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
+      LLM_MODEL_ID: ${{ secrets.LLM_MODEL_ID || 'deepseek-v4-flash' }}
+      LLM_BASE_URL: ${{ secrets.LLM_BASE_URL || 'https://api.deepseek.com' }}
       LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
     steps:
       - uses: actions/checkout@v7

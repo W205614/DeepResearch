@@ -230,16 +230,16 @@ Grafana 自动配置六个全局匿名面板：API/Worker 可用性、队列深�
 
 它不会调用模型或联网搜索，检查 Web、OIDC、迁移、Redis、`/readyz`、Worker 指标、Prometheus 两个抓取目标、Grafana 与 OTel Collector。
 
-备份和恢复应在停止演示服务后执行。备份同时导出 PostgreSQL 逻辑 SQL，以及保存资料原件的 MinIO、Milvus、Redis、Keycloak、Grafana 等命名卷，并生成 SHA-256 清单：
+备份脚本会先拒绝存在运行中研究或索引任务的环境，再短暂停止服务形成一致冷备。它同时导出业务库与 Keycloak 库的 PostgreSQL 自定义格式逻辑备份，以及保存资料原件的 MinIO、Milvus、Redis、Keycloak、Grafana 等命名卷，并生成 SHA-256 清单：
 
 ```powershell
 .\scripts\backup.ps1
-.\scripts\restore.ps1 -Input .cache\backup\deepresearch-时间戳 -ReplaceVolumes
+.\scripts\restore.ps1 -BackupPath .cache\backup\deepresearch-时间戳 -Project dr-restore-check
 # 安装本机每日 02:00 备份与最近 7 份保留（首次需手动执行）
 .\scripts\install-backup-task.ps1
 ```
 
-恢复会替换当前项目的命名卷，完成后重新启动企业 Compose 并运行企业冒烟检查。不要将备份文件、`.env` 或密钥提交到 Git。
+恢复只写入全新的 `dr-restore-*` Compose 项目和临时卷，不替换当前项目数据。它校验归档文件、恢复两个 SQL 备份，并检查就绪状态、匿名访问拒绝、OIDC 发现及 Milvus 检索；结束后清理临时恢复卷。不要将备份文件、`.env` 或密钥提交到 Git。
 
 前端工具链依赖通过 Dependabot 分组升级，并以 `npm ci`、Vitest 和生产构建作为合并门槛。当前 Vue TSC 3.3.11 与 TypeScript 7.0.2 实际不兼容，因此项目固定 TypeScript 6.0.3，并暂时忽略 TypeScript 7 的自动升级；只有完成兼容性验证后才解除该限制。
 
@@ -286,7 +286,7 @@ npm run test:e2e:enterprise
 
 1. 任务或资料异常：在“工作台设置 → 死信任务治理”查看失败类别；管理员从检查点恢复，恢复动作会写入审计日志。
 2. 依赖短暂失败：运行 `.\scripts\drill-dependency-recovery.ps1`，它会短暂停止 Milvus、确认就绪检查拒绝流量、恢复依赖与 Worker，再执行企业冒烟。
-3. 数据备份与恢复：停止演示服务后运行 `.\scripts\backup.ps1`；需要替换本机演示卷时运行 `.\scripts\restore.ps1 -Input .cache\backup\deepresearch-时间戳 -ReplaceVolumes`，再执行 `docker compose up -d --build --wait` 和企业冒烟。恢复会替换本项目命名卷，操作前确认备份路径。
+3. 数据备份与恢复：确认没有运行中任务后运行 `.\scripts\backup.ps1`；用 `.\scripts\restore.ps1 -BackupPath .cache\backup\deepresearch-时间戳 -Project dr-restore-check` 在全新隔离卷执行恢复烟测。成功报告写入备份目录的 `verification.json`，源数据卷始终保持不变。
 4. 观测排查：先看 Grafana 的队列深度、近 5 分钟成功率、失败类别和 P95；再在 Loki 以服务名过滤日志，最后按 Trace ID 在 Tempo 定位节点链路。无终态任务的成功率显示 `N/A` 是预期行为，不是失败。
 
 停止环境使用 `docker compose down`。不要使用 `docker compose down -v`，除非明确要删除所有本机演示数据卷。
@@ -302,11 +302,11 @@ npm run test:e2e:enterprise
 因此简历或面试应表述为“完成企业单机演示基线及可恢复、可观测、权限闭环验证”，不要表述为“已上线高可用生产集群”或“达到 SLA”。
 ## 压测与故障演练
 
-`load-health.js` 只用于连通性；业务读链路应使用真实 OIDC Bearer Token 运行 `load-authenticated-read.js`：
+`load-health.js` 只用于连通性；业务读链路使用临时 OIDC 身份运行 `load-authenticated-read.js`。验证脚本会创建临时客户端和用户、获取令牌、执行压测并清理测试身份：
 
 ```powershell
-# 令牌只保存在当前 shell；默认 10 VU、5 分钟，错误率 <1%、P95 <2 秒。
-docker run --rm -i -e BASE_URL=http://host.docker.internal:8080 -e AUTHORIZATION="Bearer <OIDC token>" grafana/k6 run - < scripts/load-authenticated-read.js
+# 默认 10 VU、5 分钟：成功率至少 99%、错误率低于 1%、P95 不高于 2 秒。
+.\.venv\Scripts\python.exe .\scripts\verify-authenticated-load.py
 ```
 
 这只是本机、固定数据和读接口的容量基线，不是 SLA。`scripts/drill-dependency-recovery.ps1` 会短暂停止 Milvus；`scripts/drill-worker-restart.ps1` 会重启 Worker 并执行企业冒烟。使用本地告警接收器演练时，运行 `docker compose -f compose.yaml -f compose.test.yaml up -d --build --wait` 后执行 `python scripts/drill-alert-relay.py`；它不会向真实飞书群发消息。死信表会按 timeout、network、source_blocked、provider_configuration、model_response 等稳定类别记录最终失败。
