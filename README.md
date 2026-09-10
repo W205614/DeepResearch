@@ -173,14 +173,15 @@ docker compose exec -T backend python -m backend.commands.cli --base-url http://
 它在固定资料上输出路由正确率、来源数、引用检查、时延与 Token 基线到 `.cache/eval/`，不代表真实行业研究质量。
 ### 最终回答质量门禁
 
-`eval/answer_quality_cases.json` 是脱敏、版本化的最终回答黄金集，不复用检索 Recall 或离线路由分数。它覆盖单/多来源引用、无资料拒答、资料冲突、禁止编造和推断边界。每条关键安全、拒答和冲突题必须通过；全部 7 题至少通过 85%。门禁使用当前配置的真实模型并强制 `temperature=0`，只保存题号、通过状态、结构性失败原因和统计，不保存模型回答正文、来源片段或密钥。
+回答门禁包含 7 个生成题和 3 个固定错误反例，结构检查之外另行逐条判定引用是否支持否定、数字主体、日期和范围；判定缺失、重复或模型失败均不通过。不能再把关键词出现当作事实正确。
 
+新增 `eval/research_quality_cases.json` 的 30 题固定证据完整研究评测：实际执行研究图，图外评分，关键题全部通过、整体通过率至少 85%、引用支持率至少 95%、应回答问题覆盖率至少 85%。本次 29/30 通过、引用支持率 100%、覆盖率 96%；保留 1 题过度拒答。另有 3 题实时联网浏览器验收通过。这些是小规模合成题集与公开主题验收，不是通用准确率。
 ```powershell
 # 要求 .env 中已有 LLM_API_KEY；缺失密钥会失败，而不是跳过。
 .\.venv\Scripts\python.exe .\scripts\evaluate_answers.py
 ```
 
-GitHub Actions 的 **Answer Quality Gate** 从仓库 Secret 读取 `LLM_API_KEY`、可选 `LLM_MODEL_ID` 和 `LLM_BASE_URL`。在分支保护中将该检查设为 Required 后，未配置密钥或质量退化都会阻断合并。
+GitHub Actions 的 **Answer Quality Gate** 从仓库 Secret 读取 `LLM_API_KEY`、可选 `LLM_MODEL_ID` 和 `LLM_BASE_URL`。该工作流还执行完整 30 题评测。在分支保护中将该检查设为 Required 后，未配置密钥或质量退化都会阻断合并。
 
 ## 企业单机演示环境
 
@@ -266,7 +267,7 @@ Set-Location frontend
 npm run test:e2e:enterprise
 ```
 
-脚本只从被忽略的本机 `.env` 读取 `KEYCLOAK_ADMIN_PASSWORD`（或读取同名环境变量），临时创建随机 Keycloak 用户，验证匿名 API 返回 `401`、Keycloak 授权码 + PKCE 登录、受保护工作台和设置页，随后删除临时身份和成员关系；为避免自动删除本机演示数据，临时身份创建的空工作空间需由管理员在工作台中确认后清理。失败时本机保留 `frontend/test-results/` 中的截图、视频与 Trace 供排查；该目录被忽略，CI 不会上传这些产物。
+脚本只从被忽略的本机 `.env` 读取 `KEYCLOAK_ADMIN_PASSWORD`（或读取同名环境变量），临时创建随机 Keycloak 用户，验证匿名 API 返回 `401`、Keycloak 授权码 + PKCE 登录、受保护工作台和设置页，随后删除临时身份和成员关系；仅清理脚本创建的临时身份及其工作空间，不清理日常演示数据。失败时本机保留 `frontend/test-results/` 中的截图、视频与 Trace 供排查；该目录被忽略，CI 不会上传这些产物。
 
 ## 重建、验证与恢复操作手册
 
@@ -291,9 +292,9 @@ npm run test:e2e:enterprise
 
 停止环境使用 `docker compose down`。不要使用 `docker compose down -v`，除非明确要删除所有本机演示数据卷。
 
-## 后续生产化优化
+## 当前边界（本次不继续扩展）
 
-已完成的是企业单机演示基线。以下是下一阶段可按实际条件推进的事项，不能倒推为当前已具备：
+已完成的是企业单机演示基线。以下事项保留为生产化讨论边界，不属于本次面试项目继续优化清单：
 
 - 本机即可完成：PostgreSQL RLS 策略与数据库角色、反向代理 TLS/本地 CA、密钥托管替代 `.env`、备份定时与恢复演练记录、Trace/日志保留策略和更细粒度的浏览器 E2E 场景。
 - 需要真实基础设施才能证明：多副本 API/Worker、共享对象存储、高可用 PostgreSQL/Redis/Milvus、容量压测、跨机故障转移、外部 KMS/Vault、集中身份目录（SAML/SCIM）和真实值班升级体系。
@@ -312,3 +313,20 @@ npm run test:e2e:enterprise
 ```
 
 这只是本机、固定数据和读接口的容量基线，不是 SLA。`scripts/drill-dependency-recovery.ps1` 会短暂停止 Milvus；`scripts/drill-worker-restart.ps1` 会重启 Worker 并执行企业冒烟。使用本地告警接收器演练时，运行 `docker compose -f compose.yaml -f compose.test.yaml up -d --build --wait` 后执行 `python scripts/drill-alert-relay.py`；它不会向真实飞书群发消息。死信表会按 timeout、network、source_blocked、provider_configuration、model_response 等稳定类别记录最终失败。
+
+
+## 面试项目收尾验收（2026-09-10）
+
+新增迁移 `0004_consistency` 保留已有数据。资料版本阻止删除后迟到索引复活；请求幂等先于新任务额度校验；UTC 日搜索台账与单任务额度原子预占，失败调用及备用搜索分别计数；Worker 尝试版本约束心跳与终态，持久化任务对账补偿 Redis 投递失败。
+
+- Python 108 通过，真实组件 4 通过，前端 4 通过及构建通过。
+- 隔离 PostgreSQL、Redis、Milvus、MinIO、ClamAV；5 客户端持续 5 分钟，4560 请求无非预期失败，379 个接受任务全部完成。控制/读取 P95 243.71 ms，研究、排队与索引耗时单独记录。模型和搜索为可控替身，不代表真实模型吞吐。
+- Worker 强制终止后 52.44 秒恢复，Redis 投递与 Milvus 就绪恢复通过；11 卷隔离备份恢复耗时 202.05 秒，临时资源已清理。
+- 日常 Docker 重建、企业冒烟、真实 OIDC 浏览器、资料引用、SSE 重放、取消恢复和角色边界已验收。
+
+```powershell
+python scripts/verify_components.py --load --drill
+.\.venv\Scripts\python.exe scripts/evaluate_research.py
+```
+
+[交付记录与完整复现命令](docs/interview-delivery.md) · [面试故障证据与设计取舍](docs/interview-evidence.md) · [脱敏结果](eval/delivery-results.json)。达到本次阈值后停止增加功能；GitHub Actions 状态以对应提交为准。
