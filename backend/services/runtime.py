@@ -321,6 +321,13 @@ class Runtime:
                                                               json.dumps(validation, ensure_ascii=False), run_id))
                     if not completed:
                         return
+                    dead_letter = await self.db.one(
+                        "SELECT category FROM dead_letter_runs WHERE run_id=?", (run_id,))
+                    recovered = await self.db.execute(
+                        "UPDATE dead_letter_runs SET recovered_at=? WHERE run_id=?", (now(), run_id))
+                    if recovered:
+                        DLQ_EVENTS.labels(action="recovered", category=dead_letter["category"]).inc()
+                        await self.refresh_dead_letter_depth()
                     await self.db.event(run_id, "done", {"status": status})
                     usage = await self.db.one("SELECT llm_calls,search_calls FROM counters WHERE run_id=?", (run_id,)) or {}
                     RUNS.labels(status=status).inc()
@@ -366,20 +373,27 @@ class Runtime:
         await self.refresh_queue_depth()
 
     async def dead_letters(self, user):
-        return await self.db.rows("SELECT run_id,category,message,failed_at FROM dead_letter_runs WHERE user_id=? AND recovered_at='' ORDER BY failed_at DESC", (user,))
+        rows = await self.db.rows("""SELECT d.run_id,d.category,d.message,d.failed_at,d.recovered_at,r.status
+            FROM dead_letter_runs d JOIN runs r ON r.id=d.run_id AND r.user_id=d.user_id
+            WHERE d.user_id=? ORDER BY d.failed_at DESC""", (user,))
+        for row in rows:
+            row["can_recover"] = row["status"] in {"failed", "cancelled", "interrupted"}
+            row["recovery_status"] = (
+                "succeeded" if row["status"] == "completed" else
+                "insufficient" if row["status"] == "insufficient" else
+                "retrying" if row["status"] in {"queued", "running"} else "pending")
+        return rows
 
     async def recover_dead_letter(self, run_id, user):
-        row = await self.db.one("SELECT run_id,category FROM dead_letter_runs WHERE run_id=? AND user_id=? AND recovered_at=''", (run_id, user))
+        row = await self.db.one("SELECT run_id FROM dead_letter_runs WHERE run_id=? AND user_id=?", (run_id, user))
         if not row:
             raise LookupError("死信任务不存在或已恢复")
-        run = await self.resume(run_id, user)
-        await self.db.execute("UPDATE dead_letter_runs SET recovered_at=? WHERE run_id=?", (now(), run_id))
-        DLQ_EVENTS.labels(action="recovered", category=row.get("category", "runtime_failure")).inc()
-        await self.refresh_dead_letter_depth()
-        return run
+        return await self.resume(run_id, user)
 
     async def refresh_dead_letter_depth(self):
-        row = await self.db.one("SELECT COUNT(*) AS total FROM dead_letter_runs WHERE recovered_at='' ")
+        row = await self.db.one("""SELECT COUNT(*) AS total FROM dead_letter_runs d
+            JOIN runs r ON r.id=d.run_id AND r.user_id=d.user_id
+            WHERE r.status IN ('failed','cancelled','interrupted')""")
         DLQ_DEPTH.set(int((row or {}).get("total", 0)))
 
     async def cancel(self, run_id, user):
@@ -419,6 +433,7 @@ class Runtime:
                 raise ConflictError("当前会话已有其他研究任务") from None
             await self.refresh_queue_depth()
             await self.schedule(run_id, resume=True)
+            await self.refresh_dead_letter_depth()
             return await self.db.owned_run(run_id, user)
 
     async def status(self):

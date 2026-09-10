@@ -20,6 +20,52 @@ async def finish(rt, run):
     return await rt.db.owned_run(run["id"], run["user_id"])
 
 
+@pytest.mark.parametrize("entry", ["resume", "recover_dead_letter"])
+@pytest.mark.parametrize("outcome", ["completed", "insufficient", "failed"])
+async def test_dead_letter_retry_tracks_actual_outcome(runtime, entry, outcome):
+    with patch.object(runtime.graph, "ainvoke", AsyncMock(side_effect=ServiceError("test failure"))):
+        failed = await finish(runtime, await runtime.create(
+            "alice", RunRequest(topic="重试状态", client_request_id=uid())))
+    run_id = failed["id"]
+    assert failed["status"] == "failed"
+    assert (await runtime.dead_letters("alice"))[0]["can_recover"]
+    assert await runtime.dead_letters("bob") == []
+    started, release = asyncio.Event(), asyncio.Event()
+
+    async def retry(*args, **kwargs):
+        started.set()
+        await release.wait()
+        if outcome == "failed":
+            raise ServiceError("retry failure")
+        return {"report": "retry result", "validation": {"insufficient": outcome == "insufficient"}}
+
+    with patch.object(runtime.graph, "ainvoke", retry):
+        await getattr(runtime, entry)(run_id, "alice")
+        await asyncio.wait_for(started.wait(), 5)
+        task = runtime.tasks[run_id]
+        try:
+            row = (await runtime.dead_letters("alice"))[0]
+            assert row["recovery_status"] == "retrying"
+            assert not row["can_recover"]
+            assert row["recovered_at"] == ""
+            with pytest.raises(ConflictError):
+                await runtime.recover_dead_letter(run_id, "alice")
+        finally:
+            release.set()
+            await task
+    row = (await runtime.dead_letters("alice"))[0]
+    assert row["recovery_status"] == {
+        "completed": "succeeded", "insufficient": "insufficient", "failed": "pending"}[outcome]
+    assert row["can_recover"] == (outcome == "failed")
+    assert bool(row["recovered_at"]) == (outcome != "failed")
+    if outcome != "failed":
+        with pytest.raises(ConflictError):
+            await runtime.recover_dead_letter(run_id, "alice")
+        # Old records can have a missing or premature recovery marker; run status wins.
+        await runtime.db.execute("UPDATE dead_letter_runs SET recovered_at='' WHERE run_id=?", (run_id,))
+        assert not (await runtime.dead_letters("alice"))[0]["can_recover"]
+
+
 async def test_complete_research_has_real_events_and_citations(runtime):
     result = await finish(runtime, await runtime.create("alice", RunRequest(topic="研究助手工作流程", client_request_id=uid())))
     assert result["status"] == "completed", result["error"]
