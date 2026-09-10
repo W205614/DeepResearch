@@ -1,18 +1,46 @@
 """Create disposable OIDC credentials, run k6, and remove only fixture identities."""
+import argparse
 import os
 from pathlib import Path
+import re
 import subprocess
+import sys
 import uuid
 
 import httpx
 from dotenv import dotenv_values
 
 
+def duration(value: str) -> str:
+    match = re.fullmatch(r"([1-9][0-9]*)(s|m)", value)
+    if not match:
+        raise argparse.ArgumentTypeError("duration must use positive seconds or minutes, for example 30s or 5m")
+    seconds = int(match.group(1)) * (60 if match.group(2) == "m" else 1)
+    if seconds > 30 * 60:
+        raise argparse.ArgumentTypeError("duration must not exceed 30 minutes")
+    return value
+
+
+def virtual_users(value: str) -> int:
+    try:
+        parsed = int(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError("vus must be an integer from 1 to 100") from None
+    if not 1 <= parsed <= 100:
+        raise argparse.ArgumentTypeError("vus must be an integer from 1 to 100")
+    return parsed
+
+
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--vus", type=virtual_users, default=10)
+    parser.add_argument("--duration", type=duration, default="5m")
+    args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     config = {**dotenv_values(root / '.env'), **os.environ}
     name = 'load-' + uuid.uuid4().hex
     password = uuid.uuid4().hex
+    k6_name = name + '-k6'
     realm = 'http://localhost:8180'
     client_id = user_id = None
     with httpx.Client(base_url=realm, timeout=30, trust_env=False) as client:
@@ -44,7 +72,8 @@ def main():
             token = response.json()['access_token']
             probe = client.get('http://localhost:8080/api/metrics', headers={'Authorization': 'Bearer ' + token})
             probe.raise_for_status()
-            result = subprocess.run(['docker', 'run', '--rm', '-i', '-e', 'AUTHORIZATION',
+            result = subprocess.run(['docker', 'run', '--rm', '--name', k6_name, '-i',
+                '-e', 'AUTHORIZATION', '-e', f'VUS={args.vus}', '-e', f'DURATION={args.duration}',
                 'grafana/k6:0.54.0', 'run', '-'], input=(root / 'scripts/load-authenticated-read.js').read_bytes(),
                 env={**os.environ, 'AUTHORIZATION': 'Bearer ' + token}, capture_output=True)
             output = result.stdout.decode(errors='replace') + result.stderr.decode(errors='replace')
@@ -52,10 +81,13 @@ def main():
             target = root / '.cache/verification/authenticated-load.txt'
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text(output, encoding='utf-8')
-            print(output[-5000:])
+            encoding = sys.stdout.encoding or "utf-8"
+            print(output[-5000:].encode(encoding, errors="replace").decode(encoding))
             if result.returncode:
                 raise RuntimeError('Authenticated load thresholds failed')
         finally:
+            subprocess.run(['docker', 'rm', '-f', k6_name], cwd=root, check=False,
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             # The fixture owns this automatically created personal workspace.
             if user_id:
                 sql = ';'.join(f"DELETE FROM {table} WHERE {field}='{user_id}'" for table, field in [

@@ -1,4 +1,20 @@
+import pytest
+
+from backend.core.config import Settings
+from backend.core.db import Database
 from backend.core.postgres import PostgresDatabase
+from backend.services.runtime import Runtime
+
+
+async def test_non_demo_sqlite_requires_explicit_isolated_mode(tmp_path):
+    settings = Settings(_env_file=None, demo_mode=False, database_url="", data_dir=tmp_path)
+    with pytest.raises(RuntimeError, match="DATABASE_URL"):
+        Runtime(settings)
+    runtime = Runtime(settings, isolated_mode=True)
+    try:
+        assert isinstance(runtime.db, Database)
+    finally:
+        await runtime.providers.close()
 
 
 def test_postgres_rewrites_sqlite_upserts_before_binding_parameters():

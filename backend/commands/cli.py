@@ -10,8 +10,8 @@ from uuid import uuid4
 TERMINAL = {"completed", "insufficient", "failed", "cancelled", "interrupted"}
 
 
-def request(base_url: str, path: str, *, method="GET", body=None, user="local-user", token=""):
-    headers = {"X-User-ID": user}
+def request(base_url: str, path: str, *, method="GET", body=None, token=""):
+    headers = {}
     payload = None
     if body is not None:
         payload = json.dumps(body, ensure_ascii=False).encode()
@@ -30,11 +30,13 @@ def request(base_url: str, path: str, *, method="GET", body=None, user="local-us
 
 
 def research(args):
-    run = request(args.base_url, "/api/research/runs", method="POST", user=args.user, token=args.token,
+    if not args.token:
+        raise SystemExit("请通过 --token 提供有效的 OIDC access token")
+    run = request(args.base_url, "/api/research/runs", method="POST", token=args.token,
                   body={"topic": args.topic, "mode": args.mode, "client_request_id": uuid4().hex})
     while run["status"] not in TERMINAL:
         time.sleep(.8)
-        run = request(args.base_url, f"/api/research/runs/{run['id']}", user=args.user, token=args.token)
+        run = request(args.base_url, f"/api/research/runs/{run['id']}", token=args.token)
     if args.json:
         print(json.dumps(run, ensure_ascii=False, indent=2))
     else:
@@ -45,8 +47,7 @@ def research(args):
 def main():
     parser = argparse.ArgumentParser(description="DeepResearch 本地 CLI（需先启动 Docker 服务）")
     parser.add_argument("--base-url", default="http://127.0.0.1:8080", help="本地 Web 服务地址")
-    parser.add_argument("--user", default="local-user", help="本地演示用户标识")
-    parser.add_argument("--token", default="", help="工作台访问令牌；未配置时留空")
+    parser.add_argument("--token", default="", help="Keycloak/OIDC access token")
     subparsers = parser.add_subparsers(dest="command", required=True)
     command = subparsers.add_parser("research", help="发起研究并在完成后输出 Markdown 报告")
     command.add_argument("topic", help="研究主题")

@@ -97,7 +97,9 @@ async def main_async(args):
                                                vector_collection_prefix=f"dr_eval_{uuid.uuid4().hex[:12]}"))
     if not args.demo and settings.missing():
         raise ValueError("真实评测缺少配置：" + "、".join(settings.missing()))
-    runtime = await Runtime(settings).start()
+    # Live embeddings and Milvus are intentional here, but evaluation metadata
+    # stays in a disposable SQLite database rather than the product database.
+    runtime = await Runtime(settings, isolated_mode=True).start()
     try:
         for row in corpus:
             path = (corpus_path.parent / row["path"]).resolve()

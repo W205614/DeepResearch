@@ -134,10 +134,10 @@ backend/
 
 ## CLI
 
-Docker 服务启动后，可从容器内使用 CLI 发起研究并在终端输出 Markdown 报告：
+Docker 服务启动后，可使用有效的 Keycloak/OIDC access token 从 CLI 发起研究并在终端输出 Markdown 报告：
 
 ```powershell
-docker compose exec -T backend python -m backend.commands.cli --base-url http://web research "比较企业知识库 Agent 的私有化与 SaaS 部署" --mode deep
+docker compose exec -T backend python -m backend.commands.cli --base-url http://web --token "<OIDC access token>" research "比较企业知识库 Agent 的私有化与 SaaS 部署" --mode deep
 ```
 
 增加 `--json` 可输出完整运行记录。CLI 调用同一套本地 API、事件、证据校验和数据卷，不会绕开 Web 工作台的安全规则。
@@ -158,11 +158,11 @@ docker compose exec -T backend python -m backend.commands.cli --base-url http://
 
 本地资料支持 TXT、Markdown、DOCX、文字型 PDF，以及 JPG/JPEG、PNG、GIF、WebP 图片。文本资料按标题、页码与 DOCX 表格结构切块；图片会先校验真实文件签名，再由 `VISION_MODEL_ID` 指定的 DeepSeek 视觉模型提取可检索文字、表格标题和图表事实，之后进入同一向量与 BM25 混合检索。扫描 PDF 仅在其嵌入图像可被安全提取时尝试视觉解析；PPT、Excel、复杂公式和通用版面理解仍不在当前范围。资料库页面可以查看 Chunk 定位、手动重建索引，并通过检索调试工作台查看向量、BM25 与融合分数。
 
-默认不会自动把报告写入语义记忆。完成报告后可在界面点击“保存为语义记忆”，或设置 `AUTO_SAVE_SEMANTIC_MEMORY=true` 恢复自动保存。用户偏好和个人设定按 User ID 共享；报告语义记忆只会在保存它的 Thread 内被检索。工作台设置页可导出当前用户 ZIP 数据，或在确认后清理本地报告、记忆和资料。
+默认不会自动把报告写入语义记忆。完成报告后可在界面点击“保存为语义记忆”，或设置 `AUTO_SAVE_SEMANTIC_MEMORY=true` 恢复自动保存。用户偏好和个人设定按 OIDC 账号私有，即使成员进入同一工作空间也不会互相读取或修改；报告语义记忆属于工作空间，但只会在保存它的 Thread 内被检索。工作台设置页可导出当前工作空间数据与本人个人记忆，或在确认后清理对应数据。
 
 左侧“最近研究”中每个会话都可删除。删除会停止该会话仍在运行的任务，并一并清除该会话的报告、事件、计数和检查点；本地资料、用户偏好和个人设定不会受影响。已单独保存的报告语义记忆仍会保留在数据导出中，但由于原 Thread 已删除，不会再被注入后续研究。
 
-默认 Compose 启动本机 Keycloak。打开工作台后，已有账号可登录，新用户可注册；右上角“退出”会结束浏览器和 Keycloak 会话，因此可以切换账号。每个账号的新会话自动使用 `thread01`、`thread02` 等短 Thread ID；内部 UUID 仅用于数据库关联与检查点，不会显示在工作台。`APP_ACCESS_TOKEN` 是仅在 `.env` 中显式设置时启用的服务访问保护，不是用户身份，也不会显示在工作台界面。认证流程详见 [docs/local-keycloak-login.md](docs/local-keycloak-login.md)。
+默认 Compose 启动本机 Keycloak。打开工作台后，已有账号可登录，新用户可注册；右上角“退出”会结束浏览器和 Keycloak 会话，因此可以切换账号。每个账号的新会话自动使用 `thread01`、`thread02` 等短 Thread ID；内部 UUID 仅用于数据库关联与检查点，不会显示在工作台。用户 API 统一使用 OIDC JWT，不再保留与浏览器认证冲突的第二套工作台访问令牌。认证流程详见 [docs/local-keycloak-login.md](docs/local-keycloak-login.md)。
 
 运行无需外部 API 的评测基线：
 
@@ -245,7 +245,7 @@ Grafana 自动配置六个全局匿名面板：API/Worker 可用性、队列深�
 
 ## 死信、追踪与告警
 
-最终失败的研究任务会进入 PostgreSQL 死信表；管理员可在网页的“工作台设置 → 死信任务治理”查看不含研究正文的失败摘要，并从检查点恢复。API 仍提供 GET /api/workspaces/{workspace_id}/dead-letters 和 POST /api/workspaces/{workspace_id}/dead-letters/{run_id}/recover，恢复动作写入审计日志。运行日志为 JSON，包含稳定错误类别、任务短 ID 与 OpenTelemetry Trace ID，但不写入研究正文、URL 或密钥。Prometheus 内置队列积压、死信和失败率三条告警规则，Prometheus 会发送到 Compose 内部的 Alertmanager，再由后端内部入口转换为飞书群机器人文本消息。应用层对同一告警状态去重、对短暂 Webhook 错误最多重试两次，并保留已恢复事件；`deepresearch_alert_deliveries_total{result="succeeded|failed|disabled"}` 与 `deepresearch_alert_suppressed_total` 可审计投递与去重结果。`.env` 中可选的 `FEISHU_WEBHOOK_URL` 留空即禁用外发；它只应写入被忽略的本机 `.env`，不要放入 README、截图、提交或工单。Alertmanager 的验证可向 `http://localhost:9093/api/v2/alerts` 提交一条临时告警，随后检查飞书群是否收到“DeepResearch Alert”消息。
+最终失败的研究任务会进入 PostgreSQL 死信表；管理员可在网页的“工作台设置 → 死信任务治理”查看不含研究正文的失败摘要，并从检查点恢复。API 仍提供 GET /api/workspaces/{workspace_id}/dead-letters 和 POST /api/workspaces/{workspace_id}/dead-letters/{run_id}/recover，恢复动作写入审计日志。运行日志为 JSON，包含稳定错误类别、任务短 ID 与 OpenTelemetry Trace ID，但不写入研究正文、URL 或密钥。Prometheus 内置队列积压、死信和失败率三条告警规则，Prometheus 会发送到 Compose 内部的 Alertmanager，再由后端内部入口转换为飞书群机器人文本消息。Compose 首次启动会在独立命名卷生成内部 Bearer token，Alertmanager 和后端只读挂载；缺失或错误令牌的转发请求会被拒绝。应用层对同一告警状态去重、对短暂 Webhook 错误最多重试两次，并保留已恢复事件；`deepresearch_alert_deliveries_total{result="succeeded|failed|disabled"}` 与 `deepresearch_alert_suppressed_total` 可审计投递与去重结果。`.env` 中可选的 `FEISHU_WEBHOOK_URL` 留空即禁用外发；它只应写入被忽略的本机 `.env`，不要放入 README、截图、提交或工单。Alertmanager 的验证可向 `http://localhost:9093/api/v2/alerts` 提交一条临时告警，随后检查飞书群是否收到“DeepResearch Alert”消息。
 
 ## 持久化日志、追踪与浏览器回归
 
@@ -307,6 +307,8 @@ npm run test:e2e:enterprise
 ```powershell
 # 默认 10 VU、5 分钟：成功率至少 99%、错误率低于 1%、P95 不高于 2 秒。
 .\.venv\Scripts\python.exe .\scripts\verify-authenticated-load.py
+# 快速本机回归示例；默认仍为 10 VU、5 分钟
+.\.venv\Scripts\python.exe .\scripts\verify-authenticated-load.py --vus 10 --duration 1m
 ```
 
 这只是本机、固定数据和读接口的容量基线，不是 SLA。`scripts/drill-dependency-recovery.ps1` 会短暂停止 Milvus；`scripts/drill-worker-restart.ps1` 会重启 Worker 并执行企业冒烟。使用本地告警接收器演练时，运行 `docker compose -f compose.yaml -f compose.test.yaml up -d --build --wait` 后执行 `python scripts/drill-alert-relay.py`；它不会向真实飞书群发消息。死信表会按 timeout、network、source_blocked、provider_configuration、model_response 等稳定类别记录最终失败。

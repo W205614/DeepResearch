@@ -83,7 +83,7 @@ class Claim(BaseModel):
 
 
 class Analysis(BaseModel):
-    claims: list[Claim] = Field(default_factory=list, max_length=24)
+    claims: list[Claim] = Field(default_factory=list, max_length=40)
     gaps: list[str] = Field(default_factory=list, max_length=8)
 
 
@@ -116,6 +116,7 @@ class Verification(BaseModel):
 class ResearchState(TypedDict, total=False):
     run_id: str
     user_id: str
+    owner_subject: str
     thread_id: str
     topic: str
     requested_mode: str

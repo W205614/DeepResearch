@@ -33,9 +33,9 @@ class ConflictError(Exception):
 
 
 class Runtime:
-    def __init__(self, settings: Settings, *, worker_mode: bool = False):
+    def __init__(self, settings: Settings, *, worker_mode: bool = False, isolated_mode: bool = False):
         self.settings = settings
-        if not settings.database_url and not settings.demo_mode:
+        if not settings.database_url and not settings.demo_mode and not isolated_mode:
             raise RuntimeError("DATABASE_URL is required outside isolated offline tests")
         settings.prepare()
         self.db = PostgresDatabase(settings.database_url) if settings.database_url else Database(settings.data_dir / "research.sqlite3")
@@ -165,7 +165,8 @@ class Runtime:
             await self.db.execute("DELETE FROM threads WHERE id=? AND user_id=?", (thread_id, user))
         return {"ok": True, "thread_id": thread["thread_key"], "deleted_runs": len(run_ids)}
 
-    async def create(self, user, request):
+    async def create(self, user, request, actor_subject: str | None = None):
+        actor_subject = actor_subject or user
         async with self.lock:
             limits = await self.db.workspace_limits(user)
             if limits:
@@ -192,9 +193,10 @@ class Runtime:
                 thread_id = (await self.new_thread(user, request.topic))["id"]
             run_id, stamp = uid(), now()
             try:
-                await self.db.execute("""INSERT INTO runs(id,user_id,thread_id,topic,mode,status,created_at,updated_at,client_request_id)
-                    VALUES(?,?,?,?,?,'queued',?,?,?)""", (run_id, user, thread_id, request.topic, request.mode,
-                                                        stamp, stamp, request.client_request_id))
+                await self.db.execute("""INSERT INTO runs(
+                    id,user_id,thread_id,topic,mode,status,created_at,updated_at,client_request_id,created_by)
+                    VALUES(?,?,?,?,?,'queued',?,?,?,?)""", (run_id, user, thread_id, request.topic, request.mode,
+                                                        stamp, stamp, request.client_request_id, actor_subject))
             except sqlite3.IntegrityError:
                 raise ConflictError("同一会话已有正在执行的研究") from None
             await self.db.event(run_id, "queued", {"message": "研究任务已创建"})
@@ -222,8 +224,11 @@ class Runtime:
         return f"research:{run_id}:{max(1, number)}"
 
     async def context(self, run):
-        preferences = await self.db.rows("SELECT content FROM memories WHERE user_id=? AND kind='preference' ORDER BY created_at DESC LIMIT 20", (run["user_id"],))
-        profile = await self.db.one("SELECT content FROM memories WHERE user_id=? AND kind='profile'", (run["user_id"],))
+        owner_subject = run.get("created_by") or run["user_id"]
+        preferences = await self.db.rows("""SELECT content FROM memories
+            WHERE owner_subject=? AND kind='preference' ORDER BY created_at DESC LIMIT 20""", (owner_subject,))
+        profile = await self.db.one("SELECT content FROM memories WHERE owner_subject=? AND kind='profile'",
+                                    (owner_subject,))
         history_params = (run["thread_id"], run["user_id"], run["id"])
         turn_index = await self.db.rows("""SELECT topic,status FROM runs WHERE thread_id=? AND user_id=?
             AND id!=? AND status IN ('completed','insufficient') ORDER BY created_at DESC LIMIT ?""",
@@ -300,6 +305,7 @@ class Runtime:
                     checkpoint = await self.graph.aget_state(config) if resume else None
                     if not resume or not checkpoint.values:
                         initial = {"run_id": run_id, "user_id": run["user_id"], "thread_id": run["thread_id"],
+                                   "owner_subject": run.get("created_by") or run["user_id"],
                                    "topic": run["topic"], "requested_mode": run["mode"],
                                    "context": await self.context(run)}
                     result = await self.graph.ainvoke(initial, config)
@@ -514,9 +520,12 @@ class Runtime:
                 "avg_sources": round(statistics.mean([m.get("source_count", 0) for m in evidence]), 2) if evidence else 0,
                 "avg_web_domains": round(statistics.mean([m.get("unique_web_domains", 0) for m in evidence]), 2) if evidence else 0}
 
-    async def export_user(self, user: str) -> bytes:
+    async def export_user(self, user: str, owner_subject: str | None = None) -> bytes:
+        owner_subject = owner_subject or user
         runs = await self.db.rows("SELECT * FROM runs WHERE user_id=?", (user,))
-        memories = await self.db.rows("SELECT id,kind,content,run_id,created_at FROM memories WHERE user_id=?", (user,))
+        memories = await self.db.rows("""SELECT id,kind,content,run_id,created_at FROM memories WHERE
+            (kind IN ('profile','preference') AND owner_subject=?) OR (kind='semantic' AND user_id=?)""",
+                                      (owner_subject, user))
         documents = await self.db.rows("SELECT * FROM documents WHERE user_id=? AND status='ready'", (user,))
         output = io.BytesIO()
         with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as archive:
@@ -528,23 +537,33 @@ class Runtime:
                     archive.writestr("uploads/" + document["name"], await self.documents.store.get("uploads", document["id"]))
         return output.getvalue()
 
-    async def purge_user(self, user: str, scope: str):
+    async def purge_user(self, user: str, scope: str, owner_subject: str | None = None):
+        owner_subject = owner_subject or user
         if scope not in {"reports", "memories", "documents", "all"}:
             raise ValueError("scope 必须是 reports、memories、documents 或 all")
         if scope in {"documents", "all"}:
             for document in await self.db.rows("SELECT id FROM documents WHERE user_id=? AND status!='deleted'", (user,)):
                 await self.documents.delete(document["id"], user)
         if scope in {"memories", "all"}:
-            for memory in await self.db.rows("SELECT id,kind FROM memories WHERE user_id=?", (user,)):
+            memories = await self.db.rows("""SELECT id,kind FROM memories WHERE
+                (kind IN ('profile','preference') AND owner_subject=?) OR (kind='semantic' AND user_id=?)""",
+                                          (owner_subject, user))
+            for memory in memories:
                 if memory["kind"] == "semantic":
                     await self.vectors.delete("memories", user, "id", memory["id"])
-            await self.db.execute("DELETE FROM memories WHERE user_id=?", (user,))
+                await self.db.execute("DELETE FROM memories WHERE id=?", (memory["id"],))
         if scope in {"reports", "all"}:
+            active = await self.db.rows("""SELECT id FROM runs WHERE user_id=?
+                AND status IN ('queued','running','interrupted')""", (user,))
+            for row in active:
+                await self.cancel(row["id"], user)
             run_ids = await self.db.rows("SELECT id FROM runs WHERE user_id=?", (user,))
             for row in run_ids:
+                await self.checkpointer.adelete_thread(row["id"])
                 await self.db.execute("DELETE FROM events WHERE run_id=?", (row["id"],))
                 await self.db.execute("DELETE FROM counters WHERE run_id=?", (row["id"],))
                 await self.db.execute("DELETE FROM search_cache WHERE run_id=?", (row["id"],))
+                await self.db.execute("DELETE FROM dead_letter_runs WHERE run_id=?", (row["id"],))
             await self.db.execute("DELETE FROM runs WHERE user_id=?", (user,))
             await self.db.execute("DELETE FROM threads WHERE user_id=?", (user,))
         return {"ok": True, "scope": scope}

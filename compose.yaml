@@ -29,7 +29,6 @@ services:
       WEB_SEARCH_PROVIDER: ${WEB_SEARCH_PROVIDER:-deepseek}
       BOCHA_BASE_URL: ${BOCHA_BASE_URL:-https://api.bochaai.com/v1}
       BOCHA_API_KEY: ${BOCHA_API_KEY:-}
-      APP_ACCESS_TOKEN: ${APP_ACCESS_TOKEN:-}
       AUTH_MODE: oidc
       OIDC_ISSUER: ${OIDC_ISSUER:-http://localhost:8180/realms/deepresearch}
       OIDC_AUDIENCE: ${OIDC_AUDIENCE:-deepresearch-api}
@@ -63,6 +62,9 @@ services:
       OBJECT_STORE_SECRET_KEY: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in .env}
       OTEL_EXPORTER_OTLP_ENDPOINT: otel-collector:4317
       FEISHU_WEBHOOK_URL: ${FEISHU_WEBHOOK_URL:-}
+      ALERT_RELAY_TOKEN_FILE: /run/secrets/alert_relay_token
+    volumes:
+      - alert-relay-token:/run/secrets:ro
     depends_on:
       milvus:
         condition: service_healthy
@@ -76,6 +78,8 @@ services:
         condition: service_started
       otel-collector:
         condition: service_started
+      alert-token-init:
+        condition: service_completed_successfully
       migrate:
         condition: service_completed_successfully
     restart: unless-stopped
@@ -246,8 +250,19 @@ services:
     image: prom/alertmanager:v0.28.1
     command: ["--config.file=/etc/alertmanager/alertmanager.yml"]
     ports: ["127.0.0.1:9093:9093"]
-    volumes: [./observability/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro]
+    volumes:
+      - ./observability/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - alert-relay-token:/run/secrets:ro
+    depends_on:
+      alert-token-init:
+        condition: service_completed_successfully
     restart: unless-stopped
+  alert-token-init:
+    image: alpine:3.20
+    command: ["/bin/sh", "-c", "umask 077; test -s /token/alert_relay_token || head -c 32 /dev/urandom | base64 > /token/alert_relay_token; chmod 0444 /token/alert_relay_token"]
+    volumes:
+      - alert-relay-token:/token
+    restart: "no"
   prometheus:
     image: prom/prometheus:v3.2.1
     volumes: [./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro, ./observability/alerts.yml:/etc/prometheus/alerts.yml:ro]
@@ -279,3 +294,4 @@ volumes:
   grafana-data:
   tempo-data:
   loki-data:
+  alert-relay-token:

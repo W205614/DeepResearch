@@ -1,4 +1,5 @@
 import asyncio
+import hmac
 import json
 import httpx
 from contextlib import asynccontextmanager
@@ -36,6 +37,14 @@ def create_app(settings: Settings | None = None):
     app.state.token_verifier = TokenVerifier(settings)
     app.state.alert_relay = AlertRelay()
     app.state.alert_sender = post_alert
+
+    relay_token = settings.alert_relay_token.get_secret_value()
+    if settings.alert_relay_token_file:
+        try:
+            relay_token = settings.alert_relay_token_file.read_text(encoding="utf-8").strip()
+        except OSError:
+            relay_token = ""
+    app.state.alert_relay_token = relay_token
     configure_telemetry(app, settings.otel_exporter_otlp_endpoint)
     app.mount("/metrics", make_asgi_app())
     def rt(request: Request) -> Runtime:
@@ -46,10 +55,9 @@ def create_app(settings: Settings | None = None):
         runtime = rt(request)
         memberships = await runtime.db.memberships(principal.subject)
         if not memberships:
-            workspace = await runtime.db.create_workspace(
+            membership = await runtime.db.ensure_personal_workspace(
                 principal.subject, principal.display_name + " 的工作空间",
-                (settings.workspace_daily_search_limit, settings.workspace_concurrent_run_limit), principal.subject)
-            membership = {**workspace, "role": "admin"}
+                (settings.workspace_daily_search_limit, settings.workspace_concurrent_run_limit))
         elif x_workspace_id:
             membership = await runtime.db.membership(x_workspace_id, principal.subject)
             if not membership:
@@ -84,7 +92,13 @@ def create_app(settings: Settings | None = None):
         return JSONResponse({"detail": str(exc)}, status_code=404)
 
     @app.post("/internal/alerts")
-    async def forward_alert(payload: dict):
+    async def forward_alert(payload: dict, authorization: str = Header("")):
+        expected = app.state.alert_relay_token
+        supplied = authorization.removeprefix("Bearer ").strip() if authorization.startswith("Bearer ") else ""
+        if not expected:
+            raise HTTPException(503, "告警转发令牌未配置")
+        if not supplied or not hmac.compare_digest(supplied, expected):
+            raise HTTPException(401, "告警来源未授权")
         events = app.state.alert_relay.pending(payload)
         if not events:
             ALERT_SUPPRESSED.inc()
@@ -200,7 +214,7 @@ def create_app(settings: Settings | None = None):
     @app.get("/api/data/export")
     async def export_data(request: Request, runtime=Depends(rt), user=Depends(administrator)):
         await runtime.db.audit(user, request.state.principal.subject, "data.export", "workspace", user)
-        return Response(await runtime.export_user(user), media_type="application/zip",
+        return Response(await runtime.export_user(user, request.state.principal.subject), media_type="application/zip",
                         headers={"Content-Disposition": "attachment; filename=deepresearch-export.zip"})
 
     @app.delete("/api/data")
@@ -208,7 +222,7 @@ def create_app(settings: Settings | None = None):
         if x_confirm_delete != "DELETE":
             raise HTTPException(400, "请使用 X-Confirm-Delete: DELETE 确认清理")
         try:
-            result = await runtime.purge_user(user, scope)
+            result = await runtime.purge_user(user, scope, request.state.principal.subject)
             await runtime.db.audit(user, request.state.principal.subject, "data.purge", "scope", scope)
             return result
         except ValueError as exc:
@@ -286,7 +300,7 @@ def create_app(settings: Settings | None = None):
 
     @app.post("/api/research/runs", status_code=202)
     async def start_run(body: RunRequest, request: Request, runtime=Depends(rt), user=Depends(researcher)):
-        run = await runtime.create(user, body)
+        run = await runtime.create(user, body, request.state.principal.subject)
         await runtime.db.audit(user, request.state.principal.subject, "research.create", "run", run["id"])
         return run
 
@@ -402,29 +416,37 @@ def create_app(settings: Settings | None = None):
         return {"ok": True}
 
     @app.get("/api/memories")
-    async def memories(runtime=Depends(rt), user=Depends(identity)):
-        return await runtime.db.rows("SELECT id,kind,content,created_at FROM memories WHERE user_id=? ORDER BY created_at DESC", (user,))
+    async def memories(request: Request, runtime=Depends(rt), user=Depends(identity)):
+        return await runtime.db.rows("""SELECT id,kind,content,created_at FROM memories
+            WHERE (kind IN ('profile','preference') AND owner_subject=?)
+               OR (kind='semantic' AND user_id=?) ORDER BY created_at DESC""",
+                                     (request.state.principal.subject, user))
 
     @app.post("/api/memories", status_code=201)
-    async def add_memory(body: MemoryRequest, runtime=Depends(rt), user=Depends(researcher)):
+    async def add_memory(body: MemoryRequest, request: Request, runtime=Depends(rt), user=Depends(researcher)):
         memory_id = uid()
-        await runtime.db.execute("INSERT INTO memories(id,user_id,kind,content,run_id,created_at) VALUES(?,?,'preference',?,?,?)",
-                                  (memory_id, user, body.content, memory_id, now()))
+        await runtime.db.execute("""INSERT INTO memories(
+            id,user_id,kind,content,run_id,created_at,owner_subject) VALUES(?,?,'preference',?,?,?,?)""",
+            (memory_id, user, body.content, memory_id, now(), request.state.principal.subject))
         return {"id": memory_id, "content": body.content}
 
     @app.put("/api/memories/{memory_id}")
-    async def edit_memory(memory_id: str, body: MemoryRequest, runtime=Depends(rt), user=Depends(researcher)):
-        if not await runtime.db.execute("UPDATE memories SET content=? WHERE id=? AND user_id=? AND kind='preference'",
-                                         (body.content, memory_id, user)):
+    async def edit_memory(memory_id: str, body: MemoryRequest, request: Request,
+                          runtime=Depends(rt), user=Depends(researcher)):
+        if not await runtime.db.execute("""UPDATE memories SET content=?
+            WHERE id=? AND owner_subject=? AND kind='preference'""",
+                                         (body.content, memory_id, request.state.principal.subject)):
             raise HTTPException(404, "可编辑的用户偏好不存在")
         return {"ok": True}
 
     @app.delete("/api/memories/{memory_id}")
-    async def delete_memory(memory_id: str, runtime=Depends(rt), user=Depends(researcher)):
-        memory = await runtime.db.one("SELECT * FROM memories WHERE id=? AND user_id=?", (memory_id, user))
+    async def delete_memory(memory_id: str, request: Request, runtime=Depends(rt), user=Depends(researcher)):
+        memory = await runtime.db.one("""SELECT * FROM memories WHERE id=? AND (
+            (kind IN ('profile','preference') AND owner_subject=?) OR (kind='semantic' AND user_id=?))""",
+                                      (memory_id, request.state.principal.subject, user))
         if not memory:
             raise HTTPException(404, "记忆不存在")
-        await runtime.db.execute("DELETE FROM memories WHERE id=? AND user_id=?", (memory_id, user))
+        await runtime.db.execute("DELETE FROM memories WHERE id=?", (memory_id,))
         if memory["kind"] == "semantic":
             await runtime.vectors.delete("memories", user, "id", memory_id)
         return {"ok": True}

@@ -5,8 +5,8 @@ import pytest
 
 from backend.core.config import Settings, endpoint
 from backend.core.db import Database
-from backend.domain.models import Route
-from backend.infrastructure.providers import Providers, ServiceError
+from backend.domain.models import Analysis, Route
+from backend.infrastructure.providers import Providers, ServiceError, remove_json_trailing_commas
 
 
 async def make_provider(tmp_path, response):
@@ -56,7 +56,32 @@ async def test_invalid_json_retries_once(tmp_path):
     with pytest.raises(ServiceError,match="重试一次"):
         await p.structured("router","test",{},Route,"run")
     assert len(calls) == 2
+    retry = json.loads(calls[1].content)["messages"][-1]["content"]
+    assert "错误类别" in retry and "尾逗号" in retry
     await p.close()
+
+
+async def test_trailing_comma_is_repaired_without_another_model_call(tmp_path):
+    calls = []
+    def response(request):
+        calls.append(request)
+        return httpx.Response(200, json={"choices": [{"finish_reason": "stop", "message": {
+            "content": '{"mode":"quick","reason":"ok",}'}}]})
+    p = await make_provider(tmp_path, response)
+    result = await p.structured("router", "test", {}, Route, "run")
+    assert result.mode == "quick" and result.reason == "ok"
+    assert len(calls) == 1
+    await p.close()
+
+
+def test_trailing_comma_repair_does_not_change_quoted_text():
+    value = '{"text":"literal ,} and escaped \\\" quote", "items":[1,2,],}'
+    assert remove_json_trailing_commas(value) == '{"text":"literal ,} and escaped \\\" quote", "items":[1,2]}'
+
+
+def test_analysis_capacity_covers_multi_question_research():
+    claims = [{"text": f"claim {index}", "source_ids": ["source"]} for index in range(25)]
+    assert len(Analysis.model_validate({"claims": claims, "gaps": []}).claims) == 25
 
 
 def test_deepseek_native_citations_only():

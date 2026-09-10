@@ -22,7 +22,6 @@ class Settings(BaseSettings):
     web_search_provider: Literal["deepseek", "bocha", "auto"] = "deepseek"
     bocha_base_url: str = "https://api.bochaai.com/v1"
     bocha_api_key: SecretStr = SecretStr("")
-    app_access_token: SecretStr = SecretStr("")
     auth_mode: Literal["oidc", "development"] = "oidc"
     oidc_issuer: str = ""
     oidc_audience: str = "deepresearch-api"
@@ -34,6 +33,8 @@ class Settings(BaseSettings):
     max_job_retries: int = Field(2, ge=0, le=10)
     otel_exporter_otlp_endpoint: str = ""
     feishu_webhook_url: SecretStr = SecretStr("")
+    alert_relay_token: SecretStr = SecretStr("")
+    alert_relay_token_file: Path | None = None
     workspace_daily_search_limit: int = Field(120, ge=1, le=10000)
     workspace_concurrent_run_limit: int = Field(2, ge=1, le=20)
     document_scan_mode: Literal["disabled", "clamav"] = "clamav"

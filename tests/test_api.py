@@ -58,6 +58,25 @@ async def test_delete_thread_removes_its_runs_events_and_checkpoints(app_client)
     assert not snapshot.values
 
 
+async def test_report_purge_removes_runs_events_dead_letters_and_checkpoints(app_client):
+    app, client = app_client
+    run = (await client.post('/api/research/runs', json={
+        "topic": "完整清理检查点测试", "client_request_id": uid()})).json()
+    await app.state.runtime.tasks[run['id']]
+    config = {"configurable": {"thread_id": run['id']}}
+    assert (await app.state.runtime.graph.aget_state(config)).values
+    await app.state.runtime.db.execute("""INSERT INTO dead_letter_runs(
+        run_id,user_id,category,message,failed_at,recovered_at) VALUES(?,?,?,?,?,?)""",
+        (run['id'], 'alice', 'test', 'test', 'today', ''))
+
+    response = await client.delete('/api/data?scope=reports', headers={"X-Confirm-Delete": "DELETE"})
+
+    assert response.status_code == 200
+    assert not await app.state.runtime.db.one("SELECT id FROM runs WHERE id=?", (run['id'],))
+    assert not await app.state.runtime.db.one("SELECT run_id FROM dead_letter_runs WHERE run_id=?", (run['id'],))
+    assert not (await app.state.runtime.graph.aget_state(config)).values
+
+
 async def test_thread_keys_are_short_per_user_and_resolve_in_routes(app_client):
     app, client = app_client
     first = (await client.post('/api/research/runs', json={"topic":"短会话标识", "client_request_id":uid()})).json()
@@ -156,9 +175,13 @@ async def test_oidc_mode_exposes_issuer_but_refuses_development_auto_login(tmp_p
             assert (await client.post("/api/auth/development/login")).status_code == 404
 
 async def test_alert_forwarding_is_disabled_without_webhook(settings):
+    from pydantic import SecretStr
+
+    settings.alert_relay_token = SecretStr("relay-test-token")
     app = create_app(settings)
     async with app.router.lifespan_context(app):
         async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
-            response = await client.post("/internal/alerts", json={"alerts": [{"annotations": {"summary": "test"}}]})
+            response = await client.post("/internal/alerts", headers={"Authorization": "Bearer relay-test-token"},
+                                         json={"alerts": [{"annotations": {"summary": "test"}}]})
     assert response.status_code == 200
     assert response.json() == {"delivered": False, "reason": "not_configured"}

@@ -100,7 +100,7 @@ def main() -> int:
     wait_for("stored application telemetry", telemetry_records_ready)
     version = run("exec", "-T", "postgres", "psql", "-U", "deepresearch", "-d", "deepresearch", "-tAc",
                   "SELECT version_num FROM alembic_version", capture=True).strip()
-    if version != "0002_dead_letter_runs":
+    if version != "0003_personal_memory_ownership":
         raise RuntimeError(f"Unexpected Alembic version: {version}")
     output = run("exec", "-T", "redis", "redis-cli", "ping", capture=True).strip()
     if output != "PONG":

@@ -22,6 +22,41 @@ class ServiceError(Exception):
     pass
 
 
+def remove_json_trailing_commas(value: str) -> str:
+    """Remove only commas followed by a closing JSON token, outside strings."""
+    output: list[str] = []
+    in_string = False
+    escaped = False
+    index = 0
+    while index < len(value):
+        char = value[index]
+        if in_string:
+            output.append(char)
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+            index += 1
+            continue
+        if char == '"':
+            in_string = True
+            output.append(char)
+            index += 1
+            continue
+        if char == ",":
+            lookahead = index + 1
+            while lookahead < len(value) and value[lookahead].isspace():
+                lookahead += 1
+            if lookahead < len(value) and value[lookahead] in "}]":
+                index += 1
+                continue
+        output.append(char)
+        index += 1
+    return "".join(output)
+
+
 class Providers:
     def __init__(self, settings: Settings, db: Database, client: httpx.AsyncClient | None = None):
         self.settings, self.db = settings, db
@@ -81,8 +116,9 @@ class Providers:
         with tracer().start_as_current_span("llm.structured"):
             async with self.gate:
                 for attempt in range(2):
+                    finish_reason = ""
                     payload = {"model": self.settings.llm_model_id, "messages": messages,
-                               "max_tokens": 5000, "response_format": {"type": "json_object"},
+                               "max_tokens": 8000, "response_format": {"type": "json_object"},
                                **json.loads(self.settings.llm_extra_body)}
                     if temperature is not None:
                         payload["temperature"] = temperature
@@ -96,16 +132,41 @@ class Providers:
                     TOKENS.labels(kind="prompt").inc(prompt_tokens)
                     TOKENS.labels(kind="completion").inc(completion_tokens)
                     try:
-                        content = result["choices"][0]["message"]["content"]
+                        choice = result["choices"][0]
+                        finish_reason = choice.get("finish_reason", "")
+                        if finish_reason == "length":
+                            raise ValueError("finish_reason=length")
+                        content = choice["message"]["content"]
+                        if not isinstance(content, str) or not content.strip():
+                            raise ValueError("empty content")
                         content = re.sub(r"^```(?:json)?\s*|\s*```$", "", content.strip())
-                        parsed = schema.model_validate_json(content)
+                        try:
+                            parsed = schema.model_validate_json(content)
+                        except ValidationError:
+                            repaired = remove_json_trailing_commas(content)
+                            if repaired == content:
+                                raise
+                            parsed = schema.model_validate_json(repaired)
+                            self.logger.warning("run=%s component=llm role=%s repair=trailing_commas",
+                                                run_label(run_id), role)
                         self.logger.info("run=%s component=llm role=%s phase=end duration_ms=%d",
                                          run_label(run_id), role, round((time.monotonic() - started) * 1000))
                         return parsed
-                    except (KeyError, IndexError, TypeError, AttributeError, ValidationError):
+                    except (KeyError, IndexError, TypeError, AttributeError, ValueError) as exc:
+                        if isinstance(exc, ValidationError):
+                            issue = ", ".join(sorted({str(row["type"]) for row in exc.errors(include_input=False)}))
+                        else:
+                            issue = type(exc).__name__
+                        self.logger.warning(
+                            "run=%s component=llm role=%s phase=invalid attempt=%d finish_reason=%s issue=%s",
+                            run_label(run_id), role, attempt + 1, finish_reason or "unknown", issue)
                         if attempt:
-                            raise ServiceError(f"{role} 未返回有效的结构化结果，已重试一次") from None
-                        messages.append({"role": "user", "content": "上次结果不符合 JSON schema。请重新输出完整、有效的 JSON。"})
+                            raise ServiceError(
+                                f"{role} 未返回有效的结构化结果，已重试一次；错误类别：{issue}") from None
+                        messages.append({"role": "user", "content": (
+                            f"上次结果不符合 JSON schema（错误类别：{issue}）。请从头重新生成完整、有效的 JSON；"
+                            "只输出一个 JSON 对象，不要代码围栏，不得在对象或数组末项后添加尾逗号。"
+                        )})
         raise ServiceError("模型输出校验失败")
 
     async def describe_image(self, image: bytes, media_type: str) -> str:

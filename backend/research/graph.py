@@ -234,21 +234,26 @@ class ResearchGraph:
             if route.memory_action == "set_assistant_name":
                 name = route.assistant_name.strip()
                 if re.fullmatch(r"[\u4e00-\u9fffA-Za-z0-9_-]{1,24}", name):
-                    profile_id = "p" + digest(state["user_id"])[:24]
-                    await self.db.execute("DELETE FROM memories WHERE user_id=? AND kind='profile'", (state["user_id"],))
-                    await self.db.execute("""INSERT INTO memories(id,user_id,kind,content,run_id,created_at)
-                        VALUES(?,?, 'profile', ?, ?, ?)""",
-                        (profile_id, state["user_id"], f"助手名称：{name}", profile_id, now()))
-                    return {"mode": "chat", "report": f"好的，在这个 User ID 下我叫 **{name}**。新的 Thread 也会使用这个名称。",
+                    owner_subject = state["owner_subject"]
+                    profile_id = "p" + digest(owner_subject)[:24]
+                    await self.db.execute("DELETE FROM memories WHERE owner_subject=? AND kind='profile'",
+                                          (owner_subject,))
+                    await self.db.execute("""INSERT INTO memories(
+                        id,user_id,kind,content,run_id,created_at,owner_subject)
+                        VALUES(?,?, 'profile', ?, ?, ?, ?)""",
+                        (profile_id, state["user_id"], f"助手名称：{name}", profile_id, now(), owner_subject))
+                    return {"mode": "chat", "report": f"好的，在你的账号下我叫 **{name}**。新的 Thread 也会使用这个名称。",
                             "validation": {"kind": "profile", "checked_claims": 0, "supported_claims": 0}}
             if route.memory_action == "get_assistant_name":
-                profile = await self.db.one("SELECT content FROM memories WHERE user_id=? AND kind='profile'", (state["user_id"],))
+                profile = await self.db.one("SELECT content FROM memories WHERE owner_subject=? AND kind='profile'",
+                                            (state["owner_subject"],))
                 report = f"我叫 **{profile['content'].removeprefix('助手名称：')}**。" if profile else "我还没有名字。你可以直接告诉我希望怎样称呼我。"
                 return {"mode": "chat", "report": report,
                         "validation": {"kind": "profile", "checked_claims": 0, "supported_claims": 0}}
             if route.memory_action == "get_preferences":
                 preferences = await self.db.rows(
-                    "SELECT content FROM memories WHERE user_id=? AND kind='preference' ORDER BY created_at DESC", (state["user_id"],))
+                    """SELECT content FROM memories WHERE owner_subject=? AND kind='preference'
+                    ORDER BY created_at DESC""", (state["owner_subject"],))
                 report = "# 当前研究偏好\n\n" + ("\n".join(f"- {md_text(row['content'])}" for row in preferences)
                     if preferences else "当前用户还没有保存研究偏好。你可以在“研究记忆”中添加关注行业、地区或输出格式。")
                 return {"mode": "chat", "report": report,
@@ -391,7 +396,10 @@ class ResearchGraph:
             return {"claims": [], "gaps": state["plan"]["questions"]}
         analysis = await self.ask("analyst",
             "逐项回答研究问题。每条事实或推断必须关联 source_ids，推断明确写出推断及边界。"
-            "证据不支持的内容不要写为事实，列入 gaps。数字必须保留年份、地域、统计定义。",
+            "证据不支持的内容不要写为事实，列入 gaps。数字必须保留年份、地域、统计定义。"
+            "claims 严格不超过 40 条，gaps 严格不超过 8 条；合并同一证据支持的重复结论。"
+            "JSON 结构示例（仅展示字段，不代表允许空分析）：{\"claims\":[],\"gaps\":[]}。"
+            "对象和数组末项后不得添加尾逗号。",
             {"plan": state["plan"], "evidence": evidence_context(state["evidence"]), "conflicts": state["conflicts"]},
             Analysis, state["run_id"])
         valid = {row["id"] for row in state["evidence"]}

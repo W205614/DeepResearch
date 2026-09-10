@@ -34,6 +34,7 @@ async def test_delivery_retries_transient_webhook_failures():
 @pytest.mark.asyncio
 async def test_alert_endpoint_delivers_firing_once_and_recovery(settings):
     settings.feishu_webhook_url = SecretStr("http://webhook.test")
+    settings.alert_relay_token = SecretStr("relay-test-token")
     app = create_app(settings)
     delivered = []
     async def sender(url, body):
@@ -41,9 +42,13 @@ async def test_alert_endpoint_delivers_firing_once_and_recovery(settings):
     app.state.alert_sender = sender
     async with app.router.lifespan_context(app):
         async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
-            first = await client.post("/internal/alerts", json={"alerts": [alert()]})
-            duplicate = await client.post("/internal/alerts", json={"alerts": [alert()]})
-            recovery = await client.post("/internal/alerts", json={"alerts": [alert("resolved")]})
+            headers = {"Authorization": "Bearer relay-test-token"}
+            assert (await client.post("/internal/alerts", json={"alerts": [alert()]})).status_code == 401
+            assert (await client.post("/internal/alerts", headers={"Authorization": "Bearer wrong"},
+                                      json={"alerts": [alert()]})).status_code == 401
+            first = await client.post("/internal/alerts", headers=headers, json={"alerts": [alert()]})
+            duplicate = await client.post("/internal/alerts", headers=headers, json={"alerts": [alert()]})
+            recovery = await client.post("/internal/alerts", headers=headers, json={"alerts": [alert("resolved")]})
     assert first.json()["delivered"] is True
     assert duplicate.json() == {"delivered": False, "reason": "deduplicated"}
     assert recovery.json()["statuses"] == ["resolved"]

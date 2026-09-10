@@ -15,13 +15,15 @@ CREATE TABLE IF NOT EXISTS runs(
  id TEXT PRIMARY KEY,user_id TEXT NOT NULL,thread_id TEXT NOT NULL,topic TEXT,mode TEXT,status TEXT,
  created_at TEXT,updated_at TEXT,report TEXT DEFAULT '',sources TEXT DEFAULT '[]',validation TEXT DEFAULT '{}',
  error TEXT DEFAULT '',client_request_id TEXT,attempt_count INTEGER NOT NULL DEFAULT 0,last_attempt_at TEXT DEFAULT '',
+ created_by TEXT NOT NULL DEFAULT '',
  UNIQUE(user_id,client_request_id));
 CREATE UNIQUE INDEX IF NOT EXISTS one_active_thread ON runs(thread_id) WHERE status IN ('queued','running');
 CREATE TABLE IF NOT EXISTS events(id BIGSERIAL PRIMARY KEY,run_id TEXT NOT NULL,type TEXT,data TEXT,created_at TEXT);
 CREATE INDEX IF NOT EXISTS event_run ON events(run_id,id);
 CREATE TABLE IF NOT EXISTS documents(id TEXT PRIMARY KEY,user_id TEXT NOT NULL,name TEXT,hash TEXT,status TEXT,error TEXT DEFAULT '',created_at TEXT,UNIQUE(user_id,hash));
 CREATE TABLE IF NOT EXISTS chunks(id TEXT PRIMARY KEY,document_id TEXT,user_id TEXT,text TEXT,locator TEXT,vector TEXT DEFAULT '[]');
-CREATE TABLE IF NOT EXISTS memories(id TEXT PRIMARY KEY,user_id TEXT,kind TEXT,content TEXT,run_id TEXT DEFAULT '',created_at TEXT,vector TEXT DEFAULT '[]',UNIQUE(user_id,kind,run_id));
+CREATE TABLE IF NOT EXISTS memories(id TEXT PRIMARY KEY,user_id TEXT,kind TEXT,content TEXT,run_id TEXT DEFAULT '',created_at TEXT,vector TEXT DEFAULT '[]',owner_subject TEXT NOT NULL DEFAULT '',UNIQUE(user_id,kind,run_id));
+CREATE INDEX IF NOT EXISTS personal_memory_owner ON memories(owner_subject,kind,created_at);
 CREATE TABLE IF NOT EXISTS counters(run_id TEXT PRIMARY KEY,search_calls INTEGER DEFAULT 0,llm_calls INTEGER DEFAULT 0,prompt_tokens INTEGER DEFAULT 0,completion_tokens INTEGER DEFAULT 0);
 CREATE TABLE IF NOT EXISTS search_cache(run_id TEXT,query TEXT,result TEXT,PRIMARY KEY(run_id,query));
 CREATE TABLE IF NOT EXISTS web_cache(url TEXT PRIMARY KEY,text TEXT NOT NULL,fetched_at TEXT NOT NULL,access TEXT NOT NULL,error TEXT DEFAULT '');
@@ -147,6 +149,20 @@ class PostgresDatabase:
             await conn.execute("INSERT INTO workspace_limits(workspace_id,daily_search_limit,daily_token_limit,concurrent_run_limit) VALUES(?,?,0,?)",
                                (workspace["id"], *limits))
         return workspace
+
+    async def ensure_personal_workspace(self, subject, name, limits):
+        """Idempotently bootstrap the subject's default workspace."""
+        workspace = {"id": subject, "name": name.strip()[:100], "created_by": subject, "created_at": now()}
+        async with self.connection() as conn:
+            await conn.execute("""INSERT INTO workspaces(id,name,created_by,created_at) VALUES(?,?,?,?)
+                               ON CONFLICT(id) DO NOTHING""", tuple(workspace.values()))
+            await conn.execute("""INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES(?,?,?,?)
+                               ON CONFLICT(workspace_id,subject) DO NOTHING""",
+                               (subject, subject, "admin", workspace["created_at"]))
+            await conn.execute("""INSERT INTO workspace_limits(
+                workspace_id,daily_search_limit,daily_token_limit,concurrent_run_limit) VALUES(?,?,0,?)
+                ON CONFLICT(workspace_id) DO NOTHING""", (subject, *limits))
+        return await self.membership(subject, subject)
 
     async def memberships(self, subject):
         return await self.rows("SELECT w.id,w.name,m.role,w.created_at FROM workspaces w JOIN memberships m ON w.id=m.workspace_id WHERE m.subject=? ORDER BY w.created_at", (subject,))

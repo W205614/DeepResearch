@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS runs(
  id TEXT PRIMARY KEY,user_id TEXT NOT NULL,thread_id TEXT NOT NULL,topic TEXT,mode TEXT,
  status TEXT,created_at TEXT,updated_at TEXT,report TEXT DEFAULT '',sources TEXT DEFAULT '[]',
  validation TEXT DEFAULT '{}',error TEXT DEFAULT '',client_request_id TEXT,
+ created_by TEXT NOT NULL DEFAULT '',
  UNIQUE(user_id,client_request_id));
 CREATE UNIQUE INDEX IF NOT EXISTS one_active_thread ON runs(thread_id)
  WHERE status IN ('queued','running');
@@ -36,7 +37,7 @@ CREATE TABLE IF NOT EXISTS chunks(
  id TEXT PRIMARY KEY,document_id TEXT,user_id TEXT,text TEXT,locator TEXT,vector TEXT DEFAULT '[]');
 CREATE TABLE IF NOT EXISTS memories(
  id TEXT PRIMARY KEY,user_id TEXT,kind TEXT,content TEXT,run_id TEXT DEFAULT '',created_at TEXT,
- vector TEXT DEFAULT '[]',UNIQUE(user_id,kind,run_id));
+ vector TEXT DEFAULT '[]',owner_subject TEXT NOT NULL DEFAULT '',UNIQUE(user_id,kind,run_id));
 CREATE TABLE IF NOT EXISTS counters(
  run_id TEXT PRIMARY KEY,search_calls INTEGER DEFAULT 0,llm_calls INTEGER DEFAULT 0,
  prompt_tokens INTEGER DEFAULT 0,completion_tokens INTEGER DEFAULT 0);
@@ -77,11 +78,23 @@ class Database:
             await conn.executescript(SCHEMA)
             columns = {row[1] for row in await (await conn.execute("PRAGMA table_info(threads)")).fetchall()}
             run_columns = {row[1] for row in await (await conn.execute("PRAGMA table_info(runs)")).fetchall()}
+            memory_columns = {row[1] for row in await (await conn.execute("PRAGMA table_info(memories)")).fetchall()}
             if "attempt_count" not in run_columns:
                 await conn.execute("ALTER TABLE runs ADD COLUMN attempt_count INTEGER NOT NULL DEFAULT 0")
                 await conn.execute("ALTER TABLE runs ADD COLUMN last_attempt_at TEXT DEFAULT ''")
             if "thread_key" not in columns:
                 await conn.execute("ALTER TABLE threads ADD COLUMN thread_key TEXT")
+            if "created_by" not in run_columns:
+                await conn.execute("ALTER TABLE runs ADD COLUMN created_by TEXT NOT NULL DEFAULT ''")
+            if "owner_subject" not in memory_columns:
+                await conn.execute("ALTER TABLE memories ADD COLUMN owner_subject TEXT NOT NULL DEFAULT ''")
+            await conn.execute("""UPDATE runs SET created_by=COALESCE(
+                (SELECT created_by FROM workspaces WHERE id=runs.user_id),user_id)
+                WHERE created_by=''""")
+            await conn.execute("""UPDATE memories SET owner_subject=COALESCE(
+                (SELECT created_by FROM workspaces WHERE id=memories.user_id),user_id)
+                WHERE owner_subject='' AND kind IN ('profile','preference')""")
+            await conn.execute("CREATE INDEX IF NOT EXISTS personal_memory_owner ON memories(owner_subject,kind,created_at)")
             rows = await (await conn.execute(
                 "SELECT id,user_id FROM threads WHERE thread_key IS NULL OR thread_key='' ORDER BY created_at,id")).fetchall()
             assigned: dict[str, set[str]] = {}
@@ -154,6 +167,20 @@ class Database:
                                VALUES(?,?,0,?)""", (workspace["id"], *limits))
             await conn.commit()
         return workspace
+
+    async def ensure_personal_workspace(self, subject: str, name: str, limits: tuple[int, int]) -> dict:
+        """Idempotently bootstrap the subject's default workspace."""
+        workspace = {"id": subject, "name": name.strip()[:100], "created_by": subject, "created_at": now()}
+        async with self.connection() as conn:
+            await conn.execute("INSERT OR IGNORE INTO workspaces(id,name,created_by,created_at) VALUES(?,?,?,?)",
+                               tuple(workspace.values()))
+            await conn.execute("INSERT OR IGNORE INTO memberships(workspace_id,subject,role,created_at) VALUES(?,?,?,?)",
+                               (subject, subject, "admin", workspace["created_at"]))
+            await conn.execute("""INSERT OR IGNORE INTO workspace_limits(
+                workspace_id,daily_search_limit,daily_token_limit,concurrent_run_limit) VALUES(?,?,0,?)""",
+                (subject, *limits))
+            await conn.commit()
+        return await self.membership(subject, subject)
 
     async def memberships(self, subject: str) -> list[dict]:
         return await self.rows("""SELECT w.id,w.name,m.role,w.created_at FROM workspaces w JOIN memberships m

@@ -198,8 +198,9 @@ async def test_contextual_product_question_does_not_search(runtime):
 
 
 async def test_current_user_preference_is_local_and_does_not_search(runtime):
-    await runtime.db.execute("""INSERT INTO memories(id,user_id,kind,content,run_id,created_at)
-        VALUES('preference-query','alice','preference','优先关注中国市场与中文输出','pref','today')""")
+    await runtime.db.execute("""INSERT INTO memories(
+        id,user_id,kind,content,run_id,created_at,owner_subject)
+        VALUES('preference-query','alice','preference','优先关注中国市场与中文输出','pref','today','alice')""")
 
     async def preference_route(role, *args, **kwargs):
         if role == "router":
@@ -329,7 +330,9 @@ async def test_context_keeps_thread_outline_beyond_recent_report_detail(runtime)
 
 async def test_restart_preserves_reports_and_preferences(settings):
     rt = await Runtime(settings).start()
-    await rt.db.execute("INSERT INTO memories(id,user_id,kind,content,run_id,created_at) VALUES('pref','alice','preference','关注中国市场','pref','today')")
+    await rt.db.execute("""INSERT INTO memories(
+        id,user_id,kind,content,run_id,created_at,owner_subject)
+        VALUES('pref','alice','preference','关注中国市场','pref','today','alice')""")
     result = await finish(rt, await rt.create("alice", RunRequest(topic="研究流程", client_request_id=uid())))
     await rt.close()
     rt2 = await Runtime(settings).start()
