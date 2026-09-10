@@ -1,0 +1,5 @@
+FROM deepresearch-verify-base
+USER root
+RUN uv sync --frozen --all-groups --no-install-project --no-python-downloads --link-mode=copy
+COPY . /app
+USER researcher

@@ -115,6 +115,19 @@ class VectorIndex:
             # SQL tombstones are checked after vector retrieval; an orphan is never returned.
             raise ServiceError("资料已停止参与检索，但向量清理失败；可再次执行删除重试") from None
 
+    async def delete_document_version(self, user, document_id, version):
+        if self.settings.demo_mode:
+            return
+        def operation():
+            client, name = self.ensure("documents")
+            # Legacy version zero has no dynamic version field; match its stable IDs.
+            ids = [hashlib.sha256((f"{document_id}:{i}" if version == 0 else
+                                  f"{document_id}:{version}:{i}").encode()).hexdigest()[:32]
+                   for i in range(400)]
+            client.delete(collection_name=name,
+                          filter=f"user_id == {json.dumps(user)} and id in {json.dumps(ids)}", timeout=10)
+        await asyncio.to_thread(operation)
+
     async def drop_collections(self):
         """Remove only this index instance's named collections (evaluation cleanup)."""
         if self.settings.demo_mode or not self._ready:

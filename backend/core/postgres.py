@@ -2,6 +2,7 @@
 from contextlib import asynccontextmanager
 import json
 import re
+import hashlib
 
 import asyncpg
 
@@ -58,6 +59,17 @@ class _Connection:
 class PostgresDatabase:
     def __init__(self, dsn: str):
         self.dsn, self.pool = dsn, None
+
+    @asynccontextmanager
+    async def guard(self, key):
+        # Dedicated connection avoids exhausting the query pool with lock waiters.
+        lock_id = int.from_bytes(hashlib.sha256(key.encode()).digest()[:8], "big", signed=True)
+        conn = await asyncpg.connect(self.dsn)
+        try:
+            await conn.execute("SELECT pg_advisory_lock($1)", lock_id)
+            yield
+        finally:
+            await conn.close()
 
     def _sql(self, sql: str) -> str:
         ignore_conflict = "INSERT OR IGNORE INTO" in sql
@@ -126,11 +138,32 @@ class PostgresDatabase:
                                (run_id, prompt, completion))
 
     async def reserve_search(self, run_id, limit):
-        async with self.connection() as conn:
-            await conn.execute("INSERT INTO counters(run_id) VALUES(?) ON CONFLICT DO NOTHING", (run_id,))
-            result = await conn.execute("UPDATE counters SET search_calls=search_calls+1 WHERE run_id=? AND search_calls<?",
-                                        (run_id, limit))
-        return result.endswith("1")
+        async with self.pool.acquire() as conn:
+            tx = conn.transaction()
+            await tx.start()
+            try:
+                row = await conn.fetchrow("""SELECT r.user_id,l.daily_search_limit FROM runs r
+                    JOIN workspace_limits l ON l.workspace_id=r.user_id WHERE r.id=$1""", run_id)
+                if row:
+                    day = now()[:10]
+                    await conn.execute("""INSERT INTO workspace_daily_usage(workspace_id,day)
+                        VALUES($1,$2) ON CONFLICT DO NOTHING""", row["user_id"], day)
+                    result = await conn.execute("""UPDATE workspace_daily_usage SET search_calls=search_calls+1
+                        WHERE workspace_id=$1 AND day=$2 AND search_calls<$3""",
+                        row["user_id"], day, row["daily_search_limit"])
+                    if result != "UPDATE 1":
+                        await tx.rollback()
+                        return False
+                await conn.execute("INSERT INTO counters(run_id) VALUES($1) ON CONFLICT DO NOTHING", run_id)
+                result = await conn.execute("UPDATE counters SET search_calls=search_calls+1 WHERE run_id=$1 AND search_calls<$2", run_id, limit)
+                if result != "UPDATE 1":
+                    await tx.rollback()
+                    return False
+                await tx.commit()
+                return True
+            except BaseException:
+                await tx.rollback()
+                raise
 
     async def owned_run(self, run_id, user):
         row = await self.one("SELECT * FROM runs WHERE id=? AND user_id=?", (run_id, user))

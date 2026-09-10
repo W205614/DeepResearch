@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from backend.core.config import Settings
 from backend.core.db import Database
 from backend.infrastructure.providers import Providers, ServiceError
-from backend.quality_gate import QualityDraft, evaluate_draft, summarize
+from backend.quality_gate import QualityDraft, evaluate_draft, summarize, assess_support
 
 
 async def main_async(args) -> int:
@@ -35,7 +35,20 @@ async def main_async(args) -> int:
                 {"question": case["question"], "evidence": case["evidence"]}, QualityDraft,
                 "quality-" + case["id"], temperature=0,
             )
-            results.append(evaluate_draft(case, draft))
+            checks = await assess_support(providers, case, draft, "quality-" + case["id"])
+            results.append(evaluate_draft(case, draft, checks))
+        for number, (evidence, incorrect) in enumerate([
+            ("42 名用户完成资料导出。", "42 名用户全部未完成资料导出。"),
+            ("甲组 12 人完成，乙组 20 人未完成。", "甲组 20 人完成，乙组 12 人未完成。"),
+            ("2024 年完成内部试点，范围仅限内部访谈。", "2025 年完成全球市场验证。"),
+        ]):
+            case = {"id": f"adversarial-{number}", "critical": True,
+                    "evidence": [{"id": "s1", "text": evidence}]}
+            draft = QualityDraft.model_validate({"claims": [{"text": incorrect, "source_ids": ["s1"]}]})
+            checks = await assess_support(providers, case, draft, "quality-" + case["id"])
+            rejected = checks == [{"index": 0, "supported": False}]
+            results.append({"id": case["id"], "critical": True, "passed": rejected,
+                            "checks": [] if rejected else ["incorrect_claim_not_rejected"]})
     except ServiceError as exc:
         raise RuntimeError("answer-quality gate could not obtain a valid real-model result") from exc
     finally:

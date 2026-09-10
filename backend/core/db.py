@@ -6,6 +6,7 @@ from pathlib import Path
 from uuid import uuid4
 
 import aiosqlite
+from .consistency import DAILY_SCHEMA, local_guard
 
 
 def now() -> str:
@@ -66,6 +67,9 @@ class Database:
     def __init__(self, path: Path):
         self.path = path
 
+    def guard(self, key):
+        return local_guard((str(self.path.resolve()), key))
+
     @asynccontextmanager
     async def connection(self):
         async with aiosqlite.connect(self.path, timeout=30) as conn:
@@ -76,6 +80,10 @@ class Database:
     async def init(self):
         async with self.connection() as conn:
             await conn.executescript(SCHEMA)
+            await conn.executescript(DAILY_SCHEMA)
+            document_columns = {row[1] for row in await (await conn.execute("PRAGMA table_info(documents)")).fetchall()}
+            if "index_version" not in document_columns:
+                await conn.execute("ALTER TABLE documents ADD COLUMN index_version INTEGER NOT NULL DEFAULT 0")
             columns = {row[1] for row in await (await conn.execute("PRAGMA table_info(threads)")).fetchall()}
             run_columns = {row[1] for row in await (await conn.execute("PRAGMA table_info(runs)")).fetchall()}
             memory_columns = {row[1] for row in await (await conn.execute("PRAGMA table_info(memories)")).fetchall()}
@@ -143,9 +151,23 @@ class Database:
 
     async def reserve_search(self, run_id: str, limit: int) -> bool:
         async with self.connection() as conn:
+            await conn.execute("BEGIN IMMEDIATE")
+            row = await (await conn.execute("""SELECT r.user_id,l.daily_search_limit FROM runs r
+                JOIN workspace_limits l ON l.workspace_id=r.user_id WHERE r.id=?""", (run_id,))).fetchone()
+            if row:
+                day = now()[:10]
+                await conn.execute("INSERT OR IGNORE INTO workspace_daily_usage(workspace_id,day) VALUES(?,?)", (row[0], day))
+                daily = await conn.execute("""UPDATE workspace_daily_usage SET search_calls=search_calls+1
+                    WHERE workspace_id=? AND day=? AND search_calls<?""", (row[0], day, row[1]))
+                if daily.rowcount != 1:
+                    await conn.rollback()
+                    return False
             await conn.execute("INSERT OR IGNORE INTO counters(run_id) VALUES(?)", (run_id,))
             cur = await conn.execute("UPDATE counters SET search_calls=search_calls+1 WHERE run_id=? AND search_calls<?",
                                      (run_id, limit))
+            if cur.rowcount != 1:
+                await conn.rollback()
+                return False
             await conn.commit()
             return cur.rowcount == 1
 

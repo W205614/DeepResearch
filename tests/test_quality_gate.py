@@ -8,7 +8,8 @@ def draft(claims, limitations=None):
 def test_quality_gate_requires_expected_terms_and_known_citations():
     case = {"id": "ok", "critical": False, "evidence": [{"id": "s1"}],
             "required_terms": ["42"], "required_source_ids": ["s1"]}
-    result = evaluate_draft(case, draft([{"text": "共有 42 名用户", "source_ids": ["s1"]}]))
+    result = evaluate_draft(case, draft([{"text": "共有 42 名用户", "source_ids": ["s1"]}]),
+                            [{"index": 0, "supported": True}])
     assert result["passed"] is True
 
 

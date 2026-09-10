@@ -87,13 +87,9 @@ def compact_limitations(gaps: list[str], conflicts: list[str], warnings: list[st
     clean_conflicts = unique([item.strip() for item in conflicts if item and item.strip()])
     clean_warnings = unique([item.strip() for item in warnings if item and item.strip()])
     if clean_gaps:
-        preview = "；".join(clean_gaps[:2])
-        suffix = "等" if len(clean_gaps) > 2 else ""
-        items.append(f"仍有 {len(clean_gaps)} 项研究缺口：{preview}{suffix}")
+        items.append(f"仍有 {len(clean_gaps)} 项研究缺口；当前证据未覆盖全部计划问题，请补充原始资料。")
     if clean_conflicts:
-        preview = "；".join(clean_conflicts[:1])
-        suffix = "等" if len(clean_conflicts) > 1 else ""
-        items.append(f"存在 {len(clean_conflicts)} 项信息口径冲突：{preview}{suffix}")
+        items.append(f"存在 {len(clean_conflicts)} 项信息口径冲突；仅保留通过引用核查的差异，不据此选择单一真值。")
     if clean_warnings:
         preview = "；".join(clean_warnings[:1])
         suffix = "等" if len(clean_warnings) > 1 else ""
@@ -286,7 +282,8 @@ class ResearchGraph:
         plan = await self.ask("planner",
             "根据用户主题制定研究计划，结合上下文解析追问。明确时间和地区口径，未知范围写明假设。"
             "深度研究拆解 2–5 个子问题，生成最多 4 个不同查询。quick 只生成一个查询与一个问题。"
-            "历史研究摘要不作为本次事实证据。",
+            "历史研究摘要不作为本次事实证据。只拆解用户要求，不扩展成无证据的原因猜测或治理建议。"
+            "不得擅自限定只使用公开资料；没有指定日期或地区时标记未知，不假设为今天或最新数据。",
             {"topic": state["topic"], "mode": state["mode"], "context": state.get("context", ""), "today": now()[:10]},
             Plan, state["run_id"])
         queries = plan.queries[:1] if state["mode"] == "quick" else plan.queries
@@ -377,6 +374,11 @@ class ResearchGraph:
         candidates = merge_evidence(state.get("evidence", []) + state["web_results"] + state["local_results"])
         if not candidates:
             return {"evidence": [], "conflicts": []}
+        previous = {row["id"]: row["text"] for row in state.get("evidence", [])}
+        if previous and all(previous.get(row["id"]) == row["text"] for row in candidates):
+            # An empty/repeated supplementary search provides no basis to revoke
+            # unchanged evidence. Final claim validation still runs independently.
+            return {"evidence": candidates, "conflicts": state.get("conflicts", [])}
         decision = await self.ask("judge",
             "审查证据相关性。只接受能够回答计划中问题的来源，不能凭网站名称推断可信。"
             "识别不同年份、地域、定义导致的口径差异及真实冲突，列出具体冲突，不擅自选择一个数值。"
@@ -397,6 +399,7 @@ class ResearchGraph:
         analysis = await self.ask("analyst",
             "逐项回答研究问题。每条事实或推断必须关联 source_ids，推断明确写出推断及边界。"
             "证据不支持的内容不要写为事实，列入 gaps。数字必须保留年份、地域、统计定义。"
+            "不要枚举证据未提及的假设原因、改进措施或字段清单；缺少资料就说明未知。"
             "claims 严格不超过 40 条，gaps 严格不超过 8 条；合并同一证据支持的重复结论。"
             "JSON 结构示例（仅展示字段，不代表允许空分析）：{\"claims\":[],\"gaps\":[]}。"
             "对象和数组末项后不得添加尾逗号。",
@@ -433,6 +436,7 @@ class ResearchGraph:
             "编写结构化中文研究报告。所有实质内容都放入 sections[].claims，且每条都要引用来源。"
             "不要凭记忆增加新事实或新数字，不要自行构造 URL。涵盖执行摘要、各研究问题、结论。"
             "深度模式应逐项覆盖计划问题，综合全部已接受且相关的证据；证据不足时明确缺口。"
+            "同一结论只出现一次。不要为充实篇幅增加未被原文支持的建议、假设原因和行动清单。"
             "limitations 仅描述研究边界，不包含新的行业结论或数字。",
             {"topic": state["topic"], "plan": state["plan"], "claims": state["claims"],
              "gaps": state["gaps"], "conflicts": state["conflicts"], "evidence": evidence_context(state["evidence"])},
@@ -483,7 +487,7 @@ class ResearchGraph:
         parts = ["# " + md_text(draft.title)]
         if self.settings.demo_mode:
             parts.append("> 测试模式：固定资料与模拟模型，不代表真实研究结果。")
-        parts.append("研究范围：" + md_text(state["plan"]["scope"]))
+        parts.append("研究主题：" + md_text(state["topic"]))
         index, used = 0, set()
         for section in draft.sections:
             paragraphs = []

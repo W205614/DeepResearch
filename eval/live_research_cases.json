@@ -1,0 +1,44 @@
+[
+  {
+    "id": "live-postgres",
+    "question": "根据 PostgreSQL 官方文档 https://www.postgresql.org/docs/current/ddl-rowsecurity.html 解释行级安全策略的作用、表所有者的默认行为和 FORCE ROW LEVEL SECURITY 的作用。",
+    "expected_facts": [
+      "行级安全策略限制可访问的行",
+      "表所有者通常绕过行级安全",
+      "FORCE ROW LEVEL SECURITY 可约束表所有者"
+    ],
+    "forbidden_claims": [
+      "所有角色都无法绕过行级安全"
+    ],
+    "critical": true,
+    "evidence": []
+  },
+  {
+    "id": "live-redis",
+    "question": "根据 Redis 官方文档比较 RDB 与 AOF 持久化的机制及恢复取舍。",
+    "expected_facts": [
+      "RDB 保存时间点快照",
+      "AOF 记录写操作",
+      "持久化选择存在性能和数据丢失窗口的取舍"
+    ],
+    "forbidden_claims": [
+      "任何配置下都绝不丢失数据"
+    ],
+    "critical": true,
+    "evidence": []
+  },
+  {
+    "id": "live-oidc",
+    "question": "根据 OpenID Connect 官方规范说明 ID Token、Access Token 和身份认证的区别。",
+    "expected_facts": [
+      "OpenID Connect 用于身份认证",
+      "ID Token 包含身份认证相关声明",
+      "Access Token 用于访问受保护资源"
+    ],
+    "forbidden_claims": [
+      "ID Token 可以无条件替代所有 API 的 Access Token"
+    ],
+    "critical": true,
+    "evidence": []
+  }
+]

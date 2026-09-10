@@ -2,6 +2,7 @@ import asyncio
 import io
 import json
 import sqlite3
+import asyncpg
 import statistics
 import time
 import zipfile
@@ -74,6 +75,7 @@ class Runtime:
             # Explicit offline fixtures retain the small SQLite implementation only.
             self.checkpointer = await self.stack.enter_async_context(
                 AsyncSqliteSaver.from_conn_string(str(self.settings.data_dir / "checkpoints.sqlite3")))
+            await self.checkpointer.setup()
         self.graph = ResearchGraph(self.settings, self.db, self.providers, self.vectors, self.documents).build(self.checkpointer)
         if not self.worker_mode:
             if self.settings.queue_backend == "redis":
@@ -106,7 +108,13 @@ class Runtime:
     async def schedule_document(self, document_id: str) -> None:
         key = f"document:{document_id}"
         if self.queue:
-            await self.queue.enqueue_job("ingest_document", document_id, trace_context=inject_trace_context())
+            document = await self.db.one("SELECT index_version FROM documents WHERE id=?", (document_id,))
+            if document:
+                try:
+                    await self.queue.enqueue_job("ingest_document", document_id, trace_context=inject_trace_context(),
+                                                 _job_id=f"{key}:{document['index_version']}")
+                except Exception:
+                    self.logger.warning("phase=document_delivery_pending")
             return
         if key in self.tasks:
             return
@@ -167,22 +175,20 @@ class Runtime:
 
     async def create(self, user, request, actor_subject: str | None = None):
         actor_subject = actor_subject or user
-        async with self.lock:
+        async with self.lock, self.db.guard("workspace:" + user):
+            previous = await self.db.one("SELECT id,topic,mode,thread_id FROM runs WHERE user_id=? AND client_request_id=?",
+                                         (user, request.client_request_id))
+            if previous:
+                thread = await self.find_thread(request.thread_id, user) if request.thread_id else None
+                if (previous["topic"] != request.topic or previous["mode"] != request.mode
+                        or (request.thread_id and (not thread or thread["id"] != previous["thread_id"]))):
+                    raise ConflictError("同一个请求编号不能提交不同内容")
+                return await self.db.owned_run(previous["id"], user)
             limits = await self.db.workspace_limits(user)
             if limits:
                 active = await self.db.one("SELECT COUNT(*) AS total FROM runs WHERE user_id=? AND status IN ('queued','running')", (user,))
                 if int(active["total"]) >= int(limits["concurrent_run_limit"]):
                     raise ConflictError("工作空间正在执行的研究已达到并发上限")
-                usage = await self.db.one("""SELECT COALESCE(SUM(c.search_calls),0) AS searches FROM counters c JOIN runs r ON r.id=c.run_id
-                    WHERE r.user_id=? AND substr(r.created_at,1,10)=substr(?,1,10)""", (user, now())) or {}
-                if int(usage.get("searches", 0)) >= int(limits["daily_search_limit"]):
-                    raise ConflictError("工作空间今日搜索预算已用完")
-            previous = await self.db.one("SELECT id,topic,mode FROM runs WHERE user_id=? AND client_request_id=?",
-                                         (user, request.client_request_id))
-            if previous:
-                if previous["topic"] != request.topic or previous["mode"] != request.mode:
-                    raise ConflictError("同一个请求编号不能提交不同内容")
-                return await self.db.owned_run(previous["id"], user)
             thread_id = request.thread_id
             if thread_id:
                 thread = await self.find_thread(thread_id, user)
@@ -197,7 +203,7 @@ class Runtime:
                     id,user_id,thread_id,topic,mode,status,created_at,updated_at,client_request_id,created_by)
                     VALUES(?,?,?,?,?,'queued',?,?,?,?)""", (run_id, user, thread_id, request.topic, request.mode,
                                                         stamp, stamp, request.client_request_id, actor_subject))
-            except sqlite3.IntegrityError:
+            except (sqlite3.IntegrityError, asyncpg.UniqueViolationError):
                 raise ConflictError("同一会话已有正在执行的研究") from None
             await self.db.event(run_id, "queued", {"message": "研究任务已创建"})
             await self.refresh_queue_depth()
@@ -210,8 +216,11 @@ class Runtime:
             run = await self.db.one("SELECT attempt_count FROM runs WHERE id=?", (run_id,))
             if not run:
                 return
-            await self.queue.enqueue_job("run_research", run_id, resume=resume, trace_context=inject_trace_context(),
-                                         _job_id=self.run_job_id(run_id, int(run.get("attempt_count") or 0), next_attempt=True))
+            try:
+                await self.queue.enqueue_job("run_research", run_id, resume=resume, trace_context=inject_trace_context(),
+                                             _job_id=self.run_job_id(run_id, int(run.get("attempt_count") or 0), next_attempt=True))
+            except Exception:
+                self.logger.warning("run=%s phase=delivery_pending", run_label(run_id))
             return
         task = asyncio.create_task(self.execute_run(run_id, resume), name=f"research-{run_id}")
         self.tasks[run_id] = task
@@ -286,6 +295,7 @@ class Runtime:
     async def execute_run(self, run_id, resume=False):
         started = time.monotonic()
         heartbeat = None
+        attempt = None
         try:
             async with self.gate:
                 eligible = "('queued','interrupted')" if resume else "('queued')"
@@ -296,7 +306,8 @@ class Runtime:
                     return
                 run = await self.db.one("SELECT * FROM runs WHERE id=?", (run_id,))
                 self.logger.info("run=%s phase=started mode=%s resumed=%s", run_label(run_id), run["mode"], resume)
-                heartbeat = asyncio.create_task(self.heartbeat(run_id), name=f"heartbeat-{run_id}")
+                attempt = run["attempt_count"]
+                heartbeat = asyncio.create_task(self.heartbeat(run_id, attempt), name=f"heartbeat-{run_id}")
                 await self.refresh_queue_depth()
                 await self.db.event(run_id, "running", {"resumed": resume})
                 config = {"configurable": {"thread_id": run_id}, "recursion_limit": 80}
@@ -311,16 +322,16 @@ class Runtime:
                     result = await self.graph.ainvoke(initial, config)
                     report = result.get("report", "")
                     validation = result.get("validation", {})
+                    status = "insufficient" if validation.get("insufficient") else "completed"
+                    completed = await self.db.execute("""UPDATE runs SET status=?,updated_at=?,report=?,sources=?,validation=?,error=''
+                        WHERE id=? AND status='running' AND attempt_count=?""", (status, now(), report,
+                                                              json.dumps(result.get("evidence", []), ensure_ascii=False),
+                                                              json.dumps(validation, ensure_ascii=False), run_id, attempt))
+                    if not completed:
+                        return
                     if (self.settings.auto_save_semantic_memory and report and not validation.get("insufficient")
                             and validation.get("kind") not in {"greeting", "help", "preference", "chat"}):
                         await self.save_summary(run, report)
-                    status = "insufficient" if validation.get("insufficient") else "completed"
-                    completed = await self.db.execute("""UPDATE runs SET status=?,updated_at=?,report=?,sources=?,validation=?,error=''
-                        WHERE id=? AND status='running'""", (status, now(), report,
-                                                              json.dumps(result.get("evidence", []), ensure_ascii=False),
-                                                              json.dumps(validation, ensure_ascii=False), run_id))
-                    if not completed:
-                        return
                     dead_letter = await self.db.one(
                         "SELECT category FROM dead_letter_runs WHERE run_id=?", (run_id,))
                     recovered = await self.db.execute(
@@ -341,27 +352,28 @@ class Runtime:
                 self.logger.warning("run=%s phase=cancelled status=cancelled", run_label(run_id))
             else:
                 status = "interrupted" if self.stopping else "cancelled"
-                if await self.db.execute("UPDATE runs SET status=?,updated_at=? WHERE id=? AND status='running'",
-                                         (status, now(), run_id)):
+                if await self.db.execute("UPDATE runs SET status=?,updated_at=? WHERE id=? AND status='running' AND attempt_count=?",
+                                         (status, now(), run_id, attempt)):
                     await self.db.event(run_id, status, {"message": "任务已停止，可从检查点继续"})
                 self.logger.warning("run=%s phase=cancelled status=%s", run_label(run_id), status)
         except TimeoutError:
             self.logger.error("run=%s phase=failed category=timeout", run_label(run_id))
-            await self.fail(run_id, "达到任务时限，已停止外部调用；可从检查点继续", "interrupted", "timeout")
+            await self.fail(run_id, "达到任务时限，已停止外部调用；可从检查点继续", "interrupted", "timeout", attempt=attempt)
         except Exception as exc:
             FAILURES.labels(category=error_category(exc)).inc()
             RUNS.labels(status="failed").inc()
             RUN_SECONDS.observe(time.monotonic() - started)
             self.logger.error("run=%s phase=failed category=%s", run_label(run_id), error_category(exc))
-            await self.fail(run_id, str(exc) if isinstance(exc, ServiceError) else "研究执行失败，请检查服务配置或重试", category=error_category(exc))
+            await self.fail(run_id, str(exc) if isinstance(exc, ServiceError) else "研究执行失败，请检查服务配置或重试", category=error_category(exc), attempt=attempt)
         finally:
             if heartbeat:
                 heartbeat.cancel()
                 await asyncio.gather(heartbeat, return_exceptions=True)
 
-    async def fail(self, run_id, message, status="failed", category="runtime_failure"):
-        changed = await self.db.execute("UPDATE runs SET status=?,error=?,updated_at=? WHERE id=? AND status='running'",
-                                        (status, message, now(), run_id))
+    async def fail(self, run_id, message, status="failed", category="runtime_failure", attempt=None):
+        changed = await self.db.execute("UPDATE runs SET status=?,error=?,updated_at=? WHERE id=? AND status='running'"
+                                        + (" AND attempt_count=?" if attempt is not None else ""),
+                                        (status, message, now(), run_id) + ((attempt,) if attempt is not None else ()))
         if changed:
             await self.db.event(run_id, "error", {"message": message, "status": status})
             if status == "failed":
@@ -419,7 +431,7 @@ class Runtime:
         return await self.db.owned_run(run_id, user)
 
     async def resume(self, run_id, user):
-        async with self.lock:
+        async with self.lock, self.db.guard("workspace:" + user):
             run = await self.db.owned_run(run_id, user)
             if not run:
                 raise LookupError("任务不存在")
@@ -427,9 +439,13 @@ class Runtime:
                 raise ConflictError("当前任务状态不能继续；需要重新研究时请提交新任务")
             if run_id in self.tasks:
                 raise ConflictError("任务尚未停止")
+            limits = await self.db.workspace_limits(user)
+            active = await self.db.one("SELECT COUNT(*) AS total FROM runs WHERE user_id=? AND status IN ('queued','running')", (user,))
+            if limits and active["total"] >= limits["concurrent_run_limit"]:
+                raise ConflictError("工作空间正在执行的研究已达到并发上限")
             try:
                 await self.db.execute("UPDATE runs SET status='queued',updated_at=? WHERE id=?", (now(), run_id))
-            except sqlite3.IntegrityError:
+            except (sqlite3.IntegrityError, asyncpg.UniqueViolationError):
                 raise ConflictError("当前会话已有其他研究任务") from None
             await self.refresh_queue_depth()
             await self.schedule(run_id, resume=True)
@@ -454,23 +470,29 @@ class Runtime:
 
     async def recover_queued_runs(self):
         """Re-enqueue persisted work after an API restart."""
-        rows = await self.db.rows("SELECT id,status FROM runs WHERE status IN ('queued','interrupted')")
+        rows = await self.db.rows("SELECT id,status,attempt_count FROM runs WHERE status IN ('queued','interrupted')")
         for row in rows:
             if row["id"] not in self.tasks:
-                await self.schedule(row["id"], resume=row["status"] == "interrupted")
+                await self.schedule(row["id"], resume=row["status"] == "interrupted" or row["attempt_count"] > 0)
 
-    async def heartbeat(self, run_id: str) -> None:
+    async def heartbeat(self, run_id: str, attempt: int) -> None:
         while True:
             await asyncio.sleep(RUN_HEARTBEAT_SECONDS)
-            changed = await self.db.execute("UPDATE runs SET last_attempt_at=?,updated_at=? WHERE id=? AND status='running'",
-                                            (now(), now(), run_id))
+            changed = await self.db.execute("UPDATE runs SET last_attempt_at=?,updated_at=? WHERE id=? AND status='running' AND attempt_count=?",
+                                            (now(), now(), run_id, attempt))
             if not changed:
                 return
 
     async def recover_stale_runs_loop(self) -> None:
         while not self.stopping:
             await asyncio.sleep(RUN_HEARTBEAT_SECONDS)
-            await self.recover_stale_runs()
+            try:
+                await self.recover_stale_runs()
+                await self.recover_queued_runs()
+                await self.recover_indexing_documents()
+                await self.documents.cleanup_pending()
+            except Exception:
+                self.logger.warning("phase=recovery_pending")
 
     async def recover_stale_runs(self) -> None:
         """Resume only workers whose heartbeat has actually expired."""

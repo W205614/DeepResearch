@@ -55,6 +55,7 @@ async function createUser(token) {
 async function cleanupApplicationData() {
   if (!userId) return
   const sql = [
+    `DELETE FROM workspace_daily_usage WHERE workspace_id = '${userId}'`,
     `DELETE FROM audit_logs WHERE workspace_id = '${userId}'`,
     `DELETE FROM workspace_limits WHERE workspace_id = '${userId}'`,
     `DELETE FROM memberships WHERE workspace_id = '${userId}' OR subject = '${userId}'`,
@@ -82,14 +83,19 @@ try {
   await createUser(token)
   const frontendDir = fileURLToPath(new URL('../frontend/', import.meta.url))
   const playwrightCli = fileURLToPath(new URL('../frontend/node_modules/@playwright/test/cli.js', import.meta.url))
-  const result = await execute(process.execPath, [playwrightCli, 'test'], {
+  const result = await execute(process.execPath, [playwrightCli, 'test',
+    ...(process.env.E2E_GREP ? ['--grep', process.env.E2E_GREP] : [])], {
     cwd: frontendDir,
     env: { ...process.env, E2E_USERNAME: username, E2E_PASSWORD: password },
   })
   process.stdout.write(result.stdout)
   if (result.stderr) process.stderr.write(result.stderr)
   exitCode = 0
+} catch (error) {
+  if (error.stdout) process.stdout.write(error.stdout)
+  if (error.stderr) process.stderr.write(error.stderr)
+  process.stderr.write('Enterprise browser acceptance failed; inspect local test-results.\n')
 } finally {
-  try { await cleanupApplicationData() } finally { await deleteUser(token) }
+  try { await cleanupApplicationData() } finally { await deleteUser(await adminToken(adminPassword)) }
 }
 process.exitCode = exitCode

@@ -257,6 +257,9 @@ class Providers:
                 except ServiceError:
                     if not self.settings.bocha_api_key.get_secret_value():
                         raise ServiceError("DeepSeek 联网搜索不可用，且未配置 BOCHA_API_KEY 作为备用来源") from None
+                    if not await self.db.reserve_search(run_id, self.settings.max_search_calls):
+                        return []
+                    SEARCHES.inc()
                     rows = await self.bocha_search(query)
                     provider = "bocha_fallback"
             else:

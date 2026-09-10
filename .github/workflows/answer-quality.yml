@@ -18,3 +18,4 @@ jobs:
       - uses: astral-sh/setup-uv@v7
       - run: uv sync --all-groups --frozen
       - run: uv run python scripts/evaluate_answers.py --output .cache/eval/answer-quality.json
+      - run: uv run python scripts/evaluate_research.py --output .cache/eval/research-quality.json

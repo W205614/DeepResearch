@@ -1,0 +1,72 @@
+name: dr-verify
+services:
+  postgres:
+    image: postgres:17.6-alpine
+    environment: {POSTGRES_USER: deepresearch, POSTGRES_PASSWORD: verification-only, POSTGRES_DB: deepresearch}
+    healthcheck: {test: [CMD-SHELL, "pg_isready -U deepresearch"], interval: 3s, timeout: 3s, retries: 30}
+  redis:
+    image: redis:7.4.2-alpine
+    healthcheck: {test: [CMD, redis-cli, ping], interval: 3s, timeout: 3s, retries: 30}
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.25
+    command: etcd -advertise-client-urls=http://etcd:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
+    healthcheck: {test: [CMD, etcdctl, endpoint, health], interval: 3s, timeout: 3s, retries: 30}
+  minio:
+    image: minio/minio:RELEASE.2024-05-28T17-19-04Z
+    environment: {MINIO_ROOT_USER: deepresearch, MINIO_ROOT_PASSWORD: verification-only}
+    command: minio server /data
+    healthcheck: {test: [CMD, curl, -f, http://localhost:9000/minio/health/live], interval: 3s, timeout: 3s, retries: 30}
+  milvus:
+    image: milvusdb/milvus:v3.0.0
+    command: [milvus, run, standalone]
+    environment: {ETCD_ENDPOINTS: 'etcd:2379', MINIO_ADDRESS: 'minio:9000', MINIO_REGION: us-east-1, MINIO_ACCESS_KEY_ID: deepresearch, MINIO_SECRET_ACCESS_KEY: verification-only}
+    depends_on: {etcd: {condition: service_healthy}, minio: {condition: service_healthy}}
+    healthcheck: {test: [CMD, curl, -f, http://localhost:9091/healthz], interval: 5s, timeout: 5s, retries: 40, start_period: 30s}
+  clamav:
+    image: clamav/clamav:1.4.2_base
+  migrate:
+    image: deepresearch-verify
+    command: alembic upgrade head
+    environment: {DATABASE_URL: 'postgresql+asyncpg://deepresearch:verification-only@postgres:5432/deepresearch'}
+    depends_on: {postgres: {condition: service_healthy}}
+  api:
+    image: deepresearch-verify
+    command: uvicorn scripts.component_fixture:create_app --factory --host 0.0.0.0 --port 8000 --no-access-log
+    environment: &env
+      DATABASE_URL: postgresql://deepresearch:verification-only@postgres:5432/deepresearch
+      REDIS_URL: redis://redis:6379/0
+      MILVUS_URI: http://milvus:19530
+      QUEUE_BACKEND: redis
+      OBJECT_STORE_BACKEND: s3
+      OBJECT_STORE_ENDPOINT: http://minio:9000
+      OBJECT_STORE_ACCESS_KEY: deepresearch
+      OBJECT_STORE_SECRET_KEY: verification-only
+      OBJECT_STORE_BUCKET: verification
+      DOCUMENT_SCAN_MODE: clamav
+      CLAMAV_HOST: clamav
+      AUTH_MODE: development
+      DEVELOPMENT_JWT_SECRET: verification-only-not-a-production-credential
+      DEMO_MODE: 'false'
+      EMBEDDING_DIMENSION: '64'
+      EMBEDDING_MODEL: fixture-hash-64
+      LLM_API_KEY: fixture-no-external-calls
+      TASK_LOG_LEVEL: WARNING
+      WORKSPACE_DAILY_SEARCH_LIMIT: '10000'
+      WORKSPACE_CONCURRENT_RUN_LIMIT: '20'
+      MAX_RUN_SECONDS: '120'
+      INTEGRATION: '1'
+    depends_on: {migrate: {condition: service_completed_successfully}, milvus: {condition: service_healthy}, redis: {condition: service_healthy}, clamav: {condition: service_started}}
+    healthcheck: {test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8000/readyz')"], interval: 5s, timeout: 5s, retries: 30}
+  worker:
+    image: deepresearch-verify
+    restart: unless-stopped
+    command: arq scripts.component_fixture.WorkerSettings
+    environment: *env
+    depends_on: {api: {condition: service_healthy}}
+    healthcheck: {test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8001')"], interval: 5s, timeout: 5s, retries: 30}
+  tests:
+    image: deepresearch-verify
+    command: python -m pytest tests/integration -q -p no:cacheprovider --basetemp=/tmp/dr-tests
+    environment: *env
+    profiles: [test]
+    depends_on: {worker: {condition: service_healthy}}

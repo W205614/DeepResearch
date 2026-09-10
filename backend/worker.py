@@ -41,6 +41,7 @@ class WorkerSettings:
     job_timeout = Settings().max_run_seconds
     max_tries = Settings().max_job_retries + 1
     retry_jobs = False
+    keep_result = 0
     allow_abort_jobs = True
 
     redis_settings = RedisSettings.from_dsn(Settings().redis_url)

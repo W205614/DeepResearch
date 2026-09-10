@@ -1,3 +1,4 @@
+from ..core.consistency import affected
 import asyncio
 import hashlib
 import io
@@ -188,6 +189,10 @@ class Documents:
         await self.store.start()
 
     async def add(self, user: str, name: str, content: bytes):
+        async with self.db.guard("documents:" + user):
+            return await self._add(user, name, content)
+
+    async def _add(self, user: str, name: str, content: bytes):
         name = Path(name.replace("\\", "/")).name[:160]
         if len(content) > 10 * 1024 * 1024:
             raise ServiceError("文件不能超过 10 MB")
@@ -198,9 +203,9 @@ class Documents:
             return existing
         doc_id = existing["id"] if existing else uid()
         if existing:
-            await self.db.execute("UPDATE documents SET status='scanning',error='' WHERE id=?", (doc_id,))
+            await self.db.execute("UPDATE documents SET status='scanning',error='',index_version=index_version+1 WHERE id=?", (doc_id,))
         else:
-            await self.db.execute("INSERT INTO documents(id,user_id,name,hash,status,created_at) VALUES(?,?,?,?,?,?)",
+            await self.db.execute("INSERT INTO documents(id,user_id,name,hash,status,created_at,index_version) VALUES(?,?,?,?,?,?,1)",
                                   (doc_id, user, name, digest, "scanning", now()))
         await self.store.put("quarantine", doc_id, content)
         try:
@@ -256,23 +261,38 @@ class Documents:
                 content = await self.store.get("uploads", doc_id)
                 chunks = await self.split_for_index(document["name"], content)
                 vectors = await self.providers.embed([part["text"] for part in chunks])
-                rows = [dict(part, id=hashlib.sha256(f"{doc_id}:{i}".encode()).hexdigest()[:32],
-                    user_id=document["user_id"], document_id=doc_id, title=document["name"], vector=vector)
+                rows = [dict(part, id=hashlib.sha256(f"{doc_id}:{document['index_version']}:{i}".encode()).hexdigest()[:32],
+                    user_id=document["user_id"], document_id=doc_id, index_version=document["index_version"], title=document["name"], vector=vector)
                     for i, (part, vector) in enumerate(zip(chunks, vectors))]
-                await self.vectors.upsert("documents", rows)
-                async with self.db.connection() as conn:
-                    await conn.execute("DELETE FROM chunks WHERE document_id=?", (doc_id,))
-                    await conn.executemany("INSERT INTO chunks(id,document_id,user_id,text,locator,vector) VALUES(?,?,?,?,?,?)",
-                        [(row["id"], doc_id, document["user_id"], row["text"], row["locator"],
-                          json.dumps(row["vector"]) if self.settings.demo_mode else "[]") for row in rows])
-                    await conn.execute("UPDATE documents SET status='ready',error='' WHERE id=?", (doc_id,))
-                    await conn.commit()
+                async with self.db.guard("documents:" + document["user_id"]):
+                    current = await self.db.one("SELECT status,index_version FROM documents WHERE id=?", (doc_id,))
+                    if not current or current["status"] != "indexing" or current["index_version"] != document["index_version"]:
+                        return
+                    await self.db.execute("INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version) VALUES(?,?,?)",
+                                          (doc_id, document["user_id"], document["index_version"]))
+                    await self.vectors.upsert("documents", rows)
+                    async with self.db.connection() as conn:
+                        result = await conn.execute("""UPDATE documents SET status='ready',error=''
+                            WHERE id=? AND status='indexing' AND index_version=?""", (doc_id, document["index_version"]))
+                        if affected(result):
+                            await conn.execute("DELETE FROM document_cleanup WHERE document_id=? AND version=?",
+                                               (doc_id, document["index_version"]))
+                            await conn.execute("DELETE FROM chunks WHERE document_id=?", (doc_id,))
+                            await conn.executemany("INSERT INTO chunks(id,document_id,user_id,text,locator,vector) VALUES(?,?,?,?,?,?)",
+                                [(row["id"], doc_id, document["user_id"], row["text"], row["locator"],
+                                  json.dumps(row["vector"]) if self.settings.demo_mode else "[]") for row in rows])
+                        else:
+                            await conn.execute("INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version) VALUES(?,?,?)",
+                                               (doc_id, document["user_id"], document["index_version"]))
+                        await conn.commit()
+                await self.cleanup_pending()
                 await self.invalidate_search_cache(document["user_id"])
             except asyncio.CancelledError:
                 raise
             except Exception as exc:
                 message = str(exc) if isinstance(exc, ServiceError) else "资料导入失败，请检查文件及服务配置"
-                await self.db.execute("UPDATE documents SET status='failed',error=? WHERE id=?", (message, doc_id))
+                await self.db.execute("UPDATE documents SET status='failed',error=? WHERE id=? AND status='indexing' AND index_version=?",
+                                      (message, doc_id, document["index_version"]))
                 raise
 
     async def search(self, user: str, queries: list[str], limit: int = 6, run_id: str = "") -> list[dict]:
@@ -280,8 +300,8 @@ class Documents:
         normalized_queries = [query.strip() for query in queries if query.strip()]
         if not normalized_queries:
             return []
-        documents = await self.db.rows("SELECT id,hash FROM documents WHERE user_id=? AND status='ready' ORDER BY id", (user,))
-        corpus_hash = hashlib.sha256("|".join(f"{row['id']}:{row['hash']}" for row in documents).encode()).hexdigest()
+        documents = await self.db.rows("SELECT id,hash,index_version FROM documents WHERE user_id=? AND status='ready' ORDER BY id", (user,))
+        corpus_hash = hashlib.sha256("|".join(f"{row['id']}:{row['hash']}:{row['index_version']}" for row in documents).encode()).hexdigest()
         query_hash = hashlib.sha256(json.dumps(normalized_queries, ensure_ascii=False).encode()).hexdigest()
         cache_started = time.monotonic()
         cached = await self.db.one("""SELECT result FROM document_search_cache
@@ -381,14 +401,41 @@ class Documents:
         return selected
 
     async def delete(self, doc_id, user):
-        await self.invalidate_search_cache(user)
-        await self.db.execute("UPDATE documents SET status='deleted' WHERE id=? AND user_id=?", (doc_id, user))
-        await self.db.execute("DELETE FROM chunks WHERE document_id=? AND user_id=?", (doc_id, user))
-        for directory in ("uploads", "quarantine"):
-            await self.store.delete(directory, doc_id)
-        await self.vectors.delete("documents", user, "document_id", doc_id)
+        async with self.db.guard("documents:" + user):
+            document = await self.db.one("SELECT * FROM documents WHERE id=? AND user_id=?", (doc_id, user))
+            if not document:
+                return
+            async with self.db.connection() as conn:
+                await conn.execute("INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version) VALUES(?,?,?)",
+                                   (doc_id, user, document["index_version"]))
+                await conn.execute("UPDATE documents SET status='deleted',index_version=index_version+1 WHERE id=? AND user_id=?", (doc_id, user))
+                await conn.execute("DELETE FROM chunks WHERE document_id=? AND user_id=?", (doc_id, user))
+                await conn.commit()
+            await self.invalidate_search_cache(user)
+        await self.cleanup_pending()
+
+    async def cleanup_pending(self):
+        for row in await self.db.rows("SELECT * FROM document_cleanup"):
+            async with self.db.guard("documents:" + row["user_id"]):
+                document = await self.db.one("SELECT status,index_version FROM documents WHERE id=?", (row["document_id"],))
+                if document and document["status"] in {"ready", "indexing"} and document["index_version"] == row["version"]:
+                    continue
+                try:
+                    await self.vectors.delete_document_version(row["user_id"], row["document_id"], row["version"])
+                    if not document or document["status"] == "deleted":
+                        for directory in ("uploads", "quarantine"):
+                            await self.store.delete(directory, row["document_id"])
+                    await self.db.execute("DELETE FROM document_cleanup WHERE document_id=? AND version=?",
+                                          (row["document_id"], row["version"]))
+                except Exception:
+                    # Tombstone remains authoritative; reconciliation retries the cleanup.
+                    continue
 
     async def reindex(self, doc_id: str, user: str):
+        async with self.db.guard("documents:" + user):
+            return await self._reindex(doc_id, user)
+
+    async def _reindex(self, doc_id: str, user: str):
         document = await self.db.one("SELECT * FROM documents WHERE id=? AND user_id=?", (doc_id, user))
         if not document or document["status"] == "deleted":
             raise LookupError("资料不存在")
@@ -396,7 +443,9 @@ class Documents:
             raise ServiceError("资料当前不可重建索引；隔离或扫描失败的文件不能进入资料库")
         if not await self.store.exists("uploads", doc_id):
             raise ServiceError("原始上传文件不存在，无法重建索引")
-        await self.db.execute("UPDATE documents SET status='indexing',error='' WHERE id=?", (doc_id,))
+        await self.db.execute("INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version) VALUES(?,?,?)",
+                              (doc_id, user, document["index_version"]))
+        await self.db.execute("UPDATE documents SET status='indexing',error='',index_version=index_version+1 WHERE id=?", (doc_id,))
         return await self.db.one("SELECT * FROM documents WHERE id=?", (doc_id,))
 
     async def close(self):
