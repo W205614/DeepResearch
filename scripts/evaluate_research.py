@@ -45,7 +45,7 @@ def summarize_research(cases, results):
 async def evaluate(case, root, live=False, external_results=None):
     settings = Settings(demo_mode=False, database_url="", queue_backend="local",
                         document_scan_mode="disabled", object_store_backend="filesystem",
-                        data_dir=root / case['id'], task_log_level="ERROR",
+                        data_dir=root / case['id'], task_log_level="WARNING",
                         source_trust_overrides=json.dumps({"fixtures.example.org": "authored evaluation fixture"}),
                         max_run_seconds=600)
     if not settings.llm_api_key.get_secret_value():
@@ -141,17 +141,26 @@ async def main(args):
     gate = asyncio.Semaphore(2)
     async def one(case):
         async with gate:
+            print(json.dumps({'event': 'case_start', 'id': case['id']}), flush=True)
             try:
                 return await evaluate(case, root, args.live, args.external_results)
             except Exception as exc:
                 row = {'id': case['id'], 'critical': case['critical'], 'passed': False, 'error_category': type(exc).__name__}
                 print(json.dumps(row), flush=True)
                 return row
+    config = Settings()
+    extra = json.loads(config.llm_extra_body)
+    config_id = hashlib.sha256(json.dumps(extra, sort_keys=True).encode()).hexdigest()
+    print(json.dumps({'event': 'suite_start', 'cases': len(cases), 'concurrency': 2,
+                      'model': config.llm_model_id, 'extra_body_sha256': config_id,
+                      'thinking_type': (extra.get('thinking') or {}).get('type', 'provider-default')}), flush=True)
     results = await asyncio.gather(*(one(c) for c in cases))
     summary = summarize_research(cases, results)
     report = {'suite': 'research-quality-v2', 'fixture_sha256': hashlib.sha256(raw).hexdigest(),
               'commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
               'model': Settings().llm_model_id, 'mode': 'live-web' if args.live else 'fixed-web-real-model',
+              'extra_body_sha256': config_id,
+              'thinking_type': (extra.get('thinking') or {}).get('type', 'provider-default'),
               'embedding': ('configured real adapter for browser document scenario; no retrieval benchmark'
                             if args.live and args.external_results else 'not exercised: web evidence suite'),
               'results': results, 'summary': summary, 'passed': summary['passed']}

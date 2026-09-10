@@ -9,10 +9,13 @@ on:
 jobs:
   answer-quality:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     env:
       LLM_MODEL_ID: ${{ secrets.LLM_MODEL_ID || 'deepseek-v4-flash' }}
       LLM_BASE_URL: ${{ secrets.LLM_BASE_URL || 'https://api.deepseek.com' }}
       LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+      # Match the measured local acceptance configuration explicitly.
+      LLM_EXTRA_BODY: '{"thinking":{"type":"disabled"}}'
     steps:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v7

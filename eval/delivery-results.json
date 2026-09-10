@@ -1,9 +1,1192 @@
 {
   "date": "2026-09-10",
   "base_commit": "8992eea67d41bfbb958146ea0636966088686301",
-  "tested_backend_sha256_lf": "efabaffacd72e73f04e9e39182ee388b569a19e5fec6448f20db6af75a2e7dd6",
-  "code_note": "Working tree based on base_commit; subsequent fallback quota fix covered by final regression/rebuild; fixed graph evaluation unaffected. Final publication commits follow this evidence.",
+  "tested_backend_sha256_lf": "f6c93b5389b5f81c7b0b9928e0806ec522bc492015b8b015289d4c6e784f30b3",
+  "code_note": "Final fixed evaluation after CI configuration and over-refusal correction; previous fixed evaluation and first CI failure retained separately. Live and load scenarios were verified before this prompt-only correction and reused; final Docker smoke and document browser regression rerun.",
   "fixed": {
+    "suite": "research-quality-v2",
+    "fixture_sha256": "b221029efcd4da0c6016dc16d38683cf080f9c8ab8d1213af907bbb25d17cfb7",
+    "commit": "e11a0936b4504f9c1d3c58d4d814895993408fce",
+    "model": "deepseek-v4-flash",
+    "mode": "fixed-web-real-model",
+    "extra_body_sha256": "04e5afe8e30e34b1b1bd22ad95b60a35ef9c71cf5eac8e18da1d7252d7d38c0f",
+    "thinking_type": "disabled",
+    "embedding": "not exercised: web evidence suite",
+    "results": [
+      {
+        "id": "single-1",
+        "critical": false,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 10,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 24.44,
+        "usage": {
+          "search_calls": 12,
+          "llm_calls": 11,
+          "prompt_tokens": 13268,
+          "completion_tokens": 3137
+        },
+        "research_usage": null
+      },
+      {
+        "id": "compare-1",
+        "critical": false,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 12,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 25.06,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 10,
+          "prompt_tokens": 22615,
+          "completion_tokens": 4201
+        },
+        "research_usage": null
+      },
+      {
+        "id": "refusal-1",
+        "critical": true,
+        "passed": true,
+        "status": "insufficient",
+        "claim_count": 0,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": true,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 9.02,
+        "usage": {
+          "search_calls": 8,
+          "llm_calls": 4,
+          "prompt_tokens": 2597,
+          "completion_tokens": 690
+        },
+        "research_usage": null
+      },
+      {
+        "id": "conflict-1",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 9,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 34.44,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 11,
+          "prompt_tokens": 22212,
+          "completion_tokens": 6380
+        },
+        "research_usage": null
+      },
+      {
+        "id": "negation-1",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 8,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 14.59,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 8,
+          "prompt_tokens": 10041,
+          "completion_tokens": 2135
+        },
+        "research_usage": null
+      },
+      {
+        "id": "injection-1",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 6,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 14.16,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 8,
+          "prompt_tokens": 8377,
+          "completion_tokens": 1537
+        },
+        "research_usage": null
+      },
+      {
+        "id": "single-2",
+        "critical": false,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 7,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 16.67,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 8,
+          "prompt_tokens": 9181,
+          "completion_tokens": 2288
+        },
+        "research_usage": null
+      },
+      {
+        "id": "compare-2",
+        "critical": false,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 11,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 16.47,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 8,
+          "prompt_tokens": 14814,
+          "completion_tokens": 2562
+        },
+        "research_usage": null
+      },
+      {
+        "id": "refusal-2",
+        "critical": true,
+        "passed": true,
+        "status": "insufficient",
+        "claim_count": 0,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": true,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 6.41,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 3,
+          "prompt_tokens": 1801,
+          "completion_tokens": 503
+        },
+        "research_usage": null
+      },
+      {
+        "id": "conflict-2",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 15,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 30.14,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 10,
+          "prompt_tokens": 30427,
+          "completion_tokens": 6088
+        },
+        "research_usage": null
+      },
+      {
+        "id": "negation-2",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 12,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 26.99,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 10,
+          "prompt_tokens": 18301,
+          "completion_tokens": 4617
+        },
+        "research_usage": null
+      },
+      {
+        "id": "injection-2",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 7,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 12.94,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 8,
+          "prompt_tokens": 8841,
+          "completion_tokens": 1577
+        },
+        "research_usage": null
+      },
+      {
+        "id": "single-3",
+        "critical": false,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 7,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 13.27,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 8,
+          "prompt_tokens": 9110,
+          "completion_tokens": 1797
+        },
+        "research_usage": null
+      },
+      {
+        "id": "compare-3",
+        "critical": false,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 15,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 38.08,
+        "usage": {
+          "search_calls": 8,
+          "llm_calls": 12,
+          "prompt_tokens": 28656,
+          "completion_tokens": 5630
+        },
+        "research_usage": null
+      },
+      {
+        "id": "refusal-3",
+        "critical": true,
+        "passed": true,
+        "status": "insufficient",
+        "claim_count": 0,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": true,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 6.81,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 3,
+          "prompt_tokens": 1873,
+          "completion_tokens": 495
+        },
+        "research_usage": null
+      },
+      {
+        "id": "conflict-3",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 14,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 33.14,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 10,
+          "prompt_tokens": 26568,
+          "completion_tokens": 5236
+        },
+        "research_usage": null
+      },
+      {
+        "id": "negation-3",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 10,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 36.49,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 10,
+          "prompt_tokens": 16637,
+          "completion_tokens": 4338
+        },
+        "research_usage": null
+      },
+      {
+        "id": "injection-3",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 10,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 33.2,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 10,
+          "prompt_tokens": 17519,
+          "completion_tokens": 4037
+        },
+        "research_usage": null
+      },
+      {
+        "id": "single-4",
+        "critical": false,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 11,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 27.59,
+        "usage": {
+          "search_calls": 8,
+          "llm_calls": 10,
+          "prompt_tokens": 13595,
+          "completion_tokens": 3119
+        },
+        "research_usage": null
+      },
+      {
+        "id": "compare-4",
+        "critical": false,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 19,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 28.8,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 8,
+          "prompt_tokens": 22839,
+          "completion_tokens": 3891
+        },
+        "research_usage": null
+      },
+      {
+        "id": "refusal-4",
+        "critical": true,
+        "passed": true,
+        "status": "insufficient",
+        "claim_count": 0,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": true,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 7.59,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 3,
+          "prompt_tokens": 1793,
+          "completion_tokens": 464
+        },
+        "research_usage": null
+      },
+      {
+        "id": "conflict-4",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 16,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 23.61,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 8,
+          "prompt_tokens": 20373,
+          "completion_tokens": 3556
+        },
+        "research_usage": null
+      },
+      {
+        "id": "negation-4",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 12,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 28.76,
+        "usage": {
+          "search_calls": 12,
+          "llm_calls": 11,
+          "prompt_tokens": 14956,
+          "completion_tokens": 3901
+        },
+        "research_usage": null
+      },
+      {
+        "id": "injection-4",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 14,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 29.62,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 10,
+          "prompt_tokens": 20133,
+          "completion_tokens": 4830
+        },
+        "research_usage": null
+      },
+      {
+        "id": "single-5",
+        "critical": false,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 10,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 31.88,
+        "usage": {
+          "search_calls": 6,
+          "llm_calls": 12,
+          "prompt_tokens": 17309,
+          "completion_tokens": 4431
+        },
+        "research_usage": null
+      },
+      {
+        "id": "compare-5",
+        "critical": false,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 6,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 32.08,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 11,
+          "prompt_tokens": 20708,
+          "completion_tokens": 5683
+        },
+        "research_usage": null
+      },
+      {
+        "id": "refusal-5",
+        "critical": true,
+        "passed": true,
+        "status": "insufficient",
+        "claim_count": 0,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": true,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 8.95,
+        "usage": {
+          "search_calls": 8,
+          "llm_calls": 4,
+          "prompt_tokens": 3063,
+          "completion_tokens": 708
+        },
+        "research_usage": null
+      },
+      {
+        "id": "conflict-5",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 20,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 45.42,
+        "usage": {
+          "search_calls": 8,
+          "llm_calls": 12,
+          "prompt_tokens": 39819,
+          "completion_tokens": 8504
+        },
+        "research_usage": null
+      },
+      {
+        "id": "negation-5",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 7,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 17.8,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 8,
+          "prompt_tokens": 10019,
+          "completion_tokens": 2245
+        },
+        "research_usage": null
+      },
+      {
+        "id": "injection-5",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 13,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 25.53,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 10,
+          "prompt_tokens": 18133,
+          "completion_tokens": 3567
+        },
+        "research_usage": null
+      }
+    ],
+    "summary": {
+      "case_count": 30,
+      "passed_count": 30,
+      "pass_rate": 1.0,
+      "citation_support": 1.0,
+      "answer_coverage": 1.0,
+      "critical_failures": [],
+      "passed": true
+    },
+    "passed": true
+  },
+  "live": {
+    "suite": "research-quality-v2",
+    "fixture_sha256": "2afb1d1335ba3b7f5b4e8a208d62632ed0362d9b55777133236615fbec095062",
+    "commit": "8992eea67d41bfbb958146ea0636966088686301",
+    "model": "deepseek-v4-flash",
+    "mode": "live-web",
+    "embedding": "configured real adapter in browser document scenario; no retrieval benchmark",
+    "results": [
+      {
+        "id": "live-postgres",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 30,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 7.06,
+        "usage": {
+          "search_calls": 0,
+          "llm_calls": 2,
+          "prompt_tokens": 145205,
+          "completion_tokens": 273
+        },
+        "research_usage": {
+          "search_calls": 8,
+          "llm_calls": 11,
+          "prompt_tokens": 389725,
+          "completion_tokens": 17322
+        }
+      },
+      {
+        "id": "live-redis",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 32,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 6.78,
+        "usage": {
+          "search_calls": 0,
+          "llm_calls": 2,
+          "prompt_tokens": 239272,
+          "completion_tokens": 385
+        },
+        "research_usage": {
+          "search_calls": 12,
+          "llm_calls": 13,
+          "prompt_tokens": 604269,
+          "completion_tokens": 27330
+        }
+      },
+      {
+        "id": "live-oidc",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 22,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 2.99,
+        "usage": {
+          "search_calls": 0,
+          "llm_calls": 2,
+          "prompt_tokens": 112433,
+          "completion_tokens": 209
+        },
+        "research_usage": {
+          "search_calls": 11,
+          "llm_calls": 13,
+          "prompt_tokens": 422177,
+          "completion_tokens": 25443
+        }
+      }
+    ],
+    "summary": {
+      "case_count": 3,
+      "passed_count": 3,
+      "pass_rate": 1.0,
+      "citation_support": 1.0,
+      "answer_coverage": 1.0,
+      "critical_failures": [],
+      "passed": true
+    },
+    "passed": true,
+    "thinking_type": "disabled",
+    "extra_body_sha256": "04e5afe8e30e34b1b1bd22ad95b60a35ef9c71cf5eac8e18da1d7252d7d38c0f"
+  },
+  "components": {
+    "integration": "passed",
+    "load": {
+      "clients": 5,
+      "duration_seconds": 300,
+      "provider": "deterministic fixture",
+      "requests": 4560,
+      "unexpected_failures": 0,
+      "accepted": 379,
+      "completed": 379,
+      "control_p95_ms": 243.71,
+      "research_p95_ms": 3160.28,
+      "index_p95_ms": 1752.44,
+      "queue_p95_ms": 1376.58,
+      "passed": true
+    },
+    "worker_recovery_seconds": 52.44,
+    "redis_delivery_recovered": true,
+    "milvus_readiness_recovered": true,
+    "passed": true
+  },
+  "restore": {
+    "passed": true,
+    "project": "dr-restore-interview-final",
+    "volumes_verified": 11,
+    "rto_seconds": 202.05,
+    "retrieval": {
+      "nonempty_collections_searched": 2,
+      "results_checked": 2
+    },
+    "checks": [
+      "all archived files match",
+      "both SQL dumps restored with exit-on-error",
+      "readyz",
+      "anonymous 401",
+      "OIDC discovery",
+      "Milvus search"
+    ]
+  },
+  "limitations": [
+    "single-host Compose",
+    "authored synthetic fixed sources",
+    "model-assisted independent prompts, not independent human scoring",
+    "fixture load providers; no production SLA"
+  ],
+  "first_ci_attempt": {
+    "run_id": 34471435704,
+    "outcome": "cancelled after confirmed critical failures",
+    "observed_cases": 21,
+    "observed_failed": 8,
+    "critical_failures": [
+      "injection-1",
+      "negation-2",
+      "injection-2",
+      "conflict-3"
+    ],
+    "configuration_difference": "CI omitted thinking disabled; local explicitly disabled",
+    "note": "Partial user-provided log; not a full-suite result or passing run"
+  },
+  "previous_fixed": {
     "suite": "research-quality-v2",
     "fixture_sha256": "b221029efcd4da0c6016dc16d38683cf080f9c8ab8d1213af907bbb25d17cfb7",
     "commit": "8992eea67d41bfbb958146ea0636966088686301",
@@ -981,201 +2164,8 @@
       "answer_coverage": 0.96,
       "critical_failures": [],
       "passed": true
-    }
-  },
-  "live": {
-    "suite": "research-quality-v2",
-    "fixture_sha256": "2afb1d1335ba3b7f5b4e8a208d62632ed0362d9b55777133236615fbec095062",
-    "commit": "8992eea67d41bfbb958146ea0636966088686301",
-    "model": "deepseek-v4-flash",
-    "mode": "live-web",
-    "embedding": "configured real adapter in browser document scenario; no retrieval benchmark",
-    "results": [
-      {
-        "id": "live-postgres",
-        "critical": true,
-        "passed": true,
-        "status": "completed",
-        "claim_count": 30,
-        "support": 1.0,
-        "coverage": 1.0,
-        "forbidden_claim_present": false,
-        "refusal_appropriate": false,
-        "nodes": [
-          "router",
-          "planner",
-          "local_scout",
-          "web_scout",
-          "judge",
-          "analyst",
-          "reflect",
-          "local_scout",
-          "web_scout",
-          "judge",
-          "analyst",
-          "reflect",
-          "writer",
-          "validator"
-        ],
-        "seconds": 7.06,
-        "usage": {
-          "search_calls": 0,
-          "llm_calls": 2,
-          "prompt_tokens": 145205,
-          "completion_tokens": 273
-        },
-        "research_usage": {
-          "search_calls": 8,
-          "llm_calls": 11,
-          "prompt_tokens": 389725,
-          "completion_tokens": 17322
-        }
-      },
-      {
-        "id": "live-redis",
-        "critical": true,
-        "passed": true,
-        "status": "completed",
-        "claim_count": 32,
-        "support": 1.0,
-        "coverage": 1.0,
-        "forbidden_claim_present": false,
-        "refusal_appropriate": false,
-        "nodes": [
-          "router",
-          "planner",
-          "local_scout",
-          "web_scout",
-          "judge",
-          "analyst",
-          "reflect",
-          "local_scout",
-          "web_scout",
-          "judge",
-          "analyst",
-          "reflect",
-          "local_scout",
-          "web_scout",
-          "judge",
-          "analyst",
-          "reflect",
-          "writer",
-          "validator"
-        ],
-        "seconds": 6.78,
-        "usage": {
-          "search_calls": 0,
-          "llm_calls": 2,
-          "prompt_tokens": 239272,
-          "completion_tokens": 385
-        },
-        "research_usage": {
-          "search_calls": 12,
-          "llm_calls": 13,
-          "prompt_tokens": 604269,
-          "completion_tokens": 27330
-        }
-      },
-      {
-        "id": "live-oidc",
-        "critical": true,
-        "passed": true,
-        "status": "completed",
-        "claim_count": 22,
-        "support": 1.0,
-        "coverage": 1.0,
-        "forbidden_claim_present": false,
-        "refusal_appropriate": false,
-        "nodes": [
-          "router",
-          "planner",
-          "local_scout",
-          "web_scout",
-          "judge",
-          "analyst",
-          "reflect",
-          "local_scout",
-          "web_scout",
-          "judge",
-          "analyst",
-          "reflect",
-          "local_scout",
-          "web_scout",
-          "judge",
-          "analyst",
-          "reflect",
-          "writer",
-          "validator"
-        ],
-        "seconds": 2.99,
-        "usage": {
-          "search_calls": 0,
-          "llm_calls": 2,
-          "prompt_tokens": 112433,
-          "completion_tokens": 209
-        },
-        "research_usage": {
-          "search_calls": 11,
-          "llm_calls": 13,
-          "prompt_tokens": 422177,
-          "completion_tokens": 25443
-        }
-      }
-    ],
-    "summary": {
-      "case_count": 3,
-      "passed_count": 3,
-      "pass_rate": 1.0,
-      "citation_support": 1.0,
-      "answer_coverage": 1.0,
-      "critical_failures": [],
-      "passed": true
     },
-    "passed": true
-  },
-  "components": {
-    "integration": "passed",
-    "load": {
-      "clients": 5,
-      "duration_seconds": 300,
-      "provider": "deterministic fixture",
-      "requests": 4560,
-      "unexpected_failures": 0,
-      "accepted": 379,
-      "completed": 379,
-      "control_p95_ms": 243.71,
-      "research_p95_ms": 3160.28,
-      "index_p95_ms": 1752.44,
-      "queue_p95_ms": 1376.58,
-      "passed": true
-    },
-    "worker_recovery_seconds": 52.44,
-    "redis_delivery_recovered": true,
-    "milvus_readiness_recovered": true,
-    "passed": true
-  },
-  "restore": {
-    "passed": true,
-    "project": "dr-restore-interview-final",
-    "volumes_verified": 11,
-    "rto_seconds": 202.05,
-    "retrieval": {
-      "nonempty_collections_searched": 2,
-      "results_checked": 2
-    },
-    "checks": [
-      "all archived files match",
-      "both SQL dumps restored with exit-on-error",
-      "readyz",
-      "anonymous 401",
-      "OIDC discovery",
-      "Milvus search"
-    ]
-  },
-  "limitations": [
-    "single-host Compose",
-    "authored synthetic fixed sources",
-    "model-assisted independent prompts, not independent human scoring",
-    "fixture load providers; no production SLA"
-  ]
+    "thinking_type": "disabled",
+    "extra_body_sha256": "04e5afe8e30e34b1b1bd22ad95b60a35ef9c71cf5eac8e18da1d7252d7d38c0f"
+  }
 }
