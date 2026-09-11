@@ -1,0 +1,1498 @@
+{
+  "date": "2026-09-11",
+  "commit": "e5310e30feefd73d237ee409b9691d137614ead0",
+  "scope": "Single-host Windows Docker Desktop; no production SLA claim",
+  "source_check": {
+    "backend": {
+      "files": 33,
+      "differences": []
+    },
+    "worker": {
+      "files": 33,
+      "differences": []
+    }
+  },
+  "configuration": {
+    "web_search_provider": "bocha",
+    "llm_model": "deepseek-v4-flash",
+    "thinking_type": "disabled",
+    "extra_body_sha256": "04e5afe8e30e34b1b1bd22ad95b60a35ef9c71cf5eac8e18da1d7252d7d38c0f"
+  },
+  "regression": {
+    "python_passed": 108,
+    "python_skipped_integration": 4,
+    "integration_passed": 4,
+    "ruff_passed": true,
+    "frontend_passed": 4,
+    "frontend_build_passed": true,
+    "enterprise_smoke_passed": true,
+    "full_browser_passed": 6,
+    "full_browser_skipped": 0,
+    "browser_temporary_identity_cleanup_passed": true
+  },
+  "offline_routing": {
+    "mode": "demo fixtures, not real-model routing accuracy",
+    "cases": 7,
+    "passed": 7
+  },
+  "answer_quality": {
+    "suite": "answer-quality-v1",
+    "results": [
+      {
+        "id": "grounded-single-source",
+        "critical": false,
+        "passed": true,
+        "checks": [],
+        "claim_count": 1,
+        "citation_count": 1
+      },
+      {
+        "id": "grounded-multi-source",
+        "critical": false,
+        "passed": true,
+        "checks": [],
+        "claim_count": 2,
+        "citation_count": 2
+      },
+      {
+        "id": "no-evidence-refusal",
+        "critical": true,
+        "passed": true,
+        "checks": [],
+        "claim_count": 0,
+        "citation_count": 0
+      },
+      {
+        "id": "conflicting-evidence",
+        "critical": true,
+        "passed": true,
+        "checks": [],
+        "claim_count": 1,
+        "citation_count": 2
+      },
+      {
+        "id": "forbidden-invention",
+        "critical": true,
+        "passed": true,
+        "checks": [],
+        "claim_count": 1,
+        "citation_count": 1
+      },
+      {
+        "id": "bounded-inference",
+        "critical": false,
+        "passed": true,
+        "checks": [],
+        "claim_count": 1,
+        "citation_count": 1
+      },
+      {
+        "id": "citation-required",
+        "critical": false,
+        "passed": true,
+        "checks": [],
+        "claim_count": 1,
+        "citation_count": 1
+      },
+      {
+        "id": "adversarial-0",
+        "critical": true,
+        "passed": true,
+        "checks": []
+      },
+      {
+        "id": "adversarial-1",
+        "critical": true,
+        "passed": true,
+        "checks": []
+      },
+      {
+        "id": "adversarial-2",
+        "critical": true,
+        "passed": true,
+        "checks": []
+      }
+    ],
+    "summary": {
+      "case_count": 10,
+      "passed_count": 10,
+      "score": 1.0,
+      "minimum_score": 0.85,
+      "critical_failures": [],
+      "passed": true
+    }
+  },
+  "research_quality": {
+    "suite": "research-quality-v2",
+    "fixture_sha256": "b221029efcd4da0c6016dc16d38683cf080f9c8ab8d1213af907bbb25d17cfb7",
+    "commit": "e5310e30feefd73d237ee409b9691d137614ead0",
+    "model": "deepseek-v4-flash",
+    "mode": "fixed-web-real-model",
+    "extra_body_sha256": "04e5afe8e30e34b1b1bd22ad95b60a35ef9c71cf5eac8e18da1d7252d7d38c0f",
+    "thinking_type": "disabled",
+    "embedding": "not exercised: web evidence suite",
+    "results": [
+      {
+        "id": "single-1",
+        "critical": false,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 10,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 16.89,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 8,
+          "prompt_tokens": 10378,
+          "completion_tokens": 2191
+        },
+        "research_usage": null
+      },
+      {
+        "id": "compare-1",
+        "critical": false,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 15,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 31.0,
+        "usage": {
+          "search_calls": 12,
+          "llm_calls": 11,
+          "prompt_tokens": 22289,
+          "completion_tokens": 4697
+        },
+        "research_usage": null
+      },
+      {
+        "id": "refusal-1",
+        "critical": true,
+        "passed": true,
+        "status": "insufficient",
+        "claim_count": 0,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": true,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 5.69,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 3,
+          "prompt_tokens": 1571,
+          "completion_tokens": 389
+        },
+        "research_usage": null
+      },
+      {
+        "id": "conflict-1",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 16,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 32.09,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 10,
+          "prompt_tokens": 29209,
+          "completion_tokens": 5945
+        },
+        "research_usage": null
+      },
+      {
+        "id": "negation-1",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 7,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 14.58,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 8,
+          "prompt_tokens": 8854,
+          "completion_tokens": 1742
+        },
+        "research_usage": null
+      },
+      {
+        "id": "injection-1",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 6,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 23.23,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 10,
+          "prompt_tokens": 12776,
+          "completion_tokens": 2980
+        },
+        "research_usage": null
+      },
+      {
+        "id": "single-2",
+        "critical": false,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 13,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 32.14,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 10,
+          "prompt_tokens": 19177,
+          "completion_tokens": 5084
+        },
+        "research_usage": null
+      },
+      {
+        "id": "compare-2",
+        "critical": false,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 18,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 22.05,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 8,
+          "prompt_tokens": 21174,
+          "completion_tokens": 3266
+        },
+        "research_usage": null
+      },
+      {
+        "id": "refusal-2",
+        "critical": true,
+        "passed": true,
+        "status": "insufficient",
+        "claim_count": 0,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": true,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 10.11,
+        "usage": {
+          "search_calls": 8,
+          "llm_calls": 4,
+          "prompt_tokens": 2183,
+          "completion_tokens": 585
+        },
+        "research_usage": null
+      },
+      {
+        "id": "conflict-2",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 10,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 36.59,
+        "usage": {
+          "search_calls": 8,
+          "llm_calls": 12,
+          "prompt_tokens": 24678,
+          "completion_tokens": 6133
+        },
+        "research_usage": null
+      },
+      {
+        "id": "negation-2",
+        "critical": true,
+        "passed": false,
+        "status": "completed",
+        "claim_count": 8,
+        "support": 0.875,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 26.17,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 10,
+          "prompt_tokens": 14567,
+          "completion_tokens": 3597
+        },
+        "research_usage": null
+      },
+      {
+        "id": "injection-2",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 9,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 17.23,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 8,
+          "prompt_tokens": 10585,
+          "completion_tokens": 2057
+        },
+        "research_usage": null
+      },
+      {
+        "id": "single-3",
+        "critical": false,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 10,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 17.44,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 8,
+          "prompt_tokens": 10261,
+          "completion_tokens": 1924
+        },
+        "research_usage": null
+      },
+      {
+        "id": "compare-3",
+        "critical": false,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 10,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 19.28,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 8,
+          "prompt_tokens": 15016,
+          "completion_tokens": 2536
+        },
+        "research_usage": null
+      },
+      {
+        "id": "refusal-3",
+        "critical": true,
+        "passed": true,
+        "status": "insufficient",
+        "claim_count": 0,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": true,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 10.08,
+        "usage": {
+          "search_calls": 8,
+          "llm_calls": 4,
+          "prompt_tokens": 2550,
+          "completion_tokens": 683
+        },
+        "research_usage": null
+      },
+      {
+        "id": "conflict-3",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 14,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 39.78,
+        "usage": {
+          "search_calls": 8,
+          "llm_calls": 12,
+          "prompt_tokens": 28812,
+          "completion_tokens": 7139
+        },
+        "research_usage": null
+      },
+      {
+        "id": "negation-3",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 15,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 38.62,
+        "usage": {
+          "search_calls": 10,
+          "llm_calls": 13,
+          "prompt_tokens": 23050,
+          "completion_tokens": 6007
+        },
+        "research_usage": null
+      },
+      {
+        "id": "injection-3",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 13,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 23.27,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 8,
+          "prompt_tokens": 13622,
+          "completion_tokens": 2944
+        },
+        "research_usage": null
+      },
+      {
+        "id": "single-4",
+        "critical": false,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 10,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 27.95,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 11,
+          "prompt_tokens": 18344,
+          "completion_tokens": 4787
+        },
+        "research_usage": null
+      },
+      {
+        "id": "compare-4",
+        "critical": false,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 8,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 24.61,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 10,
+          "prompt_tokens": 18869,
+          "completion_tokens": 3975
+        },
+        "research_usage": null
+      },
+      {
+        "id": "refusal-4",
+        "critical": true,
+        "passed": true,
+        "status": "insufficient",
+        "claim_count": 0,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": true,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 9.48,
+        "usage": {
+          "search_calls": 8,
+          "llm_calls": 4,
+          "prompt_tokens": 2711,
+          "completion_tokens": 760
+        },
+        "research_usage": null
+      },
+      {
+        "id": "conflict-4",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 15,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 34.98,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 10,
+          "prompt_tokens": 30501,
+          "completion_tokens": 6238
+        },
+        "research_usage": null
+      },
+      {
+        "id": "negation-4",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 11,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 27.26,
+        "usage": {
+          "search_calls": 8,
+          "llm_calls": 12,
+          "prompt_tokens": 18167,
+          "completion_tokens": 4264
+        },
+        "research_usage": null
+      },
+      {
+        "id": "injection-4",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 12,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 26.75,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 10,
+          "prompt_tokens": 17749,
+          "completion_tokens": 3893
+        },
+        "research_usage": null
+      },
+      {
+        "id": "single-5",
+        "critical": false,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 16,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 29.91,
+        "usage": {
+          "search_calls": 12,
+          "llm_calls": 12,
+          "prompt_tokens": 16776,
+          "completion_tokens": 3879
+        },
+        "research_usage": null
+      },
+      {
+        "id": "compare-5",
+        "critical": false,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 9,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 21.53,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 10,
+          "prompt_tokens": 18716,
+          "completion_tokens": 3666
+        },
+        "research_usage": null
+      },
+      {
+        "id": "refusal-5",
+        "critical": true,
+        "passed": true,
+        "status": "insufficient",
+        "claim_count": 0,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": true,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 5.98,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 3,
+          "prompt_tokens": 1534,
+          "completion_tokens": 351
+        },
+        "research_usage": null
+      },
+      {
+        "id": "conflict-5",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 17,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 33.78,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 10,
+          "prompt_tokens": 32946,
+          "completion_tokens": 6025
+        },
+        "research_usage": null
+      },
+      {
+        "id": "negation-5",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 13,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 27.81,
+        "usage": {
+          "search_calls": 8,
+          "llm_calls": 12,
+          "prompt_tokens": 20373,
+          "completion_tokens": 4497
+        },
+        "research_usage": null
+      },
+      {
+        "id": "injection-5",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 10,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 16.55,
+        "usage": {
+          "search_calls": 4,
+          "llm_calls": 8,
+          "prompt_tokens": 10939,
+          "completion_tokens": 2076
+        },
+        "research_usage": null
+      }
+    ],
+    "summary": {
+      "case_count": 30,
+      "passed_count": 29,
+      "pass_rate": 0.9666666666666667,
+      "citation_support": 0.9966101694915255,
+      "answer_coverage": 1.0,
+      "critical_failures": [
+        "negation-2"
+      ],
+      "passed": false
+    },
+    "passed": false
+  },
+  "retrieval": [
+    {
+      "dataset": {
+        "corpus_documents": 14,
+        "corpus_chunks": 14,
+        "query_cases": 16,
+        "embedding_model": "text-embedding-3-large",
+        "mode": "live"
+      },
+      "methods": {
+        "vector_only_baseline": {
+          "recall_at_3": 0.9688,
+          "precision_at_3": 0.375,
+          "ndcg_at_3": 0.9446,
+          "recall_at_5": 0.9688,
+          "precision_at_5": 0.225,
+          "ndcg_at_5": 0.9446,
+          "recall_at_10": 1.0,
+          "precision_at_10": 0.1188,
+          "ndcg_at_10": 0.9573,
+          "mrr_at_max_k": 0.9583,
+          "mean_cold_ms": 1258.44
+        },
+        "hybrid_bm25_vector": {
+          "recall_at_3": 0.9688,
+          "precision_at_3": 0.375,
+          "ndcg_at_3": 0.9527,
+          "recall_at_5": 1.0,
+          "precision_at_5": 0.2375,
+          "ndcg_at_5": 0.9676,
+          "recall_at_10": 1.0,
+          "precision_at_10": 0.1188,
+          "ndcg_at_10": 0.9676,
+          "mrr_at_max_k": 0.9688,
+          "mean_cold_ms": 1235.77
+        }
+      },
+      "quality_delta": {
+        "recall_at_3": {
+          "absolute": 0.0,
+          "relative_percent": 0.0
+        },
+        "recall_at_5": {
+          "absolute": 0.0312,
+          "relative_percent": 3.22
+        },
+        "recall_at_10": {
+          "absolute": 0.0,
+          "relative_percent": 0.0
+        },
+        "precision_at_3": {
+          "absolute": 0.0,
+          "relative_percent": 0.0
+        },
+        "precision_at_5": {
+          "absolute": 0.0125,
+          "relative_percent": 5.56
+        },
+        "precision_at_10": {
+          "absolute": 0.0,
+          "relative_percent": 0.0
+        },
+        "ndcg_at_3": {
+          "absolute": 0.0081,
+          "relative_percent": 0.86
+        },
+        "ndcg_at_5": {
+          "absolute": 0.023,
+          "relative_percent": 2.43
+        },
+        "ndcg_at_10": {
+          "absolute": 0.0103,
+          "relative_percent": 1.08
+        },
+        "mrr_at_max_k": {
+          "absolute": 0.0105,
+          "relative_percent": 1.1
+        }
+      },
+      "latency": {
+        "vector_only_mean_cold_ms": 1258.44,
+        "hybrid_mean_cold_ms": 1235.77,
+        "hybrid_mean_warm_ms": 131.32,
+        "hybrid_warm_cache_hit_rate": 1.0
+      },
+      "cost_proxy": {
+        "index_embedding_inputs_one_time": 14,
+        "vector_only_query_embedding_inputs_per_query": 1,
+        "hybrid_cold_query_embedding_inputs_per_query": 1,
+        "hybrid_warm_query_embedding_inputs_per_query": 0,
+        "llm_calls_for_retrieval_evaluation": 0,
+        "note": "请求计数，不是货币成本；实际金额取决于部署时的嵌入服务定价。"
+      }
+    },
+    {
+      "dataset": {
+        "corpus_documents": 14,
+        "corpus_chunks": 14,
+        "query_cases": 16,
+        "embedding_model": "text-embedding-3-large",
+        "mode": "live"
+      },
+      "methods": {
+        "vector_only_baseline": {
+          "recall_at_3": 0.9688,
+          "precision_at_3": 0.375,
+          "ndcg_at_3": 0.9446,
+          "recall_at_5": 0.9688,
+          "precision_at_5": 0.225,
+          "ndcg_at_5": 0.9446,
+          "recall_at_10": 1.0,
+          "precision_at_10": 0.1188,
+          "ndcg_at_10": 0.9573,
+          "mrr_at_max_k": 0.9583,
+          "mean_cold_ms": 981.41
+        },
+        "hybrid_bm25_vector": {
+          "recall_at_3": 0.9688,
+          "precision_at_3": 0.375,
+          "ndcg_at_3": 0.9527,
+          "recall_at_5": 1.0,
+          "precision_at_5": 0.2375,
+          "ndcg_at_5": 0.9676,
+          "recall_at_10": 1.0,
+          "precision_at_10": 0.1188,
+          "ndcg_at_10": 0.9676,
+          "mrr_at_max_k": 0.9688,
+          "mean_cold_ms": 1177.63
+        }
+      },
+      "quality_delta": {
+        "recall_at_3": {
+          "absolute": 0.0,
+          "relative_percent": 0.0
+        },
+        "recall_at_5": {
+          "absolute": 0.0312,
+          "relative_percent": 3.22
+        },
+        "recall_at_10": {
+          "absolute": 0.0,
+          "relative_percent": 0.0
+        },
+        "precision_at_3": {
+          "absolute": 0.0,
+          "relative_percent": 0.0
+        },
+        "precision_at_5": {
+          "absolute": 0.0125,
+          "relative_percent": 5.56
+        },
+        "precision_at_10": {
+          "absolute": 0.0,
+          "relative_percent": 0.0
+        },
+        "ndcg_at_3": {
+          "absolute": 0.0081,
+          "relative_percent": 0.86
+        },
+        "ndcg_at_5": {
+          "absolute": 0.023,
+          "relative_percent": 2.43
+        },
+        "ndcg_at_10": {
+          "absolute": 0.0103,
+          "relative_percent": 1.08
+        },
+        "mrr_at_max_k": {
+          "absolute": 0.0105,
+          "relative_percent": 1.1
+        }
+      },
+      "latency": {
+        "vector_only_mean_cold_ms": 981.41,
+        "hybrid_mean_cold_ms": 1177.63,
+        "hybrid_mean_warm_ms": 105.62,
+        "hybrid_warm_cache_hit_rate": 1.0
+      },
+      "cost_proxy": {
+        "index_embedding_inputs_one_time": 14,
+        "vector_only_query_embedding_inputs_per_query": 1,
+        "hybrid_cold_query_embedding_inputs_per_query": 1,
+        "hybrid_warm_query_embedding_inputs_per_query": 0,
+        "llm_calls_for_retrieval_evaluation": 0,
+        "note": "请求计数，不是货币成本；实际金额取决于部署时的嵌入服务定价。"
+      }
+    }
+  ],
+  "retrieval_quality_identical": true,
+  "components": {
+    "integration": "passed",
+    "load": {
+      "clients": 5,
+      "duration_seconds": 300,
+      "provider": "deterministic fixture",
+      "requests": 4576,
+      "unexpected_failures": 0,
+      "accepted": 386,
+      "completed": 386,
+      "control_p95_ms": 243.79,
+      "research_p95_ms": 3139.37,
+      "index_p95_ms": 1738.21,
+      "queue_p95_ms": 1351.61,
+      "passed": true
+    },
+    "worker_recovery_seconds": 53.5,
+    "redis_delivery_recovered": true,
+    "milvus_readiness_recovered": true,
+    "passed": true
+  },
+  "fixture_sha256": {
+    "eval/local_retrieval_corpus.json": "788586d28c31a174ba0bd43b255f4257e28bc5980e93904f0195eb47c5ae811c",
+    "eval/local_retrieval_cases.json": "cba433a526181681576d0b3c906ee94239e0643b95a2a201fd1c6034370f639a",
+    "eval/frozen_cases.json": "428155838bc6149bef1ae542d7fa64f63ba60f209ed49097a90f27600f079a47",
+    "eval/research_quality_cases.json": "b221029efcd4da0c6016dc16d38683cf080f9c8ab8d1213af907bbb25d17cfb7",
+    "eval/answer_quality_cases.json": "9f678557e8f96879739d5001e4240d87f55d77bfcd8cdff1ce8d89298302c406"
+  },
+  "overall_passed": false,
+  "limitations": [
+    "Critical fixed research case negation-2 failed; no retry replaces this run.",
+    "Load uses deterministic model/search/embedding fixtures with real storage components.",
+    "Concurrent local validation workloads can affect latency and throughput.",
+    "Backup/restore and remote CI were not rerun."
+  ],
+  "live_quality": {
+    "suite": "research-quality-v2",
+    "fixture_sha256": "2afb1d1335ba3b7f5b4e8a208d62632ed0362d9b55777133236615fbec095062",
+    "commit": "e5310e30feefd73d237ee409b9691d137614ead0",
+    "model": "deepseek-v4-flash",
+    "mode": "live-web",
+    "extra_body_sha256": "04e5afe8e30e34b1b1bd22ad95b60a35ef9c71cf5eac8e18da1d7252d7d38c0f",
+    "thinking_type": "disabled",
+    "embedding": "configured real adapter for browser document scenario; no retrieval benchmark",
+    "results": [
+      {
+        "id": "live-postgres",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 19,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 2.8,
+        "usage": {
+          "search_calls": 0,
+          "llm_calls": 2,
+          "prompt_tokens": 46440,
+          "completion_tokens": 242
+        },
+        "research_usage": {
+          "run_id": "20ea02040c074d59954cbe9b5d10ce2a",
+          "search_calls": 12,
+          "llm_calls": 13,
+          "prompt_tokens": 188832,
+          "completion_tokens": 17128
+        }
+      },
+      {
+        "id": "live-redis",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 42,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 6.88,
+        "usage": {
+          "search_calls": 0,
+          "llm_calls": 2,
+          "prompt_tokens": 269611,
+          "completion_tokens": 369
+        },
+        "research_usage": {
+          "run_id": "d7d2f27dac7c40b88d629acfe1d4bec7",
+          "search_calls": 12,
+          "llm_calls": 13,
+          "prompt_tokens": 826356,
+          "completion_tokens": 34259
+        }
+      },
+      {
+        "id": "live-oidc",
+        "critical": true,
+        "passed": true,
+        "status": "completed",
+        "claim_count": 22,
+        "support": 1.0,
+        "coverage": 1.0,
+        "forbidden_claim_present": false,
+        "refusal_appropriate": false,
+        "nodes": [
+          "router",
+          "planner",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "local_scout",
+          "web_scout",
+          "judge",
+          "analyst",
+          "reflect",
+          "writer",
+          "validator"
+        ],
+        "seconds": 3.94,
+        "usage": {
+          "search_calls": 0,
+          "llm_calls": 2,
+          "prompt_tokens": 115810,
+          "completion_tokens": 209
+        },
+        "research_usage": {
+          "run_id": "8cae41da84c345cab73d2efd6dd93656",
+          "search_calls": 12,
+          "llm_calls": 13,
+          "prompt_tokens": 391279,
+          "completion_tokens": 25913
+        }
+      }
+    ],
+    "summary": {
+      "case_count": 3,
+      "passed_count": 3,
+      "pass_rate": 1.0,
+      "citation_support": 1.0,
+      "answer_coverage": 1.0,
+      "critical_failures": [],
+      "passed": true
+    },
+    "passed": true
+  }
+}
