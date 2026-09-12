@@ -1,0 +1,231 @@
+{
+  "suite": "research-quality-v2",
+  "fixture_sha256": "b221029efcd4da0c6016dc16d38683cf080f9c8ab8d1213af907bbb25d17cfb7",
+  "commit": "a713a9bf721e508244efd233670cf378085773cb",
+  "model": "deepseek-v4-flash",
+  "mode": "fixed-web-real-model",
+  "extra_body_sha256": "04e5afe8e30e34b1b1bd22ad95b60a35ef9c71cf5eac8e18da1d7252d7d38c0f",
+  "thinking_type": "disabled",
+  "embedding": "not exercised: web evidence suite",
+  "results": [
+    {
+      "id": "negation-1",
+      "critical": true,
+      "passed": true,
+      "status": "completed",
+      "claim_count": 7,
+      "support": 1.0,
+      "coverage": 1.0,
+      "forbidden_claim_present": false,
+      "refusal_appropriate": false,
+      "nodes": [
+        "router",
+        "planner",
+        "local_scout",
+        "web_scout",
+        "judge",
+        "analyst",
+        "reflect",
+        "writer",
+        "validator"
+      ],
+      "seconds": 13.66,
+      "usage": {
+        "search_calls": 4,
+        "llm_calls": 8,
+        "prompt_tokens": 9416,
+        "completion_tokens": 2045
+      },
+      "research_usage": null
+    },
+    {
+      "id": "negation-2",
+      "critical": true,
+      "passed": true,
+      "status": "completed",
+      "claim_count": 13,
+      "support": 1.0,
+      "coverage": 1.0,
+      "forbidden_claim_present": false,
+      "refusal_appropriate": false,
+      "nodes": [
+        "router",
+        "planner",
+        "local_scout",
+        "web_scout",
+        "judge",
+        "analyst",
+        "reflect",
+        "local_scout",
+        "web_scout",
+        "judge",
+        "analyst",
+        "reflect",
+        "writer",
+        "validator"
+      ],
+      "seconds": 20.27,
+      "usage": {
+        "search_calls": 8,
+        "llm_calls": 10,
+        "prompt_tokens": 13740,
+        "completion_tokens": 2973
+      },
+      "research_usage": null
+    },
+    {
+      "id": "negation-3",
+      "critical": true,
+      "passed": true,
+      "status": "completed",
+      "claim_count": 10,
+      "support": 1.0,
+      "coverage": 1.0,
+      "forbidden_claim_present": false,
+      "refusal_appropriate": false,
+      "nodes": [
+        "router",
+        "planner",
+        "local_scout",
+        "web_scout",
+        "judge",
+        "analyst",
+        "reflect",
+        "local_scout",
+        "web_scout",
+        "judge",
+        "analyst",
+        "reflect",
+        "writer",
+        "validator"
+      ],
+      "seconds": 20.5,
+      "usage": {
+        "search_calls": 5,
+        "llm_calls": 10,
+        "prompt_tokens": 12675,
+        "completion_tokens": 3043
+      },
+      "research_usage": null
+    },
+    {
+      "id": "conflict-4",
+      "critical": true,
+      "passed": true,
+      "status": "completed",
+      "claim_count": 16,
+      "support": 1.0,
+      "coverage": 1.0,
+      "forbidden_claim_present": false,
+      "refusal_appropriate": false,
+      "nodes": [
+        "router",
+        "planner",
+        "local_scout",
+        "web_scout",
+        "judge",
+        "analyst",
+        "reflect",
+        "writer",
+        "validator"
+      ],
+      "seconds": 29.19,
+      "usage": {
+        "search_calls": 4,
+        "llm_calls": 10,
+        "prompt_tokens": 31916,
+        "completion_tokens": 6188
+      },
+      "research_usage": null
+    },
+    {
+      "id": "negation-4",
+      "critical": true,
+      "passed": true,
+      "status": "completed",
+      "claim_count": 15,
+      "support": 1.0,
+      "coverage": 1.0,
+      "forbidden_claim_present": false,
+      "refusal_appropriate": false,
+      "nodes": [
+        "router",
+        "planner",
+        "local_scout",
+        "web_scout",
+        "judge",
+        "analyst",
+        "reflect",
+        "local_scout",
+        "web_scout",
+        "judge",
+        "analyst",
+        "reflect",
+        "local_scout",
+        "web_scout",
+        "judge",
+        "analyst",
+        "reflect",
+        "writer",
+        "validator"
+      ],
+      "seconds": 33.5,
+      "usage": {
+        "search_calls": 12,
+        "llm_calls": 13,
+        "prompt_tokens": 24075,
+        "completion_tokens": 6234
+      },
+      "research_usage": null
+    },
+    {
+      "id": "negation-5",
+      "critical": true,
+      "passed": true,
+      "status": "completed",
+      "claim_count": 4,
+      "support": 1.0,
+      "coverage": 1.0,
+      "forbidden_claim_present": false,
+      "refusal_appropriate": false,
+      "nodes": [
+        "router",
+        "planner",
+        "local_scout",
+        "web_scout",
+        "judge",
+        "analyst",
+        "reflect",
+        "web_scout",
+        "local_scout",
+        "judge",
+        "analyst",
+        "reflect",
+        "writer",
+        "validator"
+      ],
+      "seconds": 25.97,
+      "usage": {
+        "search_calls": 6,
+        "llm_calls": 12,
+        "prompt_tokens": 13092,
+        "completion_tokens": 4179
+      },
+      "research_usage": null
+    }
+  ],
+  "summary": {
+    "case_count": 6,
+    "passed_count": 6,
+    "pass_rate": 1.0,
+    "citation_support": 1.0,
+    "answer_coverage": 1.0,
+    "critical_failures": [],
+    "passed": true
+  },
+  "passed": true,
+  "working_tree_changes": [
+    "backend/research/graph.py"
+  ],
+  "scope": "Targeted six-case regression on uncommitted prompt changes; not a replacement for the full 2026-09-11 audit."
+}
