@@ -12,7 +12,7 @@ services:
     command: etcd -advertise-client-urls=http://etcd:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
     healthcheck: {test: [CMD, etcdctl, endpoint, health], interval: 3s, timeout: 3s, retries: 30}
   minio:
-    image: minio/minio:RELEASE.2024-05-28T17-19-04Z
+    image: quay.io/minio/minio:RELEASE.2024-05-28T17-19-04Z
     environment: {MINIO_ROOT_USER: deepresearch, MINIO_ROOT_PASSWORD: verification-only}
     command: minio server /data
     healthcheck: {test: [CMD, curl, -f, http://localhost:9000/minio/health/live], interval: 3s, timeout: 3s, retries: 30}
