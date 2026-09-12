@@ -103,6 +103,15 @@ class ReportDraft(BaseModel):
     limitations: list[str] = Field(default_factory=list, max_length=12)
 
 
+class ClaimReplacement(BaseModel):
+    index: int = Field(ge=0)
+    replacement: Claim | None = None
+
+
+class ReportRepair(BaseModel):
+    repairs: list[ClaimReplacement] = Field(default_factory=list, max_length=96)
+
+
 class ClaimCheck(BaseModel):
     index: int = Field(ge=0)
     supported: bool
@@ -131,6 +140,7 @@ class ResearchState(TypedDict, total=False):
     evidence: list[dict]
     conflicts: list[str]
     claims: list[dict]
+    analysis_input_hash: str
     gaps: list[str]
     reflect: bool
     report: str

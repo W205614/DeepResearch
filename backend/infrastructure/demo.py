@@ -44,8 +44,9 @@ def generate(role, data):
         return {"title": "研究工作流演示报告", "sections": [{"heading": "证据整理", "claims": data["claims"]}],
                 "limitations": ["模拟模型输出，仅供功能验收"]}
     if role == "validator":
-        return {"checks": [{"index": c["index"], "supported": c["text"] in " ".join(s["text"] for s in c["sources"]),
+        return {"checks": [{"index": c["index"], "supported": c["text"] in " ".join(
+                            data["sources"][key]["text"] for key in c["source_ids"]),
                             "reason": "固定数据逐字匹配检查"} for c in data["claims"]]}
     if role == "repair":
-        return data["draft"]
+        return {"repairs": []}
     raise ValueError(f"Unknown demo role: {role}")

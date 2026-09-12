@@ -3,7 +3,7 @@ import { computed, onMounted, onUnmounted, ref, nextTick } from 'vue'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import { ArrowUp, ArrowUpRight, BookOpen, Brain, Check, ChevronRight, CircleHelp, Compass, Download, FileText, FolderOpen, Globe2, Layers3, LoaderCircle, Menu, MessageSquare, Plus, RefreshCw, Search, Settings2, ShieldCheck, LogIn, LogOut, UserPlus, Sparkles, Square, Trash2, X } from 'lucide-vue-next'
-import { api, headers, subscribe, terminal, type Run, type Source, type EventItem } from './api'
+import { api, authenticatedFetch, subscribe, terminal, type Run, type Source, type EventItem } from './api'
 import { completeLogin, configureIssuer, currentUser, login, logout, register } from './auth'
 
 type View = 'research'|'documents'|'memories'|'settings'
@@ -51,7 +51,7 @@ function signOut(){ logout() }
 function handleAuthExpired(){
   controller?.abort(); generation++; authenticated.value=false; userId.value=''; status.value=null
   threads.value=[]; runs.value=[]; selected.value=null; events.value=[]; threadId.value=''
-  localStorage.removeItem('dr-thread'); error.value='登录已过期，请重新登录'
+  error.value='登录已过期，请重新登录；研究任务仍可在登录后查看'
 }
 async function refreshThreads(){threads.value=await api('/api/threads')}
 async function refreshStatus(){status.value=await api('/api/status')}
@@ -126,11 +126,11 @@ async function saveSettings(){await safely(async()=>{
   }else{threadSwitchId.value='';view.value='settings'}
 })}
 async function checkConnection(){checking.value=true;await safely(async()=>{connection.value=await api('/api/config/check',{method:'POST'})});checking.value=false}
-async function saveMarkdown(path: string, filename: string){const response=await fetch(path,{headers:headers()});if(!response.ok)throw new Error('下载失败');const url=URL.createObjectURL(await response.blob());const a=document.createElement('a');a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url)}
+async function saveMarkdown(path: string, filename: string){const response=await authenticatedFetch(path);if(!response.ok)throw new Error('下载失败');const url=URL.createObjectURL(await response.blob());const a=document.createElement('a');a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url)}
 async function downloadRun(run: Run){await safely(async()=>{await saveMarkdown(`/api/research/runs/${run.id}/report`,`research-${run.id.slice(0,8)}.md`)})}
 async function downloadConversation(){if(!threadId.value)return;await safely(async()=>{await saveMarkdown(`/api/threads/${threadId.value}/report`,`conversation-${threadId.value.slice(0,8)}.md`)})}
 async function saveRunMemory(){if(!selected.value)return;await safely(async()=>{await api(`/api/research/runs/${selected.value!.id}/memory`,{method:'POST'});memories.value=await api('/api/memories')})}
-async function exportData(){await safely(async()=>{const response=await fetch('/api/data/export',{headers:headers()});if(!response.ok)throw new Error('导出失败');const url=URL.createObjectURL(await response.blob());const a=document.createElement('a');a.href=url;a.download='deepresearch-export.zip';a.click();URL.revokeObjectURL(url)})}
+async function exportData(){await safely(async()=>{const response=await authenticatedFetch('/api/data/export');if(!response.ok)throw new Error('导出失败');const url=URL.createObjectURL(await response.blob());const a=document.createElement('a');a.href=url;a.download='deepresearch-export.zip';a.click();URL.revokeObjectURL(url)})}
 async function purgeData(scope: string){if(!window.confirm(`确定清理${scope==='all'?'全部本地数据':'对应本地数据'}吗？此操作不可恢复。`))return;await safely(async()=>{await api(`/api/data?scope=${scope}`,{method:'DELETE',headers:{'X-Confirm-Delete':'DELETE'}});await refreshThreads();documents.value=[];memories.value=[];metrics.value=await api('/api/metrics');selected.value=null})}
 function useExample(text: string){topic.value=text;void nextTick(()=>document.querySelector<HTMLTextAreaElement>('.composer textarea')?.focus())}
 async function renameThread(){await safely(async()=>{await api(`/api/threads/${threadId.value}`,{method:'PATCH',body:JSON.stringify({title:newTitle.value})});rename.value=false;await refreshThreads()})}

@@ -137,3 +137,45 @@ async def test_vision_request_uses_the_configured_model_and_same_provider_creden
     p = await make_provider(tmp_path, response)
     assert await p.describe_image(b"png-bytes", "image/png") == "图表文字"
     await p.close()
+
+async def test_writer_retry_identifies_overfull_section_without_echoing_text(tmp_path):
+    from backend.domain.models import ReportDraft
+    calls = []
+    def response(request):
+        calls.append(json.loads(request.content))
+        count = 13 if len(calls) == 1 else 12
+        draft = {"title": "report", "sections": [{"heading": "findings", "claims": [
+            {"text": "sensitive-source-text", "source_ids": ["W-1"]} for _ in range(count)]}]}
+        return httpx.Response(200, json={"choices": [{"finish_reason": "stop", "message": {
+            "content": json.dumps(draft)}}]})
+    p = await make_provider(tmp_path, response)
+    try:
+        draft = await p.structured("writer", "test", {}, ReportDraft, "run")
+        assert len(draft.sections[0].claims) == 12
+        feedback = calls[1]["messages"][-1]["content"]
+        assert "sections.0.claims" in feedback and "max_length=12" in feedback
+        assert "sensitive-source-text" not in feedback
+    finally:
+        await p.close()
+
+
+async def test_token_truncation_is_distinct_from_schema_length(tmp_path):
+    p = await make_provider(tmp_path, lambda request: httpx.Response(200, json={
+        "choices": [{"finish_reason": "length", "message": {"content": "{}"}}]}))
+    try:
+        with pytest.raises(ServiceError, match="output_truncated"):
+            await p.structured("writer", "test", {}, Route, "run")
+    finally:
+        await p.close()
+
+async def test_writer_persistent_overflow_fails_instead_of_silently_dropping_claims(tmp_path):
+    from backend.domain.models import ReportDraft
+    draft = {"title": "report", "sections": [{"heading": "findings", "claims": [
+        {"text": "fact", "source_ids": ["W-1"]} for _ in range(13)]}]}
+    p = await make_provider(tmp_path, lambda request: httpx.Response(200, json={
+        "choices": [{"finish_reason": "stop", "message": {"content": json.dumps(draft)}}]}))
+    try:
+        with pytest.raises(ServiceError, match="too_long"):
+            await p.structured("writer", "test", {}, ReportDraft, "run")
+    finally:
+        await p.close()

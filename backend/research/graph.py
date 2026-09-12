@@ -11,7 +11,7 @@ from langgraph.graph import END, START, StateGraph
 from ..core.db import now
 from .evidence_policy import validate_claim
 from ..domain.models import (Analysis, ChatAnswer, Evidence, Judgment, Plan, Reflection, ReportDraft,
-                     ResearchState, Route, Verification)
+                     ReportRepair, ResearchState, Route, Verification)
 from ..core.metrics import NODE_SECONDS
 from ..core.observability import error_category, get_task_logger, run_label, tracer
 from ..infrastructure.providers import ServiceError
@@ -76,6 +76,25 @@ def supported_indices(checks: Verification, eligible: set[int]) -> set[int]:
     return {i for i, values in grouped.items() if i in eligible and values == [True]}
 
 
+def apply_report_repair(draft: ReportDraft, approved: set[int], repair: ReportRepair):
+    """Preserve approved claims and stable indices; missing/ambiguous patches are excluded."""
+    result = draft.model_copy(deep=True)
+    grouped = {}
+    for patch in repair.repairs:
+        grouped.setdefault(patch.index, []).append(patch.replacement)
+    excluded, index = set(), 0
+    for section in result.sections:
+        for offset, _claim in enumerate(section.claims):
+            if index not in approved:
+                replacements = grouped.get(index, [])
+                if len(replacements) == 1 and replacements[0] is not None:
+                    section.claims[offset] = replacements[0]
+                else:
+                    excluded.add(index)
+            index += 1
+    return result, excluded
+
+
 def md_text(text: str) -> str:
     return re.sub(r"([\\`*_{}\[\]<>()#!|])", r"\\\1", text.replace("\n", " "))
 
@@ -117,7 +136,8 @@ HELP_REPORT = """# DeepResearch 可以做什么
 class ResearchGraph:
     def __init__(self, settings, db, providers, vectors, documents):
         self.settings, self.db, self.providers, self.vectors, self.documents = settings, db, providers, vectors, documents
-        self.fetch_gate = asyncio.Semaphore(3)
+        self.search_gate = asyncio.Semaphore(settings.web_search_concurrency)
+        self.fetch_gate = asyncio.Semaphore(settings.web_fetch_concurrency)
         self.logger = get_task_logger()
         self.agents = AgentRuntime(db)
 
@@ -301,13 +321,20 @@ class ResearchGraph:
                 "evidence": [], "limitations": []}
 
     async def web_scout(self, state):
-        rows_by_query = []
         queries = normalize_queries(state["queries"])
-        for query in queries:
+
+        async def search(query):
             try:
-                rows_by_query.append(await self.search_web(query, state["run_id"]))
+                async with self.search_gate:
+                    return await self.search_web(query, state["run_id"])
             except ServiceError as exc:
                 await self.warning(state, str(exc))
+                return []
+
+        # Keep query order for fair candidate selection; cancel siblings on failure.
+        async with asyncio.TaskGroup() as group:
+            searches = [group.create_task(search(query)) for query in queries]
+        rows_by_query = [task.result() for task in searches]
         urls = select_web_candidates(rows_by_query, self.settings.max_web_candidates)
 
         async def read(url, row):
@@ -390,7 +417,13 @@ class ResearchGraph:
 
     async def analyst(self, state):
         if not state["evidence"]:
-            return {"claims": [], "gaps": state["plan"]["questions"]}
+            return {"claims": [], "gaps": state["plan"]["questions"], "analysis_input_hash": ""}
+        data = {"plan": state["plan"], "evidence": evidence_context(state["evidence"]),
+                "conflicts": state["conflicts"]}
+        input_hash = digest(json.dumps(data, ensure_ascii=False, sort_keys=True))
+        if state.get("analysis_input_hash") == input_hash:
+            await self.db.event(state["run_id"], "analysis_reused", {"reason": "unchanged_evidence"})
+            return {"claims": state["claims"], "gaps": state["gaps"]}
         analysis = await self.ask("analyst",
             "逐项回答研究问题。每条事实或推断必须关联 source_ids，推断明确写出推断及边界。"
             "证据不支持的内容不要写为事实，列入 gaps。数字必须保留年份、地域、统计定义。"
@@ -400,11 +433,11 @@ class ResearchGraph:
             "claims 严格不超过 40 条，gaps 严格不超过 8 条；合并同一证据支持的重复结论。"
             "JSON 结构示例（仅展示字段，不代表允许空分析）：{\"claims\":[],\"gaps\":[]}。"
             "对象和数组末项后不得添加尾逗号。",
-            {"plan": state["plan"], "evidence": evidence_context(state["evidence"]), "conflicts": state["conflicts"]},
+            data,
             Analysis, state["run_id"])
         valid = {row["id"] for row in state["evidence"]}
         claims = [claim.model_dump() for claim in analysis.claims if set(claim.source_ids) <= valid]
-        return {"claims": claims, "gaps": analysis.gaps}
+        return {"claims": claims, "gaps": analysis.gaps, "analysis_input_hash": input_hash}
 
     async def reflect(self, state):
         counter = await self.db.one("SELECT search_calls FROM counters WHERE run_id=?", (state["run_id"],))
@@ -452,6 +485,8 @@ class ResearchGraph:
             "先完整回答原文明确支持的事实，再简述术语对应的局限，全文不得一处认定等价、另一处否认已确认。"
             "深度模式应逐项覆盖计划问题，综合全部已接受且相关的证据；证据不足时明确缺口。"
             "同一结论只出现一次。不要为充实篇幅增加未被原文支持的建议、假设原因和行动清单。"
+            "最多 8 节，每节最多 12 条 claims；按研究问题分节，避免把全部结论堆进摘要。"
+            "每条 claim 最多 1500 字符、最多 8 个来源；标题最多 160 字符、节标题最多 150 字符，limitations 最多 12 项。"
             "不要将本次研究的执行过程自述写成带来源引用的事实；资料原文不能证明系统执行或未执行了某条指令。"
             "limitations 仅描述研究边界，不包含新的行业结论或数字。",
             {"topic": state["topic"], "plan": state["plan"], "claims": state["claims"],
@@ -459,8 +494,8 @@ class ResearchGraph:
             ReportDraft, state["run_id"])
         return {"draft": draft.model_dump()}
 
-    async def check_draft(self, state, draft, sources):
-        candidates = sanitize_claims(draft, sources)
+    async def check_draft(self, state, draft, sources, *, excluded=frozenset()):
+        candidates = [(i, claim) for i, claim in sanitize_claims(draft, sources) if i not in excluded]
         if not candidates:
             return set(), []
         prechecks, eligible = [], []
@@ -472,16 +507,20 @@ class ResearchGraph:
                 prechecks.append({"index": index, "supported": False, "reason": reason})
         if not eligible:
             return set(), prechecks
-        # Only the claimed sources are supplied; unrelated evidence cannot justify a bad citation.
+        # Send each full source once, preserving the per-claim citation allowlist.
+        referenced = unique([key for _, claim in eligible for key in claim.source_ids])
         checks = await self.ask("validator",
             "独立核查每个 index 的结论是否被其列出的原文片段支持。编号存在不代表内容支持。"
+            "sources 是按来源 ID 索引的原文表；每条结论只能使用自己 source_ids 列出的来源。"
+            "即使其他来源支持这条结论，也不能替代该条实际引用的来源；不得跨条借用证据。"
             "检查主体、年份、地区、数量、范围和否定关系，过度推断或所给引用不支持则 supported=false。"
             "检查状态术语是否被无依据替换或等同（如完成与成功）；问题措辞不能证明等价。"
             "保留原文状态并说明术语对应未确认是允许的；把未确认的对应关系断言为事实则不支持。"
             "资料不能证明本系统的执行行为；声称本次研究已忽略、未执行资料指令或已完成处理，"
             "却只引用该资料时，属于无依据的执行过程自述，应判不支持。"
             "每个 index 恰好返回一个检查结果。搜索摘要只支持摘要明确包含的内容。",
-            {"claims": [{"index": i, "text": c.text, "sources": [sources[k] for k in c.source_ids]} for i, c in eligible]},
+            {"claims": [{"index": i, "text": c.text, "source_ids": c.source_ids} for i, c in eligible],
+             "sources": {key: sources[key] for key in referenced}},
             Verification, state["run_id"])
         return supported_indices(checks, {i for i, _ in eligible}), prechecks + checks.model_dump()["checks"]
 
@@ -499,17 +538,26 @@ class ResearchGraph:
         total = sum(len(section.claims) for section in draft.sections)
         repaired = len(approved) < total
         if repaired:
-            draft = await self.ask("repair",
-                "根据校验结果修订报告一次。删除或缩窄无依据结论，修复错误引用。不得添加来源以外的信息。"
+            failed_claims = [{"index": i, **claim.model_dump()}
+                             for i, claim in enumerate(c for section in draft.sections for c in section.claims)
+                             if i not in approved]
+            repair = await self.ask("repair",
+                "仅返回 failed_claims 中未通过结论的局部修订 repairs，不要重新生成整份报告。"
+                "每个 index 最多一条 replacement；无法被原文支持时 replacement=null。"
+                "缩窄无依据结论或修复引用，不得扩写、拆分出新结论，也不要返回已通过的结论。"
+                "无法修复的内容直接删除，不为凑篇幅强行改写。不得添加来源以外的信息。"
                 "术语对应无依据时恢复原文用词，保留已明确的主体、数量和否定关系，并简述对应未确认；"
                 "不要因术语差异丢掉可回答的事实，全文不得同时认定和否认该对应关系。"
-                "保留已通过核查且回答主题的结论；逐项对照分析事实与研究问题，不得把有主体人数的回答"
+                "已通过结论由程序原样保留；逐项对照分析事实与研究问题，不得把有主体人数的回答"
                 "缩减为只有术语说明或资料不足。分析事实仍须由给定原文支持。",
                 {"topic": state["topic"], "plan": state.get("plan", {}),
-                 "analysis_claims": state.get("claims", []), "approved_indices": sorted(approved),
-                 "draft": draft.model_dump(), "checks": checks, "evidence": list(sources.values())},
-                ReportDraft, state["run_id"])
-            approved, checks = await self.check_draft(state, draft, sources)
+                 "analysis_claims": state.get("claims", []), "failed_claims": failed_claims,
+                 "checks": [check for check in checks if check["index"] not in approved],
+                 "evidence": list(sources.values())}, ReportRepair, state["run_id"])
+            draft, excluded = apply_report_repair(draft, approved, repair)
+            approved, checks = await self.check_draft(state, draft, sources, excluded=excluded)
+            checks += [{"index": i, "supported": False, "reason": "修订删除或未提供唯一有效替换"}
+                       for i in sorted(excluded)]
         parts = ["# " + md_text(draft.title)]
         if self.settings.demo_mode:
             parts.append("> 测试模式：固定资料与模拟模型，不代表真实研究结果。")

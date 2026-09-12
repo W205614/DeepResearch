@@ -1,0 +1,334 @@
+{
+  "date": "2026-09-12",
+  "topic": "比较 PostgreSQL pgvector 与 Milvus 在单机 RAG 知识库中的适用场景：部署运维、检索过滤、数据一致性。",
+  "mode": "deep",
+  "model": "deepseek-v4-flash",
+  "search_provider": "bocha",
+  "samples": [
+    {
+      "revision": "baseline",
+      "run_id": "8e395fa8ae314584a4b8928dda0fa284",
+      "submitted_at": "2026-09-12T15:27:41.639982+00:00",
+      "status": "completed",
+      "wall_seconds": 214.016,
+      "server_total_seconds": 213.358822,
+      "queue_seconds": 0.08169,
+      "source_count": 7,
+      "stages": [
+        {
+          "node": "router",
+          "seconds": 0.007
+        },
+        {
+          "node": "planner",
+          "seconds": 2.197
+        },
+        {
+          "node": "local_scout",
+          "seconds": 0.053
+        },
+        {
+          "node": "web_scout",
+          "seconds": 23.117
+        },
+        {
+          "node": "judge",
+          "seconds": 6.679
+        },
+        {
+          "node": "analyst",
+          "seconds": 9.975
+        },
+        {
+          "node": "reflect",
+          "seconds": 1.508
+        },
+        {
+          "node": "local_scout",
+          "seconds": 0.007
+        },
+        {
+          "node": "web_scout",
+          "seconds": 30.016
+        },
+        {
+          "node": "judge",
+          "seconds": 10.114
+        },
+        {
+          "node": "analyst",
+          "seconds": 16.136
+        },
+        {
+          "node": "reflect",
+          "seconds": 1.621
+        },
+        {
+          "node": "local_scout",
+          "seconds": 0.007
+        },
+        {
+          "node": "web_scout",
+          "seconds": 26.467
+        },
+        {
+          "node": "judge",
+          "seconds": 9.223
+        },
+        {
+          "node": "analyst",
+          "seconds": 19.551
+        },
+        {
+          "node": "reflect",
+          "seconds": 0.008
+        },
+        {
+          "node": "writer",
+          "seconds": 21.287
+        },
+        {
+          "node": "validator",
+          "seconds": 35.275
+        }
+      ],
+      "usage": {
+        "search_calls": 12,
+        "llm_calls": 13,
+        "prompt_tokens": 345816,
+        "completion_tokens": 31055
+      },
+      "validation": {
+        "checked_claims": 46,
+        "supported_claims": 13,
+        "removed_claims": 33,
+        "repaired": true,
+        "insufficient": false
+      },
+      "search_rounds": 3
+    },
+    {
+      "revision": "concurrent_search_and_deduplicated_validation",
+      "run_id": "5c351e99c049475bb526c7f57cdf2601",
+      "submitted_at": "2026-09-12T15:39:14.815923+00:00",
+      "status": "completed",
+      "wall_seconds": 218.047,
+      "server_total_seconds": 217.010957,
+      "queue_seconds": 0.134739,
+      "source_count": 13,
+      "stages": [
+        {
+          "node": "router",
+          "seconds": 0.009
+        },
+        {
+          "node": "planner",
+          "seconds": 3.136
+        },
+        {
+          "node": "local_scout",
+          "seconds": 0.024
+        },
+        {
+          "node": "web_scout",
+          "seconds": 12.44
+        },
+        {
+          "node": "judge",
+          "seconds": 7.906
+        },
+        {
+          "node": "analyst",
+          "seconds": 15.554
+        },
+        {
+          "node": "reflect",
+          "seconds": 1.575
+        },
+        {
+          "node": "local_scout",
+          "seconds": 0.008
+        },
+        {
+          "node": "web_scout",
+          "seconds": 10.079
+        },
+        {
+          "node": "judge",
+          "seconds": 11.096
+        },
+        {
+          "node": "analyst",
+          "seconds": 23.377
+        },
+        {
+          "node": "reflect",
+          "seconds": 1.335
+        },
+        {
+          "node": "local_scout",
+          "seconds": 0.007
+        },
+        {
+          "node": "web_scout",
+          "seconds": 8.077
+        },
+        {
+          "node": "judge",
+          "seconds": 9.322
+        },
+        {
+          "node": "analyst",
+          "seconds": 23.884
+        },
+        {
+          "node": "reflect",
+          "seconds": 0.016
+        },
+        {
+          "node": "writer",
+          "seconds": 28.594
+        },
+        {
+          "node": "validator",
+          "seconds": 60.37
+        }
+      ],
+      "usage": {
+        "search_calls": 12,
+        "llm_calls": 14,
+        "prompt_tokens": 344389,
+        "completion_tokens": 47562
+      },
+      "validation": {
+        "checked_claims": 55,
+        "supported_claims": 20,
+        "removed_claims": 35,
+        "repaired": true,
+        "insufficient": false
+      },
+      "search_rounds": 3
+    },
+    {
+      "revision": "partial_repair_final",
+      "run_id": "75c75274884448e08c03c46205a876ce",
+      "submitted_at": "2026-09-12T15:47:50.775979+00:00",
+      "status": "completed",
+      "wall_seconds": 139.344,
+      "server_total_seconds": 138.056929,
+      "queue_seconds": 0.406509,
+      "source_count": 11,
+      "stages": [
+        {
+          "node": "router",
+          "seconds": 0.008
+        },
+        {
+          "node": "planner",
+          "seconds": 2.827
+        },
+        {
+          "node": "local_scout",
+          "seconds": 0.023
+        },
+        {
+          "node": "web_scout",
+          "seconds": 10.215
+        },
+        {
+          "node": "judge",
+          "seconds": 7.233
+        },
+        {
+          "node": "analyst",
+          "seconds": 17.667
+        },
+        {
+          "node": "reflect",
+          "seconds": 1.45
+        },
+        {
+          "node": "local_scout",
+          "seconds": 0.008
+        },
+        {
+          "node": "web_scout",
+          "seconds": 4.989
+        },
+        {
+          "node": "judge",
+          "seconds": 7.912
+        },
+        {
+          "node": "analyst",
+          "seconds": 21.055
+        },
+        {
+          "node": "reflect",
+          "seconds": 1.616
+        },
+        {
+          "node": "writer",
+          "seconds": 46.234
+        },
+        {
+          "node": "validator",
+          "seconds": 16.358
+        }
+      ],
+      "usage": {
+        "search_calls": 8,
+        "llm_calls": 12,
+        "prompt_tokens": 218985,
+        "completion_tokens": 29249
+      },
+      "validation": {
+        "checked_claims": 42,
+        "supported_claims": 15,
+        "removed_claims": 27,
+        "repaired": true,
+        "insufficient": false
+      },
+      "search_rounds": 2
+    }
+  ],
+  "fixed_payload_comparison": {
+    "scope": "identical previously published claims and full sources; serialized validator payload bytes, not tokens or runtime",
+    "claim_count": 13,
+    "source_count": 7,
+    "before_bytes": 176255,
+    "after_bytes": 71867,
+    "reduction_percent": 59.23,
+    "source_text_hashes": {
+      "W-9431637dd4af": "5c00396d119a516f92f5a3b3fc95550a18b1a6d7507d51f151772611af9ebe52",
+      "W-57354139df6d": "97fa301fead98fde2348e093f7f62a57939cd3ac355227ab1c5d37a9b336d596",
+      "W-626c5a180f6e": "9d9c0cea18e88ea6008a507a569855f170b341fcf35ec9c99cdbb93dd8de82e6",
+      "W-d32b8a35354d": "6195c2a7d34c658470d6722e0982d47c69996989ecd7c2feac6f0508df609d58",
+      "W-4a66cf9d9e99": "36e67047dcd23c400d6d5707eac1489f1fda1de026e2392fc9d1347f7f663af5",
+      "W-69143cdb3999": "fe5f463f9c409d88513a71b55da5cb3f7c78d69db25e10d7b2514677eaa96f19",
+      "W-6e234b9c7fa7": "dc621f79def7efb00f7a72fef46065cb123ae697a324b7374f392d1a4a418f0c"
+    }
+  },
+  "focused_quality_summary": {
+    "case_count": 3,
+    "passed_count": 3,
+    "pass_rate": 1.0,
+    "citation_support": 1.0,
+    "answer_coverage": 1.0,
+    "critical_failures": [],
+    "passed": true
+  },
+  "test_scope": {
+    "backend_regression_passed": 88,
+    "frontend_unit_passed": 12,
+    "frontend_build": "passed",
+    "full_30_case_suite_rerun": false
+  },
+  "limitations": [
+    "One live sample per revision; no controlled cold-cache experiment.",
+    "Final run performed one supplementary search round instead of two.",
+    "Final writer retried too_long once and succeeded; repair took 3.491 seconds.",
+    "Fixed-evidence focused checks use automated model grading, not human review.",
+    "No local fixture documents and no access-token expiry during live runs."
+  ]
+}

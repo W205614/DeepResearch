@@ -56,6 +56,8 @@ class Settings(BaseSettings):
     max_search_calls: int = Field(12, ge=1, le=30)
     web_results_per_query: int = Field(8, ge=3, le=15)
     max_web_candidates: int = Field(24, ge=6, le=60)
+    web_search_concurrency: int = Field(3, ge=1, le=8)
+    web_fetch_concurrency: int = Field(6, ge=1, le=12)
     max_run_seconds: int = Field(600, ge=10, le=3600)
     max_concurrent_runs: int = Field(2, ge=1, le=8)
     max_llm_concurrency: int = Field(3, ge=1, le=8)

@@ -153,10 +153,21 @@ class Providers:
                                          run_label(run_id), role, round((time.monotonic() - started) * 1000))
                         return parsed
                     except (KeyError, IndexError, TypeError, AttributeError, ValueError) as exc:
+                        feedback = ""
                         if isinstance(exc, ValidationError):
                             issue = ", ".join(sorted({str(row["type"]) for row in exc.errors(include_input=False)}))
+                            # Never echo model text or validator messages into the retry.
+                            details = []
+                            for row in exc.errors(include_input=False, include_url=False)[:12]:
+                                path = ".".join(str(part) for part in row["loc"])
+                                limit = (row.get("ctx") or {}).get("max_length")
+                                details.append(f"{path}: {row['type']}" +
+                                               (f"; max_length={limit}" if isinstance(limit, int) else ""))
+                            feedback = "字段约束：" + "; ".join(details) + "。请按字段上限重新组织内容，保留事实、引用和不确定性，不要机械截断。"
                         else:
-                            issue = type(exc).__name__
+                            issue = "output_truncated" if finish_reason == "length" else type(exc).__name__
+                            if finish_reason == "length":
+                                feedback = "输出触及 token 上限，请减少重复、缩短文字，确保完整 JSON 在输出预算内结束。"
                         self.logger.warning(
                             "run=%s component=llm role=%s phase=invalid attempt=%d finish_reason=%s issue=%s",
                             run_label(run_id), role, attempt + 1, finish_reason or "unknown", issue)
@@ -165,6 +176,7 @@ class Providers:
                                 f"{role} 未返回有效的结构化结果，已重试一次；错误类别：{issue}") from None
                         messages.append({"role": "user", "content": (
                             f"上次结果不符合 JSON schema（错误类别：{issue}）。请从头重新生成完整、有效的 JSON；"
+                            + feedback +
                             "只输出一个 JSON 对象，不要代码围栏，不得在对象或数组末项后添加尾逗号。"
                         )})
         raise ServiceError("模型输出校验失败")
