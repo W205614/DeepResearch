@@ -42,7 +42,7 @@ def summarize_research(cases, results):
             'passed': bool(results) and rate >= .85 and not critical and support >= .95 and coverage >= .85}
 
 
-async def evaluate(case, root, live=False, external_results=None):
+async def evaluate(case, root, live=False, external_results=None, debug_fixed_failures=False):
     settings = Settings(demo_mode=False, database_url="", queue_backend="local",
                         document_scan_mode="disabled", object_store_backend="filesystem",
                         data_dir=root / case['id'], task_log_level="WARNING",
@@ -122,9 +122,14 @@ async def evaluate(case, root, live=False, external_results=None):
                'refusal_appropriate': coverage.refusal_appropriate, 'nodes': nodes,
                'seconds': round(time.monotonic()-started, 2), 'usage': usage,
                'research_usage': result.get('usage', {}) if external_results else None}
-        # Authored/public fixture output remains local for failure analysis, never a CI artifact.
+        # Reviews stay local by default; CI can opt into bundled synthetic failures below.
         (root / case['id'] / 'review.json').write_text(json.dumps(
             {'report': report, 'checks': checks, 'coverage': coverage.model_dump()}, ensure_ascii=False), encoding='utf-8')
+        if debug_fixed_failures and not passed and not live and not external_results:
+            print(json.dumps({'event': 'fixed_fixture_failure', 'id': case['id'],
+                              'report': report, 'claims': [claim.model_dump() for claim in claims],
+                              'checks': checks, 'coverage': coverage.model_dump(),
+                              'validation': result.get('validation')}, ensure_ascii=False), flush=True)
         print(json.dumps(row, ensure_ascii=False), flush=True)
         return row
     finally:
@@ -132,6 +137,9 @@ async def evaluate(case, root, live=False, external_results=None):
 
 
 async def main(args):
+    if args.debug_fixed_failures and (args.live or args.external_results or
+            Path(args.cases).resolve() != Path('eval/research_quality_cases.json').resolve()):
+        raise ValueError('Failure detail logging is restricted to the bundled synthetic fixed cases')
     raw = Path(args.cases).read_bytes()
     cases = json.loads(raw)
     if args.only:
@@ -143,7 +151,7 @@ async def main(args):
         async with gate:
             print(json.dumps({'event': 'case_start', 'id': case['id']}), flush=True)
             try:
-                return await evaluate(case, root, args.live, args.external_results)
+                return await evaluate(case, root, args.live, args.external_results, args.debug_fixed_failures)
             except Exception as exc:
                 row = {'id': case['id'], 'critical': case['critical'], 'passed': False, 'error_category': type(exc).__name__}
                 print(json.dumps(row), flush=True)
@@ -175,4 +183,6 @@ if __name__ == '__main__':
     parser.add_argument('--only')
     parser.add_argument('--live', action='store_true')
     parser.add_argument('--external-results')
+    parser.add_argument('--debug-fixed-failures', action='store_true',
+                        help='Log failed bundled synthetic reports for CI diagnosis; not for live or external data')
     raise SystemExit(asyncio.run(main(parser.parse_args())))

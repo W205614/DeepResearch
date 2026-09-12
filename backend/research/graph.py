@@ -281,7 +281,9 @@ class ResearchGraph:
     async def planner(self, state):
         plan = await self.ask("planner",
             "根据用户主题制定研究计划，结合上下文解析追问。明确时间和地区口径，未知范围写明假设。"
-            "深度研究拆解 2–5 个子问题，生成最多 4 个不同查询。quick 只生成一个查询与一个问题。"
+            "深度研究按实际需要拆解 1–5 个子问题，生成最多 4 个不同查询；单点事实题不为凑数量扩展问题。"
+            "quick 只生成一个查询与一个问题。询问人数或状态时，首先提取资料原文的各主体、人数与状态，"
+            "再检查这些状态与问题术语是否等价；术语对应未知不能阻止提取已有事实。"
             "历史研究摘要不作为本次事实证据。只拆解用户要求，不扩展成无证据的原因猜测或治理建议。"
             "根据资料概括结论时，优先问资料明确验证了什么及未验证什么；不要把额外指标或原始数据设为概括的前置条件。"
             "不得擅自限定只使用公开资料；没有指定日期或地区时标记未知，不假设为今天或最新数据。",
@@ -491,8 +493,12 @@ class ResearchGraph:
             draft = await self.ask("repair",
                 "根据校验结果修订报告一次。删除或缩窄无依据结论，修复错误引用。不得添加来源以外的信息。"
                 "术语对应无依据时恢复原文用词，保留已明确的主体、数量和否定关系，并简述对应未确认；"
-                "不要因术语差异丢掉可回答的事实，全文不得同时认定和否认该对应关系。",
-                {"draft": draft.model_dump(), "checks": checks, "evidence": list(sources.values())},
+                "不要因术语差异丢掉可回答的事实，全文不得同时认定和否认该对应关系。"
+                "保留已通过核查且回答主题的结论；逐项对照分析事实与研究问题，不得把有主体人数的回答"
+                "缩减为只有术语说明或资料不足。分析事实仍须由给定原文支持。",
+                {"topic": state["topic"], "plan": state.get("plan", {}),
+                 "analysis_claims": state.get("claims", []), "approved_indices": sorted(approved),
+                 "draft": draft.model_dump(), "checks": checks, "evidence": list(sources.values())},
                 ReportDraft, state["run_id"])
             approved, checks = await self.check_draft(state, draft, sources)
         parts = ["# " + md_text(draft.title)]
