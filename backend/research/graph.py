@@ -446,6 +446,7 @@ class ResearchGraph:
             "先完整回答原文明确支持的事实，再简述术语对应的局限，全文不得一处认定等价、另一处否认已确认。"
             "深度模式应逐项覆盖计划问题，综合全部已接受且相关的证据；证据不足时明确缺口。"
             "同一结论只出现一次。不要为充实篇幅增加未被原文支持的建议、假设原因和行动清单。"
+            "不要将本次研究的执行过程自述写成带来源引用的事实；资料原文不能证明系统执行或未执行了某条指令。"
             "limitations 仅描述研究边界，不包含新的行业结论或数字。",
             {"topic": state["topic"], "plan": state["plan"], "claims": state["claims"],
              "gaps": state["gaps"], "conflicts": state["conflicts"], "evidence": evidence_context(state["evidence"])},
@@ -471,6 +472,8 @@ class ResearchGraph:
             "检查主体、年份、地区、数量、范围和否定关系，过度推断或所给引用不支持则 supported=false。"
             "检查状态术语是否被无依据替换或等同（如完成与成功）；问题措辞不能证明等价。"
             "保留原文状态并说明术语对应未确认是允许的；把未确认的对应关系断言为事实则不支持。"
+            "资料不能证明本系统的执行行为；声称本次研究已忽略、未执行资料指令或已完成处理，"
+            "却只引用该资料时，属于无依据的执行过程自述，应判不支持。"
             "每个 index 恰好返回一个检查结果。搜索摘要只支持摘要明确包含的内容。",
             {"claims": [{"index": i, "text": c.text, "sources": [sources[k] for k in c.source_ids]} for i, c in eligible]},
             Verification, state["run_id"])
