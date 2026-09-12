@@ -34,12 +34,21 @@ class ObjectStore:
             region_name="us-east-1",
         )
         try:
-            await asyncio.to_thread(self._client.head_bucket, Bucket=self.settings.object_store_bucket)
-        except ClientError:
             try:
-                await asyncio.to_thread(self._client.create_bucket, Bucket=self.settings.object_store_bucket)
+                await asyncio.to_thread(self._client.head_bucket, Bucket=self.settings.object_store_bucket)
             except ClientError as exc:
-                raise RuntimeError("document object storage is unavailable") from exc
+                if exc.response.get("Error", {}).get("Code") not in {"404", "NoSuchBucket", "NotFound"}:
+                    raise
+                try:
+                    await asyncio.to_thread(self._client.create_bucket, Bucket=self.settings.object_store_bucket)
+                except ClientError as creation_error:
+                    if creation_error.response.get("Error", {}).get("Code") != "BucketAlreadyOwnedByYou":
+                        raise
+                    # Another backend/worker may have created the shared bucket after our HEAD.
+                    # Ownership alone is not enough: verify it is accessible before starting.
+                    await asyncio.to_thread(self._client.head_bucket, Bucket=self.settings.object_store_bucket)
+        except ClientError as exc:
+            raise RuntimeError("document object storage is unavailable") from exc
 
     async def put(self, area: str, document_id: str, content: bytes) -> None:
         if self.settings.object_store_backend == "filesystem":
