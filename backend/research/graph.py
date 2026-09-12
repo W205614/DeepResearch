@@ -17,7 +17,8 @@ from ..core.observability import error_category, get_task_logger, run_label, tra
 from ..infrastructure.providers import ServiceError
 from .routing import decide
 from .agents import AgentRuntime
-from ..core.security import canonical_url, fetch_text
+from ..core.security import fetch_text
+from .search_policy import normalize_queries, select_web_candidates
 
 
 def digest(value: str) -> str:
@@ -289,7 +290,11 @@ class ResearchGraph:
             "不得擅自限定只使用公开资料；没有指定日期或地区时标记未知，不假设为今天或最新数据。",
             {"topic": state["topic"], "mode": state["mode"], "context": state.get("context", ""), "today": now()[:10]},
             Plan, state["run_id"])
-        queries = plan.queries[:1] if state["mode"] == "quick" else plan.queries
+        queries = normalize_queries(plan.queries)
+        if not queries:
+            queries = normalize_queries([state["topic"]])
+        queries = queries[:1] if state["mode"] == "quick" else queries
+        plan = plan.model_copy(update={"queries": queries})
         await self.db.event(state["run_id"], "plan", plan.model_dump())
         self.logger.info("run=%s node=planner queries=%d mode=%s", run_label(state["run_id"]), len(queries), state["mode"])
         return {"plan": plan.model_dump(), "queries": unique(queries), "searched": [], "round": 0,
@@ -297,29 +302,13 @@ class ResearchGraph:
 
     async def web_scout(self, state):
         rows_by_query = []
-        for query in state["queries"]:
+        queries = normalize_queries(state["queries"])
+        for query in queries:
             try:
                 rows_by_query.append(await self.search_web(query, state["run_id"]))
             except ServiceError as exc:
                 await self.warning(state, str(exc))
-        urls = {}
-        max_rows = max((len(rows) for rows in rows_by_query), default=0)
-        # Round-robin candidates so a broad first query cannot crowd out the
-        # complementary queries produced by the research plan.
-        for index in range(max_rows):
-            for rows in rows_by_query:
-                if index >= len(rows):
-                    continue
-                row = rows[index]
-                try:
-                    url = canonical_url(row.get("url", ""))
-                except (ServiceError, ValueError):
-                    continue
-                urls.setdefault(url, row)
-                if len(urls) >= self.settings.max_web_candidates:
-                    break
-            if len(urls) >= self.settings.max_web_candidates:
-                break
+        urls = select_web_candidates(rows_by_query, self.settings.max_web_candidates)
 
         async def read(url, row):
             snippet = str(row.get("summary") or row.get("snippet") or "")[:4000]
@@ -353,7 +342,7 @@ class ResearchGraph:
                          run_label(state["run_id"]), len(rows_by_query), len(urls), len(evidence), len(skipped))
         await self.db.event(state["run_id"], "sources_found", {"kind": "web", "count": len(evidence),
                             "candidates": len(urls), "queries": len(rows_by_query)})
-        return {"web_results": evidence, "searched": unique(state.get("searched", []) + state["queries"])}
+        return {"web_results": evidence, "searched": normalize_queries(state.get("searched", []) + queries)}
 
     async def local_scout(self, state):
         exists = await self.db.one("SELECT id FROM documents WHERE user_id=? AND status='ready' LIMIT 1", (state["user_id"],))
@@ -362,7 +351,8 @@ class ResearchGraph:
             return {"local_results": []}
         evidence = []
         try:
-            hits = await self.search_local(state["user_id"], state["queries"], limit=6, run_id=state["run_id"])
+            hits = await self.search_local(state["user_id"], normalize_queries(state["queries"]),
+                                           limit=6, run_id=state["run_id"])
             for hit in hits:
                 evidence.append(Evidence(id="L-" + hit["id"][:12], kind="local", title=hit["title"],
                     text=hit["text"], locator=hit["locator"], document_id=hit["document_id"],
@@ -421,18 +411,34 @@ class ResearchGraph:
         search_available = self.settings.demo_mode or bool(self.settings.llm_api_key.get_secret_value())
         if self.settings.web_search_provider == "bocha":
             search_available = self.settings.demo_mode or bool(self.settings.bocha_api_key.get_secret_value())
+        elif self.settings.web_search_provider == "auto":
+            search_available = search_available or bool(self.settings.bocha_api_key.get_secret_value())
         can_search = search_available and (counter or {}).get("search_calls", 0) < self.settings.max_search_calls
         has_local = bool(await self.db.one("SELECT id FROM documents WHERE user_id=? AND status='ready' LIMIT 1", (state["user_id"],)))
-        if (state["mode"] == "quick" or not state["gaps"] or
-            state["round"] >= self.settings.max_reflection_rounds or not (can_search or has_local)):
+        stop_reason = (
+            "quick_mode" if state["mode"] == "quick" else
+            "no_gaps" if not state["gaps"] else
+            "round_limit" if state["round"] >= self.settings.max_reflection_rounds else
+            "no_search_capacity" if not (can_search or has_local) else ""
+        )
+        if stop_reason:
+            reasons = {
+                "quick_mode": "快速研究不追加补搜。",
+                "no_gaps": "当前分析未提出待补充的研究缺口。",
+                "round_limit": "已达到补搜轮数上限，按现有证据生成报告。",
+                "no_search_capacity": "网络检索不可用或预算已耗尽，且没有可检索的本地资料。",
+            }
+            await self.db.event(state["run_id"], "reflection", {
+                "queries": [], "reason": reasons[stop_reason], "stop_reason": stop_reason})
             return {"reflect": False}
         result = await self.ask("reflect",
             "仅针对尚未解决的缺口设计最多 4 个补充查询，禁止重复已有查询。"
             "无可执行的新查询时返回空列表；不为凑轮次补搜。",
             {"plan": state["plan"], "gaps": state["gaps"], "searched": state["searched"]}, Reflection, state["run_id"])
-        seen = {query.strip().casefold() for query in state["searched"]}
-        queries = unique([q.strip() for q in result.queries if q.strip() and q.strip().casefold() not in seen])
-        await self.db.event(state["run_id"], "reflection", {"queries": queries, "reason": result.reason})
+        queries = normalize_queries(result.queries, searched=state["searched"])
+        await self.db.event(state["run_id"], "reflection", {
+            "queries": queries, "reason": result.reason if queries else "没有可执行的新查询，停止补搜。",
+            "stop_reason": "" if queries else "no_new_queries"})
         return {"reflect": bool(queries), "queries": queries, "round": state["round"] + bool(queries)}
 
     async def writer(self, state):

@@ -6,6 +6,18 @@
 
 系统以 LangGraph 编排多个具备独立职责、工具权限和结构化交接物的研究 Agent，并以来源约束与 SSRF 防护降低不可核查结论风险。默认企业单机演示环境使用 PostgreSQL、Redis Worker、Milvus、Keycloak OIDC、MinIO 对象存储、ClamAV、OpenTelemetry、Prometheus/Grafana、Tempo/Loki，提供工作空间权限、审计、隔离扫描、可恢复任务、数据导出与备份恢复能力。
 
+## 本次改进：搜索调度与补搜诊断
+
+对照 Hello Agents 第十四章，保留现有 LangGraph、引用核验和持久化恢复链路，将查询与候选选择规则抽为独立搜索策略模块：
+
+- 统一折叠查询空白、过滤空查询及大小写变体；规划全空时回退原主题，计划事件与实际检索一致。
+- 按每个查询的下一个有效、未重复 URL 轮转分配候选名额，避免重复链接挤占其他有效来源。
+- 为停止补搜记录中文原因及结构化原因码，区分快速模式、无缺口、轮数上限、无搜索能力和无新查询；修正 `auto` 模式对博查备用配置的判断。
+
+本次代码验证：后端 **131 项通过、4 项真实组件测试跳过**（含新增 14 项搜索策略测试），Ruff 通过，离线 7 题流程基线通过。该结果不代表重新执行了真实模型质量评测，也不证明答案准确率提升。设计取舍、反例和复现命令见 [教程对照评审与重构记录](docs/chapter14-review-refactor.md)。
+
+Docker 已执行 `docker compose up -d --build --wait --wait-timeout 300`，后端、Worker 和 Web 健康，容器中的研究图与搜索策略文件哈希与本地一致；`scripts/smoke-enterprise.py` 已通过 Web、OIDC、迁移、Redis、后端就绪、Worker 和监控链路检查。该冒烟不调用真实模型或搜索 API。
+
 ## 企业能力清单
 
 | 领域 | 当前企业单机演示能力 | 验证入口 |
