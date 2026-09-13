@@ -92,4 +92,4 @@ async def test_workspace_limits_do_not_expose_or_enforce_a_token_budget(settings
                                         json={"daily_search_limit": 7, "concurrent_run_limit": 1,
                                               "daily_token_limit": 1})
             assert response.status_code == 200
-            assert response.json() == {"daily_search_limit": 7, "concurrent_run_limit": 1}
+            assert response.json() == {"daily_search_limit": None, "concurrent_run_limit": 1}

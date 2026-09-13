@@ -17,6 +17,7 @@ from ..core.metrics import ALERT_DELIVERIES, ALERT_SUPPRESSED
 from ..core.alerts import AlertRelay, deliver_with_retry, format_alert_message, post_alert
 from ..domain.models import MembershipRequest, WorkspaceLimitRequest, WorkspaceRequest
 from ..infrastructure.providers import ServiceError
+from ..services.document_parsing import InvalidDocument
 from ..services.runtime import ConflictError, Runtime, TERMINAL
 
 
@@ -57,7 +58,7 @@ def create_app(settings: Settings | None = None):
         if not memberships:
             membership = await runtime.db.ensure_personal_workspace(
                 principal.subject, principal.display_name + " 的工作空间",
-                (settings.workspace_daily_search_limit, settings.workspace_concurrent_run_limit))
+                (0, settings.workspace_concurrent_run_limit))
         elif x_workspace_id:
             membership = await runtime.db.membership(x_workspace_id, principal.subject)
             if not membership:
@@ -79,6 +80,10 @@ def create_app(settings: Settings | None = None):
     async def administrator(request: Request, user=Depends(identity)):
         require_role(request, "admin")
         return user
+    @app.exception_handler(InvalidDocument)
+    async def invalid_document(request, exc):
+        return JSONResponse({"detail": str(exc)}, status_code=422)
+
     @app.exception_handler(ServiceError)
     async def service_error(request, exc):
         return JSONResponse({"detail": str(exc)}, status_code=503)
@@ -144,7 +149,7 @@ def create_app(settings: Settings | None = None):
     async def create_workspace(body: WorkspaceRequest, request: Request, runtime=Depends(rt), user=Depends(identity)):
         workspace = await runtime.db.create_workspace(
             request.state.principal.subject, body.name,
-            (settings.workspace_daily_search_limit, settings.workspace_concurrent_run_limit))
+            (0, settings.workspace_concurrent_run_limit))
         await runtime.db.audit(workspace["id"], request.state.principal.subject, "workspace.create",
                                "workspace", workspace["id"])
         return workspace
@@ -198,9 +203,9 @@ def create_app(settings: Settings | None = None):
         if workspace_id != user:
             raise HTTPException(403, "请先切换到目标工作空间")
         require_role(request, "admin")
-        await runtime.db.execute("""UPDATE workspace_limits SET daily_search_limit=?,concurrent_run_limit=?
+        await runtime.db.execute("""UPDATE workspace_limits SET daily_search_limit=0,concurrent_run_limit=?
                                  WHERE workspace_id=?""",
-                                 (body.daily_search_limit, body.concurrent_run_limit, user))
+                                 (body.concurrent_run_limit, user))
         await runtime.db.audit(user, request.state.principal.subject, "workspace.limits.update", "workspace", user)
         return await runtime.db.workspace_limits(user)
     @app.get("/api/status")
@@ -367,6 +372,24 @@ def create_app(settings: Settings | None = None):
         return StreamingResponse(stream(), media_type="text/event-stream", headers={
             "Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
+    @app.post("/api/attachments", status_code=201)
+    async def upload_attachment(request: Request, file: UploadFile = File(), runtime=Depends(rt), user=Depends(researcher)):
+        content = await file.read(10 * 1024 * 1024 + 1)
+        await file.close()
+        async with runtime.upload_lock:
+            return await runtime.attachments.add(user, request.state.principal.subject, file.filename or "image", content)
+
+    @app.get("/api/attachments/{image_id}")
+    async def attachment_content(image_id: str, request: Request, runtime=Depends(rt), user=Depends(identity)):
+        row = await runtime.attachments.visible(image_id, user, request.state.principal.subject)
+        content = await runtime.documents.store.get("uploads", image_id)
+        return Response(content, media_type=row["media_type"], headers={"Cache-Control": "no-store", "X-Content-Type-Options": "nosniff"})
+
+    @app.delete("/api/attachments/{image_id}")
+    async def delete_attachment(image_id: str, request: Request, runtime=Depends(rt), user=Depends(researcher)):
+        await runtime.attachments.remove(image_id, user, request.state.principal.subject)
+        return {"ok": True}
+
     @app.post("/api/documents", status_code=202)
     async def upload(request: Request, file: UploadFile = File(), runtime=Depends(rt), user=Depends(researcher)):
         content = await file.read(10 * 1024 * 1024 + 1)
@@ -391,12 +414,13 @@ def create_app(settings: Settings | None = None):
         if not await runtime.db.one("SELECT id FROM documents WHERE id=? AND user_id=? AND status!='deleted'", (document_id, user)):
             raise HTTPException(404, "资料不存在")
         limit = max(1, min(limit, 400))
-        return await runtime.db.rows("SELECT id,locator,text FROM chunks WHERE document_id=? AND user_id=? ORDER BY id LIMIT ?",
+        return await runtime.db.rows("SELECT id,locator,text,ordinal FROM chunks WHERE document_id=? AND user_id=? ORDER BY ordinal,id LIMIT ?",
                                      (document_id, user, limit))
 
     @app.post("/api/documents/search")
-    async def search_documents(body: DocumentSearchRequest, runtime=Depends(rt), user=Depends(identity)):
-        return await runtime.documents.search(user, [body.query], limit=body.limit)
+    async def search_documents(body: DocumentSearchRequest, diagnostics: bool = False, runtime=Depends(rt), user=Depends(identity)):
+        results = await runtime.documents.search(user, [body.query], limit=body.limit)
+        return {"results": results, "reasons": getattr(results, "reasons", [])} if diagnostics else results
 
     @app.post("/api/documents/{document_id}/reindex", status_code=202)
     async def reindex_document(document_id: str, request: Request, runtime=Depends(rt), user=Depends(researcher)):

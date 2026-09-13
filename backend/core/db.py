@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS documents(
  id TEXT PRIMARY KEY,user_id TEXT NOT NULL,name TEXT,hash TEXT,status TEXT,error TEXT DEFAULT '',
  created_at TEXT,UNIQUE(user_id,hash));
 CREATE TABLE IF NOT EXISTS chunks(
- id TEXT PRIMARY KEY,document_id TEXT,user_id TEXT,text TEXT,locator TEXT,vector TEXT DEFAULT '[]');
+ id TEXT PRIMARY KEY,document_id TEXT,user_id TEXT,text TEXT,locator TEXT,vector TEXT DEFAULT '[]',ordinal INTEGER NOT NULL DEFAULT 0);
 CREATE TABLE IF NOT EXISTS memories(
  id TEXT PRIMARY KEY,user_id TEXT,kind TEXT,content TEXT,run_id TEXT DEFAULT '',created_at TEXT,
  vector TEXT DEFAULT '[]',owner_subject TEXT NOT NULL DEFAULT '',UNIQUE(user_id,kind,run_id));
@@ -79,8 +79,14 @@ class Database:
 
     async def init(self):
         async with self.connection() as conn:
+            from .attachments import ATTACHMENT_SCHEMA
             await conn.executescript(SCHEMA)
+            await conn.executescript(ATTACHMENT_SCHEMA)
             await conn.executescript(DAILY_SCHEMA)
+            await conn.execute("UPDATE workspace_limits SET daily_search_limit=0,daily_token_limit=0")
+            chunk_columns = {row[1] for row in await (await conn.execute("PRAGMA table_info(chunks)")).fetchall()}
+            if "ordinal" not in chunk_columns:
+                await conn.execute("ALTER TABLE chunks ADD COLUMN ordinal INTEGER NOT NULL DEFAULT 0")
             document_columns = {row[1] for row in await (await conn.execute("PRAGMA table_info(documents)")).fetchall()}
             if "index_version" not in document_columns:
                 await conn.execute("ALTER TABLE documents ADD COLUMN index_version INTEGER NOT NULL DEFAULT 0")
@@ -152,16 +158,12 @@ class Database:
     async def reserve_search(self, run_id: str, limit: int) -> bool:
         async with self.connection() as conn:
             await conn.execute("BEGIN IMMEDIATE")
-            row = await (await conn.execute("""SELECT r.user_id,l.daily_search_limit FROM runs r
-                JOIN workspace_limits l ON l.workspace_id=r.user_id WHERE r.id=?""", (run_id,))).fetchone()
+            row = await (await conn.execute("""SELECT r.user_id FROM runs r WHERE r.id=?""", (run_id,))).fetchone()
             if row:
                 day = now()[:10]
                 await conn.execute("INSERT OR IGNORE INTO workspace_daily_usage(workspace_id,day) VALUES(?,?)", (row[0], day))
-                daily = await conn.execute("""UPDATE workspace_daily_usage SET search_calls=search_calls+1
-                    WHERE workspace_id=? AND day=? AND search_calls<?""", (row[0], day, row[1]))
-                if daily.rowcount != 1:
-                    await conn.rollback()
-                    return False
+                await conn.execute("""UPDATE workspace_daily_usage SET search_calls=search_calls+1
+                    WHERE workspace_id=? AND day=?""", (row[0], day))
             await conn.execute("INSERT OR IGNORE INTO counters(run_id) VALUES(?)", (run_id,))
             cur = await conn.execute("UPDATE counters SET search_calls=search_calls+1 WHERE run_id=? AND search_calls<?",
                                      (run_id, limit))
@@ -174,6 +176,7 @@ class Database:
     async def owned_run(self, run_id: str, user: str) -> dict | None:
         row = await self.one("SELECT * FROM runs WHERE id=? AND user_id=?", (run_id, user))
         if row:
+            row["attachments"] = await self.rows("SELECT id,name,media_type,size,position FROM attachments WHERE run_id=? AND status='ready' ORDER BY position", (run_id,))
             row["sources"] = json.loads(row["sources"])
             row["validation"] = json.loads(row["validation"])
             row["usage"] = await self.one("SELECT * FROM counters WHERE run_id=?", (run_id,)) or {}
@@ -186,7 +189,7 @@ class Database:
             await conn.execute("INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES(?,?,?,?)",
                                (workspace["id"], subject, "admin", workspace["created_at"]))
             await conn.execute("""INSERT INTO workspace_limits(workspace_id,daily_search_limit,daily_token_limit,concurrent_run_limit)
-                               VALUES(?,?,0,?)""", (workspace["id"], *limits))
+                               VALUES(?,?,0,?)""", (workspace["id"], 0, limits[1]))
             await conn.commit()
         return workspace
 
@@ -200,7 +203,7 @@ class Database:
                                (subject, subject, "admin", workspace["created_at"]))
             await conn.execute("""INSERT OR IGNORE INTO workspace_limits(
                 workspace_id,daily_search_limit,daily_token_limit,concurrent_run_limit) VALUES(?,?,0,?)""",
-                (subject, *limits))
+                (subject, 0, limits[1]))
             await conn.commit()
         return await self.membership(subject, subject)
 
@@ -228,4 +231,4 @@ class Database:
                                WHERE workspace_id=? ORDER BY created_at DESC LIMIT ?""", (workspace_id, limit))
 
     async def workspace_limits(self, workspace_id: str) -> dict | None:
-        return await self.one("SELECT daily_search_limit,concurrent_run_limit FROM workspace_limits WHERE workspace_id=?", (workspace_id,))
+        return await self.one("SELECT NULL AS daily_search_limit,concurrent_run_limit FROM workspace_limits WHERE workspace_id=?", (workspace_id,))

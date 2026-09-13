@@ -18,9 +18,10 @@ from ..core.config import Settings
 from ..core.db import Database, now, uid
 from ..core.postgres import PostgresDatabase
 from .documents import Documents
+from .attachments import Attachments
 from ..research.graph import ResearchGraph
 from ..core.observability import configure_task_logger, error_category, inject_trace_context, run_label
-from ..core.metrics import DLQ_DEPTH, DLQ_EVENTS, FAILURES, QUEUE_DEPTH, RUNS, RUN_SECONDS
+from ..core.metrics import DLQ_DEPTH, DLQ_EVENTS, FAILURES, QUEUE_DEPTH, RUNS, RUN_SECONDS, FALLBACKS
 from ..infrastructure.providers import Providers, ServiceError
 from ..infrastructure.vectors import VectorIndex
 
@@ -43,6 +44,8 @@ class Runtime:
         self.providers = Providers(settings, self.db)
         self.vectors = VectorIndex(settings, self.db)
         self.documents = Documents(settings, self.db, self.providers, self.vectors)
+        self.attachments = Attachments(self.db, settings, self.documents.store)
+        self.attachment_cleanup_task = None
         self.logger = configure_task_logger(settings.task_log_level)
         self.stack = AsyncExitStack()
         self.tasks = {}
@@ -57,6 +60,8 @@ class Runtime:
     async def start(self):
         await self.db.init()
         await self.documents.start()
+        await self.attachments.cleanup()
+        self.attachment_cleanup_task = asyncio.create_task(self.cleanup_attachments_loop())
         if self.settings.database_url:
             # Workers can resume a run started by another replica, so checkpoints
             # live in the durable PostgreSQL source of truth in enterprise mode.
@@ -87,8 +92,19 @@ class Runtime:
             await self.recover_indexing_documents()
         return self
 
+    async def cleanup_attachments_loop(self):
+        while True:
+            await asyncio.sleep(300)
+            try:
+                await self.attachments.cleanup()
+            except Exception:
+                self.logger.warning("component=attachment_cleanup phase=error")
+
     async def close(self):
         self.stopping = True
+        if self.attachment_cleanup_task:
+            self.attachment_cleanup_task.cancel()
+            await asyncio.gather(self.attachment_cleanup_task, return_exceptions=True)
         if self.recovery_task:
             self.recovery_task.cancel()
             await asyncio.gather(self.recovery_task, return_exceptions=True)
@@ -164,6 +180,7 @@ class Runtime:
                 await asyncio.gather(*active_tasks, return_exceptions=True)
 
             run_ids = [run["id"] for run in runs]
+            await self.attachments.delete_runs(run_ids)
             for run_id in run_ids:
                 await self.checkpointer.adelete_thread(run_id)
                 await self.db.execute("DELETE FROM events WHERE run_id=?", (run_id,))
@@ -171,6 +188,7 @@ class Runtime:
                 await self.db.execute("DELETE FROM search_cache WHERE run_id=?", (run_id,))
             await self.db.execute("DELETE FROM runs WHERE thread_id=? AND user_id=?", (thread_id, user))
             await self.db.execute("DELETE FROM threads WHERE id=? AND user_id=?", (thread_id, user))
+        await self.attachments.cleanup()
         return {"ok": True, "thread_id": thread["thread_key"], "deleted_runs": len(run_ids)}
 
     async def create(self, user, request, actor_subject: str | None = None):
@@ -180,10 +198,13 @@ class Runtime:
                                          (user, request.client_request_id))
             if previous:
                 thread = await self.find_thread(request.thread_id, user) if request.thread_id else None
-                if (previous["topic"] != request.topic or previous["mode"] != request.mode
+                attached = await self.attachments.for_run(previous["id"])
+                if ([item["id"] for item in attached] != request.attachment_ids
+                        or previous["topic"] != request.topic or previous["mode"] != request.mode
                         or (request.thread_id and (not thread or thread["id"] != previous["thread_id"]))):
                     raise ConflictError("同一个请求编号不能提交不同内容")
                 return await self.db.owned_run(previous["id"], user)
+            await self.attachments.staged(request.attachment_ids, user, actor_subject)
             limits = await self.db.workspace_limits(user)
             if limits:
                 active = await self.db.one("SELECT COUNT(*) AS total FROM runs WHERE user_id=? AND status IN ('queued','running')", (user,))
@@ -199,10 +220,14 @@ class Runtime:
                 thread_id = (await self.new_thread(user, request.topic))["id"]
             run_id, stamp = uid(), now()
             try:
-                await self.db.execute("""INSERT INTO runs(
-                    id,user_id,thread_id,topic,mode,status,created_at,updated_at,client_request_id,created_by)
-                    VALUES(?,?,?,?,?,'queued',?,?,?,?)""", (run_id, user, thread_id, request.topic, request.mode,
-                                                        stamp, stamp, request.client_request_id, actor_subject))
+                async with self.db.connection() as conn:
+                    await conn.execute("""INSERT INTO runs(
+                        id,user_id,thread_id,topic,mode,status,created_at,updated_at,client_request_id,created_by)
+                        VALUES(?,?,?,?,?,'queued',?,?,?,?)""", (run_id, user, thread_id, request.topic, request.mode,
+                                                            stamp, stamp, request.client_request_id, actor_subject))
+                    for position, image_id in enumerate(request.attachment_ids):
+                        await conn.execute("UPDATE attachments SET run_id=?,position=? WHERE id=?", (run_id, position, image_id))
+                    await conn.commit()
             except (sqlite3.IntegrityError, asyncpg.UniqueViolationError):
                 raise ConflictError("同一会话已有正在执行的研究") from None
             await self.db.event(run_id, "queued", {"message": "研究任务已创建"})
@@ -318,19 +343,34 @@ class Runtime:
                         initial = {"run_id": run_id, "user_id": run["user_id"], "thread_id": run["thread_id"],
                                    "owner_subject": run.get("created_by") or run["user_id"],
                                    "topic": run["topic"], "requested_mode": run["mode"],
+                                   "attachment_ids": [item["id"] for item in await self.attachments.for_run(run_id)],
                                    "context": await self.context(run)}
                     result = await self.graph.ainvoke(initial, config)
                     report = result.get("report", "")
                     validation = result.get("validation", {})
-                    status = "insufficient" if validation.get("insufficient") else "completed"
-                    completed = await self.db.execute("""UPDATE runs SET status=?,updated_at=?,report=?,sources=?,validation=?,error=''
+                    outcomes = result.get("web_outcomes", []) + result.get("local_outcomes", [])
+                    reasons = list(validation.get("reasons", []))
+                    reasons += sorted({item["outcome"] for item in outcomes if item["outcome"] in {"empty", "error", "search_limit_reached", "invalid_records", "vector_unavailable"}})
+                    if validation.get("insufficient"):
+                        reasons.append("insufficient_evidence")
+                    validation["reasons"] = list(dict.fromkeys(reasons))
+                    validation["retrieval_outcomes"] = outcomes
+                    status = "failed" if validation.get("retrieval_failed") else "insufficient" if validation.get("insufficient") else "completed"
+                    messages = {"invalid_records": "部分检索字段无效，已剔除并使用有效证据", "vector_unavailable": "向量检索不可用，已降级为关键词检索", "empty": "部分检索未找到结果", "error": "部分检索服务发生故障", "search_limit_reached": "本轮研究已达到检索上限，可继续发起研究",
+                                "insufficient_evidence": "证据不足，请补充资料或调整问题", "image_unreadable": "图片无法清晰识别，请补充清晰图片"}
+                    if reasons:
+                        report += "\n\n> " + "；".join(messages[key] for key in validation["reasons"] if key in messages)
+                    completed = await self.db.execute("""UPDATE runs SET status=?,updated_at=?,report=?,sources=?,validation=?,error=?
                         WHERE id=? AND status='running' AND attempt_count=?""", (status, now(), report,
                                                               json.dumps(result.get("evidence", []), ensure_ascii=False),
-                                                              json.dumps(validation, ensure_ascii=False), run_id, attempt))
+                                                              json.dumps(validation, ensure_ascii=False), "检索服务暂不可用，请重试或检查服务配置" if status == "failed" else "", run_id, attempt))
                     if not completed:
                         return
+                    for reason in validation["reasons"]:
+                        FALLBACKS.labels(reason=reason).inc()
+                    await self.db.event(run_id, "result_status", {"status": status, "reasons": validation["reasons"]})
                     if (self.settings.auto_save_semantic_memory and report and not validation.get("insufficient")
-                            and validation.get("kind") not in {"greeting", "help", "preference", "chat"}):
+                            and validation.get("kind") not in {"greeting", "help", "preference", "chat", "vision"}):
                         await self.save_summary(run, report)
                     dead_letter = await self.db.one(
                         "SELECT category FROM dead_letter_runs WHERE run_id=?", (run_id,))
@@ -439,6 +479,10 @@ class Runtime:
                 raise ConflictError("当前任务状态不能继续；需要重新研究时请提交新任务")
             if run_id in self.tasks:
                 raise ConflictError("任务尚未停止")
+            if run.get("validation", {}).get("retrieval_failed"):
+                # A terminal graph has no pending search node. Restart its graph,
+                # retaining the durable visual result and consumed quota.
+                await self.checkpointer.adelete_thread(run_id)
             limits = await self.db.workspace_limits(user)
             active = await self.db.one("SELECT COUNT(*) AS total FROM runs WHERE user_id=? AND status IN ('queued','running')", (user,))
             if limits and active["total"] >= limits["concurrent_run_limit"]:
@@ -595,6 +639,7 @@ class Runtime:
             for row in active:
                 await self.cancel(row["id"], user)
             run_ids = await self.db.rows("SELECT id FROM runs WHERE user_id=?", (user,))
+            await self.attachments.delete_runs([row["id"] for row in run_ids])
             for row in run_ids:
                 await self.checkpointer.adelete_thread(row["id"])
                 await self.db.execute("DELETE FROM events WHERE run_id=?", (row["id"],))
@@ -603,4 +648,7 @@ class Runtime:
                 await self.db.execute("DELETE FROM dead_letter_runs WHERE run_id=?", (row["id"],))
             await self.db.execute("DELETE FROM runs WHERE user_id=?", (user,))
             await self.db.execute("DELETE FROM threads WHERE user_id=?", (user,))
+        if scope == "all":
+            await self.db.execute("UPDATE attachments SET status='deleted' WHERE user_id=? AND run_id='' AND owner_subject=?", (user, owner_subject))
+        await self.attachments.cleanup()
         return {"ok": True, "scope": scope}

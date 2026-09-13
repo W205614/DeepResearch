@@ -23,6 +23,7 @@ class AgentSpec:
 
 
 AGENTS: dict[str, AgentSpec] = {
+    "vision": AgentSpec("vision", "图片理解", frozenset({"model"})),
     "router": AgentSpec("router", "协调路由 Agent", frozenset({"model", "profile"})),
     "chat": AgentSpec("chat", "对话 Agent", frozenset({"model"})),
     "planner": AgentSpec("planner", "研究规划 Agent", frozenset({"model"})),
@@ -37,6 +38,7 @@ AGENTS: dict[str, AgentSpec] = {
 
 
 RECIPIENTS: dict[str, tuple[str, ...]] = {
+    "vision": ("router",),
     "router": ("chat", "planner"),
     "chat": (),
     "planner": ("web_scout", "local_scout"),

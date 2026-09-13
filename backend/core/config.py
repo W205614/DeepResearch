@@ -35,7 +35,6 @@ class Settings(BaseSettings):
     feishu_webhook_url: SecretStr = SecretStr("")
     alert_relay_token: SecretStr = SecretStr("")
     alert_relay_token_file: Path | None = None
-    workspace_daily_search_limit: int = Field(120, ge=1, le=10000)
     workspace_concurrent_run_limit: int = Field(2, ge=1, le=20)
     document_scan_mode: Literal["disabled", "clamav"] = "clamav"
     clamav_host: str = "clamav"
@@ -52,6 +51,7 @@ class Settings(BaseSettings):
     milvus_uri: str = "http://127.0.0.1:19530"
     vector_collection_prefix: str = "dr"
     demo_mode: bool = False
+    rag_min_vector_score: float = Field(0.2, ge=0, le=1)
     max_reflection_rounds: int = Field(2, ge=0, le=5)
     max_search_calls: int = Field(12, ge=1, le=30)
     web_results_per_query: int = Field(8, ge=3, le=15)

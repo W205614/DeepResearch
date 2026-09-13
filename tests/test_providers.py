@@ -130,9 +130,9 @@ async def test_vision_request_uses_the_configured_model_and_same_provider_creden
         assert request.url.path == "/chat/completions"
         body = json.loads(request.content)
         assert body["model"] == "deepseek-v4-flash-vision-exp"
-        image = body["messages"][0]["content"][1]["image_url"]["url"]
+        image = body["messages"][1]["content"][0]["image_url"]["url"]
         assert image.startswith("data:image/png;base64,")
-        return httpx.Response(200, json={"choices": [{"message": {"content": "图表文字"}}]})
+        return httpx.Response(200, json={"choices": [{"message": {"content": json.dumps({"readable": True, "text": "图表文字"})}}]})
 
     p = await make_provider(tmp_path, response)
     assert await p.describe_image(b"png-bytes", "image/png") == "图表文字"

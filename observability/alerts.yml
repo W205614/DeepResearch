@@ -16,3 +16,8 @@ groups:
         for: 2m
         labels: {severity: warning}
         annotations: {summary: "More than five categorized failures in ten minutes"}
+      - alert: DeepResearchVisionErrors
+        expr: sum(increase(deepresearch_vision_calls_total{outcome="error"}[10m])) > 5
+        for: 2m
+        labels: {severity: warning}
+        annotations: {summary: "More than five vision errors in ten minutes"}

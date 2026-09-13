@@ -18,6 +18,7 @@ services:
     build: .
     environment: &runtime-environment
       LLM_MODEL_ID: ${LLM_MODEL_ID:-deepseek-v4-flash}
+      VISION_MODEL_ID: ${VISION_MODEL_ID:-deepseek-v4-flash-vision-exp}
       LLM_BASE_URL: ${LLM_BASE_URL:-https://api.deepseek.com}
       LLM_API_KEY: ${LLM_API_KEY:-}
       LLM_EXTRA_BODY: '${LLM_EXTRA_BODY:-}'

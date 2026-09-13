@@ -1,181 +1,23 @@
 from ..core.consistency import affected
 import asyncio
 import hashlib
-import io
 import json
-import re
 import time
-import zipfile
 from pathlib import Path
 
-from docx import Document as WordDocument
-from pypdf import PdfReader
-from rank_bm25 import BM25Okapi
+from rank_bm25 import BM25Plus
 
 from ..core.clamav import ScanRejected, ScanUnavailable, scan
 from ..core.db import Database, now, uid
 from ..core.metrics import RAG_RETRIEVAL_SECONDS
 from ..infrastructure.providers import ServiceError
 from ..infrastructure.object_store import ObjectStore
+from .document_parsing import (IMAGE_SUFFIXES as IMAGE_SUFFIXES, IMAGE_MEDIA_TYPES as IMAGE_MEDIA_TYPES,
+                               validate_upload as validate_upload, semantic_chunks as semantic_chunks,
+                               split_document as split_document, extract_blocks, tokens)
+from .retrieval_contract import RetrievalResults, valid_chunk, normalize_hits, score
 
 
-IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
-ALLOWED_SUFFIXES = {".txt", ".md", ".pdf", ".docx", *IMAGE_SUFFIXES}
-IMAGE_MEDIA_TYPES = {
-    ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png",
-    ".gif": "image/gif", ".webp": "image/webp",
-}
-
-
-def image_media_type(content: bytes) -> str | None:
-    if content.startswith(b"\xff\xd8\xff"):
-        return "image/jpeg"
-    if content.startswith(b"\x89PNG\r\n\x1a\n"):
-        return "image/png"
-    if content.startswith((b"GIF87a", b"GIF89a")):
-        return "image/gif"
-    if len(content) >= 12 and content[:4] == b"RIFF" and content[8:12] == b"WEBP":
-        return "image/webp"
-    return None
-
-
-def tokens(text: str) -> list[str]:
-    return re.findall(r"[A-Za-z0-9_]+|[\u4e00-\u9fff]", text.lower())
-
-
-def validate_upload(name: str, content: bytes) -> str:
-    suffix = Path(name).suffix.lower()
-    if suffix not in ALLOWED_SUFFIXES:
-        raise ServiceError("仅支持 TXT、Markdown、DOCX、文字型 PDF 与 JPG/PNG/GIF/WebP 图片")
-    if not content:
-        raise ServiceError("文件内容不能为空")
-    if suffix in IMAGE_SUFFIXES:
-        if image_media_type(content) != IMAGE_MEDIA_TYPES[suffix]:
-            raise ServiceError("图片文件签名无效或与扩展名不匹配")
-    if suffix == ".pdf" and not content.startswith(b"%PDF-"):
-        raise ServiceError("PDF 文件签名无效")
-    if suffix == ".docx":
-        if not content.startswith(b"PK"):
-            raise ServiceError("DOCX 文件签名无效")
-        try:
-            with zipfile.ZipFile(io.BytesIO(content)) as archive:
-                entries = archive.infolist()
-                expanded = sum(entry.file_size for entry in entries)
-                compressed = max(1, sum(entry.compress_size for entry in entries))
-                if len(entries) > 200 or expanded > 40 * 1024 * 1024 or expanded / compressed > 100:
-                    raise ServiceError("DOCX 解压后的内容超过安全限制")
-                if "[Content_Types].xml" not in archive.namelist():
-                    raise ServiceError("DOCX 文件结构无效")
-        except ServiceError:
-            raise
-        except zipfile.BadZipFile:
-            raise ServiceError("DOCX 文件无法解压") from None
-    return suffix
-
-def semantic_chunks(locator: str, text: str) -> list[dict]:
-    text = text.strip().replace("\x00", "")
-    sentences = re.split(r"(?<=[。！？!?；;])\s*", text)
-    output, current, start = [], "", 1
-
-    def flush() -> str:
-        nonlocal start
-        output.append({"text": current, "locator": f"{locator} · 字符 {start}–{start + len(current) - 1}"})
-        overlap = current[-180:]
-        start += len(current) - len(overlap)
-        return overlap
-
-    for sentence in sentences:
-        if not sentence:
-            continue
-        while sentence:
-            available = 1100 - len(current)
-            if available <= 0:
-                current = flush()
-                continue
-            if len(sentence) <= available:
-                current += sentence
-                break
-            current += sentence[:available]
-            sentence = sentence[available:]
-            current = flush()
-    if current:
-        output.append({"text": current, "locator": f"{locator} · 字符 {start}–{start + len(current) - 1}"})
-    return output
-
-
-def split_document(name: str, content: bytes) -> list[dict]:
-    suffix = validate_upload(name, content)
-    if suffix in IMAGE_SUFFIXES:
-        return []
-    if suffix == ".pdf":
-        try:
-            reader = PdfReader(io.BytesIO(content))
-            if reader.is_encrypted or len(reader.pages) > 200:
-                raise ServiceError("PDF 加密或超过 200 页限制")
-            pages = [(f"第 {i + 1} 页", page.extract_text() or "") for i, page in enumerate(reader.pages)]
-        except ServiceError:
-            raise
-        except Exception:
-            raise ServiceError("PDF 无法解析") from None
-    elif suffix in {".txt", ".md"}:
-        try:
-            pages = [("正文", content.decode("utf-8-sig"))]
-        except UnicodeError:
-            raise ServiceError("文本资料需要使用 UTF-8 编码") from None
-    else:
-        try:
-            document = WordDocument(io.BytesIO(content))
-            pages, heading, buffer = [], "正文", []
-            for paragraph in document.paragraphs:
-                text = paragraph.text.strip()
-                if not text:
-                    continue
-                if paragraph.style.name.lower().startswith("heading"):
-                    if buffer:
-                        pages.append((heading, "\n".join(buffer)))
-                    heading, buffer = text[:180], []
-                else:
-                    buffer.append(text)
-            for index, table in enumerate(document.tables, start=1):
-                rows = [[cell.text.strip() for cell in row.cells] for row in table.rows]
-                rows = [row for row in rows if any(row)]
-                if rows:
-                    header = " | ".join(rows[0])
-                    body = [" | ".join(row) for row in rows[1:]]
-                    pages.append((f"表格 {index}", "表头：" + header + "\n" + "\n".join(body)))
-            if buffer:
-                pages.append((heading, "\n".join(buffer)))
-        except Exception:
-            raise ServiceError("DOCX 无法解析") from None
-    output = []
-    for locator, text in pages:
-        output.extend(semantic_chunks(locator, text))
-    if not output:
-        raise ServiceError("未提取到文字；扫描件需要可提取的图片内容")
-    if len(output) > 400:
-        raise ServiceError("资料超过 400 个片段限制，请拆分文件")
-    return output
-
-
-def visual_assets(name: str, content: bytes) -> list[tuple[str, str, bytes]]:
-    """Return only images whose actual bytes match a supported vision media type."""
-    suffix = Path(name).suffix.lower()
-    if suffix in IMAGE_SUFFIXES:
-        return [("图片", IMAGE_MEDIA_TYPES[suffix], content)]
-    if suffix != ".pdf":
-        return []
-    try:
-        reader = PdfReader(io.BytesIO(content))
-        assets = []
-        for page_index, page in enumerate(reader.pages, start=1):
-            for image_index, image in enumerate(page.images, start=1):
-                data = image.data
-                media_type = image_media_type(data)
-                if media_type:
-                    assets.append((f"第 {page_index} 页图片 {image_index}", media_type, data))
-        return assets
-    except Exception:
-        return []
 
 
 class Documents:
@@ -183,7 +25,7 @@ class Documents:
         self.settings, self.db, self.providers, self.vectors = settings, db, providers, vectors
         self.gate = asyncio.Semaphore(1)
         self.store = ObjectStore(settings)
-        self._corpora: dict[str, tuple[str, list[dict], dict[str, dict], BM25Okapi]] = {}
+        self._corpora: dict[str, tuple[str, list[dict], dict[str, dict], BM25Plus]] = {}
 
     async def start(self) -> None:
         await self.store.start()
@@ -232,24 +74,28 @@ class Documents:
             await self.db.event(run_id, "local_retrieval", data)
 
     async def split_for_index(self, name: str, content: bytes) -> list[dict]:
-        assets = await asyncio.to_thread(visual_assets, name, content)
-        try:
-            chunks = await asyncio.to_thread(split_document, name, content)
-        except ServiceError as exc:
-            if not assets or not str(exc).startswith("未提取到文字"):
-                raise
-            chunks = []
-        if len(assets) > 20:
-            raise ServiceError("资料中的图片超过 20 张限制，请拆分文件")
-        if sum(len(asset[2]) for asset in assets) > 20 * 1024 * 1024:
-            raise ServiceError("资料中的图片总大小超过 20 MB 限制")
-        for locator, media_type, image in assets:
-            extracted = await self.providers.describe_image(image, media_type)
-            chunks.extend(semantic_chunks(locator, "图片解析：" + extracted))
+        blocks = await asyncio.to_thread(extract_blocks, name, content)
+        assets = [block for block in blocks if block.image]
+        if len(assets) > 20 or sum(len(block.image) for block in assets) > 20 * 1024 * 1024:
+            raise ServiceError("资料图片超过 20 张或 20 MB，请拆分文件")
+        chunks = []
+        for block in blocks:
+            text = block.text
+            if block.image:
+                suffix = next(key for key, value in IMAGE_MEDIA_TYPES.items() if value == block.media_type)
+                await asyncio.to_thread(validate_upload, "image" + suffix, block.image)
+                try:
+                    extracted = await self.providers.describe_image(block.image, block.media_type)
+                except ServiceError as exc:
+                    raise ServiceError(f"{block.locator}：{exc}") from None
+                if not isinstance(extracted, str) or not extracted.strip():
+                    raise ServiceError(f"{block.locator}：视觉解析为空，请上传清晰页面")
+                text = "图片解析（图中显示，未经外部核实）：" + extracted
+            chunks.extend(semantic_chunks(block.locator, text))
+            if len(chunks) > 400:
+                raise ServiceError("资料超过 400 个片段限制，请拆分文件")
         if not chunks:
             raise ServiceError("未提取到可检索文字或图片内容")
-        if len(chunks) > 400:
-            raise ServiceError("资料超过 400 个片段限制，请拆分文件")
         return chunks
 
     async def ingest(self, doc_id: str):
@@ -261,7 +107,9 @@ class Documents:
                 content = await self.store.get("uploads", doc_id)
                 chunks = await self.split_for_index(document["name"], content)
                 vectors = await self.providers.embed([part["text"] for part in chunks])
-                rows = [dict(part, id=hashlib.sha256(f"{doc_id}:{document['index_version']}:{i}".encode()).hexdigest()[:32],
+                if len(vectors) != len(chunks):
+                    raise ServiceError("嵌入结果数量与片段不一致，资料未发布，请重试导入")
+                rows = [dict(part, ordinal=i, id=hashlib.sha256(f"{doc_id}:{document['index_version']}:{i}".encode()).hexdigest()[:32],
                     user_id=document["user_id"], document_id=doc_id, index_version=document["index_version"], title=document["name"], vector=vector)
                     for i, (part, vector) in enumerate(zip(chunks, vectors))]
                 async with self.db.guard("documents:" + document["user_id"]):
@@ -278,9 +126,9 @@ class Documents:
                             await conn.execute("DELETE FROM document_cleanup WHERE document_id=? AND version=?",
                                                (doc_id, document["index_version"]))
                             await conn.execute("DELETE FROM chunks WHERE document_id=?", (doc_id,))
-                            await conn.executemany("INSERT INTO chunks(id,document_id,user_id,text,locator,vector) VALUES(?,?,?,?,?,?)",
+                            await conn.executemany("INSERT INTO chunks(id,document_id,user_id,text,locator,vector,ordinal) VALUES(?,?,?,?,?,?,?)",
                                 [(row["id"], doc_id, document["user_id"], row["text"], row["locator"],
-                                  json.dumps(row["vector"]) if self.settings.demo_mode else "[]") for row in rows])
+                                  json.dumps(row["vector"]) if self.settings.demo_mode else "[]", row["ordinal"]) for row in rows])
                         else:
                             await conn.execute("INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version) VALUES(?,?,?)",
                                                (doc_id, document["user_id"], document["index_version"]))
@@ -297,108 +145,140 @@ class Documents:
 
     async def search(self, user: str, queries: list[str], limit: int = 6, run_id: str = "") -> list[dict]:
         started = time.monotonic()
-        normalized_queries = [query.strip() for query in queries if query.strip()]
-        if not normalized_queries:
-            return []
+        if not isinstance(queries, list) or any(not isinstance(q, str) or len(q) > 4000 for q in queries):
+            raise ServiceError("检索查询字段无效，请提供不超过 4000 字的文本")
+        queries = list(dict.fromkeys(q.strip() for q in queries if q.strip()))
+        if len(queries) > 8 or not isinstance(limit, int) or isinstance(limit, bool) or not 1 <= limit <= 20:
+            raise ServiceError("单次检索支持最多 8 个查询、1–20 个返回片段，请拆分问题")
+        if not queries:
+            return RetrievalResults()
+        reasons = set()
         documents = await self.db.rows("SELECT id,hash,index_version FROM documents WHERE user_id=? AND status='ready' ORDER BY id", (user,))
-        corpus_hash = hashlib.sha256("|".join(f"{row['id']}:{row['hash']}:{row['index_version']}" for row in documents).encode()).hexdigest()
-        query_hash = hashlib.sha256(json.dumps(normalized_queries, ensure_ascii=False).encode()).hexdigest()
-        cache_started = time.monotonic()
-        cached = await self.db.one("""SELECT result FROM document_search_cache
-            WHERE user_id=? AND corpus_hash=? AND query_hash=? AND limit_value=?""",
-                                   (user, corpus_hash, query_hash, limit))
-        cache_ms = round((time.monotonic() - cache_started) * 1000, 2)
-        RAG_RETRIEVAL_SECONDS.labels(stage="cache_lookup").observe(cache_ms / 1000)
-        if cached:
-            try:
-                result = json.loads(cached["result"])
-                if isinstance(result, list):
-                    total_ms = round((time.monotonic() - started) * 1000, 2)
-                    RAG_RETRIEVAL_SECONDS.labels(stage="total").observe(total_ms / 1000)
-                    await self.record_retrieval(run_id, {"cache_hit": True, "queries": len(normalized_queries),
-                        "corpus_documents": len(documents), "corpus_chunks": None, "cache_ms": cache_ms,
-                        "total_ms": total_ms})
-                    return result
-            except (TypeError, ValueError, json.JSONDecodeError):
-                await self.db.execute("DELETE FROM document_search_cache WHERE user_id=? AND corpus_hash=? AND query_hash=? AND limit_value=?",
-                                      (user, corpus_hash, query_hash, limit))
+        # Invalidate old cache entries when extraction/ranking contracts change.
+        corpus_hash = hashlib.sha256(("rag-v2|" + "|".join(f"{r['id']}:{r['hash']}:{r['index_version']}" for r in documents)).encode()).hexdigest()
+        query_hash = hashlib.sha256(json.dumps(queries, ensure_ascii=False).encode()).hexdigest()
         corpus_started = time.monotonic()
         cached_corpus = self._corpora.get(user)
-        if cached_corpus and cached_corpus[0] == corpus_hash:
+        corpus_cache_hit = bool(cached_corpus and cached_corpus[0] == corpus_hash)
+        if corpus_cache_hit:
             _, all_chunks, chunks_by_id, bm25 = cached_corpus
-            corpus_cache_hit = True
         else:
-            all_chunks = await self.db.rows("""SELECT c.*, d.name AS title FROM chunks c JOIN documents d
-                ON c.document_id=d.id WHERE c.user_id=? AND d.status='ready'""", (user,))
+            raw = await self.db.rows("""SELECT c.*,d.name AS title FROM chunks c JOIN documents d ON c.document_id=d.id
+                WHERE c.user_id=? AND d.user_id=? AND d.status='ready'""", (user, user))
+            all_chunks = [row for row in raw if valid_chunk(row, user)]
+            if len(all_chunks) != len(raw):
+                reasons.add("invalid_records")
+            if raw and not all_chunks:
+                raise ServiceError("资料索引字段无效，请重新索引资料")
             chunks_by_id = {row["id"]: row for row in all_chunks}
             build_started = time.monotonic()
-            bm25 = BM25Okapi([tokens(row["text"]) or ["_"] for row in all_chunks]) if all_chunks else None
-            build_ms = round((time.monotonic() - build_started) * 1000, 2)
-            RAG_RETRIEVAL_SECONDS.labels(stage="bm25_build").observe(build_ms / 1000)
-            self._corpora[user] = (corpus_hash, all_chunks, chunks_by_id, bm25)
-            corpus_cache_hit = False
+            bm25 = BM25Plus([tokens(row["text"]) or ["_"] for row in all_chunks], delta=0) if all_chunks else None
+            RAG_RETRIEVAL_SECONDS.labels(stage="bm25_build").observe(time.monotonic() - build_started)
+            if not reasons:
+                self._corpora[user] = (corpus_hash, all_chunks, chunks_by_id, bm25)
         corpus_ms = round((time.monotonic() - corpus_started) * 1000, 2)
         RAG_RETRIEVAL_SECONDS.labels(stage="corpus_load").observe(corpus_ms / 1000)
-        if not all_chunks or not bm25:
-            return []
+        if not all_chunks:
+            return RetrievalResults()
+        cache_started = time.monotonic()
+        cache_key = (user, corpus_hash, query_hash, limit)
+        cached = await self.db.one("""SELECT result FROM document_search_cache
+            WHERE user_id=? AND corpus_hash=? AND query_hash=? AND limit_value=?""", cache_key)
+        cache_ms = round((time.monotonic() - cache_started) * 1000, 2)
+        RAG_RETRIEVAL_SECONDS.labels(stage="cache_lookup").observe(cache_ms / 1000)
+        if cached and not reasons:
+            try:
+                rows = json.loads(cached["result"])
+                if not isinstance(rows, list) or len(rows) > limit:
+                    raise ValueError("cache contract")
+                result, seen = [], set()
+                for row in rows:
+                    if not isinstance(row, dict) or not isinstance(row.get("id"), str):
+                        raise ValueError("cache id")
+                    source = chunks_by_id.get(row["id"])
+                    if not source or row["id"] in seen:
+                        raise ValueError("cache provenance")
+                    seen.add(row["id"])
+                    scores = {key: score(row[key]) for key in ("score", "vector_score", "bm25_score")}
+                    result.append({**source, **scores})
+                await self.record_retrieval(run_id, {"cache_hit": True, "queries": len(queries),
+                    "corpus_documents": len(documents), "corpus_chunks": len(all_chunks), "cache_ms": cache_ms,
+                    "total_ms": round((time.monotonic() - started) * 1000, 2)})
+                RAG_RETRIEVAL_SECONDS.labels(stage="total").observe(time.monotonic() - started)
+                return RetrievalResults(result)
+            except (TypeError, ValueError, KeyError):
+                reasons.add("invalid_records")
+                await self.db.execute("DELETE FROM document_search_cache WHERE user_id=? AND corpus_hash=? AND query_hash=? AND limit_value=?", cache_key)
 
-        async def retrieve_query(query: str):
+        async def retrieve_query(query):
             lexical_started = time.monotonic()
-            lexical_scores = bm25.get_scores(tokens(query))
-            lexical_ms = round((time.monotonic() - lexical_started) * 1000, 2)
+            lexical = bm25.get_scores(tokens(query))
+            RAG_RETRIEVAL_SECONDS.labels(stage="bm25_score").observe(time.monotonic() - lexical_started)
+            hits, failures = {}, set()
             embed_started = time.monotonic()
-            vector = (await self.providers.embed([query]))[0]
-            embed_ms = round((time.monotonic() - embed_started) * 1000, 2)
-            vector_started = time.monotonic()
-            hits = await self.vectors.search("documents", user, vector, limit=limit * 3)
-            vector_ms = round((time.monotonic() - vector_started) * 1000, 2)
-            return lexical_scores, hits, lexical_ms, embed_ms, vector_ms
+            embed_ms, vector_ms = 0.0, 0.0
+            try:
+                embeddings = await self.providers.embed([query])
+                embed_ms = (time.monotonic() - embed_started) * 1000
+                if len(embeddings) != 1:
+                    raise ServiceError("查询嵌入结果格式无效")
+                vector_started = time.monotonic()
+                try:
+                    raw_hits = await self.vectors.search("documents", user, embeddings[0], limit=limit * 3)
+                    hits, rejected = normalize_hits(raw_hits, chunks_by_id, limit * 3)
+                    if rejected:
+                        failures.add("invalid_records")
+                finally:
+                    vector_ms = (time.monotonic() - vector_started) * 1000
+            except (ServiceError, TypeError, ValueError, KeyError, IndexError):
+                failures.add("vector_unavailable")
+            RAG_RETRIEVAL_SECONDS.labels(stage="query_embedding").observe(embed_ms / 1000)
+            RAG_RETRIEVAL_SECONDS.labels(stage="vector_search").observe(vector_ms / 1000)
+            return lexical, hits, failures, embed_ms, vector_ms
 
-        rows_by_query = await asyncio.gather(*(retrieve_query(query) for query in normalized_queries))
-        scores = {}
-        lexical_ms, embed_ms, vector_ms = 0.0, 0.0, 0.0
-        for lexical, hits, lexical_time, embed_time, vector_time in rows_by_query:
-            lexical_ms += lexical_time
+        results = await asyncio.gather(*(retrieve_query(query) for query in queries))
+        scores, embed_ms, vector_ms = {}, 0.0, 0.0
+        for lexical, hits, failures, embed_time, vector_time in results:
+            reasons.update(failures)
             embed_ms += embed_time
             vector_ms += vector_time
             maximum = max(lexical) or 1
-            for row, score in zip(all_chunks, lexical):
-                entry = scores.setdefault(row["id"], {"row": row, "lexical": 0.0, "vector": 0.0})
-                entry["lexical"] = max(entry["lexical"], float(score / maximum))
-            for hit in hits:
-                row = chunks_by_id.get(hit["id"])
-                if row:
-                    entry = scores.setdefault(hit["id"], {"row": row, "lexical": 0.0, "vector": 0.0})
-                    entry["vector"] = max(entry["vector"], max(0.0, float(hit.get("score", 0))))
-        RAG_RETRIEVAL_SECONDS.labels(stage="bm25_score").observe(lexical_ms / 1000)
-        RAG_RETRIEVAL_SECONDS.labels(stage="query_embedding").observe(embed_ms / 1000)
-        RAG_RETRIEVAL_SECONDS.labels(stage="vector_search").observe(vector_ms / 1000)
-
+            for row, value in zip(all_chunks, lexical):
+                if value > 0:
+                    entry = scores.setdefault(row["id"], {"row": row, "lexical": 0.0, "vector": 0.0})
+                    entry["lexical"] = max(entry["lexical"], float(value / maximum))
+            for key, value in hits.items():
+                if value >= self.settings.rag_min_vector_score:
+                    entry = scores.setdefault(key, {"row": chunks_by_id[key], "lexical": 0.0, "vector": 0.0})
+                    entry["vector"] = max(entry["vector"], value)
         fusion_started = time.monotonic()
         ranked = sorted(scores.values(), key=lambda item: 0.65 * item["vector"] + 0.35 * item["lexical"], reverse=True)
-        selected, selected_terms = [], []
+        selected, terms_seen = [], []
         for item in ranked:
             row, terms = item["row"], set(tokens(item["row"]["text"]))
-            similarity = max((len(terms & old) / max(1, len(terms | old)) for old in selected_terms), default=0.0)
-            if similarity < 0.82:
-                selected.append(dict(row, score=round(0.65 * item["vector"] + 0.35 * item["lexical"], 4),
-                                     vector_score=round(item["vector"], 4), bm25_score=round(item["lexical"], 4)))
-                selected_terms.append(terms)
+            similarity = max((len(terms & old) / max(1, len(terms | old)) for old in terms_seen), default=0)
+            if similarity >= 0.82:
+                continue
+            selected.append(dict(row, score=round(0.65 * item["vector"] + 0.35 * item["lexical"], 4),
+                                 vector_score=round(item["vector"], 4), bm25_score=round(item["lexical"], 4)))
+            terms_seen.append(terms)
             if len(selected) >= limit:
                 break
-        fusion_ms = round((time.monotonic() - fusion_started) * 1000, 2)
-        total_ms = round((time.monotonic() - started) * 1000, 2)
-        RAG_RETRIEVAL_SECONDS.labels(stage="fusion").observe(fusion_ms / 1000)
-        RAG_RETRIEVAL_SECONDS.labels(stage="total").observe(total_ms / 1000)
-        await self.db.execute("""INSERT OR REPLACE INTO document_search_cache
-            (user_id,corpus_hash,query_hash,limit_value,result,created_at) VALUES(?,?,?,?,?,?)""",
-                              (user, corpus_hash, query_hash, limit, json.dumps(selected, ensure_ascii=False), now()))
+        if not selected and any(failures & {"vector_unavailable", "invalid_records"} for _, _, failures, _, _ in results):
+            raise ServiceError("资料检索发生故障或返回无效字段，关键词检索也未找到证据，请重试或重建索引")
+        RAG_RETRIEVAL_SECONDS.labels(stage="fusion").observe(time.monotonic() - fusion_started)
+        RAG_RETRIEVAL_SECONDS.labels(stage="total").observe(time.monotonic() - started)
+        # Never cache a degraded response: a repaired service must be retried on the next request.
+        if not reasons:
+            await self.db.execute("""INSERT OR REPLACE INTO document_search_cache
+                (user_id,corpus_hash,query_hash,limit_value,result,created_at) VALUES(?,?,?,?,?,?)""",
+                (*cache_key, json.dumps([{k: row[k] for k in ("id", "score", "vector_score", "bm25_score")} for row in selected]), now()))
         await self.record_retrieval(run_id, {"cache_hit": False, "corpus_cache_hit": corpus_cache_hit,
-            "queries": len(normalized_queries), "corpus_documents": len(documents), "corpus_chunks": len(all_chunks),
-            "cache_ms": cache_ms, "corpus_ms": corpus_ms, "bm25_ms": round(lexical_ms, 2),
-            "embedding_ms": round(embed_ms, 2), "vector_ms": round(vector_ms, 2), "fusion_ms": fusion_ms,
-            "total_ms": total_ms})
-        return selected
+            "queries": len(queries), "corpus_documents": len(documents), "corpus_chunks": len(all_chunks),
+            "cache_ms": cache_ms, "corpus_ms": corpus_ms, "embedding_ms": round(embed_ms, 2),
+            "vector_ms": round(vector_ms, 2), "total_ms": round((time.monotonic() - started) * 1000, 2),
+            "candidates": len(ranked), "selected": len(selected), "reasons": sorted(reasons)})
+        return RetrievalResults(selected, reasons=reasons)
 
     async def delete(self, doc_id, user):
         async with self.db.guard("documents:" + user):

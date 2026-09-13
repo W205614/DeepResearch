@@ -15,6 +15,7 @@ async def test_search_fallback_reserves_another_attempt(runtime, monkeypatch):
     monkeypatch.setattr(runtime, 'schedule', hold)
     await runtime.db.ensure_personal_workspace('alice', 'Test', (2, 5))
     run = await runtime.create('alice', RunRequest(topic='search quota', client_request_id=uid()))
+    runtime.settings.max_search_calls = 2
     runtime.settings.demo_mode = False
     runtime.settings.web_search_provider = 'auto'
     runtime.settings.bocha_api_key = SecretStr('fixture-only')
@@ -48,17 +49,17 @@ async def test_retry_at_capacity_and_thread_mismatch(runtime, monkeypatch):
         await runtime.create("alice", request.model_copy(update={"thread_id": other["id"]}))
 
 
-async def test_daily_budget_atomic_and_not_refunded(runtime, monkeypatch):
+async def test_daily_usage_is_accounting_only_and_per_run_limit_is_atomic(runtime, monkeypatch):
     async def hold(*args, **kwargs):
         pass
     monkeypatch.setattr(runtime, "schedule", hold)
     await runtime.db.ensure_personal_workspace("alice", "Test", (3, 5))
     runs = [await runtime.create("alice", RunRequest(topic="测试", client_request_id=uid())) for _ in range(2)]
     results = await asyncio.gather(*(runtime.db.reserve_search(runs[i % 2]["id"], 2) for i in range(10)))
-    assert sum(results) == 3
+    assert sum(results) == 4
     await runtime.purge_user("alice", "reports")
     usage = await runtime.db.one("SELECT search_calls FROM workspace_daily_usage WHERE workspace_id=? AND day=?", ("alice", now()[:10]))
-    assert usage["search_calls"] == 3
+    assert usage["search_calls"] == 4
 
 
 async def test_delete_during_index_cannot_revive(runtime, monkeypatch):

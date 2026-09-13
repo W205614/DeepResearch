@@ -88,7 +88,10 @@ def test_long_unpunctuated_text_keeps_its_tail_in_the_index():
 
 async def test_image_upload_uses_vision_extraction_before_indexing(api_client):
     _, client = api_client
-    image = b"\x89PNG\r\n\x1a\n" + b"minimal-image-content"
+    from PIL import Image
+    image_file = io.BytesIO()
+    Image.new("RGB", (32, 32), "white").save(image_file, format="PNG")
+    image = image_file.getvalue()
     response = await client.post("/api/documents", files={"file": ("chart.png", image, "image/png")})
     assert response.status_code == 202, response.text
     document = await wait_for_status(client, response.json()["id"], "ready")

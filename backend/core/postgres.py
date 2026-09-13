@@ -142,18 +142,13 @@ class PostgresDatabase:
             tx = conn.transaction()
             await tx.start()
             try:
-                row = await conn.fetchrow("""SELECT r.user_id,l.daily_search_limit FROM runs r
-                    JOIN workspace_limits l ON l.workspace_id=r.user_id WHERE r.id=$1""", run_id)
+                row = await conn.fetchrow("""SELECT r.user_id FROM runs r WHERE r.id=$1""", run_id)
                 if row:
                     day = now()[:10]
                     await conn.execute("""INSERT INTO workspace_daily_usage(workspace_id,day)
                         VALUES($1,$2) ON CONFLICT DO NOTHING""", row["user_id"], day)
-                    result = await conn.execute("""UPDATE workspace_daily_usage SET search_calls=search_calls+1
-                        WHERE workspace_id=$1 AND day=$2 AND search_calls<$3""",
-                        row["user_id"], day, row["daily_search_limit"])
-                    if result != "UPDATE 1":
-                        await tx.rollback()
-                        return False
+                    await conn.execute("""UPDATE workspace_daily_usage SET search_calls=search_calls+1
+                        WHERE workspace_id=$1 AND day=$2""", row["user_id"], day)
                 await conn.execute("INSERT INTO counters(run_id) VALUES($1) ON CONFLICT DO NOTHING", run_id)
                 result = await conn.execute("UPDATE counters SET search_calls=search_calls+1 WHERE run_id=$1 AND search_calls<$2", run_id, limit)
                 if result != "UPDATE 1":
@@ -168,6 +163,7 @@ class PostgresDatabase:
     async def owned_run(self, run_id, user):
         row = await self.one("SELECT * FROM runs WHERE id=? AND user_id=?", (run_id, user))
         if row:
+            row["attachments"] = await self.rows("SELECT id,name,media_type,size,position FROM attachments WHERE run_id=? AND status='ready' ORDER BY position", (run_id,))
             row["sources"] = json.loads(row["sources"])
             row["validation"] = json.loads(row["validation"])
             row["usage"] = await self.one("SELECT * FROM counters WHERE run_id=?", (run_id,)) or {}
@@ -180,7 +176,7 @@ class PostgresDatabase:
             await conn.execute("INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES(?,?,?,?)",
                                (workspace["id"], subject, "admin", workspace["created_at"]))
             await conn.execute("INSERT INTO workspace_limits(workspace_id,daily_search_limit,daily_token_limit,concurrent_run_limit) VALUES(?,?,0,?)",
-                               (workspace["id"], *limits))
+                               (workspace["id"], 0, limits[1]))
         return workspace
 
     async def ensure_personal_workspace(self, subject, name, limits):
@@ -194,7 +190,7 @@ class PostgresDatabase:
                                (subject, subject, "admin", workspace["created_at"]))
             await conn.execute("""INSERT INTO workspace_limits(
                 workspace_id,daily_search_limit,daily_token_limit,concurrent_run_limit) VALUES(?,?,0,?)
-                ON CONFLICT(workspace_id) DO NOTHING""", (subject, *limits))
+                ON CONFLICT(workspace_id) DO NOTHING""", (subject, 0, limits[1]))
         return await self.membership(subject, subject)
 
     async def memberships(self, subject):
@@ -213,7 +209,7 @@ class PostgresDatabase:
         return await self.rows("SELECT action,target_type,target_id,result,actor_subject,created_at FROM audit_logs WHERE workspace_id=? ORDER BY created_at DESC LIMIT ?", (workspace_id, limit))
 
     async def workspace_limits(self, workspace_id):
-        return await self.one("SELECT daily_search_limit,concurrent_run_limit FROM workspace_limits WHERE workspace_id=?", (workspace_id,))
+        return await self.one("SELECT NULL AS daily_search_limit,concurrent_run_limit FROM workspace_limits WHERE workspace_id=?", (workspace_id,))
 
     async def close(self):
         if self.pool:

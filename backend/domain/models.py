@@ -1,10 +1,23 @@
 from typing import Literal, TypedDict
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class RunRequest(BaseModel):
-    topic: str = Field(min_length=2, max_length=4000)
+    topic: str = Field(default="", max_length=4000)
+    attachment_ids: list[str] = Field(default_factory=list, max_length=4)
+
+    @model_validator(mode="after")
+    def valid_input(self):
+        self.topic = self.topic.strip()
+        if len(set(self.attachment_ids)) != len(self.attachment_ids):
+            raise ValueError("图片不能重复")
+        if not self.topic and not self.attachment_ids:
+            raise ValueError("请输入文字或上传图片")
+        if not self.topic:
+            self.topic = "描述图片并提取关键信息"
+        return self
+
     thread_id: str | None = None
     mode: Literal["auto", "quick", "deep"] = "auto"
     client_request_id: str = Field(min_length=8, max_length=80, pattern=r"^[a-zA-Z0-9_-]+$")
@@ -32,7 +45,8 @@ class MembershipRequest(BaseModel):
 
 
 class WorkspaceLimitRequest(BaseModel):
-    daily_search_limit: int = Field(ge=1, le=10000)
+    # Legacy clients may send this field; daily quotas are no longer enforced.
+    daily_search_limit: int | None = Field(default=None, deprecated=True)
     concurrent_run_limit: int = Field(ge=1, le=20)
 
 
@@ -47,6 +61,18 @@ class ChatAnswer(BaseModel):
     answer: str = Field(min_length=1, max_length=2000)
 
 
+class ImageObservation(BaseModel):
+    index: int = Field(ge=1, le=4)
+    readable: bool
+    text: str = Field(max_length=6000)
+
+
+class VisionResult(BaseModel):
+    mode: Literal["chat", "quick", "deep"]
+    answer: str = Field(min_length=1, max_length=8000)
+    observations: list[ImageObservation] = Field(min_length=1, max_length=4)
+
+
 class Plan(BaseModel):
     title: str = Field(max_length=160)
     questions: list[str] = Field(min_length=1, max_length=5)
@@ -56,7 +82,8 @@ class Plan(BaseModel):
 
 class Evidence(BaseModel):
     id: str
-    kind: Literal["web", "local"]
+    kind: Literal["web", "local", "attachment"]
+    attachment_id: str = ""
     title: str
     url: str = ""
     text: str
@@ -123,6 +150,11 @@ class Verification(BaseModel):
 
 
 class ResearchState(TypedDict, total=False):
+    attachment_ids: list[str]
+    attachment_evidence: list[dict]
+    vision: dict
+    web_outcomes: list[dict]
+    local_outcomes: list[dict]
     run_id: str
     user_id: str
     owner_subject: str
