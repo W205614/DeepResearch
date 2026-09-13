@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field, model_validator
 
 
 class RunRequest(BaseModel):
+    data_policy: Literal["public", "internal", "restricted"] = "internal"
     topic: str = Field(default="", max_length=4000)
     attachment_ids: list[str] = Field(default_factory=list, max_length=4)
 
@@ -81,6 +82,9 @@ class Plan(BaseModel):
 
 
 class Evidence(BaseModel):
+    index_version: int = 0
+    chunk_id: str = ""
+    document_hash: str = ""
     id: str
     kind: Literal["web", "local", "attachment"]
     attachment_id: str = ""
@@ -147,6 +151,7 @@ class ClaimCheck(BaseModel):
 
 class Verification(BaseModel):
     checks: list[ClaimCheck] = Field(default_factory=list)
+    answered_questions: list[int] = Field(default_factory=list, max_length=5)
 
 
 class ResearchState(TypedDict, total=False):

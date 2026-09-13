@@ -67,7 +67,7 @@ async def test_dead_letter_retry_tracks_actual_outcome(runtime, entry, outcome):
 
 
 async def test_complete_research_has_real_events_and_citations(runtime):
-    result = await finish(runtime, await runtime.create("alice", RunRequest(topic="研究助手工作流程", client_request_id=uid())))
+    result = await finish(runtime, await runtime.create("alice", RunRequest(data_policy="public", topic="研究助手工作流程", client_request_id=uid())))
     assert result["status"] == "completed", result["error"]
     assert len(result["sources"]) == 2
     assert all(f"[{s['id']}]" in result["report"] for s in result["sources"])
@@ -98,7 +98,7 @@ async def test_task_logs_show_progress_without_topic_or_evidence(runtime, caplog
     caplog.set_level(logging.INFO, logger="deepresearch.task")
     try:
         result = await finish(runtime, await runtime.create(
-            "alice", RunRequest(topic="不应写入容器日志的研究主题", client_request_id=uid())))
+            "alice", RunRequest(data_policy="public", topic="不应写入容器日志的研究主题", client_request_id=uid())))
     finally:
         logger.removeHandler(caplog.handler)
     assert result["status"] == "completed"
@@ -129,7 +129,7 @@ async def test_failed_node_resumes_without_repeating_successful_searches(runtime
             raise ServiceError("测试：分析阶段临时失败")
         return await original(role, *args, **kwargs)
     runtime.providers.structured = flaky
-    run = await runtime.create("alice", RunRequest(topic="研究流程", mode="quick", client_request_id=uid()))
+    run = await runtime.create("alice", RunRequest(data_policy="public", topic="研究流程", mode="quick", client_request_id=uid()))
     failed = await finish(runtime, run)
     assert failed["status"] == "failed"
     await asyncio.sleep(0)
@@ -148,10 +148,10 @@ async def test_cancel_and_thread_concurrency(runtime):
             await release.wait()
         return await original(role, *args, **kwargs)
     runtime.providers.structured = blocked
-    run = await runtime.create("alice", RunRequest(topic="研究流程", client_request_id=uid()))
+    run = await runtime.create("alice", RunRequest(data_policy="public", topic="研究流程", client_request_id=uid()))
     await asyncio.wait_for(entered.wait(), 5)
     with pytest.raises(ConflictError):
-        await runtime.create("alice", RunRequest(topic="另一个研究", thread_id=run["thread_id"], client_request_id=uid()))
+        await runtime.create("alice", RunRequest(data_policy="public", topic="另一个研究", thread_id=run["thread_id"], client_request_id=uid()))
     result = await runtime.cancel(run["id"], "alice")
     assert result["status"] == "cancelled"
     assert result["usage"].get("search_calls", 0) == 0
@@ -426,6 +426,7 @@ async def test_recovery_reuses_a_queue_job_and_only_one_worker_claims(runtime):
         client_request_id) VALUES('queue-run','alice',?,'research workflow','quick','queued','today','today','queue-request')""",
                              (thread["id"],))
 
+    await runtime.db.execute("UPDATE runs SET data_policy='public' WHERE id='queue-run'")
     await runtime.recover_queued_runs()
     await runtime.recover_queued_runs()
     job_ids = [call.kwargs["_job_id"] for call in runtime.queue.enqueue_job.call_args_list]
@@ -448,7 +449,8 @@ async def test_stale_worker_run_is_interrupted_then_requeued(settings):
     try:
         await runtime.recover_stale_runs()
         run = await runtime.db.owned_run("stale-run", "alice")
-        assert run["status"] == "interrupted"
+        assert run["status"] == "queued"
+        assert run["auto_recoveries"] == 1
         scheduled = runtime.queue.enqueue_job.call_args.kwargs
         assert scheduled["_job_id"] == "research:stale-run:2"
         assert scheduled["resume"] is True

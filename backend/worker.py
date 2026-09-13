@@ -34,7 +34,7 @@ async def ingest_document(ctx, document_id: str, trace_context: dict | None = No
 
 
 class WorkerSettings:
-    functions = [run_research, ingest_document]
+    functions = [run_research, ingest_document]  # Legacy document jobs drain from the old queue.
     on_startup = startup
     on_shutdown = shutdown
     max_jobs = 2
@@ -44,4 +44,19 @@ class WorkerSettings:
     keep_result = 0
     allow_abort_jobs = True
 
+    redis_settings = RedisSettings.from_dsn(Settings().redis_url)
+
+
+class DocumentWorkerSettings:
+    # ARQ collects class.__dict__; inherited settings are not discovered.
+    functions = [ingest_document]
+    queue_name = "arq:documents"
+    max_jobs = 1
+    on_startup = startup
+    on_shutdown = shutdown
+    job_timeout = Settings().max_run_seconds
+    max_tries = Settings().max_job_retries + 1
+    retry_jobs = False
+    keep_result = 0
+    allow_abort_jobs = True
     redis_settings = RedisSettings.from_dsn(Settings().redis_url)

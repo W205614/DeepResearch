@@ -86,7 +86,7 @@ def create_app(settings: Settings | None = None):
 
     @app.exception_handler(ServiceError)
     async def service_error(request, exc):
-        return JSONResponse({"detail": str(exc)}, status_code=503)
+        return JSONResponse({"detail": str(exc), "error": exc.detail()}, status_code=503 if exc.retryable else 422)
 
     @app.exception_handler(ConflictError)
     async def conflict_error(request, exc):
@@ -141,6 +141,10 @@ def create_app(settings: Settings | None = None):
             raise HTTPException(503, str(exc)) from None
         return {"status": "ready"}
 
+    @app.get("/api/capabilities")
+    async def capabilities(runtime=Depends(rt), user=Depends(identity)):
+        return await runtime.capabilities()
+
     @app.get("/api/workspaces")
     async def workspaces(request: Request, runtime=Depends(rt), user=Depends(identity)):
         return await runtime.db.memberships(request.state.principal.subject)
@@ -167,7 +171,8 @@ def create_app(settings: Settings | None = None):
         if workspace_id != user:
             raise HTTPException(403, "请先切换到目标工作空间")
         require_role(request, "admin")
-        await runtime.db.upsert_membership(user, body.subject, body.role)
+        async with runtime.db.guard("workspace:" + user):
+            await runtime.db.upsert_membership(user, body.subject, body.role)
         await runtime.db.audit(user, request.state.principal.subject, "membership.upsert", "member", body.subject)
         return {"ok": True}
 
@@ -355,6 +360,10 @@ def create_app(settings: Settings | None = None):
             nonlocal cursor
             ticks = 0
             while not await request.is_disconnected():
+                membership = await runtime.db.membership(user, request.state.principal.subject)
+                if not membership:
+                    yield "event: close\ndata: {}\n\n"
+                    return
                 rows = await runtime.db.rows("SELECT * FROM events WHERE run_id=? AND id>? ORDER BY id LIMIT 200", (run_id, cursor))
                 for row in rows:
                     cursor = row["id"]

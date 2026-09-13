@@ -2,7 +2,7 @@ import { accessToken, AuthExpiredError, expireSession } from './auth'
 
 export type EventItem = { id: number; type: string; created_at: string; data: Record<string, any> }
 export type Source = { id: string; kind: 'web'|'local'|'attachment'; attachment_id?:string; title: string; url: string; text: string; access: string; locator: string; published_at: string; retrieved_at: string; domain?: string; evidence_level?: string; trust_label?: string }
-export type Run = { attachments?: {id:string;name:string;media_type:string;size:number}[]; id: string; thread_id: string; topic: string; status: string; report: string; sources: Source[]; error: string; created_at: string; validation: Record<string, any>; usage: Record<string, number> }
+export type Run = { can_resume?: boolean; error_info?: {code:string;retryable:boolean;action:string}; recovery?: {auto_recoveries:number;deadline_at:number;call_attempts:number;reserved_tokens:number}; attachments?: {id:string;name:string;media_type:string;size:number}[]; id: string; thread_id: string; topic: string; status: string; report: string; sources: Source[]; error: string; created_at: string; validation: Record<string, any>; usage: Record<string, number> }
 export const terminal = (status: string) => ['completed','insufficient','failed','cancelled','interrupted'].includes(status)
 export function headers(): Record<string,string> {
   const h: Record<string,string> = {}

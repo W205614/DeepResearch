@@ -47,6 +47,7 @@ services:
       AUTH_MODE: development
       DEVELOPMENT_JWT_SECRET: verification-only-not-a-production-credential
       DEMO_MODE: 'false'
+      ALLOW_INTERNAL_MODEL_PROCESSING: 'true'
       EMBEDDING_DIMENSION: '64'
       EMBEDDING_MODEL: fixture-hash-64
       LLM_API_KEY: fixture-no-external-calls
@@ -60,6 +61,12 @@ services:
     image: deepresearch-verify
     restart: unless-stopped
     command: arq scripts.component_fixture.WorkerSettings
+    environment: *env
+    depends_on: {api: {condition: service_healthy}}
+    healthcheck: {test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8001')"], interval: 5s, timeout: 5s, retries: 30}
+  document-worker:
+    image: deepresearch-verify
+    command: arq scripts.component_fixture.DocumentWorkerSettings
     environment: *env
     depends_on: {api: {condition: service_healthy}}
     healthcheck: {test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8001')"], interval: 5s, timeout: 5s, retries: 30}

@@ -77,8 +77,9 @@ async def evaluate(case, root, live=False, external_results=None, debug_fixed_fa
             result = json.loads((Path(external_results) / (case['id'] + '.json')).read_text(encoding='utf-8'))
             run = {'id': uid()}
         else:
+            await runtime.db.ensure_personal_workspace('evaluator', 'Synthetic evaluation', (0, 2))
             run = await runtime.create('evaluator', __import__('backend.domain.models', fromlist=['RunRequest']).RunRequest(
-                topic=case['question'], mode="deep", client_request_id=uid()))
+                data_policy='public', topic=case['question'], mode="deep", client_request_id=uid()))
             await runtime.tasks[run['id']]
             result = await runtime.db.owned_run(run['id'], 'evaluator')
         report = result['report']

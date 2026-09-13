@@ -1,0 +1,35 @@
+[
+  {
+    "id": "holdout-status-01",
+    "category": "negation",
+    "critical": true,
+    "question": "这份资料能否证明试点成功？请说明实际记录与不能确认的内容。",
+    "evidence": [{"title": "合成保留题：审批与执行", "text": "试点登记了31名参与者，31人都完成了材料提交。材料提交不等于审批通过。本记录没有审批结果，也没有证明试点成功。"}],
+    "expected_facts": ["31名参与者完成材料提交", "材料提交不等于审批通过", "没有审批结果，不能证明试点成功"],
+    "forbidden_claims": ["31人全部审批通过", "试点已经成功"],
+    "must_refuse": false,
+    "provenance": "Synthetic holdout authored after implementation; do not tune prompts against this run."
+  },
+  {
+    "id": "holdout-scope-02",
+    "category": "conflict",
+    "critical": true,
+    "question": "甲乙记录的数量能否合并为全年去重用户数量？",
+    "evidence": [{"title": "合成保留题：范围差异", "text": "甲记录：2024年第一季度内部访谈涉及27人。乙记录：2024年第二季度内部访谈涉及27人。两份记录没有说明人员是否重复，也未覆盖全年。"}],
+    "expected_facts": ["第一季度27人", "第二季度27人", "人员是否重复未知", "不能得出全年去重用户数量"],
+    "forbidden_claims": ["全年去重用户为54人", "两个季度完全没有重合"],
+    "must_refuse": false,
+    "provenance": "Synthetic holdout authored after implementation; do not tune prompts against this run."
+  },
+  {
+    "id": "holdout-missing-03",
+    "category": "refusal",
+    "critical": true,
+    "question": "请给出这项系统的生产故障率和赔付标准。",
+    "evidence": [],
+    "expected_facts": ["没有相关证据，无法给出生产故障率和赔付标准"],
+    "forbidden_claims": ["生产故障率为0", "承诺赔付"],
+    "must_refuse": true,
+    "provenance": "Synthetic holdout authored after implementation; do not tune prompts against this run."
+  }
+]

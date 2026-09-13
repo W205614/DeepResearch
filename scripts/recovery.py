@@ -40,7 +40,7 @@ def backup(destination):
     # Refuse to silently interrupt user research or indexing.
     active = compose('exec', '-T', 'postgres', 'psql', '-U', 'deepresearch', '-d', 'deepresearch',
                      '-Atc', "SELECT (SELECT count(*) FROM runs WHERE status IN ('queued','running')) + "
-                     "(SELECT count(*) FROM documents WHERE status IN ('scanning','indexing'))").decode().strip()
+                     "(SELECT count(*) FROM documents WHERE status IN ('scanning','indexing','rebuilding'))").decode().strip()
     if active != '0':
         raise RuntimeError('Active research/indexing detected; retry after tasks finish')
     try:
@@ -90,12 +90,14 @@ def restore(source, project):
     for name, service in config['services'].items():
         service.pop('ports', None)
         service.pop('build', None)
-        if name in {'backend', 'worker', 'migrate', 'web'}:
-            service['image'] = 'deepresearch-' + name
-        if name in {'backend', 'worker'}:
+        if name in {'backend', 'worker', 'document-worker', 'migrate', 'web'}:
+            service['image'] = 'deepresearch-' + ('worker' if name == 'document-worker' else name)
+        if name in {'backend', 'worker', 'document-worker'}:
             service['environment']['FEISHU_WEBHOOK_URL'] = ''
             service['environment']['LLM_API_KEY'] = ''
             service['environment']['EMBEDDING_API_KEY'] = ''
+            service['environment']['BOCHA_API_KEY'] = ''
+            service['environment']['ALLOW_INTERNAL_MODEL_PROCESSING'] = 'false'
     # Use stdin configuration; expanded credentials are never written to disk.
     encoded = json.dumps(config).encode()
 
@@ -121,7 +123,10 @@ def restore(source, project):
             run(['docker', 'cp', str(source / f'{service}.dump'), container + ':/tmp/recovery.dump'])
             target('exec', '-T', service, 'pg_restore', '--exit-on-error', '--clean', '--if-exists',
                    '-U', database, '-d', database, '/tmp/recovery.dump')
-        target('up', '-d', '--wait', '--wait-timeout', '300')
+        # Restored pending jobs must not run or contact upstream providers.
+        recovery_services = [name for name in config['services']
+                             if name not in {'worker', 'document-worker'}]
+        target('up', '-d', '--wait', '--wait-timeout', '300', *recovery_services)
         target('exec', '-T', 'backend', 'python', '-c',
                "import httpx; c=httpx.Client(); assert c.get('http://backend:8000/readyz').status_code==200; "
                "assert c.get('http://backend:8000/api/metrics').status_code==401; "

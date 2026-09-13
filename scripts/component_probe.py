@@ -17,10 +17,13 @@ async def main():
     async with httpx.AsyncClient(base_url='http://api:8000', headers=headers, timeout=60) as client:
         action = sys.argv[1]
         if action == 'create':
-            response = await client.post('/api/research/runs', json={'topic': sys.argv[2], 'client_request_id': uid()})
+            response = await client.post('/api/research/runs', json={'data_policy':'public','topic': sys.argv[2], 'client_request_id': uid()})
             print(json.dumps({'http': response.status_code, 'id': response.json().get('id')}))
         elif action == 'ready':
             print(json.dumps({'http': (await client.get('/readyz')).status_code}))
+        elif action == 'capabilities':
+            response = await client.get('/api/capabilities')
+            print(json.dumps(response.json()))
         else:
             db = PostgresDatabase(settings.database_url)
             await db.init()

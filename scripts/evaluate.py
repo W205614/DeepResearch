@@ -22,7 +22,7 @@ async def main_async(args):
     try:
         for case in cases:
             started = time.perf_counter()
-            run = await runtime.create("evaluator", RunRequest(topic=case["topic"], mode=case.get("mode", "auto"),
+            run = await runtime.create("evaluator", RunRequest(data_policy="public" if case.get("expected_sources", 0) else "internal", topic=case["topic"], mode=case.get("mode", "auto"),
                 client_request_id=uid()))
             await runtime.tasks[run["id"]]
             result = await runtime.db.owned_run(run["id"], "evaluator")

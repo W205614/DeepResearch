@@ -5,6 +5,8 @@ import json
 import math
 import re
 import time
+import random
+from email.utils import parsedate_to_datetime
 from typing import TypeVar
 
 import httpx
@@ -14,12 +16,9 @@ from ..core.config import Settings, endpoint
 from ..core.db import Database
 from ..core.metrics import LLM_CALLS, SEARCHES, TOKENS
 from ..core.observability import error_category, get_task_logger, run_label, tracer
+from ..core.reliability import ServiceError, execution, check_execution, fingerprint, estimate_tokens
 
 T = TypeVar("T", bound=BaseModel)
-
-
-class ServiceError(Exception):
-    pass
 
 
 class SearchResults(list):
@@ -73,29 +72,103 @@ class Providers:
     async def close(self):
         await self.client.aclose()
 
+    def context_cost(self, payload):
+        images = 0
+        def scrub(value):
+            nonlocal images
+            if isinstance(value, dict):
+                if value.get("type") == "image_url":
+                    images += 1
+                    return {"type": "image"}
+                return {k: scrub(v) for k, v in value.items()}
+            if isinstance(value, list):
+                return [scrub(item) for item in value]
+            return value
+        tokens = estimate_tokens(scrub(payload)) + images * self.settings.vision_image_token_reserve
+        reserve = int(payload.get("max_tokens", payload.get("max_output_tokens", 0)))
+        limit = self.settings.vision_context_tokens if images else self.settings.llm_context_tokens
+        if tokens + reserve + self.settings.context_safety_tokens > limit:
+            raise ServiceError("问题和引用资料超过模型上下文预算，请按研究问题拆分后重试",
+                               code="context_too_large", retryable=False, action="缩小问题或拆分资料")
+        return tokens + reserve
+
+    async def provider_available(self, key, *, probe=False):
+        async with self.db.guard("provider:" + key):
+            row = await self.db.one("SELECT * FROM provider_health WHERE id=?", (key,))
+            if row and (row["blocked"] or row["open_until"] > time.time() or row["probe_until"] > time.time()):
+                raise ServiceError("模型服务暂时停止调用，请联系管理员或等待恢复", code="provider_blocked" if row["blocked"] else "circuit_open",
+                                   retryable=not bool(row["blocked"]))
+            if probe and row and row["failures"]:
+                await self.db.execute("UPDATE provider_health SET probe_until=? WHERE id=?",
+                                      (time.time() + 3 * self.settings.request_timeout_seconds + 2 * self.settings.provider_cooldown_seconds + 10, key))
+
+    async def provider_failure(self, key, *, blocked=False, cooldown=None):
+        await self.db.execute("""INSERT INTO provider_health(id,failures,open_until,blocked) VALUES(?,1,?,?)
+            ON CONFLICT(id) DO UPDATE SET failures=provider_health.failures+1,
+            open_until=EXCLUDED.open_until,blocked=EXCLUDED.blocked,probe_until=0""",
+            (key, time.time() + (cooldown or self.settings.provider_cooldown_seconds), int(blocked)))
+
     async def post(self, url, key, payload, label, retries=2):
         if not key:
-            raise ServiceError(f"{label} 未配置 API 密钥")
+            raise ServiceError(f"{label} 未配置 API 密钥", code="provider_configuration", retryable=False)
+        cost = self.context_cost(payload)
+        started = time.time()
+        provider_key = fingerprint([url, key, payload.get("model")])
+        await self.provider_available(provider_key, probe=True)
         for attempt in range(retries + 1):
+            ctx = execution.get()
+            row = await check_execution()
+            if row and (row["data_policy"] == "restricted" or
+                        (row["data_policy"] == "internal" and not self.settings.allow_internal_model_processing)):
+                raise ServiceError("资料外发未获管理员配置许可", code="egress_denied", retryable=False)
+            call_id = await ctx.reserve(cost) if ctx else None
+            delay = random.uniform(0.25, 0.5 * 2 ** attempt)
             try:
-                response = await self.client.post(url, headers={"Authorization": f"Bearer {key}"}, json=payload)
+                async with asyncio.timeout(self.settings.request_timeout_seconds):
+                    response = await self.client.post(url, headers={"Authorization": f"Bearer {key}"}, json=payload)
+                if call_id:
+                    await self.db.execute("UPDATE call_attempts SET outcome=? WHERE id=?", (f"http_{response.status_code}", call_id))
+                await check_execution()
                 if response.status_code in {429, 500, 502, 503, 504} and attempt < retries:
-                    await asyncio.sleep(0.5 * 2 ** attempt)
+                    retry_after = response.headers.get("Retry-After", "")
+                    try:
+                        delay = max(delay, float(retry_after) if retry_after.strip().isdigit() else
+                                    parsedate_to_datetime(retry_after).timestamp() - time.time())
+                    except (ValueError, TypeError, OverflowError):
+                        pass
+                    if not math.isfinite(delay) or delay > self.settings.provider_cooldown_seconds or (row and time.time() + delay >= row["deadline_at"]):
+                        await self.provider_failure(provider_key, cooldown=min(delay, 86400) if math.isfinite(delay) else 300)
+                        raise ServiceError("服务限流等待超过本次调用预算", code="rate_limited", retryable=True)
+                    await asyncio.sleep(delay)
                     continue
                 if response.is_error:
                     hint = {401: "API 身份验证失败，请检查密钥", 403: "API 无访问权限，请检查授权",
                             402: "API 账户余额不足或付款失败，请检查服务账户",
                             429: "API 限流，请稍后重试", 400: "请求格式或模型参数不兼容，请检查配置"}.get(
                                 response.status_code, "外部服务请求失败，请稍后重试或检查接口配置")
-                    raise ServiceError(f"{label}：{hint}（HTTP {response.status_code}）")
+                    blocked = response.status_code in {401, 402, 403}
+                    if blocked or response.status_code in {429, 500, 502, 503, 504}:
+                        await self.provider_failure(provider_key, blocked=blocked)
+                    code = "provider_configuration" if blocked else "context_too_large" if response.status_code == 413 else "provider_request" if response.status_code == 400 else "provider_unavailable"
+                    raise ServiceError(f"{label}：{hint}（HTTP {response.status_code}）", code=code,
+                                       retryable=response.status_code in {429, 500, 502, 503, 504})
                 result = response.json()
                 if not isinstance(result, dict):
                     raise ValueError("not object")
+                await self.db.execute("DELETE FROM provider_health WHERE id=? AND blocked=0 AND open_until<=?", (provider_key, started))
                 return result
-            except (httpx.TimeoutException, httpx.NetworkError):
+            except (httpx.TimeoutException, httpx.NetworkError, TimeoutError) as exc:
+                unknown = not isinstance(exc, (httpx.ConnectTimeout, httpx.ConnectError, httpx.PoolTimeout))
+                if call_id:
+                    await self.db.execute("UPDATE call_attempts SET outcome=? WHERE id=?", ("unknown" if unknown else "not_connected", call_id))
                 if attempt == retries:
-                    raise ServiceError(f"{label} 连接超时或网络不可用") from None
-                await asyncio.sleep(0.5 * 2 ** attempt)
+                    await self.provider_failure(provider_key)
+                    raise ServiceError(f"{label} 连接超时或网络不可用", code="upstream_unknown" if unknown else "connection_failed", result_unknown=unknown) from None
+                await asyncio.sleep(delay)
+            except asyncio.CancelledError:
+                if call_id:
+                    await self.db.execute("UPDATE call_attempts SET outcome='unknown' WHERE id=?", (call_id,))
+                raise
             except (ValueError, httpx.RemoteProtocolError):
                 raise ServiceError(f"{label} 返回了无法解析的响应") from None
 
@@ -344,6 +417,9 @@ class Providers:
         return output
 
     async def search(self, query: str, run_id: str) -> list[dict]:
+        row = await self.db.one("SELECT data_policy FROM runs WHERE id=?", (run_id,))
+        if row and row["data_policy"] != "public":
+            return SearchResults(outcome="policy_blocked")
         cached = await self.db.one("SELECT result FROM search_cache WHERE run_id=? AND query=?", (run_id, query))
         if cached:
             rows = json.loads(cached["result"])

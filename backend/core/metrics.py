@@ -26,6 +26,11 @@ VISION_SECONDS = Histogram("deepresearch_vision_duration_seconds", "Vision reque
 VISION_TOKENS = Counter("deepresearch_vision_tokens_total", "Reported vision token usage", ["kind"])
 RETRIEVAL_OUTCOMES = Counter("deepresearch_retrieval_outcomes_total", "Retrieval outcomes", ["source", "outcome"])
 FALLBACKS = Counter("deepresearch_fallbacks_total", "Evidence fallback reasons", ["reason"])
+RESULT_QUALITY = Counter("deepresearch_result_quality_total", "Delivered result quality", ["quality"])
+QUEUE_AGE = Gauge("deepresearch_oldest_queued_seconds", "Age of oldest queued research")
+DISK_FREE = Gauge("deepresearch_data_disk_free_bytes", "Free bytes on runtime data filesystem")
+HEARTBEAT_LAG = Gauge("deepresearch_heartbeat_lag_seconds", "Worst persisted worker heartbeat lag")
+PROVIDER_BLOCKED = Gauge("deepresearch_blocked_providers", "Providers blocked or cooling down")
 for _outcome in ("success", "error"):
     VISION_CALLS.labels(outcome=_outcome)
 for _kind in ("prompt", "completion"):

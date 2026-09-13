@@ -50,7 +50,7 @@ def test_docx_headings_and_semantic_chunks_are_preserved():
 
 async def test_export_and_confirmed_data_cleanup(api_client):
     app, client = api_client
-    created = (await client.post("/api/research/runs", json={"topic": "研究流程", "client_request_id": "export001"})).json()
+    created = (await client.post("/api/research/runs", json={"data_policy":"public","topic": "研究流程", "client_request_id": "export001"})).json()
     await app.state.runtime.tasks[created["id"]]
     assert (await client.post(f"/api/research/runs/{created['id']}/memory")).status_code == 201
     exported = await client.get("/api/data/export")

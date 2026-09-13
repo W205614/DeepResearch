@@ -21,7 +21,7 @@ async def app_client(settings):
 
 async def test_api_isolation_sse_replay_and_download(app_client):
     app, client = app_client
-    response = await client.post('/api/research/runs',json={"topic":"研究流程","client_request_id":uid()})
+    response = await client.post('/api/research/runs',json={"data_policy":"public","topic":"研究流程","client_request_id":uid()})
     assert response.status_code == 202
     run = response.json()
     await app.state.runtime.tasks[run['id']]
@@ -41,7 +41,7 @@ async def test_api_isolation_sse_replay_and_download(app_client):
 
 async def test_delete_thread_removes_its_runs_events_and_checkpoints(app_client):
     app, client = app_client
-    run = (await client.post('/api/research/runs', json={"topic":"删除会话测试", "client_request_id":uid()})).json()
+    run = (await client.post('/api/research/runs', json={"data_policy":"public","topic":"删除会话测试", "client_request_id":uid()})).json()
     await app.state.runtime.tasks[run['id']]
     await app.state.runtime.save_run_memory(run['id'], 'alice')
     assert await app.state.runtime.db.one("SELECT id FROM memories WHERE run_id=?", (run['id'],))
@@ -79,13 +79,13 @@ async def test_report_purge_removes_runs_events_dead_letters_and_checkpoints(app
 
 async def test_thread_keys_are_short_per_user_and_resolve_in_routes(app_client):
     app, client = app_client
-    first = (await client.post('/api/research/runs', json={"topic":"短会话标识", "client_request_id":uid()})).json()
+    first = (await client.post('/api/research/runs', json={"data_policy":"public","topic":"短会话标识", "client_request_id":uid()})).json()
     await app.state.runtime.tasks[first['id']]
     threads = (await client.get('/api/threads')).json()
     assert threads[0]['thread_key'] == 'thread01'
     assert len((await client.get('/api/threads/thread01/runs')).json()) == 1
 
-    second = (await client.post('/api/research/runs', json={"topic":"另一用户", "client_request_id":uid()}, headers={"X-User-ID":"user01"})).json()
+    second = (await client.post('/api/research/runs', json={"data_policy":"public","topic":"另一用户", "client_request_id":uid()}, headers={"X-User-ID":"user01"})).json()
     await app.state.runtime.tasks[second['id']]
     other = (await client.get('/api/threads', headers={"X-User-ID":"user01"})).json()
     assert other[0]['thread_key'] == 'thread01'
@@ -99,7 +99,7 @@ async def test_document_import_retrieval_deletion(app_client):
     doc_id = response.json()['id']
     for _ in range(30):
         docs = (await client.get('/api/documents')).json()
-        if docs and docs[0]['status'] != 'indexing':
+        if docs and docs[0]['status'] not in {'indexing','rebuilding'}:
             break
         await asyncio.sleep(.02)
     assert docs[0]['status'] == 'ready'
@@ -112,7 +112,7 @@ async def test_document_import_retrieval_deletion(app_client):
     assert (await client.post(f'/api/documents/{doc_id}/reindex')).status_code == 202
     for _ in range(30):
         docs = (await client.get('/api/documents')).json()
-        if docs[0]['status'] != 'indexing':
+        if docs[0]['status'] not in {'indexing','rebuilding'}:
             break
         await asyncio.sleep(.02)
     assert docs[0]['status'] == 'ready'

@@ -187,7 +187,7 @@ async def test_validator_batches_many_claims_without_losing_full_sources(runtime
     sources = {f'L{i}': {'id': f'L{i}', 'kind': 'local', 'text': 'Enterprise evidence. ' * 500,
                          'url': '', 'access': 'document'} for i in range(24)}
     draft = ReportDraft.model_validate({'title': 'Research', 'sections': [
-        {'heading': f'Section {part}', 'claims': [{'text': 'Enterprise evidence.', 'source_ids': [f'L{i}']} for i in range(part * 12, (part + 1) * 12)]} for part in range(2)]})
+        {'heading': f'Section {part}', 'claims': [{'text': '根据所提供资料，Enterprise evidence.', 'source_ids': [f'L{i}']} for i in range(part * 12, (part + 1) * 12)]} for part in range(2)]})
     seen, sizes = [], []
     async def verify(role, instruction, data, schema, run_id):
         assert role == 'validator'

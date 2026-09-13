@@ -1,0 +1,33 @@
+{
+  "core_ready": true,
+  "anonymous_capabilities_denied": true,
+  "internal_model_processing": false,
+  "scrape_targets": {
+    "deepresearch-api": "up",
+    "deepresearch-document-worker": "up",
+    "deepresearch-worker": "up"
+  },
+  "loaded_alert_rules": 9,
+  "migration": "0008_reliability",
+  "passed": true,
+  "scope": "current single-host deployment; no external alert delivery tested",
+  "cold_restore": {
+    "passed": true,
+    "project": "dr-restore-local-pilot-20260913",
+    "volumes_verified": 11,
+    "rto_seconds": 129.89,
+    "retrieval": {
+      "nonempty_collections_searched": 2,
+      "results_checked": 2
+    },
+    "checks": [
+      "all archived files match",
+      "both SQL dumps restored with exit-on-error",
+      "readyz",
+      "anonymous 401",
+      "OIDC discovery",
+      "Milvus search"
+    ]
+  },
+  "boundary": "Single-host cold restore; no independent-host recovery or outbound alert delivery verified"
+}

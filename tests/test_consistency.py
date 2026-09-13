@@ -14,7 +14,7 @@ async def test_search_fallback_reserves_another_attempt(runtime, monkeypatch):
         pass
     monkeypatch.setattr(runtime, 'schedule', hold)
     await runtime.db.ensure_personal_workspace('alice', 'Test', (2, 5))
-    run = await runtime.create('alice', RunRequest(topic='search quota', client_request_id=uid()))
+    run = await runtime.create('alice', RunRequest(data_policy="public", topic='search quota', client_request_id=uid()))
     runtime.settings.max_search_calls = 2
     runtime.settings.demo_mode = False
     runtime.settings.web_search_provider = 'auto'

@@ -1,0 +1,64 @@
+{
+  "scope": "internal pilot working-tree acceptance; not production SLA or human review",
+  "backend": {
+    "passed": 195,
+    "skipped": 4,
+    "rag_reliability_regression_passed": 37,
+    "final_gateway_reliability_regression_passed": 36,
+    "regression_boundary": "Overlapping targeted suites; final gateway timeout refinements were validated after the full suite. Counts are not additive."
+  },
+  "frontend": {
+    "unit_passed": 12,
+    "browser_fixture_passed": 1,
+    "build": "passed"
+  },
+  "components": {
+    "integration": "passed",
+    "worker_recovery_seconds": 53.84,
+    "redis_delivery_recovered": true,
+    "milvus_readiness_recovered": true,
+    "passed": true
+  },
+  "logical_recovery": {
+    "passed": true,
+    "scope": "isolated logical SQL and object restore; not full host disaster recovery",
+    "tables_checked": 5,
+    "restored_objects_checked": 2,
+    "seconds": 11.53
+  },
+  "real_fixed_research": {
+    "case_count": 30,
+    "passed_count": 30,
+    "pass_rate": 1.0,
+    "citation_support": 1.0,
+    "answer_coverage": 1.0,
+    "critical_failures": [],
+    "passed": true
+  },
+  "real_answer": {
+    "case_count": 10,
+    "passed_count": 10,
+    "score": 1.0,
+    "minimum_score": 0.85,
+    "critical_failures": [],
+    "passed": true
+  },
+  "real_holdout": {
+    "case_count": 3,
+    "passed_count": 3,
+    "pass_rate": 1.0,
+    "citation_support": 1.0,
+    "answer_coverage": 1.0,
+    "critical_failures": [],
+    "passed": true
+  },
+  "real_research_claims": 415,
+  "boundary": "Model runs used fixed synthetic evidence and same-model external scoring. Local source safeguards, worker and UI refinements followed those model runs; final offline/component checks cover those refinements. No immutable execution snapshot was captured for model runs.",
+  "external_pending": [
+    "independent-host backup destination",
+    "external monitoring schedule",
+    "human blind review",
+    "whole-host disaster recovery",
+    "business owner and on-call assignment"
+  ]
+}

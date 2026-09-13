@@ -24,6 +24,10 @@ from ..core.observability import configure_task_logger, error_category, inject_t
 from ..core.metrics import DLQ_DEPTH, DLQ_EVENTS, FAILURES, QUEUE_DEPTH, RUNS, RUN_SECONDS, FALLBACKS
 from ..infrastructure.providers import Providers, ServiceError
 from ..infrastructure.vectors import VectorIndex
+from ..core.reliability import Execution, execution, quality, ServiceError as ReliabilityError
+from ..core.checkpoints import FencedCheckpointer
+from ..core.consistency import affected
+from ..research.source_validity import validate_sources
 
 TERMINAL = {"completed", "insufficient", "failed", "cancelled", "interrupted"}
 RUN_HEARTBEAT_SECONDS = 10
@@ -41,6 +45,7 @@ class Runtime:
             raise RuntimeError("DATABASE_URL is required outside isolated offline tests")
         settings.prepare()
         self.db = PostgresDatabase(settings.database_url) if settings.database_url else Database(settings.data_dir / "research.sqlite3")
+        self.db.reliability_settings = settings
         self.providers = Providers(settings, self.db)
         self.vectors = VectorIndex(settings, self.db)
         self.documents = Documents(settings, self.db, self.providers, self.vectors)
@@ -59,8 +64,11 @@ class Runtime:
         self.recovery_task = None
     async def start(self):
         await self.db.init()
-        await self.documents.start()
-        await self.attachments.cleanup()
+        try:
+            await self.documents.start()
+            await self.attachments.cleanup()
+        except Exception:
+            self.logger.warning("component=object_store phase=degraded_start")
         self.attachment_cleanup_task = asyncio.create_task(self.cleanup_attachments_loop())
         if self.settings.database_url:
             # Workers can resume a run started by another replica, so checkpoints
@@ -81,16 +89,26 @@ class Runtime:
             self.checkpointer = await self.stack.enter_async_context(
                 AsyncSqliteSaver.from_conn_string(str(self.settings.data_dir / "checkpoints.sqlite3")))
             await self.checkpointer.setup()
+        self.checkpointer = FencedCheckpointer(self.checkpointer)
         self.graph = ResearchGraph(self.settings, self.db, self.providers, self.vectors, self.documents).build(self.checkpointer)
         if not self.worker_mode:
             if self.settings.queue_backend == "redis":
-                from arq import create_pool
-                from arq.connections import RedisSettings
-                self.queue = await create_pool(RedisSettings.from_dsn(self.settings.redis_url))
+                await self.connect_queue()
                 await self.recover_queued_runs()
                 self.recovery_task = asyncio.create_task(self.recover_stale_runs_loop(), name="run-recovery")
             await self.recover_indexing_documents()
         return self
+
+    async def connect_queue(self):
+        if self.queue is None:
+            from arq import create_pool
+            from arq.connections import RedisSettings
+            config = RedisSettings.from_dsn(self.settings.redis_url)
+            config.conn_retries = 0
+            try:
+                self.queue = await create_pool(config)
+            except Exception:
+                self.logger.warning("component=queue phase=degraded_start")
 
     async def cleanup_attachments_loop(self):
         while True:
@@ -123,12 +141,14 @@ class Runtime:
             await self.queue.aclose()
     async def schedule_document(self, document_id: str) -> None:
         key = f"document:{document_id}"
+        if self.settings.queue_backend == "redis" and not self.queue:
+            return
         if self.queue:
             document = await self.db.one("SELECT index_version FROM documents WHERE id=?", (document_id,))
             if document:
                 try:
                     await self.queue.enqueue_job("ingest_document", document_id, trace_context=inject_trace_context(),
-                                                 _job_id=f"{key}:{document['index_version']}")
+                                                 _job_id=f"{key}:{document['index_version']}", _queue_name="arq:documents")
                 except Exception:
                     self.logger.warning("phase=document_delivery_pending")
             return
@@ -186,6 +206,8 @@ class Runtime:
                 await self.db.execute("DELETE FROM events WHERE run_id=?", (run_id,))
                 await self.db.execute("DELETE FROM counters WHERE run_id=?", (run_id,))
                 await self.db.execute("DELETE FROM search_cache WHERE run_id=?", (run_id,))
+                await self.db.execute("DELETE FROM verified_claims WHERE run_id=?", (run_id,))
+                await self.db.execute("DELETE FROM call_attempts WHERE run_id=?", (run_id,))
             await self.db.execute("DELETE FROM runs WHERE thread_id=? AND user_id=?", (thread_id, user))
             await self.db.execute("DELETE FROM threads WHERE id=? AND user_id=?", (thread_id, user))
         await self.attachments.cleanup()
@@ -193,17 +215,28 @@ class Runtime:
 
     async def create(self, user, request, actor_subject: str | None = None):
         actor_subject = actor_subject or user
-        async with self.lock, self.db.guard("workspace:" + user):
-            previous = await self.db.one("SELECT id,topic,mode,thread_id FROM runs WHERE user_id=? AND client_request_id=?",
+        async with self.lock, self.db.guard("admission"), self.db.guard("workspace:" + user):
+            previous = await self.db.one("SELECT id,topic,mode,thread_id,data_policy FROM runs WHERE user_id=? AND client_request_id=?",
                                          (user, request.client_request_id))
             if previous:
                 thread = await self.find_thread(request.thread_id, user) if request.thread_id else None
                 attached = await self.attachments.for_run(previous["id"])
                 if ([item["id"] for item in attached] != request.attachment_ids
-                        or previous["topic"] != request.topic or previous["mode"] != request.mode
+                        or previous["topic"] != request.topic or previous["mode"] != request.mode or previous["data_policy"] != request.data_policy
                         or (request.thread_id and (not thread or thread["id"] != previous["thread_id"]))):
                     raise ConflictError("同一个请求编号不能提交不同内容")
                 return await self.db.owned_run(previous["id"], user)
+            if request.data_policy == "restricted" or (request.data_policy == "internal" and
+                    not self.settings.demo_mode and not self.settings.allow_internal_model_processing):
+                raise ReliabilityError("内部资料尚未获准由已配置模型处理；敏感资料禁止外发", code="egress_denied", retryable=False)
+            if not self.settings.demo_mode:
+                from ..core.reliability import fingerprint
+                from ..core.config import endpoint
+                await self.providers.provider_available(fingerprint([endpoint(self.settings.llm_base_url, "chat/completions"),
+                    self.settings.llm_api_key.get_secret_value(), self.settings.llm_model_id]))
+            waiting = await self.db.one("SELECT COUNT(*) AS total FROM runs WHERE status IN ('queued','interrupted')")
+            if waiting["total"] >= self.settings.max_queued_runs:
+                raise ReliabilityError("待处理任务已满，请稍后提交", code="queue_full")
             await self.attachments.staged(request.attachment_ids, user, actor_subject)
             limits = await self.db.workspace_limits(user)
             if limits:
@@ -222,9 +255,10 @@ class Runtime:
             try:
                 async with self.db.connection() as conn:
                     await conn.execute("""INSERT INTO runs(
-                        id,user_id,thread_id,topic,mode,status,created_at,updated_at,client_request_id,created_by)
-                        VALUES(?,?,?,?,?,'queued',?,?,?,?)""", (run_id, user, thread_id, request.topic, request.mode,
-                                                            stamp, stamp, request.client_request_id, actor_subject))
+                        id,user_id,thread_id,topic,mode,status,created_at,updated_at,client_request_id,created_by,data_policy,deadline_at)
+                        VALUES(?,?,?,?,?,'queued',?,?,?,?,?,?)""", (run_id, user, thread_id, request.topic, request.mode,
+                                                            stamp, stamp, request.client_request_id, actor_subject, request.data_policy,
+                                                            time.time() + self.settings.max_run_total_seconds))
                     for position, image_id in enumerate(request.attachment_ids):
                         await conn.execute("UPDATE attachments SET run_id=?,position=? WHERE id=?", (run_id, position, image_id))
                     await conn.commit()
@@ -237,6 +271,8 @@ class Runtime:
 
     async def schedule(self, run_id, resume=False):
         self.logger.info("run=%s phase=scheduled resume=%s", run_label(run_id), resume)
+        if self.settings.queue_backend == "redis" and not self.queue:
+            return
         if self.queue:
             run = await self.db.one("SELECT attempt_count FROM runs WHERE id=?", (run_id,))
             if not run:
@@ -258,6 +294,9 @@ class Runtime:
         return f"research:{run_id}:{max(1, number)}"
 
     async def context(self, run):
+        if run.get("data_policy") == "public":
+            # Public search must never inherit private thread reports or memories.
+            return ""
         owner_subject = run.get("created_by") or run["user_id"]
         preferences = await self.db.rows("""SELECT content FROM memories
             WHERE owner_subject=? AND kind='preference' ORDER BY created_at DESC LIMIT 20""", (owner_subject,))
@@ -321,22 +360,32 @@ class Runtime:
         started = time.monotonic()
         heartbeat = None
         attempt = None
+        context_token = None
         try:
             async with self.gate:
                 eligible = "('queued','interrupted')" if resume else "('queued')"
-                claimed = await self.db.execute(f"""UPDATE runs SET status='running',updated_at=?,error='',
-                    attempt_count=attempt_count+1,last_attempt_at=? WHERE id=? AND status IN {eligible}""",
-                                                (now(), now(), run_id))
+                async with self.db.guard("execution:" + run_id):
+                    prior = await self.db.one("SELECT * FROM runs WHERE id=?", (run_id,))
+                    if not prior:
+                        return
+                    if prior["deadline_at"] and prior["deadline_at"] <= time.time():
+                        await self.exhaust(run_id)
+                        return
+                    claimed = await self.db.execute(f"""UPDATE runs SET status='running',updated_at=?,error='',error_info='{{}}',
+                        deadline_at=CASE WHEN deadline_at=0 THEN ? ELSE deadline_at END,
+                        attempt_count=attempt_count+1,last_attempt_at=? WHERE id=? AND status IN {eligible}""",
+                        (now(), time.time() + self.settings.max_run_total_seconds, now(), run_id))
                 if not claimed:
                     return
                 run = await self.db.one("SELECT * FROM runs WHERE id=?", (run_id,))
                 self.logger.info("run=%s phase=started mode=%s resumed=%s", run_label(run_id), run["mode"], resume)
                 attempt = run["attempt_count"]
-                heartbeat = asyncio.create_task(self.heartbeat(run_id, attempt), name=f"heartbeat-{run_id}")
+                context_token = execution.set(Execution(self.db, self.settings, run_id, attempt))
+                heartbeat = asyncio.create_task(self.heartbeat(run_id, attempt, asyncio.current_task()), name=f"heartbeat-{run_id}")
                 await self.refresh_queue_depth()
                 await self.db.event(run_id, "running", {"resumed": resume})
                 config = {"configurable": {"thread_id": run_id}, "recursion_limit": 80}
-                async with asyncio.timeout(self.settings.max_run_seconds):
+                async with asyncio.timeout(min(self.settings.max_run_seconds, max(0.01, run["deadline_at"] - time.time()))):
                     initial = None
                     checkpoint = await self.graph.aget_state(config) if resume else None
                     if not resume or not checkpoint.values:
@@ -346,8 +395,13 @@ class Runtime:
                                    "attachment_ids": [item["id"] for item in await self.attachments.for_run(run_id)],
                                    "context": await self.context(run)}
                     result = await self.graph.ainvoke(initial, config)
+                    await execution.get().check()
+                    if not self.settings.demo_mode:
+                        await validate_sources(self.db, run["user_id"], result.get("evidence", []))
                     report = result.get("report", "")
                     validation = result.get("validation", {})
+                    validation["quality"] = quality(validation)
+                    from ..core.metrics import RESULT_QUALITY
                     outcomes = result.get("web_outcomes", []) + result.get("local_outcomes", [])
                     reasons = list(validation.get("reasons", []))
                     reasons += sorted({item["outcome"] for item in outcomes if item["outcome"] in {"empty", "error", "search_limit_reached", "invalid_records", "vector_unavailable"}})
@@ -360,12 +414,22 @@ class Runtime:
                                 "insufficient_evidence": "证据不足，请补充资料或调整问题", "image_unreadable": "图片无法清晰识别，请补充清晰图片"}
                     if reasons:
                         report += "\n\n> " + "；".join(messages[key] for key in validation["reasons"] if key in messages)
-                    completed = await self.db.execute("""UPDATE runs SET status=?,updated_at=?,report=?,sources=?,validation=?,error=?
-                        WHERE id=? AND status='running' AND attempt_count=?""", (status, now(), report,
-                                                              json.dumps(result.get("evidence", []), ensure_ascii=False),
-                                                              json.dumps(validation, ensure_ascii=False), "检索服务暂不可用，请重试或检查服务配置" if status == "failed" else "", run_id, attempt))
-                    if not completed:
+                    async with self.db.guard("workspace:" + run["user_id"]), self.db.guard("documents:" + run["user_id"]), self.db.guard("execution:" + run_id):
+                        await execution.get().check()
+                        if not self.settings.demo_mode:
+                            await validate_sources(self.db, run["user_id"], result.get("evidence", []))
+                        async with self.db.connection() as conn:
+                            completed = await conn.execute("""UPDATE runs SET status=?,updated_at=?,report=?,sources=?,validation=?,error=?
+                            WHERE id=? AND status='running' AND attempt_count=?""", (status, now(), report,
+                                                                  json.dumps(result.get("evidence", []), ensure_ascii=False),
+                                                                  json.dumps(validation, ensure_ascii=False), "检索服务暂不可用，请重试或检查服务配置" if status == "failed" else "", run_id, attempt))
+                            if affected(completed):
+                                await conn.execute("INSERT INTO events(run_id,type,data,created_at) VALUES(?,?,?,?)",
+                                                   (run_id, "done", json.dumps({"status": status}), now()))
+                            await conn.commit()
+                    if not affected(completed):
                         return
+                    RESULT_QUALITY.labels(quality=validation["quality"]).inc()
                     for reason in validation["reasons"]:
                         FALLBACKS.labels(reason=reason).inc()
                     await self.db.event(run_id, "result_status", {"status": status, "reasons": validation["reasons"]})
@@ -379,7 +443,6 @@ class Runtime:
                     if recovered:
                         DLQ_EVENTS.labels(action="recovered", category=dead_letter["category"]).inc()
                         await self.refresh_dead_letter_depth()
-                    await self.db.event(run_id, "done", {"status": status})
                     usage = await self.db.one("SELECT llm_calls,search_calls FROM counters WHERE run_id=?", (run_id,)) or {}
                     RUNS.labels(status=status).inc()
                     RUN_SECONDS.observe(time.monotonic() - started)
@@ -398,24 +461,40 @@ class Runtime:
                 self.logger.warning("run=%s phase=cancelled status=%s", run_label(run_id), status)
         except TimeoutError:
             self.logger.error("run=%s phase=failed category=timeout", run_label(run_id))
-            await self.fail(run_id, "达到任务时限，已停止外部调用；可从检查点继续", "interrupted", "timeout", attempt=attempt)
+            await self.fail(run_id, "本次执行达到时限；已停止后续调用，上游请求结果可能未知", "interrupted", "timeout", attempt=attempt)
         except Exception as exc:
             FAILURES.labels(category=error_category(exc)).inc()
             RUNS.labels(status="failed").inc()
             RUN_SECONDS.observe(time.monotonic() - started)
             self.logger.error("run=%s phase=failed category=%s", run_label(run_id), error_category(exc))
-            await self.fail(run_id, str(exc) if isinstance(exc, ServiceError) else "研究执行失败，请检查服务配置或重试", category=error_category(exc), attempt=attempt)
+            if not isinstance(exc, ReliabilityError) or exc.code != "execution_lost":
+                await self.fail(run_id, str(exc) if isinstance(exc, ServiceError) else "研究执行失败，请检查服务配置或重试", category=error_category(exc), attempt=attempt,
+                                detail=exc.detail() if isinstance(exc, ReliabilityError) else None)
         finally:
             if heartbeat:
                 heartbeat.cancel()
                 await asyncio.gather(heartbeat, return_exceptions=True)
+            if context_token is not None:
+                execution.reset(context_token)
 
-    async def fail(self, run_id, message, status="failed", category="runtime_failure", attempt=None):
-        changed = await self.db.execute("UPDATE runs SET status=?,error=?,updated_at=? WHERE id=? AND status='running'"
+    async def fail(self, run_id, message, status="failed", category="runtime_failure", attempt=None, detail=None):
+        detail = detail or {"code": category, "retryable": True, "action": "恢复后继续", "result_unknown": category == "timeout"}
+        report, sources = "", []
+        if detail.get("code") not in {"permission_revoked", "source_changed", "egress_denied", "execution_lost"}:
+            report, sources = await self.partial_report(run_id)
+        validation = {"quality": "partial" if sources else "unverified", "verification_pending": True,
+                      "kind": "research", "reasons": [detail["code"]]}
+        async with self.db.connection() as conn:
+            changed = await conn.execute("UPDATE runs SET status=?,error=?,updated_at=?,error_info=?,report=?,sources=?,validation=? WHERE id=? AND status='running'"
                                         + (" AND attempt_count=?" if attempt is not None else ""),
-                                        (status, message, now(), run_id) + ((attempt,) if attempt is not None else ()))
+                                        (status, message, now(), json.dumps(detail, ensure_ascii=False), report,
+                                         json.dumps(sources, ensure_ascii=False), json.dumps(validation, ensure_ascii=False), run_id) + ((attempt,) if attempt is not None else ()))
+            if affected(changed):
+                await conn.execute("INSERT INTO events(run_id,type,data,created_at) VALUES(?,?,?,?)",
+                                   (run_id, "error", json.dumps({"message": message, "status": status}), now()))
+            await conn.commit()
+        changed = affected(changed)
         if changed:
-            await self.db.event(run_id, "error", {"message": message, "status": status})
             if status == "failed":
                 run = await self.db.one("SELECT user_id FROM runs WHERE id=?", (run_id,))
                 await self.db.execute("DELETE FROM dead_letter_runs WHERE run_id=?", (run_id,))
@@ -424,12 +503,41 @@ class Runtime:
                 await self.refresh_dead_letter_depth()
         await self.refresh_queue_depth()
 
+    async def partial_report(self, run_id):
+        from ..research.graph import supported_indices, md_text
+        from ..domain.models import Verification
+        run = await self.db.one("SELECT * FROM runs WHERE id=?", (run_id,))
+        if not run:
+            return "", []
+        claims, sources = {}, {}
+        for row in await self.db.rows("SELECT result FROM verified_claims WHERE run_id=?", (run_id,)):
+            data = json.loads(row["result"])
+            verdict = Verification.model_validate(data["verdict"])
+            inputs = {item["index"]: item for item in data["input"]["claims"]}
+            approved = supported_indices(verdict, set(inputs))
+            for index in approved:
+                claim = inputs[index]
+                cited = [data["input"]["sources"][key] for key in claim["source_ids"]]
+                try:
+                    if not self.settings.demo_mode:
+                        await validate_sources(self.db, run["user_id"], cited)
+                except ServiceError:
+                    continue
+                claims[claim["text"]] = claim["source_ids"]
+                sources.update({item["id"]: item for item in cited})
+        if not claims:
+            return "", []
+        report = "# 已核验的部分结果\n\n其余内容尚未完成核验；以下不构成完整研究报告。\n\n"
+        report += "\n\n".join(md_text(text) + " " + " ".join(f"[{key}]" for key in ids) for text, ids in claims.items())
+        return report, list(sources.values())
+
     async def dead_letters(self, user):
         rows = await self.db.rows("""SELECT d.run_id,d.category,d.message,d.failed_at,d.recovered_at,r.status
             FROM dead_letter_runs d JOIN runs r ON r.id=d.run_id AND r.user_id=d.user_id
             WHERE d.user_id=? ORDER BY d.failed_at DESC""", (user,))
         for row in rows:
-            row["can_recover"] = row["status"] in {"failed", "cancelled", "interrupted"}
+            current = await self.db.owned_run(row["run_id"], user)
+            row["can_recover"] = current["can_resume"]
             row["recovery_status"] = (
                 "succeeded" if row["status"] == "completed" else
                 "insufficient" if row["status"] == "insufficient" else
@@ -449,7 +557,7 @@ class Runtime:
         DLQ_DEPTH.set(int((row or {}).get("total", 0)))
 
     async def cancel(self, run_id, user):
-        async with self.lock:
+        async with self.lock, self.db.guard("execution:" + run_id):
             run = await self.db.owned_run(run_id, user)
             if not run:
                 raise LookupError("任务不存在")
@@ -477,6 +585,8 @@ class Runtime:
                 raise LookupError("任务不存在")
             if run["status"] not in {"cancelled", "interrupted", "failed"}:
                 raise ConflictError("当前任务状态不能继续；需要重新研究时请提交新任务")
+            if not run.get("can_resume", False) or run["call_attempts"] >= self.settings.max_run_call_attempts or run["reserved_tokens"] >= self.settings.max_run_reserved_tokens:
+                raise ReliabilityError("该任务不可继续；请处理错误原因或缩小问题重新提交", code="resume_denied", retryable=False)
             if run_id in self.tasks:
                 raise ConflictError("任务尚未停止")
             if run.get("validation", {}).get("retrieval_failed"):
@@ -514,27 +624,65 @@ class Runtime:
 
     async def recover_queued_runs(self):
         """Re-enqueue persisted work after an API restart."""
-        rows = await self.db.rows("SELECT id,status,attempt_count FROM runs WHERE status IN ('queued','interrupted')")
+        rows = await self.db.rows("SELECT * FROM runs WHERE status IN ('queued','interrupted')")
         for row in rows:
             if row["id"] not in self.tasks:
+                if row["deadline_at"] and row["deadline_at"] <= time.time():
+                    await self.exhaust(row["id"])
+                    continue
+                if row["status"] == "interrupted":
+                    if row["auto_recoveries"] >= self.settings.max_job_retries:
+                        await self.exhaust(row["id"])
+                        continue
+                    changed = await self.db.execute("""UPDATE runs SET status='queued',auto_recoveries=auto_recoveries+1
+                        WHERE id=? AND status='interrupted' AND auto_recoveries=?""", (row["id"], row["auto_recoveries"]))
+                    if not changed:
+                        continue
                 await self.schedule(row["id"], resume=row["status"] == "interrupted" or row["attempt_count"] > 0)
 
-    async def heartbeat(self, run_id: str, attempt: int) -> None:
+    async def exhaust(self, run_id):
+        detail = json.dumps({"code": "budget_exhausted", "retryable": False, "action": "缩小问题后创建新任务"}, ensure_ascii=False)
+        async with self.db.connection() as conn:
+            result = await conn.execute("""UPDATE runs SET status='failed',error=?,error_info=?,updated_at=?
+                WHERE id=? AND status IN ('queued','interrupted')""",
+                ("累计时限或自动恢复次数已耗尽，已停止自动恢复", detail, now(), run_id))
+            if affected(result):
+                await conn.execute("INSERT INTO events(run_id,type,data,created_at) VALUES(?,?,?,?)",
+                                   (run_id, "done", json.dumps({"status": "failed", "code": "budget_exhausted"}), now()))
+            await conn.commit()
+
+    async def heartbeat(self, run_id: str, attempt: int, owner=None) -> None:
         while True:
             await asyncio.sleep(RUN_HEARTBEAT_SECONDS)
-            changed = await self.db.execute("UPDATE runs SET last_attempt_at=?,updated_at=? WHERE id=? AND status='running' AND attempt_count=?",
-                                            (now(), now(), run_id, attempt))
-            if not changed:
+            try:
+                await Execution(self.db, self.settings, run_id, attempt).check()
+                changed = await self.db.execute("UPDATE runs SET last_attempt_at=?,updated_at=? WHERE id=? AND status='running' AND attempt_count=?",
+                                                (now(), now(), run_id, attempt))
+                if not changed and owner:
+                    owner.cancel()
+                    return
+            except ReliabilityError as exc:
+                if exc.code != "execution_lost":
+                    await self.fail(run_id, str(exc), attempt=attempt, detail=exc.detail())
+                if owner:
+                    owner.cancel()
+                return
+            except Exception:
+                if owner:
+                    owner.cancel()
                 return
 
     async def recover_stale_runs_loop(self) -> None:
         while not self.stopping:
             await asyncio.sleep(RUN_HEARTBEAT_SECONDS)
             try:
+                if self.settings.queue_backend == "redis":
+                    await self.connect_queue()
                 await self.recover_stale_runs()
                 await self.recover_queued_runs()
                 await self.recover_indexing_documents()
                 await self.documents.cleanup_pending()
+                await self.refresh_queue_depth()
             except Exception:
                 self.logger.warning("phase=recovery_pending")
 
@@ -549,30 +697,92 @@ class Runtime:
                 heartbeat_at = 0
             if heartbeat_at >= cutoff:
                 continue
-            changed = await self.db.execute("""UPDATE runs SET status='interrupted',updated_at=? WHERE id=?
-                                            AND status='running' AND last_attempt_at=?""",
-                                            (now(), row["id"], row["last_attempt_at"]))
+            async with self.db.guard("execution:" + row["id"]):
+                changed = await self.db.execute("""UPDATE runs SET status='interrupted',updated_at=? WHERE id=?
+                                                AND status='running' AND last_attempt_at=?""",
+                                                (now(), row["id"], row["last_attempt_at"]))
             if changed:
                 await self.db.event(row["id"], "interrupted", {"message": "Worker 心跳超时，正在从检查点恢复"})
-                await self.schedule(row["id"], resume=True)
+                await self.recover_queued_runs()
 
     async def recover_indexing_documents(self):
         """Resume persisted, clean documents after an API restart."""
-        rows = await self.db.rows("SELECT id FROM documents WHERE status='indexing'")
+        rows = await self.db.rows("SELECT id FROM documents WHERE status IN ('indexing','rebuilding')")
         for row in rows:
             await self.schedule_document(row["id"])
 
     async def refresh_queue_depth(self) -> None:
         row = await self.db.one("SELECT COUNT(*) AS total FROM runs WHERE status='queued'")
         QUEUE_DEPTH.set(int((row or {}).get("total", 0)))
+        from ..core.metrics import QUEUE_AGE, DISK_FREE, HEARTBEAT_LAG, PROVIDER_BLOCKED
+        import shutil
+        queued = await self.db.one("SELECT MIN(created_at) AS stamp FROM runs WHERE status='queued'")
+        running = await self.db.one("SELECT MIN(last_attempt_at) AS stamp FROM runs WHERE status='running'")
+        def age(value):
+            try:
+                return max(0, time.time() - datetime.fromisoformat(value).timestamp()) if value else 0
+            except (TypeError, ValueError):
+                return 0
+        QUEUE_AGE.set(age(queued["stamp"]))
+        HEARTBEAT_LAG.set(age(running["stamp"]))
+        DISK_FREE.set(shutil.disk_usage(self.settings.data_dir).free)
+        blocked = await self.db.one("SELECT COUNT(*) AS total FROM provider_health WHERE blocked=1 OR open_until>?", (time.time(),))
+        PROVIDER_BLOCKED.set(blocked["total"])
 
     async def ready(self):
         try:
-            await self.vectors.ping()
-            if self.queue:
-                await self.queue.ping()
+            async with asyncio.timeout(3):
+                await self.db.one("SELECT 1 AS ready")
         except Exception as exc:
-            raise ServiceError("依赖服务未就绪") from exc
+            raise ServiceError("核心数据库未就绪") from exc
+
+    async def capabilities(self):
+        result = {"read_history": True, "submit_research": True, "vector_search": True,
+                  "upload_documents": True, "reasons": []}
+        try:
+            await self.ready()
+        except ServiceError:
+            return {key: False for key in result if key != "reasons"} | {"reasons": ["database_unavailable"]}
+        try:
+            async with asyncio.timeout(3):
+                await self.vectors.ping()
+        except Exception:
+            result["vector_search"] = False
+            result["reasons"].append("vector_unavailable")
+        if self.settings.queue_backend == "redis":
+            try:
+                async with asyncio.timeout(3):
+                    if not self.queue:
+                        raise ServiceError("queue unavailable")
+                    await self.queue.ping()
+            except Exception:
+                result["submit_research"] = False
+                result["upload_documents"] = False
+                result["reasons"].append("queue_unavailable")
+        try:
+            async with asyncio.timeout(3):
+                await self.documents.store.ping()
+        except Exception:
+            result["upload_documents"] = False
+            result["reasons"].append("object_store_unavailable")
+        if self.settings.document_scan_mode == "clamav":
+            try:
+                async with asyncio.timeout(2):
+                    _, writer = await asyncio.open_connection(self.settings.clamav_host, self.settings.clamav_port)
+                    writer.close()
+                    await writer.wait_closed()
+            except Exception:
+                result["upload_documents"] = False
+                result["reasons"].append("scanner_unavailable")
+        from ..core.reliability import fingerprint
+        from ..core.config import endpoint
+        try:
+            await self.providers.provider_available(fingerprint([endpoint(self.settings.llm_base_url, "chat/completions"),
+                self.settings.llm_api_key.get_secret_value(), self.settings.llm_model_id]))
+        except ServiceError as exc:
+            result["submit_research"] = False
+            result["reasons"].append(exc.code)
+        return result
 
     async def save_run_memory(self, run_id: str, user: str):
         run = await self.db.owned_run(run_id, user)
@@ -645,6 +855,8 @@ class Runtime:
                 await self.db.execute("DELETE FROM events WHERE run_id=?", (row["id"],))
                 await self.db.execute("DELETE FROM counters WHERE run_id=?", (row["id"],))
                 await self.db.execute("DELETE FROM search_cache WHERE run_id=?", (row["id"],))
+                await self.db.execute("DELETE FROM verified_claims WHERE run_id=?", (row["id"],))
+                await self.db.execute("DELETE FROM call_attempts WHERE run_id=?", (row["id"],))
                 await self.db.execute("DELETE FROM dead_letter_runs WHERE run_id=?", (row["id"],))
             await self.db.execute("DELETE FROM runs WHERE user_id=?", (user,))
             await self.db.execute("DELETE FROM threads WHERE user_id=?", (user,))

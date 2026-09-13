@@ -4,6 +4,7 @@ import hashlib
 import json
 import time
 from pathlib import Path
+from concurrent.futures import ThreadPoolExecutor
 
 from rank_bm25 import BM25Plus
 
@@ -24,11 +25,30 @@ class Documents:
     def __init__(self, settings, db: Database, providers, vectors):
         self.settings, self.db, self.providers, self.vectors = settings, db, providers, vectors
         self.gate = asyncio.Semaphore(1)
+        self.lexical_gate = asyncio.Semaphore(2)
+        self.lexical_pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix="rag-lexical")
         self.store = ObjectStore(settings)
         self._corpora: dict[str, tuple[str, list[dict], dict[str, dict], BM25Plus]] = {}
 
     async def start(self) -> None:
         await self.store.start()
+
+    async def lexical(self, func, *args):
+        # A cancelled caller cannot release its slot while native work still runs.
+        await self.lexical_gate.acquire()
+        try:
+            future = asyncio.get_running_loop().run_in_executor(self.lexical_pool, func, *args)
+        except BaseException:
+            self.lexical_gate.release()
+            raise
+        future.add_done_callback(lambda _: self.lexical_gate.release())
+        return await asyncio.shield(future)
+
+    async def check_corpus(self, user, expected):
+        rows = await self.db.rows("SELECT id,hash,index_version FROM documents WHERE user_id=? AND status IN ('ready','rebuilding') ORDER BY id", (user,))
+        current = hashlib.sha256(("rag-v2|" + "|".join(f"{r['id']}:{r['hash']}:{r['index_version']}" for r in rows)).encode()).hexdigest()
+        if current != expected:
+            raise ServiceError("检索期间资料发生变化，请重新检索", code="source_changed")
 
     async def add(self, user: str, name: str, content: bytes):
         async with self.db.guard("documents:" + user):
@@ -99,32 +119,47 @@ class Documents:
         return chunks
 
     async def ingest(self, doc_id: str):
-        document = await self.db.one("SELECT * FROM documents WHERE id=? AND status='indexing'", (doc_id,))
+        document = await self.db.one("SELECT * FROM documents WHERE id=? AND status IN ('indexing','rebuilding')", (doc_id,))
         if not document:
             return
+        target_version = document["pending_version"] or document["index_version"]
         async with self.gate:
             try:
+                async with self.db.guard("documents:" + document["user_id"]):
+                    budget_key = f"index-attempt:{doc_id}:{target_version}"
+                    budget = await self.db.one("SELECT value FROM metadata WHERE key=?", (budget_key,))
+                    attempts = int(budget["value"]) if budget else 0
+                    if attempts >= self.settings.max_job_retries + 1:
+                        raise ServiceError("资料索引恢复次数已耗尽，请检查文件并显式重建", code="index_budget_exhausted", retryable=False)
+                    await self.db.execute("INSERT OR REPLACE INTO metadata(key,value) VALUES(?,?)", (budget_key, str(attempts + 1)))
+                if not self.settings.demo_mode and not self.settings.allow_internal_model_processing:
+                    raise ServiceError("资料外发解析与嵌入尚未获准", code="egress_denied", retryable=False)
                 content = await self.store.get("uploads", doc_id)
+                if hashlib.sha256(content).hexdigest() != document["hash"]:
+                    raise ServiceError("原文内容已变化，请重新上传", code="source_changed", retryable=False)
                 chunks = await self.split_for_index(document["name"], content)
                 vectors = await self.providers.embed([part["text"] for part in chunks])
                 if len(vectors) != len(chunks):
                     raise ServiceError("嵌入结果数量与片段不一致，资料未发布，请重试导入")
-                rows = [dict(part, ordinal=i, id=hashlib.sha256(f"{doc_id}:{document['index_version']}:{i}".encode()).hexdigest()[:32],
-                    user_id=document["user_id"], document_id=doc_id, index_version=document["index_version"], title=document["name"], vector=vector)
+                rows = [dict(part, ordinal=i, id=hashlib.sha256(f"{doc_id}:{target_version}:{i}".encode()).hexdigest()[:32],
+                    user_id=document["user_id"], document_id=doc_id, index_version=target_version, title=document["name"], vector=vector)
                     for i, (part, vector) in enumerate(zip(chunks, vectors))]
                 async with self.db.guard("documents:" + document["user_id"]):
-                    current = await self.db.one("SELECT status,index_version FROM documents WHERE id=?", (doc_id,))
-                    if not current or current["status"] != "indexing" or current["index_version"] != document["index_version"]:
+                    current = await self.db.one("SELECT status,index_version,pending_version FROM documents WHERE id=?", (doc_id,))
+                    if not current or current["status"] != document["status"] or (current["pending_version"] or current["index_version"]) != target_version:
                         return
                     await self.db.execute("INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version) VALUES(?,?,?)",
-                                          (doc_id, document["user_id"], document["index_version"]))
+                                          (doc_id, document["user_id"], target_version))
                     await self.vectors.upsert("documents", rows)
                     async with self.db.connection() as conn:
-                        result = await conn.execute("""UPDATE documents SET status='ready',error=''
-                            WHERE id=? AND status='indexing' AND index_version=?""", (doc_id, document["index_version"]))
+                        result = await conn.execute("""UPDATE documents SET status='ready',error='',index_version=?,pending_version=0
+                            WHERE id=? AND status=? AND index_version=?""", (target_version, doc_id, document["status"], document["index_version"]))
                         if affected(result):
                             await conn.execute("DELETE FROM document_cleanup WHERE document_id=? AND version=?",
-                                               (doc_id, document["index_version"]))
+                                               (doc_id, target_version))
+                            if document["status"] == "rebuilding":
+                                await conn.execute("INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version) VALUES(?,?,?)",
+                                                   (doc_id, document["user_id"], document["index_version"]))
                             await conn.execute("DELETE FROM chunks WHERE document_id=?", (doc_id,))
                             await conn.executemany("INSERT INTO chunks(id,document_id,user_id,text,locator,vector,ordinal) VALUES(?,?,?,?,?,?,?)",
                                 [(row["id"], doc_id, document["user_id"], row["text"], row["locator"],
@@ -139,8 +174,9 @@ class Documents:
                 raise
             except Exception as exc:
                 message = str(exc) if isinstance(exc, ServiceError) else "资料导入失败，请检查文件及服务配置"
-                await self.db.execute("UPDATE documents SET status='failed',error=? WHERE id=? AND status='indexing' AND index_version=?",
-                                      (message, doc_id, document["index_version"]))
+                retain = document["status"] == "rebuilding" and not (isinstance(exc, ServiceError) and exc.code == "source_changed")
+                await self.db.execute("UPDATE documents SET status=?,pending_version=0,error=? WHERE id=? AND status=? AND index_version=?",
+                                      ("ready" if retain else "failed", message, doc_id, document["status"], document["index_version"]))
                 raise
 
     async def search(self, user: str, queries: list[str], limit: int = 6, run_id: str = "") -> list[dict]:
@@ -153,7 +189,7 @@ class Documents:
         if not queries:
             return RetrievalResults()
         reasons = set()
-        documents = await self.db.rows("SELECT id,hash,index_version FROM documents WHERE user_id=? AND status='ready' ORDER BY id", (user,))
+        documents = await self.db.rows("SELECT id,hash,index_version FROM documents WHERE user_id=? AND status IN ('ready','rebuilding') ORDER BY id", (user,))
         # Invalidate old cache entries when extraction/ranking contracts change.
         corpus_hash = hashlib.sha256(("rag-v2|" + "|".join(f"{r['id']}:{r['hash']}:{r['index_version']}" for r in documents)).encode()).hexdigest()
         query_hash = hashlib.sha256(json.dumps(queries, ensure_ascii=False).encode()).hexdigest()
@@ -163,8 +199,10 @@ class Documents:
         if corpus_cache_hit:
             _, all_chunks, chunks_by_id, bm25 = cached_corpus
         else:
-            raw = await self.db.rows("""SELECT c.*,d.name AS title FROM chunks c JOIN documents d ON c.document_id=d.id
-                WHERE c.user_id=? AND d.user_id=? AND d.status='ready'""", (user, user))
+            raw = await self.db.rows("""SELECT c.*,d.name AS title,d.index_version,d.hash AS document_hash FROM chunks c JOIN documents d ON c.document_id=d.id
+                WHERE c.user_id=? AND d.user_id=? AND d.status IN ('ready','rebuilding') LIMIT ?""", (user, user, self.settings.rag_max_corpus_chunks + 1))
+            if len(raw) > self.settings.rag_max_corpus_chunks:
+                raise ServiceError("工作空间资料超过安全检索容量，请归档资料或联系管理员", code="corpus_capacity", retryable=False)
             all_chunks = [row for row in raw if valid_chunk(row, user)]
             if len(all_chunks) != len(raw):
                 reasons.add("invalid_records")
@@ -172,9 +210,11 @@ class Documents:
                 raise ServiceError("资料索引字段无效，请重新索引资料")
             chunks_by_id = {row["id"]: row for row in all_chunks}
             build_started = time.monotonic()
-            bm25 = BM25Plus([tokens(row["text"]) or ["_"] for row in all_chunks], delta=0) if all_chunks else None
+            bm25 = await self.lexical(lambda: BM25Plus([tokens(row["text"]) or ["_"] for row in all_chunks], delta=0)) if all_chunks else None
             RAG_RETRIEVAL_SECONDS.labels(stage="bm25_build").observe(time.monotonic() - build_started)
             if not reasons:
+                while len(self._corpora) >= self.settings.rag_corpus_cache_users:
+                    self._corpora.pop(next(iter(self._corpora)))
                 self._corpora[user] = (corpus_hash, all_chunks, chunks_by_id, bm25)
         corpus_ms = round((time.monotonic() - corpus_started) * 1000, 2)
         RAG_RETRIEVAL_SECONDS.labels(stage="corpus_load").observe(corpus_ms / 1000)
@@ -205,6 +245,7 @@ class Documents:
                     "corpus_documents": len(documents), "corpus_chunks": len(all_chunks), "cache_ms": cache_ms,
                     "total_ms": round((time.monotonic() - started) * 1000, 2)})
                 RAG_RETRIEVAL_SECONDS.labels(stage="total").observe(time.monotonic() - started)
+                await self.check_corpus(user, corpus_hash)
                 return RetrievalResults(result)
             except (TypeError, ValueError, KeyError):
                 reasons.add("invalid_records")
@@ -212,26 +253,33 @@ class Documents:
 
         async def retrieve_query(query):
             lexical_started = time.monotonic()
-            lexical = bm25.get_scores(tokens(query))
+            lexical = await self.lexical(bm25.get_scores, tokens(query))
             RAG_RETRIEVAL_SECONDS.labels(stage="bm25_score").observe(time.monotonic() - lexical_started)
             hits, failures = {}, set()
             embed_started = time.monotonic()
             embed_ms, vector_ms = 0.0, 0.0
             try:
-                embeddings = await self.providers.embed([query])
+                if not self.settings.demo_mode and not self.settings.allow_internal_model_processing:
+                    raise ServiceError("内部查询未获准外发，使用关键词检索", code="embedding_policy_blocked", retryable=False)
+                async with asyncio.timeout(self.settings.rag_vector_timeout_seconds):
+                    embeddings = await self.providers.embed([query])
                 embed_ms = (time.monotonic() - embed_started) * 1000
                 if len(embeddings) != 1:
                     raise ServiceError("查询嵌入结果格式无效")
                 vector_started = time.monotonic()
                 try:
-                    raw_hits = await self.vectors.search("documents", user, embeddings[0], limit=limit * 3)
+                    remaining = self.settings.rag_vector_timeout_seconds - (time.monotonic() - embed_started)
+                    async with asyncio.timeout(max(0, remaining)):
+                        raw_hits = await self.vectors.search("documents", user, embeddings[0], limit=limit * 3)
                     hits, rejected = normalize_hits(raw_hits, chunks_by_id, limit * 3)
                     if rejected:
                         failures.add("invalid_records")
                 finally:
                     vector_ms = (time.monotonic() - vector_started) * 1000
-            except (ServiceError, TypeError, ValueError, KeyError, IndexError):
-                failures.add("vector_unavailable")
+            except (ServiceError, TypeError, ValueError, KeyError, IndexError, TimeoutError) as exc:
+                if isinstance(exc, ServiceError) and exc.code in {"execution_lost", "permission_revoked", "budget_exhausted", "egress_denied"}:
+                    raise
+                failures.add("policy_blocked" if isinstance(exc, ServiceError) and exc.code == "embedding_policy_blocked" else "vector_unavailable")
             RAG_RETRIEVAL_SECONDS.labels(stage="query_embedding").observe(embed_ms / 1000)
             RAG_RETRIEVAL_SECONDS.labels(stage="vector_search").observe(vector_ms / 1000)
             return lexical, hits, failures, embed_ms, vector_ms
@@ -278,6 +326,7 @@ class Documents:
             "cache_ms": cache_ms, "corpus_ms": corpus_ms, "embedding_ms": round(embed_ms, 2),
             "vector_ms": round(vector_ms, 2), "total_ms": round((time.monotonic() - started) * 1000, 2),
             "candidates": len(ranked), "selected": len(selected), "reasons": sorted(reasons)})
+        await self.check_corpus(user, corpus_hash)
         return RetrievalResults(selected, reasons=reasons)
 
     async def delete(self, doc_id, user):
@@ -298,7 +347,7 @@ class Documents:
         for row in await self.db.rows("SELECT * FROM document_cleanup"):
             async with self.db.guard("documents:" + row["user_id"]):
                 document = await self.db.one("SELECT status,index_version FROM documents WHERE id=?", (row["document_id"],))
-                if document and document["status"] in {"ready", "indexing"} and document["index_version"] == row["version"]:
+                if document and document["status"] in {"ready", "indexing", "rebuilding"} and document["index_version"] == row["version"]:
                     continue
                 try:
                     await self.vectors.delete_document_version(row["user_id"], row["document_id"], row["version"])
@@ -323,10 +372,12 @@ class Documents:
             raise ServiceError("资料当前不可重建索引；隔离或扫描失败的文件不能进入资料库")
         if not await self.store.exists("uploads", doc_id):
             raise ServiceError("原始上传文件不存在，无法重建索引")
-        await self.db.execute("INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version) VALUES(?,?,?)",
-                              (doc_id, user, document["index_version"]))
-        await self.db.execute("UPDATE documents SET status='indexing',error='',index_version=index_version+1 WHERE id=?", (doc_id,))
+        await self.db.execute("DELETE FROM metadata WHERE key=?", (f"index-attempt:{doc_id}:{document['index_version'] + 1}",))
+        if document["status"] == "ready":
+            await self.db.execute("UPDATE documents SET status='rebuilding',error='',pending_version=index_version+1 WHERE id=?", (doc_id,))
+        else:
+            await self.db.execute("UPDATE documents SET status='indexing',error='',index_version=index_version+1 WHERE id=?", (doc_id,))
         return await self.db.one("SELECT * FROM documents WHERE id=?", (doc_id,))
 
     async def close(self):
-        return None
+        self.lexical_pool.shutdown(wait=False, cancel_futures=True)

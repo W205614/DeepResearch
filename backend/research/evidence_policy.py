@@ -20,6 +20,10 @@ def validate_claim(text: str, sources: list[dict]) -> tuple[bool, str]:
         if not re.search(r"图中|图片|图表|截图", text):
             return False, "图片结论必须明确限定为图中显示，不能视作外部核实事实"
         return True, "图片可见内容通过数字检查，仍需语义校验"
+    if sources and all(s.get("kind") == "local" for s in sources):
+        if not re.search(r"根据.{0,8}资料|资料中|文档中|该文档", text):
+            return False, "内部资料结论必须明确限定为资料中的记录，不能当作外部核实事实"
+        return True, "资料内陈述通过数字检查，仍需版本和语义校验"
     if not requires_strong_evidence(text):
         return True, "常规结论通过确定性引用检查"
     strong = [s for s in sources if s.get("access") in {"fulltext", "document"}]

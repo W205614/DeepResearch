@@ -16,6 +16,9 @@ services:
       retries: 5
   backend:
     build: .
+    mem_limit: 2g
+    cpus: 2
+    pids_limit: 256
     environment: &runtime-environment
       LLM_MODEL_ID: ${LLM_MODEL_ID:-deepseek-v4-flash}
       VISION_MODEL_ID: ${VISION_MODEL_ID:-deepseek-v4-flash-vision-exp}
@@ -44,6 +47,18 @@ services:
       MAX_WEB_CANDIDATES: ${MAX_WEB_CANDIDATES:-24}
       WEB_SEARCH_CONCURRENCY: ${WEB_SEARCH_CONCURRENCY:-3}
       WEB_FETCH_CONCURRENCY: ${WEB_FETCH_CONCURRENCY:-6}
+      ALLOW_INTERNAL_MODEL_PROCESSING: ${ALLOW_INTERNAL_MODEL_PROCESSING:-false}
+      MAX_JOB_RETRIES: ${MAX_JOB_RETRIES:-2}
+      MAX_QUEUED_RUNS: ${MAX_QUEUED_RUNS:-20}
+      RAG_MAX_CORPUS_CHUNKS: ${RAG_MAX_CORPUS_CHUNKS:-4000}
+      RAG_CORPUS_CACHE_USERS: ${RAG_CORPUS_CACHE_USERS:-4}
+      LLM_CONTEXT_TOKENS: ${LLM_CONTEXT_TOKENS:-128000}
+      VISION_CONTEXT_TOKENS: ${VISION_CONTEXT_TOKENS:-128000}
+      VISION_IMAGE_TOKEN_RESERVE: ${VISION_IMAGE_TOKEN_RESERVE:-16000}
+      MAX_RUN_TOTAL_SECONDS: ${MAX_RUN_TOTAL_SECONDS:-1200}
+      MAX_RUN_CALL_ATTEMPTS: ${MAX_RUN_CALL_ATTEMPTS:-80}
+      MAX_RUN_RESERVED_TOKENS: ${MAX_RUN_RESERVED_TOKENS:-2000000}
+      RAG_VECTOR_TIMEOUT_SECONDS: ${RAG_VECTOR_TIMEOUT_SECONDS:-3}
       MAX_RUN_SECONDS: ${MAX_RUN_SECONDS:-600}
       MAX_CONCURRENT_RUNS: ${MAX_CONCURRENT_RUNS:-2}
       MAX_LLM_CONCURRENCY: ${MAX_LLM_CONCURRENCY:-3}
@@ -70,11 +85,11 @@ services:
       - alert-relay-token:/run/secrets:ro
     depends_on:
       milvus:
-        condition: service_healthy
+        condition: service_started
       postgres:
         condition: service_healthy
       redis:
-        condition: service_healthy
+        condition: service_started
       keycloak:
         condition: service_started
       clamav:
@@ -160,7 +175,10 @@ services:
       keycloak-postgres:
         condition: service_healthy
     restart: unless-stopped
-  worker:
+  worker: &research-worker
+    mem_limit: 2g
+    cpus: 2
+    pids_limit: 256
     build: .
     command: arq backend.worker.WorkerSettings
     expose: ["8001"]
@@ -173,11 +191,16 @@ services:
     depends_on:
       postgres: { condition: service_healthy }
       redis: { condition: service_healthy }
-      milvus: { condition: service_healthy }
+      milvus: { condition: service_started }
       clamav: { condition: service_started }
       otel-collector: { condition: service_started }
       migrate: { condition: service_completed_successfully }
     restart: unless-stopped
+  document-worker:
+    <<: *research-worker
+    command: arq backend.worker.DocumentWorkerSettings
+    mem_limit: 1g
+    cpus: 1
   migrate:
     build: .
     command: alembic upgrade head

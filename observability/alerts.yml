@@ -1,6 +1,31 @@
 groups:
   - name: deepresearch-enterprise
     rules:
+      - alert: DeepResearchServiceDown
+        expr: up{job=~"deepresearch-api|deepresearch-worker|deepresearch-document-worker"} == 0
+        for: 1m
+        labels: {severity: critical}
+        annotations: {summary: "A DeepResearch service metrics endpoint is unavailable"}
+      - alert: DeepResearchOldQueue
+        expr: deepresearch_oldest_queued_seconds > 120
+        for: 1m
+        labels: {severity: warning}
+        annotations: {summary: "Research admission queue is not draining"}
+      - alert: DeepResearchProviderBlocked
+        expr: deepresearch_blocked_providers > 0
+        for: 1m
+        labels: {severity: warning}
+        annotations: {summary: "An upstream provider is blocked or cooling down"}
+      - alert: DeepResearchDiskLow
+        expr: deepresearch_data_disk_free_bytes < 1073741824
+        for: 1m
+        labels: {severity: critical}
+        annotations: {summary: "Runtime data filesystem has less than 1 GiB free"}
+      - alert: DeepResearchHeartbeatStale
+        expr: deepresearch_heartbeat_lag_seconds > 45
+        for: 30s
+        labels: {severity: warning}
+        annotations: {summary: "Research worker heartbeat is stale"}
       - alert: DeepResearchQueueBacklog
         expr: deepresearch_queue_depth > 10
         for: 5m

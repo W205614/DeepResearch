@@ -39,7 +39,7 @@ async def test_postgres_migration_idempotency_quota(component, monkeypatch):
     assert (await component.db.one('SELECT search_calls FROM workspace_daily_usage WHERE workspace_id=?', (user,)))['search_calls'] == 2
     await component.purge_user(user, 'reports')
     assert (await component.db.one('SELECT search_calls FROM workspace_daily_usage WHERE workspace_id=?', (user,)))['search_calls'] == 2
-    assert (await component.db.one('SELECT version_num FROM alembic_version'))['version_num'] == '0007_chunk_order'
+    assert (await component.db.one('SELECT version_num FROM alembic_version'))['version_num'] == '0008_reliability'
 
 
 async def test_real_scan_index_isolation_and_delete_race(component, monkeypatch):
@@ -81,7 +81,7 @@ async def test_api_worker_sse_cancel_and_roles(component):
     await component.db.upsert_membership(user, viewer, 'viewer')
     headers = {'Authorization': 'Bearer ' + issue_development_token(component.settings, user)}
     async with httpx.AsyncClient(base_url='http://api:8000', headers=headers, timeout=120) as client:
-        response = await client.post('/api/research/runs', json={'topic': 'research workflow', 'client_request_id': uid()})
+        response = await client.post('/api/research/runs', json={'data_policy':'public','topic': 'research workflow', 'client_request_id': uid()})
         assert response.status_code == 202
         run_id = response.json()['id']
         events = await client.get(f'/api/research/runs/{run_id}/events')
@@ -90,8 +90,8 @@ async def test_api_worker_sse_cancel_and_roles(component):
         assert result['status'] == 'completed' and result['sources']
         assert len(await component.db.rows("SELECT id FROM events WHERE run_id=? AND type='done'", (run_id,))) == 1
         vheaders = {'Authorization': 'Bearer ' + issue_development_token(component.settings, viewer)}
-        assert (await client.post('/api/research/runs', json={'topic': 'forbidden', 'client_request_id': uid()}, headers=vheaders)).status_code == 403
-        response = await client.post('/api/research/runs', json={'topic': 'slow-recovery cancellation', 'client_request_id': uid()})
+        assert (await client.post('/api/research/runs', json={'data_policy':'public','topic': 'forbidden', 'client_request_id': uid()}, headers=vheaders)).status_code == 403
+        response = await client.post('/api/research/runs', json={'data_policy':'public','topic': 'slow-recovery cancellation', 'client_request_id': uid()})
         cancel_id = response.json()['id']
         assert (await client.post(f'/api/research/runs/{cancel_id}/cancel')).status_code == 200
         await asyncio.sleep(1)

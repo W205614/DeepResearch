@@ -1,5 +1,6 @@
 """Explicit test entrypoints. Never imported by production application code."""
 import asyncio
+from backend.worker import DocumentWorkerSettings as DocumentWorkerSettings
 from backend.worker import WorkerSettings as ProductionWorkerSettings
 from backend.infrastructure.providers import Providers
 from backend.infrastructure.demo import generate, embed, search

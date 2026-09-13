@@ -83,11 +83,19 @@ class Database:
             await conn.executescript(SCHEMA)
             await conn.executescript(ATTACHMENT_SCHEMA)
             await conn.executescript(DAILY_SCHEMA)
+            from .reliability import SCHEMA as RELIABILITY_SCHEMA, RUN_COLUMNS
+            await conn.executescript(RELIABILITY_SCHEMA)
+            existing_runs = {row[1] for row in await (await conn.execute("PRAGMA table_info(runs)")).fetchall()}
+            for name, definition in RUN_COLUMNS.items():
+                if name not in existing_runs:
+                    await conn.execute(f"ALTER TABLE runs ADD COLUMN {name} {definition}")
             await conn.execute("UPDATE workspace_limits SET daily_search_limit=0,daily_token_limit=0")
             chunk_columns = {row[1] for row in await (await conn.execute("PRAGMA table_info(chunks)")).fetchall()}
             if "ordinal" not in chunk_columns:
                 await conn.execute("ALTER TABLE chunks ADD COLUMN ordinal INTEGER NOT NULL DEFAULT 0")
             document_columns = {row[1] for row in await (await conn.execute("PRAGMA table_info(documents)")).fetchall()}
+            if "pending_version" not in document_columns:
+                await conn.execute("ALTER TABLE documents ADD COLUMN pending_version INTEGER NOT NULL DEFAULT 0")
             if "index_version" not in document_columns:
                 await conn.execute("ALTER TABLE documents ADD COLUMN index_version INTEGER NOT NULL DEFAULT 0")
             columns = {row[1] for row in await (await conn.execute("PRAGMA table_info(threads)")).fetchall()}
@@ -180,6 +188,8 @@ class Database:
             row["sources"] = json.loads(row["sources"])
             row["validation"] = json.loads(row["validation"])
             row["usage"] = await self.one("SELECT * FROM counters WHERE run_id=?", (run_id,)) or {}
+            from .reliability import enrich_run
+            enrich_run(row, getattr(self, "reliability_settings", None))
         return row
     async def create_workspace(self, subject: str, name: str, limits: tuple[int, int], workspace_id: str | None = None) -> dict:
         workspace = {"id": workspace_id or uid(), "name": name.strip()[:100], "created_by": subject, "created_at": now()}

@@ -17,6 +17,9 @@ from ..core.observability import error_category, get_task_logger, run_label, tra
 from ..infrastructure.providers import ServiceError
 from .routing import decide
 from .agents import AgentRuntime
+from ..core.reliability import check_execution, phase, fingerprint
+from ..core.checkpoints import FencedDatabase
+from .source_validity import validate_sources
 from ..core.security import fetch_text
 from .search_policy import normalize_queries, select_web_candidates
 
@@ -57,7 +60,7 @@ def merge_evidence(items: list[dict], limit=48) -> list[dict]:
     return selected
 
 
-def evidence_context(items: list[dict], text_limit=4500, total_limit=48000) -> list[dict]:
+def evidence_context(items: list[dict], text_limit=4500, total_limit=48000, query="") -> list[dict]:
     """Bound each model call, not user usage. Disclose omitted excerpts explicitly."""
     if not items:
         return []
@@ -66,6 +69,25 @@ def evidence_context(items: list[dict], text_limit=4500, total_limit=48000) -> l
     for item in items:
         text = item["text"]
         excerpt = text[:share]
+        if query and len(text) > share:
+            # Extract complete paragraph windows, including the tail where qualifications
+            # often live. Never synthesize a summary as a substitute for source text.
+            terms = set(re.findall(r"[\w]{2,}", query.lower()))
+            paragraphs = list(re.finditer(r"[^\n]+(?:\n|$)", text))
+            if len(paragraphs) == 1:
+                paragraphs = list(re.finditer(r"[^。！？!?\n]+[。！？!?\n]?", text))
+            ranked = sorted(range(len(paragraphs)), key=lambda i: (
+                sum(term in paragraphs[i].group().lower() for term in terms), i == len(paragraphs)-1), reverse=True)
+            chosen, size = set(), 0
+            for i in [len(paragraphs)-1, *ranked]:
+                for neighbor in (i, i-1, i+1):
+                    if 0 <= neighbor < len(paragraphs) and neighbor not in chosen:
+                        length = len(paragraphs[neighbor].group())
+                        if size + length <= share:
+                            chosen.add(neighbor)
+                            size += length
+            if chosen:
+                excerpt = "\n[…]\n".join(paragraphs[i].group() for i in sorted(chosen))
         if len(text) > share:
             # Prefer a complete line/sentence; do not pretend a cut cell/number is complete.
             boundaries = list(re.finditer(r"[。！？!?；;\n]", excerpt))
@@ -162,7 +184,7 @@ HELP_REPORT = """# DeepResearch 可以做什么
 
 class ResearchGraph:
     def __init__(self, settings, db, providers, vectors, documents):
-        self.settings, self.db, self.providers, self.vectors, self.documents = settings, db, providers, vectors, documents
+        self.settings, self.db, self.providers, self.vectors, self.documents = settings, FencedDatabase(db), providers, vectors, documents
         self.search_gate = asyncio.Semaphore(settings.web_search_concurrency)
         self.fetch_gate = asyncio.Semaphore(settings.web_fetch_concurrency)
         self.logger = get_task_logger()
@@ -217,6 +239,10 @@ class ResearchGraph:
 
     def instrument(self, name, operation):
         async def node(state: ResearchState):
+            await check_execution()
+            if not self.settings.demo_mode:
+                await validate_sources(self.db, state["user_id"], state.get("evidence", []) + state.get("local_results", []))
+            phase_token = phase.set(name)
             start = time.monotonic()
             await self.agents.started(state["run_id"], name, state.get("round", 0))
             await self.db.event(state["run_id"], "node_start", {"node": name, "round": state.get("round", 0)})
@@ -225,6 +251,7 @@ class ResearchGraph:
                 try:
                     with self.agents.activate(name):
                         result = await operation(state)
+                    await check_execution()
                     duration = round((time.monotonic() - start) * 1000)
                     NODE_SECONDS.labels(node=name).observe(duration / 1000)
                     await self.db.event(state["run_id"], "node_end", {"node": name, "duration_ms": duration})
@@ -237,16 +264,30 @@ class ResearchGraph:
                     self.logger.warning("run=%s node=%s phase=cancelled", run_label(state["run_id"]), name)
                     raise
                 except Exception as exc:
+                    if isinstance(exc, ServiceError) and not exc.stage:
+                        exc.stage = name
                     NODE_SECONDS.labels(node=name).observe(time.monotonic() - start)
                     await self.db.event(state["run_id"], "node_error", {"node": name})
                     self.logger.error("run=%s node=%s phase=error category=%s",
                                       run_label(state["run_id"]), name, error_category(exc))
                     raise
+                finally:
+                    phase.reset(phase_token)
         return node
 
     async def ask(self, role, instruction, data, schema, run_id):
         self.agents.require("model")
-        return await self.providers.structured(role, instruction, data, schema, run_id)
+        cache_key = fingerprint(["verification-v1", self.settings.llm_model_id, self.settings.llm_base_url,
+                                 self.settings.llm_extra_body, instruction, data])
+        if role == "validator":
+            cached = await self.db.one("SELECT result FROM verified_claims WHERE run_id=? AND cache_key=?", (run_id, cache_key))
+            if cached:
+                return schema.model_validate(json.loads(cached["result"])["verdict"])
+        result = await self.providers.structured(role, instruction, data, schema, run_id)
+        if role == "validator":
+            await self.db.execute("INSERT OR IGNORE INTO verified_claims(run_id,cache_key,result) VALUES(?,?,?)",
+                (run_id, cache_key, json.dumps({"verdict": result.model_dump(), "input": data}, ensure_ascii=False)))
+        return result
 
     async def search_web(self, query: str, run_id: str) -> list[dict]:
         self.agents.require("web_search")
@@ -320,7 +361,7 @@ class ResearchGraph:
 
     async def vision_input(self, state):
         self.agents.require("model")
-        rows = await self.db.rows("SELECT * FROM attachments WHERE run_id=? AND user_id=? AND status='ready' ORDER BY position",
+        rows = await self.db.rows("SELECT * FROM attachments WHERE run_id=? AND user_id=? AND status IN ('ready','rebuilding') ORDER BY position",
                                   (state["run_id"], state["user_id"]))
         if [row["id"] for row in rows] != state["attachment_ids"]:
             raise ServiceError("任务图片缺失或不可用，请重新上传")
@@ -398,6 +439,8 @@ class ResearchGraph:
                     await self.retrieval_status(state, "web", outcome)
                     return rows
             except ServiceError as exc:
+                if exc.code in {"execution_lost", "permission_revoked", "budget_exhausted", "egress_denied"}:
+                    raise
                 outcomes.append({"source": "web", "outcome": "error"})
                 await self.retrieval_status(state, "web", "error")
                 await self.warning(state, str(exc))
@@ -448,8 +491,11 @@ class ResearchGraph:
         await self.db.event(state["run_id"], "retrieval_status", {"source": source, "outcome": outcome})
 
     async def local_scout(self, state):
+        run = await self.db.one("SELECT data_policy FROM runs WHERE id=?", (state["run_id"],))
+        if run and run["data_policy"] == "public":
+            return {"local_results": [], "local_outcomes": [{"source": "local", "outcome": "policy_blocked"}]}
         outcomes = list(state.get("local_outcomes", []))
-        exists = await self.db.one("SELECT id FROM documents WHERE user_id=? AND status='ready' LIMIT 1", (state["user_id"],))
+        exists = await self.db.one("SELECT id FROM documents WHERE user_id=? AND status IN ('ready','rebuilding') LIMIT 1", (state["user_id"],))
         if not exists:
             await self.db.event(state["run_id"], "sources_found", {"kind": "local", "count": 0})
             return {"local_results": [], "local_outcomes": outcomes}
@@ -464,8 +510,11 @@ class ResearchGraph:
             for hit in hits:
                 evidence.append(Evidence(id="L-" + hit["id"][:12], kind="local", title=hit["title"],
                     text=hit["text"], locator=hit["locator"], document_id=hit["document_id"],
+                    chunk_id=hit["id"], index_version=hit.get("index_version", 0), document_hash=hit.get("document_hash", ""),
                     access="document", retrieved_at=now(), evidence_level="local").model_dump())
         except ServiceError as exc:
+            if exc.code in {"execution_lost", "permission_revoked", "budget_exhausted", "egress_denied"}:
+                raise
             outcome = "error"
             await self.warning(state, str(exc))
         outcomes.append({"source": "local", "outcome": outcome})
@@ -483,7 +532,7 @@ class ResearchGraph:
             # An empty/repeated supplementary search provides no basis to revoke
             # unchanged evidence. Final claim validation still runs independently.
             return {"evidence": candidates, "conflicts": state.get("conflicts", [])}
-        context = evidence_context(candidates)
+        context = evidence_context(candidates, query=state.get("topic", ""))
         clipped = sum(item["excerpt_truncated"] for item in context)
         await self.db.event(state["run_id"], "evidence_context", {"sources": len(context),
             "excerpt_chars": sum(len(item["text"]) for item in context), "truncated_sources": clipped})
@@ -510,7 +559,7 @@ class ResearchGraph:
     async def analyst(self, state):
         if not state["evidence"]:
             return {"claims": [], "gaps": state["plan"]["questions"], "analysis_input_hash": ""}
-        data = {"plan": state["plan"], "evidence": evidence_context(state["evidence"]),
+        data = {"plan": state["plan"], "evidence": evidence_context(state["evidence"], query=state.get("topic", "")),
                 "conflicts": state["conflicts"]}
         input_hash = digest(json.dumps(data, ensure_ascii=False, sort_keys=True))
         if state.get("analysis_input_hash") == input_hash:
@@ -518,6 +567,7 @@ class ResearchGraph:
             return {"claims": state["claims"], "gaps": state["gaps"]}
         analysis = await self.ask("analyst",
             "逐项回答研究问题。每条事实或推断必须关联 source_ids，推断明确写出推断及边界。"
+            "仅引用本地资料时明确写根据所提供资料，不能将资料内说法当成外部已核实事实。"
             "证据不支持的内容不要写为事实，列入 gaps。数字必须保留年份、地域、统计定义。"
             "问题措辞与证据术语不一致时，先按原文回答主体、数量和肯否关系，再说明术语对应尚未确认；"
             "不得擅自把完成等同于成功，也不得因此遗漏原文明确给出的完成与未完成事实。"
@@ -539,7 +589,7 @@ class ResearchGraph:
         elif self.settings.web_search_provider == "auto":
             search_available = search_available or bool(self.settings.bocha_api_key.get_secret_value())
         can_search = search_available and (counter or {}).get("search_calls", 0) < self.settings.max_search_calls
-        has_local = bool(await self.db.one("SELECT id FROM documents WHERE user_id=? AND status='ready' LIMIT 1", (state["user_id"],)))
+        has_local = bool(await self.db.one("SELECT id FROM documents WHERE user_id=? AND status IN ('ready','rebuilding') LIMIT 1", (state["user_id"],)))
         stop_reason = (
             "quick_mode" if state["mode"] == "quick" else
             "no_gaps" if not state["gaps"] else
@@ -580,6 +630,7 @@ class ResearchGraph:
                     "validation": {"retrieval_failed": failed}}
         draft = await self.ask("writer",
             "编写结构化中文研究报告。所有实质内容都放入 sections[].claims，且每条都要引用来源。"
+            "仅引用本地资料的结论必须明确写根据所提供资料，并保留记录的日期和适用范围。"
             "图片来源的结论必须明确限定为图中显示，不得当作外部已核实事实。"
             "不要凭记忆增加新事实或新数字，不要自行构造 URL。涵盖执行摘要、各研究问题、结论。"
             "保留证据原有的状态术语和否定关系；问题使用不同术语不构成二者等价的证据。"
@@ -591,7 +642,7 @@ class ResearchGraph:
             "不要将本次研究的执行过程自述写成带来源引用的事实；资料原文不能证明系统执行或未执行了某条指令。"
             "limitations 仅描述研究边界，不包含新的行业结论或数字。",
             {"topic": state["topic"], "plan": state["plan"], "claims": state["claims"],
-             "gaps": state["gaps"], "conflicts": state["conflicts"], "evidence": evidence_context(state["evidence"])},
+             "gaps": state["gaps"], "conflicts": state["conflicts"], "evidence": evidence_context(state["evidence"], query=state.get("topic", ""))},
             ReportDraft, state["run_id"])
         return {"draft": draft.model_dump()}
 
@@ -613,7 +664,7 @@ class ResearchGraph:
         for item in eligible:
             proposed = referenced | set(item[1].source_ids)
             size = sum(len(sources[key]["text"]) for key in proposed) + sum(len(c.text) for _, c in batch) + len(item[1].text)
-            if batch and (len(batch) >= 12 or size > 96000):
+            if batch and (len(batch) >= 12 or size * 3 > self.settings.llm_context_tokens // 2):
                 batches.append(batch)
                 batch, referenced = [], set()
             batch.append(item)
@@ -632,12 +683,18 @@ class ResearchGraph:
                 "保留原文状态并说明术语对应未确认是允许的；把未确认的对应关系断言为事实则不支持。"
                 "资料不能证明本系统的执行行为；声称本次研究已忽略、未执行资料指令或已完成处理，"
                 "却只引用该资料时，属于无依据的执行过程自述，应判不支持。"
-                "每个 index 恰好返回一个检查结果。搜索摘要只支持摘要明确包含的内容。",
+                "每个 index 恰好返回一个检查结果。搜索摘要只支持摘要明确包含的内容。"
+                "answered_questions 只列出本批 supported=true 的结论已完整回答的问题序号（从0开始）；部分回答不算完整。",
                 {"claims": [{"index": i, "text": c.text, "source_ids": c.source_ids} for i, c in batch],
+                 "questions": state.get("plan", {}).get("questions", []),
                  "sources": {key: sources[key] for key in referenced}},
                 Verification, state["run_id"])
             indices = {i for i, _ in batch}
             approved.update(supported_indices(checks, indices))
+            # Coverage is a separate model-assisted assertion, never inferred from
+            # the existence of at least one supported sentence.
+            if checks.answered_questions and supported_indices(checks, indices) == indices:
+                all_checks.append({"answered_questions": checks.answered_questions})
             all_checks.extend(check for check in checks.model_dump()["checks"] if check["index"] in indices)
         return approved, all_checks
 
@@ -646,9 +703,11 @@ class ResearchGraph:
             prefix = "> 测试模式：固定资料与模拟模型，不代表真实研究结果。\n\n" if self.settings.demo_mode else ""
             return {"report": prefix + state["report"], "validation": {**state.get("validation", {}), "checked_claims": 0, "supported_claims": 0, "insufficient": True}}
         sources = {source["id"]: source for source in state["evidence"]}
+        if not self.settings.demo_mode:
+            await validate_sources(self.db, state["user_id"], list(sources.values()))
         for source_id, source in list(sources.items()):
             if source["kind"] == "local" and not await self.db.one(
-                "SELECT id FROM documents WHERE id=? AND user_id=? AND status='ready'", (source["document_id"], state["user_id"])):
+                "SELECT id FROM documents WHERE id=? AND user_id=? AND status IN ('ready','rebuilding')", (source["document_id"], state["user_id"])):
                 sources.pop(source_id)
         draft = ReportDraft.model_validate(state["draft"])
         approved, checks = await self.check_draft(state, draft, sources)
@@ -672,7 +731,7 @@ class ResearchGraph:
                     "缩减为只有术语说明或资料不足。分析事实仍须由给定原文支持。",
                     {"topic": state["topic"], "plan": state.get("plan", {}),
                      "analysis_claims": state.get("claims", []), "failed_claims": group,
-                     "checks": [check for check in checks if check["index"] in {item["index"] for item in group}],
+                     "checks": [check for check in checks if check.get("index") in {item["index"] for item in group}],
                      "evidence": evidence_context(list(sources.values()))}, ReportRepair, state["run_id"])
                 patches.extend(patch for patch in repair.repairs if patch.index in {item["index"] for item in group})
             repair = ReportRepair(repairs=patches)
@@ -716,7 +775,12 @@ class ResearchGraph:
                          + f" · 等级：{md_text(source.get('evidence_level', 'secondary'))} · {md_text(provenance)}"
                          + (" · 发布：" + md_text(source["published_at"]) if source["published_at"] else ""))
         validation = {"checked_claims": index, "supported_claims": len(approved), "removed_claims": index - len(approved),
-                      "repaired": repaired, "insufficient": not bool(used), "checks": checks}
+                      "repaired": repaired, "insufficient": not bool(used), "checks": checks, "gaps": state.get("gaps", [])}
+        covered = {i for check in checks for i in check.get("answered_questions", [])}
+        validation["unanswered_questions"] = [question for i, question in enumerate(state.get("plan", {}).get("questions", [])) if i not in covered]
+        validation["checks"] = [check for check in checks if "index" in check]
+        if validation["unanswered_questions"]:
+            parts.append("## 尚未确认完整回答的问题\n\n" + "\n".join("- " + md_text(q) for q in validation["unanswered_questions"]))
         validation["evidence_metrics"] = evidence_metrics([sources[key] for key in used])
         await self.db.event(state["run_id"], "validation", validation)
         return {"report": "\n\n".join(parts), "validation": validation,

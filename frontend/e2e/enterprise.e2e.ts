@@ -45,6 +45,7 @@ for (const item of liveCases) {
         }, { timeout: 90_000 }).toBe('ready')
       }
       await page.getByRole('button', { name: '新建研究' }).click()
+      await page.getByLabel('资料范围').selectOption(documentId ? 'internal' : 'public')
       await page.getByLabel('研究模式', { exact: true }).selectOption('deep')
       await page.getByLabel('研究主题').fill(item.question + (documentId ? ' 请同时结合本地验收备注说明本项目的边界，并引用该资料。' : ''))
       const responsePromise = page.waitForResponse(r => r.url().endsWith('/api/research/runs') && r.request().method() === 'POST')

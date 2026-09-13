@@ -77,7 +77,7 @@ class VectorIndex:
         if self.settings.demo_mode:
             if kind == "documents":
                 rows = await self.db.rows("""SELECT c.*, d.name AS title FROM chunks c JOIN documents d
-                    ON c.document_id=d.id WHERE c.user_id=? AND d.status='ready'""", (user,))
+                    ON c.document_id=d.id WHERE c.user_id=? AND d.status IN ('ready','rebuilding')""", (user,))
             else:
                 rows = await self.db.rows("""SELECT m.*,m.content AS text FROM memories m JOIN runs r ON r.id=m.run_id
                     WHERE m.user_id=? AND m.kind='semantic' AND (? IS NULL OR r.thread_id=?)""",

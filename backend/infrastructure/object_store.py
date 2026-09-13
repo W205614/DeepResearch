@@ -26,12 +26,14 @@ class ObjectStore:
         if not self.settings.object_store_endpoint:
             raise RuntimeError("OBJECT_STORE_ENDPOINT is required when OBJECT_STORE_BACKEND=s3")
         import boto3
+        from botocore.config import Config
         from botocore.exceptions import ClientError
         self._client = boto3.client(
             "s3", endpoint_url=self.settings.object_store_endpoint,
             aws_access_key_id=self.settings.object_store_access_key.get_secret_value(),
             aws_secret_access_key=self.settings.object_store_secret_key.get_secret_value(),
             region_name="us-east-1",
+            config=Config(connect_timeout=3, read_timeout=5, retries={"total_max_attempts": 1}),
         )
         try:
             try:
@@ -49,6 +51,15 @@ class ObjectStore:
                     await asyncio.to_thread(self._client.head_bucket, Bucket=self.settings.object_store_bucket)
         except ClientError as exc:
             raise RuntimeError("document object storage is unavailable") from exc
+
+    async def ping(self):
+        if self.settings.object_store_backend == "filesystem":
+            if not self.settings.data_dir.is_dir():
+                raise ServiceError("资料存储不可用")
+        elif self._client:
+            await asyncio.to_thread(self._client.head_bucket, Bucket=self.settings.object_store_bucket)
+        else:
+            await self.start()
 
     async def put(self, area: str, document_id: str, content: bytes) -> None:
         if self.settings.object_store_backend == "filesystem":

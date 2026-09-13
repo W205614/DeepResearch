@@ -51,7 +51,7 @@ async def main(args):
                         raise RuntimeError('index deadline')
                     metrics['index_ms'].append((time.monotonic()-stamp)*1000)
                     stamp = time.monotonic()
-                    run = (await call('POST', '/api/research/runs', json={'topic': 'research workflow', 'client_request_id': uid()})).json()
+                    run = (await call('POST', '/api/research/runs', json={'data_policy':'public','topic': 'research workflow', 'client_request_id': uid()})).json()
                     metrics['accepted'].append(run['id'])
                     events = await call('GET', f"/api/research/runs/{run['id']}/events")
                     if events.text.count('"type": "done"') != 1:

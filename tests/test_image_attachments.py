@@ -120,7 +120,7 @@ async def test_visual_result_reused_after_downstream_failure(runtime):
 async def test_retrieval_terminal_reasons(runtime, outcome, expected):
     search = AsyncMock(side_effect=ServiceError("搜索不可用")) if outcome == "error" else AsyncMock(return_value=SearchResults(outcome=outcome))
     with patch.object(runtime.providers, "search", search):
-        run = await finish(runtime, await runtime.create("alice", RunRequest(topic="研究市场", mode="quick", client_request_id=uid())))
+        run = await finish(runtime, await runtime.create("alice", RunRequest(data_policy="public", topic="研究市场", mode="quick", client_request_id=uid())))
     assert run["status"] == expected, run["error"]
     assert outcome in run["validation"]["reasons"]
     assert "检查博查" not in run["report"]

@@ -167,6 +167,8 @@ class PostgresDatabase:
             row["sources"] = json.loads(row["sources"])
             row["validation"] = json.loads(row["validation"])
             row["usage"] = await self.one("SELECT * FROM counters WHERE run_id=?", (run_id,)) or {}
+            from .reliability import enrich_run
+            enrich_run(row, getattr(self, "reliability_settings", None))
         return row
 
     async def create_workspace(self, subject, name, limits, workspace_id=None):

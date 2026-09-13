@@ -66,6 +66,19 @@ class Settings(BaseSettings):
     conversation_recent_runs: int = Field(6, ge=1, le=12)
     conversation_turn_limit: int = Field(30, ge=5, le=200)
     request_timeout_seconds: float = Field(90, ge=1, le=300)
+    max_run_total_seconds: int = Field(1200, ge=10, le=86400)
+    max_run_call_attempts: int = Field(80, ge=1, le=500)
+    max_run_reserved_tokens: int = Field(2000000, ge=1000, le=20000000)
+    max_queued_runs: int = Field(20, ge=1, le=1000)
+    llm_context_tokens: int = Field(128000, ge=4096)
+    vision_context_tokens: int = Field(128000, ge=4096)
+    vision_image_token_reserve: int = Field(16000, ge=1024)
+    context_safety_tokens: int = Field(2048, ge=256)
+    provider_cooldown_seconds: float = Field(30, ge=1, le=300)
+    rag_vector_timeout_seconds: float = Field(3, ge=0.01, le=30)
+    rag_max_corpus_chunks: int = Field(4000, ge=1, le=20000)
+    rag_corpus_cache_users: int = Field(4, ge=1, le=32)
+    allow_internal_model_processing: bool = False
 
     @field_validator("llm_base_url", "embedding_base_url", "bocha_base_url")
     @classmethod

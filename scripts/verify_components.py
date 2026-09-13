@@ -57,9 +57,10 @@ def main(args):
             until(lambda: probe('status', created['id'])['status'] == 'completed', 85)
             result['redis_delivery_recovered'] = True
             run(COMPOSE + ['stop', 'milvus'])
-            assert probe('ready')['http'] == 503
+            assert probe('ready')['http'] == 200  # Core reads survive vector outage.
+            assert probe('capabilities')['vector_search'] is False
             run(COMPOSE + ['start', 'milvus'])
-            until(lambda: probe('ready')['http'] == 200, 120)
+            until(lambda: probe('capabilities')['vector_search'] is True, 120)
             result['milvus_readiness_recovered'] = True
         result['passed'] = True
     finally:
