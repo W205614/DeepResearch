@@ -14,7 +14,7 @@ COMPOSE = ["docker", "compose"]
 def run(*arguments: str, capture: bool = False) -> str:
     process = subprocess.run([*COMPOSE, *arguments], check=False, text=True, capture_output=capture)
     if process.returncode:
-        raise RuntimeError(process.stderr.strip() or process.stdout.strip() or "Docker Compose command failed")
+        raise RuntimeError((process.stderr or "").strip() or (process.stdout or "").strip() or "Docker Compose command failed")
     return process.stdout
 
 
@@ -79,9 +79,20 @@ def targets_ready() -> None:
         "data=json.load(urllib.request.urlopen('http://prometheus:9090/api/v1/targets',timeout=5)); "
         "targets=data['data']['activeTargets']; "
         "assert {x['labels'].get('job') for x in targets if x['health']=='up'} "
-        ">= {'deepresearch-api','deepresearch-worker'}"
+        ">= {'deepresearch-api','deepresearch-worker','deepresearch-document-worker'}"
     )
     run("exec", "-T", "backend", "python", "-c", command, capture=True)
+
+
+def verify_migration() -> None:
+    expected = run("exec", "-T", "backend", "python", "-c", (
+        "from alembic.config import Config; from alembic.script import ScriptDirectory; "
+        "print('\\n'.join(ScriptDirectory.from_config(Config('alembic.ini')).get_heads()))"
+    ), capture=True).split()
+    actual = run("exec", "-T", "postgres", "psql", "-U", "deepresearch", "-d", "deepresearch", "-tAc",
+                 "SELECT version_num FROM alembic_version", capture=True).split()
+    if not expected or set(actual) != set(expected):
+        raise RuntimeError(f"Unexpected Alembic version: {actual}; expected migration heads: {expected}")
 
 
 def main() -> int:
@@ -98,17 +109,15 @@ def main() -> int:
     read_json("http://127.0.0.1:8080/api/auth/config")
     emit_telemetry_probe()
     wait_for("stored application telemetry", telemetry_records_ready)
-    version = run("exec", "-T", "postgres", "psql", "-U", "deepresearch", "-d", "deepresearch", "-tAc",
-                  "SELECT version_num FROM alembic_version", capture=True).strip()
-    if version != "0004_consistency":
-        raise RuntimeError(f"Unexpected Alembic version: {version}")
+    verify_migration()
     output = run("exec", "-T", "redis", "redis-cli", "ping", capture=True).strip()
     if output != "PONG":
         raise RuntimeError("Redis did not return PONG")
     wait_for("backend readiness", lambda: backend_get("http://127.0.0.1:8000/readyz"))
     wait_for("worker metrics", lambda: backend_get("http://worker:8001/metrics"))
+    wait_for("document worker metrics", lambda: backend_get("http://document-worker:8001/metrics"))
     run("exec", "-T", "backend", "python", "-c", "import socket; socket.create_connection(('otel-collector',4317),timeout=5).close()")
-    print("Enterprise smoke passed: web, OIDC, migration, Redis, backend, worker, Prometheus, Grafana, Tempo, Loki, and OTel.")
+    print("Enterprise smoke passed: web, OIDC, migration heads, Redis, backend, both workers, Prometheus, Grafana, Tempo, Loki, and OTel.")
     return 0
 
 
