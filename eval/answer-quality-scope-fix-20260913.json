@@ -1,0 +1,41 @@
+{
+  "failed_ci_run": 34739597458,
+  "failed_commit": "184b52b",
+  "original_cases_passed": 28,
+  "original_case_count": 30,
+  "original_failed_cases": [
+    "compare-1",
+    "injection-5"
+  ],
+  "critical_failed_cases": [
+    "injection-5"
+  ],
+  "deterministic_tests_passed": 50,
+  "source_sha256": {
+    "backend/research/evidence_policy.py": "d936577e602fece417564c21dc0894b3cf51596b54bf159d6d6d98bedf2b281c",
+    "backend/research/graph.py": "65a5c475579b314dbbdecb24add47d564db0a75212a8aebbe6743e58485d59ce",
+    "tests/test_claim_scope.py": "bfc023c959c6d010589b8571fe6913019899657f04d3b169b224043891a253d0",
+    "eval/research_quality_cases.json": "b221029efcd4da0c6016dc16d38683cf080f9c8ab8d1213af907bbb25d17cfb7"
+  },
+  "fixed_suite": {
+    "case_count": 30,
+    "passed_count": 30,
+    "pass_rate": 1.0,
+    "citation_support": 1.0,
+    "answer_coverage": 1.0,
+    "critical_failures": [],
+    "passed": true
+  },
+  "holdout": {
+    "case_count": 3,
+    "passed_count": 3,
+    "pass_rate": 1.0,
+    "citation_support": 1.0,
+    "answer_coverage": 1.0,
+    "critical_failures": [],
+    "passed": true
+  },
+  "model": "deepseek-v4-flash",
+  "thinking_type": "disabled",
+  "boundary": "Single local full run after targeted diagnosis; fixed synthetic sources and same-model external scoring. Thresholds and original cases unchanged. Remote repair run tracked separately."
+}

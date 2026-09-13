@@ -3,6 +3,10 @@ import re
 
 NUMBER = re.compile(r"(?<![A-Za-z])\d+(?:[,.]\d+)?(?:\s*[%％]|\s*(?:万|亿|年|月|日|美元|元|条|项|家|倍))?")
 HIGH_STAKES = re.compile(r"\d|法规|法律|条例|监管|罚款|比例|百分比|金额|市场规模|增长率")
+ENUMERATED_SCOPE = re.compile(
+    r"(?:结论|事实|结果|发现|原因|问题|事项)(?:性表述)?(?:仅有|只有|仅为|总共|一共|共计|为)"
+    r"[一二三四五六七八九十百两\d]+(?:条|项|个)"
+)
 
 
 def requires_strong_evidence(text: str) -> bool:
@@ -12,6 +16,12 @@ def requires_strong_evidence(text: str) -> bool:
 def validate_claim(text: str, sources: list[dict]) -> tuple[bool, str]:
     """Require traceable, independent support for numeric or regulatory claims."""
     combined = "\n".join(source.get("text", "") for source in sources)
+    # A selected finding does not establish an exhaustive count of all findings.
+    # Keep this conservative lexical gate separate from semantic validation.
+    compact = re.sub(r"\s+", "", text)
+    source_text = re.sub(r"\s+", "", combined)
+    if any(match.group() not in source_text for match in ENUMERATED_SCOPE.finditer(compact)):
+        return False, "原文未明确列举结论或事项总数；请直接陈述事实，保留并列限制，不自行断言仅有几条"
     numbers = [token.replace("％", "%").replace(",", "") for token in NUMBER.findall(text)]
     normalized = combined.replace("％", "%").replace(",", "")
     if any(token not in normalized for token in numbers):
