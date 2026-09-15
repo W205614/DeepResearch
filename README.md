@@ -136,7 +136,7 @@ Docker 已执行 `docker compose up -d --build --wait --wait-timeout 300`，后�
 
 已有部署升级前先做备份，并等待运行任务结束。Compose 的 `migrate` 服务执行 `alembic upgrade head`，当前最新版本为 `0009_java_business_outbox`；升级必须同时发布 Java `backend`、Python `agent`、两个 Worker 和 Web。可运行 `.venv/Scripts/python.exe scripts/verify_local_deployment.py` 检查默认本机入口、迁移、外发关闭状态与监控。维护及隔离恢复步骤见 [本机运维记录](docs/local-pilot-operations.md)。
 
-所有服务仅在 Docker 网络内互通，Web、Keycloak 与 Grafana 仅绑定本机回环地址。停止服务使用 `docker compose down`；不要使用 `down -v`，否则会删除演示数据卷。旧的 `compose.enterprise.yaml`、`compose.demo.yaml` 与 `compose.dev.yaml` 仅为兼容旧命令保留，不再改变运行拓扑。
+所有服务仅在 Docker 网络内互通，Web、Keycloak 与 Grafana 仅绑定本机回环地址。停止服务使用 `docker compose down`；不要使用 `down -v`，否则会删除演示数据卷。项目只维护根目录的 `compose.yaml` 作为运行拓扑；测试告警与隔离组件验证分别使用 `compose.test.yaml` 和 `compose.verify.yaml`。
 ## API 配置
 
 最小配置如下：
