@@ -51,11 +51,14 @@ def emit_telemetry_probe() -> None:
     """Emit one sanitized record so the smoke test exercises the live log pipeline."""
     command = (
         "from backend.core.config import Settings; "
-        "from backend.core.observability import configure_task_logger,configure_telemetry; "
-        "from opentelemetry import _logs; "
+        "from backend.core.observability import configure_task_logger,configure_telemetry,tracer; "
+        "from opentelemetry import _logs,trace; "
         "settings=Settings(); "
         "configure_telemetry(None,settings.otel_exporter_otlp_endpoint); "
+        "span=tracer().start_span('observability-smoke'); "
+        "span.end(); "
         "configure_task_logger(settings.task_log_level).info('observability smoke probe'); "
+        "assert trace.get_tracer_provider().force_flush(5000); "
         "assert _logs.get_logger_provider().force_flush(5000)"
     )
     run("exec", "-T", "agent", "python", "-c", command, capture=True)

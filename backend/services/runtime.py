@@ -74,16 +74,7 @@ class Runtime:
             # Workers can resume a run started by another replica, so checkpoints
             # live in the durable PostgreSQL source of truth in enterprise mode.
             checkpoint_url = self.settings.database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
-            self.checkpointer = await self.stack.enter_async_context(
-                AsyncPostgresSaver.from_conn_string(checkpoint_url))
-            for attempt in range(3):
-                try:
-                    await self.checkpointer.setup()
-                    break
-                except UniqueViolation:
-                    if attempt == 2:
-                        raise
-                    await asyncio.sleep(0.5 * (attempt + 1))
+            await self._open_postgres_checkpointer(checkpoint_url)
         else:
             # Explicit offline fixtures retain the small SQLite implementation only.
             self.checkpointer = await self.stack.enter_async_context(
@@ -98,6 +89,23 @@ class Runtime:
                 self.recovery_task = asyncio.create_task(self.recover_stale_runs_loop(), name="run-recovery")
             await self.recover_indexing_documents()
         return self
+
+    async def _open_postgres_checkpointer(self, checkpoint_url: str) -> None:
+        # API and workers start together in Compose. LangGraph's idempotent DDL
+        # still deadlocks when multiple processes run it concurrently. Acquire
+        # the database-scoped lock before opening the saver connection because
+        # CREATE INDEX CONCURRENTLY also waits for older open transactions.
+        async with self.db.migration_guard("langgraph-checkpoint-schema"):
+            self.checkpointer = await self.stack.enter_async_context(
+                AsyncPostgresSaver.from_conn_string(checkpoint_url))
+            for attempt in range(3):
+                try:
+                    await self.checkpointer.setup()
+                    break
+                except UniqueViolation:
+                    if attempt == 2:
+                        raise
+                    await asyncio.sleep(0.5 * (attempt + 1))
 
     async def connect_queue(self):
         if self.queue is None:

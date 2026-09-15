@@ -38,3 +38,38 @@ def test_postgres_rewrites_sqlite_upserts_before_binding_parameters():
     assert db._sql("INSERT OR IGNORE INTO counters(run_id) VALUES(?)") == (
         "INSERT INTO counters(run_id) VALUES($1) ON CONFLICT DO NOTHING"
     )
+
+
+@pytest.mark.asyncio
+async def test_migration_guard_polls_without_blocking_lock_wait(monkeypatch):
+    events = []
+
+    class FakeConnection:
+        attempts = iter((False, True))
+
+        async def fetchval(self, query, lock_id):
+            events.append(("try", query, lock_id))
+            return next(self.attempts)
+
+        async def execute(self, query, lock_id):
+            events.append(("unlock", query, lock_id))
+
+        async def close(self):
+            events.append(("close",))
+
+    async def connect(_dsn):
+        return FakeConnection()
+
+    async def no_wait(_seconds):
+        events.append(("sleep",))
+
+    monkeypatch.setattr("backend.core.postgres.asyncpg.connect", connect)
+    monkeypatch.setattr("backend.core.postgres.asyncio.sleep", no_wait)
+    db = PostgresDatabase("postgresql://unused")
+
+    async with db.migration_guard("checkpoint-schema"):
+        events.append(("body",))
+
+    assert [event[0] for event in events] == ["try", "sleep", "try", "body", "unlock", "close"]
+    assert events[0][1] == "SELECT pg_try_advisory_lock($1)"
+    assert events[-2][1] == "SELECT pg_advisory_unlock($1)"

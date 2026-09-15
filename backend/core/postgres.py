@@ -1,5 +1,6 @@
 """PostgreSQL source-of-truth adapter for the enterprise Compose profile."""
 from contextlib import asynccontextmanager
+import asyncio
 import json
 import re
 import hashlib
@@ -69,6 +70,24 @@ class PostgresDatabase:
             await conn.execute("SELECT pg_advisory_lock($1)", lock_id)
             yield
         finally:
+            await conn.close()
+
+    @asynccontextmanager
+    async def migration_guard(self, key):
+        """Serialize concurrent DDL without leaving lock waiters in a transaction."""
+        lock_id = int.from_bytes(hashlib.sha256(key.encode()).digest()[:8], "big", signed=True)
+        conn = await asyncpg.connect(self.dsn)
+        acquired = False
+        try:
+            while not await conn.fetchval("SELECT pg_try_advisory_lock($1)", lock_id):
+                # A blocking pg_advisory_lock SELECT retains a virtual transaction
+                # that CREATE INDEX CONCURRENTLY waits for, forming a lock cycle.
+                await asyncio.sleep(0.1)
+            acquired = True
+            yield
+        finally:
+            if acquired:
+                await conn.execute("SELECT pg_advisory_unlock($1)", lock_id)
             await conn.close()
 
     def _sql(self, sql: str) -> str:

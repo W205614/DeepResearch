@@ -9,6 +9,7 @@
 - **不是 Java 代理壳**：研究创建、重复请求判定、工作空间权限、并发准入、任务取消/恢复、线程与偏好 CRUD 均由 Java 直接执行；Nginx 不再把公网 API 指向 Python。
 - **Agent 仍使用 Python**：LangGraph、检索与引用核验、模型/搜索、文档处理和 Worker 未重写，避免为了语言统一破坏已经验证的 AI 执行链。
 - **命令可靠投递**：迁移 `0009_java_business_outbox` 增加业务 Outbox；Java 事务提交任务状态与待投递命令，后台调度器通过内部令牌调用 Python Agent。删除任务时 Outbox 记录随任务级联清理。
+- **并发冷启动可控**：Java、Agent 与 Worker 仍共享 PostgreSQL；Agent/Worker 使用数据库 advisory lock 串行执行 LangGraph checkpoint schema setup，避免多进程首次启动时并发 DDL 死锁。
 - **可观测与部署同步拆分**：Compose 新增 `backend`（Java）并将 Python API 改名为 `agent`；Prometheus 分别采集 `deepresearch-business`、`deepresearch-api` 和两个 Worker，健康检查同时覆盖 Java 与 Agent。
 
 | 本轮验证 | 结果 | 边界 |
