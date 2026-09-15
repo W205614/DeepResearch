@@ -90,9 +90,9 @@ def restore(source, project):
     for name, service in config['services'].items():
         service.pop('ports', None)
         service.pop('build', None)
-        if name in {'backend', 'worker', 'document-worker', 'migrate', 'web'}:
-            service['image'] = 'deepresearch-' + ('worker' if name == 'document-worker' else name)
-        if name in {'backend', 'worker', 'document-worker'}:
+        if name in {'agent', 'backend', 'worker', 'document-worker', 'migrate', 'web'}:
+            service['image'] = 'deepresearch-' + name
+        if name in {'agent', 'worker', 'document-worker'}:
             service['environment']['FEISHU_WEBHOOK_URL'] = ''
             service['environment']['LLM_API_KEY'] = ''
             service['environment']['EMBEDDING_API_KEY'] = ''
@@ -127,11 +127,11 @@ def restore(source, project):
         recovery_services = [name for name in config['services']
                              if name not in {'worker', 'document-worker'}]
         target('up', '-d', '--wait', '--wait-timeout', '300', *recovery_services)
-        target('exec', '-T', 'backend', 'python', '-c',
-               "import httpx; c=httpx.Client(); assert c.get('http://backend:8000/readyz').status_code==200; "
-               "assert c.get('http://backend:8000/api/metrics').status_code==401; "
+        target('exec', '-T', 'agent', 'python', '-c',
+               "import httpx; c=httpx.Client(); assert c.get('http://backend:8080/readyz').status_code==200; "
+               "assert c.get('http://backend:8080/api/metrics').status_code==401; "
                "assert c.get('http://keycloak:8080/realms/deepresearch/.well-known/openid-configuration').status_code==200")
-        probe = target('exec', '-T', 'backend', 'python', '-c', RESTORED_RETRIEVAL).decode().strip()
+        probe = target('exec', '-T', 'agent', 'python', '-c', RESTORED_RETRIEVAL).decode().strip()
         elapsed = round(time.monotonic() - started, 2)
         if elapsed > 3600:
             raise RuntimeError('Recovery exceeded 60 minute RTO target')

@@ -17,12 +17,13 @@ def command(*args):
 PROBE = '''
 import json, os, httpx
 c=httpx.Client(timeout=10)
-assert c.get('http://backend:8000/readyz').json()=={'status':'ready'}
-assert c.get('http://backend:8000/api/capabilities').status_code==401
+assert c.get('http://backend:8080/readyz').json()=={'status':'ready'}
+assert c.get('http://backend:8080/api/capabilities').status_code==401
+assert c.get('http://agent:8000/readyz').json()=={'status':'ready'}
 assert os.environ.get('ALLOW_INTERNAL_MODEL_PROCESSING','false').lower()=='false'
 targets=c.get('http://prometheus:9090/api/v1/targets').json()['data']['activeTargets']
 jobs={t['labels']['job']:t['health'] for t in targets}
-for job in ('deepresearch-api','deepresearch-worker','deepresearch-document-worker'):
+for job in ('deepresearch-business','deepresearch-api','deepresearch-worker','deepresearch-document-worker'):
     assert jobs.get(job)=='up', (job,jobs.get(job))
 rules=c.get('http://prometheus:9090/api/v1/rules').json()['data']['groups']
 names=[r['name'] for group in rules for r in group['rules']]
@@ -36,9 +37,9 @@ def main():
     command(sys.executable, 'scripts/probe_external.py', '--base-url', 'http://127.0.0.1:8080')
     version = command('docker', 'compose', 'exec', '-T', 'postgres', 'psql', '-U',
                       'deepresearch', '-d', 'deepresearch', '-Atc', 'select version_num from alembic_version;')
-    if version != '0008_reliability':
+    if version != '0009_java_business_outbox':
         raise RuntimeError('Unexpected database migration revision')
-    report = json.loads(command('docker', 'compose', 'exec', '-T', 'backend', 'python', '-c', PROBE))
+    report = json.loads(command('docker', 'compose', 'exec', '-T', 'agent', 'python', '-c', PROBE))
     report.update(migration=version, passed=True, scope='current single-host deployment; no external alert delivery tested')
     print(json.dumps(report, indent=2))
 

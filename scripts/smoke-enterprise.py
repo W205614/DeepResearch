@@ -35,16 +35,16 @@ def wait_for(label: str, action, attempts: int = 30) -> None:
     raise RuntimeError(f"Timed out waiting for {label}: {error}")
 
 
-def backend_get(url: str) -> None:
-    run("exec", "-T", "backend", "python", "-c", (
+def container_get(url: str) -> None:
+    run("exec", "-T", "agent", "python", "-c", (
         "import urllib.request; "
         f"assert urllib.request.urlopen('{url}', timeout=5).status == 200"
     ), capture=True)
 
 
 def telemetry_backends_ready() -> None:
-    backend_get("http://tempo:3200/ready")
-    backend_get("http://loki:3100/ready")
+    container_get("http://tempo:3200/ready")
+    container_get("http://loki:3100/ready")
 
 
 def emit_telemetry_probe() -> None:
@@ -58,7 +58,7 @@ def emit_telemetry_probe() -> None:
         "configure_task_logger(settings.task_log_level).info('observability smoke probe'); "
         "assert _logs.get_logger_provider().force_flush(5000)"
     )
-    run("exec", "-T", "backend", "python", "-c", command, capture=True)
+    run("exec", "-T", "agent", "python", "-c", command, capture=True)
 
 def telemetry_records_ready() -> None:
     command = (
@@ -68,7 +68,7 @@ def telemetry_records_ready() -> None:
         "traces=json.load(urllib.request.urlopen('http://tempo:3200/api/search?'+urllib.parse.urlencode({'tags':'service.name=deepresearch-api','limit':'1'}),timeout=5)); "
         "assert traces.get('traces')"
     )
-    run("exec", "-T", "backend", "python", "-c", command, capture=True)
+    run("exec", "-T", "agent", "python", "-c", command, capture=True)
 
 def targets_ready() -> None:
     payload = read_json("http://127.0.0.1:3000/api/health")
@@ -79,13 +79,13 @@ def targets_ready() -> None:
         "data=json.load(urllib.request.urlopen('http://prometheus:9090/api/v1/targets',timeout=5)); "
         "targets=data['data']['activeTargets']; "
         "assert {x['labels'].get('job') for x in targets if x['health']=='up'} "
-        ">= {'deepresearch-api','deepresearch-worker','deepresearch-document-worker'}"
+        ">= {'deepresearch-business','deepresearch-api','deepresearch-worker','deepresearch-document-worker'}"
     )
-    run("exec", "-T", "backend", "python", "-c", command, capture=True)
+    run("exec", "-T", "agent", "python", "-c", command, capture=True)
 
 
 def verify_migration() -> None:
-    expected = run("exec", "-T", "backend", "python", "-c", (
+    expected = run("exec", "-T", "agent", "python", "-c", (
         "from alembic.config import Config; from alembic.script import ScriptDirectory; "
         "print('\\n'.join(ScriptDirectory.from_config(Config('alembic.ini')).get_heads()))"
     ), capture=True).split()
@@ -113,11 +113,12 @@ def main() -> int:
     output = run("exec", "-T", "redis", "redis-cli", "ping", capture=True).strip()
     if output != "PONG":
         raise RuntimeError("Redis did not return PONG")
-    wait_for("backend readiness", lambda: backend_get("http://127.0.0.1:8000/readyz"))
-    wait_for("worker metrics", lambda: backend_get("http://worker:8001/metrics"))
-    wait_for("document worker metrics", lambda: backend_get("http://document-worker:8001/metrics"))
-    run("exec", "-T", "backend", "python", "-c", "import socket; socket.create_connection(('otel-collector',4317),timeout=5).close()")
-    print("Enterprise smoke passed: web, OIDC, migration heads, Redis, backend, both workers, Prometheus, Grafana, Tempo, Loki, and OTel.")
+    wait_for("Java business readiness", lambda: container_get("http://backend:8080/readyz"))
+    wait_for("Python agent readiness", lambda: container_get("http://agent:8000/readyz"))
+    wait_for("worker metrics", lambda: container_get("http://worker:8001/metrics"))
+    wait_for("document worker metrics", lambda: container_get("http://document-worker:8001/metrics"))
+    run("exec", "-T", "agent", "python", "-c", "import socket; socket.create_connection(('otel-collector',4317),timeout=5).close()")
+    print("Enterprise smoke passed: web, Java business API, Python Agent, OIDC, migration heads, Redis, both workers, Prometheus, Grafana, Tempo, Loki, and OTel.")
     return 0
 
 

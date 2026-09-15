@@ -50,7 +50,7 @@
 
 # 真实嵌入：只在 Docker 私有网络执行；状态使用临时 SQLite，Milvus 使用并在结束后删除 dr_eval_* 集合
 $workspace = (Get-Location).Path
-docker compose run --rm --no-deps -v "${workspace}:/workspace:ro" backend python /workspace/scripts/evaluate_retrieval.py --corpus /workspace/eval/local_retrieval_corpus.json --cases /workspace/eval/local_retrieval_cases.json --output /tmp/retrieval-result.json
+docker compose run --rm --no-deps -v "${workspace}:/workspace:ro" agent python /workspace/scripts/evaluate_retrieval.py --corpus /workspace/eval/local_retrieval_corpus.json --cases /workspace/eval/local_retrieval_cases.json --output /tmp/retrieval-result.json
 ```
 
 要得到“回答准确率”，需要另建问题、参考答案和证据标注集，并由人工或双盲判定答案事实正确性、完整性和引用支撑；本评测不会用检索指标替代它。

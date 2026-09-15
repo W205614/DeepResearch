@@ -1,0 +1,51 @@
+server:
+  port: 8080
+  shutdown: graceful
+  forward-headers-strategy: framework
+
+spring:
+  application:
+    name: deepresearch-business
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/deepresearch}
+    username: ${SPRING_DATASOURCE_USERNAME:deepresearch}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+    hikari:
+      maximum-pool-size: 8
+      minimum-idle: 1
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${OIDC_ISSUER:http://localhost:8180/realms/deepresearch}
+          jwk-set-uri: ${OIDC_JWKS_URL:http://localhost:8180/realms/deepresearch/protocol/openid-connect/certs}
+          audiences: ${OIDC_AUDIENCE:deepresearch-api}
+
+management:
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: health,prometheus
+      path-mapping:
+        prometheus: metrics
+  endpoint:
+    health:
+      show-details: never
+
+deepresearch:
+  auth-mode: ${AUTH_MODE:oidc}
+  oidc-issuer: ${OIDC_ISSUER:http://localhost:8180/realms/deepresearch}
+  agent-base-url: ${AGENT_BASE_URL:http://localhost:8000}
+  internal-token: ${INTERNAL_SERVICE_TOKEN:}
+  internal-token-file: ${INTERNAL_SERVICE_TOKEN_FILE:}
+  allow-internal-model-processing: ${ALLOW_INTERNAL_MODEL_PROCESSING:false}
+  workspace-concurrent-run-limit: ${WORKSPACE_CONCURRENT_RUN_LIMIT:2}
+  max-queued-runs: ${MAX_QUEUED_RUNS:20}
+  max-run-total-seconds: ${MAX_RUN_TOTAL_SECONDS:1200}
+  max-run-call-attempts: ${MAX_RUN_CALL_ATTEMPTS:80}
+  max-run-reserved-tokens: ${MAX_RUN_RESERVED_TOKENS:2000000}

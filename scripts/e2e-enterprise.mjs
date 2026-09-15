@@ -83,7 +83,7 @@ try {
   await createUser(token)
   const frontendDir = fileURLToPath(new URL('../frontend/', import.meta.url))
   const playwrightCli = fileURLToPath(new URL('../frontend/node_modules/@playwright/test/cli.js', import.meta.url))
-  const result = await execute(process.execPath, [playwrightCli, 'test',
+  const result = await execute(process.execPath, [playwrightCli, 'test', '--workers=1',
     ...(process.env.E2E_GREP ? ['--grep', process.env.E2E_GREP] : [])], {
     cwd: frontendDir,
     env: { ...process.env, E2E_USERNAME: username, E2E_PASSWORD: password },

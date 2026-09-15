@@ -15,8 +15,8 @@ def load_smoke():
 
 @pytest.mark.parametrize("heads,actual,accepted", [
     ("future_revision\n", " future_revision \n", True),
-    ("0008_reliability\n", "0004_consistency\n", False),
-    ("0008_reliability\n", "", False),
+    ("0009_java_business_outbox\n", "0008_reliability\n", False),
+    ("0009_java_business_outbox\n", "", False),
     ("", "", False),
     ("branch_a\nbranch_b\n", "branch_b\nbranch_a\n", True),
 ])
@@ -24,7 +24,7 @@ def test_migration_gate(monkeypatch, heads, actual, accepted):
     smoke = load_smoke()
 
     def run(*args, **kwargs):
-        return heads if args[2] == "backend" else actual
+        return heads if args[2] == "agent" else actual
 
     monkeypatch.setattr(smoke, "run", run)
     if accepted:

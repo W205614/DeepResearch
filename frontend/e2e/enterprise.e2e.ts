@@ -111,6 +111,67 @@ test('temporary enterprise user completes PKCE login and reaches the protected w
   await expect(page.getByText('本地研究指标')).toBeVisible()
 })
 
+test('Java business API owns authenticated thread, preference and research lifecycle', async ({ page }) => {
+  test.skip(!username || !password, 'Set E2E_USERNAME and E2E_PASSWORD to run the live OIDC path.')
+  await page.goto('/')
+  await page.getByRole('button', { name: '登录并开始研究' }).click()
+  await page.locator('#username').fill(username!)
+  await page.locator('#password').fill(password!)
+  await page.locator('#kc-login').click()
+  await expect(page.getByRole('button', { name: /退出/ })).toBeVisible()
+
+  const token = await page.evaluate(() => sessionStorage.getItem('dr-token'))
+  const headers = { Authorization: `Bearer ${token}` }
+  let threadId = ''
+  let memoryId = ''
+  try {
+    const createdThread = await page.request.post('/api/threads', {
+      headers, data: { title: 'Java 业务边界验收' },
+    })
+    expect(createdThread.status()).toBe(201)
+    threadId = (await createdThread.json()).id
+    expect((await page.request.patch(`/api/threads/${threadId}`, {
+      headers, data: { title: 'Java 业务边界验收（已重命名）' },
+    })).ok()).toBeTruthy()
+
+    const createdMemory = await page.request.post('/api/memories', {
+      headers, data: { content: '回答优先给出可核验的证据边界' },
+    })
+    expect(createdMemory.status()).toBe(201)
+    memoryId = (await createdMemory.json()).id
+    expect((await page.request.put(`/api/memories/${memoryId}`, {
+      headers, data: { content: '回答优先说明事实、推断与证据边界' },
+    })).ok()).toBeTruthy()
+    const memories = await (await page.request.get('/api/memories', { headers })).json()
+    expect(memories).toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: memoryId, content: '回答优先说明事实、推断与证据边界' }),
+    ]))
+
+    const clientRequestId = `java-boundary-${Date.now()}`
+    const request = {
+      topic: '验证 Java 业务服务能够持久化、幂等调度并取消研究任务',
+      data_policy: 'public', mode: 'quick', thread_id: threadId,
+      client_request_id: clientRequestId,
+    }
+    const createdRun = await page.request.post('/api/research/runs', { headers, data: request })
+    expect(createdRun.status()).toBe(202)
+    const run = await createdRun.json()
+    const replay = await page.request.post('/api/research/runs', { headers, data: request })
+    expect(replay.status()).toBe(202)
+    expect((await replay.json()).id).toBe(run.id)
+
+    const cancelled = await page.request.post(`/api/research/runs/${run.id}/cancel`, { headers })
+    expect(cancelled.status()).toBe(200)
+    expect((await cancelled.json()).status).toBe('cancelled')
+    const eventStream = await page.request.get(`/api/research/runs/${run.id}/events`, { headers })
+    expect(eventStream.status()).toBe(200)
+    expect(await eventStream.text()).toContain('"type":"cancelled"')
+  } finally {
+    if (memoryId) expect((await page.request.delete(`/api/memories/${memoryId}`, { headers })).ok()).toBeTruthy()
+    if (threadId) expect((await page.request.delete(`/api/threads/${threadId}`, { headers })).ok()).toBeTruthy()
+  }
+})
+
 test('document lifecycle and viewer authorization with real adapters', async ({ page }) => {
   test.skip(process.env.E2E_DOCUMENTS !== '1', 'Explicit real embedding acceptance only')
   test.setTimeout(120_000)

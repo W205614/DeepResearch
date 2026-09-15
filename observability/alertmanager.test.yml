@@ -9,7 +9,7 @@ route:
 receivers:
   - name: deepresearch-internal
     webhook_configs:
-      - url: http://backend:8000/internal/alerts
+      - url: http://agent:8000/internal/alerts
         send_resolved: true
         http_config:
           authorization:

@@ -35,6 +35,8 @@ class Settings(BaseSettings):
     feishu_webhook_url: SecretStr = SecretStr("")
     alert_relay_token: SecretStr = SecretStr("")
     alert_relay_token_file: Path | None = None
+    internal_service_token: SecretStr = SecretStr("")
+    internal_service_token_file: Path | None = None
     workspace_concurrent_run_limit: int = Field(2, ge=1, le=20)
     document_scan_mode: Literal["disabled", "clamav"] = "clamav"
     clamav_host: str = "clamav"

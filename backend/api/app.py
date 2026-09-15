@@ -46,6 +46,13 @@ def create_app(settings: Settings | None = None):
         except OSError:
             relay_token = ""
     app.state.alert_relay_token = relay_token
+    internal_token = settings.internal_service_token.get_secret_value()
+    if settings.internal_service_token_file:
+        try:
+            internal_token = settings.internal_service_token_file.read_text(encoding="utf-8").strip()
+        except OSError:
+            internal_token = ""
+    app.state.internal_service_token = internal_token
     configure_telemetry(app, settings.otel_exporter_otlp_endpoint)
     app.mount("/metrics", make_asgi_app())
     def rt(request: Request) -> Runtime:
@@ -120,6 +127,48 @@ def create_app(settings: Settings | None = None):
         app.state.alert_relay.mark_delivered(events)
         ALERT_DELIVERIES.labels("succeeded").inc()
         return {"delivered": True, "count": len(events), "statuses": sorted({event["status"] for event in events})}
+
+    def require_internal(authorization: str) -> None:
+        expected = app.state.internal_service_token
+        supplied = authorization.removeprefix("Bearer ").strip() if authorization.startswith("Bearer ") else ""
+        if not expected:
+            raise HTTPException(503, "内部服务令牌未配置")
+        if not supplied or not hmac.compare_digest(supplied, expected):
+            raise HTTPException(401, "内部服务调用未授权")
+
+    @app.post("/internal/agent/runs/{run_id}/schedule", status_code=202)
+    async def schedule_existing_run(run_id: str, payload: dict, authorization: str = Header(""), runtime=Depends(rt)):
+        """Idempotent command adapter used only by the Java business outbox."""
+        require_internal(authorization)
+        run = await runtime.db.one("SELECT id,status FROM runs WHERE id=?", (run_id,))
+        if not run:
+            raise HTTPException(404, "任务不存在")
+        if run["status"] != "queued":
+            return {"accepted": False, "status": run["status"]}
+        await runtime.schedule(run_id, resume=bool(payload.get("resume", False)))
+        return {"accepted": True, "status": "queued"}
+
+    @app.post("/internal/agent/runs/{run_id}/abort", status_code=202)
+    async def abort_existing_run(run_id: str, authorization: str = Header(""), runtime=Depends(rt)):
+        """Best-effort process/queue abort; Java has already made cancellation durable."""
+        require_internal(authorization)
+        run = await runtime.db.one("SELECT id,attempt_count FROM runs WHERE id=?", (run_id,))
+        if not run:
+            raise HTTPException(404, "任务不存在")
+        task = runtime.tasks.get(run_id)
+        if task:
+            task.cancel()
+            await asyncio.gather(task, return_exceptions=True)
+        if runtime.queue:
+            from arq.jobs import Job
+            try:
+                await asyncio.wait_for(
+                    Job(runtime.run_job_id(run_id, int(run.get("attempt_count") or 0), next_attempt=False), runtime.queue).abort(),
+                    1,
+                )
+            except Exception:
+                pass
+        return {"accepted": True}
     @app.get("/healthz")
     async def health():
         return {"status": "ok"}

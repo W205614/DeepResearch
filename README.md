@@ -2,9 +2,26 @@
 
 面向中文研究任务的 AI 应用个人项目，已完成单主机部署、故障控制与恢复验证。核心目标是让失败有边界、降级有说明、结论有证据，而不是保证模型永不出错。当前实现适合受控演示与内部试用准备，不代表生产高可用或 SLA。
 
-系统以 LangGraph 编排多个具备独立职责、工具权限和结构化交接物的研究 Agent，并以来源约束与 SSRF 防护降低不可核查结论风险。默认企业单机演示环境使用 PostgreSQL、Redis Worker、Milvus、Keycloak OIDC、MinIO 对象存储、ClamAV、OpenTelemetry、Prometheus/Grafana、Tempo/Loki，提供工作空间权限、审计、隔离扫描、可恢复任务、数据导出与备份恢复能力。
+系统采用 **Java 21 + Spring Boot 3.5 业务后端、Python Agent 执行层**。Java 对外承接 OIDC、工作空间/成员、会话、个人偏好、研究准入与幂等、并发限制、审计、SSE 和生命周期命令；Python 保留 LangGraph 多 Agent 编排、RAG、模型/搜索适配、文档解析、检查点与 ARQ Worker。两者通过只在 Docker 内网可达、带独立 Bearer 凭证的内部接口连接，并用 PostgreSQL Outbox 可靠投递调度/取消命令。
 
-## 当前进展：可靠性加固与单机部署（2026-09-13）
+## 当前进展：Java 业务后端迁移（2026-09-15）
+
+- **不是 Java 代理壳**：研究创建、重复请求判定、工作空间权限、并发准入、任务取消/恢复、线程与偏好 CRUD 均由 Java 直接执行；Nginx 不再把公网 API 指向 Python。
+- **Agent 仍使用 Python**：LangGraph、检索与引用核验、模型/搜索、文档处理和 Worker 未重写，避免为了语言统一破坏已经验证的 AI 执行链。
+- **命令可靠投递**：迁移 `0009_java_business_outbox` 增加业务 Outbox；Java 事务提交任务状态与待投递命令，后台调度器通过内部令牌调用 Python Agent。删除任务时 Outbox 记录随任务级联清理。
+- **可观测与部署同步拆分**：Compose 新增 `backend`（Java）并将 Python API 改名为 `agent`；Prometheus 分别采集 `deepresearch-business`、`deepresearch-api` 和两个 Worker，健康检查同时覆盖 Java 与 Agent。
+
+| 本轮验证 | 结果 | 边界 |
+| --- | --- | --- |
+| Java | Maven 4/4 通过；容器镜像独立构建通过 | 包含请求校验与配置；真实 PostgreSQL 业务链由浏览器 E2E 覆盖 |
+| Python Agent | 全量 208 通过、4 个显式真实组件用例跳过；Ruff 通过 | 没有把跳过项计为通过 |
+| 前端与认证业务链 | Vue 12/12、生产构建通过；真实 Keycloak E2E 4 通过、4 个付费模型/真实嵌入用例按开关跳过 | 已覆盖 OIDC、Java 线程/偏好 CRUD、幂等创建、取消及 SSE；未调用付费模型 |
+| 离线流程 | 固定 7/7 路由、来源与引用流程通过 | 使用可控替代模型/搜索，不代表真实回答准确率 |
+| Docker 单机栈 | 全量容器重建并健康；企业烟测和本机部署核验通过，迁移为 `0009_java_business_outbox`，4 个 Prometheus 目标为 up | 未执行本轮真实模型 30 题、外部告警收件、容量或长期稳定性测试 |
+
+这次迁移保留共享 PostgreSQL 作为渐进式拆分阶段：Java 是公开业务写入和准入入口，Python Worker 仍会更新任务执行状态与检查点，因此不能描述成数据库完全隔离的微服务。后续若做多副本或独立发布，需要再补 Outbox 抢占锁/租约、独立 schema/数据契约和跨服务容量验证。
+
+## 历史进展：可靠性加固与单机部署（2026-09-13）
 
 - **控制失败成本**：任务总截止时间、调用次数和保守 Token 预算持久化；重启与人工继续不隐式清零。模型错误分类、有限退避、合法 `Retry-After`、熔断与单次请求绝对超时共同限制重试；不自动切换未经批准的供应商。
 - **保护交付结果**：统一检查模型上下文预算，长资料按问题选择段落；保存分批核验成果，后续失败时只展示已验证部分。执行状态与完整、部分、证据不足、未核验等结果质量分开，普通聊天不能冒充已核验研究报告。
@@ -48,7 +65,7 @@
 
 本次相关后端回归 **88 项通过**、前端 **12 项通过**及生产构建通过；真实模型聚焦复测 `conflict-1`、`negation-2`、`injection-1` 三项通过，**未重跑完整 30 题质量集**。最终联网运行仍有 writer `too_long` 首次失败、重试成功，未消除所有模型输出重试；任务在令牌有效期内结束，不能作为自动续期的真实长任务验收。详细口径见 [流程优化实测记录](docs/research-flow-performance-20260912.md) 与 [脱敏汇总](eval/research-flow-performance-20260912.json)。
 
-升级后刷新页面并重新登录一次，以便保存新版所需的 Refresh Token。运行中的研究日志可用 `docker compose logs -f backend worker` 查看。
+升级后刷新页面并重新登录一次，以便保存新版所需的 Refresh Token。运行中的研究日志可用 `docker compose logs -f agent worker` 查看，Java 业务入口日志使用 `docker compose logs -f backend`。
 
 ## 历史改进（2026-09-12）：搜索调度与补搜诊断
 
@@ -66,14 +83,14 @@ Docker 已执行 `docker compose up -d --build --wait --wait-timeout 300`，后�
 
 | 领域 | 当前企业单机演示能力 | 验证入口 |
 | --- | --- | --- |
-| 身份与权限 | Keycloak OIDC 授权码 + PKCE；后端只校验 JWT；工作空间 `admin / researcher / viewer` 角色和资源级服务端校验 | `scripts/smoke-enterprise.py`、Playwright E2E |
-| 租户数据与审计 | 会话、研究、资料、检索、导出和死信恢复均按工作空间归属校验；关键管理动作写入不含正文的审计日志 | 权限单测、工作台设置页 |
-| 研究执行 | 同进程职责受限的 LangGraph Agent 协作、SSE 进度、来源约束、引用核验、SSRF 防护和会话上下文边界 | 后端回归、冻结评测 |
+| 身份与权限 | Java Resource Server 校验 Keycloak OIDC JWT；工作空间 `admin / researcher / viewer` 角色和资源级服务端校验 | `scripts/smoke-enterprise.py`、Playwright E2E |
+| 租户数据与审计 | Java 承接会话、研究准入、成员、偏好、限额和审计；Python Agent 承接文档、检索与执行状态 | 权限单测、Java 业务 E2E、工作台设置页 |
+| 研究执行 | Python 内同进程职责受限的 LangGraph Agent 协作；Java 提供任务生命周期与 SSE，保留来源约束、引用核验、SSRF 防护和会话上下文边界 | Java/Python 回归、冻结评测 |
 | 资料安全 | MinIO 隔离区、ClamAV 扫描、扫描失败拒绝、独立文档 Worker；`ready` 或原文有效的重建旧版可检索 | 文档安全测试、页面状态 |
-| 异步可恢复性 | Redis ARQ Worker、去重、检查点、重试、取消、心跳中断恢复、PostgreSQL 死信表与管理员恢复入口 | 故障演练、死信回归 |
+| 异步可恢复性 | Java PostgreSQL Outbox、Redis ARQ Worker、幂等、检查点、重试、取消、心跳中断恢复和死信恢复入口 | 浏览器业务链、故障演练、死信回归 |
 | 数据服务 | PostgreSQL 为事务源、Milvus 向量检索、BM25 + 向量融合、MinIO 原件保存 | 检索冻结集与恢复脚本 |
 | 可观测性 | Prometheus 指标、Grafana 面板、OTel Trace → Tempo、脱敏 JSON 应用日志 → Loki、Alertmanager → 可选飞书机器人 | 企业冒烟、Grafana Explore |
-| 质量门禁 | Python 单测/静态检查、Vue 单测/生产构建、真实 OIDC 浏览器 E2E、Compose 冒烟、离线流程评测 | GitHub Actions `CI` |
+| 质量门禁 | Maven、Python 单测/静态检查、Vue 单测/生产构建、真实 OIDC 浏览器 E2E、Compose 冒烟、离线流程评测 | GitHub Actions `CI` |
 | 迁移与恢复 | 幂等旧 SQLite 迁移、逻辑 SQL + 命名卷备份、恢复后冒烟验证 | `migrate_legacy_sqlite.py`、备份/恢复脚本 |
 
 下文给出每项能力的边界和操作方式。这里的“企业”指架构与治理链路的单机复现，不代表多副本生产集群或 SLA。
@@ -116,7 +133,7 @@ Docker 已执行 `docker compose up -d --build --wait --wait-timeout 300`，后�
 
 资料范围默认 `internal`，禁止公开搜索；`ALLOW_INTERNAL_MODEL_PROCESSING` 默认 `false`，因此内部资料相关模型处理会被策略拒绝。公开研究请在界面选择“公开”；该模式不加载内部知识库和私有会话历史。只有核准所配置模型、视觉与嵌入供应商后，管理员才可开启内部资料处理；`restricted` 请求直接拒绝外发。范围依赖用户正确声明，不是自动敏感信息检测。
 
-已有部署升级前先做备份，并等待运行任务结束。Compose 的 `migrate` 服务执行 `alembic upgrade head`，本次最新版本为 `0008_reliability`；必须同时发布新增 `document-worker`。可运行 `.venv/Scripts/python.exe scripts/verify_local_deployment.py` 检查默认本机入口、迁移、外发关闭状态与监控。维护及隔离恢复步骤见 [本机运维记录](docs/local-pilot-operations.md)。
+已有部署升级前先做备份，并等待运行任务结束。Compose 的 `migrate` 服务执行 `alembic upgrade head`，当前最新版本为 `0009_java_business_outbox`；升级必须同时发布 Java `backend`、Python `agent`、两个 Worker 和 Web。可运行 `.venv/Scripts/python.exe scripts/verify_local_deployment.py` 检查默认本机入口、迁移、外发关闭状态与监控。维护及隔离恢复步骤见 [本机运维记录](docs/local-pilot-operations.md)。
 
 所有服务仅在 Docker 网络内互通，Web、Keycloak 与 Grafana 仅绑定本机回环地址。停止服务使用 `docker compose down`；不要使用 `down -v`，否则会删除演示数据卷。旧的 `compose.enterprise.yaml`、`compose.demo.yaml` 与 `compose.dev.yaml` 仅为兼容旧命令保留，不再改变运行拓扑。
 ## API 配置
@@ -151,7 +168,14 @@ WEB_SEARCH_PROVIDER=deepseek
 
 ## 开发环境
 
-Python 依赖安装在项目内 `.venv`，不会写入系统 Python：
+业务后端需要 JDK 21 与 Maven 3.9+：
+
+```powershell
+Set-Location business-backend
+mvn test
+```
+
+Python Agent 依赖安装在项目内 `.venv`，不会写入系统 Python：
 
 ```powershell
 .\scripts\setup-dev.ps1
@@ -159,7 +183,7 @@ Python 依赖安装在项目内 `.venv`，不会写入系统 Python：
 .\.venv\Scripts\ruff.exe check backend tests scripts main.py
 ```
 
-前端位于 `frontend`，生产镜像会在构建时执行类型检查与 Vite 打包。
+前端位于 `frontend`，生产镜像会在构建时执行类型检查与 Vite 打包。CI 会分别构建 Java 业务镜像与 Python Agent 镜像。
 
 
 ## 检索评测与观测
@@ -169,7 +193,7 @@ Python 依赖安装在项目内 `.venv`，不会写入系统 Python：
 ```powershell
 # 真实嵌入只在 Docker 私有网络中执行；使用临时 SQLite 状态和自动清理的 dr_eval_* Milvus 集合
 $workspace = (Get-Location).Path
-docker compose run --rm --no-deps -v "${workspace}:/workspace:ro" backend python /workspace/scripts/evaluate_retrieval.py --corpus /workspace/eval/local_retrieval_corpus.json --cases /workspace/eval/local_retrieval_cases.json --output /tmp/retrieval-result.json
+docker compose run --rm --no-deps -v "${workspace}:/workspace:ro" agent python /workspace/scripts/evaluate_retrieval.py --corpus /workspace/eval/local_retrieval_corpus.json --cases /workspace/eval/local_retrieval_cases.json --output /tmp/retrieval-result.json
 ```
 
 最新真实嵌入测量与边界见 [eval/benchmark_results.md](eval/benchmark_results.md)。输出包含文档级 Recall、Precision、nDCG、MRR、冷/热查询时延和嵌入请求成本代理。它衡量资料检索，不代表最终答案正确率；答案质量仍需单独标注证据支撑、完整性和正确性。研究任务的 SSE 事件还会写入 `local_retrieval`，记录缓存、BM25、query embedding、向量搜索、融合和总耗时。当前界面并不流式返回模型 token，因此不能把这些数据称为模型 TTFT。
@@ -183,17 +207,23 @@ docker compose run --rm --no-deps -v "${workspace}:/workspace:ro" backend python
 
 ## 后端目录
 
-后端按职责拆分，避免将接口、研究图、存储和第三方适配器平铺在同一个目录：
+业务与 AI 执行按语言和责任边界拆分。Java 不是转发壳；只有文档、模型与检查点等 AI 专属能力由鉴权后的 Java 接口转交 Python：
 
 ```text
+business-backend/             # Java 21 / Spring Boot 对外业务服务
+├── api/                      # 工作空间、线程、研究、偏好、SSE 与代理边界
+├── config/                   # OIDC、数据源、内部 Agent 配置
+├── security/                 # JWT 工作空间身份、角色与审计
+└── service/                  # 准入、幂等、生命周期、视图与 Outbox
+
 backend/
-├── api/              # FastAPI 路由、SSE 和应用入口
+├── api/              # 容器内 FastAPI Agent/文档接口与内部命令入口
 ├── commands/         # CLI 命令
-├── core/             # 配置、认证、数据库、观测与网络安全
+├── core/             # Python 配置、数据库、观测与网络安全
 ├── domain/           # 请求、响应和工作流数据模型
 ├── infrastructure/   # 模型搜索提供方、Milvus 与演示数据
 ├── research/         # 意图路由、证据规则和 LangGraph 编排
-└── services/         # 研究运行服务与本地文档服务
+└── services/         # Agent 运行与本地文档服务
 ```
 
 ## CLI
@@ -201,7 +231,7 @@ backend/
 Docker 服务启动后，可使用有效的 Keycloak/OIDC access token 从 CLI 发起研究并在终端输出 Markdown 报告：
 
 ```powershell
-docker compose exec -T backend python -m backend.commands.cli --base-url http://web --token "<OIDC access token>" research "比较企业知识库 Agent 的私有化与 SaaS 部署" --mode deep
+docker compose exec -T agent python -m backend.commands.cli --base-url http://web --token "<OIDC access token>" research "比较企业知识库 Agent 的私有化与 SaaS 部署" --mode deep
 ```
 
 增加 `--json` 可输出完整运行记录。CLI 调用同一套本地 API、事件、证据校验和数据卷，不会绕开 Web 工作台的安全规则。
@@ -220,7 +250,7 @@ docker compose exec -T backend python -m backend.commands.cli --base-url http://
 
 同一 Worker 内，搜索与网页读取分别由 `WEB_SEARCH_CONCURRENCY`（默认 3）和 `WEB_FETCH_CONCURRENCY`（默认 6）限制并发，单轮搜索次数仍由数据库原子计数控制。引用核验把原文按来源 ID 去重传输，每条结论仍只允许使用其声明的引用，原文不因去重而截短。补搜后，只有分析输入完全相同时才复用该任务检查点中的分析结果；证据、问题或冲突改变会重新分析。可将搜索并发设为 1、网页并发设为 3 恢复原有请求并发水平。核验不通过时只请求对应结论的替换或删除，已通过内容原样保留；所有替换再次核验，未知引用和重复修订索引不会进入最终报告，避免整篇重写增加结论数量和输出超限。
 
-运行任务时，后端会向容器标准输出记录任务短 ID、节点开始/结束与耗时、模型调用、搜索结果数量、候选/可读网页数量、证据筛选数量和错误类别。查看命令为 `docker compose logs -f backend`。日志默认不记录问题文本、用户偏好、提示词、模型输入输出、URL 或网页正文；用 `TASK_LOG_LEVEL=WARNING` 可减少正常进度日志。
+运行任务时，Python Agent 会向容器标准输出记录任务短 ID、节点开始/结束与耗时、模型调用、搜索结果数量、候选/可读网页数量、证据筛选数量和错误类别。查看命令为 `docker compose logs -f agent worker`。日志默认不记录问题文本、用户偏好、提示词、模型输入输出、URL 或网页正文；用 `TASK_LOG_LEVEL=WARNING` 可减少正常进度日志。
 
 本地资料支持 TXT、Markdown、DOCX、PDF，以及 JPEG、PNG、静态 GIF、WebP 图片。正文保留章节，表格片段重复表头；DOCX 按正文顺序处理段落、表格与嵌入图片。扫描、图形或疑似双栏 PDF 页渲染整页后调用视觉模型，避免只提取嵌入图片丢失上下文；普通文字页保留页码直接解析。格式损坏、加密、无法可靠识别、解析不完整或嵌入数量不符时不发布索引。PPT、Excel、复杂公式和任意排版的准确还原不在当前保证范围。旧资料需手动重建索引才能应用新拆分规则。详见 [检索与文档边界处理](docs/retrieval-document-hardening.md)。
 
@@ -316,7 +346,7 @@ Grafana 自动配置六个全局匿名面板：API/Worker 可用性、队列深�
 
 ## 持久化日志、追踪与浏览器回归
 
-默认 Compose 将后端和 Worker 已有的脱敏 JSON 任务日志通过 OpenTelemetry Collector 写入 Loki，将 FastAPI 请求和 Worker 任务 Span 写入 Tempo；Grafana 自动配置 `Prometheus`、`Loki`、`Tempo` 三个内部数据源。Tempo 与 Loki 不映射宿主机端口；日常通过 Grafana 的 Explore 查询。日志链路不挂载 Docker Socket，不采集其他容器、浏览器流量、资料正文、提示词、来源 URL 或密钥。
+默认 Compose 将 Python Agent 和 Worker 的脱敏 JSON 任务日志通过 OpenTelemetry Collector 写入 Loki，将 Agent 请求和 Worker 任务 Span 写入 Tempo；Java 业务服务通过 Actuator 暴露 Prometheus 指标。Grafana 自动配置 `Prometheus`、`Loki`、`Tempo` 三个内部数据源。Tempo 与 Loki 不映射宿主机端口；日常通过 Grafana 的 Explore 查询。日志链路不挂载 Docker Socket，不采集其他容器、浏览器流量、资料正文、提示词、来源 URL 或密钥。
 
 在 Grafana 的 **Explore** 中选择 Loki，可使用：
 
@@ -333,7 +363,7 @@ Set-Location frontend
 npm run test:e2e:enterprise
 ```
 
-脚本只从被忽略的本机 `.env` 读取 `KEYCLOAK_ADMIN_PASSWORD`（或读取同名环境变量），临时创建随机 Keycloak 用户，验证匿名 API 返回 `401`、Keycloak 授权码 + PKCE 登录、受保护工作台和设置页，随后删除临时身份和成员关系；仅清理脚本创建的临时身份及其工作空间，不清理日常演示数据。失败时本机保留 `frontend/test-results/` 中的截图、视频与 Trace 供排查；该目录被忽略，CI 不会上传这些产物。
+脚本只从被忽略的本机 `.env` 读取 `KEYCLOAK_ADMIN_PASSWORD`（或读取同名环境变量），临时创建随机 Keycloak 用户并串行执行，验证匿名 API 返回 `401`、Keycloak 授权码 + PKCE 登录、受保护工作台，以及 Java 线程/偏好 CRUD、研究幂等创建、取消和 SSE 回放；随后删除临时身份及其工作空间，不清理日常演示数据。付费模型与真实嵌入用例仍需显式开关。失败时本机保留 `frontend/test-results/` 中的截图、视频与 Trace 供排查；该目录被忽略，CI 不会上传这些产物。
 
 ## 重建、验证与恢复操作手册
 
