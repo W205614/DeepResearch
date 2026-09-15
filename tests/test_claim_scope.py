@@ -14,6 +14,8 @@ from backend.research.graph import ResearchGraph
     ("仅验证了流程，尚未验证市场效果。", "仅验证了流程，尚未验证市场效果。", True),
     ("发现只有两项。", "发现只有两项。", True),
     ("某一条结论仍需核查。", "某一条结论仍需核查。", True),
+    ("术语“结论”与原文“验证”的对应关系尚未确认。", "仅验证了操作流程，尚未验证市场效果。", False),
+    ("术语“结论”与原文“验证”的对应关系尚未确认。", "术语“结论”与原文“验证”的对应关系尚未确认。", True),
 ])
 def test_unstated_exhaustive_counts(claim, evidence, accepted):
     assert validate_claim(claim, [{"text": evidence}])[0] is accepted

@@ -7,6 +7,10 @@ ENUMERATED_SCOPE = re.compile(
     r"(?:结论|事实|结果|发现|原因|问题|事项)(?:性表述)?(?:仅有|只有|仅为|总共|一共|共计|为)"
     r"[一二三四五六七八九十百两\d]+(?:条|项|个)"
 )
+TERM_RELATION_META = re.compile(
+    r"(?:术语|用词).{0,100}(?:对应关系|等价关系|是否等价).{0,40}"
+    r"(?:尚未确认|未确认|无法确认|不能确认|尚未证实|无法判断)"
+)
 
 
 def requires_strong_evidence(text: str) -> bool:
@@ -20,6 +24,9 @@ def validate_claim(text: str, sources: list[dict]) -> tuple[bool, str]:
     # Keep this conservative lexical gate separate from semantic validation.
     compact = re.sub(r"\s+", "", text)
     source_text = re.sub(r"\s+", "", combined)
+    term_meta = TERM_RELATION_META.search(compact)
+    if term_meta and term_meta.group() not in source_text:
+        return False, "术语对应关系是分析边界，引用原文未陈述时应放入局限或缺口，不能作为带引用的事实结论"
     if any(match.group() not in source_text for match in ENUMERATED_SCOPE.finditer(compact)):
         return False, "原文未明确列举结论或事项总数；请直接陈述事实，保留并列限制，不自行断言仅有几条"
     numbers = [token.replace("％", "%").replace(",", "") for token in NUMBER.findall(text)]
