@@ -42,6 +42,28 @@ def test_missing_other_metadata_is_not_blocked_by_count_unit_gate():
     assert accepted
 
 
+def test_cited_source_id_digits_are_not_treated_as_factual_numbers():
+    sources = [{
+        "id": "W-53c83509b786",
+        "text": "内部试点中，40名参与者完成了任务恢复。",
+        "access": "fulltext",
+        "trust_label": "fixture",
+    }]
+
+    accepted, _ = validate_claim(
+        "根据资料W-53c83509b786，内部试点中40名参与者完成了任务恢复。",
+        sources,
+    )
+    unsupported, reason = validate_claim(
+        "根据资料W-53c83509b786，内部试点中41名参与者完成了任务恢复。",
+        sources,
+    )
+
+    assert accepted
+    assert not unsupported
+    assert "数字" in reason
+
+
 @pytest.mark.asyncio
 async def test_permissive_model_cannot_approve_exhaustive_scope():
     graph = ResearchGraph.__new__(ResearchGraph)

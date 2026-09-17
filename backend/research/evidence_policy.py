@@ -37,7 +37,14 @@ def validate_claim(text: str, sources: list[dict]) -> tuple[bool, str]:
         return False, "引用原文已给出明确计数单位，不能写成单位未说明；如不同来源单位不一致，应直接保留单位差异"
     if any(match.group() not in source_text for match in ENUMERATED_SCOPE.finditer(compact)):
         return False, "原文未明确列举结论或事项总数；请直接陈述事实，保留并列限制，不自行断言仅有几条"
-    numbers = [token.replace("％", "%").replace(",", "") for token in NUMBER.findall(text)]
+    # Source IDs are provenance metadata rendered separately from claim text.
+    # A model may still repeat one in prose; its hexadecimal digits are not
+    # factual numbers and must not make an otherwise supported claim fail.
+    numeric_text = text
+    for source in sources:
+        if source.get("id"):
+            numeric_text = numeric_text.replace(source["id"], "")
+    numbers = [token.replace("％", "%").replace(",", "") for token in NUMBER.findall(numeric_text)]
     normalized = combined.replace("％", "%").replace(",", "")
     if any(token not in normalized for token in numbers):
         return False, "数字、日期或比例未在引用片段中逐字出现"

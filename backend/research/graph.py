@@ -650,6 +650,7 @@ class ResearchGraph:
                     "validation": {"retrieval_failed": failed}}
         draft = await self.ask("writer",
             "编写结构化中文研究报告。所有实质内容都放入 sections[].claims，且每条都要引用来源。"
+            "来源编号只放在 source_ids 字段，不要在 claim 的 text 中重复编号，程序会统一渲染引用。"
             "仅引用本地资料的结论必须明确写根据所提供资料，并保留记录的日期和适用范围。"
             "图片来源的结论必须明确限定为图中显示，不得当作外部已核实事实。"
             "不要凭记忆增加新事实或新数字，不要自行构造 URL。涵盖执行摘要、各研究问题、结论。"
