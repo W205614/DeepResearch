@@ -172,3 +172,45 @@ async def test_partial_repairs_are_revalidated_and_unknown_citations_fail_closed
     assert "tampered" not in result["report"] and "invented" not in result["report"]
     assert result["validation"]["supported_claims"] == 2
     assert result["validation"]["removed_claims"] == 2
+
+
+async def test_repair_scopes_context_to_failed_claim_sources(runtime):
+    graph = graph_for(runtime)
+    relevant = Evidence(id="relevant", kind="web", title="relevant", url="https://relevant.example/",
+                        text="corrected fact " * 2000, access="fulltext").model_dump()
+    unrelated = Evidence(id="unrelated", kind="web", title="unrelated", url="https://unrelated.example/",
+                         text="unrelated material " * 5000, access="fulltext").model_dump()
+    draft = ReportDraft.model_validate({"title": "test", "sections": [{"heading": "test", "claims": [
+        {"text": "approved fact", "source_ids": ["unrelated"]},
+        {"text": "bad fact", "source_ids": ["relevant"]},
+    ]}]})
+    repair_inputs = []
+
+    async def ask(role, instruction, data, schema, run_id):
+        if role == "repair":
+            repair_inputs.append(data)
+            return ReportRepair.model_validate({"repairs": [{
+                "index": 1, "replacement": {"text": "corrected fact", "source_ids": ["relevant"]}
+            }]})
+        return Verification.model_validate({"checks": [
+            {"index": row["index"], "supported": row["text"] != "bad fact", "reason": "checked"}
+            for row in data["claims"]
+        ]})
+
+    graph.ask = ask
+    result = await graph.validator({
+        "run_id": "scoped-repair", "user_id": "alice", "topic": "test",
+        "plan": {"questions": ["question"]}, "evidence": [relevant, unrelated],
+        "draft": draft.model_dump(), "gaps": [], "conflicts": [],
+        "claims": [
+            {"text": "corrected fact", "source_ids": ["relevant"]},
+            {"text": "unrelated analysis", "source_ids": ["unrelated"]},
+        ],
+    })
+    assert result["validation"]["supported_claims"] == 2
+    assert len(repair_inputs) == 1
+    assert {row["id"] for row in repair_inputs[0]["evidence"]} == {"relevant"}
+    assert repair_inputs[0]["analysis_claims"] == [
+        {"text": "corrected fact", "source_ids": ["relevant"]}
+    ]
+    assert sum(len(row["text"].encode("utf-8")) for row in repair_inputs[0]["evidence"]) <= 16000

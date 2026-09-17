@@ -60,16 +60,24 @@ def merge_evidence(items: list[dict], limit=48) -> list[dict]:
     return selected
 
 
+def utf8_prefix(text: str, limit: int) -> str:
+    """Return a valid UTF-8 prefix whose encoded size is at most ``limit`` bytes."""
+    raw = text.encode("utf-8")
+    if len(raw) <= limit:
+        return text
+    return raw[:limit].decode("utf-8", errors="ignore")
+
+
 def evidence_context(items: list[dict], text_limit=4500, total_limit=48000, query="") -> list[dict]:
-    """Bound each model call, not user usage. Disclose omitted excerpts explicitly."""
+    """Bound evidence by UTF-8 bytes, matching the provider's conservative budget."""
     if not items:
         return []
     share = min(text_limit, total_limit // len(items))
     output = []
     for item in items:
         text = item["text"]
-        excerpt = text[:share]
-        if query and len(text) > share:
+        excerpt = utf8_prefix(text, share)
+        if query and len(text.encode("utf-8")) > share:
             # Extract complete paragraph windows, including the tail where qualifications
             # often live. Never synthesize a summary as a substitute for source text.
             terms = set(re.findall(r"[\w]{2,}", query.lower()))
@@ -79,20 +87,23 @@ def evidence_context(items: list[dict], text_limit=4500, total_limit=48000, quer
             ranked = sorted(range(len(paragraphs)), key=lambda i: (
                 sum(term in paragraphs[i].group().lower() for term in terms), i == len(paragraphs)-1), reverse=True)
             chosen, size = set(), 0
+            separator_size = len("\n[…]\n".encode("utf-8"))
             for i in [len(paragraphs)-1, *ranked]:
                 for neighbor in (i, i-1, i+1):
                     if 0 <= neighbor < len(paragraphs) and neighbor not in chosen:
-                        length = len(paragraphs[neighbor].group())
-                        if size + length <= share:
+                        length = len(paragraphs[neighbor].group().encode("utf-8"))
+                        extra = length + (separator_size if chosen else 0)
+                        if size + extra <= share:
                             chosen.add(neighbor)
-                            size += length
+                            size += extra
             if chosen:
                 excerpt = "\n[…]\n".join(paragraphs[i].group() for i in sorted(chosen))
-        if len(text) > share:
+        if len(text.encode("utf-8")) > share:
             # Prefer a complete line/sentence; do not pretend a cut cell/number is complete.
             boundaries = list(re.finditer(r"[。！？!?；;\n]", excerpt))
-            if boundaries and boundaries[-1].end() >= share // 2:
+            if boundaries and boundaries[-1].end() >= len(excerpt) // 2:
                 excerpt = excerpt[:boundaries[-1].end()]
+        excerpt = utf8_prefix(excerpt, share)
         output.append({**item, "text": excerpt, "excerpt_truncated": len(excerpt) < len(text),
                        "excerpt_chars": len(excerpt), "original_chars": len(text)})
     return output
@@ -201,16 +212,20 @@ class ResearchGraph:
             except ValueError:
                 pass
         last_error = None
-        for attempt in range(2):
-            try:
-                text = await fetch_text(url)
-                await self.db.execute("INSERT OR REPLACE INTO web_cache(url,text,fetched_at,access,error) VALUES(?,?,?,?,?)",
-                                      (url, text, now(), "fulltext", ""))
-                return text
-            except ServiceError as exc:
-                last_error = exc
-                if attempt == 0:
-                    await asyncio.sleep(.25)
+        try:
+            async with asyncio.timeout(self.settings.web_fetch_timeout_seconds):
+                for attempt in range(2):
+                    try:
+                        text = await fetch_text(url)
+                        await self.db.execute("INSERT OR REPLACE INTO web_cache(url,text,fetched_at,access,error) VALUES(?,?,?,?,?)",
+                                              (url, text, now(), "fulltext", ""))
+                        return text
+                    except ServiceError as exc:
+                        last_error = exc
+                        if attempt == 0:
+                            await asyncio.sleep(.25)
+        except TimeoutError:
+            last_error = ServiceError("来源正文读取超时")
         await self.db.execute("INSERT OR REPLACE INTO web_cache(url,text,fetched_at,access,error) VALUES(?,?,?,?,?)",
                               (url, "", now(), "failed", str(last_error)))
         raise last_error
@@ -433,7 +448,11 @@ class ResearchGraph:
         async def search(query):
             try:
                 async with self.search_gate:
-                    rows = await self.search_web(query, state["run_id"])
+                    try:
+                        async with asyncio.timeout(self.settings.web_search_timeout_seconds):
+                            rows = await self.search_web(query, state["run_id"])
+                    except TimeoutError:
+                        raise ServiceError("联网搜索超时，请稍后重试") from None
                     outcome = getattr(rows, "outcome", "ok" if rows else "empty")
                     outcomes.append({"source": "web", "outcome": outcome})
                     await self.retrieval_status(state, "web", outcome)
@@ -669,8 +688,10 @@ class ResearchGraph:
         batches, batch, referenced = [], [], set()
         for item in eligible:
             proposed = referenced | set(item[1].source_ids)
-            size = sum(len(sources[key]["text"]) for key in proposed) + sum(len(c.text) for _, c in batch) + len(item[1].text)
-            if batch and (len(batch) >= 12 or size * 3 > self.settings.llm_context_tokens // 2):
+            size = (sum(len(sources[key]["text"].encode("utf-8")) for key in proposed)
+                    + sum(len(c.text.encode("utf-8")) for _, c in batch)
+                    + len(item[1].text.encode("utf-8")))
+            if batch and (len(batch) >= 12 or size > self.settings.llm_context_tokens // 2):
                 batches.append(batch)
                 batch, referenced = [], set()
             batch.append(item)
@@ -680,6 +701,12 @@ class ResearchGraph:
         approved, all_checks = set(), list(prechecks)
         for batch in batches:
             referenced = unique([key for _, claim in batch for key in claim.source_ids])
+            source_rows = [sources[key] for key in referenced]
+            source_limit = min(48000, max(8000, self.settings.llm_context_tokens // 3))
+            if sum(len(row["text"].encode("utf-8")) for row in source_rows) > source_limit:
+                query = "\n".join(claim.text for _, claim in batch)
+                source_rows = evidence_context(source_rows, text_limit=6000,
+                                               total_limit=source_limit, query=query)
             checks = await self.ask("validator",
                 "独立核查每个 index 的结论是否被其列出的原文片段支持。编号存在不代表内容支持。"
                 "sources 是按来源 ID 索引的原文表；每条结论只能使用自己 source_ids 列出的来源。"
@@ -688,6 +715,7 @@ class ResearchGraph:
                 "检查状态术语是否被无依据替换或等同（如完成与成功）；问题措辞不能证明等价。"
                 "保留原文状态是允许的；引用原文未明确陈述术语对应关系时，任何‘对应未确认’元叙述也应判不支持，"
                 "它只能作为无引用的研究局限。"
+                "excerpt_truncated=true 表示来源过长且本批只提供了相关原文窗口；只能核查窗口内明确出现的内容。"
                 "不得把问题中的场景修饰归为原文标注；如原文仅说明完成某操作，不能声称来源给出了试点或成功的统计口径。"
                 "检查唯一、仅有几条、全部等排他范围；引用只支持部分内容不能证明这是唯一结论，不能遗漏并列否定或限制。"
                 "资料不能证明本系统的执行行为；声称本次研究已忽略、未执行资料指令或已完成处理，"
@@ -696,7 +724,7 @@ class ResearchGraph:
                 "answered_questions 只列出本批 supported=true 的结论已完整回答的问题序号（从0开始）；部分回答不算完整。",
                 {"claims": [{"index": i, "text": c.text, "source_ids": c.source_ids} for i, c in batch],
                  "questions": state.get("plan", {}).get("questions", []),
-                 "sources": {key: sources[key] for key in referenced}},
+                 "sources": {row["id"]: row for row in source_rows}},
                 Verification, state["run_id"])
             indices = {i for i, _ in batch}
             approved.update(supported_indices(checks, indices))
@@ -727,8 +755,16 @@ class ResearchGraph:
                              for i, claim in enumerate(c for section in draft.sections for c in section.claims)
                              if i not in approved]
             patches = []
-            for offset in range(0, len(failed_claims), 12):
-                group = failed_claims[offset:offset + 12]
+            for offset in range(0, len(failed_claims), 6):
+                group = failed_claims[offset:offset + 6]
+                referenced = unique([
+                    source_id for item in group for source_id in item["source_ids"] if source_id in sources
+                ])
+                related_analysis = [
+                    claim for claim in state.get("claims", [])
+                    if set(claim.get("source_ids", [])) & set(referenced)
+                ][:6]
+                repair_query = "\n".join(item["text"] for item in group)
                 repair = await self.ask("repair",
                     "仅返回 failed_claims 中未通过结论的局部修订 repairs，不要重新生成整份报告。"
                     "每个 index 最多一条 replacement；无法被原文支持时 replacement=null。"
@@ -741,9 +777,11 @@ class ResearchGraph:
                     "已通过结论由程序原样保留；逐项对照分析事实与研究问题，不得把有主体人数的回答"
                     "缩减为只有术语说明或资料不足。分析事实仍须由给定原文支持。",
                     {"topic": state["topic"], "plan": state.get("plan", {}),
-                     "analysis_claims": state.get("claims", []), "failed_claims": group,
+                     "analysis_claims": related_analysis, "failed_claims": group,
                      "checks": [check for check in checks if check.get("index") in {item["index"] for item in group}],
-                     "evidence": evidence_context(list(sources.values()))}, ReportRepair, state["run_id"])
+                     "evidence": evidence_context([sources[key] for key in referenced], text_limit=4000,
+                                                  total_limit=16000, query=repair_query)},
+                    ReportRepair, state["run_id"])
                 patches.extend(patch for patch in repair.repairs if patch.index in {item["index"] for item in group})
             repair = ReportRepair(repairs=patches)
             draft, excluded = apply_report_repair(draft, approved, repair)

@@ -94,6 +94,13 @@ def test_tail_qualification_is_not_lost():
     assert "没有证明有效" in result["text"] and result["excerpt_truncated"]
 
 
+def test_evidence_context_uses_utf8_bytes_for_chinese_budget():
+    rows = evidence_context([{"text": "证据" * 100}, {"text": "资料" * 100}],
+                            text_limit=100, total_limit=100)
+    assert sum(len(row["text"].encode("utf-8")) for row in rows) <= 100
+    assert all(row["excerpt_truncated"] for row in rows)
+
+
 async def test_vector_timeout_uses_lexical_result(runtime, monkeypatch):
     doc = await runtime.documents.add("alice", "facts.txt", "任务恢复必须保留预算与检查点。".encode())
     await runtime.documents.ingest(doc["id"])
