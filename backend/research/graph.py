@@ -701,12 +701,6 @@ class ResearchGraph:
         approved, all_checks = set(), list(prechecks)
         for batch in batches:
             referenced = unique([key for _, claim in batch for key in claim.source_ids])
-            source_rows = [sources[key] for key in referenced]
-            source_limit = min(48000, max(8000, self.settings.llm_context_tokens // 3))
-            if sum(len(row["text"].encode("utf-8")) for row in source_rows) > source_limit:
-                query = "\n".join(claim.text for _, claim in batch)
-                source_rows = evidence_context(source_rows, text_limit=6000,
-                                               total_limit=source_limit, query=query)
             checks = await self.ask("validator",
                 "独立核查每个 index 的结论是否被其列出的原文片段支持。编号存在不代表内容支持。"
                 "sources 是按来源 ID 索引的原文表；每条结论只能使用自己 source_ids 列出的来源。"
@@ -715,7 +709,6 @@ class ResearchGraph:
                 "检查状态术语是否被无依据替换或等同（如完成与成功）；问题措辞不能证明等价。"
                 "保留原文状态是允许的；引用原文未明确陈述术语对应关系时，任何‘对应未确认’元叙述也应判不支持，"
                 "它只能作为无引用的研究局限。"
-                "excerpt_truncated=true 表示来源过长且本批只提供了相关原文窗口；只能核查窗口内明确出现的内容。"
                 "不得把问题中的场景修饰归为原文标注；如原文仅说明完成某操作，不能声称来源给出了试点或成功的统计口径。"
                 "检查唯一、仅有几条、全部等排他范围；引用只支持部分内容不能证明这是唯一结论，不能遗漏并列否定或限制。"
                 "资料不能证明本系统的执行行为；声称本次研究已忽略、未执行资料指令或已完成处理，"
@@ -724,7 +717,7 @@ class ResearchGraph:
                 "answered_questions 只列出本批 supported=true 的结论已完整回答的问题序号（从0开始）；部分回答不算完整。",
                 {"claims": [{"index": i, "text": c.text, "source_ids": c.source_ids} for i, c in batch],
                  "questions": state.get("plan", {}).get("questions", []),
-                 "sources": {row["id"]: row for row in source_rows}},
+                 "sources": {key: sources[key] for key in referenced}},
                 Verification, state["run_id"])
             indices = {i for i, _ in batch}
             approved.update(supported_indices(checks, indices))
