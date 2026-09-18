@@ -4,23 +4,23 @@
 
 系统采用 **Java 21 + Spring Boot 3.5 业务后端、Python Agent 执行层**。Java 对外承接 OIDC、工作空间/成员、会话、个人偏好、研究准入与幂等、并发限制、审计、SSE 和生命周期命令；Python 保留 LangGraph 多 Agent 编排、RAG、模型/搜索适配、文档解析、检查点与 ARQ Worker。两者通过只在 Docker 内网可达、带独立 Bearer 凭证的内部接口连接，并用 PostgreSQL Outbox 可靠投递调度/取消命令。
 
-## 当前进展：Java 业务后端迁移（2026-09-15）
+## 当前进展：Java 业务后端可靠性加固（2026-09-18）
 
 - **不是 Java 代理壳**：研究创建、重复请求判定、工作空间权限、并发准入、任务取消/恢复、线程与偏好 CRUD 均由 Java 直接执行；Nginx 不再把公网 API 指向 Python。
 - **Agent 仍使用 Python**：LangGraph、检索与引用核验、模型/搜索、文档处理和 Worker 未重写，避免为了语言统一破坏已经验证的 AI 执行链。
-- **命令可靠投递**：迁移 `0009_java_business_outbox` 增加业务 Outbox；Java 事务提交任务状态与待投递命令，后台调度器通过内部令牌调用 Python Agent。删除任务时 Outbox 记录随任务级联清理。
+- **命令可靠投递**：迁移 `0010_outbox_leases` 为业务 Outbox 增加原子抢占、`SKIP LOCKED`、租约回收、有限退避和可重投死信；Java 事务提交任务状态与命令，后台调度器通过内部令牌调用幂等的 Python Agent 入口。
 - **并发冷启动可控**：Java、Agent 与 Worker 仍共享 PostgreSQL；Agent/Worker 使用数据库 advisory lock 串行执行 LangGraph checkpoint schema setup，避免多进程首次启动时并发 DDL 死锁。
 - **可观测与部署同步拆分**：Compose 新增 `backend`（Java）并将 Python API 改名为 `agent`；Prometheus 分别采集 `deepresearch-business`、`deepresearch-api` 和两个 Worker，健康检查同时覆盖 Java 与 Agent。
 
 | 本轮验证 | 结果 | 边界 |
 | --- | --- | --- |
-| Java | Maven 4/4 通过；容器镜像独立构建通过 | 包含请求校验与配置；真实 PostgreSQL 业务链由浏览器 E2E 覆盖 |
-| Python Agent | 全量 208 通过、4 个显式真实组件用例跳过；Ruff 通过 | 没有把跳过项计为通过 |
+| Java | Maven 18/18 通过，其中 14 项使用真实 PostgreSQL Testcontainers | 覆盖 JWT/RBAC、工作空间与全局并发准入、事务回滚、任务状态、Outbox 抢占/租约/死信；不是多主机压测 |
+| Python Agent | 全量 218 通过、4 个显式真实组件用例跳过；Ruff 通过 | 没有把跳过项计为通过 |
 | 前端与认证业务链 | Vue 12/12、生产构建通过；真实 Keycloak E2E 4 通过、4 个付费模型/真实嵌入用例按开关跳过 | 已覆盖 OIDC、Java 线程/偏好 CRUD、幂等创建、取消及 SSE；未调用付费模型 |
 | 离线流程 | 固定 7/7 路由、来源与引用流程通过 | 使用可控替代模型/搜索，不代表真实回答准确率 |
-| Docker 单机栈 | 全量容器重建并健康；企业烟测和本机部署核验通过，迁移为 `0009_java_business_outbox`，4 个 Prometheus 目标为 up | 真实模型 30 题以对应提交的远程 Answer Quality Gate 为准，不计入上述本机结果；未验证外部告警收件、容量或长期稳定性 |
+| Docker 真实组件 | 隔离 `dr-verify` 栈完成 `0010_outbox_leases` 迁移，PostgreSQL/Redis/Milvus/MinIO/ClamAV/Worker 健康，组件用例 4/4 通过 | 正式 `compose.yaml` 尚未重建；未验证外部告警收件、容量或长期稳定性 |
 
-这次迁移保留共享 PostgreSQL 作为渐进式拆分阶段：Java 是公开业务写入和准入入口，Python Worker 仍会更新任务执行状态与检查点，因此不能描述成数据库完全隔离的微服务。后续若做多副本或独立发布，需要再补 Outbox 抢占锁/租约、独立 schema/数据契约和跨服务容量验证。
+这次迁移仍保留共享 PostgreSQL 作为渐进式拆分阶段：Java 是公开业务写入和准入入口，Python Worker 更新执行状态与检查点；Outbox 已支持多实例竞争认领和崩溃租约回收，但内部命令仍是至少一次投递，不能描述成 Exactly Once 或数据库完全隔离的微服务。当前数据所有权见 [Java/Python 职责与数据契约](docs/java-python-ownership.md)。
 
 ## 历史进展：可靠性加固与单机部署（2026-09-13）
 
@@ -85,10 +85,10 @@ Docker 已执行 `docker compose up -d --build --wait --wait-timeout 300`，后�
 | 领域 | 当前企业单机演示能力 | 验证入口 |
 | --- | --- | --- |
 | 身份与权限 | Java Resource Server 校验 Keycloak OIDC JWT；工作空间 `admin / researcher / viewer` 角色和资源级服务端校验 | `scripts/smoke-enterprise.py`、Playwright E2E |
-| 租户数据与审计 | Java 承接会话、研究准入、成员、偏好、限额和审计；Python Agent 承接文档、检索与执行状态 | 权限单测、Java 业务 E2E、工作台设置页 |
+| 租户数据与审计 | Java 承接会话、研究准入、成员、偏好、限额和审计；Python Agent 承接文档、检索与执行阶段字段 | MockMvc/JWT-RBAC、PostgreSQL Testcontainers、工作台设置页 |
 | 研究执行 | Python 内同进程职责受限的 LangGraph Agent 协作；Java 提供任务生命周期与 SSE，保留来源约束、引用核验、SSRF 防护和会话上下文边界 | Java/Python 回归、冻结评测 |
 | 资料安全 | MinIO 隔离区、ClamAV 扫描、扫描失败拒绝、独立文档 Worker；`ready` 或原文有效的重建旧版可检索 | 文档安全测试、页面状态 |
-| 异步可恢复性 | Java PostgreSQL Outbox、Redis ARQ Worker、幂等、检查点、重试、取消、心跳中断恢复和死信恢复入口 | 浏览器业务链、故障演练、死信回归 |
+| 异步可恢复性 | Java PostgreSQL Outbox 原子抢占/租约/有限重试与死信重投，Python Redis ARQ Worker 幂等调度、检查点、取消和心跳恢复 | Java 并发集成测试、浏览器业务链、故障演练 |
 | 数据服务 | PostgreSQL 为事务源、Milvus 向量检索、BM25 + 向量融合、MinIO 原件保存 | 检索冻结集与恢复脚本 |
 | 可观测性 | Prometheus 指标、Grafana 面板、OTel Trace → Tempo、脱敏 JSON 应用日志 → Loki、Alertmanager → 可选飞书机器人 | 企业冒烟、Grafana Explore |
 | 质量门禁 | Maven、Python 单测/静态检查、Vue 单测/生产构建、真实 OIDC 浏览器 E2E、Compose 冒烟、离线流程评测 | GitHub Actions `CI` |
@@ -134,7 +134,7 @@ Docker 已执行 `docker compose up -d --build --wait --wait-timeout 300`，后�
 
 资料范围默认 `internal`，禁止公开搜索；`ALLOW_INTERNAL_MODEL_PROCESSING` 默认 `false`，因此内部资料相关模型处理会被策略拒绝。公开研究请在界面选择“公开”；该模式不加载内部知识库和私有会话历史。只有核准所配置模型、视觉与嵌入供应商后，管理员才可开启内部资料处理；`restricted` 请求直接拒绝外发。范围依赖用户正确声明，不是自动敏感信息检测。
 
-已有部署升级前先做备份，并等待运行任务结束。Compose 的 `migrate` 服务执行 `alembic upgrade head`，当前最新版本为 `0009_java_business_outbox`；升级必须同时发布 Java `backend`、Python `agent`、两个 Worker 和 Web。可运行 `.venv/Scripts/python.exe scripts/verify_local_deployment.py` 检查默认本机入口、迁移、外发关闭状态与监控。维护及隔离恢复步骤见 [本机运维记录](docs/local-pilot-operations.md)。
+已有部署升级前先做备份，并等待运行任务结束。Compose 的 `migrate` 服务执行 `alembic upgrade head`，当前最新版本为 `0010_outbox_leases`；升级必须同时发布 Java `backend`、Python `agent`、两个 Worker 和 Web。可运行 `.venv/Scripts/python.exe scripts/verify_local_deployment.py` 检查默认本机入口、迁移、外发关闭状态与监控。维护及隔离恢复步骤见 [本机运维记录](docs/local-pilot-operations.md)。
 
 所有服务仅在 Docker 网络内互通，Web、Keycloak 与 Grafana 仅绑定本机回环地址。停止服务使用 `docker compose down`；不要使用 `down -v`，否则会删除演示数据卷。项目只维护根目录的 `compose.yaml` 作为运行拓扑；测试告警与隔离组件验证分别使用 `compose.test.yaml` 和 `compose.verify.yaml`。
 ## API 配置
@@ -345,6 +345,8 @@ Grafana 自动配置六个全局匿名面板：API/Worker 可用性、队列深�
 
 最终失败的研究任务会进入 PostgreSQL 死信表；管理员可在网页的“工作台设置 → 死信任务治理”查看不含研究正文的失败摘要，并从检查点恢复。API 仍提供 GET /api/workspaces/{workspace_id}/dead-letters 和 POST /api/workspaces/{workspace_id}/dead-letters/{run_id}/recover，恢复动作写入审计日志。运行日志为 JSON，包含稳定错误类别、任务短 ID 与 OpenTelemetry Trace ID，但不写入研究正文、URL 或密钥。Prometheus 内置队列积压、死信和失败率三条告警规则，Prometheus 会发送到 Compose 内部的 Alertmanager，再由后端内部入口转换为飞书群机器人文本消息。Compose 首次启动会在独立命名卷生成内部 Bearer token，Alertmanager 和后端只读挂载；缺失或错误令牌的转发请求会被拒绝。应用层对同一告警状态去重、对短暂 Webhook 错误最多重试两次，并保留已恢复事件；`deepresearch_alert_deliveries_total{result="succeeded|failed|disabled"}` 与 `deepresearch_alert_suppressed_total` 可审计投递与去重结果。`.env` 中可选的 `FEISHU_WEBHOOK_URL` 留空即禁用外发；它只应写入被忽略的本机 `.env`，不要放入 README、截图、提交或工单。Alertmanager 的验证可向 `http://localhost:9093/api/v2/alerts` 提交一条临时告警，随后检查飞书群是否收到“DeepResearch Alert”消息。
 
+业务命令投递失败与研究执行失败分开治理。Outbox 在永久错误或重试耗尽后进入自身死信状态；管理员可通过 `GET /api/workspaces/{workspace_id}/outbox/dead-letters` 查看脱敏错误码，并通过 `POST /api/workspaces/{workspace_id}/outbox/dead-letters/{message_id}/retry` 重投。重投要求工作空间 `admin` 角色并写入审计日志；指标 `deepresearch_business_outbox_delivery_total{result="delivered|retry|dead"}` 记录交付结果，`deepresearch_business_outbox_depth{status="pending|processing|dead"}` 记录当前积压。
+
 ## 持久化日志、追踪与浏览器回归
 
 默认 Compose 将 Python Agent 和 Worker 的脱敏 JSON 任务日志通过 OpenTelemetry Collector 写入 Loki，将 Agent 请求和 Worker 任务 Span 写入 Tempo；Java 业务服务通过 Actuator 暴露 Prometheus 指标。Grafana 自动配置 `Prometheus`、`Loki`、`Tempo` 三个内部数据源。Tempo 与 Loki 不映射宿主机端口；日常通过 Grafana 的 Explore 查询。日志链路不挂载 Docker Socket，不采集其他容器、浏览器流量、资料正文、提示词、来源 URL 或密钥。
@@ -399,6 +401,8 @@ npm run test:e2e:enterprise
 
 因此简历或面试应表述为“完成企业单机演示基线及可恢复、可观测、权限闭环验证”，不要表述为“已上线高可用生产集群”或“达到 SLA”。
 ## 压测与故障演练
+
+最新的隔离整栈阶梯压测、慢上游/连续 503 注入、保护顺序和边界见 [性能、限流与雪崩隔离实测](docs/performance-resilience-20260918.md)。当前默认保护为：Nginx 鉴权前粗粒度削峰、Java 主体令牌桶和全局并发限制、Agent 代理 8 路舱壁/30 秒超时/连续故障熔断、Python Worker 与供应商层并发闸门和熔断。限流值是单机本地基线，不是 SLA；多实例全局配额需要共享网关或 Redis。
 
 `load-health.js` 只用于连通性；业务读链路使用临时 OIDC 身份运行 `load-authenticated-read.js`。验证脚本会创建临时客户端和用户、获取令牌、执行压测并清理测试身份：
 

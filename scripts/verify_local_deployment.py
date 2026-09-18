@@ -37,7 +37,7 @@ def main():
     command(sys.executable, 'scripts/probe_external.py', '--base-url', 'http://127.0.0.1:8080')
     version = command('docker', 'compose', 'exec', '-T', 'postgres', 'psql', '-U',
                       'deepresearch', '-d', 'deepresearch', '-Atc', 'select version_num from alembic_version;')
-    if version != '0009_java_business_outbox':
+    if version != '0010_outbox_leases':
         raise RuntimeError('Unexpected database migration revision')
     report = json.loads(command('docker', 'compose', 'exec', '-T', 'agent', 'python', '-c', PROBE))
     report.update(migration=version, passed=True, scope='current single-host deployment; no external alert delivery tested')

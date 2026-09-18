@@ -4,7 +4,7 @@
 
 ## 已执行
 
-- 重建并发布 Java `backend`、Python `agent`、研究 Worker、独立文档 Worker 和前端；数据库迁移确认 `0009_java_business_outbox`。
+- 重建并发布 Java `backend`、Python `agent`、研究 Worker、独立文档 Worker 和前端；数据库迁移确认 `0010_outbox_leases`。
 - Java 负责 OIDC 业务入口、工作空间/会话/偏好、研究准入与生命周期、审计和 SSE；Python 保留 LangGraph、RAG、模型/搜索、文档与检查点。调度/取消通过带内部令牌的 PostgreSQL Outbox 投递。
 - 内部资料模型处理保持关闭；未经供应商审批不能为了消除错误直接开启该配置。
 - Prometheus 已重载，Java 业务 API、Python Agent、研究 Worker、文档 Worker 四个采集目标均为 up；加载 9 条告警规则。文档队列健康键存在。

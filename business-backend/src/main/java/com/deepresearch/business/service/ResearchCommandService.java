@@ -42,6 +42,7 @@ public class ResearchCommandService {
     @Transactional
     public Map<String, Object> create(WorkspaceIdentity identity, Requests.Run request) {
         access.require(identity, "admin", "researcher");
+        lockQueueAdmission(identity.workspaceId());
         List<Map<String, Object>> previous = jdbc.queryForList(
             "SELECT * FROM runs WHERE user_id=? AND client_request_id=?", identity.workspaceId(), request.getClientRequestId());
         if (!previous.isEmpty()) {
@@ -90,6 +91,7 @@ public class ResearchCommandService {
     @Transactional
     public Map<String, Object> cancel(WorkspaceIdentity identity, String runId) {
         access.require(identity, "admin", "researcher");
+        lockWorkspaceAdmission(identity.workspaceId());
         views.ownedRun(runId, identity.workspaceId());
         int changed = jdbc.update("""
             UPDATE runs SET status='cancelled',updated_at=? WHERE id=? AND user_id=?
@@ -105,9 +107,15 @@ public class ResearchCommandService {
     @Transactional
     public Map<String, Object> resume(WorkspaceIdentity identity, String runId) {
         access.require(identity, "admin", "researcher");
+        lockQueueAdmission(identity.workspaceId());
         Map<String, Object> run = views.ownedRun(runId, identity.workspaceId());
         if (!Boolean.TRUE.equals(run.get("can_resume"))) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "该任务不可继续；请处理错误原因或缩小问题重新提交");
+        }
+        int waiting = jdbc.queryForObject("SELECT COUNT(*) FROM runs WHERE status IN ('queued','interrupted')", Integer.class);
+        int alreadyWaiting = "interrupted".equals(run.get("status")) ? 1 : 0;
+        if (waiting - alreadyWaiting >= properties.getMaxQueuedRuns()) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "待处理任务已满，请稍后继续");
         }
         int active = jdbc.queryForObject("""
             SELECT COUNT(*) FROM runs WHERE user_id=?
@@ -175,5 +183,16 @@ public class ResearchCommandService {
         } catch (JsonProcessingException error) {
             throw new IllegalStateException(error);
         }
+    }
+
+    private void lockQueueAdmission(String workspaceId) {
+        jdbc.query("SELECT pg_advisory_xact_lock(hashtextextended(?,0))", result -> null,
+            "research-global-queue-admission");
+        lockWorkspaceAdmission(workspaceId);
+    }
+
+    private void lockWorkspaceAdmission(String workspaceId) {
+        jdbc.query("SELECT pg_advisory_xact_lock(hashtextextended(?,0))", result -> null,
+            "research-admission:" + workspaceId);
     }
 }

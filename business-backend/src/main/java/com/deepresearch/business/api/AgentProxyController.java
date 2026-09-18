@@ -1,7 +1,5 @@
 package com.deepresearch.business.api;
 
-import java.io.IOException;
-
 import com.deepresearch.business.security.WorkspaceAccess;
 import com.deepresearch.business.security.WorkspaceIdentity;
 import com.deepresearch.business.service.AgentClient;
@@ -31,10 +29,10 @@ public class AgentProxyController {
     })
     ResponseEntity<byte[]> proxy(@AuthenticationPrincipal Jwt jwt,
                                  @RequestHeader(value = "X-Workspace-ID", required = false) String requested,
-                                 HttpServletRequest request) throws IOException {
+                                 HttpServletRequest request) {
         WorkspaceIdentity identity = access.resolve(jwt, requested);
         authorizeMutation(identity, request);
-        return ThreadController.forwarded(agent.forward(request, request.getInputStream().readAllBytes()));
+        return ThreadController.forwarded(agent.forward(request));
     }
 
     private void authorizeMutation(WorkspaceIdentity identity, HttpServletRequest request) {

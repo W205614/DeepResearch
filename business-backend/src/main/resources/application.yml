@@ -2,6 +2,16 @@ server:
   port: 8080
   shutdown: graceful
   forward-headers-strategy: framework
+  max-http-request-header-size: 32KB
+  tomcat:
+    mbeanregistry:
+      enabled: true
+    threads:
+      max: ${SERVER_MAX_THREADS:64}
+      min-spare: ${SERVER_MIN_SPARE_THREADS:8}
+    accept-count: ${SERVER_ACCEPT_COUNT:100}
+    max-connections: ${SERVER_MAX_CONNECTIONS:512}
+    connection-timeout: ${SERVER_CONNECTION_TIMEOUT:5s}
 
 spring:
   application:
@@ -17,6 +27,11 @@ spring:
     hikari:
       maximum-pool-size: 8
       minimum-idle: 1
+      connection-timeout: 3000
+  servlet:
+    multipart:
+      max-file-size: ${MAX_UPLOAD_SIZE:20MB}
+      max-request-size: ${MAX_UPLOAD_SIZE:20MB}
   security:
     oauth2:
       resourceserver:
@@ -49,3 +64,22 @@ deepresearch:
   max-run-total-seconds: ${MAX_RUN_TOTAL_SECONDS:1200}
   max-run-call-attempts: ${MAX_RUN_CALL_ATTEMPTS:80}
   max-run-reserved-tokens: ${MAX_RUN_RESERVED_TOKENS:2000000}
+  outbox-batch-size: ${OUTBOX_BATCH_SIZE:20}
+  outbox-lease-seconds: ${OUTBOX_LEASE_SECONDS:30}
+  outbox-max-attempts: ${OUTBOX_MAX_ATTEMPTS:8}
+  outbox-base-delay-seconds: ${OUTBOX_BASE_DELAY_SECONDS:2}
+  outbox-max-delay-seconds: ${OUTBOX_MAX_DELAY_SECONDS:60}
+  agent-proxy-max-concurrent: ${AGENT_PROXY_MAX_CONCURRENT:8}
+  agent-proxy-acquire-timeout-millis: ${AGENT_PROXY_ACQUIRE_TIMEOUT_MILLIS:25}
+  agent-proxy-timeout-seconds: ${AGENT_PROXY_TIMEOUT_SECONDS:30}
+  agent-proxy-circuit-failure-threshold: ${AGENT_PROXY_CIRCUIT_FAILURE_THRESHOLD:5}
+  agent-proxy-circuit-open-seconds: ${AGENT_PROXY_CIRCUIT_OPEN_SECONDS:15}
+  api-rate-limit-per-second: ${API_RATE_LIMIT_PER_SECOND:20}
+  api-rate-limit-burst: ${API_RATE_LIMIT_BURST:40}
+  api-rate-limit-max-principals: ${API_RATE_LIMIT_MAX_PRINCIPALS:10000}
+  api-global-rate-limit-per-second: ${API_GLOBAL_RATE_LIMIT_PER_SECOND:250}
+  api-global-rate-limit-burst: ${API_GLOBAL_RATE_LIMIT_BURST:250}
+  api-max-concurrent: ${API_MAX_CONCURRENT:32}
+  api-concurrency-acquire-timeout-millis: ${API_CONCURRENCY_ACQUIRE_TIMEOUT_MILLIS:10}
+  outbox-dispatch-delay-ms: ${OUTBOX_DISPATCH_DELAY_MS:500}
+  outbox-dispatch-initial-delay-ms: ${OUTBOX_DISPATCH_INITIAL_DELAY_MS:500}

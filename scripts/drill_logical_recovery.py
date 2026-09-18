@@ -61,7 +61,7 @@ def main():
         run(["exec", "-T", "postgres", "pg_restore", "-U", "deepresearch", "-d", TARGET, "--exit-on-error"], archive)
         for table, expected in counts.items():
             assert sql(TARGET, f"SELECT count(*) FROM {table}") == expected
-        assert sql(TARGET, "SELECT version_num FROM alembic_version") == "0009_java_business_outbox"
+        assert sql(TARGET, "SELECT version_num FROM alembic_version") == "0010_outbox_leases"
         restored = json.loads(run(["exec", "-T", "api", "python", "-c", OBJECT_PROBE]).decode().strip().splitlines()[-1])
         result = {"passed": True, "scope": "isolated logical SQL and object restore; not full host disaster recovery",
                   "tables_checked": len(TABLES), **restored, "seconds": round(time.monotonic()-started, 2)}

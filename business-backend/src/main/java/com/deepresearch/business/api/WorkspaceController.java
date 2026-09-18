@@ -10,6 +10,7 @@ import java.util.Map;
 import com.deepresearch.business.config.DeepResearchProperties;
 import com.deepresearch.business.security.WorkspaceAccess;
 import com.deepresearch.business.security.WorkspaceIdentity;
+import com.deepresearch.business.service.OutboxService;
 import com.deepresearch.business.service.ResearchCommandService;
 import com.deepresearch.business.service.RunViewService;
 import jakarta.validation.Valid;
@@ -35,14 +36,16 @@ public class WorkspaceController {
     private final DeepResearchProperties properties;
     private final ResearchCommandService research;
     private final RunViewService views;
+    private final OutboxService outbox;
 
     public WorkspaceController(JdbcTemplate jdbc, WorkspaceAccess access, DeepResearchProperties properties,
-                               ResearchCommandService research, RunViewService views) {
+                               ResearchCommandService research, RunViewService views, OutboxService outbox) {
         this.jdbc = jdbc;
         this.access = access;
         this.properties = properties;
         this.research = research;
         this.views = views;
+        this.outbox = outbox;
     }
 
     @GetMapping("/api/workspaces")
@@ -134,6 +137,30 @@ public class WorkspaceController {
         Map<String, Object> run = research.resume(identity, runId);
         access.audit(identity, "dead_letter.recover", "run", runId);
         return run;
+    }
+
+    @GetMapping("/api/workspaces/{workspaceId}/outbox/dead-letters")
+    List<Map<String, Object>> outboxDeadLetters(@PathVariable String workspaceId,
+                                                @AuthenticationPrincipal Jwt jwt,
+                                                @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
+        WorkspaceIdentity identity = selected(workspaceId, jwt, requested);
+        access.require(identity, "admin");
+        return outbox.deadLetters(workspaceId);
+    }
+
+    @PostMapping("/api/workspaces/{workspaceId}/outbox/dead-letters/{messageId}/retry")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @Transactional
+    Map<String, Boolean> retryOutboxDeadLetter(@PathVariable String workspaceId,
+                                               @PathVariable String messageId,
+                                               @AuthenticationPrincipal Jwt jwt,
+                                               @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
+        WorkspaceIdentity identity = selected(workspaceId, jwt, requested);
+        access.require(identity, "admin");
+        if (!outbox.retryDeadLetter(messageId, workspaceId))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Outbox 死信不存在或已经重新投递");
+        access.audit(identity, "outbox.retry", "outbox_message", messageId);
+        return Map.of("ok", true);
     }
 
     @PutMapping("/api/workspaces/{workspaceId}/limits")

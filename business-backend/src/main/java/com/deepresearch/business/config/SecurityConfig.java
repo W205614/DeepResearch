@@ -10,12 +10,15 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
+
+import com.deepresearch.business.security.ApiRateLimitFilter;
 
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
     @Bean
-    SecurityFilterChain apiSecurity(HttpSecurity http) throws Exception {
+    SecurityFilterChain apiSecurity(HttpSecurity http, ApiRateLimitFilter rateLimitFilter) throws Exception {
         return http
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -36,6 +39,7 @@ public class SecurityConfig {
                 response.setContentType("application/json");
                 response.getWriter().write("{\"detail\":\"当前工作空间角色没有此权限\"}");
             }))
+            .addFilterAfter(rateLimitFilter, BearerTokenAuthenticationFilter.class)
             .build();
     }
 }
