@@ -17,6 +17,8 @@ LLM_CALLS = Counter("deepresearch_llm_calls_total", "LLM calls issued")
 TOKENS = Counter("deepresearch_tokens_total", "Model tokens", ["kind"])
 QUEUE_DEPTH = Gauge("deepresearch_queue_depth", "Queued research runs")
 RAG_RETRIEVAL_SECONDS = Histogram("deepresearch_rag_retrieval_duration_seconds", "Local RAG stage duration", ["stage"])
+RERANKER_CALLS = Counter("deepresearch_reranker_calls_total", "Reranker calls by outcome", ["outcome"])
+RERANKER_SECONDS = Histogram("deepresearch_reranker_duration_seconds", "Reranker request duration")
 DLQ_DEPTH = Gauge("deepresearch_dead_letter_depth", "Unrecovered dead-letter research runs")
 DLQ_EVENTS = Counter("deepresearch_dead_letter_total", "Dead-letter events", ["action","category"])
 ALERT_DELIVERIES = Counter("deepresearch_alert_deliveries_total", "Alertmanager webhook delivery results", ["result"])
@@ -36,7 +38,9 @@ for _outcome in ("success", "error"):
 for _kind in ("prompt", "completion"):
     VISION_TOKENS.labels(kind=_kind)
 for _source in ("web", "local"):
-    for _outcome in ("ok", "empty", "error", "search_limit_reached", "invalid_records", "vector_unavailable"):
+    for _outcome in ("ok", "empty", "error", "search_limit_reached", "invalid_records", "vector_unavailable", "reranker_unavailable"):
         RETRIEVAL_OUTCOMES.labels(source=_source, outcome=_outcome)
-for _reason in ("provider_switch", "empty", "error", "search_limit_reached", "invalid_records", "vector_unavailable", "insufficient_evidence", "image_unreadable"):
+for _reason in ("provider_switch", "empty", "error", "search_limit_reached", "invalid_records", "vector_unavailable", "reranker_unavailable", "insufficient_evidence", "image_unreadable"):
     FALLBACKS.labels(reason=_reason)
+for _outcome in ("success", "timeout", "error", "invalid", "policy_blocked"):
+    RERANKER_CALLS.labels(outcome=_outcome)

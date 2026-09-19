@@ -23,6 +23,7 @@ from ..research.graph import ResearchGraph
 from ..core.observability import configure_task_logger, error_category, inject_trace_context, run_label
 from ..core.metrics import DLQ_DEPTH, DLQ_EVENTS, FAILURES, QUEUE_DEPTH, RUNS, RUN_SECONDS, FALLBACKS
 from ..infrastructure.providers import Providers, ServiceError
+from ..infrastructure.reranker import RerankerClient
 from ..infrastructure.vectors import VectorIndex
 from ..core.reliability import Execution, execution, quality, ServiceError as ReliabilityError
 from ..core.checkpoints import FencedCheckpointer
@@ -47,8 +48,9 @@ class Runtime:
         self.db = PostgresDatabase(settings.database_url) if settings.database_url else Database(settings.data_dir / "research.sqlite3")
         self.db.reliability_settings = settings
         self.providers = Providers(settings, self.db)
+        self.reranker = RerankerClient(settings)
         self.vectors = VectorIndex(settings, self.db)
-        self.documents = Documents(settings, self.db, self.providers, self.vectors)
+        self.documents = Documents(settings, self.db, self.providers, self.vectors, self.reranker)
         self.attachments = Attachments(self.db, settings, self.documents.store)
         self.attachment_cleanup_task = None
         self.logger = configure_task_logger(settings.task_log_level)
@@ -141,6 +143,7 @@ class Runtime:
         await self.documents.close()
         await self.stack.aclose()
         await self.providers.close()
+        await self.reranker.close()
         await self.vectors.close()
 
         if hasattr(self.db, "close"):
@@ -148,17 +151,19 @@ class Runtime:
         if self.queue:
             await self.queue.aclose()
     async def schedule_document(self, document_id: str) -> None:
-        key = f"document:{document_id}"
         if self.settings.queue_backend == "redis" and not self.queue:
             return
+        document = await self.db.one("SELECT index_version,pending_version FROM documents WHERE id=?", (document_id,))
+        if not document:
+            return
+        target_version = document["pending_version"] or document["index_version"]
+        key = f"document:{document_id}:{target_version}"
         if self.queue:
-            document = await self.db.one("SELECT index_version FROM documents WHERE id=?", (document_id,))
-            if document:
-                try:
-                    await self.queue.enqueue_job("ingest_document", document_id, trace_context=inject_trace_context(),
-                                                 _job_id=f"{key}:{document['index_version']}", _queue_name="arq:documents")
-                except Exception:
-                    self.logger.warning("phase=document_delivery_pending")
+            try:
+                await self.queue.enqueue_job("ingest_document", document_id, trace_context=inject_trace_context(),
+                                             _job_id=key, _queue_name="arq:documents")
+            except Exception:
+                self.logger.warning("phase=document_delivery_pending")
             return
         if key in self.tasks:
             return
@@ -174,6 +179,11 @@ class Runtime:
 
     async def reindex_document(self, document_id: str, user: str) -> dict:
         document = await self.documents.reindex(document_id, user)
+        await self.schedule_document(document["id"])
+        return document
+
+    async def replace_document(self, document_id: str, user: str, name: str, content: bytes) -> dict:
+        document = await self.documents.replace(document_id, user, name, content)
         await self.schedule_document(document["id"])
         return document
 
@@ -832,8 +842,9 @@ class Runtime:
             archive.writestr("memories.json", json.dumps(memories, ensure_ascii=False, indent=2))
             archive.writestr("documents.json", json.dumps(documents, ensure_ascii=False, indent=2))
             for document in documents:
-                if await self.documents.store.exists("uploads", document["id"]):
-                    archive.writestr("uploads/" + document["name"], await self.documents.store.get("uploads", document["id"]))
+                object_key = document.get("object_key") or document["id"]
+                if await self.documents.store.exists("uploads", object_key):
+                    archive.writestr("uploads/" + document["name"], await self.documents.store.get("uploads", object_key))
         return output.getvalue()
 
     async def purge_user(self, user: str, scope: str, owner_subject: str | None = None):

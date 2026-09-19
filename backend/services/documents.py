@@ -2,6 +2,7 @@ from ..core.consistency import affected
 import asyncio
 import hashlib
 import json
+import math
 import time
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
@@ -22,8 +23,8 @@ from .retrieval_contract import RetrievalResults, valid_chunk, normalize_hits, s
 
 
 class Documents:
-    def __init__(self, settings, db: Database, providers, vectors):
-        self.settings, self.db, self.providers, self.vectors = settings, db, providers, vectors
+    def __init__(self, settings, db: Database, providers, vectors, reranker=None):
+        self.settings, self.db, self.providers, self.vectors, self.reranker = settings, db, providers, vectors, reranker
         self.gate = asyncio.Semaphore(1)
         self.lexical_gate = asyncio.Semaphore(2)
         self.lexical_pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix="rag-lexical")
@@ -51,8 +52,11 @@ class Documents:
             raise ServiceError("检索期间资料发生变化，请重新检索", code="source_changed")
 
     async def add(self, user: str, name: str, content: bytes):
-        async with self.db.guard("documents:" + user):
-            return await self._add(user, name, content)
+        try:
+            async with self.db.guard("documents:" + user):
+                return await self._add(user, name, content)
+        finally:
+            await self.cleanup_pending()
 
     async def _add(self, user: str, name: str, content: bytes):
         name = Path(name.replace("\\", "/")).name[:160]
@@ -60,16 +64,28 @@ class Documents:
             raise ServiceError("文件不能超过 10 MB")
         validate_upload(name, content)
         digest = hashlib.sha256(content).hexdigest()
-        existing = await self.db.one("SELECT * FROM documents WHERE user_id=? AND hash=?", (user, digest))
-        if existing and existing["status"] in {"ready", "indexing", "scanning"}:
+        existing = await self.db.one("""SELECT * FROM documents WHERE user_id=? AND status!='deleted'
+            AND (hash=? OR pending_hash=?)""", (user, digest, digest))
+        if existing and (existing["pending_hash"] == digest
+                         or existing["status"] in {"ready", "rebuilding", "indexing", "scanning"}):
             return existing
+        if not existing:
+            existing = await self.db.one("SELECT * FROM documents WHERE user_id=? AND hash=? AND status='deleted'",
+                                         (user, digest))
         doc_id = existing["id"] if existing else uid()
+        version = int(existing["index_version"]) + 1 if existing else 1
+        object_key = f"{doc_id}.v{version}"
+        timestamp = now()
         if existing:
-            await self.db.execute("UPDATE documents SET status='scanning',error='',index_version=index_version+1 WHERE id=?", (doc_id,))
+            await self.db.execute("""INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version,object_key)
+                VALUES(?,?,?,?)""", (doc_id, user, existing["index_version"], existing["object_key"] or doc_id))
+            await self.db.execute("""UPDATE documents SET name=?,hash=?,status='scanning',error='',index_version=?,
+                pending_version=0,pending_name='',pending_hash='',pending_object_key='',object_key=?,updated_at=? WHERE id=?""",
+                (name, digest, version, object_key, timestamp, doc_id))
         else:
-            await self.db.execute("INSERT INTO documents(id,user_id,name,hash,status,created_at,index_version) VALUES(?,?,?,?,?,?,1)",
-                                  (doc_id, user, name, digest, "scanning", now()))
-        await self.store.put("quarantine", doc_id, content)
+            await self.db.execute("""INSERT INTO documents(id,user_id,name,hash,status,created_at,updated_at,index_version,object_key)
+                VALUES(?,?,?,?,?,?,?,?,?)""", (doc_id, user, name, digest, "scanning", timestamp, timestamp, version, object_key))
+        await self.store.put("quarantine", object_key, content)
         try:
             await scan(self.settings, content)
         except ScanRejected as exc:
@@ -80,9 +96,52 @@ class Documents:
             await self.db.execute("UPDATE documents SET status='scan_failed',error=? WHERE id=?", (str(exc), doc_id))
             exc.document_id = doc_id
             raise
-        await self.store.move("quarantine", "uploads", doc_id)
+        await self.store.move("quarantine", "uploads", object_key)
         await self.invalidate_search_cache(user)
         await self.db.execute("UPDATE documents SET status='indexing',error='' WHERE id=?", (doc_id,))
+        return await self.db.one("SELECT * FROM documents WHERE id=?", (doc_id,))
+
+    async def replace(self, doc_id: str, user: str, name: str, content: bytes):
+        name = Path(name.replace("\\", "/")).name[:160]
+        if len(content) > 10 * 1024 * 1024:
+            raise ServiceError("文件不能超过 10 MB")
+        validate_upload(name, content)
+        digest = hashlib.sha256(content).hexdigest()
+        failure = None
+        # Keep the document/user lock through staging and scanning. Otherwise two
+        # concurrent replacements can choose the same versioned object key and
+        # the losing request may delete the winner's staged object.
+        async with self.db.guard("documents:" + user):
+            document = await self.db.one("SELECT * FROM documents WHERE id=? AND user_id=?", (doc_id, user))
+            if not document or document["status"] == "deleted":
+                raise LookupError("资料不存在")
+            if document["status"] != "ready":
+                raise ServiceError("资料正在处理，完成后才能替换", code="document_busy", retryable=False)
+            if digest == document["hash"]:
+                raise ServiceError("文件内容未变化；如需应用新解析规则，请使用重建索引", code="document_unchanged", retryable=False)
+            duplicate = await self.db.one("""SELECT id FROM documents WHERE user_id=? AND id!=? AND status!='deleted'
+                AND (hash=? OR pending_hash=?)""", (user, doc_id, digest, digest))
+            if duplicate:
+                raise ServiceError("相同内容已存在于资料库", code="document_duplicate", retryable=False)
+            target_version = int(document["index_version"]) + 1
+            object_key = f"{doc_id}.v{target_version}"
+            await self.store.put("quarantine", object_key, content)
+            try:
+                await scan(self.settings, content)
+                await self.store.move("quarantine", "uploads", object_key)
+                await self.db.execute("""UPDATE documents SET status='rebuilding',error='',pending_version=?,
+                    pending_name=?,pending_hash=?,pending_object_key=?,updated_at=? WHERE id=? AND status='ready' AND index_version=?""",
+                    (target_version, name, digest, object_key, now(), doc_id, document["index_version"]))
+            except Exception as exc:
+                message = str(exc) if isinstance(exc, (ServiceError, ScanRejected, ScanUnavailable)) else "资料替换预处理失败，请稍后重试"
+                await self.db.execute("""INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version,object_key)
+                    VALUES(?,?,?,?)""", (doc_id, user, target_version, object_key))
+                await self.db.execute("UPDATE documents SET status='ready',error=?,updated_at=? WHERE id=? AND status='ready' AND index_version=?",
+                                      (message, now(), doc_id, document["index_version"]))
+                failure = exc
+        if failure:
+            await self.cleanup_pending()
+            raise failure
         return await self.db.one("SELECT * FROM documents WHERE id=?", (doc_id,))
 
     async def invalidate_search_cache(self, user: str) -> None:
@@ -123,6 +182,10 @@ class Documents:
         if not document:
             return
         target_version = document["pending_version"] or document["index_version"]
+        rebuilding = document["status"] == "rebuilding"
+        target_name = document["pending_name"] if rebuilding else document["name"]
+        target_hash = document["pending_hash"] if rebuilding else document["hash"]
+        target_object_key = (document["pending_object_key"] if rebuilding else document["object_key"]) or doc_id
         async with self.gate:
             try:
                 async with self.db.guard("documents:" + document["user_id"]):
@@ -134,39 +197,50 @@ class Documents:
                     await self.db.execute("INSERT OR REPLACE INTO metadata(key,value) VALUES(?,?)", (budget_key, str(attempts + 1)))
                 if not self.settings.demo_mode and not self.settings.allow_internal_model_processing:
                     raise ServiceError("资料外发解析与嵌入尚未获准", code="egress_denied", retryable=False)
-                content = await self.store.get("uploads", doc_id)
-                if hashlib.sha256(content).hexdigest() != document["hash"]:
+                content = await self.store.get("uploads", target_object_key)
+                if hashlib.sha256(content).hexdigest() != target_hash:
                     raise ServiceError("原文内容已变化，请重新上传", code="source_changed", retryable=False)
-                chunks = await self.split_for_index(document["name"], content)
+                chunks = await self.split_for_index(target_name, content)
                 vectors = await self.providers.embed([part["text"] for part in chunks])
                 if len(vectors) != len(chunks):
                     raise ServiceError("嵌入结果数量与片段不一致，资料未发布，请重试导入")
                 rows = [dict(part, ordinal=i, id=hashlib.sha256(f"{doc_id}:{target_version}:{i}".encode()).hexdigest()[:32],
-                    user_id=document["user_id"], document_id=doc_id, index_version=target_version, title=document["name"], vector=vector)
+                    user_id=document["user_id"], document_id=doc_id, index_version=target_version, title=target_name, vector=vector)
                     for i, (part, vector) in enumerate(zip(chunks, vectors))]
                 async with self.db.guard("documents:" + document["user_id"]):
-                    current = await self.db.one("SELECT status,index_version,pending_version FROM documents WHERE id=?", (doc_id,))
-                    if not current or current["status"] != document["status"] or (current["pending_version"] or current["index_version"]) != target_version:
+                    current = await self.db.one("SELECT * FROM documents WHERE id=?", (doc_id,))
+                    if (not current or current["status"] != document["status"]
+                            or (current["pending_version"] or current["index_version"]) != target_version
+                            or (rebuilding and current["pending_hash"] != target_hash)):
                         return
-                    await self.db.execute("INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version) VALUES(?,?,?)",
-                                          (doc_id, document["user_id"], target_version))
+                    await self.db.execute("""INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version,object_key)
+                        VALUES(?,?,?,?)""", (doc_id, document["user_id"], target_version, target_object_key))
                     await self.vectors.upsert("documents", rows)
                     async with self.db.connection() as conn:
-                        result = await conn.execute("""UPDATE documents SET status='ready',error='',index_version=?,pending_version=0
-                            WHERE id=? AND status=? AND index_version=?""", (target_version, doc_id, document["status"], document["index_version"]))
+                        if rebuilding:
+                            result = await conn.execute("""UPDATE documents SET status='ready',error='',index_version=?,pending_version=0,
+                                name=?,hash=?,object_key=?,pending_name='',pending_hash='',pending_object_key='',updated_at=?
+                                WHERE id=? AND status='rebuilding' AND index_version=? AND pending_version=? AND pending_hash=?""",
+                                (target_version, target_name, target_hash, target_object_key, now(), doc_id,
+                                 document["index_version"], target_version, target_hash))
+                        else:
+                            result = await conn.execute("""UPDATE documents SET status='ready',error='',index_version=?,pending_version=0,
+                                updated_at=? WHERE id=? AND status='indexing' AND index_version=?""",
+                                (target_version, now(), doc_id, document["index_version"]))
                         if affected(result):
                             await conn.execute("DELETE FROM document_cleanup WHERE document_id=? AND version=?",
                                                (doc_id, target_version))
-                            if document["status"] == "rebuilding":
-                                await conn.execute("INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version) VALUES(?,?,?)",
-                                                   (doc_id, document["user_id"], document["index_version"]))
+                            if rebuilding:
+                                old_object_key = (document["object_key"] or doc_id) if (document["object_key"] or doc_id) != target_object_key else ""
+                                await conn.execute("""INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version,object_key)
+                                    VALUES(?,?,?,?)""", (doc_id, document["user_id"], document["index_version"], old_object_key))
                             await conn.execute("DELETE FROM chunks WHERE document_id=?", (doc_id,))
                             await conn.executemany("INSERT INTO chunks(id,document_id,user_id,text,locator,vector,ordinal) VALUES(?,?,?,?,?,?,?)",
                                 [(row["id"], doc_id, document["user_id"], row["text"], row["locator"],
                                   json.dumps(row["vector"]) if self.settings.demo_mode else "[]", row["ordinal"]) for row in rows])
                         else:
-                            await conn.execute("INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version) VALUES(?,?,?)",
-                                               (doc_id, document["user_id"], document["index_version"]))
+                            await conn.execute("""INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version,object_key)
+                                VALUES(?,?,?,?)""", (doc_id, document["user_id"], target_version, target_object_key))
                         await conn.commit()
                 await self.cleanup_pending()
                 await self.invalidate_search_cache(document["user_id"])
@@ -174,12 +248,20 @@ class Documents:
                 raise
             except Exception as exc:
                 message = str(exc) if isinstance(exc, ServiceError) else "资料导入失败，请检查文件及服务配置"
-                retain = document["status"] == "rebuilding" and not (isinstance(exc, ServiceError) and exc.code == "source_changed")
-                await self.db.execute("UPDATE documents SET status=?,pending_version=0,error=? WHERE id=? AND status=? AND index_version=?",
-                                      ("ready" if retain else "failed", message, doc_id, document["status"], document["index_version"]))
+                if rebuilding:
+                    await self.db.execute("""INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version,object_key)
+                        VALUES(?,?,?,?)""", (doc_id, document["user_id"], target_version, target_object_key))
+                    await self.db.execute("""UPDATE documents SET status='ready',pending_version=0,pending_name='',pending_hash='',
+                        pending_object_key='',error=?,updated_at=? WHERE id=? AND status='rebuilding' AND index_version=? AND pending_version=?""",
+                        (message, now(), doc_id, document["index_version"], target_version))
+                    await self.cleanup_pending()
+                else:
+                    await self.db.execute("UPDATE documents SET status='failed',pending_version=0,error=?,updated_at=? WHERE id=? AND status='indexing' AND index_version=?",
+                                          (message, now(), doc_id, document["index_version"]))
                 raise
 
-    async def search(self, user: str, queries: list[str], limit: int = 6, run_id: str = "") -> list[dict]:
+    async def search(self, user: str, queries: list[str], limit: int = 6, run_id: str = "",
+                     rerank_query: str = "") -> list[dict]:
         started = time.monotonic()
         if not isinstance(queries, list) or any(not isinstance(q, str) or len(q) > 4000 for q in queries):
             raise ServiceError("检索查询字段无效，请提供不超过 4000 字的文本")
@@ -192,7 +274,10 @@ class Documents:
         documents = await self.db.rows("SELECT id,hash,index_version FROM documents WHERE user_id=? AND status IN ('ready','rebuilding') ORDER BY id", (user,))
         # Invalidate old cache entries when extraction/ranking contracts change.
         corpus_hash = hashlib.sha256(("rag-v2|" + "|".join(f"{r['id']}:{r['hash']}:{r['index_version']}" for r in documents)).encode()).hexdigest()
-        query_hash = hashlib.sha256(json.dumps(queries, ensure_ascii=False).encode()).hexdigest()
+        original_query = rerank_query.strip() or queries[0]
+        ranking_contract = self.reranker.contract_key if self.reranker else "fusion-v1"
+        query_hash = hashlib.sha256(json.dumps({"queries": queries, "rerank_query": original_query,
+            "ranking": ranking_contract}, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
         corpus_started = time.monotonic()
         cached_corpus = self._corpora.get(user)
         corpus_cache_hit = bool(cached_corpus and cached_corpus[0] == corpus_hash)
@@ -240,7 +325,15 @@ class Documents:
                         raise ValueError("cache provenance")
                     seen.add(row["id"])
                     scores = {key: score(row[key]) for key in ("score", "vector_score", "bm25_score")}
-                    result.append({**source, **scores})
+                    stage = row.get("ranking_stage", "fusion")
+                    if stage not in {"fusion", "rerank"}:
+                        raise ValueError("cache stage")
+                    rerank_value = row.get("rerank_score")
+                    if rerank_value is not None:
+                        if isinstance(rerank_value, bool) or not isinstance(rerank_value, (int, float)) or not math.isfinite(float(rerank_value)):
+                            raise ValueError("cache rerank score")
+                        rerank_value = float(rerank_value)
+                    result.append({**source, **scores, "rerank_score": rerank_value, "ranking_stage": stage})
                 await self.record_retrieval(run_id, {"cache_hit": True, "queries": len(queries),
                     "corpus_documents": len(documents), "corpus_chunks": len(all_chunks), "cache_ms": cache_ms,
                     "total_ms": round((time.monotonic() - started) * 1000, 2)})
@@ -250,6 +343,10 @@ class Documents:
             except (TypeError, ValueError, KeyError):
                 reasons.add("invalid_records")
                 await self.db.execute("DELETE FROM document_search_cache WHERE user_id=? AND corpus_hash=? AND query_hash=? AND limit_value=?", cache_key)
+
+        fusion_candidate_limit = max(
+            limit, self.settings.reranker_candidate_limit if self.reranker and self.reranker.enabled else limit)
+        vector_candidate_limit = max(limit * 3, fusion_candidate_limit)
 
         async def retrieve_query(query):
             lexical_started = time.monotonic()
@@ -270,8 +367,8 @@ class Documents:
                 try:
                     remaining = self.settings.rag_vector_timeout_seconds - (time.monotonic() - embed_started)
                     async with asyncio.timeout(max(0, remaining)):
-                        raw_hits = await self.vectors.search("documents", user, embeddings[0], limit=limit * 3)
-                    hits, rejected = normalize_hits(raw_hits, chunks_by_id, limit * 3)
+                        raw_hits = await self.vectors.search("documents", user, embeddings[0], limit=vector_candidate_limit)
+                    hits, rejected = normalize_hits(raw_hits, chunks_by_id, vector_candidate_limit)
                     if rejected:
                         failures.add("invalid_records")
                 finally:
@@ -301,17 +398,32 @@ class Documents:
                     entry["vector"] = max(entry["vector"], value)
         fusion_started = time.monotonic()
         ranked = sorted(scores.values(), key=lambda item: 0.65 * item["vector"] + 0.35 * item["lexical"], reverse=True)
-        selected, terms_seen = [], []
+        candidates, terms_seen = [], []
         for item in ranked:
             row, terms = item["row"], set(tokens(item["row"]["text"]))
             similarity = max((len(terms & old) / max(1, len(terms | old)) for old in terms_seen), default=0)
             if similarity >= 0.82:
                 continue
-            selected.append(dict(row, score=round(0.65 * item["vector"] + 0.35 * item["lexical"], 4),
-                                 vector_score=round(item["vector"], 4), bm25_score=round(item["lexical"], 4)))
+            candidates.append(dict(row, score=round(0.65 * item["vector"] + 0.35 * item["lexical"], 4),
+                                   vector_score=round(item["vector"], 4), bm25_score=round(item["lexical"], 4)))
             terms_seen.append(terms)
-            if len(selected) >= limit:
+            if len(candidates) >= fusion_candidate_limit:
                 break
+        selected = [{**row, "rerank_score": None, "ranking_stage": "fusion"} for row in candidates[:limit]]
+        reranker_ms = 0.0
+        if candidates and self.reranker and self.reranker.enabled:
+            rerank_started = time.monotonic()
+            try:
+                order = await self.reranker.rerank(original_query, candidates, min(limit, len(candidates)))
+                selected = [{**candidates[index], "rerank_score": round(value, 6), "ranking_stage": "rerank"}
+                            for index, value in order]
+            except ServiceError:
+                reasons.add("reranker_unavailable")
+                selected = [{**row, "rerank_score": None, "ranking_stage": "fusion_fallback"}
+                            for row in candidates[:limit]]
+            finally:
+                reranker_ms = (time.monotonic() - rerank_started) * 1000
+                RAG_RETRIEVAL_SECONDS.labels(stage="rerank").observe(reranker_ms / 1000)
         if not selected and any(failures & {"vector_unavailable", "invalid_records"} for _, _, failures, _, _ in results):
             raise ServiceError("资料检索发生故障或返回无效字段，关键词检索也未找到证据，请重试或重建索引")
         RAG_RETRIEVAL_SECONDS.labels(stage="fusion").observe(time.monotonic() - fusion_started)
@@ -320,11 +432,14 @@ class Documents:
         if not reasons:
             await self.db.execute("""INSERT OR REPLACE INTO document_search_cache
                 (user_id,corpus_hash,query_hash,limit_value,result,created_at) VALUES(?,?,?,?,?,?)""",
-                (*cache_key, json.dumps([{k: row[k] for k in ("id", "score", "vector_score", "bm25_score")} for row in selected]), now()))
+                (*cache_key, json.dumps([{k: row.get(k) for k in ("id", "score", "vector_score", "bm25_score",
+                    "rerank_score", "ranking_stage")} for row in selected]), now()))
         await self.record_retrieval(run_id, {"cache_hit": False, "corpus_cache_hit": corpus_cache_hit,
             "queries": len(queries), "corpus_documents": len(documents), "corpus_chunks": len(all_chunks),
             "cache_ms": cache_ms, "corpus_ms": corpus_ms, "embedding_ms": round(embed_ms, 2),
-            "vector_ms": round(vector_ms, 2), "total_ms": round((time.monotonic() - started) * 1000, 2),
+            "vector_ms": round(vector_ms, 2), "reranker_ms": round(reranker_ms, 2),
+            "ranking_stage": selected[0]["ranking_stage"] if selected else "fusion",
+            "total_ms": round((time.monotonic() - started) * 1000, 2),
             "candidates": len(ranked), "selected": len(selected), "reasons": sorted(reasons)})
         await self.check_corpus(user, corpus_hash)
         return RetrievalResults(selected, reasons=reasons)
@@ -335,9 +450,13 @@ class Documents:
             if not document:
                 return
             async with self.db.connection() as conn:
-                await conn.execute("INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version) VALUES(?,?,?)",
-                                   (doc_id, user, document["index_version"]))
-                await conn.execute("UPDATE documents SET status='deleted',index_version=index_version+1 WHERE id=? AND user_id=?", (doc_id, user))
+                await conn.execute("""INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version,object_key)
+                    VALUES(?,?,?,?)""", (doc_id, user, document["index_version"], document["object_key"] or doc_id))
+                if document["pending_version"]:
+                    await conn.execute("""INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version,object_key)
+                        VALUES(?,?,?,?)""", (doc_id, user, document["pending_version"], document["pending_object_key"]))
+                await conn.execute("""UPDATE documents SET status='deleted',index_version=index_version+1,pending_version=0,
+                    pending_name='',pending_hash='',pending_object_key='',updated_at=? WHERE id=? AND user_id=?""", (now(), doc_id, user))
                 await conn.execute("DELETE FROM chunks WHERE document_id=? AND user_id=?", (doc_id, user))
                 await conn.commit()
             await self.invalidate_search_cache(user)
@@ -346,14 +465,17 @@ class Documents:
     async def cleanup_pending(self):
         for row in await self.db.rows("SELECT * FROM document_cleanup"):
             async with self.db.guard("documents:" + row["user_id"]):
-                document = await self.db.one("SELECT status,index_version FROM documents WHERE id=?", (row["document_id"],))
-                if document and document["status"] in {"ready", "indexing", "rebuilding"} and document["index_version"] == row["version"]:
+                document = await self.db.one("SELECT status,index_version,pending_version,object_key,pending_object_key FROM documents WHERE id=?", (row["document_id"],))
+                if (document and document["status"] != "deleted"
+                        and row["version"] in {document["index_version"], document["pending_version"]}):
                     continue
                 try:
                     await self.vectors.delete_document_version(row["user_id"], row["document_id"], row["version"])
-                    if not document or document["status"] == "deleted":
+                    object_key = row.get("object_key", "")
+                    if object_key and (not document or document["status"] == "deleted"
+                                       or object_key not in {document["object_key"], document["pending_object_key"]}):
                         for directory in ("uploads", "quarantine"):
-                            await self.store.delete(directory, row["document_id"])
+                            await self.store.delete(directory, object_key)
                     await self.db.execute("DELETE FROM document_cleanup WHERE document_id=? AND version=?",
                                           (row["document_id"], row["version"]))
                 except Exception:
@@ -370,13 +492,15 @@ class Documents:
             raise LookupError("资料不存在")
         if document["status"] not in {"ready", "failed"}:
             raise ServiceError("资料当前不可重建索引；隔离或扫描失败的文件不能进入资料库")
-        if not await self.store.exists("uploads", doc_id):
+        object_key = document["object_key"] or doc_id
+        if not await self.store.exists("uploads", object_key):
             raise ServiceError("原始上传文件不存在，无法重建索引")
         await self.db.execute("DELETE FROM metadata WHERE key=?", (f"index-attempt:{doc_id}:{document['index_version'] + 1}",))
         if document["status"] == "ready":
-            await self.db.execute("UPDATE documents SET status='rebuilding',error='',pending_version=index_version+1 WHERE id=?", (doc_id,))
+            await self.db.execute("""UPDATE documents SET status='rebuilding',error='',pending_version=index_version+1,
+                pending_name=name,pending_hash=hash,pending_object_key=?,updated_at=? WHERE id=?""", (object_key, now(), doc_id))
         else:
-            await self.db.execute("UPDATE documents SET status='indexing',error='',index_version=index_version+1 WHERE id=?", (doc_id,))
+            await self.db.execute("UPDATE documents SET status='indexing',error='',index_version=index_version+1,updated_at=? WHERE id=?", (now(), doc_id))
         return await self.db.one("SELECT * FROM documents WHERE id=?", (doc_id,))
 
     async def close(self):

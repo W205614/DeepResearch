@@ -15,8 +15,8 @@ def load_smoke():
 
 @pytest.mark.parametrize("heads,actual,accepted", [
     ("future_revision\n", " future_revision \n", True),
-    ("0010_outbox_leases\n", "0009_java_business_outbox\n", False),
-    ("0010_outbox_leases\n", "", False),
+    ("0011_document_hot_update\n", "0010_outbox_leases\n", False),
+    ("0011_document_hot_update\n", "", False),
     ("", "", False),
     ("branch_a\nbranch_b\n", "branch_b\nbranch_a\n", True),
 ])

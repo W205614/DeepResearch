@@ -22,7 +22,9 @@ CREATE TABLE IF NOT EXISTS runs(
 CREATE UNIQUE INDEX IF NOT EXISTS one_active_thread ON runs(thread_id) WHERE status IN ('queued','running');
 CREATE TABLE IF NOT EXISTS events(id BIGSERIAL PRIMARY KEY,run_id TEXT NOT NULL,type TEXT,data TEXT,created_at TEXT);
 CREATE INDEX IF NOT EXISTS event_run ON events(run_id,id);
-CREATE TABLE IF NOT EXISTS documents(id TEXT PRIMARY KEY,user_id TEXT NOT NULL,name TEXT,hash TEXT,status TEXT,error TEXT DEFAULT '',created_at TEXT,UNIQUE(user_id,hash));
+CREATE TABLE IF NOT EXISTS documents(id TEXT PRIMARY KEY,user_id TEXT NOT NULL,name TEXT,hash TEXT,status TEXT,error TEXT DEFAULT '',created_at TEXT,
+ updated_at TEXT NOT NULL DEFAULT '',object_key TEXT NOT NULL DEFAULT '',pending_name TEXT NOT NULL DEFAULT '',
+ pending_hash TEXT NOT NULL DEFAULT '',pending_object_key TEXT NOT NULL DEFAULT '',UNIQUE(user_id,hash));
 CREATE TABLE IF NOT EXISTS chunks(id TEXT PRIMARY KEY,document_id TEXT,user_id TEXT,text TEXT,locator TEXT,vector TEXT DEFAULT '[]');
 CREATE TABLE IF NOT EXISTS memories(id TEXT PRIMARY KEY,user_id TEXT,kind TEXT,content TEXT,run_id TEXT DEFAULT '',created_at TEXT,vector TEXT DEFAULT '[]',owner_subject TEXT NOT NULL DEFAULT '',UNIQUE(user_id,kind,run_id));
 CREATE INDEX IF NOT EXISTS personal_memory_owner ON memories(owner_subject,kind,created_at);

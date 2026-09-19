@@ -1,0 +1,80 @@
+name: RAG Quality (manual)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  live-reranker-evaluation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - run: docker build -t deepresearch-rag-quality .
+      - run: docker compose -p dr-rag-quality -f compose.verify.yaml up -d --wait --wait-timeout 240 etcd minio milvus
+      - name: Retrieval ablation and reranker gate
+        env:
+          EMBEDDING_MODEL: ${{ secrets.EMBEDDING_MODEL }}
+          EMBEDDING_BASE_URL: ${{ secrets.EMBEDDING_BASE_URL }}
+          EMBEDDING_API_KEY: ${{ secrets.EMBEDDING_API_KEY }}
+          EMBEDDING_DIMENSION: ${{ secrets.EMBEDDING_DIMENSION }}
+          RERANKER_URL: ${{ secrets.RERANKER_URL }}
+          RERANKER_API_KEY: ${{ secrets.RERANKER_API_KEY }}
+          RERANKER_MODEL: ${{ secrets.RERANKER_MODEL }}
+        run: >-
+          docker run --rm --network dr-rag-quality_default
+          -v "${{ github.workspace }}:/workspace" -w /workspace
+          -e MILVUS_URI=http://milvus:19530 -e ALLOW_INTERNAL_MODEL_PROCESSING=true
+          -e EMBEDDING_MODEL -e EMBEDDING_BASE_URL -e EMBEDDING_API_KEY -e EMBEDDING_DIMENSION
+          -e RERANKER_ENABLED=true -e RERANKER_URL -e RERANKER_API_KEY -e RERANKER_MODEL
+          deepresearch-rag-quality python scripts/evaluate_retrieval.py
+          --corpus eval/local_retrieval_corpus.json --cases eval/local_retrieval_cases.json
+          --output .cache/eval/reranker-retrieval.json --with-reranker --require-reranker-gate
+      - name: Local QA baseline
+        env:
+          LLM_MODEL_ID: ${{ secrets.LLM_MODEL_ID }}
+          LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          EMBEDDING_MODEL: ${{ secrets.EMBEDDING_MODEL }}
+          EMBEDDING_BASE_URL: ${{ secrets.EMBEDDING_BASE_URL }}
+          EMBEDDING_API_KEY: ${{ secrets.EMBEDDING_API_KEY }}
+          EMBEDDING_DIMENSION: ${{ secrets.EMBEDDING_DIMENSION }}
+          RERANKER_URL: ${{ secrets.RERANKER_URL }}
+          RERANKER_API_KEY: ${{ secrets.RERANKER_API_KEY }}
+          RERANKER_MODEL: ${{ secrets.RERANKER_MODEL }}
+        run: >-
+          docker run --rm --network dr-rag-quality_default
+          -v "${{ github.workspace }}:/workspace" -w /workspace
+          -e MILVUS_URI=http://milvus:19530 -e ALLOW_INTERNAL_MODEL_PROCESSING=true
+          -e LLM_MODEL_ID -e LLM_BASE_URL -e LLM_API_KEY
+          -e EMBEDDING_MODEL -e EMBEDDING_BASE_URL -e EMBEDDING_API_KEY -e EMBEDDING_DIMENSION
+          deepresearch-rag-quality python scripts/evaluate_local_qa.py
+          --output .cache/eval/hybrid-local-qa.json --require-gate
+      - name: Local QA reranker gate
+        env:
+          LLM_MODEL_ID: ${{ secrets.LLM_MODEL_ID }}
+          LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          EMBEDDING_MODEL: ${{ secrets.EMBEDDING_MODEL }}
+          EMBEDDING_BASE_URL: ${{ secrets.EMBEDDING_BASE_URL }}
+          EMBEDDING_API_KEY: ${{ secrets.EMBEDDING_API_KEY }}
+          EMBEDDING_DIMENSION: ${{ secrets.EMBEDDING_DIMENSION }}
+          RERANKER_URL: ${{ secrets.RERANKER_URL }}
+          RERANKER_API_KEY: ${{ secrets.RERANKER_API_KEY }}
+          RERANKER_MODEL: ${{ secrets.RERANKER_MODEL }}
+        run: >-
+          docker run --rm --network dr-rag-quality_default
+          -v "${{ github.workspace }}:/workspace" -w /workspace
+          -e MILVUS_URI=http://milvus:19530 -e ALLOW_INTERNAL_MODEL_PROCESSING=true
+          -e LLM_MODEL_ID -e LLM_BASE_URL -e LLM_API_KEY
+          -e EMBEDDING_MODEL -e EMBEDDING_BASE_URL -e EMBEDDING_API_KEY -e EMBEDDING_DIMENSION
+          -e RERANKER_ENABLED=true -e RERANKER_URL -e RERANKER_API_KEY -e RERANKER_MODEL
+          deepresearch-rag-quality python scripts/evaluate_local_qa.py
+          --output .cache/eval/reranker-local-qa.json --with-reranker
+          --baseline .cache/eval/hybrid-local-qa.json --require-gate
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: rag-quality-results
+          path: .cache/eval/*.json
+      - if: always()
+        run: docker compose -p dr-rag-quality -f compose.verify.yaml down -v

@@ -33,7 +33,9 @@ CREATE TABLE IF NOT EXISTS events(
 CREATE INDEX IF NOT EXISTS event_run ON events(run_id,id);
 CREATE TABLE IF NOT EXISTS documents(
  id TEXT PRIMARY KEY,user_id TEXT NOT NULL,name TEXT,hash TEXT,status TEXT,error TEXT DEFAULT '',
- created_at TEXT,UNIQUE(user_id,hash));
+ created_at TEXT,updated_at TEXT NOT NULL DEFAULT '',object_key TEXT NOT NULL DEFAULT '',
+ pending_name TEXT NOT NULL DEFAULT '',pending_hash TEXT NOT NULL DEFAULT '',pending_object_key TEXT NOT NULL DEFAULT '',
+ UNIQUE(user_id,hash));
 CREATE TABLE IF NOT EXISTS chunks(
  id TEXT PRIMARY KEY,document_id TEXT,user_id TEXT,text TEXT,locator TEXT,vector TEXT DEFAULT '[]',ordinal INTEGER NOT NULL DEFAULT 0);
 CREATE TABLE IF NOT EXISTS memories(
@@ -98,6 +100,14 @@ class Database:
                 await conn.execute("ALTER TABLE documents ADD COLUMN pending_version INTEGER NOT NULL DEFAULT 0")
             if "index_version" not in document_columns:
                 await conn.execute("ALTER TABLE documents ADD COLUMN index_version INTEGER NOT NULL DEFAULT 0")
+            for name in ("updated_at", "object_key", "pending_name", "pending_hash", "pending_object_key"):
+                if name not in document_columns:
+                    await conn.execute(f"ALTER TABLE documents ADD COLUMN {name} TEXT NOT NULL DEFAULT ''")
+            await conn.execute("UPDATE documents SET updated_at=COALESCE(created_at,'') WHERE updated_at=''")
+            cleanup_columns = {row[1] for row in await (await conn.execute("PRAGMA table_info(document_cleanup)")).fetchall()}
+            if "object_key" not in cleanup_columns:
+                await conn.execute("ALTER TABLE document_cleanup ADD COLUMN object_key TEXT NOT NULL DEFAULT ''")
+            await conn.execute("UPDATE document_cleanup SET object_key=document_id WHERE object_key=''")
             columns = {row[1] for row in await (await conn.execute("PRAGMA table_info(threads)")).fetchall()}
             run_columns = {row[1] for row in await (await conn.execute("PRAGMA table_info(runs)")).fetchall()}
             memory_columns = {row[1] for row in await (await conn.execute("PRAGMA table_info(memories)")).fetchall()}

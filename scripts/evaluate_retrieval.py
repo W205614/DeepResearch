@@ -68,10 +68,13 @@ def aggregate(rows: list[dict], prefix: str, cutoffs: list[int]) -> dict:
     for row in rows:
         for key in values:
             values[key].append(row[f"{prefix}_{key}"])
+    cold = [row[f"{prefix}_cold_ms"] for row in rows]
     return {
         **{key: round(statistics.mean(items), 4) for key, items in values.items()},
         "mrr_at_max_k": round(statistics.mean(row[f"{prefix}_mrr_at_max_k"] for row in rows), 4),
-        "mean_cold_ms": round(statistics.mean(row[f"{prefix}_cold_ms"] for row in rows), 2),
+        "mean_cold_ms": round(statistics.mean(cold), 2),
+        "p50_cold_ms": round(statistics.median(cold), 2),
+        "p95_cold_ms": round(sorted(cold)[max(0, math.ceil(len(cold) * 0.95) - 1)], 2),
     }
 
 
@@ -81,6 +84,8 @@ def delta(baseline: float, optimized: float) -> dict:
 
 
 async def main_async(args):
+    if args.with_reranker and 5 not in args.cutoffs:
+        raise ValueError("Reranker gate requires cutoff 5")
     corpus_path, cases_path = Path(args.corpus), Path(args.cases)
     corpus = json.loads(corpus_path.read_text(encoding="utf-8"))
     cases = json.loads(cases_path.read_text(encoding="utf-8"))
@@ -101,6 +106,9 @@ async def main_async(args):
     # stays in a disposable SQLite database rather than the product database.
     runtime = await Runtime(settings, isolated_mode=True).start()
     try:
+        configured_reranker = bool(runtime.settings.reranker_url and runtime.settings.reranker_model)
+        if args.with_reranker and not configured_reranker:
+            raise ValueError("--with-reranker requires RERANKER_URL and a reachable compatible service")
         for row in corpus:
             path = (corpus_path.parent / row["path"]).resolve()
             document = await runtime.documents.add("evaluator", row["name"], path.read_bytes())
@@ -110,22 +118,39 @@ async def main_async(args):
         for case in cases:
             expected, query = set(case["relevant_documents"]), case["query"]
             vector_hits, vector_ms = await vector_only(runtime, "evaluator", query, args.max_k)
+            runtime.settings.reranker_enabled = False
             hybrid = await runtime.documents.search("evaluator", [query], limit=args.max_k,
                                                     run_id=f"hybrid-cold-{case['id']}")
             await runtime.documents.search("evaluator", [query], limit=args.max_k,
                                            run_id=f"hybrid-warm-{case['id']}")
-            events = await runtime.db.rows("SELECT run_id,data FROM events WHERE run_id IN (?,?) ORDER BY id",
-                (f"hybrid-cold-{case['id']}", f"hybrid-warm-{case['id']}"))
-            timing = {row["run_id"].split("-", 1)[1]: json.loads(row["data"]) for row in events}
+            reranked = []
+            if args.with_reranker:
+                runtime.settings.reranker_enabled = True
+                reranked = await runtime.documents.search("evaluator", [query], limit=args.max_k,
+                    run_id=f"reranked-cold-{case['id']}", rerank_query=query)
+                await runtime.documents.search("evaluator", [query], limit=args.max_k,
+                    run_id=f"reranked-warm-{case['id']}", rerank_query=query)
+            event_ids = [f"hybrid-cold-{case['id']}", f"hybrid-warm-{case['id']}"]
+            if args.with_reranker:
+                event_ids += [f"reranked-cold-{case['id']}", f"reranked-warm-{case['id']}"]
+            placeholders = ",".join("?" for _ in event_ids)
+            events = await runtime.db.rows(f"SELECT run_id,data FROM events WHERE run_id IN ({placeholders}) ORDER BY id", tuple(event_ids))
+            timing = {row["run_id"]: json.loads(row["data"]) for row in events}
             row = {"id": case["id"], "query": query, "expected_documents": sorted(expected),
                    "vector_retrieved_documents": document_titles(vector_hits),
                    "hybrid_retrieved_documents": document_titles(hybrid),
                    "vector_cold_ms": vector_ms,
-                   "hybrid_cold_ms": timing[f"cold-{case['id']}"]["total_ms"],
-                   "hybrid_warm_ms": timing[f"warm-{case['id']}"]["total_ms"],
-                   "hybrid_warm_cache_hit": timing[f"warm-{case['id']}"]["cache_hit"]}
+                   "hybrid_cold_ms": timing[f"hybrid-cold-{case['id']}"]["total_ms"],
+                   "hybrid_warm_ms": timing[f"hybrid-warm-{case['id']}"]["total_ms"],
+                   "hybrid_warm_cache_hit": timing[f"hybrid-warm-{case['id']}"]["cache_hit"]}
             row.update({f"vector_{key}": value for key, value in metrics(vector_hits, expected, args.cutoffs).items()})
             row.update({f"hybrid_{key}": value for key, value in metrics(hybrid, expected, args.cutoffs).items()})
+            if args.with_reranker:
+                row.update({"reranked_retrieved_documents": document_titles(reranked),
+                            "reranked_cold_ms": timing[f"reranked-cold-{case['id']}"]["total_ms"],
+                            "reranked_warm_ms": timing[f"reranked-warm-{case['id']}"]["total_ms"],
+                            "reranked_warm_cache_hit": timing[f"reranked-warm-{case['id']}"]["cache_hit"]})
+                row.update({f"reranked_{key}": value for key, value in metrics(reranked, expected, args.cutoffs).items()})
             rows.append(row)
     finally:
         try:
@@ -134,12 +159,14 @@ async def main_async(args):
         finally:
             await runtime.close()
     baseline, optimized = aggregate(rows, "vector", args.cutoffs), aggregate(rows, "hybrid", args.cutoffs)
+    reranked_summary = aggregate(rows, "reranked", args.cutoffs) if args.with_reranker else None
     comparable = [f"recall_at_{k}" for k in args.cutoffs] + [f"precision_at_{k}" for k in args.cutoffs] + [
         f"ndcg_at_{k}" for k in args.cutoffs] + ["mrr_at_max_k"]
     summary = {"dataset": {"corpus_documents": len(corpus), "corpus_chunks": chunk_count,
                             "query_cases": len(rows), "embedding_model": settings.embedding_model,
                             "mode": "demo" if args.demo else "live"},
-               "methods": {"vector_only_baseline": baseline, "hybrid_bm25_vector": optimized},
+               "methods": {"vector_only_baseline": baseline, "hybrid_bm25_vector": optimized,
+                           "hybrid_plus_reranker": reranked_summary},
                "quality_delta": {key: delta(baseline[key], optimized[key]) for key in comparable},
                "latency": {"vector_only_mean_cold_ms": baseline["mean_cold_ms"],
                            "hybrid_mean_cold_ms": optimized["mean_cold_ms"],
@@ -151,11 +178,25 @@ async def main_async(args):
                               "hybrid_cold_query_embedding_inputs_per_query": 1,
                               "hybrid_warm_query_embedding_inputs_per_query": 0,
                               "llm_calls_for_retrieval_evaluation": 0,
-                              "note": "请求计数，不是货币成本；实际金额取决于部署时的嵌入服务定价。"},
+                              "reranker_calls_per_cold_query": 1 if args.with_reranker else 0,
+                              "note": "请求计数，不是货币成本；实际金额取决于部署时的嵌入与重排服务定价。"},
                "cases": rows}
+    if args.with_reranker:
+        recall_key = "recall_at_5"
+        quality_improved = (reranked_summary["ndcg_at_5"] > optimized["ndcg_at_5"]
+                            or reranked_summary["mrr_at_max_k"] > optimized["mrr_at_max_k"])
+        summary["reranker_gate"] = {
+            "recall_not_lower": reranked_summary[recall_key] >= optimized[recall_key],
+            "ranking_improved": quality_improved,
+            "p95_added_ms": round(reranked_summary["p95_cold_ms"] - optimized["p95_cold_ms"], 2),
+        }
+        summary["reranker_gate"]["passed"] = (summary["reranker_gate"]["recall_not_lower"]
+            and quality_improved and summary["reranker_gate"]["p95_added_ms"] <= 2000)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(summary, ensure_ascii=False, indent=2))
+    if args.require_reranker_gate and not summary.get("reranker_gate", {}).get("passed"):
+        raise RuntimeError("reranker acceptance gate failed")
 
 
 if __name__ == "__main__":
@@ -166,4 +207,6 @@ if __name__ == "__main__":
     parser.add_argument("--max-k", type=int, default=10)
     parser.add_argument("--cutoffs", type=int, nargs="+", default=[3, 5, 10])
     parser.add_argument("--demo", action="store_true", help="使用离线嵌入，仅验证评测可复现性")
+    parser.add_argument("--with-reranker", action="store_true", help="调用已配置的真实 HTTP Reranker")
+    parser.add_argument("--require-reranker-gate", action="store_true", help="重排未满足启用门槛时返回失败")
     raise SystemExit(asyncio.run(main_async(parser.parse_args())))

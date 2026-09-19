@@ -39,7 +39,7 @@ async def test_postgres_migration_idempotency_quota(component, monkeypatch):
     assert (await component.db.one('SELECT search_calls FROM workspace_daily_usage WHERE workspace_id=?', (user,)))['search_calls'] == 2
     await component.purge_user(user, 'reports')
     assert (await component.db.one('SELECT search_calls FROM workspace_daily_usage WHERE workspace_id=?', (user,)))['search_calls'] == 2
-    assert (await component.db.one('SELECT version_num FROM alembic_version'))['version_num'] == '0010_outbox_leases'
+    assert (await component.db.one('SELECT version_num FROM alembic_version'))['version_num'] == '0011_document_hot_update'
 
 
 async def test_real_scan_index_isolation_and_delete_race(component, monkeypatch):
@@ -50,7 +50,7 @@ async def test_real_scan_index_isolation_and_delete_race(component, monkeypatch)
     await component.documents.ingest(doc['id'])
     assert await component.documents.search(user, ['source validation'])
     assert not await component.documents.search(other, ['source validation'])
-    assert await component.documents.store.exists('uploads', doc['id'])
+    assert await component.documents.store.exists('uploads', doc['object_key'])
     await component.documents.reindex(doc['id'], user)
     entered, release = asyncio.Event(), asyncio.Event()
     original = component.providers.embed
@@ -65,7 +65,7 @@ async def test_real_scan_index_isolation_and_delete_race(component, monkeypatch)
     release.set()
     await task
     assert not await component.documents.search(user, ['source validation'])
-    assert not await component.documents.store.exists('uploads', doc['id'])
+    assert not await component.documents.store.exists('uploads', doc['object_key'])
     client, collection = component.vectors.ensure('documents')
     assert not await asyncio.to_thread(client.query, collection_name=collection, filter=f'document_id == {json.dumps(doc["id"])}')
     eicar = b'X5O!P%@AP[4' + b'\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*'

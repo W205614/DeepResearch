@@ -461,11 +461,35 @@ def create_app(settings: Settings | None = None):
                 raise
         await runtime.db.audit(user, request.state.principal.subject, "document.upload", "document",
                                document["id"], document["status"])
-        return document
+        return public_document(document)
+
+    def public_document(row: dict) -> dict:
+        return {key: row.get(key) for key in ("id", "name", "status", "error", "created_at", "updated_at",
+                                                "index_version", "pending_version")}
 
     @app.get("/api/documents")
     async def documents(runtime=Depends(rt), user=Depends(identity)):
-        return await runtime.db.rows("SELECT * FROM documents WHERE user_id=? AND status!='deleted' ORDER BY created_at DESC", (user,))
+        rows = await runtime.db.rows("""SELECT id,name,status,error,created_at,updated_at,index_version,pending_version
+            FROM documents WHERE user_id=? AND status!='deleted' ORDER BY created_at DESC""", (user,))
+        return [public_document(row) for row in rows]
+
+    @app.put("/api/documents/{document_id}", status_code=202)
+    async def replace_document(document_id: str, request: Request, file: UploadFile = File(),
+                               runtime=Depends(rt), user=Depends(researcher)):
+        content = await file.read(10 * 1024 * 1024 + 1)
+        await file.close()
+        try:
+            document = await runtime.replace_document(document_id, user, file.filename or "document", content)
+        except LookupError as exc:
+            await runtime.db.audit(user, request.state.principal.subject, "document.replace", "document", document_id, "rejected")
+            raise HTTPException(404, str(exc)) from None
+        except ServiceError as exc:
+            await runtime.db.audit(user, request.state.principal.subject, "document.replace", "document", document_id, "rejected")
+            if exc.code in {"document_busy", "document_unchanged", "document_duplicate", "source_changed"}:
+                raise HTTPException(409, str(exc)) from None
+            raise
+        await runtime.db.audit(user, request.state.principal.subject, "document.replace", "document", document_id, "rebuilding")
+        return public_document(document)
 
     @app.get("/api/documents/{document_id}/chunks")
     async def document_chunks(document_id: str, limit: int = 100, runtime=Depends(rt), user=Depends(identity)):
@@ -477,7 +501,7 @@ def create_app(settings: Settings | None = None):
 
     @app.post("/api/documents/search")
     async def search_documents(body: DocumentSearchRequest, diagnostics: bool = False, runtime=Depends(rt), user=Depends(identity)):
-        results = await runtime.documents.search(user, [body.query], limit=body.limit)
+        results = await runtime.documents.search(user, [body.query], limit=body.limit, rerank_query=body.query)
         return {"results": results, "reasons": getattr(results, "reasons", [])} if diagnostics else results
 
     @app.post("/api/documents/{document_id}/reindex", status_code=202)
@@ -487,7 +511,7 @@ def create_app(settings: Settings | None = None):
         except LookupError as exc:
             raise HTTPException(404, str(exc)) from None
         await runtime.db.audit(user, request.state.principal.subject, "document.reindex", "document", document_id)
-        return document
+        return public_document(document)
 
     @app.delete("/api/documents/{document_id}")
     async def delete_document(document_id: str, request: Request, runtime=Depends(rt), user=Depends(administrator)):

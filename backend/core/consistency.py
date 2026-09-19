@@ -7,7 +7,7 @@ DAILY_SCHEMA = """CREATE TABLE IF NOT EXISTS workspace_daily_usage(
  workspace_id TEXT NOT NULL,day TEXT NOT NULL,search_calls INTEGER NOT NULL DEFAULT 0,
  PRIMARY KEY(workspace_id,day));
 CREATE TABLE IF NOT EXISTS document_cleanup(
- document_id TEXT NOT NULL,user_id TEXT NOT NULL,version INTEGER NOT NULL,
+ document_id TEXT NOT NULL,user_id TEXT NOT NULL,version INTEGER NOT NULL,object_key TEXT NOT NULL DEFAULT '',
  PRIMARY KEY(document_id,version));"""
 
 _locks = weakref.WeakValueDictionary()

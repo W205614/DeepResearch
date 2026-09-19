@@ -31,8 +31,9 @@ async def test_clean_upload_moves_out_of_quarantine_and_is_indexed(api_client, m
     response = await client.post("/api/documents", files={"file": ("clean.md", "可检索资料".encode(), "text/markdown")})
     assert response.status_code == 202, response.text
     document = await wait_for_status(client, response.json()["id"], "ready")
-    assert (app.state.runtime.settings.data_dir / "uploads" / document["id"]).is_file()
-    assert not (app.state.runtime.settings.data_dir / "quarantine" / document["id"]).exists()
+    stored = await app.state.runtime.db.one("SELECT object_key FROM documents WHERE id=?", (document["id"],))
+    assert (app.state.runtime.settings.data_dir / "uploads" / stored["object_key"]).is_file()
+    assert not (app.state.runtime.settings.data_dir / "quarantine" / stored["object_key"]).exists()
 
 
 @pytest.mark.parametrize("error_type, expected", [(ScanRejected, "quarantined"), (ScanUnavailable, "scan_failed")])
@@ -49,13 +50,14 @@ async def test_rejected_or_unavailable_scan_is_not_indexed_and_can_be_deleted(ap
     rows = (await client.get("/api/documents")).json()
     assert rows and rows[0]["status"] == expected
     document = rows[0]
-    assert (app.state.runtime.settings.data_dir / "quarantine" / document["id"]).is_file()
+    stored = await app.state.runtime.db.one("SELECT object_key FROM documents WHERE id=?", (document["id"],))
+    assert (app.state.runtime.settings.data_dir / "quarantine" / stored["object_key"]).is_file()
     assert (await client.post("/api/documents/search", json={"query": "隔离"})).json() == []
     exported = await client.get("/api/data/export")
     with zipfile.ZipFile(io.BytesIO(exported.content)) as archive:
         assert document["id"] not in archive.read("documents.json").decode("utf-8")
     assert (await client.delete(f"/api/documents/{document['id']}")).status_code == 200
-    assert not (app.state.runtime.settings.data_dir / "quarantine" / document["id"]).exists()
+    assert not (app.state.runtime.settings.data_dir / "quarantine" / stored["object_key"]).exists()
     audit = (await client.get("/api/workspaces/alice/audit")).json()
     assert any(row["action"] == "document.upload" and row["result"] == "rejected" for row in audit)
 

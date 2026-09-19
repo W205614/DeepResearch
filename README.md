@@ -134,7 +134,7 @@ Docker 已执行 `docker compose up -d --build --wait --wait-timeout 300`，后�
 
 资料范围默认 `internal`，禁止公开搜索；`ALLOW_INTERNAL_MODEL_PROCESSING` 默认 `false`，因此内部资料相关模型处理会被策略拒绝。公开研究请在界面选择“公开”；该模式不加载内部知识库和私有会话历史。只有核准所配置模型、视觉与嵌入供应商后，管理员才可开启内部资料处理；`restricted` 请求直接拒绝外发。范围依赖用户正确声明，不是自动敏感信息检测。
 
-已有部署升级前先做备份，并等待运行任务结束。Compose 的 `migrate` 服务执行 `alembic upgrade head`，当前最新版本为 `0010_outbox_leases`；升级必须同时发布 Java `backend`、Python `agent`、两个 Worker 和 Web。可运行 `.venv/Scripts/python.exe scripts/verify_local_deployment.py` 检查默认本机入口、迁移、外发关闭状态与监控。维护及隔离恢复步骤见 [本机运维记录](docs/local-pilot-operations.md)。
+已有部署升级前先做备份，并等待运行任务结束。Compose 的 `migrate` 服务执行 `alembic upgrade head`，当前最新版本为 `0011_document_hot_update`；升级必须同时发布 Java `backend`、Python `agent`、两个 Worker 和 Web。可运行 `.venv/Scripts/python.exe scripts/verify_local_deployment.py` 检查默认本机入口、迁移、外发关闭状态与监控。维护及隔离恢复步骤见 [本机运维记录](docs/local-pilot-operations.md)。
 
 所有服务仅在 Docker 网络内互通，Web、Keycloak 与 Grafana 仅绑定本机回环地址。停止服务使用 `docker compose down`；不要使用 `down -v`，否则会删除演示数据卷。项目只维护根目录的 `compose.yaml` 作为运行拓扑；测试告警与隔离组件验证分别使用 `compose.test.yaml` 和 `compose.verify.yaml`。
 ## API 配置
@@ -189,13 +189,15 @@ Python Agent 依赖安装在项目内 `.venv`，不会写入系统 Python：
 
 ## 检索评测与观测
 
-`eval/frozen_cases.json` 只验证研究流程、路由和来源数量目标，`source_target_rate` 不是检索召回率。仓库包含一套冻结的内部回归语料：14 份资料、16 个问题，并为每个问题人工标注 `relevant_documents`。运行以下命令可在同一索引上对照单向量基线和当前 BM25 + 向量融合：
+`eval/frozen_cases.json` 只验证研究流程、路由和来源数量目标，`source_target_rate` 不是检索召回率。仓库包含一套版本化内部回归语料：15 份资料、27 个问题，并为每个问题人工标注 `relevant_documents`。运行以下命令可在同一索引上对照单向量基线和当前 BM25 + 向量融合：
 
 ```powershell
 # 真实嵌入只在 Docker 私有网络中执行；使用临时 SQLite 状态和自动清理的 dr_eval_* Milvus 集合
 $workspace = (Get-Location).Path
 docker compose run --rm --no-deps -v "${workspace}:/workspace:ro" agent python /workspace/scripts/evaluate_retrieval.py --corpus /workspace/eval/local_retrieval_corpus.json --cases /workspace/eval/local_retrieval_cases.json --output /tmp/retrieval-result.json
 ```
+
+可选 HTTP Reranker 默认关闭。它使用 `{model,query,documents:[{id,text}],top_n}` 请求和 `{results:[{index,relevance_score}]}` 响应；超时、无效响应或策略禁止时回退现有融合排序，降级结果不缓存。配置 `RERANKER_URL`、密钥和模型后，手动运行 GitHub `RAG Quality (manual)` 工作流；只有 Recall@5 不下降、nDCG@5 或 MRR 改善、答案门禁通过且 P95 新增时延不超过 2 秒时，才允许在正式环境设置 `RERANKER_ENABLED=true`。仓库不会因接口存在而宣称重排效果提升。
 
 最新真实嵌入测量与边界见 [eval/benchmark_results.md](eval/benchmark_results.md)。输出包含文档级 Recall、Precision、nDCG、MRR、冷/热查询时延和嵌入请求成本代理。它衡量资料检索，不代表最终答案正确率；答案质量仍需单独标注证据支撑、完整性和正确性。研究任务的 SSE 事件还会写入 `local_retrieval`，记录缓存、BM25、query embedding、向量搜索、融合和总耗时。当前界面并不流式返回模型 token，因此不能把这些数据称为模型 TTFT。
 
@@ -204,7 +206,7 @@ docker compose run --rm --no-deps -v "${workspace}:/workspace:ro" agent python /
 - 在 14 份冻结资料、16 个人工标注中文查询与真实 `text-embedding-3-large` 服务上，BM25 + 向量融合的 Recall@5 为 **1.0000**，单向量对照为 **0.9688**；nDCG@5 为 **0.9676**，对照为 **0.9446**。
 - 2026-09-11 两轮复测中，混合检索平均冷查询分别为 **1235.77 / 1177.63 ms**；平均热查询分别为 **131.32 / 105.62 ms**，热查询缓存命中率均为 **100%**。
 
-以上质量数据在 2026-09-11 两轮真实嵌入复测中一致，适合写成“固定语料检索评测”；不能写成通用数据集成绩、回答准确率或生产 SLA。
+以上历史质量数据仍对应 2026-09-11 的 14 份资料、16 个问题；新增困难集和 Reranker 尚无真实服务结果，不能把历史数字套用到新集合。固定语料结果不能写成通用数据集成绩、回答准确率或生产 SLA。
 
 ## 后端目录
 
@@ -253,7 +255,7 @@ docker compose exec -T agent python -m backend.commands.cli --base-url http://we
 
 运行任务时，Python Agent 会向容器标准输出记录任务短 ID、节点开始/结束与耗时、模型调用、搜索结果数量、候选/可读网页数量、证据筛选数量和错误类别。查看命令为 `docker compose logs -f agent worker`。日志默认不记录问题文本、用户偏好、提示词、模型输入输出、URL 或网页正文；用 `TASK_LOG_LEVEL=WARNING` 可减少正常进度日志。
 
-本地资料支持 TXT、Markdown、DOCX、PDF，以及 JPEG、PNG、静态 GIF、WebP 图片。正文保留章节，表格片段重复表头；DOCX 按正文顺序处理段落、表格与嵌入图片。扫描、图形或疑似双栏 PDF 页渲染整页后调用视觉模型，避免只提取嵌入图片丢失上下文；普通文字页保留页码直接解析。格式损坏、加密、无法可靠识别、解析不完整或嵌入数量不符时不发布索引。PPT、Excel、复杂公式和任意排版的准确还原不在当前保证范围。旧资料需手动重建索引才能应用新拆分规则。详见 [检索与文档边界处理](docs/retrieval-document-hardening.md)。
+本地资料支持 TXT、Markdown、DOCX、PDF，以及 JPEG、PNG、静态 GIF、WebP 图片。正文保留章节，表格片段重复表头；DOCX 按正文顺序处理段落、表格与嵌入图片。扫描、图形或疑似双栏 PDF 页渲染整页后调用视觉模型，避免只提取嵌入图片丢失上下文；普通文字页保留页码直接解析。格式损坏、加密、无法可靠识别、解析不完整或嵌入数量不符时不发布索引。PPT、Excel、复杂公式和任意排版的准确还原不在当前保证范围。资料页可替换 ready 文档：新原件完成扫描、解析、向量化和版本发布前旧索引继续可用；失败保留旧版，删除与替换并发时删除墓碑优先。旧资料仍可手动重建索引以应用新拆分规则。详见 [检索与文档边界处理](docs/retrieval-document-hardening.md)。
 
 默认不会自动把报告写入语义记忆。完成报告后可在界面点击“保存为语义记忆”，或设置 `AUTO_SAVE_SEMANTIC_MEMORY=true` 恢复自动保存。用户偏好和个人设定按 OIDC 账号私有，即使成员进入同一工作空间也不会互相读取或修改；报告语义记忆属于工作空间，但只会在保存它的 Thread 内被检索。工作台设置页可导出当前工作空间数据与本人个人记忆，或在确认后清理对应数据。
 

@@ -1,0 +1,12 @@
+[
+  {"id":"qa-hybrid-weight","question":"混合召回中向量和BM25的权重分别是多少？","relevant_documents":["04_hybrid_retrieval.md"],"required_terms":["0.65","0.35"]},
+  {"id":"qa-cache","question":"热缓存为什么可以避免重复调用查询嵌入？","relevant_documents":["06_cache_latency.md"],"required_terms":["缓存"]},
+  {"id":"qa-web-boundary","question":"无法读取网页正文时能否把搜索摘要写成已阅读全文？","relevant_documents":["02_web_research.md"],"required_any_terms":["不能","不"]},
+  {"id":"qa-rerank-boundary","question":"当前Jaccard去重是不是独立Cross-Encoder重排？","relevant_documents":["05_ranking_diversity.md"],"required_any_terms":["不是","不能"]},
+  {"id":"qa-metrics-boundary","question":"Recall@K提升是否等于最终回答正确率提升？","relevant_documents":["11_evaluation_metrics.md","14_citation_validation.md"],"required_any_terms":["不等于","不能"]},
+  {"id":"qa-reflection","question":"补搜怎样避免无限循环？","relevant_documents":["13_reflection.md"],"required_any_terms":["轮次","预算","新查询"]},
+  {"id":"qa-vision-limit","question":"视觉解析是否保证复杂公式一定准确？","relevant_documents":["09_multimodal_ingestion.md"],"required_any_terms":["有限","不能","不保证"]},
+  {"id":"qa-hot-update","question":"文档热更新失败后旧索引应如何处理？","relevant_documents":["15_hot_update.md"],"required_terms":["旧"],"critical":true},
+  {"id":"qa-delete-race","question":"删除与文档替换并发时以什么为准？","relevant_documents":["15_hot_update.md"],"required_terms":["删除"],"critical":true},
+  {"id":"qa-unsupported","question":"这些资料证明系统已达到多少生产QPS？","relevant_documents":[],"must_refuse":true,"required_any_terms":["没有","无法","资料"],"critical":true}
+]

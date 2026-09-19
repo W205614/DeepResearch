@@ -3,12 +3,14 @@ package com.deepresearch.business;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -41,6 +43,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -111,6 +114,29 @@ class BusinessBackendIntegrationTest {
             .andExpect(status().isForbidden());
 
         assertThat(count("runs")).isZero();
+    }
+
+    @Test
+    void documentReplacementIsProxiedForResearcherButDeniedForViewer() throws Exception {
+        workspace("document-space", "researcher", "researcher", 2);
+        jdbc.update("INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES('document-space','viewer','viewer','now')");
+        when(agent.forward(any(HttpServletRequest.class))).thenReturn(
+            new AgentClient.AgentResponse(202, new HttpHeaders(), "{}".getBytes()));
+
+        mvc.perform(put("/api/documents/document-1")
+                .with(jwt().jwt(token -> token.subject("viewer")))
+                .header("X-Workspace-ID", "document-space")
+                .contentType("multipart/form-data; boundary=test")
+                .content("--test--"))
+            .andExpect(status().isForbidden());
+        mvc.perform(put("/api/documents/document-1")
+                .with(jwt().jwt(token -> token.subject("researcher")))
+                .header("X-Workspace-ID", "document-space")
+                .contentType("multipart/form-data; boundary=test")
+                .content("--test--"))
+            .andExpect(status().isAccepted());
+
+        verify(agent, times(1)).forward(any(HttpServletRequest.class));
     }
 
     @Test

@@ -14,5 +14,16 @@
   {"id":"reflection","query":"证据不足时如何决定继续补搜，以及怎样防止无限循环？","relevant_documents":["13_reflection.md"]},
   {"id":"citation","query":"如何验证报告结论真的被它标出的引用片段支持？","relevant_documents":["14_citation_validation.md"]},
   {"id":"rag-boundary","query":"检索质量的召回率提高，是否等于最终生成答案准确？","relevant_documents":["11_evaluation_metrics.md","14_citation_validation.md"]},
-  {"id":"research-boundary","query":"网页信息和用户 Thread 记忆能否都作为报告事实证据？","relevant_documents":["02_web_research.md","08_memory_scope.md"]}
+  {"id":"research-boundary","query":"网页信息和用户 Thread 记忆能否都作为报告事实证据？","relevant_documents":["02_web_research.md","08_memory_scope.md"]},
+  {"id":"hard-exact-weight","query":"融合公式里的向量权重 0.65 和关键词权重 0.35 分别是多少？","relevant_documents":["04_hybrid_retrieval.md"]},
+  {"id":"hard-synonym-cache","query":"相同问题再次查询时怎样省掉语义编码请求？","relevant_documents":["06_cache_latency.md"]},
+  {"id":"hard-negation-summary","query":"只有搜索摘要却没有网页正文，是否可以声称已经阅读全文？","relevant_documents":["02_web_research.md"]},
+  {"id":"hard-multi-permission-memory","query":"登录隔离和 Thread 记忆隔离分别由哪些资料说明？","relevant_documents":["10_authentication.md","08_memory_scope.md"]},
+  {"id":"hard-duplicate-rerank","query":"Jaccard 去重是否等同于部署了 Cross-Encoder 重排模型？","relevant_documents":["05_ranking_diversity.md"]},
+  {"id":"hard-metric-boundary","query":"Top-K 召回改善为什么不能直接写成生成答案正确率提升？","relevant_documents":["11_evaluation_metrics.md","14_citation_validation.md"]},
+  {"id":"hard-reflection-stop","query":"补充检索在没有新查询时如何停止，怎样避免死循环？","relevant_documents":["13_reflection.md"]},
+  {"id":"hard-visual-limitation","query":"图片文字已经被视觉模型提取后，是否代表复杂公式一定能准确结构化？","relevant_documents":["09_multimodal_ingestion.md"]},
+  {"id":"hard-hot-update-old-readable","query":"替换文档建立新索引期间，为什么旧版本还必须可以检索？","relevant_documents":["15_hot_update.md"]},
+  {"id":"hard-hot-update-delete-wins","query":"文档删除和版本替换同时发生时，哪个状态拥有最终决定权？","relevant_documents":["15_hot_update.md"]},
+  {"id":"hard-hot-update-old-invalid","query":"新文档版本发布完成以后，旧向量、旧原件和旧查询缓存是否还能继续生效？","relevant_documents":["15_hot_update.md"]}
 ]

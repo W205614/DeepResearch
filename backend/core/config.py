@@ -82,6 +82,12 @@ class Settings(BaseSettings):
     rag_vector_timeout_seconds: float = Field(3, ge=0.01, le=30)
     rag_max_corpus_chunks: int = Field(4000, ge=1, le=20000)
     rag_corpus_cache_users: int = Field(4, ge=1, le=32)
+    reranker_enabled: bool = False
+    reranker_url: str = ""
+    reranker_api_key: SecretStr = SecretStr("")
+    reranker_model: str = ""
+    reranker_timeout_seconds: float = Field(2, ge=0.1, le=30)
+    reranker_candidate_limit: int = Field(20, ge=2, le=100)
     allow_internal_model_processing: bool = False
 
     @field_validator("llm_base_url", "embedding_base_url", "bocha_base_url")
@@ -91,6 +97,18 @@ class Settings(BaseSettings):
         url = urlsplit(value)
         if url.scheme not in {"http", "https"} or not url.hostname or url.username or url.password or url.query:
             raise ValueError("API base URL must be an HTTP(S) address without credentials or query")
+        return value.rstrip("/")
+
+    @field_validator("reranker_url")
+    @classmethod
+    def validate_optional_api_url(cls, value: str) -> str:
+        if not value:
+            return ""
+        from urllib.parse import urlsplit
+        url = urlsplit(value)
+        if (url.scheme not in {"http", "https"} or not url.hostname or url.username or url.password
+                or url.query or url.fragment):
+            raise ValueError("RERANKER_URL must be an HTTP(S) address without credentials or query")
         return value.rstrip("/")
 
     @field_validator("llm_extra_body")

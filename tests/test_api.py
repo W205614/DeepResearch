@@ -103,12 +103,24 @@ async def test_document_import_retrieval_deletion(app_client):
             break
         await asyncio.sleep(.02)
     assert docs[0]['status'] == 'ready'
+    assert 'hash' not in docs[0] and 'object_key' not in docs[0] and docs[0]['index_version'] == 1
     chunks = (await client.get(f'/api/documents/{doc_id}/chunks')).json()
     assert chunks and chunks[0]['locator']
     search_response = await client.post('/api/documents/search', json={'query': '证据核查'})
     assert search_response.status_code == 200, search_response.text
     matches = search_response.json()
-    assert matches and {'score', 'vector_score', 'bm25_score'} <= set(matches[0])
+    assert matches and {'score', 'vector_score', 'bm25_score', 'rerank_score', 'ranking_stage'} <= set(matches[0])
+    replacement = await client.put(f'/api/documents/{doc_id}', files={"file":(
+        "sample-v2.md", "这是更新后的资料。热更新必须保留旧版直到发布。".encode(), "text/markdown")})
+    assert replacement.status_code == 202, replacement.text
+    for _ in range(30):
+        docs = (await client.get('/api/documents')).json()
+        if docs[0]['status'] != 'rebuilding':
+            break
+        await asyncio.sleep(.02)
+    assert docs[0]['status'] == 'ready' and docs[0]['index_version'] == 2
+    assert (await client.put(f'/api/documents/{doc_id}', files={"file":(
+        "same.md", "这是更新后的资料。热更新必须保留旧版直到发布。".encode(), "text/markdown")})).status_code == 409
     assert (await client.post(f'/api/documents/{doc_id}/reindex')).status_code == 202
     for _ in range(30):
         docs = (await client.get('/api/documents')).json()
@@ -122,9 +134,12 @@ async def test_document_import_retrieval_deletion(app_client):
     vector = (await rt.providers.embed(['证据核查']))[0]
     assert await rt.vectors.search('documents','alice',vector)
     assert not await rt.vectors.search('documents','bob',vector)
+    stored = await rt.db.one("SELECT object_key FROM documents WHERE id=?", (doc_id,))
     assert (await client.delete(f'/api/documents/{doc_id}')).status_code == 200
+    assert (await client.put(f'/api/documents/{doc_id}', files={"file":(
+        "deleted.md", b"deleted replacement", "text/markdown")})).status_code == 404
     assert not await rt.vectors.search('documents','alice',vector)
-    assert not (rt.settings.data_dir / 'uploads' / doc_id).exists()
+    assert not (rt.settings.data_dir / 'uploads' / stored['object_key']).exists()
 
 
 async def test_preferences_crud_and_isolation(app_client):

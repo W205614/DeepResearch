@@ -308,9 +308,11 @@ class ResearchGraph:
         self.agents.require("web_search")
         return await self.providers.search(query, run_id)
 
-    async def search_local(self, user_id: str, queries: list[str], *, limit: int, run_id: str) -> list[dict]:
+    async def search_local(self, user_id: str, queries: list[str], *, limit: int, run_id: str,
+                           rerank_query: str = "") -> list[dict]:
         self.agents.require("local_retrieval")
-        return await self.documents.search(user_id, queries, limit=limit, run_id=run_id)
+        return await self.documents.search(user_id, queries, limit=limit, run_id=run_id,
+                                           rerank_query=rerank_query)
 
     async def warning(self, state, text):
         await self.db.event(state["run_id"], "warning", {"message": text})
@@ -521,7 +523,8 @@ class ResearchGraph:
         evidence = []
         try:
             hits = await self.search_local(state["user_id"], normalize_queries(state["queries"]),
-                                           limit=6, run_id=state["run_id"])
+                                           limit=6, run_id=state["run_id"],
+                                           rerank_query=state.get("topic", "") or state["queries"][0])
             outcome = "ok" if hits else "empty"
             for reason in getattr(hits, "reasons", []):
                 outcomes.append({"source": "local", "outcome": reason})

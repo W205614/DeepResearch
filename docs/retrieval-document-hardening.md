@@ -50,6 +50,15 @@
 
 库接口依据：[python-docx 文档顺序遍历](https://python-docx.readthedocs.io/en/stable/_modules/docx/document.html)、[pypdf 文本提取边界](https://github.com/py-pdf/pypdf/blob/main/docs/user/extract-text.md)、[PDFium 渲染接口](https://pypdfium2.readthedocs.io/en/v4/python_api.html)。PDF 渲染提供页面图像，阅读顺序仍需解析策略或视觉模型判断。
 
+## 可选重排与版本化替换
+
+- HTTP Reranker 默认关闭，仅接收现有混合召回去重后的候选。请求使用原始用户问题，不改变原有融合、向量和 BM25 分数；响应索引、分数或数量无效，以及超时、鉴权、策略或服务错误时，返回 `fusion_fallback` 并禁止缓存该次降级结果。
+- `PUT /api/documents/{id}` 只替换 `ready` 文档。新原件使用 `文档ID.v版本号` 独立保存并写入新版本向量；发布事务成功前，检索仍读取旧片段。失败恢复 `ready`、保留旧原件与索引，并由清理墓碑重试删除未发布对象和向量。
+- 删除墓碑优先于替换 Worker；Worker 发布时同时核对状态、当前版本、待发布版本与 Hash。历史对象键为空的资料继续读取 `uploads/{document_id}`，不会为迁移而批量搬动对象。
+- `0011_document_hot_update` 只新增版本发布字段和清理对象键。公开列表明确选择展示字段，不返回 Hash、当前对象键或待发布对象键。
+
+真实 Reranker 必须经过独立手动工作流；普通 CI 只使用无网络替代服务验证协议与回退。接口实现存在不代表已经获得真实排序收益，正式配置保持关闭直到三路检索对照、答案门禁和 P95 时延门槛同时通过。
+
 ## 验证记录
 
 - 最终后端全量：175 passed、4 skipped（独立 Docker 组件测试），84.16 秒；Ruff 检查通过。
