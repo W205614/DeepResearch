@@ -9,7 +9,9 @@ from backend.services.runtime import Runtime
 
 @pytest.fixture
 def settings(tmp_path):
-    return Settings(_env_file=None, demo_mode=True, auth_mode="development", queue_backend="local", document_scan_mode="disabled", data_dir=tmp_path, max_run_seconds=30)
+    return Settings(_env_file=None, demo_mode=True, auth_mode="development", queue_backend="local",
+                    document_scan_mode="disabled", data_dir=tmp_path, max_run_seconds=30,
+                    reranker_enabled=False)
 
 
 @pytest.fixture

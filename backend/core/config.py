@@ -82,11 +82,11 @@ class Settings(BaseSettings):
     rag_vector_timeout_seconds: float = Field(3, ge=0.01, le=30)
     rag_max_corpus_chunks: int = Field(4000, ge=1, le=20000)
     rag_corpus_cache_users: int = Field(4, ge=1, le=32)
-    reranker_enabled: bool = False
-    reranker_url: str = ""
+    reranker_enabled: bool = True
+    reranker_url: str = "https://api.siliconflow.cn/v1/rerank"
     reranker_api_key: SecretStr = SecretStr("")
-    reranker_model: str = ""
-    reranker_document_format: str = "objects"
+    reranker_model: str = "Pro/BAAI/bge-reranker-v2-m3"
+    reranker_document_format: str = "strings"
     reranker_timeout_seconds: float = Field(2, ge=0.1, le=30)
     reranker_candidate_limit: int = Field(20, ge=2, le=100)
     allow_internal_model_processing: bool = False

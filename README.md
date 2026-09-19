@@ -197,7 +197,7 @@ $workspace = (Get-Location).Path
 docker compose run --rm --no-deps -v "${workspace}:/workspace:ro" agent python /workspace/scripts/evaluate_retrieval.py --corpus /workspace/eval/local_retrieval_corpus.json --cases /workspace/eval/local_retrieval_cases.json --output /tmp/retrieval-result.json
 ```
 
-可选 HTTP Reranker 默认关闭。通用协议使用 `{model,query,documents:[{id,text}],top_n}` 请求和 `{results:[{index,relevance_score}]}` 响应；要求纯文本数组的供应商可设置 `RERANKER_DOCUMENT_FORMAT=strings`。超时、无效响应或策略禁止时回退现有融合排序，降级结果不缓存。配置完整地址、密钥和模型后，手动运行 GitHub `RAG Quality (manual)` 工作流；只有 Recall@5 不下降、nDCG@5 或 MRR 改善、答案门禁通过且 P95 新增时延不超过 2 秒时，才允许在正式环境启用。仓库不会因接口可调用而宣称重排效果提升。
+HTTP Reranker 默认开启，并预置 SiliconFlow `Pro/BAAI/bge-reranker-v2-m3` 的公开端点与字符串文档协议；部署仍需通过 `RERANKER_API_KEY` 注入密钥。通用兼容服务可切换为 `{model,query,documents:[{id,text}],top_n}` 对象协议，响应保持 `{results:[{index,relevance_score}]}`。超时、无效响应或策略禁止时回退现有融合排序，降级结果不缓存。手动运行 GitHub `RAG Quality (manual)` 工作流可验证 Recall@5、nDCG/MRR、答案门禁和 P95 新增时延；仓库不会因接口可调用而宣称重排效果提升。
 
 最新真实嵌入测量与边界见 [eval/benchmark_results.md](eval/benchmark_results.md)。输出包含文档级 Recall、Precision、nDCG、MRR、冷/热查询时延和嵌入请求成本代理。它衡量资料检索，不代表最终答案正确率；答案质量仍需单独标注证据支撑、完整性和正确性。研究任务的 SSE 事件还会写入 `local_retrieval`，记录缓存、BM25、query embedding、向量搜索、融合和总耗时。当前界面并不流式返回模型 token，因此不能把这些数据称为模型 TTFT。
 
