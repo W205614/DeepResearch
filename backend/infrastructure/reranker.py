@@ -23,7 +23,8 @@ class RerankerClient:
 
     @property
     def contract_key(self) -> str:
-        return (f"rerank-v1:{self.settings.reranker_model}:{self.settings.reranker_candidate_limit}"
+        return (f"rerank-v1:{self.settings.reranker_model}:{self.settings.reranker_document_format}:"
+                f"{self.settings.reranker_candidate_limit}"
                 if self.enabled else "fusion-v1")
 
     async def close(self) -> None:
@@ -43,10 +44,13 @@ class RerankerClient:
         secret = self.settings.reranker_api_key.get_secret_value()
         if secret:
             headers["Authorization"] = f"Bearer {secret}"
+        documents = ([row["text"] for row in rows]
+                     if self.settings.reranker_document_format == "strings"
+                     else [{"id": row["id"], "text": row["text"]} for row in rows])
         payload = {
             "model": self.settings.reranker_model,
             "query": query,
-            "documents": [{"id": row["id"], "text": row["text"]} for row in rows],
+            "documents": documents,
             "top_n": top_n,
         }
         started = time.monotonic()

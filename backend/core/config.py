@@ -86,6 +86,7 @@ class Settings(BaseSettings):
     reranker_url: str = ""
     reranker_api_key: SecretStr = SecretStr("")
     reranker_model: str = ""
+    reranker_document_format: str = "objects"
     reranker_timeout_seconds: float = Field(2, ge=0.1, le=30)
     reranker_candidate_limit: int = Field(20, ge=2, le=100)
     allow_internal_model_processing: bool = False
@@ -110,6 +111,13 @@ class Settings(BaseSettings):
                 or url.query or url.fragment):
             raise ValueError("RERANKER_URL must be an HTTP(S) address without credentials or query")
         return value.rstrip("/")
+
+    @field_validator("reranker_document_format")
+    @classmethod
+    def validate_reranker_document_format(cls, value: str) -> str:
+        if value not in {"objects", "strings"}:
+            raise ValueError("RERANKER_DOCUMENT_FORMAT must be objects or strings")
+        return value
 
     @field_validator("llm_extra_body")
     @classmethod

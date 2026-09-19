@@ -54,6 +54,27 @@ async def test_reranker_uses_original_query_and_cache_contract(runtime):
     assert len(calls) == 4
 
 
+async def test_reranker_supports_string_document_provider_contract(runtime):
+    await add_ready(runtime, "strings.md", "ALPHA string document evidence")
+    runtime.settings.reranker_enabled = True
+    runtime.settings.reranker_url = "https://reranker.test/rerank"
+    runtime.settings.reranker_model = "fixture-v1"
+    runtime.settings.reranker_document_format = "strings"
+    payloads = []
+
+    async def handler(request):
+        body = json.loads(request.content)
+        payloads.append(body)
+        return httpx.Response(200, json={"results": [{"index": 0, "relevance_score": 0.9}]})
+
+    await runtime.reranker.client.aclose()
+    runtime.reranker.client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+    result = await runtime.documents.search("alice", ["ALPHA"], limit=1, rerank_query="original ALPHA")
+
+    assert result[0]["ranking_stage"] == "rerank"
+    assert payloads[0]["documents"] == ["ALPHA string document evidence"]
+
+
 @pytest.mark.parametrize("response", [
     httpx.Response(503),
     httpx.Response(401),
