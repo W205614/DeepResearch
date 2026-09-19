@@ -17,7 +17,7 @@
 | 本轮验证 | 结果 | 边界 |
 | --- | --- | --- |
 | Java | Maven 21/21 通过，其中 15 项使用真实 PostgreSQL Testcontainers | 覆盖 JWT/RBAC、工作空间与全局并发准入、事务回滚、任务状态、Outbox 抢占/租约/死信；不是多主机压测 |
-| Python Agent | 全量 232 通过、4 个条件性用例跳过；Ruff 通过 | 没有把跳过项计为通过 |
+| Python Agent | 全量 234 通过、4 个条件性用例跳过；Ruff 通过 | 没有把跳过项计为通过 |
 | 前端与认证业务链 | Vue 12/12、生产构建通过；企业 Compose 冒烟覆盖 OIDC、Java、Agent、迁移、Redis、Worker 与观测链 | 冒烟不等于真实浏览器全流程或长期稳定性验证 |
 | 离线流程 | 固定 7/7 路由、来源与引用流程通过 | 使用可控替代模型/搜索，不代表真实回答准确率 |
 | Docker 真实组件 | 正式 Compose 已重建至 `0011_document_hot_update`，Java、Agent、两个 Worker、PostgreSQL、Redis、Milvus、MinIO、ClamAV 与 Web 健康 | 未验证外部告警收件、多机容量或长期稳定性 |

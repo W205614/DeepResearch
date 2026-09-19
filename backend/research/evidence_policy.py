@@ -17,6 +17,10 @@ MISSING_COUNT_UNIT = re.compile(
 EXPLICIT_COUNT_UNIT = re.compile(
     r"(?<![A-Za-z])\d+(?:[,.]\d+)?\s*(?:名|人|个|条|项|家|组|批|份|台|辆|次|件|套|位)"
 )
+SHARED_BATCH_UNCERTAINTY = re.compile(
+    r"(?:是否.{0,24}(?:同一|相同)批次.{0,64}(?:无法|不能|未能).{0,20}(?:判定|确认|判断)"
+    r"|(?:无法|不能|未能).{0,64}(?:判定|确认|判断).{0,24}是否.{0,24}(?:同一|相同)批次)"
+)
 
 
 def requires_strong_evidence(text: str) -> bool:
@@ -33,6 +37,11 @@ def validate_claim(text: str, sources: list[dict]) -> tuple[bool, str]:
     term_meta = TERM_RELATION_META.search(compact)
     if term_meta and term_meta.group() not in source_text:
         return False, "术语对应关系是分析边界，引用原文未陈述时应放入局限或缺口，不能作为带引用的事实结论"
+    if SHARED_BATCH_UNCERTAINTY.search(compact) and sources and all(
+        re.search(r"(?:同一|相同)批次", re.sub(r"\s+", "", source.get("text", "")))
+        for source in sources
+    ):
+        return False, "引用原文均已明确同一批次，不能因缺少批次编号而反向声称是否同批次无法判定"
     if MISSING_COUNT_UNIT.search(compact) and EXPLICIT_COUNT_UNIT.search(combined):
         return False, "引用原文已给出明确计数单位，不能写成单位未说明；如不同来源单位不一致，应直接保留单位差异"
     if any(match.group() not in source_text for match in ENUMERATED_SCOPE.finditer(compact)):
