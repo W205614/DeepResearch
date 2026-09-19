@@ -4,21 +4,23 @@
 
 系统采用 **Java 21 + Spring Boot 3.5 业务后端、Python Agent 执行层**。Java 对外承接 OIDC、工作空间/成员、会话、个人偏好、研究准入与幂等、并发限制、审计、SSE 和生命周期命令；Python 保留 LangGraph 多 Agent 编排、RAG、模型/搜索适配、文档解析、检查点与 ARQ Worker。两者通过只在 Docker 内网可达、带独立 Bearer 凭证的内部接口连接，并用 PostgreSQL Outbox 可靠投递调度/取消命令。
 
-## 当前进展：Java 业务后端可靠性加固（2026-09-18）
+## 当前进展：Java 控制面与 RAG 链路加固（2026-09-19）
 
 - **不是 Java 代理壳**：研究创建、重复请求判定、工作空间权限、并发准入、任务取消/恢复、线程与偏好 CRUD 均由 Java 直接执行；Nginx 不再把公网 API 指向 Python。
 - **Agent 仍使用 Python**：LangGraph、检索与引用核验、模型/搜索、文档处理和 Worker 未重写，避免为了语言统一破坏已经验证的 AI 执行链。
 - **命令可靠投递**：迁移 `0010_outbox_leases` 为业务 Outbox 增加原子抢占、`SKIP LOCKED`、租约回收、有限退避和可重投死信；Java 事务提交任务状态与命令，后台调度器通过内部令牌调用幂等的 Python Agent 入口。
 - **并发冷启动可控**：Java、Agent 与 Worker 仍共享 PostgreSQL；Agent/Worker 使用数据库 advisory lock 串行执行 LangGraph checkpoint schema setup，避免多进程首次启动时并发 DDL 死锁。
 - **可观测与部署同步拆分**：Compose 新增 `backend`（Java）并将 Python API 改名为 `agent`；Prometheus 分别采集 `deepresearch-business`、`deepresearch-api` 和两个 Worker，健康检查同时覆盖 Java 与 Agent。
+- **本地知识检索可控增强**：BM25 与 Milvus 形成候选后调用可配置 HTTP Reranker，使用原始问题重排并保留融合分数；服务超时、鉴权失败或响应非法时无损回退，降级结果不进入缓存。
+- **文档替换不中断旧版**：迁移 `0011_document_hot_update` 增加版本化暂存、发布围栏和清理队列；新版本完成解析与向量写入后再事务切换，失败时恢复 `ready` 并继续使用旧片段和旧原件。
 
 | 本轮验证 | 结果 | 边界 |
 | --- | --- | --- |
-| Java | Maven 18/18 通过，其中 14 项使用真实 PostgreSQL Testcontainers | 覆盖 JWT/RBAC、工作空间与全局并发准入、事务回滚、任务状态、Outbox 抢占/租约/死信；不是多主机压测 |
-| Python Agent | 全量 218 通过、4 个显式真实组件用例跳过；Ruff 通过 | 没有把跳过项计为通过 |
-| 前端与认证业务链 | Vue 12/12、生产构建通过；真实 Keycloak E2E 4 通过、4 个付费模型/真实嵌入用例按开关跳过 | 已覆盖 OIDC、Java 线程/偏好 CRUD、幂等创建、取消及 SSE；未调用付费模型 |
+| Java | Maven 21/21 通过，其中 15 项使用真实 PostgreSQL Testcontainers | 覆盖 JWT/RBAC、工作空间与全局并发准入、事务回滚、任务状态、Outbox 抢占/租约/死信；不是多主机压测 |
+| Python Agent | 全量 232 通过、4 个条件性用例跳过；Ruff 通过 | 没有把跳过项计为通过 |
+| 前端与认证业务链 | Vue 12/12、生产构建通过；企业 Compose 冒烟覆盖 OIDC、Java、Agent、迁移、Redis、Worker 与观测链 | 冒烟不等于真实浏览器全流程或长期稳定性验证 |
 | 离线流程 | 固定 7/7 路由、来源与引用流程通过 | 使用可控替代模型/搜索，不代表真实回答准确率 |
-| Docker 真实组件 | 隔离 `dr-verify` 栈完成 `0010_outbox_leases` 迁移，PostgreSQL/Redis/Milvus/MinIO/ClamAV/Worker 健康，组件用例 4/4 通过 | 正式 `compose.yaml` 尚未重建；未验证外部告警收件、容量或长期稳定性 |
+| Docker 真实组件 | 正式 Compose 已重建至 `0011_document_hot_update`，Java、Agent、两个 Worker、PostgreSQL、Redis、Milvus、MinIO、ClamAV 与 Web 健康 | 未验证外部告警收件、多机容量或长期稳定性 |
 
 这次迁移仍保留共享 PostgreSQL 作为渐进式拆分阶段：Java 是公开业务写入和准入入口，Python Worker 更新执行状态与检查点；Outbox 已支持多实例竞争认领和崩溃租约回收，但内部命令仍是至少一次投递，不能描述成 Exactly Once 或数据库完全隔离的微服务。当前数据所有权见 [Java/Python 职责与数据契约](docs/java-python-ownership.md)。
 
@@ -197,7 +199,9 @@ $workspace = (Get-Location).Path
 docker compose run --rm --no-deps -v "${workspace}:/workspace:ro" agent python /workspace/scripts/evaluate_retrieval.py --corpus /workspace/eval/local_retrieval_corpus.json --cases /workspace/eval/local_retrieval_cases.json --output /tmp/retrieval-result.json
 ```
 
-HTTP Reranker 默认开启，并预置 SiliconFlow `Pro/BAAI/bge-reranker-v2-m3` 的公开端点与字符串文档协议；部署仍需通过 `RERANKER_API_KEY` 注入密钥。通用兼容服务可切换为 `{model,query,documents:[{id,text}],top_n}` 对象协议，响应保持 `{results:[{index,relevance_score}]}`。超时、无效响应或策略禁止时回退现有融合排序，降级结果不缓存。手动运行 GitHub `RAG Quality (manual)` 工作流可验证 Recall@5、nDCG/MRR、答案门禁和 P95 新增时延；仓库不会因接口可调用而宣称重排效果提升。
+HTTP Reranker 默认开启，并预置 SiliconFlow `Pro/BAAI/bge-reranker-v2-m3` 的公开端点与字符串文档协议；部署仍需通过 `RERANKER_API_KEY` 注入密钥。通用兼容服务可切换为 `{model,query,documents:[{id,text}],top_n}` 对象协议，响应保持 `{results:[{index,relevance_score}]}`。超时、无效响应或策略禁止时回退现有融合排序，降级结果不缓存。手动运行 GitHub `RAG Quality (manual)` 工作流可复测 Recall@5、nDCG/MRR、答案门禁和 P95 新增时延。
+
+2026-09-19 使用 15 份固定资料、27 个查询、真实 `text-embedding-3-large` 与真实 Reranker 对照：融合与重排的 Recall@5 均为 **0.9630**，nDCG@5 从 **0.9392** 提升到 **0.9658**，MRR@10 从 **0.9568** 提升到 **1.0000**，冷检索 P95 增加 **72.28 ms**。同一资料上的 10 题检索到答案联合门禁由 **9/10、0.90** 变为 **10/10、1.00**，引用覆盖率均为 **100%**，重排版端到端 P95 增加 **631.28 ms**。完整条件、失败样例和边界见 [Reranker 默认开启与链路实测](docs/reranker-performance-20260919.md)。这些数据支持当前固定集上的启用决策，不代表任意资料的回答准确率。
 
 最新真实嵌入测量与边界见 [eval/benchmark_results.md](eval/benchmark_results.md)。输出包含文档级 Recall、Precision、nDCG、MRR、冷/热查询时延和嵌入请求成本代理。它衡量资料检索，不代表最终答案正确率；答案质量仍需单独标注证据支撑、完整性和正确性。研究任务的 SSE 事件还会写入 `local_retrieval`，记录缓存、BM25、query embedding、向量搜索、融合和总耗时。当前界面并不流式返回模型 token，因此不能把这些数据称为模型 TTFT。
 
@@ -206,7 +210,7 @@ HTTP Reranker 默认开启，并预置 SiliconFlow `Pro/BAAI/bge-reranker-v2-m3`
 - 在 14 份冻结资料、16 个人工标注中文查询与真实 `text-embedding-3-large` 服务上，BM25 + 向量融合的 Recall@5 为 **1.0000**，单向量对照为 **0.9688**；nDCG@5 为 **0.9676**，对照为 **0.9446**。
 - 2026-09-11 两轮复测中，混合检索平均冷查询分别为 **1235.77 / 1177.63 ms**；平均热查询分别为 **131.32 / 105.62 ms**，热查询缓存命中率均为 **100%**。
 
-以上历史质量数据仍对应 2026-09-11 的 14 份资料、16 个问题；新增困难集和 Reranker 尚无真实服务结果，不能把历史数字套用到新集合。固定语料结果不能写成通用数据集成绩、回答准确率或生产 SLA。
+以上两条历史质量数据仍对应 2026-09-11 的 14 份资料、16 个问题，不能与 2026-09-19 的 15 份资料、27 个问题直接拼接或相互替代。两组都是固定语料开发证据，不能写成通用数据集成绩、回答准确率或生产 SLA。
 
 ## 后端目录
 
@@ -404,7 +408,7 @@ npm run test:e2e:enterprise
 因此简历或面试应表述为“完成企业单机演示基线及可恢复、可观测、权限闭环验证”，不要表述为“已上线高可用生产集群”或“达到 SLA”。
 ## 压测与故障演练
 
-最新的隔离整栈阶梯压测、慢上游/连续 503 注入、保护顺序和边界见 [性能、限流与雪崩隔离实测](docs/performance-resilience-20260918.md)。当前默认保护为：Nginx 鉴权前粗粒度削峰、Java 主体令牌桶和全局并发限制、Agent 代理 8 路舱壁/30 秒超时/连续故障熔断、Python Worker 与供应商层并发闸门和熔断。限流值是单机本地基线，不是 SLA；多实例全局配额需要共享网关或 Redis。
+隔离整栈阶梯压测、慢上游/连续 503 注入、保护顺序和边界见 [性能、限流与雪崩隔离实测](docs/performance-resilience-20260918.md)；默认开启 Reranker 后的复测见 [Reranker 默认开启与链路实测](docs/reranker-performance-20260919.md)。本轮 k6 固定到达率在 100/250 QPS 档全部返回 200，500 QPS 起按设计触发保护性 429/503，其他错误为 0，已放行请求 P95 保持在 2.82–4.09 ms。当前默认保护为：Nginx 鉴权前粗粒度削峰、Java 主体令牌桶和全局并发限制、Agent 代理 8 路舱壁/30 秒超时/连续故障熔断、Python Worker 与供应商层并发闸门和熔断。压测使用固定模型/搜索夹具，没有对第三方 Reranker 发起高并发压力；限流值是单机本地基线，不是 SLA，多实例全局配额需要共享网关或 Redis。
 
 `load-health.js` 只用于连通性；业务读链路使用临时 OIDC 身份运行 `load-authenticated-read.js`。验证脚本会创建临时客户端和用户、获取令牌、执行压测并清理测试身份：
 
