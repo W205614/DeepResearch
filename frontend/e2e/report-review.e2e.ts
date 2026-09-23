@@ -2,6 +2,7 @@ import { expect, test, type BrowserContext, type Page } from '@playwright/test'
 
 test('two accounts submit, approve and withdraw a frozen report in the browser', async ({ browser }) => {
   const state = { status: '' as ''|'pending'|'published'|'withdrawn', reviewedBy: '', withdrawnAt: '' }
+  let quality = 'partial'
   const evidence = { id: 'W-123', kind: 'web', title: 'Research source', url: 'https://example.invalid/source',
     text: 'Quoted evidence', access: 'fulltext', locator: 'section 2', published_at: '',
     retrieved_at: '2026-09-23T00:00:00Z', original_available: null }
@@ -12,9 +13,9 @@ test('two accounts submit, approve and withdraw a frozen report in the browser',
     reviewed_by: state.reviewedBy, reviewed_at: state.reviewedBy ? '2026-09-23T01:00:00Z' : '',
     review_reason: '', withdrawn_by: state.withdrawnAt ? 'reviewer' : '',
     withdrawn_at: state.withdrawnAt, withdrawal_reason: state.withdrawnAt ? 'Source updated' : '' })
-  const run = () => ({ id: 'run-1', thread_id: 'thread-1', topic: 'Review test report',
+  const run = () => ({ id: 'run-1', thread_id: 'thread-1', created_by: 'author', topic: 'Review test report',
     status: 'completed', report: '# Original report\n\nClaim [W-123]', sources: [evidence],
-    error: '', created_at: '2026-09-23T00:00:00Z', validation: { quality: 'complete', checked_claims: 1,
+    error: '', created_at: '2026-09-23T00:00:00Z', validation: { quality, checked_claims: 1,
       supported_claims: 1 }, usage: {}, publication: state.status ? { id: 'publication-1', status: state.status } : null })
 
   async function account(subject: string, role: string): Promise<{ context: BrowserContext; page: Page }> {
@@ -69,7 +70,13 @@ test('two accounts submit, approve and withdraw a frozen report in the browser',
   try {
     await reviewer.page.getByLabel('切换工作空间').selectOption('workspace-1')
     await author.page.locator('.thread-select').filter({ hasText: 'Review test thread' }).click()
+    await expect(author.page.getByRole('button', { name: '提交人工审核' })).toBeDisabled()
+    await expect(author.page.getByText(/未达到送审门槛/)).toBeVisible()
+    quality = 'complete'
+    await author.page.reload()
+    await author.page.locator('.thread-select').filter({ hasText: 'Review test thread' }).click()
     await expect(author.page.getByRole('button', { name: '提交人工审核' })).toBeVisible()
+    await expect(author.page.getByRole('button', { name: '提交人工审核' })).toBeEnabled()
     await author.page.getByRole('button', { name: '提交人工审核' }).click()
     await expect(author.page.getByText('待审核', { exact: true })).toBeVisible()
 
