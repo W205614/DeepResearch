@@ -43,6 +43,7 @@ export async function api<T=any>(path: string, init: RequestInit = {}): Promise<
     const body = await response.json().catch(()=>({detail:'服务暂时不可用'}))
     throw new Error(typeof body.detail === 'string' ? body.detail : `请求参数无效（${response.status}）`)
   }
+  if(response.status===204)return undefined as T
   return response.json()
 }
 export function parseFrame(frame: string): EventItem | 'close' | null {

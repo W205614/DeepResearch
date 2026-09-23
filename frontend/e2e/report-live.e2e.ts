@@ -114,6 +114,13 @@ test('real OIDC accounts review, publish, read and withdraw a frozen report', as
     expect(audit.map((entry: { action: string }) => entry.action)).toEqual(expect.arrayContaining([
       'report.submit', 'report.approve', 'report.withdraw',
     ]))
+    await author.getByRole('button', { name: '工作台设置' }).click()
+    author.once('dialog', dialog => dialog.accept())
+    await author.getByRole('button', { name: `移除成员 ${reviewerSubject}` }).click()
+    await expect(author.getByRole('status').filter({ hasText: '成员已移除' })).toBeVisible()
+    expect((await reviewer.request.get(`/api/threads/${threadId}/report`, { headers: reviewShared })).status()).toBe(403)
+    const removalAudit = await (await author.request.get(`/api/workspaces/${workspace}/audit`, { headers: shared })).json()
+    expect(removalAudit.map((entry: { action: string }) => entry.action)).toContain('membership.remove')
   } finally {
     if (reportId && cleanupHeaders) await author.request.delete(`/api/reports/${reportId}`, { headers: cleanupHeaders })
     await authorContext.close()

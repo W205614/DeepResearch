@@ -28,8 +28,9 @@ const selectedDocument = ref<any|null>(null), documentChunks = ref<any[]>([]), d
 const userId = ref('')
 const authenticated = ref(false), authMode = ref<'oidc'>('oidc'), threadSwitchId = ref(localStorage.getItem('dr-thread') || '')
 const connection = ref<Record<string,any>|null>(null), checking = ref(false), uploadBusy = ref(false), deadLetters = ref<any[]>([]), workspace = ref<any|null>(null), workspaces = ref<any[]>([])
-const members = ref<{subject:string;role:'admin'|'researcher'|'viewer';created_at:string}[]>([])
+const members = ref<{subject:string;role:'admin'|'researcher'|'viewer';created_at:string;creator:boolean}[]>([])
 const memberSubject = ref(''), memberRole = ref<'admin'|'researcher'|'viewer'>('admin'), memberNotice = ref('')
+const removingMember = ref('')
 const uploadInput = ref<HTMLInputElement|null>(null), logOpen = ref(false), rename = ref(false), newTitle = ref('')
 const replacementInput = ref<HTMLInputElement|null>(null), replacementTarget = ref<any|null>(null), replacingId = ref('')
 let controller: AbortController|null = null, poll: ReturnType<typeof setInterval>|undefined, generation = 0
@@ -133,6 +134,14 @@ async function upsertMember(){
     await api(`/api/workspaces/${workspace.value.id}/members`,{method:'PUT',body:JSON.stringify({subject,role:memberRole.value})})
     await refreshMembers();memberSubject.value='';memberNotice.value='成员已更新。请让对方刷新工作空间列表并选择此工作空间。'
   })
+}
+async function removeMember(subject:string){
+  if(!workspace.value||!window.confirm(`从当前工作空间移除 ${subject}？对方将失去访问权限，已有研究与审核记录会保留。`))return
+  removingMember.value=subject
+  try{await safely(async()=>{
+    await api(`/api/workspaces/${workspace.value!.id}/members/${encodeURIComponent(subject)}`,{method:'DELETE'})
+    await refreshMembers();memberNotice.value='成员已移除；对方刷新页面后将无法再进入此工作空间。'
+  })}finally{removingMember.value=''}
 }
 async function copyAccountId(){
   const id=currentUser()?.id
@@ -369,7 +378,7 @@ onUnmounted(()=>{controller?.abort();clearInterval(poll);window.removeEventListe
           <p v-if="memberNotice" class="muted" role="status">{{memberNotice}}</p>
           <template v-if="workspace?.role==='admin'">
             <h4>当前成员</h4><p v-if="!members.length" class="muted">暂无成员记录。</p>
-            <div v-for="member in members" :key="member.subject" class="debug-result"><strong>{{member.subject===currentUser()?.id?'我':member.subject}}</strong><small>{{member.role}}</small></div>
+            <div v-for="member in members" :key="member.subject" class="debug-result"><strong>{{member.subject===currentUser()?.id?'我':member.subject}}</strong><small>{{member.role==='admin'?'管理员':member.role==='researcher'?'研究员':'只读成员'}}{{member.creator?' · 创建者':''}}</small><button v-if="!member.creator&&member.subject!==currentUser()?.id" class="text-button" :aria-label="`移除成员 ${member.subject}`" :disabled="!!removingMember" @click="removeMember(member.subject)">移除</button></div>
             <label>已注册用户的账号 ID<input v-model.trim="memberSubject" maxlength="128" placeholder="请对方在此页面复制账号 ID"></label>
             <label>工作空间角色<select v-model="memberRole"><option value="admin">管理员（可审核）</option><option value="researcher">研究员</option><option value="viewer">成员（只读正式报告）</option></select></label>
             <button class="primary" :disabled="!memberSubject.trim()" @click="upsertMember">添加或更新成员</button>

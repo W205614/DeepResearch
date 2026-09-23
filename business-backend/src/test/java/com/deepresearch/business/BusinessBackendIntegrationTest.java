@@ -535,6 +535,53 @@ class BusinessBackendIntegrationTest {
     }
 
     @Test
+    void removingWorkspaceMemberRevokesAccessButKeepsPublishedReportAndAudit() throws Exception {
+        workspace("remove-space", "owner", "admin", 2);
+        jdbc.update("INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES('remove-space','reviewer','admin','now'),('remove-space','reader','viewer','now')");
+        run("remove-run", "remove-space");
+        jdbc.update("""
+            UPDATE runs SET created_by='owner',status='completed',report='# 已核验结论 [W-1]',
+            sources='[{"id":"W-1","kind":"web","text":"原文证据"}]',
+            validation='{"quality":"complete","checked_claims":1,"supported_claims":1}'
+            WHERE id='remove-run'""");
+        String id = String.valueOf(body(mvc.perform(post("/api/research/runs/remove-run/publication")
+                .with(jwt().jwt(t -> t.subject("owner"))).header("X-Workspace-ID", "remove-space"))
+            .andExpect(status().isCreated()).andReturn()).get("id"));
+        mvc.perform(post("/api/reports/" + id + "/approve").with(jwt().jwt(t -> t.subject("reviewer")))
+                .header("X-Workspace-ID", "remove-space"))
+            .andExpect(status().isOk());
+        mvc.perform(get("/api/reports/" + id).with(jwt().jwt(t -> t.subject("reader")))
+                .header("X-Workspace-ID", "remove-space"))
+            .andExpect(status().isOk());
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/api/workspaces/remove-space/members/reader")
+                .with(jwt().jwt(t -> t.subject("reader"))).header("X-Workspace-ID", "remove-space"))
+            .andExpect(status().isForbidden());
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/api/workspaces/remove-space/members/owner")
+                .with(jwt().jwt(t -> t.subject("reviewer"))).header("X-Workspace-ID", "remove-space"))
+            .andExpect(status().isConflict());
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/api/workspaces/remove-space/members/reviewer")
+                .with(jwt().jwt(t -> t.subject("reviewer"))).header("X-Workspace-ID", "remove-space"))
+            .andExpect(status().isConflict());
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/api/workspaces/remove-space/members/missing")
+                .with(jwt().jwt(t -> t.subject("owner"))).header("X-Workspace-ID", "remove-space"))
+            .andExpect(status().isNotFound());
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/api/workspaces/remove-space/members/reader")
+                .with(jwt().jwt(t -> t.subject("owner"))).header("X-Workspace-ID", "remove-space"))
+            .andExpect(status().isNoContent());
+        mvc.perform(get("/api/reports/" + id).with(jwt().jwt(t -> t.subject("reader")))
+                .header("X-Workspace-ID", "remove-space"))
+            .andExpect(status().isForbidden());
+        mvc.perform(get("/api/threads").with(jwt().jwt(t -> t.subject("reader")))
+                .header("X-Workspace-ID", "remove-space"))
+            .andExpect(status().isForbidden());
+        mvc.perform(get("/api/reports/" + id).with(jwt().jwt(t -> t.subject("owner")))
+                .header("X-Workspace-ID", "remove-space"))
+            .andExpect(status().isOk());
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_logs WHERE action='membership.remove'", Integer.class))
+            .isEqualTo(1);
+    }
+
+    @Test
     void legacyUnknownAuthorCannotSubmitAndCrossWorkspaceCannotReadReport() throws Exception {
         workspace("legacy-space", "admin", "admin", 2);
         workspace("other-space", "other", "viewer", 2);

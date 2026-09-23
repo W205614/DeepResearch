@@ -40,6 +40,7 @@ public class ReportPublicationService {
     @Transactional
     public Map<String, Object> submit(WorkspaceIdentity identity, String runId) {
         access.require(identity, "admin", "researcher");
+        requireCurrentRole(identity, "admin", "researcher");
         lockPublicationWorkspace(identity.workspaceId());
         List<Map<String, Object>> rows = jdbc.queryForList(
             "SELECT * FROM runs WHERE id=? AND user_id=? FOR UPDATE", runId, identity.workspaceId());
@@ -88,6 +89,7 @@ public class ReportPublicationService {
     @Transactional
     public Map<String, Object> approve(WorkspaceIdentity identity, String reportId, String reason) {
         access.require(identity, "admin");
+        requireCurrentRole(identity, "admin");
         Map<String, Object> row = lookup(identity.workspaceId(), reportId, true);
         if (identity.subject().equals(row.get("author_subject")))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "报告作者不能审核自己的报告");
@@ -104,6 +106,7 @@ public class ReportPublicationService {
     @Transactional
     public Map<String, Object> reject(WorkspaceIdentity identity, String reportId, String reason) {
         access.require(identity, "admin");
+        requireCurrentRole(identity, "admin");
         Map<String, Object> row = lookup(identity.workspaceId(), reportId, true);
         if (identity.subject().equals(row.get("author_subject")))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "报告作者不能审核自己的报告");
@@ -117,6 +120,7 @@ public class ReportPublicationService {
     @Transactional
     public Map<String, Object> withdraw(WorkspaceIdentity identity, String reportId, String reason) {
         access.require(identity, "admin");
+        requireCurrentRole(identity, "admin");
         Map<String, Object> row = lookup(identity.workspaceId(), reportId, true);
         requireStatus(row, "published");
         jdbc.update("UPDATE report_publications SET status='withdrawn',withdrawn_by=?,withdrawn_at=?,withdrawal_reason=? WHERE id=?",
@@ -128,6 +132,7 @@ public class ReportPublicationService {
     @Transactional
     public void delete(WorkspaceIdentity identity, String reportId) {
         access.require(identity, "admin");
+        requireCurrentRole(identity, "admin");
         Map<String, Object> row = lookup(identity.workspaceId(), reportId, true);
         if (!List.of("rejected", "withdrawn").contains(row.get("status")))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "只有已驳回或已撤回的报告可以清理");
@@ -186,6 +191,14 @@ public class ReportPublicationService {
             "SELECT * FROM report_publications WHERE id=? AND workspace_id=?" + (lock ? " FOR UPDATE" : ""), id, workspaceId);
         if (rows.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "报告不存在");
         return rows.getFirst();
+    }
+
+    private void requireCurrentRole(WorkspaceIdentity identity, String... roles) {
+        List<Map<String, Object>> current = jdbc.queryForList(
+            "SELECT role FROM memberships WHERE workspace_id=? AND subject=? FOR SHARE",
+            identity.workspaceId(), identity.subject());
+        if (current.isEmpty() || !List.of(roles).contains(current.getFirst().get("role")))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "当前工作空间权限已撤销");
     }
 
     private Map<String, Object> detail(Map<String, Object> source) {

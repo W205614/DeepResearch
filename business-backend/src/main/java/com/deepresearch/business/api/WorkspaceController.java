@@ -19,6 +19,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -78,7 +79,10 @@ public class WorkspaceController {
                                       @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
         WorkspaceIdentity identity = selected(workspaceId, jwt, requested);
         access.require(identity, "admin");
-        return jdbc.queryForList("SELECT subject,role,created_at FROM memberships WHERE workspace_id=? ORDER BY created_at", workspaceId);
+        return jdbc.queryForList("""
+            SELECT m.subject,m.role,m.created_at,(m.subject=w.created_by) AS creator
+            FROM memberships m JOIN workspaces w ON w.id=m.workspace_id
+            WHERE m.workspace_id=? ORDER BY m.created_at,m.subject""", workspaceId);
     }
 
     @PutMapping("/api/workspaces/{workspaceId}/members")
@@ -89,6 +93,7 @@ public class WorkspaceController {
         WorkspaceIdentity identity = selected(workspaceId, jwt, requested);
         access.require(identity, "admin");
         jdbc.queryForObject("SELECT id FROM workspaces WHERE id=? FOR UPDATE", String.class, workspaceId);
+        requireCurrentAdmin(workspaceId, identity.subject());
         if (!"admin".equals(body.role())) {
             int otherAdmins = jdbc.queryForObject("SELECT COUNT(*) FROM memberships WHERE workspace_id=? AND role='admin' AND subject<>?",
                 Integer.class, workspaceId, body.subject());
@@ -100,6 +105,41 @@ public class WorkspaceController {
             workspaceId, body.subject(), body.role(), now());
         access.audit(identity, "membership.upsert", "member", body.subject());
         return Map.of("ok", true);
+    }
+
+    @DeleteMapping("/api/workspaces/{workspaceId}/members/{subject}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Transactional
+    void removeMember(@PathVariable String workspaceId, @PathVariable String subject,
+                      @AuthenticationPrincipal Jwt jwt,
+                      @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
+        WorkspaceIdentity identity = selected(workspaceId, jwt, requested);
+        access.require(identity, "admin");
+        String creator = jdbc.queryForObject("SELECT created_by FROM workspaces WHERE id=? FOR UPDATE", String.class, workspaceId);
+        requireCurrentAdmin(workspaceId, identity.subject());
+        if (subject.equals(identity.subject()))
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "不能在成员管理中移除自己");
+        if (subject.equals(creator))
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "工作空间创建者不能直接移除");
+        List<Map<String, Object>> target = jdbc.queryForList(
+            "SELECT role FROM memberships WHERE workspace_id=? AND subject=?", workspaceId, subject);
+        if (target.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "成员不存在");
+        if ("admin".equals(target.getFirst().get("role"))) {
+            int otherAdmins = jdbc.queryForObject("""
+                SELECT COUNT(*) FROM memberships WHERE workspace_id=? AND role='admin' AND subject<>?""",
+                Integer.class, workspaceId, subject);
+            if (otherAdmins == 0)
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "工作空间必须保留至少一位管理员");
+        }
+        jdbc.update("DELETE FROM memberships WHERE workspace_id=? AND subject=?", workspaceId, subject);
+        access.audit(identity, "membership.remove", "member", subject);
+    }
+
+    private void requireCurrentAdmin(String workspaceId, String subject) {
+        List<Map<String, Object>> current = jdbc.queryForList(
+            "SELECT role FROM memberships WHERE workspace_id=? AND subject=?", workspaceId, subject);
+        if (current.isEmpty() || !"admin".equals(current.getFirst().get("role")))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "当前工作空间管理员权限已撤销");
     }
 
     @GetMapping("/api/workspaces/{workspaceId}/audit")
