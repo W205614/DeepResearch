@@ -88,6 +88,12 @@ public class WorkspaceController {
                                       @Valid @RequestBody Requests.Membership body) {
         WorkspaceIdentity identity = selected(workspaceId, jwt, requested);
         access.require(identity, "admin");
+        jdbc.queryForObject("SELECT id FROM workspaces WHERE id=? FOR UPDATE", String.class, workspaceId);
+        if (!"admin".equals(body.role())) {
+            int otherAdmins = jdbc.queryForObject("SELECT COUNT(*) FROM memberships WHERE workspace_id=? AND role='admin' AND subject<>?",
+                Integer.class, workspaceId, body.subject());
+            if (otherAdmins == 0) throw new ResponseStatusException(HttpStatus.CONFLICT, "工作空间必须保留至少一位管理员");
+        }
         jdbc.update("""
             INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES(?,?,?,?)
             ON CONFLICT(workspace_id,subject) DO UPDATE SET role=EXCLUDED.role""",

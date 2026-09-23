@@ -47,9 +47,11 @@ test('real OIDC accounts review, publish, read and withdraw a frozen report', as
     const workspace = authorSubject!
     const shared = { ...authorHeaders, 'X-Workspace-ID': workspace }
     cleanupHeaders = shared
-    expect((await author.request.put(`/api/workspaces/${workspace}/members`, {
-      headers: shared, data: { subject: reviewerSubject, role: 'admin' },
-    })).status()).toBe(200)
+    await author.getByRole('button', { name: '工作台设置' }).click()
+    await author.getByLabel('已注册用户的账号 ID').fill(reviewerSubject!)
+    await author.getByLabel('工作空间角色').selectOption('admin')
+    await author.getByRole('button', { name: '添加或更新成员' }).click()
+    await expect(author.getByRole('status').filter({ hasText: '成员已更新' })).toBeVisible()
     const createdThread = await author.request.post('/api/threads', {
       headers: shared, data: { title: '审核真实链路验收' },
     })
@@ -63,7 +65,7 @@ test('real OIDC accounts review, publish, read and withdraw a frozen report', as
     await sql(`INSERT INTO documents(id,user_id,name,hash,status,index_version) VALUES('${docId}','${workspace}','验收资料','fixture-hash','ready',1); ` +
       `INSERT INTO chunks(id,document_id,user_id,text) VALUES('${chunkId}','${docId}','${workspace}','冻结证据原文'); ` +
       `INSERT INTO runs(id,user_id,thread_id,topic,mode,status,created_at,updated_at,client_request_id,created_by,data_policy,deadline_at,report,sources,validation) ` +
-      `VALUES('${runId}','${workspace}','${threadId}','审核真实链路验收','deep','completed',now()::text,now()::text,'${runId}','${authorSubject}','internal',9999999999,'# 冻结报告 [L-1]','${sources}','{"quality":"complete","checked_claims":1,"supported_claims":1}');`)
+      `VALUES('${runId}','${workspace}','${threadId}','审核真实链路验收','deep','completed',now()::text,now()::text,'${runId}','${authorSubject}','internal',9999999999,'# 冻结报告 [L-1]\\n\\n未回答：长期效果','${sources}','{"quality":"partial","checked_claims":2,"supported_claims":1,"removed_claims":1,"unanswered_questions":["长期效果"]}');`)
     await author.reload()
     await author.locator('.thread-select').filter({ hasText: '审核真实链路验收' }).click()
     await expect(author.getByRole('button', { name: '提交人工审核' })).toBeVisible()
@@ -81,12 +83,17 @@ test('real OIDC accounts review, publish, read and withdraw a frozen report', as
     await expect(reviewer.getByRole('heading', { name: '待审核' })).toBeVisible()
     await reviewer.locator('.report-list-item').filter({ hasText: '审核真实链路验收' }).click()
     await expect(reviewer.getByRole('button', { name: '批准发布' })).toBeVisible()
+    await expect(reviewer.getByRole('button', { name: '批准发布' })).toBeDisabled()
+    await reviewer.getByRole('textbox', { name: '审核意见（部分结果批准时必填）' }).fill('仅发布现有证据，长期效果尚未回答')
     await reviewer.getByRole('button', { name: '批准发布' }).click()
-    await expect(reviewer.getByText('正式版本', { exact: true })).toBeVisible()
+    await expect(reviewer.getByText('正式版本 · 部分结果', { exact: true })).toBeVisible()
+    await expect(reviewer.getByText('批准说明：仅发布现有证据，长期效果尚未回答')).toBeVisible()
     const listed = await (await reviewer.request.get('/api/reports', { headers: reviewShared })).json()
     reportId = listed[0].id
     const before = await (await reviewer.request.get(`/api/reports/${reportId}`, { headers: reviewShared })).json()
-    expect(before.report_markdown).toBe('# 冻结报告 [L-1]')
+    expect(before.report_markdown).toContain('# 冻结报告 [L-1]')
+    expect(before.validation.quality).toBe('partial')
+    expect(before.validation.unanswered_questions).toEqual(['长期效果'])
     expect(before.sources[0].original_available).toBe(true)
     expect((await reviewer.request.get(`/api/reports/${reportId}/download`, { headers: reviewShared })).status()).toBe(200)
     await sql(`UPDATE runs SET report='# 被修改的任务内容 [L-1]' WHERE id='${runId}'; ` +

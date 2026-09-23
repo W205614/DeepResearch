@@ -2,7 +2,7 @@ import { expect, test, type BrowserContext, type Page } from '@playwright/test'
 
 test('two accounts submit, approve and withdraw a frozen report in the browser', async ({ browser }) => {
   const state = { status: '' as ''|'pending'|'published'|'withdrawn', reviewedBy: '', withdrawnAt: '' }
-  let quality = 'partial'
+  let quality = 'unknown'
   const evidence = { id: 'W-123', kind: 'web', title: 'Research source', url: 'https://example.invalid/source',
     text: 'Quoted evidence', access: 'fulltext', locator: 'section 2', published_at: '',
     retrieved_at: '2026-09-23T00:00:00Z', original_available: null }
@@ -71,7 +71,7 @@ test('two accounts submit, approve and withdraw a frozen report in the browser',
     await reviewer.page.getByLabel('切换工作空间').selectOption('workspace-1')
     await author.page.locator('.thread-select').filter({ hasText: 'Review test thread' }).click()
     await expect(author.page.getByRole('button', { name: '提交人工审核' })).toBeDisabled()
-    await expect(author.page.getByText(/未达到送审门槛/)).toBeVisible()
+    await expect(author.page.getByText(/没有可送审的已核验证据/)).toBeVisible()
     quality = 'complete'
     await author.page.reload()
     await author.page.locator('.thread-select').filter({ hasText: 'Review test thread' }).click()

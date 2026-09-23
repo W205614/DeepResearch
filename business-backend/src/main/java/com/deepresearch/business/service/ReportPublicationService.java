@@ -61,10 +61,15 @@ public class ReportPublicationService {
                 && text instanceof String excerpt && !excerpt.isBlank()
                 && report.contains("[" + key + "]");
         });
-        if (!"completed".equals(run.get("status")) || !"complete".equals(validation.get("quality"))
-            || report.isBlank() || !hasQuotedEvidence || number(validation.get("checked_claims")) < 1
-            || number(validation.get("supported_claims")) != number(validation.get("checked_claims"))) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "只有证据与引用核验完整的研究报告可提交审核");
+        String quality = String.valueOf(validation.get("quality"));
+        long checked = number(validation.get("checked_claims"));
+        long supported = number(validation.get("supported_claims"));
+        if (!"completed".equals(run.get("status")) || !List.of("complete", "partial").contains(quality)
+            || Boolean.TRUE.equals(validation.get("verification_pending"))
+            || report.isBlank() || !hasQuotedEvidence || supported < 1 || checked < supported
+            || ("complete".equals(quality) && supported != checked)) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                "只有保留已核验证据、并明确标示未回答内容的研究报告可提交审核");
         }
         String sourceJson = String.valueOf(run.get("sources"));
         String validationJson = String.valueOf(run.get("validation"));
@@ -81,14 +86,17 @@ public class ReportPublicationService {
     }
 
     @Transactional
-    public Map<String, Object> approve(WorkspaceIdentity identity, String reportId) {
+    public Map<String, Object> approve(WorkspaceIdentity identity, String reportId, String reason) {
         access.require(identity, "admin");
         Map<String, Object> row = lookup(identity.workspaceId(), reportId, true);
         if (identity.subject().equals(row.get("author_subject")))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "报告作者不能审核自己的报告");
         requireStatus(row, "pending");
-        jdbc.update("UPDATE report_publications SET status='published',reviewed_by=?,reviewed_at=? WHERE id=?",
-            identity.subject(), now(), reportId);
+        String note = reason == null ? "" : reason.strip();
+        if (note.length() > 1000 || ("partial".equals(parseMap(row.get("validation_json")).get("quality")) && note.isBlank()))
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "部分结果须填写批准范围与未回答问题的审核说明");
+        jdbc.update("UPDATE report_publications SET status='published',reviewed_by=?,reviewed_at=?,review_reason=? WHERE id=?",
+            identity.subject(), now(), note, reportId);
         access.audit(identity, "report.approve", "report", reportId);
         return detail(lookup(identity.workspaceId(), reportId, false));
     }
@@ -129,7 +137,8 @@ public class ReportPublicationService {
 
     public List<Map<String, Object>> published(WorkspaceIdentity identity) {
         return jdbc.queryForList("""
-            SELECT id,source_run_id,topic,author_subject,content_sha256,submitted_at,reviewed_by,reviewed_at,status
+            SELECT id,source_run_id,topic,author_subject,content_sha256,submitted_at,reviewed_by,reviewed_at,status,
+                validation_json::jsonb->>'quality' AS quality
             FROM report_publications WHERE workspace_id=? AND status='published' ORDER BY reviewed_at DESC,id""",
             identity.workspaceId());
     }
@@ -137,7 +146,8 @@ public class ReportPublicationService {
     public List<Map<String, Object>> pending(WorkspaceIdentity identity) {
         access.require(identity, "admin");
         return jdbc.queryForList("""
-            SELECT id,source_run_id,topic,author_subject,content_sha256,submitted_at,status
+            SELECT id,source_run_id,topic,author_subject,content_sha256,submitted_at,status,
+                validation_json::jsonb->>'quality' AS quality
             FROM report_publications WHERE workspace_id=? AND status='pending' ORDER BY submitted_at,id""",
             identity.workspaceId());
     }

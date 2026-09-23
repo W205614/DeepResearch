@@ -73,8 +73,9 @@ public class ReportPublicationController {
 
     @PostMapping("/api/reports/{reportId}/approve")
     Map<String, Object> approve(@PathVariable String reportId, @AuthenticationPrincipal Jwt jwt,
-            @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
-        return publications.approve(identity(jwt, requested), reportId);
+            @RequestHeader(value = "X-Workspace-ID", required = false) String requested,
+            @Valid @RequestBody(required = false) Requests.ReviewReason body) {
+        return publications.approve(identity(jwt, requested), reportId, body == null ? "" : body.reason());
     }
 
     @PostMapping("/api/reports/{reportId}/reject")

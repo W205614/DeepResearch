@@ -459,7 +459,7 @@ class BusinessBackendIntegrationTest {
         workspace("review-space", "author", "admin", 2);
         jdbc.update("INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES('review-space','other-admin','admin','now')");
         run("decision-run", "review-space");
-        jdbc.update("UPDATE runs SET created_by='author',status='completed',report='# Report [W-1]',sources='[{\"id\":\"W-1\",\"kind\":\"web\",\"text\":\"Evidence\"}]',validation='{\"quality\":\"partial\",\"checked_claims\":1,\"supported_claims\":1}' WHERE id='decision-run'");
+        jdbc.update("UPDATE runs SET created_by='author',status='completed',report='# Report [W-1]',sources='[{\"id\":\"W-1\",\"kind\":\"web\",\"text\":\"Evidence\"}]',validation='{\"quality\":\"unverified\",\"checked_claims\":1,\"supported_claims\":1}' WHERE id='decision-run'");
         mvc.perform(post("/api/research/runs/decision-run/publication")
                 .with(jwt().jwt(t -> t.subject("author"))).header("X-Workspace-ID", "review-space"))
             .andExpect(status().isUnprocessableEntity());
@@ -479,6 +479,59 @@ class BusinessBackendIntegrationTest {
                 .andReturn().getResponse().getStatus());
         assertThat(outcomes).containsExactlyInAnyOrder(200, 409);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_logs WHERE action='report.approve'", Integer.class)).isEqualTo(1);
+    }
+
+    @Test
+    void partialReportKeepsGapsAndRequiresReviewerScope() throws Exception {
+        workspace("partial-space", "author", "researcher", 2);
+        jdbc.update("INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES('partial-space','reviewer','admin','now'),('partial-space','reader','viewer','now')");
+        run("partial-run", "partial-space");
+        jdbc.update("""
+            UPDATE runs SET created_by='author',status='completed',report='# 有限结论 [W-1]\\n\\n未回答：长期效果',
+            sources='[{"id":"W-1","kind":"web","title":"研究资料","text":"已有依据"}]',
+            validation='{"quality":"partial","checked_claims":2,"supported_claims":1,"removed_claims":1,"unanswered_questions":["长期效果"]}'
+            WHERE id='partial-run'""");
+        String id = String.valueOf(body(mvc.perform(post("/api/research/runs/partial-run/publication")
+                .with(jwt().jwt(t -> t.subject("author"))).header("X-Workspace-ID", "partial-space"))
+            .andExpect(status().isCreated()).andExpect(jsonPath("$.validation.quality").value("partial"))
+            .andReturn()).get("id"));
+        mvc.perform(get("/api/reports/pending").with(jwt().jwt(t -> t.subject("reviewer")))
+                .header("X-Workspace-ID", "partial-space"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$[0].quality").value("partial"));
+        mvc.perform(post("/api/reports/" + id + "/approve").with(jwt().jwt(t -> t.subject("reviewer")))
+                .header("X-Workspace-ID", "partial-space"))
+            .andExpect(status().isUnprocessableEntity());
+        mvc.perform(post("/api/reports/" + id + "/approve").with(jwt().jwt(t -> t.subject("reviewer")))
+                .header("X-Workspace-ID", "partial-space").contentType("application/json")
+                .content("{\"reason\":\"仅发布已有依据，长期效果尚未回答\"}"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.review_reason").value("仅发布已有依据，长期效果尚未回答"));
+        mvc.perform(get("/api/reports").with(jwt().jwt(t -> t.subject("reader")))
+                .header("X-Workspace-ID", "partial-space"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$[0].quality").value("partial"));
+        mvc.perform(get("/api/reports/" + id).with(jwt().jwt(t -> t.subject("reader")))
+                .header("X-Workspace-ID", "partial-space"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.validation.unanswered_questions[0]").value("长期效果"))
+            .andExpect(jsonPath("$.review_reason").value("仅发布已有依据，长期效果尚未回答"));
+    }
+
+    @Test
+    void workspaceMemberManagementPreservesAnAdministrator() throws Exception {
+        workspace("member-space", "owner", "admin", 2);
+        mvc.perform(put("/api/workspaces/member-space/members").with(jwt().jwt(t -> t.subject("owner")))
+                .header("X-Workspace-ID", "member-space").contentType("application/json")
+                .content("{\"subject\":\"owner\",\"role\":\"researcher\"}"))
+            .andExpect(status().isConflict());
+        mvc.perform(put("/api/workspaces/member-space/members").with(jwt().jwt(t -> t.subject("owner")))
+                .header("X-Workspace-ID", "member-space").contentType("application/json")
+                .content("{\"subject\":\"reviewer\",\"role\":\"admin\"}"))
+            .andExpect(status().isOk());
+        mvc.perform(put("/api/workspaces/member-space/members").with(jwt().jwt(t -> t.subject("owner")))
+                .header("X-Workspace-ID", "member-space").contentType("application/json")
+                .content("{\"subject\":\"owner\",\"role\":\"researcher\"}"))
+            .andExpect(status().isOk());
+        mvc.perform(get("/api/workspaces/member-space/members").with(jwt().jwt(t -> t.subject("reviewer")))
+                .header("X-Workspace-ID", "member-space"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$[?(@.subject == 'owner')].role").value("researcher"));
     }
 
     @Test
