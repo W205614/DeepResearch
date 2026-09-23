@@ -17,8 +17,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from pydantic import BaseModel
 from backend.core.config import Settings
 from backend.core.db import uid
+from backend.core.reliability import ServiceError
 from backend.domain.models import Claim
-from backend.quality_gate import QualityDraft, assess_support
+from backend.quality_gate import assess_support
 from backend.research.graph import ResearchGraph
 from backend.services.runtime import Runtime
 
@@ -27,6 +28,29 @@ class Coverage(BaseModel):
     covered: list[bool]
     forbidden_claim_present: bool
     refusal_appropriate: bool
+
+
+async def assess_report_support(providers, sources, claims, run_id):
+    # Keep the established whole-report grading input when it fits. A long
+    # report can repeat cited excerpts past the provider context budget; only
+    # then split it, preserving the complete cited excerpts in each group.
+    from types import SimpleNamespace
+
+    async def grade(group, start):
+        try:
+            local = await assess_support(providers, {'evidence': sources},
+                                         SimpleNamespace(claims=group),
+                                         run_id if start == 0 and len(group) == len(claims)
+                                         else f'{run_id}-support-{start}')
+            return [{**check, 'index': check['index'] + start} for check in local]
+        except ServiceError as exc:
+            if exc.code != 'context_too_large' or len(group) < 2:
+                raise
+            midpoint = len(group) // 2
+            return (await grade(group[:midpoint], start)
+                    + await grade(group[midpoint:], start + midpoint))
+
+    return await grade(claims, 0)
 
 
 def summarize_research(cases, results):
@@ -90,11 +114,7 @@ async def evaluate(case, root, live=False, external_results=None, debug_fixed_fa
             if ids and not line.startswith('- ['):
                 text = re.sub(r"\[[WL]-[a-f0-9]+\]", '', line).strip()
                 claims.append(Claim(text=text, source_ids=list(dict.fromkeys(ids))))
-        draft = QualityDraft(claims=claims[:8]) if len(claims) <= 8 else None
-        # Production reports can have more than the small unit gate's eight claims.
-        from types import SimpleNamespace
-        checks = await assess_support(runtime.providers, {'evidence': result['sources']},
-                                      draft or SimpleNamespace(claims=claims), run['id'])
+        checks = await assess_report_support(runtime.providers, result['sources'], claims, run['id'])
         valid_checks = sorted(c['index'] for c in checks) == list(range(len(claims)))
         support = sum(c['supported'] for c in checks) / len(claims) if claims and valid_checks else (1.0 if not claims else 0.0)
         coverage = await runtime.providers.structured('quality_coverage',
@@ -119,8 +139,11 @@ async def evaluate(case, root, live=False, external_results=None, debug_fixed_fa
         if external_results:
             nodes = result['nodes']
         passed = passed and {'planner', 'web_scout', 'local_scout', 'judge', 'analyst', 'reflect', 'writer', 'validator'}.issubset(nodes)
-        usage = await runtime.db.one('SELECT * FROM counters WHERE run_id=?', (run['id'],)) or {}
-        usage.pop('run_id', None)
+        usage_rows = await runtime.db.rows(
+            'SELECT search_calls,llm_calls,prompt_tokens,completion_tokens FROM counters '
+            'WHERE run_id=? OR run_id LIKE ?', (run['id'], run['id'] + '-support-%'))
+        usage = {key: sum(int(row.get(key) or 0) for row in usage_rows)
+                 for key in ('search_calls', 'llm_calls', 'prompt_tokens', 'completion_tokens')}
         row = {'id': case['id'], 'critical': case['critical'], 'passed': passed,
                'status': result['status'], 'claim_count': len(claims), 'support': support,
                'coverage': coverage_score, 'forbidden_claim_present': coverage.forbidden_claim_present,
@@ -158,7 +181,8 @@ async def main(args):
             try:
                 return await evaluate(case, root, args.live, args.external_results, args.debug_fixed_failures)
             except Exception as exc:
-                row = {'id': case['id'], 'critical': case['critical'], 'passed': False, 'error_category': type(exc).__name__}
+                row = {'id': case['id'], 'critical': case['critical'], 'passed': False,
+                       'error_category': type(exc).__name__, 'error_code': getattr(exc, 'code', None)}
                 print(json.dumps(row), flush=True)
                 return row
     config = Settings()

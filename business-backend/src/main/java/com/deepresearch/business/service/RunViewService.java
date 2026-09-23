@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.deepresearch.business.config.DeepResearchProperties;
+import com.deepresearch.business.security.WorkspaceIdentity;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,23 @@ public class RunViewService {
         return render(rows.getFirst());
     }
 
+    public Map<String, Object> visibleRun(String runId, WorkspaceIdentity identity) {
+        List<Map<String, Object>> rows = jdbc.queryForList("SELECT * FROM runs WHERE id=? AND user_id=?",
+            runId, identity.workspaceId());
+        if (rows.isEmpty() || !identity.hasRole("admin")
+            && !identity.subject().equals(rows.getFirst().get("created_by")))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "任务不存在");
+        return render(rows.getFirst());
+    }
+
+    public List<Map<String, Object>> visibleThreadRuns(String threadId, WorkspaceIdentity identity) {
+        return jdbc.queryForList("""
+            SELECT * FROM runs WHERE thread_id=? AND user_id=?
+            AND (? OR created_by=?) ORDER BY created_at""",
+            threadId, identity.workspaceId(), identity.hasRole("admin"), identity.subject())
+            .stream().map(this::render).toList();
+    }
+
     public List<Map<String, Object>> threadRuns(String threadId, String workspaceId) {
         return jdbc.queryForList("SELECT * FROM runs WHERE thread_id=? AND user_id=? ORDER BY created_at", threadId, workspaceId)
             .stream().map(this::render).toList();
@@ -46,6 +64,10 @@ public class RunViewService {
         Map<String, Object> validation = jsonMap(row.get("validation"));
         validation.putIfAbsent("quality", "unknown");
         row.put("validation", validation);
+        List<Map<String, Object>> publications = jdbc.queryForList(
+            "SELECT id,status,reviewed_by,reviewed_at,review_reason,withdrawn_at,withdrawal_reason FROM report_publications WHERE source_run_id=?",
+            runId);
+        row.put("publication", publications.isEmpty() ? null : publications.getFirst());
         Map<String, Object> errorInfo = jsonMap(row.get("error_info"));
         row.put("error_info", errorInfo);
         row.put("attachments", jdbc.queryForList("""

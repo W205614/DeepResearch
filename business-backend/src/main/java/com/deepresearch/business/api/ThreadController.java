@@ -9,6 +9,7 @@ import com.deepresearch.business.security.WorkspaceIdentity;
 import com.deepresearch.business.service.AgentClient;
 import com.deepresearch.business.service.ResearchCommandService;
 import com.deepresearch.business.service.RunViewService;
+import com.deepresearch.business.service.ReportPublicationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
@@ -34,14 +35,16 @@ public class ThreadController {
     private final ResearchCommandService research;
     private final RunViewService views;
     private final AgentClient agent;
+    private final ReportPublicationService publications;
 
     public ThreadController(JdbcTemplate jdbc, WorkspaceAccess access, ResearchCommandService research,
-                            RunViewService views, AgentClient agent) {
+                            RunViewService views, AgentClient agent, ReportPublicationService publications) {
         this.jdbc = jdbc;
         this.access = access;
         this.research = research;
         this.views = views;
         this.agent = agent;
+        this.publications = publications;
     }
 
     @PostMapping("/api/threads")
@@ -56,7 +59,9 @@ public class ThreadController {
     List<Map<String, Object>> list(@AuthenticationPrincipal Jwt jwt,
                                    @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
         WorkspaceIdentity identity = access.resolve(jwt, requested);
-        return jdbc.queryForList("SELECT * FROM threads WHERE user_id=? ORDER BY created_at DESC", identity.workspaceId());
+        return jdbc.queryForList("""
+            SELECT * FROM threads WHERE user_id=? AND (? OR created_by=?) ORDER BY created_at DESC""",
+            identity.workspaceId(), identity.hasRole("admin"), identity.subject());
     }
 
     @PatchMapping("/api/threads/{threadId}")
@@ -66,7 +71,7 @@ public class ThreadController {
                                 @Valid @RequestBody Requests.Thread body) {
         WorkspaceIdentity identity = access.resolve(jwt, requested);
         access.require(identity, "admin", "researcher");
-        Map<String, Object> thread = research.resolveThread(identity.workspaceId(), threadId);
+        Map<String, Object> thread = research.visibleThread(identity, threadId);
         int changed = jdbc.update("UPDATE threads SET title=? WHERE id=? AND user_id=?", body.title(), thread.get("id"), identity.workspaceId());
         if (changed == 0) throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "会话不存在");
         return Map.of("ok", true);
@@ -78,7 +83,8 @@ public class ThreadController {
                                   HttpServletRequest request) {
         WorkspaceIdentity identity = access.resolve(jwt, requested);
         access.require(identity, "admin");
-        research.resolveThread(identity.workspaceId(), threadId);
+        Map<String, Object> thread = research.visibleThread(identity, threadId);
+        publications.requireNoPublicationsForThread(identity, String.valueOf(thread.get("id")));
         return forwarded(agent.forward(request, new byte[0]));
     }
 
@@ -86,16 +92,16 @@ public class ThreadController {
     List<Map<String, Object>> runs(@PathVariable String threadId, @AuthenticationPrincipal Jwt jwt,
                                    @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
         WorkspaceIdentity identity = access.resolve(jwt, requested);
-        Map<String, Object> thread = research.resolveThread(identity.workspaceId(), threadId);
-        return views.threadRuns(String.valueOf(thread.get("id")), identity.workspaceId());
+        Map<String, Object> thread = research.visibleThread(identity, threadId);
+        return views.visibleThreadRuns(String.valueOf(thread.get("id")), identity);
     }
 
     @GetMapping("/api/threads/{threadId}/report")
     ResponseEntity<byte[]> report(@PathVariable String threadId, @AuthenticationPrincipal Jwt jwt,
                                   @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
         WorkspaceIdentity identity = access.resolve(jwt, requested);
-        Map<String, Object> thread = research.resolveThread(identity.workspaceId(), threadId);
-        List<Map<String, Object>> runs = views.threadRuns(String.valueOf(thread.get("id")), identity.workspaceId());
+        Map<String, Object> thread = research.visibleThread(identity, threadId);
+        List<Map<String, Object>> runs = views.visibleThreadRuns(String.valueOf(thread.get("id")), identity);
         StringBuilder report = new StringBuilder("# ").append(thread.get("title") == null ? "研究会话" : thread.get("title"))
             .append("\n\n本文件包含该会话中的全部研究记录。\n");
         for (int index = 0; index < runs.size(); index++) {

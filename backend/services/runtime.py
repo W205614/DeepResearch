@@ -206,6 +206,10 @@ class Runtime:
             if not thread:
                 raise LookupError("会话不存在")
             thread_id = thread["id"]
+            if self.settings.database_url and await self.db.one("""
+                SELECT p.id FROM report_publications p JOIN runs r ON r.id=p.source_run_id
+                WHERE p.workspace_id=? AND r.thread_id=? LIMIT 1""", (user, thread_id)):
+                raise ConflictError("会话含审核记录，请先撤回并清理正式报告")
             runs = await self.db.rows("SELECT id,status FROM runs WHERE thread_id=? AND user_id=?", (thread_id, user))
             active_tasks = []
             for run in runs:
@@ -851,6 +855,9 @@ class Runtime:
         owner_subject = owner_subject or user
         if scope not in {"reports", "memories", "documents", "all"}:
             raise ValueError("scope 必须是 reports、memories、documents 或 all")
+        if scope in {"reports", "all"} and self.settings.database_url and await self.db.one(
+                "SELECT id FROM report_publications WHERE workspace_id=? LIMIT 1", (user,)):
+            raise ValueError("工作空间含审核记录，请先撤回并清理正式报告")
         if scope in {"documents", "all"}:
             for document in await self.db.rows("SELECT id FROM documents WHERE user_id=? AND status!='deleted'", (user,)):
                 await self.documents.delete(document["id"], user)

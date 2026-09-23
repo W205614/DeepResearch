@@ -68,6 +68,9 @@ class Attachments:
         if row["run_id"]:
             if not await self.db.one("SELECT id FROM runs WHERE id=? AND user_id=?", (row["run_id"], workspace)):
                 raise LookupError("图片不存在或不可访问")
+            membership = await self.db.membership(workspace, owner)
+            if row["owner_subject"] != owner and (not membership or membership["role"] != "admin"):
+                raise LookupError("图片不存在或不可访问")
         elif row["owner_subject"] != owner:
             raise LookupError("图片不存在或不可访问")
         return row

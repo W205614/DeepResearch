@@ -62,14 +62,14 @@ public class ResearchController {
     Map<String, Object> get(@PathVariable String runId, @AuthenticationPrincipal Jwt jwt,
                             @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
         WorkspaceIdentity identity = access.resolve(jwt, requested);
-        return views.ownedRun(runId, identity.workspaceId());
+        return views.visibleRun(runId, identity);
     }
 
     @GetMapping("/api/research/runs/{runId}/report")
     ResponseEntity<byte[]> report(@PathVariable String runId, @AuthenticationPrincipal Jwt jwt,
                                   @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
         WorkspaceIdentity identity = access.resolve(jwt, requested);
-        Map<String, Object> run = views.ownedRun(runId, identity.workspaceId());
+        Map<String, Object> run = views.visibleRun(runId, identity);
         return ResponseEntity.ok().contentType(MediaType.parseMediaType("text/markdown;charset=UTF-8"))
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"research-" + runId + ".md\"")
             .body(String.valueOf(run.get("report")).getBytes(StandardCharsets.UTF_8));
@@ -92,7 +92,7 @@ public class ResearchController {
                                       @RequestHeader(value = "X-Workspace-ID", required = false) String requested,
                                       HttpServletRequest request) {
         WorkspaceIdentity identity = access.resolve(jwt, requested);
-        views.ownedRun(runId, identity.workspaceId());
+        views.visibleRun(runId, identity);
         return ThreadController.forwarded(agent.forward(request, new byte[0]));
     }
 
@@ -102,7 +102,7 @@ public class ResearchController {
                       @AuthenticationPrincipal Jwt jwt,
                       @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
         WorkspaceIdentity identity = access.resolve(jwt, requested);
-        views.ownedRun(runId, identity.workspaceId());
+        views.visibleRun(runId, identity);
         long headerCursor;
         try { headerCursor = Long.parseLong(lastEventId); }
         catch (NumberFormatException error) { throw new IllegalArgumentException("事件序号无效"); }
@@ -116,8 +116,11 @@ public class ResearchController {
         int ticks = 0;
         try {
             while (true) {
-                if (jdbc.queryForObject("SELECT COUNT(*) FROM memberships WHERE workspace_id=? AND subject=?",
-                    Integer.class, identity.workspaceId(), identity.subject()) == 0) {
+                if (jdbc.queryForObject("""
+                    SELECT COUNT(*) FROM memberships m JOIN runs r ON r.user_id=m.workspace_id
+                    WHERE m.workspace_id=? AND m.subject=? AND r.id=?
+                    AND (m.role='admin' OR r.created_by=m.subject)""",
+                    Integer.class, identity.workspaceId(), identity.subject(), runId) == 0) {
                     emitter.send(SseEmitter.event().name("close").data(Map.of()));
                     emitter.complete();
                     return;

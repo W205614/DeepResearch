@@ -92,6 +92,24 @@ async def test_complete_research_has_real_events_and_citations(runtime):
     assert await runtime.db.one("SELECT id FROM memories WHERE run_id=?", (result["id"],))
 
 
+async def test_local_scout_retries_original_topic_when_planner_queries_miss_local_evidence(runtime):
+    graph = ResearchGraph(runtime.settings, runtime.db, runtime.providers, runtime.vectors, runtime.documents)
+    graph.db = AsyncMock()
+    graph.db.one.side_effect = [{"data_policy": "internal"}, {"id": "local-document"}]
+    hit = {"id": "chunk-1", "title": "验收备注", "text": "本项目使用工作空间权限", "locator": "第 2 页",
+           "document_id": "local-document", "index_version": 1, "document_hash": "hash"}
+    graph.search_local = AsyncMock(side_effect=[ServiceError("vector timeout"), [hit]])
+    state = {"run_id": "test-run", "user_id": "alice", "topic": "结合本地验收备注说明工作空间权限",
+             "queries": ["PostgreSQL row level security FORCE RLS"]}
+
+    result = await graph.local_scout(state)
+
+    assert result["local_outcomes"][-1] == {"source": "local", "outcome": "ok"}
+    assert result["local_results"][0]["chunk_id"] == "chunk-1"
+    assert graph.search_local.await_count == 2
+    assert graph.search_local.await_args_list[1].args[1] == [state["topic"]]
+
+
 async def test_task_logs_show_progress_without_topic_or_evidence(runtime, caplog):
     logger = get_task_logger()
     logger.addHandler(caplog.handler)

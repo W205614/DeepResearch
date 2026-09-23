@@ -58,4 +58,5 @@ public final class Requests {
         @NotBlank @Pattern(regexp = "admin|researcher|viewer") String role) {}
     public record WorkspaceLimit(@Min(1) @Max(20) int concurrentRunLimit) {}
     public record Memory(@NotBlank @Size(max = 1000) String content) {}
+    public record ReviewReason(@NotBlank @Size(max = 1000) String reason) {}
 }

@@ -524,9 +524,22 @@ class ResearchGraph:
             return {"local_results": [], "local_outcomes": outcomes}
         evidence = []
         try:
-            hits = await self.search_local(state["user_id"], normalize_queries(state["queries"]),
-                                           limit=6, run_id=state["run_id"],
-                                           rerank_query=state.get("topic", "") or state["queries"][0])
+            queries = normalize_queries(state["queries"])[:8]
+            topic = str(state.get("topic", ""))[:4000]
+            topic_queries = normalize_queries([topic], searched=queries)
+            async def local_search(query_set):
+                return await self.search_local(state["user_id"], query_set, limit=6,
+                                               run_id=state["run_id"], rerank_query=topic or queries[0])
+            fallback_used = False
+            try:
+                hits = await local_search(queries)
+            except ServiceError as exc:
+                if exc.code in {"execution_lost", "permission_revoked", "budget_exhausted", "egress_denied"} or not topic_queries:
+                    raise
+                hits = await local_search(topic_queries)
+                fallback_used = True
+            if not hits and topic_queries and not fallback_used:
+                hits = await local_search(topic_queries)
             outcome = "ok" if hits else "empty"
             for reason in getattr(hits, "reasons", []):
                 outcomes.append({"source": "local", "outcome": reason})

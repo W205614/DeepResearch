@@ -30,8 +30,8 @@ spring:
       connection-timeout: 3000
   servlet:
     multipart:
-      max-file-size: ${MAX_UPLOAD_SIZE:20MB}
-      max-request-size: ${MAX_UPLOAD_SIZE:20MB}
+      # Java forwards the raw multipart stream to Python; parsing here consumes it.
+      enabled: false
   security:
     oauth2:
       resourceserver:

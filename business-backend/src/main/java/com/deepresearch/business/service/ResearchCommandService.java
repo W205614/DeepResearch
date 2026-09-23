@@ -46,6 +46,8 @@ public class ResearchCommandService {
         List<Map<String, Object>> previous = jdbc.queryForList(
             "SELECT * FROM runs WHERE user_id=? AND client_request_id=?", identity.workspaceId(), request.getClientRequestId());
         if (!previous.isEmpty()) {
+            if (!identity.subject().equals(previous.getFirst().get("created_by")))
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "请求编号已被其他成员使用");
             verifyReplay(identity, request, previous.getFirst());
             return views.render(previous.getFirst());
         }
@@ -69,7 +71,7 @@ public class ResearchCommandService {
         validateAttachments(identity, request.getAttachmentIds());
         String threadId = request.getThreadId() == null || request.getThreadId().isBlank()
             ? createThread(identity, request.normalizedTopic()).get("id").toString()
-            : resolveThread(identity.workspaceId(), request.getThreadId()).get("id").toString();
+            : visibleThread(identity, request.getThreadId()).get("id").toString();
         String runId = uid();
         String stamp = now();
         jdbc.update("""
@@ -92,7 +94,7 @@ public class ResearchCommandService {
     public Map<String, Object> cancel(WorkspaceIdentity identity, String runId) {
         access.require(identity, "admin", "researcher");
         lockWorkspaceAdmission(identity.workspaceId());
-        views.ownedRun(runId, identity.workspaceId());
+        views.visibleRun(runId, identity);
         int changed = jdbc.update("""
             UPDATE runs SET status='cancelled',updated_at=? WHERE id=? AND user_id=?
             AND status IN ('queued','running','interrupted')""", now(), runId, identity.workspaceId());
@@ -108,7 +110,7 @@ public class ResearchCommandService {
     public Map<String, Object> resume(WorkspaceIdentity identity, String runId) {
         access.require(identity, "admin", "researcher");
         lockQueueAdmission(identity.workspaceId());
-        Map<String, Object> run = views.ownedRun(runId, identity.workspaceId());
+        Map<String, Object> run = views.visibleRun(runId, identity);
         if (!Boolean.TRUE.equals(run.get("can_resume"))) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "该任务不可继续；请处理错误原因或缩小问题重新提交");
         }
@@ -140,8 +142,8 @@ public class ResearchCommandService {
         Map<String, Object> thread = Map.of("id", uid(), "user_id", identity.workspaceId(),
             "title", title.strip().substring(0, Math.min(100, title.strip().length())),
             "thread_key", "thread%02d".formatted(index), "created_at", now());
-        jdbc.update("INSERT INTO threads(id,user_id,title,thread_key,created_at) VALUES(?,?,?,?,?)",
-            thread.get("id"), thread.get("user_id"), thread.get("title"), thread.get("thread_key"), thread.get("created_at"));
+        jdbc.update("INSERT INTO threads(id,user_id,title,thread_key,created_at,created_by) VALUES(?,?,?,?,?,?)",
+            thread.get("id"), thread.get("user_id"), thread.get("title"), thread.get("thread_key"), thread.get("created_at"), identity.subject());
         return thread;
     }
 
@@ -152,12 +154,19 @@ public class ResearchCommandService {
         return rows.getFirst();
     }
 
+    public Map<String, Object> visibleThread(WorkspaceIdentity identity, String reference) {
+        Map<String, Object> thread = resolveThread(identity.workspaceId(), reference);
+        if (!identity.hasRole("admin") && !identity.subject().equals(thread.get("created_by")))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "会话不存在");
+        return thread;
+    }
+
     private void verifyReplay(WorkspaceIdentity identity, Requests.Run request, Map<String, Object> previous) {
         List<String> attachments = jdbc.queryForList(
             "SELECT id FROM attachments WHERE run_id=? AND status='ready' ORDER BY position", String.class, previous.get("id"));
         boolean threadMatches = true;
         if (request.getThreadId() != null && !request.getThreadId().isBlank()) {
-            threadMatches = Objects.equals(resolveThread(identity.workspaceId(), request.getThreadId()).get("id"), previous.get("thread_id"));
+            threadMatches = Objects.equals(visibleThread(identity, request.getThreadId()).get("id"), previous.get("thread_id"));
         }
         if (!Objects.equals(previous.get("topic"), request.normalizedTopic())
             || !Objects.equals(previous.get("mode"), request.getMode())

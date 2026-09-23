@@ -51,7 +51,7 @@ public class WorkspaceController {
     @GetMapping("/api/workspaces")
     List<Map<String, Object>> list(@AuthenticationPrincipal Jwt jwt,
                                    @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
-        access.resolve(jwt, requested);
+        access.resolve(jwt, null);
         return access.memberships(jwt.getSubject());
     }
 

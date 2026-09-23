@@ -1,24 +1,25 @@
 import { accessToken, AuthExpiredError, expireSession } from './auth'
 
 export type EventItem = { id: number; type: string; created_at: string; data: Record<string, any> }
-export type Source = { id: string; kind: 'web'|'local'|'attachment'; attachment_id?:string; title: string; url: string; text: string; access: string; locator: string; published_at: string; retrieved_at: string; domain?: string; evidence_level?: string; trust_label?: string }
-export type Run = { can_resume?: boolean; error_info?: {code:string;retryable:boolean;action:string}; recovery?: {auto_recoveries:number;deadline_at:number;call_attempts:number;reserved_tokens:number}; attachments?: {id:string;name:string;media_type:string;size:number}[]; id: string; thread_id: string; topic: string; status: string; report: string; sources: Source[]; error: string; created_at: string; validation: Record<string, any>; usage: Record<string, number> }
+export type Source = { id: string; kind: 'web'|'local'|'attachment'; attachment_id?:string; title: string; url: string; text: string; access: string; locator: string; published_at: string; retrieved_at: string; domain?: string; evidence_level?: string; trust_label?: string; original_available?: boolean|null }
+export type Publication = { id:string; source_run_id:string; topic:string; author_subject:string; report_markdown:string; sources:Source[]; validation:Record<string,any>; content_sha256:string; status:'pending'|'published'|'rejected'|'withdrawn'; submitted_at:string; reviewed_by:string; reviewed_at:string; review_reason:string; withdrawn_by:string; withdrawn_at:string; withdrawal_reason:string }
+export type Run = { report_submitted?:boolean; publication?: {id:string;status:string;review_reason?:string;withdrawal_reason?:string}|null; can_resume?: boolean; error_info?: {code:string;retryable:boolean;action:string}; recovery?: {auto_recoveries:number;deadline_at:number;call_attempts:number;reserved_tokens:number}; attachments?: {id:string;name:string;media_type:string;size:number}[]; id: string; thread_id: string; topic: string; status: string; report: string; sources: Source[]; error: string; created_at: string; validation: Record<string, any>; usage: Record<string, number> }
 export const terminal = (status: string) => ['completed','insufficient','failed','cancelled','interrupted'].includes(status)
 export function headers(): Record<string,string> {
   const h: Record<string,string> = {}
   const token = sessionStorage.getItem('dr-token')
   if(token) h.Authorization = `Bearer ${token}`
-  else {
-    const workspace = localStorage.getItem('dr-user')
-    if(workspace) h['X-Workspace-ID'] = workspace
-  }
+  const workspace = localStorage.getItem('dr-workspace') || (!token ? localStorage.getItem('dr-user') : null)
+  if(workspace) h['X-Workspace-ID'] = workspace
   return h
 }
 export async function authenticatedFetch(path: string, init: RequestInit = {}): Promise<Response> {
   const send = (token: string | null) => {
     const requestHeaders = new Headers(init.headers)
     if (token) requestHeaders.set('Authorization', `Bearer ${token}`)
-    else for (const [key, value] of Object.entries(headers())) requestHeaders.set(key, value)
+    for (const [key, value] of Object.entries(headers())) {
+      if (key !== 'Authorization' || !token) requestHeaders.set(key, value)
+    }
     return fetch(path, {...init, headers: requestHeaders})
   }
   const token = await accessToken()

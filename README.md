@@ -4,7 +4,15 @@
 
 系统采用 **Java 21 + Spring Boot 3.5 业务后端、Python Agent 执行层**。Java 对外承接 OIDC、工作空间/成员、会话、个人偏好、研究准入与幂等、并发限制、审计、SSE 和生命周期命令；Python 保留 LangGraph 多 Agent 编排、RAG、模型/搜索适配、文档解析、检查点与 ARQ Worker。两者通过只在 Docker 内网可达、带独立 Bearer 凭证的内部接口连接，并用 PostgreSQL Outbox 可靠投递调度/取消命令。
 
-## 当前进展：Java 控制面与 RAG 链路加固（2026-09-19）
+## 报告人工审核与发布（2026-09-23）
+
+迁移 `0012_report_publication` 增加 Java 独占写入的审核快照。任务作者只能提交已完成、质量为 `complete` 且引用核验完整的报告；另一位工作空间管理员审核。批准后，工作空间成员从独立的“正式报告”列表读取冻结的正文、证据、位置、文档版本和内容哈希；驳回及撤回必须填写原因，撤回会立即停止成员访问。草稿任务、会话导出、SSE 和图片附件仅作者及管理员可见；历史作者不明的任务不能提交审核。含审核记录的会话或研究数据不能直接清理，管理员须先撤回并显式清理审核记录，操作进入审计日志。原始资料热更新或删除后，快照仍保留，但页面会标示原文是否仍可访问。生成与检索仍由 Python Agent 负责，发布状态、权限和审计由 Java 负责。详见 [职责与数据契约](docs/java-python-ownership.md)及[本轮验收记录](docs/report-publication-verification-20260923.md)。
+
+本轮在默认 Docker Compose 完整重建至 `0012_report_publication` 并通过冒烟；两个真实 OIDC 账号完成“作者提交 → 管理员批准 → 成员读取 → 管理员撤回”浏览器流程。Java 25/25（其中 PostgreSQL Testcontainers 19 项）、Python 237 通过/4 跳过、前端单测 12/12 和构建均通过。真实浏览器企业流程 7 项通过，3 项付费实时研究在该套件中跳过并另行逐项运行通过；三份实时报告的图外评分均通过。隔离环境中 11 个卷和两份 PostgreSQL 逻辑备份冷恢复成功，观察恢复时间 253.47 秒。固定研究质量门禁为 **29/30、整体通过**，其中 `compare-1` 单题未通过，不能描述为 30/30。
+
+隔离压测使用 64 个临时 OIDC 用户和确定性 Agent 替身。对 `GET /api/threads` 的 30 秒恒定到达测试，200 与 250 QPS 分别完成 6000/6000、7501/7501 次 HTTP 200；300 QPS 有 1253/9001 次被 429/503 保护性拒绝。因而本机可复现的短时**只读控制面**容量约为 250 QPS；这不代表真实模型研究任务吞吐、长时间稳定容量或生产 SLA。24 个慢上游并发请求中 16 个在 500 ms 内拒绝，同时控制面请求 20/20 成功。详细负载条件和失败边界见[本轮验收记录](docs/report-publication-verification-20260923.md)。
+
+## 此前进展：Java 控制面与 RAG 链路加固（2026-09-19）
 
 - **不是 Java 代理壳**：研究创建、重复请求判定、工作空间权限、并发准入、任务取消/恢复、线程与偏好 CRUD 均由 Java 直接执行；Nginx 不再把公网 API 指向 Python。
 - **Agent 仍使用 Python**：LangGraph、检索与引用核验、模型/搜索、文档处理和 Worker 未重写，避免为了语言统一破坏已经验证的 AI 执行链。
@@ -14,7 +22,7 @@
 - **本地知识检索可控增强**：BM25 与 Milvus 形成候选后调用可配置 HTTP Reranker，使用原始问题重排并保留融合分数；服务超时、鉴权失败或响应非法时无损回退，降级结果不进入缓存。
 - **文档替换不中断旧版**：迁移 `0011_document_hot_update` 增加版本化暂存、发布围栏和清理队列；新版本完成解析与向量写入后再事务切换，失败时恢复 `ready` 并继续使用旧片段和旧原件。
 
-| 本轮验证 | 结果 | 边界 |
+| 2026-09-19 验证 | 当时结果 | 边界 |
 | --- | --- | --- |
 | Java | Maven 21/21 通过，其中 15 项使用真实 PostgreSQL Testcontainers | 覆盖 JWT/RBAC、工作空间与全局并发准入、事务回滚、任务状态、Outbox 抢占/租约/死信；不是多主机压测 |
 | Python Agent | 全量 234 通过、4 个条件性用例跳过；Ruff 通过 | 没有把跳过项计为通过 |
@@ -87,6 +95,7 @@ Docker 已执行 `docker compose up -d --build --wait --wait-timeout 300`，后�
 | 领域 | 当前企业单机演示能力 | 验证入口 |
 | --- | --- | --- |
 | 身份与权限 | Java Resource Server 校验 Keycloak OIDC JWT；工作空间 `admin / researcher / viewer` 角色和资源级服务端校验 | `scripts/smoke-enterprise.py`、Playwright E2E |
+| 报告交付 | Java 审核及冻结快照；作者提交、异人管理员审核、成员读取、驳回/撤回/清理审计；旧接口隔离草稿 | PostgreSQL Testcontainers、真实 OIDC 双账号浏览器流程 |
 | 租户数据与审计 | Java 承接会话、研究准入、成员、偏好、限额和审计；Python Agent 承接文档、检索与执行阶段字段 | MockMvc/JWT-RBAC、PostgreSQL Testcontainers、工作台设置页 |
 | 研究执行 | Python 内同进程职责受限的 LangGraph Agent 协作；Java 提供任务生命周期与 SSE，保留来源约束、引用核验、SSRF 防护和会话上下文边界 | Java/Python 回归、冻结评测 |
 | 资料安全 | MinIO 隔离区、ClamAV 扫描、扫描失败拒绝、独立文档 Worker；`ready` 或原文有效的重建旧版可检索 | 文档安全测试、页面状态 |
@@ -136,7 +145,7 @@ Docker 已执行 `docker compose up -d --build --wait --wait-timeout 300`，后�
 
 资料范围默认 `internal`，禁止公开搜索；`ALLOW_INTERNAL_MODEL_PROCESSING` 默认 `false`，因此内部资料相关模型处理会被策略拒绝。公开研究请在界面选择“公开”；该模式不加载内部知识库和私有会话历史。只有核准所配置模型、视觉与嵌入供应商后，管理员才可开启内部资料处理；`restricted` 请求直接拒绝外发。范围依赖用户正确声明，不是自动敏感信息检测。
 
-已有部署升级前先做备份，并等待运行任务结束。Compose 的 `migrate` 服务执行 `alembic upgrade head`，当前最新版本为 `0011_document_hot_update`；升级必须同时发布 Java `backend`、Python `agent`、两个 Worker 和 Web。可运行 `.venv/Scripts/python.exe scripts/verify_local_deployment.py` 检查默认本机入口、迁移、外发关闭状态与监控。维护及隔离恢复步骤见 [本机运维记录](docs/local-pilot-operations.md)。
+已有部署升级前先做备份，并等待运行任务结束。Compose 的 `migrate` 服务执行 `alembic upgrade head`，当前最新版本为 `0012_report_publication`；升级必须同时发布 Java `backend`、Python `agent`、两个 Worker 和 Web。可运行 `.venv/Scripts/python.exe scripts/verify_local_deployment.py` 检查默认本机入口、迁移、外发关闭状态与监控。维护及隔离恢复步骤见 [本机运维记录](docs/local-pilot-operations.md)。
 
 所有服务仅在 Docker 网络内互通，Web、Keycloak 与 Grafana 仅绑定本机回环地址。停止服务使用 `docker compose down`；不要使用 `down -v`，否则会删除演示数据卷。项目只维护根目录的 `compose.yaml` 作为运行拓扑；测试告警与隔离组件验证分别使用 `compose.test.yaml` 和 `compose.verify.yaml`。
 ## API 配置
@@ -263,7 +272,7 @@ docker compose exec -T agent python -m backend.commands.cli --base-url http://we
 
 默认不会自动把报告写入语义记忆。完成报告后可在界面点击“保存为语义记忆”，或设置 `AUTO_SAVE_SEMANTIC_MEMORY=true` 恢复自动保存。用户偏好和个人设定按 OIDC 账号私有，即使成员进入同一工作空间也不会互相读取或修改；报告语义记忆属于工作空间，但只会在保存它的 Thread 内被检索。工作台设置页可导出当前工作空间数据与本人个人记忆，或在确认后清理对应数据。
 
-左侧“最近研究”中每个会话都可删除。删除会停止该会话仍在运行的任务，并一并清除该会话的报告、事件、计数和检查点；本地资料、用户偏好和个人设定不会受影响。已单独保存的报告语义记忆仍会保留在数据导出中，但由于原 Thread 已删除，不会再被注入后续研究。
+左侧“最近研究”中没有审核记录的会话可由管理员删除；删除会停止该会话仍在运行的任务，并清除对应报告、事件、计数和检查点。含待审、已发布、已驳回或已撤回审核记录的会话会被拒绝删除。管理员需先处理审核状态、显式清理已驳回或已撤回记录，再删除会话。本地资料、用户偏好和个人设定不随会话删除；已单独保存的报告语义记忆仍在数据导出中，但原 Thread 删除后不会被注入后续研究。
 
 默认 Compose 启动本机 Keycloak。打开工作台后，已有账号可登录，新用户可注册；右上角“退出”会结束浏览器和 Keycloak 会话，因此可以切换账号。每个账号的新会话自动使用 `thread01`、`thread02` 等短 Thread ID；内部 UUID 仅用于数据库关联与检查点，不会显示在工作台。用户 API 统一使用 OIDC JWT，不再保留与浏览器认证冲突的第二套工作台访问令牌。认证流程详见 [docs/local-keycloak-login.md](docs/local-keycloak-login.md)。
 
@@ -402,13 +411,13 @@ npm run test:e2e:enterprise
 已完成的是企业单机演示基线。以下事项保留为生产化讨论边界，不属于本次面试项目继续优化清单：
 
 - 本机即可完成：PostgreSQL RLS 策略与数据库角色、反向代理 TLS/本地 CA、密钥托管替代 `.env`、备份定时与恢复演练记录、Trace/日志保留策略和更细粒度的浏览器 E2E 场景。
-- 需要真实基础设施才能证明：多副本 API/Worker、共享对象存储、高可用 PostgreSQL/Redis/Milvus、容量压测、跨机故障转移、外部 KMS/Vault、集中身份目录（SAML/SCIM）和真实值班升级体系。
+- 需要真实基础设施才能证明：多副本 API/Worker、共享对象存储、高可用 PostgreSQL/Redis/Milvus、跨机容量压测与故障转移、外部 KMS/Vault、集中身份目录（SAML/SCIM）和真实值班升级体系。
 - 需要组织流程才能证明：告警分级、飞书/钉钉/企业微信的轮值人员路由、RPO/RTO 承诺、变更审批、数据分级与合规审计。
 
 因此简历或面试应表述为“完成企业单机演示基线及可恢复、可观测、权限闭环验证”，不要表述为“已上线高可用生产集群”或“达到 SLA”。
 ## 压测与故障演练
 
-隔离整栈阶梯压测、慢上游/连续 503 注入、保护顺序和边界见 [性能、限流与雪崩隔离实测](docs/performance-resilience-20260918.md)；默认开启 Reranker 后的复测见 [Reranker 默认开启与链路实测](docs/reranker-performance-20260919.md)。本轮 k6 固定到达率在 100/250 QPS 档全部返回 200，500 QPS 起按设计触发保护性 429/503，其他错误为 0，已放行请求 P95 保持在 2.82–4.09 ms。当前默认保护为：Nginx 鉴权前粗粒度削峰、Java 主体令牌桶和全局并发限制、Agent 代理 8 路舱壁/30 秒超时/连续故障熔断、Python Worker 与供应商层并发闸门和熔断。压测使用固定模型/搜索夹具，没有对第三方 Reranker 发起高并发压力；限流值是单机本地基线，不是 SLA，多实例全局配额需要共享网关或 Redis。
+2026-09-18 的隔离整栈阶梯压测、慢上游/连续 503 注入和保护顺序见 [性能、限流与雪崩隔离实测](docs/performance-resilience-20260918.md)；默认开启 Reranker 后的历史复测见 [Reranker 默认开启与链路实测](docs/reranker-performance-20260919.md)。本次 2026-09-23 的 30 秒恒定到达测试见[报告发布与单机验收](docs/report-publication-verification-20260923.md)。当前默认保护为：Nginx 鉴权前粗粒度削峰、Java 主体令牌桶和全局并发限制、Agent 代理 8 路舱壁/30 秒超时/连续故障熔断、Python Worker 与供应商层并发闸门和熔断。压测使用固定模型/搜索夹具，没有对第三方 Reranker 发起高并发压力；限流值是单机本地基线，不是 SLA，多实例全局配额需要共享网关或 Redis。
 
 `load-health.js` 只用于连通性；业务读链路使用临时 OIDC 身份运行 `load-authenticated-read.js`。验证脚本会创建临时客户端和用户、获取令牌、执行压测并清理测试身份：
 

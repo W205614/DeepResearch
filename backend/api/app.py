@@ -281,7 +281,8 @@ def create_app(settings: Settings | None = None):
         if x_confirm_delete != "DELETE":
             raise HTTPException(400, "请使用 X-Confirm-Delete: DELETE 确认清理")
         try:
-            result = await runtime.purge_user(user, scope, request.state.principal.subject)
+            async with runtime.db.guard("publication:" + user):
+                result = await runtime.purge_user(user, scope, request.state.principal.subject)
             await runtime.db.audit(user, request.state.principal.subject, "data.purge", "scope", scope)
             return result
         except ValueError as exc:
@@ -331,7 +332,8 @@ def create_app(settings: Settings | None = None):
     @app.delete("/api/threads/{thread_id}")
     async def delete_thread(thread_id: str, request: Request, runtime=Depends(rt), user=Depends(administrator)):
         try:
-            result = await runtime.delete_thread(thread_id, user)
+            async with runtime.db.guard("publication:" + user):
+                result = await runtime.delete_thread(thread_id, user)
             await runtime.db.audit(user, request.state.principal.subject, "thread.delete", "thread", thread_id)
             return result
         except LookupError as exc:

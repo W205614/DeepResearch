@@ -95,6 +95,7 @@ services:
       retries: 20
   performance:
     image: deepresearch-verify
+    user: '0'
     command: python scripts/load_system_performance.py
     environment:
       PERFORMANCE_BACKEND_URL: http://edge

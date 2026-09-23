@@ -1,8 +1,11 @@
 DROP TABLE IF EXISTS business_outbox CASCADE;
+DROP TABLE IF EXISTS report_publications CASCADE;
 DROP TABLE IF EXISTS dead_letter_runs CASCADE;
 DROP TABLE IF EXISTS audit_logs CASCADE;
 DROP TABLE IF EXISTS counters CASCADE;
 DROP TABLE IF EXISTS attachments CASCADE;
+DROP TABLE IF EXISTS chunks CASCADE;
+DROP TABLE IF EXISTS documents CASCADE;
 DROP TABLE IF EXISTS events CASCADE;
 DROP TABLE IF EXISTS runs CASCADE;
 DROP TABLE IF EXISTS threads CASCADE;
@@ -23,6 +26,7 @@ CREATE TABLE workspace_limits(
 );
 CREATE TABLE threads(
     id TEXT PRIMARY KEY,user_id TEXT NOT NULL,title TEXT,created_at TEXT,thread_key TEXT,
+    created_by TEXT NOT NULL DEFAULT '',
     UNIQUE(user_id,thread_key)
 );
 CREATE TABLE runs(
@@ -32,7 +36,18 @@ CREATE TABLE runs(
     created_by TEXT NOT NULL DEFAULT '',deadline_at DOUBLE PRECISION NOT NULL DEFAULT 0,
     call_attempts INTEGER NOT NULL DEFAULT 0,reserved_tokens INTEGER NOT NULL DEFAULT 0,
     auto_recoveries INTEGER NOT NULL DEFAULT 0,error_info TEXT NOT NULL DEFAULT '{}',
-    data_policy TEXT NOT NULL DEFAULT 'internal',UNIQUE(user_id,client_request_id)
+    data_policy TEXT NOT NULL DEFAULT 'internal',report_submitted BOOLEAN NOT NULL DEFAULT FALSE,
+    UNIQUE(user_id,client_request_id)
+);
+CREATE TABLE report_publications(
+    id TEXT PRIMARY KEY,workspace_id TEXT NOT NULL REFERENCES workspaces(id),
+    source_run_id TEXT NOT NULL UNIQUE REFERENCES runs(id) ON DELETE RESTRICT,
+    author_subject TEXT NOT NULL,topic TEXT NOT NULL,report_markdown TEXT NOT NULL,
+    sources_json TEXT NOT NULL,validation_json TEXT NOT NULL,content_sha256 TEXT NOT NULL,
+    status TEXT NOT NULL CHECK(status IN ('pending','published','rejected','withdrawn')),
+    submitted_at TEXT NOT NULL,reviewed_by TEXT NOT NULL DEFAULT '',reviewed_at TEXT NOT NULL DEFAULT '',
+    review_reason TEXT NOT NULL DEFAULT '',withdrawn_by TEXT NOT NULL DEFAULT '',
+    withdrawn_at TEXT NOT NULL DEFAULT '',withdrawal_reason TEXT NOT NULL DEFAULT ''
 );
 CREATE UNIQUE INDEX one_active_thread ON runs(thread_id) WHERE status IN ('queued','running');
 CREATE TABLE events(
@@ -43,6 +58,9 @@ CREATE TABLE attachments(
     media_type TEXT NOT NULL,size INTEGER NOT NULL,status TEXT NOT NULL,created_at TEXT NOT NULL,
     run_id TEXT NOT NULL DEFAULT '',position INTEGER NOT NULL DEFAULT 0
 );
+CREATE TABLE documents(id TEXT PRIMARY KEY,user_id TEXT NOT NULL,status TEXT NOT NULL,
+    hash TEXT NOT NULL,index_version INTEGER NOT NULL);
+CREATE TABLE chunks(id TEXT PRIMARY KEY,document_id TEXT NOT NULL,user_id TEXT NOT NULL,text TEXT NOT NULL);
 CREATE TABLE counters(
     run_id TEXT PRIMARY KEY,search_calls INTEGER DEFAULT 0,llm_calls INTEGER DEFAULT 0,
     prompt_tokens INTEGER DEFAULT 0,completion_tokens INTEGER DEFAULT 0

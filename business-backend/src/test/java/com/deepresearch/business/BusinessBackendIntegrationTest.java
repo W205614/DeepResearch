@@ -372,6 +372,172 @@ class BusinessBackendIntegrationTest {
             .isEqualTo(1);
     }
 
+    @Test
+    void reportReviewFreezesEvidenceAndRestrictsOldDraftRoutes() throws Exception {
+        workspace("review-space", "writer", "researcher", 2);
+        jdbc.update("INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES('review-space','reviewer','admin','now'),('review-space','reader','viewer','now')");
+        run("review-run", "review-space");
+        jdbc.update("UPDATE threads SET created_by='writer' WHERE id='review-run-thread'");
+        jdbc.update("""
+            UPDATE runs SET created_by='writer',status='completed',report='# Original [L-1]',
+            sources='[{"id":"L-1","kind":"local","title":"资料","text":"证据","locator":"第 2 页","chunk_id":"chunk-1","document_id":"doc-1","document_hash":"hash-1","index_version":1}]',
+            validation='{"quality":"complete","checked_claims":1,"supported_claims":1}'
+            WHERE id='review-run'""");
+        jdbc.update("INSERT INTO documents(id,user_id,status,hash,index_version) VALUES('doc-1','review-space','ready','hash-1',1)");
+        jdbc.update("INSERT INTO chunks(id,document_id,user_id,text) VALUES('chunk-1','doc-1','review-space','证据')");
+
+        mvc.perform(get("/api/research/runs/review-run").with(jwt().jwt(t -> t.subject("reader")))
+                .header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isNotFound());
+        mvc.perform(get("/api/research/runs/review-run/events").with(jwt().jwt(t -> t.subject("reader")))
+                .header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isNotFound());
+        mvc.perform(get("/api/threads/review-run-thread/report").with(jwt().jwt(t -> t.subject("reader")))
+                .header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isNotFound());
+        mvc.perform(get("/api/threads").with(jwt().jwt(t -> t.subject("reader")))
+                .header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$").isEmpty());
+
+        MvcResult submitted = mvc.perform(post("/api/research/runs/review-run/publication")
+                .with(jwt().jwt(t -> t.subject("writer"))).header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isCreated()).andExpect(jsonPath("$.sources[0].original_available").value(true))
+            .andReturn();
+        String id = String.valueOf(body(submitted).get("id"));
+        mvc.perform(post("/api/research/runs/review-run/publication")
+                .with(jwt().jwt(t -> t.subject("writer"))).header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isCreated()).andExpect(jsonPath("$.id").value(id));
+        assertThat(count("report_publications")).isEqualTo(1);
+        mvc.perform(get("/api/reports/" + id).with(jwt().jwt(t -> t.subject("reader")))
+                .header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isNotFound());
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/api/threads/review-run-thread")
+                .with(jwt().jwt(t -> t.subject("reviewer"))).header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isConflict());
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/api/data?scope=reports")
+                .with(jwt().jwt(t -> t.subject("reviewer"))).header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isConflict());
+        mvc.perform(post("/api/reports/" + id + "/approve").with(jwt().jwt(t -> t.subject("reviewer")))
+                .header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isOk());
+        jdbc.update("UPDATE runs SET report='# Changed [L-1]' WHERE id='review-run'");
+        jdbc.update("UPDATE documents SET index_version=2 WHERE id='doc-1'");
+        mvc.perform(get("/api/reports/" + id).with(jwt().jwt(t -> t.subject("reader")))
+                .header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.report_markdown").value("# Original [L-1]"))
+            .andExpect(jsonPath("$.sources[0].locator").value("第 2 页"))
+            .andExpect(jsonPath("$.sources[0].original_available").value(false));
+        jdbc.update("DELETE FROM chunks WHERE id='chunk-1'");
+        jdbc.update("DELETE FROM documents WHERE id='doc-1'");
+        mvc.perform(get("/api/reports/" + id).with(jwt().jwt(t -> t.subject("reader")))
+                .header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.report_markdown").value("# Original [L-1]"))
+            .andExpect(jsonPath("$.sources[0].text").value("证据"))
+            .andExpect(jsonPath("$.sources[0].original_available").value(false));
+        mvc.perform(get("/api/research/runs/review-run/report").with(jwt().jwt(t -> t.subject("reader")))
+                .header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isNotFound());
+        mvc.perform(get("/api/reports/" + id).with(jwt().jwt(t -> t.subject("outsider"))))
+            .andExpect(status().isNotFound());
+        mvc.perform(post("/api/reports/" + id + "/withdraw").with(jwt().jwt(t -> t.subject("reviewer")))
+                .header("X-Workspace-ID", "review-space").contentType("application/json")
+                .content("{\"reason\":\"引用资料已更新\"}"))
+            .andExpect(status().isOk());
+        mvc.perform(get("/api/reports/" + id).with(jwt().jwt(t -> t.subject("reader")))
+                .header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isNotFound());
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/api/reports/" + id)
+                .with(jwt().jwt(t -> t.subject("reviewer"))).header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isNoContent());
+        assertThat(count("report_publications")).isZero();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_logs WHERE action LIKE 'report.%'", Integer.class))
+            .isEqualTo(4);
+    }
+
+    @Test
+    void reviewRejectsSelfApprovalBadQualityAndConcurrentDecisions() throws Exception {
+        workspace("review-space", "author", "admin", 2);
+        jdbc.update("INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES('review-space','other-admin','admin','now')");
+        run("decision-run", "review-space");
+        jdbc.update("UPDATE runs SET created_by='author',status='completed',report='# Report [W-1]',sources='[{\"id\":\"W-1\",\"kind\":\"web\",\"text\":\"Evidence\"}]',validation='{\"quality\":\"partial\",\"checked_claims\":1,\"supported_claims\":1}' WHERE id='decision-run'");
+        mvc.perform(post("/api/research/runs/decision-run/publication")
+                .with(jwt().jwt(t -> t.subject("author"))).header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isUnprocessableEntity());
+        jdbc.update("UPDATE runs SET validation='{\"quality\":\"complete\",\"checked_claims\":1,\"supported_claims\":1}' WHERE id='decision-run'");
+        String id = String.valueOf(body(mvc.perform(post("/api/research/runs/decision-run/publication")
+                .with(jwt().jwt(t -> t.subject("author"))).header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isCreated()).andReturn()).get("id"));
+        mvc.perform(post("/api/reports/" + id + "/approve").with(jwt().jwt(t -> t.subject("author")))
+                .header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isForbidden());
+        List<Object> outcomes = concurrentResults(
+            () -> mvc.perform(post("/api/reports/" + id + "/approve")
+                .with(jwt().jwt(t -> t.subject("other-admin"))).header("X-Workspace-ID", "review-space"))
+                .andReturn().getResponse().getStatus(),
+            () -> mvc.perform(post("/api/reports/" + id + "/approve")
+                .with(jwt().jwt(t -> t.subject("other-admin"))).header("X-Workspace-ID", "review-space"))
+                .andReturn().getResponse().getStatus());
+        assertThat(outcomes).containsExactlyInAnyOrder(200, 409);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_logs WHERE action='report.approve'", Integer.class)).isEqualTo(1);
+    }
+
+    @Test
+    void legacyUnknownAuthorCannotSubmitAndCrossWorkspaceCannotReadReport() throws Exception {
+        workspace("legacy-space", "admin", "admin", 2);
+        workspace("other-space", "other", "viewer", 2);
+        run("legacy-run", "legacy-space");
+        jdbc.update("""
+            UPDATE runs SET created_by='',status='completed',report='# Legacy',
+            sources='[{"id":"W-1","kind":"web","text":"Evidence"}]',
+            validation='{"quality":"complete","checked_claims":1,"supported_claims":1}'
+            WHERE id='legacy-run'""");
+        mvc.perform(post("/api/research/runs/legacy-run/publication")
+                .with(jwt().jwt(t -> t.subject("admin"))).header("X-Workspace-ID", "legacy-space"))
+            .andExpect(status().isForbidden());
+        mvc.perform(get("/api/research/runs/legacy-run").with(jwt().jwt(t -> t.subject("admin")))
+                .header("X-Workspace-ID", "legacy-space"))
+            .andExpect(status().isOk());
+        mvc.perform(get("/api/research/runs/legacy-run").with(jwt().jwt(t -> t.subject("other")))
+                .header("X-Workspace-ID", "other-space"))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void rejectedReportRequiresReasonAndRemainsPrivateUntilExplicitCleanup() throws Exception {
+        workspace("review-space", "author", "researcher", 2);
+        jdbc.update("INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES('review-space','reviewer','admin','now'),('review-space','viewer','viewer','now')");
+        run("rejected-run", "review-space");
+        jdbc.update("""
+            UPDATE runs SET created_by='author',status='completed',report='# Result [W-1]',
+            sources='[{"id":"W-1","kind":"web","text":"Evidence"}]',
+            validation='{"quality":"complete","checked_claims":1,"supported_claims":1}'
+            WHERE id='rejected-run'""");
+        String id = String.valueOf(body(mvc.perform(post("/api/research/runs/rejected-run/publication")
+                .with(jwt().jwt(t -> t.subject("author"))).header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isCreated()).andReturn()).get("id"));
+        mvc.perform(post("/api/reports/" + id + "/reject")
+                .with(jwt().jwt(t -> t.subject("reviewer"))).header("X-Workspace-ID", "review-space")
+                .contentType("application/json").content("{\"reason\":\"   \"}"))
+            .andExpect(status().isUnprocessableEntity());
+        mvc.perform(post("/api/reports/" + id + "/reject")
+                .with(jwt().jwt(t -> t.subject("reviewer"))).header("X-Workspace-ID", "review-space")
+                .contentType("application/json").content("{\"reason\":\"日期证据不足\"}"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.review_reason").value("日期证据不足"));
+        mvc.perform(get("/api/reports/" + id).with(jwt().jwt(t -> t.subject("author")))
+                .header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isOk());
+        mvc.perform(get("/api/reports/" + id).with(jwt().jwt(t -> t.subject("viewer")))
+                .header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isNotFound());
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/api/reports/" + id)
+                .with(jwt().jwt(t -> t.subject("reviewer"))).header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isNoContent());
+        assertThat(count("report_publications")).isZero();
+        mvc.perform(post("/api/research/runs/rejected-run/publication")
+                .with(jwt().jwt(t -> t.subject("author"))).header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isConflict());
+    }
+
     private void workspace(String id, String subject, String role, int limit) {
         jdbc.update("INSERT INTO workspaces(id,name,created_by,created_at) VALUES(?,?,?,?)", id, id, subject, "now");
         jdbc.update("INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES(?,?,?,?)", id, subject, role, "now");

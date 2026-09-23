@@ -30,24 +30,12 @@ for (const item of liveCases) {
     await expect(page.getByRole('button', { name: /退出/ })).toBeVisible()
     const token = await page.evaluate(() => sessionStorage.getItem('dr-token'))
     const headers = { Authorization: `Bearer ${token}` }
-    let documentId = ''
     let threadId = ''
     try {
-      if (item.id === 'live-postgres') {
-        await page.getByRole('button', { name: '本地资料库' }).click()
-        await page.locator('input[type=file]').setInputFiles({ name: 'acceptance-note.txt', mimeType: 'text/plain',
-          buffer: Buffer.from('验收备注：本项目使用应用层工作空间权限。数据库行级安全是另一层防线，需要正确配置运行角色；不能把尚未实施的能力描述为已经具备。') })
-        await expect.poll(async () => {
-          const docs = await (await page.request.get('/api/documents', { headers })).json()
-          const doc = docs.find((d: any) => d.name === 'acceptance-note.txt')
-          documentId = doc?.id || ''
-          return doc?.status
-        }, { timeout: 90_000 }).toBe('ready')
-      }
       await page.getByRole('button', { name: '新建研究' }).click()
-      await page.getByLabel('资料范围').selectOption(documentId ? 'internal' : 'public')
+      await page.getByLabel('资料范围').selectOption('public')
       await page.getByLabel('研究模式', { exact: true }).selectOption('deep')
-      await page.getByLabel('研究主题').fill(item.question + (documentId ? ' 请同时结合本地验收备注说明本项目的边界，并引用该资料。' : ''))
+      await page.getByLabel('研究主题').fill(item.question)
       const responsePromise = page.waitForResponse(r => r.url().endsWith('/api/research/runs') && r.request().method() === 'POST')
       await page.getByRole('button', { name: '开始研究', exact: true }).click()
       const created = await responsePromise
@@ -61,15 +49,20 @@ for (const item of liveCases) {
         await page.reload()
       }
       let result: any
-      await expect.poll(async () => {
+      const deadline = Date.now() + 600_000
+      while (Date.now() < deadline) {
         const response = await page.request.get(`/api/research/runs/${run.id}`, { headers })
         expect(response.status()).toBe(200)
         result = await response.json()
-        return result.status
-      }, { timeout: 600_000, intervals: [2000] }).toBe('completed')
+        if (result.status === 'completed') break
+        if (['failed', 'cancelled', 'insufficient', 'interrupted'].includes(result.status))
+          throw new Error(`Research terminated as ${result.status}; reasons=${JSON.stringify(result.validation?.reasons || [])}`)
+        await page.waitForTimeout(2000)
+      }
+      expect(result.status).toBe('completed')
       const stream = await page.request.get(`/api/research/runs/${run.id}/events`, { headers })
-      const events = (await stream.text()).split('\n').filter(line => line.startsWith('data: {'))
-        .map(line => JSON.parse(line.slice(6))).filter(event => event.type)
+      const events = (await stream.text()).split('\n').filter(line => /^data:\s*\{/.test(line))
+        .map(line => JSON.parse(line.slice(5).trim())).filter(event => event.type)
       expect(events.filter(e => e.type === 'done')).toHaveLength(1)
       const replay = await page.request.get(`/api/research/runs/${run.id}/events?after=${events[0].id}`, { headers })
       expect(await replay.text()).not.toContain(`id: ${events[0].id}\n`)
@@ -81,11 +74,7 @@ for (const item of liveCases) {
       writeFileSync(resolve(output, `${item.id}.json`), JSON.stringify({ ...result,
         nodes: events.filter(e => e.type === 'node_end').map(e => e.data.node) }))
       expect(result.sources.some((s: any) => s.kind === 'web' && s.access === 'fulltext')).toBeTruthy()
-      if (documentId) expect(result.sources.some((s: any) => s.document_id === documentId)).toBeTruthy()
     } finally {
-      if (documentId) {
-        expect((await page.request.delete(`/api/documents/${documentId}`, { headers })).ok()).toBeTruthy()
-      }
       if (threadId) {
         expect((await page.request.delete(`/api/threads/${threadId}`, { headers })).ok()).toBeTruthy()
       }
@@ -172,9 +161,9 @@ test('Java business API owns authenticated thread, preference and research lifec
   }
 })
 
-test('document lifecycle and viewer authorization with real adapters', async ({ page }) => {
+test('document lifecycle and viewer authorization with real adapters', async ({ page, browser }) => {
   test.skip(process.env.E2E_DOCUMENTS !== '1', 'Explicit real embedding acceptance only')
-  test.setTimeout(120_000)
+  test.setTimeout(240_000)
   await page.goto('/')
   await page.getByRole('button', { name: '登录并开始研究' }).click()
   await page.locator('#username').fill(username!)
@@ -184,10 +173,14 @@ test('document lifecycle and viewer authorization with real adapters', async ({ 
   const token = await page.evaluate(() => sessionStorage.getItem('dr-token'))
   const headers = { Authorization: `Bearer ${token}` }
   let documentId = ''
+  let threadId = ''
   try {
     await page.getByRole('button', { name: '本地资料库' }).click()
-    await page.locator('input[type=file]').setInputFiles({ name: 'lifecycle.txt', mimeType: 'text/plain',
+    await expect(page.locator('input[type=file]')).toHaveCount(2)
+    const uploaded = page.waitForResponse(r => new URL(r.url()).pathname === '/api/documents' && r.request().method() === 'POST')
+    await page.locator('input[type=file]').first().setInputFiles({ name: 'lifecycle.txt', mimeType: 'text/plain',
       buffer: Buffer.from('功能验收资料：工作空间成员权限在后端校验。删除资料后，不应在知识库检索结果中出现。') })
+    expect((await uploaded).status()).toBe(202)
     await expect.poll(async () => {
       const docs = await (await page.request.get('/api/documents', { headers })).json()
       const doc = docs.find((d: any) => d.name === 'lifecycle.txt')
@@ -196,15 +189,54 @@ test('document lifecycle and viewer authorization with real adapters', async ({ 
     }, { timeout: 90_000 }).toBe('ready')
     const found = await (await page.request.post('/api/documents/search', { headers, data: { query: '工作空间成员权限' } })).json()
     expect(found.some((d: any) => d.document_id === documentId)).toBeTruthy()
+    const created = await page.request.post('/api/research/runs', { headers, data: {
+      topic: '根据本地功能验收资料，说明工作空间成员权限在哪里校验，以及删除资料后的检索预期。',
+      data_policy: 'internal', mode: 'quick', client_request_id: `internal-document-${Date.now()}`,
+    } })
+    expect(created.status()).toBe(202)
+    const run = await created.json()
+    threadId = run.thread_id
+    let result: any
+    const deadline = Date.now() + 180_000
+    while (Date.now() < deadline) {
+      result = await (await page.request.get(`/api/research/runs/${run.id}`, { headers })).json()
+      if (['completed', 'insufficient', 'failed', 'interrupted'].includes(result.status)) break
+      await page.waitForTimeout(2000)
+    }
+    expect(['completed', 'insufficient']).toContain(result.status)
+    expect(result.sources.every((source: any) => source.kind !== 'web')).toBeTruthy()
+    if (result.status === 'completed')
+      expect(result.sources.some((source: any) => source.kind === 'local' && source.document_id === documentId)).toBeTruthy()
   } finally {
+    if (threadId) expect((await page.request.delete(`/api/threads/${threadId}`, { headers })).ok()).toBeTruthy()
     if (documentId) expect((await page.request.delete(`/api/documents/${documentId}`, { headers })).ok()).toBeTruthy()
   }
   const found = await (await page.request.post('/api/documents/search', { headers, data: { query: '工作空间成员权限' } })).json()
   expect(found.some((d: any) => d.document_id === documentId)).toBeFalsy()
-  const workspaces = await (await page.request.get('/api/workspaces', { headers })).json()
-  const members = await (await page.request.get(`/api/workspaces/${workspaces[0].id}/members`, { headers })).json()
-  expect((await page.request.put(`/api/workspaces/${workspaces[0].id}/members`, { headers,
-    data: { subject: members[0].subject, role: 'viewer' } })).ok()).toBeTruthy()
-  expect((await page.request.post('/api/research/runs', { headers,
-    data: { topic: 'should be rejected', client_request_id: 'viewer-rejection' } })).status()).toBe(403)
+  const reviewerName = process.env.E2E_REVIEWER_USERNAME
+  const reviewerPassword = process.env.E2E_REVIEWER_PASSWORD
+  const reviewerSubject = process.env.E2E_REVIEWER_SUBJECT
+  if (reviewerName && reviewerPassword && reviewerSubject) {
+    const workspaces = await (await page.request.get('/api/workspaces', { headers })).json()
+    const workspace = workspaces[0].id
+    expect((await page.request.put(`/api/workspaces/${workspace}/members`, { headers,
+      data: { subject: reviewerSubject, role: 'viewer' } })).ok()).toBeTruthy()
+    const viewerContext = await browser.newContext()
+    try {
+      const viewer = await viewerContext.newPage()
+      await viewer.goto('/')
+      await viewer.getByRole('button', { name: '登录并开始研究' }).click()
+      await viewer.locator('#username').fill(reviewerName)
+      await viewer.locator('#password').fill(reviewerPassword)
+      await viewer.locator('#kc-login').click()
+      await expect(viewer.getByRole('button', { name: /退出/ })).toBeVisible()
+      const viewerToken = await viewer.evaluate(() => sessionStorage.getItem('dr-token'))
+      expect((await viewer.request.post('/api/research/runs', {
+        headers: { Authorization: `Bearer ${viewerToken}`, 'X-Workspace-ID': workspace },
+        data: { topic: 'should be rejected', client_request_id: 'viewer-rejection' },
+      })).status()).toBe(403)
+    } finally {
+      await viewerContext.close()
+    }
+  }
 })

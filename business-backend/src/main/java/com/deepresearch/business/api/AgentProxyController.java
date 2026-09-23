@@ -3,6 +3,7 @@ package com.deepresearch.business.api;
 import com.deepresearch.business.security.WorkspaceAccess;
 import com.deepresearch.business.security.WorkspaceIdentity;
 import com.deepresearch.business.service.AgentClient;
+import com.deepresearch.business.service.ReportPublicationService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,10 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AgentProxyController {
     private final WorkspaceAccess access;
     private final AgentClient agent;
+    private final ReportPublicationService publications;
 
-    public AgentProxyController(WorkspaceAccess access, AgentClient agent) {
+    public AgentProxyController(WorkspaceAccess access, AgentClient agent, ReportPublicationService publications) {
         this.access = access;
         this.agent = agent;
+        this.publications = publications;
     }
 
     @RequestMapping({
@@ -32,6 +35,9 @@ public class AgentProxyController {
                                  HttpServletRequest request) {
         WorkspaceIdentity identity = access.resolve(jwt, requested);
         authorizeMutation(identity, request);
+        if ("DELETE".equals(request.getMethod()) && request.getRequestURI().equals("/api/data")
+            && ("all".equals(request.getParameter("scope")) || "reports".equals(request.getParameter("scope"))))
+            publications.requireNoPublicationsForWorkspace(identity);
         return ThreadController.forwarded(agent.forward(request));
     }
 
