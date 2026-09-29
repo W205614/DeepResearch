@@ -32,7 +32,7 @@ def main(args):
         if not args.reuse:
             run(['docker', 'build', '-t', 'deepresearch-verify-base', '.'])
             run(['docker', 'build', '-f', 'Dockerfile.verify', '-t', 'deepresearch-verify', '.'])
-            run(COMPOSE + ['up', '-d', '--wait', '--wait-timeout', '300'])
+            run(COMPOSE + ['up', '-d', '--wait', '--wait-timeout', '600'])
         run(COMPOSE + ['run', '--rm', 'tests'])
         result['integration'] = 'passed'
         if args.load:

@@ -42,6 +42,21 @@ def test_missing_other_metadata_is_not_blocked_by_count_unit_gate():
     assert accepted
 
 
+def test_unstated_group_relationship_is_a_limitation_not_a_cited_claim():
+    source = {"text": "检索定位试点明确记录：甲组19人全部完成；乙组21人全部未完成。没有其他结论。"}
+    unsupported, reason = validate_claim(
+        "根据所提供资料，资料未说明甲组与乙组之间是同一试点的不同分组、不同批次还是不同对象。",
+        [source],
+    )
+    explicit, _ = validate_claim(
+        "资料未说明甲组与乙组之间的归属关系。",
+        [{"text": "资料未说明甲组与乙组之间的归属关系。"}],
+    )
+    assert not unsupported
+    assert "主体关系" in reason
+    assert explicit
+
+
 def test_explicit_shared_batch_blocks_reverse_uncertainty_claim():
     sources = [
         {"text": "同一批次的原始记录甲：完成引用核查的参与者为33名。尚未核对。"},
@@ -66,6 +81,18 @@ def test_shared_batch_gate_does_not_invent_a_batch_identifier():
     accepted, _ = validate_claim("两份记录均未给出具体批次编号。", sources)
 
     assert accepted
+
+
+def test_explicit_version_supersession_blocks_unresolved_replacement_claim():
+    sources = [{"text": "复核版将同一批次完成数修正为14份，并说明旧版12份已被替代。",
+                "access": "fulltext", "trust_label": "fixture"}]
+
+    unsupported, reason = validate_claim("若要判断两版数据能否替代，还需确认批次编号。", sources)
+    explicit, _ = validate_claim("复核版明确说明旧版12份已被替代。", sources)
+
+    assert not unsupported
+    assert "替代" in reason
+    assert explicit
 
 
 def test_cited_source_id_digits_are_not_treated_as_factual_numbers():

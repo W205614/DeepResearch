@@ -11,6 +11,10 @@ TERM_RELATION_META = re.compile(
     r"(?:术语|用词).{0,100}(?:对应关系|等价关系|是否等价).{0,40}"
     r"(?:尚未确认|未确认|无法确认|不能确认|尚未证实|无法判断)"
 )
+UNSTATED_RELATION_META = re.compile(
+    r"(?:资料|原文|文档).{0,12}(?:未说明|未明确|没有说明).{0,100}"
+    r"(?:之间|关系|还是)"
+)
 MISSING_COUNT_UNIT = re.compile(
     r"(?:均|都)?.{0,12}(?:未明确|未提供|未给出|没有说明|并未说明).{0,8}(?:计数)?单位"
 )
@@ -21,6 +25,7 @@ SHARED_BATCH_UNCERTAINTY = re.compile(
     r"(?:是否.{0,24}(?:同一|相同)批次.{0,64}(?:无法|不能|未能).{0,20}(?:判定|确认|判断)"
     r"|(?:无法|不能|未能).{0,64}(?:判定|确认|判断).{0,24}是否.{0,24}(?:同一|相同)批次)"
 )
+UNRESOLVED_SUPERSESSION = re.compile(r"(?:能否|是否|可否).{0,16}(?:替代|取代).{0,40}(?:还需|需要|无法|不能|未能)")
 
 
 def requires_strong_evidence(text: str) -> bool:
@@ -37,11 +42,16 @@ def validate_claim(text: str, sources: list[dict]) -> tuple[bool, str]:
     term_meta = TERM_RELATION_META.search(compact)
     if term_meta and term_meta.group() not in source_text:
         return False, "术语对应关系是分析边界，引用原文未陈述时应放入局限或缺口，不能作为带引用的事实结论"
+    relation_meta = UNSTATED_RELATION_META.search(compact)
+    if relation_meta and relation_meta.group() not in source_text:
+        return False, "主体关系缺失是分析边界；原文未明确陈述时应放入局限或缺口，不能作为带引用的事实结论"
     if SHARED_BATCH_UNCERTAINTY.search(compact) and sources and all(
         re.search(r"(?:同一|相同)批次", re.sub(r"\s+", "", source.get("text", "")))
         for source in sources
     ):
         return False, "引用原文均已明确同一批次，不能因缺少批次编号而反向声称是否同批次无法判定"
+    if UNRESOLVED_SUPERSESSION.search(compact) and re.search(r"旧版.{0,24}(?:已被|已经被).{0,12}(?:替代|取代)", source_text):
+        return False, "引用原文已明确旧版被替代，不能把版本替代关系写成尚待确认"
     if MISSING_COUNT_UNIT.search(compact) and EXPLICIT_COUNT_UNIT.search(combined):
         return False, "引用原文已给出明确计数单位，不能写成单位未说明；如不同来源单位不一致，应直接保留单位差异"
     if any(match.group() not in source_text for match in ENUMERATED_SCOPE.finditer(compact)):

@@ -12,7 +12,10 @@ services:
     command: etcd -advertise-client-urls=http://etcd:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
     healthcheck: {test: [CMD, etcdctl, endpoint, health], interval: 3s, timeout: 3s, retries: 30}
   minio:
-    image: quay.io/minio/minio:RELEASE.2024-05-28T17-19-04Z
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile.minio
     environment: {MINIO_ROOT_USER: deepresearch, MINIO_ROOT_PASSWORD: verification-only}
     command: minio server /data
     healthcheck: {test: [CMD, curl, -f, http://localhost:9000/minio/health/live], interval: 3s, timeout: 3s, retries: 30}
@@ -24,6 +27,12 @@ services:
     healthcheck: {test: [CMD, curl, -f, http://localhost:9091/healthz], interval: 5s, timeout: 5s, retries: 40, start_period: 30s}
   clamav:
     image: clamav/clamav:1.4.2_base
+    healthcheck:
+      test: [CMD-SHELL, "printf 'PING\\n' | nc -w 2 127.0.0.1 3310 | grep -q PONG"]
+      interval: 5s
+      timeout: 3s
+      retries: 120
+      start_period: 30s
   migrate:
     image: deepresearch-verify
     command: alembic upgrade head
@@ -56,7 +65,7 @@ services:
       WORKSPACE_CONCURRENT_RUN_LIMIT: '20'
       MAX_RUN_SECONDS: '120'
       INTEGRATION: '1'
-    depends_on: {migrate: {condition: service_completed_successfully}, milvus: {condition: service_healthy}, redis: {condition: service_healthy}, clamav: {condition: service_started}}
+    depends_on: {migrate: {condition: service_completed_successfully}, milvus: {condition: service_healthy}, redis: {condition: service_healthy}, clamav: {condition: service_healthy}}
     healthcheck: {test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8000/readyz')"], interval: 5s, timeout: 5s, retries: 30}
   worker:
     image: deepresearch-verify
