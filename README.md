@@ -4,6 +4,16 @@
 
 系统采用 **Java 21 + Spring Boot 3.5 业务后端、Python Agent 执行层**。Java 对外承接 OIDC、工作空间/成员、会话、个人偏好、研究准入与幂等、并发限制、审计、SSE 和生命周期命令；Python 保留 LangGraph 多 Agent 编排、RAG、模型/搜索适配、文档解析、检查点与 ARQ Worker。两者通过只在 Docker 内网可达、带独立 Bearer 凭证的内部接口连接，并用 PostgreSQL Outbox 可靠投递调度/取消命令。
 
+## 功能、界面与并发复测（2026-09-29）
+
+在 Windows Docker Desktop 保留默认数据卷重建全栈，结束时恢复 Web、Java、Agent、两个 Worker 等服务；企业冒烟和本机部署检查通过。Python 全量测试 **240 通过、4 跳过**（在本轮最后的结构化输出约束修订前执行），修订后的相关定向测试 49 通过、provider 回归 17 通过；Java 28 通过，前端 12 通过且生产构建成功。真实 OIDC 浏览器流程覆盖权限、会话、研究、资料索引与检索、双人报告审核、撤回和导出；人工查看桌面与 390px 手机界面后，修正了公开/内部资料策略的误导性文案。
+
+真实模型的 `live-redis` 首次扩展浏览器用例失败，后续重跑又暴露结构化输出长度边界；调整数据模型约束、提示词和回归测试后，单独重跑成功，但报告仍为 `partial`，不能视为稳定的完整回答。隔离栈用 64 个临时 OIDC 用户和确定性上游持续 30 秒测试 `GET /api/threads`：200/250 次每秒全部返回 200；300 次每秒有 **1253/9001** 次被 429/503 保护性拒绝。5 秒目标 500 次每秒的短压测出现排队，完成 2500 次请求耗时 21.07 秒、P95 18.64 秒，不能算作 500 次每秒容量。以上不代表真实模型研究吞吐或生产 SLA。完整覆盖、失败与未测项目见[本轮功能与并发记录](docs/functional-concurrency-verification-20260929.md)；学习与讲解请看[导学](导学-深度研究.md)和[面经](面经-深度研究.md)。
+
+## Agent 试用证据闭环（2026-09-28）
+
+新增 [Agent 试用证据流程](docs/agent-pilot-evidence.md)：提供真实任务同题人工/Agent 对照的盲评准备、揭盲汇总和只读任务遥测工具；新增合成失败场景独立回归集，保留原 30 题及门槛。仓库没有真实用户任务或人工盲评结果，工具本身不构成业务收益证明；告警实际收件、机外恢复和值守仍按运维验收表逐项完成。
+
 ## 报告人工审核与发布（2026-09-23）
 
 迁移 `0012_report_publication` 增加 Java 独占写入的审核快照。任务作者可提交已完成、有已核验引用的 `complete` 或 `partial` 报告；低质量、未核验及作者不明的历史任务会在报告页显示不能提交的原因。`partial` 表示部分问题仍未回答或部分结论未获支持：它可以进入人工审核，但列表和正式详情必须标示“部分结果”，管理员批准时必须写明发布范围及缺口，不能将其当作完整回答。另一位工作空间管理员审核；在“工作台设置 → 工作空间成员”中，管理员可输入对方在设置页复制的账号 ID，添加为管理员，也可移除不再需要访问的成员，双方无需调用接口。移除立即撤销该成员后续访问并留下审计，不删除已有任务、正式报告或审核记录；创建者、当前操作者和最后一位管理员不能通过此入口移除。批准后，工作空间成员从独立的“正式报告”列表读取冻结的正文、证据、位置、文档版本和内容哈希；驳回及撤回必须填写原因，撤回会立即停止成员访问。草稿任务、会话导出、SSE 和图片附件仅作者及管理员可见。含审核记录的会话或研究数据不能直接清理，管理员须先撤回并显式清理审核记录，操作进入审计日志。原始资料热更新或删除后，快照仍保留，但页面会标示原文是否仍可访问。生成与检索仍由 Python Agent 负责，发布状态、权限和审计由 Java 负责。详见 [职责与数据契约](docs/java-python-ownership.md)及[本轮验收记录](docs/report-publication-verification-20260923.md)。
@@ -145,7 +155,7 @@ Docker 已执行 `docker compose up -d --build --wait --wait-timeout 300`，后�
 
 资料范围默认 `internal`，禁止公开搜索；`ALLOW_INTERNAL_MODEL_PROCESSING` 默认 `false`，因此内部资料相关模型处理会被策略拒绝。公开研究请在界面选择“公开”；该模式不加载内部知识库和私有会话历史。只有核准所配置模型、视觉与嵌入供应商后，管理员才可开启内部资料处理；`restricted` 请求直接拒绝外发。范围依赖用户正确声明，不是自动敏感信息检测。
 
-已有部署升级前先做备份，并等待运行任务结束。Compose 的 `migrate` 服务执行 `alembic upgrade head`，当前最新版本为 `0012_report_publication`；升级必须同时发布 Java `backend`、Python `agent`、两个 Worker 和 Web。可运行 `.venv/Scripts/python.exe scripts/verify_local_deployment.py` 检查默认本机入口、迁移、外发关闭状态与监控。维护及隔离恢复步骤见 [本机运维记录](docs/local-pilot-operations.md)。
+已有部署升级前先做备份，并等待运行任务结束。Compose 的 `migrate` 服务执行 `alembic upgrade head`，当前最新版本为 `0012_report_publication`；升级必须同时发布 Java `backend`、Python `agent`、两个 Worker 和 Web。可运行 `.venv/Scripts/python.exe scripts/verify_local_deployment.py` 检查默认本机入口、迁移、内部模型处理配置与监控；非默认端口可设置 `VERIFY_BASE_URL`，冒烟脚本可设置 `SMOKE_BASE_URL` 和 `SMOKE_KEYCLOAK_BASE_URL`。维护及隔离恢复步骤见 [本机运维记录](docs/local-pilot-operations.md)。
 
 所有服务仅在 Docker 网络内互通，Web、Keycloak 与 Grafana 仅绑定本机回环地址。停止服务使用 `docker compose down`；不要使用 `down -v`，否则会删除演示数据卷。项目只维护根目录的 `compose.yaml` 作为运行拓扑；测试告警与隔离组件验证分别使用 `compose.test.yaml` 和 `compose.verify.yaml`。
 ## API 配置

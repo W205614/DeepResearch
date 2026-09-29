@@ -5,7 +5,7 @@ import pytest
 
 from backend.core.config import Settings, endpoint
 from backend.core.db import Database
-from backend.domain.models import Analysis, Route
+from backend.domain.models import Analysis, Judgment, Route, Verification
 from backend.infrastructure.providers import Providers, ServiceError, remove_json_trailing_commas
 
 
@@ -72,6 +72,30 @@ async def test_trailing_comma_is_repaired_without_another_model_call(tmp_path):
     assert result.mode == "quick" and result.reason == "ok"
     assert len(calls) == 1
     await p.close()
+
+
+async def test_judge_and_validator_keep_verbose_decisions_without_retry(tmp_path):
+    responses = [
+        {"accepted_ids": ["W-1"], "conflicts": [], "notes": [f"note {i}" for i in range(13)]},
+        {"checks": [{"index": 0, "supported": False, "reason": "依据不足。" * 70}],
+         "answered_questions": []},
+    ]
+    calls = []
+
+    def response(request):
+        calls.append(request)
+        return httpx.Response(200, json={"choices": [{"finish_reason": "stop", "message": {
+            "content": json.dumps(responses[len(calls) - 1])}}]})
+
+    p = await make_provider(tmp_path, response)
+    try:
+        judgment = await p.structured("judge", "test", {}, Judgment, "run")
+        verification = await p.structured("validator", "test", {}, Verification, "run")
+        assert len(judgment.notes) == 13
+        assert verification.checks[0].supported is False
+        assert len(calls) == 2
+    finally:
+        await p.close()
 
 
 def test_trailing_comma_repair_does_not_change_quoted_text():

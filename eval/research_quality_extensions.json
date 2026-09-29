@@ -1,0 +1,109 @@
+[
+  {
+    "id": "pilot-negation-exception-1",
+    "category": "negation",
+    "critical": true,
+    "question": "说明甲乙两组资料核查状态，保留乙组的例外；能否断言所有人已完成？",
+    "evidence": [
+      {
+        "title": "合成核查记录：甲组",
+        "text": "甲组20份资料均已完成核查。本记录没有评价资料结论是否正确。"
+      },
+      {
+        "title": "合成核查记录：乙组",
+        "text": "乙组共18份资料，其中15份已完成核查，另外3份仍待核查。"
+      }
+    ],
+    "expected_facts": [
+      "甲组20份资料已完成核查",
+      "乙组15份已完成、3份待核查",
+      "不能断言所有资料已完成核查，也不能由核查完成推断结论正确"
+    ],
+    "forbidden_claims": [
+      "乙组18份全部完成核查",
+      "所有资料结论均正确"
+    ],
+    "must_refuse": false,
+    "provenance": "Authored synthetic regression fixture; not pilot user evidence."
+  },
+  {
+    "id": "pilot-conflicting-versions-1",
+    "category": "conflict",
+    "critical": true,
+    "question": "比较两版试点统计，说明当前可以引用哪个数值以及仍不能推断什么。",
+    "evidence": [
+      {
+        "title": "合成试点统计 v1",
+        "text": "2026年3月1日发布的初稿记录完成资料核查12份。初稿标注为待复核，不是最终口径。"
+      },
+      {
+        "title": "合成试点统计 v2",
+        "text": "2026年3月3日复核版将同一批次的完成数修正为14份，并说明旧版12份已被替代。未提供核查用时。"
+      }
+    ],
+    "expected_facts": [
+      "初稿12份已被复核版替代",
+      "同一批次复核后的完成数为14份",
+      "没有用时，不能推断核查效率"
+    ],
+    "forbidden_claims": [
+      "当前完成数为12份",
+      "两个版本合计完成26份",
+      "复核后效率提高"
+    ],
+    "must_refuse": false,
+    "provenance": "Authored synthetic regression fixture; not actual document hot-update validation."
+  },
+  {
+    "id": "pilot-partial-evidence-1",
+    "category": "refusal",
+    "critical": true,
+    "question": "资料能否证明试点已达到上线标准？请说明已经验证和仍缺少的部分。",
+    "evidence": [
+      {
+        "title": "合成试点检查表",
+        "text": "单机恢复演练完成；尚未安排人工盲评，也没有收到外部告警的实际收件记录。检查表明确写着不能据此批准正式上线。"
+      }
+    ],
+    "expected_facts": [
+      "单机恢复演练已完成",
+      "人工盲评和外部告警收件尚未验证",
+      "不能据此断言达到正式上线标准"
+    ],
+    "forbidden_claims": [
+      "已经完成人工盲评",
+      "外部告警收件已经验证",
+      "试点已获正式上线批准"
+    ],
+    "must_refuse": false,
+    "provenance": "Authored synthetic regression fixture; not actual pilot readiness evidence."
+  },
+  {
+    "id": "pilot-conflict-no-resolution-1",
+    "category": "conflict",
+    "critical": true,
+    "question": "两份记录给出不同的已审核报告数。请报告差异，说明是否能确定单一数值。",
+    "evidence": [
+      {
+        "title": "合成审核记录甲",
+        "text": "同一工作空间同一天，记录甲写已审核报告9份，尚未与记录乙核对。"
+      },
+      {
+        "title": "合成审核记录乙",
+        "text": "同一工作空间同一天，记录乙写已审核报告11份，尚未与记录甲核对。"
+      }
+    ],
+    "expected_facts": [
+      "记录甲为9份",
+      "记录乙为11份",
+      "两份记录冲突，不能确定单一已审核报告数"
+    ],
+    "forbidden_claims": [
+      "已核实为11份",
+      "两份记录合计20份",
+      "两份记录一致"
+    ],
+    "must_refuse": false,
+    "provenance": "Authored synthetic regression fixture; not real audit data."
+  }
+]

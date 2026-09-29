@@ -3,12 +3,15 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 import time
 import urllib.request
 
 COMPOSE = ["docker", "compose"]
+WEB_BASE_URL = os.environ.get("SMOKE_BASE_URL", "http://127.0.0.1:8080").rstrip("/")
+KEYCLOAK_BASE_URL = os.environ.get("SMOKE_KEYCLOAK_BASE_URL", "http://127.0.0.1:8180").rstrip("/")
 
 
 def run(*arguments: str, capture: bool = False) -> str:
@@ -104,12 +107,12 @@ def main() -> int:
     args = parser.parse_args()
     if args.start:
         run("up", "-d", "--build", "--force-recreate", "--wait", "--wait-timeout", "300")
-    wait_for("web", lambda: read_json("http://127.0.0.1:8080/healthz"))
+    wait_for("web", lambda: read_json(f"{WEB_BASE_URL}/healthz"))
     wait_for("Keycloak OIDC", lambda: read_json(
-        "http://127.0.0.1:8180/realms/deepresearch/.well-known/openid-configuration"))
+        f"{KEYCLOAK_BASE_URL}/realms/deepresearch/.well-known/openid-configuration"))
     wait_for("Grafana and Prometheus targets", targets_ready)
     wait_for("Tempo and Loki", telemetry_backends_ready)
-    read_json("http://127.0.0.1:8080/api/auth/config")
+    read_json(f"{WEB_BASE_URL}/api/auth/config")
     emit_telemetry_probe()
     wait_for("stored application telemetry", telemetry_records_ready)
     verify_migration()

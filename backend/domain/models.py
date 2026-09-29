@@ -104,8 +104,8 @@ class Evidence(BaseModel):
 
 class Judgment(BaseModel):
     accepted_ids: list[str]
-    conflicts: list[str] = Field(default_factory=list, max_length=12)
-    notes: list[str] = Field(default_factory=list, max_length=12)
+    conflicts: list[str] = Field(default_factory=list, max_length=32)
+    notes: list[str] = Field(default_factory=list, max_length=32)
 
 
 class Claim(BaseModel):
@@ -146,7 +146,7 @@ class ReportRepair(BaseModel):
 class ClaimCheck(BaseModel):
     index: int = Field(ge=0)
     supported: bool
-    reason: str = Field(max_length=400)
+    reason: str = Field(max_length=4000)
 
 
 class Verification(BaseModel):

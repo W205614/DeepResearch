@@ -55,8 +55,12 @@ for (const item of liveCases) {
         expect(response.status()).toBe(200)
         result = await response.json()
         if (result.status === 'completed') break
-        if (['failed', 'cancelled', 'insufficient', 'interrupted'].includes(result.status))
+        if (['failed', 'cancelled', 'insufficient', 'interrupted'].includes(result.status)) {
+          const output = resolve('../.cache/eval/live-browser')
+          mkdirSync(output, { recursive: true })
+          writeFileSync(resolve(output, `${item.id}-failed.json`), JSON.stringify(result))
           throw new Error(`Research terminated as ${result.status}; reasons=${JSON.stringify(result.validation?.reasons || [])}`)
+        }
         await page.waitForTimeout(2000)
       }
       expect(result.status).toBe('completed')
@@ -98,6 +102,24 @@ test('temporary enterprise user completes PKCE login and reaches the protected w
   await page.getByRole('button', { name: '工作台设置' }).click()
   await expect(page.getByRole('heading', { name: '你的研究工作空间。' })).toBeVisible()
   await expect(page.getByText('本地研究指标')).toBeVisible()
+})
+
+test('authenticated workspace export downloads a ZIP from the settings page', async ({ page }) => {
+  test.skip(!username || !password, 'Set E2E_USERNAME and E2E_PASSWORD to run the live OIDC path.')
+  await page.goto('/')
+  await page.getByRole('button', { name: '登录并开始研究' }).click()
+  await page.locator('#username').fill(username!)
+  await page.locator('#password').fill(password!)
+  await page.locator('#kc-login').click()
+  await expect(page.getByRole('button', { name: /退出/ })).toBeVisible()
+  await page.getByRole('button', { name: '工作台设置' }).click()
+  const downloadPromise = page.waitForEvent('download')
+  await page.getByRole('button', { name: '导出工作空间' }).click()
+  const download = await downloadPromise
+  expect(download.suggestedFilename()).toBe('deepresearch-export.zip')
+  const exported = await download.path()
+  expect(exported).toBeTruthy()
+  expect(readFileSync(exported!).subarray(0, 2).toString()).toBe('PK')
 })
 
 test('Java business API owns authenticated thread, preference and research lifecycle', async ({ page }) => {

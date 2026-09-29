@@ -233,11 +233,12 @@ async function saveSettings(){await safely(async()=>{
   }else{threadSwitchId.value='';view.value='settings'}
 })}
 async function checkConnection(){checking.value=true;await safely(async()=>{connection.value=await api('/api/config/check',{method:'POST'})});checking.value=false}
-async function saveMarkdown(path: string, filename: string){const response=await authenticatedFetch(path);if(!response.ok)throw new Error('下载失败');const url=URL.createObjectURL(await response.blob());const a=document.createElement('a');a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url)}
+function downloadBlob(blob: Blob, filename: string){const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();window.setTimeout(()=>URL.revokeObjectURL(url),60_000)}
+async function saveMarkdown(path: string, filename: string){const response=await authenticatedFetch(path);if(!response.ok)throw new Error('下载失败');downloadBlob(await response.blob(),filename)}
 async function downloadRun(run: Run){await safely(async()=>{await saveMarkdown(`/api/research/runs/${run.id}/report`,`research-${run.id.slice(0,8)}.md`)})}
 async function downloadConversation(){if(!threadId.value)return;await safely(async()=>{await saveMarkdown(`/api/threads/${threadId.value}/report`,`conversation-${threadId.value.slice(0,8)}.md`)})}
 async function saveRunMemory(){if(!selected.value)return;await safely(async()=>{await api(`/api/research/runs/${selected.value!.id}/memory`,{method:'POST'});memories.value=await api('/api/memories')})}
-async function exportData(){await safely(async()=>{const response=await authenticatedFetch('/api/data/export');if(!response.ok)throw new Error('导出失败');const url=URL.createObjectURL(await response.blob());const a=document.createElement('a');a.href=url;a.download='deepresearch-export.zip';a.click();URL.revokeObjectURL(url)})}
+async function exportData(){await safely(async()=>{const response=await authenticatedFetch('/api/data/export');if(!response.ok)throw new Error('导出失败');downloadBlob(await response.blob(),'deepresearch-export.zip')})}
 async function purgeData(scope: string){if(!window.confirm(`确定清理${scope==='all'?'全部本地数据':'对应本地数据'}吗？此操作不可恢复。`))return;await safely(async()=>{await api(`/api/data?scope=${scope}`,{method:'DELETE',headers:{'X-Confirm-Delete':'DELETE'}});await refreshThreads();documents.value=[];memories.value=[];metrics.value=await api('/api/metrics');selected.value=null})}
 function useExample(text: string){topic.value=text;void nextTick(()=>document.querySelector<HTMLTextAreaElement>('.composer textarea')?.focus())}
 async function renameThread(){await safely(async()=>{await api(`/api/threads/${threadId.value}`,{method:'PATCH',body:JSON.stringify({title:newTitle.value})});rename.value=false;await refreshThreads()})}
@@ -294,10 +295,10 @@ onUnmounted(()=>{controller?.abort();clearInterval(poll);window.removeEventListe
 
       <section v-if="view==='research'" class="research-view" :class="{hasRun:selected}">
         <template v-if="!selected">
-          <div class="welcome"><span class="eyebrow"><span></span> YOUR RESEARCH, CONNECTED</span><h1>从一个问题，<br>到一份<span>有依据的洞察。</span></h1><p>连接网络与本地知识，让研究、分析和写作有序发生。<br class="desktop-break">你专注于问题，我们沿着证据寻找答案。</p></div>
+          <div class="welcome"><span class="eyebrow"><span></span> YOUR RESEARCH, CONNECTED</span><h1>从一个问题，<br>到一份<span>有依据的洞察。</span></h1><p>按资料范围使用网络或本地知识，让研究、分析和写作有序发生。<br class="desktop-break">你专注于问题，我们沿着证据寻找答案。</p></div>
           <div class="start-area"><p v-if="serviceCapabilities?.reasons.length" class="inline-warning">部分服务暂不可用：{{serviceCapabilities.reasons.map(reasonLabel).join("；")}}。已有报告仍可查看。</p>
             <div class="composer" @paste="imagePicker?.paste($event)" @dragover.prevent @drop="imagePicker?.drop($event)"><ImageAttachments ref="imagePicker" v-model="attachmentIds" :disabled="busy||active" @busy="attachmentBusy=$event"/><textarea v-model="topic" aria-label="研究主题" maxlength="4000" placeholder="你想研究什么？试着描述主题、时间范围和你关心的问题…" @keydown.enter.exact.prevent="send"></textarea><div class="composer-footer"><label class="data-policy">资料范围<select v-model="dataPolicy" aria-label="资料范围"><option value="internal">内部资料（禁止联网补搜）</option><option value="public">公开问题（不使用内部资料与历史）</option></select></label><div class="mode-picker"><Sparkles :size="15"/><select v-model="mode" aria-label="研究模式"><option value="auto">自动选择</option><option value="deep">深度研究</option><option value="quick">快速问答</option></select></div><span class="composer-hint">Enter 发送 · Shift + Enter 换行</span><button class="send-button" aria-label="开始研究" :disabled="busy||attachmentBusy||(!topic.trim()&&!attachmentIds.length)" @click="send"><LoaderCircle v-if="busy" class="spin" :size="20"/><ArrowUp v-else :size="21"/></button></div></div>
-            <div class="capabilities"><span><Globe2 :size="14"/>网络 + 本地资料</span><span><ShieldCheck :size="14"/>证据与引用核查</span><span><Brain :size="14"/>持续研究记忆</span></div>
+            <div class="capabilities"><span><Globe2 :size="14"/>{{dataPolicy==='public'?'联网检索公开资料':'仅检索内部资料'}}</span><span><ShieldCheck :size="14"/>证据与引用核查</span><span><Brain :size="14"/>{{dataPolicy==='public'?'不读取个人记忆':'会话上下文与研究记忆'}}</span></div>
             <div class="examples-title">从这里开始探索 <span>为复杂问题找到清晰路径</span></div>
             <div class="examples"><button @click="useExample('请调研企业知识库 Agent 的应用场景、主要产品与部署方式，明确资料时间并提供来源。')"><div class="example-icon purple"><Globe2 :size="20"/></div><h3>行业深度调研<ArrowUpRight :size="16"/></h3><p>了解市场、主要参与者与发展方向，建立全局视角。</p><span>探索一个行业 <ArrowUpRight :size="13"/></span></button><button @click="useExample('请对比 RAG 与长上下文方案在企业知识问答中的适用场景、局限和选型依据，并提供来源。')"><div class="example-icon blue"><Layers3 :size="20"/></div><h3>方案对比分析<ArrowUpRight :size="16"/></h3><p>沿着相同维度比较方案，让关键差异更清楚。</p><span>比较不同方案 <ArrowUpRight :size="13"/></span></button><button @click="navigate('documents')"><div class="example-icon green"><BookOpen :size="20"/></div><h3>基于资料的研究<ArrowUpRight :size="16"/></h3><p>上传已有文档，连接你的知识，核查并补充信息。</p><span>添加本地资料 <ArrowUpRight :size="13"/></span></button></div>
           </div>
@@ -351,7 +352,7 @@ onUnmounted(()=>{controller?.abort();clearInterval(poll);window.removeEventListe
 
       <section v-if="view==='documents'" class="utility-view">
         <span class="eyebrow">YOUR KNOWLEDGE</span><h1>把资料，变成研究的依据。</h1>
-        <p class="intro">导入你的行业报告和笔记。研究时会同时检索这些资料，并保留原文位置。</p>
+        <p class="intro">导入你的行业报告和笔记。选择“内部资料”研究时会检索这些资料，并保留原文位置。</p>
         <input ref="uploadInput" type="file" accept=".txt,.md,.pdf,.docx,.jpg,.jpeg,.png,.gif,.webp" multiple hidden @change="upload">
         <input ref="replacementInput" type="file" accept=".txt,.md,.pdf,.docx,.jpg,.jpeg,.png,.gif,.webp" hidden @change="replaceDocument">
         <button class="upload-zone" :disabled="uploadBusy" @click="uploadInput?.click()"><FolderOpen :size="32"/><strong>{{uploadBusy?'正在上传…':'选择本地资料'}}</strong><span>TXT / Markdown / DOCX / PDF / JPG / PNG / GIF / WebP · 每份不超过 10 MB</span><small>表格保留表头；扫描或复杂 PDF 页会尝试视觉解析，无法可靠识别时提示修复文件。</small></button>
