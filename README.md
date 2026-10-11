@@ -8,7 +8,7 @@
 
 SQLite/PostgreSQL 共用普通任务视图组装函数，各自保留连接、事务、锁和 SQL 适配。API 共用所属会话/任务查找以及限量上传读取，读取失败也会关闭文件；权限、审计、错误响应和数据库结构保持兼容。API 测试共用 `conftest.py` 夹具，任务等待和供应商替身放在 `tests/helpers.py`，消除测试文件之间的辅助函数引用。本轮保留并发、取消、隔离、证据核验和恢复测试，只补充上传读取异常时的资源关闭边界；没有以减少测试数量为目标，也没有拆大文件或引入通用框架。
 
-CI 的完整 Compose 构建、存活/就绪检查、企业冒烟和浏览器流程由 `enterprise-compose-smoke` 执行一次，原 `compose-smoke` 检查名保留并检查其依赖结果。`Security` 修正 Trivy Action 标签为 `v0.36.0`，增加 `main` 推送触发，并提前解析 Maven 依赖以减少扫描时的仓库请求；HIGH/CRITICAL 失败阈值保持不变。真实模型回答仍由独立 `Answer Quality Gate` 检查，交付须等待该提交的三条工作流成功。
+CI 的完整 Compose 构建、存活/就绪检查、企业冒烟和浏览器流程由 `enterprise-compose-smoke` 执行一次，原 `compose-smoke` 检查名保留并检查其依赖结果。`Security` 修正 Trivy Action 标签为 `v0.36.0`，固定扫描器为 `v0.75.0`，增加 `main` 推送触发，并提前解析 Maven 依赖以减少扫描时的仓库请求；为等级字符串加引号，并让 SARIF 明确使用 HIGH/CRITICAL 筛选，保证这两个等级均会使门禁失败。真实模型回答仍由独立 `Answer Quality Gate` 检查，交付须等待该提交的三条工作流成功。
 
 严格安全扫描促使本轮增加运行时更新：Python 保留 3.11.15 和 uid 10001，改用固定摘要的 Distroless Debian 13 基础镜像，仅复制所需原生库，并保留其 Debian 包记录供扫描。运行镜像没有 shell；Worker 进程检查使用 Python，运维检查通过 `docker compose exec -T agent python ...` 执行。供应商、数据库、PDF、向量库和压缩相关原生模块已验证。Java 从 Spring Boot 3.5.16 迁至受维护的 4.0.8 / Spring Framework 7，采用 Jackson 3 并启用官方 Jackson 2 默认行为兼容选项；升级 Jackson/Tomcat 安全补丁、PyJWT/pypdf/urllib3 和 `source-map-js`，保留 Java 21、原 API 字段及数据库版本。
 
