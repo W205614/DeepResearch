@@ -33,20 +33,14 @@ jobs:
       - run: npm run build
         working-directory: frontend
   compose-smoke:
+    # Keep the existing check name without building a second enterprise stack.
+    needs: enterprise-compose-smoke
+    if: always()
     runs-on: ubuntu-latest
-    env:
-      POSTGRES_PASSWORD: ci-postgres-password
-      KEYCLOAK_DB_PASSWORD: ci-keycloak-db-password
-      KEYCLOAK_ADMIN_PASSWORD: ci-keycloak-admin-password
-      MINIO_ROOT_PASSWORD: ci-minio-password
-      GRAFANA_ADMIN_PASSWORD: ci-grafana-password
     steps:
-      - uses: actions/checkout@v7
-      - run: docker compose up -d --build --wait --wait-timeout 300
-      - run: curl --fail --retry 15 --retry-connrefused http://127.0.0.1:8080/livez
-      - run: curl --fail --retry 15 --retry-connrefused http://127.0.0.1:8080/readyz
-      - if: always()
-        run: docker compose logs --no-color && docker compose down -v
+      - run: test "$ENTERPRISE_RESULT" = success
+        env:
+          ENTERPRISE_RESULT: ${{ needs.enterprise-compose-smoke.result }}
   enterprise-compose-smoke:
     runs-on: ubuntu-latest
     env:
@@ -58,6 +52,8 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - run: python scripts/smoke-enterprise.py --start
+      - run: curl --fail --retry 15 --retry-connrefused http://127.0.0.1:8080/livez
+      - run: curl --fail --retry 15 --retry-connrefused http://127.0.0.1:8080/readyz
       - uses: actions/setup-node@v7
         with: { node-version: 22, cache: npm, cache-dependency-path: frontend/package-lock.json }
       - run: npm ci

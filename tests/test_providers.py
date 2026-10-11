@@ -4,17 +4,9 @@ import httpx
 import pytest
 
 from backend.core.config import Settings, endpoint
-from backend.core.db import Database
 from backend.domain.models import Analysis, Judgment, Route, Verification
 from backend.infrastructure.providers import Providers, ServiceError, remove_json_trailing_commas
-
-
-async def make_provider(tmp_path, response):
-    db = Database(tmp_path / 'test.sqlite3')
-    await db.init()
-    settings = Settings(_env_file=None, llm_api_key='test-key', embedding_api_key='test-key', embedding_dimension=3)
-    client = httpx.AsyncClient(transport=httpx.MockTransport(response))
-    return Providers(settings, db, client)
+from tests.helpers import make_provider
 
 
 def test_model_id_alias_and_endpoint():

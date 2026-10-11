@@ -79,7 +79,9 @@ async function cleanupApplicationData() {
     `DELETE FROM memberships WHERE workspace_id IN (${quoted}) OR subject IN (${quoted})`,
     `DELETE FROM workspaces WHERE id IN (${quoted})`,
   ].join('; ')
-  await execute('docker', ['compose', 'exec', '-T', 'postgres', 'psql', '-v', 'ON_ERROR_STOP=1', '-U', 'deepresearch', '-d', 'deepresearch', '-c', sql])
+  await execute('docker', ['compose', 'exec', '-T', 'postgres', 'psql', '-v', 'ON_ERROR_STOP=1', '-U', 'deepresearch', '-d', 'deepresearch', '-c', sql], {
+    cwd: fileURLToPath(new URL('../', import.meta.url)),
+  })
 }
 
 async function deleteUser(token, id) {

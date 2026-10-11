@@ -1,26 +1,28 @@
 import asyncio
+import io
 import json
+from unittest.mock import AsyncMock
 
 import httpx
 import pytest
+from fastapi import UploadFile
 from backend.core.auth import issue_development_token
 
-from backend.api.app import create_app
+from backend.api.app import create_app, read_upload
 from backend.core.db import uid
 
 
-@pytest.fixture
-async def app_client(settings):
-    app = create_app(settings)
-    async def attach_test_identity(request):
-        request.headers["Authorization"] = "Bearer " + issue_development_token(settings, request.headers.get("X-User-ID", "alice"))
-    async with app.router.lifespan_context(app):
-        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test", event_hooks={"request": [attach_test_identity]}) as client:
-            yield app, client
+async def test_failed_upload_read_closes_the_file(monkeypatch):
+    stream = io.BytesIO(b"document")
+    upload = UploadFile(stream)
+    monkeypatch.setattr(upload, "read", AsyncMock(side_effect=OSError("read failed")))
+    with pytest.raises(OSError, match="read failed"):
+        await read_upload(upload)
+    assert stream.closed
 
 
-async def test_api_isolation_sse_replay_and_download(app_client):
-    app, client = app_client
+async def test_api_isolation_sse_replay_and_download(api_client):
+    app, client = api_client
     response = await client.post('/api/research/runs',json={"data_policy":"public","topic":"研究流程","client_request_id":uid()})
     assert response.status_code == 202
     run = response.json()
@@ -28,6 +30,8 @@ async def test_api_isolation_sse_replay_and_download(app_client):
     result = (await client.get(f"/api/research/runs/{run['id']}")).json()
     assert result['status'] == 'completed'
     assert (await client.get(f"/api/research/runs/{run['id']}",headers={"X-User-ID":"bob"})).status_code == 404
+    for suffix in ('report', 'events'):
+        assert (await client.get(f"/api/research/runs/{run['id']}/{suffix}", headers={"X-User-ID": "bob"})).status_code == 404
     assert (await client.post(f"/api/research/runs/{run['id']}/cancel",headers={"X-User-ID":"bob"})).status_code == 404
     stream = await client.get(f"/api/research/runs/{run['id']}/events")
     ids = [int(line[4:]) for line in stream.text.splitlines() if line.startswith('id: ')]
@@ -39,8 +43,8 @@ async def test_api_isolation_sse_replay_and_download(app_client):
     assert 'attachment' in report.headers['content-disposition']
 
 
-async def test_delete_thread_removes_its_runs_events_and_checkpoints(app_client):
-    app, client = app_client
+async def test_delete_thread_removes_its_runs_events_and_checkpoints(api_client):
+    app, client = api_client
     run = (await client.post('/api/research/runs', json={"data_policy":"public","topic":"删除会话测试", "client_request_id":uid()})).json()
     await app.state.runtime.tasks[run['id']]
     await app.state.runtime.save_run_memory(run['id'], 'alice')
@@ -58,8 +62,8 @@ async def test_delete_thread_removes_its_runs_events_and_checkpoints(app_client)
     assert not snapshot.values
 
 
-async def test_report_purge_removes_runs_events_dead_letters_and_checkpoints(app_client):
-    app, client = app_client
+async def test_report_purge_removes_runs_events_dead_letters_and_checkpoints(api_client):
+    app, client = api_client
     run = (await client.post('/api/research/runs', json={
         "topic": "完整清理检查点测试", "client_request_id": uid()})).json()
     await app.state.runtime.tasks[run['id']]
@@ -77,13 +81,15 @@ async def test_report_purge_removes_runs_events_dead_letters_and_checkpoints(app
     assert not (await app.state.runtime.graph.aget_state(config)).values
 
 
-async def test_thread_keys_are_short_per_user_and_resolve_in_routes(app_client):
-    app, client = app_client
+async def test_thread_keys_are_short_per_user_and_resolve_in_routes(api_client):
+    app, client = api_client
     first = (await client.post('/api/research/runs', json={"data_policy":"public","topic":"短会话标识", "client_request_id":uid()})).json()
     await app.state.runtime.tasks[first['id']]
     threads = (await client.get('/api/threads')).json()
     assert threads[0]['thread_key'] == 'thread01'
     assert len((await client.get('/api/threads/thread01/runs')).json()) == 1
+    for suffix in ('runs', 'report'):
+        assert (await client.get(f"/api/threads/{first['thread_id']}/{suffix}", headers={"X-User-ID": "bob"})).status_code == 404
 
     second = (await client.post('/api/research/runs', json={"data_policy":"public","topic":"另一用户", "client_request_id":uid()}, headers={"X-User-ID":"user01"})).json()
     await app.state.runtime.tasks[second['id']]
@@ -92,8 +98,8 @@ async def test_thread_keys_are_short_per_user_and_resolve_in_routes(app_client):
     assert (await client.get('/api/threads/thread01/runs', headers={"X-User-ID":"user01"})).status_code == 200
 
 
-async def test_document_import_retrieval_deletion(app_client):
-    app, client = app_client
+async def test_document_import_retrieval_deletion(api_client):
+    app, client = api_client
     response = await client.post('/api/documents',files={"file":("sample.md","这是本地资料。研究报告需要证据核查。".encode(),"text/markdown")})
     assert response.status_code == 202
     doc_id = response.json()['id']
@@ -142,8 +148,8 @@ async def test_document_import_retrieval_deletion(app_client):
     assert not (rt.settings.data_dir / 'uploads' / stored['object_key']).exists()
 
 
-async def test_preferences_crud_and_isolation(app_client):
-    app, client = app_client
+async def test_preferences_crud_and_isolation(api_client):
+    app, client = api_client
     first = (await client.post('/api/memories',json={"content":"关注中国市场"})).json()
     second = await client.post('/api/memories',json={"content":"中文报告"})
     assert second.status_code == 201
@@ -154,8 +160,8 @@ async def test_preferences_crud_and_isolation(app_client):
     assert '全球市场' not in contents and '中文报告' in contents
 
 
-async def test_status_never_exposes_keys(app_client):
-    _, client = app_client
+async def test_status_never_exposes_keys(api_client):
+    _, client = api_client
     response = await client.get('/api/status')
     assert response.status_code == 200
     assert 'api_key' not in response.text.lower()

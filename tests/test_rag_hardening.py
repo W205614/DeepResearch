@@ -14,7 +14,7 @@ from backend.infrastructure.providers import ServiceError
 from backend.research.graph import evidence_context, merge_evidence, ResearchGraph
 from backend.services.document_parsing import extract_blocks, split_document
 from backend.services.retrieval_contract import normalize_hits
-from tests.test_providers import make_provider
+from tests.helpers import make_provider
 
 
 def pdf_bytes(*, columns=False, encrypted=False):

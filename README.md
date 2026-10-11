@@ -2,7 +2,35 @@
 
 面向中文研究任务的 AI 应用个人项目，已完成单主机部署、故障控制与恢复验证。核心目标是让失败有边界、降级有说明、结论有证据，而不是保证模型永不出错。当前实现适合受控演示与内部试用准备，不代表生产高可用或 SLA。
 
-系统采用 **Java 21 + Spring Boot 3.5 业务后端、Python Agent 执行层**。Java 对外承接 OIDC、工作空间/成员、会话、个人偏好、研究准入与幂等、并发限制、审计、SSE 和生命周期命令；Python 保留 LangGraph 多 Agent 编排、RAG、模型/搜索适配、文档解析、检查点与 ARQ Worker。两者通过只在 Docker 内网可达、带独立 Bearer 凭证的内部接口连接，并用 PostgreSQL Outbox 可靠投递调度/取消命令。
+系统采用 **Java 21 + Spring Boot 4.0.8 业务后端、Python Agent 执行层**。Java 对外承接 OIDC、工作空间/成员、会话、个人偏好、研究准入与幂等、并发限制、审计、SSE 和生命周期命令；Python 保留 LangGraph 多 Agent 编排、RAG、模型/搜索适配、文档解析、检查点与 ARQ Worker。两者通过只在 Docker 内网可达、带独立 Bearer 凭证的内部接口连接，并用 PostgreSQL Outbox 可靠投递调度/取消命令。
+
+## 去重、安全更新与容器验收（2026-10-11）
+
+SQLite/PostgreSQL 共用普通任务视图组装函数，各自保留连接、事务、锁和 SQL 适配。API 共用所属会话/任务查找以及限量上传读取，读取失败也会关闭文件；权限、审计、错误响应和数据库结构保持兼容。API 测试共用 `conftest.py` 夹具，任务等待和供应商替身放在 `tests/helpers.py`，消除测试文件之间的辅助函数引用。本轮保留并发、取消、隔离、证据核验和恢复测试，只补充上传读取异常时的资源关闭边界；没有以减少测试数量为目标，也没有拆大文件或引入通用框架。
+
+CI 的完整 Compose 构建、存活/就绪检查、企业冒烟和浏览器流程由 `enterprise-compose-smoke` 执行一次，原 `compose-smoke` 检查名保留并检查其依赖结果。`Security` 修正 Trivy Action 标签为 `v0.36.0`，增加 `main` 推送触发，并提前解析 Maven 依赖以减少扫描时的仓库请求；HIGH/CRITICAL 失败阈值保持不变。真实模型回答仍由独立 `Answer Quality Gate` 检查，交付须等待该提交的三条工作流成功。
+
+严格安全扫描促使本轮增加运行时更新：Python 保留 3.11.15 和 uid 10001，改用固定摘要的 Distroless Debian 13 基础镜像，仅复制所需原生库，并保留其 Debian 包记录供扫描。运行镜像没有 shell；Worker 进程检查使用 Python，运维检查通过 `docker compose exec -T agent python ...` 执行。供应商、数据库、PDF、向量库和压缩相关原生模块已验证。Java 从 Spring Boot 3.5.16 迁至受维护的 4.0.8 / Spring Framework 7，采用 Jackson 3 并启用官方 Jackson 2 默认行为兼容选项；升级 Jackson/Tomcat 安全补丁、PyJWT/pypdf/urllib3 和 `source-map-js`，保留 Java 21、原 API 字段及数据库版本。
+
+| 本轮实际验收 | 结果与边界 |
+| --- | --- |
+| 修改前相关 Python 基线 | 98 项通过；此前审查中的 247 项收集不等于全量执行 |
+| Ruff 与 Python 全量 | Ruff 通过；最终最小镜像内 244 项通过、4 项条件跳过，共 248 项；盲评规则测试使用固定 Git 元信息，不依赖镜像安装 Git |
+| Java 全量 | 最终依赖组合 28 项通过、0 跳过，包含 22 项 PostgreSQL Testcontainers 集成测试 |
+| 前端 | 12 项单测和生产构建通过 |
+| 离线研究流程 | 固定 7 项基线通过，使用确定性模型/搜索替身 |
+| 隔离真实组件 | PostgreSQL、Redis、Milvus、MinIO、ClamAV 真实适配器 4 项通过；Worker 崩溃恢复 52.59 秒，Redis 投递及 Milvus 就绪恢复通过；模型/搜索为替身 |
+| 最终企业部署 | Compose 重建、企业冒烟、匿名拒绝、OIDC、迁移、两个 Worker 与观测链通过；迁移仍为 `0012_report_publication` |
+| 浏览器 | 最终版本 8 项通过、3 项付费研究用例按计划跳过；开启真实文档嵌入验收，覆盖上传、检索、替换、删除和查看者权限，以及 PKCE、幂等/取消/SSE、双人报告发布与撤回 |
+| 本地安全扫描 | 源码、最终 Python 镜像及完整 Java 镜像均无 HIGH/CRITICAL 命中；该结果是当时数据库下的扫描结果 |
+| 构建产物核对 | 四个 Python 服务的 61 个源码/配置文件、Java 的 38 个类/资源、Web 的 3 个构建文件与工作区匹配；核对运行镜像 ID、挂载及端口 |
+| 隔离回滚验证 | 11 个冷备数据卷逐文件 SHA-256 一致；20 个旧部署镜像可重新加载；旧 JAR、Java/Web 就绪、匿名拒绝、OIDC 和两份向量集合检索通过 |
+
+保留本机 `deepresearch` 最终 21 个服务容器，包括退出码为 0 的迁移和令牌初始化容器；Web 为 8380、Keycloak 为 8480，原数据卷和其他项目资源保留。按明确 ID 删除 12 个旧应用/验证/探测镜像及一个验证别名标签；隔离验证容器和本次扫描缓存卷已清理，不执行全局 prune，也不对正式项目执行 `down -v`。清理清单与本轮日志位于忽略目录 `.cache/refactor-20261011/evidence/`。
+
+磁盘回滚包位于 `.cache/refactor-20261011/rollback/`，含源代码归档、镜像、11 个卷、两份 PostgreSQL 逻辑备份、私有配置、`manifest.json` SHA-256 清单及 `ROLLBACK.md`。旧 Java/Web 原镜像记录已不可查询，因此这两个镜像由旧容器的原 JAR、静态文件和运行配置重建，是经过隔离验证的恢复镜像。回滚说明区分应用镜像回退与数据恢复；冷备先恢复到隔离卷，不能覆盖当前业务数据。回滚包含私有配置和业务数据，保持 Git 忽略。
+
+失败尝试单独保留：验证镜像曾因 PyPI TLS 中断失败；Java 漏洞数据库下载中断后，通过分块下载及官方摘要校验完成扫描；首次浏览器收尾暴露 Compose 相对路径的执行目录问题并已修复，另一次文档索引因嵌入服务连接超时失败，最终完整重跑通过。这些失败与条件跳过不计入通过。下列日期章节记录历史结果，与本轮验收分开。
 
 ## 功能、界面与并发复测（2026-09-29）
 

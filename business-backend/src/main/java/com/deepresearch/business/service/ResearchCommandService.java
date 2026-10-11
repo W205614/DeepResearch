@@ -12,8 +12,8 @@ import com.deepresearch.business.api.Requests;
 import com.deepresearch.business.config.DeepResearchProperties;
 import com.deepresearch.business.security.WorkspaceAccess;
 import com.deepresearch.business.security.WorkspaceIdentity;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -189,7 +189,7 @@ public class ResearchCommandService {
         try {
             jdbc.update("INSERT INTO events(run_id,type,data,created_at) VALUES(?,?,?,?)",
                 runId, type, mapper.writeValueAsString(data), now());
-        } catch (JsonProcessingException error) {
+        } catch (JacksonException error) {
             throw new IllegalStateException(error);
         }
     }

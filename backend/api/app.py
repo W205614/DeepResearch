@@ -21,6 +21,13 @@ from ..services.document_parsing import InvalidDocument
 from ..services.runtime import ConflictError, Runtime, TERMINAL
 
 
+async def read_upload(file: UploadFile) -> bytes:
+    try:
+        return await file.read(10 * 1024 * 1024 + 1)
+    finally:
+        await file.close()
+
+
 def create_app(settings: Settings | None = None):
     settings = settings or Settings()
 
@@ -57,6 +64,18 @@ def create_app(settings: Settings | None = None):
     app.mount("/metrics", make_asgi_app())
     def rt(request: Request) -> Runtime:
         return request.app.state.runtime
+
+    async def owned_thread(runtime: Runtime, thread_id: str, user: str):
+        thread = await runtime.find_thread(thread_id, user)
+        if not thread:
+            raise HTTPException(404, "会话不存在")
+        return thread
+
+    async def owned_run(runtime: Runtime, run_id: str, user: str):
+        run = await runtime.db.owned_run(run_id, user)
+        if not run:
+            raise HTTPException(404, "任务不存在")
+        return run
 
     async def identity(request: Request, authorization: str = Header(""), x_workspace_id: str = Header("")):
         principal = await app.state.token_verifier.verify(authorization)
@@ -324,8 +343,8 @@ def create_app(settings: Settings | None = None):
 
     @app.patch("/api/threads/{thread_id}")
     async def rename_thread(thread_id: str, body: ThreadRequest, runtime=Depends(rt), user=Depends(researcher)):
-        thread = await runtime.find_thread(thread_id, user)
-        if not thread or not await runtime.db.execute("UPDATE threads SET title=? WHERE id=? AND user_id=?", (body.title, thread["id"], user)):
+        thread = await owned_thread(runtime, thread_id, user)
+        if not await runtime.db.execute("UPDATE threads SET title=? WHERE id=? AND user_id=?", (body.title, thread["id"], user)):
             raise HTTPException(404, "会话不存在")
         return {"ok": True}
 
@@ -341,16 +360,12 @@ def create_app(settings: Settings | None = None):
 
     @app.get("/api/threads/{thread_id}/runs")
     async def thread_runs(thread_id: str, runtime=Depends(rt), user=Depends(identity)):
-        thread = await runtime.find_thread(thread_id, user)
-        if not thread:
-            raise HTTPException(404, "会话不存在")
+        thread = await owned_thread(runtime, thread_id, user)
         rows = await runtime.db.rows("SELECT id FROM runs WHERE thread_id=? AND user_id=? ORDER BY created_at", (thread["id"], user))
         return [await runtime.db.owned_run(row["id"], user) for row in rows]
     @app.get("/api/threads/{thread_id}/report")
     async def thread_report(thread_id: str, runtime=Depends(rt), user=Depends(identity)):
-        thread = await runtime.find_thread(thread_id, user)
-        if not thread:
-            raise HTTPException(404, "会话不存在")
+        thread = await owned_thread(runtime, thread_id, user)
         rows = await runtime.db.rows("SELECT id FROM runs WHERE thread_id=? AND user_id=? ORDER BY created_at", (thread["id"], user))
         runs = [await runtime.db.owned_run(row["id"], user) for row in rows]
         parts = [f"# {thread['title'] or '研究会话'}", "", "本文件包含该会话中的全部研究记录。"]
@@ -367,16 +382,11 @@ def create_app(settings: Settings | None = None):
 
     @app.get("/api/research/runs/{run_id}")
     async def get_run(run_id: str, runtime=Depends(rt), user=Depends(identity)):
-        run = await runtime.db.owned_run(run_id, user)
-        if not run:
-            raise HTTPException(404, "任务不存在")
-        return run
+        return await owned_run(runtime, run_id, user)
 
     @app.get("/api/research/runs/{run_id}/report")
     async def report(run_id: str, runtime=Depends(rt), user=Depends(identity)):
-        run = await runtime.db.owned_run(run_id, user)
-        if not run:
-            raise HTTPException(404, "任务不存在")
+        run = await owned_run(runtime, run_id, user)
         return PlainTextResponse(run["report"], media_type="text/markdown",
                                  headers={"Content-Disposition": f'attachment; filename="research-{run_id}.md"'})
 
@@ -400,8 +410,7 @@ def create_app(settings: Settings | None = None):
     @app.get("/api/research/runs/{run_id}/events")
     async def events(run_id: str, request: Request, after: int = 0, last_event_id: str = Header("0"),
                      runtime=Depends(rt), user=Depends(identity)):
-        if not await runtime.db.owned_run(run_id, user):
-            raise HTTPException(404, "任务不存在")
+        await owned_run(runtime, run_id, user)
         try:
             cursor = max(after, int(last_event_id), 0)
         except ValueError:
@@ -434,8 +443,7 @@ def create_app(settings: Settings | None = None):
 
     @app.post("/api/attachments", status_code=201)
     async def upload_attachment(request: Request, file: UploadFile = File(), runtime=Depends(rt), user=Depends(researcher)):
-        content = await file.read(10 * 1024 * 1024 + 1)
-        await file.close()
+        content = await read_upload(file)
         async with runtime.upload_lock:
             return await runtime.attachments.add(user, request.state.principal.subject, file.filename or "image", content)
 
@@ -452,8 +460,7 @@ def create_app(settings: Settings | None = None):
 
     @app.post("/api/documents", status_code=202)
     async def upload(request: Request, file: UploadFile = File(), runtime=Depends(rt), user=Depends(researcher)):
-        content = await file.read(10 * 1024 * 1024 + 1)
-        await file.close()
+        content = await read_upload(file)
         async with runtime.upload_lock:
             try:
                 document = await runtime.upload_document(user, file.filename or "document", content)
@@ -478,8 +485,7 @@ def create_app(settings: Settings | None = None):
     @app.put("/api/documents/{document_id}", status_code=202)
     async def replace_document(document_id: str, request: Request, file: UploadFile = File(),
                                runtime=Depends(rt), user=Depends(researcher)):
-        content = await file.read(10 * 1024 * 1024 + 1)
-        await file.close()
+        content = await read_upload(file)
         try:
             document = await runtime.replace_document(document_id, user, file.filename or "document", content)
         except LookupError as exc:

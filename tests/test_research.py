@@ -11,13 +11,7 @@ from backend.domain.models import Route, RunRequest
 from backend.core.observability import get_task_logger
 from backend.infrastructure.providers import ServiceError
 from backend.services.runtime import ConflictError, Runtime
-
-
-async def finish(rt, run):
-    task = rt.tasks.get(run["id"])
-    if task:
-        await task
-    return await rt.db.owned_run(run["id"], run["user_id"])
+from tests.helpers import finish
 
 
 @pytest.mark.parametrize("entry", ["resume", "recover_dead_letter"])

@@ -24,6 +24,8 @@ def test_extension_fixtures_keep_original_quality_gate_separate():
 
 def test_blind_pilot_requires_complete_reviews_before_unblinding(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr("scripts.pilot_evidence.git_commit", lambda: None)
+    monkeypatch.setattr("scripts.pilot_evidence.worktree_clean", lambda: None)
     (tmp_path / ".cache").mkdir()
     source = tmp_path / "source.md"
     source.write_text("A frozen primary record.\n", encoding="utf-8")

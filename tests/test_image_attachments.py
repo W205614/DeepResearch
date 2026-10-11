@@ -15,19 +15,13 @@ from backend.research.graph import ResearchGraph
 from backend.services.attachments import validate_image
 from backend.services.runtime import ConflictError
 from backend.services.runtime import Runtime
+from tests.helpers import finish
 
 
 def picture(format="PNG"):
     data = io.BytesIO()
     Image.new("RGB", (40, 30), "white").save(data, format=format)
     return data.getvalue()
-
-
-async def finish(rt, run):
-    task = rt.tasks.get(run["id"])
-    if task:
-        await task
-    return await rt.db.owned_run(run["id"], run["user_id"])
 
 
 @pytest.mark.parametrize("format,name", [("PNG", "x.png"), ("JPEG", "x.jpg"), ("WEBP", "x.webp"), ("GIF", "x.gif")])

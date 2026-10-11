@@ -8,6 +8,7 @@ import hashlib
 import asyncpg
 
 from .db import now, uid
+from .run_views import read_owned_run
 
 
 POSTGRES_SCHEMA = """
@@ -182,15 +183,7 @@ class PostgresDatabase:
                 raise
 
     async def owned_run(self, run_id, user):
-        row = await self.one("SELECT * FROM runs WHERE id=? AND user_id=?", (run_id, user))
-        if row:
-            row["attachments"] = await self.rows("SELECT id,name,media_type,size,position FROM attachments WHERE run_id=? AND status='ready' ORDER BY position", (run_id,))
-            row["sources"] = json.loads(row["sources"])
-            row["validation"] = json.loads(row["validation"])
-            row["usage"] = await self.one("SELECT * FROM counters WHERE run_id=?", (run_id,)) or {}
-            from .reliability import enrich_run
-            enrich_run(row, getattr(self, "reliability_settings", None))
-        return row
+        return await read_owned_run(self, run_id, user)
 
     async def create_workspace(self, subject, name, limits, workspace_id=None):
         workspace = {"id": workspace_id or uid(), "name": name.strip()[:100], "created_by": subject, "created_at": now()}

@@ -228,6 +228,6 @@ public class AgentClient {
 
     public record AgentResponse(int status, HttpHeaders headers, byte[] body) {
         public boolean successful() { return status >= 200 && status < 300; }
-        public Map<String, List<String>> headerMap() { return headers; }
+        public Map<String, List<String>> headerMap() { return headers.asMultiValueMap(); }
     }
 }
