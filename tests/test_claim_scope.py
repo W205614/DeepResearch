@@ -57,6 +57,48 @@ def test_unstated_group_relationship_is_a_limitation_not_a_cited_claim():
     assert explicit
 
 
+@pytest.mark.parametrize("claim", [
+    '根据所提供资料，两条记录均未说明完成人数所对应的统计口径、试点地区、统计时间段或'
+    '"完成"的状态定义，也未明确甲方案与乙方案是否属于同一批次、同一范围或同一对象。',
+    '根据所提供资料，就完成检索定位的参与者人数而言，乙方案记录为24名，多于甲方案记录的19名；'
+    '但资料未说明两者的统计口径、试点地区、统计时间段与"完成"定义，也未说明是否属于同一批次、'
+    '同一范围或同一对象，因此不能据此推断两方案中哪种检索效率更高。',
+])
+async def test_unstated_shared_scope_cannot_pass_a_permissive_validator(claim):
+    graph = ResearchGraph.__new__(ResearchGraph)
+    graph.settings = SimpleNamespace(llm_context_tokens=128000)
+    seen = []
+
+    async def ask(role, instruction, data, schema, run_id):
+        seen.extend(c["index"] for c in data["claims"])
+        return Verification(checks=[{"index": c["index"], "supported": True, "reason": "mock"}
+                                    for c in data["claims"]])
+
+    graph.ask = ask
+    draft = ReportDraft(title="数量与效率", sections=[{"heading": "结论", "claims": [
+        {"text": claim, "source_ids": ["a", "b"]},
+        {"text": "甲方案19名、乙方案24名参与者完成检索定位；未提供耗时，不能由人数推断效率。",
+         "source_ids": ["a", "b"]},
+    ]}])
+    sources = {
+        "a": {"id": "a", "text": "甲方案有19名参与者完成检索定位。未提供耗时与招募方式。",
+              "access": "fulltext", "trust_label": "fixture"},
+        "b": {"id": "b", "text": "乙方案有24名参与者完成检索定位。未提供耗时与招募方式。",
+              "access": "fulltext", "trust_label": "fixture"},
+    }
+
+    approved, checks = await graph.check_draft({"run_id": "test"}, draft, sources)
+
+    assert approved == {1}
+    assert seen == [1]
+    assert any(c["index"] == 0 and not c["supported"] for c in checks)
+
+
+def test_explicit_missing_shared_scope_is_preserved():
+    text = "资料未说明甲乙是否属于同一批次。"
+    assert validate_claim(text, [{"text": text}])[0]
+
+
 def test_explicit_shared_batch_blocks_reverse_uncertainty_claim():
     sources = [
         {"text": "同一批次的原始记录甲：完成引用核查的参与者为33名。尚未核对。"},
