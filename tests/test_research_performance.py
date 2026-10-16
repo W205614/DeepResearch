@@ -192,6 +192,9 @@ async def test_repair_scopes_context_to_failed_claim_sources(runtime):
             return ReportRepair.model_validate({"repairs": [{
                 "index": 1, "replacement": {"text": "corrected fact", "source_ids": ["relevant"]}
             }]})
+        if role == "coverage":
+            assert {claim['text'] for claim in data['claims']} == {'approved fact', 'corrected fact'}
+            return schema.model_validate({"answered_questions": []})
         return Verification.model_validate({"checks": [
             {"index": row["index"], "supported": row["text"] != "bad fact", "reason": "checked"}
             for row in data["claims"]

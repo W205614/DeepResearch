@@ -26,6 +26,7 @@ SHARED_BATCH_UNCERTAINTY = re.compile(
     r"|(?:无法|不能|未能).{0,64}(?:判定|确认|判断).{0,24}是否.{0,24}(?:同一|相同)批次)"
 )
 UNRESOLVED_SUPERSESSION = re.compile(r"(?:能否|是否|可否).{0,16}(?:替代|取代).{0,40}(?:还需|需要|无法|不能|未能)")
+ATTRIBUTED_CONFLICT = re.compile(r"(?:均|都|各自)(?:明确)?(?:指出|记载|声明|说明|提到).{0,60}(?:冲突|矛盾|不一致)")
 
 
 def requires_strong_evidence(text: str) -> bool:
@@ -39,6 +40,10 @@ def validate_claim(text: str, sources: list[dict]) -> tuple[bool, str]:
     # Keep this conservative lexical gate separate from semantic validation.
     compact = re.sub(r"\s+", "", text)
     source_text = re.sub(r"\s+", "", combined)
+    if ATTRIBUTED_CONFLICT.search(compact) and not all(
+        re.search(r"冲突|矛盾|不一致|不同|差异", source.get("text", "")) for source in sources
+    ):
+        return False, "跨来源对照得出的差异不能冒充每份来源自行声明的冲突；请直接报告各自记录或明确标注推断"
     term_meta = TERM_RELATION_META.search(compact)
     if term_meta and term_meta.group() not in source_text:
         return False, "术语对应关系是分析边界，引用原文未陈述时应放入局限或缺口，不能作为带引用的事实结论"

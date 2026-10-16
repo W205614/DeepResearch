@@ -41,8 +41,11 @@ def generate(role, data):
         return {"queries": ["补充测试资料查询"] if "补充测试资料查询" not in data["searched"] else [],
                 "reason": "测试补搜与停止条件"}
     if role == "writer":
-        return {"title": "研究工作流演示报告", "sections": [{"heading": "证据整理", "claims": data["claims"]}],
-                "limitations": ["模拟模型输出，仅供功能验收"]}
+        return {"sections": [{"question_index": None, "claim_indices": list(range(len(data["claims"])))}]}
+    if role == "coverage":
+        return {"answered_questions": []}
+    if role == "evidence_recovery":
+        return {"facts": []}
     if role == "validator":
         return {"checks": [{"index": c["index"], "supported": c["text"] in " ".join(
                             data["sources"][key]["text"] for key in c["source_ids"]),

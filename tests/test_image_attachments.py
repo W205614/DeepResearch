@@ -142,11 +142,12 @@ async def test_blurry_image_is_insufficient(runtime):
 
 async def test_partial_sources_survive_web_error(runtime):
     graph = ResearchGraph(runtime.settings, runtime.db, runtime.providers, runtime.vectors, runtime.documents)
-    state = {"run_id": "fixture", "evidence": [{"id": "I-1", "text": "图中内容"}], "claims": [{"text": "图中显示数据"}],
+    state = {"run_id": "fixture", "evidence": [{"id": "I-1", "text": "图中内容"}],
+             "claims": [{"text": "图中显示数据", "source_ids": ["I-1"]}],
              "web_outcomes": [{"source": "web", "outcome": "error"}], "attachment_evidence": [{"id": "I-1"}]}
     # Presence of valid image evidence must not trigger the no-evidence branch.
-    from backend.domain.models import ReportDraft
-    with patch.object(graph, "ask", AsyncMock(return_value=ReportDraft(title="图中内容", sections=[{"heading": "观察", "claims": []}]))):
+    from backend.domain.models import ReportOutline
+    with patch.object(graph, "ask", AsyncMock(return_value=ReportOutline(sections=[{"claim_indices": [0]}]))):
         result = await graph.writer({**state, "topic": "图片研究", "gaps": [], "plan": {}, "conflicts": []})
     assert "draft" in result and result["draft"]
 
@@ -165,6 +166,7 @@ async def test_image_research_with_no_web_evidence(runtime):
             "analyst": {"claims": [claim], "gaps": []},
             "writer": {"title": "图中内容", "sections": [{"heading": "状态", "claims": [claim]}]},
             "validator": {"checks": [{"index": 0, "supported": True, "reason": "图片原文支持且保留否定关系"}]},
+            "coverage": {"answered_questions": [0]},
         }
         return schema.model_validate(values[role])
 

@@ -300,6 +300,22 @@ docker compose exec -T agent python -m backend.commands.cli --base-url http://we
 
 GitHub Actions 的 **Answer Quality Gate** 从仓库 Secret 读取 `LLM_API_KEY`、可选 `LLM_MODEL_ID` 和 `LLM_BASE_URL`。该工作流还执行完整 30 题评测。在分支保护中将该检查设为 Required 后，未配置密钥或质量退化都会阻断合并。
 
+### 引用支持与证据覆盖的稳定性
+
+2026-10-16 的门禁曾在同一提交出现首轮失败、复跑通过，不能据此认为稳定。此次修复保持前端不变，针对研究链路做了以下调整：
+
+- **事实不在写作阶段重生成**：分析阶段以用户原始问题为准。写作阶段只返回事实序号和问题分组，程序保留遗漏事实、去除完全重复项，不让写作步骤扩写新的口径或来源说法；所有事实仍经过引用校验。
+- **空结果做一次有约束的事实恢复**：相关性裁决全部排除来源或分析返回空事实时，可从完整原文摘取直接相关句段。来源编号必须已知，句段须完整、连续且逐字存在，不能改数字、去掉句内否定或限定；恢复不等于自动通过，仍须走原有门控与语义核验。没有可回答事实时仍保留证据不足状态。
+- **修订与覆盖分开验证**：已通过且未改动的事实保留原判定，只复核局部修订；覆盖检查只读取最终留下的事实。研究相关调用显式使用 `temperature=0`，但不把它当作确定性保证。
+- **固定计划检查波动**：原 30 题与扩展题、评分器和阈值保留。CI 额外对 `conflict-1`、`compare-3`、`single-5` 各独立运行三次，`--require-all` 要求 9/9 全过，任何一次失败都会失败，不取最好一次，也不以整条工作流重跑代替修复。
+
+```powershell
+$env:LLM_EXTRA_BODY='{"thinking":{"type":"disabled"}}'
+.\.venv\Scripts\python.exe scripts/evaluate_research.py --only conflict-1,compare-3,single-5 --repetitions 3 --require-all --debug-fixed-failures --output .cache/eval/research-stability.json
+```
+
+失败明细输出仅允许仓库内置的合成固定题，不用于输出用户私有报告；补充阶段诊断可区分来源被排除、分析为空、组装与最终核验。根因、验证记录与部署边界见 [回答质量稳定性修复记录](docs/answer-quality-stability-20261016.md)。这些检查仍是小规模固定资料与真实模型评测，不是通用准确率、人工盲评或稳定性保证。
+
 ## 企业单机演示环境
 
 企业单机演示环境使用默认 Compose 启动：

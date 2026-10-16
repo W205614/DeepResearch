@@ -2,7 +2,7 @@ from argparse import Namespace
 
 import pytest
 
-from scripts.evaluate_research import main, assess_report_support
+from scripts.evaluate_research import main, assess_report_support, summarize_repetitions
 
 
 @pytest.mark.parametrize('overrides', [
@@ -62,3 +62,15 @@ async def test_independent_report_support_splits_only_on_context_limit(monkeypat
         ('run-support-2', ['结论 2']),
         ('run-support-3', ['结论 3', '结论 4']),
     ]
+
+
+def test_stability_gate_cannot_select_a_good_run_or_hide_a_failed_case():
+    cases = [{'id': str(i), 'critical': False} for i in range(10)]
+    results = [{'id': c['id'], 'critical': False, 'passed': not (n == 1 and int(c['id']) < 2),
+                'claim_count': 1, 'support': 1, 'coverage': 1, 'repetition': n}
+               for n in range(1, 4) for c in cases]
+    # 28/30 overall exceeds 85%, but the first cohort fails the unchanged 85% gate.
+    assert not summarize_repetitions(cases, results, 3)['passed']
+    results[0]['passed'] = True  # Every cohort now clears 85%, but one case still fails.
+    assert summarize_repetitions(cases, results, 3)['passed']
+    assert not summarize_repetitions(cases, results, 3, require_all=True)['passed']

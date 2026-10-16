@@ -171,9 +171,15 @@ def create_app(settings: Settings | None = None):
     async def abort_existing_run(run_id: str, authorization: str = Header(""), runtime=Depends(rt)):
         """Best-effort process/queue abort; Java has already made cancellation durable."""
         require_internal(authorization)
-        run = await runtime.db.one("SELECT id,attempt_count FROM runs WHERE id=?", (run_id,))
+        run = await runtime.db.one("SELECT id,status,attempt_count FROM runs WHERE id=?", (run_id,))
         if not run:
             raise HTTPException(404, "任务不存在")
+        if run["status"] != "cancelled":
+            return {"accepted": False, "status": run["status"]}
+        # Outbox delivery can arrive after resume. Abort only an attempt that
+        # actually started; attempt zero would target the future first job.
+        if not run.get("attempt_count"):
+            return {"accepted": True}
         task = runtime.tasks.get(run_id)
         if task:
             task.cancel()

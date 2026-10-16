@@ -118,6 +118,28 @@ class Analysis(BaseModel):
     gaps: list[str] = Field(default_factory=list, max_length=8)
 
 
+class SourceFact(BaseModel):
+    source_id: str
+    quote: str = Field(min_length=1, max_length=1400)
+
+
+class SourceFacts(BaseModel):
+    facts: list[SourceFact] = Field(default_factory=list, max_length=16)
+
+
+class OutlineSection(BaseModel):
+    question_index: int | None = Field(default=None, ge=0, le=4)
+    claim_indices: list[int] = Field(default_factory=list, max_length=40)
+
+
+class ReportOutline(BaseModel):
+    sections: list[OutlineSection] = Field(min_length=1, max_length=8)
+
+
+class QuestionCoverage(BaseModel):
+    answered_questions: list[int] = Field(default_factory=list, max_length=5)
+
+
 class Reflection(BaseModel):
     queries: list[str] = Field(default_factory=list, max_length=4)
     reason: str = Field(max_length=500)
@@ -177,6 +199,7 @@ class ResearchState(TypedDict, total=False):
     evidence: list[dict]
     conflicts: list[str]
     claims: list[dict]
+    recovered_claims: list[dict]
     analysis_input_hash: str
     gaps: list[str]
     reflect: bool

@@ -66,6 +66,22 @@ def summarize_research(cases, results):
             'passed': bool(results) and rate >= .85 and not critical and support >= .95 and coverage >= .85}
 
 
+def summarize_repetitions(cases, results, repetitions, require_all=False):
+    """Keep every run, and prevent a good cohort from concealing a failed cohort."""
+    cohorts = [summarize_research(cases, [r for r in results if r['repetition'] == n])
+               for n in range(1, repetitions + 1)]
+    expanded_cases = [{**case, 'id': f"{case['id']}#{n}"}
+                      for n in range(1, repetitions + 1) for case in cases]
+    expanded_results = [{**r, 'id': f"{r['id']}#{r['repetition']}"} for r in results]
+    summary = summarize_research(expanded_cases, expanded_results)
+    summary['cohorts'] = cohorts
+    summary['require_all'] = require_all
+    summary['passed'] &= all(cohort['passed'] for cohort in cohorts)
+    if require_all:
+        summary['passed'] &= all(result['passed'] for result in results)
+    return summary
+
+
 async def evaluate(case, root, live=False, external_results=None, debug_fixed_failures=False):
     settings = Settings(demo_mode=False, database_url="", queue_backend="local",
                         document_scan_mode="disabled", object_store_backend="filesystem",
@@ -154,10 +170,16 @@ async def evaluate(case, root, live=False, external_results=None, debug_fixed_fa
         (root / case['id'] / 'review.json').write_text(json.dumps(
             {'report': report, 'checks': checks, 'coverage': coverage.model_dump()}, ensure_ascii=False), encoding='utf-8')
         if debug_fixed_failures and not passed and not live and not external_results:
+            trace = await runtime.db.rows(
+                "SELECT type,data FROM events WHERE run_id=? AND type IN "
+                "('plan','evidence_judged','evidence_recovery','analysis_result','report_assembly') ORDER BY id",
+                (run['id'],))
             print(json.dumps({'event': 'fixed_fixture_failure', 'id': case['id'],
                               'report': report, 'claims': [claim.model_dump() for claim in claims],
                               'checks': checks, 'coverage': coverage.model_dump(),
-                              'validation': result.get('validation')}, ensure_ascii=False), flush=True)
+                              'validation': result.get('validation'),
+                              'pipeline': [{'type': row['type'], 'data': json.loads(row['data'])} for row in trace]},
+                             ensure_ascii=False), flush=True)
         print(json.dumps(row, ensure_ascii=False), flush=True)
         return row
     finally:
@@ -168,6 +190,10 @@ async def main(args):
     if args.debug_fixed_failures and (args.live or args.external_results or
             Path(args.cases).resolve() != Path('eval/research_quality_cases.json').resolve()):
         raise ValueError('Failure detail logging is restricted to the bundled synthetic fixed cases')
+    repetitions = getattr(args, 'repetitions', 1)
+    require_all = getattr(args, 'require_all', False)
+    if not 1 <= repetitions <= 5 or (args.external_results and repetitions != 1):
+        raise ValueError('Repetitions require 1-5 fresh graph runs, not regrading a saved report')
     raw = Path(args.cases).read_bytes()
     cases = json.loads(raw)
     if args.only:
@@ -179,7 +205,7 @@ async def main(args):
         async with gate:
             print(json.dumps({'event': 'case_start', 'id': case['id']}), flush=True)
             try:
-                return await evaluate(case, root, args.live, args.external_results, args.debug_fixed_failures)
+                return await evaluate(case, attempt_root, args.live, args.external_results, args.debug_fixed_failures)
             except Exception as exc:
                 row = {'id': case['id'], 'critical': case['critical'], 'passed': False,
                        'error_category': type(exc).__name__, 'error_code': getattr(exc, 'code', None)}
@@ -189,13 +215,21 @@ async def main(args):
     extra = json.loads(config.llm_extra_body)
     config_id = hashlib.sha256(json.dumps(extra, sort_keys=True).encode()).hexdigest()
     print(json.dumps({'event': 'suite_start', 'cases': len(cases), 'concurrency': 2,
+                      'repetitions': repetitions, 'require_all': require_all,
                       'model': config.llm_model_id, 'extra_body_sha256': config_id,
                       'thinking_type': (extra.get('thinking') or {}).get('type', 'provider-default')}), flush=True)
-    results = await asyncio.gather(*(one(c) for c in cases))
-    summary = summarize_research(cases, results)
+    results = []
+    for repetition in range(1, repetitions + 1):
+        attempt_root = root / f'repetition-{repetition}'
+        attempt_root.mkdir()
+        print(json.dumps({'event': 'repetition_start', 'repetition': repetition}), flush=True)
+        rows = await asyncio.gather(*(one(c) for c in cases))
+        results.extend({**row, 'repetition': repetition} for row in rows)
+    summary = summarize_repetitions(cases, results, repetitions, require_all)
     report = {'suite': 'research-quality-v2', 'fixture_sha256': hashlib.sha256(raw).hexdigest(),
               'commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
               'model': Settings().llm_model_id, 'mode': 'live-web' if args.live else 'fixed-web-real-model',
+              'repetitions': repetitions, 'require_all': require_all,
               'extra_body_sha256': config_id,
               'thinking_type': (extra.get('thinking') or {}).get('type', 'provider-default'),
               'embedding': ('configured real adapter for browser document scenario; no retrieval benchmark'
@@ -212,6 +246,10 @@ if __name__ == '__main__':
     parser.add_argument('--only')
     parser.add_argument('--live', action='store_true')
     parser.add_argument('--external-results')
+    parser.add_argument('--repetitions', type=int, default=1,
+                        help='Run 1-5 independent cohorts; retain every outcome, never select the best')
+    parser.add_argument('--require-all', action='store_true',
+                        help='Fail if any individual case in any repetition fails')
     parser.add_argument('--debug-fixed-failures', action='store_true',
                         help='Log failed bundled synthetic reports for CI diagnosis; not for live or external data')
     raise SystemExit(asyncio.run(main(parser.parse_args())))
