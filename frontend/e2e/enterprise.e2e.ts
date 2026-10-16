@@ -216,7 +216,7 @@ test('document lifecycle and viewer authorization with real adapters', async ({ 
     const searchResult = page.locator('.retrieval-debug .debug-result').filter({ hasText: '工作空间成员权限' }).first()
     await expect(searchResult).toBeVisible()
     await expect(searchResult.getByText(/融合/)).not.toBeVisible()
-    await searchResult.getByText('检索匹配明细', { exact: true }).click()
+    await searchResult.getByText('检索技术信息（匹配分数）', { exact: true }).click()
     await expect(searchResult.getByText(/融合/)).toBeVisible()
     const created = await page.request.post('/api/research/runs', { headers, data: {
       topic: '根据本地功能验收资料，说明工作空间成员权限在哪里校验，以及删除资料后的检索预期。',

@@ -120,12 +120,11 @@ main { margin-left: var(--sidebar); flex: 1; min-width: 0; }
 .data-policy { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; min-width: 0; }
 .data-policy select { max-width: 280px; min-width: 0; color: var(--ink); background: var(--bg); border: 0; padding: 11px 8px; min-height: 42px; border-radius: var(--radius); font: inherit; }
 .mode-picker { display: flex; align-items: center; gap: 5px; color: var(--ink); background: var(--bg); border-radius: var(--radius); padding: 0 10px; }
-.mode-picker select { min-height: 42px; border: 0; background: transparent; color: inherit; font-size: 13px; cursor: pointer; max-width: 120px; }
+.mode-picker select { min-height: 44px; border: 0; background: transparent; color: inherit; font-size: 13px; cursor: pointer; max-width: 170px; }
 .composer-hint { font-size: 13px; color: var(--muted); margin-left: auto; }
 .send-button { display: grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0; border-radius: var(--radius); background: var(--accent); color: var(--ink); margin-left: auto; }
 .send-button:hover:not(:disabled) { background: var(--accent-hover); }
-.capabilities { display: flex; flex-wrap: wrap; gap: 10px 20px; margin: 16px 0 32px; color: var(--muted); font-size: 13px; }
-.capabilities span { display: flex; align-items: center; gap: 7px; }
+.start-area .send-button { display: flex; gap: 6px; width: auto; padding: 0 14px; font-size: 14px; font-weight: 500; }
 .examples-title { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 12px; font-size: 14px; font-weight: 600; }
 .examples-title span { font-size: 13px; color: var(--muted); font-weight: 400; }
 .examples { display: grid; gap: 0; }
@@ -135,8 +134,6 @@ main { margin-left: var(--sidebar); flex: 1; min-width: 0; }
 .examples h3 > svg { display: none; }
 .examples p { margin: 0; font-size: 15px; line-height: 1.8; color: #4e545c; }
 .examples button > span { display: flex; align-items: center; gap: 8px; font-size: 13px; }
-.home-note { display: flex; align-items: flex-start; gap: 8px; margin: 28px 0 0; font-size: 13px; line-height: 1.8; color: var(--muted); }
-.home-note svg { flex-shrink: 0; margin-top: 4px; }
 
 /* Controls, notices and data surfaces. */
 .icon-button { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: var(--radius); color: var(--muted); }
@@ -196,11 +193,11 @@ input, select, textarea { max-width: 100%; }
 .event-log > div { display: flex; gap: 16px; }
 .event-log time { color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .event-log span { min-width: 0; overflow-wrap: anywhere; }
-.report-card { background: var(--paper); border-radius: var(--radius); margin-top: 24px; overflow: hidden; }
+.report-card { background: var(--paper); border-radius: var(--radius); margin-top: 24px; }
 .report-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 28px 0; background: transparent; font-size: 14px; color: var(--muted); }
 .report-toolbar > span { display: flex; align-items: center; gap: 8px; }
 .report-toolbar > div { display: flex; flex-wrap: wrap; gap: 4px; }
-.markdown { padding: 32px clamp(20px, 3vw, 48px); font-size: 16px; line-height: 1.9; color: #292c31; overflow-wrap: anywhere; }
+.markdown { padding: 32px clamp(20px, 3vw, 48px); max-width: 78ch; margin-inline: auto; font-size: 16px; line-height: 1.9; color: #292c31; overflow-wrap: anywhere; }
 .markdown h1 { font-size: 30px; line-height: 1.5; margin: 0 0 28px; letter-spacing: -.03em; color: var(--ink); }
 .markdown h2 { font-size: 23px; line-height: 1.5; margin: 36px 0 16px; color: var(--ink); }
 .markdown h3 { font-size: 18px; line-height: 1.6; margin-top: 28px; }
@@ -212,6 +209,20 @@ input, select, textarea { max-width: 100%; }
 .markdown th, .markdown td { padding: 12px; border: 1px solid var(--line); text-align: left; }
 .markdown pre { overflow: auto; background: var(--bg); padding: 20px; font-size: 14px; }
 .markdown img { max-width: 100%; }
+.report-reader { min-width: 0; }
+.report-reader h2, .report-reader h3 { scroll-margin-top: 76px; }
+.report-contents { position: sticky; top: 8px; z-index: 5; background: #f0f2f3; padding: 0 24px; }
+.report-contents > summary { cursor: pointer; min-height: 48px; padding: 12px 0; font-size: 14px; font-weight: 500; }
+.report-contents > summary span { color: var(--muted); font-weight: 400; margin-left: 12px; font-size: 13px; }
+.report-contents nav { display: grid; max-height: 45dvh; overflow-y: auto; padding-bottom: 12px; }
+.report-contents a { display: flex; align-items: center; min-height: 44px; padding: 8px 12px; color: var(--ink); font-size: 14px; line-height: 1.6; text-decoration: none; overflow-wrap: anywhere; }
+.report-contents a:hover { background: var(--bg); }
+.report-contents a.nested { padding-left: 28px; color: #535a63; }
+.report-table { max-width: 100%; overflow-x: auto; margin: 24px 0; }
+.report-table.is-wide::before { content: '表格较宽，可左右滑动'; display: block; position: sticky; left: 0; width: fit-content; padding-bottom: 8px; font-size: 13px; color: var(--muted); }
+.report-table table { display: table; max-width: none; margin: 0; }
+.report-table th { white-space: nowrap; background: var(--bg); }
+.report-table td { min-width: 8em; }
 .report-metrics { padding: 16px 28px; background: #f8f9fa; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
 .panel-heading { display: flex; align-items: center; gap: 8px; padding: 18px 0; font-size: 15px; }
 .panel-heading > span { margin-left: auto; font-size: 13px; color: var(--muted); }
@@ -370,17 +381,16 @@ input, select, textarea { max-width: 100%; }
   .breadcrumb strong { max-width: 36vw; }
   .top-status { display: none; }
   .topbar > .text-button { max-width: 112px; font-size: 13px; }
-  .research-view { padding: 32px 20px 28px; }
-  .welcome { margin-bottom: 24px; }
+  .research-view { padding: 24px 20px 28px; }
+  .welcome { margin-bottom: 20px; }
   .welcome h1 { font-size: clamp(28px, 7.5vw, 38px); }
-  .welcome p { font-size: 15px; }
+  .welcome p { font-size: 15px; margin-top: 8px; }
   .composer textarea { padding: 16px; min-height: 144px; font-size: 16px; }
   .image-attachments { padding: 12px 12px 0; }
   .image-attachments > .muted { display: block; padding: 0 8px; }
   .composer-footer { padding: 12px; gap: 10px; }
   .data-policy { flex-basis: 100%; flex-wrap: wrap; }
   .data-policy select { flex: 1; width: 100%; max-width: none; }
-  .capabilities { gap: 12px 18px; margin-bottom: 32px; }
   .examples-title { display: block; }
   .examples-title span { display: block; margin-top: 8px; }
   .examples > button { grid-template-columns: minmax(0, 1fr) 20px; gap: 8px; padding: 20px; }
@@ -389,7 +399,6 @@ input, select, textarea { max-width: 100%; }
   .examples p { grid-row: 2; }
   .examples button > span { grid-column: 2; grid-row: 1 / 3; font-size: 0; }
   .examples button > span svg { width: 20px; height: 20px; }
-  .home-note { font-size: 13px; }
   .utility-view { padding: 32px 20px; }
   .utility-view h1 { font-size: 28px; }
   .intro { font-size: 15px; }
@@ -455,11 +464,11 @@ input, select, textarea { max-width: 100%; }
   .examples > button { grid-template-columns: 145px minmax(0, 1fr); }
 }
 @media (max-width: 760px) {
-  .scope-bar { padding: 16px 16px 8px; }
+  .scope-bar { padding: 12px 16px 4px; }
   .scope-bar .data-policy { display: flex; flex-wrap: nowrap; gap: 8px; }
   .scope-bar .data-policy select { width: 100%; max-width: none; font-size: 13px; }
   .scope-help .text-button { display: flex; margin-left: 0; }
-  .composer textarea { min-height: 100px; }
+  .composer textarea { min-height: 88px; padding-block: 12px; }
   .image-attachments > .muted { display: inline; padding: 0; font-size: 13px; }
   .examples > button { grid-template-columns: minmax(0, 1fr) 20px; padding: 16px 0; }
   .document-entry { display: block; padding: 16px 0; }
@@ -471,4 +480,19 @@ input, select, textarea { max-width: 100%; }
   .publication-limits { margin: 16px 20px 0; padding: 14px; }
   .publication-review-note { padding: 0 20px; }
   .report-metrics { padding: 12px 20px; }
+  .examples-title { margin-top: 24px; }
+  .examples-title span { margin-top: 4px; line-height: 1.6; }
+  .examples > button { min-height: 76px; padding: 12px 0; }
+  .examples h3 { font-size: 16px; }
+  .examples p { font-size: 14px; line-height: 1.7; }
+  .document-entry { margin-top: 0; padding: 12px 0; }
+  .document-entry > span { min-height: 44px; }
+  .report-contents { top: 0; padding-inline: 16px; }
+  .report-contents > summary span { margin-left: 6px; }
+  .report-toolbar { gap: 4px 12px; }
+  .report-toolbar > .text-button { margin-left: auto; }
+  .markdown { padding: 24px 18px; }
+  .markdown li { margin: 8px 0; }
 }
+.examples-title { margin-top: 24px; }
+.scope-help .text-button { min-height: 44px; }
