@@ -49,7 +49,7 @@ onUnmounted(()=>{disposed=true;items.value.forEach(i=>URL.revokeObjectURL(i.url)
   <div class="image-attachments">
     <input ref="input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden @change="choose">
     <button class="text-button" type="button" :disabled="disabled||items.length>=4" @click="input?.click()">＋ 添加图片</button>
-    <span class="muted">可粘贴或拖入 · 最多 4 张 · 每张 10 MB</span>
+    <span class="muted" title="支持选择、粘贴或拖入图片">最多 4 张，每张不超过 10 MB</span>
     <div class="attachment-previews"><div v-for="item in items" :key="item.key" class="attachment-preview">
       <img :src="item.url" :alt="item.name"><span>{{item.loading?'上传并扫描中…':item.error||item.name}}</span>
       <button type="button" :disabled="disabled||item.loading" :aria-label="`移除 ${item.name}`" @click="remove(item)">移除</button>

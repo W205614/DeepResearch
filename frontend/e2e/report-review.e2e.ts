@@ -87,6 +87,7 @@ test('two accounts submit, approve and withdraw a frozen report in the browser',
     await expect(reviewer.page.getByText('正式版本', { exact: true })).toBeVisible()
 
     await author.page.getByRole('button', { name: '正式报告', exact: true }).click()
+    await author.page.getByRole('button', { name: '返回报告列表', exact: true }).click()
     await expect(author.page.getByRole('button', { name: /Review test report/ })).toBeVisible()
     await reviewer.page.getByRole('textbox', { name: '撤回原因' }).fill('Source updated')
     await reviewer.page.getByRole('button', { name: '撤回正式版本' }).click()

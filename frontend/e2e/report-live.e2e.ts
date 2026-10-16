@@ -19,6 +19,7 @@ async function capture(page: Page, name: string) {
   mkdirSync(directory, { recursive: true })
   await page.setViewportSize({ width: 1440, height: 1000 })
   await page.evaluate(() => window.scrollTo(0, 0))
+  await page.mouse.move(0, 0)
   await page.screenshot({ path: resolve(directory, `${name}.png`), fullPage: true, animations: 'disabled' })
 }
 
@@ -82,6 +83,7 @@ test('real OIDC accounts review, publish, read and withdraw a frozen report', as
     await expect(author.getByRole('button', { name: '提交人工审核' })).toBeVisible()
     await capture(author, 'research-report')
     await author.getByRole('button', { name: '提交人工审核' }).click()
+    await author.getByRole('button', { name: '返回报告列表', exact: true }).click()
     await expect(author.locator('.report-list-item').filter({ hasText: '审核真实链路验收' })).toBeVisible()
     expect((await (await author.request.get('/api/reports/pending', { headers: shared })).json())).toHaveLength(1)
     const pending = await author.request.get('/api/reports', { headers: shared })
@@ -100,6 +102,20 @@ test('real OIDC accounts review, publish, read and withdraw a frozen report', as
     await reviewer.getByRole('button', { name: '批准发布' }).click()
     await expect(reviewer.getByText('正式版本 · 部分结果', { exact: true })).toBeVisible()
     await expect(reviewer.getByText('批准说明：仅发布现有证据，长期效果尚未回答')).toBeVisible()
+    await expect(reviewer.locator('.publication-meta code')).not.toBeVisible()
+    await reviewer.getByText('版本与审核明细', { exact: true }).click()
+    await expect(reviewer.locator('.publication-meta code')).toHaveText(/^[a-f0-9]{64}$/)
+    await expect(reviewer.locator('.publication-meta code')).toBeVisible()
+    await reviewer.getByText('版本与审核明细', { exact: true }).click()
+    for (const width of [1440, 768, 390]) {
+      await reviewer.setViewportSize({ width, height: 1000 })
+      expect(await reviewer.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy()
+      await reviewer.getByText('版本与审核明细', { exact: true }).click()
+      await expect(reviewer.locator('.publication-meta code')).toBeVisible()
+      expect(await reviewer.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy()
+      await reviewer.getByText('版本与审核明细', { exact: true }).click()
+    }
+    await reviewer.setViewportSize({ width: 1440, height: 1000 })
     await capture(reviewer, 'report-review')
     const listed = await (await reviewer.request.get('/api/reports', { headers: reviewShared })).json()
     reportId = listed[0].id
@@ -116,6 +132,7 @@ test('real OIDC accounts review, publish, read and withdraw a frozen report', as
     expect(frozen.content_sha256).toBe(before.content_sha256)
     expect(frozen.sources[0].locator).toBe('第 2 页')
     expect(frozen.sources[0].original_available).toBe(false)
+    await reviewer.getByRole('button', { name: '返回报告列表', exact: true }).click()
     await expect(reviewer.locator('.report-list-item .green-pill')).toHaveCount(1)
     await reviewer.locator('.report-list-item .green-pill').click()
     await expect(reviewer.getByText('原文当前不可访问')).toBeVisible()
