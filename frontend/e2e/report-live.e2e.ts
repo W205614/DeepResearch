@@ -2,6 +2,8 @@ import { expect, test, type Page } from '@playwright/test'
 import { randomUUID } from 'node:crypto'
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
+import { mkdirSync } from 'node:fs'
+import { resolve } from 'node:path'
 
 const execute = promisify(execFile)
 const authorName = process.env.E2E_USERNAME
@@ -10,6 +12,15 @@ const authorSubject = process.env.E2E_AUTHOR_SUBJECT
 const reviewerName = process.env.E2E_REVIEWER_USERNAME
 const reviewerPassword = process.env.E2E_REVIEWER_PASSWORD
 const reviewerSubject = process.env.E2E_REVIEWER_SUBJECT
+
+async function capture(page: Page, name: string) {
+  const directory = process.env.E2E_SCREENSHOT_DIR
+  if (!directory) return
+  mkdirSync(directory, { recursive: true })
+  await page.setViewportSize({ width: 1440, height: 1000 })
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await page.screenshot({ path: resolve(directory, `${name}.png`), fullPage: true, animations: 'disabled' })
+}
 
 async function login(page: Page, username: string, password: string) {
   await page.goto('/')
@@ -65,10 +76,11 @@ test('real OIDC accounts review, publish, read and withdraw a frozen report', as
     await sql(`INSERT INTO documents(id,user_id,name,hash,status,index_version) VALUES('${docId}','${workspace}','验收资料','fixture-hash','ready',1); ` +
       `INSERT INTO chunks(id,document_id,user_id,text) VALUES('${chunkId}','${docId}','${workspace}','冻结证据原文'); ` +
       `INSERT INTO runs(id,user_id,thread_id,topic,mode,status,created_at,updated_at,client_request_id,created_by,data_policy,deadline_at,report,sources,validation) ` +
-      `VALUES('${runId}','${workspace}','${threadId}','审核真实链路验收','deep','completed',now()::text,now()::text,'${runId}','${authorSubject}','internal',9999999999,'# 冻结报告 [L-1]\\n\\n未回答：长期效果','${sources}','{"quality":"partial","checked_claims":2,"supported_claims":1,"removed_claims":1,"unanswered_questions":["长期效果"]}');`)
+      `VALUES('${runId}','${workspace}','${threadId}','审核真实链路验收','deep','completed',now()::text,now()::text,'${runId}','${authorSubject}','internal',9999999999,E'# 冻结报告 [L-1]\\n\\n未回答：长期效果','${sources}','{"quality":"partial","checked_claims":2,"supported_claims":1,"removed_claims":1,"unanswered_questions":["长期效果"]}');`)
     await author.reload()
     await author.locator('.thread-select').filter({ hasText: '审核真实链路验收' }).click()
     await expect(author.getByRole('button', { name: '提交人工审核' })).toBeVisible()
+    await capture(author, 'research-report')
     await author.getByRole('button', { name: '提交人工审核' }).click()
     await expect(author.locator('.report-list-item').filter({ hasText: '审核真实链路验收' })).toBeVisible()
     expect((await (await author.request.get('/api/reports/pending', { headers: shared })).json())).toHaveLength(1)
@@ -88,6 +100,7 @@ test('real OIDC accounts review, publish, read and withdraw a frozen report', as
     await reviewer.getByRole('button', { name: '批准发布' }).click()
     await expect(reviewer.getByText('正式版本 · 部分结果', { exact: true })).toBeVisible()
     await expect(reviewer.getByText('批准说明：仅发布现有证据，长期效果尚未回答')).toBeVisible()
+    await capture(reviewer, 'report-review')
     const listed = await (await reviewer.request.get('/api/reports', { headers: reviewShared })).json()
     reportId = listed[0].id
     const before = await (await reviewer.request.get(`/api/reports/${reportId}`, { headers: reviewShared })).json()
