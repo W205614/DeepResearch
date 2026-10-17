@@ -1,473 +1,176 @@
 # DeepResearch 企业研究工作台
 
-基于 **Spring Boot、LangGraph 和 Vue 3** 的中文研究应用。先选择资料范围，再输入问题，查看研究进度、报告和原文证据；研究结果经另一位管理员审核后，才能成为冻结的正式报告。
+输入研究问题，从公开网页或本地资料中查找依据，生成带引用的中文报告，并可交由另一位管理员审核、发布正式版本。
 
-Java 承接身份、权限、工作空间与任务生命周期，Python 负责研究编排、检索和文档处理。项目定位是可验证的单机应用，适合受控演示与内部试用准备；模型输出和引用核查都不等于事实保证，也不代表生产高可用或 SLA。
+基于 **Spring Boot + LangGraph + Vue 3**，适合资料问答、方案比较、专题调研和团队内部试用。支持 Docker Compose 单机部署，模型与搜索服务需自行配置。
 
-[快速启动](#企业单机演示启动) · [界面预览](#界面预览) · [能力与验证](#企业能力清单) · [开发环境](#开发环境) · [研究边界](#研究边界) · [历史交付记录](docs/delivery-history.md)
+[快速部署](#快速部署) · [开始使用](#开始使用) · [效果图](#效果图) · [常见问题](#常见问题) · [更多文档](#更多文档)
 
-## 功能特点
+## 解决什么问题
 
-- **问题驱动的研究**：自动选择、深度研究与快速问答共用一个入口，支持图片、连续追问和过程查看。
-- **明确的资料范围**：内部研究检索本地资料，公开研究不读取内部资料和私有会话历史；策略在服务端执行。
-- **可回查的证据**：报告展示来源和原文片段；证据不足、部分结果和待核验状态保留明确提示。
-- **资料库与个人偏好**：导入、扫描、解析、检索和替换资料；个人偏好按账号隔离，历史摘要遵循会话范围。
-- **人工审核与正式报告**：作者提交、另一位管理员审核；正式版本冻结正文、证据和位置，支持下载与撤回。
-- **可恢复的研究任务**：任务进度经 SSE 展示，支持取消、检查点恢复、有限重试与死信治理。
+| 常见困扰 | DeepResearch 的处理方式 |
+| --- | --- |
+| 网页和文件分散，整理资料耗时 | 围绕问题规划检索、分析资料并组织报告 |
+| AI 回答缺少依据，难以核实 | 展示引用、原文片段和资料位置，保留证据不足提示 |
+| 内部资料与公开搜索容易混用 | 显式选择资料范围，服务端限制检索与模型处理 |
+| 研究结果需要复核和交付 | 支持异人审核，冻结正式报告的正文与证据 |
 
-## 界面预览
+## 主要功能
 
-以下截图来自本机 Docker 部署的浏览器验收。工作台、资料库和审核画面使用临时真实账号；报告审核使用确定性验收资料。另附长报告阅读样本，接口由浏览器测试替身提供，仅验证排版与交互，不代表真实研究结果或模型质量。手机截图宽度为 390px。
+- **研究与追问**：自动判断、快速问答、深度研究；查看任务进度、停止任务，并在同一会话继续提问。
+- **本地资料库**：上传 TXT、Markdown、DOCX、PDF 和图片，扫描后建立检索索引；单份文件不超过 10 MB。
+- **引用与原文**：从报告查看来源及证据片段，导出 Markdown；未回答的问题和部分结果会明确标注。
+- **图片输入**：每次最多添加 4 张图片，用于看图问答或辅助研究。
+- **团队协作**：账号登录、工作空间成员管理、研究员与只读角色、人工审核和正式报告下载。
+- **运行管理**：任务检查点恢复、个人研究偏好，以及 Grafana 指标、日志和追踪。
+
+## 快速部署
+
+### 1. 准备环境并获取代码
+
+需要 Git、Docker 和 Docker Compose。Windows 用户先启动 Docker Desktop，并使用 Linux 容器。以下命令使用 PowerShell，在项目根目录执行；Docker 会构建应用，无需另装 Java、Python 或 Node.js。
+
+```powershell
+git clone https://github.com/W205614/DeepResearch.git
+cd DeepResearch
+Copy-Item .env.example .env
+```
+
+已有部署请先备份，再参考[升级与维护记录](docs/local-pilot-operations.md)，不要覆盖现有 `.env`。
+
+### 2. 配置密钥和服务密码
+
+用编辑器打开 `.env`，填写下列配置。首次建议使用至少 16 位的随机字母数字密码，避免数据库连接串中的特殊字符转义问题；不要提交 `.env`。
+
+| 配置项 | 如何填写 |
+| --- | --- |
+| `LLM_API_KEY` | 对话模型密钥；核对同组的 `LLM_BASE_URL`、`LLM_MODEL_ID` 是否与供应商一致 |
+| `EMBEDDING_API_KEY` | 嵌入模型密钥；同时填写 `EMBEDDING_BASE_URL`、`EMBEDDING_MODEL` 和实际输出的 `EMBEDDING_DIMENSION` |
+| `POSTGRES_PASSWORD` | 项目数据库密码 |
+| `KEYCLOAK_DB_PASSWORD` | 身份服务数据库密码 |
+| `KEYCLOAK_ADMIN_PASSWORD` | Keycloak 管理台 `admin` 账号的初始密码 |
+| `MINIO_ROOT_PASSWORD` | 文件存储服务密码 |
+| `GRAFANA_ADMIN_PASSWORD` | Grafana `admin` 账号的初始密码 |
+
+**首次体验还需留意：**
+
+- 模板的 `WEB_SEARCH_PROVIDER=deepseek` 会复用模型密钥，调用该端点的 Responses `web_search` 工具。若端点不支持，可改为 `bocha` 并填写 `BOCHA_API_KEY`；仅兼容聊天接口不足以提供联网搜索。
+- 嵌入服务地址需按实际供应商填写，模板地址只是预置值。即使先体验公开研究，也请填写嵌入密钥。
+- 图片功能需要 `VISION_MODEL_ID` 对应的视觉模型可用，它复用 `LLM_BASE_URL` 和 `LLM_API_KEY`。首次可先使用纯文字问题。
+- 重排是可选能力：填写 `RERANKER_API_KEY`，或先设置 `RERANKER_ENABLED=false`，使用关键词与向量融合检索。
+
+模型、嵌入、搜索和可选重排可能产生供应商费用；其余调优参数可先保留模板默认值。
+
+### 3. 启动服务
+
+```powershell
+docker compose up -d --build --wait --wait-timeout 300
+```
+
+首次需要下载镜像、构建应用并初始化资料扫描服务，耗时取决于网络和机器资源。Compose 会自动执行数据库迁移并启动依赖服务。
+
+| 入口 | 地址 | 登录方式 |
+| --- | --- | --- |
+| 研究工作台 | [localhost:8080](http://localhost:8080) | 点击“创建本地账号”，注册后使用 |
+| Keycloak 管理台 | [localhost:8180/admin](http://localhost:8180/admin) | `admin` / `KEYCLOAK_ADMIN_PASSWORD` |
+| Grafana 监控 | [localhost:3000](http://localhost:3000) | `admin` / `GRAFANA_ADMIN_PASSWORD` |
+
+普通用户只需访问研究工作台。默认入口仅供本机访问；首次部署建议保留默认端口，避免额外配置登录回调。
+
+## 开始使用
+
+### 先完成一条公开研究
+
+1. 打开 [研究工作台](http://localhost:8080)，点击“创建本地账号”。注册后返回工作台；已有账号选择“登录并开始研究”。首次登录会创建个人工作空间。
+2. 将输入框上方的资料范围切换为 **“公开问题（联网检索）”**。页面默认是内部资料范围，首次体验请主动切换。
+3. 输入问题，例如：**“比较线上课程与线下课程的差异、适用人群与局限，请给出公开来源。”**
+4. 选择“深度研究”，点击“开始研究”，等待报告；可展开研究过程查看进度。
+5. 点击报告引用或“查看证据片段”回查原文；需要保存时选择“导出 Markdown”。证据不足时，结果可能只回答部分问题。
+
+公开模式不读取本地资料、私有会话历史和个人记忆；追问时请明确写出需要沿用的背景。
+
+### 再使用自己的资料
+
+1. 先确认允许所配置的模型、视觉和嵌入供应商处理这些资料，再在 `.env` 设置 `ALLOW_INTERNAL_MODEL_PROCESSING=true`，重新执行上面的启动命令使配置生效。
+2. 打开左侧“本地资料库”，上传一份文件，等待扫描和索引完成，状态变为 `ready`。
+3. 新建研究，选择 **“内部资料（不联网）”**，围绕文件内容提问，例如“根据这份资料，总结方案的优势、限制和适用条件”。
+
+内部资料处理默认关闭；“不联网”指不进行公开网页搜索，模型、嵌入和可选重排仍可能调用所配置的外部服务。仅在确认供应商与资料使用范围后开启。
+
+<details>
+<summary>需要发布正式报告时</summary>
+
+1. 另一位用户注册后，在“工作台设置”复制自己的账号 ID。
+2. 当前工作空间管理员在“工作台设置 → 工作空间成员”中添加该账号，角色选择“管理员（可审核）”。
+3. 研究作者在满足提交条件的报告下点击“提交人工审核”；另一位管理员刷新页面，在左侧切换到受邀的工作空间，再进入“正式报告”审核。
+4. 批准后可阅读和下载冻结的正式版本。作者不能审核自己的报告；部分结果批准时必须说明发布范围。
+
+Keycloak 管理台账号与工作空间管理员角色是两套权限；普通研究和导出草稿不需要第二个账号。
+
+</details>
+
+## 效果图
+
+工作台与审核流程截图来自本机部署，研究报告和审核内容使用固定验收资料；长报告为人工编写的阅读样本，用于展示排版。
 
 ### 研究工作台
 
-![研究工作台：一处资料范围说明，日常问题示例与明确的开始按钮](docs/images/workspace.png)
+选择资料范围、输入问题、开始研究。
+
+![研究工作台](docs/images/workspace.png)
 
 ### 报告与原文证据
 
-![研究报告：保留部分结果提示，先读正文和来源，再按需查看过程与用量](docs/images/research-report.png)
+报告展示引用、来源入口和未完整回答的问题，可继续追问或导出。
 
-### 人工审核
-
-![正式报告独立阅读：正文、局限和原文先展示，版本与审核明细按需展开](docs/images/report-review.png)
+![报告与证据入口](docs/images/research-report.png)
 
 <details>
-<summary>登录页、资料库与手机布局</summary>
+<summary>查看更多：长报告、资料库、审核与手机布局</summary>
 
-![登录页](docs/images/login.png)
+长报告阅读样本，可按章节跳转：
+
+![长报告阅读样本，非模型研究结果](docs/images/long-report.png)
+
+本地资料库：
 
 ![本地资料库](docs/images/documents.png)
 
-<img src="docs/images/workspace-mobile.png" alt="手机工作台：精简说明，直接输入问题与开始研究" width="390">
+正式报告审核与证据快照：
+
+![正式报告](docs/images/report-review.png)
+
+手机研究工作台：
+
+<img src="docs/images/workspace-mobile.png" alt="手机研究工作台" width="390">
 
 </details>
 
-### 长报告阅读
+## 常见问题
 
-以下为人工编写的阅读验收样本，不是模型生成的研究结论。报告目录从正文原有的二、三级标题生成；短报告不额外显示目录。
+| 问题 | 处理方式 |
+| --- | --- |
+| 启动失败或超时 | 用 `docker compose ps -a` 查看状态，再用 `docker compose logs --tail 80` 查看错误。先核对 `.env` 必填密码、镜像下载和 Docker 资源；`migrate` 显示 `Exited (0)` 表示迁移成功 |
+| 页面能打开，但无法研究 | 查看“工作台设置 → 服务连接”的待配置项。核对模型与嵌入密钥、端点和模型名称，以及搜索端点是否支持所选协议 |
+| 提示内部资料模型处理未获准 | 体验公开检索时切换为“公开问题”；需要处理本地资料时，按上面的授权配置步骤操作 |
+| 上传后暂时查不到资料 | 等待扫描和索引完成。若为 `scan_failed`，查看 `docker compose logs --tail 80 clamav document-worker`；被隔离的文件不能用于研究 |
+| 登录提示 `Invalid parameter: redirect_uri` | 先使用默认 `http://localhost:8080`。如修改了 `APP_PORT`，还需在 Keycloak 的 `deepresearch-web` 客户端配置对应回调地址与 Web Origins |
 
-![长报告：正文、随滚动可展开的章节目录与多来源布局](docs/images/long-report.png)
-
-<details>
-<summary>手机上的章节跳转与宽表格</summary>
-
-<img src="docs/images/long-report-mobile.png" alt="手机长报告：章节目录在阅读中可随时展开" width="390">
-
-<img src="docs/images/long-table-mobile.png" alt="手机宽表格：溢出时提示左右滑动，正文保持正常宽度" width="390">
-
-</details>
-
-界面沿用石墨色导航、浅色阅读区和橙色主要操作，本轮进一步降低开始与阅读的负担：
-
-- **少读说明，直接开始**：首页合并重复引导，保留一处随选择变化的资料范围解释；示例改为课程比较、远程办公等日常问题。示例仍只填问题，不改变当前范围，默认仍为内部资料。
-- **适应手机**：压缩首页辅助信息与输入区留白，发送按钮显示“开始研究”；手机首屏验证覆盖发送和首个示例，表格与代码只在自身区域横向滚动。
-- **长文按章节阅读**：研究结果与正式报告共用阅读组件，限制正文行宽；有至少三个二、三级标题时提供可随滚动展开的目录，支持同名标题与键盘焦点跳转。不改写正文，不生成摘要，不改变下载内容。
-- **详情入口说明用途**：研究过程、核验与用量、版本与审核分别命名；顶部提供直达核验或版本详情的入口，来源分类与检索分数仍可展开。失败、部分结果、未回答问题和审核限制保持可见。
-
-字体在本地托管。最终容器的体验与功能回归，以及样本与真实链路的边界，见 [前端体验验证记录](docs/frontend-ux-verification.md)。
-
-## 技术栈
-
-| 部分 | 技术 | 职责 |
-| --- | --- | --- |
-| Java 业务后端 | Java 21、Spring Boot 4.0.8、Spring Security、PostgreSQL Outbox | OIDC、工作空间/成员、会话、偏好、研究准入、幂等、审计、SSE 与任务生命周期 |
-| Python 执行层 | FastAPI、LangGraph、ARQ | Agent 编排、模型/搜索适配、RAG、文档解析与研究检查点 |
-| 数据与资料 | PostgreSQL、Redis、Milvus、MinIO、ClamAV | 事务、队列、向量检索、文件保存与安全扫描 |
-| 前端 | Vue 3、TypeScript、Vite、Lucide | 研究输入、过程与证据展示、资料管理、报告审核 |
-| 部署与验证 | Docker Compose、Nginx、pytest、JUnit、Vitest、Playwright、GitHub Actions | 单机部署、功能回归、故障演练与质量门禁 |
-| 观测 | Prometheus、Grafana、OpenTelemetry、Tempo、Loki、Alertmanager | 指标、追踪、日志与告警 |
-
-## 架构分层
-
-```text
-浏览器 / Vue
-    │ 同源 API、SSE
-    ▼
-Nginx → Java 业务后端 → PostgreSQL（业务状态、权限、Outbox）
-              │ 内网 Bearer 接口 / 可靠任务投递
-              ▼
-         Python Agent / Worker
-              ├── LangGraph → 模型与公开搜索
-              ├── 资料解析 → MinIO / ClamAV
-              ├── 关键词与向量检索 → Milvus
-              └── Redis 队列 / 检查点
-```
-
-以下保留具体能力、操作命令和研究边界。过往修复及历史测量已移至 [历史交付与验证记录](docs/delivery-history.md)，避免将旧结果当作当前状态。
-
-## 企业能力清单
-
-| 领域 | 当前企业单机演示能力 | 验证入口 |
-| --- | --- | --- |
-| 身份与权限 | Java Resource Server 校验 Keycloak OIDC JWT；工作空间 `admin / researcher / viewer` 角色和资源级服务端校验 | `scripts/smoke-enterprise.py`、Playwright E2E |
-| 报告交付 | Java 审核及冻结快照；作者提交、异人管理员审核、成员读取、驳回/撤回/清理审计；旧接口隔离草稿 | PostgreSQL Testcontainers、真实 OIDC 双账号浏览器流程 |
-| 租户数据与审计 | Java 承接会话、研究准入、成员、偏好、限额和审计；Python Agent 承接文档、检索与执行阶段字段 | MockMvc/JWT-RBAC、PostgreSQL Testcontainers、工作台设置页 |
-| 研究执行 | Python 内同进程职责受限的 LangGraph Agent 协作；Java 提供任务生命周期与 SSE，保留来源约束、引用核验、SSRF 防护和会话上下文边界 | Java/Python 回归、冻结评测 |
-| 资料安全 | MinIO 隔离区、ClamAV 扫描、扫描失败拒绝、独立文档 Worker；`ready` 或原文有效的重建旧版可检索 | 文档安全测试、页面状态 |
-| 异步可恢复性 | Java PostgreSQL Outbox 原子抢占/租约/有限重试与死信重投，Python Redis ARQ Worker 幂等调度、检查点、取消和心跳恢复 | Java 并发集成测试、浏览器业务链、故障演练 |
-| 数据服务 | PostgreSQL 为事务源、Milvus 向量检索、BM25 + 向量融合、MinIO 原件保存 | 检索冻结集与恢复脚本 |
-| 可观测性 | Prometheus 指标、Grafana 面板、OTel Trace → Tempo、脱敏 JSON 应用日志 → Loki、Alertmanager → 可选飞书机器人 | 企业冒烟、Grafana Explore |
-| 质量门禁 | Maven、Python 单测/静态检查、Vue 单测/生产构建、真实 OIDC 浏览器 E2E、Compose 冒烟、离线流程评测 | GitHub Actions `CI` |
-| 迁移与恢复 | 幂等旧 SQLite 迁移、逻辑 SQL + 命名卷备份、恢复后冒烟验证 | `migrate_legacy_sqlite.py`、备份/恢复脚本 |
-
-下文给出每项能力的边界和操作方式。这里的“企业”指架构与治理链路的单机复现，不代表多副本生产集群或 SLA。
-
-## 多 Agent 协作边界
-
-系统注册了 10 个职责角色，包含协调路由与普通对话，在同一进程、共享当前配置的模型端点运行。每个 Agent 进入受限工具作用域，输入输出通过 `ResearchState` 交接；`agent_handoff` 事件记录发送方、接收方与产物字段名。单条研究路径不会执行全部角色；这也不代表多个独立模型服务的分布式协作。
-
-| Agent | 允许工具 | 交接物 |
-| --- | --- | --- |
-| 协调路由 | 结构化模型、用户档案 | 路由模式或本地记忆动作 |
-| 普通对话 | 结构化模型 | 对话回答 |
-| 研究规划 | 结构化模型 | 问题、范围、差异化查询 |
-| 网络调研 | 网页搜索、安全正文读取 | 网络证据 |
-| 本地资料 | 用户资料混合检索 | 带位置的本地证据 |
-| 证据裁决 | 结构化模型 | 接受来源、冲突、局限 |
-| 研究分析 | 结构化模型 | 带来源的结论与缺口 |
-| 补搜决策 | 结构化模型 | 补充查询与下一步决策 |
-| 报告撰写 | 结构化模型 | 结构化草稿 |
-| 引用核验 | 结构化模型 | 支撑判定与修订后的报告 |
-
-执行过程通过 SSE 展示 Agent 启动、允许工具和交接记录；权限测试会拒绝规划 Agent 直接联网、网络调研 Agent 直接调用模型等越权调用。
-
-## 企业单机演示启动
-
-1. 复制 `.env.example` 为 `.env`，填写模型密钥，以及 `POSTGRES_PASSWORD`、`KEYCLOAK_DB_PASSWORD`、`KEYCLOAK_ADMIN_PASSWORD`、`MINIO_ROOT_PASSWORD` 和 `GRAFANA_ADMIN_PASSWORD`。如需飞书告警，另外填写可选的 `FEISHU_WEBHOOK_URL`。这些值不得提交。
-2. 启动 Docker Desktop 后运行：
-
-   ```powershell
-   .\scripts\start.ps1
-   ```
-
-   或：
-
-   ```powershell
-   docker compose up -d --build --wait
-   ```
-
-3. 打开 `http://localhost:8080`，通过内置 Keycloak 登录；Grafana 位于 `http://localhost:3000`。
-
-资料范围默认 `internal`，禁止公开搜索；`ALLOW_INTERNAL_MODEL_PROCESSING` 默认 `false`，因此内部资料相关模型处理会被策略拒绝。公开研究请在界面选择“公开”；该模式不加载内部知识库和私有会话历史。只有核准所配置模型、视觉与嵌入供应商后，管理员才可开启内部资料处理；`restricted` 请求直接拒绝外发。范围依赖用户正确声明，不是自动敏感信息检测。
-
-已有部署升级前先做备份，并等待运行任务结束。Compose 的 `migrate` 服务执行 `alembic upgrade head`，当前最新版本为 `0012_report_publication`；升级必须同时发布 Java `backend`、Python `agent`、两个 Worker 和 Web。可运行 `.venv/Scripts/python.exe scripts/verify_local_deployment.py` 检查默认本机入口、迁移、内部模型处理配置与监控；非默认端口可设置 `VERIFY_BASE_URL`，冒烟脚本可设置 `SMOKE_BASE_URL` 和 `SMOKE_KEYCLOAK_BASE_URL`。维护及隔离恢复步骤见 [本机运维记录](docs/local-pilot-operations.md)。
-
-所有服务仅在 Docker 网络内互通，Web、Keycloak 与 Grafana 仅绑定本机回环地址。停止服务使用 `docker compose down`；不要使用 `down -v`，否则会删除演示数据卷。项目只维护根目录的 `compose.yaml` 作为运行拓扑；测试告警与隔离组件验证分别使用 `compose.test.yaml` 和 `compose.verify.yaml`。
-## API 配置
-
-最小配置如下：
-
-```dotenv
-LLM_MODEL_ID=deepseek-v4-flash
-# 图片资料解析复用同一 LLM_BASE_URL 和 LLM_API_KEY
-VISION_MODEL_ID=deepseek-v4-flash-vision-exp
-LLM_BASE_URL=https://api.deepseek.com
-LLM_API_KEY=你的 DeepSeek API Key
-
-EMBEDDING_MODEL=text-embedding-3-large
-EMBEDDING_BASE_URL=https://你的嵌入服务/v1
-EMBEDDING_API_KEY=你的嵌入模型密钥
-EMBEDDING_DIMENSION=3072
-WEB_SEARCH_PROVIDER=deepseek
-```
-
-`deepseek` 使用 DeepSeek Responses API 的 `web_search` 工具，因此联网搜索不必只能使用博查。它只接受服务端返回的原生来源 URL，不把模型正文中的 URL 当作证据；若网页正文无法安全抓取，该 DeepSeek 结果不会进入报告。这样可避免将综合搜索回答错误归因给单一链接。
-
-如需使用博查，将 `WEB_SEARCH_PROVIDER=bocha` 并设置 `BOCHA_API_KEY`。`auto` 会优先使用 DeepSeek，失败时才回退到博查。
-
-运行配置检查：
+停止服务并保留数据：
 
 ```powershell
-.\.venv\Scripts\python.exe .\scripts\check_apis.py --web-search
+docker compose down
 ```
 
-它只输出连接状态、嵌入维度和可验证来源数，不回显密钥、响应正文或来源 URL。
+下次启动使用上面的启动命令。**不要添加 `-v`**，否则会删除包含账号、资料和研究记录的数据卷。
 
-## 开发环境
+## 更多文档
 
-业务后端需要 JDK 21 与 Maven 3.9+：
+Java 负责身份权限、工作空间与任务生命周期；Python 负责研究编排、检索与文档处理；Vue 提供工作台。底层使用 PostgreSQL、Redis、Milvus 和 MinIO，默认编排同时包含身份、扫描与监控服务。
 
-```powershell
-Set-Location business-backend
-mvn test
-```
+- [完整配置模板](.env.example) · [部署编排](compose.yaml)
+- [登录与账号说明](docs/local-keycloak-login.md) · [升级、备份与维护记录](docs/local-pilot-operations.md)
+- [Java / Python 职责划分](docs/java-python-ownership.md) · [图片与文档解析](docs/multimodal.md)
+- [检索评测](eval/benchmark_results.md) · [历史交付记录](docs/delivery-history.md)
 
-Python Agent 依赖安装在项目内 `.venv`，不会写入系统 Python：
-
-```powershell
-.\scripts\setup-dev.ps1
-.\.venv\Scripts\python.exe -m pytest -q --basetemp=.cache\pytest
-.\.venv\Scripts\ruff.exe check backend tests scripts main.py
-```
-
-前端位于 `frontend`，生产镜像会在构建时执行类型检查与 Vite 打包。CI 会分别构建 Java 业务镜像与 Python Agent 镜像。
-
-
-## 检索评测与观测
-
-`eval/frozen_cases.json` 只验证研究流程、路由和来源数量目标，`source_target_rate` 不是检索召回率。仓库包含一套版本化内部回归语料：15 份资料、27 个问题，并为每个问题人工标注 `relevant_documents`。运行以下命令可在同一索引上对照单向量基线和当前 BM25 + 向量融合：
-
-```powershell
-# 真实嵌入只在 Docker 私有网络中执行；使用临时 SQLite 状态和自动清理的 dr_eval_* Milvus 集合
-$workspace = (Get-Location).Path
-docker compose run --rm --no-deps -v "${workspace}:/workspace:ro" agent python /workspace/scripts/evaluate_retrieval.py --corpus /workspace/eval/local_retrieval_corpus.json --cases /workspace/eval/local_retrieval_cases.json --output /tmp/retrieval-result.json
-```
-
-HTTP Reranker 默认开启，并预置 SiliconFlow `Pro/BAAI/bge-reranker-v2-m3` 的公开端点与字符串文档协议；部署仍需通过 `RERANKER_API_KEY` 注入密钥。通用兼容服务可切换为 `{model,query,documents:[{id,text}],top_n}` 对象协议，响应保持 `{results:[{index,relevance_score}]}`。超时、无效响应或策略禁止时回退现有融合排序，降级结果不缓存。手动运行 GitHub `RAG Quality (manual)` 工作流可复测 Recall@5、nDCG/MRR、答案门禁和 P95 新增时延。
-
-2026-09-19 使用 15 份固定资料、27 个查询、真实 `text-embedding-3-large` 与真实 Reranker 对照：融合与重排的 Recall@5 均为 **0.9630**，nDCG@5 从 **0.9392** 提升到 **0.9658**，MRR@10 从 **0.9568** 提升到 **1.0000**，冷检索 P95 增加 **72.28 ms**。同一资料上的 10 题检索到答案联合门禁由 **9/10、0.90** 变为 **10/10、1.00**，引用覆盖率均为 **100%**，重排版端到端 P95 增加 **631.28 ms**。完整条件、失败样例和边界见 [Reranker 默认开启与链路实测](docs/reranker-performance-20260919.md)。这些数据支持当前固定集上的启用决策，不代表任意资料的回答准确率。
-
-最新真实嵌入测量与边界见 [eval/benchmark_results.md](eval/benchmark_results.md)。输出包含文档级 Recall、Precision、nDCG、MRR、冷/热查询时延和嵌入请求成本代理。它衡量资料检索，不代表最终答案正确率；答案质量仍需单独标注证据支撑、完整性和正确性。研究任务的 SSE 事件还会写入 `local_retrieval`，记录缓存、BM25、query embedding、向量搜索、融合和总耗时。当前界面并不流式返回模型 token，因此不能把这些数据称为模型 TTFT。
-
-### 可核验的作品集数据
-
-- 在 14 份冻结资料、16 个人工标注中文查询与真实 `text-embedding-3-large` 服务上，BM25 + 向量融合的 Recall@5 为 **1.0000**，单向量对照为 **0.9688**；nDCG@5 为 **0.9676**，对照为 **0.9446**。
-- 2026-09-11 两轮复测中，混合检索平均冷查询分别为 **1235.77 / 1177.63 ms**；平均热查询分别为 **131.32 / 105.62 ms**，热查询缓存命中率均为 **100%**。
-
-以上两条历史质量数据仍对应 2026-09-11 的 14 份资料、16 个问题，不能与 2026-09-19 的 15 份资料、27 个问题直接拼接或相互替代。两组都是固定语料开发证据，不能写成通用数据集成绩、回答准确率或生产 SLA。
-
-## 后端目录
-
-业务与 AI 执行按语言和责任边界拆分。Java 不是转发壳；只有文档、模型与检查点等 AI 专属能力由鉴权后的 Java 接口转交 Python：
-
-```text
-business-backend/             # Java 21 / Spring Boot 对外业务服务
-├── api/                      # 工作空间、线程、研究、偏好、SSE 与代理边界
-├── config/                   # OIDC、数据源、内部 Agent 配置
-├── security/                 # JWT 工作空间身份、角色与审计
-└── service/                  # 准入、幂等、生命周期、视图与 Outbox
-
-backend/
-├── api/              # 容器内 FastAPI Agent/文档接口与内部命令入口
-├── commands/         # CLI 命令
-├── core/             # Python 配置、数据库、观测与网络安全
-├── domain/           # 请求、响应和工作流数据模型
-├── infrastructure/   # 模型搜索提供方、Milvus 与演示数据
-├── research/         # 意图路由、证据规则和 LangGraph 编排
-└── services/         # Agent 运行与本地文档服务
-```
-
-## CLI
-
-Docker 服务启动后，可使用有效的 Keycloak/OIDC access token 从 CLI 发起研究并在终端输出 Markdown 报告：
-
-```powershell
-docker compose exec -T agent python -m backend.commands.cli --base-url http://web --token "<OIDC access token>" research "比较企业知识库 Agent 的私有化与 SaaS 部署" --mode deep
-```
-
-增加 `--json` 可输出完整运行记录。CLI 调用同一套本地 API、事件、证据校验和数据卷，不会绕开 Web 工作台的安全规则。
-
-## 研究边界
-
-报告中的每条正文结论必须关联已接受的来源，并经过一次独立的模型辅助支持校验；不通过的结论会删除或修订。该机制降低无引用结论的风险，但不替代重要决策所需的人工原文核查。网页抓取还会验证协议、DNS 地址、跳转和响应大小，以阻断本机与内网地址访问。
-
-除用户在界面手动选择“快速问答”或“深度研究”外，路由模型会结合当前 Thread 上下文判断回答是否需要网页、本地资料库或最新可核查外部事实。普通交流、对当前会话的追问和用户档案查询会走聊天或本地记忆动作，不进入研究检索；单点外部事实使用快速研究，多维或对比主题使用深度研究。同一 Thread 是一条连续研究会话：页面按时间连续显示提问与报告；内部范围下后端注入最多 `CONVERSATION_TURN_LIMIT` 个历史问题和 `CONVERSATION_RECENT_RUNS` 份最近报告；公开范围不注入私有历史，所有模型请求还受统一上下文预算约束。这两个值默认是 30 和 6，可在 `.env` 调整。会话历史、用户设定及历史研究摘要只用于理解上下文，不能作为本次研究事实来源。每次证据审查会记录来源数量、网页域名数、来源类型和正文/摘要状态，便于后续测量覆盖度与来源多样性。
-
-例如，用户用自然语言为助手命名、询问助手名称或已保存偏好时，语义路由会返回对应的本地记忆动作；“上一个问题是什么”会只读取当前 Thread 的上一条问题。它们不会进入网页或资料库检索。跨 Thread 的助手名称和偏好按 User ID 保存；会话问题和研究摘要始终按 Thread 隔离。“AI 行业研究偏好”等需要外部事实的主题仍会进入研究流程。
-
-重要的数字、日期、比例、金额和法规结论必须有正文或本地资料支持，使用网页依据时需要两个独立域名，或一个在 `SOURCE_TRUST_OVERRIDES` 中明确配置的可信域名；仅使用内部资料时，结论必须明确限定为所提供资料的口径，并通过原文核验。搜索摘要可以用于背景，但不能单独支撑这类结论。网页正文会安全缓存 `WEB_CACHE_TTL_HOURS` 指定的时长；缓存和重试不会绕过 DNS、跳转和内网地址限制。
-
-深度研究默认每条查询取得最多 8 个结果，在全部查询间轮转选择最多 12 个不同网页候选，再读取可访问正文和筛选证据。可用 `.env` 中的 `WEB_RESULTS_PER_QUERY`、`MAX_WEB_CANDIDATES` 调整覆盖范围；提高它们会增加时延、模型上下文和搜索调用成本。每条搜索和正文抓取还分别受 `WEB_SEARCH_TIMEOUT_SECONDS`（默认 20 秒）和 `WEB_FETCH_TIMEOUT_SECONDS`（默认 8 秒）的单次上限保护，慢站点只会形成检索局限，不会无限拖住整轮研究。不设每日查询或 Token 配额，但每项任务受累计时限、外部调用次数与保守 Token 预占预算约束；达到边界后停止调用，恢复不重置预算。实际用量与保守预占分别理解，不能把预占量当作账单。它是多源抽样与可核查综合，不是对整个互联网的穷尽抓取。
-
-同一 Worker 内，搜索与网页读取分别由 `WEB_SEARCH_CONCURRENCY`（默认 3）和 `WEB_FETCH_CONCURRENCY`（默认 6）限制并发，单轮搜索次数仍由数据库原子计数控制。引用核验按结论分批，只传该批声明的来源并保留引用原文完整内容。补搜后，只有分析输入完全相同时才复用该任务检查点中的分析结果；证据、问题或冲突改变会重新分析。可将搜索并发设为 1、网页并发设为 3 恢复原有请求并发水平。核验不通过时只请求对应结论的替换或删除，已通过内容原样保留；修订按失败结论分批，只携带该批引用的相关原文窗口和分析事实，所有替换再次使用完整引用原文核验，未知引用和重复修订索引不会进入最终报告，避免整篇重写增加结论数量和输出超限。
-
-运行任务时，Python Agent 会向容器标准输出记录任务短 ID、节点开始/结束与耗时、模型调用、搜索结果数量、候选/可读网页数量、证据筛选数量和错误类别。查看命令为 `docker compose logs -f agent worker`。日志默认不记录问题文本、用户偏好、提示词、模型输入输出、URL 或网页正文；用 `TASK_LOG_LEVEL=WARNING` 可减少正常进度日志。
-
-本地资料支持 TXT、Markdown、DOCX、PDF，以及 JPEG、PNG、静态 GIF、WebP 图片。正文保留章节，表格片段重复表头；DOCX 按正文顺序处理段落、表格与嵌入图片。扫描、图形或疑似双栏 PDF 页渲染整页后调用视觉模型，避免只提取嵌入图片丢失上下文；普通文字页保留页码直接解析。格式损坏、加密、无法可靠识别、解析不完整或嵌入数量不符时不发布索引。PPT、Excel、复杂公式和任意排版的准确还原不在当前保证范围。资料页可替换 ready 文档：新原件完成扫描、解析、向量化和版本发布前旧索引继续可用；失败保留旧版，删除与替换并发时删除墓碑优先。旧资料仍可手动重建索引以应用新拆分规则。详见 [检索与文档边界处理](docs/retrieval-document-hardening.md)。
-
-默认不会自动把报告写入语义记忆。完成报告后可在界面点击“保存为语义记忆”，或设置 `AUTO_SAVE_SEMANTIC_MEMORY=true` 恢复自动保存。用户偏好和个人设定按 OIDC 账号私有，即使成员进入同一工作空间也不会互相读取或修改；报告语义记忆属于工作空间，但只会在保存它的 Thread 内被检索。工作台设置页可导出当前工作空间数据与本人个人记忆，或在确认后清理对应数据。
-
-左侧“最近研究”中没有审核记录的会话可由管理员删除；删除会停止该会话仍在运行的任务，并清除对应报告、事件、计数和检查点。含待审、已发布、已驳回或已撤回审核记录的会话会被拒绝删除。管理员需先处理审核状态、显式清理已驳回或已撤回记录，再删除会话。本地资料、用户偏好和个人设定不随会话删除；已单独保存的报告语义记忆仍在数据导出中，但原 Thread 删除后不会被注入后续研究。
-
-默认 Compose 启动本机 Keycloak。打开工作台后，已有账号可登录，新用户可注册；右上角“退出”会结束浏览器和 Keycloak 会话，因此可以切换账号。每个账号的新会话自动使用 `thread01`、`thread02` 等短 Thread ID；内部 UUID 仅用于数据库关联与检查点，不会显示在工作台。用户 API 统一使用 OIDC JWT，不再保留与浏览器认证冲突的第二套工作台访问令牌。认证流程详见 [docs/local-keycloak-login.md](docs/local-keycloak-login.md)。
-
-运行无需外部 API 的评测基线：
-
-```powershell
-.\.venv\Scripts\python.exe .\scripts\evaluate.py
-```
-
-它在固定资料上输出路由正确率、来源数、引用检查、时延与 Token 基线到 `.cache/eval/`，不代表真实行业研究质量。
-### 最终回答质量门禁
-
-回答门禁包含 7 个生成题和 3 个固定错误反例，结构检查之外另行逐条判定引用是否支持否定、数字主体、日期和范围；判定缺失、重复或模型失败均不通过。不能再把关键词出现当作事实正确。
-
-`eval/research_quality_cases.json` 的 30 题固定证据完整研究评测实际执行研究图，图外评分；门槛为关键题全部通过、整体通过率至少 85%、引用支持率至少 95%、应回答问题覆盖率至少 85%。2026-09-12 修复术语边界后，保持原题与评分门槛，单次完整复测 **30/30 通过**，引用支持率 **100%（297/297 条）**、覆盖率 **100%**，全部关键题通过，固定研究质量门禁通过，见[本次记录](docs/research-full-20260912.md)。2026-09-11 的 29/30 及关键题失败结果仍保留为历史。这是小规模合成题集，不是通用准确率；图外评分使用同一模型，不是人工盲评；实时联网验收另行统计。
-```powershell
-# 要求 .env 中已有 LLM_API_KEY；缺失密钥会失败，而不是跳过。
-.\.venv\Scripts\python.exe .\scripts\evaluate_answers.py
-```
-
-GitHub Actions 的 **Answer Quality Gate** 从仓库 Secret 读取 `LLM_API_KEY`、可选 `LLM_MODEL_ID` 和 `LLM_BASE_URL`。该工作流还执行完整 30 题评测。在分支保护中将该检查设为 Required 后，未配置密钥或质量退化都会阻断合并。
-
-### 引用支持与证据覆盖的稳定性
-
-2026-10-16 的门禁曾在同一提交出现首轮失败、复跑通过，不能据此认为稳定。此次修复保持前端不变，针对研究链路做了以下调整：
-
-- **事实不在写作阶段重生成**：分析阶段以用户原始问题为准。写作阶段只返回事实序号和问题分组，程序保留遗漏事实、去除完全重复项，不让写作步骤扩写新的口径或来源说法；所有事实仍经过引用校验。
-- **空结果做一次有约束的事实恢复**：相关性裁决全部排除来源或分析返回空事实时，可从完整原文摘取直接相关句段。来源编号必须已知，句段须完整、连续且逐字存在，不能改数字、去掉句内否定或限定；恢复不等于自动通过，仍须走原有门控与语义核验。没有可回答事实时仍保留证据不足状态。
-- **修订与覆盖分开验证**：已通过且未改动的事实保留原判定，只复核局部修订；覆盖检查只读取最终留下的事实。研究相关调用显式使用 `temperature=0`，但不把它当作确定性保证。
-- **固定计划检查波动**：原 30 题与扩展题、评分器和阈值保留。CI 额外对 `conflict-1`、`compare-3`、`single-5` 各独立运行三次，`--require-all` 要求 9/9 全过，任何一次失败都会失败，不取最好一次，也不以整条工作流重跑代替修复。
-
-```powershell
-$env:LLM_EXTRA_BODY='{"thinking":{"type":"disabled"}}'
-.\.venv\Scripts\python.exe scripts/evaluate_research.py --only conflict-1,compare-3,single-5 --repetitions 3 --require-all --debug-fixed-failures --output .cache/eval/research-stability.json
-```
-
-失败明细输出仅允许仓库内置的合成固定题，不用于输出用户私有报告；补充阶段诊断可区分来源被排除、分析为空、组装与最终核验。根因、验证记录与部署边界见 [回答质量稳定性修复记录](docs/answer-quality-stability-20261016.md)。这些检查仍是小规模固定资料与真实模型评测，不是通用准确率、人工盲评或稳定性保证。
-
-## 企业单机演示环境
-
-企业单机演示环境使用默认 Compose 启动：
-
-```powershell
-docker compose up -d --build --wait
-```
-
-默认编排直接包含 PostgreSQL、Redis Worker、OpenTelemetry Collector、Prometheus、Grafana、Tempo、Loki、Keycloak 与 MinIO；不再存在功能较低的本地运行拓扑。后端只接受 OIDC JWT；浏览器提供的 `X-User-ID` 不作为生产身份。工作空间成员角色为 admin、researcher、viewer，审计日志不记录研究正文、来源地址或密钥。
-
-当前 Compose 适合单机演示；运行、备份和恢复说明见 [docs/operations.md](docs/operations.md)。
-使用下面的命令执行不涉及模型调用的集成冒烟检查。它会验证 Web、Keycloak OIDC 发现、PostgreSQL 迁移版本、Redis、Worker、后端 `/readyz` 和 OpenTelemetry Collector 的连通性：
-
-```powershell
-.\scripts\smoke-enterprise.ps1
-```
-
-首次启用企业单机演示环境时，Keycloak 的 `keycloak-data` 命名卷会保存本机注册账号和管理台改动；不要用 `docker compose down -v` 停止演示环境。
-Grafana 仅映射到 `http://localhost:3000`，使用 `.env` 的 `GRAFANA_ADMIN_PASSWORD` 登录；Prometheus 数据源会在启动时自动连接到容器内的 Prometheus。Alertmanager 也只映射到本机的 `http://localhost:9093`。
-
-## 企业演示验证
-
-企业单机演示环境使用 Keycloak、PostgreSQL、Redis Worker、Milvus、Prometheus、Grafana 与 ClamAV。启动后打开 `http://localhost:8080` 登录；监控面板在 `http://localhost:3000` 的 **Dashboards → DeepResearch**。Grafana 仅监听本机。
-
-```powershell
-.\scripts\smoke-enterprise.ps1
-```
-
-资料上传在企业单机演示环境会先经 ClamAV 扫描；扫描服务不可用时上传会被拒绝。连续会话中的每条历史研究都有“查看来源 N”入口，可切换并查看该次研究保存的引用与本地资料来源。
-
-`migrate` 是一次性 Alembic 迁移任务，显示 `Exited (0)` 表示成功完成，应保留；不要执行 `docker compose down -v`，否则会删除本机演示数据卷。
-
-## 企业演示强化说明
-
-企业单机演示环境将原始资料先写入 MinIO 的 `quarantine/<document-id>` 对象键，再交由 ClamAV 扫描；通过后原子移动至 `uploads/<document-id>`。只有 `ready` 状态的资料可检索、用于研究或导出：`scanning` 表示正在扫描，`indexing` 表示已通过扫描且正在建立索引，`quarantined` 表示扫描拒绝，`scan_failed` 表示扫描服务不可用。后两种状态保留最少的文件记录和错误说明，不能通过重建索引绕过扫描；管理员删除后会同时删除对应对象，并写入不含正文的审计记录。
-
-研究与资料索引均有持久化状态。企业单机演示环境研究任务由 Redis Worker 消费，每次尝试使用固定的队列任务编号；重复恢复不会并行执行同一研究。点击停止会先将研究持久化为 `cancelled`，再向 Worker 发送中止信号，因此排队任务和已开始的任务都会停止，晚到的 Worker 也不能重新领取它。Worker 每 10 秒更新一次心跳；只有连续 45 秒未更新的运行中任务才会被标记为中断并从检查点重新入队。资料索引在 API 或 Worker 重启后会重新入队，已通过扫描的原始文件不会因进程内任务丢失而被视为可检索。任务、指标和追踪不使用用户、工作空间、主题、文件名、来源 URL 或错误正文作为 Prometheus 标签或 OpenTelemetry 属性。
-
-Grafana 自动配置六个全局匿名面板：API/Worker 可用性、队列深度、任务成功率、失败类别、节点 P95 时延和 Token 消耗。Worker 启动时会预先暴露 `completed`、`insufficient`、`failed` 三类终态计数器的零值，使 Prometheus 在首个任务前取得基线。任务成功率只计算最近 5 分钟内有终态任务的窗口；`completed` 与因证据不足而安全结束的 `insufficient` 均计为成功。无样本时显示 `N/A`，不再误显示为 0% 或 `NaN`。刚重建容器后，等待一个 15 秒抓取周期再运行研究，即可在下一个抓取周期看到成功率。
-
-企业 Compose 冒烟在本机和 GitHub Actions 复用标准库脚本：
-
-```powershell
-.\scripts\smoke-enterprise.ps1 -Start
-```
-
-它不会调用模型或联网搜索，检查 Web、OIDC、迁移、Redis、`/readyz`、Worker 指标、Prometheus 两个抓取目标、Grafana 与 OTel Collector。
-
-备份脚本会先拒绝存在运行中研究或索引任务的环境，再短暂停止服务形成一致冷备。它同时导出业务库与 Keycloak 库的 PostgreSQL 自定义格式逻辑备份，以及保存资料原件的 MinIO、Milvus、Redis、Keycloak、Grafana 等命名卷，并生成 SHA-256 清单：
-
-```powershell
-.\scripts\backup.ps1
-.\scripts\restore.ps1 -BackupPath .cache\backup\deepresearch-时间戳 -Project dr-restore-check
-# 安装本机每日 02:00 备份与最近 7 份保留（首次需手动执行）
-.\scripts\install-backup-task.ps1
-```
-
-恢复只写入全新的 `dr-restore-*` Compose 项目和临时卷，不替换当前项目数据。它校验归档文件、恢复两个 SQL 备份，并检查就绪状态、匿名访问拒绝、OIDC 发现及 Milvus 检索；结束后清理临时恢复卷。不要将备份文件、`.env` 或密钥提交到 Git。
-
-前端工具链依赖通过 Dependabot 分组升级，并以 `npm ci`、Vitest 和生产构建作为合并门槛。当前 Vue TSC 3.3.11 与 TypeScript 7.0.2 实际不兼容，因此项目固定 TypeScript 6.0.3，并暂时忽略 TypeScript 7 的自动升级；只有完成兼容性验证后才解除该限制。
-
-## 死信、追踪与告警
-
-最终失败的研究任务会进入 PostgreSQL 死信表；管理员可在网页的“工作台设置 → 死信任务治理”查看不含研究正文的失败摘要，并从检查点恢复。API 仍提供 GET /api/workspaces/{workspace_id}/dead-letters 和 POST /api/workspaces/{workspace_id}/dead-letters/{run_id}/recover，恢复动作写入审计日志。运行日志为 JSON，包含稳定错误类别、任务短 ID 与 OpenTelemetry Trace ID，但不写入研究正文、URL 或密钥。Prometheus 内置队列积压、死信和失败率三条告警规则，Prometheus 会发送到 Compose 内部的 Alertmanager，再由后端内部入口转换为飞书群机器人文本消息。Compose 首次启动会在独立命名卷生成内部 Bearer token，Alertmanager 和后端只读挂载；缺失或错误令牌的转发请求会被拒绝。应用层对同一告警状态去重、对短暂 Webhook 错误最多重试两次，并保留已恢复事件；`deepresearch_alert_deliveries_total{result="succeeded|failed|disabled"}` 与 `deepresearch_alert_suppressed_total` 可审计投递与去重结果。`.env` 中可选的 `FEISHU_WEBHOOK_URL` 留空即禁用外发；它只应写入被忽略的本机 `.env`，不要放入 README、截图、提交或工单。Alertmanager 的验证可向 `http://localhost:9093/api/v2/alerts` 提交一条临时告警，随后检查飞书群是否收到“DeepResearch Alert”消息。
-
-业务命令投递失败与研究执行失败分开治理。Outbox 在永久错误或重试耗尽后进入自身死信状态；管理员可通过 `GET /api/workspaces/{workspace_id}/outbox/dead-letters` 查看脱敏错误码，并通过 `POST /api/workspaces/{workspace_id}/outbox/dead-letters/{message_id}/retry` 重投。重投要求工作空间 `admin` 角色并写入审计日志；指标 `deepresearch_business_outbox_delivery_total{result="delivered|retry|dead"}` 记录交付结果，`deepresearch_business_outbox_depth{status="pending|processing|dead"}` 记录当前积压。
-
-## 持久化日志、追踪与浏览器回归
-
-默认 Compose 将 Python Agent 和 Worker 的脱敏 JSON 任务日志通过 OpenTelemetry Collector 写入 Loki，将 Agent 请求和 Worker 任务 Span 写入 Tempo；Java 业务服务通过 Actuator 暴露 Prometheus 指标。Grafana 自动配置 `Prometheus`、`Loki`、`Tempo` 三个内部数据源。Tempo 与 Loki 不映射宿主机端口；日常通过 Grafana 的 Explore 查询。日志链路不挂载 Docker Socket，不采集其他容器、浏览器流量、资料正文、提示词、来源 URL 或密钥。
-
-在 Grafana 的 **Explore** 中选择 Loki，可使用：
-
-```logql
-{service_name=~"deepresearch-api|deepresearch-worker"}
-```
-
-选择 Tempo 后按服务 `deepresearch-api` 或 `deepresearch-worker` 查询 Trace。任务日志中的 `trace_id` 可跳转到 Tempo；Tempo 也会根据服务名回查 Loki。Tempo 的本地文件块和 Loki 的本地 TSDB 是为了单机演示保留，生产多副本必须改为共享对象存储、鉴权代理、保留期与容量策略。
-
-真实浏览器回归不使用开发身份头，也不需要模型调用。启动 Compose 后运行：
-
-```powershell
-Set-Location frontend
-npm run test:e2e:enterprise
-```
-
-脚本只从被忽略的本机 `.env` 读取 `KEYCLOAK_ADMIN_PASSWORD`（或读取同名环境变量），临时创建随机 Keycloak 用户并串行执行，验证匿名 API 返回 `401`、Keycloak 授权码 + PKCE 登录、受保护工作台，以及 Java 线程/偏好 CRUD、研究幂等创建、取消和 SSE 回放；随后删除临时身份及其工作空间，不清理日常演示数据。付费模型与真实嵌入用例仍需显式开关。失败时本机保留 `frontend/test-results/` 中的截图、视频与 Trace 供排查；该目录被忽略，CI 不会上传这些产物。
-
-## 重建、验证与恢复操作手册
-
-日常重建与最小验收：
-
-```powershell
-docker compose up -d --build --wait
-.\scripts\smoke-enterprise.ps1
-Set-Location frontend
-npm ci
-npm run test:e2e:enterprise
-```
-
-企业冒烟会验证 Web、OIDC 发现、迁移、Redis、后端就绪、Worker 指标、Prometheus 抓取目标、Grafana、OTel Collector、Tempo Trace，以及经受控脱敏探针确认可写入的 Loki 日志。E2E 额外验证真实浏览器认证边界。首次安装 Playwright 时运行 `npx playwright install chromium`；GitHub Actions 会安装 Chromium 后执行同一 E2E。
-
-故障与数据恢复按下面顺序进行：
-
-1. 任务或资料异常：在“工作台设置 → 死信任务治理”查看失败类别；管理员从检查点恢复，恢复动作会写入审计日志。
-2. 依赖短暂失败：运行 `.\scripts\drill-dependency-recovery.ps1`，它会短暂停止 Milvus、确认就绪检查拒绝流量、恢复依赖与 Worker，再执行企业冒烟。
-3. 数据备份与恢复：确认没有运行中任务后运行 `.\scripts\backup.ps1`；用 `.\scripts\restore.ps1 -BackupPath .cache\backup\deepresearch-时间戳 -Project dr-restore-check` 在全新隔离卷执行恢复烟测。成功报告写入备份目录的 `verification.json`，源数据卷始终保持不变。
-4. 观测排查：先看 Grafana 的队列深度、近 5 分钟成功率、失败类别和 P95；再在 Loki 以服务名过滤日志，最后按 Trace ID 在 Tempo 定位节点链路。无终态任务的成功率显示 `N/A` 是预期行为，不是失败。
-
-停止环境使用 `docker compose down`。不要使用 `docker compose down -v`，除非明确要删除所有本机演示数据卷。
-
-## 当前边界（本次不继续扩展）
-
-已完成的是企业单机演示基线。以下事项保留为生产化讨论边界，不属于本次面试项目继续优化清单：
-
-- 本机即可完成：PostgreSQL RLS 策略与数据库角色、反向代理 TLS/本地 CA、密钥托管替代 `.env`、备份定时与恢复演练记录、Trace/日志保留策略和更细粒度的浏览器 E2E 场景。
-- 需要真实基础设施才能证明：多副本 API/Worker、共享对象存储、高可用 PostgreSQL/Redis/Milvus、跨机容量压测与故障转移、外部 KMS/Vault、集中身份目录（SAML/SCIM）和真实值班升级体系。
-- 需要组织流程才能证明：告警分级、飞书/钉钉/企业微信的轮值人员路由、RPO/RTO 承诺、变更审批、数据分级与合规审计。
-
-因此简历或面试应表述为“完成企业单机演示基线及可恢复、可观测、权限闭环验证”，不要表述为“已上线高可用生产集群”或“达到 SLA”。
-## 压测与故障演练
-
-2026-09-18 的隔离整栈阶梯压测、慢上游/连续 503 注入和保护顺序见 [性能、限流与雪崩隔离实测](docs/performance-resilience-20260918.md)；默认开启 Reranker 后的历史复测见 [Reranker 默认开启与链路实测](docs/reranker-performance-20260919.md)。本次 2026-09-23 的 30 秒恒定到达测试见[报告发布与单机验收](docs/report-publication-verification-20260923.md)。当前默认保护为：Nginx 鉴权前粗粒度削峰、Java 主体令牌桶和全局并发限制、Agent 代理 8 路舱壁/30 秒超时/连续故障熔断、Python Worker 与供应商层并发闸门和熔断。压测使用固定模型/搜索夹具，没有对第三方 Reranker 发起高并发压力；限流值是单机本地基线，不是 SLA，多实例全局配额需要共享网关或 Redis。
-
-`load-health.js` 只用于连通性；业务读链路使用临时 OIDC 身份运行 `load-authenticated-read.js`。验证脚本会创建临时客户端和用户、获取令牌、执行压测并清理测试身份：
-
-```powershell
-# 默认 10 VU、5 分钟：成功率至少 99%、错误率低于 1%、P95 不高于 2 秒。
-.\.venv\Scripts\python.exe .\scripts\verify-authenticated-load.py
-# 快速本机回归示例；默认仍为 10 VU、5 分钟
-.\.venv\Scripts\python.exe .\scripts\verify-authenticated-load.py --vus 10 --duration 1m
-```
-
-这只是本机、固定数据和读接口的容量基线，不是 SLA。`scripts/drill-dependency-recovery.ps1` 会短暂停止 Milvus；`scripts/drill-worker-restart.ps1` 会重启 Worker 并执行企业冒烟。使用本地告警接收器演练时，运行 `docker compose -f compose.yaml -f compose.test.yaml up -d --build --wait` 后执行 `python scripts/drill-alert-relay.py`；它不会向真实飞书群发消息。死信表会按 timeout、network、source_blocked、provider_configuration、model_response 等稳定类别记录最终失败。
-
-
-## 面试项目收尾验收（2026-09-10）
-
-新增迁移 `0004_consistency` 保留已有数据。资料版本阻止删除后迟到索引复活；请求幂等先于新任务额度校验；UTC 日搜索台账仅用于统计，单任务检索次数原子预占，失败调用及备用搜索分别计数；Worker 尝试版本约束心跳与终态，持久化任务对账补偿 Redis 投递失败。
-
-- Python 108 通过，真实组件 4 通过，前端 4 通过及构建通过。
-- 隔离 PostgreSQL、Redis、Milvus、MinIO、ClamAV；5 客户端持续 5 分钟，4560 请求无非预期失败，379 个接受任务全部完成。控制/读取 P95 243.71 ms，研究、排队与索引耗时单独记录。模型和搜索为可控替身，不代表真实模型吞吐。
-- Worker 强制终止后 52.44 秒恢复，Redis 投递与 Milvus 就绪恢复通过；11 卷隔离备份恢复耗时 202.05 秒，临时资源已清理。
-- 日常 Docker 重建、企业冒烟、真实 OIDC 浏览器、资料引用、SSE 重放、取消恢复和角色边界已验收。
-
-```powershell
-python scripts/verify_components.py --load --drill
-.\.venv\Scripts\python.exe scripts/evaluate_research.py
-```
-
-[交付记录与完整复现命令](docs/interview-delivery.md) · [面试故障证据与设计取舍](docs/interview-evidence.md) · [脱敏结果](eval/delivery-results.json)。达到本次阈值后停止增加功能；GitHub Actions 状态以对应提交为准。
-
-## 图片输入与检索兜底
-
-输入框支持最多 4 张图片，自动区分直接看图和需要检索的研究；图片按任务保存，不自动进入共享资料库。检索空结果、服务故障和本轮检索达到上限会分别提示，证据不足时不生成无依据的事实报告。详见 [图片输入与 Grafana 观测说明](docs/multimodal.md)。
+当前部署面向单机演示与受控试用。引用和模型核验有助于回查依据，重要结论仍需人工核实；截图与固定题集结果不代表通用回答准确率或生产可用性承诺。
