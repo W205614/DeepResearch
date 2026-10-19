@@ -25,6 +25,31 @@ const selectedPublication = ref<Publication|null>(null), reviewReason = ref('')
 const topic = ref(''), mode = ref('auto'), error = ref(''), busy = ref(false)
 const status = ref<any>(null), documents = ref<any[]>([]), memories = ref<any[]>([]), metrics = ref<any>(null)
 const preference = ref(''), editingMemory = ref(''), source = ref<Source|null>(null)
+const sourceDrawer = ref<HTMLElement|null>(null)
+let sourceTrigger: HTMLElement|null = null
+watch(source, async (next, previous) => {
+  if (next && !previous) sourceTrigger = document.activeElement instanceof HTMLElement ? document.activeElement : null
+  await nextTick()
+  if (source.value !== next) return
+  if (next) sourceDrawer.value?.querySelector<HTMLButtonElement>('.close-drawer')?.focus()
+  else {
+    if (sourceTrigger?.isConnected) sourceTrigger.focus()
+    sourceTrigger = null
+  }
+})
+function handleSourceKeys(event: KeyboardEvent) {
+  if (event.key === 'Escape') {
+    event.preventDefault()
+    event.stopPropagation()
+    source.value = null
+  } else if (event.key === 'Tab') {
+    const controls = Array.from(sourceDrawer.value?.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], summary, [tabindex="0"]') || [])
+      .filter(element => element.getClientRects().length > 0)
+    const first = controls[0], last = controls.at(-1)
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus() }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus() }
+  }
+}
 const selectedDocument = ref<any|null>(null), documentChunks = ref<any[]>([]), documentQuery = ref(''), documentResults = ref<any[]>([]), documentReasons = ref<string[]>([]), documentSearchBusy = ref(false)
 const userId = ref('')
 const authenticated = ref(false), authMode = ref<'oidc'>('oidc'), threadSwitchId = ref(localStorage.getItem('dr-thread') || '')
@@ -306,7 +331,7 @@ onUnmounted(()=>{controller?.abort();clearInterval(poll);window.removeEventListe
   </section>
   <div v-else class="workspace">
     <div v-if="navOpen" class="nav-backdrop" @click="navOpen=false"></div>
-    <aside id="workspace-navigation" class="sidebar" :class="{open:navOpen}">
+    <aside id="workspace-navigation" :inert="!!source" class="sidebar" :class="{open:navOpen}">
       <a class="brand" href="#" @click.prevent="newResearch"><div class="brand-mark"><Layers3 :size="23"/></div><div>DeepResearch<span>让研究有据可循</span></div></a>
       <button class="new-button" @click="newResearch"><Plus :size="18"/> 新建研究</button>
       <nav>
@@ -319,7 +344,7 @@ onUnmounted(()=>{controller?.abort();clearInterval(poll);window.removeEventListe
       <div class="thread-list"><p v-if="!threads.length" class="empty-history">你的研究会保存在这里</p><div v-for="thread in threads" :key="thread.id" :class="['thread-item',{chosen:thread.id===threadId}]"><button class="thread-select" @click="safely(()=>openThread(thread.id))"><MessageSquare :size="15"/><div><span>{{thread.title}}</span></div></button><button v-if="workspace?.role==='admin'" class="thread-delete icon-button" :aria-label="`删除研究 ${thread.title}`" title="删除研究" @click.stop="deleteThread(thread)"><Trash2 :size="15"/></button></div></div>
       <div class="sidebar-bottom"><label class="workspace-selector">工作空间<select :value="workspace?.id" aria-label="切换工作空间" @change="switchWorkspace"><option v-for="item in workspaces" :key="item.id" :value="item.id">{{item.name}} · {{item.role}}</option></select></label><div class="local-badge"><span class="status-dot"></span>本地工作空间 <ShieldCheck :size="14"/></div><button @click="navigate('settings')"><Settings2 :size="17"/>工作台设置</button><div class="profile"><div class="avatar">研</div><div>{{userId}}<small>已登录用户</small></div></div></div>
     </aside>
-    <main>
+    <main :inert="!!source">
       <header class="topbar"><div class="breadcrumb"><button class="mobile-menu icon-button" aria-label="打开导航" :aria-expanded="navOpen" aria-controls="workspace-navigation" @click="navOpen=true"><Menu :size="20"/></button><span>工作空间</span><ChevronRight :size="14"/><strong>{{viewTitle}}</strong></div><div class="top-status"><span :class="['status-dot',{'amber':!status||status.missing?.length}]"></span>{{status?.mode==='demo'?'测试模式':status?.missing?.length?'部分服务待配置':'已连接'}}<span class="divider"></span><span>本地工作空间</span></div><button v-if="!authenticated" class="text-button" @click="safely(beginLogin)"><LogIn :size="15"/>登录</button><button v-else class="text-button" @click="signOut"><LogOut :size="15"/><span>退出 {{userId}}</span></button></header>
       <div v-if="error" class="error-banner" role="alert">{{error}}<button aria-label="关闭提示" @click="error=''"><X :size="16"/></button></div>
       <div v-if="status?.mode==='demo'" class="demo-banner">当前为固定数据测试模式，报告用于验证功能，不代表真实研究结论。</div>
@@ -422,6 +447,6 @@ onUnmounted(()=>{controller?.abort();clearInterval(poll);window.removeEventListe
           <button v-else class="text-button" @click="safely(async()=>{await refreshWorkspace();memberNotice='工作空间列表已刷新；请在左侧切换到受邀的工作空间。'})">刷新工作空间列表</button>
         </div><div class="settings-card"><h3>服务连接</h3><dl><dt>对话模型</dt><dd>{{status?.llm_model}}</dd><dt>嵌入模型</dt><dd>{{status?.embedding_model}}</dd><dt>向量维度</dt><dd>{{status?.embedding_dimension}}</dd><dt>资料索引</dt><dd>{{status?.milvus==='ready'?'可用':'尚未连接'}}</dd></dl><p v-if="status?.missing?.length" class="inline-warning">待配置：{{status.missing.join('、')}}</p><button class="primary" :disabled="checking" @click="checkConnection"><LoaderCircle v-if="checking" class="spin" :size="15"/>{{checking?'正在测试…':'测试模型连接'}}</button><small class="block muted">会发送少量测试文字，产生少量 API 调用。</small><pre v-if="connection" class="connection-result">{{JSON.stringify(connection,null,2)}}</pre></div><div class="settings-card"><h3>本地研究指标</h3><dl><dt>完成 / 资料不足</dt><dd>{{metrics?.completed||0}} / {{metrics?.insufficient||0}}</dd><dt>平均来源 / 域名</dt><dd>{{metrics?.avg_sources||0}} / {{metrics?.avg_web_domains||0}}</dd><dt>P50 / P95 节点时延</dt><dd>{{metrics?.node_latency_ms?.p50||0}} / {{metrics?.node_latency_ms?.p95||0}} ms</dd><dt>Token</dt><dd>{{(metrics?.prompt_tokens||0)+(metrics?.completion_tokens||0)}}</dd></dl></div><div v-if="authenticated && workspace?.role==='admin'" class="settings-card"><h3>死信任务治理</h3><p class="muted">管理员可查看失败及重试记录；仅未完成且已停止的任务可从检查点恢复。</p><p v-if="!deadLetters.length" class="muted">当前没有死信任务记录。</p><div v-for="item in deadLetters" :key="item.run_id" class="debug-result"><strong>{{item.category}}</strong><small>{{new Date(item.failed_at).toLocaleString()}}</small><p>{{item.message}}</p><p>{{item.recovery_status==='succeeded'?'重试成功':item.recovery_status==='insufficient'?'重试完成（证据不足）':item.recovery_status==='retrying'?'正在重试…':'待恢复'}}</p><button v-if="item.can_recover" class="text-button" @click="recoverDeadLetter(item)">从检查点恢复</button></div></div><div class="settings-card"><h3>本地数据</h3><button class="primary" @click="exportData"><Download :size="15"/>导出工作空间</button><button class="text-button" @click="purgeData('reports')">清理研究记录</button><button class="text-button" @click="purgeData('all')">清理全部本地数据</button></div><div v-if="!authenticated" class="settings-card"><h3>演示工作空间</h3><p class="muted">User ID 用于隔离资料、记忆和会话；每个用户的新会话自动命名为 thread01、thread02。填入 Thread ID 可直接打开已有会话，留空则切换到新的研究页面。</p><label>User ID<input v-model.trim="userId" maxlength="64" placeholder="例如：user01"></label><label>Thread ID（可选）<input v-model.trim="threadSwitchId" maxlength="32" placeholder="例如：thread01"></label><p v-if="threadId" class="muted">当前 Thread ID：<code>{{threadSwitchId}}</code></p><button class="primary" @click="saveSettings">切换工作空间</button></div></section>
     </main>
-    <div v-if="source" class="drawer-backdrop" @click.self="source=null"><aside class="source-drawer"><button class="icon-button close-drawer" aria-label="关闭来源" @click="source=null"><X :size="20"/></button><h2>{{source.title}}</h2><div class="source-meta"><span>{{source.kind==='attachment'?'本轮图片':source.kind==='local'?'本地资料库':source.access==='summary'?'仅搜索摘要':'已读取正文'}}</span></div><p v-if="source.locator">{{source.locator}}</p><p v-if="source.published_at" class="muted">发布时间：{{source.published_at}}</p><p class="muted">取得时间：{{new Date(source.retrieved_at).toLocaleString()}}</p><a v-if="source.url && source.access!=='summary'" :href="source.url" target="_blank" rel="noopener noreferrer" class="source-link">打开原始来源 <ArrowUpRight :size="15"/></a><p v-else-if="source.kind==='web'" class="inline-warning">该候选地址未取得可读正文，可能已失效、需要登录或需要付费。新版研究不会将它作为引用。</p><AttachmentImage v-if="source.attachment_id" :id="source.attachment_id" :name="source.title"/><h3>{{source.kind==='attachment'?'图片识别内容（未经外部核实）':'用于研究的原文片段'}}</h3><div class="source-excerpt">{{source.text}}</div><details class="technical-details source-technical"><summary>来源技术信息（标识、系统分类）</summary><p>来源 ID：<code>{{source.id}}</code></p><p>系统分类：{{source.evidence_level||'未记录'}}（不等于可信度保证）</p></details></aside></div>
+    <div v-if="source" class="drawer-backdrop" @click.self="source=null"><aside ref="sourceDrawer" class="source-drawer" role="dialog" aria-modal="true" :aria-label="source.title" @keydown="handleSourceKeys"><button class="icon-button close-drawer" aria-label="关闭来源" @click="source=null"><X :size="20"/></button><h2>{{source.title}}</h2><div class="source-meta"><span>{{source.kind==='attachment'?'本轮图片':source.kind==='local'?'本地资料库':source.access==='summary'?'仅搜索摘要':'已读取正文'}}</span></div><p v-if="source.locator">{{source.locator}}</p><p v-if="source.published_at" class="muted">发布时间：{{source.published_at}}</p><p class="muted">取得时间：{{new Date(source.retrieved_at).toLocaleString()}}</p><a v-if="source.url && source.access!=='summary'" :href="source.url" target="_blank" rel="noopener noreferrer" class="source-link">打开原始来源 <ArrowUpRight :size="15"/></a><p v-else-if="source.kind==='web'" class="inline-warning">该候选地址未取得可读正文，可能已失效、需要登录或需要付费。新版研究不会将它作为引用。</p><AttachmentImage v-if="source.attachment_id" :id="source.attachment_id" :name="source.title"/><h3>{{source.kind==='attachment'?'图片识别内容（未经外部核实）':'用于研究的原文片段'}}</h3><div class="source-excerpt">{{source.text}}</div><details class="technical-details source-technical"><summary>来源技术信息（标识、系统分类）</summary><p>来源 ID：<code>{{source.id}}</code></p><p>系统分类：{{source.evidence_level||'未记录'}}（不等于可信度保证）</p></details></aside></div>
   </div>
 </template>

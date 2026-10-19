@@ -1,5 +1,5 @@
 import { beforeEach, afterEach, expect, it, vi } from 'vitest'
-import { accessToken, AuthExpiredError } from './auth'
+import { accessToken, AuthExpiredError, currentUser } from './auth'
 import { authenticatedFetch } from './api'
 
 const jwt = (seconds: number) => `a.${btoa(JSON.stringify({sub: 'alice', exp: Math.floor(Date.now()/1000)+seconds}))}.b`
@@ -15,6 +15,13 @@ beforeEach(() => {
   sessionStorage.setItem('dr-refresh-token', 'refresh-old')
 })
 afterEach(() => vi.unstubAllGlobals())
+it('displays UTF-8 names from base64url tokens without corrupting Chinese or emoji', () => {
+  const claims = { sub: 'alice', preferred_username: '研究员小林 🧑‍🔬', exp: Math.floor(Date.now()/1000)+300 }
+  const bytes = new TextEncoder().encode(JSON.stringify(claims))
+  const payload = btoa(String.fromCharCode(...bytes)).replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/, '')
+  sessionStorage.setItem('dr-token', `a.${payload}.b`)
+  expect(currentUser()).toEqual({ id: 'alice', name: claims.preferred_username, email: undefined })
+})
 it('shares refresh among concurrent requests and stores rotated tokens', async () => {
   const fresh = jwt(300)
   const fetcher = vi.fn().mockResolvedValue(new Response(JSON.stringify({access_token: fresh, refresh_token: 'refresh-new'})))

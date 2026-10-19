@@ -10,7 +10,9 @@ RUN --mount=type=cache,target=/root/.m2 \
     done; exit 1
 
 FROM eclipse-temurin:21-jre-alpine
-RUN addgroup -S app && adduser -S -G app app
+# Refresh the affected OS library even when the upstream JRE image still ships it.
+RUN apk add --no-cache --upgrade 'libexpat>=2.9.0-r0' \
+    && addgroup -S app && adduser -S -G app app
 WORKDIR /app
 COPY --from=build /workspace/target/business-backend-0.1.0.jar app.jar
 USER app

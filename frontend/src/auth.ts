@@ -18,7 +18,13 @@ function base64Url(bytes: Uint8Array) {
 }
 function randomValue() { const bytes = new Uint8Array(32); crypto.getRandomValues(bytes); return base64Url(bytes) }
 async function challenge(verifier: string) { return base64Url(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier)))) }
-function decodeClaims(token: string): Record<string, unknown> | null { try { const payload = token.split('.')[1]; return JSON.parse(atob(payload.replaceAll('-', '+').replaceAll('_', '/'))) } catch { return null } }
+function decodeClaims(token: string): Record<string, unknown> | null {
+  try {
+    const payload = token.split('.')[1]
+    const bytes = Uint8Array.from(atob(payload.replaceAll('-', '+').replaceAll('_', '/')), char => char.charCodeAt(0))
+    return JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes))
+  } catch { return null }
+}
 
 export function currentUser(): AuthUser | null {
   const token = sessionStorage.getItem(tokenKey)
