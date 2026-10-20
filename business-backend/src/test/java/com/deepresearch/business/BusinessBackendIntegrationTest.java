@@ -32,6 +32,7 @@ import com.deepresearch.business.security.WorkspaceIdentity;
 import com.deepresearch.business.service.AgentClient;
 import com.deepresearch.business.service.OutboxService;
 import com.deepresearch.business.service.ResearchCommandService;
+import com.deepresearch.business.service.ReportPublicationService;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -82,6 +83,7 @@ class BusinessBackendIntegrationTest {
     @Autowired ObjectMapper mapper;
     @Autowired ResearchCommandService commands;
     @Autowired OutboxService outbox;
+    @Autowired ReportPublicationService publications;
     @Autowired DeepResearchProperties properties;
     @Autowired MeterRegistry registry;
     @MockitoBean AgentClient agent;
@@ -381,7 +383,7 @@ class BusinessBackendIntegrationTest {
         jdbc.update("""
             UPDATE runs SET created_by='writer',status='completed',report='# Original [L-1]',
             sources='[{"id":"L-1","kind":"local","title":"资料","text":"证据","locator":"第 2 页","chunk_id":"chunk-1","document_id":"doc-1","document_hash":"hash-1","index_version":1}]',
-            validation='{"quality":"complete","checked_claims":1,"supported_claims":1}'
+            validation='{"verification_contract":"verification-v3-claim-span","quality":"complete","checked_claims":1,"supported_claims":1}'
             WHERE id='review-run'""");
         jdbc.update("INSERT INTO documents(id,user_id,status,hash,index_version) VALUES('doc-1','review-space','ready','hash-1',1)");
         jdbc.update("INSERT INTO chunks(id,document_id,user_id,text) VALUES('chunk-1','doc-1','review-space','证据')");
@@ -459,11 +461,11 @@ class BusinessBackendIntegrationTest {
         workspace("review-space", "author", "admin", 2);
         jdbc.update("INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES('review-space','other-admin','admin','now')");
         run("decision-run", "review-space");
-        jdbc.update("UPDATE runs SET created_by='author',status='completed',report='# Report [W-1]',sources='[{\"id\":\"W-1\",\"kind\":\"web\",\"text\":\"Evidence\"}]',validation='{\"quality\":\"unverified\",\"checked_claims\":1,\"supported_claims\":1}' WHERE id='decision-run'");
+        jdbc.update("UPDATE runs SET created_by='author',status='completed',report='# Report [W-1]',sources='[{\"id\":\"W-1\",\"kind\":\"web\",\"text\":\"Evidence\"}]',validation='{\"verification_contract\":\"verification-v3-claim-span\",\"quality\":\"unverified\",\"checked_claims\":1,\"supported_claims\":1}' WHERE id='decision-run'");
         mvc.perform(post("/api/research/runs/decision-run/publication")
                 .with(jwt().jwt(t -> t.subject("author"))).header("X-Workspace-ID", "review-space"))
             .andExpect(status().isUnprocessableEntity());
-        jdbc.update("UPDATE runs SET validation='{\"quality\":\"complete\",\"checked_claims\":1,\"supported_claims\":1}' WHERE id='decision-run'");
+        jdbc.update("UPDATE runs SET validation='{\"verification_contract\":\"verification-v3-claim-span\",\"quality\":\"complete\",\"checked_claims\":1,\"supported_claims\":1}' WHERE id='decision-run'");
         String id = String.valueOf(body(mvc.perform(post("/api/research/runs/decision-run/publication")
                 .with(jwt().jwt(t -> t.subject("author"))).header("X-Workspace-ID", "review-space"))
             .andExpect(status().isCreated()).andReturn()).get("id"));
@@ -489,7 +491,7 @@ class BusinessBackendIntegrationTest {
         jdbc.update("""
             UPDATE runs SET created_by='author',status='completed',report='# 有限结论 [W-1]\\n\\n未回答：长期效果',
             sources='[{"id":"W-1","kind":"web","title":"研究资料","text":"已有依据"}]',
-            validation='{"quality":"partial","checked_claims":2,"supported_claims":1,"removed_claims":1,"unanswered_questions":["长期效果"]}'
+            validation='{"verification_contract":"verification-v3-claim-span","quality":"partial","checked_claims":2,"supported_claims":1,"removed_claims":1,"unanswered_questions":["长期效果"]}'
             WHERE id='partial-run'""");
         String id = String.valueOf(body(mvc.perform(post("/api/research/runs/partial-run/publication")
                 .with(jwt().jwt(t -> t.subject("author"))).header("X-Workspace-ID", "partial-space"))
@@ -542,7 +544,7 @@ class BusinessBackendIntegrationTest {
         jdbc.update("""
             UPDATE runs SET created_by='owner',status='completed',report='# 已核验结论 [W-1]',
             sources='[{"id":"W-1","kind":"web","text":"原文证据"}]',
-            validation='{"quality":"complete","checked_claims":1,"supported_claims":1}'
+            validation='{"verification_contract":"verification-v3-claim-span","quality":"complete","checked_claims":1,"supported_claims":1}'
             WHERE id='remove-run'""");
         String id = String.valueOf(body(mvc.perform(post("/api/research/runs/remove-run/publication")
                 .with(jwt().jwt(t -> t.subject("owner"))).header("X-Workspace-ID", "remove-space"))
@@ -589,7 +591,7 @@ class BusinessBackendIntegrationTest {
         jdbc.update("""
             UPDATE runs SET created_by='',status='completed',report='# Legacy',
             sources='[{"id":"W-1","kind":"web","text":"Evidence"}]',
-            validation='{"quality":"complete","checked_claims":1,"supported_claims":1}'
+            validation='{"verification_contract":"verification-v3-claim-span","quality":"complete","checked_claims":1,"supported_claims":1}'
             WHERE id='legacy-run'""");
         mvc.perform(post("/api/research/runs/legacy-run/publication")
                 .with(jwt().jwt(t -> t.subject("admin"))).header("X-Workspace-ID", "legacy-space"))
@@ -610,7 +612,7 @@ class BusinessBackendIntegrationTest {
         jdbc.update("""
             UPDATE runs SET created_by='author',status='completed',report='# Result [W-1]',
             sources='[{"id":"W-1","kind":"web","text":"Evidence"}]',
-            validation='{"quality":"complete","checked_claims":1,"supported_claims":1}'
+            validation='{"verification_contract":"verification-v3-claim-span","quality":"complete","checked_claims":1,"supported_claims":1}'
             WHERE id='rejected-run'""");
         String id = String.valueOf(body(mvc.perform(post("/api/research/runs/rejected-run/publication")
                 .with(jwt().jwt(t -> t.subject("author"))).header("X-Workspace-ID", "review-space"))
@@ -636,6 +638,294 @@ class BusinessBackendIntegrationTest {
         mvc.perform(post("/api/research/runs/rejected-run/publication")
                 .with(jwt().jwt(t -> t.subject("author"))).header("X-Workspace-ID", "review-space"))
             .andExpect(status().isConflict());
+    }
+
+    @Test
+    void reportRevisionIsIdempotentReviewedAndPreservesPublishedHistory() throws Exception {
+        Map<String, Object> original = lifecycleReport("public", -1);
+        WorkspaceIdentity writer = new WorkspaceIdentity("lifecycle", "writer", "researcher", "Writer");
+        WorkspaceIdentity reviewer = new WorkspaceIdentity("lifecycle", "reviewer", "admin", "Reviewer");
+        String originalId = String.valueOf(original.get("id"));
+        publications.approve(reviewer, originalId, "");
+        Requests.ReportRevision request = new Requests.ReportRevision("revision-request-1", String.valueOf(original.get("content_sha256")), -1);
+        run("preoccupied-request", "lifecycle");
+        String occupiedKey = "revision-" + java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256")
+            .digest("writer:revision-request-1".getBytes(java.nio.charset.StandardCharsets.UTF_8))).substring(0, 48);
+        jdbc.update("UPDATE runs SET client_request_id=?,created_by='writer',status='completed' WHERE id='preoccupied-request'", occupiedKey);
+        Map<String, Object> revision = body(mvc.perform(post("/api/reports/" + originalId + "/revisions")
+                .with(jwt().jwt(t -> t.subject("writer"))).header("X-Workspace-ID", "lifecycle")
+                .contentType("application/json").content(mapper.writeValueAsString(request)))
+            .andExpect(status().isAccepted()).andReturn());
+        assertThat(publications.revise(writer, originalId, request)).isEqualTo(revision);
+        assertThat(count("report_revision_jobs")).isEqualTo(1);
+        assertThat(count("business_outbox")).isEqualTo(1);
+        String runId = String.valueOf(revision.get("run_id"));
+        assertThat(runId).isNotEqualTo("preoccupied-request");
+        String revisionThread = jdbc.queryForObject("SELECT thread_id FROM runs WHERE id=?", String.class, runId);
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/api/threads/" + revisionThread)
+                .with(jwt().jwt(t -> t.subject("reviewer"))).header("X-Workspace-ID", "lifecycle"))
+            .andExpect(status().isConflict());
+        completeLifecycleRun(runId, "public", -1, "新版结论");
+        jdbc.update("UPDATE report_publications SET content_sha256=? WHERE id=?", "f".repeat(64), originalId);
+        assertThatThrownBy(() -> publications.submit(writer, runId))
+            .isInstanceOf(ResponseStatusException.class).hasMessageContaining("原报告指纹");
+        jdbc.update("UPDATE report_publications SET content_sha256=? WHERE id=?", original.get("content_sha256"), originalId);
+        Map<String, Object> updated = publications.submit(writer, runId);
+        assertThat(updated.get("revision_no")).isEqualTo(2);
+        assertThat(updated.get("parent_report_id")).isEqualTo(originalId);
+        String updatedId = String.valueOf(updated.get("id"));
+        assertThatThrownBy(() -> publications.approve(new WorkspaceIdentity("lifecycle", "writer", "admin", "Writer"), updatedId, ""))
+            .isInstanceOf(ResponseStatusException.class);
+        jdbc.update("UPDATE report_publications SET content_sha256=? WHERE id=?", "f".repeat(64), originalId);
+        assertThatThrownBy(() -> publications.approve(reviewer, updatedId, ""))
+            .isInstanceOf(ResponseStatusException.class).hasMessageContaining("修订依据已变化");
+        jdbc.update("UPDATE report_publications SET content_sha256=? WHERE id=?", original.get("content_sha256"), originalId);
+        publications.approve(reviewer, updatedId, "");
+        assertThat(publications.series(writer, String.valueOf(original.get("series_id"))).get("current_report_id")).isEqualTo(updatedId);
+        assertThat(publications.get(writer, originalId).get("report_markdown")).isEqualTo("# 原结论 [W-1]");
+        assertThat((List<?>) publications.diff(writer, updatedId, originalId).get("changes")).hasSize(1);
+        mvc.perform(get("/api/reports/" + updatedId + "/diff?against=" + originalId)
+                .with(jwt().jwt(t -> t.subject("writer"))).header("X-Workspace-ID", "lifecycle"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.changes[0].kind").value("changed"));
+        mvc.perform(get("/api/reports/" + updatedId + "/impacts")
+                .with(jwt().jwt(t -> t.subject("writer"))).header("X-Workspace-ID", "lifecycle"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.current_corpus_revision").value(-1));
+        mvc.perform(get("/api/report-series/" + original.get("series_id"))
+                .with(jwt().jwt(t -> t.subject("writer"))).header("X-Workspace-ID", "lifecycle"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.current_report_id").value(updatedId));
+        publications.withdraw(reviewer, updatedId, "撤回修订");
+        assertThat(publications.series(writer, String.valueOf(original.get("series_id"))).get("current_report_id")).isNull();
+        assertThatThrownBy(() -> publications.revise(writer, originalId,
+            new Requests.ReportRevision("revision-request-2", String.valueOf(original.get("content_sha256")), -1)))
+            .isInstanceOf(ResponseStatusException.class);
+    }
+
+    @Test
+    void corpusChangesFenceSubmissionApprovalAndRevisionWhilePublicReportsRemainIndependent() throws Exception {
+        Map<String, Object> original = lifecycleReport("internal", 3);
+        WorkspaceIdentity writer = new WorkspaceIdentity("lifecycle", "writer", "researcher", "Writer");
+        WorkspaceIdentity reviewer = new WorkspaceIdentity("lifecycle", "reviewer", "admin", "Reviewer");
+        String id = String.valueOf(original.get("id"));
+        jdbc.update("UPDATE workspace_corpus_revisions SET revision=4 WHERE workspace_id='lifecycle'");
+        assertThatThrownBy(() -> publications.approve(reviewer, id, ""))
+            .isInstanceOf(ResponseStatusException.class).hasMessageContaining("资料已变化");
+        assertThat(publications.get(writer, id).get("evidence_status")).isEqualTo("check_pending");
+        run("stale-artifact", "lifecycle");
+        completeLifecycleRun("stale-artifact", "internal", 3, "过期结论");
+        assertThatThrownBy(() -> publications.submit(writer, "stale-artifact"))
+            .isInstanceOf(ResponseStatusException.class).hasMessageContaining("资料版本已变化");
+        jdbc.update("UPDATE run_artifacts SET corpus_revision=4,attempt_count=0 WHERE run_id='stale-artifact'");
+        assertThatThrownBy(() -> publications.submit(writer, "stale-artifact"))
+            .isInstanceOf(ResponseStatusException.class).hasMessageContaining("执行代次");
+        run("public-artifact", "lifecycle");
+        completeLifecycleRun("public-artifact", "public", -1, "公开结论");
+        Map<String, Object> publicReport = publications.submit(writer, "public-artifact");
+        publications.approve(reviewer, String.valueOf(publicReport.get("id")), "");
+        assertThat(((Number) publicReport.get("corpus_revision")).longValue()).isEqualTo(-1L);
+    }
+
+    @Test
+    void revisionsRejectForeignAuthorsReusedKeysAndObsoletePublishedParents() throws Exception {
+        Map<String, Object> original = lifecycleReport("public", -1);
+        WorkspaceIdentity writer = new WorkspaceIdentity("lifecycle", "writer", "researcher", "Writer");
+        WorkspaceIdentity reviewer = new WorkspaceIdentity("lifecycle", "reviewer", "admin", "Reviewer");
+        String id = String.valueOf(original.get("id"));
+        publications.approve(reviewer, id, "");
+        jdbc.update("INSERT INTO memberships VALUES('lifecycle','stranger','researcher','now')");
+        Requests.ReportRevision first = new Requests.ReportRevision("first-revision", String.valueOf(original.get("content_sha256")), -1);
+        assertThatThrownBy(() -> publications.revise(new WorkspaceIdentity("lifecycle", "stranger", "researcher", "Stranger"), id, first))
+            .isInstanceOf(ResponseStatusException.class).hasMessageContaining("作者或管理员");
+        Map<String, Object> job = publications.revise(writer, id, first);
+        Map<String, Object> competing = publications.revise(writer, id,
+            new Requests.ReportRevision("competing-revision", String.valueOf(original.get("content_sha256")), -1));
+        assertThatThrownBy(() -> publications.revise(writer, id,
+            new Requests.ReportRevision("first-revision", "a".repeat(64), -1)))
+            .isInstanceOf(ResponseStatusException.class).hasMessageContaining("不同内容");
+        String newRun = String.valueOf(job.get("run_id"));
+        completeLifecycleRun(newRun, "public", -1, "新版");
+        Map<String, Object> revised = publications.submit(writer, newRun);
+        String competingRun = String.valueOf(competing.get("run_id"));
+        completeLifecycleRun(competingRun, "public", -1, "另一修订");
+        Map<String, Object> competingReport = publications.submit(writer, competingRun);
+        publications.approve(reviewer, String.valueOf(revised.get("id")), "");
+        assertThatThrownBy(() -> publications.approve(reviewer, String.valueOf(competingReport.get("id")), ""))
+            .isInstanceOf(ResponseStatusException.class).hasMessageContaining("旧修订不能发布");
+        assertThatThrownBy(() -> publications.revise(writer, id,
+            new Requests.ReportRevision("late-revision", String.valueOf(original.get("content_sha256")), -1)))
+            .isInstanceOf(ResponseStatusException.class).hasMessageContaining("最新正式版本");
+        mvc.perform(get("/api/reports?limit=1").with(jwt().jwt(t -> t.subject("writer"))).header("X-Workspace-ID", "lifecycle"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.length()").value(1))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.header().exists("X-Next-Cursor"));
+        mvc.perform(get("/api/reports?limit=101").with(jwt().jwt(t -> t.subject("writer"))).header("X-Workspace-ID", "lifecycle"))
+            .andExpect(status().isBadRequest());
+    }
+
+    private Map<String, Object> lifecycleReport(String policy, long revision) {
+        workspace("lifecycle", "writer", "researcher", 2);
+        jdbc.update("INSERT INTO memberships VALUES('lifecycle','reviewer','admin','now')");
+        jdbc.update("INSERT INTO workspace_corpus_revisions VALUES('lifecycle',?)", Math.max(0, revision));
+        run("lifecycle-original", "lifecycle");
+        completeLifecycleRun("lifecycle-original", policy, revision, "原结论");
+        return publications.submit(new WorkspaceIdentity("lifecycle", "writer", "researcher", "Writer"), "lifecycle-original");
+    }
+
+    @Test
+    void reportDiffIgnoresRetrievalDiagnosticsButPreservesSourceVersionChanges() throws Exception {
+        workspace("lifecycle", "writer", "researcher", 2);
+        WorkspaceIdentity writer = new WorkspaceIdentity("lifecycle", "writer", "researcher", "Writer");
+        jdbc.update("INSERT INTO documents VALUES('diff-doc','lifecycle','ready','hash-1',1)");
+        jdbc.update("INSERT INTO chunks VALUES('diff-chunk','diff-doc','lifecycle','金额上限为500元，实习生不适用')");
+        List<Map<String, Object>> reports = new ArrayList<>();
+        for (int index = 0; index < 3; index++) {
+            int version = index == 2 ? 2 : 1;
+            String runId = "diff-run-" + index;
+            jdbc.update("UPDATE documents SET index_version=?,hash=? WHERE id='diff-doc'", version, "hash-" + version);
+            run(runId, "lifecycle");
+            completeLifecycleRun(runId, "public", -1, "原结论");
+            Map<String, Object> evidence = new java.util.LinkedHashMap<>(Map.of(
+                "id", "L-1", "kind", "local", "document_id", "diff-doc", "chunk_id", "diff-chunk",
+                "index_version", version, "document_hash", "hash-" + version, "locator", "第1条",
+                "text", "金额上限为500元，实习生不适用", "retrieved_at", "2026-10-20T00:0" + index + ":00Z"));
+            evidence.put("score", index * 0.1);
+            String claim = mapper.writeValueAsString(List.of(Map.of("id", "stable-claim", "text", "金额上限为500元，实习生不适用",
+                "type", "fact", "source_ids", List.of("L-1"), "evidence", List.of(evidence))));
+            jdbc.update("UPDATE runs SET report='# 金额上限为500元，实习生不适用 [L-1]',sources=? WHERE id=?",
+                mapper.writeValueAsString(List.of(evidence)), runId);
+            jdbc.update("UPDATE run_artifacts SET claims_json=? WHERE run_id=?", claim, runId);
+            Map<String, Object> report = publications.submit(writer, runId);
+            if (!reports.isEmpty()) jdbc.update("UPDATE report_publications SET series_id=?,revision_no=? WHERE id=?",
+                reports.getFirst().get("series_id"), index + 1, report.get("id"));
+            reports.add(report);
+        }
+        String first = String.valueOf(reports.getFirst().get("id"));
+        assertThat((List<?>) publications.diff(writer, String.valueOf(reports.get(1).get("id")), first).get("changes")).isEmpty();
+        List<?> changed = (List<?>) publications.diff(writer, String.valueOf(reports.get(2).get("id")), first).get("changes");
+        assertThat(changed).hasSize(1);
+        assertThat(((Map<?, ?>) changed.getFirst()).get("kind")).isEqualTo("evidence_changed");
+        assertThat(((Map<?, ?>) changed.getFirst()).get("old")).isInstanceOf(Map.class);
+        assertThat(((Map<?, ?>) changed.getFirst()).get("new")).isInstanceOf(Map.class);
+    }
+
+    @Test
+    void threadAndRunPaginationKeepEveryRecordAndConversationExportStreamsAllRuns() throws Exception {
+        workspace("paging", "writer", "researcher", 2);
+        for (int index = 0; index < 22; index++) {
+            String id = "page-%02d".formatted(index);
+            run(id, "paging");
+            jdbc.update("UPDATE runs SET status='completed',created_by='writer',report=? WHERE id=?", "报告 " + id + " 中文证据", id);
+            jdbc.update("UPDATE runs SET thread_id='page-00-thread' WHERE id=?", id);
+        }
+        jdbc.update("UPDATE threads SET created_by='writer' WHERE user_id='paging'");
+        MvcResult threads = mvc.perform(get("/api/threads").with(jwt().jwt(t -> t.subject("writer")))
+                .header("X-Workspace-ID", "paging"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.length()").value(20)).andReturn();
+        mvc.perform(get("/api/threads").param("cursor", threads.getResponse().getHeader("X-Next-Cursor"))
+                .with(jwt().jwt(t -> t.subject("writer"))).header("X-Workspace-ID", "paging"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.length()").value(2));
+        MvcResult runs = mvc.perform(get("/api/threads/page-00-thread/runs").with(jwt().jwt(t -> t.subject("writer")))
+                .header("X-Workspace-ID", "paging"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.length()").value(20))
+            .andExpect(jsonPath("$[0].id").value("page-21")).andReturn();
+        mvc.perform(get("/api/threads/page-00-thread/runs").param("cursor", runs.getResponse().getHeader("X-Next-Cursor"))
+                .with(jwt().jwt(t -> t.subject("writer"))).header("X-Workspace-ID", "paging"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.length()").value(2))
+            .andExpect(jsonPath("$[0].id").value("page-01"));
+        MvcResult export = mvc.perform(get("/api/threads/page-00-thread/report")
+                .with(jwt().jwt(t -> t.subject("writer"))).header("X-Workspace-ID", "paging"))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.request().asyncStarted()).andReturn();
+        String markdown = mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch(export))
+            .andExpect(status().isOk()).andReturn().getResponse().getContentAsString(java.nio.charset.StandardCharsets.UTF_8);
+        assertThat(markdown).contains("报告 page-00 中文证据", "报告 page-21 中文证据", "## 22.");
+    }
+
+    @Test
+    void outboxMeasuresAgeAndDeliveryDelayByCommandWithoutExposingPayloads() {
+        run("observed-run", "workspace");
+        SimpleMeterRegistry metrics = new SimpleMeterRegistry();
+        OutboxService dispatcher = new OutboxService(jdbc, agent, properties, metrics);
+        dispatcher.enqueue("observed-run", "research.schedule", "{}");
+        jdbc.update("UPDATE business_outbox SET created_at=?", Instant.now().minusSeconds(12).toString());
+        when(agent.internal(anyString(), anyString())).thenReturn(new AgentClient.AgentResponse(503, new HttpHeaders(), new byte[0]));
+        dispatcher.dispatch();
+        assertThat(metrics.get("deepresearch.business.outbox.oldest.age.seconds").gauge().value()).isGreaterThanOrEqualTo(12);
+        jdbc.update("UPDATE business_outbox SET next_attempt_at=0");
+        when(agent.internal(anyString(), anyString())).thenReturn(accepted());
+        dispatcher.dispatch();
+        assertThat(metrics.get("deepresearch.business.outbox.delivery.delay").tag("command", "research.schedule").timer().count()).isEqualTo(1);
+        assertThat(metrics.get("deepresearch.business.outbox.oldest.age.seconds").gauge().value()).isZero();
+    }
+
+    @Test
+    void legacyCompletedRunRequiresCurrentVerificationBeforeSubmission() throws Exception {
+        workspace("lifecycle", "writer", "researcher", 2);
+        run("legacy-completed", "lifecycle");
+        completeLifecycleRun("legacy-completed", "public", -1, "旧核验结论");
+        for (String validation : List.of(
+                "{\"quality\":\"complete\",\"checked_claims\":1,\"supported_claims\":1}",
+                "{\"verification_contract\":\"verification-v2\",\"quality\":\"complete\",\"checked_claims\":1,\"supported_claims\":1}")) {
+            jdbc.update("UPDATE runs SET validation=? WHERE id='legacy-completed'", validation);
+            MvcResult rejected = mvc.perform(post("/api/research/runs/legacy-completed/publication")
+                    .with(jwt().jwt(t -> t.subject("writer"))).header("X-Workspace-ID", "lifecycle"))
+                .andExpect(status().isConflict()).andReturn();
+            assertThat(rejected.getResponse().getContentAsString(java.nio.charset.StandardCharsets.UTF_8)).contains("请新建研究");
+            assertThat(count("report_publications")).isZero();
+            assertThat(count("report_series")).isZero();
+            assertThat(jdbc.queryForObject("SELECT report_submitted FROM runs WHERE id='legacy-completed'", Boolean.class)).isFalse();
+        }
+    }
+
+    @Test
+    void legacyPendingSnapshotCannotBeApprovedButPublishedHistoryRemainsReadable() throws Exception {
+        Map<String, Object> report = lifecycleReport("public", -1);
+        String id = String.valueOf(report.get("id"));
+        Map<String, Object> original = jdbc.queryForMap("SELECT * FROM report_publications WHERE id=?", id);
+        String legacyValidation = "{\"verification_contract\":\"verification-v2\",\"quality\":\"complete\",\"checked_claims\":1,\"supported_claims\":1}";
+        String frozenDigest = java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(
+            (original.get("report_markdown") + "\n" + original.get("sources_json") + "\n" + legacyValidation + "\n"
+                + original.get("artifacts_json")).getBytes(java.nio.charset.StandardCharsets.UTF_8)));
+        jdbc.update("UPDATE report_publications SET validation_json=?,content_sha256=? WHERE id=?", legacyValidation, frozenDigest, id);
+        MvcResult rejected = mvc.perform(post("/api/reports/" + id + "/approve")
+                .with(jwt().jwt(t -> t.subject("reviewer"))).header("X-Workspace-ID", "lifecycle"))
+            .andExpect(status().isConflict()).andReturn();
+        assertThat(rejected.getResponse().getContentAsString(java.nio.charset.StandardCharsets.UTF_8)).contains("请新建研究");
+        Map<String, Object> unchanged = jdbc.queryForMap("SELECT * FROM report_publications WHERE id=?", id);
+        assertThat(unchanged.get("status")).isEqualTo("pending");
+        assertThat(unchanged.get("reviewed_at")).isEqualTo(original.get("reviewed_at"));
+        assertThat(unchanged.get("content_sha256")).isEqualTo(frozenDigest);
+        assertThat(unchanged.get("validation_json")).isEqualTo(legacyValidation);
+        assertThat(unchanged.get("report_markdown")).isEqualTo(original.get("report_markdown"));
+        assertThat(jdbc.queryForObject("SELECT current_report_id FROM report_series WHERE id=?", String.class, report.get("series_id"))).isNull();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_logs WHERE action='report.approve'", Integer.class)).isZero();
+        jdbc.update("UPDATE report_publications SET status='published' WHERE id=?", id);
+        mvc.perform(get("/api/reports/" + id).with(jwt().jwt(t -> t.subject("writer"))).header("X-Workspace-ID", "lifecycle"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.content_sha256").value(frozenDigest));
+        mvc.perform(post("/api/research/runs/lifecycle-original/publication")
+                .with(jwt().jwt(t -> t.subject("writer"))).header("X-Workspace-ID", "lifecycle"))
+            .andExpect(status().isCreated()).andExpect(jsonPath("$.id").value(id));
+    }
+
+    @Test
+    void migratedLegacySnapshotKeepsDigestCompatibilityAndUnknownEvidenceStatus() throws Exception {
+        Map<String, Object> report = lifecycleReport("public", -1);
+        String id = String.valueOf(report.get("id"));
+        Map<String, Object> raw = jdbc.queryForMap("SELECT * FROM report_publications WHERE id=?", id);
+        String legacyDigest = java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(
+            (raw.get("report_markdown") + "\n" + raw.get("sources_json") + "\n" + raw.get("validation_json")).getBytes(java.nio.charset.StandardCharsets.UTF_8)));
+        jdbc.update("UPDATE report_publications SET artifacts_json='{}',content_sha256=?,evidence_status='undetermined' WHERE id=?", legacyDigest, id);
+        Map<String, Object> approved = publications.approve(new WorkspaceIdentity("lifecycle", "reviewer", "admin", "Reviewer"), id, "");
+        assertThat(approved.get("status")).isEqualTo("published");
+        assertThat(approved.get("evidence_status")).isEqualTo("undetermined");
+    }
+
+    private void completeLifecycleRun(String id, String policy, long revision, String text) {
+        jdbc.update("""
+            UPDATE runs SET created_by='writer',status='completed',attempt_count=1,data_policy=?,report=?,
+            sources='[{"id":"W-1","kind":"web","text":"证据"}]',
+            validation='{"verification_contract":"verification-v3-claim-span","quality":"complete","checked_claims":1,"supported_claims":1}' WHERE id=?""", policy, "# " + text + " [W-1]", id);
+        jdbc.update("""
+            INSERT INTO run_artifacts(run_id,workspace_id,attempt_count,corpus_revision,requirements_json,claims_json,created_at)
+            VALUES(?,'lifecycle',1,?,'{"requirements":["研究要求"],"questions":["问题"]}',?,'now')""",
+            id, revision, "[{\"id\":\"claim-1\",\"text\":\"" + text + "\",\"type\":\"fact\",\"source_ids\":[\"W-1\"]}]");
     }
 
     private void workspace(String id, String subject, String role, int limit) {

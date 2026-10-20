@@ -1,0 +1,133 @@
+{
+  "suite": "lifecycle-research-evidence-status",
+  "recorded_date": "2026-10-20",
+  "operation": "export existing mixed evidence, no new model execution",
+  "backend_source_sha256": "16953cb2e65ae24e4937f48425a98d702a46d23ae9816c93866c87f4c6176b2c",
+  "source_context": "Windows working-tree byte fingerprint before final Git commit; not an assertion about historical HEAD code",
+  "verification_contract": "verification-v3-claim-span",
+  "verification_wire": "verification-v4-target-id",
+  "fixture_sha256": {
+    "research_cases.json": "6962ac91789b58afbb20c6719fe9f64876177f8f5dbff0813958f953976b0a0b",
+    "public_sample.json": "669878c679e35d6d172270dfa7a8507a1732e8466e492bcd8092069e130ce931"
+  },
+  "total_cases": 60,
+  "all_sixty_passed": false,
+  "new_whole_graph_sixty_run": false,
+  "cohorts": {
+    "historical_exact_span_semantic_compatibility": {
+      "count": 35,
+      "ids": [
+        "policy-01-1",
+        "policy-01-2",
+        "policy-02-1",
+        "policy-02-2",
+        "policy-03-1",
+        "policy-03-2",
+        "policy-04-1",
+        "policy-04-2",
+        "policy-05-1",
+        "policy-05-2",
+        "policy-06-1",
+        "policy-06-2",
+        "policy-07-1",
+        "policy-07-2",
+        "policy-08-1",
+        "policy-08-2",
+        "policy-09-1",
+        "policy-09-2",
+        "policy-10-1",
+        "policy-10-2",
+        "policy-11-1",
+        "policy-11-2",
+        "policy-12-1",
+        "policy-12-2",
+        "policy-13-1",
+        "policy-13-2",
+        "policy-14-1",
+        "policy-14-2",
+        "policy-15-1",
+        "policy-15-2",
+        "policy-16-1",
+        "policy-17-1",
+        "policy-17-2",
+        "policy-18-1",
+        "policy-18-2"
+      ],
+      "meaning": "Offline compatibility under the same v3 semantic rule and preserved real-model content grades; not new v4 execution."
+    },
+    "new_wire_component_complete": {
+      "count": 18,
+      "ids": [
+        "policy-19-1",
+        "policy-19-2",
+        "policy-20-1",
+        "policy-20-2",
+        "sample-configmap",
+        "sample-deployment",
+        "sample-job",
+        "sample-network-policy",
+        "sample-persistent-volume",
+        "sample-pod-lifecycle",
+        "sample-probes",
+        "sample-quota",
+        "sample-secret",
+        "sample-statefulset",
+        "public-deployment",
+        "public-job",
+        "public-network-policy",
+        "public-persistent-volume"
+      ],
+      "meaning": "Saved reports validated through current protocol; each result distinguishes historical unchanged grading from new grading. Not fresh research generation."
+    },
+    "targeted_correct_fact_canary": {
+      "count": 1,
+      "ids": [
+        "policy-16-2"
+      ],
+      "meaning": "Seven original claims retained; current production and external coverage passed; unchanged per-claim support objects match historical real grading."
+    },
+    "incomplete": {
+      "count": 6,
+      "ids": [
+        "public-pod-lifecycle",
+        "public-probes",
+        "public-quota",
+        "public-secret",
+        "public-statefulset",
+        "public-configmap"
+      ]
+    }
+  },
+  "known_gaps": {
+    "public-configmap": "Incorrect enumeration in saved report rejected by current canary; actual repair and final grading incomplete.",
+    "public-pod-lifecycle": "Two claims rejected; real repair response saved, replacement verification blocked before HTTP by budget.",
+    "public-quota": "Historical unsupported claim remains unresolved in current protocol evidence.",
+    "public-statefulset": "Historical unsupported claim and glossary-expanded source require further validation.",
+    "public-probes": "Current protocol component verification incomplete.",
+    "public-secret": "Current protocol component verification incomplete."
+  },
+  "controlled_revalidation_usage": {
+    "http_requests": 119,
+    "prompt_tokens": 781874,
+    "completion_tokens": 47501,
+    "search_calls": 0,
+    "scope": "Only the bounded saved-report revalidation ledger (74 + 5 + 40); excludes earlier complete research, retrieval, and separate early checks. Not total account usage or monetary cost.",
+    "last_user_authorized_batch_http_limit": 40,
+    "last_batch_actual_http": 40
+  },
+  "delivery_decision": {
+    "user_confirmed_date": "2026-10-20",
+    "stop_local_paid_evaluation": true,
+    "incomplete_expanded_cases_retained": true,
+    "expanded_sixty_required_for_this_delivery": false,
+    "existing_ci_and_answer_quality_thresholds_unchanged": true,
+    "functional_role_recovery_soak_and_exact_commit_ci_still_required": true
+  },
+  "limitations": [
+    "Template-heavy synthetic policy cases; public sample questions share source documents with the main set.",
+    "Development and holdout failures have been inspected; not an unseen blind test.",
+    "Historical relevant configuration snapshot and grading code are comparable, but per-request environment fingerprints were not captured.",
+    "No independent human blind review; model judges can share errors.",
+    "No aggregate all-current-model score inferred from incomplete or mixed cohorts."
+  ]
+}

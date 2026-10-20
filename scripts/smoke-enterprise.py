@@ -101,6 +101,22 @@ def verify_migration() -> None:
         raise RuntimeError(f"Unexpected Alembic version: {actual}; expected migration heads: {expected}")
 
 
+def alert_relay_ready() -> None:
+    # Authenticate the boundary without sending a real webhook notification.
+    command = """import json,urllib.request,urllib.error
+payload=json.load(urllib.request.urlopen('http://alert-relay:8002/livez',timeout=5))
+assert payload.get('status')=='alive' and isinstance(payload.get('notifications_enabled'),bool)
+request=urllib.request.Request('http://alert-relay:8002/internal/alerts',data=b'{}',headers={'Content-Type':'application/json'})
+try:
+    urllib.request.urlopen(request,timeout=5)
+except urllib.error.HTTPError as error:
+    assert error.code==401
+else:
+    raise AssertionError('Unauthenticated alert relay accepted a notification')
+"""
+    run("exec", "-T", "agent", "python", "-c", command, capture=True)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--start", action="store_true", help="Build and start the default enterprise Compose environment first")
@@ -123,8 +139,9 @@ def main() -> int:
     wait_for("Python agent readiness", lambda: container_get("http://agent:8000/readyz"))
     wait_for("worker metrics", lambda: container_get("http://worker:8001/metrics"))
     wait_for("document worker metrics", lambda: container_get("http://document-worker:8001/metrics"))
+    wait_for("independent alert relay health and authentication", alert_relay_ready)
     run("exec", "-T", "agent", "python", "-c", "import socket; socket.create_connection(('otel-collector',4317),timeout=5).close()")
-    print("Enterprise smoke passed: web, Java business API, Python Agent, OIDC, migration heads, Redis, both workers, Prometheus, Grafana, Tempo, Loki, and OTel.")
+    print("Enterprise smoke passed: web, Java business API, Python Agent, OIDC, migration heads, Redis, both workers, independent alert relay health/authentication, Prometheus, Grafana, Tempo, Loki, and OTel.")
     return 0
 
 

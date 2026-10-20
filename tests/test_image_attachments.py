@@ -165,7 +165,9 @@ async def test_image_research_with_no_web_evidence(runtime):
             "judge": {"accepted_ids": [source_id]},
             "analyst": {"claims": [claim], "gaps": []},
             "writer": {"title": "图中内容", "sections": [{"heading": "状态", "claims": [claim]}]},
-            "validator": {"checks": [{"index": 0, "supported": True, "reason": "图片原文支持且保留否定关系"}]},
+            "validator": {"checks": [{"index": 0, "supported": True,
+                                      "atomic_checks": [{"target_id": "0:0", "supported": True}],
+                                      "reason": "图片原文支持且保留否定关系"}]},
             "coverage": {"answered_questions": [0]},
         }
         return schema.model_validate(values[role])

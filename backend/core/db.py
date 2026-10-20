@@ -86,6 +86,14 @@ class Database:
             await conn.executescript(SCHEMA)
             await conn.executescript(ATTACHMENT_SCHEMA)
             await conn.executescript(DAILY_SCHEMA)
+            from .lifecycle_schema import SCHEMA as LIFECYCLE_SCHEMA, SQLITE_PUBLICATIONS, PUBLICATION_COLUMNS, PUBLICATION_INDEXES
+            await conn.executescript(LIFECYCLE_SCHEMA)
+            await conn.execute(SQLITE_PUBLICATIONS)
+            publication_columns = {row[1] for row in await (await conn.execute("PRAGMA table_info(report_publications)")).fetchall()}
+            for name, definition in PUBLICATION_COLUMNS.items():
+                if name not in publication_columns:
+                    await conn.execute(f"ALTER TABLE report_publications ADD COLUMN {name} {definition}")
+            await conn.executescript(PUBLICATION_INDEXES)
             from .reliability import SCHEMA as RELIABILITY_SCHEMA, RUN_COLUMNS
             await conn.executescript(RELIABILITY_SCHEMA)
             existing_runs = {row[1] for row in await (await conn.execute("PRAGMA table_info(runs)")).fetchall()}

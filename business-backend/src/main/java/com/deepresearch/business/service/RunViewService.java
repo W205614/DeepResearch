@@ -45,36 +45,58 @@ public class RunViewService {
     }
 
     public List<Map<String, Object>> visibleThreadRuns(String threadId, WorkspaceIdentity identity) {
-        return jdbc.queryForList("""
+        return renderMany(jdbc.queryForList("""
             SELECT * FROM runs WHERE thread_id=? AND user_id=?
             AND (? OR created_by=?) ORDER BY created_at""",
-            threadId, identity.workspaceId(), identity.hasRole("admin"), identity.subject())
-            .stream().map(this::render).toList();
+            threadId, identity.workspaceId(), identity.hasRole("admin"), identity.subject()));
     }
 
     public List<Map<String, Object>> threadRuns(String threadId, String workspaceId) {
-        return jdbc.queryForList("SELECT * FROM runs WHERE thread_id=? AND user_id=? ORDER BY created_at", threadId, workspaceId)
-            .stream().map(this::render).toList();
+        return renderMany(jdbc.queryForList("SELECT * FROM runs WHERE thread_id=? AND user_id=? ORDER BY created_at", threadId, workspaceId));
+    }
+
+    public ReportPublicationService.Page page(String threadId, WorkspaceIdentity identity, String cursor, int limit) {
+        String[] keys = PageCursor.decode(cursor, limit);
+        List<Map<String, Object>> rows = jdbc.queryForList("""
+            SELECT * FROM runs WHERE thread_id=? AND user_id=? AND (? OR created_by=?)
+            AND (?='' OR (created_at,id)<(?,?)) ORDER BY created_at DESC,id DESC LIMIT ?""",
+            threadId, identity.workspaceId(), identity.hasRole("admin"), identity.subject(), keys[1], keys[0], keys[1], limit + 1);
+        String next = rows.size() > limit ? PageCursor.encode(rows.get(limit - 1)) : null;
+        return new ReportPublicationService.Page(renderMany(rows.subList(0, Math.min(limit, rows.size()))), next);
     }
 
     public Map<String, Object> render(Map<String, Object> source) {
+        return renderMany(List.of(source)).getFirst();
+    }
+
+    private List<Map<String, Object>> renderMany(List<Map<String, Object>> sources) {
+        if (sources.isEmpty()) return List.of();
+        Object[] ids = sources.stream().map(row -> row.get("id")).toArray();
+        String placeholders = String.join(",", java.util.Collections.nCopies(ids.length, "?"));
+        Map<String, Map<String, Object>> publications = new LinkedHashMap<>(), usage = new LinkedHashMap<>();
+        Map<String, List<Map<String, Object>>> attachments = new LinkedHashMap<>();
+        jdbc.queryForList("SELECT source_run_id,id,status,series_id,revision_no,reviewed_by,reviewed_at,review_reason,withdrawn_at,withdrawal_reason FROM report_publications WHERE source_run_id IN (" + placeholders + ")", ids)
+            .forEach(row -> publications.put(String.valueOf(row.get("source_run_id")), row));
+        jdbc.queryForList("SELECT * FROM counters WHERE run_id IN (" + placeholders + ")", ids)
+            .forEach(row -> usage.put(String.valueOf(row.get("run_id")), row));
+        jdbc.queryForList("SELECT run_id,id,name,media_type,size,position FROM attachments WHERE status='ready' AND run_id IN (" + placeholders + ") ORDER BY position", ids)
+            .forEach(row -> attachments.computeIfAbsent(String.valueOf(row.get("run_id")), ignored -> new ArrayList<>()).add(row));
+        return sources.stream().map(source -> render(source, publications, usage, attachments)).toList();
+    }
+
+    private Map<String, Object> render(Map<String, Object> source, Map<String, Map<String, Object>> publications,
+                                      Map<String, Map<String, Object>> usage, Map<String, List<Map<String, Object>>> attachments) {
         Map<String, Object> row = new LinkedHashMap<>(source);
         String runId = String.valueOf(row.get("id"));
         row.put("sources", jsonList(row.get("sources")));
         Map<String, Object> validation = jsonMap(row.get("validation"));
         validation.putIfAbsent("quality", "unknown");
         row.put("validation", validation);
-        List<Map<String, Object>> publications = jdbc.queryForList(
-            "SELECT id,status,reviewed_by,reviewed_at,review_reason,withdrawn_at,withdrawal_reason FROM report_publications WHERE source_run_id=?",
-            runId);
-        row.put("publication", publications.isEmpty() ? null : publications.getFirst());
+        row.put("publication", publications.get(runId));
         Map<String, Object> errorInfo = jsonMap(row.get("error_info"));
         row.put("error_info", errorInfo);
-        row.put("attachments", jdbc.queryForList("""
-            SELECT id,name,media_type,size,position FROM attachments
-            WHERE run_id=? AND status='ready' ORDER BY position""", runId));
-        List<Map<String, Object>> usage = jdbc.queryForList("SELECT * FROM counters WHERE run_id=?", runId);
-        row.put("usage", usage.isEmpty() ? Map.of() : usage.getFirst());
+        row.put("attachments", attachments.getOrDefault(runId, List.of()));
+        row.put("usage", usage.getOrDefault(runId, Map.of()));
         long deadline = number(row.get("deadline_at"));
         long calls = number(row.get("call_attempts"));
         long reserved = number(row.get("reserved_tokens"));

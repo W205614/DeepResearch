@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 @RestController
 public class ResearchController {
@@ -66,13 +67,13 @@ public class ResearchController {
     }
 
     @GetMapping("/api/research/runs/{runId}/report")
-    ResponseEntity<byte[]> report(@PathVariable String runId, @AuthenticationPrincipal Jwt jwt,
+    ResponseEntity<StreamingResponseBody> report(@PathVariable String runId, @AuthenticationPrincipal Jwt jwt,
                                   @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
         WorkspaceIdentity identity = access.resolve(jwt, requested);
         Map<String, Object> run = views.visibleRun(runId, identity);
         return ResponseEntity.ok().contentType(MediaType.parseMediaType("text/markdown;charset=UTF-8"))
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"research-" + runId + ".md\"")
-            .body(String.valueOf(run.get("report")).getBytes(StandardCharsets.UTF_8));
+            .body(MarkdownDownload.stream(String.valueOf(run.get("report"))));
     }
 
     @PostMapping("/api/research/runs/{runId}/cancel")

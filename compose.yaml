@@ -347,6 +347,25 @@ services:
       - ./observability/loki.yaml:/etc/loki/loki.yaml:ro
       - loki-data:/loki
     restart: unless-stopped
+  alert-relay:
+    build: .
+    command: ["uvicorn", "scripts.alert_relay_service:create_app", "--factory", "--host", "0.0.0.0", "--port", "8002", "--no-access-log"]
+    environment:
+      FEISHU_WEBHOOK_URL: ${FEISHU_WEBHOOK_URL:-}
+      ALERT_RELAY_TOKEN_FILE: /run/secrets/alert_relay_token
+    volumes:
+      - alert-relay-token:/run/secrets:ro
+    depends_on:
+      alert-token-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8002/livez',timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    mem_limit: 128m
+    cpus: 0.5
+    restart: unless-stopped
   alertmanager:
     image: prom/alertmanager:v0.28.1
     command: ["--config.file=/etc/alertmanager/alertmanager.yml"]
@@ -357,6 +376,8 @@ services:
     depends_on:
       alert-token-init:
         condition: service_completed_successfully
+      alert-relay:
+        condition: service_healthy
     restart: unless-stopped
   alert-token-init:
     image: alpine:3.20

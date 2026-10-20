@@ -44,3 +44,7 @@ for _reason in ("provider_switch", "empty", "error", "search_limit_reached", "in
     FALLBACKS.labels(reason=_reason)
 for _outcome in ("success", "timeout", "error", "invalid", "policy_blocked"):
     RERANKER_CALLS.labels(outcome=_outcome)
+
+RAG_VECTOR_CANDIDATES = Counter("deepresearch_rag_vector_candidates_total", "Vector candidates checked against effective SQL records", ["state"])
+RAG_VECTOR_REFILLS = Counter("deepresearch_rag_vector_refills_total", "Bounded vector candidate refill calls")
+CHANGE_EVENTS_PENDING = Gauge("deepresearch_document_change_events_pending", "Durable document change events awaiting impact processing")

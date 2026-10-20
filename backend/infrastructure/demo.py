@@ -43,12 +43,15 @@ def generate(role, data):
     if role == "writer":
         return {"sections": [{"question_index": None, "claim_indices": list(range(len(data["claims"])))}]}
     if role == "coverage":
-        return {"answered_questions": []}
+        return {"answered_questions": [], "original_request_answered": False}
     if role == "evidence_recovery":
         return {"facts": []}
     if role == "validator":
         return {"checks": [{"index": c["index"], "supported": c["text"] in " ".join(
                             data["sources"][key]["text"] for key in c["source_ids"]),
+                            "atomic_checks": [{"target_id": target["id"], "supported": c["text"] in " ".join(
+                                data["sources"][key]["text"] for key in c["source_ids"])}
+                                for target in c.get("targets", [{"id": f"{c['index']}:0"}])],
                             "reason": "固定数据逐字匹配检查"} for c in data["claims"]]}
     if role == "repair":
         return {"repairs": []}

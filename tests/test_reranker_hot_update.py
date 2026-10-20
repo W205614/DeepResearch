@@ -72,7 +72,10 @@ async def test_reranker_supports_string_document_provider_contract(runtime):
     result = await runtime.documents.search("alice", ["ALPHA"], limit=1, rerank_query="original ALPHA")
 
     assert result[0]["ranking_stage"] == "rerank"
-    assert payloads[0]["documents"] == ["ALPHA string document evidence"]
+    assert len(payloads[0]["documents"]) == 1
+    assert "标题：strings.md" in payloads[0]["documents"][0]
+    assert payloads[0]["documents"][0].endswith("原文：ALPHA string document evidence")
+    assert result[0]["text"] == "ALPHA string document evidence"
 
 
 @pytest.mark.parametrize("response", [
@@ -131,7 +134,7 @@ async def test_reranker_timeout_and_policy_block_are_fallbacks(runtime):
     assert blocked[0]["ranking_stage"] == "fusion_fallback"
 
 
-async def test_hot_update_switches_version_and_cleans_old_object(runtime):
+async def test_hot_update_switches_version_and_archives_old_object(runtime):
     document = await add_ready(runtime, "guide.md", "OLD_ONLY original evidence")
     old_key, old_version = document["object_key"], document["index_version"]
 
@@ -145,7 +148,8 @@ async def test_hot_update_switches_version_and_cleans_old_object(runtime):
     assert current["status"] == "ready" and current["index_version"] == old_version + 1
     assert current["name"] == "guide-v2.md" and current["pending_version"] == 0
     assert "NEW_ONLY" in " ".join(row["text"] for row in chunks)
-    assert not await runtime.documents.store.exists("uploads", old_key)
+    assert await runtime.documents.store.exists("uploads", old_key)
+    assert await runtime.db.one("SELECT version FROM document_versions WHERE document_id=? AND version=?", (document["id"], old_version))
 
 
 async def test_hot_update_failure_keeps_old_version(runtime, monkeypatch):
@@ -237,3 +241,32 @@ async def test_concurrent_replacements_cannot_delete_winning_stage(runtime, monk
         await second
     assert busy.value.code == "document_busy"
     assert await runtime.documents.store.exists("uploads", winner["pending_object_key"])
+
+
+async def test_metadata_ranking_disambiguates_identical_clauses_without_rewriting_evidence(runtime,monkeypatch):
+    first=await add_ready(runtime,"alpha.md","正式员工报销须提交凭证。\n")
+    second=await add_ready(runtime,"beta.md","正式员工报销须提交凭证。\n\n")
+    chunks=await runtime.db.rows("SELECT id,document_id,text FROM chunks ORDER BY id")
+    async def tied_vectors(*args,limit,**kwargs):
+        return [{"id":row["id"],"score":0.8} for row in chunks][:limit]
+    monkeypatch.setattr(runtime.vectors,"search",tied_vectors)
+    rows=await runtime.documents.search("alice",["beta 报销 提交凭证"],limit=1)
+    assert rows[0]["document_id"] == second["id"]
+    assert rows[0]["text"] == "正式员工报销须提交凭证。"
+    assert "定位：正文" in rows[0]["ranking_text"] and "beta.md" in rows[0]["ranking_text"]
+    assert rows[0]["document_id"] != first["id"]
+    payloads=[]
+    async def rerank(request):
+        payload=json.loads(request.content)
+        payloads.append(payload)
+        documents=payload["documents"]
+        index=next(i for i,row in enumerate(documents) if "标题：beta.md" in row["text"])
+        return httpx.Response(200,json={"results":[{"index":index,"relevance_score":0.99}]})
+    runtime.settings.reranker_enabled=True
+    runtime.settings.reranker_url="https://reranker.test/rerank"
+    runtime.settings.reranker_model="metadata-fixture"
+    await runtime.reranker.client.aclose()
+    runtime.reranker.client=httpx.AsyncClient(transport=httpx.MockTransport(rerank))
+    rows=await runtime.documents.search("alice",["beta 报销 提交凭证"],limit=1)
+    assert rows[0]["document_id"]==second["id"] and payloads
+    assert rows[0]["text"]=="正式员工报销须提交凭证。"

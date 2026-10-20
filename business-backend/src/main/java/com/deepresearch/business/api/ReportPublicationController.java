@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 @RestController
 public class ReportPublicationController {
@@ -38,21 +40,24 @@ public class ReportPublicationController {
     }
 
     @GetMapping("/api/reports")
-    List<Map<String, Object>> published(@AuthenticationPrincipal Jwt jwt,
-            @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
-        return publications.published(identity(jwt, requested));
+    ResponseEntity<List<Map<String, Object>>> published(@AuthenticationPrincipal Jwt jwt,
+            @RequestHeader(value = "X-Workspace-ID", required = false) String requested,
+            @RequestParam(required = false) String cursor, @RequestParam(defaultValue = "20") int limit) {
+        return page(publications.page(identity(jwt, requested), "published", cursor, limit));
     }
 
     @GetMapping("/api/reports/pending")
-    List<Map<String, Object>> pending(@AuthenticationPrincipal Jwt jwt,
-            @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
-        return publications.pending(identity(jwt, requested));
+    ResponseEntity<List<Map<String, Object>>> pending(@AuthenticationPrincipal Jwt jwt,
+            @RequestHeader(value = "X-Workspace-ID", required = false) String requested,
+            @RequestParam(required = false) String cursor, @RequestParam(defaultValue = "20") int limit) {
+        return page(publications.page(identity(jwt, requested), "pending", cursor, limit));
     }
 
     @GetMapping("/api/reports/archived")
-    List<Map<String, Object>> archived(@AuthenticationPrincipal Jwt jwt,
-            @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
-        return publications.archived(identity(jwt, requested));
+    ResponseEntity<List<Map<String, Object>>> archived(@AuthenticationPrincipal Jwt jwt,
+            @RequestHeader(value = "X-Workspace-ID", required = false) String requested,
+            @RequestParam(required = false) String cursor, @RequestParam(defaultValue = "20") int limit) {
+        return page(publications.page(identity(jwt, requested), "archived", cursor, limit));
     }
 
     @GetMapping("/api/reports/{reportId}")
@@ -62,13 +67,44 @@ public class ReportPublicationController {
     }
 
     @GetMapping("/api/reports/{reportId}/download")
-    ResponseEntity<byte[]> download(@PathVariable String reportId, @AuthenticationPrincipal Jwt jwt,
+    ResponseEntity<StreamingResponseBody> download(@PathVariable String reportId, @AuthenticationPrincipal Jwt jwt,
             @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
         WorkspaceIdentity identity = identity(jwt, requested);
         Map<String, Object> report = publications.get(identity, reportId);
         return ResponseEntity.ok().contentType(MediaType.parseMediaType("text/markdown;charset=UTF-8"))
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"report-" + reportId + ".md\"")
-            .body(String.valueOf(report.get("report_markdown")).getBytes(StandardCharsets.UTF_8));
+            .body(MarkdownDownload.stream(String.valueOf(report.get("report_markdown"))));
+    }
+
+    @GetMapping("/api/reports/{reportId}/impacts")
+    Map<String, Object> impacts(@PathVariable String reportId, @AuthenticationPrincipal Jwt jwt,
+            @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
+        return publications.impacts(identity(jwt, requested), reportId);
+    }
+
+    @PostMapping("/api/reports/{reportId}/revisions")
+    ResponseEntity<Map<String, Object>> revise(@PathVariable String reportId, @AuthenticationPrincipal Jwt jwt,
+            @RequestHeader(value = "X-Workspace-ID", required = false) String requested,
+            @Valid @RequestBody Requests.ReportRevision body) {
+        return ResponseEntity.accepted().body(publications.revise(identity(jwt, requested), reportId, body));
+    }
+
+    @GetMapping("/api/report-series/{seriesId}")
+    Map<String, Object> series(@PathVariable String seriesId, @AuthenticationPrincipal Jwt jwt,
+            @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
+        return publications.series(identity(jwt, requested), seriesId);
+    }
+
+    @GetMapping("/api/reports/{reportId}/diff")
+    Map<String, Object> diff(@PathVariable String reportId, @RequestParam String against, @AuthenticationPrincipal Jwt jwt,
+            @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
+        return publications.diff(identity(jwt, requested), reportId, against);
+    }
+
+    private ResponseEntity<List<Map<String, Object>>> page(ReportPublicationService.Page page) {
+        ResponseEntity.BodyBuilder result = ResponseEntity.ok();
+        if (page.nextCursor() != null) result.header("X-Next-Cursor", page.nextCursor());
+        return result.body(page.rows());
     }
 
     @PostMapping("/api/reports/{reportId}/approve")

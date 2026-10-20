@@ -187,6 +187,14 @@ async def evaluate(case, root, live=False, external_results=None, debug_fixed_fa
 
 
 async def main(args):
+    source_root = Path(__file__).resolve().parents[1]
+    source_hash = hashlib.sha256()
+    for source in sorted((source_root / 'backend').rglob('*.py')):
+        source_hash.update(source.relative_to(source_root).as_posix().encode())
+        source_hash.update(b'\0' + source.read_bytes() + b'\0')
+    source_sha256 = source_hash.hexdigest()
+    working_tree_dirty = bool(subprocess.check_output(
+        ['git', 'status', '--porcelain', '--untracked-files=normal'], cwd=source_root, text=True).strip())
     if args.debug_fixed_failures and (args.live or args.external_results or
             Path(args.cases).resolve() != Path('eval/research_quality_cases.json').resolve()):
         raise ValueError('Failure detail logging is restricted to the bundled synthetic fixed cases')
@@ -228,6 +236,7 @@ async def main(args):
     summary = summarize_repetitions(cases, results, repetitions, require_all)
     report = {'suite': 'research-quality-v2', 'fixture_sha256': hashlib.sha256(raw).hexdigest(),
               'commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
+              'working_tree_dirty': working_tree_dirty, 'backend_source_sha256': source_sha256,
               'model': Settings().llm_model_id, 'mode': 'live-web' if args.live else 'fixed-web-real-model',
               'repetitions': repetitions, 'require_all': require_all,
               'extra_body_sha256': config_id,

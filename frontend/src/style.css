@@ -500,3 +500,15 @@ input, select, textarea { max-width: 100%; }
 }
 .examples-title { margin-top: 24px; }
 .scope-help .text-button { min-height: 44px; }
+.lifecycle-panel { margin: 24px 0; padding: 20px; border: 1px solid var(--border, #e6e1d9); border-radius: 12px; }
+.lifecycle-panel h4 { margin-top: 20px; }
+.lifecycle-controls { display: flex; align-items: end; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
+.lifecycle-controls label { display: grid; gap: 6px; font-size: 13px; }
+.lifecycle-controls select { min-height: 40px; padding: 6px 10px; border: 1px solid #d8d4cb; border-radius: 6px; background: transparent; max-width: 100%; }
+.lifecycle-version { display: block; text-align: left; overflow-wrap: anywhere; }
+.lifecycle-diff { border-top: 1px solid #e6e1d9; padding-top: 16px; margin-top: 16px; }
+.lifecycle-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.lifecycle-columns > div { min-width: 0; }
+.lifecycle-panel pre, .lifecycle-panel p { overflow-wrap: anywhere; white-space: pre-wrap; }
+.lifecycle-panel pre { max-height: 440px; overflow-y: auto; font-size: 12px; }
+@media (max-width: 640px) { .lifecycle-columns { grid-template-columns: 1fr; } .lifecycle-panel { padding: 14px; } }

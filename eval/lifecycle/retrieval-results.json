@@ -1,0 +1,129 @@
+{
+  "dataset": {
+    "corpus_documents": 30,
+    "corpus_chunks": 632,
+    "query_cases": 50,
+    "embedding_model": "text-embedding-3-large",
+    "mode": "live"
+  },
+  "methods": {
+    "vector_only_baseline": {
+      "recall_at_3": 0.84,
+      "precision_at_3": 0.28,
+      "ndcg_at_3": 0.7979,
+      "recall_at_5": 0.88,
+      "precision_at_5": 0.176,
+      "ndcg_at_5": 0.8151,
+      "recall_at_10": 0.96,
+      "precision_at_10": 0.096,
+      "ndcg_at_10": 0.8407,
+      "mrr_at_max_k": 0.8037,
+      "mean_cold_ms": 1358.9,
+      "p50_cold_ms": 1225.06,
+      "p95_cold_ms": 2076.64
+    },
+    "hybrid_bm25_vector": {
+      "recall_at_3": 0.98,
+      "precision_at_3": 0.3266,
+      "ndcg_at_3": 0.9652,
+      "recall_at_5": 0.98,
+      "precision_at_5": 0.196,
+      "ndcg_at_5": 0.9652,
+      "recall_at_10": 0.98,
+      "precision_at_10": 0.098,
+      "ndcg_at_10": 0.9652,
+      "mrr_at_max_k": 0.96,
+      "mean_cold_ms": 1511.18,
+      "p50_cold_ms": 1407.95,
+      "p95_cold_ms": 2548.39
+    },
+    "hybrid_plus_reranker": {
+      "recall_at_3": 0.98,
+      "precision_at_3": 0.3266,
+      "ndcg_at_3": 0.9726,
+      "recall_at_5": 0.98,
+      "precision_at_5": 0.196,
+      "ndcg_at_5": 0.9726,
+      "recall_at_10": 0.98,
+      "precision_at_10": 0.098,
+      "ndcg_at_10": 0.9726,
+      "mrr_at_max_k": 0.97,
+      "mean_cold_ms": 1899.76,
+      "p50_cold_ms": 1737.98,
+      "p95_cold_ms": 3059.95
+    }
+  },
+  "quality_delta": {
+    "recall_at_3": {
+      "absolute": 0.14,
+      "relative_percent": 16.67
+    },
+    "recall_at_5": {
+      "absolute": 0.1,
+      "relative_percent": 11.36
+    },
+    "recall_at_10": {
+      "absolute": 0.02,
+      "relative_percent": 2.08
+    },
+    "precision_at_3": {
+      "absolute": 0.0466,
+      "relative_percent": 16.64
+    },
+    "precision_at_5": {
+      "absolute": 0.02,
+      "relative_percent": 11.36
+    },
+    "precision_at_10": {
+      "absolute": 0.002,
+      "relative_percent": 2.08
+    },
+    "ndcg_at_3": {
+      "absolute": 0.1673,
+      "relative_percent": 20.97
+    },
+    "ndcg_at_5": {
+      "absolute": 0.1501,
+      "relative_percent": 18.41
+    },
+    "ndcg_at_10": {
+      "absolute": 0.1245,
+      "relative_percent": 14.81
+    },
+    "mrr_at_max_k": {
+      "absolute": 0.1563,
+      "relative_percent": 19.45
+    }
+  },
+  "latency": {
+    "vector_only_mean_cold_ms": 1358.9,
+    "hybrid_mean_cold_ms": 1511.18,
+    "hybrid_mean_warm_ms": 124.86,
+    "hybrid_warm_cache_hit_rate": 1.0
+  },
+  "cost_proxy": {
+    "index_embedding_inputs_one_time": 632,
+    "vector_only_query_embedding_inputs_per_query": 1,
+    "hybrid_cold_query_embedding_inputs_per_query": 1,
+    "hybrid_warm_query_embedding_inputs_per_query": 0,
+    "llm_calls_for_retrieval_evaluation": 0,
+    "reranker_calls_per_cold_query": 1,
+    "note": "请求计数，不是货币成本；实际金额取决于部署时的嵌入与重排服务定价。"
+  },
+  "reranker_gate": {
+    "recall_not_lower": true,
+    "ranking_improved": true,
+    "p95_added_ms": 511.56,
+    "passed": true
+  },
+  "run_context": {
+    "date": "2026-10-20",
+    "checkout_head": "090ef4c74365d9f3743af1c3a1e8c242563fe5f4",
+    "working_tree_dirty": true,
+    "source_identity_note": "Evaluated modified workspace before commit; checkout HEAD is not the deployed source identity.",
+    "corpus": "eval/lifecycle/corpus.json",
+    "cases": "eval/lifecycle/retrieval_cases.json",
+    "grading_unit": "document",
+    "independent_human_review": false
+  }
+}

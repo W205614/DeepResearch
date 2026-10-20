@@ -71,7 +71,7 @@ async def test_unstated_shared_scope_cannot_pass_a_permissive_validator(claim):
 
     async def ask(role, instruction, data, schema, run_id):
         seen.extend(c["index"] for c in data["claims"])
-        return Verification(checks=[{"index": c["index"], "supported": True, "reason": "mock"}
+        return Verification(checks=[{"index": c["index"], "supported": True, "reason": "mock", "atomic_checks": [{"text": c["text"], "supported": True}]}
                                     for c in data["claims"]])
 
     graph.ask = ask
@@ -167,7 +167,7 @@ async def test_permissive_model_cannot_approve_exhaustive_scope():
 
     async def ask(role, instruction, data, schema, run_id):
         seen.extend(c["index"] for c in data["claims"])
-        return Verification(checks=[{"index": c["index"], "supported": True, "reason": "mock"}
+        return Verification(checks=[{"index": c["index"], "supported": True, "reason": "mock", "atomic_checks": [{"text": c["text"], "supported": True}]}
                                     for c in data["claims"]])
 
     graph.ask = ask
@@ -190,7 +190,7 @@ async def test_permissive_model_cannot_approve_missing_unit_claim():
 
     async def ask(role, instruction, data, schema, run_id):
         seen.extend(c["index"] for c in data["claims"])
-        return Verification(checks=[{"index": c["index"], "supported": True, "reason": "mock"}
+        return Verification(checks=[{"index": c["index"], "supported": True, "reason": "mock", "atomic_checks": [{"text": c["text"], "supported": True}]}
                                     for c in data["claims"]])
 
     graph.ask = ask

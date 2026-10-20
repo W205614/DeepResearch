@@ -1,4 +1,9 @@
 DROP TABLE IF EXISTS business_outbox CASCADE;
+DROP TABLE IF EXISTS report_revision_jobs CASCADE;
+DROP TABLE IF EXISTS report_impacts CASCADE;
+DROP TABLE IF EXISTS run_artifacts CASCADE;
+DROP TABLE IF EXISTS report_series CASCADE;
+DROP TABLE IF EXISTS workspace_corpus_revisions CASCADE;
 DROP TABLE IF EXISTS report_publications CASCADE;
 DROP TABLE IF EXISTS dead_letter_runs CASCADE;
 DROP TABLE IF EXISTS audit_logs CASCADE;
@@ -47,8 +52,27 @@ CREATE TABLE report_publications(
     status TEXT NOT NULL CHECK(status IN ('pending','published','rejected','withdrawn')),
     submitted_at TEXT NOT NULL,reviewed_by TEXT NOT NULL DEFAULT '',reviewed_at TEXT NOT NULL DEFAULT '',
     review_reason TEXT NOT NULL DEFAULT '',withdrawn_by TEXT NOT NULL DEFAULT '',
-    withdrawn_at TEXT NOT NULL DEFAULT '',withdrawal_reason TEXT NOT NULL DEFAULT ''
+    withdrawn_at TEXT NOT NULL DEFAULT '',withdrawal_reason TEXT NOT NULL DEFAULT '',
+    series_id TEXT,parent_report_id TEXT,revision_no INTEGER NOT NULL DEFAULT 1,
+    artifacts_json TEXT NOT NULL DEFAULT '{}',corpus_revision INTEGER NOT NULL DEFAULT 0,
+    evidence_status TEXT NOT NULL DEFAULT 'legacy'
 );
+CREATE INDEX report_publications_page ON report_publications(workspace_id,status,submitted_at,id);
+CREATE UNIQUE INDEX report_publications_series_version ON report_publications(series_id,revision_no);
+CREATE TABLE workspace_corpus_revisions(workspace_id TEXT PRIMARY KEY,revision INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE run_artifacts(run_id TEXT PRIMARY KEY,workspace_id TEXT NOT NULL,attempt_count INTEGER NOT NULL,
+    corpus_revision INTEGER NOT NULL,requirements_json TEXT NOT NULL,claims_json TEXT NOT NULL,created_at TEXT NOT NULL);
+CREATE TABLE report_series(id TEXT PRIMARY KEY,workspace_id TEXT NOT NULL,current_report_id TEXT,
+    created_at TEXT NOT NULL,updated_at TEXT NOT NULL);
+CREATE TABLE report_revision_jobs(id TEXT PRIMARY KEY,workspace_id TEXT NOT NULL,source_report_id TEXT NOT NULL,
+    target_run_id TEXT NOT NULL UNIQUE,idempotency_key TEXT NOT NULL,requested_by TEXT NOT NULL,
+    target_corpus_revision INTEGER NOT NULL,source_content_sha256 TEXT NOT NULL,status TEXT NOT NULL,
+    plan_json TEXT NOT NULL DEFAULT '{}',created_at TEXT NOT NULL,updated_at TEXT NOT NULL,
+    UNIQUE(workspace_id,requested_by,idempotency_key));
+CREATE INDEX report_revision_jobs_source ON report_revision_jobs(source_report_id,created_at);
+CREATE TABLE report_impacts(report_id TEXT NOT NULL,target_revision INTEGER NOT NULL,status TEXT NOT NULL,
+    reasons_json TEXT NOT NULL,affected_claims_json TEXT NOT NULL,diff_json TEXT NOT NULL,created_at TEXT NOT NULL,
+    PRIMARY KEY(report_id,target_revision));
 CREATE UNIQUE INDEX one_active_thread ON runs(thread_id) WHERE status IN ('queued','running');
 CREATE TABLE events(
     id BIGSERIAL PRIMARY KEY,run_id TEXT NOT NULL,type TEXT,data TEXT,created_at TEXT

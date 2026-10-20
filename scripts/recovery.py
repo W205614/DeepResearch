@@ -8,13 +8,21 @@ import json
 from pathlib import Path
 import subprocess
 import time
+import copy
+import ipaddress
+import os
+import shutil
+import gzip
+import tarfile
+from pathlib import PurePosixPath
 
 ROOT = Path(__file__).resolve().parents[1]
 HELPER = 'python:3.13-alpine'
 
 
-def run(args, *, data=None):
-    result = subprocess.run(args, input=data, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=ROOT)
+def run(args, *, data=None, environment=None):
+    result = subprocess.run(args, input=data, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=ROOT,
+                            env=None if environment is None else {**os.environ, **environment})
     if result.returncode:
         raise RuntimeError(f'{args[:3]} failed (exit {result.returncode}); output withheld to protect secrets')
     return result.stdout
@@ -29,53 +37,250 @@ def sha(path):
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
-def backup(destination):
+def freeze_binds(config, destination):
+    mounts = []
+    for definition in config['services'].values():
+        for mount in definition.get('volumes', []):
+            if mount.get('type') != 'bind':
+                continue
+            original = Path(mount['source'])
+            if not mount.get('read_only') or original.is_symlink() or not original.exists():
+                raise ValueError('Recovery requires existing, nonsymlink, read-only bind mounts')
+            relative = f'binds/{len(mounts):04d}'
+            target = destination / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            if original.is_dir():
+                if any(path.is_symlink() for path in original.rglob('*')):
+                    raise ValueError('Symlinks inside configuration bind mounts are unsupported')
+                shutil.copytree(original, target)
+            else:
+                shutil.copy2(original, target)
+            files = [p.relative_to(destination).as_posix() for p in target.rglob('*') if p.is_file()] if target.is_dir() else [relative]
+            mounts.append({'path': relative, 'directory': target.is_dir(), 'files': files})
+            mount['source'] = 'backup:' + relative
+    if config.get('configs') or config.get('secrets'):
+        raise ValueError('External Compose configs/secrets must be converted to archived read-only mounts')
+    return mounts
+
+
+def materialize_runtime_storage(config, source_compose):
+    """Include actual anonymous volumes and known required container-layer data."""
+    volumes = {key: value['name'] for key, value in config['volumes'].items()}
+    by_name = {name: key for key, name in volumes.items()}
+    assets = []
+    for service, definition in config['services'].items():
+        containers = source_compose('ps', '-aq', service).decode().split()
+        if not containers:
+            if service == 'clamav':
+                raise ValueError('ClamAV has no existing container/database to snapshot')
+            continue
+        mounts = json.loads(run(['docker', 'inspect', '--format', '{{json .Mounts}}', containers[0]]))
+        configured_targets = {mount['target'] for mount in definition.get('volumes', [])}
+        for mount in mounts:
+            if mount['Destination'] in configured_targets:
+                continue
+            if mount['Type'] != 'volume':
+                raise ValueError('Runtime bind mount is absent from its deployment snapshot')
+            name = mount['Name']
+            key = by_name.get(name) or 'runtime-' + service + '-' + hashlib.sha256(mount['Destination'].encode()).hexdigest()[:12]
+            by_name[name], volumes[key] = key, name
+            config['volumes'][key] = {'name': name}
+            definition.setdefault('volumes', []).append({'type': 'volume', 'source': key, 'target': mount['Destination'],
+                                                       'read_only': not mount.get('RW', True)})
+        database_mounted = any(PurePosixPath('/var/lib/clamav').is_relative_to(PurePosixPath(mount['Destination'])) for mount in mounts)
+        if service == 'clamav' and not database_mounted:
+            key = 'runtime-clamav-database'
+            config['volumes'][key] = {'name': config['name'] + '_' + key}
+            definition.setdefault('volumes', []).append({'type': 'volume', 'source': key, 'target': '/var/lib/clamav'})
+            assets.append({'volume': key, 'service': service, 'container': containers[0], 'path': '/var/lib/clamav'})
+    return volumes, assets
+
+
+def export_runtime_asset(asset, destination):
+    """Stream docker cp's tar into gzip without allocating the database in RAM."""
+    with subprocess.Popen(['docker', 'cp', asset['container'] + ':' + asset['path'] + '/.', '-'],
+                          stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, cwd=ROOT) as process:
+        with gzip.open(destination, 'wb') as output:
+            shutil.copyfileobj(process.stdout, output, length=1024 * 1024)
+        if process.wait():
+            raise RuntimeError('Runtime database export failed; output withheld')
+    if asset['service'] == 'clamav':
+        validate_clamav_database(destination)
+
+
+def validate_clamav_database(destination):
+    """A mount at /var/lib/clamav must expose the databases directly, not one level deeper."""
+    with tarfile.open(destination, 'r:gz') as archive:
+        files = set()
+        for member in archive:
+            path = PurePosixPath(member.name)
+            if path.is_absolute() or '..' in path.parts:
+                raise ValueError('ClamAV archive has unsafe paths')
+            if member.isfile() and member.size > 0 and len(path.parts) == 1:
+                files.add(path.name)
+    if 'main.cvd' not in files or not files.intersection({'daily.cvd', 'daily.cld'}):
+        raise ValueError('ClamAV signature database is incomplete or nested; backup is not recoverable offline')
+
+
+def safe_container_states(project):
+    """No environment, command, health log output, or arbitrary error strings."""
+    template = ('{"service":{{json (index .Config.Labels "com.docker.compose.service")}},'
+                '"state":{{json .State.Status}},"health":{{if .State.Health}}{{json .State.Health.Status}}{{else}}"none"{{end}},'
+                '"exit_code":{{.State.ExitCode}},"oom_killed":{{json .State.OOMKilled}},"restarts":{{.RestartCount}}}')
+    rows = []
+    containers = run(['docker', 'ps', '-aq', '--filter', 'label=com.docker.compose.project=' + project]).decode().split()
+    for container in containers:
+        try:
+            rows.append(json.loads(run(['docker', 'inspect', '--format', template, container])))
+        except Exception:
+            rows.append({'state': 'inspection_unavailable'})
+    return rows
+
+
+def backup(destination, compose_files=(), source_project=None):
     destination = destination.resolve()
     destination.mkdir(parents=True, exist_ok=False)
-    config = json.loads(compose('config', '--format', 'json'))
-    volumes = {key: value['name'] for key, value in config['volumes'].items()}
-    running = compose('ps', '--status', 'running', '--services').decode().split()
-    if not running:
-        raise RuntimeError('Start the source stack before taking a controlled cold backup')
-    # Refuse to silently interrupt user research or indexing.
-    active = compose('exec', '-T', 'postgres', 'psql', '-U', 'deepresearch', '-d', 'deepresearch',
+    prefix = [part for filename in compose_files for part in ('-f', str(filename))]
+    if source_project:
+        prefix += ['-p', source_project]
+    def source_compose(*args):
+        return compose(*prefix, *args)
+    config = json.loads(source_compose('config', '--format', 'json'))
+    if source_project and config['name'] != source_project:
+        raise ValueError('Source project does not match resolved deployment')
+    recovery_config = copy.deepcopy(config)
+    volumes, runtime_assets = materialize_runtime_storage(recovery_config, source_compose)
+    bind_mounts = freeze_binds(recovery_config, destination)
+    helper_image = run(['docker', 'image', 'inspect', '--format', '{{.Id}}', HELPER]).decode().strip()
+    existing = set(run(['docker', 'volume', 'ls', '--format', '{{.Name}}']).decode().splitlines())
+    if not set(volumes.values()) <= existing:
+        raise ValueError('A source volume is absent; refusing to create an empty substitute')
+    running = source_compose('ps', '--status', 'running', '--services').decode().split()
+    temporary_databases = not running
+    try:
+        if temporary_databases:
+            # Start the existing database containers; never recreate an older deployment.
+            source_compose('start', '--wait', '--wait-timeout', '120', 'postgres', 'keycloak-postgres')
+        active = source_compose('exec', '-T', 'postgres', 'psql', '-U', 'deepresearch', '-d', 'deepresearch',
                      '-Atc', "SELECT (SELECT count(*) FROM runs WHERE status IN ('queued','running')) + "
                      "(SELECT count(*) FROM documents WHERE status IN ('scanning','indexing','rebuilding'))").decode().strip()
-    if active != '0':
-        raise RuntimeError('Active research/indexing detected; retry after tasks finish')
-    try:
-        compose('stop', *[name for name in running if name not in {'postgres', 'keycloak-postgres'}])
+        if active != '0' and not temporary_databases:
+            raise RuntimeError('Active research/indexing detected; retry after tasks finish')
+        migration_head = source_compose('exec', '-T', 'postgres', 'psql', '-U', 'deepresearch', '-d', 'deepresearch',
+                             '-Atc', 'SELECT version_num FROM alembic_version').decode().strip()
+        applications = [name for name in running if name not in {'postgres', 'keycloak-postgres'}]
+        if applications:
+            source_compose('stop', *applications)
         for service, database in [('postgres', 'deepresearch'), ('keycloak-postgres', 'keycloak')]:
-            dump = compose('exec', '-T', service, 'pg_dump', '-U', database, '-d', database, '--format=custom')
+            dump = source_compose('exec', '-T', service, 'pg_dump', '-U', database, '-d', database, '--format=custom')
             (destination / f'{service}.dump').write_bytes(dump)
-        compose('stop', 'postgres', 'keycloak-postgres')
+        source_compose('stop', 'postgres', 'keycloak-postgres')
         for key, volume in volumes.items():
             print('Backing up ' + key, flush=True)
             run(['docker', 'run', '--rm', '--network', 'none', '-v', f'{volume}:/source:ro',
-                 '-v', f'{destination}:/backup', HELPER, 'tar', '-czpf', f'/backup/{key}.tgz', '-C', '/source', '.'])
-        manifest = {'version': 2, 'created_at': time.time(), 'source_project': config['name'],
-                    'volumes': list(volumes), 'files': {path.name: sha(path) for path in destination.iterdir()}}
+                 '-v', f'{destination}:/backup', helper_image, 'tar', '-czpf', f'/backup/{key}.tgz', '-C', '/source', '.'])
+        for asset in runtime_assets:
+            print('Backing up runtime database: ' + asset['service'], flush=True)
+            export_runtime_asset(asset, destination / (asset['volume'] + '.tgz'))
+        # This private backup already contains database data and authentication
+        # material. Bind the resolved deployment and exact images to it too;
+        # never print this configuration or commit the backup directory.
+        image_ids = {}
+        for service, definition in recovery_config['services'].items():
+            containers = source_compose('ps', '-aq', service).decode().split()
+            if containers:
+                image_id = run(['docker', 'inspect', '--format', '{{.Image}}', containers[0]]).decode().strip()
+            else:
+                image_name = definition.get('image', config['name'] + '-' + service)
+                image_id = run(['docker', 'image', 'inspect', '--format', '{{.Id}}', image_name]).decode().strip()
+            image_ids[service] = image_id
+            definition['image'] = image_id
+            definition.pop('build', None)
+        (destination / 'deployment.private.json').write_text(json.dumps(recovery_config), encoding='utf-8')
+        shutil.copy2(Path(__file__), destination / 'restore.py')
+        run(['docker', 'image', 'save', '-o', str(destination / 'images.tar'), *sorted(set(image_ids.values()) | {helper_image})])
+        manifest = {'version': 3, 'created_at': time.time(), 'source_project': config['name'],
+                    'source_sha': run(['git', 'rev-parse', 'HEAD']).decode().strip(),
+                    'worktree_dirty': bool(run(['git', 'status', '--porcelain', '--untracked-files=no']).strip()),
+                    'original_running_services': running, 'images': image_ids,
+                    'helper_image': helper_image, 'bind_mounts': bind_mounts,
+                    'runtime_assets': [{key: asset[key] for key in ('volume', 'service', 'path')} for asset in runtime_assets],
+                    'migration_head': migration_head,
+                    'volumes': list(recovery_config['volumes']), 'files': {path.relative_to(destination).as_posix(): sha(path) for path in destination.rglob('*') if path.is_file()}}
         (destination / 'manifest.json').write_text(json.dumps(manifest, indent=2), encoding='utf-8')
     finally:
-        compose('up', '-d', '--wait', '--wait-timeout', '300', *running)
+        if running:
+            source_compose('start', '--wait', '--wait-timeout', '300', *running)
+        elif temporary_databases:
+            source_compose('stop', 'postgres', 'keycloak-postgres')
     return destination
 
 
-def restore(source, project):
+def load_archive(source):
+    """Validate the whole archive before creating any recovery resources."""
+    source = source.resolve()
+    manifest = json.loads((source / 'manifest.json').read_text(encoding='utf-8'))
+    if manifest.get('version') != 3:
+        raise ValueError('Version 3 backup required: immutable deployment and image identities')
+    required = {'deployment.private.json', 'restore.py', 'images.tar', 'postgres.dump', 'keycloak-postgres.dump'}
+    required.update(f'{key}.tgz' for key in manifest['volumes'])
+    if not manifest.get('helper_image') or 'bind_mounts' not in manifest:
+        raise ValueError('Backup is missing immutable helper/configuration snapshots')
+    for mount in manifest['bind_mounts']:
+        required.update(mount['files'])
+    if not required <= set(manifest['files']):
+        raise ValueError('Required backup files are missing from the checksum manifest')
+    for name, digest in manifest['files'].items():
+        path = source / name
+        if not path.resolve().is_relative_to(source) or path.is_symlink() or not path.is_file() or sha(path) != digest:
+            raise ValueError('Backup checksum/path validation failed')
+    for mount in manifest['bind_mounts']:
+        path = source / mount['path']
+        if not path.resolve().is_relative_to(source) or path.is_symlink() or not path.exists() or path.is_dir() != mount['directory']:
+            raise ValueError('Archived configuration bind is invalid')
+    config = json.loads((source / 'deployment.private.json').read_text(encoding='utf-8'))
+    if set(manifest['volumes']) != set(config['volumes']):
+        raise ValueError('Backup volume set does not match its deployment snapshot')
+    if set(manifest['images']) != set(config['services']):
+        raise ValueError('Backup image set does not match its deployment snapshot')
+    if any(service.get('image') != manifest['images'][name] for name, service in config['services'].items()):
+        raise ValueError('Backup image identities do not match its deployment snapshot')
+    import re
+    if any(not re.fullmatch(r'sha256:[a-f0-9]{64}', image) for image in [*manifest['images'].values(), manifest['helper_image']]):
+        raise ValueError('Backup requires immutable image digests')
+    binds = {mount['path'] for mount in manifest['bind_mounts']}
+    for service in config['services'].values():
+        for mount in service.get('volumes', []):
+            if mount.get('type') == 'bind' and (not mount.get('read_only') or mount['source'] not in {'backup:' + path for path in binds}):
+                raise ValueError('Deployment references a live or writable host configuration')
+    if 'clamav' in config['services'] and not any(
+        mount.get('type') == 'volume' and mount.get('source') in manifest['volumes']
+        and PurePosixPath('/var/lib/clamav').is_relative_to(PurePosixPath(mount['target']))
+        for mount in config['services']['clamav'].get('volumes', [])
+    ):
+        raise ValueError('Backup omits ClamAV runtime database; create a fresh complete backup')
+    return manifest, config
+
+
+def restore(source, project, subnet='10.254.245.0/24'):
+    started = time.monotonic()
     import re
     if not re.fullmatch(r'dr-restore-[a-z0-9-]+', project):
         raise ValueError('Fresh recovery projects must start with dr-restore-')
     source = source.resolve()
-    manifest = json.loads((source / 'manifest.json').read_text(encoding='utf-8'))
-    if manifest.get('version') != 2:
-        raise ValueError('Version 2 backup required')
-    for name, digest in manifest['files'].items():
-        path = source / name
-        if path.resolve().parent != source or sha(path) != digest:
-            raise ValueError('Backup checksum/path validation failed')
-    config = json.loads(compose('config', '--format', 'json'))
-    if set(manifest['volumes']) != set(config['volumes']):
-        raise ValueError('Backup volume set does not match current Compose')
+    manifest, config = load_archive(source)
+    recovery_subnet = ipaddress.ip_network(subnet, strict=True)
+    if recovery_subnet.version != 4 or not recovery_subnet.is_private or recovery_subnet.prefixlen < 24:
+        raise ValueError('Recovery requires an explicit small private IPv4 subnet')
+    image_set = set(manifest['images'].values()) | {manifest['helper_image']}
+    for image_id in image_set:
+        result = subprocess.run(['docker', 'image', 'inspect', image_id], cwd=ROOT,
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if result.returncode:
+            run(['docker', 'image', 'load', '-i', str(source / 'images.tar')])
+            break
+    for image_id in image_set:
+        run(['docker', 'image', 'inspect', image_id])
     existing = run(['docker', 'volume', 'ls', '--format', '{{.Name}}']).decode().splitlines()
     targets = {key: f'{project}_{key}' for key in manifest['volumes']}
     if any(name in existing for name in targets.values()):
@@ -85,14 +290,24 @@ def restore(source, project):
     config['name'] = project
     for key, name in targets.items():
         config['volumes'][key] = {'name': name, 'external': True}
-    for network in config.get('networks', {}).values():
-        network['name'] = project + '_default'
+    network_name = project + '_isolated'
+    if network_name in run(['docker', 'network', 'ls', '--format', '{{.Name}}']).decode().splitlines():
+        raise ValueError('Recovery network already exists')
+    config['networks'] = {'recovery': {'name': network_name, 'external': True}}
     for name, service in config['services'].items():
         service.pop('ports', None)
         service.pop('build', None)
-        if name in {'agent', 'backend', 'worker', 'document-worker', 'migrate', 'web'}:
-            service['image'] = 'deepresearch-' + name
-        if name in {'agent', 'worker', 'document-worker'}:
+        service.pop('container_name', None)
+        service.pop('network_mode', None)
+        service.pop('external_links', None)
+        service['networks'] = {'recovery': {}}
+        for mount in service.get('volumes', []):
+            if mount.get('type') == 'bind':
+                mount['source'] = str(source / mount['source'].removeprefix('backup:'))
+        service['image'] = manifest['images'][name]
+        if name == 'clamav':
+            service.setdefault('environment', {})['CLAMAV_NO_FRESHCLAMD'] = 'true'
+        if name in {'agent', 'worker', 'document-worker', 'alert-relay'}:
             service['environment']['FEISHU_WEBHOOK_URL'] = ''
             service['environment']['LLM_API_KEY'] = ''
             service['environment']['EMBEDDING_API_KEY'] = ''
@@ -101,22 +316,30 @@ def restore(source, project):
     # Use stdin configuration; expanded credentials are never written to disk.
     encoded = json.dumps(config).encode()
 
-    def target(*args):
-        return run(['docker', 'compose', '-f', '-', '-p', project, *args], data=encoded)
+    def target(*args, environment=None):
+        return run(['docker', 'compose', '-f', '-', '-p', project, *args], data=encoded, environment=environment)
 
-    started = time.monotonic()
+    created_volumes, network_created = [], False
+    report = {'passed': False, 'project': project, 'volumes': targets, 'created_volumes': created_volumes,
+              'volumes_retained': True, 'cleanup_complete': False, 'stage': 'creating_network'}
     try:
+        run(['docker', 'network', 'create', '--driver', 'bridge', '--internal', '--subnet', str(recovery_subnet),
+             '--label', 'com.deepresearch.recovery.project=' + project, network_name])
+        network_created = True
+        report['stage'] = 'restoring_volumes'
         for key, name in targets.items():
             run(['docker', 'volume', 'create', name])
+            created_volumes.append(name)
             run(['docker', 'run', '--rm', '--network', 'none', '-v', f'{name}:/target',
-                 '-v', f'{source}:/backup:ro', HELPER, 'tar', '-xzpf', f'/backup/{key}.tgz', '-C', '/target'])
+                 '-v', f'{source}:/backup:ro', manifest['helper_image'], 'tar', '-xzpf', f'/backup/{key}.tgz', '-C', '/target'])
             # Compare every archived file before any service can modify it.
             run(['docker', 'run', '--rm', '--network', 'none', '-v', f'{name}:/target:ro',
-                 '-v', f'{source}:/backup:ro', HELPER, 'python', '-c',
+                 '-v', f'{source}:/backup:ro', manifest['helper_image'], 'python', '-c',
                  "import tarfile,hashlib,pathlib; t=tarfile.open('/backup/" + key + ".tgz'); "
                  "[(lambda p,m: (_ for _ in ()).throw(RuntimeError('restored file mismatch')) "
                  "if hashlib.sha256(p.read_bytes()).digest()!=hashlib.sha256(t.extractfile(m).read()).digest() "
                  "else None)(pathlib.Path('/target')/m.name,m) for m in t if m.isfile()]"])
+        report['stage'] = 'starting_databases'
         target('up', '-d', '--wait', '--wait-timeout', '120', 'postgres', 'keycloak-postgres')
         for service, database in [('postgres', 'deepresearch'), ('keycloak-postgres', 'keycloak')]:
             container = target('ps', '-q', service).decode().strip()
@@ -126,30 +349,60 @@ def restore(source, project):
         # Restored pending jobs must not run or contact upstream providers.
         recovery_services = [name for name in config['services']
                              if name not in {'worker', 'document-worker'}]
+        report['stage'] = 'starting_recovery_services'
         target('up', '-d', '--wait', '--wait-timeout', '300', *recovery_services)
+        report['stage'] = 'verifying_services_and_business'
         target('exec', '-T', 'agent', 'python', '-c',
                "import httpx; c=httpx.Client(); assert c.get('http://backend:8080/readyz').status_code==200; "
                "assert c.get('http://backend:8080/api/metrics').status_code==401; "
                "assert c.get('http://keycloak:8080/realms/deepresearch/.well-known/openid-configuration').status_code==200")
         probe = target('exec', '-T', 'agent', 'python', '-c', RESTORED_RETRIEVAL).decode().strip()
+        # Compose's canonical JSON preserves $$ escapes. Read the effective
+        # restored environment so a literal dollar in the password is not doubled.
+        identity_container = target('ps', '-q', 'keycloak').decode().strip()
+        effective_environment = json.loads(run(['docker', 'inspect', '--format', '{{json .Config.Env}}', identity_container]))
+        identity_environment = dict(item.split('=', 1) for item in effective_environment if '=' in item)
+        admin_password = identity_environment.get('KC_BOOTSTRAP_ADMIN_PASSWORD') or identity_environment.get('KEYCLOAK_ADMIN_PASSWORD')
+        if not admin_password:
+            raise ValueError('Snapshot has no configured recovery identity administrator')
+        business_probe = target('exec', '-T', '-e', 'RECOVERY_ADMIN_PASSWORD', 'agent', 'python', '-c', RESTORED_BUSINESS,
+                                environment={'RECOVERY_ADMIN_PASSWORD': admin_password}).decode().strip()
         elapsed = round(time.monotonic() - started, 2)
         if elapsed > 3600:
             raise RuntimeError('Recovery exceeded 60 minute RTO target')
-        report = {'passed': True, 'project': project, 'volumes_verified': len(targets),
-                  'rto_seconds': elapsed, 'retrieval': json.loads(probe),
+        report.update({'passed': True, 'project': project, 'volumes_verified': len(targets),
+                  'source_sha': manifest['source_sha'], 'images_bound': True,
+                  'rto_seconds': elapsed, 'retrieval': json.loads(probe), 'business': json.loads(business_probe),
                   'checks': ['all archived files match', 'both SQL dumps restored with exit-on-error',
-                             'readyz', 'anonymous 401', 'OIDC discovery', 'Milvus search']}
-        (source / 'verification.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
-        print(json.dumps(report), flush=True)
+                             'readyz', 'anonymous 401', 'OIDC discovery', 'Milvus search',
+                             'real OIDC tokens', 'viewer/revoked permissions', 'published report SHA and citations',
+                             'authorized SQL-filtered document retrieval (keyword fallback, upstream disabled)',
+                             'offline ClamAV signatures: clean content accepted and EICAR rejected',
+                             'new research accepted and explicitly cancelled']})
+        report['stage'] = 'verified'
     finally:
         try:
+            report['container_states'] = safe_container_states(project)
+        except Exception:
+            report['container_states'] = [{'state': 'inspection_unavailable'}]
+        cleanup_errors = []
+        try:
             target('down')
-        finally:
-            # Attempt every exact temporary target even when Compose cleanup fails.
-            # Source volumes and the checked backup directory are never touched.
-            for name in targets.values():
-                subprocess.run(['docker', 'volume', 'rm', name], cwd=ROOT,
-                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
+        except Exception:
+            cleanup_errors.append('recovery_container_cleanup_failed')
+        if network_created:
+            try:
+                run(['docker', 'network', 'rm', network_name])
+            except Exception:
+                cleanup_errors.append('recovery_network_cleanup_failed')
+        report['cleanup_complete'] = not cleanup_errors
+        report['cleanup_errors'] = cleanup_errors
+        report['passed'] = report['passed'] and not cleanup_errors
+        (source / f'restore-{project}.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
+    (source / 'verification.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
+    print(json.dumps(report), flush=True)
+    if not report['passed']:
+        raise RuntimeError('Recovery cleanup incomplete; preserved resource names are recorded')
 
 
 RESTORED_RETRIEVAL = '''
@@ -174,13 +427,143 @@ print(json.dumps({'nonempty_collections_searched': verified, 'results_checked': 
 '''
 
 
+RESTORED_BUSINESS = r'''
+import asyncio, hashlib, json, os, uuid
+import asyncpg, httpx
+
+async def verify():
+    db = await asyncpg.connect(os.environ['DATABASE_URL'])
+    users, client_id, master = [], None, None
+    checks = {}
+    async with httpx.AsyncClient(timeout=30, trust_env=False) as client:
+        identity = 'http://keycloak:8080'
+        api = 'http://backend:8080'
+        def require(response, status):
+            assert response.status_code == status, 'Recovery HTTP check failed: ' + str(response.status_code)
+            return response
+        try:
+            from backend.core.clamav import scan, ScanUnavailable, ScanRejected
+            from backend.core.config import Settings
+            settings = Settings()
+            assert settings.document_scan_mode == 'clamav'
+            for attempt in range(24):
+                try:
+                    await scan(settings, b'Recovery clean document test')
+                    break
+                except (ScanUnavailable, ScanRejected):
+                    if attempt == 23:
+                        raise
+                    await asyncio.sleep(5)
+            marker = b'X5O!P%@AP[4' + bytes([92]) + b'PZX54(P^)7CC)7}$' + b'EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*'
+            try:
+                await scan(settings, marker)
+            except ScanRejected:
+                pass
+            else:
+                raise AssertionError('Restored scanner accepted the antivirus test marker')
+            master = require(await client.post(identity + '/realms/master/protocol/openid-connect/token', data={
+                'client_id':'admin-cli', 'grant_type':'password', 'username':'admin',
+                'password':os.environ['RECOVERY_ADMIN_PASSWORD']}), 200).json()['access_token']
+            headers = {'Authorization':'Bearer ' + master}
+            tag = uuid.uuid4().hex
+            client_name = 'restore-check-' + tag
+            response = require(await client.post(identity + '/admin/realms/deepresearch/clients', headers=headers, json={
+                'clientId':client_name, 'enabled':True, 'publicClient':True, 'protocol':'openid-connect',
+                'standardFlowEnabled':False, 'directAccessGrantsEnabled':True,
+                'protocolMappers':[{'name':'recovery-audience','protocol':'openid-connect',
+                    'protocolMapper':'oidc-audience-mapper','config':{
+                        'included.client.audience':os.environ.get('OIDC_AUDIENCE','deepresearch-api'),
+                        'id.token.claim':'false','access.token.claim':'true'}}]}), 201)
+            client_id = response.headers['location'].rsplit('/',1)[-1]
+            tokens = []
+            for role in ('admin','viewer'):
+                name, password = 'restore-' + role + '-' + tag, uuid.uuid4().hex + uuid.uuid4().hex
+                created = require(await client.post(identity + '/admin/realms/deepresearch/users', headers=headers, json={
+                    'username':name,'enabled':True,'emailVerified':True,'email':name+'@example.invalid',
+                    'firstName':'Recovery','lastName':'Verification',
+                    'credentials':[{'type':'password','value':password,'temporary':False}]}), 201)
+                subject = created.headers['location'].rsplit('/',1)[-1]
+                users.append(subject)
+                token = require(await client.post(identity + '/realms/deepresearch/protocol/openid-connect/token', data={
+                    'grant_type':'password','client_id':client_name,'username':name,'password':password}), 200).json()['access_token']
+                tokens.append({'Authorization':'Bearer ' + token})
+                require(await client.get(api + '/api/workspaces', headers=tokens[-1]), 200)
+            report = await db.fetchrow("SELECT * FROM report_publications WHERE status='published' ORDER BY reviewed_at DESC,id DESC LIMIT 1")
+            assert report, 'No published report; business recovery cannot be claimed'
+            workspace = report['workspace_id']
+            for subject, role in zip(users, ('admin','viewer')):
+                await db.execute("INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES($1,$2,$3,'recovery-check')", workspace, subject, role)
+            scoped = [{**header,'X-Workspace-ID':workspace} for header in tokens]
+            body = require(await client.get(api + '/api/reports/' + report['id'], headers=scoped[1]), 200).json()
+            snapshot = report['report_markdown']+'\n'+report['sources_json']+'\n'+report['validation_json']
+            hashes = {hashlib.sha256((snapshot+'\n'+report['artifacts_json']).encode()).hexdigest()}
+            if not json.loads(report['artifacts_json']):
+                hashes.add(hashlib.sha256(snapshot.encode()).hexdigest())
+            assert report['content_sha256'] in hashes and body['content_sha256'] == report['content_sha256']
+            assert body['report_markdown'] == report['report_markdown']
+            original = json.loads(report['sources_json'])
+            visible = {source['id']:source for source in body['sources']}
+            assert original and any('['+source['id']+']' in body['report_markdown'] for source in original)
+            for source in original:
+                assert source['id'] in visible and all(visible[source['id']].get(k) == v for k,v in source.items())
+            denied = await client.get(api + '/api/research/runs/' + report['source_run_id'], headers=scoped[1])
+            assert denied.status_code in (403,404)
+            denied = await client.post(api + '/api/reports/' + report['id'] + '/revisions', headers=scoped[1], json={
+                'client_request_id':uuid.uuid4().hex,'expected_content_sha256':report['content_sha256'],
+                'expected_corpus_revision':report['corpus_revision']})
+            assert denied.status_code == 403
+            seed = await db.fetchrow("""SELECT c.document_id,c.user_id,c.text,d.hash,d.index_version
+                FROM chunks c JOIN documents d ON d.id=c.document_id AND d.user_id=c.user_id
+                WHERE d.status IN ('ready','rebuilding') AND length(c.text)>=10 ORDER BY c.id LIMIT 1""")
+            assert seed, 'No current document chunk; application retrieval was not verified'
+            await db.execute("""INSERT INTO memberships(workspace_id,subject,role,created_at)
+                VALUES($1,$2,'admin','recovery-check') ON CONFLICT DO NOTHING""",seed['user_id'],users[0])
+            found = require(await client.post(api + '/api/documents/search',headers={**tokens[0],'X-Workspace-ID':seed['user_id']},
+                json={'query':seed['text'][:1000],'limit':20}),200).json()
+            assert any(hit['document_id'] == seed['document_id'] and hit['index_version'] == seed['index_version']
+                       and hit['document_hash'] == seed['hash'] for hit in found)
+            await db.execute('DELETE FROM memberships WHERE workspace_id=$1 AND subject=$2',workspace,users[1])
+            assert (await client.get(api + '/api/reports/' + report['id'],headers=scoped[1])).status_code in (403,404)
+            # Use the new administrator's personal workspace: old user data remains read-only.
+            personal = {**tokens[0], 'X-Workspace-ID':users[0]}
+            created = require(await client.post(api + '/api/research/runs', headers=personal, json={
+                'topic':'恢复验收：证据追溯和研究交付','mode':'quick','data_policy':'public',
+                'client_request_id':'restore-'+uuid.uuid4().hex}), 202).json()
+            queued = await db.fetchrow('SELECT user_id,created_by,status FROM runs WHERE id=$1',created['id'])
+            assert queued and queued['user_id'] == users[0] and queued['created_by'] == users[0]
+            assert await db.fetchval('SELECT COUNT(*) FROM business_outbox WHERE aggregate_id=$1',created['id']) == 1
+            require(await client.post(api + '/api/research/runs/' + created['id'] + '/cancel',headers=personal),200)
+            assert await db.fetchval('SELECT status FROM runs WHERE id=$1',created['id']) == 'cancelled'
+            checks = {'oidc_tokens_verified':2,'permission_boundaries_verified':3,'reports_sha_verified':1,
+                      'citation_snapshots_verified':len(original),'new_research_accepted':1,'new_research_cancelled':1,
+                      'authorized_document_retrieval_verified':1,'query_embedding_mode':'keyword fallback; upstream disabled',
+                      'offline_antivirus_checks_verified':2,
+                      'execution_completed':False,'upstream_calls_enabled':False}
+        finally:
+            if users:
+                await db.execute('DELETE FROM memberships WHERE subject=ANY($1::text[])',users)
+            if master:
+                for subject in users:
+                    await client.delete(identity + '/admin/realms/deepresearch/users/' + subject,headers={'Authorization':'Bearer '+master})
+                if client_id:
+                    await client.delete(identity + '/admin/realms/deepresearch/clients/' + client_id,headers={'Authorization':'Bearer '+master})
+            await db.close()
+    print(json.dumps(checks))
+
+asyncio.run(verify())
+'''
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('action', choices=['backup', 'restore'])
     parser.add_argument('--path', type=Path, required=True)
     parser.add_argument('--project', default='dr-restore-verification')
+    parser.add_argument('--compose-file', action='append', default=[], help='Explicit source Compose files, repeatable')
+    parser.add_argument('--source-project', help='Explicit source Compose project for backup')
+    parser.add_argument('--subnet', default='10.254.245.0/24', help='Fresh explicit recovery-only private IPv4 subnet')
     args = parser.parse_args()
     if args.action == 'backup':
-        backup(args.path)
+        backup(args.path, args.compose_file, args.source_project)
     else:
-        restore(args.path, args.project)
+        restore(args.path, args.project, args.subnet)

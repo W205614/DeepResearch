@@ -36,7 +36,11 @@ async function login(page: Page, username: string, password: string) {
 }
 
 async function sql(statement: string) {
-  await execute('docker', ['compose', 'exec', '-T', 'postgres', 'psql', '-v', 'ON_ERROR_STOP=1',
+  const files=(process.env.E2E_COMPOSE_FILES || '').split(';').filter(Boolean)
+  const project=process.env.E2E_COMPOSE_PROJECT
+  if(new URL(process.env.E2E_BASE_URL || 'http://127.0.0.1:8080').port==='28080' && project!=='dr-lifecycle-acceptance')
+    throw new Error('The isolated browser URL requires its explicit Compose project before seeding test data')
+  await execute('docker', ['compose', ...files.flatMap(file=>['-f',file]), ...(project?['-p',project]:[]), 'exec', '-T', 'postgres', 'psql', '-v', 'ON_ERROR_STOP=1',
     '-U', 'deepresearch', '-d', 'deepresearch', '-c', statement], { cwd: '..' })
 }
 
@@ -77,7 +81,7 @@ test('real OIDC accounts review, publish, read and withdraw a frozen report', as
     await sql(`INSERT INTO documents(id,user_id,name,hash,status,index_version) VALUES('${docId}','${workspace}','验收资料','fixture-hash','ready',1); ` +
       `INSERT INTO chunks(id,document_id,user_id,text) VALUES('${chunkId}','${docId}','${workspace}','冻结证据原文'); ` +
       `INSERT INTO runs(id,user_id,thread_id,topic,mode,status,created_at,updated_at,client_request_id,created_by,data_policy,deadline_at,report,sources,validation) ` +
-      `VALUES('${runId}','${workspace}','${threadId}','审核真实链路验收','deep','completed',now()::text,now()::text,'${runId}','${authorSubject}','internal',9999999999,E'# 冻结报告 [L-1]\\n\\n未回答：长期效果','${sources}','{"quality":"partial","checked_claims":2,"supported_claims":1,"removed_claims":1,"unanswered_questions":["长期效果"]}');`)
+      `VALUES('${runId}','${workspace}','${threadId}','审核真实链路验收','deep','completed',now()::text,now()::text,'${runId}','${authorSubject}','internal',9999999999,E'# 冻结报告 [L-1]\\n\\n未回答：长期效果','${sources}','{"quality":"partial","verification_contract":"verification-v3-claim-span","checked_claims":2,"supported_claims":1,"removed_claims":1,"unanswered_questions":["长期效果"]}');`)
     await author.reload()
     await author.locator('.thread-select').filter({ hasText: '审核真实链路验收' }).click()
     await expect(author.getByRole('button', { name: '提交人工审核' })).toBeVisible()

@@ -11,7 +11,8 @@ from langgraph.graph import END, START, StateGraph
 from ..core.db import now
 from .evidence_policy import validate_claim
 from ..domain.models import (Analysis, ChatAnswer, Evidence, Judgment, Plan, Reflection, ReportDraft,
-                     ReportRepair, ReportOutline, QuestionCoverage, SourceFacts, ResearchState, Route, Verification)
+                     ReportRepair, ReportOutline, QuestionCoverage, SourceFacts, ResearchState, Route, Verification,
+                     TargetVerification)
 from ..core.metrics import NODE_SECONDS, RETRIEVAL_OUTCOMES
 from ..core.observability import error_category, get_task_logger, run_label, tracer
 from ..infrastructure.providers import ServiceError
@@ -23,6 +24,9 @@ from ..core.checkpoints import FencedDatabase
 from .source_validity import validate_sources
 from ..core.security import fetch_text
 from .search_policy import normalize_queries, select_web_candidates
+
+VERIFICATION_CONTRACT = "verification-v3-claim-span"
+VERIFICATION_WIRE = "verification-v4-target-id"
 
 
 def digest(value: str) -> str:
@@ -81,15 +85,24 @@ def evidence_context(items: list[dict], text_limit=4500, total_limit=48000, quer
         if query and len(text.encode("utf-8")) > share:
             # Extract complete paragraph windows, including the tail where qualifications
             # often live. Never synthesize a summary as a substitute for source text.
-            terms = set(re.findall(r"[\w]{2,}", query.lower()))
+            # Unicode word regex treats a whole Chinese sentence as one token. Use
+            # CJK bigrams plus Latin words so amount/eligibility clauses can actually rank.
+            terms = set(re.findall(r"[a-z0-9_]{2,}", query.lower()))
+            for segment in re.findall(r"[\u3400-\u9fff]+", query):
+                terms.update(segment[i:i+2] for i in range(len(segment)-1))
+                if len(segment) == 1:
+                    terms.add(segment)
             paragraphs = list(re.finditer(r"[^\n]+(?:\n|$)", text))
             if len(paragraphs) == 1:
                 paragraphs = list(re.finditer(r"[^。！？!?\n]+[。！？!?\n]?", text))
+            paragraph_text = [paragraph.group().lower() for paragraph in paragraphs]
+            frequencies = {term: sum(term in paragraph for paragraph in paragraph_text) for term in terms}
             ranked = sorted(range(len(paragraphs)), key=lambda i: (
-                sum(term in paragraphs[i].group().lower() for term in terms), i == len(paragraphs)-1), reverse=True)
+                sum(1 / frequencies[term] for term in terms if frequencies[term] and term in paragraph_text[i]),
+                i in {0,len(paragraphs)-1}, -i), reverse=True)
             chosen, size = set(), 0
             separator_size = len("\n[…]\n".encode("utf-8"))
-            for i in [len(paragraphs)-1, *ranked]:
+            for i in [0, len(paragraphs)-1, *ranked]:
                 for neighbor in (i, i-1, i+1):
                     if 0 <= neighbor < len(paragraphs) and neighbor not in chosen:
                         length = len(paragraphs[neighbor].group().encode("utf-8"))
@@ -129,7 +142,91 @@ def sanitize_claims(draft: ReportDraft, sources: dict) -> list[tuple[int, object
             if claim.source_ids and all(source_id in sources for source_id in claim.source_ids)]
 
 
-def supported_indices(checks: Verification, eligible: set[int]) -> set[int]:
+def atomic_span_error(claim: str, atoms: list) -> str:
+    """Atomic checks partition the actual claim, never a paraphrase of its source.
+
+    Whitespace and punctuation between quoted spans are harmless. Every other
+    character must be covered, in order, by nonoverlapping verbatim spans.
+    """
+    if not atoms:
+        return "原子核验缺少待核验断言的原文片段"
+    text = re.sub(r"\s+", "", claim)
+    cursor, gaps = 0, []
+    for atom in atoms:
+        quote = re.sub(r"\s+", "", atom.text)
+        start = text.find(quote, cursor) if quote else -1
+        if start < 0:
+            return "原子核验文本不是待核验断言中按顺序出现的连续原文"
+        gaps.append(text[cursor:start])
+        cursor = start + len(quote)
+    gaps.append(text[cursor:])
+    # This exact system attribution is presentation, not a factual proposition.
+    # No other hedge, inference, negation or condition receives this exception.
+    attribution = "根据所提供资料，"
+    if claim.startswith(attribution) and gaps[0].startswith(attribution):
+        gaps[0] = gaps[0][len(attribution):]
+    # Keep signs, percentages and operators significant; only prose separators
+    # may sit outside quoted spans.
+    punctuation = "，。；：、,.;:!?！？“”‘’\"'（）()[]【】"
+    if any(char not in punctuation for gap in gaps for char in gap):
+        return "原子核验遗漏待核验断言中的内容"
+    return ""
+
+
+def normalize_verification(checks: Verification, claims: dict[int, str] | None = None) -> Verification:
+    """Fail closed on unsupported semantics, unanchored checks or omitted text."""
+    result = checks.model_copy(deep=True)
+    for check in result.checks:
+        if check.supported:
+            text = (claims or {}).get(check.index)
+            error = atomic_span_error(text, check.atomic_checks) if text is not None else "原子核验缺少对应的待核验断言"
+            if error:
+                check.verification_complete = False
+                check.format_error = error
+        if (not check.verification_complete or check.unsupported_parts or check.omitted_conditions
+                or any(not atom.supported for atom in check.atomic_checks)):
+            check.supported = False
+    return result
+
+
+def verification_targets(index: int, text: str) -> list[dict]:
+    # A whole claim is intentionally conservative. Splitting on commas can
+    # detach negation, prerequisites or attribution from the proposition.
+    return [{"id": f"{index}:0", "text": text}]
+
+
+def bind_target_verification(verdict: TargetVerification, claims: list[dict]) -> Verification:
+    """Bind complete, unique IDs to program-owned claim text; preserve semantic defects."""
+    expected = {claim["index"]: claim for claim in claims}
+    unexpected = any(check.index not in expected for check in verdict.checks)
+    checks = []
+    for index, claim in expected.items():
+        rows = [check for check in verdict.checks if check.index == index]
+        error = ""
+        if unexpected or len(rows) != 1:
+            error = "核验结论编号缺失、重复或未知"
+        row = rows[0] if len(rows) == 1 else None
+        targets = verification_targets(index, claim["text"])
+        ids = [atom.target_id for atom in row.atomic_checks] if row else []
+        if row and (sorted(ids) != sorted(target["id"] for target in targets)
+                    or any(atom.supported is None for atom in row.atomic_checks)):
+            error = "核验目标编号缺失、重复、未知或缺少支持判断"
+        atoms = []
+        if row and not error:
+            by_id = {atom.target_id: atom for atom in row.atomic_checks}
+            atoms = [{"target_id": target["id"], "text": target["text"],
+                      "supported": by_id[target["id"]].supported} for target in targets]
+        checks.append({"index": index, "supported": bool(row and row.supported is not False and not error),
+                       "atomic_checks": atoms, "unsupported_parts": row.unsupported_parts if row else [],
+                       "omitted_conditions": row.omitted_conditions if row else [],
+                       "reason": row.reason if row else "核验尚未完成",
+                       "verification_complete": not bool(error), "format_error": error})
+    return normalize_verification(Verification.model_validate({"checks": checks}),
+                                  {index: claim["text"] for index, claim in expected.items()})
+
+
+def supported_indices(checks: Verification, eligible: set[int], claims: dict[int, str] | None = None) -> set[int]:
+    checks = normalize_verification(checks, claims)
     # Omitted or duplicated decisions fail closed.
     grouped = {}
     for check in checks.checks:
@@ -293,17 +390,32 @@ class ResearchGraph:
 
     async def ask(self, role, instruction, data, schema, run_id):
         self.agents.require("model")
-        cache_key = fingerprint(["verification-v2-temperature-zero", self.settings.llm_model_id, self.settings.llm_base_url,
+        if role == "validator":
+            data = {**data, "claims": [{**claim, "targets": verification_targets(claim["index"], claim["text"])}
+                                       for claim in data.get("claims", [])]}
+            schema = TargetVerification
+        cache_key = fingerprint([VERIFICATION_WIRE, self.settings.llm_model_id, self.settings.llm_base_url,
                                  self.settings.llm_extra_body, instruction, data])
+        claim_texts = ({item["index"]: item["text"] for item in data.get("claims", [])}
+                      if role == "validator" else {})
         if role == "validator":
             cached = await self.db.one("SELECT result FROM verified_claims WHERE run_id=? AND cache_key=?", (run_id, cache_key))
             if cached:
-                return schema.model_validate(json.loads(cached["result"])["verdict"])
+                saved = json.loads(cached["result"])
+                if (saved.get("contract_version") == VERIFICATION_CONTRACT
+                        and saved.get("wire_version") == VERIFICATION_WIRE):
+                    value = normalize_verification(Verification.model_validate(saved["verdict"]), claim_texts)
+                    if all(check.verification_complete for check in value.checks):
+                        return value
         options = {"temperature": 0} if role not in {"chat", "router"} else {}
         result = await self.providers.structured(role, instruction, data, schema, run_id, **options)
         if role == "validator":
-            await self.db.execute("INSERT OR IGNORE INTO verified_claims(run_id,cache_key,result) VALUES(?,?,?)",
-                (run_id, cache_key, json.dumps({"verdict": result.model_dump(), "input": data}, ensure_ascii=False)))
+            result = bind_target_verification(TargetVerification.model_validate(result.model_dump()), data["claims"])
+            await self.db.execute("""INSERT INTO verified_claims(run_id,cache_key,result) VALUES(?,?,?)
+                ON CONFLICT(run_id,cache_key) DO UPDATE SET result=EXCLUDED.result""",
+                (run_id, cache_key, json.dumps({"contract_version": VERIFICATION_CONTRACT,
+                                               "wire_version": VERIFICATION_WIRE,
+                                               "verdict": result.model_dump(), "input": data}, ensure_ascii=False)))
         return result
 
     async def search_web(self, query: str, run_id: str) -> list[dict]:
@@ -438,7 +550,11 @@ class ResearchGraph:
             "不得擅自限定只使用公开资料；没有指定日期或地区时标记未知，不假设为今天或最新数据。",
             {"topic": state["topic"], "mode": state["mode"], "context": state.get("context", ""), "today": now()[:10], "image_observations": state.get("attachment_evidence", [])},
             Plan, state["run_id"])
+        revision = state.get("revision_plan", {})
         queries = normalize_queries(plan.queries)
+        if revision.get("strategy") == "targeted_revalidation":
+            # Focus new generation on affected conclusions while retaining original scope queries.
+            queries = normalize_queries([*revision.get("focus", [])[:2], *queries])[:4]
         if not queries:
             queries = normalize_queries([state["topic"]])
         queries = queries[:1] if state["mode"] == "quick" else queries
@@ -547,7 +663,13 @@ class ResearchGraph:
             for reason in getattr(hits, "reasons", []):
                 outcomes.append({"source": "local", "outcome": reason})
                 await self.retrieval_status(state, "local", reason)
+            expanded = []
             for hit in hits:
+                expanded.append(hit)
+                expanded.extend(hit.get("context_blocks", []))
+                if hit.get("context_incomplete"):
+                    await self.warning(state, "相邻条件补全达到上下文预算，可能仍有范围缺口")
+            for hit in expanded:
                 evidence.append(Evidence(id="L-" + hit["id"][:12], kind="local", title=hit["title"],
                     text=hit["text"], locator=hit["locator"], document_id=hit["document_id"],
                     chunk_id=hit["id"], index_version=hit.get("index_version", 0), document_hash=hit.get("document_hash", ""),
@@ -559,7 +681,7 @@ class ResearchGraph:
             await self.warning(state, str(exc))
         outcomes.append({"source": "local", "outcome": outcome})
         await self.retrieval_status(state, "local", outcome)
-        evidence = merge_evidence(evidence)
+        evidence = merge_evidence(evidence + state.get("revision_plan", {}).get("seed_sources", []))
         await self.db.event(state["run_id"], "sources_found", {"kind": "local", "count": len(evidence)})
         return {"local_results": evidence, "local_outcomes": outcomes}
 
@@ -633,6 +755,7 @@ class ResearchGraph:
             return {"claims": [], "gaps": state["plan"]["questions"], "analysis_input_hash": ""}
         data = {"topic": state.get("topic", ""), "plan": state["plan"],
                 "source_facts": state.get("recovered_claims", []),
+                "revision": {k:v for k,v in state.get("revision_plan", {}).items() if k not in {"seed_sources"}},
                 "evidence": evidence_context(state["evidence"], query=state.get("topic", "")),
                 "conflicts": state["conflicts"]}
         input_hash = digest(json.dumps(data, ensure_ascii=False, sort_keys=True))
@@ -641,7 +764,11 @@ class ResearchGraph:
             return {"claims": state["claims"], "gaps": state["gaps"]}
         analysis = await self.ask("analyst",
             "先回答 topic 中用户原始问题，再处理计划。计划增加的元数据问题不构成事实提取的前置条件。"
-            "每条事实或推断必须关联 source_ids，推断明确写出对照资料得出及边界，不可冒充各来源原话。"
+            "每条事实或推断必须关联 source_ids，kind 分别为 fact 或 inference。"
+            "每条只表达一个可核验命题；同一规则的主体、否定、适用前提和并列必要条件必须完整保留。"
+            "推断标明对照资料得出，说明原文支持的依据与适用条件，不可冒充各来源原话。"
+            "原文是否逐字陈述、是否提供额外细节或是否被截断属于研究过程与信息缺口，放入 gaps，"
+            "不要为了表现谨慎而把这些元断言拼接到带引用的事实或推断中。"
             "先逐源保留主体、数量、状态、适用范围与并列限制，避免为了概括统计口径再改写一遍。"
             "仅引用本地资料时明确写根据所提供资料，不能将资料内说法当成外部已核实事实。"
             "证据不支持的内容不要写为事实，列入 gaps。数字必须保留年份、地域、统计定义。"
@@ -662,6 +789,11 @@ class ResearchGraph:
         claims = [claim.model_dump() for claim in analysis.claims if set(claim.source_ids) <= valid]
         if not claims:
             claims = state.get("recovered_claims") or await self.recover_facts(state, state["evidence"], stage="analyst")
+        seeds = state.get("revision_plan", {}).get("seed_claims", [])
+        existing = {claim["text"] for claim in claims}
+        retained = [claim for claim in seeds if claim["text"] not in existing and set(claim["source_ids"]) <= valid]
+        # These statements still pass the ordinary judge, conflict and final validator stages.
+        claims = (claims + retained)[:40]
         await self.db.event(state["run_id"], "analysis_result", {
             "generated_claims": len(analysis.claims), "retained_claims": len(claims), "gaps": len(analysis.gaps)})
         return {"claims": claims, "gaps": analysis.gaps, "analysis_input_hash": input_hash}
@@ -776,6 +908,17 @@ class ResearchGraph:
                 "检查唯一、仅有几条、全部等排他范围；引用只支持部分内容不能证明这是唯一结论，不能遗漏并列否定或限制。"
                 "资料不能证明本系统的执行行为；声称本次研究已忽略、未执行资料指令或已完成处理，"
                 "却只引用该资料时，属于无依据的执行过程自述，应判不支持。"
+                "每条claims已由程序提供完整覆盖原文的targets；逐项核查其全部并列、转折、因果和尾部说明。"
+                "atomic_checks只返回每个target的target_id、supported和reason，禁止生成、改写或补充目标文本。"
+                "按当前claim的targets原样返回全部ID且各一次，不得借用其他claim的ID。"
+                "每个完整target内的所有子句都需获支持才能为true；来源里正确的内容不能代替结论实际写出的内容。"
+                "不能因大部分子句正确而整体通过；‘原文未提供/没有逐字说明/被截断’也是需要验证的命题，"
+                "不是免于核验的免责声明；不能把局部摘录未见某项说成完整来源没有该项。"
+                "unsupported_parts 列出任何未获支持的子句或元断言；omitted_conditions 列出同一规则被遗漏的必要条件。"
+                "例如原文要求 A 且 B 才能放行，仅写 A 就能放行或以‘以下条件全部满足’只列 A，必须指出遗漏 B，"
+                "不得以结论没有使用‘唯一’二字而放过条件缺失；纯粹说 A 是必要条件则不要改判成充分条件。"
+                "只有每个原子命题均获支持且两个缺陷列表均为空，整体 supported 才能为 true；"
+                "reason 若说明某子句与原文冲突、欠缺或无法推导，必须同时在缺陷列表记录并返回 false。"
                 "每个 index 恰好返回一个检查结果，每条 reason 尽量控制在 400 字内，说明决定性依据即可。"
                 "搜索摘要只支持摘要明确包含的内容。"
                 "本阶段只检查引用支持，answered_questions 留空；问题覆盖稍后只用最终保留事实单独检查。",
@@ -783,15 +926,23 @@ class ResearchGraph:
                  "questions": state.get("plan", {}).get("questions", []),
                  "sources": {key: sources[key] for key in referenced}},
                 Verification, state["run_id"])
+            claim_texts = {i: claim.text for i, claim in batch}
+            checks = normalize_verification(checks, claim_texts)
+            if any(not check.verification_complete for check in checks.checks):
+                raise ServiceError("模型未完整返回核验目标，原稿保留待继续核验",
+                                   code="verification_incomplete", retryable=True, action="继续核验，不删除原事实")
             indices = {i for i, _ in batch}
-            approved.update(supported_indices(checks, indices))
+            approved.update(supported_indices(checks, indices, claim_texts))
             all_checks.extend(check for check in checks.model_dump()["checks"] if check["index"] in indices)
         return approved, all_checks
 
     async def validator(self, state):
         if not state.get("draft"):
             prefix = "> 测试模式：固定资料与模拟模型，不代表真实研究结果。\n\n" if self.settings.demo_mode else ""
-            return {"report": prefix + state["report"], "validation": {**state.get("validation", {}), "checked_claims": 0, "supported_claims": 0, "insufficient": True}}
+            return {"report": prefix + state["report"], "validation": {**state.get("validation", {}),
+                    "verification_contract": VERIFICATION_CONTRACT,
+                    "verification_wire": VERIFICATION_WIRE,
+                    "checked_claims": 0, "supported_claims": 0, "insufficient": True}}
         sources = {source["id"]: source for source in state["evidence"]}
         if not self.settings.demo_mode:
             await validate_sources(self.db, state["user_id"], list(sources.values()))
@@ -822,6 +973,8 @@ class ResearchGraph:
                     "仅返回 failed_claims 中未通过结论的局部修订 repairs，不要重新生成整份报告。"
                     "每个 index 最多一条 replacement；无法被原文支持时 replacement=null。"
                     "缩窄无依据结论或修复引用，不得扩写、拆分出新结论，也不要返回已通过的结论。"
+                    "逐项修复 unsupported_parts 与 omitted_conditions：保留可支持的核心事实，补全原文要求的并列条件；"
+                    "关于来源是否逐字陈述、未提供额外细节或片段截断的元说明不拼进带引用结论，无法修复就删除。"
                     "无法修复的内容直接删除，不为凑篇幅强行改写。不得添加来源以外的信息。"
                     "原文未枚举总数时删除仅有几条或唯一等排他措辞，直接保留事实及其并列限制；不得把问题用词归为来源口径。"
                     "术语对应无依据时恢复原文用词，保留已明确的主体、数量和否定关系；"
@@ -886,25 +1039,35 @@ class ResearchGraph:
             parts.append(f"- [{source_id}] {title} · {md_text(source['locator'] or source['access'])}"
                          + f" · 等级：{md_text(source.get('evidence_level', 'secondary'))} · {md_text(provenance)}"
                          + (" · 发布：" + md_text(source["published_at"]) if source["published_at"] else ""))
-        validation = {"checked_claims": index, "supported_claims": len(approved), "removed_claims": index - len(approved),
+        validation = {"verification_contract": VERIFICATION_CONTRACT,
+                      "verification_wire": VERIFICATION_WIRE,
+                      "checked_claims": index, "supported_claims": len(approved), "removed_claims": index - len(approved),
                       "repaired": repaired, "insufficient": not bool(used), "checks": checks, "gaps": state.get("gaps", [])}
         questions = state.get("plan", {}).get("questions", [])
         covered = set()
+        original_covered = False
         if approved and questions:
             coverage = await self.ask("coverage",
                 "只判断最终保留事实是否完整回答 questions 中各问题，返回零起始 answered_questions。"
+                "同时独立检查原始 topic 的全部要求，original_request_answered 为是否完整回答原始要求。"
+                "不能把计划遗漏的用户要求视为已完成；不确定时 original_request_answered=false。"
                 "只能使用给出的已核验事实；不使用被删除结论、来源列表、计划假设或外部知识补齐答案。"
                 "未知信息不算完整回答；原文事实及其明确限定可以回答问题，不要求用户未问的额外元数据。",
                 {"topic": state["topic"], "questions": questions,
                  "claims": [claim.model_dump() for i, claim in enumerate(
                      c for section in draft.sections for c in section.claims) if i in approved]},
                 QuestionCoverage, state["run_id"])
+            original_covered = coverage.original_request_answered
             covered = {i for i in coverage.answered_questions if 0 <= i < len(questions)}
         validation["unanswered_questions"] = [question for i, question in enumerate(state.get("plan", {}).get("questions", [])) if i not in covered]
+        validation["original_request_answered"] = original_covered
+        if not original_covered and state["topic"] not in validation["unanswered_questions"]:
+            validation["unanswered_questions"].append(state["topic"])
         validation["checks"] = [check for check in checks if "index" in check]
         if validation["unanswered_questions"]:
             parts.append("## 尚未确认完整回答的问题\n\n" + "\n".join("- " + md_text(q) for q in validation["unanswered_questions"]))
         validation["evidence_metrics"] = evidence_metrics([sources[key] for key in used])
         await self.db.event(state["run_id"], "validation", validation)
         return {"report": "\n\n".join(parts), "validation": validation,
+                "final_claims": [claim.model_dump() for i, claim in enumerate(c for section in draft.sections for c in section.claims) if i in approved],
                 "evidence": [source for key, source in sources.items() if key in used]}

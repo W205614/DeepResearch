@@ -1,7 +1,16 @@
 """Deterministic evidence gates that run before model-assisted validation."""
 import re
 
-NUMBER = re.compile(r"(?<![A-Za-z])\d+(?:[,.]\d+)?(?:\s*[%％]|\s*(?:万|亿|年|月|日|美元|元|条|项|家|倍))?")
+NUMBER = re.compile(
+    r"(?<![A-Za-z0-9_])(?P<value>(?:\d{1,3}(?:[,，]\s*\d{3})+|\d+)(?:\.\d+)?)"
+    r"(?:\s*(?P<unit>[%％]|万|亿|年|月|日|美元|元|条|项|家|倍))?"
+)
+
+
+def numeric_tokens(text):
+    # Normalize formatting only: never convert units, ratios, scales or currencies.
+    return {(re.sub(r"[,，\s]", "", match['value']), (match['unit'] or '').replace('％','%'))
+            for match in NUMBER.finditer(text)}
 HIGH_STAKES = re.compile(r"\d|法规|法律|条例|监管|罚款|比例|百分比|金额|市场规模|增长率")
 ENUMERATED_SCOPE = re.compile(
     r"(?:结论|事实|结果|发现|原因|问题|事项)(?:性表述)?(?:仅有|只有|仅为|总共|一共|共计|为)"
@@ -26,6 +35,10 @@ SHARED_BATCH_UNCERTAINTY = re.compile(
     r"|(?:无法|不能|未能).{0,64}(?:判定|确认|判断).{0,24}是否.{0,24}(?:同一|相同)批次)"
 )
 UNRESOLVED_SUPERSESSION = re.compile(r"(?:能否|是否|可否).{0,16}(?:替代|取代).{0,40}(?:还需|需要|无法|不能|未能)")
+MISSING_STATUS_CODE = re.compile(r"(?:未|没有|并未|尚未)(?:给出|提供|说明|列出|展示|注明|写明)[^，。；;]{0,20}(?:具体)?(?:HTTP)?(?:错误)?状态码")
+EXPLICIT_STATUS_CODE = re.compile(
+    r"(?:HTTP(?:status(?:code)?)?[`*:=：-]{0,8}|(?:HTTP)?(?:错误)?状态码(?:为|是)?[`*:=：-]{0,8})[1-5]\d{2}(?!\d)", re.I
+)
 ATTRIBUTED_CONFLICT = re.compile(r"(?:均|都|各自)(?:明确)?(?:指出|记载|声明|说明|提到).{0,60}(?:冲突|矛盾|不一致)")
 
 
@@ -57,6 +70,9 @@ def validate_claim(text: str, sources: list[dict]) -> tuple[bool, str]:
         return False, "引用原文均已明确同一批次，不能因缺少批次编号而反向声称是否同批次无法判定"
     if UNRESOLVED_SUPERSESSION.search(compact) and re.search(r"旧版.{0,24}(?:已被|已经被).{0,12}(?:替代|取代)", source_text):
         return False, "引用原文已明确旧版被替代，不能把版本替代关系写成尚待确认"
+    missing_status = MISSING_STATUS_CODE.search(compact)
+    if missing_status and missing_status.group() not in source_text and EXPLICIT_STATUS_CODE.search(source_text):
+        return False, "引用原文已给出明确HTTP状态码，不能声称具体状态码未提供；请保留状态码并把其他缺口分开说明"
     if MISSING_COUNT_UNIT.search(compact) and EXPLICIT_COUNT_UNIT.search(combined):
         return False, "引用原文已给出明确计数单位，不能写成单位未说明；如不同来源单位不一致，应直接保留单位差异"
     if any(match.group() not in source_text for match in ENUMERATED_SCOPE.finditer(compact)):
@@ -68,9 +84,10 @@ def validate_claim(text: str, sources: list[dict]) -> tuple[bool, str]:
     for source in sources:
         if source.get("id"):
             numeric_text = numeric_text.replace(source["id"], "")
-    numbers = [token.replace("％", "%").replace(",", "") for token in NUMBER.findall(numeric_text)]
-    normalized = combined.replace("％", "%").replace(",", "")
-    if any(token not in normalized for token in numbers):
+    numbers = numeric_tokens(numeric_text)
+    normalized = numeric_tokens(combined)
+    source_values = {value for value, _ in normalized}
+    if any((value, unit) not in normalized if unit else value not in source_values for value, unit in numbers):
         return False, "数字、日期或比例未在引用片段中逐字出现"
     if sources and all(s.get("kind") == "attachment" for s in sources):
         if not re.search(r"图中|图片|图表|截图", text):

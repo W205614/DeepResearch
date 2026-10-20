@@ -23,7 +23,7 @@ class RerankerClient:
 
     @property
     def contract_key(self) -> str:
-        return (f"rerank-v1:{self.settings.reranker_model}:{self.settings.reranker_document_format}:"
+        return (f"rerank-v2-metadata:{self.settings.reranker_model}:{self.settings.reranker_document_format}:"
                 f"{self.settings.reranker_candidate_limit}"
                 if self.enabled else "fusion-v1")
 
@@ -44,9 +44,9 @@ class RerankerClient:
         secret = self.settings.reranker_api_key.get_secret_value()
         if secret:
             headers["Authorization"] = f"Bearer {secret}"
-        documents = ([row["text"] for row in rows]
+        documents = ([row.get("ranking_text", row["text"]) for row in rows]
                      if self.settings.reranker_document_format == "strings"
-                     else [{"id": row["id"], "text": row["text"]} for row in rows])
+                     else [{"id": row["id"], "text": row.get("ranking_text", row["text"])} for row in rows])
         payload = {
             "model": self.settings.reranker_model,
             "query": query,

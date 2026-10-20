@@ -8,7 +8,7 @@ test('two accounts submit, approve and withdraw a frozen report in the browser',
     retrieved_at: '2026-09-23T00:00:00Z', original_available: null }
   const publication = () => ({ id: 'publication-1', workspace_id: 'workspace-1', source_run_id: 'run-1',
     topic: 'Review test report', author_subject: 'author', report_markdown: '# Original report\n\nClaim [W-123]',
-    sources: [evidence], validation: { quality: 'complete', checked_claims: 1, supported_claims: 1 },
+    sources: [evidence], validation: { verification_contract:'verification-v3-claim-span', quality: 'complete', checked_claims: 1, supported_claims: 1 },
     content_sha256: 'a'.repeat(64), status: state.status, submitted_at: '2026-09-23T00:00:00Z',
     reviewed_by: state.reviewedBy, reviewed_at: state.reviewedBy ? '2026-09-23T01:00:00Z' : '',
     review_reason: '', withdrawn_by: state.withdrawnAt ? 'reviewer' : '',

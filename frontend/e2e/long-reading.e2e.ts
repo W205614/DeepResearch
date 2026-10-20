@@ -11,7 +11,7 @@ test('long reports keep navigation, wide content, citations and technical detail
     locator: `样本文档 · 第 ${i + 1} 节`, access: 'fulltext', retrieved_at: '2026-10-16T00:00:00Z' }))
   const run = { id: 'long-run', thread_id: 'long-thread', topic: '怎样选择适合自己的学习方式', status: 'completed',
     report: readingReport, sources, usage: { llm_calls: 3 }, created_at: '2026-10-16T00:00:00Z',
-    validation: { quality: 'partial', checked_claims: 2, supported_claims: 1 } }
+    validation: { verification_contract:'verification-v3-claim-span', quality: 'partial', checked_claims: 2, supported_claims: 1 } }
   const publication = { id: 'long-publication', topic: run.topic, status: 'published', author_subject: 'reader',
     report_markdown: readingReport, sources, validation: run.validation, content_sha256: 'a'.repeat(64),
     submitted_at: '2026-10-16T00:00:00Z', reviewed_at: '2026-10-16T01:00:00Z', reviewed_by: 'reviewer',

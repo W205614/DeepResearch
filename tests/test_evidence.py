@@ -26,9 +26,9 @@ def test_unknown_citations_are_rejected():
 
 def test_duplicate_or_omitted_verdict_fails_closed():
     check = Verification(checks=[ClaimCheck(index=0,supported=True,reason="ok"),
-        ClaimCheck(index=0,supported=False,reason="conflict"), ClaimCheck(index=1,supported=True,reason="ok"),
+        ClaimCheck(index=0,supported=False,reason="conflict"), ClaimCheck(index=1,supported=True,reason="ok",atomic_checks=[{"text":"approved","supported":True}]),
         ClaimCheck(index=999,supported=True,reason="invented")])
-    assert supported_indices(check, {0,1,2}) == {1}
+    assert supported_indices(check, {0,1,2}, {0:"conflict",1:"approved",2:"missing"}) == {1}
 
 
 @pytest.mark.parametrize("url", ["file:///etc/passwd", "ftp://example.com/a", "https://user:secret@example.com", "https://example.com:8888"])

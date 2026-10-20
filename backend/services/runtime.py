@@ -1,6 +1,7 @@
 import asyncio
 import io
 import json
+import re
 import sqlite3
 import asyncpg
 import statistics
@@ -19,7 +20,7 @@ from ..core.db import Database, now, uid
 from ..core.postgres import PostgresDatabase
 from .documents import Documents
 from .attachments import Attachments
-from ..research.graph import ResearchGraph
+from ..research.graph import ResearchGraph, VERIFICATION_CONTRACT, VERIFICATION_WIRE
 from ..core.observability import configure_task_logger, error_category, inject_trace_context, run_label
 from ..core.metrics import DLQ_DEPTH, DLQ_EVENTS, FAILURES, QUEUE_DEPTH, RUNS, RUN_SECONDS, FALLBACKS
 from ..infrastructure.providers import Providers, ServiceError
@@ -408,6 +409,13 @@ class Runtime:
                 await self.db.event(run_id, "running", {"resumed": resume})
                 config = {"configurable": {"thread_id": run_id}, "recursion_limit": 80}
                 async with asyncio.timeout(min(self.settings.max_run_seconds, max(0.01, run["deadline_at"] - time.time()))):
+                    revision_plan = await self.documents.lifecycle.revision_context(run)
+                    saved_artifact = await self.db.one("SELECT corpus_revision FROM run_artifacts WHERE run_id=?", (run_id,))
+                    corpus_revision = saved_artifact["corpus_revision"] if saved_artifact else await self.documents.lifecycle.revision(run["user_id"])
+                    if run.get("data_policy") == "public":
+                        corpus_revision = -1
+                    await self.db.execute("""INSERT OR IGNORE INTO run_artifacts(run_id,workspace_id,attempt_count,corpus_revision,requirements_json,claims_json,created_at)
+                        VALUES(?,?,?,?,?,'[]',?)""", (run_id,run["user_id"],attempt,corpus_revision,json.dumps({"requirements":[run["topic"]],"data_policy":run.get("data_policy","internal")},ensure_ascii=False),now()))
                     initial = None
                     checkpoint = await self.graph.aget_state(config) if resume else None
                     if not resume or not checkpoint.values:
@@ -415,13 +423,24 @@ class Runtime:
                                    "owner_subject": run.get("created_by") or run["user_id"],
                                    "topic": run["topic"], "requested_mode": run["mode"],
                                    "attachment_ids": [item["id"] for item in await self.attachments.for_run(run_id)],
-                                   "context": await self.context(run)}
+                                   "context": await self.context(run), "corpus_revision": corpus_revision,
+                                   "revision_plan": revision_plan or {}}
+                        if revision_plan:
+                            initial["context"] += "\n修订要求（旧结论不是证据，须重新取证；检查原始问题全部要求）：" + json.dumps(revision_plan,ensure_ascii=False)
                     result = await self.graph.ainvoke(initial, config)
                     await execution.get().check()
                     if not self.settings.demo_mode:
                         await validate_sources(self.db, run["user_id"], result.get("evidence", []))
                     report = result.get("report", "")
                     validation = result.get("validation", {})
+                    carries_claims = bool(result.get("final_claims") or result.get("claims")
+                                          or validation.get("checked_claims") or validation.get("supported_claims")
+                                          or re.search(r"\[[WL]-[a-f0-9]+\]", report))
+                    if carries_claims and (validation.get("verification_contract") != VERIFICATION_CONTRACT
+                                           or validation.get("verification_wire") != VERIFICATION_WIRE):
+                        raise ReliabilityError("保存的研究核验合同已更新，请重新发起研究",
+                                               code="verification_contract_changed", retryable=False,
+                                               action="重新发起研究，不复用旧核验结果")
                     validation["quality"] = quality(validation)
                     from ..core.metrics import RESULT_QUALITY
                     outcomes = result.get("web_outcomes", []) + result.get("local_outcomes", [])
@@ -438,6 +457,10 @@ class Runtime:
                         report += "\n\n> " + "；".join(messages[key] for key in validation["reasons"] if key in messages)
                     async with self.db.guard("workspace:" + run["user_id"]), self.db.guard("documents:" + run["user_id"]), self.db.guard("execution:" + run_id):
                         await execution.get().check()
+                        if corpus_revision >= 0 and corpus_revision != await self.documents.lifecycle.revision(run["user_id"]):
+                            raise ReliabilityError("研究期间资料范围发生变化，请重新研究",code="source_changed",retryable=False)
+                        await self.documents.lifecycle.revision_context(run)
+                        artifact = self.documents.lifecycle.artifact(run,result,corpus_revision)
                         if not self.settings.demo_mode:
                             await validate_sources(self.db, run["user_id"], result.get("evidence", []))
                         async with self.db.connection() as conn:
@@ -446,6 +469,8 @@ class Runtime:
                                                                   json.dumps(result.get("evidence", []), ensure_ascii=False),
                                                                   json.dumps(validation, ensure_ascii=False), "检索服务暂不可用，请重试或检查服务配置" if status == "failed" else "", run_id, attempt))
                             if affected(completed):
+                                await conn.execute("""UPDATE run_artifacts SET attempt_count=?,corpus_revision=?,requirements_json=?,claims_json=?,created_at=? WHERE run_id=?""",
+                                    (attempt,corpus_revision,json.dumps({k:v for k,v in artifact.items() if k!='claims'},ensure_ascii=False),json.dumps(artifact['claims'],ensure_ascii=False),now(),run_id))
                                 await conn.execute("INSERT INTO events(run_id,type,data,created_at) VALUES(?,?,?,?)",
                                                    (run_id, "done", json.dumps({"status": status}), now()))
                             await conn.commit()
@@ -502,7 +527,8 @@ class Runtime:
     async def fail(self, run_id, message, status="failed", category="runtime_failure", attempt=None, detail=None):
         detail = detail or {"code": category, "retryable": True, "action": "恢复后继续", "result_unknown": category == "timeout"}
         report, sources = "", []
-        if detail.get("code") not in {"permission_revoked", "source_changed", "egress_denied", "execution_lost"}:
+        if detail.get("code") not in {"permission_revoked", "source_changed", "egress_denied", "execution_lost",
+                                     "verification_contract_changed", "verification_incomplete"}:
             report, sources = await self.partial_report(run_id)
         validation = {"quality": "partial" if sources else "unverified", "verification_pending": True,
                       "kind": "research", "reasons": [detail["code"]]}
@@ -534,9 +560,12 @@ class Runtime:
         claims, sources = {}, {}
         for row in await self.db.rows("SELECT result FROM verified_claims WHERE run_id=?", (run_id,)):
             data = json.loads(row["result"])
+            if (data.get("contract_version") != VERIFICATION_CONTRACT
+                    or data.get("wire_version") != VERIFICATION_WIRE):
+                continue
             verdict = Verification.model_validate(data["verdict"])
             inputs = {item["index"]: item for item in data["input"]["claims"]}
-            approved = supported_indices(verdict, set(inputs))
+            approved = supported_indices(verdict, set(inputs), {i: item["text"] for i, item in inputs.items()})
             for index in approved:
                 claim = inputs[index]
                 cited = [data["input"]["sources"][key] for key in claim["source_ids"]]
@@ -631,9 +660,10 @@ class Runtime:
     async def status(self):
         vector_error = ""
         try:
-            await self.vectors.ping()
-        except ServiceError as exc:
-            vector_error = str(exc)
+            async with asyncio.timeout(3):
+                await self.vectors.ping()
+        except (ServiceError, TimeoutError) as exc:
+            vector_error = str(exc) or "向量服务状态检查超时"
         return {"mode": "demo" if self.settings.demo_mode else "live", "missing": self.settings.missing(),
                 "milvus": "unavailable" if vector_error else "ready", "milvus_message": vector_error,
                 "llm_model": self.settings.llm_model_id, "embedding_model": self.settings.embedding_model,
@@ -704,6 +734,7 @@ class Runtime:
                 await self.recover_queued_runs()
                 await self.recover_indexing_documents()
                 await self.documents.cleanup_pending()
+                await self.documents.lifecycle.process_events()
                 await self.refresh_queue_depth()
             except Exception:
                 self.logger.warning("phase=recovery_pending")
@@ -882,6 +913,7 @@ class Runtime:
                 await self.db.execute("DELETE FROM counters WHERE run_id=?", (row["id"],))
                 await self.db.execute("DELETE FROM search_cache WHERE run_id=?", (row["id"],))
                 await self.db.execute("DELETE FROM verified_claims WHERE run_id=?", (row["id"],))
+                await self.db.execute("DELETE FROM run_artifacts WHERE run_id=?", (row["id"],))
                 await self.db.execute("DELETE FROM call_attempts WHERE run_id=?", (row["id"],))
                 await self.db.execute("DELETE FROM dead_letter_runs WHERE run_id=?", (row["id"],))
             await self.db.execute("DELETE FROM runs WHERE user_id=?", (user,))

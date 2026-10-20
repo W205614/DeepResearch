@@ -9,7 +9,7 @@ import pytest
 
 from backend.core.db import uid
 from backend.core.reliability import Execution, ServiceError, execution
-from backend.domain.models import RunRequest, Verification
+from backend.domain.models import RunRequest, Verification, TargetVerification
 from backend.research.graph import ResearchGraph, evidence_context
 from backend.research.source_validity import validate_sources
 
@@ -178,14 +178,47 @@ async def test_partial_verification_persists_and_reuses_only_checked_claims(runt
     data = {"claims": [{"index": 0, "text": "来源支持的描述", "source_ids": ["W1"]},
                        {"index": 1, "text": "没有证据的描述", "source_ids": ["W1"]}],
             "sources": {"W1": {"id": "W1", "kind": "web", "text": "来源支持的描述"}}}
-    model = AsyncMock(return_value=Verification(checks=[{"index": 0, "supported": True, "reason": "supported"}]))
+    model = AsyncMock(return_value=TargetVerification(checks=[{"index": 0, "supported": True, "reason": "supported", "atomic_checks": [{"target_id": "0:0", "supported": True}]}]))
     monkeypatch.setattr(runtime.providers, "structured", model)
     await graph.ask("validator", "核查", data, Verification, run["id"])
     model.side_effect = ServiceError("offline")
-    await graph.ask("validator", "核查", data, Verification, run["id"])
-    assert model.await_count == 1
+    with pytest.raises(ServiceError):
+        await graph.ask("validator", "核查", data, Verification, run["id"])
+    assert model.await_count == 2
     report, sources = await runtime.partial_report(run["id"])
     assert "来源支持的描述" in report and "没有证据的描述" not in report and len(sources) == 1
+
+
+@pytest.mark.parametrize('payload', [
+    {'validation': {'checked_claims': 1, 'supported_claims': 1}},
+    {'validation': {}, 'final_claims': [{'text': '旧核验事实', 'source_ids': ['W-old']}]},
+    {'validation': {'checked_claims': 0}, 'claims': [{'text': '旧核验事实', 'source_ids': ['W-old']}]},
+    {'validation': {}, 'report': '旧核验事实 [W-abcd]'},
+])
+async def test_old_checkpoint_result_cannot_bypass_current_contract_or_fall_back_to_partial(runtime, monkeypatch, payload):
+    run = await held_run(runtime, monkeypatch)
+    await runtime.db.execute("UPDATE runs SET status='interrupted' WHERE id=?", (run['id'],))
+    from types import SimpleNamespace
+    monkeypatch.setattr(runtime.graph, 'aget_state', AsyncMock(return_value=SimpleNamespace(values={'old': True})))
+    monkeypatch.setattr(runtime.graph, 'ainvoke', AsyncMock(return_value={'report': 'stale checkpoint', **payload}))
+    fallback = AsyncMock(return_value=('stale partial evidence', [{'id': 'W-old'}]))
+    monkeypatch.setattr(runtime, 'partial_report', fallback)
+    await runtime.execute_run(run['id'], resume=True)
+    current = await runtime.db.owned_run(run['id'], 'alice')
+    artifact = await runtime.db.one('SELECT claims_json FROM run_artifacts WHERE run_id=?', (run['id'],))
+    assert current['status'] == 'failed' and current['error_info']['code'] == 'verification_contract_changed'
+    assert not current['report'] and not current['sources'] and json.loads(artifact['claims_json']) == []
+    fallback.assert_not_awaited()
+
+
+async def test_zero_claim_insufficient_result_needs_no_legacy_claim_approval(runtime, monkeypatch):
+    run = await held_run(runtime, monkeypatch)
+    monkeypatch.setattr(runtime.graph, 'ainvoke', AsyncMock(return_value={
+        'report': '资料不足，无法确认', 'final_claims': [], 'claims': [], 'evidence': [],
+        'validation': {'checked_claims': 0, 'supported_claims': 0, 'insufficient': True}}))
+    await runtime.execute_run(run['id'])
+    current = await runtime.db.owned_run(run['id'], 'alice')
+    assert current['status'] == 'insufficient' and '资料不足' in current['report']
 
 
 async def test_vector_outage_does_not_remove_core_readiness(runtime, monkeypatch):

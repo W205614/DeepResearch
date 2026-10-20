@@ -1,6 +1,6 @@
 from typing import Literal, TypedDict
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, model_validator, model_serializer
 
 
 class RunRequest(BaseModel):
@@ -109,6 +109,15 @@ class Judgment(BaseModel):
 
 
 class Claim(BaseModel):
+    kind: Literal["fact", "inference", "unspecified"] = "unspecified"
+
+    @model_serializer(mode="wrap")
+    def serialize_claim(self, handler):
+        data = handler(self)
+        if self.kind == "unspecified":
+            data.pop("kind", None)
+        return data
+
     text: str = Field(max_length=1500)
     source_ids: list[str] = Field(min_length=1, max_length=8)
 
@@ -137,6 +146,7 @@ class ReportOutline(BaseModel):
 
 
 class QuestionCoverage(BaseModel):
+    original_request_answered: bool = False
     answered_questions: list[int] = Field(default_factory=list, max_length=5)
 
 
@@ -165,15 +175,47 @@ class ReportRepair(BaseModel):
     repairs: list[ClaimReplacement] = Field(default_factory=list, max_length=96)
 
 
+class AtomicClaimCheck(BaseModel):
+    text: str = Field(min_length=1, max_length=1500,
+                      description="按顺序逐字摘录待核验claim中的连续原文片段，禁止从来源补写或改写")
+    supported: bool
+    target_id: str | None = None
+
+
 class ClaimCheck(BaseModel):
+    atomic_checks: list[AtomicClaimCheck] = Field(default_factory=list, max_length=12)
+    unsupported_parts: list[str] = Field(default_factory=list, max_length=12)
+    omitted_conditions: list[str] = Field(default_factory=list, max_length=12)
     index: int = Field(ge=0)
     supported: bool
     reason: str = Field(max_length=4000)
+    verification_complete: bool = True
+    format_error: str = ""
 
 
 class Verification(BaseModel):
     checks: list[ClaimCheck] = Field(default_factory=list)
     answered_questions: list[int] = Field(default_factory=list, max_length=5)
+
+
+class TargetSupport(BaseModel):
+    target_id: str = ""
+    supported: bool | None = None
+    reason: str = Field(default="", max_length=2000)
+
+
+class TargetClaimCheck(BaseModel):
+    index: int | None = None
+    atomic_checks: list[TargetSupport] = Field(default_factory=list, max_length=12)
+    unsupported_parts: list[str] = Field(default_factory=list, max_length=12)
+    omitted_conditions: list[str] = Field(default_factory=list, max_length=12)
+    supported: bool | None = None
+    reason: str = Field(default="", max_length=4000)
+
+
+class TargetVerification(BaseModel):
+    """Wire verdict: the model selects immutable targets, never rewrites them."""
+    checks: list[TargetClaimCheck] = Field(default_factory=list)
 
 
 class ResearchState(TypedDict, total=False):
@@ -199,6 +241,9 @@ class ResearchState(TypedDict, total=False):
     evidence: list[dict]
     conflicts: list[str]
     claims: list[dict]
+    final_claims: list[dict]
+    corpus_revision: int
+    revision_plan: dict
     recovered_claims: list[dict]
     analysis_input_hash: str
     gaps: list[str]

@@ -1,4 +1,7 @@
 services:
+  alert-relay:
+    environment:
+      FEISHU_WEBHOOK_URL: http://webhook-recorder:8090/webhook
   agent:
     environment:
       FEISHU_WEBHOOK_URL: http://webhook-recorder:8090/webhook

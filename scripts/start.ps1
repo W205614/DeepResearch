@@ -11,4 +11,7 @@ if ($Demo) { Write-Warning 'The -Demo switch is deprecated and no longer enables
 
 docker compose up -d --build --wait --wait-timeout 300
 if ($LASTEXITCODE -ne 0) { throw 'Startup failed. Inspect: docker compose ps / docker compose logs --tail 80' }
-Write-Host 'DeepResearch is running. Default address: http://localhost:8080 (APP_PORT in .env).'
+$appPort = '8080'
+$portLine = Get-Content -LiteralPath '.env' | Where-Object { $_ -match '^APP_PORT=' } | Select-Object -First 1
+if ($portLine) { $appPort = ($portLine -split '=', 2)[1].Trim() }
+Write-Host "DeepResearch is running at http://localhost:$appPort (persistent APP_PORT in .env)."

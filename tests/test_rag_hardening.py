@@ -195,7 +195,7 @@ async def test_validator_batches_many_claims_without_losing_full_sources(runtime
         for source in data['sources'].values():
             assert source['text'] == 'Enterprise evidence. ' * 500
         seen.extend(c['index'] for c in data['claims'])
-        return Verification(checks=[{'index': c['index'], 'supported': True, 'reason': 'supported'} for c in data['claims']])
+        return Verification(checks=[{'index': c['index'], 'supported': True, 'reason': 'supported', 'atomic_checks': [{'text': c['text'], 'supported': True}]} for c in data['claims']])
     graph.ask = verify
     approved, _ = await graph.check_draft({'run_id': 'batch-test'}, draft, sources)
     assert approved == set(range(24)) and seen == list(range(24))

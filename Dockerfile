@@ -25,6 +25,7 @@ COPY alembic.ini ./
 COPY migrations ./migrations
 COPY backend ./backend
 COPY scripts/migrate_legacy_sqlite.py ./scripts/migrate_legacy_sqlite.py
+COPY scripts/alert_relay_service.py ./scripts/alert_relay_service.py
 USER 10001:10001
 EXPOSE 8000
 HEALTHCHECK --interval=15s --timeout=5s --start-period=20s --retries=5 \

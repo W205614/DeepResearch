@@ -18,9 +18,9 @@
 
 ## 备份、恢复与回滚
 
-- 在停止演示服务后运行 `scripts/backup.ps1`。它导出 PostgreSQL SQL，以及保存研究附件的 MinIO、Milvus、Redis、Keycloak 和 Grafana 卷，并写入 SHA-256 清单。
-- 先在隔离环境验证备份，再使用 `scripts/restore.ps1 -Input <备份目录> -ReplaceVolumes` 恢复。该参数是显式确认，会替换当前 DeepResearch 命名卷。
-- 恢复后启动默认企业编排并运行 `scripts/smoke-enterprise.ps1`。每季度至少演练一次恢复。
+- 在维护窗口等待在途任务结束后运行 `scripts/backup.ps1`。脚本自行短暂停止服务、归档数据和精确镜像、保存私有部署快照及哈希，最后恢复原先运行状态；具体支持范围和最新实际验证见[生命周期说明](evidence-lifecycle.md)与[交付记录](lifecycle-delivery-20261020.md)。
+- 在新的隔离项目恢复，禁止覆盖原卷。推荐执行备份包内的 `restore.py restore --path <备份绝对目录> --project dr-restore-<唯一名称> --subnet <未占用私网段>`。`scripts/restore.ps1 -BackupPath <目录>` 也只允许新项目，`-ReplaceVolumes` 会明确拒绝。
+- 恢复检查账号、权限、正文/引用 SHA、检索及研究接单后取消；不会执行真实外部模型研究。保留失败记录和恢复卷，不把旧版历史演练作为新版本的通过证据。
 - 发布前执行迁移；应用回滚可回退镜像。数据库回滚只在该迁移明确提供 downgrade 且已验证时进行。
 
 ## 容量与告警起点

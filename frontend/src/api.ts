@@ -2,7 +2,7 @@ import { accessToken, AuthExpiredError, expireSession } from './auth'
 
 export type EventItem = { id: number; type: string; created_at: string; data: Record<string, any> }
 export type Source = { id: string; kind: 'web'|'local'|'attachment'; attachment_id?:string; title: string; url: string; text: string; access: string; locator: string; published_at: string; retrieved_at: string; domain?: string; evidence_level?: string; trust_label?: string; original_available?: boolean|null }
-export type Publication = { id:string; source_run_id:string; topic:string; author_subject:string; report_markdown:string; sources:Source[]; validation:Record<string,any>; quality?:string; content_sha256:string; status:'pending'|'published'|'rejected'|'withdrawn'; submitted_at:string; reviewed_by:string; reviewed_at:string; review_reason:string; withdrawn_by:string; withdrawn_at:string; withdrawal_reason:string }
+export type Publication = { id:string; source_run_id:string; topic:string; author_subject:string; report_markdown:string; sources:Source[]; validation:Record<string,any>; quality?:string; content_sha256:string; status:'pending'|'published'|'rejected'|'withdrawn'; submitted_at:string; reviewed_by:string; reviewed_at:string; review_reason:string; withdrawn_by:string; withdrawn_at:string; withdrawal_reason:string; series_id?:string; parent_report_id?:string|null; revision_no?:number; corpus_revision?:number; current_corpus_revision?:number; evidence_status?:string; is_current?:boolean; artifacts?:{requirements?:string[];claims?:{id:string;text:string}[]} }
 export type Run = { created_by?:string; report_submitted?:boolean; publication?: {id:string;status:string;review_reason?:string;withdrawal_reason?:string}|null; can_resume?: boolean; error_info?: {code:string;retryable:boolean;action:string}; recovery?: {auto_recoveries:number;deadline_at:number;call_attempts:number;reserved_tokens:number}; attachments?: {id:string;name:string;media_type:string;size:number}[]; id: string; thread_id: string; topic: string; status: string; report: string; sources: Source[]; error: string; created_at: string; validation: Record<string, any>; usage: Record<string, number> }
 export const terminal = (status: string) => ['completed','insufficient','failed','cancelled','interrupted'].includes(status)
 export function headers(): Record<string,string> {
@@ -41,10 +41,19 @@ export async function api<T=any>(path: string, init: RequestInit = {}): Promise<
   const response = await authenticatedFetch(path, {...init, headers: requestHeaders})
   if(!response.ok) {
     const body = await response.json().catch(()=>({detail:'服务暂时不可用'}))
-    throw new Error(typeof body.detail === 'string' ? body.detail : `请求参数无效（${response.status}）`)
+    throw new Error(typeof body.detail === 'string' ? body.detail : typeof body.message === 'string' ? body.message : `请求参数无效（${response.status}）`)
   }
   if(response.status===204)return undefined as T
   return response.json()
+}
+export async function apiPage<T>(path:string, cursor?:string):Promise<{items:T[];next:string}> {
+  const query = new URLSearchParams({limit:'20', ...(cursor ? {cursor} : {})})
+  const response = await authenticatedFetch(`${path}?${query}`)
+  if (!response.ok) {
+    const body = await response.json().catch(()=>({}))
+    throw new Error(typeof body.detail === 'string' ? body.detail : typeof body.message === 'string' ? body.message : `读取列表失败（${response.status}）`)
+  }
+  return {items:await response.json(), next:response.headers.get('X-Next-Cursor') || ''}
 }
 export function parseFrame(frame: string): EventItem | 'close' | null {
   const lines = frame.replace(/\r/g,'').split('\n')

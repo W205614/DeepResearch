@@ -4,7 +4,7 @@ import json
 import httpx
 from contextlib import asynccontextmanager
 
-from fastapi import Depends, FastAPI, File, Header, HTTPException, Request, UploadFile
+from fastapi import Depends, FastAPI, File, Header, HTTPException, Request, UploadFile, Query
 from fastapi.responses import JSONResponse, PlainTextResponse, Response, StreamingResponse
 
 from prometheus_client import make_asgi_app
@@ -504,6 +504,21 @@ def create_app(settings: Settings | None = None):
             raise
         await runtime.db.audit(user, request.state.principal.subject, "document.replace", "document", document_id, "rebuilding")
         return public_document(document)
+
+    @app.get("/api/documents/{document_id}/versions")
+    async def document_versions(document_id: str, runtime=Depends(rt), user=Depends(identity)):
+        try:
+            return await runtime.documents.lifecycle.versions(document_id, user)
+        except LookupError as exc:
+            raise HTTPException(404, str(exc)) from None
+
+    @app.get("/api/documents/{document_id}/diff")
+    async def document_diff(document_id: str, from_version: int = Query(alias="from", ge=1),
+                            to_version: int = Query(alias="to", ge=1), runtime=Depends(rt), user=Depends(identity)):
+        try:
+            return await runtime.documents.lifecycle.diff(document_id, user, from_version, to_version)
+        except LookupError as exc:
+            raise HTTPException(404, str(exc)) from None
 
     @app.get("/api/documents/{document_id}/chunks")
     async def document_chunks(document_id: str, limit: int = 100, runtime=Depends(rt), user=Depends(identity)):

@@ -1,0 +1,62 @@
+# Explicit isolated acceptance only: docker compose -f compose.yaml -f compose.acceptance.yaml -p dr-lifecycle-acceptance ...
+services:
+  web:
+    ports: !override ["127.0.0.1:28080:80"]
+    volumes:
+      - ./.cache/lifecycle-acceptance/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+  keycloak:
+    ports: !override ["127.0.0.1:18480:8080"]
+    environment:
+      KC_HOSTNAME: http://localhost:18480
+    volumes: !override
+      - keycloak-data:/opt/keycloak/data
+      - ./.cache/lifecycle-acceptance/realm.json:/opt/keycloak/data/import/deepresearch-realm.json:ro
+  backend:
+    environment:
+      OIDC_ISSUER: http://localhost:18480/realms/deepresearch
+  agent:
+    command: ["uvicorn", "scripts.component_fixture:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000", "--no-access-log"]
+    environment: &fixture-environment
+      OIDC_ISSUER: http://localhost:18480/realms/deepresearch
+      LLM_API_KEY: fixture-no-external-calls
+      LLM_BASE_URL: http://webhook-recorder:8090
+      EMBEDDING_API_KEY: fixture-no-external-calls
+      # Keep the original embedding identity for retained acceptance volumes.
+      # component_fixture overrides Providers.embed; no external embedding call.
+      WEB_SEARCH_PROVIDER: deepseek
+      BOCHA_API_KEY: ''
+      EMBEDDING_DIMENSION: "64"
+      RERANKER_ENABLED: "false"
+      ALLOW_INTERNAL_MODEL_PROCESSING: "true"
+    volumes:
+      - ./scripts/component_fixture.py:/app/scripts/component_fixture.py:ro
+  worker:
+    command: ["arq", "scripts.component_fixture.WorkerSettings"]
+    environment: *fixture-environment
+    volumes:
+      - ./scripts/component_fixture.py:/app/scripts/component_fixture.py:ro
+  document-worker:
+    command: ["arq", "scripts.component_fixture.DocumentWorkerSettings"]
+    environment: *fixture-environment
+    volumes:
+      - ./scripts/component_fixture.py:/app/scripts/component_fixture.py:ro
+  alertmanager:
+    ports: !override ["127.0.0.1:19093:9093"]
+    volumes:
+      - ./observability/alertmanager.test.yml:/etc/alertmanager/alertmanager.yml:ro
+  alert-relay:
+    environment:
+      FEISHU_WEBHOOK_URL: http://webhook-recorder:8090/webhook
+  grafana:
+    ports: !override ["127.0.0.1:13000:3000"]
+  webhook-recorder:
+    image: python:3.13-alpine
+    command: ["python", "/app/mock_webhook.py"]
+    volumes:
+      - ./scripts/mock_webhook.py:/app/mock_webhook.py:ro
+    ports: ["127.0.0.1:18090:8090"]
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: ${ACCEPTANCE_SUBNET:-10.254.244.0/24}

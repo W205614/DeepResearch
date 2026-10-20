@@ -59,4 +59,9 @@ public final class Requests {
     public record WorkspaceLimit(@Min(1) @Max(20) int concurrentRunLimit) {}
     public record Memory(@NotBlank @Size(max = 1000) String content) {}
     public record ReviewReason(@NotBlank @Size(max = 1000) String reason) {}
+    public record ReportRevision(
+        @NotBlank @Size(min = 8, max = 80) @Pattern(regexp = "^[a-zA-Z0-9_-]+$")
+        String client_request_id,
+        @NotBlank @Pattern(regexp = "^[a-f0-9]{64}$") String expected_content_sha256,
+        @Min(-1) long expected_corpus_revision) {}
 }

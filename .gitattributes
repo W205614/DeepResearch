@@ -1,0 +1,5 @@
+# Preserve the exact evaluated fixture and upstream snapshot bytes on every OS.
+# The frozen corpus contains both CRLF-authored records and raw LF dependencies.
+eval/lifecycle/*.json -text
+eval/lifecycle/documents/** -text
+eval/lifecycle/evidence-includes/** -text

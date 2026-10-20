@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.time.Duration;
+import io.micrometer.core.instrument.Timer;
 
 import com.deepresearch.business.config.DeepResearchProperties;
 import io.micrometer.core.instrument.Counter;
@@ -34,18 +37,22 @@ public class OutboxService {
     private final AtomicInteger pendingDepth = new AtomicInteger();
     private final AtomicInteger processingDepth = new AtomicInteger();
     private final AtomicInteger deadDepth = new AtomicInteger();
+    private final AtomicLong oldestAge = new AtomicLong();
+    private final MeterRegistry registry;
 
     public OutboxService(JdbcTemplate jdbc, AgentClient agent, DeepResearchProperties properties,
                          MeterRegistry registry) {
         this.jdbc = jdbc;
         this.agent = agent;
         this.properties = properties;
+        this.registry = registry;
         this.delivered = registry.counter("deepresearch.business.outbox.delivery", "result", DELIVERED);
         this.retried = registry.counter("deepresearch.business.outbox.delivery", "result", "retry");
         this.dead = registry.counter("deepresearch.business.outbox.delivery", "result", DEAD);
         registry.gauge("deepresearch.business.outbox.depth", Tags.of("status", "pending"), pendingDepth);
         registry.gauge("deepresearch.business.outbox.depth", Tags.of("status", "processing"), processingDepth);
         registry.gauge("deepresearch.business.outbox.depth", Tags.of("status", "dead"), deadDepth);
+        registry.gauge("deepresearch.business.outbox.oldest.age.seconds", oldestAge);
     }
 
     public void enqueue(String runId, String eventType, String payload) {
@@ -124,6 +131,12 @@ public class OutboxService {
         pendingDepth.set(0);
         processingDepth.set(0);
         deadDepth.set(0);
+        oldestAge.set(0);
+        List<String> oldest = jdbc.queryForList("SELECT MIN(created_at) FROM business_outbox WHERE status IN ('pending','processing')", String.class);
+        if (!oldest.isEmpty() && oldest.getFirst() != null) {
+            try { oldestAge.set(Math.max(0, Duration.between(Instant.parse(oldest.getFirst()), Instant.now()).getSeconds())); }
+            catch (java.time.format.DateTimeParseException ignored) { /* Historical invalid timestamps are not durations. */ }
+        }
         for (Map<String, Object> row : jdbc.queryForList("""
             SELECT status,COUNT(*) AS total FROM business_outbox
             WHERE status IN ('pending','processing','dead') GROUP BY status""")) {
@@ -158,7 +171,14 @@ public class OutboxService {
                 UPDATE business_outbox SET status='delivered',lease_owner='',lease_until=0,
                     delivered_at=?,last_error='',updated_at=?
                 WHERE id=? AND status='processing' AND lease_owner=?""", now(), now(), id, leaseOwner);
-            if (changed == 1) delivered.increment();
+            if (changed == 1) {
+                delivered.increment();
+                try {
+                    Duration delay = Duration.between(Instant.parse(String.valueOf(row.get("created_at"))), Instant.now());
+                    if (!delay.isNegative()) Timer.builder("deepresearch.business.outbox.delivery.delay")
+                        .tag("command", type).register(registry).record(delay);
+                } catch (java.time.format.DateTimeParseException ignored) { }
+            }
         } catch (RuntimeException error) {
             fail(row, id, error);
         }

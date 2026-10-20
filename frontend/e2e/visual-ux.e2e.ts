@@ -52,7 +52,7 @@ test('report reading, source drawer and follow-up controls fit narrow screens', 
   const run = { id: 'visual-run', thread_id: 'visual-thread', topic: '比较 RAG 与长上下文的适用范围',
     status: 'completed', sources: [source], created_at: '2026-10-16T00:00:00Z', error: '', usage: {},
     report: '# 资料范围与选型依据\n\n两种方案都需要核对来源 [L-abc123]。\n\n| 方案 | 核对事项 |\n| --- | --- |\n| RAG | 检索覆盖范围 |\n| 长上下文 | 输入资料的完整性 |',
-    validation: { quality: 'partial', checked_claims: 1, supported_claims: 1 } }
+    validation: { verification_contract:'verification-v3-claim-span', quality: 'partial', checked_claims: 1, supported_claims: 1 } }
   await page.route('**/api/**', async route => {
     const path = new URL(route.request().url()).pathname
     const data: Record<string, unknown> = {
