@@ -39,7 +39,7 @@ async def test_postgres_migration_idempotency_quota(component, monkeypatch):
     assert (await component.db.one('SELECT search_calls FROM workspace_daily_usage WHERE workspace_id=?', (user,)))['search_calls'] == 2
     await component.purge_user(user, 'reports')
     assert (await component.db.one('SELECT search_calls FROM workspace_daily_usage WHERE workspace_id=?', (user,)))['search_calls'] == 2
-    assert (await component.db.one('SELECT version_num FROM alembic_version'))['version_num'] == '0012_report_publication'
+    assert (await component.db.one('SELECT version_num FROM alembic_version'))['version_num'] == '0013_evidence_lifecycle'
 
 
 async def test_real_scan_index_isolation_and_delete_race(component, monkeypatch):
@@ -65,7 +65,16 @@ async def test_real_scan_index_isolation_and_delete_race(component, monkeypatch)
     release.set()
     await task
     assert not await component.documents.search(user, ['source validation'])
-    assert not await component.documents.store.exists('uploads', doc['object_key'])
+    # A logical deletion must retain the immutable audit source, while a late
+    # index task cannot revive active chunks or vector candidates.
+    assert await component.documents.store.exists('uploads', doc['object_key'])
+    archived = await component.db.one(
+        'SELECT chunks_json FROM document_versions WHERE document_id=? AND user_id=? AND object_key=?',
+        (doc['id'], user, doc['object_key']))
+    assert archived and json.loads(archived['chunks_json'])
+    assert not await component.db.rows('SELECT id FROM chunks WHERE document_id=?', (doc['id'],))
+    tombstone = await component.db.one('SELECT status,pending_version FROM documents WHERE id=?', (doc['id'],))
+    assert tombstone == {'status': 'deleted', 'pending_version': 0}
     client, collection = component.vectors.ensure('documents')
     assert not await asyncio.to_thread(client.query, collection_name=collection, filter=f'document_id == {json.dumps(doc["id"])}')
     eicar = b'X5O!P%@AP[4' + b'\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*'

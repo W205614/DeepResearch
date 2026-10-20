@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock
 
 import pytest
 
-from backend.domain.models import Analysis, Evidence, ReportDraft, ReportRepair, Verification
+from backend.domain.models import Analysis, Evidence, ReportDraft, ReportRepair, TargetVerification
 from backend.infrastructure.demo import generate
 from backend.infrastructure.providers import ServiceError
 from backend.research.graph import ResearchGraph, apply_report_repair
@@ -111,13 +111,21 @@ async def test_validation_deduplicates_full_sources_without_cross_claim_support(
         {"text": "different fact", "source_ids": ["one"]},
         {"text": "retained tail", "source_ids": ["two"]}]}]})
     captured = {}
+    real_ask = graph.ask
 
     async def ask(role, instruction, data, schema, run_id):
         captured.update(data)
         assert "不得跨条借用证据" in instruction
-        return Verification.model_validate(generate(role, data))
+        return await real_ask(role, instruction, data, schema, run_id)
+
+    async def structured(role, instruction, data, schema, run_id, **kwargs):
+        assert schema is TargetVerification
+        assert all(row["targets"] == [{"id": f"{row['index']}:0", "text": row["text"]}]
+                   for row in data["claims"])
+        return TargetVerification.model_validate(generate(role, data))
 
     graph.ask = ask
+    runtime.providers.structured = structured
     approved, _ = await graph.check_draft({"run_id": "compact-validator"}, draft, sources)
     assert approved == {0, 1}
     assert set(captured["sources"]) == {"one", "two"}
@@ -151,7 +159,7 @@ async def test_partial_repairs_are_revalidated_and_unknown_citations_fail_closed
         {"text": text, "source_ids": ["one"]} for text in ["approved fact", "bad", "invented", "remove"]]}]})
     roles = []
 
-    async def ask(role, instruction, data, schema, run_id):
+    async def structured(role, instruction, data, schema, run_id, **kwargs):
         roles.append(role)
         if role == "repair":
             assert [row["index"] for row in data["failed_claims"]] == [1, 2, 3]
@@ -162,9 +170,10 @@ async def test_partial_repairs_are_revalidated_and_unknown_citations_fail_closed
                 {"index": 2, "replacement": {"text": "invented", "source_ids": ["unknown"]}},
                 {"index": 3, "replacement": None},
             ]})
-        return Verification.model_validate(generate(role, data))
+        assert schema is TargetVerification
+        return TargetVerification.model_validate(generate(role, data))
 
-    graph.ask = ask
+    runtime.providers.structured = structured
     result = await graph.validator({"run_id": "partial-repair", "topic": "test", "evidence": [source],
                                     "draft": draft.model_dump(), "gaps": [], "conflicts": []})
     assert roles == ["validator", "repair", "validator"]
@@ -186,7 +195,7 @@ async def test_repair_scopes_context_to_failed_claim_sources(runtime):
     ]}]})
     repair_inputs = []
 
-    async def ask(role, instruction, data, schema, run_id):
+    async def structured(role, instruction, data, schema, run_id, **kwargs):
         if role == "repair":
             repair_inputs.append(data)
             return ReportRepair.model_validate({"repairs": [{
@@ -195,12 +204,15 @@ async def test_repair_scopes_context_to_failed_claim_sources(runtime):
         if role == "coverage":
             assert {claim['text'] for claim in data['claims']} == {'approved fact', 'corrected fact'}
             return schema.model_validate({"answered_questions": []})
-        return Verification.model_validate({"checks": [
-            {"index": row["index"], "supported": row["text"] != "bad fact", "reason": "checked"}
+        assert schema is TargetVerification
+        return TargetVerification.model_validate({"checks": [
+            {"index": row["index"], "supported": row["text"] != "bad fact", "reason": "checked",
+             "atomic_checks": [{"target_id": target["id"], "supported": row["text"] != "bad fact"}
+                               for target in row["targets"]]}
             for row in data["claims"]
         ]})
 
-    graph.ask = ask
+    runtime.providers.structured = structured
     result = await graph.validator({
         "run_id": "scoped-repair", "user_id": "alice", "topic": "test",
         "plan": {"questions": ["question"]}, "evidence": [relevant, unrelated],

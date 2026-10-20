@@ -140,12 +140,24 @@ async def test_document_import_retrieval_deletion(api_client):
     vector = (await rt.providers.embed(['证据核查']))[0]
     assert await rt.vectors.search('documents','alice',vector)
     assert not await rt.vectors.search('documents','bob',vector)
-    stored = await rt.db.one("SELECT object_key FROM documents WHERE id=?", (doc_id,))
+    stored = await rt.db.one("SELECT object_key,hash,index_version FROM documents WHERE id=?", (doc_id,))
     assert (await client.delete(f'/api/documents/{doc_id}')).status_code == 200
     assert (await client.put(f'/api/documents/{doc_id}', files={"file":(
         "deleted.md", b"deleted replacement", "text/markdown")})).status_code == 404
     assert not await rt.vectors.search('documents','alice',vector)
-    assert not (rt.settings.data_dir / 'uploads' / stored['object_key']).exists()
+    # Deletion removes active retrieval/access while preserving immutable audit
+    # versions. Archived originals are deliberately retained, not public files.
+    archived = await rt.db.one(
+        "SELECT hash,object_key,chunks_json FROM document_versions WHERE document_id=? AND user_id=? AND version=?",
+        (doc_id, 'alice', stored['index_version']))
+    assert archived and archived['hash'] == stored['hash'] and archived['object_key'] == stored['object_key']
+    assert json.loads(archived['chunks_json'])
+    assert (rt.settings.data_dir / 'uploads' / stored['object_key']).exists()
+    assert (await client.post('/api/documents/search', json={'query': '更新后的资料'})).json() == []
+    assert all(row['id'] != doc_id for row in (await client.get('/api/documents')).json())
+    for suffix in ('chunks', 'versions'):
+        assert (await client.get(f'/api/documents/{doc_id}/{suffix}')).status_code == 404
+        assert (await client.get(f'/api/documents/{doc_id}/{suffix}', headers={'X-User-ID': 'bob'})).status_code == 404
 
 
 async def test_preferences_crud_and_isolation(api_client):

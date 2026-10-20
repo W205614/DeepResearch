@@ -15,7 +15,7 @@ test('two accounts submit, approve and withdraw a frozen report in the browser',
     withdrawn_at: state.withdrawnAt, withdrawal_reason: state.withdrawnAt ? 'Source updated' : '' })
   const run = () => ({ id: 'run-1', thread_id: 'thread-1', created_by: 'author', topic: 'Review test report',
     status: 'completed', report: '# Original report\n\nClaim [W-123]', sources: [evidence],
-    error: '', created_at: '2026-09-23T00:00:00Z', validation: { quality, checked_claims: 1,
+    error: '', created_at: '2026-09-23T00:00:00Z', validation: { verification_contract:'verification-v3-claim-span', quality, checked_claims: 1,
       supported_claims: 1 }, usage: {}, publication: state.status ? { id: 'publication-1', status: state.status } : null })
 
   async function account(subject: string, role: string): Promise<{ context: BrowserContext; page: Page }> {
