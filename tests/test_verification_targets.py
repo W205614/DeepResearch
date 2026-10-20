@@ -1,12 +1,15 @@
 """Model formatting cannot rewrite targets or erase valid facts."""
 from unittest.mock import AsyncMock
+import json
 
+import httpx
 import pytest
 
-from backend.domain.models import ReportDraft, TargetVerification
+from backend.domain.models import ReportDraft, TargetVerification, Verification
 from backend.research.graph import (ResearchGraph, bind_target_verification,
                                     verification_targets, VERIFICATION_WIRE)
 from backend.core.reliability import ServiceError
+from tests.helpers import make_provider
 
 
 def test_targets_preserve_entire_claim_scope_attribution_and_negation():
@@ -78,3 +81,180 @@ async def test_runtime_format_failure_does_not_fall_back_to_partial_evidence(run
     current = await runtime.db.owned_run(run['id'], 'alice')
     assert current['error_info']['code'] == 'verification_incomplete' and not current['report']
     fallback.assert_not_awaited()
+
+
+def wire_row(index, supported=True):
+    return {'index': index, 'supported': supported,
+            'atomic_checks': [{'target_id': f'{index}:0', 'supported': supported}]}
+
+
+def target_input(count=3):
+    return {'claims': [{'index': i, 'text': f'private-claim-{i}', 'source_ids': [f's{i}']}
+                       for i in range(count)],
+            'sources': {f's{i}': {'id': f's{i}', 'text': f'private-source-{i}'} for i in range(count)}}
+
+
+async def test_missing_targets_retry_only_incomplete_claims_and_preserve_semantic_false(tmp_path):
+    calls = []
+
+    def response(request):
+        calls.append(json.loads(request.content))
+        verdict = {'checks': [wire_row(0), wire_row(1, False)] if len(calls) == 1 else [wire_row(2)]}
+        return httpx.Response(200, json={'choices': [{'message': {'content': json.dumps(verdict)}}]})
+
+    provider = await make_provider(tmp_path, response)
+    graph = ResearchGraph(provider.settings, provider.db, provider, None, None)
+    try:
+        data = target_input()
+        result = await graph.ask('validator', 'test unchanged semantics', data, Verification, 'narrow-retry')
+        assert len(calls) == 2
+        second = json.loads(calls[1]['messages'][1]['content'])
+        assert [row['index'] for row in second['claims']] == [2]
+        assert set(second['sources']) == {'s2'}
+        assert [row.supported for row in result.checks] == [True, False, True]
+        assert all(row.verification_complete for row in result.checks)
+        assert (await graph.ask('validator', 'test unchanged semantics', data, Verification,
+                                'narrow-retry')).model_dump() == result.model_dump()
+        assert len(calls) == 2  # Complete canonical verdict, including semantic false, is cached.
+        event = await provider.db.one("SELECT data FROM events WHERE type='verification_format'")
+        diagnostic = json.loads(event['data'])
+        assert diagnostic['indices'] == [2] and diagnostic['missing_claims'] == 1
+        assert 'private-claim' not in event['data'] and 'private-source' not in event['data']
+    finally:
+        await provider.close()
+
+
+@pytest.mark.parametrize('first', [
+    {'checks': [wire_row(0), wire_row(0), wire_row(1)]},
+    {'checks': [wire_row(0), wire_row(1), wire_row(99)]},
+    {'checks': [{'index': 0, 'atomic_checks': [{'target_id': 'private-unknown-id', 'supported': True}]},
+                wire_row(1)]},
+])
+async def test_duplicate_unknown_ids_get_only_one_bounded_shape_retry(tmp_path, first):
+    calls = []
+
+    def response(request):
+        calls.append(json.loads(request.content))
+        verdict = first if len(calls) == 1 else {'checks': [wire_row(c['index']) for c in
+            json.loads(calls[-1]['messages'][1]['content'])['claims']]}
+        return httpx.Response(200, json={'choices': [{'message': {'content': json.dumps(verdict)}}]})
+
+    provider = await make_provider(tmp_path, response)
+    graph = ResearchGraph(provider.settings, provider.db, provider, None, None)
+    try:
+        result = await graph.ask('validator', 'test', target_input(2), Verification, 'ids')
+        assert len(calls) == 2 and all(row.verification_complete for row in result.checks)
+        second = json.loads(calls[1]['messages'][1]['content'])
+        assert [row['index'] for row in second['claims']] == ([0, 1] if len(first['checks']) == 3 and
+            first['checks'][-1]['index'] == 99 else [0])
+        event = await provider.db.one("SELECT data FROM events WHERE type='verification_format'")
+        assert 'private-unknown-id' not in event['data']
+    finally:
+        await provider.close()
+
+
+@pytest.mark.parametrize('outputs', [
+    ['not-json-private-output', {'checks': []}],
+    [{'checks': []}, 'not-json-private-output'],
+    [{'checks': []}, {'checks': []}],
+])
+async def test_parse_and_id_failures_share_two_attempts_and_keep_draft(tmp_path, outputs):
+    calls = []
+
+    def response(request):
+        calls.append(request)
+        result = outputs[len(calls) - 1]
+        return httpx.Response(200, json={'choices': [{'message': {
+            'content': result if isinstance(result, str) else json.dumps(result)}}]})
+
+    provider = await make_provider(tmp_path, response)
+    graph = ResearchGraph(provider.settings, provider.db, provider, None, None)
+    draft = ReportDraft(title='private title', sections=[{'heading': 'fact', 'claims': [
+        {'text': 'private correct fact', 'source_ids': ['s']}]}])
+    original = draft.model_dump()
+    try:
+        with pytest.raises(ServiceError) as caught:
+            await graph.check_draft({'run_id': 'bad-shape'}, draft, {
+                's': {'id': 's', 'text': 'private correct fact', 'access': 'fulltext'}})
+        assert caught.value.code == 'verification_incomplete'
+        assert len(calls) == 2 and draft.model_dump() == original
+        assert not await provider.db.rows('SELECT * FROM verified_claims')
+        events = await provider.db.rows("SELECT data FROM events WHERE type='verification_format'")
+        assert len(events) == 2
+        assert not any('private' in row['data'] for row in events)
+    finally:
+        await provider.close()
+
+
+async def test_complete_semantic_false_does_not_trigger_format_retry(tmp_path):
+    calls = []
+
+    def response(request):
+        calls.append(request)
+        return httpx.Response(200, json={'choices': [{'message': {
+            'content': json.dumps({'checks': [wire_row(0, False)]})}}]})
+
+    provider = await make_provider(tmp_path, response)
+    graph = ResearchGraph(provider.settings, provider.db, provider, None, None)
+    try:
+        result = await graph.ask('validator', 'test', target_input(1), Verification, 'semantic-false')
+        assert len(calls) == 1 and not result.checks[0].supported
+        assert result.checks[0].verification_complete
+        assert not await provider.db.rows("SELECT * FROM events WHERE type='verification_format'")
+    finally:
+        await provider.close()
+
+
+async def test_provider_authorization_failure_is_not_a_shape_retry(tmp_path):
+    calls = []
+
+    def response(request):
+        calls.append(request)
+        return httpx.Response(401, json={'error': 'private upstream'})
+
+    provider = await make_provider(tmp_path, response)
+    graph = ResearchGraph(provider.settings, provider.db, provider, None, None)
+    try:
+        with pytest.raises(ServiceError) as caught:
+            await graph.ask('validator', 'test', target_input(1), Verification, 'auth')
+        assert caught.value.code == 'provider_configuration' and len(calls) == 1
+        assert 'private' not in str(caught.value)
+        assert not await provider.db.rows("SELECT * FROM events WHERE type='verification_format'")
+    finally:
+        await provider.close()
+
+
+async def test_shape_retry_obeys_shared_execution_budget(tmp_path):
+    from backend.core.reliability import execution
+
+    calls = []
+
+    def response(request):
+        calls.append(request)
+        return httpx.Response(200, json={'choices': [{'message': {'content': '{"checks":[]}'}}]})
+
+    provider = await make_provider(tmp_path, response)
+
+    class OneCallBudget:
+        reservations = 0
+
+        async def check(self):
+            return {'data_policy': 'public', 'deadline_at': 0}
+
+        async def reserve(self, tokens):
+            self.reservations += 1
+            if self.reservations > 1:
+                raise ServiceError('budget exhausted', code='budget_exhausted', retryable=False)
+            return 'reserved-first-call'
+
+    budget = OneCallBudget()
+    token = execution.set(budget)
+    graph = ResearchGraph(provider.settings, provider.db, provider, None, None)
+    try:
+        with pytest.raises(ServiceError) as caught:
+            await graph.ask('validator', 'test', target_input(1), Verification, 'budget')
+        assert caught.value.code == 'budget_exhausted'
+        assert len(calls) == 1 and budget.reservations == 2
+    finally:
+        execution.reset(token)
+        await provider.close()

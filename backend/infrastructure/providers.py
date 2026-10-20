@@ -21,6 +21,13 @@ from ..core.reliability import ServiceError, execution, check_execution, fingerp
 T = TypeVar("T", bound=BaseModel)
 
 
+class StructuredResponseError(ValueError):
+    """Safe shape diagnostics and a narrowed input for the existing format retry."""
+    def __init__(self, diagnostic, retry_data):
+        super().__init__("verification_target_shape")
+        self.diagnostic, self.retry_data = diagnostic, retry_data
+
+
 class SearchResults(list):
     def __init__(self, rows=(), *, outcome="ok"):
         super().__init__(rows)
@@ -173,7 +180,7 @@ class Providers:
                 raise ServiceError(f"{label} 返回了无法解析的响应") from None
 
     async def structured(self, role: str, instruction: str, data: dict, schema: type[T], run_id: str,
-                         *, temperature: float | None = None) -> T:
+                         *, temperature: float | None = None, validate_response=None) -> T:
         started = time.monotonic()
         self.logger.info("run=%s component=llm role=%s phase=start", run_label(run_id), role)
         if self.settings.demo_mode:
@@ -183,6 +190,8 @@ class Providers:
             TOKENS.labels(kind="prompt").inc(0)
             TOKENS.labels(kind="completion").inc(0)
             result = schema.model_validate(generate(role, data))
+            if validate_response is not None:
+                result = validate_response(result)
             self.logger.info("run=%s component=llm role=%s phase=end duration_ms=%d",
                              run_label(run_id), role, round((time.monotonic() - started) * 1000))
             return result
@@ -232,12 +241,21 @@ class Providers:
                             parsed = schema.model_validate_json(repaired)
                             self.logger.warning("run=%s component=llm role=%s repair=trailing_commas",
                                                 run_label(run_id), role)
+                        if validate_response is not None:
+                            parsed = validate_response(parsed)
                         self.logger.info("run=%s component=llm role=%s phase=end duration_ms=%d",
                                          run_label(run_id), role, round((time.monotonic() - started) * 1000))
                         return parsed
                     except (KeyError, IndexError, TypeError, AttributeError, ValueError) as exc:
                         feedback = ""
-                        if isinstance(exc, ValidationError):
+                        diagnostic = {}
+                        if isinstance(exc, StructuredResponseError):
+                            issue = "verification_target_shape"
+                            diagnostic = exc.diagnostic
+                            messages[1] = {"role": "user", "content": json.dumps(exc.retry_data, ensure_ascii=False)}
+                            feedback = ("目标编号缺失、重复、未知或缺少支持判断。仅核查本次输入列出的claims，"
+                                        "按各自targets原样返回全部ID且各一次，不改写目标文本；保留真实语义判断。")
+                        elif isinstance(exc, ValidationError):
                             issue = ", ".join(sorted({str(row["type"]) for row in exc.errors(include_input=False)}))
                             # Never echo model text or validator messages into the retry.
                             details = []
@@ -254,9 +272,17 @@ class Providers:
                         self.logger.warning(
                             "run=%s component=llm role=%s phase=invalid attempt=%d finish_reason=%s issue=%s",
                             run_label(run_id), role, attempt + 1, finish_reason or "unknown", issue)
+                        if validate_response is not None:
+                            self.logger.warning("run=%s component=llm role=%s phase=format_shape attempt=%d diagnostic=%s",
+                                                run_label(run_id), role, attempt + 1,
+                                                json.dumps({"reason": issue, **diagnostic}, sort_keys=True))
+                            await self.db.event(run_id, "verification_format", {
+                                "attempt": attempt + 1, "reason": issue, **diagnostic})
                         if attempt:
                             raise ServiceError(
-                                f"{role} 未返回有效的结构化结果，已重试一次；错误类别：{issue}") from None
+                                f"{role} 未返回有效的结构化结果，已重试一次；错误类别：{issue}",
+                                **({"code": "verification_incomplete", "action": "继续核验，不删除原事实"}
+                                   if validate_response is not None else {})) from None
                         messages.append({"role": "user", "content": (
                             f"上次结果不符合 JSON schema（错误类别：{issue}）。请从头重新生成完整、有效的 JSON；"
                             + feedback +

@@ -15,7 +15,7 @@ from ..domain.models import (Analysis, ChatAnswer, Evidence, Judgment, Plan, Ref
                      TargetVerification)
 from ..core.metrics import NODE_SECONDS, RETRIEVAL_OUTCOMES
 from ..core.observability import error_category, get_task_logger, run_label, tracer
-from ..infrastructure.providers import ServiceError
+from ..infrastructure.providers import ServiceError, StructuredResponseError
 from .reporting import assemble_report, quoted_facts
 from .routing import decide
 from .agents import AgentRuntime
@@ -405,9 +405,47 @@ class ResearchGraph:
                 if (saved.get("contract_version") == VERIFICATION_CONTRACT
                         and saved.get("wire_version") == VERIFICATION_WIRE):
                     value = normalize_verification(Verification.model_validate(saved["verdict"]), claim_texts)
-                    if all(check.verification_complete for check in value.checks):
+                    if (sorted(check.index for check in value.checks) == sorted(claim_texts)
+                            and all(check.verification_complete
+                                    and [atom.target_id for atom in check.atomic_checks] == [f"{check.index}:0"]
+                                    and check.atomic_checks[0].text == claim_texts[check.index]
+                                    for check in value.checks)):
                         return value
         options = {"temperature": 0} if role not in {"chat", "router"} else {}
+        if role == "validator":
+            pending = list(data["claims"])
+            completed = {}
+
+            def validate_response(verdict):
+                nonlocal pending
+                bound = bind_target_verification(verdict, pending)
+                complete = {check.index for check in bound.checks if check.verification_complete}
+                completed.update({row.index: row for row in verdict.checks if row.index in complete})
+                incomplete = [check.index for check in bound.checks if not check.verification_complete]
+                if incomplete:
+                    expected = {row["index"] for row in pending}
+                    indices = [row.index for row in verdict.checks]
+                    target_ids = [atom.target_id for row in verdict.checks for atom in row.atomic_checks]
+                    expected_targets = {target["id"] for row in pending for target in row["targets"]}
+                    diagnostic = {"indices": incomplete, "expected_claims": len(pending),
+                                  "returned_claims": len(indices), "missing_claims": len(expected - set(indices)),
+                                  "duplicate_claims": len(indices) - len(set(indices)),
+                                  "unknown_claims": sum(index not in expected for index in indices),
+                                  "expected_targets": len(expected_targets), "returned_targets": len(target_ids),
+                                  "missing_targets": len(expected_targets - set(target_ids)),
+                                  "duplicate_targets": len(target_ids) - len(set(target_ids)),
+                                  "unknown_targets": sum(target not in expected_targets for target in target_ids),
+                                  "missing_support": sum(atom.supported is None for row in verdict.checks
+                                                         for atom in row.atomic_checks)}
+                    pending = [row for row in pending if row["index"] in incomplete]
+                    referenced = {key for row in pending for key in row["source_ids"]}
+                    retry_data = {**data, "claims": pending,
+                                  "sources": {key: source for key, source in data.get("sources", {}).items()
+                                              if key in referenced}}
+                    raise StructuredResponseError(diagnostic, retry_data)
+                return TargetVerification(checks=[completed[row["index"]] for row in data["claims"]])
+
+            options["validate_response"] = validate_response
         result = await self.providers.structured(role, instruction, data, schema, run_id, **options)
         if role == "validator":
             result = bind_target_verification(TargetVerification.model_validate(result.model_dump()), data["claims"])
