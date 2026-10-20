@@ -42,6 +42,50 @@ def test_missing_other_metadata_is_not_blocked_by_count_unit_gate():
     assert accepted
 
 
+@pytest.mark.parametrize("metric", ["单位时间完成量", "单位成本", "单位面积产出"])
+def test_compound_unit_metric_is_not_a_missing_count_unit_field(metric):
+    sources = [{"text": "甲方案26名参与者完成，未提供耗时与招募方式。"},
+               {"text": "乙方案31名参与者完成，未提供耗时与招募方式。"}]
+    claim = f"根据所提供资料，资料未提供耗时、{metric}，因此不能仅凭人数推断哪种方案效率更高。"
+
+    accepted, _ = validate_claim(claim, sources)
+
+    assert accepted  # Only the deterministic precheck; semantic support still requires the model.
+
+
+@pytest.mark.parametrize("claim", [
+    "资料未明确计数单位。", "资料未提供单位。", "资料未给出单位名称。",
+    "资料没有说明单位是否一致。", "资料并未说明单位信息。",
+    "资料未提供单位时间完成量，也未提供单位。",
+])
+def test_missing_count_unit_field_still_rejected_with_explicit_people(claim):
+    accepted, reason = validate_claim(claim, [{"text": "记录显示26名参与者完成。"}])
+
+    assert not accepted
+    assert "计数单位" in reason
+
+
+async def test_compound_unit_metric_still_requires_independent_semantic_verdict():
+    graph = ResearchGraph.__new__(ResearchGraph)
+    graph.settings = SimpleNamespace(llm_context_tokens=128000)
+    seen = []
+
+    async def ask(role, instruction, data, schema, run_id):
+        seen.extend(row["index"] for row in data["claims"])
+        return Verification(checks=[{"index": row["index"], "supported": False,
+            "reason": "independent semantic rejection", "atomic_checks": [
+                {"text": row["text"], "supported": False}]} for row in data["claims"]])
+
+    graph.ask = ask
+    draft = ReportDraft(title="metric boundary", sections=[{"heading": "fact", "claims": [{
+        "text": "资料未提供耗时、单位时间完成量，因此不能仅凭人数推断效率。", "source_ids": ["s"]}]}])
+    approved, checks = await graph.check_draft({"run_id": "metric-boundary"}, draft, {
+        "s": {"id": "s", "text": "26名参与者完成，未提供耗时。", "access": "fulltext"}})
+
+    assert seen == [0]
+    assert not approved and not checks[0]["supported"]
+
+
 def test_unstated_group_relationship_is_a_limitation_not_a_cited_claim():
     source = {"text": "检索定位试点明确记录：甲组19人全部完成；乙组21人全部未完成。没有其他结论。"}
     unsupported, reason = validate_claim(

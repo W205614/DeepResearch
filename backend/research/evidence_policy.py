@@ -26,6 +26,8 @@ UNSTATED_RELATION_META = re.compile(
 )
 MISSING_COUNT_UNIT = re.compile(
     r"(?:均|都)?.{0,12}(?:未明确|未提供|未给出|没有说明|并未说明).{0,8}(?:计数)?单位"
+    # Match the unit field, not a metric whose name begins with 单位 (unit time/cost).
+    r"(?=$|[^\u4e00-\u9fffA-Za-z0-9_]|(?:为|是|的|信息|名称|说明|定义|符号|口径|是否|一致|等价|相同|不同))"
 )
 EXPLICIT_COUNT_UNIT = re.compile(
     r"(?<![A-Za-z])\d+(?:[,.]\d+)?\s*(?:名|人|个|条|项|家|组|批|份|台|辆|次|件|套|位)"
