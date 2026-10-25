@@ -318,5 +318,38 @@
     "non_target_compose_containers_unchanged": 30,
     "stopped_daily_containers": 22,
     "failed_probe_retained": "First Linux probe used an empty PDF page that was correctly skipped; replaced only the invalid fixture with an image-containing scanned page; no production assertion removed."
+  },
+  "java_os_followup": {
+    "trigger_sha": "c764c907df7c6cc5f5cb781871dc0cf8c0fc50bb",
+    "security_run": "https://github.com/W205614/DeepResearch/actions/runs/40183294241",
+    "source_and_python_image_checks": "passed",
+    "vulnerability": "CVE-2026-111497",
+    "severity": "HIGH",
+    "package": "brotli-libs",
+    "from": "1.2.0-r1",
+    "to": "1.2.1-r0",
+    "patch": "explicit apk minimum in Java runtime Dockerfile; no ignore or severity reduction",
+    "deployment": {
+      "passed": true,
+      "old_image": "sha256:9b97f3e470e060f87f392941c9cb9a057442753cc44d2a99c9f09aaacc6dfea6",
+      "image": "sha256:1e9798b27da7f14dfee840790b8fe28d1c9d0e2b063f3ab1adde6b5b5ae61d7a",
+      "container": "4b9994babf865c1d2a1c76c06c2391979b2f3e56a615db6cf3f496130c1b3996",
+      "brotli_package": "brotli-libs-1.2.1-r0",
+      "class_and_dependency_jar_members_identical": true,
+      "jar_member_count": 116,
+      "initial_probe_failure": "apk info -v display format assertion; installed database confirms exact version; original failure retained",
+      "business_tables_unchanged": true,
+      "python_web_container_ids_and_images_unchanged": true,
+      "health_and_anonymous_401": true,
+      "local_os_scan_high_critical": 0,
+      "backup_reference": ".cache/backup/deepresearch-pre-security-20261025",
+      "backup_java_image_verified": true,
+      "dockerfile_normalized_sha256": "949a116bba4e606163dfbe19209f5044acae89e46fc08b1d0a9614106d31350d",
+      "stopped_daily_containers": 22,
+      "mounts_unchanged": true,
+      "non_target_compose_containers_unchanged": 30,
+      "deployment_window": "RELEASED"
+    },
+    "validation_boundary": "Native local scan covers OS packages; full final exact-SHA remote Security must independently pass"
   }
 }

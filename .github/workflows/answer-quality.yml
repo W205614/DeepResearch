@@ -10,6 +10,7 @@ jobs:
   answer-quality:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    permissions: { contents: read, actions: read }
     env:
       LLM_MODEL_ID: ${{ secrets.LLM_MODEL_ID || 'deepseek-v4-flash' }}
       LLM_BASE_URL: ${{ secrets.LLM_BASE_URL || 'https://api.deepseek.com' }}
@@ -18,12 +19,24 @@ jobs:
       LLM_EXTRA_BODY: '{"thinking":{"type":"disabled"}}'
     steps:
       - uses: actions/checkout@v7
+        with: { fetch-depth: 2 }
       - uses: astral-sh/setup-uv@v7
       - run: uv sync --all-groups --frozen
+      - id: quality-mode
+        run: uv run python scripts/reuse_quality_evidence.py --probe
+      - run: uv run python scripts/reuse_quality_evidence.py
+        if: steps.quality-mode.outputs.mode == 'reuse'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          LLM_API_KEY: ''
       - run: uv run python scripts/bounded_evaluation.py --policy eval/ci-provider-budget.json --ledger .cache/eval/provider-budget.sqlite3 --label answers scripts/evaluate_answers.py --output .cache/eval/answer-quality.json
+        if: steps.quality-mode.outputs.mode == 'fresh'
       - run: uv run python scripts/bounded_evaluation.py --policy eval/ci-provider-budget.json --ledger .cache/eval/provider-budget.sqlite3 --label research scripts/evaluate_research.py --debug-fixed-failures --output .cache/eval/research-quality.json
+        if: steps.quality-mode.outputs.mode == 'fresh'
       - run: uv run python scripts/bounded_evaluation.py --policy eval/ci-provider-budget.json --ledger .cache/eval/provider-budget.sqlite3 --label stability scripts/evaluate_research.py --only conflict-1,compare-3,single-5 --repetitions 3 --require-all --debug-fixed-failures --output .cache/eval/research-stability.json
+        if: steps.quality-mode.outputs.mode == 'fresh'
       - run: uv run python scripts/bounded_evaluation.py --policy eval/ci-provider-budget.json --ledger .cache/eval/provider-budget.sqlite3 --label extensions scripts/evaluate_research.py --cases eval/research_quality_extensions.json --output .cache/eval/research-quality-extensions.json
+        if: steps.quality-mode.outputs.mode == 'fresh'
       - run: uv run python scripts/write_delivery_receipt.py
         if: always()
         env:
@@ -32,4 +45,6 @@ jobs:
         if: always()
         with:
           name: answer-quality-evidence-${{ github.sha }}
-          path: .cache/eval/*.json
+          path: |
+            .cache/eval/*.json
+            .cache/eval/reused-source/*.json

@@ -13,18 +13,44 @@
       "prompt_tokens": 458509,
       "completion_tokens": 60842,
       "usage_missing_requests": 0
+    },
+    {
+      "sha": "c764c907df7c6cc5f5cb781871dc0cf8c0fc50bb",
+      "run_url": "https://github.com/W205614/DeepResearch/actions/runs/40183294157",
+      "conclusion": "success",
+      "http_requests": 414,
+      "prompt_tokens": 440256,
+      "completion_tokens": 60036,
+      "usage_missing_requests": 0,
+      "artifact_id": 12594928509,
+      "artifact_sha256": "a1e5ee721e721d0ee50fb9765581bd3dbe647769e3735091bbe84f08658c345f"
     }
   ],
   "next_run_effective_policy": {
-    "model_http": 471,
-    "llm_http": 471,
+    "model_http": 57,
+    "llm_http": 57,
     "embedding_http": 0,
     "reranker_http": 0,
     "search_http": 0,
-    "total_http": 471,
-    "input_tokens": 9541491,
-    "output_tokens": 439158
+    "total_http": 57,
+    "input_tokens": 9101235,
+    "output_tokens": 379122
   },
   "artifact_sha256": "ff85bd7336e61b56c65fad1bb3c87679d8264e2cc175a2db8ff31e22fb78b66e",
-  "rule": "No reset across new SHA; prior actual usage deducted before next push. No RAG manual run."
+  "rule": "No reset across SHA; both paid runs deducted. Strict approved evidence reuse for final Java-OS-only direct child; no fallback to paid on validation failure. Future commits restore original fresh evaluation with remaining budget.",
+  "aggregate_actual_usage": {
+    "http_requests": 843,
+    "prompt_tokens": 898765,
+    "completion_tokens": 120878,
+    "usage_missing_requests": 0
+  },
+  "final_java_os_commit": {
+    "quality_evidence": "reused",
+    "source_sha": "c764c907df7c6cc5f5cb781871dc0cf8c0fc50bb",
+    "source_run_id": 40183294157,
+    "source_artifact_id": 12594928509,
+    "source_artifact_sha256": "a1e5ee721e721d0ee50fb9765581bd3dbe647769e3735091bbe84f08658c345f",
+    "target_model_http_requests": 0,
+    "approval_scope": "one direct-child commit, Java brotli OS package plus strict evidence verification/accounting; unchanged Python, dependencies, cases, evaluator and effective model configuration"
+  }
 }

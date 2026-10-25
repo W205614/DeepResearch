@@ -11,7 +11,7 @@ RUN --mount=type=cache,target=/root/.m2 \
 
 FROM eclipse-temurin:21-jre-alpine
 # Refresh the affected OS library even when the upstream JRE image still ships it.
-RUN apk add --no-cache --upgrade 'libexpat>=2.9.0-r0' \
+RUN apk add --no-cache --upgrade 'libexpat>=2.9.0-r0' 'brotli-libs>=1.2.1-r0' \
     && addgroup -S app && adduser -S -G app app
 WORKDIR /app
 COPY --from=build /workspace/target/business-backend-0.1.0.jar app.jar
