@@ -177,6 +177,7 @@ docker compose down
 
 Java 负责身份权限、工作空间与任务生命周期；Python 负责研究编排、检索与文档处理；Vue 提供工作台。底层使用 PostgreSQL、Redis、Milvus 和 MinIO，默认编排同时包含身份、扫描与监控服务。
 
+- [项目结构与本地文件](docs/project-structure.md)
 - [完整配置模板](.env.example) · [部署编排](compose.yaml)
 - [登录与账号说明](docs/local-keycloak-login.md) · [升级、备份与维护记录](docs/local-pilot-operations.md)
 - [Java / Python 职责划分](docs/java-python-ownership.md) · [图片与文档解析](docs/multimodal.md)
