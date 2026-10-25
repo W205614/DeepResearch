@@ -183,5 +183,6 @@ Java 负责身份权限、工作空间与任务生命周期；Python 负责研�
 - [检索评测](eval/benchmark_results.md) · [历史交付记录](docs/delivery-history.md)
 - [生命周期开发计划、停止标准与恢复操作](docs/evidence-lifecycle.md) · [扩展评测集与来源](eval/lifecycle/README.md)
 - [本轮交付验证状态](docs/lifecycle-delivery-20261020.md)
+- [2026-10-25 改善、效果对照与交付边界](docs/evidence/improvement-20261025/README.md)
 
-当前部署面向单机内部试用。引用和模型核验有助于回查依据，重要结论仍需人工核实；本轮扩展回答题集仍有6题待验，详见[证据状态](eval/lifecycle/research-evidence-status.json)。截图与固定题集结果不代表通用回答准确率或生产可用性承诺。
+当前部署面向单机内部试用。引用和模型核验有助于回查依据，重要结论仍需人工核实。历史扩展集的6题现已补保存报告组件闭环，混合了精确复用的历史评分与本轮核验，不能称60题全新端到端通过；ConfigMap、Secret仍保留部分结果边界。新增两个固定留出问题验证了有界补搜在可控证据缺口下的作用，范围和失败记录见[本轮说明](docs/evidence/improvement-20261025/README.md)。截图与固定题集结果不代表通用回答准确率或生产可用性承诺。

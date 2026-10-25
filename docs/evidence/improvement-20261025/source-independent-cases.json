@@ -1,0 +1,132 @@
+[
+  {
+    "id": "dev-pathlib",
+    "split": "development",
+    "question": "根据给定 Python pathlib 文档，pure path 与 concrete path 有什么区别？在 Unix 上只计算 Windows 路径而不访问文件系统，应选择什么类型？文档是否提供性能耗时？",
+    "critical": true,
+    "expected_facts": [
+      "pure path 只进行路径计算，不执行文件系统 I/O",
+      "concrete path 还提供 I/O 操作",
+      "跨平台计算 Windows 路径可用 PureWindowsPath",
+      "给定资料未提供性能耗时，不能声称速度提升"
+    ],
+    "forbidden_claims": [
+      "所有 Path 都不访问文件系统",
+      "WindowsPath 可在 Unix 上直接实例化"
+    ],
+    "evidence": [
+      {
+        "title": "dev-pathlib passage 1",
+        "text": "This module offers classes representing filesystem paths with semantics appropriate for different operating systems. Path classes are divided between pure paths , which provide purely computational operations without I/O, and concrete paths , which inherit from pure paths but also provide I/O operations.",
+        "source_url": "https://docs.python.org/3.13/library/pathlib.html",
+        "locator": "selected paragraph 1"
+      },
+      {
+        "title": "dev-pathlib passage 2",
+        "text": "If you want to manipulate Windows paths on a Unix machine (or vice versa). You cannot instantiate a WindowsPath when running on Unix, but you can instantiate PureWindowsPath .",
+        "source_url": "https://docs.python.org/3.13/library/pathlib.html",
+        "locator": "selected paragraph 2"
+      }
+    ]
+  },
+  {
+    "id": "dev-httpx",
+    "split": "development",
+    "question": "根据 HTTPX 文档，默认5秒超时是否代表整个请求最多5秒？请区分 connect timeout 和 read timeout，并说明默认值约束的对象。",
+    "critical": true,
+    "expected_facts": [
+      "默认是5秒网络不活动超时",
+      "connect timeout 约束建立连接等待",
+      "read timeout 约束等待接收一块数据",
+      "不能把不活动或分块读取超时解释为整个请求的固定总时限"
+    ],
+    "forbidden_claims": [
+      "整个请求总耗时保证小于5秒"
+    ],
+    "evidence": [
+      {
+        "title": "dev-httpx passage 1",
+        "text": "The default behavior is to raise a TimeoutException after 5 seconds of network inactivity.",
+        "source_url": "https://www.python-httpx.org/advanced/timeouts/",
+        "locator": "selected paragraph 1"
+      },
+      {
+        "title": "dev-httpx passage 2",
+        "text": "There are four different types of timeouts that may occur. These are connect , read , write , and pool timeouts.",
+        "source_url": "https://www.python-httpx.org/advanced/timeouts/",
+        "locator": "selected paragraph 2"
+      },
+      {
+        "title": "dev-httpx passage 3",
+        "text": "The connect timeout specifies the maximum amount of time to wait until a socket connection to the requested host is established. If HTTPX is unable to connect within this time frame, a ConnectTimeout exception is raised.",
+        "source_url": "https://www.python-httpx.org/advanced/timeouts/",
+        "locator": "selected paragraph 3"
+      },
+      {
+        "title": "dev-httpx passage 4",
+        "text": "The read timeout specifies the maximum duration to wait for a chunk of data to be received (for example, a chunk of the response body). If HTTPX is unable to receive data within this time frame, a ReadTimeout exception is raised.",
+        "source_url": "https://www.python-httpx.org/advanced/timeouts/",
+        "locator": "selected paragraph 4"
+      }
+    ]
+  },
+  {
+    "id": "holdout-sqlite",
+    "split": "holdout",
+    "question": "根据 SQLite 文档，不同连接通常能否读取未提交变更？读取未提交数据需要哪些组合条件？WAL 模式下读事务使用什么视图？",
+    "critical": true,
+    "expected_facts": [
+      "通常不同连接不能看到未提交变更",
+      "共享缓存且 reader 开启 read_uncommitted 才能读另一个连接未提交变更",
+      "WAL 模式提供快照隔离",
+      "读事务看到开始时的数据库快照"
+    ],
+    "forbidden_claims": [
+      "只开启WAL即可读取未提交变更",
+      "read_uncommitted 单独就足够"
+    ],
+    "evidence": [
+      {
+        "title": "holdout-sqlite passage 1",
+        "text": "If two database connections share the same cache and the reader has enabled the read_uncommitted pragma , then the reader will be able to see changes made by the writer before the writer transaction commits. The combined use of shared cache mode and the read_uncommitted pragma is the only way that one database connection can see uncommitted changes on a different database connection. In all other circumstances, separate database connections are completely isolated from one another.",
+        "source_url": "https://www.sqlite.org/isolation.html",
+        "locator": "selected paragraph 1"
+      },
+      {
+        "title": "holdout-sqlite passage 2",
+        "text": "WAL mode permits simultaneous readers and writers. It can do this because changes do not overwrite the original database file, but rather go into the separate write-ahead log file. That means that readers can continue to read the old, original, unaltered content from the original database file at the same time that the writer is appending to the write-ahead log. In WAL mode , SQLite exhibits \"snapshot isolation\". When a read transaction starts, that reader continues to see an unchanging \"snapshot\" of the database file as it existed at the moment in time when the read transaction started. Any write transactions that commit while the read transaction is active are still invisible to the read transaction, because the reader is seeing a snapshot of database file from a prior moment in time.",
+        "source_url": "https://www.sqlite.org/isolation.html",
+        "locator": "selected paragraph 2"
+      }
+    ]
+  },
+  {
+    "id": "holdout-pg17",
+    "split": "holdout",
+    "question": "根据 PostgreSQL 17 文档，默认隔离级别是什么？Read Committed 的连续 SELECT 是否总看见相同数据？Repeatable Read 的快照时间点如何确定？",
+    "critical": true,
+    "expected_facts": [
+      "默认隔离级别是 Read Committed",
+      "Read Committed 每条 SELECT 使用查询开始时已提交数据的快照",
+      "同一事务连续 SELECT 可看到不同数据",
+      "Repeatable Read 使用事务中首个非事务控制语句开始时的快照"
+    ],
+    "forbidden_claims": [
+      "同一事务 Read Committed 的 SELECT 永远看到相同数据"
+    ],
+    "evidence": [
+      {
+        "title": "holdout-pg17 passage 1",
+        "text": "Read Committed is the default isolation level in PostgreSQL . When a transaction uses this isolation level, a SELECT query (without a FOR UPDATE/SHARE clause) sees only data committed before the query began; it never sees either uncommitted data or changes committed by concurrent transactions during the query's execution. In effect, a SELECT query sees a snapshot of the database as of the instant the query begins to run. However, SELECT does see the effects of previous updates executed within its own transaction, even though they are not yet committed. Also note that two successive SELECT commands can see different data, even though they are within a single transaction, if other transactions commit changes after the first SELECT starts and before the second SELECT starts.",
+        "source_url": "https://www.postgresql.org/docs/17/transaction-iso.html",
+        "locator": "selected paragraph 1"
+      },
+      {
+        "title": "holdout-pg17 passage 2",
+        "text": "This level is different from Read Committed in that a query in a repeatable read transaction sees a snapshot as of the start of the first non-transaction-control statement in the transaction , not as of the start of the current statement within the transaction. Thus, successive SELECT commands within a single transaction see the same data, i.e., they do not see changes made by other transactions that committed after their own transaction started.",
+        "source_url": "https://www.postgresql.org/docs/17/transaction-iso.html",
+        "locator": "selected paragraph 2"
+      }
+    ]
+  }
+]

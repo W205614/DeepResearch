@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-25",
+  "baseline_sha": "b03305f57dc9764eab3ee6500f3dce8866c27833",
+  "new_cases_sha256": "17fff4ebdaa0abbe348915a77811d108538d4a05eb03031dd1c1f1a1a101332a",
+  "saved_cases": [
+    "public-configmap",
+    "public-pod-lifecycle",
+    "public-quota",
+    "public-statefulset",
+    "public-probes",
+    "public-secret"
+  ],
+  "source_provenance": [
+    {
+      "id": "dev-pathlib",
+      "url": "https://docs.python.org/3.13/library/pathlib.html",
+      "html_sha256": "283f32d8b46cf2c8767102fbf1e0ade0df9477cdb9da30a5400fbd1c8586c285",
+      "selected_text_sha256": "9c7e1b16fa2ab666cb32f7edcf818ff12f35951278059630ea8a25f7c68a7720",
+      "paragraphs": 2
+    },
+    {
+      "id": "dev-httpx",
+      "url": "https://www.python-httpx.org/advanced/timeouts/",
+      "html_sha256": "1a060f1e06215f7c9305d8cb88f5553440fb01274de4594405b693cbd16a0649",
+      "selected_text_sha256": "5c77889084168af9161abb2cd73656b5fbee98dac1661a2a38bba57fb41dea07",
+      "paragraphs": 4
+    },
+    {
+      "id": "holdout-sqlite",
+      "url": "https://www.sqlite.org/isolation.html",
+      "html_sha256": "23395653f04984e4310b287ed548202d874e06ecd2cba17f32b2714e5b7ebef7",
+      "selected_text_sha256": "d3105ed5c7da0f723cdc6f2beee41a6317b4190be71888a4c1e11472cd6f22c8",
+      "paragraphs": 2
+    },
+    {
+      "id": "holdout-pg17",
+      "url": "https://www.postgresql.org/docs/17/transaction-iso.html",
+      "html_sha256": "3cbdd6bd65e4c3fc3cf0751bf2256dea53fd15483955f9cbeef3a46e1d2dbf5b",
+      "selected_text_sha256": "86249cb48a4aa3d8ad20964193934bb709be61231832bf6c3270d0b11e9191b9",
+      "paragraphs": 2
+    }
+  ],
+  "gates": {
+    "support": 0.95,
+    "coverage": 0.85,
+    "critical_failures": 0,
+    "forbidden_claims": 0,
+    "holdout_repetitions": 1
+  },
+  "comparison": "same frozen input, max_reflection_rounds=0 versus 2; controlled first-pass evidence availability; real model, frozen retrieval, not live-web proof",
+  "budget": {
+    "model_http": 160,
+    "llm_http": 160,
+    "embedding_http": 20,
+    "reranker_http": 16,
+    "search_http": 12,
+    "total_http": 208,
+    "input_tokens": 3000000,
+    "output_tokens": 150000,
+    "stages": {
+      "saved-six": 56,
+      "development": 48,
+      "holdout": 40,
+      "browser": 16
+    }
+  },
+  "stop": [
+    "budget",
+    "401/402/403",
+    "429 or 5xx",
+    "source mismatch",
+    "holdout failure"
+  ],
+  "initial_daily_state": "all 22 containers stopped",
+  "human_blind_review": false
+}

@@ -1,0 +1,17 @@
+{
+  "operation": "analysis of preserved 20261020 real reranker rows; no new supplier requests",
+  "cases": 50,
+  "ndcg_improved": [
+    {
+      "id": "public-probes",
+      "ndcg_delta": 0.3691,
+      "before_top": "public-pod-lifecycle.txt",
+      "after_top": "public-probes.txt"
+    }
+  ],
+  "ndcg_degraded": [],
+  "unchanged": 49,
+  "latency_additional_p95_ms": 511.56,
+  "conclusion": "One ranking correction, no Recall@5 increase; optional deployment tradeoff, not report accuracy proof",
+  "fallback_tests": "test_reranker_hot_update.py: HTTP errors, timeout, malformed/duplicate/out-of-range responses, policy block, cache contract"
+}

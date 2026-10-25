@@ -1,0 +1,352 @@
+{
+  "status": "LOCAL_DELIVERY_COMPLETE_CI_PENDING",
+  "date": "2026-10-25",
+  "baseline_sha": "b03305f57dc9764eab3ee6500f3dce8866c27833",
+  "final_sha_binding": "CI-generated delivery.json artifact uses GITHUB_SHA; all expected workflow results must be checked for that SHA",
+  "backend_source_sha256": "46c8a933b5b227db13d06309292cdf11dc1460a7a57f64261fad9af588b1edd5",
+  "graph_file_sha256": "b6c0346fb7d8d3586f40017fea27343995fce7363aa3014f3c5362c199908023",
+  "fixed": [
+    "Refine missing-evidence queries without repeating searched queries or increasing limits",
+    "Pass unresolved gaps to final coverage judgment without treating every limitation as automatic failure",
+    "Persistent opt-in evaluation HTTP/token budget across cohorts and CI steps, explicit audited stage transfer"
+  ],
+  "not_changed": [
+    "Java business ownership, authorization, Outbox, publication transaction rules",
+    "Agent count, tech stack, retrieval algorithm, evaluation thresholds",
+    "Resume HTML/PDF and project guides/interview materials"
+  ],
+  "effects": {
+    "saved_six_component_cases": 6,
+    "saved_six_new_whole_graph_cases": 0,
+    "saved_six_mixed_historical_support_disclosed": true,
+    "saved_six_partial_production_cases": [
+      "public-configmap",
+      "public-secret"
+    ],
+    "heldout_questions": 2,
+    "variants_per_question": 2,
+    "sqlite_coverage": [
+      0.5,
+      1.0
+    ],
+    "pg17_coverage": [
+      0.75,
+      1.0
+    ],
+    "citation_support_each_variant": 1.0,
+    "all_outcomes_retained": true,
+    "source_and_staging_limits": "effect-results.json"
+  },
+  "browser": {
+    "roles_fixture": {
+      "passed": true,
+      "seconds": 37.5,
+      "scope": [
+        "real OIDC, backend, database, index and browser",
+        "document versions, report impact/revision/diff",
+        "self-review denied, independent approval, viewer/revoked permissions"
+      ],
+      "model": "deterministic fixture"
+    },
+    "normal_real_model": {
+      "results": [
+        {
+          "kind": "normal",
+          "status": "completed",
+          "quality": "partial",
+          "original_request_answered": true,
+          "source_count": 1
+        }
+      ],
+      "mode": "real model, real OIDC/backend/database/browser; deterministic embedding, no external user feedback"
+    },
+    "saved_evidence_and_insufficient_ui": {
+      "saved_real_report_evidence_opened": true,
+      "missing_evidence_status": "insufficient",
+      "submission_blocked": true,
+      "model": "deterministic fixture for missing-evidence state; no generation quality claim"
+    },
+    "real_model_insufficient": "not completed: browser stage limit reached; retained failure, fixture does not replace real generation evidence",
+    "failure_records": [
+      "first shared bind SQLite OperationalError, original ledger retained",
+      "first zero-cost state attempt raced worker recreation and failed; retried only that path after worker readiness"
+    ]
+  },
+  "local_verification": {
+    "affected_python": "39 passed; budget amendment then 9 focused budget tests passed (overlapping, not added as independent cases)",
+    "frontend": "TypeScript/Vite build passed; isolated role 1/1 and saved-report/missing-evidence UI 1/1",
+    "expected_remote": [
+      "CI",
+      "Security",
+      "Answer Quality Gate"
+    ],
+    "full_local_regression_run": false
+  },
+  "deployment": {
+    "data_tables_equal": true,
+    "table_counts": {
+      "postgres.documents": 13,
+      "postgres.threads": 22,
+      "postgres.runs": 45,
+      "postgres.report_publications": 1,
+      "postgres.memberships": 10,
+      "postgres.workspaces": 8,
+      "keycloak-postgres.user_entity": 3
+    },
+    "python_services": [
+      {
+        "service": "agent",
+        "container": "86555d344264ae3d5181bb2b9508b402f3033f4b1f1344a53068d137086e7a1f",
+        "image": "sha256:1ee34917a9490739442a16efd57876d09903549d2d232538c3a8efa02c1947f3",
+        "graph_sha256": "b6c0346fb7d8d3586f40017fea27343995fce7363aa3014f3c5362c199908023"
+      },
+      {
+        "service": "worker",
+        "container": "eb1e0fba593cf74b8f05f4226a5a27ee50f1c3322e0d0d858524c3900b0c6da6",
+        "image": "sha256:be42ebac35bb61434d22bd182d47f41b1fc007552013b0c53172bd287a9f3b50",
+        "graph_sha256": "b6c0346fb7d8d3586f40017fea27343995fce7363aa3014f3c5362c199908023"
+      },
+      {
+        "service": "document-worker",
+        "container": "772e2c408a17f67f45e820ed74bc4981d71698bd8bf5fe9aae5b4dad210d31d2",
+        "image": "sha256:f02f60ab11564e4075e9fea12eb4b0e82ac2f78e0c4ea2801d4785a14d52a353",
+        "graph_sha256": "b6c0346fb7d8d3586f40017fea27343995fce7363aa3014f3c5362c199908023"
+      }
+    ],
+    "graph_sha256": "b6c0346fb7d8d3586f40017fea27343995fce7363aa3014f3c5362c199908023",
+    "restored_initial_state": "22 containers stopped",
+    "archive": ".cache/backup/deepresearch-pre-improvement-20261025",
+    "backup_restore_passed": true
+  },
+  "recovery": {
+    "passed": true,
+    "storage_items": 14,
+    "rto_seconds": 128.58,
+    "checks": [
+      "all archived files match",
+      "both SQL dumps restored with exit-on-error",
+      "readyz",
+      "anonymous 401",
+      "OIDC discovery",
+      "Milvus search",
+      "real OIDC tokens",
+      "viewer/revoked permissions",
+      "published report SHA and citations",
+      "authorized SQL-filtered document retrieval (keyword fallback, upstream disabled)",
+      "offline ClamAV signatures: clean content accepted and EICAR rejected",
+      "new research accepted and explicitly cancelled"
+    ],
+    "scope": "same-host isolated restoration, upstream model disabled; not cross-host DR/SLA"
+  },
+  "cleanup": {
+    "authorization": "current project improvement cleanup; exact fresh acceptance and restored test copies only",
+    "backup": ".cache\\backup\\deepresearch-acceptance-improvement-20261025-02",
+    "backup_manifest_sha256": "b84500ac2a954f75b80cf66b05fab7c66e12cdff52bbb6641f3e73b21da492df",
+    "restore_source": ".cache\\backup\\deepresearch-pre-improvement-20261025",
+    "containers": [
+      {
+        "id": "b6957bca56847359230bfbe760c1dc85ad6a7b169a1ad967ebf301ef924f9c14",
+        "service": "worker"
+      },
+      {
+        "id": "531c2272357924d95829de9d72205f9cf5a9ef0ee5c4ab2e38161d15649c40b9",
+        "service": "web"
+      },
+      {
+        "id": "1b913e2ad8e09198c595dfde6107891085403bfe289eb057901ec14f6e0121c8",
+        "service": "backend"
+      },
+      {
+        "id": "2a85c6bf6d62f8fbf3594f0bce5dc469cc0a4e7741d24f5e0bf926a412bb754f",
+        "service": "agent"
+      },
+      {
+        "id": "f9a3e6b87d22ff913bcc590caeae3b158256819d91af8ca7fca65d5632c410ae",
+        "service": "document-worker"
+      },
+      {
+        "id": "0ef7bd1e433dce42d7c04232ca174be207f9d291f60c9e7eba0e749af79c58a6",
+        "service": "alertmanager"
+      },
+      {
+        "id": "3a8218576101c042c3996d76bb74af8a419ec23e7b550816739d5cb6ecf28774",
+        "service": "alert-relay"
+      },
+      {
+        "id": "e51d6ef999123f46a8f29a871708d0a5395c3372640302e51cd51ec36ecb9ca9",
+        "service": "migrate"
+      },
+      {
+        "id": "f21fef4882d36c4009ded6abe66c12dbd551eac00ef8439f70b2989cbced3a4a",
+        "service": "keycloak"
+      },
+      {
+        "id": "e461d6b51b59e59b238cbd4bdfb146699cb420bd797193426f1050d025b73a01",
+        "service": "grafana"
+      },
+      {
+        "id": "fbdb686b0be2a38df360cada4ba1d44f7b7815c5ebbc65dd9d927f6944f69c09",
+        "service": "otel-collector"
+      },
+      {
+        "id": "3f27d9a5bd96b2db58fd4d50100af8244921d51dc182489ecd0bd5c828df48c3",
+        "service": "milvus"
+      },
+      {
+        "id": "1360f0ee62f1d34753e5378c40bf36ae9d5b46a48eb29cfd7fe89a09792790b4",
+        "service": "keycloak-postgres"
+      },
+      {
+        "id": "d2840694572f517025e2488fcefd67633368193a602059caef488459dd897d82",
+        "service": "alert-token-init"
+      },
+      {
+        "id": "b2cd9e7425f4e12ec636c8a3dbcd14b24f92da2471c45720ba41c65f79809388",
+        "service": "redis"
+      },
+      {
+        "id": "8d90748a6a105d4028f61e569a2e34577395b32f6430525cbfdba00a753bece5",
+        "service": "loki"
+      },
+      {
+        "id": "1c81f5a5acd7365885f577a5cfa870660b647feecf74b5dbfbb0e1d539e37fce",
+        "service": "webhook-recorder"
+      },
+      {
+        "id": "bde261573a684dfed83d8dcae1d2b55cd7f67baec31ff68b018fc2759eed5da2",
+        "service": "etcd"
+      },
+      {
+        "id": "400cb1a7308c0165a1969a36274518437f948f90053e182df51251574ce11e38",
+        "service": "postgres"
+      },
+      {
+        "id": "33d8a33935ca6c7f6fa8aa24fd4d7d018249af2acc1d3ff2329897eebf6b8c05",
+        "service": "prometheus"
+      },
+      {
+        "id": "e7d640c459d650321ade1209bdf04707486b6d58ba949312db4ae3f68293ac2f",
+        "service": "minio"
+      },
+      {
+        "id": "c0fa8c511f8e79d810f909d06ac5ba070498aea48d26af31268a151693db2600",
+        "service": "tempo"
+      },
+      {
+        "id": "2149f365fe5a47e536d840672f9807b29c49cdd5ee66a5571438e2ea2a1a5474",
+        "service": "clamav"
+      }
+    ],
+    "volumes": [
+      "45c26b7bbe43fb891d284f07b644c8f99d173bdfb2a217deb41f5f3648794526",
+      "5f7c75a407b0796f386a1c396e4116980f52bb8cdb1cff0e27c31494e0d738d0",
+      "dr-lifecycle-acceptance_alert-relay-token",
+      "dr-lifecycle-acceptance_etcd-data",
+      "dr-lifecycle-acceptance_grafana-data",
+      "dr-lifecycle-acceptance_improvement-budget",
+      "dr-lifecycle-acceptance_improvement-clamav",
+      "dr-lifecycle-acceptance_keycloak-data",
+      "dr-lifecycle-acceptance_keycloak-postgres-data",
+      "dr-lifecycle-acceptance_loki-data",
+      "dr-lifecycle-acceptance_milvus-data",
+      "dr-lifecycle-acceptance_minio-data",
+      "dr-lifecycle-acceptance_postgres-data",
+      "dr-lifecycle-acceptance_redis-data",
+      "dr-lifecycle-acceptance_tempo-data",
+      "dr-restore-improvement-20261025_alert-relay-token",
+      "dr-restore-improvement-20261025_etcd-data",
+      "dr-restore-improvement-20261025_grafana-data",
+      "dr-restore-improvement-20261025_keycloak-data",
+      "dr-restore-improvement-20261025_keycloak-postgres-data",
+      "dr-restore-improvement-20261025_loki-data",
+      "dr-restore-improvement-20261025_milvus-data",
+      "dr-restore-improvement-20261025_minio-data",
+      "dr-restore-improvement-20261025_postgres-data",
+      "dr-restore-improvement-20261025_redis-data",
+      "dr-restore-improvement-20261025_runtime-alertmanager-7b12648a1f1d",
+      "dr-restore-improvement-20261025_runtime-clamav-database",
+      "dr-restore-improvement-20261025_runtime-prometheus-20d9e71df97b",
+      "dr-restore-improvement-20261025_tempo-data"
+    ],
+    "volume_ownership": "acceptance snapshot exact names; restore created_volumes exact receipt; dedicated browser budget archive",
+    "images_removed": [],
+    "image_reason": "Current images and rollback OCI trees protected; no additional image proven redundant",
+    "protected_daily_volumes": [
+      "3743676bf01f6587dd6eae6529aa6ba73a53109ee0e19a0cfcb9091ca2a55869",
+      "524fbe74fea3163663dcace8adfd12bfab587c54cd02f46eca6991e67bed1f06",
+      "deepresearch_alert-relay-token",
+      "deepresearch_etcd-data",
+      "deepresearch_grafana-data",
+      "deepresearch_keycloak-data",
+      "deepresearch_keycloak-postgres-data",
+      "deepresearch_loki-data",
+      "deepresearch_milvus-data",
+      "deepresearch_minio-data",
+      "deepresearch_postgres-data",
+      "deepresearch_redis-data",
+      "deepresearch_tempo-data"
+    ],
+    "completed": true,
+    "removed_container_count": 23,
+    "removed_volume_count": 29,
+    "non_target_container_identity_and_state_unchanged": true,
+    "daily_containers_stopped": 22
+  },
+  "backup_paths": [
+    ".cache/backup/deepresearch-pre-improvement-20261025",
+    ".cache/backup/deepresearch-acceptance-improvement-20261025-02"
+  ],
+  "preserved_failed_archive": ".cache/backup/deepresearch-acceptance-improvement-20261025",
+  "rollback": "Verified pre-improvement OCI archive and explicit pre-improvement-20261025 tags; current latest tags restored after archive image reload",
+  "resource_failures": "First acceptance image save failed after rebuilding mutable tags; old OCI roots reloaded from verified archive, rollback aliases anchored, second complete archive validated before cleanup",
+  "provider_usage": {
+    "http_requests": 137,
+    "actual_prompt_tokens": 451760,
+    "actual_completion_tokens": 24583,
+    "usage_missing_requests": 1,
+    "charged_input_tokens": 459323,
+    "charged_output_tokens": 32583,
+    "stage_http": {
+      "browser": 16,
+      "development": 45,
+      "holdout": 42,
+      "saved-six": 34
+    }
+  },
+  "evidence_boundaries": [
+    "No general accuracy, HA, SLA, real external user feedback or personal-contribution inference",
+    "Real generation and offline fixtures reported separately",
+    "Unknown usage remains conservatively reserved, never recorded as zero or monetary cost"
+  ],
+  "resume_supported": [
+    "Java owns access, lifecycle and publication; Python executes bounded evidence research",
+    "Fixed-source two-question mechanism comparison showed coverage recovery with bounded supplemental search; disclose denominator and staging",
+    "Versioned evidence, independent approval and isolated recovery verified on one host"
+  ],
+  "guide_handoff": {
+    "files_symbols": [
+      "backend/research/graph.py: ResearchGraph.reflect, ResearchGraph.validator",
+      "scripts/bounded_evaluation.py: Budget.reserve, settle, amend_stages",
+      "scripts/evaluate_reflection.py: staged source mechanism study",
+      "frontend/e2e/improvement-live.e2e.ts: opt-in real generation and fixture-state separation"
+    ],
+    "outdated_claims": [
+      "six uncompleted cases as six current code bugs",
+      "60 fresh end-to-end passes",
+      "reranker improves overall accuracy",
+      "SQLite/PG fixed sample gains as general accuracy",
+      "browser role automation as external user feedback"
+    ],
+    "tradeoffs": [
+      "refined search versus duplicate or unbounded search",
+      "coverage gaps as evidence-review hints, not unconditional refusal",
+      "historical exact-object reuse versus fresh independent grading",
+      "token reservation versus reported actual usage",
+      "partial reports and scoped independent approval",
+      "SQL authority versus derived indexes and version switching",
+      "same-host restore versus HA/cross-host recovery"
+    ]
+  },
+  "graph_normalized_sha256": "75b72123f171e493d1ee44ee1579b3b5606d39be4fdf17a4b4cdc584ebece3e9",
+  "image_commit_relationship": "Deployment graph bytes are preserved under graph_file_sha256; Git normalizes code to LF. graph_normalized_sha256 is checked against the final CI checkout before the receipt is written."
+}

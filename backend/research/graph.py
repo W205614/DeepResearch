@@ -866,6 +866,8 @@ class ResearchGraph:
             return {"reflect": False}
         result = await self.ask("reflect",
             "仅针对尚未解决的缺口设计最多 4 个补充查询，禁止重复已有查询。"
+            "已有查询涉及某个主题，不代表该主题的缺口已经解决。若仍缺具体事实，"
+            "改用更具体的符号、原文关键词、精确短语或 site: 来源限定，形成不同的可执行查询。"
             "无可执行的新查询时返回空列表；不为凑轮次补搜。",
             {"plan": state["plan"], "gaps": state["gaps"], "searched": state["searched"]}, Reflection, state["run_id"])
         queries = normalize_queries(result.queries, searched=state["searched"])
@@ -1090,8 +1092,12 @@ class ResearchGraph:
                 "同时独立检查原始 topic 的全部要求，original_request_answered 为是否完整回答原始要求。"
                 "不能把计划遗漏的用户要求视为已完成；不确定时 original_request_answered=false。"
                 "只能使用给出的已核验事实；不使用被删除结论、来源列表、计划假设或外部知识补齐答案。"
+                "gaps 是分析阶段报告的待确认项，仅作为核对线索；逐项检查是否已被最终事实解决。"
+                "若用户明确要求的具体事实仍缺失，只披露未知或资料不足不算完整回答；"
+                "用户原本只问资料是否提供某信息时，明确说明资料范围和未知可以构成回答。"
                 "未知信息不算完整回答；原文事实及其明确限定可以回答问题，不要求用户未问的额外元数据。",
                 {"topic": state["topic"], "questions": questions,
+                 "gaps": state.get("gaps", []),
                  "claims": [claim.model_dump() for i, claim in enumerate(
                      c for section in draft.sections for c in section.claims) if i in approved]},
                 QuestionCoverage, state["run_id"])

@@ -1,0 +1,481 @@
+{
+  "dataset_sha256": "17fff4ebdaa0abbe348915a77811d108538d4a05eb03031dd1c1f1a1a101332a",
+  "scope": "2 held-out questions, one run per variant, controlled staged source availability, real model, no live search",
+  "rows": [
+    {
+      "id": "holdout-sqlite",
+      "reflection_round_limit": 0,
+      "passed": false,
+      "claim_count": 4,
+      "support": 1.0,
+      "coverage": 0.5,
+      "forbidden_claim_present": false,
+      "report_sha256": "113b4105934d8e2f8cc815d28020ee5b4d418ceeafb6707163f851c339004ceb",
+      "reflection_events": [
+        {
+          "queries": [],
+          "reason": "已达到补搜轮数上限，按现有证据生成报告。",
+          "stop_reason": "round_limit"
+        }
+      ],
+      "generation_usage": {
+        "run_id": "ce0d98a782174c63b13acecadfe59405",
+        "search_calls": 4,
+        "llm_calls": 6,
+        "prompt_tokens": 6751,
+        "completion_tokens": 1206
+      },
+      "grading_usage": {
+        "search_calls": 0,
+        "llm_calls": 2,
+        "prompt_tokens": 2653,
+        "completion_tokens": 67
+      },
+      "original_stop": null
+    },
+    {
+      "id": "holdout-sqlite",
+      "reflection_round_limit": 2,
+      "passed": true,
+      "claim_count": 11,
+      "support": 1.0,
+      "coverage": 1.0,
+      "forbidden_claim_present": false,
+      "report_sha256": "ab231e5213e6aafc01941e226e4612148ade8737ae1b35019795ea8cfca2b8f8",
+      "reflection_events": [
+        {
+          "queries": [
+            "site:sqlite.org/wal.html \"read transaction\" snapshot end mark",
+            "site:sqlite.org/pragma.html \"read_uncommitted\" shared cache locking",
+            "site:sqlite.org/isolation.html read uncommitted shared cache",
+            "site:sqlite.org/lang_transaction.html read_uncommitted isolation"
+          ],
+          "reason": "现有查询已覆盖 read_uncommitted、shared cache、WAL 快照等主题，但缺口仍集中在 WAL 读事务视图的官方原文表述、读取未提交数据的锁状态条件，以及版本适用范围。为避免重复，改用更精确的原文关键词与 site: 限定形成可执行查询；版本号缺口不单独补搜，因范围已声明不涉及具体版本。",
+          "stop_reason": ""
+        },
+        {
+          "queries": [
+            "site:sqlite.org/wal.html \"snapshot\" \"read transaction\" isolation",
+            "site:sqlite.org/sharedcache.html uncommitted changes visibility read_uncommitted",
+            "site:sqlite.org/pragma.html \"read_uncommitted\" default value version",
+            "site:sqlite.org/changes.html read_uncommitted shared cache WAL"
+          ],
+          "reason": "现有检索已覆盖 read_uncommitted 语法、共享缓存组合、WAL 快照及隔离级别页面，但缺口仍集中在两点：WAL 与 read_uncommitted/共享缓存的交互例外，以及版本适用范围。可改用更精确的原文短语和 site: 限定，分别针对 WAL 页面中的隔离/快照表述、pragma 页面中的默认值与版本说明、shared-cache 页面中的未提交可见性边界，以及 changelog 中的版本引入信息设计查询；不重复已有查询。",
+          "stop_reason": ""
+        },
+        {
+          "queries": [],
+          "reason": "已达到补搜轮数上限，按现有证据生成报告。",
+          "stop_reason": "round_limit"
+        }
+      ],
+      "generation_usage": {
+        "run_id": "57379d2eaec34cf3bed50cc7b8d6ba0e",
+        "search_calls": 11,
+        "llm_calls": 12,
+        "prompt_tokens": 17748,
+        "completion_tokens": 3279
+      },
+      "grading_usage": {
+        "search_calls": 0,
+        "llm_calls": 2,
+        "prompt_tokens": 5762,
+        "completion_tokens": 123
+      },
+      "original_stop": null
+    },
+    {
+      "id": "holdout-pg17",
+      "reflection_round_limit": 0,
+      "passed": false,
+      "claim_count": 7,
+      "support": 1.0,
+      "coverage": 0.75,
+      "forbidden_claim_present": false,
+      "report_sha256": "c4d7948ab7278251b34827141e1437de25d064cded9ee681bca2eae80691eb13",
+      "reflection_events": [
+        {
+          "queries": [],
+          "reason": "已达到补搜轮数上限，按现有证据生成报告。",
+          "stop_reason": "round_limit"
+        }
+      ],
+      "generation_usage": {
+        "run_id": "716c73fcc8c74b749476d4587b4c2229",
+        "search_calls": 3,
+        "llm_calls": 6,
+        "prompt_tokens": 7548,
+        "completion_tokens": 1567
+      },
+      "grading_usage": {
+        "search_calls": 0,
+        "llm_calls": 2,
+        "prompt_tokens": 4233,
+        "completion_tokens": 91
+      },
+      "original_stop": null
+    },
+    {
+      "id": "holdout-pg17",
+      "reflection_round_limit": 2,
+      "passed": true,
+      "claim_count": 10,
+      "support": 1.0,
+      "coverage": 1.0,
+      "forbidden_claim_present": false,
+      "report_sha256": "bc641b41105578148186849e9eae743d1cd6f4492e44564e27741901a2194ced",
+      "reflection_events": null,
+      "generation_usage": {
+        "run_id": "0237ceba6ca24b8496723722146183ad",
+        "search_calls": 8,
+        "llm_calls": 10,
+        "prompt_tokens": 13310,
+        "completion_tokens": 3130
+      },
+      "grading_usage": {
+        "search_calls": 0,
+        "llm_calls": 2,
+        "prompt_tokens": 5413,
+        "completion_tokens": 115
+      },
+      "original_stop": "evaluation_budget"
+    }
+  ],
+  "development_original": {
+    "source_sha256": "17fff4ebdaa0abbe348915a77811d108538d4a05eb03031dd1c1f1a1a101332a",
+    "results": [
+      {
+        "id": "dev-pathlib",
+        "split": "development",
+        "reflection_round_limit": 0,
+        "status": "completed",
+        "grade": {
+          "id": "dev-pathlib",
+          "critical": true,
+          "passed": false,
+          "status": "completed",
+          "claim_count": 5,
+          "support": 1.0,
+          "coverage": 0.5,
+          "forbidden_claim_present": false,
+          "refusal_appropriate": false,
+          "nodes": [
+            "router",
+            "planner",
+            "local_scout",
+            "web_scout",
+            "judge",
+            "analyst",
+            "reflect",
+            "writer",
+            "validator"
+          ],
+          "seconds": 2.08,
+          "usage": {
+            "search_calls": 0,
+            "llm_calls": 2,
+            "prompt_tokens": 2735,
+            "completion_tokens": 75
+          },
+          "research_usage": {
+            "run_id": "f01a0966ee2e4a96b354e3c65deba6e4",
+            "search_calls": 4,
+            "llm_calls": 6,
+            "prompt_tokens": 6628,
+            "completion_tokens": 1255
+          }
+        },
+        "reflections": [
+          {
+            "queries": [],
+            "reason": "已达到补搜轮数上限，按现有证据生成报告。",
+            "stop_reason": "round_limit"
+          }
+        ],
+        "report_sha256": "a0802a1c36c1b05f8d1938e940101639169722624904dc680cc1ce8942aa11ed",
+        "production_original_request_answered": true,
+        "source_count": 1
+      },
+      {
+        "id": "dev-pathlib",
+        "split": "development",
+        "reflection_round_limit": 2,
+        "status": "completed",
+        "grade": {
+          "id": "dev-pathlib",
+          "critical": true,
+          "passed": false,
+          "status": "completed",
+          "claim_count": 5,
+          "support": 1.0,
+          "coverage": 0.5,
+          "forbidden_claim_present": false,
+          "refusal_appropriate": false,
+          "nodes": [
+            "router",
+            "planner",
+            "local_scout",
+            "web_scout",
+            "judge",
+            "analyst",
+            "reflect",
+            "writer",
+            "validator"
+          ],
+          "seconds": 2.23,
+          "usage": {
+            "search_calls": 0,
+            "llm_calls": 2,
+            "prompt_tokens": 2729,
+            "completion_tokens": 75
+          },
+          "research_usage": {
+            "run_id": "6dd1c61ca0a54b65b6474a910455bde7",
+            "search_calls": 4,
+            "llm_calls": 7,
+            "prompt_tokens": 7113,
+            "completion_tokens": 1303
+          }
+        },
+        "reflections": [
+          {
+            "queries": [],
+            "reason": "没有可执行的新查询，停止补搜。",
+            "stop_reason": "no_new_queries"
+          }
+        ],
+        "report_sha256": "99db77fbf12d22d7fda64ea4216e00dfcfd324da9335966ff00985c43fff1917",
+        "production_original_request_answered": true,
+        "source_count": 1
+      },
+      {
+        "id": "dev-httpx",
+        "split": "development",
+        "reflection_round_limit": 0,
+        "status": "insufficient",
+        "grade": {
+          "id": "dev-httpx",
+          "critical": true,
+          "passed": false,
+          "status": "insufficient",
+          "claim_count": 0,
+          "support": 1.0,
+          "coverage": 0.0,
+          "forbidden_claim_present": false,
+          "refusal_appropriate": true,
+          "nodes": [
+            "router",
+            "planner",
+            "local_scout",
+            "web_scout",
+            "judge",
+            "analyst",
+            "reflect",
+            "writer",
+            "validator"
+          ],
+          "seconds": 3.05,
+          "usage": {
+            "search_calls": 0,
+            "llm_calls": 1,
+            "prompt_tokens": 797,
+            "completion_tokens": 30
+          },
+          "research_usage": {
+            "run_id": "1aa22aa8a3a8495fbe1394b1d9c4e7c6",
+            "search_calls": 3,
+            "llm_calls": 5,
+            "prompt_tokens": 5351,
+            "completion_tokens": 877
+          }
+        },
+        "reflections": [
+          {
+            "queries": [],
+            "reason": "已达到补搜轮数上限，按现有证据生成报告。",
+            "stop_reason": "round_limit"
+          }
+        ],
+        "report_sha256": "3d760d0b6adef00a5c3ad81596fad82acfb1a1237ddea35c32330d56712c7dfb",
+        "production_original_request_answered": false,
+        "source_count": 0
+      },
+      {
+        "id": "dev-httpx",
+        "split": "development",
+        "reflection_round_limit": 2,
+        "status": "completed",
+        "grade": {
+          "id": "dev-httpx",
+          "critical": true,
+          "passed": false,
+          "status": "completed",
+          "claim_count": 1,
+          "support": 1.0,
+          "coverage": 0.0,
+          "forbidden_claim_present": false,
+          "refusal_appropriate": false,
+          "nodes": [
+            "router",
+            "planner",
+            "local_scout",
+            "web_scout",
+            "judge",
+            "analyst",
+            "reflect",
+            "writer",
+            "validator"
+          ],
+          "seconds": 1.66,
+          "usage": {
+            "search_calls": 0,
+            "llm_calls": 2,
+            "prompt_tokens": 1534,
+            "completion_tokens": 43
+          },
+          "research_usage": {
+            "run_id": "8e3b9f67b3d14ab2a2ed6fc68689c622",
+            "search_calls": 4,
+            "llm_calls": 8,
+            "prompt_tokens": 8477,
+            "completion_tokens": 1165
+          }
+        },
+        "reflections": [
+          {
+            "queries": [],
+            "reason": "没有可执行的新查询，停止补搜。",
+            "stop_reason": "no_new_queries"
+          }
+        ],
+        "report_sha256": "7208173b84fb6ed57436b1332719b012e1834705045bc13b0f376e2f2d66d24c",
+        "production_original_request_answered": false,
+        "source_count": 1
+      }
+    ],
+    "mode": "real model, frozen staged retrieval; no live search or independent human review",
+    "sampling": "one run per frozen variant, all outcomes retained"
+  },
+  "development_component_followup": [
+    {
+      "id": "dev-pathlib",
+      "new_query_count": 4,
+      "stop_reason": null,
+      "original_request_answered": false,
+      "claim_count": 5,
+      "operation": "paid saved state component check, not a fresh report or independent effect run"
+    },
+    {
+      "id": "dev-httpx",
+      "new_query_count": 4,
+      "stop_reason": null,
+      "original_request_answered": false,
+      "claim_count": 1,
+      "operation": "paid saved state component check, not a fresh report or independent effect run"
+    }
+  ],
+  "historical_saved_six": {
+    "results": [
+      {
+        "id": "public-configmap",
+        "operation": "saved-report component revalidation, not fresh end-to-end research",
+        "passed": true,
+        "support_mixed": 1.0,
+        "coverage_current": 1.0,
+        "forbidden_claim_present": false,
+        "sources_changed": false,
+        "report_sha256": "a50485e31f5303cbdff1b47e5bda1bd220ed701234289fceb48971db131b605c",
+        "paid_pod_repair_reused": false,
+        "historical_reused_count": 18,
+        "fresh_support_count": 1,
+        "final_claims": 19,
+        "production_quality": false
+      },
+      {
+        "id": "public-pod-lifecycle",
+        "operation": "saved-report component revalidation, not fresh end-to-end research",
+        "passed": true,
+        "support_mixed": 1.0,
+        "coverage_current": 1.0,
+        "forbidden_claim_present": false,
+        "sources_changed": false,
+        "report_sha256": "b662a4e845b0847acdec816aff28a436bb4fe705008068e1f6c5b9361488dd3c",
+        "paid_pod_repair_reused": true,
+        "historical_reused_count": 12,
+        "fresh_support_count": 2,
+        "final_claims": 14,
+        "production_quality": true
+      },
+      {
+        "id": "public-quota",
+        "operation": "saved-report component revalidation, not fresh end-to-end research",
+        "passed": true,
+        "support_mixed": 1.0,
+        "coverage_current": 1.0,
+        "forbidden_claim_present": false,
+        "sources_changed": false,
+        "report_sha256": "04c5089210eb26955128830be9e4e1d869392ba54415c877b925d22e4948f870",
+        "paid_pod_repair_reused": false,
+        "historical_reused_count": 12,
+        "fresh_support_count": 2,
+        "final_claims": 14,
+        "production_quality": true
+      },
+      {
+        "id": "public-statefulset",
+        "operation": "saved-report component revalidation, not fresh end-to-end research",
+        "passed": true,
+        "support_mixed": 1.0,
+        "coverage_current": 1.0,
+        "forbidden_claim_present": false,
+        "sources_changed": true,
+        "report_sha256": "5c8c5e207e13fa38722ff49e698e29a600275565f11b02f4b94db4e993dcf8e3",
+        "paid_pod_repair_reused": false,
+        "historical_reused_count": 0,
+        "fresh_support_count": 15,
+        "final_claims": 15,
+        "production_quality": true
+      },
+      {
+        "id": "public-probes",
+        "operation": "saved-report component revalidation, not fresh end-to-end research",
+        "passed": true,
+        "support_mixed": 1.0,
+        "coverage_current": 1.0,
+        "forbidden_claim_present": false,
+        "sources_changed": false,
+        "report_sha256": "33ba5816b19fa8200ebe84010810b8a921c40c54466d5bcd72ef842989ba83c7",
+        "paid_pod_repair_reused": false,
+        "historical_reused_count": 13,
+        "fresh_support_count": 0,
+        "final_claims": 13,
+        "production_quality": true
+      },
+      {
+        "id": "public-secret",
+        "operation": "saved-report component revalidation, not fresh end-to-end research",
+        "passed": true,
+        "support_mixed": 1.0,
+        "coverage_current": 1.0,
+        "forbidden_claim_present": false,
+        "sources_changed": false,
+        "report_sha256": "17ea2ab570905f1d960f86a54392140e4ad866fdfce49057951818565a4c7fd6",
+        "paid_pod_repair_reused": false,
+        "historical_reused_count": 15,
+        "fresh_support_count": 0,
+        "final_claims": 15,
+        "production_quality": false
+      }
+    ],
+    "all_completed": true
+  },
+  "limitations": [
+    "Development output inspected and used for prompt changes; no development blind-test claim",
+    "Early development harness URL failure retained and charged",
+    "Saved-six uses exact historical unchanged support and current changed support; not all-current grading",
+    "Saved-six ran before the final coverage-input change; semantic verifier unchanged, old production partial flags retained",
+    "Holdout source excerpts opened in a controlled supplemental search, not an unbiased live-search estimate",
+    "PG final grading stopped at stage cap then resumed with 2 requests after explicit transfer",
+    "No independent human blind review or statistical accuracy estimate"
+  ]
+}
