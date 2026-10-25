@@ -8,12 +8,14 @@
   "fixed": [
     "Refine missing-evidence queries without repeating searched queries or increasing limits",
     "Pass unresolved gaps to final coverage judgment without treating every limitation as automatic failure",
-    "Persistent opt-in evaluation HTTP/token budget across cohorts and CI steps, explicit audited stage transfer"
+    "Persistent opt-in evaluation HTTP/token budget across cohorts and CI steps, explicit audited stage transfer",
+    "Upgrade DOMPurify, Pillow, pypdf and certifi to address the exact scanner findings without ignores or severity reductions"
   ],
   "not_changed": [
     "Java business ownership, authorization, Outbox, publication transaction rules",
     "Agent count, tech stack, retrieval algorithm, evaluation thresholds",
-    "Resume HTML/PDF and project guides/interview materials"
+    "Resume HTML/PDF and project guides/interview materials",
+    "No further local supplier calls after the original 137; security follow-up used offline and deterministic checks"
   ],
   "effects": {
     "saved_six_component_cases": 6,
@@ -83,40 +85,71 @@
     "full_local_regression_run": false
   },
   "deployment": {
-    "data_tables_equal": true,
-    "table_counts": {
-      "postgres.documents": 13,
-      "postgres.threads": 22,
-      "postgres.runs": 45,
-      "postgres.report_publications": 1,
-      "postgres.memberships": 10,
-      "postgres.workspaces": 8,
-      "keycloak-postgres.user_entity": 3
-    },
+    "passed": true,
+    "initial_and_final": "22 daily containers stopped",
+    "backup": ".cache\\backup\\deepresearch-pre-security-20261025",
+    "backup_checksum_verified": true,
+    "backup_manifest_sha256": "c5b86e34a8443b85ee83b40e7370841cbd60e3bb63ca0434301d8c1527086fc3",
+    "prior_isolated_restore_reference": ".cache/backup/deepresearch-pre-improvement-20261025/verification.json",
+    "business_tables_unchanged": true,
+    "mounts_unchanged": true,
     "python_services": [
       {
         "service": "agent",
-        "container": "86555d344264ae3d5181bb2b9508b402f3033f4b1f1344a53068d137086e7a1f",
-        "image": "sha256:1ee34917a9490739442a16efd57876d09903549d2d232538c3a8efa02c1947f3",
-        "graph_sha256": "b6c0346fb7d8d3586f40017fea27343995fce7363aa3014f3c5362c199908023"
+        "container": "4a286b53ef1f1630517263d71170df424a1c2449c24582d8b7ec285af19b1bbd",
+        "image": "sha256:19369a879f6748b26abb18b400a51190a9cf3678871b0686b8f02b699997cc06",
+        "packages": {
+          "pillow": "13.0.0",
+          "pypdf": "6.21.2",
+          "certifi": "2026.10.23"
+        },
+        "graph_sha256": "b6c0346fb7d8d3586f40017fea27343995fce7363aa3014f3c5362c199908023",
+        "uv_lock_sha256": "d63ecb8cb8c56a301e92bbd2de405dabc351bcb5cfd51cd4d5bc5b0674af9dc0",
+        "uv_lock_normalized_sha256": "d63ecb8cb8c56a301e92bbd2de405dabc351bcb5cfd51cd4d5bc5b0674af9dc0"
       },
       {
         "service": "worker",
-        "container": "eb1e0fba593cf74b8f05f4226a5a27ee50f1c3322e0d0d858524c3900b0c6da6",
-        "image": "sha256:be42ebac35bb61434d22bd182d47f41b1fc007552013b0c53172bd287a9f3b50",
-        "graph_sha256": "b6c0346fb7d8d3586f40017fea27343995fce7363aa3014f3c5362c199908023"
+        "container": "b52ad5ad458245989bc686b87b0f340bd612aba53fc8845200712541d925ca9b",
+        "image": "sha256:93e82bff2a55a67418c145071491c611edd1d7df5583bd6c8985631e9b202e3f",
+        "packages": {
+          "pillow": "13.0.0",
+          "pypdf": "6.21.2",
+          "certifi": "2026.10.23"
+        },
+        "graph_sha256": "b6c0346fb7d8d3586f40017fea27343995fce7363aa3014f3c5362c199908023",
+        "uv_lock_sha256": "d63ecb8cb8c56a301e92bbd2de405dabc351bcb5cfd51cd4d5bc5b0674af9dc0",
+        "uv_lock_normalized_sha256": "d63ecb8cb8c56a301e92bbd2de405dabc351bcb5cfd51cd4d5bc5b0674af9dc0"
       },
       {
         "service": "document-worker",
-        "container": "772e2c408a17f67f45e820ed74bc4981d71698bd8bf5fe9aae5b4dad210d31d2",
-        "image": "sha256:f02f60ab11564e4075e9fea12eb4b0e82ac2f78e0c4ea2801d4785a14d52a353",
-        "graph_sha256": "b6c0346fb7d8d3586f40017fea27343995fce7363aa3014f3c5362c199908023"
+        "container": "e2a9d4ee9e49bd9c1a919dee767e85c0d3568deb95d8f218861b7626b4524f10",
+        "image": "sha256:4501fcc0ae708bacf68a53d14126964c00200770981ba65bd851926f182fd231",
+        "packages": {
+          "pillow": "13.0.0",
+          "pypdf": "6.21.2",
+          "certifi": "2026.10.23"
+        },
+        "graph_sha256": "b6c0346fb7d8d3586f40017fea27343995fce7363aa3014f3c5362c199908023",
+        "uv_lock_sha256": "d63ecb8cb8c56a301e92bbd2de405dabc351bcb5cfd51cd4d5bc5b0674af9dc0",
+        "uv_lock_normalized_sha256": "d63ecb8cb8c56a301e92bbd2de405dabc351bcb5cfd51cd4d5bc5b0674af9dc0"
       }
     ],
-    "graph_sha256": "b6c0346fb7d8d3586f40017fea27343995fce7363aa3014f3c5362c199908023",
-    "restored_initial_state": "22 containers stopped",
-    "archive": ".cache/backup/deepresearch-pre-improvement-20261025",
-    "backup_restore_passed": true
+    "web": {
+      "container": "48631b2a5acf464c10b5fabf9e4bc6e83b4ce5c222fc1a14c5c5c494f73e624c",
+      "image": "sha256:df0c37d83e6da52a6f7efa073c589c2e9962ecd07c2d881db58e4eccfb5dfd9f",
+      "dompurify": "3.4.17",
+      "renderer_browser_passed": true,
+      "bundle_sha256": "6b4aed929be15fb1f0ce665bafbedbfd69a067e1be0957d2bf43f71efcad77f6",
+      "dompurify_version_in_bundle_verified": true,
+      "frontend_lock_normalized_sha256": "b62267a1844b3ca43ae360ba62257f73deee542f42a1676be4b005af5cb6fd2c"
+    },
+    "linux_png_pdf_certificate_smoke": true,
+    "new_business_schema": false,
+    "images_removed": [],
+    "rollback_images": "pre-security-20261025 tags and verified immutable archive preserved",
+    "non_target_compose_containers_unchanged": 30,
+    "precise_persistent_mounts_unchanged": true,
+    "probe_failure_retained": "First Linux probe used an empty PDF page that was correctly skipped; replaced only the invalid fixture with an image-containing scanned page; no production assertion removed."
   },
   "recovery": {
     "passed": true,
@@ -294,7 +327,8 @@
   },
   "backup_paths": [
     ".cache/backup/deepresearch-pre-improvement-20261025",
-    ".cache/backup/deepresearch-acceptance-improvement-20261025-02"
+    ".cache/backup/deepresearch-acceptance-improvement-20261025-02",
+    ".cache/backup/deepresearch-pre-security-20261025"
   ],
   "preserved_failed_archive": ".cache/backup/deepresearch-acceptance-improvement-20261025",
   "rollback": "Verified pre-improvement OCI archive and explicit pre-improvement-20261025 tags; current latest tags restored after archive image reload",
@@ -328,7 +362,10 @@
       "backend/research/graph.py: ResearchGraph.reflect, ResearchGraph.validator",
       "scripts/bounded_evaluation.py: Budget.reserve, settle, amend_stages",
       "scripts/evaluate_reflection.py: staged source mechanism study",
-      "frontend/e2e/improvement-live.e2e.ts: opt-in real generation and fixture-state separation"
+      "frontend/e2e/improvement-live.e2e.ts: opt-in real generation and fixture-state separation",
+      "pyproject.toml and uv.lock: parser security minimums and certifi resolver constraint",
+      "frontend/package.json and package-lock.json: DOMPurify 3.4.17",
+      "frontend/e2e/report-sanitization.e2e.ts: actual report renderer rejects active HTML and preserves safe evidence"
     ],
     "outdated_claims": [
       "six uncompleted cases as six current code bugs",
@@ -348,5 +385,393 @@
     ]
   },
   "graph_normalized_sha256": "75b72123f171e493d1ee44ee1579b3b5606d39be4fdf17a4b4cdc584ebece3e9",
-  "image_commit_relationship": "Deployment graph bytes are preserved under graph_file_sha256; Git normalizes code to LF. graph_normalized_sha256 is checked against the final CI checkout before the receipt is written."
+  "image_commit_relationship": "Deployment graph bytes are preserved under graph_file_sha256; Git normalizes code to LF. graph_normalized_sha256 is checked against the final CI checkout before the receipt is written.",
+  "deployment_before_security": {
+    "data_tables_equal": true,
+    "table_counts": {
+      "postgres.documents": 13,
+      "postgres.threads": 22,
+      "postgres.runs": 45,
+      "postgres.report_publications": 1,
+      "postgres.memberships": 10,
+      "postgres.workspaces": 8,
+      "keycloak-postgres.user_entity": 3
+    },
+    "python_services": [
+      {
+        "service": "agent",
+        "container": "86555d344264ae3d5181bb2b9508b402f3033f4b1f1344a53068d137086e7a1f",
+        "image": "sha256:1ee34917a9490739442a16efd57876d09903549d2d232538c3a8efa02c1947f3",
+        "graph_sha256": "b6c0346fb7d8d3586f40017fea27343995fce7363aa3014f3c5362c199908023"
+      },
+      {
+        "service": "worker",
+        "container": "eb1e0fba593cf74b8f05f4226a5a27ee50f1c3322e0d0d858524c3900b0c6da6",
+        "image": "sha256:be42ebac35bb61434d22bd182d47f41b1fc007552013b0c53172bd287a9f3b50",
+        "graph_sha256": "b6c0346fb7d8d3586f40017fea27343995fce7363aa3014f3c5362c199908023"
+      },
+      {
+        "service": "document-worker",
+        "container": "772e2c408a17f67f45e820ed74bc4981d71698bd8bf5fe9aae5b4dad210d31d2",
+        "image": "sha256:f02f60ab11564e4075e9fea12eb4b0e82ac2f78e0c4ea2801d4785a14d52a353",
+        "graph_sha256": "b6c0346fb7d8d3586f40017fea27343995fce7363aa3014f3c5362c199908023"
+      }
+    ],
+    "graph_sha256": "b6c0346fb7d8d3586f40017fea27343995fce7363aa3014f3c5362c199908023",
+    "restored_initial_state": "22 containers stopped",
+    "archive": ".cache/backup/deepresearch-pre-improvement-20261025",
+    "backup_restore_passed": true
+  },
+  "security_dependency_repair": {
+    "initial_sha": "062b0763b37ebad2d8795caeae42fe72df89d0f4",
+    "initial_security_run": "https://github.com/W205614/DeepResearch/actions/runs/40178416068",
+    "scanner": "Trivy 0.75.0, same vulnerability database before/after",
+    "initial_high_critical": 34,
+    "after_high_critical": 0,
+    "secret_findings": 0,
+    "findings": [
+      {
+        "VulnerabilityID": "GHSA-cg2g-xh64-v4q7",
+        "PkgName": "dompurify",
+        "InstalledVersion": "3.4.14",
+        "FixedVersion": "3.4.17",
+        "Severity": "CRITICAL",
+        "PrimaryURL": "https://github.com/advisories/GHSA-cg2g-xh64-v4q7"
+      },
+      {
+        "VulnerabilityID": "GHSA-mrv2-3pqr-j5jr",
+        "PkgName": "dompurify",
+        "InstalledVersion": "3.4.14",
+        "FixedVersion": "3.4.17",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://github.com/advisories/GHSA-mrv2-3pqr-j5jr"
+      },
+      {
+        "VulnerabilityID": "GHSA-6q48-6c7w-9gw2",
+        "PkgName": "certifi",
+        "InstalledVersion": "2026.7.22",
+        "FixedVersion": "2026.10.19",
+        "Severity": "CRITICAL",
+        "PrimaryURL": "https://github.com/advisories/GHSA-6q48-6c7w-9gw2"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-112393",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "CRITICAL",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-112393"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-112398",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "CRITICAL",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-112398"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-112403",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "CRITICAL",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-112403"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-112900",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "CRITICAL",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-112900"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-96639",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "CRITICAL",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-96639"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-112390",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-112390"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-112392",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-112392"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-112397",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-112397"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-112399",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-112399"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-112400",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-112400"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-112402",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-112402"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-112404",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-112404"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-112405",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-112405"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-112406",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-112406"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-112892",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-112892"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-112893",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-112893"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-112894",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-112894"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-112895",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-112895"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-112896",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-112896"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-112897",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-112897"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-112902",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-112902"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-96637",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-96637"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-96640",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-96640"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-96642",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-96642"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-96643",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-96643"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-96644",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-96644"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-96778",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-96778"
+      },
+      {
+        "VulnerabilityID": "GHSA-78g4-xqwv-q3g8",
+        "PkgName": "pillow",
+        "InstalledVersion": "12.3.0",
+        "FixedVersion": "13.0.0",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://github.com/advisories/GHSA-78g4-xqwv-q3g8"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-115572",
+        "PkgName": "pypdf",
+        "InstalledVersion": "6.20.0",
+        "FixedVersion": "6.21.2",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-115572"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-115580",
+        "PkgName": "pypdf",
+        "InstalledVersion": "6.20.0",
+        "FixedVersion": "6.21.2",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-115580"
+      },
+      {
+        "VulnerabilityID": "CVE-2026-115585",
+        "PkgName": "pypdf",
+        "InstalledVersion": "6.20.0",
+        "FixedVersion": "6.21.2",
+        "Severity": "HIGH",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-115585"
+      }
+    ],
+    "upgrades": {
+      "dompurify": "3.4.14 -> 3.4.17",
+      "certifi": "2026.7.22 -> 2026.10.23; resolver constraint >=2026.10.19",
+      "pillow": "12.3.0 -> 13.0.0",
+      "pypdf": "6.20.0 -> 6.21.2"
+    },
+    "local_validation": {
+      "python_affected": {
+        "passed": 8,
+        "deselected": 26,
+        "scope": "PNG/JPEG/WEBP/GIF, invalid/animated images, image-only task, plain/multicolumn/scanned/encrypted/malformed PDF, DOCX embedded image"
+      },
+      "certificate_bundle_load": true,
+      "browser_report_renderer": {
+        "passed": 1,
+        "mode": "real Chromium App renderer with API fixture; strips script/img/iframe/form/event handlers/javascript URL and retains safe content/link"
+      },
+      "frontend_build": true
+    },
+    "limitations": [
+      "Scanner dependency findings do not establish exploitability in every configured mode",
+      "Local filesystem scan is not the final Linux application-image scan; final exact-SHA Security still required",
+      "No vulnerability ignores or severity reductions introduced"
+    ],
+    "deployment_validation": {
+      "passed": true,
+      "linux_png_pdf_certificate_smoke": true,
+      "python_package_versions": {
+        "pillow": "13.0.0",
+        "pypdf": "6.21.2",
+        "certifi": "2026.10.23"
+      },
+      "web_bundle_dompurify_verified": true,
+      "deployed_renderer_browser_passed": true,
+      "business_tables_unchanged": true,
+      "precise_persistent_mounts_unchanged": true,
+      "non_target_compose_containers_unchanged": 30,
+      "stopped_daily_containers": 22,
+      "failed_probe_retained": "First Linux probe used an empty PDF page that was correctly skipped; replaced only the invalid fixture with an image-containing scanned page; no production assertion removed."
+    }
+  },
+  "ci_budget_history": {
+    "aggregate_original_limits": {
+      "model_http": 900,
+      "input_tokens": 10000000,
+      "output_tokens": 500000
+    },
+    "previous_runs": [
+      {
+        "sha": "062b0763b37ebad2d8795caeae42fe72df89d0f4",
+        "run_url": "https://github.com/W205614/DeepResearch/actions/runs/40178416061",
+        "conclusion": "success",
+        "http_requests": 429,
+        "prompt_tokens": 458509,
+        "completion_tokens": 60842,
+        "usage_missing_requests": 0
+      }
+    ],
+    "next_run_effective_policy": {
+      "model_http": 471,
+      "llm_http": 471,
+      "embedding_http": 0,
+      "reranker_http": 0,
+      "search_http": 0,
+      "total_http": 471,
+      "input_tokens": 9541491,
+      "output_tokens": 439158
+    },
+    "artifact_sha256": "ff85bd7336e61b56c65fad1bb3c87679d8264e2cc175a2db8ff31e22fb78b66e",
+    "rule": "No reset across new SHA; prior actual usage deducted before next push. No RAG manual run."
+  }
 }

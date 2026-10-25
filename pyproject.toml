@@ -13,10 +13,10 @@ dependencies = [
   "langgraph-checkpoint-sqlite>=3,<4",
   "pymilvus>=2.6,<4",
   "python-multipart>=0.0.20,<1",
-  "pypdf>=6.19,<7",
+  "pypdf>=6.21.2,<7",
   "beautifulsoup4>=4.13,<5",
   "python-docx>=1.1,<2",
-  "pillow>=11,<13",
+  "pillow>=13,<14",
   "rank-bm25>=0.2,<1",
   "PyJWT[crypto]>=2.14,<3",
   "arq>=0.26,<1",
@@ -36,6 +36,9 @@ dependencies = [
 
 [dependency-groups]
 dev = ["pytest>=8,<10", "pytest-asyncio>=1,<2", "ruff>=0.11,<1"]
+
+[tool.uv]
+constraint-dependencies = ["certifi>=2026.10.19"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

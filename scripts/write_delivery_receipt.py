@@ -11,6 +11,15 @@ def main():
     graph = Path("backend/research/graph.py").read_bytes().replace(b"\r\n", b"\n")
     if hashlib.sha256(graph).hexdigest() != evidence["graph_normalized_sha256"]:
         raise ValueError("CI graph differs from the verified deployment source after LF normalization")
+    deployment = evidence.get("deployment", {})
+    python_services = deployment.get("python_services", [])
+    if python_services and "uv_lock_normalized_sha256" in python_services[0]:
+        lock = hashlib.sha256(Path("uv.lock").read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+        if any(row["uv_lock_normalized_sha256"] != lock for row in python_services):
+            raise ValueError("CI Python lock differs from the verified deployment images")
+        frontend = hashlib.sha256(Path("frontend/package-lock.json").read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+        if deployment["web"]["frontend_lock_normalized_sha256"] != frontend:
+            raise ValueError("CI frontend lock differs from the verified Web build")
     evidence["ci_receipt"] = {
         "sha": os.environ["GITHUB_SHA"],
         "workflow_url": f"{os.environ['GITHUB_SERVER_URL']}/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}",

@@ -1,0 +1,30 @@
+{
+  "aggregate_original_limits": {
+    "model_http": 900,
+    "input_tokens": 10000000,
+    "output_tokens": 500000
+  },
+  "previous_runs": [
+    {
+      "sha": "062b0763b37ebad2d8795caeae42fe72df89d0f4",
+      "run_url": "https://github.com/W205614/DeepResearch/actions/runs/40178416061",
+      "conclusion": "success",
+      "http_requests": 429,
+      "prompt_tokens": 458509,
+      "completion_tokens": 60842,
+      "usage_missing_requests": 0
+    }
+  ],
+  "next_run_effective_policy": {
+    "model_http": 471,
+    "llm_http": 471,
+    "embedding_http": 0,
+    "reranker_http": 0,
+    "search_http": 0,
+    "total_http": 471,
+    "input_tokens": 9541491,
+    "output_tokens": 439158
+  },
+  "artifact_sha256": "ff85bd7336e61b56c65fad1bb3c87679d8264e2cc175a2db8ff31e22fb78b66e",
+  "rule": "No reset across new SHA; prior actual usage deducted before next push. No RAG manual run."
+}
