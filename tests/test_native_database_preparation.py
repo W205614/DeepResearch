@@ -27,7 +27,7 @@ def controlled_import(tmp_path, monkeypatch):
     cache, output = tmp_path / "cache", tmp_path / "output"
     output.mkdir()
     state = {"payload": archive, "headers": {"Content-Length": str(len(archive))},
-             "imports": [], "statuses": [], "metadata_updates": {}, "status_updates": {}, "exit": 0}
+             "imports": [], "statuses": [], "requests": [], "metadata_updates": {}, "status_updates": {}, "exit": 0}
 
     class Response(io.BytesIO):
         def __init__(self):
@@ -37,8 +37,10 @@ def controlled_import(tmp_path, monkeypatch):
         def geturl(self):
             return state.get("redirect", "https://example.invalid/fixed.tar.zst")
 
-    def fetch(url, timeout):
-        assert "checksum=" not in url and timeout == 60
+    def fetch(request, timeout):
+        assert isinstance(request, gate.Request)
+        assert "checksum=" not in request.full_url and timeout == 60
+        state["requests"].append(request)
         return Response()
 
     def process(argv, *, env, **kwargs):
@@ -85,6 +87,18 @@ def controlled_import(tmp_path, monkeypatch):
                                      evidence, now=now or built + timedelta(days=1))
 
     return prepare, state, evidence, cache, output, spec
+
+
+def test_archive_transport_identifies_pinned_grype_and_requests_identity_encoding(controlled_import):
+    prepare, state, evidence, _, _, _ = controlled_import
+    prepare()
+    assert len(state["requests"]) == 1
+    request = state["requests"][0]
+    headers = {name.lower(): value for name, value in request.header_items()}
+    assert headers == {"user-agent": "grype/0.121.0", "accept-encoding": "identity"}
+    assert request.full_url == "https://example.invalid/fixed.tar.zst"
+    assert evidence["archive"]["request_headers"] == {
+        "User-Agent": "grype/0.121.0", "Accept-Encoding": "identity"}
 
 
 def test_verified_archive_fresh_import_ignores_historical_hydrated_reference_and_old_cache(controlled_import):

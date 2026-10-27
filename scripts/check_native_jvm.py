@@ -18,7 +18,7 @@ import tempfile
 import time
 import uuid
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCK = ROOT / "deployment/security/native-jvm-tools.json"
@@ -118,10 +118,12 @@ def _download_database_archive(spec, destination, evidence):
     transport = urlunsplit(parsed._replace(query=urlencode([(k, v) for k, v in query if k != "checksum"])))
     observed = {"identity_url": spec["url"], "transport_url": transport,
                 "expected_sha256": spec["archive_sha256"], "max_bytes": MAX_DATABASE_ARCHIVE_BYTES}
+    headers = {"User-Agent": "grype/0.121.0", "Accept-Encoding": "identity"}
+    observed["request_headers"] = headers
     evidence["archive"] = observed
     received, hashed, started = 0, hashlib.sha256(), time.monotonic()
     try:
-        with urlopen(transport, timeout=60) as response, destination.open("xb") as output:
+        with urlopen(Request(transport, headers=headers), timeout=60) as response, destination.open("xb") as output:
             if urlsplit(response.geturl()).scheme != "https":
                 raise NativeGateError("Pinned database archive redirected outside HTTPS")
             length = response.headers.get("Content-Length")

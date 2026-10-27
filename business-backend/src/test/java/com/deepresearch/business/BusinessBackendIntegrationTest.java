@@ -386,6 +386,7 @@ class BusinessBackendIntegrationTest {
             validation='{"verification_contract":"verification-v3-claim-span","quality":"complete","checked_claims":1,"supported_claims":1}'
             WHERE id='review-run'""");
         jdbc.update("INSERT INTO documents(id,user_id,status,hash,index_version) VALUES('doc-1','review-space','ready','hash-1',1)");
+        jdbc.update("INSERT INTO document_policies(document_id,workspace_id,owner_subject) VALUES('doc-1','review-space','writer')");
         jdbc.update("INSERT INTO chunks(id,document_id,user_id,text) VALUES('chunk-1','doc-1','review-space','证据')");
 
         mvc.perform(get("/api/research/runs/review-run").with(jwt().jwt(t -> t.subject("reader")))
