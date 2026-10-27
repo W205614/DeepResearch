@@ -1,0 +1,235 @@
+{
+  "schema": "source2-independent-technical-applicability-v1",
+  "scope": {
+    "source_path": "deployment/vendors/grafana/main/go.mod",
+    "source_sha256": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda",
+    "module": "github.com/grafana/tempo",
+    "version": "v1.5.1-0.20260427112133-525d1bab07e0",
+    "expires": "2026-11-25T23:59:59+08:00",
+    "runtime_binding_sha256": "7e0ae656477b23d4cd3692987360ada987c40aa6f4c13e37dbb6655495b3e35d",
+    "image_index": "sha256:9a68d3a7f3b96ffa643af86e5be5f91a723cc051678b4d445a879861bc335132",
+    "main_target": "usr/share/grafana/bin/grafana",
+    "main_elf_sha256": "5b718e17a373c83547a720e0e5a048032388b0d9691da83a3ec3b8ec19d9d152",
+    "main_graph": {
+      "target": "usr/share/grafana/bin/grafana",
+      "compressed_evidence": "deployment/security/grafana-fixed-evidence/go-graph-0.gz",
+      "raw_sha256": "1592d81c6f58b34ed4985cec29005efe1950d5e27076f25d6fe320dba2d40c63",
+      "raw_bytes": 80573048,
+      "packages": 4200,
+      "format": "go-list-json-stream"
+    },
+    "main_image_scan": "deployment/security/grafana-fixed-evidence/musl-fixed-trivy-full-raw.json",
+    "main_image_packages": 523,
+    "source_inventory_count": 629,
+    "source_inventory_sha256": "5ec6653b441ccd2041764c5dc39af9c9aa7106de450e238415d887f23afec75f",
+    "required_scan_targets": [
+      [
+        "business-backend/pom.xml",
+        "lang-pkgs",
+        "pom"
+      ],
+      [
+        "deployment/vendors/alertmanager/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/etcd/modules/api/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/etcd/modules/client/pkg/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/etcd/modules/client/v2/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/etcd/modules/client/v3/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/etcd/modules/etcdctl/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/etcd/modules/etcdutl/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/etcd/modules/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/etcd/modules/pkg/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/etcd/modules/raft/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/etcd/modules/server/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/etcd/modules/tests/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/etcd/modules/tools/mod/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/gosu/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/grafana/main/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/grafana/plugins/grafana-postgresql-datasource/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/grafana/plugins/grafana-pyroscope-datasource/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/grafana/plugins/influxdb/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/grafana/plugins/jaeger/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/grafana/plugins/loki/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/grafana/plugins/mssql/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/grafana/plugins/mysql/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/grafana/plugins/opentsdb/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/milvus/modules/client/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/milvus/modules/examples/telemetry_demo/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/milvus/modules/examples/telemetry_e2e_test/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/milvus/modules/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/milvus/modules/pkg/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "deployment/vendors/milvus/modules/tests/go_client/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "frontend/package-lock.json",
+        "lang-pkgs",
+        "npm"
+      ],
+      [
+        "scripts/storage-bootstrap/go.mod",
+        "lang-pkgs",
+        "gomod"
+      ],
+      [
+        "uv.lock",
+        "lang-pkgs",
+        "uv"
+      ]
+    ],
+    "scanner_version": "0.75.0",
+    "required_severities": [
+      "CRITICAL",
+      "HIGH",
+      "MEDIUM",
+      "LOW",
+      "UNKNOWN"
+    ],
+    "schema": "exact-source2-bound-main-technical-facts-v1",
+    "rows": [
+      {
+        "target": "deployment/vendors/grafana/main/go.mod",
+        "source_sha256": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda",
+        "package": "github.com/grafana/tempo",
+        "version": "v1.5.1-0.20260427112133-525d1bab07e0",
+        "id": "CVE-2026-21728",
+        "severity": "HIGH",
+        "technical_disposition": "NOT_APPLICABLE_TO_EXACT_BOUND_MAIN_BUILD"
+      },
+      {
+        "target": "deployment/vendors/grafana/main/go.mod",
+        "source_sha256": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda",
+        "package": "github.com/grafana/tempo",
+        "version": "v1.5.1-0.20260427112133-525d1bab07e0",
+        "id": "CVE-2026-28377",
+        "severity": "HIGH",
+        "technical_disposition": "NOT_APPLICABLE_TO_EXACT_BOUND_MAIN_BUILD"
+      }
+    ],
+    "expected_exact_row_count": 2,
+    "technical_review_path": "deployment/security/grafana-source2-technical-review.json",
+    "technical_review_sha256": "f5ade0c49161d5e60a21fd0834d6abf7582ee33d8fb91d51da1129b550015c68"
+  },
+  "basis": "Exact independent compiled-facts review only, not new human CVE risk acceptance or runtime disposition inheritance.",
+  "baseline_gate_severities": [
+    "HIGH",
+    "CRITICAL"
+  ],
+  "retained_raw_levels": [
+    "MEDIUM",
+    "LOW",
+    "UNKNOWN"
+  ]
+}

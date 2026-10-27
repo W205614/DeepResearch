@@ -179,11 +179,13 @@ def test_grafana_transport_and_tag_cannot_mix_minio_or_unverified_upload(inputs,
     monkeypatch.setattr(fetch, "build_opener", lambda *args: pytest.fail("must fail before network"))
     policy = json.loads((gate.ROOT / gate.POLICY).read_bytes())
     transport = deepcopy(policy["transport"])
-    transport["remote_digest"] = None
-    with pytest.raises(DispositionError, match="not been verified"):
+    # Parts have individual server digests; no whole-archive server digest exists.
+    transport["parts"][0]["remote_digest"] = None
+    with pytest.raises(DispositionError, match="server digest"):
         fetch.download_archive(tmp_path / "archive.tar", binding, transport, artifact="grafana")
+    transport = deepcopy(policy["transport"])
     transport["asset_id"] = 678114320
-    with pytest.raises(DispositionError, match="bound repository"):
+    with pytest.raises(DispositionError, match="subject/repository/scope"):
         fetch.download_archive(tmp_path / "archive.tar", binding, transport, artifact="grafana")
     with pytest.raises(DispositionError, match="namespace"):
         fetch.load_image(tmp_path / "archive.tar", binding, fetch.APPROVED_TAG, artifact="grafana")

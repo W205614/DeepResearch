@@ -1,0 +1,21 @@
+--- a/internal/distributed/utils/util.go
++++ b/internal/distributed/utils/util.go
+@@ -37,12 +37,15 @@
+ }
+ 
+ func getTLSCreds(certFile string, keyFile string, nodeType string) credentials.TransportCredentials {
++	caFile := paramtable.Get().InternalTLSCfg.InternalTLSCaPemPath.GetValue()
++	if _, err := CreateCertPoolforClient(caFile, nodeType); err != nil {
++		panic("internal TLS CA configuration is unreadable or invalid")
++	}
+ 	mlog.Info(context.TODO(), "TLS Server PEM Path", mlog.String("path", certFile))
+ 	mlog.Info(context.TODO(), "TLS Server Key Path", mlog.String("path", keyFile))
+ 	creds, err := credentials.NewServerTLSFromFile(certFile, keyFile)
+-	if err != nil {
+-		mlog.Warn(context.TODO(), nodeType+" can't create creds", mlog.Err(err))
+-		mlog.Warn(context.TODO(), nodeType+" can't create creds", mlog.Err(err))
++	if err != nil || creds == nil {
++		panic("internal TLS server certificate/key configuration is unreadable or invalid")
+ 	}
+ 	return creds
+ }

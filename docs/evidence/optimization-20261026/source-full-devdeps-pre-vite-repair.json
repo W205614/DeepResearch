@@ -1,0 +1,77 @@
+{
+  "schema": "full-source-proposal-before-vite-repair-v1",
+  "recorded_at": "2026-10-27T10:26:28.733248+00:00",
+  "completed": true,
+  "final_clean_CI": false,
+  "source_status": "Exact954file pre-Vite-repair proposal; subsequent2package files changed and this new public receipt was not present in that snapshot. Postrepair scan still pending.",
+  "snapshot_total_files": 954,
+  "tracked": 894,
+  "new": 60,
+  "manifest_sha256": "f957e38f042f303f8d6b05e0962be33090e8a160f019a862bf5a99ec3b9bbac0",
+  "source_bytes_unchanged_during_scan": true,
+  "raw_sha256": "ded28f6903770e279da12154d77651c776749cf32007d5508ea3368e3a40de5c",
+  "started_at": "2026-10-27T10:18:01.910198+00:00",
+  "finished_at": "2026-10-27T10:18:08.526480+00:00",
+  "scanner_version": "0.75.0",
+  "scanner_sha256": "3b4fcf6fec53c4c73c325cfd518c7264100695b19e6c59c6a777e4a67dc9f0e6",
+  "database_sha256": "d56c43f48dcae3239a456ca23ef2350a72aa7353582f9cf65dfcee0473f775a5",
+  "database_metadata": {
+    "Version": 2,
+    "NextUpdate": "2026-10-28T07:13:33.504286922Z",
+    "UpdatedAt": "2026-10-27T07:13:33.504287223Z",
+    "DownloadedAt": "2026-10-27T10:03:06.5000108Z"
+  },
+  "language_target_count": 33,
+  "scanners": [
+    "vuln",
+    "secret"
+  ],
+  "severities": [
+    "CRITICAL",
+    "HIGH",
+    "MEDIUM",
+    "LOW",
+    "UNKNOWN"
+  ],
+  "filters": {
+    "ignorefile_used": true,
+    "ignorefile_rules_empty": true,
+    "ignorefile_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ignorefile_mode": "verified_empty_neutral",
+    "include_dev_dependencies": true,
+    "skip_files": [],
+    "skip_dirs": [],
+    "ignore_unfixed": false,
+    "vex_documents": []
+  },
+  "offline_scan": true,
+  "offline_boundary": "Manifest/package inventory proposal only; final clean CI may perform online dependency identification.",
+  "scanner_exit": 0,
+  "raw_vulnerability_counts": {
+    "UNKNOWN": 14,
+    "LOW": 28,
+    "MEDIUM": 13,
+    "HIGH": 3,
+    "CRITICAL": 0
+  },
+  "raw_secret_counts": {
+    "UNKNOWN": 0,
+    "LOW": 0,
+    "MEDIUM": 0,
+    "HIGH": 0,
+    "CRITICAL": 0
+  },
+  "extra_blocking_rows": [
+    [
+      "frontend/package-lock.json",
+      "CVE-2026-112942",
+      "vite",
+      "8.2.2",
+      "HIGH"
+    ]
+  ],
+  "missing_pending_rows": [],
+  "security_verdict": "BLOCKED_NO_APPLICABILITY_GRANTED",
+  "source16_active": false,
+  "advisory_suppressions_added": false
+}

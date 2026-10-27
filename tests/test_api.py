@@ -103,11 +103,17 @@ async def test_document_import_retrieval_deletion(api_client):
     response = await client.post('/api/documents',files={"file":("sample.md","这是本地资料。研究报告需要证据核查。".encode(),"text/markdown")})
     assert response.status_code == 202
     doc_id = response.json()['id']
-    for _ in range(30):
-        docs = (await client.get('/api/documents')).json()
-        if docs and docs[0]['status'] not in {'indexing','rebuilding'}:
-            break
-        await asyncio.sleep(.02)
+
+    async def after_indexing():
+        # Await the actual queued local ingestion task; parser subprocess startup
+        # has no fixed 0.6s completion guarantee, especially on Windows.
+        pending = [task for key, task in list(app.state.runtime.tasks.items())
+                   if key.startswith(f'document:{doc_id}:')]
+        if pending:
+            await asyncio.gather(*pending)
+        return (await client.get('/api/documents')).json()
+
+    docs = await after_indexing()
     assert docs[0]['status'] == 'ready'
     assert 'hash' not in docs[0] and 'object_key' not in docs[0] and docs[0]['index_version'] == 1
     chunks = (await client.get(f'/api/documents/{doc_id}/chunks')).json()
@@ -119,20 +125,12 @@ async def test_document_import_retrieval_deletion(api_client):
     replacement = await client.put(f'/api/documents/{doc_id}', files={"file":(
         "sample-v2.md", "这是更新后的资料。热更新必须保留旧版直到发布。".encode(), "text/markdown")})
     assert replacement.status_code == 202, replacement.text
-    for _ in range(30):
-        docs = (await client.get('/api/documents')).json()
-        if docs[0]['status'] != 'rebuilding':
-            break
-        await asyncio.sleep(.02)
+    docs = await after_indexing()
     assert docs[0]['status'] == 'ready' and docs[0]['index_version'] == 2
     assert (await client.put(f'/api/documents/{doc_id}', files={"file":(
         "same.md", "这是更新后的资料。热更新必须保留旧版直到发布。".encode(), "text/markdown")})).status_code == 409
     assert (await client.post(f'/api/documents/{doc_id}/reindex')).status_code == 202
-    for _ in range(30):
-        docs = (await client.get('/api/documents')).json()
-        if docs[0]['status'] not in {'indexing','rebuilding'}:
-            break
-        await asyncio.sleep(.02)
+    docs = await after_indexing()
     assert docs[0]['status'] == 'ready'
     assert (await client.get('/api/documents',headers={"X-User-ID":"bob"})).json() == []
     assert (await client.delete(f'/api/documents/{doc_id}',headers={"X-User-ID":"bob"})).status_code == 404

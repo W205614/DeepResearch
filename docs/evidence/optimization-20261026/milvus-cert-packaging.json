@@ -1,0 +1,212 @@
+{
+  "state": "filtered_packaging_and_narrow_TLS_source_patch_statically_verified_Linux_Go_tests_build_scan_startup_pending",
+  "recorded_at": "2026-10-27T05:49:29.917821+00:00",
+  "classification": "3 HIGH public upstream sample private-key secret findings; no new CVE conclusion",
+  "reported_CI_source": {
+    "job_id": 122017588234,
+    "artifact_id": 12711121662,
+    "reported_vulnerability_HIGH_CRITICAL": 0,
+    "reported_private_key_HIGH": 3,
+    "independent_local_image_rescan_performed": false
+  },
+  "upstream": {
+    "repository": "https://github.com/milvus-io/milvus",
+    "commit": "328df0cd2f323c2d3c50cef91bfc9f2c412bcb09",
+    "archive_sha256": "1dd3a0ff960af532f04172b2aebdb9716b1244cad2fb81781b27641f67216cf9",
+    "sample_files": [
+      {
+        "path": "configs/cert/ca.key",
+        "bytes": 1675,
+        "sha256": "841d058620f7498ec195e06f08a6b23871d3c694250c1be93e7eb00ccf1584eb"
+      },
+      {
+        "path": "configs/cert/ca.pem",
+        "bytes": 1326,
+        "sha256": "c25815e56ec0a95eee2785b9706a0763870cb3dc332bba0be964a916b26cde57"
+      },
+      {
+        "path": "configs/cert/ca.srl",
+        "bytes": 41,
+        "sha256": "4c6d258772454ba1ccabd9d8f5fa6fd5efdff5e25ff04c3c94064544a4248447"
+      },
+      {
+        "path": "configs/cert/client.csr",
+        "bytes": 1094,
+        "sha256": "c2e5708e967d7cb17501b9c570e61314281aafb4412d72db2c17d321a2a3d025"
+      },
+      {
+        "path": "configs/cert/client.key",
+        "bytes": 1704,
+        "sha256": "67c205fe6a2b7d92610d38467d1b3037ee3ff65020f1fac75dc4bae8499f96bc"
+      },
+      {
+        "path": "configs/cert/client.pem",
+        "bytes": 1289,
+        "sha256": "ce2d28cc6a10881b92181f18a18da057127e9a1c2ad02cf3ea0ce0285ae9e057"
+      },
+      {
+        "path": "configs/cert/server.csr",
+        "bytes": 1094,
+        "sha256": "93232880c8c9a61efde8fc67599075148204376dbc525c6e237d98a5cea44e70"
+      },
+      {
+        "path": "configs/cert/server.key",
+        "bytes": 1704,
+        "sha256": "aa73e7231dd4ba2912cdbee7fd9844639ebe2a2ab768206dfc6ce7adefbbc4ba"
+      },
+      {
+        "path": "configs/cert/server.pem",
+        "bytes": 1289,
+        "sha256": "6a4a9de12b22844a48b03509356f6a0689f568932f983278123f6db15bc9e5c3"
+      }
+    ],
+    "source_file_hashes": {
+      "build/docker/milvus/ubuntu22.04/Dockerfile": "0be48e5a68c0bbf8c96895239b3967ee6baf497bff0a8db9caa0c01c7ceea186",
+      "configs/milvus.yaml": "e1f5b3b66b97cf957762039f39276ed21ab346a5722b1b7b9e3346b3f7b05548",
+      "internal/distributed/datanode/service.go": "29e331d81e5f9de479cafd60008fc340ca83fcb520c29927543c2e4dd009f2dd",
+      "internal/distributed/mixcoord/service.go": "caceaa5bdff88ea5403d1a2c4c6983aff29203bcb3a8e83307452693873f5290",
+      "internal/distributed/proxy/listener_manager.go": "4ef5701a03d1e72ffe27024fc44bbed8a17481efb2c2e1a11db92fba82b13c97",
+      "internal/distributed/proxy/service.go": "cfc6e2cd71c7658dcce7457172ae0d70d21ee1b2395aa13aaa92823806698fc6",
+      "internal/distributed/querynode/service.go": "4e9b211bd0c069df128889050322263e19cde6796de613d67c871053310420f5",
+      "internal/distributed/streamingnode/service.go": "cfd941e336da736cd1f00070321eb5488c474d357a323f6eaa0c7e4ea7a97730",
+      "internal/distributed/utils/util.go": "62ea686155db8df34ffa57c119de00968a3773decccfaab2c359bc8893094769",
+      "pkg/util/paramtable/grpc_param.go": "e7bb822fa3d0cb8de9afb7f7da01245805fa7edfd35539c68af7f45d43e004b5"
+    },
+    "default_external_tls_mode": 0,
+    "default_internal_tls_enabled": false
+  },
+  "packaging": {
+    "final_base": "scratch",
+    "unfiltered_original_layers_inherited": false,
+    "only_excluded_source_subtree": "/milvus/configs/cert",
+    "excluded_public_files": 9,
+    "source_config_file_count": 16,
+    "source_config_files_after_logical_filter": 7,
+    "manifest_comparison_only_not_actual_built_rootfs": true,
+    "original_two_Go_build_commands_byte_identical": true,
+    "original_Config_fields": [
+      "Entrypoint",
+      "Env",
+      "Labels",
+      "User",
+      "WorkingDir"
+    ],
+    "original_Config_canonical_sha256": "4957215a13531637f6622dfa039b5979a990b24503cf0172807f8f98822a8e29",
+    "declared_Config_canonical_sha256": "4957215a13531637f6622dfa039b5979a990b24503cf0172807f8f98822a8e29",
+    "declared_Config_exact_match": true,
+    "builder_packages_and_source_not_COPIED_to_final": true,
+    "main_binary_expected_to_change_due_to_narrow_source_patch": true,
+    "no_new_image_byte_identity_claim": true
+  },
+  "static_internal_TLS_chain": {
+    "tls_key_loader_logs_and_returns_nil_on_error": true,
+    "callers_without_adjacent_error_guard": [
+      "DataNode",
+      "MixCoord",
+      "Proxy",
+      "QueryNode",
+      "StreamingNode"
+    ],
+    "gRPC_module": "google.golang.org/grpc v1.83.2",
+    "grpc_server_source_sha256": "a09f192cb707172d7b9004813f300697e0eab8eb781389978683460ed0ddc49e",
+    "grpc_transport_source_sha256": "84ad3bde6a86be6ab86af02adc250ae04418fb24aafa628292141fb6fc9ed093",
+    "grpc_Creds_nil_accepted": true,
+    "grpc_transport_handshake_only_when_credentials_non_nil": true,
+    "inference": "conditional internal plaintext-listener risk when enabled with unreadable server key/cert; overall startup/readiness and network reproduction not executed",
+    "external_TLS_load_error_return_proven_by_source_only": true,
+    "current_profile_internal_TLS": "disabled; root-reported profile and fixed upstream default, not a fresh runtime check",
+    "runtime_TLS_implementation_or_wrapper_changed": false,
+    "describes": "original fixed upstream before the separately authorized maintainer source patch",
+    "TLS_source_function_now_modified": true,
+    "new_wrapper_added": false,
+    "artifact_containing_patch_built_or_executed": false
+  },
+  "verification": {
+    "static_packaging_tests_passed": 3,
+    "test_seconds": 0.46,
+    "ruff_passed": true,
+    "Docker_build_start_operations": 0,
+    "new_image_built": false,
+    "new_image_vulnerability_or_secret_scan": false,
+    "actual_TLS_handshakes": 0,
+    "host_or_user_files_deleted": 0,
+    "Go_targeted_unit_tests_prepared": 8,
+    "Go_targeted_unit_tests_executed": 0
+  },
+  "remaining": [
+    "Future normal Linux builder must pass eight targeted Go subcases with actual existing dependencies and compile the production binary; no local Go test/compile result claimed",
+    "Normal CI full vulnerability+secret scan on exact new image without ignores or scanner reduction",
+    "Actual filtered rootfs bytes/uid/gid/mode/xattr/native library/package coverage and Config comparison",
+    "New narrow window: actual isolated default startup, enabled internal TLS missing/invalid certificate-key-CA negative startup, valid read-only mounted TLS positive handshake and mode-specific external TLS cases",
+    "Current daily artifact remains unchanged; the source patch is not deployment or native fail-closed execution proof"
+  ],
+  "changed_files_sha256": {
+    "Dockerfile.milvus": "c843003c94222d7d0968a240f8d0efe1bb3e0ebe3edb28ae1aec1ce719435c34",
+    "deployment/vendors/milvus/source.lock.json": "80a4450e63fa3dfa46befb43109f4a91a37a8d4c3773cfe4abd8c40735e7bafb",
+    "deployment/vendors/milvus/.gitattributes": "0b16a020014b41ae96aee74ddc295f397d3173c52cc35938c9e1c26f32c51880",
+    "deployment/vendors/milvus/patches/internal-tls-fail-closed.patch": "a9c29644f45aee2afdaf475269c275f75eefdd17fd6e6e09221d43dc59d5644e",
+    "deployment/vendors/milvus/tests/internal_tls_fail_closed_test.go": "b1d20d11c07364980f2b825cc2a3083cad19bb8a6a456fce5947f7303a6f0542",
+    "tests/test_milvus_packaging.py": "554dd88733fbca71d11e7308044d0bd7ea387950d4e2e805936e80417e090262",
+    "docs/milvus-image-packaging.md": "8204ead8f88e44765b7a7a9789d398f23d91a25f3c577e7f7cb68a8abb87de5b"
+  },
+  "previous_static_only_runs": [
+    {
+      "static_packaging_tests_passed": 2,
+      "test_seconds": 0.33,
+      "changed_files_sha256": {
+        "Dockerfile.milvus": "9913b4efcff4eff64047fabc173996071d9278256d4019138599d35783d8795d",
+        "tests/test_milvus_packaging.py": "7b82187f294def1788148ebe5b6c69334ff9d2208ac2ee5f8fe47dc007411acb",
+        "docs/milvus-image-packaging.md": "3428a709c99df012dcfb5b4f105999386a328265cede9ecaddc335d3cf4ace4b"
+      },
+      "runtime_or_TLS_execution": false
+    }
+  ],
+  "maintainer_internal_TLS_source_patch": {
+    "upstream_source_commit": "328df0cd2f323c2d3c50cef91bfc9f2c412bcb09",
+    "upstream_archive_sha256": "1dd3a0ff960af532f04172b2aebdb9716b1244cad2fb81781b27641f67216cf9",
+    "target": "internal/distributed/utils/util.go",
+    "original_file_sha256": "62ea686155db8df34ffa57c119de00968a3773decccfaab2c359bc8893094769",
+    "patch_file": "patches/internal-tls-fail-closed.patch",
+    "patch_file_sha256": "a9c29644f45aee2afdaf475269c275f75eefdd17fd6e6e09221d43dc59d5644e",
+    "patched_file_sha256": "3d26515e2d0a70e362922bcd5be3c913a4ac15480f4c486954a5c013b271bb6e",
+    "test_file": "tests/internal_tls_fail_closed_test.go",
+    "test_file_sha256": "b1d20d11c07364980f2b825cc2a3083cad19bb8a6a456fce5947f7303a6f0542",
+    "scope": "Only getTLSCreds: validate configured CA with existing helper and panic with constant sanitized messages on CA/key-pair load failure or nil credentials; signatures/callers/default-disabled branch/valid TLS credentials unchanged",
+    "build_application": "Exact original file + patch + test hashes, patch --batch --forward --fuzz=0, exact patched-file hash; mismatched input or patch failure stops build",
+    "Go_test_command": "go test -p=2 -mod=readonly -tags=dynamic,sonic,with_jemalloc,bytedance_tango -ldflags='-checklinkname=0 -r /milvus/lib' ./internal/distributed/utils -run '^TestInternalTLSCredentials' -count=1",
+    "Go_test_execution": "not_executed_locally; mandatory builder RUN for future normal Linux build",
+    "test_cases": [
+      "missing-ca",
+      "invalid-ca",
+      "missing-cert",
+      "invalid-cert",
+      "missing-key",
+      "invalid-key",
+      "valid-files",
+      "disabled-skips-missing-files"
+    ],
+    "no_module_dependency_change": true,
+    "derived_source_not_pristine_upstream": true,
+    "source_patch_permission": "explicit root task authorized this narrow internal TLS fail-closed change; deployment window not granted"
+  },
+  "static_patch_application": {
+    "original_archive_sha256_unchanged": "1dd3a0ff960af532f04172b2aebdb9716b1244cad2fb81781b27641f67216cf9",
+    "only_target_file": "internal/distributed/utils/util.go",
+    "only_function_changed": "getTLSCreds",
+    "original_file_sha256": "62ea686155db8df34ffa57c119de00968a3773decccfaab2c359bc8893094769",
+    "patched_file_sha256": "3d26515e2d0a70e362922bcd5be3c913a4ac15480f4c486954a5c013b271bb6e",
+    "prefix_and_all_content_from_EnableInternalTLS_onward_identical": true,
+    "private_copy": ".cache/optimization-20261027-daily/milvus-tls-source-copy-lf/internal/distributed/utils/util.go",
+    "git_apply_check_and_actual_apply_passed": true,
+    "git_reverse_apply_check_passed": true,
+    "git_core_autocrlf_for_exact_proof": false,
+    "original_cache_archive_or_source_modified": false,
+    "Go_source_and_unit_test_gofmt_parse_clean": true,
+    "Go_package_compilation_or_test_execution": false,
+    "first_windows_default_autocrlf_copy_retained": {
+      "path": ".cache/optimization-20261027-daily/milvus-tls-source-copy/internal/distributed/utils/util.go",
+      "sha256": "fff44b74a28ad8a57b2638d4c263b1dac3a56792ecc1acdbc2e82b41e7c4a8b8",
+      "boundary": "CRLF working-copy trial retained; exact LF result independently established with core.autocrlf=false; not compiled or used as builder input"
+    }
+  }
+}

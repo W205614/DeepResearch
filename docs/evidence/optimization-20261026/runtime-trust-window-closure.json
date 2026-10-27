@@ -1,0 +1,484 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-27T10:17:08.179452+00:00",
+  "project": "DeepResearch",
+  "operation": "71a16872",
+  "window": "CI_CORRECTION_BUILD_VALIDATION_NO_DAILY_SWITCH",
+  "status": "local_validation_finished_ready_for_parent_window_release_review_not_daily_deployed",
+  "candidate_images": [
+    {
+      "kind": "python",
+      "tag": "dr-ci-fix-20261027-python-ca-final:71a16872",
+      "index_digest": "sha256:c57a4dbe2621d3e125152df8bd577401734c0806fde05ebdd550217ef037e76d",
+      "normal_recipe_path": "Dockerfile",
+      "normal_recipe_sha256": "93a0763b78c0ba05396dc0caa26bda19c3baa4db2ca12bf4a35a86ae89649b5d",
+      "build_exit": 0,
+      "build_elapsed_seconds": 10.093,
+      "source_drift_during_build": [],
+      "build": {
+        "path": ".cache/optimization-20261027-daily/runtime-trust-realfix/normal-python-local-source-finalCurrent4/receipt.private.json",
+        "sha256": "292fc9d56f8dbb45632c21442b38754e2670f1b2110797c41d818ee2ec3ba980"
+      },
+      "provenance_metadata": {
+        "path": ".cache/optimization-20261027-daily/runtime-trust-realfix/normal-python-local-source-finalCurrent4/metadata.json",
+        "sha256": "fcba400550b684867befaf7fc343b6f2985f2ba2c145f969aaa8ffdf11c1ccbd"
+      },
+      "rootfs_diffids": [
+        "sha256:43783ba91655311c8e948647f977dc7bb5546064415d3724089f534aaf80a648",
+        "sha256:10da8b11900bc10783574c52ae75ae934a9a677f73cce43e3dc3038909f6f2a4",
+        "sha256:104dddc3743f0af8c24fb908966903f331fcc4e95ffc686294ce79efe9ced4c4",
+        "sha256:1fd795467368df2c705aef1f30e7c6caa8e0d6767c020e69cf08b788f475f366",
+        "sha256:79e8472d40c4c52e46b17760b8377611fdf223ee3ff53f810200a61619907de3",
+        "sha256:9fb95ee0965b871a0012bdda399e5631ebf7caf3b2c89c8ed5aa48604a9d9bab",
+        "sha256:3da13c173c31ac17c684d9cdb219b3c93acc094ed9f38a1af3b031f3e6e9b635",
+        "sha256:41c501d20064c8b2d1ca61ad1939262760e39ffe6d9e49252c5f6bcc0e39b0c7",
+        "sha256:c2d0844baedcece8a2ab898cc2239de5485b3f8635e38e432be72f05654f0a8d",
+        "sha256:09aba625e2b9ea68b05a5506c923539800c5aeb1cb99d64ecd061ccbad0fcc48",
+        "sha256:286ebca872aa6d8521475a6f0ba96c2700facf9b0b446c97cd3af1e86723e160",
+        "sha256:16733729c1a21412391b96545ad2d60f0af5d11abce8d07e632139391cfa7850",
+        "sha256:ee897b8d57361b3b0b026bda6b2e2105b27ec69c2042eb94381435ec6147c4c4",
+        "sha256:19aa822d175606deb42b2be513ae05849dee0bef34f4d910d42cd1954bf0a6f3"
+      ],
+      "remote_normal_recipe_completed": false,
+      "transport_adaptation": {
+        "normal_recipe_sha256": "93a0763b78c0ba05396dc0caa26bda19c3baa4db2ca12bf4a35a86ae89649b5d",
+        "actual_transport_recipe_sha256": "9eaa78a4d25c388c1bfa6e657944d23d35c800a450c2865bc07fdb04685036e3",
+        "exact_archive_sha256": "9120e0a653868f6e3698d36cdd99e5a58903ec9469e448f21d98f7b16d8fa290",
+        "archive_bytes": 20351120,
+        "difference": "Onlyfixed remoteADD replaced by equalbyte read-only namedcontext COPY chmod0600. Original pinnedSHA+PGP verification remains in unchanged build-python.sh before extraction/compile. No signature check bypass. NormalremoteADD failedunexpectedEOF.",
+        "original_archive_modified": false,
+        "signed_compile_script_sha256": "f7c0dd5450e406913daced1da4bdb500f721aef319898f9960886199f51e0c7e"
+      }
+    },
+    {
+      "kind": "etcd",
+      "tag": "dr-ci-fix-20261027-etcd-deb13:71a16872",
+      "index_digest": "sha256:ed0bca6dc00472877d5d100ca6126a26f782c00d777d8e6feb6c7fc38a2d1084",
+      "normal_recipe_path": "Dockerfile.etcd",
+      "normal_recipe_sha256": "c4a476a8eb9c67438b0f80f9a0f016625dae2ad35e924a0661de1493e4ed14eb",
+      "build_exit": 0,
+      "build_elapsed_seconds": 40.14,
+      "source_drift_during_build": [],
+      "build": {
+        "path": ".cache/optimization-20261027-daily/runtime-trust-realfix/normal-etcd-attempt1/receipt.private.json",
+        "sha256": "8c04320ed52612f7bc3b648971d1d5e614053b7673472307df3c2df1f2979d24"
+      },
+      "provenance_metadata": {
+        "path": ".cache/optimization-20261027-daily/runtime-trust-realfix/normal-etcd-attempt1/metadata.json",
+        "sha256": "e4720086571d69a97b83f0496116751887726fc35d7300d2cc36363053ac83fb"
+      },
+      "rootfs_diffids": [
+        "sha256:9174a4a624801c3b890d5202a64adfe9772d17fee2875b22f90dc311bdbda4fa",
+        "sha256:bcb8540c0d1a2a5a4540f5017edf485ecc6dbaf7dcaaf00c851405ca591cec7e",
+        "sha256:ed5ed98cb511161ae4ee69b52504fb864bc2b39832b38574f146dbe6f91fb4b1"
+      ],
+      "remote_normal_recipe_completed": true,
+      "transport_adaptation": null
+    }
+  ],
+  "final_CA_source_inputs_8": {
+    "Dockerfile": "93a0763b78c0ba05396dc0caa26bda19c3baa4db2ca12bf4a35a86ae89649b5d",
+    "Dockerfile.etcd": "c4a476a8eb9c67438b0f80f9a0f016625dae2ad35e924a0661de1493e4ed14eb",
+    "scripts/prepare_python_runtime.py": "08a44b72f09e03e7ef3bd3b1fd571a9361bd81a7abf8814a980866d54caa7e80",
+    "scripts/prepare_runtime_trust.py": "91bc9b23f9394e2c355281b57bbdd5d5d1e87780474efd05d67e5abafc3959d3",
+    "deployment/runtime-packages.lock.json": "dae6eae140ad38a01cde7c5c7b8839e234acc350fbf71729a50d7df725376f15",
+    "deployment/vendors/python311/build-python.sh": "f7c0dd5450e406913daced1da4bdb500f721aef319898f9960886199f51e0c7e",
+    "deployment/vendors/python311/source-lock.json": "5c7dbe9249d84bda69c79cd84e8b6f89f1fa87d65fe3f60bf1fa4e2e4cedda1c",
+    "deployment/vendors/python311/release-key.asc": "36490870b1f9e2b4fb29411c17c1fca127b92c2745b52a7093ece1c062186f1f"
+  },
+  "producer_manifest_scope_notes": [
+    {
+      "kind": "python",
+      "captured_input_count": 98,
+      "recorded_source_manifest_sha256": "a7c757d85bd84073b4030b07b32262037f72cba6d08d70e8ec2df0c6f9de819b",
+      "current_captured_input_drift": [],
+      "original_manifest": {
+        "path": ".cache/optimization-20261027-daily/runtime-trust-realfix/normal-python-local-source-finalCurrent4/producer-source-manifest.private.json",
+        "sha256": "bb77d096bf3d9aa1d62c212f4cbd87b33c74b94639efdae508be7ed954f786bf"
+      },
+      "supplemental_files_not_in_original_manifest": {
+        "deployment/runtime-packages.lock.json": "dae6eae140ad38a01cde7c5c7b8839e234acc350fbf71729a50d7df725376f15"
+      },
+      "supplemental_boundary": "Original private producer enumeration omitted the runtime-package lock (and etcd provenance-only source.lock, which Dockerfile does not COPY). Their explicit pre-build patch hashes are retained in latest_TZ_E_correction; the same complete8 CA source freeze/current byte check and actual authenticated package closures supplement this record. This does not retroactively claim those files were in the original per-build manifest.",
+      "prebuild_explicit_source_patch": {
+        "path": ".cache/optimization-20261027-daily/runtime-trust-realfix/latest_TZ_E_correction.private.json",
+        "sha256": "2b39ebfd436abae0f9d54c7b191843cdeebb381ff7a503da0ac9195e1e868f5c"
+      }
+    },
+    {
+      "kind": "etcd",
+      "captured_input_count": 27,
+      "recorded_source_manifest_sha256": "19b89dd0a8effe998419cb8e5644a6bc509c9d17e9016d4db7d1a17f294efdca",
+      "current_captured_input_drift": [],
+      "original_manifest": {
+        "path": ".cache/optimization-20261027-daily/runtime-trust-realfix/normal-etcd-attempt1/producer-source-manifest.private.json",
+        "sha256": "2d84027c384cfd77a86936540b556b92b59c1cabbdf56211dbc3f06c6124fedb"
+      },
+      "supplemental_files_not_in_original_manifest": {
+        "deployment/runtime-packages.lock.json": "dae6eae140ad38a01cde7c5c7b8839e234acc350fbf71729a50d7df725376f15",
+        "deployment/vendors/etcd/source.lock.json": "90e086e9b8c2e21530c095b64260820c57ad0cbdae099d6e73533dd405885b6b"
+      },
+      "supplemental_boundary": "Original private producer enumeration omitted the runtime-package lock (and etcd provenance-only source.lock, which Dockerfile does not COPY). Their explicit pre-build patch hashes are retained in latest_TZ_E_correction; the same complete8 CA source freeze/current byte check and actual authenticated package closures supplement this record. This does not retroactively claim those files were in the original per-build manifest.",
+      "prebuild_explicit_source_patch": {
+        "path": ".cache/optimization-20261027-daily/runtime-trust-realfix/latest_TZ_E_correction.private.json",
+        "sha256": "2b39ebfd436abae0f9d54c7b191843cdeebb381ff7a503da0ac9195e1e868f5c"
+      }
+    }
+  ],
+  "actual_native_fingerprints": {
+    "python": {
+      "actual_old_image": "sha256:0250e2c5a9ce8f7294f1b63eb0680a1a848755c06610a61597df417ee0654a46",
+      "actual_new_image": "sha256:c57a4dbe2621d3e125152df8bd577401734c0806fde05ebdd550217ef037e76d",
+      "same_signed_source_version": "CPython3.11.18/archive9120e0.../keyA035...",
+      "objects": [
+        {
+          "path": "/usr/local/bin/python3.11",
+          "SHA256": {
+            "before": "92d7e40ec50be176cb1b790c7568b7e08cd862137b5aa69f1413ba1967886b79",
+            "after": "92d7e40ec50be176cb1b790c7568b7e08cd862137b5aa69f1413ba1967886b79"
+          },
+          "byte_identical": true
+        },
+        {
+          "path": "/usr/local/lib/libpython3.11.so.1.0",
+          "SHA256": {
+            "before": "5b11029b1a57e7d0e0a2fad61a945526810a2564c17ff1a320de25de06664338",
+            "after": "ec2d093eb1ab3414d0727ee7388a60616033051167fa888c7e91c9b5e2544e49"
+          },
+          "byte_identical": false
+        }
+      ],
+      "new_native_ABI_evidence": "final-python-runtime-validation-v2/actual-native-ABI.private.json",
+      "old_ABI_not_claimed_byte_equivalent": true
+    },
+    "etcd": {
+      "etcd": "dfe09a079e8a98a4829fcb4face6c420a81e2c51f1dc60983f3378d26db936f7",
+      "etcdctl": "27c4f175e00ae03b92e245b0598d8def497a2c30fd55572c91f4aa1cbaae53b6",
+      "etcdutl": "5a38ca7d14cf92f8733116daba19fac88d85f5961e846a34e225cb7df81dfdc7",
+      "all3_exact_phase1_bytes": true,
+      "actual_selected_layer_binding": {
+        "path": ".cache/optimization-20261027-daily/runtime-trust-realfix/actual-etcd-layer-bindings/receipt.private.json",
+        "sha256": "387eeeacb9be472cef18638bfb591581fb774d36425abe35f41a4ba9b82ea2e6"
+      }
+    },
+    "unchanged_AM_bootstrap_readonly_binding": {
+      "path": ".cache/optimization-20261027-daily/runtime-trust-realfix/unchanged-AM-bootstrap-readonly-binding/receipt.private.json",
+      "sha256": "125479c041b84d39f5349a33585a97fae75b3e998009d9bd8aa3560652cba2f5"
+    }
+  },
+  "validation": {
+    "Python": {
+      "direct_Linux_cases": 12,
+      "actual_CA_bundle_default_context_HTTPX_CAPATH_removed_anchor_count": 0,
+      "native_libcrypto_removed_anchors_rejected": true,
+      "native_libcrypto_existing_positive_anchor_verified": true,
+      "verified_TLS_handshake_without_HTTP": true,
+      "direct_native_ABI_imports_passed": true,
+      "actual_app_fingerprint_files": 88,
+      "actual_app_source_differences": [],
+      "builtin_exec_healthcheck_healthy": true,
+      "controlled_HTTP503_same_command_rejected": 1,
+      "bin_sh_exists": false,
+      "uv_retained_version": "0.12.3",
+      "receipt": {
+        "path": ".cache/optimization-20261027-daily/runtime-trust-realfix/final-python-runtime-validation-v2/receipt.private.json",
+        "sha256": "28e3606274166c5528fb03343d8d4438a740287a5edeeb4742224b130640bebc"
+      }
+    },
+    "etcd": {
+      "version": "etcd Version: 3.5.34\nGit SHA: 38e57443c51fc9a3cc6a943fa8ed10381f66ce5c-security-rebuild\nGo Version: go1.27.3\nGo OS/Arch: linux/amd64",
+      "native_health": true,
+      "synthetic_put_get": true,
+      "real_image_timezone_files_checked": 4,
+      "data_permissions_metadata_verified": true,
+      "authenticated_real_CA_TZ_payload_and_records": true,
+      "native_receipt": {
+        "path": ".cache/optimization-20261027-daily/runtime-trust-realfix/etcd-supported-runtime-lab-continuation/etcd-native-runtime.private.json",
+        "sha256": "0cb0f21856355909832462618687603b2dbe84d766ae6980b48a2d31c96177ed"
+      },
+      "unchanged_Milvus_one_native_query": {
+        "status": "passed",
+        "synthetic_rows": 2,
+        "visible_rows": 1,
+        "visible_hits": 1,
+        "physical_HNSW_build_or_capacity_claimed": false,
+        "receipt": {
+          "path": ".cache/optimization-20261027-daily/runtime-trust-realfix/etcd-supported-native-compat-final/milvus-native-receipt.private.json",
+          "sha256": "93cc61214eb0bb5737c68005cf761500a5cabb99256bd4e5962cf1a80d25e008"
+        }
+      }
+    }
+  },
+  "actual_full_Config_comparisons": [
+    {
+      "old": "python_before_common",
+      "new": "python_final",
+      "actual_Config_key_count": 7,
+      "compared_keys": [
+        "ArgsEscaped",
+        "Cmd",
+        "Env",
+        "ExposedPorts",
+        "Healthcheck",
+        "User",
+        "WorkingDir"
+      ],
+      "raw_different_keys": [
+        "Env",
+        "Healthcheck"
+      ],
+      "Env_order_only_unique_key_values_equal": true,
+      "absent_null_not_conflated": true
+    },
+    {
+      "old": "python_before_daily",
+      "new": "python_final",
+      "actual_Config_key_count": 8,
+      "compared_keys": [
+        "ArgsEscaped",
+        "Cmd",
+        "Env",
+        "ExposedPorts",
+        "Healthcheck",
+        "Labels",
+        "User",
+        "WorkingDir"
+      ],
+      "raw_different_keys": [
+        "Env",
+        "Healthcheck",
+        "Labels"
+      ],
+      "Env_order_only_unique_key_values_equal": true,
+      "absent_null_not_conflated": true
+    },
+    {
+      "old": "etcd_before_daily",
+      "new": "etcd_final",
+      "actual_Config_key_count": 7,
+      "compared_keys": [
+        "ArgsEscaped",
+        "Cmd",
+        "Env",
+        "ExposedPorts",
+        "Labels",
+        "User",
+        "WorkingDir"
+      ],
+      "raw_different_keys": [
+        "Labels"
+      ],
+      "absent_null_not_conflated": true
+    },
+    {
+      "old": "etcd_phase1",
+      "new": "etcd_final",
+      "actual_Config_key_count": 6,
+      "compared_keys": [
+        "ArgsEscaped",
+        "Cmd",
+        "Env",
+        "ExposedPorts",
+        "User",
+        "WorkingDir"
+      ],
+      "raw_different_keys": [],
+      "absent_null_not_conflated": true
+    }
+  ],
+  "Config_details": {
+    "path": ".cache/optimization-20261027-daily/runtime-trust-realfix/full-actual-Config-comparison.private.json",
+    "sha256": "9c6ef5284ac86cadc352a79a27e7fc414e61881fffee6b6c7d35a0ba6b3be764"
+  },
+  "final_two_full_scans": [
+    {
+      "kind": "python",
+      "image": "dr-ci-fix-20261027-python-ca-final:71a16872",
+      "image_id": "sha256:c57a4dbe2621d3e125152df8bd577401734c0806fde05ebdd550217ef037e76d",
+      "exit_code": 0,
+      "elapsed_seconds": 15.032,
+      "db_sha256": "d56c43f48dcae3239a456ca23ef2350a72aa7353582f9cf65dfcee0473f775a5",
+      "db_metadata": {
+        "Version": 2,
+        "NextUpdate": "2026-10-28T07:13:33.504286922Z",
+        "UpdatedAt": "2026-10-27T07:13:33.504287223Z",
+        "DownloadedAt": "2026-10-27T10:03:06.5000108Z"
+      },
+      "vulnerabilities": {
+        "MEDIUM": 31,
+        "LOW": 10
+      },
+      "secrets": {},
+      "package_count": 629,
+      "OS": {
+        "Family": "debian",
+        "Name": "13.7"
+      },
+      "unknown_unresolved": [],
+      "targets": [
+        {
+          "target": "dr-ci-fix-20261027-python-ca-final:71a16872 (debian 13.7)",
+          "class": "os-pkgs",
+          "type": "debian",
+          "packages": 21
+        },
+        {
+          "target": "Python",
+          "class": "lang-pkgs",
+          "type": "python-pkg",
+          "packages": 102
+        },
+        {
+          "target": "usr/local/bin/uv",
+          "class": "lang-pkgs",
+          "type": "rustbinary",
+          "packages": 506
+        }
+      ],
+      "all_severity_retained": true,
+      "ignored_CVEs": [],
+      "severity_filter": null,
+      "HC_and_secret_findings_zero": true,
+      "raw": {
+        "path": ".cache/optimization-20261027-daily/runtime-trust-realfix/final-two-full-image-scans/python.raw.json",
+        "sha256": "e532e1557665d050293bd4ee1c8dbcae82167bf2435018fa4760598f7f18ee6b"
+      },
+      "EOSL_boundary": "Actual Trivy OS is Debian13.7; EOSL=true is not reported. Missing EOSL is preserved as absent, not rewritten into the raw scan."
+    },
+    {
+      "kind": "etcd",
+      "image": "dr-ci-fix-20261027-etcd-deb13:71a16872",
+      "image_id": "sha256:ed0bca6dc00472877d5d100ca6126a26f782c00d777d8e6feb6c7fc38a2d1084",
+      "exit_code": 0,
+      "elapsed_seconds": 1.797,
+      "db_sha256": "d56c43f48dcae3239a456ca23ef2350a72aa7353582f9cf65dfcee0473f775a5",
+      "db_metadata": {
+        "Version": 2,
+        "NextUpdate": "2026-10-28T07:13:33.504286922Z",
+        "UpdatedAt": "2026-10-27T07:13:33.504287223Z",
+        "DownloadedAt": "2026-10-27T10:03:06.5000108Z"
+      },
+      "vulnerabilities": {
+        "MEDIUM": 23,
+        "LOW": 11,
+        "UNKNOWN": 3
+      },
+      "secrets": {},
+      "package_count": 193,
+      "OS": {
+        "Family": "debian",
+        "Name": "13.7"
+      },
+      "unknown_unresolved": [
+        {
+          "id": "GO-2026-5932",
+          "pkg": "golang.org/x/crypto",
+          "version": "v0.57.0",
+          "fixed_version": null,
+          "target": "usr/local/bin/etcd"
+        },
+        {
+          "id": "GO-2026-5932",
+          "pkg": "golang.org/x/crypto",
+          "version": "v0.57.0",
+          "fixed_version": null,
+          "target": "usr/local/bin/etcdctl"
+        },
+        {
+          "id": "GO-2026-5932",
+          "pkg": "golang.org/x/crypto",
+          "version": "v0.57.0",
+          "fixed_version": null,
+          "target": "usr/local/bin/etcdutl"
+        }
+      ],
+      "targets": [
+        {
+          "target": "dr-ci-fix-20261027-etcd-deb13:71a16872 (debian 13.7)",
+          "class": "os-pkgs",
+          "type": "debian",
+          "packages": 14
+        },
+        {
+          "target": "usr/local/bin/etcd",
+          "class": "lang-pkgs",
+          "type": "gobinary",
+          "packages": 68
+        },
+        {
+          "target": "usr/local/bin/etcdctl",
+          "class": "lang-pkgs",
+          "type": "gobinary",
+          "packages": 59
+        },
+        {
+          "target": "usr/local/bin/etcdutl",
+          "class": "lang-pkgs",
+          "type": "gobinary",
+          "packages": 52
+        }
+      ],
+      "all_severity_retained": true,
+      "ignored_CVEs": [],
+      "severity_filter": null,
+      "HC_and_secret_findings_zero": true,
+      "raw": {
+        "path": ".cache/optimization-20261027-daily/runtime-trust-realfix/final-two-full-image-scans/etcd.raw.json",
+        "sha256": "7b348ac36cba2e0e1242d241c225a996b83e939d4d884987a1a214a93f892bde"
+      },
+      "EOSL_boundary": "Actual Trivy OS is Debian13.7; EOSL=true is not reported. Missing EOSL is preserved as absent, not rewritten into the raw scan."
+    }
+  ],
+  "original128_protected_raw_differences": 0,
+  "daily25_protection": {
+    "count": 25,
+    "id_image_start_state_mounts_unchanged": true,
+    "receipt": {
+      "path": ".cache/optimization-20261027-daily/runtime-trust-realfix/final-protected-daily-state.private.json",
+      "sha256": "ad4927e858307cb84c071ea7ec6b5f698dc80d70ed4d09150c4ced4f1e5582e2"
+    },
+    "data_boundary": "No current-daily command, mount write, database query/write, container lifecycle or data copying was executed in this correction phase. This is lifecycle/mount identity protection evidence, not a new content-hash or SQL-row verification. Synthetic fixture volumes are separate exact creation-ledger resources."
+  },
+  "all_current_window_fixture_resources": {
+    "counts": {
+      "containers": 41,
+      "volumes_including_anonymous": 21,
+      "networks": 4
+    },
+    "exact_creation_proofs_actual_states_and_mounts": {
+      "path": ".cache/optimization-20261027-daily/runtime-trust-realfix/all-created-resource-states.private.json",
+      "sha256": "1659c2e0ff966ad8635634772c96332fed555d6d78c42c33a9bf79b2fb0ac960"
+    },
+    "all_created_containers_retained_not_running": true,
+    "unattributed_discovered_operation_containers": [],
+    "all_volumes_networks_and_images_retained": true
+  },
+  "no_active_heavy": {
+    "active_cli_count": 0,
+    "proof": {
+      "path": ".cache/optimization-20261027-daily/runtime-trust-realfix/final-no-active-heavy.private.json",
+      "sha256": "0830d44c138cfe836d41704e72d61df0c0a51b8e24ed3ebd7a20201e4d0c2b07"
+    },
+    "E_free_bytes": 135084908544
+  },
+  "history_preserved": {
+    "phase1": {
+      "path": ".cache/optimization-20261027-daily/ci-correction-build/phase1-validation-summary.json",
+      "sha256": "55dd4e9ac6b95bed376310deec887195d33d4a511e18d53ac07855596ffa7005"
+    },
+    "remote_source_EOF_and_private_collector_failures": "Original failed build/fixture receipts and logs remain alongside successful continuations; the original successful producer manifests are not rewritten.",
+    "unrelated_tests_reused": "Milvus8 TLS cases/PG empty-fixture/roles/backups not repeated. Native reuse is limited by actual ELF bytes; CPython shared library changed and received fresh direct ABI/SSL/import checks."
+  },
+  "remaining": [
+    "GO-2026-5932 source16 independent human applicability review remains pending; no UNKNOWN exception is implicitly granted by functional validation.",
+    "Final exact-source GitHub CI/Security and any separately granted narrow daily switch remain pending.",
+    "Root must review this receipt and release the local build window; this receipt does not release it."
+  ],
+  "daily_mutations": 0,
+  "retirement_cleanup_actions": 0,
+  "paid_provider_calls": 0,
+  "private_window_receipt": {
+    "path": ".cache/optimization-20261027-daily/runtime-trust-realfix/window-closure-receipt.json",
+    "sha256": "55d1f8a2fdffc64d69fdf103a1c7329b708a5085c5d0c4c247d598843eb64c72"
+  }
+}

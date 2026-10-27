@@ -11,6 +11,14 @@ jobs:
     permissions: { contents: read }
     steps:
       - uses: actions/checkout@v7
+        with: { fetch-depth: 0, fetch-tags: true }
+      - name: Verify immutable ancestor artifact source reuse
+        run: python scripts/check_artifact_source_reuse.py --output .cache/eval/artifact-source-reuse.json
+      - uses: actions/upload-artifact@v6
+        if: always() && hashFiles('.cache/eval/artifact-source-reuse.json') != ''
+        with:
+          name: component-artifact-source-${{ github.sha }}
+          path: .cache/eval/artifact-source-reuse.json
       - name: Load the approved storage artifact for the isolated component fixture
         run: python scripts/fetch_approved_image.py
         env:
@@ -63,6 +71,14 @@ jobs:
       GRAFANA_ADMIN_PASSWORD: ci-grafana-password
     steps:
       - uses: actions/checkout@v7
+        with: { fetch-depth: 0, fetch-tags: true }
+      - name: Verify immutable ancestor artifact source reuse
+        run: python scripts/check_artifact_source_reuse.py --output .cache/eval/artifact-source-reuse.json
+      - uses: actions/upload-artifact@v6
+        if: always() && hashFiles('.cache/eval/artifact-source-reuse.json') != ''
+        with:
+          name: enterprise-artifact-source-${{ github.sha }}
+          path: .cache/eval/artifact-source-reuse.json
       - name: Load the exact approved storage artifact before Compose startup
         run: python scripts/fetch_approved_image.py
         env:

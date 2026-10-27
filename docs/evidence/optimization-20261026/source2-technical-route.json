@@ -1,0 +1,68 @@
+{
+  "schema": "exact-source2-technical-route-v1",
+  "recorded_at": "2026-10-27T12:17:37.016689+00:00",
+  "status": "APPLIED_DIRECT_SYNTHETIC_CASES_PASSED_FINAL_EXISTING_CI_PENDING",
+  "scope": "OnlyCVE-2026-21728/CVE-2026-28377 at deployment/vendors/grafana/main/go.mod, Tempo v1.5.1-0.20260427112133-525d1bab07e0",
+  "technical_disposition": "NOT_APPLICABLE_TO_EXACT_BOUND_MAIN_BUILD",
+  "raw_HIGH_unchanged": 2,
+  "version_fixed_or_upgraded_claimed": false,
+  "basis": {
+    "root_review": "deployment/security/grafana-source2-technical-review.json",
+    "root_review_sha256": "f5ade0c49161d5e60a21fd0834d6abf7582ee33d8fb91d51da1129b550015c68",
+    "scope_canonical_sha256": "12dd01ca6c46961ebc89adfb6a4b9c263047410ec9c51229de90a1239945e051",
+    "review_actor": "independent_root_coordinator",
+    "main_graph_packages": 4200,
+    "bound_main_ELF_inventory": 523,
+    "main_graph_or_real_ELF_reparsed_during_this_phase": false,
+    "legacy_compiled_facts_function": "unchanged; root already independently checked full original graph and bound main inventory"
+  },
+  "thresholds": {
+    "full_raw": [
+      "CRITICAL",
+      "HIGH",
+      "MEDIUM",
+      "LOW",
+      "UNKNOWN"
+    ],
+    "vulnerability_and_secret_blocking": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "retained_without_new_disposition": [
+      "MEDIUM",
+      "LOW",
+      "UNKNOWN"
+    ],
+    "other_HC_missing_duplicate_failed_invalid_blocks": true
+  },
+  "direct_checks": {
+    "passed": 22,
+    "checker": 18,
+    "workflow": 3,
+    "producer_affected_case": 1,
+    "pytest_reported_seconds": 2.41,
+    "Ruff": "All checks passed",
+    "count_correction": "Private draft listed19checker; actual reviewed module has18, all selected. No skipped/deselected or omitted cases; no extra case added merely to match estimate.",
+    "full_business_or_source16_suite_repeated": false,
+    "Docker_HTTP_DB_provider_model_calls": 0
+  },
+  "no_new_human_risk_acceptance": true,
+  "runtime18_dispositions_inherited": false,
+  "source16_runtime5_activation": false,
+  "existing128_or_effective_authorization_mutations": 0,
+  "remaining": [
+    "Root finalchangedset review then separatelyauthorized coherent finalSHA commit/push",
+    "Actual all existing final sameSHA CI/Security/Quality terminal results",
+    "Separatelygranted affected daily readback and finalscopedcleanup; no blanketrole/backup repetition"
+  ],
+  "private_apply_receipt": {
+    "path": ".cache/optimization-20261027-daily/source2-apply-direct-20261027T121048Z/apply-receipt.json",
+    "sha256": "b98bd7001d111bc8ad373b3d9a0e6a683470555a91ecd3d04b7ab96b7fe12fca"
+  },
+  "private_direct_checks": {
+    "path": ".cache/optimization-20261027-daily/source2-apply-direct-20261027T121048Z/direct-checks.json",
+    "sha256": "ccac37ea2581e32ac6c86e421a3c9e30e554712cf8dd4ac4c1ac6da2c77fb385"
+  },
+  "updated_at": "2026-10-27T12:50:28.875766+00:00",
+  "normal_Linux_Web_build": "one_normal_build_passed_vite-normal-linux-web-build.json; no hostbuild/localfullsource scan duplicate"
+}

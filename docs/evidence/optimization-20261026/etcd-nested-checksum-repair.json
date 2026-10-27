@@ -1,0 +1,204 @@
+{
+  "schema": "etcd-nested-checksum-repair-v1",
+  "recorded_at": "2026-10-27T07:05:47.767381+00:00",
+  "status": "minimal_checksum_and_authorized_MVS_alignment_complete_readonly_sourcegraphs_verified_not_compiled_or_run",
+  "scope": [
+    "deployment/vendors/etcd/modules/go.mod",
+    "deployment/vendors/etcd/modules/go.sum",
+    "deployment/vendors/etcd/modules/tests/go.mod",
+    "deployment/vendors/etcd/modules/tests/go.sum",
+    "deployment/vendors/etcd/source.lock.json"
+  ],
+  "confirmed_failure": "Independent readonly go list -deps -test -json ./... failed for source root and tests module because local replacements already selected x/netv0.60.0 but each module lacked its go.mod checksum. This was not a production server/etcdctl/etcdutl compile failure.",
+  "change": "Initial necessary x/net0.60 checksum append followed by explicitly authorized minimal existing-family MVS alignment after independent readonly failure; initial source-sum attempt and semantic failure are retained separately.",
+  "updated_files": {
+    "modules/go.sum": {
+      "before_sha256": "dcb5922c61ca1b901c233f2278ae4b42d3e3d7c219d644ba290695247e902627",
+      "after_sha256": "a0f7eacaea929594a7d42336bd3038d72e787bf53307d024d7837ac374b4682e",
+      "appended_lines": [
+        "golang.org/x/net v0.60.0 h1:79p50tfZlm0J9YfoDsSi639qSXNGVwEzOPLCxM2FsYU=",
+        "golang.org/x/net v0.60.0/go.mod h1:2DA/G1UfVbCpQPeWTmMPGY7Cs2PkBkwu743bVX5PIVg="
+      ]
+    },
+    "modules/tests/go.sum": {
+      "before_sha256": "1e2792400def87d0039991802f0b387547406dab2c99b2fa90e892833c53c627",
+      "after_sha256": "c7e90cb1b040ef0bb8727138151143d15e217e295ed0e5871ecaca327b161b16",
+      "appended_lines": [
+        "golang.org/x/net v0.60.0 h1:79p50tfZlm0J9YfoDsSi639qSXNGVwEzOPLCxM2FsYU=",
+        "golang.org/x/net v0.60.0/go.mod h1:2DA/G1UfVbCpQPeWTmMPGY7Cs2PkBkwu743bVX5PIVg="
+      ]
+    }
+  },
+  "source_lock_sha256": "661ce012334770d17ed5de72d96f609a33a325545db2d5e3b4a0f913d28b0638",
+  "initial_failure_receipts": {
+    "nested-root.stderr": {
+      "private_copy": ".cache/optimization-20261027-daily/etcd-nested-sum-repair/original-nested-root.stderr",
+      "sha256": "b3ecb8bbee81ae3fb638147e1da8e64aded9c8c5841299d70a765c784d67826b"
+    },
+    "nested-tests.stderr": {
+      "private_copy": ".cache/optimization-20261027-daily/etcd-nested-sum-repair/original-nested-tests.stderr",
+      "sha256": "a876d7cad346eee3675d20baf91fdc87be400e302ebe6eb831b10e1b796984ac"
+    }
+  },
+  "bounds": [
+    "Not evidence that example/test packages compile or run",
+    "No production behavior/API/storage code changed",
+    "No Docker or service actions, no business suite or FS rescan, no defaultchecker activation",
+    "Any new module semantic/MVS requirement must be separately reported before expanding source scope"
+  ],
+  "upstream_identity_preserved": true,
+  "diff_check": "passed; Git line-ending advisories only",
+  "initial_checksum_only_step_verification": {
+    "official_GOPROXY": "https://proxy.golang.org",
+    "official_GOSUMDB": "sum.golang.org",
+    "actual_Go": "Go1.27.3 Windows amd64",
+    "download_exit": 0,
+    "download_receipt_private": ".cache/optimization-20261027-daily/etcd-nested-sum-repair/official-download.stdout.json",
+    "download_receipt_sha256": "a703f1ac56be9ad9055a41bba50e575d8532f668649f88e8f24834c71503744e",
+    "private_candidates_verified_before_worktree_write": true,
+    "process_cache_paths_restricted_to_private_cache": true,
+    "root_go_mod_unchanged": true,
+    "tests_go_mod_unchanged": true,
+    "production_module_locks_unchanged": true,
+    "old_entries_removed": 0,
+    "appended_lines_each": 2,
+    "sourcegraph_owner": "security_review",
+    "sourcegraph_retry_mode": "readonly only; do not usemodmod; report semantic/MVS diff before any further change",
+    "compilation_or_tests_executed": false,
+    "readonly_retry_result": {
+      "source": "security_review independent retry after copying only2sums and checking other overlay bytes unchanged",
+      "root_exit": 1,
+      "tests_exit": 1,
+      "message": "updates to go.mod needed; disabled by -mod=readonly",
+      "complete_sourcegraph": false,
+      "further_changes_stopped": true,
+      "possible_MVS_requirements_not_implemented": "x/net0.60 requirescrypto0.57/sys0.48/text0.42 while these modules still declare0.55/0.47/0.41; private diff needs new authority before changes"
+    },
+    "readonly_retry_receipt": {
+      "private_path": ".cache/optimization-20261027-daily/etcd-source-applicability-graphs/nested-after-sum-receipt.private.json",
+      "sha256": "8484c21917b043ad19e205f8036e40979f97d0850f33c901dcb8804b8054343c"
+    }
+  },
+  "followup_MVS_alignment": {
+    "recorded_at": "2026-10-27T07:23:49.804637+00:00",
+    "authority": "Root explicitly authorized only this reviewed private tidy-diff, after checksum-only retry exposed readonly module semantics.",
+    "allowed_go_mod_differences": "Root crypto0.55->0.57/sys0.47->0.48/text0.41->0.42; tests additionallysync0.22->0.23; go1.26->1.26.0 normalization; toolchain1.26.8 unchanged.",
+    "no_new_module_identities_replaces_or_application_source": true,
+    "reviewed_private_diff_sha256": {
+      "root": "77ca08bf470d080b2fbf76a854347e0a66d5271cf5dc8dc44d83a6335e866b37",
+      "tests": "ef49bc4d8ab3f4f0a14d8686bb092205098e83a168f38a265f8dc35f59e90267"
+    },
+    "official_proxy_and_sumdb_download_exit": 0,
+    "download_receipt_sha256": "12f0d31cb5bd38b999c1c50bf1cd18ac8848817e5c57e67f90245c43b477d08c",
+    "private_candidate_mod_parse_exit": 0,
+    "old_sum_bytes_preserved_as_prefix": true,
+    "appended_checksum_lines_each": 8,
+    "tidy_executed_by_this_maintainer": false,
+    "tidy_checksum_deletions_or_moves_installed": false,
+    "production_server_etcdctl_etcdutl_locks_unchanged": true,
+    "GO_2026_5932_fixed_claimed": false,
+    "updated_files": {
+      "modules/go.mod": {
+        "before_sha256": "64c4fabcbe9bcb1788e1570f1e961f6d61e2c230383fae77fa1c0da69cb06b82",
+        "after_sha256": "b029fef669627e81366e9b433a7c7839d6ce8569d0d424d76489918a70c058e5",
+        "only_authorized_mod_changes": [
+          [
+            "go 1.26",
+            "go 1.26.0"
+          ],
+          [
+            "\tgolang.org/x/crypto v0.55.0 // indirect",
+            "\tgolang.org/x/crypto v0.57.0 // indirect"
+          ],
+          [
+            "\tgolang.org/x/sys v0.47.0 // indirect",
+            "\tgolang.org/x/sys v0.48.0 // indirect"
+          ],
+          [
+            "\tgolang.org/x/text v0.41.0 // indirect",
+            "\tgolang.org/x/text v0.42.0 // indirect"
+          ]
+        ],
+        "appended_checksum_lines": []
+      },
+      "modules/go.sum": {
+        "before_sha256": "a0f7eacaea929594a7d42336bd3038d72e787bf53307d024d7837ac374b4682e",
+        "after_sha256": "b65b2944602fcc71cc6297a1297202c776eb746c9f64dd2d43299e70e43d267b",
+        "only_authorized_mod_changes": null,
+        "appended_checksum_lines": [
+          "golang.org/x/crypto v0.57.0 h1:3ZVCjf8Ggz7zneR/EHRVx68Ctf+2pmIMP2UFhh9cC6M=",
+          "golang.org/x/crypto v0.57.0/go.mod h1:Fdz0i5U6CoizGwLda9DttjSk6qlZo25zYNtR+ycvuZA=",
+          "golang.org/x/sync v0.23.0 h1:KameEIfc1IkluZyXWLn39Wd4tURc6GbCiISGiZm2bQk=",
+          "golang.org/x/sync v0.23.0/go.mod h1:sUUOizhqBxiL6pEWpqNLUiaJn1ShEbZ6BBqskPbjZm0=",
+          "golang.org/x/sys v0.48.0 h1:bbX/i/6MgT9BVLM9RT1thmxL04yeTAhbEz4SyadbXoo=",
+          "golang.org/x/sys v0.48.0/go.mod h1:hNLxWAXmnKAxqDtdwIYC4bM9oQPEecfsnNMuSxOs3og=",
+          "golang.org/x/text v0.42.0 h1:JbOZXgfeCPU9gacVtYliJqOhD+zhrEqK4LfdpmlUZqI=",
+          "golang.org/x/text v0.42.0/go.mod h1:ojzP1Z+2QtioaF8DTtO8K5q7JWVVYwZKenzujK0Zd0E="
+        ]
+      },
+      "modules/tests/go.mod": {
+        "before_sha256": "80d031967180ed4d11c11eae713fdf197e1f4322122bd56ae0e42a573e9c8e38",
+        "after_sha256": "681610132f11d5cf28a120ac2592c77703dcccc1834e2922a4d24c6e3618751d",
+        "only_authorized_mod_changes": [
+          [
+            "go 1.26",
+            "go 1.26.0"
+          ],
+          [
+            "\tgolang.org/x/crypto v0.55.0",
+            "\tgolang.org/x/crypto v0.57.0"
+          ],
+          [
+            "\tgolang.org/x/sync v0.22.0",
+            "\tgolang.org/x/sync v0.23.0"
+          ],
+          [
+            "\tgolang.org/x/sys v0.47.0 // indirect",
+            "\tgolang.org/x/sys v0.48.0 // indirect"
+          ],
+          [
+            "\tgolang.org/x/text v0.41.0 // indirect",
+            "\tgolang.org/x/text v0.42.0 // indirect"
+          ]
+        ],
+        "appended_checksum_lines": []
+      },
+      "modules/tests/go.sum": {
+        "before_sha256": "c7e90cb1b040ef0bb8727138151143d15e217e295ed0e5871ecaca327b161b16",
+        "after_sha256": "2d56990727f65a8daaa902e034750debf5cf7b769aa00239a1597e718148af95",
+        "only_authorized_mod_changes": null,
+        "appended_checksum_lines": [
+          "golang.org/x/crypto v0.57.0 h1:3ZVCjf8Ggz7zneR/EHRVx68Ctf+2pmIMP2UFhh9cC6M=",
+          "golang.org/x/crypto v0.57.0/go.mod h1:Fdz0i5U6CoizGwLda9DttjSk6qlZo25zYNtR+ycvuZA=",
+          "golang.org/x/sync v0.23.0 h1:KameEIfc1IkluZyXWLn39Wd4tURc6GbCiISGiZm2bQk=",
+          "golang.org/x/sync v0.23.0/go.mod h1:sUUOizhqBxiL6pEWpqNLUiaJn1ShEbZ6BBqskPbjZm0=",
+          "golang.org/x/sys v0.48.0 h1:bbX/i/6MgT9BVLM9RT1thmxL04yeTAhbEz4SyadbXoo=",
+          "golang.org/x/sys v0.48.0/go.mod h1:hNLxWAXmnKAxqDtdwIYC4bM9oQPEecfsnNMuSxOs3og=",
+          "golang.org/x/text v0.42.0 h1:JbOZXgfeCPU9gacVtYliJqOhD+zhrEqK4LfdpmlUZqI=",
+          "golang.org/x/text v0.42.0/go.mod h1:ojzP1Z+2QtioaF8DTtO8K5q7JWVVYwZKenzujK0Zd0E="
+        ]
+      }
+    },
+    "source_lock_sha256": "1e236eb29bc28262519b9545b46b3a6cebd36edf9d045c6d596755b39b4c3e1d",
+    "independent_readonly_retry": {
+      "owner": "security_review",
+      "completed": true,
+      "command": "Go1.27.3 linuxamd64 CGO0 go list -p=2 -deps -test -json -mod=readonly ./...",
+      "root_packages": 597,
+      "root_module_source_Go_files": 43,
+      "tests_packages": 663,
+      "tests_module_source_Go_files": 224,
+      "old_OpenPGP_packages": 0,
+      "module_locks_unchanged_by_retry": true,
+      "binary_built": false,
+      "tests_executed": false,
+      "private_receipt": ".cache/optimization-20261027-daily/etcd-source-applicability-graphs/nested-after-mvs-receipt.private.json",
+      "private_receipt_sha256": "d2f38e12b8af92fdf26a128aa4453146e793fea4435942826c7226533fdb4c4b",
+      "raw_graph_sha256": {
+        "root": "7229a7d1c00e7d40a532ac6384d43562f7d712c8c611959f940916483d458377",
+        "tests": "4fb82a79acd68ce17e669d4825de99a8f315b8e6d38a13df6c317400a6112c15"
+      },
+      "no_GO_2026_5932_fixed_or_authorized_claim": true
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "reviewed_at": "2026-10-27",
+  "ca-certificates": {
+    "suite": "trixie-security",
+    "version": "20250419+deb13u1",
+    "deb_sha256": "c10585ac22c7f617a73d394eea29ba71d0356f350ae973b19043d1b017f80f54",
+    "bytes": 160720,
+    "package_source": "https://packages.debian.org/trixie/all/ca-certificates/download",
+    "advisory": "https://lists.debian.org/debian-security-announce/2026/msg00487.html",
+    "removed_CA_DER_SHA256": [
+      "d7a7a0fb5d7e2731d771e9484ebcdef71d5f0c3e0a2948782bc83ee0ea699ef4",
+      "86a1ecba089c4a8d3bbe2734c612ba341d813e043cf9e8a862cd5c57a36bbe6b"
+    ]
+  },
+  "tzdata": {
+    "suite": "trixie-updates",
+    "version": "2026e-0+deb13u1",
+    "deb_sha256": "165fbf909c02150f62091c64f751ae84c66ff86da124a46a58614d8e174a6acd",
+    "bytes": 266488,
+    "package_source": "https://deb.debian.org/debian/dists/trixie-updates/main/binary-amd64/Packages.xz",
+    "later_advisories_reviewed": [
+      "https://security-tracker.debian.org/tracker/DLA-4792-1",
+      "https://security-tracker.debian.org/tracker/DLA-4854-1"
+    ],
+    "later_advisory_boundary": "ActualAPTinstalled2026e fromtrixie-updates andcurrentPackages/InRelease confirm newer stable-update than cachedtrixie2026c website. Normalbuild authenticatesAPTandexactEdebSHA; differentcandidate failsreview.",
+    "authenticated_suite_index_sha256": "235fb859490d45c1490bc69836bd2607c9a8557b629ebc33bab1008edb6e9e6d"
+  },
+  "authentication": "APT signed Release/Packages using the existing pinned Debian archive keyring, then explicit independent package SHA256 gates. No allow-unauthenticated, check-valid-until bypass or foreign-suite package installed into the runtime.",
+  "status": "source-prepared; actual image/trust/timezone/scan validation pending amended build phase",
+  "runtime_base": {
+    "etcd_old": "quay.io/coreos/etcd@sha256:b3f8af4c73b64e25fe9ba7a6969a753c80917daa8c1633b1f247c13750afcd76",
+    "etcd_new_and_python_unchanged": "gcr.io/distroless/cc-debian13:nonroot@sha256:e792ab3d241a468a4fd7519ddbbebe66b49b5f365771716ea688ad40b6c6f1c2",
+    "authorization": "deepresearch-supported-etcd-base-build-amendment.json",
+    "actual_supported_base_image_and_runtime_verification": "Exacte792index/20afeamd64/config/layers verified, daemonpull verified, cosignofficialidentity+issuer+tlog passed; actualcandidate runtime still pending",
+    "linux_amd64_manifest": "sha256:20afe6a70f2565277b704cc17289cb557f353a3619f6350f52a2317106598df4",
+    "config_digest": "sha256:a7d72ba3ecf06ca5f88108568b5503e4a8cd682e598eadcd2f118a8c93f76080"
+  },
+  "uv_builder": {
+    "version": "0.12.3",
+    "exact_phase1_resolved_index": "sha256:2d890623d310b57771ce840f0da5eed5fc6d657da05ffaa45d82797b53fa3abc",
+    "actual_linux_amd64_manifest": "sha256:dfd1e6972e100ca2fbf1f391effc3dd4aa57f319bf03c3e321e0a3f3341ed5af",
+    "config_digest": "sha256:fd7025e15908a4960ecfd647b55b67f06670c09c471bb8f9072fc39735d7f336",
+    "input_equivalence": "phase1real buildlog and BuildKitmaterials exact2d890subject; no toolversion change; actualuvCLI to record with newimage"
+  }
+}

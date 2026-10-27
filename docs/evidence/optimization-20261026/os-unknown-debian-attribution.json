@@ -1,0 +1,277 @@
+{
+  "schema": "changed-runtime-debian-OS-unknown-primary-attribution-v1",
+  "recorded_at": "2026-10-27T07:17:04.722049+00:00",
+  "status": "six_raw_UNKNOWN_rows_retained_official_versions_verified_no_approval_or_remediation_performed",
+  "source_raws": {
+    "python": {
+      "raw_private_path": ".cache/optimization-20261027-daily/ci-correction-build/full-image-scans/python.raw.json",
+      "raw_sha256": "c50ec58e812440db6bc914614d69473a9e52662481d46e3802d5288ea1d5f8e7",
+      "OS": {
+        "Family": "debian",
+        "Name": "13.7"
+      }
+    },
+    "etcd": {
+      "raw_private_path": ".cache/optimization-20261027-daily/ci-correction-build/full-image-scans/etcd.raw.json",
+      "raw_sha256": "f6a987d73fc2174426fea0575b6f90500b12f1caf53e41441d0b6c3f009da0d0",
+      "OS": {
+        "Family": "debian",
+        "Name": "11.10",
+        "EOSL": true
+      }
+    },
+    "postgres": {
+      "raw_private_path": ".cache/optimization-20261027-daily/ci-correction-build/full-image-scans/postgres.raw.json",
+      "raw_sha256": "5b9b77db90c0416ec328dbd0afad1f8a6d18fde5f7c9d8e4603eeb0a3f4fc826",
+      "OS": {
+        "Family": "alpine",
+        "Name": "3.24.3"
+      }
+    }
+  },
+  "raw_rows": [
+    {
+      "VulnerabilityID": "DSA-6572-1",
+      "PkgName": "ca-certificates",
+      "InstalledVersion": "20250419",
+      "FixedVersion": "20250419+deb13u1",
+      "Status": "fixed",
+      "Severity": "UNKNOWN",
+      "DataSource": {
+        "ID": "debian",
+        "Name": "Debian Security Tracker",
+        "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+      },
+      "PrimaryURL": null,
+      "Title": "ca-certificates - security update",
+      "image": "python",
+      "Target": "dr-ci-fix-20261027-python:71a16872 (debian 13.7)",
+      "official_attribution": "Actual security trust-store update after intermediate CA compromise, not routine root-list refresh.",
+      "official_detail": "Debian20Oct2026 DSA removes emSign ECC Root CA-G3 and Comodo AAA Services root following eMudhra intermediate-CA compromise.",
+      "candidate_minimum": "ca-certificates20250419+deb13u1 for Debian13/trixie",
+      "official_reference": "https://lists.debian.org/debian-security-announce/2026/msg00487.html"
+    },
+    {
+      "VulnerabilityID": "DLA-3972-1",
+      "PkgName": "tzdata",
+      "InstalledVersion": "2024a-0+deb11u1",
+      "FixedVersion": "2024b-0+deb11u1",
+      "Status": "fixed",
+      "Severity": "UNKNOWN",
+      "DataSource": {
+        "ID": "debian",
+        "Name": "Debian Security Tracker",
+        "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+      },
+      "PrimaryURL": null,
+      "Title": "tzdata - new timezone database",
+      "image": "etcd",
+      "Target": "dr-ci-fix-20261027-etcd:71a16872 (debian 11.10)",
+      "official_attribution": "Timezone/leap-second database maintenance under Debian LTS; no code exploit or severity reassignment inferred from advisory classification.",
+      "candidate_minimum": "tzdata2026b-0+deb11u1 covers the five observed bullseye fixed-version thresholds",
+      "official_reference": "https://security-tracker.debian.org/tracker/DLA-3972-1"
+    },
+    {
+      "VulnerabilityID": "DLA-4085-1",
+      "PkgName": "tzdata",
+      "InstalledVersion": "2024a-0+deb11u1",
+      "FixedVersion": "2025a-0+deb11u1",
+      "Status": "fixed",
+      "Severity": "UNKNOWN",
+      "DataSource": {
+        "ID": "debian",
+        "Name": "Debian Security Tracker",
+        "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+      },
+      "PrimaryURL": null,
+      "Title": "tzdata - new timezone database",
+      "image": "etcd",
+      "Target": "dr-ci-fix-20261027-etcd:71a16872 (debian 11.10)",
+      "official_attribution": "Timezone/leap-second database maintenance under Debian LTS; no code exploit or severity reassignment inferred from advisory classification.",
+      "candidate_minimum": "tzdata2026b-0+deb11u1 covers the five observed bullseye fixed-version thresholds",
+      "official_reference": "https://security-tracker.debian.org/tracker/DLA-4085-1"
+    },
+    {
+      "VulnerabilityID": "DLA-4105-1",
+      "PkgName": "tzdata",
+      "InstalledVersion": "2024a-0+deb11u1",
+      "FixedVersion": "2025b-0+deb11u1",
+      "Status": "fixed",
+      "Severity": "UNKNOWN",
+      "DataSource": {
+        "ID": "debian",
+        "Name": "Debian Security Tracker",
+        "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+      },
+      "PrimaryURL": null,
+      "Title": "tzdata - new timezone database",
+      "image": "etcd",
+      "Target": "dr-ci-fix-20261027-etcd:71a16872 (debian 11.10)",
+      "official_attribution": "Timezone/leap-second database maintenance under Debian LTS; no code exploit or severity reassignment inferred from advisory classification.",
+      "candidate_minimum": "tzdata2026b-0+deb11u1 covers the five observed bullseye fixed-version thresholds",
+      "official_reference": "https://security-tracker.debian.org/tracker/DLA-4105-1"
+    },
+    {
+      "VulnerabilityID": "DLA-4403-1",
+      "PkgName": "tzdata",
+      "InstalledVersion": "2024a-0+deb11u1",
+      "FixedVersion": "2025b-0+deb11u2",
+      "Status": "fixed",
+      "Severity": "UNKNOWN",
+      "DataSource": {
+        "ID": "debian",
+        "Name": "Debian Security Tracker",
+        "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+      },
+      "PrimaryURL": null,
+      "Title": "tzdata - new timezone database",
+      "image": "etcd",
+      "Target": "dr-ci-fix-20261027-etcd:71a16872 (debian 11.10)",
+      "official_attribution": "Timezone/leap-second database maintenance under Debian LTS; no code exploit or severity reassignment inferred from advisory classification.",
+      "candidate_minimum": "tzdata2026b-0+deb11u1 covers the five observed bullseye fixed-version thresholds",
+      "official_reference": "https://security-tracker.debian.org/tracker/DLA-4403-1"
+    },
+    {
+      "VulnerabilityID": "DLA-4569-1",
+      "PkgName": "tzdata",
+      "InstalledVersion": "2024a-0+deb11u1",
+      "FixedVersion": "2026b-0+deb11u1",
+      "Status": "fixed",
+      "Severity": "UNKNOWN",
+      "DataSource": {
+        "ID": "debian",
+        "Name": "Debian Security Tracker",
+        "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+      },
+      "PrimaryURL": null,
+      "Title": "tzdata - new timezone database",
+      "image": "etcd",
+      "Target": "dr-ci-fix-20261027-etcd:71a16872 (debian 11.10)",
+      "official_attribution": "Timezone/leap-second database maintenance under Debian LTS; no code exploit or severity reassignment inferred from advisory classification.",
+      "candidate_minimum": "tzdata2026b-0+deb11u1 covers the five observed bullseye fixed-version thresholds",
+      "official_reference": "https://security-tracker.debian.org/tracker/DLA-4569-1"
+    }
+  ],
+  "raw_row_count": 6,
+  "raw_severity_changed": false,
+  "raw_Status_fixed_meaning": "Scanner says a fixed package version exists, not that the installed package is fixed.",
+  "PG_OS_UNKNOWN_rows": 0,
+  "official_maintenance_details": {
+    "DLA-3972-1": "2024b leap-second expiry and historical timezone corrections, verified official announcement",
+    "DLA-4085-1": "Official tracker classifies new timezone database and confirms2025a fixed version; exact per-zone detail not independently retrieved from its announcement here",
+    "DLA-4105-1": "2025b new America/Coyhaique zone and Chile Aysen offset/rule change, verified official announcement",
+    "DLA-4403-1": "Official tracker classifies new timezone database and confirms2025b+deb11u2; precise announcement detail not independently retrieved here",
+    "DLA-4569-1": "2026b British Columbia permanent-07 and leap-second expiry update, verified official announcement"
+  },
+  "source_closure_review": {
+    "Python": "Dockerfile final pinned distroless cc-debian13 supplies OS CA package; prepare_python_runtime.py copies9native library families and records, not CA trust-store directories orca-certificates record. Builderaptupgrade alone is insufficient evidence the final store was replaced.",
+    "actual_CA_payload_and_trust_results_read_by_this_reviewer": false,
+    "CPython_31118_special_block_boundary": "Existing compromised-CA rejection is additional interpreter-specific protection; not proof OS CA package/payload has been updated for every runtime consumer.",
+    "etcd": "Pinned base reportsDebian11.10/EOSLtrue and oldtzdata2024a; fixed package refresh can remove observed stale timezone rows but does not restore base distribution security support."
+  },
+  "minimal_reviewable_fix_scope": {
+    "Python": [
+      "Prefer a real fixed distroless base when independently pinned/available, or faithfully stage fixedca-certificates20250419+deb13u1 payload and records into the existing runtime closure.",
+      "Trust bundle, hashed CA-directory contents/symlinks and package records must agree; overlaying only the bundle while old hashed compromised roots remain, or changing only status metadata, is insufficient.",
+      "Normal commonPython7-consumer cached recipe rebuild, full raw vuln/secret scan and actual validTLS/compromisedCA rejection checks; preserve ABI/source/compiler locks and no provider calls."
+    ],
+    "etcd": [
+      "Use the genuine Debian11 bullseye fixedtzdata2026b-0+deb11u1 package or a newer verified same-suite version, with authenticated repository/package hashes and matching actual zoneinfo/status data.",
+      "Normal etcd recipe final-layer/package update and candidate rebuild/fullraw scan; retainUTC and relevant region timezone behavior. No silent major distro change or deletion of packages to hide a finding."
+    ],
+    "approval": "Necessary source/build-scope proposal only. No Dockerfile/package changes, apt commands, new Docker or scans performed by reviewer; operator/root must authorize execution.",
+    "strict_result": "HC0 alone is not an all-grade pass. All6UNKNOWN remain unapproved until actual repair or a separately reviewed exact disposition; M/L remain reported as their raw grades."
+  },
+  "primary_source_snapshots": [
+    {
+      "id": "DSA-6572-1",
+      "url": "https://security-tracker.debian.org/tracker/DSA-6572-1",
+      "retrieved": true,
+      "sha256": "60f25b16fd296640fb06514d33589088d6abbfee679f28afd38d97434167ff77",
+      "private_path": ".cache/optimization-20261027-daily/os-unknown-primary-attribution/DSA-6572-1.html"
+    },
+    {
+      "id": "DLA-3972-1",
+      "url": "https://security-tracker.debian.org/tracker/DLA-3972-1",
+      "retrieved": true,
+      "sha256": "5c44e7787e2afd825dd40d04b182ff6439eb08e29b076f81d7f7679a762b5790",
+      "private_path": ".cache/optimization-20261027-daily/os-unknown-primary-attribution/DLA-3972-1.html"
+    },
+    {
+      "id": "DLA-4085-1",
+      "url": "https://security-tracker.debian.org/tracker/DLA-4085-1",
+      "retrieved": true,
+      "sha256": "1df63a7492ecd1ea7991ad51920a24b19008960a4627f557739792649ae310db",
+      "private_path": ".cache/optimization-20261027-daily/os-unknown-primary-attribution/DLA-4085-1.html"
+    },
+    {
+      "id": "DLA-4105-1",
+      "url": "https://security-tracker.debian.org/tracker/DLA-4105-1",
+      "retrieved": true,
+      "sha256": "688c78dce2e590322a8548c05c1456372f29fd485d540d27d5822aa17b2e315e",
+      "private_path": ".cache/optimization-20261027-daily/os-unknown-primary-attribution/DLA-4105-1.html"
+    },
+    {
+      "id": "DLA-4403-1",
+      "url": "https://security-tracker.debian.org/tracker/DLA-4403-1",
+      "retrieved": true,
+      "sha256": "0369231567b0fa7c19205ecbdd31439d5e88dee56addafde8c290936f9e9692d",
+      "private_path": ".cache/optimization-20261027-daily/os-unknown-primary-attribution/DLA-4403-1.html"
+    },
+    {
+      "id": "DLA-4569-1",
+      "url": "https://security-tracker.debian.org/tracker/DLA-4569-1",
+      "retrieved": true,
+      "sha256": "e2f99f3275196705feab76e022c6284afa306abd9c519072c5e02ae0a3393dd0",
+      "private_path": ".cache/optimization-20261027-daily/os-unknown-primary-attribution/DLA-4569-1.html"
+    },
+    {
+      "id": "DSA-6572-1-announcement",
+      "url": "https://lists.debian.org/debian-security-announce/2026/msg00487.html",
+      "retrieved": true,
+      "sha256": "e5a2caadc9da16256b442d90cc7bc8c4462c5a27b5f5930887515e737eb64ac9",
+      "private_path": ".cache/optimization-20261027-daily/os-unknown-primary-attribution/DSA-6572-1-announcement.html"
+    },
+    {
+      "id": "DLA-3972-1-announcement",
+      "url": "https://lists.debian.org/debian-lts-announce/2024/11/msg00030.html",
+      "retrieved": true,
+      "sha256": "91d841b8190fd9f24bad55f4aa374602eb207c9b5d51f6e71b5a8769f9841059",
+      "private_path": ".cache/optimization-20261027-daily/os-unknown-primary-attribution/DLA-3972-1-announcement.html"
+    },
+    {
+      "id": "DLA-4105-1-announcement",
+      "url": "https://lists.debian.org/debian-lts-announce/2025/04/msg00000.html",
+      "retrieved": true,
+      "sha256": "bbe166dcf6878fa12c9b44b82dfc27792449dfd5c34e653e7ed946c01333ee99",
+      "private_path": ".cache/optimization-20261027-daily/os-unknown-primary-attribution/DLA-4105-1-announcement.html"
+    },
+    {
+      "id": "DLA-4569-1-announcement",
+      "url": "https://lists.debian.org/debian-lts-announce/2026/05/msg00012.html",
+      "retrieved": true,
+      "sha256": "a7ffc4250205214bcbdd9a2cde6ac0642e6932b532056d16c834dbf52119f304",
+      "private_path": ".cache/optimization-20261027-daily/os-unknown-primary-attribution/DLA-4569-1-announcement.html"
+    },
+    {
+      "id": "tzdata-bullseye-package",
+      "url": "https://packages.debian.org/bullseye/tzdata",
+      "retrieved": true,
+      "sha256": "ec2b934793e342c8855550e0713db3ca217f49ebd62b15482310b44f76ac4a19",
+      "private_path": ".cache/optimization-20261027-daily/os-unknown-primary-attribution/tzdata-bullseye-package.html"
+    },
+    {
+      "id": "ca-certificates-trixie-package",
+      "url": "https://packages.debian.org/trixie/ca-certificates",
+      "retrieved": true,
+      "sha256": "774d654ffe7e88b19426f618ca579d959418a69327451b28fd38fbf51bbd2691",
+      "private_path": ".cache/optimization-20261027-daily/os-unknown-primary-attribution/ca-certificates-trixie-package.html"
+    }
+  ],
+  "scope_exclusions": [
+    "GO593214rows and Milvus/etcd Go graph/ELF attribution owned bysecurity_review",
+    "No new source or image scan",
+    "No blanket exception or severity downgrade",
+    "No changes to frozen128 ordefault source checker activation"
+  ]
+}

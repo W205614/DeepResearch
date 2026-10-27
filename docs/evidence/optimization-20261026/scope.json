@@ -1243,14 +1243,14 @@
     "external_users": "not_claimed",
     "cross_host_disaster_recovery": "deferred_by_user_not_verified"
   },
-  "updated_at": "2026-10-27T04:44:00.035609+00:00",
+  "updated_at": "2026-10-27T12:50:28.875766+00:00",
   "remaining_common_acceptance": [
     "final exact-source GitHub CI/Security/fresh quality under cumulative515-new-model-HTTP authorization",
     "fresh final retained IDs/references and both-project gates, then a separately granted cleanup window; no retirement cleanup now",
     "external SMTP/MFA/TLS/human review remain unverified; offhost restore explicitly deferred by user",
     "Evidence limits remain: no empty-daemon or nonempty restricted collection/grant restore proof; no general RPO/RTO/SLA/HA/capacity promise"
   ],
-  "stage": "LOCAL_DAILY_CLOSURE_PASSED_final_exact_SHA_CI_and_separate_cleanup_pending",
+  "stage": "CI_CORRECTIONS_LOCALLY_VALIDATED_FINAL_REVIEW_AND_CI_PENDING",
   "final_cleanup_prerequisites": [
     "Both projects final deployment and exact-source GitHub CI/Security/quality gates verified by coordinator",
     "Fresh final retained daily container/image/volume identity inventory and all references reviewed",
@@ -1362,5 +1362,128 @@
       "No general RPO/RTO/SLA/HA/capacity or long-term unattended-task guarantee",
       "Window sampling does not exclude every transient window between observations"
     ]
+  },
+  "historical_local_daily_stage": "LOCAL_DAILY_CLOSURE_PASSED_final_exact_SHA_CI_and_separate_cleanup_pending",
+  "current_correction_boundary": {
+    "first_exact_CI_source": "6bec3f00d883f0de0aac89b29d3a30cd7325fdf3",
+    "first_CI_Security_Quality": "failed;originalfailuresretained",
+    "new_quality_model_HTTP": 0,
+    "historical_model_HTTP_preserved": 843,
+    "remaining_authorized_new_HTTP_all_attempts": 515,
+    "all_level_source_proposal_historical_counts": {
+      "HIGH": 2,
+      "CRITICAL": 0,
+      "UNKNOWN": 15,
+      "MEDIUM": 11,
+      "LOW": 27,
+      "secret": 0
+    },
+    "planned_source_scope_after_gosu_realfix": "Superseded optionalsource16 proposal remains private/unpublished. Exact2sourceHIGH technicalroute applied using independentrootreview, no newhumanriskacceptance, originalHIGH/CRITICALthreshold; M/L/U raw retained.",
+    "runtime_known_real_repairs": "Actual CA closure/negative-root+legalTLS/nativeABI/exec health passed; supported Debian13 etcd real TZ/native putget/permissions/oneMilvus compatibility passed; full newDB scans passed operationally, GoUNKNOWN still pending, not daily deployed",
+    "two_upstream_standalone_source_probes": "failedreadonlyresolution;notcompiled/tested;production-profileconditionalproofonly",
+    "daily25_latest_corrections_deployed": false,
+    "final_replacement_SHA_CI": "pending",
+    "cleanup_executed": false,
+    "prior_local_role_backup_restore_results": "historicalnamedpassed evidence, only reusable under explicit source/runtime equivalence",
+    "historical_source_dependency_coverage": "912files/33language targets, default npm/yarn/gradle development dependency suppression; not current full-dependency or final clean-CI proof",
+    "runtime_new_db": "d56c43f48dcae3239a456ca23ef2350a72aa7353582f9cf65dfcee0473f775a5",
+    "runtime_current_full_scan_counts": {
+      "python": {
+        "index": "sha256:c57a4dbe2621d3e125152df8bd577401734c0806fde05ebdd550217ef037e76d",
+        "HIGH": 0,
+        "CRITICAL": 0,
+        "UNKNOWN": 0,
+        "MEDIUM": 31,
+        "LOW": 10,
+        "secret": 0,
+        "raw_sha256": "e532e1557665d050293bd4ee1c8dbcae82167bf2435018fa4760598f7f18ee6b"
+      },
+      "etcd": {
+        "index": "sha256:ed0bca6dc00472877d5d100ca6126a26f782c00d777d8e6feb6c7fc38a2d1084",
+        "HIGH": 0,
+        "CRITICAL": 0,
+        "UNKNOWN": 3,
+        "MEDIUM": 23,
+        "LOW": 11,
+        "secret": 0,
+        "raw_sha256": "7b348ac36cba2e0e1242d241c225a996b83e939d4d884987a1a214a93f892bde"
+      }
+    },
+    "source_development_dependency_contract": {
+      "explicit_flag": "--include-dev-deps",
+      "supported_languages": [
+        "npm",
+        "yarn",
+        "gradle"
+      ],
+      "typed_bool_enforced_by_independent_checker": true,
+      "direct_passed": 8,
+      "independent_readonly_review": "passed",
+      "fresh_current_proposal": "PreVite954raw preserved; finalexistingSecurity willfresh source/full devdeps; no additional localsource scan required."
+    },
+    "source_full_devdeps_pre_vite_repair": {
+      "evidence": "source-full-devdeps-pre-vite-repair.json",
+      "HIGH": 3,
+      "CRITICAL": 0,
+      "UNKNOWN": 14,
+      "MEDIUM": 13,
+      "LOW": 28,
+      "secret": 0,
+      "extra_blocker": "frontend/package-lock.json vite8.2.2 CVE-2026-112942 HIGH",
+      "scope16_automatically_extended": false,
+      "new_source_exception_active": false
+    },
+    "vite_source_patch": {
+      "evidence": "frontend-vite-security-fix.json",
+      "from": "8.2.2",
+      "to": "8.2.4",
+      "source_manifest_and_lock_changed": 2,
+      "other_package_records_changed": 0,
+      "targeted_build": "one_normal_Linux_Web_build_passed70.141s",
+      "postfix_scan": "final_existing_Security_fresh_source_not_duplicate_local_fullscan",
+      "new_Web_image_or_daily_deployment": "candidate_b4725a15_built_not_daily_deployed"
+    },
+    "local_build_window_closure": {
+      "evidence": "runtime-trust-window-closure.json",
+      "all_direct_runtime_work_completed": true,
+      "41_fixtures_stopped_or_never_started_retained": true,
+      "21_volumes_4_networks_retained": true,
+      "daily25_lifecycle_mount_identity_changes": 0,
+      "current_SQL_or_content_reverification_claimed": false,
+      "new_local_heavy_or_scanner_starts": "held_for_parent_handoff",
+      "root_ACK": "deepresearch-build-window-handoff-ack.json",
+      "parent_release_still_required": false,
+      "current_Docker_owner": "DeepResearch_NormalWeb_complete_awaitparentrelease",
+      "nonheavy_source2_supplement": "exact8applied/direct22+Ruffpassed, noheavytransfer"
+    },
+    "source2_minimal_technical_route": {
+      "evidence": "source2-technical-route.json",
+      "applied": true,
+      "direct_passed": 22,
+      "checker_actual": 18,
+      "workflow": 3,
+      "producer": 1,
+      "Ruff": "passed",
+      "original_raw_HIGH": 2,
+      "technical_label": "NOT_APPLICABLE_TO_EXACT_BOUND_MAIN_BUILD",
+      "version_fixed_claimed": false,
+      "source16_runtime5_published_or_activated": false,
+      "expanded_human_scope_required": false
+    },
+    "acceptance_convergence": "Basicuse+existingfinalCI+affecteddaily; nozeroUNKNOWN/M/L target, no newordinaryruntime/appUNKNOWNgate, no repeatroles/backup",
+    "normal_Linux_Web": {
+      "evidence": "vite-normal-linux-web-build.json",
+      "index": "sha256:b4725a15fb356ed143ba1e12fae2b3577886f81b641c14a9d90d517b7aae4ac4",
+      "Vite": "8.2.4",
+      "source31_dist7_exact": true,
+      "runtime_packages": 71,
+      "runtime_raw_alllevels_findings": 0,
+      "runtime_secret": 0,
+      "daily25_continuity_differences": 0,
+      "one_never_started_audit_container_retained": true,
+      "no_inflight_operation": true,
+      "other_project_timestamp_change": "directuser_confirmed_intentional_start_no_diagnosis",
+      "still_no_daily_CI_commit_or_paid": true
+    }
   }
 }

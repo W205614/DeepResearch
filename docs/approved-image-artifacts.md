@@ -17,6 +17,6 @@ GitHub token 仅发往固定仓库的 API URL。自动重定向关闭；仅允�
 
 当前 Grafana 的[实际远程传输收据](evidence/optimization-20261026/grafana-remote-transport.json) 已验证全部13段及各段 SHA，849540608 字节全部来自远程下载，按顺序重组后的整档 SHA256 为 `02332c39f6daed922cd030fbcaa00e4949e07b1c157776a2ca60640327e4e59b`，完整 OCI 校验通过。原始短流失败和分段重试材料保留，没有使用本地源归档补齐，也没有伪造整档服务器 digest。
 
-两份 release 仍为未发布草稿。上述显式私有草稿审计不等于正常远程加载或最终源码 SHA 的冷 GitHub CI 通过；默认远程入口须实时验证固定 release 已发布，缓存不能绕过。本地 `--archive` 仍须验证同一获批归档，不提供远程发布证明。发布及最终 GitHub CI 结果仍由交付协调方核实。任何缺失、过期、未知、扫描失败、新发现或绑定漂移均阻断；本说明不授予日常部署或清理许可。
+[发布来源收据](evidence/optimization-20261026/published-artifact-origin.json)记录两份固定release已于2026-10-27发布，并在官方API回读中保持prerelease/非draft状态；两个原tag仍指向6bec3f00d883f0de0aac89b29d3a30cd7325fdf3。默认远程入口每次仍实时验证发布状态，缓存不能绕过。本地 `--archive` 只验证同一获批归档，不提供远程发布证明。新的应用提交通过 `scripts/check_artifact_source_reuse.py` 验证祖先关系、原tag和全部128文件在原提交/新提交/index/工作区的原始字节，再独立完成归档/ELF/新扫描门禁；旧制品不被称为新提交重建。此前草稿审计、当前发布元数据和最终应用SHA的CI分别记录，最终CI仍待完成。任何缺失、过期、未知、扫描失败、新发现或绑定漂移均阻断；本说明不授予日常部署或清理许可。
 
 原批准配方包含一份固定 Python 缓存，已按原始字节随配方交付。测试从实际 `.py` 在内存编译读取，不依赖或改写该缓存；不自动纳入其他被忽略文件。128项冻结文件的 Git 索引核对及本次只读加载回归见[交付记录](evidence/optimization-20261026/frozen-recipe-git-delivery.json)。后续清理这份原输入仍须重新冻结审查，不能静默改变本次批准范围。

@@ -1,8 +1,18 @@
 # 2026-10-26 架构、可靠性与安全优化证据
 
-当前阶段：`LOCAL_DAILY_CLOSURE_PASSED_FINAL_SHA_CI_PENDING`，本地窗口 `release-ready=true`。日常部署已实际升级到 `0017_product_governance`，25个服务中21个长期服务运行、已声明健康检查通过，4个一次性任务退出码为0；健康与就绪接口均返回200。[日常部署收据](daily-deployment-acceptance.json) 绑定本次代码提交及实际镜像、容器身份。日常五角色、旧数据保留、监控浏览器、原生静默备份/探测及升级后独立恢复均已取得具名通过证据。最终源码 GitHub 门禁及两项目之后另获许可的清理仍待完成。逐项状态以 [scope.json](scope.json) 为准。
+当前阶段：`CI_CORRECTIONS_LOCALLY_VALIDATED_FINAL_REVIEW_AND_CI_PENDING`。此前日常 `0017_product_governance` 的本地闭环是已取得的历史证据；最终源码 GitHub 门禁、后续修正的定向日常切换及另获许可的清理尚未完成，不应据此把当前项目标为最终安全验收通过。逐项状态以 [scope.json](scope.json) 和各具名收据为准。
 
-窗口状态：`DR DAILY_DEPLOYMENT_NO_CLEANUP` 已获批准，由 root 独占执行日常 Docker 变更。[升级前旧版完整备份及独立冷卷恢复](daily-old-backup-restore.json) 与[升级后备份的独立恢复](daily-postupgrade-backup-restore.json) 分别通过；同机新项目使用独立卷，临时资源保留。本窗口不包含退休资源清理许可；已获批的正常编排替换另列原22个容器身份，不记成“生命周期删除为零”。
+第一轮精确提交 `6bec3f00d883f0de0aac89b29d3a30cd7325fdf3` 的 CI/Security/Quality 均有失败记录；质量作业在付费前置条件失败，封存账本仍为历史843次、新增0次，后续515次共享授权未消耗。失败包括实际 API 跨空间错误语义、测试输入/启动夹具、Python3.12预算AST证明差异、源依赖和公开示例私钥打包。相关代码与定向修正已准备或验证，最终替代提交及其所有 GitHub 门禁仍待完成。
+
+历史912文件扫描的默认开发依赖抑制和[升级Vite前的954文件完整快照](source-full-devdeps-pre-vite-repair.json)均保留：后者为3个HIGH、14个UNKNOWN、13个MEDIUM、28个LOW及0个secret，不能当修复后或最终clean SHA结论。Vite的[两份依赖输入](frontend-vite-security-fix.json)已升级8.2.4，[正常Linux Web构建](vite-normal-linux-web-build.json)一次成功，包含实际vue-tsc和vite8.2.4编译。新候选`b4725a15…`的31项源文件及7项dist指纹一致，71个runtime包的完整扫描未发现漏洞或secret；这不表示runtime扫描覆盖了已移出最终镜像的Vite开发依赖，最终既有Security仍执行fresh源码扫描。未追加host构建、本地全量复扫或业务/角色/备份重跑。
+
+原来的两个Grafana主模块HIGH现采用[精确编译事实技术路线](source2-technical-route.json)：固定源码036450…、原7e0…绑定、4200包完整图和同一9a68…主ELF的523包库存均排除Tempo。仅两条精确tuple分类为`NOT_APPLICABLE_TO_EXACT_BOUND_MAIN_BUILD`，原始HIGH仍保留，依赖版本未声称已修复；这是[独立根复核](../../../deployment/security/grafana-source2-technical-review.json)，不伪造新人类风险接受或继承runtime18结论。实现已按精确8文件复核应用，22个直接用例及改动文件Ruff通过，最终CI仍未运行。
+
+验收按最新用户要求收敛为基本功能可用、既有CI通过和受影响日常路径回读。源码漏洞/secret仍保持原HIGH、CRITICAL门槛，完整原始M/L/UNKNOWN如实保留，不标FIXED或不受影响；未发布source16/runtime5严格提案不接入交付，也不扩为16/21项新审批。两份Milvus示例/测试模块的独立只读解析失败仍保留，不能冒称独立编译或测试通过；既有通过的业务、角色、备份及恢复不重复运行。
+
+本轮4个候选的首批完整扫描均为0 HIGH/CRITICAL、0 secret，但仍有11个UNKNOWN。官方核对确认其中Python的DSA-6572-1是实际受损CA事件，旧候选默认OpenSSL/HTTPX信任集合实测仍含两枚相关信任根；仅构建阶段APT升级没有把完整CA闭包带入最终镜像。已实修完整CA闭包及匹配包记录，并将etcd改为精确获批的受支持Debian13基础系统与真实时区数据。新Python候选`c57a4dbe…`通过实际默认信任、旧根拒绝、合法TLS、native ABI和exec健康检查；etcd候选`ed0bca6d…`通过原生put/get、权限、时区及一次Milvus兼容查询。2026-10-27本轮新库的全等级扫描分别保留Python31个MEDIUM/10个LOW/0 UNKNOWN，etcd23个MEDIUM/11个LOW/3个Go UNKNOWN；二者HIGH/CRITICAL和secret均为0。旧OS相关UNKNOWN已消失，3个Go UNKNOWN仍保留，未判定不受影响，也未被降级或消除；其不是新增全UNKNOWN验收门禁。源码、图与包内容事实、候选运行验证、日常生效状态和最终CI分别登记，候选安全修复尚未日常切换或最终验收。
+
+DeepResearch本轮修正候选及一次正常Linux Web构建均已完成，当前无在途构建或扫描，仅保留一个永不启动的Web审计容器。窗口待协调方最终复核后释放；尚无commit/push、新CI、日常切换、清理或付费许可。构建前后DR日常25服务身份、镜像、启动时间和挂载连续性未变；另一个项目的容器启动时间变化已由用户确认是主动启动，不作为本项目问题或后续诊断。此前日常25个服务中21个长期服务及4个已完成一次性任务、五角色、旧数据保留、监控、原生静默备份和同机独立恢复的结果按原收据保留；新修正不能自动继承其源码/镜像身份。[原日常部署](daily-deployment-acceptance.json)、[升级前备份及恢复](daily-old-backup-restore.json)、[升级后独立恢复](daily-postupgrade-backup-restore.json)是对应版本历史验证。后续只对受影响服务执行另获许可的切换与必要回读。
 
 ## 架构判断
 
@@ -24,7 +34,7 @@ Java 控制身份、权限、任务接纳、发布审核和最终业务状态；
 | 3 上传扫描恢复 | [reliability.json](reliability.json)、[dependency-faults.json](dependency-faults.json)、[browser-failures.json](browser-failures.json) | 真实 ClamAV 故障暴露的退避问题已修复并重验；MinIO 断服返回受控503，同内容重传复用记录 |
 | 4 解析资源边界 | [parser.json](parser.json) | Windows 与 Linux 有针对性验证；不等同完整恶意代码沙箱 |
 | 5 删除与保留 | [reliability.json](reliability.json)、[reliability-postgres.json](reliability-postgres.json) | 实际 PostgreSQL 并发、检查点与文档向量故障重试通过；来源不明的独立语义记忆物理保留，失去原任务后拒绝上下文召回 |
-| 6 服务最小权限 | [privileges-isolated-v3.json](privileges-isolated-v3.json)、[storage-isolated.json](storage-isolated.json)、[新鲜库供应商扫描](vendor-fresh-scan.json)、[精确 Grafana 门禁](grafana-artifact-governance.json) | 本地普通镜像扫描与获批制品定向判定分别验证；最终 SHA 的冷 Security CI 尚未执行，原始中低危和 Unknown 不删除 |
+| 6 服务最小权限 | [privileges-isolated-v3.json](privileges-isolated-v3.json)、[storage-isolated.json](storage-isolated.json)、[新鲜库供应商扫描](vendor-fresh-scan.json)、[精确 Grafana 门禁](grafana-artifact-governance.json) | 本地普通镜像扫描与获批制品定向判定分别验证；首轮精确SHA Security已失败并保留；最终替代SHA仍待验证，原始中低危和 Unknown 不删除 |
 | 7 检索容量边界 | [retrieval.json](retrieval.json)、[维护就绪边界](lexical-maintenance-readiness.json)、[实际迁移](daily-deployment-acceptance.json) | 117个词法标记保留，1个空间不存在且无成员的孤儿片段明确延后，`all_eligible_indexed=false`；不是全数据索引完成或通用容量承诺 |
 | 8 研究范围确认 | [scope-intake.json](scope-intake.json)、[roles-and-scope.json](roles-and-scope.json) | 确定性保守触发规则，不保证识别所有模糊问题 |
 | 9 资料与历史权限 | [acl.json](acl.json)、[roles-and-scope.json](roles-and-scope.json) | 当前权限重查覆盖检索、来源、记忆、报告与导出；异人角色由自动化浏览器操作 |
@@ -46,7 +56,7 @@ Java 控制身份、权限、任务接纳、发布审核和最终业务状态；
 
 [应用镜像记录](application-image-security.json) 分别列出包扫描与真实运行时检查。旧CPython和JVM未被原Trivy包扫描识别，不能根据原0告警推断已修复；Python签名源码、受损CA拒绝/合法TLS和native依赖闭包单独实测，[Java完整JRE文件指纹与native/CPE门禁](native-jvm-ci.json) 也独立核验。新鲜数据库另发现Web的curl/libcurl高危，已正常升级并复扫，不忽略原告警。中低危数量和识别范围保留在原始记录。
 
-[MinIO固定归档门禁](minio-ci-integration.json) 只接受获批的同一OCI内容，原始1HIGH/0CRITICAL与精确FIXED1分开保留。[Grafana 最终新制品](grafana-artifact-governance.json) 为 `9a68d3a7…`，musl 已实际修复，五个 ELF 的编译依赖图和二进制排除了公告指定的七个旧 OpenPGP 包。完整新 subject 的18个目标/公告行获得独立人类授权，机器门禁分别报告 FIXED2、NOT_AFFECTED16；没有继承旧 `646b…` 的授权。Trivy 原始2CRITICAL/11HIGH/20MEDIUM/2LOW/5UNKNOWN、Grype 原始2HIGH/3MEDIUM/5UNKNOWN均保留，三条 BusyBox 中危未被豁免。[13段实际远程下载、整档重组及OCI校验](grafana-remote-transport.json) 已通过：849540608 字节全部来自远程分段，整档 SHA256 为 `02332c39f6daed922cd030fbcaa00e4949e07b1c157776a2ca60640327e4e59b`，未使用本地源归档补齐。原始短流失败、首次分段8成功/5失败及后续补齐的收据保留。Release 尚为草稿，正常远程加载必须实时核对已发布状态，缓存不能绕过；新增8个发布状态回归通过。私有草稿传输审计不等于发布完成或最终 SHA 的冷 GitHub CI 通过。授权到2026-11-25失效；新发现、失配、扫描失败或证据缺失均阻断，不把 Unknown 降为低危或把失败写成零。
+[MinIO固定归档门禁](minio-ci-integration.json) 只接受获批的同一OCI内容，原始1HIGH/0CRITICAL与精确FIXED1分开保留。[Grafana 最终新制品](grafana-artifact-governance.json) 为 `9a68d3a7…`，musl 已实际修复，五个 ELF 的编译依赖图和二进制排除了公告指定的七个旧 OpenPGP 包。完整新 subject 的18个目标/公告行获得独立人类授权，机器门禁分别报告 FIXED2、NOT_AFFECTED16；没有继承旧 `646b…` 的授权。Trivy 原始2CRITICAL/11HIGH/20MEDIUM/2LOW/5UNKNOWN、Grype 原始2HIGH/3MEDIUM/5UNKNOWN均保留，三条 BusyBox 中危未被豁免。[13段实际远程下载、整档重组及OCI校验](grafana-remote-transport.json) 已通过：849540608 字节全部来自远程分段，整档 SHA256 为 `02332c39f6daed922cd030fbcaa00e4949e07b1c157776a2ca60640327e4e59b`，未使用本地源归档补齐。原始短流失败、首次分段8成功/5失败及后续补齐的收据保留。[两份发布来源回读](published-artifact-origin.json)于2026-10-27再次读取官方Release与tag：固定release均已发布为prerelease，tag仍指向6bec3f00d883f0de0aac89b29d3a30cd7325fdf3，没有force-retag。正常远程加载仍实时核对发布状态，缓存不能绕过。新的应用提交须证明该提交是祖先、128个冻结文件在祖先/当前提交/index/工作区逐字节相同；这不称为在新应用提交重建过制品。先前私有草稿传输审计与此发布元数据回读均不等同最终源码的冷GitHub CI通过。授权到2026-11-25失效；新发现、失配、扫描失败或证据缺失均阻断，不把 Unknown 降为低危或把失败写成零。
 
 [镜像备份包校验](backup-image-bundle.json) 在备份完成前、恢复查询本机镜像缓存前验证当前平台内容。历史2.456GB包的22个镜像根、232个必需 blob、166个实际解压 DiffID 通过，35个直接用例通过。非目标平台的缺失引用单独记录；这不是完整多架构包或空缓存导入证明。另有[本窗口升级前旧版备份/恢复实测](daily-old-backup-restore.json)。
 
@@ -70,7 +80,7 @@ CI 后续获得用户授权：所有新完整质量 CI 尝试合计最多515次�
 
 用户明确决定“暂无目标，先完成其他工作”。真实异机恢复标记为 `deferred_by_user_not_verified`，不再等待地址；升级前后同机隔离恢复已有分别实测，受控告警与保留策略按各自收据判定。真实 SMTP 送达、目标用户 MFA 注册/恢复以及外部域名 TLS 须另有接入条件和证据，不能用只读配置检查代替实测。
 
-日常服务已按本次获批编排完成升级和上述验收。候选与日常证据分别列出；镜像某时点0个 HIGH/CRITICAL 发现不等同零风险。
+此前日常版本已完成对应升级与验收；本轮CI修正和CA/基础系统修复仍按本文首段的当前阶段执行。候选与日常证据分别列出，0个HIGH/CRITICAL发现不等同零风险。
 
 [Windows静默入口](windows-host-task-silence.json) 强制pythonw、隐藏备份子进程、显式当前用户Interactive/Limited，保留日志及真实退出码。除10个直接用例和PowerShell语法检查外，[实际原生任务](daily-scheduled-backup.json)的第二次备份退出码0，205次进程后代窗口采样未观察到可见窗口；首次失败任务同样完整保留。备份前后实际探测任务均退出0，未伪造备份成功，也未用容量探测续签最后验证时间。永久计划为每日03:30备份、每5分钟探测，临时维护许可已还原为03:15—04:30。采样不能排除两次采样间所有瞬时窗口，单次验收不证明长期无人值守运行。
 

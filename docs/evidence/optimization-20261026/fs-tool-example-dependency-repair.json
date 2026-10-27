@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-27T05:23:13.790605+00:00",
+  "status": "three_independent_tool_example_module_locks_repaired_direct_offline_scan_passed",
+  "basis_source_sha": "6bec3f00d883f0de0aac89b29d3a30cd7325fdf3",
+  "scope": [
+    "deployment/vendors/etcd/modules/tools/mod",
+    "deployment/vendors/milvus/modules/examples/telemetry_demo",
+    "deployment/vendors/milvus/modules/examples/telemetry_e2e_test"
+  ],
+  "production_compile_targets": [
+    "etcd server,etcdctl,etcdutl",
+    "Milvus root cmd/main.go and planparser c-shared"
+  ],
+  "build_copy_boundary": "Dockerfile.etcd and Dockerfile.milvus COPY the module overlays to upstream source; these independent nested modules are not production compile targets. No production root go.mod/go.sum changed.",
+  "changes": {
+    "deployment/vendors/etcd/modules/tools/mod": {
+      "golang.org/x/mod": "v0.40.0"
+    },
+    "deployment/vendors/milvus/modules/examples/telemetry_demo": {
+      "github.com/klauspost/compress": "v1.18.7",
+      "go.opentelemetry.io/otel": "v1.44.0",
+      "go.opentelemetry.io/otel/metric": "v1.44.0",
+      "go.opentelemetry.io/otel/sdk": "v1.44.0",
+      "go.opentelemetry.io/otel/trace": "v1.44.0",
+      "golang.org/x/crypto": "v0.57.0",
+      "golang.org/x/net": "v0.60.0",
+      "golang.org/x/sys": "v0.48.0",
+      "golang.org/x/text": "v0.42.0",
+      "google.golang.org/grpc": "v1.83.2"
+    },
+    "deployment/vendors/milvus/modules/examples/telemetry_e2e_test": {
+      "google.golang.org/grpc": "v1.83.2"
+    }
+  },
+  "dependency_metadata_basis": [
+    "https://proxy.golang.org/golang.org/x/mod/@v/v0.40.0.mod",
+    "https://proxy.golang.org/golang.org/x/net/@v/v0.60.0.mod",
+    "https://proxy.golang.org/google.golang.org/grpc/@v/v1.83.2.mod"
+  ],
+  "required_dependency_edges": "grpc1.83.2 requires OTel1.44; x/net0.60 requires x/crypto0.57,x/sys0.48,x/text0.42. These required edges explain upgrades above the earliest individual advisory fixed version.",
+  "go_metadata_validation": {
+    "toolchain": "go version go1.27.3 windows/amd64",
+    "GOPROXY": "https://proxy.golang.org",
+    "GOSUMDB": "sum.golang.org",
+    "changed_module_versions_downloaded_and_verified": 11,
+    "module_manifest_parse_and_expected_require_checks": 3,
+    "prior_sum_lines_deleted": 0,
+    "tidy_executed": false,
+    "upstream_absolute_and_relative_replace_values_changed": false,
+    "initial_download_failures_preserved": "Official toolchain first EOF then successful retry; x/text and grpc first ZIP EOF then successful exact-version retry.",
+    "receipts_sha256": "724e1d85c06ed8829d1e6cd7bcb7fc3600aa56375be8297fd79183127932260b"
+  },
+  "source_locks": [
+    {
+      "path": "deployment/vendors/etcd/source.lock.json",
+      "sha256": "b52cd8860cde2e65b65f1b44eda89eacbaa02f08a4cd54ef8ed19cd5c76e3097",
+      "upstream_identity_unchanged": true,
+      "other_recorded_file_hashes_unchanged": true
+    },
+    {
+      "path": "deployment/vendors/milvus/source.lock.json",
+      "sha256": "8c2b4cb0295a54722edaef0f3a732e69c8dd1139d1e29607de796d6ccdca1c04",
+      "upstream_identity_unchanged": true,
+      "other_recorded_file_hashes_unchanged": true
+    }
+  ],
+  "source_file_sha256": {
+    "deployment/vendors/etcd/modules/tools/mod/go.mod": "5f19670503559285304e2e580e0c8ca30d39428fd94b1dc88206b57a130d6ec0",
+    "deployment/vendors/etcd/modules/tools/mod/go.sum": "92bdf2495784b79f3b33d8de35fb6f4d1cc1fb417aae67527462f81f61f4c089",
+    "deployment/vendors/milvus/modules/examples/telemetry_demo/go.mod": "b03d2c72bbb9e07a6e40ad7dd0850c9b5e1717358a3b679c246ae21016f13b67",
+    "deployment/vendors/milvus/modules/examples/telemetry_demo/go.sum": "d3f61e362c3955b6a6a8a7217b6bf8683485d4d5c6dd5169091679aef1dca4d0",
+    "deployment/vendors/milvus/modules/examples/telemetry_e2e_test/go.mod": "922a7953b933e97b4410e1e198751c912b6b11241627a8a39c3d28baac2fda0d",
+    "deployment/vendors/milvus/modules/examples/telemetry_e2e_test/go.sum": "d1beb166990ff0f8e4ab9b5b9d4ea8cffe1c4a322d6beee6d4435d639821751c"
+  },
+  "offline_scan": {
+    "scanner": "Trivy0.75.0",
+    "scanner_sha256": "3b4fcf6fec53c4c73c325cfd518c7264100695b19e6c59c6a777e4a67dc9f0e6",
+    "frozen_db_sha256": "d941f76c20fd916816fd04fa80d67bcd8dec6a5f68d353cb0c00be3fd3c9d2f8",
+    "same_DB_as_exact6bec_baseline": true,
+    "target": "Two explicitly assembled scan roots, each containing exactly the six delegated go.mod/go.sum files; no .env or unrelated source included",
+    "scanners": [
+      "vuln"
+    ],
+    "severity": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "offline": true,
+    "before": {
+      "HIGH": 29,
+      "CRITICAL": 1,
+      "operational_exit": 1,
+      "raw_sha256": "e3ba773dde15a53e515311d566398e2c3eee3b25dec403d1cbea6d4388f715bf"
+    },
+    "after": {
+      "HIGH": 0,
+      "CRITICAL": 0,
+      "operational_exit": 0,
+      "raw_sha256": "7a725d0c3c0ef5486c7fad365afdbfc2445358ca684768147138f264e19672bb"
+    },
+    "base_command": ".cache/improvement-20261025/security/tool/trivy.exe fs --cache-dir .cache/optimization-20261026/trivy-final-cache --cache-backend memory --scanners vuln --severity HIGH,CRITICAL --timeout 120s --skip-db-update --skip-java-db-update --skip-version-check --offline-scan --format json --output REPORT --exit-code 1 EXACT_SIX_FILE_ROOT",
+    "whole_repository_or_cloud_gate_pass_claimed": false,
+    "Grafana_two_findings": "Outside this repair; separately reviewed by security agent, unchanged here"
+  },
+  "limits": [
+    "Only module metadata/selected checksums and direct manifest scan verified; no example source compilation or runtime build/test performed.",
+    "Upstream telemetry_demo absolute developer proto replacement remains unchanged; incomplete source overlay is not presented as an independently buildable example.",
+    "No suppression, VEX, gate/severity reduction or advisory database edit.",
+    "No Docker/service mutation, supplier/model requests, CI rerun or commit.",
+    "Official Go proxy/checksum requests were used only for dependency and toolchain resolution."
+  ],
+  "private_raw_directory": ".cache/optimization-20261027-daily/fs-module-lock-remediation",
+  "metadata_diff_check": "Passed; Git LF/CRLF advisories only"
+}

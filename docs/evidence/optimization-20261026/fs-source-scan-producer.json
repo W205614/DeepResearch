@@ -1,0 +1,124 @@
+{
+  "schema": "fs-scan-producer-implementation-v1",
+  "recorded_at": "2026-10-27T06:20:40.084638+00:00",
+  "status": "source2_technical_route_applied_direct_checks_passed_final_clean_CI_pending",
+  "source_files_sha256": {
+    "scripts/run_fs_source_scan.py": "255e4c7dbfab872bb50a15d50453e8ac8b9c5ac7ffb250363921e7caf5332d66",
+    "scripts/check_fs_source_applicability.py": "7ec6a1c5d065b09b33941800612d87a8a2d2d71c8823d30051ec9c404fa41c07",
+    "tests/test_fs_scan_completion.py": "505e20135efe2b3bb22ed5fd44754cde2bdde7c4655f72360a0a323971978050",
+    "tests/test_fs_source_applicability.py": "e4b34c83c3d64fe0b537aa0722e0b86fa9bf9b64489108b42e9aaf64b0d8d9f9",
+    "tests/test_fs_workflow_gate.py": "162bd3d38ff269cd39e55a996854e2954c11bc66d3ddd113410640c71e744ada"
+  },
+  "implementation": {
+    "producer": "scripts/run_fs_source_scan.py",
+    "consumer": "scripts/check_fs_source_applicability.py; pinned independentroot source2 compiledfacts only, no humanriskacceptance/runtime18inheritance",
+    "coverage": "Full fresh committed source tree,33 expected language targets derived from Git tracked manifests and matched to scope; no vulnerability-path skips",
+    "source_binding": "Clean tracked HEAD before/after; explicit expected SHA plus GITHUB_SHA when present; regular Git archive entries and every blob hash verified to reject export-ignore/export-subst omissions or transformations",
+    "severities": "All5 raw preserved; independentconsumer keeps6bec HIGH,CRITICAL vulnerability/secret threshold",
+    "scanners": [
+      "vuln",
+      "secret"
+    ],
+    "listing_all_packages": true,
+    "finding_exit": 0,
+    "operational_exit_required": 0,
+    "freshness": "New output directory only; actual invocation interval must contain original CreatedAt and nonempty ReportID; raw JSON SHA and all result-target hash retained",
+    "completion_is_security_verdict": false,
+    "thresholds": "Only exact2HIGH classified NOT_APPLICABLE_TO_EXACT_BOUND_MAIN_BUILD. OtherHIGH/CRITICAL vulnerability/secret, missing/failed/invalid evidence block; M/L/UNKNOWN raw retained withoutnewlabels, not a newblocker.",
+    "logs": "Original raw JSON and stdout/stderr retained; completion never copies secret Match",
+    "default_config_suppression": "Inherited TRIVY options removed; exact empty config and explicit verified zero-byte nonsymlink ignore file checked before/after. Receipt truthfully records ignorefile_used=true, rules_empty=true, fixed empty SHA and verified_empty_neutral mode; no skip-files/dirs/ignore-unfixed/VEX.",
+    "development_dependency_coverage": {
+      "include_dev_dependencies": true,
+      "actual_scanner_flag": "--include-dev-deps",
+      "supported_by_Trivy_0_75": [
+        "npm",
+        "yarn",
+        "gradle"
+      ],
+      "boundary": "No claim that this flag adds every test-only package for all languages; full tracked source and33manifest targets remain separately checked."
+    },
+    "scope_path": "deployment/security/grafana-source2-technical-scope.json"
+  },
+  "targeted_tests": [
+    {
+      "command": ".venv/Scripts/python.exe -m pytest tests/test_fs_scan_completion.py -q",
+      "result": "21 passed in2.93s",
+      "exit": 0
+    }
+  ],
+  "unique_direct_cases_verified": 21,
+  "verification_boundary": "Synthetic subprocesses only; no actual Trivy/Docker/provider operation during producer tests. Fresh dirty proposed-source offline scan is separately labelled precommit, never a clean final-CI completion receipt.",
+  "ruff": {
+    "command": ".venv/Scripts/python.exe -m ruff check scripts/run_fs_source_scan.py tests/test_fs_scan_completion.py",
+    "result": "All checks passed"
+  },
+  "workflow_integration_suggestion": [
+    "Install fixed Trivy0.75.0, run producer on final clean checkout with fresh .cache evidence directory and expected GITHUB_SHA.",
+    "After successfulfreshsourcecompletion, apply only pinned exact2 independenttechnicalfacts to raw.json+completion.json; retain originalrawHIGH and baselineHCthreshold.",
+    "Always retain raw/completion/private logs and convert/upload original SARIF even if the independent gate fails.",
+    "Keep filesystem-security artifact separate from CodeQL source-security to avoid cross-job name collision."
+  ],
+  "pending": [
+    "Root finaldeliveryset review then finalcleanSHA existingSecurity/CI actualterminalresults; no localfullscan duplicate",
+    "Separatelygranted affecteddayreadback; normalLinuxWeb alreadypassed once"
+  ],
+  "native_failure_preserved": {
+    "directory": ".cache/optimization-20261027-daily/fs-complete-proposal-20261027T062214Z",
+    "process_exit": 1,
+    "raw_report_created": false,
+    "cause": "Trivy0.75 rejects explicit absent ignorefile; switched to verified empty neutral file, not an ignore exception.",
+    "snapshot_stale": true,
+    "source_changes": [
+      "scripts/check_fs_source_applicability.py",
+      "tests/test_fs_source_applicability.py"
+    ],
+    "status": "failed_not_zero_not_final_CI"
+  },
+  "historical_protocol_runs": [
+    {
+      "command": ".venv/Scripts/python.exe -m pytest tests/test_fs_scan_completion.py -q",
+      "result": "17 passed in1.38s (before adding the direct independent consumer contract case)",
+      "exit": 0
+    },
+    {
+      "command": ".venv/Scripts/python.exe -m pytest tests/test_fs_scan_completion.py::test_producer_receipt_matches_independent_checker_completion_contract -q",
+      "result": "1 passed in0.91s",
+      "exit": 0
+    }
+  ],
+  "updated_at": "2026-10-27T12:50:28.875766+00:00",
+  "historical_default_development_dependency_suppression": {
+    "old_scan": ".cache/optimization-20261027-daily/fs-complete-proposal-20261027T062807Z",
+    "actual_stderr": "Suppressing dependencies for development and testing. To display them, try the --include-dev-deps flag.",
+    "current_proposal_with_explicit_include_dev_deps": "954preVite raw completed andretained; finalexistingSecurity willfreshpostpatch scan",
+    "historical_raw_not_claimed_full_development_dependency_coverage": true
+  },
+  "historical_source16_contract_before_convergence": {
+    "consumer": "scripts/check_fs_source_applicability.py (separately maintained; independent pending authorization remains inactive)",
+    "thresholds": "Consumer independently reports M/L vulnerability risk; H/C/UNKNOWN vulnerabilities and every severity secret remain blocked except separately authorized exact source rows",
+    "pending": [
+      "Actual clean final-source GitHub run after workflow integration",
+      "Separate pending source applicability authorization; no activation done by producer"
+    ]
+  },
+  "historical_dev_dependency_contract_verification": {
+    "cases": 8,
+    "passed": true,
+    "seconds": 2.72,
+    "new_negative_cases": 5,
+    "command": "pytest -q tests/test_fs_scan_completion.py::test_complete_full_raw_preserves_low_medium_and_secret_counts_without_verdict tests/test_fs_scan_completion.py::test_producer_receipt_matches_independent_checker_completion_contract tests/test_fs_scan_completion.py::test_omitted_or_untyped_development_dependency_coverage_is_rejected tests/test_fs_source_applicability.py::test_exact_isolated_human_authorization_fixture_retains_raw_high",
+    "ruff": "All checks passed",
+    "unrelated_tests_repeated": false
+  },
+  "latest_source2_direct_verification": {
+    "passed": 22,
+    "checker": 18,
+    "workflow": 3,
+    "producer_affected_case": 1,
+    "pytest_reported_seconds": 2.41,
+    "Ruff": "All checks passed",
+    "count_correction": "Private draft listed19checker; actual reviewed module has18, all selected. No skipped/deselected or omitted cases; no extra case added merely to match estimate.",
+    "full_business_or_source16_suite_repeated": false,
+    "Docker_HTTP_DB_provider_model_calls": 0
+  }
+}

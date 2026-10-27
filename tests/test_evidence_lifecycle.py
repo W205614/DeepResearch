@@ -124,7 +124,11 @@ async def test_versions_and_diff_api_reject_cross_workspace(api_client):
     runtime=app.state.runtime
     doc=await ready(runtime)
     assert (await client.get(f"/api/documents/{doc['id']}/versions")).status_code==200
-    assert (await client.get(f"/api/documents/{doc['id']}/versions",headers={'X-User-ID':'mallory'})).status_code==404
+    for suffix in ('versions', 'chunks', 'diff?from=1&to=1'):
+        assert (await client.get(f"/api/documents/{doc['id']}/{suffix}",headers={'X-User-ID':'mallory'})).status_code==404
+    assert (await client.put(f"/api/documents/{doc['id']}", headers={'X-User-ID':'mallory'},
+                             files={'file': ('cross.md', b'cross workspace', 'text/markdown')})).status_code==404
+    assert (await client.post(f"/api/documents/{doc['id']}/reindex",headers={'X-User-ID':'mallory'})).status_code==404
     assert (await client.get(f"/api/documents/{doc['id']}/diff?from=1&to=1")).json()['changes']==[]
     assert (await client.get(f"/api/documents/{doc['id']}/diff?from=0&to=1")).status_code==422
 

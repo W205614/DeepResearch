@@ -9,6 +9,11 @@ import ssl
 import subprocess
 from xml.parsers import expat
 
+try:
+    from .prepare_runtime_trust import inspect_python_trust
+except ImportError:  # Direct execution of the two adjacent build-stage scripts.
+    from prepare_runtime_trust import inspect_python_trust
+
 
 PACKAGES = (
     "libbz2-1.0",
@@ -51,6 +56,7 @@ def main() -> None:
                 "expat": expat.EXPAT_VERSION, "sqlite": sqlite3.sqlite_version,
                 "native_package_records": list(PACKAGES),
                 "scanner_boundary": "CPython interpreter/source security is verified independently of OS/PyPI findings"}
+    identity["build_stage_trust_inputs"] = inspect_python_trust(Path("/opt/venv/bin/python"))
     source = Path("/usr/local/share/deepresearch-python-source.json")
     if source.exists():
         identity["signed_source"] = json.loads(source.read_text(encoding="utf-8"))

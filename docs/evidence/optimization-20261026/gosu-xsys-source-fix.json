@@ -1,0 +1,115 @@
+{
+  "schema": "gosu-xsys-source-fix-v1",
+  "recorded_at": "2026-10-27T06:41:54.569105+00:00",
+  "status": "source_dependency_fixed_readonly_Linux_graph_verified_candidate_image_validation_pending",
+  "official_advisory": {
+    "url": "https://pkg.go.dev/vuln/GO-2026-5024",
+    "CVE": "CVE-2026-39824",
+    "affected_package": "golang.org/x/sys/windows",
+    "affected_symbol": "NewNTUnicodeString",
+    "affected_versions": "beforev0.44.0",
+    "selected_fixed_version": "v0.44.0",
+    "primary_fixed_code": "Official sumdb-verifiedv0.44.0/windows/syscall_windows.go checks UTF16 byte length against16bit maximum and returns EINVAL before narrowing conversion."
+  },
+  "build_audit": {
+    "recipe": "Dockerfile.postgres",
+    "override": "Direct COPY of gosu go.mod/go.sum before go build -mod=readonly; no higher x/sys override exists",
+    "Dockerfile_changed": false,
+    "source_commit": "6456aaa0f3c854d199d0f037f068eb97515b7513",
+    "source_archive_sha256": "33d7537d588ea49458b9509bcf4554bdf5ceacc66da71e5caa1058ea3b689c3b",
+    "gosu_application_version": "1.19, unchanged",
+    "metadata_tool_sha256": "6ffaef5b0b820070c02253fb27bd07f62d1e501e757f71d8b501f1c8e17d828e",
+    "build_compiler": "Go1.27.3 unchanged",
+    "production_image_rebuild_required_to_consume_patch": true,
+    "production_or_candidate_image_fixed_claimed": false
+  },
+  "source_changes": {
+    "golang.org/x/sys": "v0.1.0 to v0.44.0",
+    "main_go_directive": "1.20 to1.25.0, required by the fixed dependency",
+    "github.com/moby/sys/user": "v0.1.0 retained; pre-existing MEDIUM separately reported",
+    "upstream_Go_application_source_changed": false,
+    "old_checksum_lines_deleted": 0,
+    "new_verified_checksum_lines": 2,
+    "source_file_sha256": {
+      "deployment/vendors/gosu/go.mod": "c29d3a92f3cae2a45faab57ad6656fb54e8d77cd26248b3f859dcef6bbcc6e2a",
+      "deployment/vendors/gosu/go.sum": "fe68cfefef81c6e10bce5a8fc1e1ff6852ff878fff639346ff955515af73057b",
+      "deployment/vendors/gosu/source.lock.json": "e737b43a00053964d1e03aa44cb9f91cee91e67464536e4619f8a34f7b5d9c0d"
+    },
+    "previous_overrides": {
+      "go.mod": "0475f1708db81d718b633faf2d9dd64695037eabdc8562125060607bcb01b2ba",
+      "go.sum": "2a8f3fb6adb84839bbb9999f12f1416fb86c184135aaa1c2e489b35203c08346"
+    }
+  },
+  "direct_verification": {
+    "official_proxy": "https://proxy.golang.org",
+    "official_checksum_database": "sum.golang.org",
+    "cache_policy": "Only process-level GOPATH/GOMODCACHE/GOCACHE/GOENV under .cache/optimization-20261027-daily/gosu-cve-2026-39824; global Go settings unchanged",
+    "Linux_graph": {
+      "command": "Go1.27.3 GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go list -mod=readonly -deps -json .",
+      "exit": 0,
+      "packages": 72,
+      "xsys_selected_package": "golang.org/x/sys/unix",
+      "xsys_selected_version": "v0.44.0",
+      "xsys_windows_packages": 0,
+      "raw_private_path": ".cache/optimization-20261027-daily/gosu-cve-2026-39824/linux-go-list.stdout.jsons",
+      "raw_sha256": "721cbffd37ac5de97c15be8fe30a49fc9c3e6dd759af863e580fe91d776dea45",
+      "host_binary_compilation_executed": false,
+      "boundary": "Package closure of exact upstream Go source plus declared module patch; no runtime ELF/downgrade/privilege or database initialization proof."
+    },
+    "direct_manifest_scan": {
+      "scope": "Only explicitly copied gosu go.mod/go.sum, no other source or private configuration",
+      "scanner": "Trivy0.75.0",
+      "database_sha256": "d941f76c20fd916816fd04fa80d67bcd8dec6a5f68d353cb0c00be3fd3c9d2f8",
+      "offline": true,
+      "scanners": [
+        "vuln"
+      ],
+      "severities": [
+        "CRITICAL",
+        "HIGH",
+        "MEDIUM",
+        "LOW",
+        "UNKNOWN"
+      ],
+      "configured_finding_exit": 1,
+      "actual_exit": 1,
+      "H": 0,
+      "C": 0,
+      "M": 1,
+      "L": 0,
+      "UNKNOWN": 0,
+      "remaining_preexisting_row": {
+        "id": "CVE-2026-61801",
+        "package": "github.com/moby/sys/user",
+        "version": "v0.1.0",
+        "severity": "MEDIUM",
+        "not_new": true
+      },
+      "exact_fixed_CVE_absent": true,
+      "raw_private_path": ".cache/optimization-20261027-daily/gosu-cve-2026-39824/manifest-scan.private.json",
+      "raw_sha256": "ca0828ddeb8a8c94c3b130d5d1526ecf34d098df33230a2a48794058350e1ad8",
+      "not_an_all_zero_gate": true
+    }
+  },
+  "window": {
+    "requested_amendment": "deepresearch-gosu-postgres-build-extension-request.json",
+    "root_granted_build_only_amendment": "deepresearch-gosu-correction-build-amendment.json",
+    "only_Docker_operator": "deployment_hardening",
+    "child_Docker_actions": 0,
+    "daily_switch_authorized_by_this_receipt": false
+  },
+  "historical_full_proposal_boundary": {
+    "raw_private_path": ".cache/optimization-20261027-daily/fs-complete-proposal-20261027T062807Z/raw.private.json",
+    "raw_sha256": "d1978f35fd437f2ea372c3569d770ef66e835c89adab836528661cd2090cefaf",
+    "original_UNKNOWN_count_preserved": 15,
+    "now_historical_not_current_source": true,
+    "full_source_rescan_performed_for_this_fix": false
+  },
+  "remaining": [
+    "Operator serially builds new immutable PostgreSQL candidate under root amendment",
+    "Actual full vuln+secret image scan, gosu version/module metadata, drop-privilege and isolated empty-volume PostgreSQL initialization checks",
+    "Final complete source raw/precise source applicability decision after all source edits; default checker activation remains unchanged"
+  ],
+  "no_frozen128_or_Grafana_MinIO_changes": true,
+  "diff_check": "passed; line-ending advisories only"
+}

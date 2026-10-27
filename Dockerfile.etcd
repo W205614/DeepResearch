@@ -29,5 +29,32 @@ RUN --mount=type=cache,target=/go/pkg/mod,id=dr-vendor-go-mod-20261026 \
       case "${version}" in v3.5.34|v3.5.34+dirty) ;; *) exit 1 ;; esac; \
       grep -F 'vcs.revision=38e57443c51fc9a3cc6a943fa8ed10381f66ce5c' /tmp/build-info; \
     done; mv /out/server /out/etcd; /out/etcd --version
-FROM quay.io/coreos/etcd@sha256:b3f8af4c73b64e25fe9ba7a6969a753c80917daa8c1633b1f247c13750afcd76
+FROM gcr.io/distroless/cc-debian13:nonroot@sha256:e792ab3d241a468a4fd7519ddbbebe66b49b5f365771716ea688ad40b6c6f1c2 AS runtime-base
+FROM debian:trixie-slim@sha256:38a76d01668772e381ad2826d876627c89e7133e2f8a0f5d567306798b0f2a16 AS trust-source
+# Only genuine CA/timezone data and records leave this authenticated packaging
+# stage; its Python/APT tooling never enters the runtime.
+RUN apt-get update && apt-get install -y --no-install-recommends python3 \
+    && apt-cache policy tzdata \
+    && test "$(apt-cache policy tzdata | awk '/Candidate:/ {print $2}')" = '2026e-0+deb13u1' \
+    && cd /tmp && apt-get download ca-certificates=20250419+deb13u1 tzdata=2026e-0+deb13u1 \
+    && echo 'c10585ac22c7f617a73d394eea29ba71d0356f350ae973b19043d1b017f80f54  ca-certificates_20250419+deb13u1_all.deb' | sha256sum -c - \
+    && echo '165fbf909c02150f62091c64f751ae84c66ff86da124a46a58614d8e174a6acd  tzdata_2026e-0+deb13u1_all.deb' | sha256sum -c - \
+    && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y --no-install-recommends /tmp/ca-certificates_20250419+deb13u1_all.deb /tmp/tzdata_2026e-0+deb13u1_all.deb \
+    && update-ca-certificates --fresh \
+    && mkdir -p /tmp/authenticated-package-inputs \
+    && cp /var/lib/apt/lists/*InRelease /tmp/authenticated-package-inputs/ \
+    && cp /usr/share/keyrings/debian-archive-keyring.gpg /tmp/authenticated-package-inputs/
+COPY scripts/prepare_runtime_trust.py /tmp/prepare_runtime_trust.py
+FROM trust-source AS runtime-package
+COPY --from=runtime-base / /runtime-root/
+RUN python3 /tmp/prepare_runtime_trust.py --runtime-root /runtime-root --kind ca \
+    && python3 /tmp/prepare_runtime_trust.py --runtime-root /runtime-root --kind tz
+FROM scratch
+COPY --from=runtime-package /runtime-root/ /
 COPY --from=build /out/ /usr/local/bin/
+ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+    SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+USER 0
+WORKDIR /var/lib/etcd/
+EXPOSE 2379 2380
+CMD ["/usr/local/bin/etcd"]

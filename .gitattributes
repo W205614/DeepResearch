@@ -35,3 +35,42 @@ docs/evidence/optimization-20261026/** -text whitespace=cr-at-eol
 deployment/security/minio-fixed-evidence/*-buildinfo.txt -whitespace
 deployment/vendors/keycloak/h2-manifest.diff -text -whitespace
 deployment/vendors/minio/legacy-part-compat.patch -whitespace
+
+# Unbound runtime recipes and new trust tooling use reproducible Linux inputs.
+Dockerfile text eol=lf
+Dockerfile.etcd text eol=lf
+Dockerfile.milvus text eol=lf
+deployment/vendors/etcd/source.lock.json text eol=lf
+deployment/vendors/milvus/source.lock.json text eol=lf
+scripts/prepare_python_runtime.py text eol=lf
+scripts/prepare_runtime_trust.py text eol=lf
+tests/test_runtime_trust_packaging.py text eol=lf
+tests/fixtures/runtime_trust/* text eol=lf
+deployment/vendors/alertmanager/** text eol=lf
+deployment/vendors/etcd/** text eol=lf
+deployment/vendors/gosu/** text eol=lf
+deployment/vendors/milvus/modules/** text eol=lf
+deployment/vendors/milvus/*.h text eol=lf
+deployment/vendors/milvus/README.md text eol=lf
+deployment/vendors/milvus/.gitattributes text eol=lf
+deployment/vendors/milvus/licenses/* text eol=lf
+deployment/vendors/milvus/headers.tar.gz -text
+scripts/storage-bootstrap/** text eol=lf
+Dockerfile.alertmanager text eol=lf
+Dockerfile.storage-init text eol=lf
+Dockerfile.postgres text eol=lf
+scripts/check_fs_source_applicability.py text eol=lf
+tests/test_fs_source_applicability.py text eol=lf
+deployment/runtime-packages.lock.json text eol=lf
+docs/runtime-trust-packaging.md text eol=lf
+.gitattributes text eol=lf
+compose.yaml text eol=lf
+compose.production.yaml text eol=lf
+scripts/runtime_ci_inventory.py text eol=lf
+scripts/build_ci_image.py text eol=lf
+.github/workflows/ci.yml text eol=lf
+.github/workflows/security.yml text eol=lf
+deployment/vendors/python311/source-lock.json text eol=lf
+deployment/security/grafana-source2-technical-scope.json text eol=lf
+deployment/security/grafana-source2-technical-review.json -text whitespace=cr-at-eol
+deployment/vendors/milvus/patches/internal-tls-fail-closed.patch -text -whitespace

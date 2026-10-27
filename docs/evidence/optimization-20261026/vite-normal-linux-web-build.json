@@ -1,0 +1,276 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-27T12:43:31.317803+00:00",
+  "project": "DeepResearch",
+  "kind": "DR_NORMAL_LINUX_WEB_BUILD_CHANGED_VITE_NO_DAILY_SWITCH",
+  "operation": "32e76020",
+  "status": "normal_Linux_candidate_build_and_original_HC_secret_scan_passed_ready_for_root_window_release_review",
+  "source": {
+    "current_tracked_context_file_count": 51,
+    "explicit_raw_copy_equal": true,
+    "input_manifest_sha256": "cdcba71c4a613a5473a58478ec9b0c1c05b195f4f5c68fdced6cd2d6c80d55f0",
+    "source_manifest": {
+      "path": ".cache/optimization-20261027-daily/vite-normal-web-32e76020/frontend-current-tracked-inputs.private.json",
+      "sha256": "9eb371a3a71d2419212721b210f0f86bb40934d9f82421ae196e2edb468d43ac"
+    },
+    "unchanged_Dockerfile_sha256": "139bd2ed2a9b3a52dc5b7dd4a9e6e8dd77e1abc0e5ea2b28e4616f7dfbd2a4c1",
+    "Vite_locked_version": "8.2.4",
+    "package_sha256": "4edc40aed0ba4460cf456f733e5b1e5c6fa788b4b7bd82ffe7c821625403a3dd",
+    "package_lock_sha256": "3a24821d33764e07ebef656159f79b22ac615958749c000e14992b4aca95b1a7",
+    "excluded_policy": [
+      ".env*",
+      "private",
+      ".private",
+      "*.private.*",
+      "node_modules",
+      "dist",
+      "test-results",
+      "playwright-report",
+      ".cache",
+      ".local"
+    ],
+    "excluded_tracked_paths": [],
+    "current_source_drift": [],
+    "context_copy_excludes_untracked_files": true
+  },
+  "build": {
+    "normal_unchanged_Dockerfile": true,
+    "count": 1,
+    "exit_code": 0,
+    "elapsed_seconds": 70.141,
+    "log": {
+      "path": ".cache/optimization-20261027-daily/vite-normal-web-32e76020/normal-linux-build.private.log",
+      "sha256": "108e2346961e587ad902e0f290659a7af0fe041f15c03c149b320723cf792b28"
+    },
+    "metadata": {
+      "path": ".cache/optimization-20261027-daily/vite-normal-web-32e76020/build-metadata.json",
+      "sha256": "3fcc6b0c8c453a72141c7948aa1a73f28dc0de926fd830dadac7534d224a2b1b"
+    },
+    "receipt": {
+      "path": ".cache/optimization-20261027-daily/vite-normal-web-32e76020/normal-linux-build.receipt.private.json",
+      "sha256": "8a20835f155fe514d5fec4dd28293f66916317418355ff14b35779ecfdf4acab"
+    },
+    "actual_resolved_base_materials": [
+      {
+        "uri": "pkg:docker/nginx@1.30.6-alpine?digest=sha256:47928bf67eb62a1863cb08d9ecb52d3e704304ba614eaee17884204677702951&platform=linux%2Famd64",
+        "digest": {
+          "sha256": "47928bf67eb62a1863cb08d9ecb52d3e704304ba614eaee17884204677702951"
+        }
+      },
+      {
+        "uri": "pkg:docker/node@22.16.0-alpine?platform=linux%2Famd64",
+        "digest": {
+          "sha256": "41e4389f3d988d2ed55392df4db1420ad048ae53324a8e2b7c6d19508288107e"
+        }
+      }
+    ],
+    "base_identity_boundary": "These are actual BuildKit linux/amd64 resolved provenance materials, not inferred daemon image IDs or a claim that builder stages were loaded as runnable daemon images.",
+    "trusted_download_retry_boundary": "No extra build or transport workaround was needed; the normal Dockerfile npm ci retry policy remained unchanged."
+  },
+  "candidate_image": {
+    "tag": "dr-vite-normal-web:20261027-32e76020",
+    "actual_local_index_digest": "sha256:b4725a15fb356ed143ba1e12fae2b3577886f81b641c14a9d90d517b7aae4ac4",
+    "architecture": "amd64",
+    "os": "linux",
+    "size_bytes": 96469523,
+    "actual_Config": {
+      "ExposedPorts": {
+        "80/tcp": {}
+      },
+      "Env": [
+        "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "NGINX_VERSION=1.30.6",
+        "PKG_RELEASE=1",
+        "DYNPKG_RELEASE=1",
+        "NJS_VERSION=1.0.2",
+        "NJS_RELEASE=1",
+        "ACME_VERSION=0.4.1"
+      ],
+      "Entrypoint": [
+        "/docker-entrypoint.sh"
+      ],
+      "Cmd": [
+        "nginx",
+        "-g",
+        "daemon off;"
+      ],
+      "WorkingDir": "/",
+      "Labels": {
+        "maintainer": "NGINX Docker Maintainers <docker-maint@nginx.com>"
+      },
+      "StopSignal": "SIGQUIT"
+    },
+    "actual_RootFS": {
+      "Type": "layers",
+      "Layers": [
+        "sha256:75c137aedfb2760f88629236cb7b797630aed0c3d91d626d1d1bb694878fc2ba",
+        "sha256:5b91dba2fc11b3e6dab4d25e913db11e6e701065af717028e060dfb5ab8532e4",
+        "sha256:a8a09d37d441c540c613402fa23c75308b04f4801e80f6d193316949f3df4b42",
+        "sha256:d87f6628aa86314e48021285bd5dce15a2cf5166c1c80246d2e03dbb674abaf2",
+        "sha256:313dac429378b98567656151706777045067624f9a6678873dd6fdc7ecf35545",
+        "sha256:2ba21653acee34632d9eab26da39a5ff0cac12021817e6a5e9efac9507628575",
+        "sha256:3212502c73d1691bd2b186efdda493ca750fc99795b6b0b85741af01b4e79aa4",
+        "sha256:8ff2a17964b4a163c6ba0fa456ebd70ed12823a74324ba3b6f49d87bc25c1456",
+        "sha256:8058be7f3b9ea4cf9ce56380f69640e9d29c0c5fa6d83f421326c21dcca7aa79",
+        "sha256:b00be33a99cbf4b0d4a8139a4cb4e4af506fc22e38c2bdd255ce3a94e3d38fee",
+        "sha256:bb5289d1aec6a1d1556941471077b5f26c50acbf0eef2a4bb741e4dcf00eb6b6",
+        "sha256:b0f8eef000c4ce27c6026fee62a17a794a8fa3acd4b40bc82342713805ccf2f8",
+        "sha256:7a3a80c069f180fc1845b25cc1f700b3de9fa087fdd19d0311fdb0866e260a55"
+      ]
+    },
+    "daily_tags_or_services_changed": false
+  },
+  "actual_artifacts": {
+    "source_fingerprint_files": 31,
+    "source_fingerprints_match_raw_context": true,
+    "dist_fingerprint_files": 7,
+    "dist_bytes_match_runtime_html": true,
+    "inherited_runtime_extra_files": {
+      "50x.html": "876766b4e80133fd490603e073d3567425b88794828a9292104244c9e40875ed"
+    },
+    "source_fingerprint": {
+      "path": ".cache/optimization-20261027-daily/vite-normal-web-32e76020/source-fingerprint.txt",
+      "sha256": "19524a75412edbfe66cf89233939fcafca7e74e1c491432976a89b49e5cda1be"
+    },
+    "dist_fingerprint": {
+      "path": ".cache/optimization-20261027-daily/vite-normal-web-32e76020/dist-fingerprint.txt",
+      "sha256": "e7a8efa601d500492212396fc296b52b9477eb2b8a4aee0ca609912d939123a7"
+    },
+    "complete_hash_maps": {
+      "path": ".cache/optimization-20261027-daily/vite-normal-web-32e76020/actual-source-dist-fingerprints.private.json",
+      "sha256": "0ab9e68e328d7b93ea180a079dd195b6438d0967f7527bf3fbf32a662137aaa1"
+    },
+    "runtime_functionality_not_exercised": true
+  },
+  "one_runtime_scan": {
+    "count": 1,
+    "tool_version": "Trivy0.75.0",
+    "exit_code": 0,
+    "elapsed_seconds": 3.61,
+    "package_count": 71,
+    "targets": [
+      {
+        "target": "dr-vite-normal-web:20261027-32e76020 (alpine 3.24.3)",
+        "class": "os-pkgs",
+        "type": "alpine",
+        "packages": 71
+      }
+    ],
+    "vulnerabilities": {},
+    "secrets": {},
+    "db_sha256": "d56c43f48dcae3239a456ca23ef2350a72aa7353582f9cf65dfcee0473f775a5",
+    "db_metadata": {
+      "Version": 2,
+      "NextUpdate": "2026-10-28T07:13:33.504286922Z",
+      "UpdatedAt": "2026-10-27T07:13:33.504287223Z",
+      "DownloadedAt": "2026-10-27T10:03:06.5000108Z"
+    },
+    "raw_all_levels": {
+      "path": ".cache/optimization-20261027-daily/vite-normal-web-32e76020/runtime-all-level-vuln-secret.raw.json",
+      "sha256": "f34e10727eb665c12960872ff97fbe950ef265b6f0b5d7ac3221414066a7d62f"
+    },
+    "receipt": {
+      "path": ".cache/optimization-20261027-daily/vite-normal-web-32e76020/runtime-scan.receipt.private.json",
+      "sha256": "23fd6bbea906cd293d63fff3fe6f8abdf1e5899c6b2cdc5cf548e087ebe43df4"
+    },
+    "existing_HC_vulnerability_secret_gate_passed": true,
+    "severity_filter_on_raw": null,
+    "new_UNKNOWN_or_Medium_Low_gate_added": false,
+    "runtime5_or_source16_applied": false,
+    "coverage_boundary": "Actual runtime scan covers its71Alpine packages and finds no language-specific package manifest. This does not claim that Vite builder/dev dependencies were separately scanned in this runtime image; final existing source CI remains responsible for that path."
+  },
+  "protected_continuity": {
+    "daily25_id_image_start_state_mounts_unchanged": true,
+    "other_preexisting_container_identity_start_state_mounts_unchanged": false,
+    "unattributed_other_project_observations": [
+      {
+        "id": "19bfc490861d614878a14e66c0abd74d6cb2d86dcf4c3b9a4dbbf073ade4af82",
+        "name": "/ai-order-assistant-mysql-1",
+        "project": "ai-order-assistant",
+        "changed": [
+          "started_at"
+        ],
+        "before_started_at": "2026-10-21T11:50:59.897907359Z",
+        "after_started_at": "2026-10-27T12:39:10.004684506Z",
+        "cause": "not established; no other-project lifecycle command issued by this operation"
+      }
+    ],
+    "original128_raw_unchanged": true,
+    "details": {
+      "path": ".cache/optimization-20261027-daily/vite-normal-web-32e76020/protected-continuity-and-retained-resources.private.json",
+      "sha256": "626017917889adec8f2c0235ed250c5a789bebc3fc64c879a158fbe5ba65a438"
+    },
+    "data_boundary": "Only image build/scan, new never-started artifact container creation and read-only inspect/copy occurred. No daily DB/query/dump/write/restore or data content verification was performed; lifecycle/mount continuity is not a SQL/content-preservation proof."
+  },
+  "retained_resources": {
+    "created_container_count": 1,
+    "container_id": "dffd3d9cff97397c5e7946af5fd10999879ebce1b8c8594db4f9cc94b7920263",
+    "name": "/dr-vite-normal-web-32e76020-artifact-audit",
+    "never_started": true,
+    "readonly_rootfs": true,
+    "network": "none",
+    "mounts": [],
+    "creation_receipt": {
+      "path": ".cache/optimization-20261027-daily/vite-normal-web-32e76020/artifact-container-creation.private.json",
+      "sha256": "6f4392fcfe57dd7869744c193e62c00bf30c8695907578a439176a9b301c8537"
+    },
+    "candidate_image_retained": true,
+    "private_context_and_logs_retained": true,
+    "no_resources_removed": true
+  },
+  "no_inflight": {
+    "active_build_scan": 0,
+    "active_operation_Docker_CLI": 0,
+    "process_proof": {
+      "path": ".cache/optimization-20261027-daily/vite-normal-web-32e76020/no-inflight-processes.private.json",
+      "sha256": "411a8ae2757113a5dfc8bf22c876ddd77240cfb1bd379740b77cacac4c3060b6"
+    },
+    "E_free_bytes": 135521685504,
+    "desktop_daemon_not_stopped": true
+  },
+  "not_performed": [
+    "No host npm/build or full source re-scan.",
+    "No HTTP listener, browser, business/native runtime command, daily service lifecycle or DB action.",
+    "No unrelated tests, new source16/runtime5 hardening, commit/push or new CI invocation.",
+    "No cleanup or paid provider call."
+  ],
+  "remaining": [
+    "Root final delta review and window release.",
+    "Final exact-source existing GitHub CI/Security.",
+    "Any daily switch requires its own root-reviewed window."
+  ],
+  "source_frozen": true,
+  "daily_mutations": 0,
+  "cleanup_operations": 0,
+  "paid_calls": 0,
+  "important_scope_observation": [
+    {
+      "id": "19bfc490861d614878a14e66c0abd74d6cb2d86dcf4c3b9a4dbbf073ade4af82",
+      "name": "/ai-order-assistant-mysql-1",
+      "project": "ai-order-assistant",
+      "changed": [
+        "started_at"
+      ],
+      "before_started_at": "2026-10-21T11:50:59.897907359Z",
+      "after_started_at": "2026-10-27T12:39:10.004684506Z",
+      "cause": "not established; no other-project lifecycle command issued by this operation"
+    }
+  ],
+  "observation_evidence": {
+    "path": ".cache/optimization-20261027-daily/vite-normal-web-32e76020/protected-continuity-and-retained-resources.private.json",
+    "sha256": "626017917889adec8f2c0235ed250c5a789bebc3fc64c879a158fbe5ba65a438"
+  },
+  "original_collector_failure_retained": {
+    "path": ".cache/optimization-20261027-daily/vite-normal-web-32e76020/collector-attempt1-failure.private.json",
+    "sha256": "a44c7eb2fee37ecf9106947853376e9d47e2adc8e2dbdaa7e44f861fbc4c9217"
+  },
+  "original_collector_trace_retained": {
+    "path": ".cache/optimization-20261027-daily/vite-normal-web-32e76020/collector-attempt1-failure.private.log",
+    "sha256": "3867cfdcd2dd1805a520baa018f6b89ab21c07f0e6635e452df62b90444f5c97"
+  },
+  "completion_boundary": "Authorized DR25 continuity, candidate byte/scan evidence, one retained never-started resource, and no active operation are complete. Unrelated AIOrder started_at change is an unassigned observation, not a global no-change claim.",
+  "private_result": {
+    "path": ".cache/optimization-20261027-daily/vite-normal-web-32e76020/normal-web-window-result.private.json",
+    "sha256": "3d5964fd18221a87a8e50ee4208483316da3d2e4cd977778df143567c876e2bc"
+  }
+}

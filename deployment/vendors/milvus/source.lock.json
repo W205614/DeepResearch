@@ -74,17 +74,20 @@
     "licenses/storage-LICENSE": "e84a8c820447b38a9b2c7e7b2988f8557b87acbabc39839fc74c9a3547dabc24",
     "modules/client/go.mod": "afe0223b24d4700cda7419ebf435e81ff72ee61339bb0297dae35725d9ab2ceb",
     "modules/client/go.sum": "2b0fd921af8bc22f7dfbdf846baca14ffbc00e5221b50110740a439347ae5c1c",
-    "modules/examples/telemetry_demo/go.mod": "8f4542c2fda010f31e622fd927319669c8b753ec93c778fcb580b7d16c5fd65b",
-    "modules/examples/telemetry_demo/go.sum": "7862ea2eab1f542e2103c4ef888c414ee8845fa3f2a3d91e9ed086ec0eeb02d7",
-    "modules/examples/telemetry_e2e_test/go.mod": "3988ac6416dd43743024e332c1542d4b13d8847099ad0778c63443931e2e0439",
-    "modules/examples/telemetry_e2e_test/go.sum": "90764d65dba77e68123e5d6f63a6470aeb4756ba7d066e32452a5b965fd895f5",
+    "modules/examples/telemetry_demo/go.mod": "b03d2c72bbb9e07a6e40ad7dd0850c9b5e1717358a3b679c246ae21016f13b67",
+    "modules/examples/telemetry_demo/go.sum": "d3f61e362c3955b6a6a8a7217b6bf8683485d4d5c6dd5169091679aef1dca4d0",
+    "modules/examples/telemetry_e2e_test/go.mod": "922a7953b933e97b4410e1e198751c912b6b11241627a8a39c3d28baac2fda0d",
+    "modules/examples/telemetry_e2e_test/go.sum": "d1beb166990ff0f8e4ab9b5b9d4ea8cffe1c4a322d6beee6d4435d639821751c",
     "modules/go.mod": "9b1c592be228d108c9c045069cbe2789c0e6426cb417d404e85e6f273f4f49c3",
     "modules/go.sum": "ff9a24224b0758bf8d91beec29214c57c73b73740dd72becba3ee4ce540cbb1d",
     "modules/pkg/go.mod": "bb8ca1a22fb368a7227a1a934e25207bd813087fea25f54a305383512b65778c",
     "modules/pkg/go.sum": "5d1786819a1de0149ff322c1f8b1ebb99c1904c2cc20af7ba745951e52d019a3",
     "modules/tests/go_client/go.mod": "da138767eb2564434d47758a4a7ba373a97ca069798e39c7d5f8467cd0f39bdf",
     "modules/tests/go_client/go.sum": "2610ddfe0bdeae151434267da181fa4b160ff0b99215f2f83e90ff668659daed",
-    "rdkafka_mock.h": "2d4d52168b669257fbe936554af6af543fa0fa4f2cccc5a201a2c7d301dad500"
+    "rdkafka_mock.h": "2d4d52168b669257fbe936554af6af543fa0fa4f2cccc5a201a2c7d301dad500",
+    "patches/internal-tls-fail-closed.patch": "a9c29644f45aee2afdaf475269c275f75eefdd17fd6e6e09221d43dc59d5644e",
+    "tests/internal_tls_fail_closed_test.go": "b1d20d11c07364980f2b825cc2a3083cad19bb8a6a456fce5947f7303a6f0542",
+    ".gitattributes": "0b16a020014b41ae96aee74ddc295f397d3173c52cc35938c9e1c26f32c51880"
   },
   "header_files": {
     "bitset/bitset.h": "0b61ccc3a33141da49e4438d1902e5101dbe1714790db919479c2ed70b60b010",
@@ -618,5 +621,86 @@
     "syncpoint/sync_point_impl.h": "b4838f55283491d34003fd53bf45eb99113be2c733d73c2be8c9f585e04e43af",
     "rdkafka/rdkafka.h": "981210446c732d19e1de1feced64899fbef8daaf881c2bc7e2c1ac67953da970",
     "rocksdb/c.h": "02cd268bf1d144bc937b2c1e53c7ed80b50a7be8fef27ab2cbbe444ddce7ac72"
+  },
+  "nonruntime_module_dependency_update_20261027": {
+    "basis": "Exact6bec source FS scan,30 HIGH/CRITICAL finding rows across these three independent modules; repair dependencies rather than waive source findings.",
+    "upstream_source_identity_unchanged": true,
+    "production_root_module_locks_unchanged": true,
+    "local_replacements_unchanged": true,
+    "no_tidy_or_checksum_deletion": true,
+    "verification": "Go1.27.3 official proxy+sum.golang.org downloads, module syntax/declared requirements, dedicated offline FS rescan; no example/runtime compilation claimed",
+    "overrides": [
+      {
+        "directory": "deployment/vendors/milvus/modules/examples/telemetry_demo",
+        "purpose": "independent tools/example module, copied into build source but absent from production compile targets",
+        "required_versions": {
+          "github.com/klauspost/compress": "v1.18.7",
+          "go.opentelemetry.io/otel": "v1.44.0",
+          "go.opentelemetry.io/otel/metric": "v1.44.0",
+          "go.opentelemetry.io/otel/sdk": "v1.44.0",
+          "go.opentelemetry.io/otel/trace": "v1.44.0",
+          "golang.org/x/crypto": "v0.57.0",
+          "golang.org/x/net": "v0.60.0",
+          "golang.org/x/sys": "v0.48.0",
+          "golang.org/x/text": "v0.42.0",
+          "google.golang.org/grpc": "v1.83.2"
+        },
+        "files": {
+          "modules/examples/telemetry_demo/go.mod": {
+            "previous_override_sha256": "8f4542c2fda010f31e622fd927319669c8b753ec93c778fcb580b7d16c5fd65b",
+            "patched_override_sha256": "b03d2c72bbb9e07a6e40ad7dd0850c9b5e1717358a3b679c246ae21016f13b67"
+          },
+          "modules/examples/telemetry_demo/go.sum": {
+            "previous_override_sha256": "7862ea2eab1f542e2103c4ef888c414ee8845fa3f2a3d91e9ed086ec0eeb02d7",
+            "patched_override_sha256": "d3f61e362c3955b6a6a8a7217b6bf8683485d4d5c6dd5169091679aef1dca4d0"
+          }
+        }
+      },
+      {
+        "directory": "deployment/vendors/milvus/modules/examples/telemetry_e2e_test",
+        "purpose": "independent tools/example module, copied into build source but absent from production compile targets",
+        "required_versions": {
+          "google.golang.org/grpc": "v1.83.2"
+        },
+        "files": {
+          "modules/examples/telemetry_e2e_test/go.mod": {
+            "previous_override_sha256": "3988ac6416dd43743024e332c1542d4b13d8847099ad0778c63443931e2e0439",
+            "patched_override_sha256": "922a7953b933e97b4410e1e198751c912b6b11241627a8a39c3d28baac2fda0d"
+          },
+          "modules/examples/telemetry_e2e_test/go.sum": {
+            "previous_override_sha256": "90764d65dba77e68123e5d6f63a6470aeb4756ba7d066e32452a5b965fd895f5",
+            "patched_override_sha256": "d1beb166990ff0f8e4ab9b5b9d4ea8cffe1c4a322d6beee6d4435d639821751c"
+          }
+        }
+      }
+    ]
+  },
+  "maintainer_internal_TLS_source_patch_20261027": {
+    "upstream_source_commit": "328df0cd2f323c2d3c50cef91bfc9f2c412bcb09",
+    "upstream_archive_sha256": "1dd3a0ff960af532f04172b2aebdb9716b1244cad2fb81781b27641f67216cf9",
+    "target": "internal/distributed/utils/util.go",
+    "original_file_sha256": "62ea686155db8df34ffa57c119de00968a3773decccfaab2c359bc8893094769",
+    "patch_file": "patches/internal-tls-fail-closed.patch",
+    "patch_file_sha256": "a9c29644f45aee2afdaf475269c275f75eefdd17fd6e6e09221d43dc59d5644e",
+    "patched_file_sha256": "3d26515e2d0a70e362922bcd5be3c913a4ac15480f4c486954a5c013b271bb6e",
+    "test_file": "tests/internal_tls_fail_closed_test.go",
+    "test_file_sha256": "b1d20d11c07364980f2b825cc2a3083cad19bb8a6a456fce5947f7303a6f0542",
+    "scope": "Only getTLSCreds: validate configured CA with existing helper and panic with constant sanitized messages on CA/key-pair load failure or nil credentials; signatures/callers/default-disabled branch/valid TLS credentials unchanged",
+    "build_application": "Exact original file + patch + test hashes, patch --batch --forward --fuzz=0, exact patched-file hash; mismatched input or patch failure stops build",
+    "Go_test_command": "go test -v -p=2 -mod=readonly -tags=dynamic,sonic,with_jemalloc,bytedance_tango -ldflags='-checklinkname=0 -r /milvus/lib' ./internal/distributed/utils -run '^TestInternalTLSCredentials' -count=1",
+    "Go_test_execution": "not_executed_locally; mandatory builder RUN for future normal Linux build",
+    "test_cases": [
+      "missing-ca",
+      "invalid-ca",
+      "missing-cert",
+      "invalid-cert",
+      "missing-key",
+      "invalid-key",
+      "valid-files",
+      "disabled-skips-missing-files"
+    ],
+    "no_module_dependency_change": true,
+    "derived_source_not_pristine_upstream": true,
+    "source_patch_permission": "explicit root task authorized this narrow internal TLS fail-closed change; deployment window not granted"
   }
 }

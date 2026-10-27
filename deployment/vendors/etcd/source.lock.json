@@ -3,7 +3,7 @@
   "tag": "v3.5.34",
   "commit": "38e57443c51fc9a3cc6a943fa8ed10381f66ce5c",
   "source_archive_sha256": "6d575a3fbeece5230290314d74f5c93dbb53ee3bcb564465b63cbea673740805",
-  "runtime_amd64_manifest": "sha256:b3f8af4c73b64e25fe9ba7a6969a753c80917daa8c1633b1f247c13750afcd76",
+  "runtime_amd64_manifest": "sha256:20afe6a70f2565277b704cc17289cb557f353a3619f6350f52a2317106598df4",
   "compiler": "Go1.27.3 pinned Dockerfile.etcd",
   "source_changes": "locked dependency graph x/net0.60 and required x/crypto0.57,x/sys0.48,x/text0.42; no API or storage code changes",
   "main_version_provenance": "real official server/etcdctl/etcdutl tags fetched and commit checked; Go buildvcs=true retains3.5.34+dirty for actual patched source instead of devel",
@@ -20,17 +20,193 @@
     "modules/etcdctl/go.sum": "38c85f83a555cbe366745e3cb7a87cfcff90d78565e90c04ae092ad1ba428c70",
     "modules/etcdutl/go.mod": "bc4f6226ba9a34af20eebbae321562e48c04672cd48ac1f673033411027c6043",
     "modules/etcdutl/go.sum": "4624d3e82642e3ef66b8464df7d71856325aab0588214e8c13c43aacb9b3d85c",
-    "modules/go.mod": "64c4fabcbe9bcb1788e1570f1e961f6d61e2c230383fae77fa1c0da69cb06b82",
-    "modules/go.sum": "dcb5922c61ca1b901c233f2278ae4b42d3e3d7c219d644ba290695247e902627",
+    "modules/go.mod": "b029fef669627e81366e9b433a7c7839d6ce8569d0d424d76489918a70c058e5",
+    "modules/go.sum": "b65b2944602fcc71cc6297a1297202c776eb746c9f64dd2d43299e70e43d267b",
     "modules/pkg/go.mod": "948209b5028b829c64d82c51e49bc657b4f1264022ded3bf85bbd6d286978e94",
     "modules/pkg/go.sum": "8648757c7347303bbcad9298fb4ef805110ceadbbaf37bd476ca3f3cd4d1139d",
     "modules/raft/go.mod": "089247a6557eeb928b41f4cf526b7d376ef5b478b61cf106057ea9e30e60cd38",
     "modules/raft/go.sum": "38f9d084c00dc4e7dfd2d42fa6be0a332c33c6de6a1a75fea1260e84f58f6807",
     "modules/server/go.mod": "de27d11341a29768065a4a9484d954b0308cee4f9be8cc57e75567050b7270c7",
     "modules/server/go.sum": "3b14f04da468c39c996fa480a777e4740dad36f5da5fd9341a524105d15f7449",
-    "modules/tests/go.mod": "80d031967180ed4d11c11eae713fdf197e1f4322122bd56ae0e42a573e9c8e38",
-    "modules/tests/go.sum": "1e2792400def87d0039991802f0b387547406dab2c99b2fa90e892833c53c627",
-    "modules/tools/mod/go.mod": "6131dbe1c14d430688b801a6c7a069d2a1abc21400dfd450fd3375792c6db0bc",
-    "modules/tools/mod/go.sum": "66645e56311ccbe067ed54825d9477fc6d4d05d923c9beaea6f671984864163c"
+    "modules/tests/go.mod": "681610132f11d5cf28a120ac2592c77703dcccc1834e2922a4d24c6e3618751d",
+    "modules/tests/go.sum": "2d56990727f65a8daaa902e034750debf5cf7b769aa00239a1597e718148af95",
+    "modules/tools/mod/go.mod": "5f19670503559285304e2e580e0c8ca30d39428fd94b1dc88206b57a130d6ec0",
+    "modules/tools/mod/go.sum": "92bdf2495784b79f3b33d8de35fb6f4d1cc1fb417aae67527462f81f61f4c089"
+  },
+  "nonruntime_module_dependency_update_20261027": {
+    "basis": "Exact6bec source FS scan,30 HIGH/CRITICAL finding rows across these three independent modules; repair dependencies rather than waive source findings.",
+    "upstream_source_identity_unchanged": true,
+    "production_root_module_locks_unchanged": true,
+    "local_replacements_unchanged": true,
+    "no_tidy_or_checksum_deletion": true,
+    "verification": "Go1.27.3 official proxy+sum.golang.org downloads, module syntax/declared requirements, dedicated offline FS rescan; no example/runtime compilation claimed",
+    "overrides": [
+      {
+        "directory": "deployment/vendors/etcd/modules/tools/mod",
+        "purpose": "independent tools/example module, copied into build source but absent from production compile targets",
+        "required_versions": {
+          "golang.org/x/mod": "v0.40.0"
+        },
+        "files": {
+          "modules/tools/mod/go.mod": {
+            "previous_override_sha256": "6131dbe1c14d430688b801a6c7a069d2a1abc21400dfd450fd3375792c6db0bc",
+            "patched_override_sha256": "5f19670503559285304e2e580e0c8ca30d39428fd94b1dc88206b57a130d6ec0"
+          },
+          "modules/tools/mod/go.sum": {
+            "previous_override_sha256": "66645e56311ccbe067ed54825d9477fc6d4d05d923c9beaea6f671984864163c",
+            "patched_override_sha256": "92bdf2495784b79f3b33d8de35fb6f4d1cc1fb417aae67527462f81f61f4c089"
+          }
+        }
+      }
+    ]
+  },
+  "nested_readonly_checksum_completion_20261027": {
+    "reason": "Independent full readonly root/tests source graphs selected x/net0.60 through existing local replacements, but each module lacked its go.mod checksum.",
+    "go_mod_versions_or_replacements_changed": false,
+    "production_server_etcdctl_etcdutl_module_locks_changed": false,
+    "verification": "Go1.27.3 official proxy+sum.golang.org complete module download with returned Sum/GoModSum; private candidate copies verified before installation.",
+    "old_entries_removed": 0,
+    "affected_files": {
+      "modules/go.sum": {
+        "before_sha256": "dcb5922c61ca1b901c233f2278ae4b42d3e3d7c219d644ba290695247e902627",
+        "after_sha256": "a0f7eacaea929594a7d42336bd3038d72e787bf53307d024d7837ac374b4682e",
+        "appended_lines": [
+          "golang.org/x/net v0.60.0 h1:79p50tfZlm0J9YfoDsSi639qSXNGVwEzOPLCxM2FsYU=",
+          "golang.org/x/net v0.60.0/go.mod h1:2DA/G1UfVbCpQPeWTmMPGY7Cs2PkBkwu743bVX5PIVg="
+        ]
+      },
+      "modules/tests/go.sum": {
+        "before_sha256": "1e2792400def87d0039991802f0b387547406dab2c99b2fa90e892833c53c627",
+        "after_sha256": "c7e90cb1b040ef0bb8727138151143d15e217e295ed0e5871ecaca327b161b16",
+        "appended_lines": [
+          "golang.org/x/net v0.60.0 h1:79p50tfZlm0J9YfoDsSi639qSXNGVwEzOPLCxM2FsYU=",
+          "golang.org/x/net v0.60.0/go.mod h1:2DA/G1UfVbCpQPeWTmMPGY7Cs2PkBkwu743bVX5PIVg="
+        ]
+      }
+    },
+    "readonly_complete_sourcegraph_retry": "pending independent security_review; no compilation or test execution claimed",
+    "upstream_application_source_identity_unchanged": true
+  },
+  "nested_readonly_MVS_alignment_20261027": {
+    "reason": "Independent private tidy-diff proved only versions already selected by existingx/net0.60 family require alignment; no new module identities. Root explicitly authorized this exact diff.",
+    "go_directive_normalization": "1.26 to1.26.0",
+    "toolchain_unchanged": "go1.26.8",
+    "root_requires_updated": [
+      "x/crypto0.55 to0.57",
+      "x/sys0.47 to0.48",
+      "x/text0.41 to0.42"
+    ],
+    "tests_additional_require_update": "x/sync0.22 to0.23",
+    "sum_strategy": "Append verified needed entries; preserve every original line including prior versions. Do not install tidy checksum deletions/reordering.",
+    "official_verification": "Go1.27.3 officialproxy+sum.golang.org download success for4fixed selected versions before private candidate parsing/installation.",
+    "production_server_etcdctl_etcdutl_module_locks_unchanged": true,
+    "replace_and_application_source_unchanged": true,
+    "GO_2026_5932_fixed_claimed": false,
+    "files": {
+      "modules/go.mod": {
+        "before_sha256": "64c4fabcbe9bcb1788e1570f1e961f6d61e2c230383fae77fa1c0da69cb06b82",
+        "after_sha256": "b029fef669627e81366e9b433a7c7839d6ce8569d0d424d76489918a70c058e5",
+        "only_authorized_mod_changes": [
+          [
+            "go 1.26",
+            "go 1.26.0"
+          ],
+          [
+            "\tgolang.org/x/crypto v0.55.0 // indirect",
+            "\tgolang.org/x/crypto v0.57.0 // indirect"
+          ],
+          [
+            "\tgolang.org/x/sys v0.47.0 // indirect",
+            "\tgolang.org/x/sys v0.48.0 // indirect"
+          ],
+          [
+            "\tgolang.org/x/text v0.41.0 // indirect",
+            "\tgolang.org/x/text v0.42.0 // indirect"
+          ]
+        ],
+        "appended_checksum_lines": []
+      },
+      "modules/go.sum": {
+        "before_sha256": "a0f7eacaea929594a7d42336bd3038d72e787bf53307d024d7837ac374b4682e",
+        "after_sha256": "b65b2944602fcc71cc6297a1297202c776eb746c9f64dd2d43299e70e43d267b",
+        "only_authorized_mod_changes": null,
+        "appended_checksum_lines": [
+          "golang.org/x/crypto v0.57.0 h1:3ZVCjf8Ggz7zneR/EHRVx68Ctf+2pmIMP2UFhh9cC6M=",
+          "golang.org/x/crypto v0.57.0/go.mod h1:Fdz0i5U6CoizGwLda9DttjSk6qlZo25zYNtR+ycvuZA=",
+          "golang.org/x/sync v0.23.0 h1:KameEIfc1IkluZyXWLn39Wd4tURc6GbCiISGiZm2bQk=",
+          "golang.org/x/sync v0.23.0/go.mod h1:sUUOizhqBxiL6pEWpqNLUiaJn1ShEbZ6BBqskPbjZm0=",
+          "golang.org/x/sys v0.48.0 h1:bbX/i/6MgT9BVLM9RT1thmxL04yeTAhbEz4SyadbXoo=",
+          "golang.org/x/sys v0.48.0/go.mod h1:hNLxWAXmnKAxqDtdwIYC4bM9oQPEecfsnNMuSxOs3og=",
+          "golang.org/x/text v0.42.0 h1:JbOZXgfeCPU9gacVtYliJqOhD+zhrEqK4LfdpmlUZqI=",
+          "golang.org/x/text v0.42.0/go.mod h1:ojzP1Z+2QtioaF8DTtO8K5q7JWVVYwZKenzujK0Zd0E="
+        ]
+      },
+      "modules/tests/go.mod": {
+        "before_sha256": "80d031967180ed4d11c11eae713fdf197e1f4322122bd56ae0e42a573e9c8e38",
+        "after_sha256": "681610132f11d5cf28a120ac2592c77703dcccc1834e2922a4d24c6e3618751d",
+        "only_authorized_mod_changes": [
+          [
+            "go 1.26",
+            "go 1.26.0"
+          ],
+          [
+            "\tgolang.org/x/crypto v0.55.0",
+            "\tgolang.org/x/crypto v0.57.0"
+          ],
+          [
+            "\tgolang.org/x/sync v0.22.0",
+            "\tgolang.org/x/sync v0.23.0"
+          ],
+          [
+            "\tgolang.org/x/sys v0.47.0 // indirect",
+            "\tgolang.org/x/sys v0.48.0 // indirect"
+          ],
+          [
+            "\tgolang.org/x/text v0.41.0 // indirect",
+            "\tgolang.org/x/text v0.42.0 // indirect"
+          ]
+        ],
+        "appended_checksum_lines": []
+      },
+      "modules/tests/go.sum": {
+        "before_sha256": "c7e90cb1b040ef0bb8727138151143d15e217e295ed0e5871ecaca327b161b16",
+        "after_sha256": "2d56990727f65a8daaa902e034750debf5cf7b769aa00239a1597e718148af95",
+        "only_authorized_mod_changes": null,
+        "appended_checksum_lines": [
+          "golang.org/x/crypto v0.57.0 h1:3ZVCjf8Ggz7zneR/EHRVx68Ctf+2pmIMP2UFhh9cC6M=",
+          "golang.org/x/crypto v0.57.0/go.mod h1:Fdz0i5U6CoizGwLda9DttjSk6qlZo25zYNtR+ycvuZA=",
+          "golang.org/x/sync v0.23.0 h1:KameEIfc1IkluZyXWLn39Wd4tURc6GbCiISGiZm2bQk=",
+          "golang.org/x/sync v0.23.0/go.mod h1:sUUOizhqBxiL6pEWpqNLUiaJn1ShEbZ6BBqskPbjZm0=",
+          "golang.org/x/sys v0.48.0 h1:bbX/i/6MgT9BVLM9RT1thmxL04yeTAhbEz4SyadbXoo=",
+          "golang.org/x/sys v0.48.0/go.mod h1:hNLxWAXmnKAxqDtdwIYC4bM9oQPEecfsnNMuSxOs3og=",
+          "golang.org/x/text v0.42.0 h1:JbOZXgfeCPU9gacVtYliJqOhD+zhrEqK4LfdpmlUZqI=",
+          "golang.org/x/text v0.42.0/go.mod h1:ojzP1Z+2QtioaF8DTtO8K5q7JWVVYwZKenzujK0Zd0E="
+        ]
+      }
+    },
+    "independent_readonly_graph_retry": "pending security_review; no compilation or test execution claimed"
+  },
+  "original_runtime_amd64_manifest": "sha256:b3f8af4c73b64e25fe9ba7a6969a753c80917daa8c1633b1f247c13750afcd76",
+  "runtime_base_index": "sha256:e792ab3d241a468a4fd7519ddbbebe66b49b5f365771716ea688ad40b6c6f1c2",
+  "runtime_base_input": "gcr.io/distroless/cc-debian13:nonroot@sha256:e792ab3d241a468a4fd7519ddbbebe66b49b5f365771716ea688ad40b6c6f1c2",
+  "runtime_package_repair_20261027": {
+    "authorization": "deepresearch-supported-etcd-base-build-amendment.json",
+    "prior_runtime_OS": "Debian11.10 EOSLtrue actualphase1raw",
+    "candidate_runtime_OS": "fixedpinned distrolessDebian13, actualnewimage scan pending",
+    "native3_binaries_and_build_flags": "unchanged selected source closure; actualbytecomparison required after normalbuild",
+    "package_lock": "deployment/runtime-packages.lock.json",
+    "helper": "scripts/prepare_runtime_trust.py",
+    "helper_sha256": "91bc9b23f9394e2c355281b57bbdd5d5d1e87780474efd05d67e5abafc3959d3",
+    "packages": {
+      "ca-certificates": "20250419+deb13u1",
+      "tzdata": "2026e-0+deb13u1"
+    },
+    "data_metadata_authentication": "APT signed indexes with pinnedDebian keyring plus independent exact .deb SHA256 gates",
+    "actual_base_cosign_verified": {
+      "identity": "keyless@distroless.iam.gserviceaccount.com",
+      "issuer": "https://accounts.google.com",
+      "root_subject": "sha256:e792ab3d241a468a4fd7519ddbbebe66b49b5f365771716ea688ad40b6c6f1c2"
+    },
+    "validation": "source/LF/direct11Linuxfixtures passed; normalcandidate image/CA/timezone/EOSL/native/fullscan pending"
   }
 }

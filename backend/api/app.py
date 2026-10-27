@@ -544,6 +544,15 @@ def create_app(settings: Settings | None = None):
         return {key: row.get(key) for key in ("id", "name", "status", "error", "created_at", "updated_at",
                                                 "index_version", "pending_version")}
 
+    async def require_api_document(runtime, user: str, document_id: str, *, write=False):
+        # Preserve the object's workspace/not-found contract before evaluating
+        # current collection grants; an existing but revoked document still uses
+        # the structured source_permission_denied error.
+        if not await runtime.db.one("SELECT id FROM documents WHERE id=? AND user_id=? AND status!='deleted'",
+                                    (document_id, user)):
+            raise HTTPException(404, "资料不存在")
+        await require_document(runtime.db, user, document_id, write=write)
+
     @app.get("/api/documents")
     async def documents(runtime=Depends(rt), user=Depends(identity)):
         rows = await runtime.db.rows(f"""SELECT d.id,d.name,d.status,d.error,d.created_at,d.updated_at,d.index_version,d.pending_version
@@ -557,7 +566,7 @@ def create_app(settings: Settings | None = None):
     @app.put("/api/documents/{document_id}", status_code=202)
     async def replace_document(document_id: str, request: Request, file: UploadFile = File(),
                                runtime=Depends(rt), user=Depends(researcher)):
-        await require_document(runtime.db, user, document_id, write=True)
+        await require_api_document(runtime, user, document_id, write=True)
         content = await read_upload(file)
         try:
             document = await runtime.replace_document(document_id, user, file.filename or "document", content)
@@ -574,7 +583,7 @@ def create_app(settings: Settings | None = None):
 
     @app.get("/api/documents/{document_id}/versions")
     async def document_versions(document_id: str, runtime=Depends(rt), user=Depends(identity)):
-        await require_document(runtime.db, user, document_id)
+        await require_api_document(runtime, user, document_id)
         try:
             return await runtime.documents.lifecycle.versions(document_id, user)
         except LookupError as exc:
@@ -583,7 +592,7 @@ def create_app(settings: Settings | None = None):
     @app.get("/api/documents/{document_id}/diff")
     async def document_diff(document_id: str, from_version: int = Query(alias="from", ge=1),
                             to_version: int = Query(alias="to", ge=1), runtime=Depends(rt), user=Depends(identity)):
-        await require_document(runtime.db, user, document_id)
+        await require_api_document(runtime, user, document_id)
         try:
             return await runtime.documents.lifecycle.diff(document_id, user, from_version, to_version)
         except LookupError as exc:
@@ -591,9 +600,7 @@ def create_app(settings: Settings | None = None):
 
     @app.get("/api/documents/{document_id}/chunks")
     async def document_chunks(document_id: str, limit: int = 100, runtime=Depends(rt), user=Depends(identity)):
-        await require_document(runtime.db, user, document_id)
-        if not await runtime.db.one("SELECT id FROM documents WHERE id=? AND user_id=? AND status!='deleted'", (document_id, user)):
-            raise HTTPException(404, "资料不存在")
+        await require_api_document(runtime, user, document_id)
         limit = max(1, min(limit, 400))
         return await runtime.db.rows("SELECT id,locator,text,ordinal FROM chunks WHERE document_id=? AND user_id=? ORDER BY ordinal,id LIMIT ?",
                                      (document_id, user, limit))
@@ -605,7 +612,7 @@ def create_app(settings: Settings | None = None):
 
     @app.post("/api/documents/{document_id}/reindex", status_code=202)
     async def reindex_document(document_id: str, request: Request, runtime=Depends(rt), user=Depends(researcher)):
-        await require_document(runtime.db, user, document_id, write=True)
+        await require_api_document(runtime, user, document_id, write=True)
         try:
             document = await runtime.reindex_document(document_id, user)
         except LookupError as exc:

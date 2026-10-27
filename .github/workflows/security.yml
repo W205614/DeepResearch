@@ -16,10 +16,43 @@ jobs:
         with: { distribution: temurin, java-version: "21", cache: maven }
       - run: mvn -B dependency:resolve
         working-directory: business-backend
-      - uses: aquasecurity/trivy-action@v0.36.0
-        with: { scan-type: fs, scanners: "vuln,secret", format: sarif, output: trivy-fs.sarif, severity: "HIGH,CRITICAL", limit-severities-for-sarif: true, exit-code: "1", version: v0.75.0 }
+      # Full raw preserves all severities; independent exact2 compiled facts keep the original HIGH,CRITICAL source threshold.
+      - uses: aquasecurity/setup-trivy@3fb12ec12f41e471780db15c232d5dd185dcb514 # v0.2.6, same installer as trivy-action v0.36.0
+        with: { version: v0.75.0, cache: true }
+      - name: Produce fresh complete source scan and independent completion proof
+        id: source_scan
+        run: >-
+          python scripts/run_fs_source_scan.py
+          --scanner "$(command -v trivy)"
+          --output-dir .cache/eval/source-fs
+          --source-sha "$EXPECTED_SOURCE_SHA"
+        env:
+          EXPECTED_SOURCE_SHA: ${{ github.sha }}
+      - name: Apply only pinned independent source2 technical facts; keep baseline HIGH,CRITICAL gate
+        run: >-
+          python scripts/check_fs_source_applicability.py
+          --scan .cache/eval/source-fs/raw.json
+          --scan-receipt .cache/eval/source-fs/completion.json
+          --output .cache/eval/source-fs-verdict.json
+      - name: Convert original complete source scan even when its gate fails
+        if: always() && hashFiles('.cache/eval/source-fs/raw.json') != ''
+        run: trivy convert --format sarif --output trivy-fs.sarif .cache/eval/source-fs/raw.json
       - uses: github/codeql-action/upload-sarif@v4
+        if: always() && hashFiles('trivy-fs.sarif') != ''
         with: { sarif_file: trivy-fs.sarif }
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: filesystem-security-${{ github.sha }}
+          path: |
+            .cache/eval/source-fs/raw.json
+            .cache/eval/source-fs/completion.json
+            .cache/eval/source-fs/scanner-version.log
+            .cache/eval/source-fs/stdout.private.log
+            .cache/eval/source-fs/stderr.private.log
+            .cache/eval/source-fs-verdict.json
+            trivy-fs.sarif
+          if-no-files-found: error
   inventory-runtime:
     runs-on: ubuntu-latest
     permissions: { contents: read }
@@ -43,6 +76,10 @@ jobs:
       matrix: ${{ fromJSON(needs.inventory-runtime.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v7
+        with: { fetch-depth: 0, fetch-tags: true }
+      - name: Verify immutable ancestor artifact source reuse
+        if: matrix.approved_artifact == true
+        run: python scripts/check_artifact_source_reuse.py --output .cache/eval/artifact-source-reuse.json
       - name: Load each independently approved OCI artifact without rebuilding
         if: matrix.approved_artifact == true
         run: python scripts/fetch_approved_image.py --artifact "$ARTIFACT" --tag "$SCAN_TAG" --output ".cache/eval/approved-$ARTIFACT-load.json"
@@ -68,13 +105,19 @@ jobs:
         with:
           image-ref: deepresearch-scan-${{ matrix.artifact }}:ci
           severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
-          scanners: vuln
+          scanners: vuln,secret
           list-all-pkgs: 'true'
           exit-code: '0'
           version: v0.75.0
           timeout: 5m
           format: json
           output: runtime-image.json
+      - name: Reject every secret finding independently of vulnerability dispositions
+        if: matrix.approved_artifact == true && steps.approved_scan.outcome == 'success'
+        run: >-
+          python scripts/check_image_secrets.py
+          --scan runtime-image.json --scanner-exit-code 0
+          --output .cache/eval/approved-image-secret-gate.json
       - name: Enforce only the exact authorized FIXED finding
         if: matrix.artifact == 'minio' && steps.approved_scan.outcome == 'success'
         run: >-
@@ -113,6 +156,8 @@ jobs:
             .cache/eval/approved-*-load*.json
             .cache/eval/minio-ci-disposition.json
             .cache/eval/grafana-ci-disposition.json
+            .cache/eval/approved-image-secret-gate.json
+            .cache/eval/artifact-source-reuse.json
             .cache/eval/grafana-native/*.json
             .cache/eval/native-jvm/*.json
   application-image-scan:

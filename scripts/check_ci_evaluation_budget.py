@@ -37,7 +37,15 @@ def symbol(path, name):
 
 
 def symbol_hash(path, name):
-    return hashlib.sha256(ast.dump(symbol(path, name), include_attributes=False).encode()).hexdigest()
+    node = symbol(path, name)
+    # CPython 3.12 adds type_params=[] to ordinary class/function AST nodes.
+    # The audited basis was made on 3.11: ignore only that empty compatibility
+    # field, never a nonempty generic declaration or any executable source.
+    for child in ast.walk(node):
+        if (isinstance(child, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef))
+                and 'type_params' in child._fields and child.type_params == []):
+            child._fields = tuple(field for field in child._fields if field != 'type_params')
+    return hashlib.sha256(ast.dump(node, include_attributes=False).encode()).hexdigest()
 
 
 def source_basis(root, basis):
@@ -164,7 +172,7 @@ def assess(root=ROOT, *, policy_path=None, ledger_path=None, basis_path=None):
     return {'schema': 'ci-budget-assessment-v1', 'generated_at': datetime.now(timezone.utc).isoformat(),
             'precheck_status': ('cumulative_reconciliation_required' if not reconciled else 'existing_provider_halt' if ledger['halt']
                                else 'insufficient_known_budget' if insufficient else 'bound_not_verified' if not known else 'necessary_bound_not_violated'),
-            'exit_code': 1 if not reconciled or insufficient or ledger['halt'] else 0, 'supplier_http_requests': 0,
+            'exit_code': 1 if not reconciled or not known or insufficient or ledger['halt'] else 0, 'supplier_http_requests': 0,
             'proof_verified': known, 'proof_drift': failures, 'source_references': references,
             'policy': policy, 'policy_sha256': fingerprint(policy_path), 'ledger': ledger,
             'remaining_requests': remaining if reconciled else None, 'available_model_and_total_http': available,

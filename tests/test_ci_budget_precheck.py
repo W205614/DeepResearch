@@ -1,5 +1,7 @@
 """Static budget checks cannot spend supplier calls or mutate a reservation ledger."""
 import json
+import ast
+import copy
 import sqlite3
 import socket
 from pathlib import Path
@@ -7,6 +9,38 @@ from pathlib import Path
 import pytest
 
 from scripts.check_ci_evaluation_budget import ROOT, assess, main
+from scripts import check_ci_evaluation_budget as precheck
+
+
+@pytest.mark.parametrize('source',['def sample():\n return 1','async def sample():\n return 1','class sample:\n pass'])
+def test_audited_ast_hash_ignores_only_empty_python312_type_params(monkeypatch,source):
+    node=ast.parse(source).body[0]
+    # A 3.11-style node has no type_params, while CPython3.12 supplies [].
+    node._fields=tuple(field for field in node._fields if field!='type_params')
+    monkeypatch.setattr(precheck,'symbol',lambda *args:copy.deepcopy(node))
+    audited=precheck.symbol_hash(None,None)
+    node._fields=(*node._fields,'type_params')
+    node.type_params=[]
+    assert precheck.symbol_hash(None,None)==audited
+    node.type_params=[ast.Name(id='T',ctx=ast.Load())]
+    assert precheck.symbol_hash(None,None)!=audited  # Generic source remains protected.
+
+
+def test_unverified_proof_fails_closed_without_inventing_shortage_or_spending(tmp_path):
+    basis=json.loads((ROOT/'eval/ci-budget-source-basis.json').read_bytes())
+    basis['symbols'][0]['ast_sha256']='0'*64
+    basis_path=tmp_path/'basis.json'
+    basis_path.write_text(json.dumps(basis),encoding='utf-8')
+    policy=json.loads((ROOT/'eval/ci-provider-budget.json').read_bytes())
+    policy.pop('ci_series_id',None)
+    policy_path=tmp_path/'policy.json'
+    policy_path.write_text(json.dumps(policy),encoding='utf-8')
+    ledger=tmp_path/'not-created.sqlite3'
+    report=assess(basis_path=basis_path,policy_path=policy_path,ledger_path=ledger)
+    assert report['exit_code']==1 and report['precheck_status']=='bound_not_verified'
+    assert not report['proof_verified'] and report['proof_drift']
+    assert report['critical_path_lower_bound'] is None and report['additional_http_below_critical_bound'] is None
+    assert report['supplier_http_requests']==0 and not ledger.exists()
 
 
 @pytest.mark.parametrize('cap,code',[(57,1),(500,0)])

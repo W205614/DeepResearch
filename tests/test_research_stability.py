@@ -255,7 +255,7 @@ async def test_partial_recovery_ignores_legacy_contract_even_when_verdict_would_
         topic='legacy cache boundary', client_request_id='legacy-cache-contract'))
     await runtime.cancel(run['id'], 'alice')
     data = {'verdict': {'checks': [{'index': 0, 'supported': True, 'reason': 'old',
-        'atomic_checks': [{'text': '旧结论', 'supported': True}]}]},
+        'atomic_checks': [{'target_id': '0:0', 'text': '旧结论', 'supported': True}]}]},
         'input': {'claims': [{'index': 0, 'text': '旧结论', 'source_ids': ['W-old']}],
                   'sources': {'W-old': {'id': 'W-old', 'kind': 'web', 'text': '旧结论'}}}}
     await runtime.db.execute('INSERT INTO verified_claims(run_id,cache_key,result) VALUES(?,?,?)',

@@ -1,4 +1,5 @@
-FROM ghcr.io/astral-sh/uv:0.12.3 AS uv
+FROM ghcr.io/astral-sh/uv:0.12.3@sha256:2d890623d310b57771ce840f0da5eed5fc6d657da05ffaa45d82797b53fa3abc AS uv
+FROM gcr.io/distroless/cc-debian13:nonroot@sha256:e792ab3d241a468a4fd7519ddbbebe66b49b5f365771716ea688ad40b6c6f1c2 AS runtime-base
 # DockerHub3.11.18 tags were not published at verification time. Build the
 # official signed CPython release using its pinned upstream slim recipe.
 FROM debian:trixie-slim@sha256:38a76d01668772e381ad2826d876627c89e7133e2f8a0f5d567306798b0f2a16 AS python-security
@@ -12,7 +13,11 @@ COPY deployment/vendors/python311/build-python.sh /tmp/build-python.sh
 RUN sh /tmp/build-python.sh
 FROM python-security AS builder
 COPY --from=uv /uv /usr/local/bin/uv
-RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/* \
+RUN apt-get update && apt-get upgrade -y \
+    && cd /tmp && apt-get download ca-certificates=20250419+deb13u1 \
+    && echo 'c10585ac22c7f617a73d394eea29ba71d0356f350ae973b19043d1b017f80f54  ca-certificates_20250419+deb13u1_all.deb' | sha256sum -c - \
+    && apt-get install -y --no-install-recommends /tmp/ca-certificates_20250419+deb13u1_all.deb \
+    && update-ca-certificates --fresh && rm -rf /var/lib/apt/lists/* \
     && python -m pip uninstall -y pip setuptools wheel
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 UV_PROJECT_ENVIRONMENT=/opt/venv \
     PATH="/opt/venv/bin:$PATH" DATA_DIR=/data
@@ -22,15 +27,24 @@ RUN uv sync --frozen --no-dev --no-install-project --no-python-downloads --link-
     && mkdir /data && chown 10001:10001 /data
 COPY deployment/vendors/python311/source-lock.json /usr/local/share/deepresearch-python-source.json
 COPY scripts/prepare_python_runtime.py /tmp/prepare_python_runtime.py
+COPY scripts/prepare_runtime_trust.py /tmp/prepare_runtime_trust.py
 RUN python /tmp/prepare_python_runtime.py
 
-FROM gcr.io/distroless/cc-debian13:nonroot@sha256:e792ab3d241a468a4fd7519ddbbebe66b49b5f365771716ea688ad40b6c6f1c2
+FROM builder AS runtime-package
+COPY --from=runtime-base / /runtime-root/
+# Replace complete trust trees before flattening: an overlay on runtime-base
+# alone would retain obsolete named/hashed certificate files that were removed.
+RUN python /tmp/prepare_runtime_trust.py --runtime-root /runtime-root --kind ca
+
+FROM scratch
+COPY --from=runtime-package /runtime-root/ /
 COPY --from=builder /usr/local /usr/local
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /runtime/ /
 COPY --from=builder --chown=10001:10001 /data /data
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 UV_PROJECT_ENVIRONMENT=/opt/venv \
-    PATH="/opt/venv/bin:/usr/local/bin:$PATH" LD_LIBRARY_PATH=/usr/local/lib DATA_DIR=/data
+    PATH="/opt/venv/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
+    SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt LD_LIBRARY_PATH=/usr/local/lib DATA_DIR=/data
 WORKDIR /app
 COPY pyproject.toml uv.lock ./
 COPY alembic.ini ./
@@ -44,5 +58,5 @@ RUN ["python", "-c", "import pathlib,hashlib,json; root=pathlib.Path('/app'); ma
 USER 10001:10001
 EXPOSE 8000
 HEALTHCHECK --interval=15s --timeout=5s --start-period=20s --retries=5 \
-  CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=3)"
+  CMD ["python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=3)"]
 CMD ["uvicorn", "backend.api.app:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000", "--workers", "1", "--no-access-log"]

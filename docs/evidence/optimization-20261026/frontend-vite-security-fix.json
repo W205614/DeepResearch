@@ -1,0 +1,75 @@
+{
+  "schema": "frontend-vite-real-version-repair-v1",
+  "recorded_at": "2026-10-27T10:26:28.729011+00:00",
+  "status": "normal_Linux_Web_build_and_actual_runtime_scan_passed_final_existing_sourceCI_pending",
+  "finding": {
+    "id": "CVE-2026-112942",
+    "severity": "HIGH",
+    "target": "frontend/package-lock.json",
+    "package": "vite",
+    "before": "8.2.2",
+    "after": "8.2.4"
+  },
+  "primary_sources": [
+    "https://github.com/vitejs/launch-editor/security/advisories/GHSA-587h-7wmj-h5pm",
+    "https://github.com/vitejs/vite/releases/tag/v8.2.4"
+  ],
+  "advisory_boundary": "Upstream describes a Windows launch-editor path-validation bypass that can combine with command escaping to reach command injection. This is a Windows development-toolchain issue, not evidence that the Linux production static Nginx image was exploitable. The workspace is Windows, so it is repaired rather than excepted.",
+  "normal_package_manager_operation": "npm install --package-lock-only --ignore-scripts --no-audit --no-fund --save-dev vite@8.2.4 --registry=https://registry.npmjs.org/",
+  "exit": 0,
+  "elapsed_reported": "20s",
+  "source_files": {
+    "frontend/package.json": {
+      "before_sha256": "96a7cd26753f7103256a69c7bc67fefc891ffa7d524a4968e76226e299676baa",
+      "after_sha256": "4edc40aed0ba4460cf456f733e5b1e5c6fa788b4b7bd82ffe7c821625403a3dd"
+    },
+    "frontend/package-lock.json": {
+      "before_sha256": "f8d7fb457c76085008420eb22365049d5f795cc93e402961f6318fa7884a1d4b",
+      "after_sha256": "3a24821d33764e07ebef656159f79b22ac615958749c000e14992b4aca95b1a7"
+    }
+  },
+  "lock_structural_diff": {
+    "changed_package_records": [
+      "",
+      "node_modules/vite"
+    ],
+    "other_package_records_changed": 0,
+    "Vite_dependency_ranges_unchanged": true,
+    "locked_package_count_before": 107,
+    "locked_package_count_after": 107
+  },
+  "resolved_tarball": "https://registry.npmjs.org/vite/-/vite-8.2.4.tgz",
+  "integrity": "sha512-lfauXnrf2x0p+UoA+wXh0dgFWnUjCyG6Js95KBkgaCwUU9k0DAHI4W6Q0WCx+h+5g+Alce1y4Zi2QjjK0UvGBw==",
+  "no_node_modules_replacement_or_removal_requested": true,
+  "new_exception_or_ignore": false,
+  "pending": [
+    "FinalexistingSecurity fresh cleanSHA source scan covers the changed Vite8.2.4 manifest/lock; no duplicate localfullscan/hostbuild.",
+    "Finalall existingCI and separatelygranted affected daily adoption/readback."
+  ],
+  "current_window_handoff_hold": "normalLinuxWebcomplete_awaitrootrelease_no_newoperations",
+  "new_Docker_builds_or_scanners_after_hold": 0,
+  "paid_provider_calls": 0,
+  "updated_at": "2026-10-27T12:50:28.875766+00:00",
+  "historical_pending_before_normal_build": [
+    "Fresh isolated npm ci + npm run build using the changed lock; application source unit paths unchanged and not broadly rerun.",
+    "One complete newDB include-dev-deps source scan after this patch; prepatch raw cannot count as postpatch proof.",
+    "Normal final clean-SHA CI; later Web runtime image/daily adoption requires separately granted window."
+  ],
+  "normal_Linux_build": {
+    "evidence": "docs/evidence/optimization-20261026/vite-normal-linux-web-build.json",
+    "evidence_sha256": "1f0bc24bcc83cc909685572faec2beab25a177af788bfb9657e560aba2a9aff9",
+    "build_count": 1,
+    "exit": 0,
+    "seconds": 70.141,
+    "actual_vite": "8.2.4",
+    "vue_tsc_then_vite_build": true,
+    "source_fingerprints": 31,
+    "dist_fingerprints": 7,
+    "runtime_index": "sha256:b4725a15fb356ed143ba1e12fae2b3577886f81b641c14a9d90d517b7aae4ac4",
+    "runtime_packages": 71,
+    "runtime_alllevels_vulnerability_and_secret_findings": 0,
+    "runtime_scan_does_not_catalog_builder_Vite": true
+  },
+  "historical_source16_candidate_canonical": "f3d339c29c4aba11b5a81c5cc21d47de47b96736b23fa0c355d70749d94a079a",
+  "source16_runtime5_gate_published_or_activated": false
+}

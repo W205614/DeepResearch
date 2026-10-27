@@ -1,12 +1,20 @@
 FROM golang@sha256:d1f3216ef30257c850cc136ba42a359ccd9d3e75f19b2c276e520c0b4ef327ce AS go
-FROM milvusdb/milvus@sha256:812cb91ad04e847e5ebb4d19593c69f2e207593073063ede0fd604bbba5fddf1 AS build
+FROM milvusdb/milvus@sha256:812cb91ad04e847e5ebb4d19593c69f2e207593073063ede0fd604bbba5fddf1 AS runtime-base
+FROM runtime-base AS build
 USER root
-RUN apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=30 update && apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=30 install -y --no-install-recommends gcc g++ pkg-config libssl-dev
+RUN apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=30 update && apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=30 install -y --no-install-recommends gcc g++ pkg-config libssl-dev patch
 COPY --from=go /usr/local/go /usr/local/go
 ENV PATH=/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin GOPATH=/go GOTOOLCHAIN=local GOMAXPROCS=2 GOMEMLIMIT=1024MiB CGO_ENABLED=1 GOPROXY="https://proxy.golang.org|https://goproxy.cn|direct" GOSUMDB=sum.golang.org
 WORKDIR /source
 ADD --checksum=sha256:1dd3a0ff960af532f04172b2aebdb9716b1244cad2fb81781b27641f67216cf9 https://codeload.github.com/milvus-io/milvus/tar.gz/328df0cd2f323c2d3c50cef91bfc9f2c412bcb09 /source/source.tar.gz
 RUN echo '1dd3a0ff960af532f04172b2aebdb9716b1244cad2fb81781b27641f67216cf9  source.tar.gz' | sha256sum -c - && tar -xzf source.tar.gz --strip-components=1
+COPY deployment/vendors/milvus/patches/internal-tls-fail-closed.patch /tmp/internal-tls-fail-closed.patch
+COPY deployment/vendors/milvus/tests/internal_tls_fail_closed_test.go /source/internal/distributed/utils/internal_tls_fail_closed_test.go
+RUN echo '62ea686155db8df34ffa57c119de00968a3773decccfaab2c359bc8893094769  internal/distributed/utils/util.go' | sha256sum -c - \
+ && echo 'a9c29644f45aee2afdaf475269c275f75eefdd17fd6e6e09221d43dc59d5644e  /tmp/internal-tls-fail-closed.patch' | sha256sum -c - \
+ && echo 'b1d20d11c07364980f2b825cc2a3083cad19bb8a6a456fce5947f7303a6f0542  internal/distributed/utils/internal_tls_fail_closed_test.go' | sha256sum -c - \
+ && patch --batch --forward --fuzz=0 -p1 < /tmp/internal-tls-fail-closed.patch \
+ && echo '3d26515e2d0a70e362922bcd5be3c913a4ac15480f4c486954a5c013b271bb6e  internal/distributed/utils/util.go' | sha256sum -c -
 COPY deployment/vendors/milvus/modules/ /source/
 RUN --mount=type=cache,target=/go/pkg/mod,id=dr-vendor-go-mod-20261026 --mount=type=cache,target=/root/.cache/go-build,id=dr-vendor-go-build-20261026 go build -p=2 -mod=readonly -buildvcs=false -buildmode=c-shared -o /out/libmilvus-planparser.so ./internal/parser/planparserv2/cwrapper
 COPY deployment/vendors/milvus/headers.tar.gz /tmp/headers-main-complete.tar.gz
@@ -18,7 +26,27 @@ RUN mkdir -p /source/c-api-headers/librdkafka && cp /source/c-api-headers/rdkafk
 COPY deployment/vendors/milvus/rdkafka_mock.h /source/c-api-headers/librdkafka/rdkafka_mock.h
 RUN echo '2d4d52168b669257fbe936554af6af543fa0fa4f2cccc5a201a2c7d301dad500  /source/c-api-headers/librdkafka/rdkafka_mock.h' | sha256sum -c -
 ENV PKG_CONFIG_PATH=/source/pkgconfig LIBRARY_PATH=/milvus/lib LD_LIBRARY_PATH=/milvus/lib
+RUN --mount=type=cache,target=/go/pkg/mod,id=dr-vendor-go-mod-20261026 --mount=type=cache,target=/root/.cache/go-build,id=dr-vendor-go-build-20261026 go test -v -p=2 -mod=readonly -tags=dynamic,sonic,with_jemalloc,bytedance_tango -ldflags='-checklinkname=0 -r /milvus/lib' ./internal/distributed/utils -run '^TestInternalTLSCredentials' -count=1
 RUN --mount=type=cache,target=/go/pkg/mod,id=dr-vendor-go-mod-20261026 --mount=type=cache,target=/root/.cache/go-build,id=dr-vendor-go-build-20261026 go build -p=2 -mod=readonly -buildvcs=false -pgo=/source/configs/pgo/default.pgo -tags=dynamic,sonic,with_jemalloc,bytedance_tango -ldflags='-checklinkname=0 -r /milvus/lib -X github.com/milvus-io/milvus/cmd/milvus.GitCommit=328df0cd2f323c2d3c50cef91bfc9f2c412bcb09-security-rebuild -X github.com/milvus-io/milvus/cmd/milvus.GoVersion=go1.26.10 -X github.com/milvus-io/milvus/cmd/milvus.MilvusVersion=3.0.3' -o /out/milvus ./cmd/main.go
-FROM milvusdb/milvus@sha256:812cb91ad04e847e5ebb4d19593c69f2e207593073063ede0fd604bbba5fddf1
+FROM runtime-base AS runtime-package
+USER root
+# Copy the fixed runtime only, without compiler packages or the build source.
+# A later whiteout on an inherited layer would still expose its sample keys.
+COPY --from=runtime-base / /runtime-root/
+RUN test -d /runtime-root/milvus/configs/cert && test ! -L /runtime-root/milvus/configs/cert \
+ && rm -r -- /runtime-root/milvus/configs/cert \
+ && test ! -e /runtime-root/milvus/configs/cert && test -f /runtime-root/milvus/configs/milvus.yaml
+FROM scratch
+COPY --from=runtime-package /runtime-root/ /
 COPY --chmod=0755 --from=build /out/libmilvus-planparser.so /milvus/lib/libmilvus-planparser.so
 COPY --from=build /out/milvus /milvus/bin/milvus
+ENV PATH=/milvus/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+    LD_LIBRARY_PATH=/milvus/lib::/usr/lib \
+    LD_PRELOAD=:/milvus/lib/libjemalloc.so \
+    MALLOC_CONF=background_thread:true \
+    OPENSSL_MODULES=/milvus/lib/ossl-modules \
+    ASAN_OPTIONS=detect_leaks=1:detect_container_overflow=0
+LABEL org.opencontainers.image.ref.name=ubuntu org.opencontainers.image.version=22.04
+USER milvus:milvus
+ENTRYPOINT ["/tini", "--"]
+WORKDIR /milvus/
