@@ -1,0 +1,65 @@
+{
+  "recorded_at": "2026-10-27T04:41:42.123825+00:00",
+  "passed": true,
+  "source_code_commit": "9dcc24073ddf0cba383701362ea8e32ac1415d14",
+  "source_backup": "scheduled-20261027-042116",
+  "raw_private_report_sha256": "22cea20c607f3e34755f5c808c74d33851a2644d38844e57897a6257cde89bbc",
+  "fresh_project": "dr-restore-daily-postupgrade-20261027-01",
+  "fresh_subnet": "10.254.247.0/24",
+  "volumes_verified": 17,
+  "both_SQL_dumps_restored_with_exit_on_error": true,
+  "images_bound": true,
+  "observed_restore_seconds": 227.61,
+  "configured_restore_target_seconds": 900,
+  "observed_within_target": true,
+  "retrieval": {
+    "nonempty_collections_searched": 2,
+    "results_checked": 2
+  },
+  "business": {
+    "oidc_tokens_verified": 2,
+    "permission_boundaries_verified": 3,
+    "reports_sha_verified": 1,
+    "citation_snapshots_verified": 3,
+    "new_research_accepted": 1,
+    "new_research_cancelled": 1,
+    "authorized_document_retrieval_verified": 1,
+    "query_embedding_mode": "keyword fallback; upstream disabled",
+    "offline_antivirus_checks_verified": 2,
+    "synthetic_viewer_collection_grants": 0,
+    "restored_acl_contract": {
+      "collection_acl": true,
+      "mode": "current_collection_acl"
+    },
+    "execution_completed": false,
+    "upstream_calls_enabled": false
+  },
+  "checks": [
+    "all archived files match",
+    "both SQL dumps restored with exit-on-error",
+    "readyz",
+    "anonymous 401",
+    "OIDC discovery",
+    "Milvus search",
+    "real OIDC tokens",
+    "viewer/revoked permissions",
+    "published report SHA and citations",
+    "authorized SQL-filtered document retrieval (keyword fallback, upstream disabled)",
+    "offline ClamAV signatures: clean content accepted and EICAR rejected",
+    "new research accepted and explicitly cancelled"
+  ],
+  "retention": {
+    "compose_containers_stopped_and_retained": 23,
+    "helpers_retained_with_creator_proof": 34,
+    "fresh_volumes_retained": 17,
+    "internal_network_retained": "dr-restore-daily-postupgrade-20261027-01_isolated",
+    "compose_stop_complete": true,
+    "retirement_cleanup_performed": false
+  },
+  "limits": [
+    "Same Windows host, fresh project/network/volumes with cached immutable images; archive validated before Docker cache lookup, not an empty-daemon or off-host restore.",
+    "Source daily data has no nonempty restricted collection/grant fixture; current ACL schema/default document policies and actual workspace/revocation paths verified; candidate private collection checks remain separate.",
+    "No research execution/model calls: new queued request accepted then cancelled, upstream disabled.",
+    "One observation under900s is not general RTO/SLA/HA or capacity proof."
+  ]
+}

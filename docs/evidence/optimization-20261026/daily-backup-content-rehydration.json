@@ -1,0 +1,40 @@
+{
+  "recorded_at": "2026-10-27T04:21:09.860729+00:00",
+  "prior_scheduled_backup": {
+    "passed": false,
+    "duration_seconds": 331.314,
+    "manifest_written": false,
+    "last_verified_backup_at_advanced": false,
+    "failure": "Docker save current-platform Loki config plus 12 of18 compressed layers missing; both OCI and Docker compatibility chains incomplete. Running snapshots alone were insufficient.",
+    "failed_archive_retained": true,
+    "native_task_exit": 1,
+    "visible_descendant_windows_observed": 0
+  },
+  "repair": {
+    "method": "Load complete original verified same-platform OCI bytes already acquired for original source scan; no binary rebuild or version change. Then normal Docker save targeted current image and strict unmodified bundle verifier.",
+    "transport_sha256": "696a4921cccc58438f50d7c31e8d4d30704f8a1e8abd0134a7891488ca39dfff",
+    "source_layout_byte_identity": true,
+    "runtime_container_and_image_subject_unchanged": "sha256:569e5cab050b7705eb82080335ff9a8bd329650b358bb0d42131e3ced8d9492e",
+    "container_recreated": false,
+    "policy_or_verifier_relaxed": false
+  },
+  "fresh_targeted_docker_export": {
+    "version": 1,
+    "platform": "linux/amd64",
+    "image_roots": 1,
+    "descriptor_visits": 1,
+    "selected_manifests": 1,
+    "verified_required_blobs": 20,
+    "verified_unique_layer_diffids": 18,
+    "expanded_layer_bytes": 160328192,
+    "archive_bytes": 48120320,
+    "bundle_limit_bytes": 34359738368,
+    "expanded_limit_bytes": 68719476736,
+    "excluded_platform_refs": 0,
+    "excluded_missing_platform_refs": 0,
+    "full_multiarch_archive_verified": false,
+    "docker_cache_consulted": false
+  },
+  "retirement_cleanup_performed": false,
+  "next_full_scheduled_backup": "pending"
+}

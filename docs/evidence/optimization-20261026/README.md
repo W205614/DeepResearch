@@ -1,8 +1,8 @@
 # 2026-10-26 架构、可靠性与安全优化证据
 
-当前阶段：`DEPLOY_READY`。候选实现、五角色功能/故障验收和监控验收已取得对应证据，远程制品重组和新增 Windows 静默任务入口检查已完成。尚未提交最终 Git SHA、替换日常部署或取得最终 GitHub CI 结果。逐项状态以 [scope.json](scope.json) 为准，不能将组件通过理解为全部交付完成。
+当前阶段：`LOCAL_DAILY_CLOSURE_PASSED_FINAL_SHA_CI_PENDING`，本地窗口 `release-ready=true`。日常部署已实际升级到 `0017_product_governance`，25个服务中21个长期服务运行、已声明健康检查通过，4个一次性任务退出码为0；健康与就绪接口均返回200。[日常部署收据](daily-deployment-acceptance.json) 绑定本次代码提交及实际镜像、容器身份。日常五角色、旧数据保留、监控浏览器、原生静默备份/探测及升级后独立恢复均已取得具名通过证据。最终源码 GitHub 门禁及两项目之后另获许可的清理仍待完成。逐项状态以 [scope.json](scope.json) 为准。
 
-后续窗口状态：`DR DAILY_DEPLOYMENT_NO_CLEANUP` 已获批准。用户已确认手动停机并要求启动继续，由 root 独占执行日常 Docker 变更；启动、备份/恢复及日常验收结果仍须另有执行证据。该窗口不包含清理许可。
+窗口状态：`DR DAILY_DEPLOYMENT_NO_CLEANUP` 已获批准，由 root 独占执行日常 Docker 变更。[升级前旧版完整备份及独立冷卷恢复](daily-old-backup-restore.json) 与[升级后备份的独立恢复](daily-postupgrade-backup-restore.json) 分别通过；同机新项目使用独立卷，临时资源保留。本窗口不包含退休资源清理许可；已获批的正常编排替换另列原22个容器身份，不记成“生命周期删除为零”。
 
 ## 架构判断
 
@@ -18,23 +18,27 @@ Java 控制身份、权限、任务接纳、发布审核和最终业务状态；
 
 | 项目 | 当前证据 | 尚待完成或证据边界 |
 | --- | --- | --- |
-| 0 基线与共同交付 | 冻结输入、分项账本、独立候选项目 | 日常冷备/恢复、部署窗口、定向清理、最终 SHA 与 CI |
+| 0 基线与共同交付 | 冻结输入、分项账本、独立候选项目；[日常部署](daily-deployment-acceptance.json)、[静默备份](daily-scheduled-backup.json)、[升级后恢复](daily-postupgrade-backup-restore.json) | 本地闭环完成；最终 SHA 与 CI、清理须另获许可 |
 | 1 恢复与异常分类 | [reliability.json](reliability.json)、[recovery-and-sources.json](recovery-and-sources.json) | 一次公开任务出现约266秒停顿后自动恢复，未复现；原因仍在核查 |
 | 2 费用治理 | [governance.json](governance.json)、[usage-postgres.json](usage-postgres.json) | 运维探测与静态检查区分；已知实耗、未知预留分开；真实供应商验收另记 |
 | 3 上传扫描恢复 | [reliability.json](reliability.json)、[dependency-faults.json](dependency-faults.json)、[browser-failures.json](browser-failures.json) | 真实 ClamAV 故障暴露的退避问题已修复并重验；MinIO 断服返回受控503，同内容重传复用记录 |
 | 4 解析资源边界 | [parser.json](parser.json) | Windows 与 Linux 有针对性验证；不等同完整恶意代码沙箱 |
 | 5 删除与保留 | [reliability.json](reliability.json)、[reliability-postgres.json](reliability-postgres.json) | 实际 PostgreSQL 并发、检查点与文档向量故障重试通过；来源不明的独立语义记忆物理保留，失去原任务后拒绝上下文召回 |
 | 6 服务最小权限 | [privileges-isolated-v3.json](privileges-isolated-v3.json)、[storage-isolated.json](storage-isolated.json)、[新鲜库供应商扫描](vendor-fresh-scan.json)、[精确 Grafana 门禁](grafana-artifact-governance.json) | 本地普通镜像扫描与获批制品定向判定分别验证；最终 SHA 的冷 Security CI 尚未执行，原始中低危和 Unknown 不删除 |
-| 7 检索容量边界 | [retrieval.json](retrieval.json) | 固定题与4201片段实验，不是通用召回率、容量或延迟承诺 |
+| 7 检索容量边界 | [retrieval.json](retrieval.json)、[维护就绪边界](lexical-maintenance-readiness.json)、[实际迁移](daily-deployment-acceptance.json) | 117个词法标记保留，1个空间不存在且无成员的孤儿片段明确延后，`all_eligible_indexed=false`；不是全数据索引完成或通用容量承诺 |
 | 8 研究范围确认 | [scope-intake.json](scope-intake.json)、[roles-and-scope.json](roles-and-scope.json) | 确定性保守触发规则，不保证识别所有模糊问题 |
 | 9 资料与历史权限 | [acl.json](acl.json)、[roles-and-scope.json](roles-and-scope.json) | 当前权限重查覆盖检索、来源、记忆、报告与导出；异人角色由自动化浏览器操作 |
 | 10 公开来源时效 | [source-revalidation.json](source-revalidation.json) | 来源正文变化不是事实错误证明；浏览器正文和模型为受控夹具 |
 | 11 跨语言契约 | [reliability.json](reliability.json) | 共享冻结样例、严格版本/字段、尝试号和数据库写入边界 |
-| 12 模块与运维 | [boundary-review.json](boundary-review.json)、[infra.json](infra.json) | 配置档、资源限制、告警、备份工具已实现；安装与日常部署证据待窗口阶段 |
+| 12 模块与运维 | [boundary-review.json](boundary-review.json)、[infra.json](infra.json)、[日常监控回读](daily-monitoring-readback.json)、[面板浏览器](daily-grafana-panel8-browser.json)、[静默任务](daily-scheduled-backup.json) | 本地运维与同机恢复已验收；异机、空缓存及长期无人值守可靠性不由单次结果证明 |
 
 [document-lifecycle-roles.json](document-lifecycle-roles.json) 验证实际文件上传、替换、影响分析、报告修订、独立审核账号发布、只读访问和撤权。五角色、终态恢复及公开来源修订使用真实 OIDC、Java/Python、PostgreSQL、Redis、MinIO、Milvus、ClamAV；模型、嵌入或网页正文的替换点明确标为夹具。没有全程拦截浏览器业务 HTTP。
 
 [统一候选验收](unified-candidate.json) 已切换正式完整构建的Python3.11.18、签名Java21.0.13+9及更新后的数据/身份组件；[五个应用服务的源码指纹](candidate-source-fingerprints-v5.json) 均匹配。重新验证五角色、Java恢复、资料生命周期和真实扫描/对象存储故障路径，无新增供应商调用。升级前保留11个合成数据卷冷快照，另以只读SQL核对[163条选定旧行和11份旧正式快照](upgrade-old-row-preservation.json)，均保留且固定字段/正文摘要一致。这些结果不是完整存储恢复或日常部署证明。
+
+[日常五角色验收](daily-five-role-acceptance.json) 取得79项功能检查、7项拒绝和17张私密截图，新增供应商调用为0。原脚本的 `Response.ok()` 预检错误和 Keycloak 未保留自定义属性导致的收尾失败均保留；后者按实际创建的5个精确用户ID独立核对并删除、确认404，没有重跑已经通过的业务检查。[迁移后](daily-sql-post-schema-preservation.json)及[五角色后](daily-sql-post-runtime-preservation.json)对15张表原2132行、11844个字段逐项比较，旧行/字段未变，允许新增18行合成数据；[S3旧版本核对](daily-s3-preservation.json)的5个版本、1243982字节正文摘要全部一致。这些是选定存量数据保留证明，不是全库恢复证明。
+
+[日常依赖与解释器回读](daily-native-readback.json) 验证实际 ClamAV clean/EICAR、Milvus两集合、Python3.11.18和Java21.0.13。[Grafana精确管理员修复](daily-grafana-admin-reconciliation.json)保留旧卷冷副本，仅重置id1密码并通过stdin传入，实际 `/api/user` 返回200且身份为id1/admin；[监控回读](daily-monitoring-readback.json)确认5个目标、3个数据源健康及panel8轴配置。[实际浏览器面板](daily-grafana-panel8-browser.json)已检查真实渲染和坐标轴，私密截图摘要保留；零值曲线不当作识图准确率或故障率结论。
 
 失败尝试、修复前后结果和私密原始材料的摘要分别保留。测试脚本错误、已确认缺陷、尚未定位的停顿与供应商扫描失败不混写成“全部通过”。仅重测修改和直接影响路径，完整检查交最终 GitHub CI。
 
@@ -44,7 +48,11 @@ Java 控制身份、权限、任务接纳、发布审核和最终业务状态；
 
 [MinIO固定归档门禁](minio-ci-integration.json) 只接受获批的同一OCI内容，原始1HIGH/0CRITICAL与精确FIXED1分开保留。[Grafana 最终新制品](grafana-artifact-governance.json) 为 `9a68d3a7…`，musl 已实际修复，五个 ELF 的编译依赖图和二进制排除了公告指定的七个旧 OpenPGP 包。完整新 subject 的18个目标/公告行获得独立人类授权，机器门禁分别报告 FIXED2、NOT_AFFECTED16；没有继承旧 `646b…` 的授权。Trivy 原始2CRITICAL/11HIGH/20MEDIUM/2LOW/5UNKNOWN、Grype 原始2HIGH/3MEDIUM/5UNKNOWN均保留，三条 BusyBox 中危未被豁免。[13段实际远程下载、整档重组及OCI校验](grafana-remote-transport.json) 已通过：849540608 字节全部来自远程分段，整档 SHA256 为 `02332c39f6daed922cd030fbcaa00e4949e07b1c157776a2ca60640327e4e59b`，未使用本地源归档补齐。原始短流失败、首次分段8成功/5失败及后续补齐的收据保留。Release 尚为草稿，正常远程加载必须实时核对已发布状态，缓存不能绕过；新增8个发布状态回归通过。私有草稿传输审计不等于发布完成或最终 SHA 的冷 GitHub CI 通过。授权到2026-11-25失效；新发现、失配、扫描失败或证据缺失均阻断，不把 Unknown 降为低危或把失败写成零。
 
-[镜像备份包校验](backup-image-bundle.json) 在备份完成前、恢复查询本机镜像缓存前验证当前平台内容。历史2.456GB包的22个镜像根、232个必需 blob、166个实际解压 DiffID 通过，35个直接用例通过。非目标平台的缺失引用单独记录；这不是完整多架构包、空缓存导入或整栈冷恢复证明。日常冷备及独立项目恢复仍待部署窗口。
+[镜像备份包校验](backup-image-bundle.json) 在备份完成前、恢复查询本机镜像缓存前验证当前平台内容。历史2.456GB包的22个镜像根、232个必需 blob、166个实际解压 DiffID 通过，35个直接用例通过。非目标平台的缺失引用单独记录；这不是完整多架构包或空缓存导入证明。另有[本窗口升级前旧版备份/恢复实测](daily-old-backup-restore.json)。
+
+[首次实际静默备份失败](daily-scheduled-backup.json)的退出码1保留，未更新成功心跳；[25个根的完整普查](daily-backup-all-roots-survey.json)发现254个现存blob摘要无误，13个缺失引用全部属于Loki。按[原始OCI相同字节补齐](daily-backup-content-rehydration.json)后，原镜像身份及校验器门槛不变，定向Docker导出通过20个blob、18个DiffID校验；旧失败包仍为失败。第二次实际任务退出码0，新备份17份卷归档、25个镜像根、267个blob、195个DiffID全部通过；[升级后独立恢复](daily-postupgrade-backup-restore.json)实测227.61秒通过，23个恢复编排容器已停止并保留，34个带创建归属证明的helper、17个新卷和隔离网络保留。
+
+恢复验证涵盖当前ACL表和默认文档策略、2个OIDC token、3项权限边界、1份报告与3份引用快照、2项原生向量检索和2项ClamAV检查。新研究仅接纳入队后显式取消，上游禁用，没有证明模型执行完成。源日常集合为空，因此没有证明恢复非空私有集合/授权数据；此前候选私有集合验收另记。本机已有不可变镜像缓存，包先于缓存查询验证；这仍不是异机、空daemon、多架构、HA或普遍RTO承诺。
 
 最新清理顺序以 [scope.json](scope.json) 为准：两个项目完成日常验收和最终 SHA 的 GitHub 门禁后，再由协调方核对最终保留集并发放单独的最终清理窗口。[原18容器清单](cleanup-plan.json) 仍只是冻结的条件预审，不在部署前执行。最终审查扩展到明确专属、无引用的旧镜像和废弃卷；保留备份文件、其他项目、共享或归属不明资源，禁止全局 prune、`down -v` 和强制删除。
 
@@ -60,12 +68,12 @@ CI 后续获得用户授权：所有新完整质量 CI 尝试合计最多515次�
 
 ## 当前外部限制
 
-用户明确决定“暂无目标，先完成其他工作”。真实异机恢复标记为 `deferred_by_user_not_verified`，不再等待地址；可配置备份、本机隔离恢复、受控告警与保留策略仍须完成。真实 SMTP 送达、目标用户 MFA 注册/恢复以及外部域名 TLS 须另有接入条件和证据，不能用只读配置检查代替实测。
+用户明确决定“暂无目标，先完成其他工作”。真实异机恢复标记为 `deferred_by_user_not_verified`，不再等待地址；升级前后同机隔离恢复已有分别实测，受控告警与保留策略按各自收据判定。真实 SMTP 送达、目标用户 MFA 注册/恢复以及外部域名 TLS 须另有接入条件和证据，不能用只读配置检查代替实测。
 
-日常服务仍按原编排运行。候选组件的成功结果不等同已部署，镜像某时点0个 HIGH/CRITICAL 发现也不等同零风险。
+日常服务已按本次获批编排完成升级和上述验收。候选与日常证据分别列出；镜像某时点0个 HIGH/CRITICAL 发现不等同零风险。
 
-[Windows静默入口](windows-host-task-silence.json) 强制pythonw、隐藏全部备份子进程、显式当前用户Interactive/Limited，保留日志及真实退出码。10个直接用例和PowerShell语法检查通过，实际任务安装及日常单次备份仍待窗口。
+[Windows静默入口](windows-host-task-silence.json) 强制pythonw、隐藏备份子进程、显式当前用户Interactive/Limited，保留日志及真实退出码。除10个直接用例和PowerShell语法检查外，[实际原生任务](daily-scheduled-backup.json)的第二次备份退出码0，205次进程后代窗口采样未观察到可见窗口；首次失败任务同样完整保留。备份前后实际探测任务均退出0，未伪造备份成功，也未用容量探测续签最后验证时间。永久计划为每日03:30备份、每5分钟探测，临时维护许可已还原为03:15—04:30。采样不能排除两次采样间所有瞬时窗口，单次验收不证明长期无人值守运行。
 
-[最新只读源码核验](candidate-source-fingerprints-v7.json) 从现有已停止容器读取实际文件，五个服务的88/29/31输入及Web7个产物均匹配；实际JAR也与原源码绑定结果相同。此前live-only v6因服务已停止返回0个服务，失败记录保留。候选和日常服务均观察到约2026-10-27 08:47上海时间已停止，原因未在本次审查中建立；本次没有启停服务，也不声称当前可用。
+[候选停机时源码核验](candidate-source-fingerprints-v7.json) 从当时已停止容器读取实际文件，五个服务的88/29/31输入及Web7个产物均匹配，实际JAR与原源码绑定结果相同；此前live-only v6返回0个服务的失败记录保留。约2026-10-27 08:47上海时间的停机观察是窗口前历史状态，原因未在该次审查中建立；当前日常状态以[实际部署](daily-deployment-acceptance.json)及[日常运行源码](daily-runtime-source.json)为准，不由旧候选快照推断。
 
 [最终保留与清理初审](final-retention-plan.preliminary.json) 扩展到43个有原创建依据的条件容器、107个仅发现线索待归属核对的容器、74个镜像及76个卷的逐项审查。输入是旧快照，不是可立即执行的删除清单；最终部署与两项目CI通过后必须刷新精确保留集和全部引用，再取得独立最终清理窗口。

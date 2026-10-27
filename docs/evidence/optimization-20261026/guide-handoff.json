@@ -2,8 +2,18 @@
   "artifact": "complete-functional-guide-handoff",
   "date": "2026-10-26",
   "baseline_git_head": "8768aa6c1e4f0d24a8c355ce769112e98b3b8c10",
+  "source_git_head": "9dcc24073ddf0cba383701362ea8e32ac1415d14",
   "final_delivery_sha": null,
-  "source_state": "working tree; coordinator must refresh source lines after final code changes",
+  "source_state": "Current source anchors refreshed at source_git_head; the final containing Git tree binds this handoff. Remote/CI status must be checked separately for that final commit.",
+  "daily_delivery_evidence": [
+    "daily-deployment-acceptance.json",
+    "daily-five-role-acceptance.json",
+    "daily-sql-post-runtime-preservation.json",
+    "daily-s3-preservation.json",
+    "daily-scheduled-backup.json",
+    "daily-postupgrade-backup-restore.json",
+    "daily-grafana-panel8-browser.json"
+  ],
   "personal_material_mapping": "由协调方映射到既有导学/面经；本工具未查找、读取或修改共享简历与个人面经",
   "human_review": "not_performed",
   "external_user_feedback": "not_established",
@@ -2606,8 +2616,8 @@
           "path": "compose.yaml",
           "symbol": "module/configuration",
           "line": 1,
-          "source_sha256": "9f819cbfaa9a3073ba1bc0fcfc9fb745fb2992ac4cad2682fb91db388ef8a1f3",
-          "source_text_lf_sha256": "c4e81c93b834b6dd6799d4ca44ed8a941c20d806fbbe2f951ba55de0178fcc67",
+          "source_sha256": "fe66e42917851d8a076fc9f40d690bed2c9ea798e1ab98bb4807febcb29c65df",
+          "source_text_lf_sha256": "0f6becccec044a437b46104ad78a9a139c844bb8feabe2328a57aa8d58cdd0cf",
           "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
         }
       ],
@@ -2664,8 +2674,8 @@
           "path": "compose.yaml",
           "symbol": "module/configuration",
           "line": 1,
-          "source_sha256": "9f819cbfaa9a3073ba1bc0fcfc9fb745fb2992ac4cad2682fb91db388ef8a1f3",
-          "source_text_lf_sha256": "c4e81c93b834b6dd6799d4ca44ed8a941c20d806fbbe2f951ba55de0178fcc67",
+          "source_sha256": "fe66e42917851d8a076fc9f40d690bed2c9ea798e1ab98bb4807febcb29c65df",
+          "source_text_lf_sha256": "0f6becccec044a437b46104ad78a9a139c844bb8feabe2328a57aa8d58cdd0cf",
           "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
         }
       ],
@@ -3426,8 +3436,8 @@
           "path": "compose.yaml",
           "symbol": "module/configuration",
           "line": 1,
-          "source_sha256": "9f819cbfaa9a3073ba1bc0fcfc9fb745fb2992ac4cad2682fb91db388ef8a1f3",
-          "source_text_lf_sha256": "c4e81c93b834b6dd6799d4ca44ed8a941c20d806fbbe2f951ba55de0178fcc67",
+          "source_sha256": "fe66e42917851d8a076fc9f40d690bed2c9ea798e1ab98bb4807febcb29c65df",
+          "source_text_lf_sha256": "0f6becccec044a437b46104ad78a9a139c844bb8feabe2328a57aa8d58cdd0cf",
           "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
         }
       ],

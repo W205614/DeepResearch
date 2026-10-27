@@ -1,0 +1,72 @@
+{
+  "recorded_at": "2026-10-27T10:37:53.312243+08:00",
+  "scope": "Local Windows private configuration/backup files, separate from service or image CVE gates",
+  "confirmed_initial_issue": "Inherited Authenticated Users/BUILTIN Users local allow rules on private E-drive artifacts",
+  "restricted_owned_paths": [
+    {
+      "Path": ".env.before-service-roles",
+      "Status": "restricted_current_user_system_administrators",
+      "Protected": true,
+      "RuleCount": 3
+    },
+    {
+      "Path": ".cache/optimization-20261026",
+      "Status": "restricted_current_user_system_administrators",
+      "Protected": true,
+      "RuleCount": 3
+    },
+    {
+      "Path": ".cache/optimization-20261027-daily",
+      "Status": "restricted_current_user_system_administrators",
+      "Protected": true,
+      "RuleCount": 3
+    },
+    {
+      "Path": ".cache/backup/deepresearch-pre-upgrade-window-20261027-01",
+      "Status": "restricted_current_user_system_administrators",
+      "Protected": true,
+      "RuleCount": 3
+    }
+  ],
+  "existing_nonowned_env": {
+    "path": ".env",
+    "tightening_result": "OS refused WRITE_DAC; no elevation attempted and SDDL unchanged",
+    "owner_matches_current_user": false,
+    "boundary_at_initial_attempt": "Still inherits broad local read rights; requires file owner/administrator to adjust. Do not describe this file as restricted.",
+    "current_boundary": "Resolved under task-authorized coordinator instruction by samebyte samepath restricted replacement, no owner takeover/elevation; see windows-env-private-rebuild.json"
+  },
+  "rollback_sddl_private_sha256": "d2fd2b4d9a2bdea889f464c61e948d7020908425d24448d5091830faa834979f",
+  "permission_denial_type": "Windows unauthorized operation, not automatic approval review",
+  "secret_values_printed": false,
+  "boundary": "Owned private directories and credential backup narrowed to currentuser/SYSTEM/Administrators. This does not prove permissions for every pre-existing or other-project path.",
+  "resolution_evidence": "windows-env-private-rebuild.json",
+  "initial_acl_attempt_files_deleted_or_moved": 0,
+  "subsequent_env_rebuild_operations": {
+    "restricted_new_env_file_created": 1,
+    "restricted_original_byte_backup_created": 1,
+    "restricted_original_SDdl_backup_created": 1,
+    "original_object_overwritten_with_nonsecret_marker_before_archive": true,
+    "file_moves": 2,
+    "permanent_file_deletion": false,
+    "evidence": "windows-env-private-rebuild.json"
+  },
+  "final_current_readback": {
+    "recorded_at": "2026-10-27T12:44:19.7865732+08:00",
+    "paths": [
+      {
+        "path": ".env",
+        "protected": true,
+        "allow_entries": 3,
+        "expected_only_current_user_system_administrators": true
+      },
+      {
+        "path": ".cache\\backup\\scheduled",
+        "protected": true,
+        "allow_entries": 3,
+        "expected_only_current_user_system_administrators": true
+      }
+    ],
+    "later_grafana_credential_rotation": "daily-grafana-admin-reconciliation.json; intentional password update preserved main ACL; before-env/private cold DB copies retained",
+    "permanent_file_deletion": 0
+  }
+}

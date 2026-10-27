@@ -6,7 +6,7 @@
     {
       "id": 0,
       "title": "基线与共同交付",
-      "status": "local_candidate_acceptance_done_final_daily_SHA_CI_and_bothprojects_cleanup_pending",
+      "status": "local_daily_deployment_backup_restore_and_named_acceptance_passed_final_SHA_CI_and_separate_cleanup_pending",
       "subitems": [
         {
           "requirement": "只测修改/直接影响",
@@ -30,7 +30,7 @@
         },
         {
           "requirement": "真实角色浏览器",
-          "status": "candidate_validated",
+          "status": "candidate_and_daily_named_functional_acceptance_validated_harness_failures_preserved",
           "implementation": [
             "docs/evidence/optimization-20261026/README.md",
             "docs/evidence/optimization-20261026/guide-handoff.json"
@@ -41,7 +41,8 @@
             "dependency-faults.json",
             "real-provider.json",
             "unified-candidate.json",
-            "observability-acceptance.json"
+            "observability-acceptance.json",
+            "daily-five-role-acceptance.json"
           ],
           "limitations": []
         },
@@ -61,13 +62,21 @@
         },
         {
           "requirement": "窗口后重建清理",
-          "status": "daily_backup_restore_pending_window_cleanup_only_after_bothprojects_final_CI",
+          "status": "daily_upgrade_pre_and_postupgrade_restore_and_native_tasks_passed_cleanup_not_authorized",
           "implementation": [
             "docs/evidence/optimization-20261026/README.md",
             "docs/evidence/optimization-20261026/guide-handoff.json"
           ],
-          "evidence": [],
-          "limitations": []
+          "evidence": [
+            "daily-deployment-acceptance.json",
+            "daily-old-backup-restore.json",
+            "daily-scheduled-backup.json",
+            "daily-postupgrade-backup-restore.json"
+          ],
+          "limitations": [
+            "Retirement cleanup is not authorized or performed; approved normal Compose replacements remain recorded separately.",
+            "Same-host fresh volumes with cached immutable images; no empty-daemon, offhost, full multiarch or general RTO/HA proof."
+          ]
         },
         {
           "requirement": "README最终SHA及CI",
@@ -81,7 +90,7 @@
         },
         {
           "requirement": "完整导学面经交接",
-          "status": "59_features_prepared_final_source_refresh_pending",
+          "status": "59_features_prepared_final_metadata_handoff_root_owned",
           "implementation": [
             "docs/evidence/optimization-20261026/README.md",
             "docs/evidence/optimization-20261026/guide-handoff.json"
@@ -108,6 +117,18 @@
       "implementation": [
         "docs/evidence/optimization-20261026/README.md",
         "docs/evidence/optimization-20261026/guide-handoff.json"
+      ],
+      "latest_evidence": [
+        "daily-deployment-acceptance.json",
+        "daily-old-backup-restore.json",
+        "daily-five-role-acceptance.json",
+        "daily-sql-post-runtime-preservation.json",
+        "daily-s3-preservation.json",
+        "daily-scheduled-backup.json",
+        "daily-postupgrade-backup-restore.json",
+        "daily-backup-all-roots-survey.json",
+        "daily-backup-content-rehydration.json",
+        "daily-grafana-panel8-browser.json"
       ]
     },
     {
@@ -183,7 +204,7 @@
         "recovery-and-sources.json",
         "unified-candidate.json"
       ],
-      "evidence_boundary": "Only named receipt inputs and paths; full daily deployment and final-source GitHub gates are pending. No general accuracy, capacity, HA or zero-risk inference."
+      "evidence_boundary": "Named candidate and daily receipts only. Local daily deployment, native scheduled backup/probe, same-host upgraded-stack independent restore, monitoring screenshot and named acceptance passed. Final exact-source GitHub gates and separately authorized later cleanup remain pending. No general accuracy, capacity, HA, empty-daemon or offhost recovery inference."
     },
     {
       "id": 2,
@@ -271,7 +292,7 @@
         "real-provider.json",
         "ci-budget-assessment.json"
       ],
-      "evidence_boundary": "Only named receipt inputs and paths; full daily deployment and final-source GitHub gates are pending. No general accuracy, capacity, HA or zero-risk inference."
+      "evidence_boundary": "Named candidate and daily receipts only. Local daily deployment, native scheduled backup/probe, same-host upgraded-stack independent restore, monitoring screenshot and named acceptance passed. Final exact-source GitHub gates and separately authorized later cleanup remain pending. No general accuracy, capacity, HA, empty-daemon or offhost recovery inference."
     },
     {
       "id": 3,
@@ -360,7 +381,7 @@
         "dependency-faults.json",
         "unified-candidate/dependency-faults.json"
       ],
-      "evidence_boundary": "Only named receipt inputs and paths; full daily deployment and final-source GitHub gates are pending. No general accuracy, capacity, HA or zero-risk inference."
+      "evidence_boundary": "Named candidate and daily receipts only. Local daily deployment, native scheduled backup/probe, same-host upgraded-stack independent restore, monitoring screenshot and named acceptance passed. Final exact-source GitHub gates and separately authorized later cleanup remain pending. No general accuracy, capacity, HA, empty-daemon or offhost recovery inference."
     },
     {
       "id": 4,
@@ -431,7 +452,7 @@
       "latest_evidence": [
         "parser.json"
       ],
-      "evidence_boundary": "Only named receipt inputs and paths; full daily deployment and final-source GitHub gates are pending. No general accuracy, capacity, HA or zero-risk inference."
+      "evidence_boundary": "Named candidate and daily receipts only. Local daily deployment, native scheduled backup/probe, same-host upgraded-stack independent restore, monitoring screenshot and named acceptance passed. Final exact-source GitHub gates and separately authorized later cleanup remain pending. No general accuracy, capacity, HA, empty-daemon or offhost recovery inference."
     },
     {
       "id": 5,
@@ -520,7 +541,7 @@
         "runtime-cleanup-boundary.json",
         "reliability-postgres.json"
       ],
-      "evidence_boundary": "Only named receipt inputs and paths; full daily deployment and final-source GitHub gates are pending. No general accuracy, capacity, HA or zero-risk inference."
+      "evidence_boundary": "Named candidate and daily receipts only. Local daily deployment, native scheduled backup/probe, same-host upgraded-stack independent restore, monitoring screenshot and named acceptance passed. Final exact-source GitHub gates and separately authorized later cleanup remain pending. No general accuracy, capacity, HA, empty-daemon or offhost recovery inference."
     },
     {
       "id": 6,
@@ -626,9 +647,11 @@
         "vendor-fresh-scan.json",
         "native-jvm-ci.json",
         "minio-ci-integration.json",
-        "grafana-artifact-governance.json"
+        "grafana-artifact-governance.json",
+        "daily-deployment-acceptance.json",
+        "daily-native-readback.json"
       ],
-      "evidence_boundary": "Only named receipt inputs and paths; full daily deployment and final-source GitHub gates are pending. No general accuracy, capacity, HA or zero-risk inference."
+      "evidence_boundary": "Named candidate and daily receipts only. Local daily deployment, native scheduled backup/probe, same-host upgraded-stack independent restore, monitoring screenshot and named acceptance passed. Final exact-source GitHub gates and separately authorized later cleanup remain pending. No general accuracy, capacity, HA, empty-daemon or offhost recovery inference."
     },
     {
       "id": 7,
@@ -711,9 +734,19 @@
         "frontend/src/DocumentCapacity.vue"
       ],
       "latest_evidence": [
-        "retrieval.json"
+        "retrieval.json",
+        "lexical-maintenance-readiness.json",
+        "daily-deployment-acceptance.json"
       ],
-      "evidence_boundary": "Only named receipt inputs and paths; full daily deployment and final-source GitHub gates are pending. No general accuracy, capacity, HA or zero-risk inference."
+      "evidence_boundary": "Named candidate and daily receipts only. Local daily deployment, native scheduled backup/probe, same-host upgraded-stack independent restore, monitoring screenshot and named acceptance passed. Final exact-source GitHub gates and separately authorized later cleanup remain pending. No general accuracy, capacity, HA, empty-daemon or offhost recovery inference.",
+      "daily_index_boundary": {
+        "lexical_markers": 117,
+        "remaining_missing_chunks": 1,
+        "deferred_unservable_chunks": 1,
+        "all_eligible_indexed": false,
+        "ready_for_currently_servable_corpus": true,
+        "reason": "Workspace absent and zero memberships; no marker/source/ACL changes; future workspace restoration requires renewed census and backfill."
+      }
     },
     {
       "id": 8,
@@ -814,7 +847,7 @@
         "scope-intake.json",
         "unified-candidate/roles-and-scope.json"
       ],
-      "evidence_boundary": "Only named receipt inputs and paths; full daily deployment and final-source GitHub gates are pending. No general accuracy, capacity, HA or zero-risk inference."
+      "evidence_boundary": "Named candidate and daily receipts only. Local daily deployment, native scheduled backup/probe, same-host upgraded-stack independent restore, monitoring screenshot and named acceptance passed. Final exact-source GitHub gates and separately authorized later cleanup remain pending. No general accuracy, capacity, HA, empty-daemon or offhost recovery inference."
     },
     {
       "id": 9,
@@ -888,9 +921,11 @@
       "latest_evidence": [
         "acl.json",
         "unified-candidate/roles-and-scope.json",
-        "unified-candidate/document-lifecycle.json"
+        "unified-candidate/document-lifecycle.json",
+        "daily-five-role-acceptance.json",
+        "daily-sql-post-runtime-preservation.json"
       ],
-      "evidence_boundary": "Only named receipt inputs and paths; full daily deployment and final-source GitHub gates are pending. No general accuracy, capacity, HA or zero-risk inference."
+      "evidence_boundary": "Named candidate and daily receipts only. Local daily deployment, native scheduled backup/probe, same-host upgraded-stack independent restore, monitoring screenshot and named acceptance passed. Final exact-source GitHub gates and separately authorized later cleanup remain pending. No general accuracy, capacity, HA, empty-daemon or offhost recovery inference."
     },
     {
       "id": 10,
@@ -962,7 +997,7 @@
         "source-revalidation.json",
         "unified-candidate/recovery-and-sources.json"
       ],
-      "evidence_boundary": "Only named receipt inputs and paths; full daily deployment and final-source GitHub gates are pending. No general accuracy, capacity, HA or zero-risk inference."
+      "evidence_boundary": "Named candidate and daily receipts only. Local daily deployment, native scheduled backup/probe, same-host upgraded-stack independent restore, monitoring screenshot and named acceptance passed. Final exact-source GitHub gates and separately authorized later cleanup remain pending. No general accuracy, capacity, HA, empty-daemon or offhost recovery inference."
     },
     {
       "id": 11,
@@ -1034,12 +1069,12 @@
         "verification-boundary.json",
         "reliability.json"
       ],
-      "evidence_boundary": "Only named receipt inputs and paths; full daily deployment and final-source GitHub gates are pending. No general accuracy, capacity, HA or zero-risk inference."
+      "evidence_boundary": "Named candidate and daily receipts only. Local daily deployment, native scheduled backup/probe, same-host upgraded-stack independent restore, monitoring screenshot and named acceptance passed. Final exact-source GitHub gates and separately authorized later cleanup remain pending. No general accuracy, capacity, HA, empty-daemon or offhost recovery inference."
     },
     {
       "id": 12,
       "title": "职责与部署整理",
-      "status": "structure_profiles_ops_and_selected_candidate_checks_validated_install_restore_and_release_pending_window",
+      "status": "structure_daily_deployment_monitoring_native_tasks_and_samehost_restore_validated_final_exact_SHA_CI_pending",
       "subitems": [
         {
           "requirement": "runtime/graph/App职责拆分",
@@ -1056,7 +1091,7 @@
         },
         {
           "requirement": "类型边界",
-          "status": "implemented_local_evidence_available_daily_install_and_release_pending",
+          "status": "implemented_named_candidate_and_daily_checks_available_final_release_pending",
           "implementation": [
             "backend/research/verification_contract.py",
             "backend/services/retention.py",
@@ -1067,7 +1102,7 @@
         },
         {
           "requirement": "部署档保留防护",
-          "status": "implemented_local_evidence_available_daily_install_and_release_pending",
+          "status": "implemented_named_candidate_and_daily_checks_available_final_release_pending",
           "implementation": [
             "backend/research/verification_contract.py",
             "backend/services/retention.py",
@@ -1078,7 +1113,7 @@
         },
         {
           "requirement": "告警容量资源日志",
-          "status": "implemented_local_evidence_available_daily_install_and_release_pending",
+          "status": "implemented_named_candidate_and_daily_checks_available_final_release_pending",
           "implementation": [
             "backend/research/verification_contract.py",
             "backend/services/retention.py",
@@ -1089,20 +1124,26 @@
         },
         {
           "requirement": "自动备份异机接口与RPO/RTO",
-          "status": "tools_and_local_component_checks_prepared_install_and_restore_pending_window",
+          "status": "pre_and_postupgrade_samehost_restore_and_native_backup_passed_offhost_explicitly_deferred",
           "implementation": [
             "backend/research/verification_contract.py",
             "backend/services/retention.py",
             "frontend/src/useDocumentLibrary.ts"
           ],
-          "evidence": [],
+          "evidence": [
+            "daily-old-backup-restore.json",
+            "daily-scheduled-backup.json",
+            "daily-postupgrade-backup-restore.json"
+          ],
           "limitations": [
-            "offhost restore deferred_by_user_not_verified; user instructed other work to continue"
+            "offhost restore deferred_by_user_not_verified; user instructed other work to continue",
+            "Observed restore 227.61s within configured 900s target for this one run; not a general RTO/SLA/RPO/HA or capacity guarantee.",
+            "Source daily collections were empty: nonempty private collection/grant restoration not demonstrated; candidate private-ACL checks remain separately scoped."
           ]
         },
         {
           "requirement": "最终交付",
-          "status": "pending_exact_SHA_CI_and_deployment",
+          "status": "local_daily_closure_passed_final_exact_SHA_CI_and_separate_cleanup_pending",
           "implementation": [
             "backend/research/verification_contract.py",
             "backend/services/retention.py",
@@ -1113,7 +1154,7 @@
         },
         {
           "requirement": "Windows备份和探测任务及子进程全链路后台静默，保留日志、真实退出码与失败恢复",
-          "status": "implemented_static_and_synthetic_entry_verified_actual_scheduler_pending_window",
+          "status": "actual_native_backup_and_pre_postbackup_probe_passed_failure_and_logs_preserved",
           "implementation": [
             "scripts/install_backup_task.ps1",
             "scripts/scheduled_backup.py",
@@ -1122,11 +1163,13 @@
             "scripts/host_task.py"
           ],
           "evidence": [
-            "windows-host-task-silence.json"
+            "windows-host-task-silence.json",
+            "daily-scheduled-backup.json"
           ],
           "limitations": [
-            "No scheduler installed or backup triggered before DeepResearch daily window.",
-            "Current user Limited, no stored password or elevation; final actual single scheduler run pending window."
+            "First native backup failed exit1 and remains recorded; second exit0. 205 descendant-window samples saw no visible window, not proof excluding all transient windows.",
+            "Interactive current-user Limited, no stored password/elevation. Daily03:30 backup and five-minute probe configured; permanent03:15-04:30 maintenance window restored.",
+            "Single scheduled-task acceptance is not long-term unattended reliability proof."
           ]
         }
       ],
@@ -1151,7 +1194,16 @@
         "backup-image-bundle.json",
         "recovery-business-compatibility.json",
         "windows-host-task-silence.json",
-        "candidate-source-fingerprints-v7.json"
+        "candidate-source-fingerprints-v7.json",
+        "daily-deployment-acceptance.json",
+        "daily-monitoring-readback.json",
+        "daily-grafana-admin-reconciliation.json",
+        "daily-old-backup-restore.json",
+        "daily-scheduled-backup.json",
+        "daily-postupgrade-backup-restore.json",
+        "daily-backup-all-roots-survey.json",
+        "daily-backup-content-rehydration.json",
+        "daily-grafana-panel8-browser.json"
       ]
     }
   ],
@@ -1172,21 +1224,33 @@
   },
   "deployment": {
     "owner_required": "DeepResearch",
-    "window_required": true
+    "window_required": true,
+    "status": "local_daily_closure_passed",
+    "source_receipt": "daily-deployment-acceptance.json",
+    "service_count": 25,
+    "long_running_services": 21,
+    "successful_once_jobs": 4,
+    "retirement_cleanup_authorized": false,
+    "approved_compose_replacement_recorded_separately": true,
+    "current_native_silent_backup_task": "passed_second_native_run_exit0_first_exit1_preserved",
+    "upgraded_stack_independent_restore": "passed_samehost_cached_images_227_61_seconds",
+    "local_window_release_ready": true,
+    "native_probe_pre_and_post_backup": "passed_exit0_freshness_not_renewed_by_capacity_probe",
+    "grafana_panel_browser": "actual_render_and_axis_inspected"
   },
   "evidence_boundary": {
     "human_blind_review": "not_performed",
     "external_users": "not_claimed",
-    "cross_host_disaster_recovery": "not_performed"
+    "cross_host_disaster_recovery": "deferred_by_user_not_verified"
   },
-  "updated_at": "2026-10-27T01:21:19.015457+00:00",
+  "updated_at": "2026-10-27T04:44:00.035609+00:00",
   "remaining_common_acceptance": [
-    "oldcandidate data comparison and finalmonitoring artifact acceptance",
-    "coordinated daily fullcoldbackup/isolatedrestore/deployment anddirectedcleanup",
-    "exactSHA final CI/Security/freshquality under515cumulative limit",
-    "externalSMTP/MFA/TLS/humanreview unverified; offhostexplicitlydeferred"
+    "final exact-source GitHub CI/Security/fresh quality under cumulative515-new-model-HTTP authorization",
+    "fresh final retained IDs/references and both-project gates, then a separately granted cleanup window; no retirement cleanup now",
+    "external SMTP/MFA/TLS/human review remain unverified; offhost restore explicitly deferred by user",
+    "Evidence limits remain: no empty-daemon or nonempty restricted collection/grant restore proof; no general RPO/RTO/SLA/HA/capacity promise"
   ],
-  "stage": "DEPLOY_READY_local_candidate_implementation_verified_daily_window_and_final_delivery_pending",
+  "stage": "LOCAL_DAILY_CLOSURE_PASSED_final_exact_SHA_CI_and_separate_cleanup_pending",
   "final_cleanup_prerequisites": [
     "Both projects final deployment and exact-source GitHub CI/Security/quality gates verified by coordinator",
     "Fresh final retained daily container/image/volume identity inventory and all references reviewed",
@@ -1196,5 +1260,107 @@
     "offhost_restore": "deferred_by_user_not_verified; no target, continue other authorized work",
     "human_blind_review": "not_performed; model/fixture scores do not establish independent human truth"
   },
-  "candidate_runtime_current_boundary": "Prior live named acceptance passed. Fresh stopped-container source-byte audit passed all5services; observed candidate and daily containers already stopped around00:47Z, cause not established here; no service state mutation by readiness refresh."
+  "candidate_runtime_current_boundary": "Candidate v7 stopped-container byte audit is historical pre-window evidence. Actual daily deployment and named role/native/monitoring/browser checks passed; upgraded current backup verified before cache lookup and restored into a fresh same-host project/volumes. Native backup/probe acceptance passed with first backup failure preserved. Image runtime bytes are bound to source commit9dcc24073ddf0cba383701362ea8e32ac1415d14; metadata dirty at backup time is explicitly recorded, not relabeled as later final commit. Final exact-source GitHub gates remain pending.",
+  "daily_acceptance_summary": {
+    "source_receipts": [
+      "daily-five-role-acceptance.json",
+      "daily-sql-post-schema-preservation.json",
+      "daily-sql-post-runtime-preservation.json",
+      "daily-s3-preservation.json",
+      "daily-native-readback.json",
+      "daily-monitoring-readback.json",
+      "daily-grafana-admin-reconciliation.json"
+    ],
+    "role_functional_checks": 79,
+    "role_denials": 7,
+    "private_screenshots": 17,
+    "supplier_calls": 0,
+    "selected_old_tables": 15,
+    "selected_old_rows": 2132,
+    "selected_old_fields": 11844,
+    "selected_old_rows_and_fields_unchanged": true,
+    "allowed_new_synthetic_rows": 18,
+    "old_S3_versions_hash_equal": 5,
+    "old_S3_bytes_hashed": 1243982,
+    "monitoring_targets_up": 5,
+    "healthy_datasources": 3,
+    "grafana_panel8_axis_API_verified": true,
+    "grafana_panel_browser_screenshot": "passed_actual_render_axis_inspection_private_screenshot_hash_retained",
+    "historical_harness_and_migration_failures_preserved": true,
+    "exact_synthetic_identity_cleanup_followup": "Five exact created user IDs independently deleted and confirmed 404; passed business checks not rerun.",
+    "restore_receipt": "daily-postupgrade-backup-restore.json",
+    "not_an_exact_final_SHA_CI_or_general_recovery_guarantee": true
+  },
+  "local_backup_restore_closure": {
+    "receipts": [
+      "daily-scheduled-backup.json",
+      "daily-postupgrade-backup-restore.json",
+      "daily-backup-all-roots-survey.json",
+      "daily-backup-content-rehydration.json",
+      "daily-grafana-panel8-browser.json"
+    ],
+    "first_native_backup": {
+      "exit": 1,
+      "failure_preserved": true,
+      "successful_backup_heartbeat_not_advanced": true,
+      "missing_selected_blob_refs": 13,
+      "all_missing_refs_owned_by": "exact Loki image subject"
+    },
+    "all_roots_survey": {
+      "roots": 25,
+      "existing_required_blob_digests_verified": 254,
+      "digest_mismatches": 0
+    },
+    "repair": {
+      "original_OCI_byte_identity": true,
+      "runtime_image_unchanged": true,
+      "guard_or_verifier_relaxed": false,
+      "targeted_export_blobs": 20,
+      "targeted_export_diffids": 18
+    },
+    "second_native_backup": {
+      "exit": 0,
+      "descendant_window_samples": 205,
+      "visible_windows_observed": 0,
+      "volume_archives": 17,
+      "image_roots": 25,
+      "required_blobs_verified": 267,
+      "unique_layer_diffids_verified": 195,
+      "current_platform": "linux/amd64",
+      "full_multiarch": false
+    },
+    "native_probe_before_and_after_backup_exit": 0,
+    "capacity_probe_did_not_renew_verified_backup_timestamp": true,
+    "permanent_maintenance_window_restored": "03:15-04:30 Asia/Shanghai",
+    "restore": {
+      "passed": true,
+      "observed_seconds": 227.61,
+      "same_host": true,
+      "existing_image_cache": true,
+      "current_collection_acl_schema_and_default_document_policies": true,
+      "nonempty_private_collection_grant_restoration_verified": false,
+      "OIDC_tokens": 2,
+      "permission_boundaries": 3,
+      "report_SHA": 1,
+      "citation_snapshots": 3,
+      "native_vector_checks": 2,
+      "antivirus_checks": 2,
+      "new_research": "queued_then_explicitly_cancelled_upstream_disabled",
+      "research_execution_completed": false,
+      "upstream_calls_enabled": false
+    },
+    "intentional_retention": {
+      "stopped_compose_containers": 23,
+      "helpers_with_creator_proof": 34,
+      "new_volumes": 17,
+      "isolated_network_retained": true,
+      "retirement_cleanup_performed": false
+    },
+    "limits": [
+      "No empty-daemon/offhost/full-multiarch restore proof",
+      "No source nonempty private collection/grant fixture",
+      "No general RPO/RTO/SLA/HA/capacity or long-term unattended-task guarantee",
+      "Window sampling does not exclude every transient window between observations"
+    ]
+  }
 }

@@ -1,0 +1,33 @@
+{
+  "recorded_at": "2026-10-27T03:30:54.039922+00:00",
+  "reason": "Docker automatic address pools exhausted; no DB migration started",
+  "private_override": ".env.local-networks.compose.yaml",
+  "new_missing_network_ipam": {
+    "database": {
+      "ipam": {
+        "config": [
+          {
+            "subnet": "10.253.240.0/24"
+          }
+        ]
+      }
+    }
+  },
+  "existing_networks_kept": [
+    "deepresearch_application",
+    "deepresearch_edge",
+    "deepresearch_identity",
+    "deepresearch_identity-db",
+    "deepresearch_index-store",
+    "deepresearch_retrieval",
+    "deepresearch_telemetry"
+  ],
+  "all_Docker_and_current_host_route_overlaps": 0,
+  "env_changed_key_only": "COMPOSE_FILE",
+  "secret_values_changed": false,
+  "env_before_sha256": "98fd710f743ce50a748bc5432d2b91b2e9eb3673e7c25f92e469b90ad319e36b",
+  "env_after_sha256": "1a00114739cbd56f1baeeb8c39cbc49def414446e3813aa9cc63667a5c15bf5a",
+  "global_Docker_settings_changed": false,
+  "networks_deleted": 0,
+  "initial_up_log_sha256": "68ac80b725194c3d0e3621346fedfce2dec292f2f867f6052eafb933e2ab1e43"
+}

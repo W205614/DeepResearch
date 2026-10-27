@@ -1,0 +1,35 @@
+{
+  "mode": "monitoring",
+  "status": "passed",
+  "counts": {
+    "prometheus_targets": 5,
+    "expected_targets_up": 5,
+    "datasources": 3,
+    "datasource_health_ok": 3,
+    "panel8_matches": 1
+  },
+  "checks": {
+    "prometheus_API_200": true,
+    "exact_five_configured_jobs": true,
+    "all_five_targets_up": true,
+    "actual_dashboard_API_200": true,
+    "panel8_unit_percentunit_min0_max1": true,
+    "datasources_API_200": true,
+    "exact_three_provisioned_types": true,
+    "provisioned_backend_urls_match": true,
+    "loki_health_OK": true,
+    "prometheus_health_OK": true,
+    "tempo_health_OK": true
+  },
+  "boundaries": {
+    "business_writes": 0,
+    "IAM_changes": 0,
+    "Docker_stop_rm_prune": 0,
+    "supplier_model_embedding_search_rerank": 0,
+    "raw_business_values_persisted": false,
+    "not_a_full_restore_proof": true
+  },
+  "recorded_at": "2026-10-27T04:04:59.119591+00:00",
+  "failure_record_count": 0,
+  "private_receipt_sha256": "b3efe48dc6980843d195a302f060d84fafea8dd84b7c6979196de32677fd895b"
+}

@@ -1,0 +1,104 @@
+{
+  "status": "functional_pass_and_independent_identity_followup_pass",
+  "original_harness_exit": 1,
+  "original_functional_result": {
+    "status": "functional_checks_passed_cleanup_pending",
+    "roles": [
+      {
+        "role": "admin",
+        "status": "passed",
+        "checks": 23,
+        "page_errors": 0,
+        "ui_console_errors": 0,
+        "pkce_authorizations": 1,
+        "authorization_code_exchanges": 1
+      },
+      {
+        "role": "editor",
+        "status": "passed",
+        "checks": 15,
+        "page_errors": 0,
+        "ui_console_errors": 0,
+        "pkce_authorizations": 1,
+        "authorization_code_exchanges": 1
+      },
+      {
+        "role": "reviewer",
+        "status": "passed",
+        "checks": 13,
+        "page_errors": 0,
+        "ui_console_errors": 0,
+        "pkce_authorizations": 1,
+        "authorization_code_exchanges": 1
+      },
+      {
+        "role": "viewer",
+        "status": "passed",
+        "checks": 15,
+        "page_errors": 0,
+        "ui_console_errors": 0,
+        "pkce_authorizations": 1,
+        "authorization_code_exchanges": 1
+      },
+      {
+        "role": "outsider",
+        "status": "passed",
+        "checks": 13,
+        "page_errors": 0,
+        "ui_console_errors": 0,
+        "pkce_authorizations": 1,
+        "authorization_code_exchanges": 1
+      }
+    ],
+    "counts": {
+      "created_users": 5,
+      "deleted_users": 0,
+      "retained_users": 5,
+      "created_workspaces": 6,
+      "retained_workspaces": 6,
+      "created_intakes": 2,
+      "cancelled_intakes": 2,
+      "retained_intakes": 2,
+      "granted_memberships": 3,
+      "revoked_memberships": 3,
+      "retained_memberships": 0,
+      "created_clients": 0,
+      "denial_checks": 7,
+      "allowed_browser_requests": 229,
+      "blocked_requests": 0,
+      "screenshots": 17,
+      "synthetic_paid_calls_observed": 0
+    },
+    "boundaries": {
+      "real_oidc": true,
+      "real_browser": true,
+      "role_reviewer_is_workspace_admin": true,
+      "external_human_review": false,
+      "research_run_creation_permitted": false,
+      "intake_confirmation_permitted": false,
+      "document_upload_permitted": false,
+      "provider_endpoints_permitted": false,
+      "docker_operations": 0,
+      "new_client_creation": false,
+      "business_workspace_deletion": false,
+      "final_cleanup_is_not_docker_cleanup": true
+    },
+    "cleanup_status": "incomplete_retained_resources_list_required"
+  },
+  "identity_followup": {
+    "exact_owned_ids_deleted": 5,
+    "GET_after_delete": 404,
+    "receipt_sha256": "e21ea83f2c3c559ddae5eaba66699ee513ca96e571bd20728f46b573bf34b46b",
+    "source_result_unchanged": true,
+    "new_functional_run": false
+  },
+  "first_preflight_failure": "Native Fetch Response.ok incorrectly used as method; no resources created. Private harness corrected; failed result retained.",
+  "second_cleanup_failure": "Realm omitted unmanaged attributes. Exact successful POST-created IDs, creator-operation log, unique five-role username formats and original server creation window were independently checked for deletion. Realm policy unchanged; original failure retained.",
+  "synthetic_business_metadata_retained": {
+    "workspaces": 6,
+    "cancelled_intakes": 2,
+    "memberships_revoked": 3
+  },
+  "provider_calls": 0,
+  "Docker_cleanup_performed": false
+}

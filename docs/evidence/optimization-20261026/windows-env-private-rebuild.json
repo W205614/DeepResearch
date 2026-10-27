@@ -1,0 +1,35 @@
+{
+  "recorded_at": "2026-10-27T11:18:32.584481+08:00",
+  "status": "byte_identical_same_path_env_rebuild_completed_independent_readback_passed",
+  "source_sha256": "98fd710f743ce50a748bc5432d2b91b2e9eb3673e7c25f92e469b90ad319e36b",
+  "source_bytes": 2182,
+  "compose_before_sha256": "e71142f6097bad0092d3691dc9459f173a438cba18201d14eb998f43c4d49205",
+  "compose_after_sha256": "e71142f6097bad0092d3691dc9459f173a438cba18201d14eb998f43c4d49205",
+  "ACL": "protected exact currentuser/SYSTEM/Administrators FullControl; new file owned by currentuser",
+  "elevation": false,
+  "take_ownership": false,
+  "permanent_file_deletion": false,
+  "original_object": "retained as verified nonsecret marker, not moved with credential bytes",
+  "secret_rollback_copies": "original-env.bytes plus originalmetadata/SDDL under restricted3SID package; hashes verified",
+  "initial_command": {
+    "command_exit": 1,
+    "mutation_and_compose_stage": "completed",
+    "bytes_and_ACL_verified_before_finally": true,
+    "compose_before_equals_after": true,
+    "final_receipt_error_type": "PrivilegeNotHeldException",
+    "initial_receipt_empty_preserved": true
+  },
+  "followup": "No second env mutation. Actual current bytes, backup bytes, ACL and independent Compose digest read back; final log ACL reset error retained rather than claimed initialsuccess.",
+  "transaction_script_sha256": "3d16e7c18d52d87e41a92caff33608d1285c9c0890a1510d681fa44ab3ba09da",
+  "private_metadata_sha256": "e85c48be9009463e46dae089bc6b52fca0a717e34a328ee2b8884280ea3bce38",
+  "execution_authority": "task-authorized coordinator instruction under user-approved project/security maintenance; not a separately direct-human-confirmed Windows procedure",
+  "credential_file_operations": {
+    "new_restricted_replacement": 1,
+    "new_restricted_original_bytes_copy": 1,
+    "new_restricted_SDdl_metadata": 1,
+    "file_moves": 2,
+    "old_object_archived_after_verified_nonsecret_marker": true,
+    "permanent_file_deletion": 0
+  },
+  "later_separate_authorized_config_change": "Following the original same-byte transaction, COMPOSE_FILE-only network override and later exact Grafana admin credential reconciliation intentionally changed .env; both preserve protected ACL and have separate receipts. Neither changes the original transaction before/after identity fact."
+}
