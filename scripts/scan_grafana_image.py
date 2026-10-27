@@ -9,7 +9,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from scripts.check_native_jvm import executable, validate_database, run, digest  # noqa: E402
+from scripts.check_native_jvm import executable, prepare_database, run, digest  # noqa: E402
 from scripts.grafana_image_disposition import load_binding, validate_loaded, validate_sbom  # noqa: E402
 
 
@@ -28,11 +28,10 @@ def main():
         syft=executable("syft",lock,args.tool_dir,args.tool_dir)
         grype=executable("grype",lock,args.tool_dir,args.tool_dir)
         env={k:v for k,v in os.environ.items() if not k.startswith(("GRYPE_","SYFT_"))}
-        env.update(GRYPE_DB_CACHE_DIR=str(args.db_cache.resolve()),GRYPE_DB_AUTO_UPDATE="false",GRYPE_CHECK_FOR_APP_UPDATE="false",SYFT_CHECK_FOR_APP_UPDATE="false")
-        db=args.db_cache/"6/vulnerability.db"
-        if not db.exists():
-            run([grype,"db","import",lock["database"]["url"]],env=env,timeout=900)
-        validate_database(db,lock["database"])
+        env.update(GRYPE_CHECK_FOR_APP_UPDATE="false",SYFT_CHECK_FOR_APP_UPDATE="false")
+        result["database"]={}
+        prepared=prepare_database(grype,lock["database"],args.db_cache,args.output_dir,env,result["database"])
+        env=prepared.env
         actual=json.loads(run(["docker","image","inspect",args.image]))[0]
         validate_loaded(actual,binding)
         (args.output_dir/"image-inspect.json").write_text(json.dumps(actual,indent=2),encoding="utf-8")
@@ -45,7 +44,8 @@ def main():
         run([syft,"--config",syconfig,"scan","docker:"+actual["Id"],"-o","syft-json="+str(sbom),"--quiet"],env=env)
         types=validate_sbom(json.loads(sbom.read_text(encoding="utf-8")),binding)
         run([grype,"--config",grconfig,"sbom:"+str(sbom),"-o","json","--file",report,"--quiet"],env=env)
-        result.update(operational_success=True,actual_image_id=actual["Id"],syft_types=types,sbom_sha256=digest(sbom),raw_grype_sha256=digest(report),database=lock["database"],required_next_step="grafana_image_disposition.py full raw Trivy plus native/full Grype exact checker")
+        prepared.assert_unchanged("after-full-scan")
+        result.update(operational_success=True,actual_image_id=actual["Id"],syft_types=types,sbom_sha256=digest(sbom),raw_grype_sha256=digest(report),required_next_step="grafana_image_disposition.py full raw Trivy plus native/full Grype exact checker")
     except Exception as error:
         result.update(error_type=type(error).__name__)
         if isinstance(error,ValueError):

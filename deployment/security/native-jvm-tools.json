@@ -35,7 +35,8 @@
     "schema": "v6.1.10",
     "built": "2026-10-26T06:38:44Z",
     "max_snapshot_age_days": 7,
-    "transport": "official static timestamped zstd blob; grype db import verifies checksum URL; verify extracted DB hash/size; latest is never substituted"
+    "db_fingerprint_role": "db_sha256 and db_bytes are historical hydrated observations, not a cross-import byte gate; identity is the immutable archive plus a fresh pinned-tool controlled import",
+    "transport": "explicit bounded download of the unchanged timestamped zstd URL; exact archive SHA256 before one local pinned-Grype import in a fresh exclusive cache; force Grype checksum validation and exact schema/built/path/manual-import status; record derived SHA256/size and reject subsequent change; latest is never substituted"
   },
   "profiles": {
     "business-java": {

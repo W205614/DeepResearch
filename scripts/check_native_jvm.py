@@ -11,13 +11,18 @@ import os
 from pathlib import Path, PurePosixPath
 import platform
 import re
+import stat
 import subprocess
 import tarfile
+import tempfile
+import time
 import uuid
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 from urllib.request import urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCK = ROOT / "deployment/security/native-jvm-tools.json"
+MAX_DATABASE_ARCHIVE_BYTES = 4 * 1024**3
 
 
 class NativeGateError(ValueError):
@@ -75,14 +80,182 @@ def executable(tool, lock, cache, tool_dir):
     return path
 
 
-def validate_database(path, spec, *, now=None):
+def validate_snapshot_age(spec, *, now=None):
     now = now or datetime.now(timezone.utc)
     built = datetime.fromisoformat(spec["built"].replace("Z", "+00:00"))
     age = (now - built).total_seconds()
     if age < -300 or age > spec["max_snapshot_age_days"] * 86400:
         raise NativeGateError("Pinned advisory snapshot is stale or in the future; explicitly refresh its lock")
+
+
+def validate_database(path, spec, *, now=None):
+    """Validate a concrete fingerprint, including a freshly recorded derived fingerprint."""
+    validate_snapshot_age(spec, now=now)
     if not path.is_file() or path.stat().st_size != spec["db_bytes"] or digest(path) != spec["db_sha256"]:
         raise NativeGateError("Pinned native advisory database bytes differ")
+
+
+def _database_fingerprint(path):
+    if not path.exists() or not stat.S_ISREG(path.lstat().st_mode):
+        raise NativeGateError("Database artifact must be a regular file, not a symlink")
+    return {"bytes": path.stat().st_size, "sha256": digest(path)}
+
+
+def _save_database_evidence(evidence, output_dir):
+    (output_dir / "database-preparation.json").write_text(
+        json.dumps(evidence, indent=2) + "\n", encoding="utf-8"
+    )
+
+
+def _download_database_archive(spec, destination, evidence):
+    parsed = urlsplit(spec["url"])
+    query = parse_qsl(parsed.query, keep_blank_values=True)
+    if (parsed.scheme != "https" or parsed.username or parsed.password or parsed.fragment
+            or [v for k, v in query if k == "checksum"] != ["sha256:" + spec["archive_sha256"]]
+            or not re.fullmatch(r"[0-9a-f]{64}", spec["archive_sha256"])):
+        raise NativeGateError("Pinned database archive URL/checksum is invalid")
+    # go-getter also consumes the checksum query locally rather than sending it to the server.
+    transport = urlunsplit(parsed._replace(query=urlencode([(k, v) for k, v in query if k != "checksum"])))
+    observed = {"identity_url": spec["url"], "transport_url": transport,
+                "expected_sha256": spec["archive_sha256"], "max_bytes": MAX_DATABASE_ARCHIVE_BYTES}
+    evidence["archive"] = observed
+    received, hashed, started = 0, hashlib.sha256(), time.monotonic()
+    try:
+        with urlopen(transport, timeout=60) as response, destination.open("xb") as output:
+            if urlsplit(response.geturl()).scheme != "https":
+                raise NativeGateError("Pinned database archive redirected outside HTTPS")
+            length = response.headers.get("Content-Length")
+            expected_length = int(length) if length is not None else None
+            observed["content_length"] = expected_length
+            if expected_length is not None and not 0 < expected_length <= MAX_DATABASE_ARCHIVE_BYTES:
+                raise NativeGateError("Pinned database archive length exceeds its bound")
+            while block := response.read(1024 * 1024):
+                received += len(block)
+                hashed.update(block)
+                if received > MAX_DATABASE_ARCHIVE_BYTES or time.monotonic() - started > 900:
+                    raise NativeGateError("Pinned database archive download exceeds its bound")
+                output.write(block)
+        if (not received or (expected_length is not None and received != expected_length)
+                or hashed.hexdigest() != spec["archive_sha256"]):
+            raise NativeGateError("Pinned database archive is incomplete or its SHA256 differs")
+        observed["verified"] = True
+    finally:
+        observed.update(actual_bytes=received, actual_sha256=hashed.hexdigest())
+
+
+def _database_command(args, *, env, evidence, stage, timeout=300):
+    evidence["stage"] = stage
+    operation = {"stage": stage, "argv": [str(a) for a in args]}
+    evidence.setdefault("operations", []).append(operation)
+    try:
+        result = subprocess.run(operation["argv"], capture_output=True, env=env, timeout=timeout, check=False)
+    except subprocess.TimeoutExpired:
+        operation["timed_out"] = True
+        raise NativeGateError("Required database operation timed out") from None
+    operation.update(exit_code=result.returncode,
+                     stdout_tail=result.stdout.decode("utf-8", errors="replace")[-16384:],
+                     stderr_tail=result.stderr.decode("utf-8", errors="replace")[-16384:])
+    if result.returncode:
+        raise NativeGateError("Required database operation failed: " + stage)
+    return result.stdout
+
+
+class PreparedDatabase:
+    """A fresh controlled import, never an arbitrary pre-existing DB or external receipt."""
+
+    def __init__(self, path, spec, env, evidence, output_dir, *, now=None):
+        self.path, self.spec, self.env = path, spec, env
+        self.evidence, self.output_dir, self.now = evidence, output_dir, now
+        self.fingerprint = _database_fingerprint(path)
+        self.metadata_path = path.with_name("import.json")
+        self.metadata_fingerprint = _database_fingerprint(self.metadata_path)
+        evidence["derived_database"] = {"path": str(path), **self.fingerprint}
+        evidence["import_metadata_sha256"] = self.metadata_fingerprint["sha256"]
+
+    def assert_unchanged(self, stage):
+        self.evidence["stage"] = stage
+        try:
+            validate_snapshot_age(self.spec, now=self.now)
+            observed = _database_fingerprint(self.path)
+            self.evidence.setdefault("derived_integrity_checks", []).append({"stage": stage, **observed})
+            if observed != self.fingerprint or _database_fingerprint(self.metadata_path) != self.metadata_fingerprint:
+                raise NativeGateError("Controlled imported database changed after preparation")
+        except Exception as error:
+            self.evidence.update(failure_stage=stage, error_type=type(error).__name__)
+            raise
+        finally:
+            _save_database_evidence(self.evidence, self.output_dir)
+
+
+def prepare_database(grype, spec, cache_root, output_dir, env, evidence, *, now=None):
+    """Authenticate the immutable archive, then attest one pinned-tool local import."""
+    evidence.update(stage="validate-snapshot", identity="immutable-archive-controlled-import",
+                    snapshot={k: spec[k] for k in ("url", "archive_sha256", "schema", "built", "max_snapshot_age_days")},
+                    historical_hydrated_reference={"sha256": spec["db_sha256"], "bytes": spec["db_bytes"],
+                                                   "role": "historical observation, not the derived-byte gate"})
+    try:
+        validate_snapshot_age(spec, now=now)
+        evidence["import_tool"] = {"path": str(grype), "sha256": digest(grype)}
+        cache_root.mkdir(parents=True, exist_ok=True)
+        fresh = Path(tempfile.mkdtemp(prefix="verified-import-", dir=cache_root)).resolve()
+        db = fresh / "6/vulnerability.db"
+        evidence.update(fresh_cache=str(fresh), preexisting_database_reused=False)
+        if db.exists():
+            raise NativeGateError("Fresh database import directory was not empty")
+        active_env = {k: v for k, v in env.items() if not k.startswith("GRYPE_")}
+        active_env.update(GRYPE_DB_CACHE_DIR=str(fresh), GRYPE_DB_AUTO_UPDATE="false",
+                          GRYPE_DB_VALIDATE_BY_HASH_ON_START="true", GRYPE_DB_VALIDATE_AGE="true",
+                          GRYPE_CHECK_FOR_APP_UPDATE="false")
+        config = output_dir / "database-config.json"
+        config.write_text(json.dumps({"db": {"cache-dir": str(fresh), "auto-update": False,
+                                              "validate-by-hash-on-start": True, "validate-age": True},
+                                      "check-for-app-update": False}), encoding="utf-8")
+        archive = output_dir / "pinned-advisory-db.tar.zst"
+        evidence["stage"] = "download-archive"
+        _download_database_archive(spec, archive, evidence)
+        archive_fingerprint = _database_fingerprint(archive)
+        if (archive_fingerprint["sha256"] != spec["archive_sha256"]
+                or archive_fingerprint["bytes"] != evidence["archive"]["actual_bytes"]):
+            raise NativeGateError("Verified archive changed before local import")
+        _database_command([grype, "--config", config, "db", "import", archive.resolve()],
+                          env=active_env, evidence=evidence, stage="local-import", timeout=900)
+        if _database_fingerprint(archive) != archive_fingerprint:
+            raise NativeGateError("Verified archive changed during local import")
+        evidence["stage"] = "validate-import-metadata"
+        metadata_path = fresh / "6/import.json"
+        if (db.resolve() != db or metadata_path.resolve() != metadata_path or not metadata_path.is_file()
+                or not stat.S_ISREG(metadata_path.lstat().st_mode) or metadata_path.stat().st_size > 65536):
+            raise NativeGateError("Imported database metadata/path is unsafe")
+        def unique_pairs(pairs):
+            value = {}
+            for key, item in pairs:
+                if key in value:
+                    raise NativeGateError("Duplicate imported database metadata key")
+                value[key] = item
+            return value
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"), object_pairs_hook=unique_pairs)
+        evidence["import_metadata"] = metadata
+        if (set(metadata) != {"digest", "source", "client_version"}
+                or metadata.get("source") != "manual import" or metadata.get("client_version") != spec["schema"]
+                or not re.fullmatch(r"xxh64:[0-9a-f]{16}", metadata.get("digest", ""))):
+            raise NativeGateError("Controlled import metadata differs from the pinned client/schema")
+        prepared = PreparedDatabase(db, spec, active_env, evidence, output_dir, now=now)
+        status = json.loads(_database_command([grype, "--config", config, "db", "status", "-o", "json"],
+                                              env=active_env, evidence=evidence, stage="validate-status"))
+        evidence["validated_status"] = status
+        if (status.get("valid") is not True or status.get("error")
+                or status.get("schemaVersion") != spec["schema"] or status.get("built") != spec["built"]
+                or status.get("from") != "manual import" or status.get("path") != str(db)):
+            raise NativeGateError("Controlled database status/path/schema/built differs")
+        # Grype status with forced checksum validation verifies actual DB against import.json's xxh64.
+        prepared.assert_unchanged("after-status")
+        evidence["stage"] = "prepared"
+        return prepared
+    except Exception as error:
+        evidence.update(failure_stage=evidence.get("stage"), error_type=type(error).__name__)
+        raise
+    finally:
+        _save_database_evidence(evidence, output_dir)
 
 
 def validate_jvm(sbom, profile, expected):
@@ -205,15 +378,11 @@ def main():
         syft = executable("syft", lock, args.tool_dir, args.tool_dir)
         grype = executable("grype", lock, args.tool_dir, args.tool_dir)
         env = {k: v for k, v in os.environ.items() if not k.startswith(("SYFT_", "GRYPE_"))}
-        env.update(GRYPE_DB_CACHE_DIR=str(args.db_cache.resolve()), GRYPE_DB_AUTO_UPDATE="false", GRYPE_CHECK_FOR_APP_UPDATE="false", SYFT_CHECK_FOR_APP_UPDATE="false")
-        db = args.db_cache / "6/vulnerability.db"
-        if not db.exists():
-            run([grype, "db", "import", lock["database"]["url"]], env=env, timeout=900)
-        validate_database(db, lock["database"])
-        status = json.loads(run([grype, "db", "status", "-o", "json"], env=env))
-        if status.get("valid") is not True or status.get("schemaVersion") != lock["database"]["schema"]:
-            raise NativeGateError("Pinned database status/schema is invalid")
-        summary["database"] = {**lock["database"], "validated_status": status}
+        env.update(GRYPE_CHECK_FOR_APP_UPDATE="false", SYFT_CHECK_FOR_APP_UPDATE="false")
+        summary["database"] = {}
+        prepared = prepare_database(grype, lock["database"], args.db_cache, args.output_dir,
+                                    env, summary["database"])
+        env = prepared.env
         inspection = json.loads(run(["docker", "image", "inspect", args.image]))[0]
         image = inspection["Id"]
         summary["actual_image_id"] = image
@@ -248,6 +417,7 @@ def main():
                 validate_full_inventory(sbom, profile)
             report_path = args.output_dir / (mode + "-grype.json")
             run([grype, "--config", configuration, "sbom:" + str(sbom_path), "-o", "json", "--file", report_path, "--quiet"], env=env)
+            prepared.assert_unchanged("after-" + mode + "-scan")
             report = json.loads(report_path.read_text(encoding="utf-8"))
             summary[mode] = {"packages": len(sbom["artifacts"]), "raw_counts": validate_scan(report, sbom), "sbom_sha256": digest(sbom_path), "report_sha256": digest(report_path)}
         summary["passed"] = True

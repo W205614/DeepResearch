@@ -240,15 +240,17 @@ class Runtime:
             run_ids = [run["id"] for run in runs]
             async with self.db.connection() as conn:
                 if self.settings.database_url:
-                    # Serialize with Java's FOR KEY SHARE admission before taking
-                    # the run list, so a concurrent create cannot leave an orphan.
-                    await conn.execute("SELECT id FROM threads WHERE id=? AND user_id=? FOR UPDATE", (thread_id,user))
+                    # DELETE takes the same row lock as FOR UPDATE and serializes
+                    # with Java's FOR KEY SHARE without granting Python UPDATE.
+                    # It remains in this transaction and rolls back if cleanup fails.
+                    await conn.execute("DELETE FROM threads WHERE id=? AND user_id=?", (thread_id,user))
                     run_ids=[row['id'] for row in await conn.rows("SELECT id FROM runs WHERE thread_id=? AND user_id=?",(thread_id,user))]
                 async with self._delete_execution_guards(conn,run_ids):
                     for run_id in run_ids:
                         await self._delete_run_records(conn, run_id, user)
                     await conn.execute("DELETE FROM runs WHERE thread_id=? AND user_id=?", (thread_id, user))
-                    await conn.execute("DELETE FROM threads WHERE id=? AND user_id=?", (thread_id, user))
+                    if not self.settings.database_url:
+                        await conn.execute("DELETE FROM threads WHERE id=? AND user_id=?", (thread_id, user))
                     await conn.commit()
         await self.cleanup_runs()
         pending = await self.db.one("SELECT COUNT(*) AS total FROM run_cleanup WHERE workspace_id=?", (user,))
