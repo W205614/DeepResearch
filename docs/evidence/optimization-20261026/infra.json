@@ -1,0 +1,121 @@
+{
+  "project": "DeepResearch",
+  "updated_at": "2026-10-26T14:11:02.589831+00:00",
+  "scope_ids": [
+    6,
+    12
+  ],
+  "phase": "implemented_isolated_verified_daily_delivery_pending",
+  "implemented": {
+    "database": "administrative one-shot bootstrap; non-superuser migrator/java/python/monitor; explicit table/column grants; checkpoints prepared outside runtime; in-place ownership transfer",
+    "storage": "separate fixed business/Milvus policies; root only one-shot Go SDK bootstrap; no general CLI in runtime",
+    "secret_mounts": "new alert-only v2 volume separate from internal business token; workers do not mount business token; legacy mixed volume retained only for rollback",
+    "networks": "edge/application/database/retrieval/index-store/identity/identity-db/telemetry; no Docker socket",
+    "resource_boundaries": "all service CPU/memory/PID caps; no-new-privileges; Docker json-file 10m*3; Redis noeviction cap; Keycloak CPU/thread/HTTP health bound",
+    "profiles": "base full observability, production read-only/cap-drop runtime, core explicit optional-observability opt-out, development readonly Python source mounts",
+    "backups": "existing v3 complete recovery reused; v2/v3 verified remote copier supports nested configurations; opt-in cold scheduler and native Task Scheduler installer; 24h RPO/15m RTO targets; no automatic recovery-package deletion; scheduler reports local_backup_verified separately from all-requested-actions success; remote deferral explicit",
+    "monitoring": "read-only ops exporter for database size/connections/queue; host disk and verified-backup timestamp probe; 20 Prometheus alert rules; persistent concurrent/restart-safe alert dedup; 5-minute native host probe registration shares the private backup configuration and serializes status updates",
+    "source_binding": "Python full input manifests, Java pom/src-main and jar fingerprint, Web source+dist manifest, five-service verification CLI",
+    "security": "filesystem dependency+secret scan; CodeQL; Python/Java/Web/storage-init/MinIO custom image scan; Compose-derived 13-vendor CI matrix with raw artifacts",
+    "monitoring_persistence": "explicit named volumes at /prometheus and /alertmanager; cold-copy helper preserves files/hash/uid/gid/mode; current daily anonymous volumes only inspected and retained"
+  },
+  "verification": {
+    "focused_python_tests": {
+      "result": "33 passed",
+      "command": "pytest tests/test_infra_hardening.py tests/test_standalone_alert_relay.py tests/test_recovery_manifest.py tests/test_reliability.py::test_backup_copy_rejects_corrupt_manifest_and_preserves_existing_destination -q",
+      "scope": "direct infra and recovery-manifest contracts; overlapping earlier 9-test run not added"
+    },
+    "ruff": "passed for owned changed Python files",
+    "compose_config": "base/production/core/development/isolated acceptance config --quiet passed",
+    "privileges": "privileges-isolated.json then stricter v2 whitelist verification; migration head0017, retained row, idempotent bootstrap and negative grants",
+    "storage": "storage-isolated.json; real isolated S3 allowed operations + four denied paths; two SDK bootstrap executions retained objects",
+    "alert_delivery": "alert-delivery-isolated.json; actual loopback HTTP, upstream503 retry, concurrent duplicate suppression, restart persistence and resolved notification; no real recipient",
+    "promtool": "20 rules validated by actual promtool",
+    "source_fingerprints": "candidate-source-fingerprints.json v1 passed; later maintenance-script changes require new versioned receipt",
+    "new_storage_image_security": "storage-bootstrap-security.json; 0 HIGH/CRITICAL on this new image only",
+    "runtime_vendor_baseline": "runtime-image-security-baseline.json; broad old vendor HIGH/CRITICAL findings and one Keycloak scanner failure are pending, not passing",
+    "daily_topology_freeze": ".cache/optimization-20261026/pre-upgrade-deployment/snapshot-redacted.json; 22 genuine Compose containers, exact image/env/absolute binds; read-only, no cold backup yet",
+    "candidate": "candidate-bootstrap.json; dr-opt-acceptance isolated core stack; true OIDC/SQL/Redis/Milvus/MinIO/ClamAV; model/search/embedding substitutes only",
+    "capacity_probe_followup": "6 targeted tests passed (fast no-rehash/preserved timestamp/future or invalid verification fails closed/remote-copy failure separated from local verified backup); installer AST parsed without registering tasks",
+    "monitoring_final_handoff": "monitoring-frozen-handoff-v2.json",
+    "fresh_monitoring_security": "monitoring-final-security-scan.json",
+    "grafana_precise_pending_review": "grafana-vulnerability-review-request-v2.json",
+    "monitoring_cold_migration_fixture": "monitoring-volume-migration-isolated.json",
+    "unified_observability_candidate": "observability-acceptance.json"
+  },
+  "actual_activation": {
+    "daily_rebuilt": false,
+    "daily_stopped": false,
+    "native_backup_task_installed": false,
+    "scheduled_backup_success_observed": false,
+    "host_probe_schedule_installed": false,
+    "real_webhook_configured_or_notified": false,
+    "foreign_host_backup_or_restore": false
+  },
+  "pending_internal": [
+    "vendor-image patch remediation/compatibility and final exact-SHA security gate",
+    "candidate role browser acceptance owned by root",
+    "daily window deployment and complete old/new topology recovery evidence",
+    "actual native backup task installation and first verified backup/host probe",
+    "final SHA/CI and source receipt",
+    "WINDOW_PATCH_REQUIRED_GRAFANA_VISION_ERROR_AXIS: Panel8 currently percentunit/minmax unset; add min0/max1 only in daily maintenance window, JSON and actual axis check once"
+  ],
+  "blocked_external": [
+    "real SMTP delivery/account recovery",
+    "real target-user MFA enrollment/recovery",
+    "external TLS/hostname and independent on-call recipient"
+  ],
+  "limits": [
+    "configuration and same-host isolated recovery are not production HA/SLA proof",
+    "same cached vulnerability DB results do not replace final current CI scans",
+    "native task tool availability is not evidence it has been installed or run",
+    "source/storage fixtures are not real model quality or external-user feedback",
+    "NewGrafana9a68subject remains authorization pending: fullTrivy2C11H20M2L5U/fullGrype2H3M5U. Actualmusl2r3fix;5GOunknown exact-package-not-linked facts require review.3BusyBoxMedium retained without declared fix. No VEX/CI suppression or inherited oldsubject authorization."
+  ],
+  "model_calls": 0,
+  "temporary_owned_assets": [
+    {
+      "name": "dr-opt-privileges-20261026",
+      "container_id": "635bb61dd6e4df6fd5579a21dd1f24d41e2726d5a138d5314a42b9d2c470506b",
+      "data": "tmpfs synthetic only; retained for window cleanup"
+    },
+    {
+      "name": "dr-opt-storage-20261026",
+      "container_id": "f5286e9a55d3074308dc1b8b93c95fb9c0e698a5e7e22693a699bcf3877ce072",
+      "data": "tmpfs synthetic S3 only; inherited image Compose build label but lacks real config-hash; retain/exclude from daily counts until explicit window cleanup"
+    }
+  ],
+  "deferred_by_user_not_verified": [
+    "actual off-host backup target, access/encryption, transfer and physical different-host restore; user has no target and explicitly deferred this part"
+  ],
+  "window_patch_required": [
+    {
+      "id": "WINDOW_PATCH_REQUIRED_GRAFANA_VISION_ERROR_AXIS",
+      "status": "WINDOW_PATCH_REQUIRED",
+      "file": "observability/grafana/provisioning/dashboards/deepresearch.json",
+      "panel_id": 8,
+      "panel_title": "\u56fe\u7247\u7406\u89e3\u9519\u8bef\u7387",
+      "panel_id_line": 183,
+      "unit_line": 200,
+      "field_defaults_line": 199,
+      "old_field_defaults": {
+        "unit": "percentunit"
+      },
+      "old_min": "unset",
+      "old_max": "unset",
+      "observed_rendered_auto_axis": "0% to10000% with current zero-valued series",
+      "proposed_field_defaults": {
+        "unit": "percentunit",
+        "min": 0,
+        "max": 1
+      },
+      "source_sha256_before_window": "737d0ce3d790df74bd27b323e6701ee022f85d1453d6d0fca338c540a3ca722f",
+      "reason_to_wait": "Shared read-only provisioning directory is mounted by daily Grafana and hot-reloads; no daily window granted",
+      "window_validation": [
+        "Parse JSON and assert exactly panel id8 has unit percentunit,min0,max1",
+        "After authorized update, inspect actual Grafana panel axis once and retain screenshot"
+      ],
+      "source_modified_now": false
+    }
+  ]
+}

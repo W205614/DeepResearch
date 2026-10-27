@@ -1,0 +1,182 @@
+{
+  "scope": "fresh database; exact cached runtime artifacts; no service starts",
+  "database_sha256": "d941f76c20fd916816fd04fa80d67bcd8dec6a5f68d353cb0c00be3fd3c9d2f8",
+  "database_metadata": {
+    "Version": 2,
+    "NextUpdate": "2026-10-27T07:15:18.945936953Z",
+    "UpdatedAt": "2026-10-26T07:15:18.945937093Z",
+    "DownloadedAt": "2026-10-26T13:16:14.5358069Z"
+  },
+  "security_pass": false,
+  "grafana_attribution_approval_pending": true,
+  "images": [
+    {
+      "service": "grafana",
+      "image": "dr-opt-grafana-final:20261026",
+      "state": "scanned",
+      "raw": ".cache\\optimization-20261026\\monitoring-final-db\\grafana.json",
+      "sha256": "853e0713fd1b8766aca393686572291e077ca79d4682d795fdff8450f6db24a3",
+      "counts": {
+        "CRITICAL": 2,
+        "HIGH": 11
+      },
+      "findings": [
+        {
+          "VulnerabilityID": "CVE-2018-15727",
+          "PkgName": "github.com/grafana/grafana",
+          "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+          "FixedVersion": "4.6.4, 5.2.3",
+          "Severity": "CRITICAL"
+        },
+        {
+          "VulnerabilityID": "CVE-2023-3128",
+          "PkgName": "github.com/grafana/grafana",
+          "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+          "FixedVersion": "9.4.13, 9.3.16, 9.2.20, 8.5.27",
+          "Severity": "CRITICAL"
+        },
+        {
+          "VulnerabilityID": "CVE-2020-12458",
+          "PkgName": "github.com/grafana/grafana",
+          "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+          "FixedVersion": "7.2.1",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2021-39226",
+          "PkgName": "github.com/grafana/grafana",
+          "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+          "FixedVersion": "7.5.11, 8.1.6",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2022-35957",
+          "PkgName": "github.com/grafana/grafana",
+          "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+          "FixedVersion": "9.1.6, 9.0.9, 8.5.13",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2022-39307",
+          "PkgName": "github.com/grafana/grafana",
+          "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+          "FixedVersion": "9.2.4, 8.5.15",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2023-2801",
+          "PkgName": "github.com/grafana/grafana",
+          "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+          "FixedVersion": "9.4.12, 9.5.3",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2025-6023",
+          "PkgName": "github.com/grafana/grafana",
+          "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+          "FixedVersion": "1.9.2-0.20250521205822-0ba0b99665a9",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42127",
+          "PkgName": "github.com/grafana/grafana",
+          "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+          "FixedVersion": "1.9.2-0.20260616075434-82ef13993059",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-42129",
+          "PkgName": "github.com/grafana/grafana",
+          "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+          "FixedVersion": "1.9.2-0.20260616075434-82ef13993059",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-9029",
+          "PkgName": "github.com/grafana/grafana",
+          "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+          "FixedVersion": "1.9.2-0.20260616075434-82ef13993059",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-21728",
+          "PkgName": "github.com/grafana/tempo",
+          "InstalledVersion": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+          "FixedVersion": "2.8.4, 2.9.2, 2.10.2",
+          "Severity": "HIGH"
+        },
+        {
+          "VulnerabilityID": "CVE-2026-28377",
+          "PkgName": "github.com/grafana/tempo",
+          "InstalledVersion": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+          "FixedVersion": "2.10.3",
+          "Severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "service": "alertmanager",
+      "image": "dr-opt-alertmanager-vcs:20261026",
+      "state": "scanned",
+      "raw": ".cache\\optimization-20261026\\monitoring-final-db\\alertmanager.json",
+      "sha256": "2fd9205ffd994e972827cf7075a981389598dade06fa6c666e9cfeb35b56be8e",
+      "counts": {},
+      "findings": []
+    },
+    {
+      "service": "storage-init",
+      "image": "dr-opt-storage-init:20261026",
+      "state": "scanned",
+      "raw": ".cache\\optimization-20261026\\monitoring-final-db\\storage-init.json",
+      "sha256": "720f4720b3993974b2be795dfac3c5349a044cccdbf11cd22277e15c2b0af0e3",
+      "counts": {},
+      "findings": []
+    },
+    {
+      "service": "prometheus",
+      "image": "prom/prometheus:v3.15.1",
+      "state": "scanned",
+      "raw": ".cache\\optimization-20261026\\monitoring-final-db\\prometheus.json",
+      "sha256": "3665dfeb3228099bb146fb0ff92fbc1fc65f27845cab2a62f8eedd21de26e04d",
+      "counts": {},
+      "findings": []
+    },
+    {
+      "service": "tempo",
+      "image": "grafana/tempo:2.10.10",
+      "state": "scanned",
+      "raw": ".cache\\optimization-20261026\\monitoring-final-db\\tempo.json",
+      "sha256": "4f55ed90971760ffc321ca8d6d02bd013b14ad35fa904a4d5e1b3b886dcb2e37",
+      "counts": {},
+      "findings": []
+    },
+    {
+      "service": "otel-collector",
+      "image": "otel/opentelemetry-collector-contrib:0.163.2",
+      "state": "scanned",
+      "raw": ".cache\\optimization-20261026\\monitoring-final-db\\otel-collector.json",
+      "sha256": "7d351ae29c5ebc1e0ac194eb0e7962484560b2e712112aa5b3a0711b36038fe6",
+      "counts": {},
+      "findings": []
+    },
+    {
+      "service": "alpine-helper",
+      "image": "alpine:3.24.3",
+      "state": "scanned",
+      "raw": ".cache\\optimization-20261026\\monitoring-final-db\\alpine-helper.json",
+      "sha256": "a5210e9d14e2464f6e25de0c5726ba66352b74c4d2eb807d501bec13b8cac7b0",
+      "counts": {},
+      "findings": []
+    },
+    {
+      "service": "loki",
+      "image": "grafana/loki:3.7.9",
+      "state": "scanned",
+      "raw": ".cache\\optimization-20261026\\monitoring-final-db\\loki-relative-input-v2.json",
+      "sha256": "23c4c59bab7869f7549dc280551befc8743b8bc380414f61447b678d38502d46",
+      "counts": {},
+      "findings": []
+    }
+  ],
+  "loki_input_note": "Exact upstream platform manifest/config/compressed layers verified as OCI graph; Windows absolute-drive parser failure retained, relative input succeeded. Not a flattened rootfs scan."
+}

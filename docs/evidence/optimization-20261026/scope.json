@@ -1,0 +1,1200 @@
+{
+  "project": "DeepResearch",
+  "baseline_sha": "8768aa6c1e4f0d24a8c355ce769112e98b3b8c10",
+  "scope": "all 0-12 including non-resume capabilities",
+  "items": [
+    {
+      "id": 0,
+      "title": "基线与共同交付",
+      "status": "local_candidate_acceptance_done_final_daily_SHA_CI_and_bothprojects_cleanup_pending",
+      "subitems": [
+        {
+          "requirement": "只测修改/直接影响",
+          "status": "candidate_validated",
+          "implementation": [
+            "docs/evidence/optimization-20261026/README.md",
+            "docs/evidence/optimization-20261026/guide-handoff.json"
+          ],
+          "evidence": [],
+          "limitations": []
+        },
+        {
+          "requirement": "冻结开发与留出输入",
+          "status": "candidate_validated",
+          "implementation": [
+            "docs/evidence/optimization-20261026/README.md",
+            "docs/evidence/optimization-20261026/guide-handoff.json"
+          ],
+          "evidence": [],
+          "limitations": []
+        },
+        {
+          "requirement": "真实角色浏览器",
+          "status": "candidate_validated",
+          "implementation": [
+            "docs/evidence/optimization-20261026/README.md",
+            "docs/evidence/optimization-20261026/guide-handoff.json"
+          ],
+          "evidence": [
+            "roles-and-scope.json",
+            "document-lifecycle-roles.json",
+            "dependency-faults.json",
+            "real-provider.json",
+            "unified-candidate.json",
+            "observability-acceptance.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "有界付费账本",
+          "status": "candidate_validated",
+          "implementation": [
+            "docs/evidence/optimization-20261026/README.md",
+            "docs/evidence/optimization-20261026/guide-handoff.json"
+          ],
+          "evidence": [
+            "real-provider.json",
+            "live/provider-budget.json",
+            "ci-budget-assessment.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "窗口后重建清理",
+          "status": "daily_backup_restore_pending_window_cleanup_only_after_bothprojects_final_CI",
+          "implementation": [
+            "docs/evidence/optimization-20261026/README.md",
+            "docs/evidence/optimization-20261026/guide-handoff.json"
+          ],
+          "evidence": [],
+          "limitations": []
+        },
+        {
+          "requirement": "README最终SHA及CI",
+          "status": "README_updated_final_SHA_and_CI_pending",
+          "implementation": [
+            "docs/evidence/optimization-20261026/README.md",
+            "docs/evidence/optimization-20261026/guide-handoff.json"
+          ],
+          "evidence": [],
+          "limitations": []
+        },
+        {
+          "requirement": "完整导学面经交接",
+          "status": "59_features_prepared_final_source_refresh_pending",
+          "implementation": [
+            "docs/evidence/optimization-20261026/README.md",
+            "docs/evidence/optimization-20261026/guide-handoff.json"
+          ],
+          "evidence": [
+            "guide-handoff.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "两项目最终CI均成功后仅保留最终日常一版并定向清理专属冗余容器、镜像、卷",
+          "status": "preliminary_full_retention_review_prepared_finalIDs_CI_and_separatewindow_pending",
+          "implementation": [
+            "docs/evidence/optimization-20261026/cleanup-plan.json",
+            "docs/evidence/optimization-20261026/final-retention-plan.preliminary.json"
+          ],
+          "evidence": [],
+          "limitations": [
+            "Original18containerplan remains frozen preliminary review only; no cleanup now.",
+            "Preserve backup files, other-project/shared/unknown assets; no prune/down-v/force."
+          ]
+        }
+      ],
+      "implementation": [
+        "docs/evidence/optimization-20261026/README.md",
+        "docs/evidence/optimization-20261026/guide-handoff.json"
+      ]
+    },
+    {
+      "id": 1,
+      "title": "任务恢复与异常分类",
+      "status": "implemented_local_component_and_named_candidate_checks_validated_final_delivery_pending",
+      "subitems": [
+        {
+          "requirement": "Java入口终态失败重检索",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/runtime.py",
+            "backend/core/recovery_contract.py",
+            "backend/core/research_command_contract.json"
+          ],
+          "evidence": [
+            "reliability.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "旧执行拒绝",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/runtime.py",
+            "backend/core/recovery_contract.py",
+            "backend/core/research_command_contract.json"
+          ],
+          "evidence": [
+            "reliability.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "心跳故障非用户取消",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/runtime.py",
+            "backend/core/recovery_contract.py",
+            "backend/core/research_command_contract.json"
+          ],
+          "evidence": [
+            "reliability.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "累计预算及历史",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/runtime.py",
+            "backend/core/recovery_contract.py",
+            "backend/core/research_command_contract.json"
+          ],
+          "evidence": [
+            "reliability.json"
+          ],
+          "limitations": []
+        }
+      ],
+      "evidence": [
+        "reliability.json",
+        "unified-candidate.json",
+        "candidate-source-fingerprints-v5.json"
+      ],
+      "implementation": [
+        "backend/services/runtime.py",
+        "backend/core/recovery_contract.py",
+        "backend/core/research_command_contract.json"
+      ],
+      "latest_evidence": [
+        "reliability.json",
+        "recovery-and-sources.json",
+        "unified-candidate.json"
+      ],
+      "evidence_boundary": "Only named receipt inputs and paths; full daily deployment and final-source GitHub gates are pending. No general accuracy, capacity, HA or zero-risk inference."
+    },
+    {
+      "id": 2,
+      "title": "统一费用治理",
+      "status": "implemented_local_component_and_named_candidate_checks_validated_final_delivery_pending",
+      "subitems": [
+        {
+          "requirement": "静态检查/真实运维探测",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/core/usage_governance.py",
+            "backend/api/usage.py",
+            "scripts/ci_budget_ledger.py"
+          ],
+          "evidence": [
+            "governance.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "专用额度冷却缓存审计",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/core/usage_governance.py",
+            "backend/api/usage.py",
+            "scripts/ci_budget_ledger.py"
+          ],
+          "evidence": [
+            "governance.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "平台账号空间周期额度",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/core/usage_governance.py",
+            "backend/api/usage.py",
+            "scripts/ci_budget_ledger.py"
+          ],
+          "evidence": [
+            "governance.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "全部付费路径原子预留",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/core/usage_governance.py",
+            "backend/api/usage.py",
+            "scripts/ci_budget_ledger.py"
+          ],
+          "evidence": [
+            "governance.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "预留实耗未知区分",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/core/usage_governance.py",
+            "backend/api/usage.py",
+            "scripts/ci_budget_ledger.py"
+          ],
+          "evidence": [
+            "governance.json"
+          ],
+          "limitations": []
+        }
+      ],
+      "evidence": [
+        "governance.json"
+      ],
+      "implementation": [
+        "backend/core/usage_governance.py",
+        "backend/api/usage.py",
+        "scripts/ci_budget_ledger.py",
+        "scripts/reconcile_ci_budget.py"
+      ],
+      "latest_evidence": [
+        "governance.json",
+        "usage-postgres.json",
+        "real-provider.json",
+        "ci-budget-assessment.json"
+      ],
+      "evidence_boundary": "Only named receipt inputs and paths; full daily deployment and final-source GitHub gates are pending. No general accuracy, capacity, HA or zero-risk inference."
+    },
+    {
+      "id": 3,
+      "title": "上传扫描恢复",
+      "status": "implemented_local_component_and_named_candidate_checks_validated_final_delivery_pending",
+      "subitems": [
+        {
+          "requirement": "存储失败",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/documents.py",
+            "backend/infrastructure/object_store.py",
+            "backend/core/recovery_schema.py"
+          ],
+          "evidence": [
+            "reliability.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "扫描中断",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/documents.py",
+            "backend/infrastructure/object_store.py",
+            "backend/core/recovery_schema.py"
+          ],
+          "evidence": [
+            "reliability.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "重复Hash重传",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/documents.py",
+            "backend/infrastructure/object_store.py",
+            "backend/core/recovery_schema.py"
+          ],
+          "evidence": [
+            "reliability.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "有界重扫",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/documents.py",
+            "backend/infrastructure/object_store.py",
+            "backend/core/recovery_schema.py"
+          ],
+          "evidence": [
+            "reliability.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "旧可用版保留",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/documents.py",
+            "backend/infrastructure/object_store.py",
+            "backend/core/recovery_schema.py"
+          ],
+          "evidence": [
+            "reliability.json"
+          ],
+          "limitations": []
+        }
+      ],
+      "evidence": [
+        "reliability.json",
+        "dependency-faults.json",
+        "candidate-source-fingerprints-v3.json",
+        "unified-candidate.json",
+        "candidate-source-fingerprints-v5.json"
+      ],
+      "implementation": [
+        "backend/services/documents.py",
+        "backend/infrastructure/object_store.py",
+        "backend/core/recovery_schema.py"
+      ],
+      "latest_evidence": [
+        "dependency-faults.json",
+        "unified-candidate/dependency-faults.json"
+      ],
+      "evidence_boundary": "Only named receipt inputs and paths; full daily deployment and final-source GitHub gates are pending. No general accuracy, capacity, HA or zero-risk inference."
+    },
+    {
+      "id": 4,
+      "title": "受限解析子进程",
+      "status": "implemented_local_component_and_named_candidate_checks_validated_final_delivery_pending",
+      "subitems": [
+        {
+          "requirement": "PDF解压/图片边界",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/parser_process.py",
+            "backend/services/parser_worker.py",
+            "backend/services/document_parsing.py"
+          ],
+          "evidence": [
+            "parser.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "内存CPU墙钟输出",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/parser_process.py",
+            "backend/services/parser_worker.py",
+            "backend/services/document_parsing.py"
+          ],
+          "evidence": [
+            "parser.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "超时杀进程与回收",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/parser_process.py",
+            "backend/services/parser_worker.py",
+            "backend/services/document_parsing.py"
+          ],
+          "evidence": [
+            "parser.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "后续正常文档",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/parser_process.py",
+            "backend/services/parser_worker.py",
+            "backend/services/document_parsing.py"
+          ],
+          "evidence": [
+            "parser.json"
+          ],
+          "limitations": []
+        }
+      ],
+      "evidence": [
+        "parser.json"
+      ],
+      "implementation": [
+        "backend/services/parser_process.py",
+        "backend/services/parser_worker.py",
+        "backend/services/document_parsing.py"
+      ],
+      "latest_evidence": [
+        "parser.json"
+      ],
+      "evidence_boundary": "Only named receipt inputs and paths; full daily deployment and final-source GitHub gates are pending. No general accuracy, capacity, HA or zero-risk inference."
+    },
+    {
+      "id": 5,
+      "title": "删除保留归档",
+      "status": "implemented_local_component_and_named_candidate_checks_validated_final_delivery_pending",
+      "subitems": [
+        {
+          "requirement": "SQL事务和孤儿清理",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/runtime.py",
+            "backend/services/retention.py",
+            "backend/core/recovery_schema.py"
+          ],
+          "evidence": [
+            "reliability.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "正式证据保护",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/runtime.py",
+            "backend/services/retention.py",
+            "backend/core/recovery_schema.py"
+          ],
+          "evidence": [
+            "reliability.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "个人偏好/语义记忆合同",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/runtime.py",
+            "backend/services/retention.py",
+            "backend/core/recovery_schema.py"
+          ],
+          "evidence": [
+            "reliability.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "外部清理幂等",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/runtime.py",
+            "backend/services/retention.py",
+            "backend/core/recovery_schema.py"
+          ],
+          "evidence": [
+            "reliability.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "版本事件缓存检查点保留",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/runtime.py",
+            "backend/services/retention.py",
+            "backend/core/recovery_schema.py"
+          ],
+          "evidence": [
+            "reliability.json"
+          ],
+          "limitations": []
+        }
+      ],
+      "evidence": [
+        "reliability.json",
+        "reliability-postgres.json",
+        "runtime-cleanup-boundary.json",
+        "runtime-cleanup-postgres.json"
+      ],
+      "implementation": [
+        "backend/services/runtime.py",
+        "backend/services/retention.py",
+        "backend/core/recovery_schema.py",
+        "backend/services/run_cleanup.py"
+      ],
+      "latest_evidence": [
+        "runtime-cleanup-boundary.json",
+        "reliability-postgres.json"
+      ],
+      "evidence_boundary": "Only named receipt inputs and paths; full daily deployment and final-source GitHub gates are pending. No general accuracy, capacity, HA or zero-risk inference."
+    },
+    {
+      "id": 6,
+      "title": "最小权限隔离",
+      "status": "implemented_local_component_and_named_candidate_checks_validated_final_delivery_pending",
+      "subitems": [
+        {
+          "requirement": "实际角色核查",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "scripts/bootstrap_services.py",
+            "scripts/migrate_services.py",
+            "scripts/storage-bootstrap/main.go"
+          ],
+          "evidence": [
+            "privileges-isolated.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "迁移JavaPython分权",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "scripts/bootstrap_services.py",
+            "scripts/migrate_services.py",
+            "scripts/storage-bootstrap/main.go"
+          ],
+          "evidence": [
+            "privileges-isolated.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "业务Milvus存储身份",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "scripts/bootstrap_services.py",
+            "scripts/migrate_services.py",
+            "scripts/storage-bootstrap/main.go"
+          ],
+          "evidence": [
+            "privileges-isolated.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "token分挂载",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "scripts/bootstrap_services.py",
+            "scripts/migrate_services.py",
+            "scripts/storage-bootstrap/main.go"
+          ],
+          "evidence": [
+            "privileges-isolated.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "必要网络",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "scripts/bootstrap_services.py",
+            "scripts/migrate_services.py",
+            "scripts/storage-bootstrap/main.go"
+          ],
+          "evidence": [
+            "privileges-isolated.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "既有库无损升级",
+          "status": "local_exact_artifact_and_ordinary_scan_gates_verified_cold_final_SHA_CI_pending",
+          "implementation": [
+            "scripts/bootstrap_services.py",
+            "scripts/migrate_services.py",
+            "scripts/storage-bootstrap/main.go"
+          ],
+          "evidence": [
+            "privileges-isolated.json"
+          ],
+          "limitations": []
+        }
+      ],
+      "evidence": [
+        "privileges-isolated.json",
+        "application-image-security.json",
+        "vendor-remediation.json",
+        "minio-remediation.json",
+        "unified-candidate.json",
+        "candidate-source-fingerprints-v5.json"
+      ],
+      "implementation": [
+        "scripts/bootstrap_services.py",
+        "scripts/migrate_services.py",
+        "scripts/storage-bootstrap/main.go",
+        "compose.yaml"
+      ],
+      "latest_evidence": [
+        "privileges-isolated-v3.json",
+        "storage-isolated.json",
+        "vendor-fresh-scan.json",
+        "native-jvm-ci.json",
+        "minio-ci-integration.json",
+        "grafana-artifact-governance.json"
+      ],
+      "evidence_boundary": "Only named receipt inputs and paths; full daily deployment and final-source GitHub gates are pending. No general accuracy, capacity, HA or zero-risk inference."
+    },
+    {
+      "id": 7,
+      "title": "词法召回下推及容量",
+      "status": "implemented_local_component_and_named_candidate_checks_validated_final_delivery_pending",
+      "subitems": [
+        {
+          "requirement": "上传准入容量提示",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/lexical_retrieval.py",
+            "backend/services/documents.py",
+            "scripts/rebuild_lexical_index.py"
+          ],
+          "evidence": [
+            "lexical-baseline.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "数据库候选召回",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/lexical_retrieval.py",
+            "backend/services/documents.py",
+            "scripts/rebuild_lexical_index.py"
+          ],
+          "evidence": [
+            "lexical-baseline.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "中文固定题集不退化",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/lexical_retrieval.py",
+            "backend/services/documents.py",
+            "scripts/rebuild_lexical_index.py"
+          ],
+          "evidence": [
+            "lexical-baseline.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "超过旧4000片段",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/lexical_retrieval.py",
+            "backend/services/documents.py",
+            "scripts/rebuild_lexical_index.py"
+          ],
+          "evidence": [
+            "lexical-baseline.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "内存上界实测",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/lexical_retrieval.py",
+            "backend/services/documents.py",
+            "scripts/rebuild_lexical_index.py"
+          ],
+          "evidence": [
+            "lexical-baseline.json"
+          ],
+          "limitations": []
+        }
+      ],
+      "evidence": [
+        "lexical-baseline.json"
+      ],
+      "implementation": [
+        "backend/services/lexical_retrieval.py",
+        "backend/services/documents.py",
+        "scripts/rebuild_lexical_index.py",
+        "frontend/src/DocumentCapacity.vue"
+      ],
+      "latest_evidence": [
+        "retrieval.json"
+      ],
+      "evidence_boundary": "Only named receipt inputs and paths; full daily deployment and final-source GitHub gates are pending. No general accuracy, capacity, HA or zero-risk inference."
+    },
+    {
+      "id": 8,
+      "title": "研究需求澄清",
+      "status": "implemented_local_component_and_named_candidate_checks_validated_final_delivery_pending",
+      "subitems": [
+        {
+          "requirement": "无模型预检",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "business-backend/src/main/java/com/deepresearch/business/api/ResearchIntakeController.java",
+            "business-backend/src/main/java/com/deepresearch/business/service/ResearchIntakePolicy.java",
+            "frontend/src/ResearchScope.vue"
+          ],
+          "evidence": [
+            "scope-intake.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "持久可继续状态",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "business-backend/src/main/java/com/deepresearch/business/api/ResearchIntakeController.java",
+            "business-backend/src/main/java/com/deepresearch/business/service/ResearchIntakePolicy.java",
+            "frontend/src/ResearchScope.vue"
+          ],
+          "evidence": [
+            "scope-intake.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "修改取消过期",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "business-backend/src/main/java/com/deepresearch/business/api/ResearchIntakeController.java",
+            "business-backend/src/main/java/com/deepresearch/business/service/ResearchIntakePolicy.java",
+            "frontend/src/ResearchScope.vue"
+          ],
+          "evidence": [
+            "scope-intake.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "确认后成本操作",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "business-backend/src/main/java/com/deepresearch/business/api/ResearchIntakeController.java",
+            "business-backend/src/main/java/com/deepresearch/business/service/ResearchIntakePolicy.java",
+            "frontend/src/ResearchScope.vue"
+          ],
+          "evidence": [
+            "scope-intake.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "明确问题直接执行",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "business-backend/src/main/java/com/deepresearch/business/api/ResearchIntakeController.java",
+            "business-backend/src/main/java/com/deepresearch/business/service/ResearchIntakePolicy.java",
+            "frontend/src/ResearchScope.vue"
+          ],
+          "evidence": [
+            "scope-intake.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "假设披露",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "business-backend/src/main/java/com/deepresearch/business/api/ResearchIntakeController.java",
+            "business-backend/src/main/java/com/deepresearch/business/service/ResearchIntakePolicy.java",
+            "frontend/src/ResearchScope.vue"
+          ],
+          "evidence": [
+            "scope-intake.json"
+          ],
+          "limitations": []
+        }
+      ],
+      "evidence": [
+        "scope-intake.json",
+        "roles-and-scope.json",
+        "unified-candidate.json",
+        "candidate-source-fingerprints-v5.json"
+      ],
+      "implementation": [
+        "business-backend/src/main/java/com/deepresearch/business/api/ResearchIntakeController.java",
+        "business-backend/src/main/java/com/deepresearch/business/service/ResearchIntakePolicy.java",
+        "frontend/src/ResearchScope.vue"
+      ],
+      "latest_evidence": [
+        "scope-intake.json",
+        "unified-candidate/roles-and-scope.json"
+      ],
+      "evidence_boundary": "Only named receipt inputs and paths; full daily deployment and final-source GitHub gates are pending. No general accuracy, capacity, HA or zero-risk inference."
+    },
+    {
+      "id": 9,
+      "title": "集合或文档授权",
+      "status": "implemented_local_component_and_named_candidate_checks_validated_final_delivery_pending",
+      "subitems": [
+        {
+          "requirement": "继承迁移默认",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/document_access.py",
+            "business-backend/src/main/java/com/deepresearch/business/service/DocumentAccessService.java",
+            "business-backend/src/main/java/com/deepresearch/business/api/CollectionController.java"
+          ],
+          "evidence": [
+            "acl.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "检索/原文/引用/历史快照",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/document_access.py",
+            "business-backend/src/main/java/com/deepresearch/business/service/DocumentAccessService.java",
+            "business-backend/src/main/java/com/deepresearch/business/api/CollectionController.java"
+          ],
+          "evidence": [
+            "acl.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "撤权及并发边界",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/document_access.py",
+            "business-backend/src/main/java/com/deepresearch/business/service/DocumentAccessService.java",
+            "business-backend/src/main/java/com/deepresearch/business/api/CollectionController.java"
+          ],
+          "evidence": [
+            "acl.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "非前端隐藏",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/services/document_access.py",
+            "business-backend/src/main/java/com/deepresearch/business/service/DocumentAccessService.java",
+            "business-backend/src/main/java/com/deepresearch/business/api/CollectionController.java"
+          ],
+          "evidence": [
+            "acl.json"
+          ],
+          "limitations": []
+        }
+      ],
+      "evidence": [
+        "acl.json",
+        "roles-and-scope.json",
+        "unified-candidate.json",
+        "candidate-source-fingerprints-v5.json"
+      ],
+      "implementation": [
+        "backend/services/document_access.py",
+        "business-backend/src/main/java/com/deepresearch/business/service/DocumentAccessService.java",
+        "business-backend/src/main/java/com/deepresearch/business/api/CollectionController.java"
+      ],
+      "latest_evidence": [
+        "acl.json",
+        "unified-candidate/roles-and-scope.json",
+        "unified-candidate/document-lifecycle.json"
+      ],
+      "evidence_boundary": "Only named receipt inputs and paths; full daily deployment and final-source GitHub gates are pending. No general accuracy, capacity, HA or zero-risk inference."
+    },
+    {
+      "id": 10,
+      "title": "公开来源时效重核验",
+      "status": "implemented_local_component_and_named_candidate_checks_validated_final_delivery_pending",
+      "subitems": [
+        {
+          "requirement": "获取核验时间及状态",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/api/source_rechecks.py",
+            "frontend/src/SourceRechecks.vue",
+            "frontend/src/ReportLifecycle.vue"
+          ],
+          "evidence": [
+            "source-revalidation.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "显式检查变化/不可达",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/api/source_rechecks.py",
+            "frontend/src/SourceRechecks.vue",
+            "frontend/src/ReportLifecycle.vue"
+          ],
+          "evidence": [
+            "source-revalidation.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "历史快照不变",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/api/source_rechecks.py",
+            "frontend/src/SourceRechecks.vue",
+            "frontend/src/ReportLifecycle.vue"
+          ],
+          "evidence": [
+            "source-revalidation.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "修订与异人审核",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/api/source_rechecks.py",
+            "frontend/src/SourceRechecks.vue",
+            "frontend/src/ReportLifecycle.vue"
+          ],
+          "evidence": [
+            "source-revalidation.json"
+          ],
+          "limitations": []
+        }
+      ],
+      "evidence": [
+        "source-revalidation.json"
+      ],
+      "implementation": [
+        "backend/api/source_rechecks.py",
+        "frontend/src/SourceRechecks.vue",
+        "frontend/src/ReportLifecycle.vue"
+      ],
+      "latest_evidence": [
+        "source-revalidation.json",
+        "unified-candidate/recovery-and-sources.json"
+      ],
+      "evidence_boundary": "Only named receipt inputs and paths; full daily deployment and final-source GitHub gates are pending. No general accuracy, capacity, HA or zero-risk inference."
+    },
+    {
+      "id": 11,
+      "title": "跨语言契约",
+      "status": "implemented_local_component_and_named_candidate_checks_validated_final_delivery_pending",
+      "subitems": [
+        {
+          "requirement": "字段状态写入所有者",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/core/recovery_contract.py",
+            "backend/core/research_command_contract.json",
+            "business-backend/src/main/java/com/deepresearch/business/service/ResearchCommandContract.java"
+          ],
+          "evidence": [
+            "reliability.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "版本化恢复合同",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/core/recovery_contract.py",
+            "backend/core/research_command_contract.json",
+            "business-backend/src/main/java/com/deepresearch/business/service/ResearchCommandContract.java"
+          ],
+          "evidence": [
+            "reliability.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "共享固定用例",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/core/recovery_contract.py",
+            "backend/core/research_command_contract.json",
+            "business-backend/src/main/java/com/deepresearch/business/service/ResearchCommandContract.java"
+          ],
+          "evidence": [
+            "reliability.json"
+          ],
+          "limitations": []
+        },
+        {
+          "requirement": "兼容迁移",
+          "status": "implemented_component_validated_named_combined_evidence_separate",
+          "implementation": [
+            "backend/core/recovery_contract.py",
+            "backend/core/research_command_contract.json",
+            "business-backend/src/main/java/com/deepresearch/business/service/ResearchCommandContract.java"
+          ],
+          "evidence": [
+            "reliability.json"
+          ],
+          "limitations": []
+        }
+      ],
+      "evidence": [
+        "reliability.json"
+      ],
+      "implementation": [
+        "backend/core/recovery_contract.py",
+        "backend/core/research_command_contract.json",
+        "business-backend/src/main/java/com/deepresearch/business/service/ResearchCommandContract.java"
+      ],
+      "latest_evidence": [
+        "verification-boundary.json",
+        "reliability.json"
+      ],
+      "evidence_boundary": "Only named receipt inputs and paths; full daily deployment and final-source GitHub gates are pending. No general accuracy, capacity, HA or zero-risk inference."
+    },
+    {
+      "id": 12,
+      "title": "职责与部署整理",
+      "status": "structure_profiles_ops_and_selected_candidate_checks_validated_install_restore_and_release_pending_window",
+      "subitems": [
+        {
+          "requirement": "runtime/graph/App职责拆分",
+          "status": "typed_cleanup_and_existing_recovery_retention_verification_document_UI_boundaries_validated",
+          "implementation": [
+            "backend/services/run_cleanup.py",
+            "backend/core/recovery_contract.py",
+            "backend/services/retention.py",
+            "backend/research/verification_contract.py",
+            "frontend/src/useDocumentLibrary.ts"
+          ],
+          "evidence": [],
+          "limitations": []
+        },
+        {
+          "requirement": "类型边界",
+          "status": "implemented_local_evidence_available_daily_install_and_release_pending",
+          "implementation": [
+            "backend/research/verification_contract.py",
+            "backend/services/retention.py",
+            "frontend/src/useDocumentLibrary.ts"
+          ],
+          "evidence": [],
+          "limitations": []
+        },
+        {
+          "requirement": "部署档保留防护",
+          "status": "implemented_local_evidence_available_daily_install_and_release_pending",
+          "implementation": [
+            "backend/research/verification_contract.py",
+            "backend/services/retention.py",
+            "frontend/src/useDocumentLibrary.ts"
+          ],
+          "evidence": [],
+          "limitations": []
+        },
+        {
+          "requirement": "告警容量资源日志",
+          "status": "implemented_local_evidence_available_daily_install_and_release_pending",
+          "implementation": [
+            "backend/research/verification_contract.py",
+            "backend/services/retention.py",
+            "frontend/src/useDocumentLibrary.ts"
+          ],
+          "evidence": [],
+          "limitations": []
+        },
+        {
+          "requirement": "自动备份异机接口与RPO/RTO",
+          "status": "tools_and_local_component_checks_prepared_install_and_restore_pending_window",
+          "implementation": [
+            "backend/research/verification_contract.py",
+            "backend/services/retention.py",
+            "frontend/src/useDocumentLibrary.ts"
+          ],
+          "evidence": [],
+          "limitations": [
+            "offhost restore deferred_by_user_not_verified; user instructed other work to continue"
+          ]
+        },
+        {
+          "requirement": "最终交付",
+          "status": "pending_exact_SHA_CI_and_deployment",
+          "implementation": [
+            "backend/research/verification_contract.py",
+            "backend/services/retention.py",
+            "frontend/src/useDocumentLibrary.ts"
+          ],
+          "evidence": [],
+          "limitations": []
+        },
+        {
+          "requirement": "Windows备份和探测任务及子进程全链路后台静默，保留日志、真实退出码与失败恢复",
+          "status": "implemented_static_and_synthetic_entry_verified_actual_scheduler_pending_window",
+          "implementation": [
+            "scripts/install_backup_task.ps1",
+            "scripts/scheduled_backup.py",
+            "scripts/ops_probe.py",
+            "scripts/recovery.py",
+            "scripts/host_task.py"
+          ],
+          "evidence": [
+            "windows-host-task-silence.json"
+          ],
+          "limitations": [
+            "No scheduler installed or backup triggered before DeepResearch daily window.",
+            "Current user Limited, no stored password or elevation; final actual single scheduler run pending window."
+          ]
+        }
+      ],
+      "implementation": [
+        "backend/research/verification_contract.py",
+        "backend/services/retention.py",
+        "frontend/src/useDocumentLibrary.ts",
+        "compose.core.yaml",
+        "compose.production.yaml",
+        "scripts/scheduled_backup.py",
+        "backend/services/run_cleanup.py"
+      ],
+      "evidence": [
+        "runtime-cleanup-boundary.json",
+        "runtime-cleanup-postgres.json",
+        "unified-candidate.json",
+        "candidate-source-fingerprints-v5.json"
+      ],
+      "latest_evidence": [
+        "infra.json",
+        "observability-acceptance.json",
+        "backup-image-bundle.json",
+        "recovery-business-compatibility.json",
+        "windows-host-task-silence.json",
+        "candidate-source-fingerprints-v7.json"
+      ]
+    }
+  ],
+  "budget": {
+    "real_complete_samples": 4,
+    "development_samples": 2,
+    "holdout_samples": 2,
+    "model_http": 80,
+    "embedding_http": 80,
+    "map_rest": 120,
+    "reserved_tokens": 800000,
+    "existing_stricter_limits_precede": true,
+    "actual_local_selected_samples": 2,
+    "actual_local_model_http": 12,
+    "actual_local_embedding_http": 4,
+    "authorized_CI_model_http_all_new_attempts": 515,
+    "CI_shared_with_local_samples": false
+  },
+  "deployment": {
+    "owner_required": "DeepResearch",
+    "window_required": true
+  },
+  "evidence_boundary": {
+    "human_blind_review": "not_performed",
+    "external_users": "not_claimed",
+    "cross_host_disaster_recovery": "not_performed"
+  },
+  "updated_at": "2026-10-27T01:21:19.015457+00:00",
+  "remaining_common_acceptance": [
+    "oldcandidate data comparison and finalmonitoring artifact acceptance",
+    "coordinated daily fullcoldbackup/isolatedrestore/deployment anddirectedcleanup",
+    "exactSHA final CI/Security/freshquality under515cumulative limit",
+    "externalSMTP/MFA/TLS/humanreview unverified; offhostexplicitlydeferred"
+  ],
+  "stage": "DEPLOY_READY_local_candidate_implementation_verified_daily_window_and_final_delivery_pending",
+  "final_cleanup_prerequisites": [
+    "Both projects final deployment and exact-source GitHub CI/Security/quality gates verified by coordinator",
+    "Fresh final retained daily container/image/volume identity inventory and all references reviewed",
+    "Separate coordinator final-cleanup window explicitly granted; current Trip deployment ownership grants no cleanup permission"
+  ],
+  "external_user_decisions": {
+    "offhost_restore": "deferred_by_user_not_verified; no target, continue other authorized work",
+    "human_blind_review": "not_performed; model/fixture scores do not establish independent human truth"
+  },
+  "candidate_runtime_current_boundary": "Prior live named acceptance passed. Fresh stopped-container source-byte audit passed all5services; observed candidate and daily containers already stopped around00:47Z, cause not established here; no service state mutation by readiness refresh."
+}

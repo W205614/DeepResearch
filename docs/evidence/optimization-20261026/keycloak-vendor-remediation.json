@@ -1,0 +1,151 @@
+{
+  "date": "2026-10-26",
+  "status": "eligible_for_isolated_stack_acceptance_not_deployed",
+  "candidate": "dr-vendor-keycloak:26.8.1-temurin21.0.13-locked-20261026",
+  "oci_index": "sha256:95e66ef578a2e6a7ed744252edf687d07713e4e50ee1e9eb194cd0db522361ca",
+  "amd64_manifest": "sha256:f02ba58cc5faa60cff30f2b8224c2191758a6452dc181548d67dc1900e531140",
+  "config": "sha256:e767894fd95d5f88855a38393808d64339613ec0a9f36c9656353232d0b885d3",
+  "recipe": {
+    "path": "Dockerfile.keycloak",
+    "sha256": "9d046392007c27d5ee54d3e58069146e7c13a39630268ba5a7f5684888305343"
+  },
+  "source_lock": {
+    "path": "deployment/vendors/keycloak/source.lock.json",
+    "sha256": "1b5a9c7dff798d3596159d803984a080e9b98e0a6f95ee699f20c7b92134542a"
+  },
+  "source_scope": "same official26.8.1 rootfs/application; lawful actual oldJDK RPM+files removal; signed Temurin21.0.13+9 glibc JRE; non-JDK OS identities retained",
+  "full_fresh_locked_scan": {
+    "path": ".cache/optimization-20261026/vendor-candidates/keycloak-jre/locked-full-scan.json",
+    "sha256": "a02972c5852345d282a71f8d919453b68656ed96c9c57bdfd48c7b6ee579bb2c",
+    "HIGH": 0,
+    "CRITICAL": 0,
+    "coverage": [
+      {
+        "target": "dr-vendor-keycloak:26.8.1-temurin21.0.13-locked-20261026 (redhat 9.8)",
+        "packages": 43
+      },
+      {
+        "target": "Java",
+        "packages": 518
+      }
+    ]
+  },
+  "supplemental_H2_scan": {
+    "path": ".cache/optimization-20261026/vendor-candidates/keycloak-jre/h2-supplemental-scan.json",
+    "sha256": "6d43dd5521102eabad83fb97cade9ecf235386b2af21dd8700059e3c3b46133b",
+    "HIGH": 0,
+    "CRITICAL": 0,
+    "coverage": [
+      {
+        "target": "Java",
+        "packages": 1
+      }
+    ]
+  },
+  "native_JRE_coverage": {
+    "tool_receipt": {
+      "path": ".cache/optimization-20261026/vendor-candidates/native-jdk-scanners/tool-receipt.json",
+      "sha256": "d0bc4f213d95a0fe560c29288edb9502cf3d1fb2232337c753b03a48c456b56c"
+    },
+    "frozen_grype_db": {
+      "path": ".cache/optimization-20261026/vendor-candidates/native-jdk-scanners/grype-db/frozen-db-receipt.json",
+      "sha256": "98613770d152abc78bc81d25e85dc9bdd7f0bbe0ae18b45fdfa068458a4e78b6"
+    },
+    "actual_inventory": {
+      "path": ".cache/optimization-20261026/vendor-candidates/keycloak-jre/rpm-removed-jvm-syft.json",
+      "sha256": "d097dbf8bed6cef9b7323d39623ed710b507198785548036c87deb22ef0b53c5"
+    },
+    "actual_CPE_scan": {
+      "path": ".cache/optimization-20261026/vendor-candidates/keycloak-jre/rpm-removed-jvm-grype.json",
+      "sha256": "71ee1b47c7378190b15138fc6a707f4637394226d401c1f5ee509813893a1b22"
+    },
+    "native_JVM_matches": 0,
+    "runtime": "OpenJDK21.0.13+9-LTS, declaredoracle:openjdk21.0.13 CPE",
+    "synthetic_positive_control": {
+      "path": ".cache/optimization-20261026/vendor-candidates/keycloak-jre/synthetic-positive-control-grype.json",
+      "sha256": "a29b0d564321cdadcacd59bf61dd9e08a7bdf7e55f6ac83b677c30b3c6ad4b68"
+    },
+    "positive_control_findings": 53,
+    "positive_control_boundary": "synthetic21.0.1 only; never actual-image evidence",
+    "locked_rebuild_identity": {
+      "path": ".cache/optimization-20261026/vendor-candidates/keycloak-jre/locked-runtime-equivalence.json",
+      "sha256": "70fcd73a490dac555121ce22a83f411b58be25d9b924b5fb9d97dade82bb4826"
+    }
+  },
+  "detailed_jar_coverage": {
+    "path": ".cache/optimization-20261026/vendor-candidates/keycloak-jre/rpm-removal-coverage.json",
+    "sha256": "4c7ebf7e8ed41dcbb67700cdc792cc2b2d65cf9eb339cad468fcce7cb163bf64"
+  },
+  "no_GAV_exact_fingerprints": {
+    "path": ".cache/optimization-20261026/vendor-candidates/keycloak-jre/no-gav-fingerprint-coverage.json",
+    "sha256": "ee131a573800f6686512b355440b27a338a3c9a0aa8cdb79e08371e24889f66f"
+  },
+  "generated_code_inheritance": {
+    "path": ".cache/optimization-20261026/vendor-candidates/keycloak-jre/generated-artifact-inheritance.json",
+    "sha256": "fbbc900ac766dfbe43a4c51701bde2ca804bc73a13aba998338588ce0f7440b9"
+  },
+  "H2_class_fingerprint": {
+    "path": ".cache/optimization-20261026/vendor-candidates/keycloak-jre/h2-official-fingerprint.json",
+    "sha256": "08ffd4c316339bfdd55bf3d46063381b199eec642b7f034d1d35fdf79eaf571d"
+  },
+  "compatibility": {
+    "passed": true,
+    "receipt": {
+      "path": ".cache/optimization-20261026/vendor-candidates/keycloak-jre/compatibility-rpm-removed.json",
+      "sha256": "c9141ad0d836a03bf8daa85a9b2150004c46c462066d9649042157a7f9532694"
+    },
+    "reuse": "full runtime layers/config exactly match experimental33a2 image; actual isolated SQL-copy/migration/PKCE results explicitly reused, not rerun",
+    "checks": [
+      "26.4 private realm SQL restored into separatePG17.11",
+      "26.8 Liquibase165to237",
+      "fixed mapper check/apply/privatebackup/readback/idempotence/rollback/reapply",
+      "actual signedJRE runtime",
+      "S256PKCE+JWKSRS256 signature+strictissuer/aud/sub+role+nonce",
+      "wrongaudience rejected",
+      "refresh+logoutinvalidatesrefresh+managementhealth"
+    ]
+  },
+  "existing_realm_migration": {
+    "path": "docs/evidence/optimization-20261026/keycloak-audience-migration.json",
+    "sha256": "6c75a879ffe523dfe88b8d5b56d1e610e640c8c368653dd4a7d42d39c1a4869a"
+  },
+  "deployment_prerequisites": [
+    "actual original realm private backup before exclusive-writer audience migration; existing realm import alone is insufficient",
+    "database minor26.4to26.8 migration rollback needs restored original DB copy",
+    "root isolated fullstack acceptance before daily switch"
+  ],
+  "limitations": [
+    "no production token continuity/federation/TLS/HA/capacity proof",
+    "scans are bounded recognized-component/frozen-advisory evidence, not absence-of-all-vulnerabilities proof",
+    "source-less generated augmentation is classified by official ownership and exactbyte inheritance; not falsely assigned scanner Maven identities"
+  ],
+  "business_volumes_changed": false,
+  "daily_deployment_changed": false,
+  "resources_retained_stopped": true,
+  "cross_host_restore": "deferred_by_user_not_verified",
+  "current_advisory_database_scan": {
+    "database_sha256": "d941f76c20fd916816fd04fa80d67bcd8dec6a5f68d353cb0c00be3fd3c9d2f8",
+    "updated": "2026-10-26T07:15:18Z",
+    "raw": {
+      "path": ".cache/optimization-20261026/vendor-final-scan/keycloak.json",
+      "sha256": "e3163803f4667062e08432ea266f75efb9ec8171561ac6c8b8bc8ad9bf560830"
+    },
+    "HIGH": 0,
+    "CRITICAL": 0,
+    "H2_supplement": {
+      "path": ".cache/optimization-20261026/vendor-final-scan/keycloak-h2-supplement.json",
+      "sha256": "c25999adfdd38a6d707ec6e300c65b58fb8f3a2b670d1bc973eca1d8272d3610"
+    }
+  },
+  "native_default_full_independent_gate": {
+    "path": "docs/evidence/optimization-20261026/native-jvm-ci.json",
+    "sha256": "74563ac882cfaa0d0ebbe78d3f23049a4638c04e5d734af95e5f77ebacdcafae"
+  },
+  "historical_frozen_scan_policy": {
+    "version": "0.75.0",
+    "vulnerability_db_sha256": "05a1fa5372e54059b6a7c1fc41afb812fafd9bd56a8e0ab6aa20d7f3f154ff31",
+    "java_db_sha256": "148a3e77d8a7df1c28ad261c4f72085fe0eb9d1354c4cf400e9abe963825a2c4",
+    "updates": false,
+    "ignore": []
+  }
+}

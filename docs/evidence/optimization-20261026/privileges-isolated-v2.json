@@ -1,0 +1,72 @@
+{
+  "passed": true,
+  "scope": "isolated PostgreSQL 17.6; retained pre-upgrade row; no daily service changed",
+  "migration_head": "0017_product_governance",
+  "runtime_roles_non_superuser": true,
+  "denials": [
+    {
+      "role": "dr_java",
+      "operation": "CREATE",
+      "rejected": true
+    },
+    {
+      "role": "dr_java",
+      "operation": "UPDATE",
+      "rejected": true
+    },
+    {
+      "role": "dr_java",
+      "operation": "DELETE",
+      "rejected": true
+    },
+    {
+      "role": "dr_python",
+      "operation": "CREATE",
+      "rejected": true
+    },
+    {
+      "role": "dr_python",
+      "operation": "UPDATE",
+      "rejected": true
+    },
+    {
+      "role": "dr_python",
+      "operation": "UPDATE",
+      "rejected": true
+    },
+    {
+      "role": "dr_python",
+      "operation": "UPDATE",
+      "rejected": true
+    },
+    {
+      "role": "dr_python",
+      "operation": "INSERT",
+      "rejected": true
+    },
+    {
+      "role": "dr_monitor",
+      "operation": "CREATE",
+      "rejected": true
+    },
+    {
+      "role": "dr_monitor",
+      "operation": "SELECT",
+      "rejected": true
+    },
+    {
+      "role": "dr_monitor",
+      "operation": "SELECT",
+      "rejected": true
+    },
+    {
+      "role": "dr_monitor",
+      "operation": "UPDATE",
+      "rejected": true
+    }
+  ],
+  "retained_rows": 1,
+  "idempotent_bootstrap": true,
+  "provider_calls": 0,
+  "container_id": "635bb61dd6e4df6fd5579a21dd1f24d41e2726d5a138d5314a42b9d2c470506b"
+}

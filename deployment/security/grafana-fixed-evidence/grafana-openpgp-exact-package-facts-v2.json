@@ -1,0 +1,195 @@
+{
+  "status": "exact_package_facts_verified_independent_review_required",
+  "index_digest": "sha256:9a68d3a7f3b96ffa643af86e5be5f91a723cc051678b4d445a879861bc335132",
+  "configuration_digest": "sha256:0bf2ff0e6cc8f6ca357aae46062ff8188ee7629736d3763c27788a80b4df1d5b",
+  "rows": [
+    {
+      "advisory": "GO-2026-5932",
+      "package": "golang.org/x/crypto",
+      "version": "v0.57.0",
+      "target": "/usr/share/grafana/bin/grafana",
+      "elf_sha256": "5b718e17a373c83547a720e0e5a048032388b0d9691da83a3ec3b8ec19d9d152",
+      "go_list_package_count": 4200,
+      "excluded_exact_old_packages": [
+        "golang.org/x/crypto/openpgp",
+        "golang.org/x/crypto/openpgp/packet",
+        "golang.org/x/crypto/openpgp/armor",
+        "golang.org/x/crypto/openpgp/clearsign",
+        "golang.org/x/crypto/openpgp/errors",
+        "golang.org/x/crypto/openpgp/elgamal",
+        "golang.org/x/crypto/openpgp/s2k"
+      ],
+      "old_openpgp_packages_in_graph": [],
+      "maintained_protonmail_packages": [
+        "github.com/ProtonMail/go-crypto/openpgp/errors",
+        "github.com/ProtonMail/go-crypto/openpgp/armor",
+        "github.com/ProtonMail/go-crypto/openpgp/aes/keywrap",
+        "github.com/ProtonMail/go-crypto/openpgp/internal/algorithm",
+        "github.com/ProtonMail/go-crypto/openpgp/internal/encoding",
+        "github.com/ProtonMail/go-crypto/openpgp/internal/ecc",
+        "github.com/ProtonMail/go-crypto/openpgp/ecdh",
+        "github.com/ProtonMail/go-crypto/openpgp/ecdsa",
+        "github.com/ProtonMail/go-crypto/openpgp/ed25519",
+        "github.com/ProtonMail/go-crypto/openpgp/ed448",
+        "github.com/ProtonMail/go-crypto/openpgp/eddsa",
+        "github.com/ProtonMail/go-crypto/openpgp/elgamal",
+        "github.com/ProtonMail/go-crypto/openpgp/s2k",
+        "github.com/ProtonMail/go-crypto/openpgp/x25519",
+        "github.com/ProtonMail/go-crypto/openpgp/x448",
+        "github.com/ProtonMail/go-crypto/openpgp/packet",
+        "github.com/ProtonMail/go-crypto/openpgp",
+        "github.com/ProtonMail/go-crypto/openpgp/clearsign"
+      ],
+      "pclntab_function_count": 402092,
+      "old_openpgp_linked_functions": 0,
+      "other_xcrypto_functions_retained": 341,
+      "compile_evidence": {
+        "go_list": "CGO_ENABLED=0 GOOS=linux GOARCH=amd64; -mod=readonly ./pkg/cmd/grafana; no tags",
+        "raw_sha256": "1592d81c6f58b34ed4985cec29005efe1950d5e27076f25d6fe320dba2d40c63"
+      },
+      "proposed_disposition": "not_affected:vulnerable_code_not_present",
+      "authorization_granted": false
+    },
+    {
+      "advisory": "GO-2026-5932",
+      "package": "golang.org/x/crypto",
+      "version": "v0.57.0",
+      "target": "/usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+      "elf_sha256": "9506612c4e2b460e524ce10977214e197feba998fff597ff90f4ce1d9ca91c35",
+      "go_list_package_count": 743,
+      "excluded_exact_old_packages": [
+        "golang.org/x/crypto/openpgp",
+        "golang.org/x/crypto/openpgp/packet",
+        "golang.org/x/crypto/openpgp/armor",
+        "golang.org/x/crypto/openpgp/clearsign",
+        "golang.org/x/crypto/openpgp/errors",
+        "golang.org/x/crypto/openpgp/elgamal",
+        "golang.org/x/crypto/openpgp/s2k"
+      ],
+      "old_openpgp_packages_in_graph": [],
+      "maintained_protonmail_packages": [],
+      "pclntab_function_count": 47617,
+      "old_openpgp_linked_functions": 0,
+      "other_xcrypto_functions_retained": 2,
+      "compile_evidence": {
+        "go_list": "CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GOAMD64=v1; -tags=arrow_json_stdlib -mod=readonly ./pkg",
+        "source": {
+          "Path": "github.com/grafana/grafana-elasticsearch-datasource",
+          "Version": "v0.0.0-20261021105443-815316bda4b8",
+          "Sum": "h1:2OVVXUjAOY5Q9EEJvSjy9E+1rEck0xb3S09W5znjPx0=",
+          "Origin": {
+            "VCS": "git",
+            "URL": "https://github.com/grafana/grafana-elasticsearch-datasource",
+            "Hash": "815316bda4b87ba342e4a13940d6566dac82ef46"
+          }
+        },
+        "raw_sha256": "ac5b6bb4736dd43424df22c223eab9cf736f888327a44f9604d02f422d9d0e32",
+        "effective_module_versions_equal_actual_ELF_deps": true
+      },
+      "proposed_disposition": "not_affected:vulnerable_code_not_present",
+      "authorization_granted": false
+    },
+    {
+      "advisory": "GO-2026-5932",
+      "package": "golang.org/x/crypto",
+      "version": "v0.57.0",
+      "target": "/usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+      "elf_sha256": "c1a538a81d72dca95c905931cc85dced95feae77683b64c935ac65111e9fbb53",
+      "go_list_package_count": 1078,
+      "excluded_exact_old_packages": [
+        "golang.org/x/crypto/openpgp",
+        "golang.org/x/crypto/openpgp/packet",
+        "golang.org/x/crypto/openpgp/armor",
+        "golang.org/x/crypto/openpgp/clearsign",
+        "golang.org/x/crypto/openpgp/errors",
+        "golang.org/x/crypto/openpgp/elgamal",
+        "golang.org/x/crypto/openpgp/s2k"
+      ],
+      "old_openpgp_packages_in_graph": [],
+      "maintained_protonmail_packages": [],
+      "pclntab_function_count": 52376,
+      "old_openpgp_linked_functions": 0,
+      "other_xcrypto_functions_retained": 23,
+      "compile_evidence": {
+        "go_list": "actual backend build emitted go list -deps -mod=readonly ./pkg; CGO_ENABLED=0 linux/amd64; no tags",
+        "raw_sha256": "8fc311c702a488fe58cfbff9d13b39c28f652197be67aa9a62dae37e9aca657e"
+      },
+      "proposed_disposition": "not_affected:vulnerable_code_not_present",
+      "authorization_granted": false
+    },
+    {
+      "advisory": "GO-2026-5932",
+      "package": "golang.org/x/crypto",
+      "version": "v0.57.0",
+      "target": "/usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+      "elf_sha256": "2ce80b3f011682d265ec98fc882ef58a9314c0019847ba0404f486433d5d08aa",
+      "go_list_package_count": 726,
+      "excluded_exact_old_packages": [
+        "golang.org/x/crypto/openpgp",
+        "golang.org/x/crypto/openpgp/packet",
+        "golang.org/x/crypto/openpgp/armor",
+        "golang.org/x/crypto/openpgp/clearsign",
+        "golang.org/x/crypto/openpgp/errors",
+        "golang.org/x/crypto/openpgp/elgamal",
+        "golang.org/x/crypto/openpgp/s2k"
+      ],
+      "old_openpgp_packages_in_graph": [],
+      "maintained_protonmail_packages": [],
+      "pclntab_function_count": 40261,
+      "old_openpgp_linked_functions": 0,
+      "other_xcrypto_functions_retained": 51,
+      "compile_evidence": {
+        "go_list": "actual backend build emitted go list -deps -mod=readonly ./pkg; CGO_ENABLED=0 linux/amd64; no tags",
+        "raw_sha256": "3e27ddf19a2ecf738b967e1e56b969b1ebcf9824f04fb5f4c2f19379a552896e"
+      },
+      "proposed_disposition": "not_affected:vulnerable_code_not_present",
+      "authorization_granted": false
+    },
+    {
+      "advisory": "GO-2026-5932",
+      "package": "golang.org/x/crypto",
+      "version": "v0.57.0",
+      "target": "/usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+      "elf_sha256": "8e6c55fc90d0e94657e663b386cd6173c811133daef447d08b6bdddea3f6cc9d",
+      "go_list_package_count": 676,
+      "excluded_exact_old_packages": [
+        "golang.org/x/crypto/openpgp",
+        "golang.org/x/crypto/openpgp/packet",
+        "golang.org/x/crypto/openpgp/armor",
+        "golang.org/x/crypto/openpgp/clearsign",
+        "golang.org/x/crypto/openpgp/errors",
+        "golang.org/x/crypto/openpgp/elgamal",
+        "golang.org/x/crypto/openpgp/s2k"
+      ],
+      "old_openpgp_packages_in_graph": [],
+      "maintained_protonmail_packages": [],
+      "pclntab_function_count": 39077,
+      "old_openpgp_linked_functions": 0,
+      "other_xcrypto_functions_retained": 2,
+      "compile_evidence": {
+        "go_list": "CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GOAMD64=v1; -tags=arrow_json_stdlib -mod=readonly ./pkg",
+        "source": {
+          "Path": "github.com/grafana/grafana-cloudmonitoring-datasource",
+          "Version": "v0.0.0-20261021111639-8ef6e781f032",
+          "Sum": "h1:5Yiz5tUK0ccc28T7Xz1P5W9TAyHcIirST6JMUK4qsXs=",
+          "Origin": {
+            "VCS": "git",
+            "URL": "https://github.com/grafana/grafana-cloudmonitoring-datasource",
+            "Hash": "8ef6e781f03294367a7ed700d33fe227bf507fd8"
+          }
+        },
+        "raw_sha256": "29b7ffc787069d370999248bede93c5a0499ea369158430d58919077383e6bec",
+        "effective_module_versions_equal_actual_ELF_deps": true
+      },
+      "proposed_disposition": "not_affected:vulnerable_code_not_present",
+      "authorization_granted": false
+    }
+  ],
+  "official_go_osv_sha256": "f277b0400996200a7d5034c676661cd8cf18adeab1fdc5d0dc369e456ddf1fad",
+  "scope_limit": "only the7 advisory-listed old openpgp packages in these5 exact ELFs; other x/crypto packages remain fully scanned",
+  "severity": "Unknown; official Go advisory has no CVSS/severity or CVE alias, not reassigned",
+  "raw_unknown_rows_retained": 5,
+  "authorized_unknown_dispositions": 0,
+  "unknown_gate_blocked_pending_authorization": true,
+  "vex_enabled": false
+}

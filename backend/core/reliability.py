@@ -114,17 +114,14 @@ def quality(validation):
 
 
 def enrich_run(row, settings=None):
+    from .recovery_contract import can_resume
     row["error_info"] = json.loads(row.get("error_info") or "{}") if isinstance(row.get("error_info", ""), str) else row["error_info"]
     row["validation"].setdefault("quality", "unknown")
-    exhausted = row["error_info"].get("retryable") is False or (
-        row.get("deadline_at", 0) > 0 and row["deadline_at"] <= time.time())
-    row["can_resume"] = row["status"] in {"failed", "interrupted", "cancelled"} and not exhausted
+    row["can_resume"] = can_resume(row, settings)
     row["recovery"] = {"auto_recoveries": row.get("auto_recoveries", 0),
         "deadline_at": row.get("deadline_at", 0), "call_attempts": row.get("call_attempts", 0),
         "reserved_tokens": row.get("reserved_tokens", 0)}
     if settings:
         row["recovery"].update(remaining_calls=max(0, settings.max_run_call_attempts - row.get("call_attempts", 0)),
             remaining_reserved_tokens=max(0, settings.max_run_reserved_tokens - row.get("reserved_tokens", 0)))
-        if row["recovery"]["remaining_calls"] == 0 or row["recovery"]["remaining_reserved_tokens"] == 0:
-            row["can_resume"] = False
     return row

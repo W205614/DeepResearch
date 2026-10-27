@@ -1,0 +1,52 @@
+{
+  "passed": true,
+  "old_image": "sha256:d1aa81d3a62ae1b5d7279f4d12fe9b1a1e6aba466b2f7adc83bbd4d0abe6f48b",
+  "candidate_image": "sha256:151cd83d5e6500f4d1b3d7f0a12756fe80e8ffcbf91150afd6b9b9605bc2369a",
+  "fixture": {
+    "versions": [
+      "889b11fd-9a63-461e-8048-1f97e514de5d",
+      "af97f787-79da-4ed8-96ad-8eb292f53390"
+    ],
+    "upload_id": "YTNhMGJhNjgtYjdkOS00ODk0LTk0ZmItYzFkODEwMGNiYzZhLjAxOGM2MjQ0LTA5ZmUtNDNkYi1iYjM1LTAwM2JjOWVlZTdkMHgxNzkzMDEzODkzNTAyMzg1NDg2",
+    "part1_etag": "\"79b281060d337b9b2b84ccf390adcf74\"",
+    "part1_sha256": "a29968fad2e782aa9f2040a35f05adb97ed8979eb1f572c8c8ea78637e275f3c"
+  },
+  "checks": [
+    "old2024 object versions retained",
+    "old IAM identities retained",
+    "cross-bucket IAM denial retained",
+    "bucket anonymous prefix policy retained",
+    "old multipart part retained and completed afterupgrade",
+    "Milvus S3 location/list/get/put/delete/multipart interfaces",
+    "oversized plain andgzip Select rejected OverMaxRecordSize",
+    "legal CSV Select still works",
+    "old rollbackcopy reopens2024 original data/IAM/multipart"
+  ],
+  "source_volumes_untouched": true,
+  "retained_fixture_containers": [
+    "dr-opt-minio-compat-20261026c-old",
+    "dr-opt-minio-compat-20261026c-new",
+    "dr-opt-minio-compat-20261026c-rollback",
+    "dr-opt-minio-compat-20261026c-bootstrap"
+  ],
+  "retained_fixture_volumes": {
+    "old": "dr-opt-minio-compat-20261026c-old-data",
+    "new": "dr-opt-minio-compat-20261026c-new-data",
+    "rollback": "dr-opt-minio-compat-20261026c-rollback-data"
+  },
+  "network": "dr-opt-minio-compat-20261026c-net",
+  "supplier_http": 0,
+  "real_milvus_profile": {
+    "passed": true,
+    "milvus": "v3.0.0",
+    "rows": 2,
+    "new_s3_keys": 9,
+    "scope": "real insert/flush S3 binlogs/release/reload/search with scopeddr-milvus IAM",
+    "retained_volumes": [
+      "dr-opt-minio-compat-20261026c-etcd-data",
+      "dr-opt-minio-compat-20261026c-milvus-data"
+    ],
+    "private_env": ".cache\\optimization-20261026\\vendor-candidates\\silo-source\\dr-opt-minio-compat-20261026c-milvus.env"
+  },
+  "scope": "Synthetic objects and dedicated volumes only; old rollbackcopy is pre-upgrade, never an in-place downgrade. S3 API compatibility is not full Milvus workload/production proof."
+}

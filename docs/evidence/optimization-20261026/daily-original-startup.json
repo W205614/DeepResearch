@@ -1,0 +1,445 @@
+{
+  "recorded_at": "2026-10-27T01:33:27.351301+00:00",
+  "user_authority": "manual-stop-confirmation.json",
+  "mode": "start_exact_existing_daily_long_lived_no_recreate",
+  "stages": [
+    [
+      {
+        "service": "postgres",
+        "id": "65d7206d50ca8a3f105a11abef53c56a6a132fd9f0283d49c35e93f495fb24b4",
+        "image_id": "sha256:ef257d85f76e48da1c64832459b59fcaba1a4dac97bf5d7450c77753542eee94",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "keycloak-postgres",
+        "id": "ad1a5d2e9a3f0828bd1faf2635d4121db15f289acf02dc30b6be54300b714e76",
+        "image_id": "sha256:ef257d85f76e48da1c64832459b59fcaba1a4dac97bf5d7450c77753542eee94",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "redis",
+        "id": "28d3916cd2f2d884543341de7bfde787edda407be5551d95fea537ffecc49cfa",
+        "image_id": "sha256:02419de7eddf55aa5bcf49efb74e88fa8d931b4d77c07eff8a6b2144472b6952",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "etcd",
+        "id": "ae32c557fcfbf91a3beab3d2924cc61f2e554aae82583bc60fbc4785d3a0702d",
+        "image_id": "sha256:52f17f7e56e4f7239f0320dbfcbcc24721163d7d78ae710b466af3254ccf6366",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "minio",
+        "id": "64a8ea97eeb78edf1b04ca7103f56b1d9d1972c981106b983b7ba9e8487bf9b0",
+        "image_id": "sha256:d1aa81d3a62ae1b5d7279f4d12fe9b1a1e6aba466b2f7adc83bbd4d0abe6f48b",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "clamav",
+        "id": "8e15f33d799e460010bbd991d67fbd066bc707b1196d79926f87e3553e1ffe32",
+        "image_id": "sha256:26a576bbed25fe1de510891ff54697c161124050a03e1c5d59b5b9bdf21c3366",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      }
+    ],
+    [
+      {
+        "service": "milvus",
+        "id": "cf4987b0955a803f941beac32c5ed92df0e2a5f1525e0bfa4fa40fa665e70c53",
+        "image_id": "sha256:49371c30af46b1013e4d3e0b980e691d81376d69cdbe1b372725baf1d7255862",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "keycloak",
+        "id": "8ce05b8b9a93d3ebb0ba8f8f6f30857e1622bbe763b57dc4b4e60eb47e3ef7e6",
+        "image_id": "sha256:5f3fb534cde6bf006d79f5912473e5d2c828c707cdfc52e16972803aca9d43dd",
+        "state": "running",
+        "health": "none",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      }
+    ],
+    [
+      {
+        "service": "otel-collector",
+        "id": "9724f11ab8cd658e8b4b6893f0a8417c23113910fa4a8713106e3b428f5dc4f5",
+        "image_id": "sha256:85ac41c2db88d0df9bd6145e608a3cb023f5d8443868adbfbbf66efb51087917",
+        "state": "running",
+        "health": "none",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "tempo",
+        "id": "9fbd0c4d650a035699844200a756e961016bc9dc738bc51739bafdf1c5c0d7ff",
+        "image_id": "sha256:4b0277a9b572a4b1fa43b01468e58911ec214dd69d033f2cd476596d14de9fe3",
+        "state": "running",
+        "health": "none",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "loki",
+        "id": "8f37555810382c110713e0ae6d844f0ceb01d04a358593faa85d7ceeb113d5d8",
+        "image_id": "sha256:58a6c186ce78ba04d58bfe2a927eff296ba733a430df09645d56cdc158f3ba08",
+        "state": "running",
+        "health": "none",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "alert-relay",
+        "id": "81181d3b5e8c94c25484d5a3f6b54babade4a5c6f66d01c93bf04f6f40664bf9",
+        "image_id": "sha256:2353816ae963d3a401ea19c06394f5d0f471bbf7a162fff6b30abac32e2d0711",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "alertmanager",
+        "id": "6e4fc3d8bc3b34539dab3375e06b3cb2b41a790c8182fd5e8566d6d022c73bdc",
+        "image_id": "sha256:27c475db5fb156cab31d5c18a4251ac7ed567746a2483ff264516437a39b15ba",
+        "state": "running",
+        "health": "none",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      }
+    ],
+    [
+      {
+        "service": "agent",
+        "id": "4a286b53ef1f1630517263d71170df424a1c2449c24582d8b7ec285af19b1bbd",
+        "image_id": "sha256:19369a879f6748b26abb18b400a51190a9cf3678871b0686b8f02b699997cc06",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "backend",
+        "id": "4b9994babf865c1d2a1c76c06c2391979b2f3e56a615db6cf3f496130c1b3996",
+        "image_id": "sha256:1e9798b27da7f14dfee840790b8fe28d1c9d0e2b063f3ab1adde6b5b5ae61d7a",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "worker",
+        "id": "b52ad5ad458245989bc686b87b0f340bd612aba53fc8845200712541d925ca9b",
+        "image_id": "sha256:93e82bff2a55a67418c145071491c611edd1d7df5583bd6c8985631e9b202e3f",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "document-worker",
+        "id": "e2a9d4ee9e49bd9c1a919dee767e85c0d3568deb95d8f218861b7626b4524f10",
+        "image_id": "sha256:4501fcc0ae708bacf68a53d14126964c00200770981ba65bd851926f182fd231",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      }
+    ],
+    [
+      {
+        "service": "web",
+        "id": "48631b2a5acf464c10b5fabf9e4bc6e83b4ce5c222fc1a14c5c5c494f73e624c",
+        "image_id": "sha256:df0c37d83e6da52a6f7efa073c589c2e9962ecd07c2d881db58e4eccfb5dfd9f",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "prometheus",
+        "id": "cf8a7de19ce5f623d3562efc1d2e2a757896c6d8a3d7392f0ef45862809b7cbd",
+        "image_id": "sha256:6927e0919a144aa7616fd0137d4816816d42f6b816de3af269ab065250859a62",
+        "state": "running",
+        "health": "none",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "grafana",
+        "id": "ee39225458ee370b5b1f0faf99b5678c22ca9765bf136cb1876bb9530d573012",
+        "image_id": "sha256:8b37a2f028f164ce7b9889e1765b9d6ee23fec80f871d156fbf436d6198d32b7",
+        "state": "running",
+        "health": "none",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      }
+    ]
+  ],
+  "services": [
+    {
+      "service": "postgres",
+      "id": "65d7206d50ca8a3f105a11abef53c56a6a132fd9f0283d49c35e93f495fb24b4",
+      "image_id": "sha256:ef257d85f76e48da1c64832459b59fcaba1a4dac97bf5d7450c77753542eee94",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "oom_killed": false,
+      "restarts": 0
+    },
+    {
+      "service": "keycloak-postgres",
+      "id": "ad1a5d2e9a3f0828bd1faf2635d4121db15f289acf02dc30b6be54300b714e76",
+      "image_id": "sha256:ef257d85f76e48da1c64832459b59fcaba1a4dac97bf5d7450c77753542eee94",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "oom_killed": false,
+      "restarts": 0
+    },
+    {
+      "service": "redis",
+      "id": "28d3916cd2f2d884543341de7bfde787edda407be5551d95fea537ffecc49cfa",
+      "image_id": "sha256:02419de7eddf55aa5bcf49efb74e88fa8d931b4d77c07eff8a6b2144472b6952",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "oom_killed": false,
+      "restarts": 0
+    },
+    {
+      "service": "etcd",
+      "id": "ae32c557fcfbf91a3beab3d2924cc61f2e554aae82583bc60fbc4785d3a0702d",
+      "image_id": "sha256:52f17f7e56e4f7239f0320dbfcbcc24721163d7d78ae710b466af3254ccf6366",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "oom_killed": false,
+      "restarts": 0
+    },
+    {
+      "service": "minio",
+      "id": "64a8ea97eeb78edf1b04ca7103f56b1d9d1972c981106b983b7ba9e8487bf9b0",
+      "image_id": "sha256:d1aa81d3a62ae1b5d7279f4d12fe9b1a1e6aba466b2f7adc83bbd4d0abe6f48b",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "oom_killed": false,
+      "restarts": 0
+    },
+    {
+      "service": "clamav",
+      "id": "8e15f33d799e460010bbd991d67fbd066bc707b1196d79926f87e3553e1ffe32",
+      "image_id": "sha256:26a576bbed25fe1de510891ff54697c161124050a03e1c5d59b5b9bdf21c3366",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "oom_killed": false,
+      "restarts": 0
+    },
+    {
+      "service": "milvus",
+      "id": "cf4987b0955a803f941beac32c5ed92df0e2a5f1525e0bfa4fa40fa665e70c53",
+      "image_id": "sha256:49371c30af46b1013e4d3e0b980e691d81376d69cdbe1b372725baf1d7255862",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "oom_killed": false,
+      "restarts": 0
+    },
+    {
+      "service": "keycloak",
+      "id": "8ce05b8b9a93d3ebb0ba8f8f6f30857e1622bbe763b57dc4b4e60eb47e3ef7e6",
+      "image_id": "sha256:5f3fb534cde6bf006d79f5912473e5d2c828c707cdfc52e16972803aca9d43dd",
+      "state": "running",
+      "health": "none",
+      "exit_code": 0,
+      "oom_killed": false,
+      "restarts": 0
+    },
+    {
+      "service": "otel-collector",
+      "id": "9724f11ab8cd658e8b4b6893f0a8417c23113910fa4a8713106e3b428f5dc4f5",
+      "image_id": "sha256:85ac41c2db88d0df9bd6145e608a3cb023f5d8443868adbfbbf66efb51087917",
+      "state": "running",
+      "health": "none",
+      "exit_code": 0,
+      "oom_killed": false,
+      "restarts": 0
+    },
+    {
+      "service": "tempo",
+      "id": "9fbd0c4d650a035699844200a756e961016bc9dc738bc51739bafdf1c5c0d7ff",
+      "image_id": "sha256:4b0277a9b572a4b1fa43b01468e58911ec214dd69d033f2cd476596d14de9fe3",
+      "state": "running",
+      "health": "none",
+      "exit_code": 0,
+      "oom_killed": false,
+      "restarts": 0
+    },
+    {
+      "service": "loki",
+      "id": "8f37555810382c110713e0ae6d844f0ceb01d04a358593faa85d7ceeb113d5d8",
+      "image_id": "sha256:58a6c186ce78ba04d58bfe2a927eff296ba733a430df09645d56cdc158f3ba08",
+      "state": "running",
+      "health": "none",
+      "exit_code": 0,
+      "oom_killed": false,
+      "restarts": 0
+    },
+    {
+      "service": "alert-relay",
+      "id": "81181d3b5e8c94c25484d5a3f6b54babade4a5c6f66d01c93bf04f6f40664bf9",
+      "image_id": "sha256:2353816ae963d3a401ea19c06394f5d0f471bbf7a162fff6b30abac32e2d0711",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "oom_killed": false,
+      "restarts": 0
+    },
+    {
+      "service": "alertmanager",
+      "id": "6e4fc3d8bc3b34539dab3375e06b3cb2b41a790c8182fd5e8566d6d022c73bdc",
+      "image_id": "sha256:27c475db5fb156cab31d5c18a4251ac7ed567746a2483ff264516437a39b15ba",
+      "state": "running",
+      "health": "none",
+      "exit_code": 0,
+      "oom_killed": false,
+      "restarts": 0
+    },
+    {
+      "service": "agent",
+      "id": "4a286b53ef1f1630517263d71170df424a1c2449c24582d8b7ec285af19b1bbd",
+      "image_id": "sha256:19369a879f6748b26abb18b400a51190a9cf3678871b0686b8f02b699997cc06",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "oom_killed": false,
+      "restarts": 0
+    },
+    {
+      "service": "backend",
+      "id": "4b9994babf865c1d2a1c76c06c2391979b2f3e56a615db6cf3f496130c1b3996",
+      "image_id": "sha256:1e9798b27da7f14dfee840790b8fe28d1c9d0e2b063f3ab1adde6b5b5ae61d7a",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "oom_killed": false,
+      "restarts": 0
+    },
+    {
+      "service": "worker",
+      "id": "b52ad5ad458245989bc686b87b0f340bd612aba53fc8845200712541d925ca9b",
+      "image_id": "sha256:93e82bff2a55a67418c145071491c611edd1d7df5583bd6c8985631e9b202e3f",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "oom_killed": false,
+      "restarts": 0
+    },
+    {
+      "service": "document-worker",
+      "id": "e2a9d4ee9e49bd9c1a919dee767e85c0d3568deb95d8f218861b7626b4524f10",
+      "image_id": "sha256:4501fcc0ae708bacf68a53d14126964c00200770981ba65bd851926f182fd231",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "oom_killed": false,
+      "restarts": 0
+    },
+    {
+      "service": "web",
+      "id": "48631b2a5acf464c10b5fabf9e4bc6e83b4ce5c222fc1a14c5c5c494f73e624c",
+      "image_id": "sha256:df0c37d83e6da52a6f7efa073c589c2e9962ecd07c2d881db58e4eccfb5dfd9f",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "oom_killed": false,
+      "restarts": 0
+    },
+    {
+      "service": "prometheus",
+      "id": "cf8a7de19ce5f623d3562efc1d2e2a757896c6d8a3d7392f0ef45862809b7cbd",
+      "image_id": "sha256:6927e0919a144aa7616fd0137d4816816d42f6b816de3af269ab065250859a62",
+      "state": "running",
+      "health": "none",
+      "exit_code": 0,
+      "oom_killed": false,
+      "restarts": 0
+    },
+    {
+      "service": "grafana",
+      "id": "ee39225458ee370b5b1f0faf99b5678c22ca9765bf136cb1876bb9530d573012",
+      "image_id": "sha256:8b37a2f028f164ce7b9889e1765b9d6ee23fec80f871d156fbf436d6198d32b7",
+      "state": "running",
+      "health": "none",
+      "exit_code": 0,
+      "oom_killed": false,
+      "restarts": 0
+    }
+  ],
+  "one_shots_not_started": [
+    {
+      "service": "migrate",
+      "id": "77600a76e15e7d819c35ad3baf6c7f71568113c3c98aef247442ad27be7e3fe3",
+      "image_id": "sha256:2109736604d081d461d4556177cb23c9cb1893467ff69b64003e90a3169fe41a",
+      "state": "exited",
+      "health": "unhealthy",
+      "exit_code": 0,
+      "oom_killed": false,
+      "restarts": 0
+    },
+    {
+      "service": "alert-token-init",
+      "id": "4eca9ab927df8f37174186350b34561cf0ca8870e43bb3c0a5b3a5f7917e9881",
+      "image_id": "sha256:d9e853e87e55526f6b2917df91a2115c36dd7c696a35be12163d44e6e2a4b6bc",
+      "state": "exited",
+      "health": "none",
+      "exit_code": 0,
+      "oom_killed": false,
+      "restarts": 0
+    }
+  ],
+  "elapsed_seconds": 88.875,
+  "passed": true,
+  "cleanup": 0,
+  "candidate_audit_restore_started": 0
+}

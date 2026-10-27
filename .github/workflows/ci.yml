@@ -8,8 +8,13 @@ on:
 jobs:
   real-components:
     runs-on: ubuntu-latest
+    permissions: { contents: read }
     steps:
       - uses: actions/checkout@v7
+      - name: Load the approved storage artifact for the isolated component fixture
+        run: python scripts/fetch_approved_image.py
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - run: python scripts/verify_components.py --drill
   quality:
     runs-on: ubuntu-latest
@@ -43,14 +48,29 @@ jobs:
           ENTERPRISE_RESULT: ${{ needs.enterprise-compose-smoke.result }}
   enterprise-compose-smoke:
     runs-on: ubuntu-latest
+    permissions: { contents: read }
     env:
       POSTGRES_PASSWORD: ci-postgres-password
+      MIGRATOR_DB_PASSWORD: ci-migrator-password
+      JAVA_DB_PASSWORD: ci-java-password-distinct
+      PYTHON_DB_PASSWORD: ci-python-password-distinct
+      MONITOR_DB_PASSWORD: ci-monitor-password-distinct
+      OBJECT_STORE_SECRET_KEY: ci-business-objects-password
+      MILVUS_STORAGE_PASSWORD: ci-milvus-storage-password
       KEYCLOAK_DB_PASSWORD: ci-keycloak-db-password
       KEYCLOAK_ADMIN_PASSWORD: ci-keycloak-admin-password
       MINIO_ROOT_PASSWORD: ci-minio-password
       GRAFANA_ADMIN_PASSWORD: ci-grafana-password
     steps:
       - uses: actions/checkout@v7
+      - name: Load the exact approved storage artifact before Compose startup
+        run: python scripts/fetch_approved_image.py
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Load the exact approved Grafana artifact before Compose startup
+        run: python scripts/fetch_approved_image.py --artifact grafana
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - run: python scripts/smoke-enterprise.py --start
       - run: curl --fail --retry 15 --retry-connrefused http://127.0.0.1:8080/livez
       - run: curl --fail --retry 15 --retry-connrefused http://127.0.0.1:8080/readyz

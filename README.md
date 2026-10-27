@@ -25,6 +25,9 @@
 - **运行管理**：任务检查点恢复、个人研究偏好，以及 Grafana 指标、日志和追踪。
 - **证据生命周期**：保留文档版本与差异；资料更新后标记受影响报告和结论，旧报告仍保留原正文与证据。
 - **报告修订**：从正式报告发起修订，展示新旧结论与证据变化，再经过异人审核发布；同一报告系列保留完整历史。
+- **范围确认**：对触发范围澄清的宽泛问题，先保存时间、地域、对象和交付形式，再确认启动研究；快速问答可直接执行。
+- **资料权限**：集合可继承工作空间权限或限制为授权成员；检索、来源、历史报告、记忆和导出均重新检查当前权限，撤权后不继续提供历史正文。
+- **来源时效与费用**：手动重取公开来源并比较正文指纹；展示个人及空间调用额度、已知实耗与未知请求预留。配置检查不请求供应商，真实探测仅限指定运维账号。
 
 资料更新采用当前／待发布版本，索引成功后切换。内部报告提交和批准时检查资料修订号、来源版本与系列最新版本，过期结果需要重新研究或修订；公开报告不因内部资料更新失效。定向修订只复用仍然有效的结论，资料新增、删除或历史信息不足时回退完整研究。
 
@@ -32,7 +35,7 @@
 
 ### 1. 准备环境并获取代码
 
-需要 Git、Docker 和 Docker Compose。Windows 用户先启动 Docker Desktop，并使用 Linux 容器。以下命令使用 PowerShell，在项目根目录执行；Docker 会构建应用，无需另装 Java、Python 或 Node.js。
+需要 Git、Docker、Docker Compose 和已安装安全补丁的 Python 3.11 或更新版本。Python 仅用于标准库镜像校验工具，不需要安装项目依赖；应用由 Docker 构建，无需另装 Java 或 Node.js。本轮固定镜像面向 Linux/amd64；Windows 用户先启动 Docker Desktop 并使用 Linux 容器。以下命令使用 PowerShell，在项目根目录执行。
 
 ```powershell
 git clone https://github.com/W205614/DeepResearch.git
@@ -55,6 +58,10 @@ Copy-Item .env.example .env
 | `KEYCLOAK_ADMIN_PASSWORD` | Keycloak 管理台 `admin` 账号的初始密码 |
 | `MINIO_ROOT_PASSWORD` | 文件存储服务密码 |
 | `GRAFANA_ADMIN_PASSWORD` | Grafana `admin` 账号的初始密码 |
+| `MIGRATOR_DB_PASSWORD`、`JAVA_DB_PASSWORD`、`PYTHON_DB_PASSWORD`、`MONITOR_DB_PASSWORD` | 四个独立数据库账号密码；运行服务不再使用 PostgreSQL 管理员 |
+| `OBJECT_STORE_SECRET_KEY`、`MILVUS_STORAGE_PASSWORD` | 资料存储与向量索引的独立服务密码；不能与根密码或彼此复用 |
+
+后两组凭据可用本机 Python 执行 `python scripts/prepare_service_credentials.py --env .env` 生成。脚本仅补齐空值，并保留原配置备份；输出不包含密码。已有部署须先冻结原编排、完成完整备份与隔离恢复核对，再迁移所有权和授权；不要将旧镜像配合新版编排当作回滚方案，操作见[部署安全与维护](docs/deployment-security-operations.md)。
 
 **首次体验还需留意：**
 
@@ -67,11 +74,17 @@ Copy-Item .env.example .env
 
 ### 3. 启动服务
 
+先取得并校验本轮批准的文件存储与 Grafana 镜像。工具核对归档、完整 OCI 描述符、解压层、配置和最终二进制摘要，成功后才标记为 Compose 使用的镜像；无网络时可用 `--archive <已取得的归档路径>`。只使用下述 core 模式时可略过 Grafana 归档。具体判定、到期时间和更新方式见[镜像安全与升级](docs/deployment-security-operations.md#固定镜像与安全判定)。
+
 ```powershell
+python scripts/fetch_approved_image.py
+python scripts/fetch_approved_image.py --artifact grafana
 docker compose up -d --build --wait --wait-timeout 300
 ```
 
-首次需要下载镜像、构建应用并初始化资料扫描服务，耗时取决于网络和机器资源。Compose 会自动执行数据库迁移并启动依赖服务。
+首次需要下载固定归档、构建应用及必要的受控组件，并初始化资料扫描服务，耗时取决于网络和机器资源。Compose 会自动执行数据库迁移并启动依赖服务。
+
+基础编排含完整观测组件；资源受限试用可显式使用 `docker compose -f compose.yaml -f compose.core.yaml up -d --build --wait --wait-timeout 300`。该模式关闭可选观测栈。生产控制、开发挂载和备份计划的区别见[部署安全与维护](docs/deployment-security-operations.md)，资源上限不是经测试的容量承诺。
 
 | 入口 | 地址 | 登录方式 |
 | --- | --- | --- |
@@ -102,6 +115,10 @@ docker compose up -d --build --wait --wait-timeout 300
 3. 新建研究，选择 **“内部资料（不联网）”**，围绕文件内容提问，例如“根据这份资料，总结方案的优势、限制和适用条件”。
 
 内部资料处理默认关闭；“不联网”指不进行公开网页搜索，模型、嵌入和可选重排仍可能调用所配置的外部服务。仅在确认供应商与资料使用范围后开启。
+
+资料库显示空间资料数和片段上限。文档在独立进程中解析，受内存、CPU、时间和输出限制；扫描失败的首次上传保留恢复记录，原件保持隔离。替换失败时，已经可用的版本继续保留。超过小语料阈值后使用数据库关键词召回与向量检索融合，迁移时会有界补建派生词索引。
+
+在“资料集合与访问权限”中分配资料，并为受限集合逐项授权。空间成员身份不自动取得受限资料权限；空间管理员和资料所有者的管理权限独立保留。历史研究记忆依赖可核对的原任务和来源，删除原任务后不能继续作为可用私有上下文。
 
 <details>
 <summary>需要发布正式报告时</summary>
@@ -185,5 +202,7 @@ Java 负责身份权限、工作空间与任务生命周期；Python 负责研�
 - [生命周期开发计划、停止标准与恢复操作](docs/evidence-lifecycle.md) · [扩展评测集与来源](eval/lifecycle/README.md)
 - [本轮交付验证状态](docs/lifecycle-delivery-20261020.md)
 - [2026-10-25 改善、效果对照与交付边界](docs/evidence/improvement-20261025/README.md)
+- [部署隔离、凭据、自动备份与运维](docs/deployment-security-operations.md)
+- [2026-10-26 架构优化与验证边界](docs/evidence/optimization-20261026/README.md) · [逐项状态](docs/evidence/optimization-20261026/scope.json)
 
 当前部署面向单机内部试用。引用和模型核验有助于回查依据，重要结论仍需人工核实。历史扩展集的6题现已补保存报告组件闭环，混合了精确复用的历史评分与本轮核验，不能称60题全新端到端通过；ConfigMap、Secret仍保留部分结果边界。新增两个固定留出问题验证了有界补搜在可控证据缺口下的作用，范围和失败记录见[本轮说明](docs/evidence/improvement-20261025/README.md)。截图与固定题集结果不代表通用回答准确率或生产可用性承诺。

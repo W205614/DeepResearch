@@ -1,0 +1,148 @@
+{
+  "schema": "cross-ci-wiring-review-v1",
+  "recorded_at": "2026-10-26T13:41:00.507026+00:00",
+  "remote_main_read_only": "8768aa6c1e4f0d24a8c355ce769112e98b3b8c10",
+  "confirmed_issue_and_fix": {
+    "before": "real-components fixture rebuilt MinIO using new Silo recipe but invoked obsolete minio command/curl health; other fixture vendor pins were stale",
+    "after": "real-components contents:read loads exact approved artifact before verify entrypoint; compose.verify uses approved image without build and native silo command/health; PG/etcd/Milvus use same current base recipes and Redis/ClamAV use same fixed digests",
+    "drill_semantics": "unchanged; fixture still uses isolated empty storage and synthetic root S3 credentials, not a production role-proof",
+    "files": [
+      "compose.verify.yaml",
+      ".github/workflows/ci.yml real-components block"
+    ]
+  },
+  "actual_no_network_cli": {
+    "targets": [
+      {
+        "label": "answers",
+        "target": "scripts/evaluate_answers.py",
+        "help_parsed": true
+      },
+      {
+        "label": "research",
+        "target": "scripts/evaluate_research.py",
+        "help_parsed": true
+      },
+      {
+        "label": "stability",
+        "target": "scripts/evaluate_research.py",
+        "help_parsed": true
+      },
+      {
+        "label": "extensions",
+        "target": "scripts/evaluate_research.py",
+        "help_parsed": true
+      }
+    ],
+    "python": "3.11.18 (main, Oct 26 2026, 12:28:24) [GCC 14.2.0]",
+    "git": null,
+    "shell": null,
+    "uv": "/usr/local/bin/uv",
+    "supplier_http": 0
+  },
+  "additional_actual_commands": [
+    "docker network=none silo healthcheck --help passed",
+    "docker network=none uv --version returned0.12.3"
+  ],
+  "approved_minio_local_image_id": "sha256:151cd83d5e6500f4d1b3d7f0a12756fe80e8ffcbf91150afd6b9b9605bc2369a",
+  "fixture_pins": {
+    "digest_lengths_verified": [
+      64,
+      64
+    ],
+    "clamav": "clamav/clamav:1.4.6_base@sha256:e73991068f2037e10cf15669dd3b48c24345658f5488430746b414c0f761270f"
+  },
+  "static_findings": [
+    "All four paid target modules import and parse original flags with --help in actual production image using source RO/network none/no supplier credentials.",
+    "Paid target imports are production dependencies; pytest/ruff are not needed there. Dockerfile.verify installs dev group via exec-form UV; no shell/Git requirement.",
+    "verify_components host subprocesses Docker; container probes/tests use Python or Alembic executable. smoke-enterprise Docker calls remain host-side and exec Python for in-container probes.",
+    "Research evaluator source metadata consumes ledger-bound source receipt in CI, not missing Git binary; ordinary local evaluation retains Git.",
+    "Security inventory resolves8 vendor and10 custom images; MinIO is exact approved artifact, keycloak and backend native profiles are keycloak/business-java.",
+    "Quality preflight/reconciliation/necessary-budget/same-SHA CI+Security gates precede start; original four arguments/cases/thresholds/cumulative515 unchanged.",
+    "CI/Security push triggers main only; codex push quality cannot spend until exact-SHA prerequisite workflows exist/succeed. Parent final delivery uses main.",
+    "Build/gates may exceed900second prerequisite window and zero-fail; same-SHA later rerun reconciles any original ledger. No stale or different SHA pass accepted."
+  ],
+  "not_verified_here": [
+    "No full component drill, dev-image build or enterprise startup repeated. Final GitHub run must prove new fixture recipe builds, health, recovery and full inter-service behavior.",
+    "Local verify_components --reuse does not attest existing container identity and is not accepted as current artifact validation; CI fresh path does not use --reuse.",
+    "Runtime source fingerprint review and CLI import-only do not establish real-model quality or complete scanner/native coverage; separate gate evidence remains required."
+  ],
+  "source_hashes": {
+    ".github/workflows/ci.yml": "4dd62977c2d6bd53ac29a53b13aa595cc535ebebe776e9d2f0392b8b1e049cdf",
+    ".github/workflows/security.yml": "494ab03057940571a7d20473b7d5a5e15fdcccef3fa5d6ee8bc13cf542d213be",
+    ".github/workflows/answer-quality.yml": "7f927cc853d30f6e2883cfffe5f43b61f449d17c867e0078c1c6b32489210ae5",
+    "compose.verify.yaml": "af095870d055b16531e16573962e7f92a13d06eac25951f51b61f26f8a98187d",
+    "Dockerfile.verify": "5a10eb683ceb567b0ba2dd2c9a4b0cf51abbb3595e511a25f5f7a60a965454e1",
+    "scripts/verify_components.py": "26032ae238616e9f50b6ed6032ef71523d228d5e78288f77fd90b83ac723d4dc",
+    "scripts/smoke-enterprise.py": "3a76ee445750044cd9082a475b35c21c37eef4d1d83b6b3203ed2a55fafc374f",
+    "scripts/runtime_ci_inventory.py": "774e3c0dbc5f41f7518ccc946deb64aeb5f799533b4b3d045e25facc76b922cb",
+    "scripts/run_ci_evaluation.py": "320bef2c5fdd2a175e22f04e0a6cb61b96b532c0286c583cbf83a785560a8257",
+    "scripts/ci_source_context.py": "e2d0c99ad9203a886d104e74e1f11dc83ee340a4e359d9f553802081592340e6",
+    "scripts/evaluate_answers.py": "f54cc583fe20471058f599115c8052619c482e786eac891a3c160be66fca986d",
+    "scripts/evaluate_research.py": "9b82f470d112e2a04b486dd3f6cb1aea7a2fd7f81607c7b817018aa22775b6e3"
+  },
+  "private_receipts": {
+    ".cache/optimization-20261026/ci-python/cross_ci_probe.py": "7defbf09bd2341de19db42672a4df40e68508632c499deee67ce34011e94d6de",
+    ".cache/optimization-20261026/ci-python/four-cli-help-stdout.json": "febe82841765992efde8a928bb1caa1634b1358b47748afcfbc7a936ec12fb09",
+    ".cache/optimization-20261026/ci-python/four-cli-help-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/optimization-20261026/ci-python/compose-verify-resolved.json": "d9695cbc7d362f9ec14a14bbacf203ddd284b779e177eac3bdcd95f2d3ce283f",
+    ".cache/optimization-20261026/ci-python/silo-health-help.txt": "ba6d3f2be8b729fc84e8d2c6f68a344b12e4f147c9e4dce816f32c2e32d48dc8"
+  },
+  "supplier_http": 0,
+  "full_tests_repeated": false,
+  "commit_push": false,
+  "running_services_changed": false,
+  "followup_reviews": [
+    {
+      "recorded_at": "2026-10-27T01:09:53.638409+00:00",
+      "review_mode": "read_only; no Docker, supplier requests or repeated CI test suites",
+      "scope": [
+        ".github/workflows/ci.yml",
+        ".github/workflows/security.yml",
+        ".github/workflows/answer-quality.yml",
+        "scripts/runtime_ci_inventory.py",
+        "scripts/build_ci_image.py",
+        "scripts/fetch_approved_image.py",
+        "scripts/run_ci_evaluation.py"
+      ],
+      "confirmed_finding": {
+        "id": "remote_release_publication_not_explicitly_enforced",
+        "observed_locations_at_review": [
+          "scripts/fetch_approved_image.py:89-120",
+          "scripts/fetch_approved_image.py:173-193"
+        ],
+        "observed_behavior": "Parts/single asset paths validate archive identity and hashes but do not inspect transport publication state or live release draft/published_at. Existing exact archive returns from cache before any release-status read.",
+        "trigger": "A credential able to retrieve a draft asset, or a matching local archive cache, can allow verify/load while release remains draft. An incidental HTTP404 is not an explicit publication policy check.",
+        "scope_limit": "Exact approved artifact hashes are still checked; this finding concerns publication-state lifecycle, not a claim that arbitrary image bytes bypass authorization."
+      },
+      "remediation": {
+        "owner": "root final readback after security pending turn",
+        "status": "implemented_current_source_readback_and8publication_tests_passed",
+        "required_remote_path": "Before downloads or cache return, live-check the bound release id/tag, draft=false and nonempty published_at; do not fabricate a published state.",
+        "explicit_local_archive": "Keep authorized --archive local review/verification path available.",
+        "draft_transfer_audit": "Use separate explicit audit entrypoint; CI default must fail closed before publication.",
+        "evidence": "grafana-remote-transport.json",
+        "current_helper_sha256": "973c6a59e42ab0c8a33ee35e5b9f62cc4d185a8d9b66c63924b0c278ca1a19f0"
+      },
+      "other_static_checks": "No new confirmed mismatch in current image refs/recipe matrix, native JVM profile routing, approved inspect filenames, exact-SHA CI/Security prerequisites, cumulative ledger non-reset behavior, or original four paid target flags. Source/ledger receipts supply Git metadata inside the no-Git/no-shell container.",
+      "not_reverified": [
+        "Actual release publication or remote transfer completeness",
+        "Final security implementation after this finding",
+        "Fresh GitHub runs or supplier quality results"
+      ],
+      "root_readback": {
+        "default_remote_cache_gate": "verify_release_publication before cache return in parts and single mode",
+        "CI_uses_unpublished_override": false,
+        "CLI_exposes_unpublished_override": false,
+        "actual_remote_draft": "privateauditor only; wholearchive/OCI passed, no publication claim"
+      }
+    }
+  ],
+  "latest_wiring_source_hashes": {
+    ".github/workflows/ci.yml": "78777a22647476837264c84fbaa2630af7fa9d6e2fc734f62a01c42178f416f3",
+    ".github/workflows/security.yml": "d020d5dc5fe11b089cf11ae2a8caae3b3c16853d0fee76c50d7c7069570d2570",
+    ".github/workflows/answer-quality.yml": "7f927cc853d30f6e2883cfffe5f43b61f449d17c867e0078c1c6b32489210ae5",
+    "scripts/fetch_approved_image.py": "973c6a59e42ab0c8a33ee35e5b9f62cc4d185a8d9b66c63924b0c278ca1a19f0",
+    "scripts/runtime_ci_inventory.py": "e547af6824101a54a077bbed8f923596e1188ac3930f59fb7cfa459d82858719"
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "owner": "reliability_review",
+  "baseline_sha": "8768aa6c1e4f0d24a8c355ce769112e98b3b8c10",
+  "supplier_calls": 0,
+  "tests": [
+    {
+      "phase": "red",
+      "command": ".venv/Scripts/python.exe -m pytest -q tests/test_recovery_retention.py (initial four cases)",
+      "result": "4 failed",
+      "meaning": "Original code reproduced terminal graph replay, stuck scanning, orphan SQL artifacts and heartbeat cancellation classification."
+    },
+    {
+      "phase": "green",
+      "command": "targeted new recovery plus existing resume, deletion and verification-contract cases",
+      "result": "17 passed in 67.05s"
+    },
+    {
+      "phase": "green",
+      "command": ".venv/Scripts/python.exe -m pytest -q tests/test_recovery_retention.py (13 cases at this stage)",
+      "result": "13 passed in 35.19s"
+    },
+    {
+      "phase": "green",
+      "command": "mvn -B -Dtest=ResearchCommandContractTest test",
+      "result": "1 passed; 11 schedule and 8 recovery qualification fixtures shared with Python"
+    },
+    {
+      "phase": "integration-followup",
+      "command": "targeted internal API, scanner and replacement compatibility cases",
+      "result": "19 passed, 1 failed",
+      "failure": "Old restart test only allowed 1.6 seconds for parser subprocess startup. Changed to await the persisted recovery job with a bounded 20 second deadline."
+    },
+    {
+      "phase": "integration-repair",
+      "command": "restart recovery and internal HTTP schedule only",
+      "result": "2 passed in 12.05s"
+    },
+    {
+      "phase": "final-reliability-regression",
+      "command": "tests/test_recovery_retention.py plus existing single-thread and workspace report deletion cases",
+      "result": "18 passed in 63.86s"
+    },
+    {
+      "phase": "replacement-cancellation-followup",
+      "command": "cancelled replacement cleanup ownership, resumable backfill, scan rejection and concurrent replacement only",
+      "result": "4 passed in 21.22s"
+    },
+    {
+      "phase": "real-clamav-outage-followup",
+      "command": "uv run pytest tests/test_recovery_retention.py -k 'scan or cancelled_replacement' -q",
+      "result": "6passed,12deselected in24.30s",
+      "meaning": "four concurrentrecoverers recheck persisted20/40scooldown underworkspacelock; cooldownspendsnoretry; cap3unchanged; scannerrecoverysucceeds"
+    },
+    {
+      "phase": "real-isolated-postgres-milvus-checkpoint",
+      "command": "scripts/verify_reliability_postgres.py --initialize, newDB dr_opt_reliability, independentvectorprefix optreliability20261026",
+      "result": "passed, providerHTTP0",
+      "evidence": "reliability-postgres.json",
+      "scope": "DBowner fixture checks locking/deletion; not runtime service admission grants evidence"
+    },
+    {
+      "phase": "typed-run-cleanup-boundary",
+      "result": "2red→6relatedgreen+3directAPI/commitvisibilitygreen; realPGprobe rerunpassed",
+      "evidence": "runtime-cleanup-boundary.json"
+    }
+  ],
+  "items": [
+    {
+      "id": 1,
+      "implementation_status": "implemented_targeted_tests_passed",
+      "implementation": [
+        "backend/services/runtime.py: execute_run restarts terminal retrieval_failed graph under attempt fence; all Java and automatic entry points share preparation",
+        "backend/services/runtime.py: heartbeat cancellation carries infrastructure cause; interrupted is retried within existing durable deadline/call/token/recovery caps",
+        "backend/core/recovery_contract.py: strict version and persisted attempt fence"
+      ],
+      "test_cases": [
+        "test_java_schedule_resume_restarts_terminal_retrieval_failure",
+        "test_heartbeat_database_failure_is_interrupted_not_user_cancelled",
+        "test_delayed_versioned_command_cannot_schedule_newer_attempt",
+        "existing old-worker checkpoint fence and interrupted recovery tests"
+      ],
+      "runtime_remaining": [
+        "Java public API -> Outbox -> Redis -> Python real-component failure/recovery acceptance; no production availability claim"
+      ]
+    },
+    {
+      "id": 3,
+      "implementation_status": "implemented_targeted_tests_passed",
+      "implementation": [
+        "0014_runtime_reliability persists document_scan_jobs",
+        "backend/services/documents.py: put failure becomes recoverable scan_failed; duplicate-hash reupload starts a new version",
+        "recover_scans rechecks stored hash and rescans bytes before any indexing; bounded attempts; missing original requires reupload; rejected bytes remain quarantined",
+        "replacement writes durable cleanup ownership before staging; cancellation preserves old ready plus an explicit reupload message; failed replacement stages can be reconciled and reuploaded",
+        "storage mutations defer cancellation until the underlying thread operation finishes while retaining the document lock, preventing late writes/deletes beyond a cleanup record",
+        "real isolated ClamAV startup exposed multi-runtime retry exhaustion; recoveries now recheck persisted pending state and exponential20/40s cooldown under workspace lock; first upload immediate, maxattempts unchanged"
+      ],
+      "test_cases": [
+        "test_object_put_failure_is_reuploadable_instead_of_stuck_scanning",
+        "test_scanning_crash_rescans_and_never_promotes_unscanned_bytes",
+        "test_scan_storage_move_failure_retries_safely",
+        "test_scanner_unavailable_recovery_is_bounded",
+        "test_concurrent_scan_recoverers_recheck_persisted_cooldown_without_spending_attempts"
+      ],
+      "runtime_remaining": [
+        "Actual MinIO copy/delete and ClamAV restart/interruption drill; no successful scan inferred from process liveness",
+        "Interrupted replacement preprocessing is cleaned and explicitly reuploaded; it is not automatically rescanned like the first-upload scanning state."
+      ]
+    },
+    {
+      "id": 5,
+      "implementation_status": "implemented_targeted_tests_passed",
+      "implementation": [
+        "single-thread and workspace run deletion share SQL transaction cleanup of artifacts, dead letters, events, counters, vision and call records",
+        "durable run_cleanup tombstone retries checkpoint and attachment deletion after SQL commit; execution locks reject late writes",
+        "PostgreSQL execution transaction locks use one connection for the entire history; Java FOR KEY SHARE and Python thread row lock serialize run creation with thread deletion; transaction-local rows avoid nested pool borrowing",
+        "publications and revision audit block source-run deletion; independently saved memories are retained by contract",
+        "backend/services/retention.py expires only bounded web/document-search caches and historical orphan artifacts; optional immutable archive retains originals; versions/events/checkpoints protected by default",
+        "Python direct create uses the same transaction FOR KEY SHARE admission row lock as Java; delete FOR UPDATE waits then reloads allruns before cleanup"
+      ],
+      "test_cases": [
+        "test_single_thread_delete_removes_artifacts_and_dead_letter",
+        "test_external_cleanup_failure_keeps_tombstone_then_retries",
+        "test_deletion_sql_failure_rolls_back_records_and_tombstone",
+        "test_retention_cleans_only_bounded_caches_and_orphans_by_default",
+        "test_opt_in_archive_is_immutable_and_explicit_deletion_removes_it",
+        "existing saved-memory and workspace-purge cases"
+      ],
+      "runtime_remaining": [
+        "Unknown-provenance semantic SQL/vector rows intentionally physically retained; current SQL JOIN plus ACL reject their recall. No automatic semantic memory garbage collection claim.",
+        "Archives retain SQL source records and do not reclaim primary evidence storage; no cross-host archival claim"
+      ],
+      "real_component_evidence": "reliability-postgres.json proves both create/delete lock orders, real checkpoint cleanup retry, real Milvus document tombstone retry, and source-less semantic hit rejection"
+    },
+    {
+      "id": 11,
+      "implementation_status": "implemented_targeted_tests_passed",
+      "implementation": [
+        "backend/core/research_command_contract.json documents unique field writers and shared frozen fixtures",
+        "new Java schedule/resume commands carry research-command-v1 and expected_attempt",
+        "strict Python wire parser rejects unknown versions/fields/coercions; legacy resume-only outbox objects remain replayable",
+        "Java/Python resume qualification consumes the same status/retryable/deadline/budget cases"
+      ],
+      "test_cases": [
+        "test_python_and_java_share_command_wire_cases",
+        "test_internal_http_schedule_rejects_unknown_versions_and_stale_attempts",
+        "ResearchCommandContractTest.java"
+      ],
+      "runtime_remaining": [
+        "Historical outbox replay and repeated command delivery through real Java/Python deployment"
+      ]
+    }
+  ],
+  "boundaries": [
+    "No daily-container rebuild or Docker deletion performed by this agent",
+    "No paid provider calls or new model-quality claims",
+    "Full GitHub CI and real-role deployment acceptance belong to coordinating agent"
+  ],
+  "runtime_decomposition": "runtime-cleanup-boundary.json"
+}

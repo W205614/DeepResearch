@@ -21,10 +21,11 @@ async def shutdown(ctx):
     await ctx["runtime"].close()
 
 
-async def run_research(ctx, run_id: str, resume: bool = False, trace_context: dict | None = None):
+async def run_research(ctx, run_id: str, resume: bool = False, trace_context: dict | None = None,
+                       expected_attempt: int | None = None):
     runtime: Runtime = ctx["runtime"]
     with tracer().start_as_current_span("research.run", context=extract_trace_context(trace_context)):
-        await runtime.execute_run(run_id, resume=resume)
+        await runtime.execute_run(run_id, resume=resume, expected_attempt=expected_attempt)
 
 
 async def ingest_document(ctx, document_id: str, trace_context: dict | None = None):

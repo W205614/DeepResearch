@@ -1,0 +1,30 @@
+{
+  "workspace": "reliability-probe-78d07b2e06d547719406c9fd6a55b8f3",
+  "supplier_http": 0,
+  "provider_calls": 0,
+  "database_role": "deepresearch",
+  "delete_before_insert_rejected": true,
+  "create_row_lock_blocks_delete_then_rescans": true,
+  "checkpoint_failure_keeps_tombstone_then_real_retry_cleans": true,
+  "real_milvus_orphan_hit_rejected_by_sql_context": true,
+  "unknown_semantic_provenance_physically_retained": true,
+  "independent_preference_retained": true,
+  "document_vector_failure_keeps_tombstone_then_real_retry_cleans": true,
+  "passed": true,
+  "scope": "Real isolated PG owner fixture transactions, AsyncPostgresSaver and independent Milvus collections; not production dr_python admission permission evidence. Synthetic local graph/embedding, no model HTTP, worker startup or service restart.",
+  "verified_at": "2026-10-26T10:43:01.734450+00:00",
+  "database": "dr_opt_reliability",
+  "vector_prefix": "optreliability20261026",
+  "source_files": {
+    "scripts/verify_reliability_postgres.py": "260e381fcee2f33a6f38e22754b7c58d2dc0ed229a5bf49711ec79207f4cc753",
+    "backend/services/runtime.py": "b3e5870332f39342efac1bcb5192253c48b657a54a6e367ddb95e7909afb82b0",
+    "backend/services/documents.py": "1a9e4ba836ab25c607c76a891e41ef4239e6fd63859bc503285e354466c1c647",
+    "backend/infrastructure/vectors.py": "c9475240608f9673576a6bba16f9a3de6ba56aa875176f6e04c04a7a4f1d5d80"
+  },
+  "retained_fixture_assets": [
+    "isolated DB dr_opt_reliability",
+    "Milvus optreliability20261026_documents / memories",
+    "stopped helper container dr-opt-reliability-probe-20261026"
+  ],
+  "semantic_retention_boundary": "Orphan semantic row and vector intentionally retained because kind alone does not prove automatic/manual provenance; SQL source hydration rejects contextual reuse. No general physical orphan collector claimed."
+}

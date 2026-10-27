@@ -1,0 +1,144 @@
+{
+  "schema": "backup-image-bundle-proof-v1",
+  "recorded_at": "2026-10-26T16:07:19.358155+00:00",
+  "status": "current_platform_content_verified_empty_cache_runtime_pending",
+  "previous_gap": {
+    "load_archive": "whole-file checksums only",
+    "restore": "all images cached bypassed Docker load",
+    "save_nonzero": "already aborts before completed manifest"
+  },
+  "new_guard_order": [
+    "backup export",
+    "verify current-platform bundle before manifest completion",
+    "load_archive file SHA and unconditional bundle verification",
+    "only then Docker cache lookup/resource creation"
+  ],
+  "actual_historical_package": {
+    "version": 1,
+    "platform": "linux/amd64",
+    "image_roots": 22,
+    "descriptor_visits": 138,
+    "selected_manifests": 22,
+    "verified_required_blobs": 232,
+    "verified_unique_layer_diffids": 166,
+    "expanded_layer_bytes": 6557843456,
+    "archive_bytes": 2456602624,
+    "bundle_limit_bytes": 34359738368,
+    "expanded_limit_bytes": 68719476736,
+    "excluded_platform_refs": 94,
+    "excluded_missing_platform_refs": 80,
+    "full_multiarch_archive_verified": false,
+    "docker_cache_consulted": false,
+    "elapsed_seconds": 44.125,
+    "recorded_archive_sha256": "3681a8e637c3af9f578300bb279ed7a15ebacfa64fb8808c2b97187e9f78b769",
+    "backup": "deepresearch-pre-security-20261025",
+    "verifier_sha256": "34db6b3b5b431a85e3a2509967d51593bb512a25a5a1d19d68ad78d9cb558eb3"
+  },
+  "independent_all_present_blob_diagnostic": {
+    "backup": "deepresearch-pre-security-20261025",
+    "archive_bytes": 2456602624,
+    "outer_members": 277,
+    "layout": "OCI1.0+Docker manifest.json compatibility",
+    "bundle_root_count": 22,
+    "expected_unique_image_count": 22,
+    "expected_ids_matching_roots": 22,
+    "expected_ids_matching_legacy_configs": 0,
+    "legacy_entries": 22,
+    "legacy_missing_members": 0,
+    "descriptor_size_mismatches": 0,
+    "missing_descriptors": 80,
+    "missing_required_linux_amd64_descriptors": 0,
+    "present_descriptors": 272,
+    "linux_amd64_runtime_manifests": 22,
+    "recorded_archive_sha256": "3681a8e637c3af9f578300bb279ed7a15ebacfa64fb8808c2b97187e9f78b769",
+    "present_blob_sha256_verified": 272,
+    "actual_archive_sha256": "3681a8e637c3af9f578300bb279ed7a15ebacfa64fb8808c2b97187e9f78b769",
+    "linux_amd64_unique_layers_diffid_verified": 166,
+    "uncompressed_unique_layer_bytes": 6557843456,
+    "legacy_runtime_config_layers_consistent": true
+  },
+  "target_platform": "linux/amd64",
+  "full_multiarch_archive_verified": false,
+  "bounds": {
+    "bundle_bytes": 34359738368,
+    "expanded_unique_layer_bytes": 68719476736,
+    "metadata_item_bytes": 4194304,
+    "metadata_aggregate_bytes": 67108864,
+    "single_approved_artifact_hard_limit_unchanged": 2147483648,
+    "descriptor_traversals": 100000
+  },
+  "counterexamples": [
+    {
+      "case": "missing selected-platform layer blob",
+      "outer_file_sha": "recomputed and self-consistent",
+      "result": "rejected before any Docker cache/resource call"
+    },
+    {
+      "case": "wrong config DiffID with config/manifest/index digests and outer file SHA recomputed",
+      "result": "actual uncompressed DiffID rejected before any Docker cache/resource call"
+    }
+  ],
+  "direct_tests": [
+    {
+      "command": "uv run pytest -q tests/test_backup_images.py tests/test_recovery_manifest.py",
+      "result": "33passed in5.89s before MIME alias/standalone additions"
+    },
+    {
+      "command": "uv run pytest -q tests/test_backup_images.py",
+      "result": "4passed in1.04s after MIME alias regression added"
+    },
+    {
+      "command": "uv run pytest -q tests/test_backup_images.py::test_archived_restore_can_import_its_stdlib_verifier_without_repository",
+      "result": "1passed in1.27s"
+    },
+    {
+      "command": "uv run ruff check scripts/backup_images.py scripts/recovery.py tests/test_backup_images.py tests/image_bundle_fixture.py tests/test_recovery_manifest.py",
+      "result": "passed"
+    },
+    {
+      "command": "uv run pytest -q tests/test_backup_images.py",
+      "result": "5passed in1.74s on final descriptor-traversal bound, including standalone sidecar;35unique direct cases across runs"
+    }
+  ],
+  "source_sha256": {
+    "scripts/backup_images.py": "34db6b3b5b431a85e3a2509967d51593bb512a25a5a1d19d68ad78d9cb558eb3",
+    "scripts/recovery.py": "8ae8bec6324697b61c1f19b6588553e87fbcf4291c103441d4e2d2831522f53a",
+    "tests/test_backup_images.py": "4f1d0f5b585a9f0977d4d45d50c4654e3e546035d5f7e6452b8b07f501ba287b",
+    "tests/image_bundle_fixture.py": "8e20695e22be8ec916b531e0ebd06574e7a240ec59ee1271bd9688db452f855f",
+    "tests/test_recovery_manifest.py": "c7277f3e5be24e7d243c4e9b393c40850c859a08a21b5b7f5eef128a1b3c7136"
+  },
+  "private_receipts": {
+    ".cache/optimization-20261026/backup-cache-gap/metadata-review.private.json": "514bd063c732ca045583eb2b43e27d26af777635ea260705462ba82f096288d5",
+    ".cache/optimization-20261026/backup-cache-gap/production-helper-positive.json": "4887d905d6cc0285c215692c105adf0f1a346df53ca87bbcfc58ec98153845e1"
+  },
+  "remaining_acceptance": [
+    "Actual empty-daemon/current-platform image import not performed; no cache deleted.",
+    "Complete fresh-project cold-volume restore deferred to authorized maintenance window.",
+    "Different-host restore remains deferred_by_user_not_verified."
+  ],
+  "boundaries": [
+    "Only one protected images.tar payload read; known backup manifests inventoried locally. No full-disk search, new image export, stopped services or Docker resource deletion.",
+    "Sidecar archived for new standalone restore.py; frozen old restore.py copies are not retroactively patched.",
+    "Unsupported non-OCI/Docker-compat bundle formats fail closed.",
+    "This proves bound current-platform image content, not general multiarch portability or service/RTO/SLA availability."
+  ],
+  "supplier_http": 0,
+  "subsequent_host_only_changes": [
+    {
+      "recorded_at": "2026-10-27T01:14:28.799853+00:00",
+      "previous_recovery_sha256": "da614c7fc6663d0ca7207b8c70b750536b9ebcb8b886e87ccc44c936475007be",
+      "current_recovery_sha256": "226253d615a55670de2b973dcf0bc48ee6705d09d22dfea0b8868d2e7230c2af",
+      "unchanged_bundle_verifier_sha256": "34db6b3b5b431a85e3a2509967d51593bb512a25a5a1d19d68ad78d9cb558eb3",
+      "scope": "Windows CREATE_NO_WINDOW+hidden STARTUPINFO on all three subprocess sites and redacted child exit diagnostics; original restore/backup finally preserved",
+      "historical_bundle_proof": "unchanged; no2.456GB rescan, no re-export or Docker invocation for this change"
+    },
+    {
+      "recorded_at": "2026-10-27T01:56:18.840991+00:00",
+      "scope": "Legacy0013-0016 schema-gated business verifier plus explicit retain-temporary-resources for current no-temporary-Docker-deletion window; no automatic schema migration/image substitution.",
+      "current_recovery_sha256": "8ae8bec6324697b61c1f19b6588553e87fbcf4291c103441d4e2d2831522f53a",
+      "unchanged_bundle_verifier_sha256": "34db6b3b5b431a85e3a2509967d51593bb512a25a5a1d19d68ad78d9cb558eb3",
+      "historical_bundle_proof": "unchanged; no2.456GB rescan",
+      "retention_manifest_integrity": "retained-resources.json is written once before completion manifest; finally writes it only if absent after early failure; tiny fixture load_archive checksum passed"
+    }
+  ]
+}

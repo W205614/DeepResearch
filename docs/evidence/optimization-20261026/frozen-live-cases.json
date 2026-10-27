@@ -1,0 +1,59 @@
+{
+  "frozen_at": "2026-10-26T08:15:44.411260+00:00",
+  "synthetic": true,
+  "cases": [
+    {
+      "id": "development-visitor",
+      "split": "development",
+      "document": "# 青禾访客开放规则\n访客临时授权有效期为7个自然日。受限集合不得自动续期。续期必须经空间管理员重新授权。成员离开工作空间后立即撤销其集合权限。本规则未规定数据保留期限。",
+      "question": "根据青禾访客开放规则，访客临时授权的有效期是多少？受限集合是否可以自动续期，续期由谁批准？请保留适用范围。",
+      "expected_facts": [
+        "依据所提供规则而非通用事实",
+        "7个自然日",
+        "受限集合不得自动续期",
+        "续期经空间管理员重新授权"
+      ],
+      "forbidden": [
+        "所有资料永久保留",
+        "所有集合都不得续期",
+        "普通成员可自行续期"
+      ]
+    },
+    {
+      "id": "holdout-retention",
+      "split": "holdout",
+      "document": "# 北辰样本保留办法\n已批准研究报告保留24个月。未提交的试验草稿保留30天。处于争议冻结的记录在冻结解除前不得自动删除。本办法未给出备份副本的保留期限。",
+      "question": "根据北辰样本保留办法，已批准报告和未提交草稿分别保留多久？争议冻结记录能否按普通期限自动删除？备份副本保留多久？只用所给资料回答。",
+      "expected_facts": [
+        "已批准报告24个月",
+        "未提交草稿30天",
+        "争议冻结解除前不得自动删除",
+        "备份副本保留期限未提供，不能推断"
+      ],
+      "forbidden": [
+        "备份也保留24个月",
+        "冻结记录到期必须删除",
+        "所有报告保留30天"
+      ]
+    }
+  ],
+  "source": "user-authorized synthetic acceptance policies; not external business facts",
+  "budget": {
+    "authorized_model_http": 80,
+    "planned_model_http": 23,
+    "embedding_http": 20,
+    "reranker_http": 0,
+    "search_http": 0,
+    "map_rest": 0,
+    "input_tokens": 600000,
+    "output_tokens": 117417,
+    "combined_reservation_upper_bound": 717417,
+    "complete_samples": 2,
+    "development": 1,
+    "holdout": 1
+  },
+  "prior_paid_evidence": "Previous task ledger unchanged; historical 137 local requests retained separately. This run voluntarily uses no more than 23 new model attempts. CI keeps its existing 57-request policy.",
+  "stopping": "Stop before any request exceeding ledger, on auth/payment/upstream rate limit failure, or after the two frozen cases; no selection of best rerun",
+  "baseline": "mechanism red-to-green tests and SQL ranking equivalence; these two new samples are final candidate checks, not a before/after accuracy claim",
+  "human_blind_review": "not_performed"
+}

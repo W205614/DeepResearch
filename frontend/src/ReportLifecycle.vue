@@ -30,7 +30,7 @@ async function load() {
   } catch (e) { if (alive && epoch === generation) error.value = e instanceof Error ? e.message : '报告版本读取失败' }
   finally { if (alive && epoch === generation) busy.value = false }
 }
-watch(() => [props.report.id, props.report.status, props.report.content_sha256], load, { immediate:true })
+watch(() => [props.report.id, props.report.status, props.report.content_sha256, props.report.evidence_status], load, { immediate:true })
 async function compare() {
   const epoch = generation
   busy.value = true; error.value = ''; diff.value = null

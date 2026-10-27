@@ -1,0 +1,42 @@
+{
+  "contract_version": "research-command-v1",
+  "migration": "Legacy resume-only payloads remain replayable; unknown versions or fields fail closed.",
+  "delivery": "at_least_once; expected_attempt fences delayed commands; attempt CAS remains authoritative",
+  "field_owners": {
+    "runs.created_by,user_id,thread_id,topic,mode,data_policy,client_request_id": "java",
+    "runs.queued,cancelled,report_submitted": "java public commands; python may requeue persisted interrupted runs during bounded recovery",
+    "runs.running,completed,insufficient,failed,interrupted,attempt_count,last_attempt_at": "python execution",
+    "runs.report,sources,validation,call_attempts,reserved_tokens": "python execution with attempt fence",
+    "runs.deadline_at": "java initializes; python initializes legacy zero; never reset on resume",
+    "business_outbox,report_publications.snapshot_and_publication_status,memberships,workspace_limits": "java",
+    "report_publications.evidence_status": "python source lifecycle; java initializes and reads derived pending status",
+    "document_policies.collection_id,revision": "java; python only inserts initial uploader ownership",
+    "audit_logs": "append only by java lifecycle and authorized python document/probe adapters",
+    "document_scan_jobs,run_cleanup,run_artifacts,documents,chunks,document_versions,checkpoints": "python",
+    "events": "append only by java lifecycle and python execution"
+  },
+  "schedule_cases": [
+    {"name":"legacy_initial","payload":{"resume":false},"valid":true},
+    {"name":"legacy_resume","payload":{"resume":true},"valid":true},
+    {"name":"versioned_resume","payload":{"contract_version":"research-command-v1","resume":true,"expected_attempt":3},"valid":true},
+    {"name":"unknown_version","payload":{"contract_version":"research-command-v2","resume":true},"valid":false},
+    {"name":"string_boolean","payload":{"resume":"false"},"valid":false},
+    {"name":"negative_attempt","payload":{"resume":true,"expected_attempt":-1},"valid":false},
+    {"name":"boolean_attempt","payload":{"contract_version":"research-command-v1","resume":true,"expected_attempt":true},"valid":false},
+    {"name":"fractional_attempt","payload":{"contract_version":"research-command-v1","resume":true,"expected_attempt":1.5},"valid":false},
+    {"name":"unknown_field","payload":{"resume":true,"reset_budget":true},"valid":false},
+    {"name":"missing_version_with_new_field","payload":{"resume":true,"expected_attempt":1},"valid":false},
+    {"name":"versioned_initial","payload":{"contract_version":"research-command-v1","resume":false,"expected_attempt":0},"valid":true}
+  ],
+  "resume_cases": [
+    {"name":"failed_retryable","status":"failed","retryable":true,"deadline":101,"calls":1,"tokens":100,"expected":true},
+    {"name":"interrupted_retryable","status":"interrupted","retryable":true,"deadline":101,"calls":1,"tokens":100,"expected":true},
+    {"name":"cancelled_retryable","status":"cancelled","retryable":true,"deadline":101,"calls":1,"tokens":100,"expected":true},
+    {"name":"running_denied","status":"running","retryable":true,"deadline":101,"calls":1,"tokens":100,"expected":false},
+    {"name":"fatal_denied","status":"failed","retryable":false,"deadline":101,"calls":1,"tokens":100,"expected":false},
+    {"name":"expired_denied","status":"failed","retryable":true,"deadline":100,"calls":1,"tokens":100,"expected":false},
+    {"name":"calls_exhausted","status":"failed","retryable":true,"deadline":101,"calls":10,"tokens":100,"expected":false},
+    {"name":"tokens_exhausted","status":"failed","retryable":true,"deadline":101,"calls":1,"tokens":1000,"expected":false}
+  ],
+  "resume_fixture_limits": {"epoch":100,"max_calls":10,"max_tokens":1000}
+}

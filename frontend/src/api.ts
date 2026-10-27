@@ -18,6 +18,7 @@ export async function authenticatedFetch(path: string, init: RequestInit = {}): 
     const requestHeaders = new Headers(init.headers)
     if (token) requestHeaders.set('Authorization', `Bearer ${token}`)
     for (const [key, value] of Object.entries(headers())) {
+      if (key === 'X-Workspace-ID' && requestHeaders.has(key)) continue
       if (key !== 'Authorization' || !token) requestHeaders.set(key, value)
     }
     return fetch(path, {...init, headers: requestHeaders})

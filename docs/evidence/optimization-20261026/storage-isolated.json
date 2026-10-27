@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "scope": "labelled isolated MinIO fixture, real S3 requests, no model calls",
+  "denied": [
+    "business_unrelated_bucket",
+    "business_unapproved_prefix",
+    "business_bucket_admin",
+    "milvus_business_original"
+  ],
+  "preexisting_object_sha256": "316403637ad5c6c9d81d21f76e0f401cc945a3ff5dbe13d113e3316a31e1030c",
+  "allowed": [
+    "business_head_bucket",
+    "business_quarantine_upload",
+    "business_publish_copy",
+    "business_cleanup",
+    "milvus_object_io",
+    "milvus_multipart_abort",
+    "bucket_listing_filtered_to_authorized_bucket"
+  ],
+  "server_image": "sha256:d1aa81d3a62ae1b5d7279f4d12fe9b1a1e6aba466b2f7adc83bbd4d0abe6f48b"
+}

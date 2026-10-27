@@ -1,0 +1,113 @@
+{
+  "schema": "windows-host-task-silence-v1",
+  "recorded_at": "2026-10-27T01:16:09.788727+00:00",
+  "status": "implemented_static_and_synthetic_verified_scheduler_window_pending",
+  "implementation": [
+    "Task action requires workspace pythonw.exe; console fallback removed.",
+    "Explicit current Windows identity uses Interactive logon and Limited run level; no password or elevation.",
+    "Backup/probe pythonw entry bridges before repository imports to a hidden same-environment python.exe target with real stdout/stderr append-file handles; native target exit propagates unchanged.",
+    "All three recovery subprocess run/Popen sites use CREATE_NO_WINDOW plus hidden STARTUPINFO on Windows; non-Windows options remain empty.",
+    "Redacted fatal child metadata keeps executable basename and native exit; raw credential-bearing driver output stays withheld.",
+    "Standalone restore guard is inline; only existing backup_images.py sidecar remains required."
+  ],
+  "actual_synthetic": {
+    "pythonw-exit-0": {
+      "actual_interpreter": "pythonw.exe",
+      "exit_code": 0,
+      "descendant_exit_code": 17,
+      "stdout_and_stderr_saved": true,
+      "outer_console_output_bytes": 0,
+      "creationflags": 134217728,
+      "startup_hidden": true,
+      "raw_log_sha256": "3455ecbf27d814b2ff626037d39394213a327aac130f13768df54e954f7ebfb0",
+      "supplier_http": 0
+    },
+    "pythonw-exit-23": {
+      "actual_interpreter": "pythonw.exe",
+      "exit_code": 23,
+      "descendant_exit_code": 17,
+      "stdout_and_stderr_saved": true,
+      "outer_console_output_bytes": 0,
+      "creationflags": 134217728,
+      "startup_hidden": true,
+      "raw_log_sha256": "8a041b4ee8b6811692686d11e9501917712f4eb7b69953f4a0907dcbc087ed86",
+      "supplier_http": 0
+    }
+  },
+  "direct_validation": [
+    {
+      "command": "uv run pytest -q tests/test_host_task_silence.py tests/test_recovery_manifest.py::test_stopped_source_databases_return_to_stopped_state_if_preflight_query_fails tests/test_recovery_manifest.py::test_restore_failure_retains_every_created_volume_and_only_cleans_its_network",
+      "result": "8passed,2failed in5.28s; synthetic descendant initially relied on implicit stdio inheritance under CREATE_NO_WINDOW; production sites already use explicit streams."
+    },
+    {
+      "command": "uv run pytest -q tests/test_host_task_silence.py::test_pythonw_bridge_logs_target_and_descendant_streams_preserving_exit",
+      "result": "2passed in2.89s after explicitly wiring descendant stdout/stderr to match the production pattern."
+    },
+    {
+      "command": "uv run pytest -q tests/test_host_task_silence.py::test_recovery_child_failure_is_redacted_and_keeps_native_exit",
+      "result": "1passed in0.27s after redacted child-exit logging;10unique direct cases pass across focused runs."
+    },
+    {
+      "method": "PowerShell Language.Parser.ParseFile of installer only",
+      "result": "0parse_errors; installer not executed."
+    },
+    {
+      "command": "uv run ruff check scripts/host_task.py scripts/recovery.py scripts/scheduled_backup.py scripts/ops_probe.py tests/test_host_task_silence.py",
+      "result": "passed"
+    }
+  ],
+  "logging": {
+    "default_files": [
+      ".cache/ops/logs/backup.log",
+      ".cache/ops/logs/probe.log"
+    ],
+    "encoding": "UTF-8 append",
+    "metadata_excludes": "arguments, private configuration, environment values and passwords",
+    "cleanup": "no automatic deletion"
+  },
+  "source_sha256": {
+    "scripts/install_backup_task.ps1": "baa5c46e327be6e77656076eebf237e08f58730efe36c72abe125015cc849885",
+    "scripts/scheduled_backup.py": "9ad20ced86bc4687b65b77e5b0a24b1622df0dac51d1028201b8abc08440b975",
+    "scripts/ops_probe.py": "17507b17daec8e25ea079b0cedab39c5c46bf37c9ab6f601cc9831ebbf88ca48",
+    "scripts/recovery.py": "8ae8bec6324697b61c1f19b6588553e87fbcf4291c103441d4e2d2831522f53a",
+    "scripts/host_task.py": "3924f7557afc3646c37a7a396d0dabe6bf155599e5e9043a81c70fe3501d6cd2",
+    "tests/test_host_task_silence.py": "5574de6e481b8cd47b54839cb4583bf566d69f325bcf592985ad592c3faa32c5"
+  },
+  "private_receipts": {
+    ".cache/optimization-20261026/silent-host/pythonw-exit-0.json": "58b25310ac37ec21095e4ca81a171d45cb6b93c52030c9de91f974f1472ba51b",
+    ".cache/optimization-20261026/silent-host/pythonw-exit-0.log": "3455ecbf27d814b2ff626037d39394213a327aac130f13768df54e954f7ebfb0",
+    ".cache/optimization-20261026/silent-host/pythonw-exit-23.json": "f05ac10f66d16870b79dda1d207ed09349f068f5e9c01aaecec0aaf5fd43a111",
+    ".cache/optimization-20261026/silent-host/pythonw-exit-23.log": "8a041b4ee8b6811692686d11e9501917712f4eb7b69953f4a0907dcbc087ed86"
+  },
+  "unchanged_bundle_proof": {
+    "verifier_sha256": "34db6b3b5b431a85e3a2509967d51593bb512a25a5a1d19d68ad78d9cb558eb3",
+    "actual_historical_verifier_sha256": "34db6b3b5b431a85e3a2509967d51593bb512a25a5a1d19d68ad78d9cb558eb3",
+    "new_scan_or_export": false,
+    "updated_recovery_source_receipt": true
+  },
+  "cross_ci_followup": "appended followup_reviews in cross-ci-wiring-review.json; publication gate assigned to security with root final readback pending; original review preserved",
+  "remaining_acceptance": [
+    "Install task definitions only in the granted maintenance window.",
+    "Read back task pythonw action, current Interactive/Limited principal, next run and LastTaskResult.",
+    "Observe actual scheduled backup/probe no-popup behavior, real logs and recovery/status results; synthetic flags are not that operational proof."
+  ],
+  "no_real_actions": {
+    "scheduler_registered_or_started": false,
+    "real_backup": false,
+    "Docker": false,
+    "supplier_http": 0,
+    "service_restart": false,
+    "password_saved": false,
+    "existing_data_deleted": false
+  },
+  "subsequent_compatibility_changes": [
+    {
+      "recorded_at": "2026-10-27T01:56:18.840991+00:00",
+      "scope": "Legacy schema selection and retained Docker helper/project lifecycle. Windows startup options, host_task.py wrapper, principal, logging and native exits unchanged; no repeat of Windows synthetic suite.",
+      "source_sha256": {
+        "scripts/recovery.py": "8ae8bec6324697b61c1f19b6588553e87fbcf4291c103441d4e2d2831522f53a",
+        "scripts/scheduled_backup.py": "9ad20ced86bc4687b65b77e5b0a24b1622df0dac51d1028201b8abc08440b975"
+      }
+    }
+  ]
+}

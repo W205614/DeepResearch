@@ -12,6 +12,13 @@ from backend.core.reliability import Execution, ServiceError, execution
 from backend.domain.models import RunRequest, Verification, TargetVerification
 from backend.research.graph import ResearchGraph, evidence_context
 from backend.research.source_validity import validate_sources
+from backend.core.usage_governance import paid_scope
+
+
+@pytest.fixture
+def external_mock_scope():
+    with paid_scope("alice", "reliability-fixture", "evaluation"):
+        yield
 
 
 async def held_run(runtime, monkeypatch, **kwargs):
@@ -56,7 +63,7 @@ async def test_retry_attempts_share_durable_budget(runtime, monkeypatch):
         await runtime.resume(run["id"], "alice")
 
 
-async def test_auth_failure_breaks_circuit_without_repeated_calls(runtime):
+async def test_auth_failure_breaks_circuit_without_repeated_calls(runtime, external_mock_scope):
     seen = []
     def reply(request):
         seen.append(request)
@@ -70,7 +77,7 @@ async def test_auth_failure_breaks_circuit_without_repeated_calls(runtime):
     assert len(seen) == 1
 
 
-async def test_retry_after_does_not_sleep_beyond_budget(runtime):
+async def test_retry_after_does_not_sleep_beyond_budget(runtime, external_mock_scope):
     await runtime.providers.client.aclose()
     runtime.providers.client = httpx.AsyncClient(transport=httpx.MockTransport(
         lambda request: httpx.Response(429, headers={"Retry-After": "3600"}, json={})))

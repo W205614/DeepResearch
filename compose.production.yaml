@@ -1,0 +1,27 @@
+# Single-host production controls; TLS/hostname and off-host facilities still
+# require operator configuration. Never disables auth, scanning or budgets.
+services:
+  agent:
+    read_only: true
+    cap_drop: [ALL]
+    tmpfs: ["/tmp:size=256m", "/data:size=32m,uid=10001,gid=10001"]
+  worker:
+    read_only: true
+    cap_drop: [ALL]
+    tmpfs: ["/tmp:size=256m", "/data:size=32m,uid=10001,gid=10001"]
+  document-worker:
+    read_only: true
+    cap_drop: [ALL]
+    tmpfs: ["/tmp:size=256m", "/data:size=32m,uid=10001,gid=10001"]
+  backend:
+    read_only: true
+    cap_drop: [ALL]
+    tmpfs: [/tmp:size=128m]
+  alert-relay:
+    read_only: true
+    cap_drop: [ALL]
+    tmpfs: [/tmp:size=16m]
+  ops-exporter:
+    read_only: true
+    cap_drop: [ALL]
+    tmpfs: [/tmp:size=16m]

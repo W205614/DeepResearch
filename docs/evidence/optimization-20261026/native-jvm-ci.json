@@ -1,0 +1,213 @@
+{
+  "status": "final_helper_actual_Windows_execution_passed_Linux_cold_CI_pending",
+  "source_review": "business-backend/Dockerfile fixedmuslJREtar+publisherSBOM SHA and GPG verifies officialfingerprint; removes actual old /opt/java/openjdk; native helper independently verifies complete actualJRE filesystem against that officialarchive, not justversion text",
+  "helper": {
+    "path": "scripts/check_native_jvm.py",
+    "sha256": "cc518fa7958d8b3ac26a7f70d36261f4c417f7c0f4c6a235bf414db2c9179f2a"
+  },
+  "tool_database_profile_lock": {
+    "path": "deployment/security/native-jvm-tools.json",
+    "sha256": "44bfe3e0215cbf62166a114f64bfd53caf69b8345fc5be15f0570797a5ee15a2"
+  },
+  "tool_transport": "official pinned Linux release URL+archive byte count+SHA256 crosschecked publisherchecksums and GitHubasset digest; Windows executedbinary SHA pinned. No arbitrary download/script execution. Linux fresh runner cold transport remains actualCI pending",
+  "database_transport": {
+    "url": "https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-10-26T00:32:02Z_1792996724.tar.zst?checksum=sha256%3A214b59fbe13608346ee1b22583ec0531083d6088c33891f3520d0fbdedb1b308",
+    "archive_sha256": "214b59fbe13608346ee1b22583ec0531083d6088c33891f3520d0fbdedb1b308",
+    "db_sha256": "1d0367b7e969624d3c6a66f9f39118a99b5dbd99622a85a97f3c928c31e588a4",
+    "db_bytes": 3344613376,
+    "schema": "v6.1.10",
+    "built": "2026-10-26T06:38:44Z",
+    "max_snapshot_age_days": 7,
+    "transport": "official static timestamped zstd blob; grype db import verifies checksum URL; verify extracted DB hash/size; latest is never substituted"
+  },
+  "jre_file_manifests": [
+    {
+      "path": "deployment/security/jre-manifests/business-java.json",
+      "sha256": "de2e56d95d3296453e252dcf1562c34baccf1ea7a23b7d70b78124d753fd34b7"
+    },
+    {
+      "path": "deployment/security/jre-manifests/keycloak.json",
+      "sha256": "6bf1dc372aaa15f41416bf7bb0d0febaf896120a173bbbfe8c0c861c97c4414e"
+    }
+  ],
+  "actual_profiles": {
+    "business-java": {
+      "summary": {
+        "path": ".cache/optimization-20261026/native-ci-business-verified/summary.json",
+        "sha256": "bade5edb47c73b673f1697544e9d72019639f2ffa3c27aa0b65b4028aa59974d"
+      },
+      "actual_image_id": "sha256:20bae2ec4a9af26d8f730a5c21b2cb83ee093d4601a5df7cc7360f288ff7c3e7",
+      "actual_JRE_bytes": {
+        "verified_entries": 255,
+        "verified_regular_bytes": 164682680
+      },
+      "native_counts": {
+        "packages": 1,
+        "raw_counts": {
+          "High": 0,
+          "Critical": 0,
+          "Unknown": 0,
+          "Medium": 0,
+          "Low": 0,
+          "Negligible": 0
+        },
+        "sbom_sha256": "1b4cf6f24f54b964e8181ee67f2b014d69fe49fd2bbad1ae0fb381309abcf625",
+        "report_sha256": "f6bbf7d9b8efadd07aa386a754e68a20656e1d6f920753c12a7d3533fe39ce7c"
+      },
+      "complete_counts": {
+        "packages": 153,
+        "raw_counts": {
+          "High": 0,
+          "Critical": 0,
+          "Unknown": 0,
+          "Medium": 15,
+          "Low": 11,
+          "Negligible": 0
+        },
+        "sbom_sha256": "93747c2faf0ab16d337d72f3383845547528437415cb04f7115c32b808494b6d",
+        "report_sha256": "6ded80424c0ca5ef1cfbc0b29db14623cbc2b7f75d01b1f6e7608a2452e7d50d"
+      },
+      "audit_container_retained_created_not_started": "dr-native-jvm-inventory-8d04a238e798",
+      "complete_raw_reports": {
+        "native-syft.json": {
+          "path": ".cache/optimization-20261026/native-ci-business-verified/native-syft.json",
+          "sha256": "1b4cf6f24f54b964e8181ee67f2b014d69fe49fd2bbad1ae0fb381309abcf625"
+        },
+        "native-grype.json": {
+          "path": ".cache/optimization-20261026/native-ci-business-verified/native-grype.json",
+          "sha256": "f6bbf7d9b8efadd07aa386a754e68a20656e1d6f920753c12a7d3533fe39ce7c"
+        },
+        "full-syft.json": {
+          "path": ".cache/optimization-20261026/native-ci-business-verified/full-syft.json",
+          "sha256": "93747c2faf0ab16d337d72f3383845547528437415cb04f7115c32b808494b6d"
+        },
+        "full-grype.json": {
+          "path": ".cache/optimization-20261026/native-ci-business-verified/full-grype.json",
+          "sha256": "6ded80424c0ca5ef1cfbc0b29db14623cbc2b7f75d01b1f6e7608a2452e7d50d"
+        },
+        "syft-config.json": {
+          "path": ".cache/optimization-20261026/native-ci-business-verified/syft-config.json",
+          "sha256": "5fa73034e5e62ce17055c7b21a832380326fcc2cf6ecfabb51d0477464c3e9bd"
+        },
+        "grype-config.json": {
+          "path": ".cache/optimization-20261026/native-ci-business-verified/grype-config.json",
+          "sha256": "9a0b5c054c10937dfc52a98ab87411bbef896a960dab9b98c93900572bda2151"
+        }
+      }
+    },
+    "keycloak": {
+      "summary": {
+        "path": ".cache/optimization-20261026/native-ci-keycloak-verified/summary.json",
+        "sha256": "e1ef4d5f3b62f534a585af16e2b446f8c9de9e512c3996a1b8945cc5d613a3d4"
+      },
+      "actual_image_id": "sha256:95e66ef578a2e6a7ed744252edf687d07713e4e50ee1e9eb194cd0db522361ca",
+      "actual_JRE_bytes": {
+        "verified_entries": 257,
+        "verified_regular_bytes": 165569769
+      },
+      "native_counts": {
+        "packages": 1,
+        "raw_counts": {
+          "High": 0,
+          "Critical": 0,
+          "Unknown": 0,
+          "Medium": 0,
+          "Low": 0,
+          "Negligible": 0
+        },
+        "sbom_sha256": "2a3ed44870cefeed1e20b76a3311ecc04af11f9015fdd87694cc5e35c47ecd85",
+        "report_sha256": "5fe8ab8135813ccd9a7eb1d99f28c411f77f255bb8349ceabe6d3f1c031c0384"
+      },
+      "complete_counts": {
+        "packages": 564,
+        "raw_counts": {
+          "High": 0,
+          "Critical": 0,
+          "Unknown": 0,
+          "Medium": 17,
+          "Low": 24,
+          "Negligible": 0
+        },
+        "sbom_sha256": "2f4aa2a3def33c7dd1e32bccdfdf90ff6e569422bc31a9d6e55b46d54e45a011",
+        "report_sha256": "28e03e9efd70d9dc7195ef055433d23652e6f718059b54b6ec7a331b101ca5e1"
+      },
+      "audit_container_retained_created_not_started": "dr-native-jvm-inventory-855347146ee9",
+      "complete_raw_reports": {
+        "native-syft.json": {
+          "path": ".cache/optimization-20261026/native-ci-keycloak-verified/native-syft.json",
+          "sha256": "2a3ed44870cefeed1e20b76a3311ecc04af11f9015fdd87694cc5e35c47ecd85"
+        },
+        "native-grype.json": {
+          "path": ".cache/optimization-20261026/native-ci-keycloak-verified/native-grype.json",
+          "sha256": "5fe8ab8135813ccd9a7eb1d99f28c411f77f255bb8349ceabe6d3f1c031c0384"
+        },
+        "full-syft.json": {
+          "path": ".cache/optimization-20261026/native-ci-keycloak-verified/full-syft.json",
+          "sha256": "2f4aa2a3def33c7dd1e32bccdfdf90ff6e569422bc31a9d6e55b46d54e45a011"
+        },
+        "full-grype.json": {
+          "path": ".cache/optimization-20261026/native-ci-keycloak-verified/full-grype.json",
+          "sha256": "28e03e9efd70d9dc7195ef055433d23652e6f718059b54b6ec7a331b101ca5e1"
+        },
+        "syft-config.json": {
+          "path": ".cache/optimization-20261026/native-ci-keycloak-verified/syft-config.json",
+          "sha256": "5fa73034e5e62ce17055c7b21a832380326fcc2cf6ecfabb51d0477464c3e9bd"
+        },
+        "grype-config.json": {
+          "path": ".cache/optimization-20261026/native-ci-keycloak-verified/grype-config.json",
+          "sha256": "9a0b5c054c10937dfc52a98ab87411bbef896a960dab9b98c93900572bda2151"
+        }
+      }
+    }
+  },
+  "security_policy": [
+    "normal fullTrivy HIGH/CRITICAL gate remains",
+    "actual JRE everyregularfile+symlink matches fixed officialartifact",
+    "exactone nativeJVM actualversion/source/ABI/path/declaredCPE",
+    "defaultfullSyft and Grype retained, minimumreviewed packagecoverage, unknown identity/version blocked",
+    "HIGH/CRITICAL/UNKNOWN findings and ignoredfindings blocked; MEDIUM/LOW retained",
+    "explicit controlled Syft/Grype configs prevent local config exclusions; tool/DB/scan operational failure blocks",
+    "OCIindex image and SyftconfigID differences verified through decoded config+manifest SHA chain, actualdiffIDs+runtimeconfiguration; no direct DockerconfigID lookup assumption"
+  ],
+  "tests": {
+    "native_gate_cases": 6,
+    "fetch_inventory_cases": 20,
+    "disposition_cases": 22,
+    "total_unique_cases_across_focused_runs": 48,
+    "last_additions": [
+      "malformed63/65/nonhex/extra digest negatives",
+      "allzero rawHIGH0/CRITICAL0 emitsno fakeFIXED",
+      "old ELF with forgedrelease text rejected",
+      "missing/extra JVM/source/ABI/CPE rejected",
+      "stale/changed/missing nativeDB rejected",
+      "OS HIGH/Unknown/ignored/missingCPE report blocks",
+      "full OS inventory cannot disappear",
+      "index/config/source config-manifest-rootFS tampering rejected"
+    ]
+  },
+  "source_false_zero_fix_attempts_preserved": {
+    "paths": [
+      ".cache/optimization-20261026/native-ci-business-final/summary.json",
+      ".cache/optimization-20261026/native-ci-keycloak-final/summary.json"
+    ],
+    "reason": "strict direct DockerconfigID lookup is not valid on Docker29 OCI index store; failedclosed. Replaced by stronger actual embedded config/manifest SHA+diffIDs validation, then complete finalhelper rerunpassed above."
+  },
+  "workflow": {
+    "path": ".github/workflows/security.yml",
+    "sha256": "494ab03057940571a7d20473b7d5a5e15fdcccef3fa5d6ee8bc13cf542d213be"
+  },
+  "inventory": {
+    "path": "scripts/runtime_ci_inventory.py",
+    "sha256": "774e3c0dbc5f41f7518ccc946deb64aeb5f799533b4b3d045e25facc76b922cb"
+  },
+  "documentation": {
+    "path": "docs/native-jvm-security-gate.md",
+    "sha256": "5dc791ff7d18fa4ce6f5868d252b40f7009a25ae4b630b2eda9857ea82b188d0"
+  },
+  "known_limits": [
+    "not independent live human review or production HA/TLS/capacity proof",
+    "database is a pinned7day advisory snapshot, not a claim against future unknown vulnerabilities; expiresfailclosed until explicit refresh",
+    "local success doesnotclaim GitHubCI pass or daily deployment"
+  ],
+  "services_started_by_gate": false
+}

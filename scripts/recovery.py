@@ -15,15 +15,40 @@ import shutil
 import gzip
 import tarfile
 from pathlib import PurePosixPath
+from urllib.parse import quote
+import re
+import sys
+import uuid
+try:
+    from scripts.backup_images import verify_image_bundle
+except ModuleNotFoundError:
+    from backup_images import verify_image_bundle  # Standalone archived restore.py sidecar.
 
 ROOT = Path(__file__).resolve().parents[1]
 HELPER = 'python:3.13-alpine'
 
 
+def hidden_process_options():
+    """Suppress Windows child consoles; leave non-Windows process behavior intact."""
+    if os.name != 'nt':
+        return {}
+    startup = subprocess.STARTUPINFO()
+    startup.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    startup.wShowWindow = subprocess.SW_HIDE
+    return {'creationflags': subprocess.CREATE_NO_WINDOW, 'startupinfo': startup}
+
+
+def log_child_failure(executable, code):
+    if os.name == 'nt' and sys.stderr is not None:
+        print(json.dumps({'event': 'recovery_child_failed', 'executable': Path(executable).name,
+                          'exit_code': code}), file=sys.stderr, flush=True)
+
+
 def run(args, *, data=None, environment=None):
     result = subprocess.run(args, input=data, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=ROOT,
-                            env=None if environment is None else {**os.environ, **environment})
+                            env=None if environment is None else {**os.environ, **environment}, **hidden_process_options())
     if result.returncode:
+        log_child_failure(args[0], result.returncode)
         raise RuntimeError(f'{args[:3]} failed (exit {result.returncode}); output withheld to protect secrets')
     return result.stdout
 
@@ -32,9 +57,65 @@ def compose(*args):
     return run(['docker', 'compose', *args])
 
 
+def run_container_helper(arguments, *, retain, project, operation, records, purpose):
+    """Retain explicitly owned helpers when deletion is outside the current window."""
+    if not retain:
+        return run(['docker', 'run', '--rm', *arguments])
+    name = f'{project}-helper-{operation}-{len(records):03d}'
+    entry = {'name': name, 'purpose': purpose, 'operation': operation, 'project': project,
+             'creator': 'scripts/recovery.py', 'creator_proof_verified': False}
+    records.append(entry)
+    labels = {'operation': operation, 'project': project, 'creator': 'scripts/recovery.py', 'purpose': purpose}
+    command = ['docker', 'run', '--name', name]
+    for key, value in labels.items():
+        command += ['--label', 'com.deepresearch.recovery.'+key+'='+value]
+    try:
+        output = run([*command, *arguments])
+    finally:
+        template = ('{"container_id":{{json .Id}},"name":{{json .Name}},"image_id":{{json .Image}},'
+                    '"operation":{{json (index .Config.Labels "com.deepresearch.recovery.operation")}},'
+                    '"project":{{json (index .Config.Labels "com.deepresearch.recovery.project")}},'
+                    '"creator":{{json (index .Config.Labels "com.deepresearch.recovery.creator")}},'
+                    '"purpose":{{json (index .Config.Labels "com.deepresearch.recovery.purpose")}}}')
+        try:
+            actual = json.loads(run(['docker', 'inspect', '--format', template, name]))
+            entry['container_id'], entry['image_id'] = actual['container_id'], actual['image_id']
+            entry['creator_proof_verified'] = (actual['name'] == '/'+name
+                                               and all(actual.get(key) == value for key, value in labels.items()))
+        except Exception:
+            entry['creator_proof_error'] = 'inspection_unavailable'
+    if not entry['creator_proof_verified']:
+        raise RuntimeError('Retained helper creator proof could not be verified; resource preserved')
+    return output
+
+
+def retained_helpers_report(project, operation, records):
+    return {'intentional_retention': True, 'cleanup_performed': False, 'project': project,
+            'operation': operation, 'creator': 'scripts/recovery.py', 'temporary_containers': records}
+
+
 def sha(path):
     with path.open('rb') as stream:
         return hashlib.file_digest(stream, 'sha256').hexdigest()
+
+
+def verification_database_environment(project, container):
+    """Short-lived verifier privilege, only after inspecting a fresh restore DB."""
+    if not re.fullmatch(r'dr-restore-[a-z0-9-]+', project):
+        raise ValueError('Verifier administrator access requires a dr-restore project')
+    value = json.loads(run(['docker', 'inspect', container]))[0]
+    labels = value['Config'].get('Labels') or {}
+    if (labels.get('com.docker.compose.project') != project
+            or labels.get('com.docker.compose.service') != 'postgres'):
+        raise ValueError('Verifier database container is outside this restore project')
+    environment = dict(item.split('=', 1) for item in value['Config']['Env'] if '=' in item)
+    if not environment.get('POSTGRES_PASSWORD'):
+        raise ValueError('Restore database has no inspectable verifier credential')
+    user = quote(environment.get('POSTGRES_USER', 'postgres'), safe='')
+    password = quote(environment['POSTGRES_PASSWORD'], safe='')
+    database = quote(environment.get('POSTGRES_DB', environment.get('POSTGRES_USER', 'postgres')), safe='')
+    return {'RECOVERY_DATABASE_URL': f'postgresql://{user}:{password}@postgres:5432/{database}',
+            'RECOVERY_VERIFICATION_PROJECT': project}
 
 
 def freeze_binds(config, destination):
@@ -99,11 +180,13 @@ def materialize_runtime_storage(config, source_compose):
 def export_runtime_asset(asset, destination):
     """Stream docker cp's tar into gzip without allocating the database in RAM."""
     with subprocess.Popen(['docker', 'cp', asset['container'] + ':' + asset['path'] + '/.', '-'],
-                          stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, cwd=ROOT) as process:
+                          stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, cwd=ROOT, **hidden_process_options()) as process:
         with gzip.open(destination, 'wb') as output:
             shutil.copyfileobj(process.stdout, output, length=1024 * 1024)
-        if process.wait():
-            raise RuntimeError('Runtime database export failed; output withheld')
+        exit_code = process.wait()
+        if exit_code:
+            log_child_failure('docker', exit_code)
+            raise RuntimeError(f'Runtime database export failed (exit {exit_code}); output withheld')
     if asset['service'] == 'clamav':
         validate_clamav_database(destination)
 
@@ -137,7 +220,7 @@ def safe_container_states(project):
     return rows
 
 
-def backup(destination, compose_files=(), source_project=None):
+def backup(destination, compose_files=(), source_project=None, retain_temporary_resources=False):
     destination = destination.resolve()
     destination.mkdir(parents=True, exist_ok=False)
     prefix = [part for filename in compose_files for part in ('-f', str(filename))]
@@ -157,6 +240,7 @@ def backup(destination, compose_files=(), source_project=None):
         raise ValueError('A source volume is absent; refusing to create an empty substitute')
     running = source_compose('ps', '--status', 'running', '--services').decode().split()
     temporary_databases = not running
+    operation, helpers = uuid.uuid4().hex, []
     try:
         if temporary_databases:
             # Start the existing database containers; never recreate an older deployment.
@@ -177,8 +261,9 @@ def backup(destination, compose_files=(), source_project=None):
         source_compose('stop', 'postgres', 'keycloak-postgres')
         for key, volume in volumes.items():
             print('Backing up ' + key, flush=True)
-            run(['docker', 'run', '--rm', '--network', 'none', '-v', f'{volume}:/source:ro',
-                 '-v', f'{destination}:/backup', helper_image, 'tar', '-czpf', f'/backup/{key}.tgz', '-C', '/source', '.'])
+            run_container_helper(['--network', 'none', '-v', f'{volume}:/source:ro',
+                 '-v', f'{destination}:/backup', helper_image, 'tar', '-czpf', f'/backup/{key}.tgz', '-C', '/source', '.'],
+                 retain=retain_temporary_resources, project=config['name'], operation=operation, records=helpers, purpose='backup-tar')
         for asset in runtime_assets:
             print('Backing up runtime database: ' + asset['service'], flush=True)
             export_runtime_asset(asset, destination / (asset['volume'] + '.tgz'))
@@ -198,7 +283,12 @@ def backup(destination, compose_files=(), source_project=None):
             definition.pop('build', None)
         (destination / 'deployment.private.json').write_text(json.dumps(recovery_config), encoding='utf-8')
         shutil.copy2(Path(__file__), destination / 'restore.py')
+        shutil.copy2(Path(__file__).with_name('backup_images.py'), destination / 'backup_images.py')
         run(['docker', 'image', 'save', '-o', str(destination / 'images.tar'), *sorted(set(image_ids.values()) | {helper_image})])
+        image_bundle = verify_image_bundle(destination / 'images.tar', set(image_ids.values()) | {helper_image})
+        retained = retained_helpers_report(config['name'], operation, helpers) if retain_temporary_resources else None
+        if retained:
+            (destination / 'retained-resources.json').write_text(json.dumps(retained, indent=2)+'\n', encoding='utf-8')
         manifest = {'version': 3, 'created_at': time.time(), 'source_project': config['name'],
                     'source_sha': run(['git', 'rev-parse', 'HEAD']).decode().strip(),
                     'worktree_dirty': bool(run(['git', 'status', '--porcelain', '--untracked-files=no']).strip()),
@@ -206,13 +296,24 @@ def backup(destination, compose_files=(), source_project=None):
                     'helper_image': helper_image, 'bind_mounts': bind_mounts,
                     'runtime_assets': [{key: asset[key] for key in ('volume', 'service', 'path')} for asset in runtime_assets],
                     'migration_head': migration_head,
+                    'image_bundle_verification': image_bundle,
+                    'retained_resources': retained,
                     'volumes': list(recovery_config['volumes']), 'files': {path.relative_to(destination).as_posix(): sha(path) for path in destination.rglob('*') if path.is_file()}}
         (destination / 'manifest.json').write_text(json.dumps(manifest, indent=2), encoding='utf-8')
     finally:
-        if running:
-            source_compose('start', '--wait', '--wait-timeout', '300', *running)
-        elif temporary_databases:
-            source_compose('stop', 'postgres', 'keycloak-postgres')
+        try:
+            if running:
+                source_compose('start', '--wait', '--wait-timeout', '300', *running)
+            elif temporary_databases:
+                source_compose('stop', 'postgres', 'keycloak-postgres')
+        finally:
+            if retain_temporary_resources:
+                retained_path = destination / 'retained-resources.json'
+                # Success already hashed this file into manifest. Only failures
+                # before completion need an orphan-resource ownership receipt.
+                if not retained_path.exists():
+                    retained = retained_helpers_report(config['name'], operation, helpers)
+                    retained_path.write_text(json.dumps(retained, indent=2)+'\n', encoding='utf-8')
     return destination
 
 
@@ -230,6 +331,8 @@ def load_archive(source):
         required.update(mount['files'])
     if not required <= set(manifest['files']):
         raise ValueError('Required backup files are missing from the checksum manifest')
+    if manifest.get('image_bundle_verification') and 'backup_images.py' not in manifest['files']:
+        raise ValueError('New standalone recovery bundle omits its image verifier')
     for name, digest in manifest['files'].items():
         path = source / name
         if not path.resolve().is_relative_to(source) or path.is_symlink() or not path.is_file() or sha(path) != digest:
@@ -259,10 +362,12 @@ def load_archive(source):
         for mount in config['services']['clamav'].get('volumes', [])
     ):
         raise ValueError('Backup omits ClamAV runtime database; create a fresh complete backup')
+    # Always inspect archive content, even when restore later finds every image in Docker cache.
+    verify_image_bundle(source / 'images.tar', set(manifest['images'].values()) | {manifest['helper_image']})
     return manifest, config
 
 
-def restore(source, project, subnet='10.254.245.0/24'):
+def restore(source, project, subnet='10.254.245.0/24', retain_temporary_resources=False):
     started = time.monotonic()
     import re
     if not re.fullmatch(r'dr-restore-[a-z0-9-]+', project):
@@ -275,7 +380,7 @@ def restore(source, project, subnet='10.254.245.0/24'):
     image_set = set(manifest['images'].values()) | {manifest['helper_image']}
     for image_id in image_set:
         result = subprocess.run(['docker', 'image', 'inspect', image_id], cwd=ROOT,
-                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, **hidden_process_options())
         if result.returncode:
             run(['docker', 'image', 'load', '-i', str(source / 'images.tar')])
             break
@@ -319,26 +424,31 @@ def restore(source, project, subnet='10.254.245.0/24'):
     def target(*args, environment=None):
         return run(['docker', 'compose', '-f', '-', '-p', project, *args], data=encoded, environment=environment)
 
-    created_volumes, network_created = [], False
+    created_volumes, network_created, helpers = [], False, []
+    operation = uuid.uuid4().hex
     report = {'passed': False, 'project': project, 'volumes': targets, 'created_volumes': created_volumes,
               'volumes_retained': True, 'cleanup_complete': False, 'stage': 'creating_network'}
+    report['intentional_retention'] = bool(retain_temporary_resources)
+    report['container_states_phase'] = 'before_final_stop_or_cleanup'
     try:
-        run(['docker', 'network', 'create', '--driver', 'bridge', '--internal', '--subnet', str(recovery_subnet),
-             '--label', 'com.deepresearch.recovery.project=' + project, network_name])
+        network_id = run(['docker', 'network', 'create', '--driver', 'bridge', '--internal', '--subnet', str(recovery_subnet),
+             '--label', 'com.deepresearch.recovery.project=' + project, network_name]).decode().strip()
         network_created = True
         report['stage'] = 'restoring_volumes'
         for key, name in targets.items():
             run(['docker', 'volume', 'create', name])
             created_volumes.append(name)
-            run(['docker', 'run', '--rm', '--network', 'none', '-v', f'{name}:/target',
-                 '-v', f'{source}:/backup:ro', manifest['helper_image'], 'tar', '-xzpf', f'/backup/{key}.tgz', '-C', '/target'])
+            run_container_helper(['--network', 'none', '-v', f'{name}:/target',
+                 '-v', f'{source}:/backup:ro', manifest['helper_image'], 'tar', '-xzpf', f'/backup/{key}.tgz', '-C', '/target'],
+                 retain=retain_temporary_resources, project=project, operation=operation, records=helpers, purpose='restore-extract')
             # Compare every archived file before any service can modify it.
-            run(['docker', 'run', '--rm', '--network', 'none', '-v', f'{name}:/target:ro',
+            run_container_helper(['--network', 'none', '-v', f'{name}:/target:ro',
                  '-v', f'{source}:/backup:ro', manifest['helper_image'], 'python', '-c',
                  "import tarfile,hashlib,pathlib; t=tarfile.open('/backup/" + key + ".tgz'); "
                  "[(lambda p,m: (_ for _ in ()).throw(RuntimeError('restored file mismatch')) "
                  "if hashlib.sha256(p.read_bytes()).digest()!=hashlib.sha256(t.extractfile(m).read()).digest() "
-                 "else None)(pathlib.Path('/target')/m.name,m) for m in t if m.isfile()]"])
+                 "else None)(pathlib.Path('/target')/m.name,m) for m in t if m.isfile()]"],
+                 retain=retain_temporary_resources, project=project, operation=operation, records=helpers, purpose='restore-verify')
         report['stage'] = 'starting_databases'
         target('up', '-d', '--wait', '--wait-timeout', '120', 'postgres', 'keycloak-postgres')
         for service, database in [('postgres', 'deepresearch'), ('keycloak-postgres', 'keycloak')]:
@@ -365,8 +475,12 @@ def restore(source, project, subnet='10.254.245.0/24'):
         admin_password = identity_environment.get('KC_BOOTSTRAP_ADMIN_PASSWORD') or identity_environment.get('KEYCLOAK_ADMIN_PASSWORD')
         if not admin_password:
             raise ValueError('Snapshot has no configured recovery identity administrator')
-        business_probe = target('exec', '-T', '-e', 'RECOVERY_ADMIN_PASSWORD', 'agent', 'python', '-c', RESTORED_BUSINESS,
-                                environment={'RECOVERY_ADMIN_PASSWORD': admin_password}).decode().strip()
+        database_container = target('ps', '-q', 'postgres').decode().strip()
+        verifier_environment = verification_database_environment(project, database_container)
+        verifier_environment['RECOVERY_ADMIN_PASSWORD'] = admin_password
+        business_probe = target('exec', '-T', '-e', 'RECOVERY_ADMIN_PASSWORD', '-e', 'RECOVERY_DATABASE_URL',
+                                '-e', 'RECOVERY_VERIFICATION_PROJECT', 'agent', 'python', '-c', RESTORED_BUSINESS,
+                                environment=verifier_environment).decode().strip()
         elapsed = round(time.monotonic() - started, 2)
         if elapsed > 3600:
             raise RuntimeError('Recovery exceeded 60 minute RTO target')
@@ -387,22 +501,30 @@ def restore(source, project, subnet='10.254.245.0/24'):
             report['container_states'] = [{'state': 'inspection_unavailable'}]
         cleanup_errors = []
         try:
-            target('down')
+            target('stop' if retain_temporary_resources else 'down')
         except Exception:
             cleanup_errors.append('recovery_container_cleanup_failed')
-        if network_created:
+        if network_created and not retain_temporary_resources:
             try:
                 run(['docker', 'network', 'rm', network_name])
             except Exception:
                 cleanup_errors.append('recovery_network_cleanup_failed')
-        report['cleanup_complete'] = not cleanup_errors
+        report['cleanup_complete'] = not cleanup_errors and not retain_temporary_resources
+        report['cleanup_performed'] = not retain_temporary_resources
+        if retain_temporary_resources:
+            report['retained_resources'] = {**retained_helpers_report(project, operation, helpers),
+                'compose_project': project, 'created_volumes': created_volumes,
+                'network': network_name if network_created else None,
+                'network_id': network_id if network_created else None,
+                'compose_stop_complete': not cleanup_errors}
         report['cleanup_errors'] = cleanup_errors
         report['passed'] = report['passed'] and not cleanup_errors
         (source / f'restore-{project}.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
     (source / 'verification.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
     print(json.dumps(report), flush=True)
     if not report['passed']:
-        raise RuntimeError('Recovery cleanup incomplete; preserved resource names are recorded')
+        raise RuntimeError('Recovery retained resources could not be stopped; names are recorded' if retain_temporary_resources
+                           else 'Recovery cleanup incomplete; preserved resource names are recorded')
 
 
 RESTORED_RETRIEVAL = '''
@@ -428,11 +550,32 @@ print(json.dumps({'nonempty_collections_searched': verified, 'results_checked': 
 
 
 RESTORED_BUSINESS = r'''
-import asyncio, hashlib, json, os, uuid
+import asyncio, hashlib, json, os, re, uuid
 import asyncpg, httpx
 
+async def restored_acl_contract(db):
+    tables = await db.fetchrow("""SELECT to_regclass('public.document_policies') IS NOT NULL AS policies,
+        to_regclass('public.collections') IS NOT NULL AS collections,
+        to_regclass('public.collection_grants') IS NOT NULL AS grants""")
+    present = [bool(tables[name]) for name in ('policies','collections','grants')]
+    if all(present):
+        return {'collection_acl':True,'mode':'current_collection_acl'}
+    assert not any(present), 'Partial document ACL schema; recovery verification must fail closed'
+    heads = await db.fetch('SELECT version_num FROM alembic_version')
+    supported = {'0013_evidence_lifecycle','0014_runtime_reliability',
+                 '0015_usage_governance','0016_service_privileges'}
+    assert len(heads)==1 and heads[0]['version_num'] in supported, 'Legacy ACL requires a known0013-0016 migration head'
+    return {'collection_acl':False,'mode':'legacy_workspace_acl','migration_head':heads[0]['version_num']}
+
 async def verify():
-    db = await asyncpg.connect(os.environ['DATABASE_URL'])
+    project = os.environ.get('RECOVERY_VERIFICATION_PROJECT', '')
+    acceptance = project == 'dr-opt-acceptance' and os.environ.get('RECOVERY_ACCEPTANCE_ONLY') == '1'
+    assert re.fullmatch(r'dr-restore-[a-z0-9-]+', project) or acceptance, 'Explicit isolated verifier project required'
+    from backend.core.config import Settings
+    settings = Settings()
+    if acceptance:
+        assert settings.llm_base_url == settings.embedding_base_url == 'http://127.0.0.1:9', 'Acceptance providers must be unreachable fixtures'
+    db = await asyncpg.connect(os.environ['RECOVERY_DATABASE_URL'])
     users, client_id, master = [], None, None
     checks = {}
     async with httpx.AsyncClient(timeout=30, trust_env=False) as client:
@@ -442,9 +585,8 @@ async def verify():
             assert response.status_code == status, 'Recovery HTTP check failed: ' + str(response.status_code)
             return response
         try:
+            acl_contract = await restored_acl_contract(db)
             from backend.core.clamav import scan, ScanUnavailable, ScanRejected
-            from backend.core.config import Settings
-            settings = Settings()
             assert settings.document_scan_mode == 'clamav'
             for attempt in range(24):
                 try:
@@ -472,7 +614,7 @@ async def verify():
                 'standardFlowEnabled':False, 'directAccessGrantsEnabled':True,
                 'protocolMappers':[{'name':'recovery-audience','protocol':'openid-connect',
                     'protocolMapper':'oidc-audience-mapper','config':{
-                        'included.client.audience':os.environ.get('OIDC_AUDIENCE','deepresearch-api'),
+                        'included.custom.audience':os.environ.get('OIDC_AUDIENCE','deepresearch-api'),
                         'id.token.claim':'false','access.token.claim':'true'}}]}), 201)
             client_id = response.headers['location'].rsplit('/',1)[-1]
             tokens = []
@@ -493,6 +635,21 @@ async def verify():
             workspace = report['workspace_id']
             for subject, role in zip(users, ('admin','viewer')):
                 await db.execute("INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES($1,$2,$3,'recovery-check')", workspace, subject, role)
+            original = json.loads(report['sources_json'])
+            granted_collections = set()
+            if acl_contract['collection_acl']:
+                for source in original:
+                    if source.get('kind') != 'local':
+                        continue
+                    policy = await db.fetchrow("""SELECT p.collection_id,c.visibility FROM documents d
+                        LEFT JOIN document_policies p ON p.document_id=d.id AND p.workspace_id=d.user_id
+                        LEFT JOIN collections c ON c.id=p.collection_id AND c.workspace_id=p.workspace_id
+                        WHERE d.id=$1 AND d.user_id=$2""", source.get('document_id',''), workspace)
+                    assert policy, 'Selected published source is no longer present'
+                    if policy['collection_id'] and policy['visibility'] != 'workspace':
+                        await db.execute("""INSERT INTO collection_grants(collection_id,subject,permission)
+                            VALUES($1,$2,'read') ON CONFLICT DO NOTHING""",policy['collection_id'],users[1])
+                        granted_collections.add(policy['collection_id'])
             scoped = [{**header,'X-Workspace-ID':workspace} for header in tokens]
             body = require(await client.get(api + '/api/reports/' + report['id'], headers=scoped[1]), 200).json()
             snapshot = report['report_markdown']+'\n'+report['sources_json']+'\n'+report['validation_json']
@@ -501,7 +658,6 @@ async def verify():
                 hashes.add(hashlib.sha256(snapshot.encode()).hexdigest())
             assert report['content_sha256'] in hashes and body['content_sha256'] == report['content_sha256']
             assert body['report_markdown'] == report['report_markdown']
-            original = json.loads(report['sources_json'])
             visible = {source['id']:source for source in body['sources']}
             assert original and any('['+source['id']+']' in body['report_markdown'] for source in original)
             for source in original:
@@ -527,7 +683,7 @@ async def verify():
             # Use the new administrator's personal workspace: old user data remains read-only.
             personal = {**tokens[0], 'X-Workspace-ID':users[0]}
             created = require(await client.post(api + '/api/research/runs', headers=personal, json={
-                'topic':'恢复验收：证据追溯和研究交付','mode':'quick','data_policy':'public',
+                'topic':('slow-recovery ' if acceptance else '')+'恢复验收：证据追溯和研究交付','mode':'quick','data_policy':'public',
                 'client_request_id':'restore-'+uuid.uuid4().hex}), 202).json()
             queued = await db.fetchrow('SELECT user_id,created_by,status FROM runs WHERE id=$1',created['id'])
             assert queued and queued['user_id'] == users[0] and queued['created_by'] == users[0]
@@ -538,16 +694,33 @@ async def verify():
                       'citation_snapshots_verified':len(original),'new_research_accepted':1,'new_research_cancelled':1,
                       'authorized_document_retrieval_verified':1,'query_embedding_mode':'keyword fallback; upstream disabled',
                       'offline_antivirus_checks_verified':2,
+                      'synthetic_viewer_collection_grants':len(granted_collections),
+                      'restored_acl_contract':acl_contract,
                       'execution_completed':False,'upstream_calls_enabled':False}
         finally:
-            if users:
-                await db.execute('DELETE FROM memberships WHERE subject=ANY($1::text[])',users)
-            if master:
-                for subject in users:
-                    await client.delete(identity + '/admin/realms/deepresearch/users/' + subject,headers={'Authorization':'Bearer '+master})
-                if client_id:
-                    await client.delete(identity + '/admin/realms/deepresearch/clients/' + client_id,headers={'Authorization':'Bearer '+master})
-            await db.close()
+            cleanup_failed = False
+            try:
+                if users:
+                    cleanup_tables = ('collection_grants','memberships') if acl_contract['collection_acl'] else ('memberships',)
+                    for table in cleanup_tables:
+                        try:
+                            await db.execute('DELETE FROM '+table+' WHERE subject=ANY($1::text[])',users)
+                        except Exception:
+                            cleanup_failed = True
+                if master:
+                    paths = ['/users/'+subject for subject in users]
+                    if client_id:
+                        paths.append('/clients/'+client_id)
+                    for path in paths:
+                        try:
+                            response = await client.delete(identity+'/admin/realms/deepresearch'+path,headers={'Authorization':'Bearer '+master})
+                            cleanup_failed |= response.status_code not in (204,404)
+                        except Exception:
+                            cleanup_failed = True
+            finally:
+                await db.close()
+            if cleanup_failed:
+                raise RuntimeError('Recovery synthetic identity cleanup incomplete')
     print(json.dumps(checks))
 
 asyncio.run(verify())
@@ -562,8 +735,9 @@ if __name__ == '__main__':
     parser.add_argument('--compose-file', action='append', default=[], help='Explicit source Compose files, repeatable')
     parser.add_argument('--source-project', help='Explicit source Compose project for backup')
     parser.add_argument('--subnet', default='10.254.245.0/24', help='Fresh explicit recovery-only private IPv4 subnet')
+    parser.add_argument('--retain-temporary-resources', action='store_true', help='Keep helper containers and restored project/network; no temporary Docker deletion')
     args = parser.parse_args()
     if args.action == 'backup':
-        backup(args.path, args.compose_file, args.source_project)
+        backup(args.path, args.compose_file, args.source_project, retain_temporary_resources=args.retain_temporary_resources)
     else:
-        restore(args.path, args.project, args.subnet)
+        restore(args.path, args.project, args.subnet, retain_temporary_resources=args.retain_temporary_resources)

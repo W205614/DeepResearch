@@ -17,6 +17,7 @@ from ..core.db import Database
 from ..core.metrics import LLM_CALLS, SEARCHES, TOKENS
 from ..core.observability import error_category, get_task_logger, run_label, tracer
 from ..core.reliability import ServiceError, execution, check_execution, fingerprint, estimate_tokens
+from ..core.usage_governance import UsageGovernance, provider_account
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -75,6 +76,7 @@ class Providers:
         self.client = client or httpx.AsyncClient(timeout=settings.request_timeout_seconds, trust_env=False)
         self.gate = asyncio.Semaphore(settings.max_llm_concurrency)
         self.logger = get_task_logger()
+        self.governance = UsageGovernance(db, settings)
 
     async def close(self):
         await self.client.aclose()
@@ -122,6 +124,8 @@ class Providers:
         started = time.time()
         provider_key = fingerprint([url, key, payload.get("model")])
         await self.provider_available(provider_key, probe=True)
+        kind = ("embedding" if url.rstrip("/").endswith("/embeddings") else
+                "search" if url.rstrip("/").endswith(("/responses", "/web-search")) else "model")
         for attempt in range(retries + 1):
             ctx = execution.get()
             row = await check_execution()
@@ -129,10 +133,23 @@ class Providers:
                         (row["data_policy"] == "internal" and not self.settings.allow_internal_model_processing)):
                 raise ServiceError("资料外发未获管理员配置许可", code="egress_denied", retryable=False)
             call_id = await ctx.reserve(cost) if ctx else None
+            try:
+                paid_attempt = await self.governance.reserve(provider_account(url, key), kind, cost)
+            except Exception:
+                if call_id:
+                    await self.db.execute("UPDATE call_attempts SET outcome='not_sent_budget' WHERE id=?", (call_id,))
+                raise
+            settled = False
             delay = random.uniform(0.25, 0.5 * 2 ** attempt)
             try:
                 async with asyncio.timeout(self.settings.request_timeout_seconds):
                     response = await self.client.post(url, headers={"Authorization": f"Bearer {key}"}, json=payload)
+                try:
+                    usage_body = response.json()
+                except ValueError:
+                    usage_body = None
+                await self.governance.settle(paid_attempt, f"http_{response.status_code}", usage_body)
+                settled = True
                 if call_id:
                     await self.db.execute("UPDATE call_attempts SET outcome=? WHERE id=?", (f"http_{response.status_code}", call_id))
                 await check_execution()
@@ -166,6 +183,8 @@ class Providers:
                 return result
             except (httpx.TimeoutException, httpx.NetworkError, TimeoutError) as exc:
                 unknown = not isinstance(exc, (httpx.ConnectTimeout, httpx.ConnectError, httpx.PoolTimeout))
+                await self.governance.settle(paid_attempt, "unknown" if unknown else "not_connected", not_connected=not unknown)
+                settled = True
                 if call_id:
                     await self.db.execute("UPDATE call_attempts SET outcome=? WHERE id=?", ("unknown" if unknown else "not_connected", call_id))
                 if attempt == retries:
@@ -178,6 +197,11 @@ class Providers:
                 raise
             except (ValueError, httpx.RemoteProtocolError):
                 raise ServiceError(f"{label} 返回了无法解析的响应") from None
+            finally:
+                if not settled:
+                    # Cancellation and malformed replies retain conservative exposure.
+                    # A ledger failure stops the caller; it never triggers a new HTTP retry.
+                    await asyncio.shield(self.governance.settle(paid_attempt, "unknown"))
 
     async def structured(self, role: str, instruction: str, data: dict, schema: type[T], run_id: str,
                          *, temperature: float | None = None, validate_response=None) -> T:

@@ -1,0 +1,36 @@
+{
+  "project": "DeepResearch",
+  "authorized_at": "2026-10-26T11:57:43.526485+00:00",
+  "human_question": "DeepResearch 的 MinIO 候选已通过定向修复与兼容性验证，但扫描器仍按包版本报1个HIGH。是否接受仅对这个固定镜像的CVE-2026-39414采用已修复判定？保留原始告警，仅这一项按源码与测试证据判定，其他高危仍阻断；镜像或源码变化即失效，最晚11月25日重审。",
+  "human_answer": "接受这一个固定镜像的已修复判定（建议）",
+  "accepted": true,
+  "index_digest": "sha256:151cd83d5e6500f4d1b3d7f0a12756fe80e8ffcbf91150afd6b9b9605bc2369a",
+  "platform_manifest_digest": "sha256:1a7bd6d07a350cd83ef332d8d2148f123306c7a5706d4184f4d83e5dce42bc83",
+  "config_digest": "sha256:45b3d3e48a5b0a92e7ff52b046573268a241207fe6ddfafa504a48bc543cb1f3",
+  "vulnerability": "CVE-2026-39414",
+  "source_commit": "0cd388c666f8211f552604ae73448a066e9c25ce",
+  "raw_counts_preserved": {
+    "HIGH": 1,
+    "CRITICAL": 0
+  },
+  "policy": {
+    "type": "exact-artifact FIXED disposition only",
+    "binding": [
+      "CVE ID",
+      "upstream pinned commit",
+      "patch/source hashes",
+      "OCI index",
+      "linux platform manifest",
+      "config digest",
+      "binary hashes and build provenance"
+    ],
+    "invalidation": "Any image/source/patch change, expired approval, absent/mismatched evidence or new finding fails closed; new image needs renewed review.",
+    "reporting": "Keep raw reports/counts and label raw1HIGH, verified-fixed1, unresolved0; never rewrite raw0.",
+    "gate": "All other HIGH/CRITICAL plus unknown/missing/failed scans remain failing; no mutable-tag or broadpackage ignore; finalSHA CI/security still required.",
+    "expires": "2026-11-25T23:59:59+08:00",
+    "deployment": "No deployment/cleanup window authorized by this review."
+  },
+  "review_path": "C:\\Users\\25452\\.codex\\visualizations\\2026\\10\\25\\01a172e2-8a39-7783-b536-b6dbe2f478cd\\execution-20261026\\deepresearch-security-disposition-review.json",
+  "other_gates_unchanged": true,
+  "deployment_window_granted": false
+}

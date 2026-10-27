@@ -1,0 +1,39 @@
+{
+  "item": 4,
+  "implementation": [
+    "backend/services/parser_process.py",
+    "backend/services/parser_worker.py",
+    "backend/services/document_parsing.py",
+    "backend/services/attachments.py"
+  ],
+  "boundaries": {
+    "wall_seconds": 30,
+    "memory_mb": 512,
+    "cpu_seconds": 20,
+    "output_mb": 36,
+    "credential_environment": "scrubbed",
+    "process_reaped_on_cancel_and_timeout": true,
+    "effective_candidate_memory_mb": 384,
+    "max_concurrent_parsers_per_process": 1
+  },
+  "verification": [
+    {
+      "command": "pytest tests/test_parser_process.py",
+      "result": "2 passed, Windows Job Object and kill/reap followed by normal parse"
+    },
+    {
+      "command": "pytest tests/test_parser_process.py tests/test_image_attachments.py",
+      "result": "19 passed in 100.53s, directly affected image/attachment paths"
+    },
+    {
+      "command": "docker exec -e OPTIMIZATION_ISOLATED_VERIFY=1 -e PYTHONPATH=/app dr-opt-acceptance-agent-1 python /tmp/verify_parser_resources.py",
+      "result": "passed: actual Linux child RLIMIT_AS=402653184, CPU=20s, NOFILE=64; 0.05s wall timeout killed/reaped; next normal parse succeeded",
+      "script_sha256": "3a669d2ca014e3012fed51d822f912a0136d9a5af546a458c60b3864618fd9d9"
+    }
+  ],
+  "limitations": [
+    "Process resource limits are not a complete hostile-code sandbox",
+    "The actual Linux check covers bounded execution and reuse, not every document format or stress capacity"
+  ],
+  "paid_requests": 0
+}

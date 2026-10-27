@@ -917,6 +917,124 @@ class BusinessBackendIntegrationTest {
         assertThat(approved.get("evidence_status")).isEqualTo("undetermined");
     }
 
+    @Test
+    void restrictedEvidenceRevocationGuardsFrozenReportsSeriesDiffRevisionAndDownload() throws Exception {
+        Map<String,Object> report=restrictedEvidenceReport();
+        String id=String.valueOf(report.get("id")), series=String.valueOf(report.get("series_id"));
+        WorkspaceIdentity writer=new WorkspaceIdentity("lifecycle","writer","researcher","Writer");
+        WorkspaceIdentity reviewer=new WorkspaceIdentity("lifecycle","reviewer","admin","Reviewer");
+        publications.approve(reviewer,id,"");
+        Map<String,Object> frozen=jdbc.queryForMap("SELECT report_markdown,sources_json,content_sha256 FROM report_publications WHERE id=?",id);
+        assertThat(publications.get(writer,id).get("report_markdown")).isEqualTo("# PRIVATE-REPORT [L-1]");
+        jdbc.update("INSERT INTO memories(id,user_id,kind,content,run_id,created_at) VALUES('acl-summary','lifecycle','semantic','PRIVATE-SUMMARY','acl-original','now')");
+        jdbc.update("INSERT INTO memories(id,user_id,kind,content,run_id,created_at,owner_subject) VALUES('own-preference','lifecycle','preference','OWN-PREFERENCE','own-preference','now','writer')");
+        mvc.perform(get("/api/memories").with(jwt().jwt(t->t.subject("writer"))).header("X-Workspace-ID","lifecycle"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.length()").value(2));
+        jdbc.update("DELETE FROM collection_grants WHERE collection_id='private-collection' AND subject='writer'");
+        mvc.perform(get("/api/memories").with(jwt().jwt(t->t.subject("writer"))).header("X-Workspace-ID","lifecycle"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.length()").value(1)).andExpect(jsonPath("$[0].id").value("own-preference"));
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/api/memories/acl-summary")
+                .with(jwt().jwt(t->t.subject("writer"))).header("X-Workspace-ID","lifecycle"))
+            .andExpect(status().isNotFound());
+        for(String suffix:List.of("","/download","/impacts","/diff?against="+id)) {
+            mvc.perform(get("/api/reports/"+id+suffix).with(jwt().jwt(t->t.subject("writer")))
+                .header("X-Workspace-ID","lifecycle")).andExpect(status().isNotFound());
+        }
+        mvc.perform(get("/api/reports").with(jwt().jwt(t->t.subject("writer"))).header("X-Workspace-ID","lifecycle"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.length()").value(0));
+        mvc.perform(get("/api/report-series/"+series).with(jwt().jwt(t->t.subject("writer"))).header("X-Workspace-ID","lifecycle"))
+            .andExpect(status().isNotFound());
+        mvc.perform(post("/api/reports/"+id+"/revisions").with(jwt().jwt(t->t.subject("writer")))
+                .header("X-Workspace-ID","lifecycle").contentType("application/json")
+                .content(mapper.writeValueAsString(Map.of("client_request_id","denied-revision-01",
+                    "expected_content_sha256",report.get("content_sha256"),"expected_corpus_revision",0))))
+            .andExpect(status().isNotFound());
+        mvc.perform(post("/api/research/runs/acl-original/publication").with(jwt().jwt(t->t.subject("writer")))
+                .header("X-Workspace-ID","lifecycle")).andExpect(status().isNotFound());
+        assertThat(jdbc.queryForMap("SELECT report_markdown,sources_json,content_sha256 FROM report_publications WHERE id=?",id)).isEqualTo(frozen);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM report_revision_jobs",Integer.class)).isZero();
+        // Owner and current workspace admin retain independent access; physical source deletion
+        // does not erase a frozen snapshot or its retained document policy.
+        assertThat(publications.get(new WorkspaceIdentity("lifecycle","doc-owner","researcher","Owner"),id).get("content_sha256")).isEqualTo(frozen.get("content_sha256"));
+        jdbc.update("DELETE FROM chunks WHERE document_id='acl-document'");
+        jdbc.update("DELETE FROM documents WHERE id='acl-document'");
+        assertThat(publications.get(reviewer,id).get("content_sha256")).isEqualTo(frozen.get("content_sha256"));
+    }
+
+    @Test
+    void collectionControlsRejectSelfPromotionAndPreserveLegacyInheritanceAndWorkspaceBoundary() throws Exception {
+        workspace("acl-control","owner","admin",2);
+        jdbc.update("INSERT INTO memberships VALUES('acl-control','researcher','researcher','now')");
+        jdbc.update("INSERT INTO documents VALUES('legacy-document','acl-control','ready','hash',1)");
+        WorkspaceIdentity researcher=new WorkspaceIdentity("acl-control","researcher","researcher","Researcher");
+        assertThat(com.deepresearch.business.service.DocumentAccessService.allowed(jdbc,researcher,"legacy-document")).isTrue();
+        assertThat(com.deepresearch.business.service.DocumentAccessService.allowed(jdbc,researcher,"missing-document")).isFalse();
+        mvc.perform(post("/api/collections").with(jwt().jwt(t->t.subject("researcher")))
+                .header("X-Workspace-ID","acl-control").contentType("application/json")
+                .content("{\"name\":\"private\",\"visibility\":\"restricted\"}"))
+            .andExpect(status().isForbidden());
+        MvcResult collection=mvc.perform(post("/api/collections").with(jwt().jwt(t->t.subject("owner")))
+                .header("X-Workspace-ID","acl-control").contentType("application/json")
+                .content("{\"name\":\"private\",\"visibility\":\"restricted\"}"))
+            .andExpect(status().isOk()).andReturn();
+        String collectionId=String.valueOf(body(collection).get("id"));
+        mvc.perform(put("/api/documents/legacy-document/collection").with(jwt().jwt(t->t.subject("owner")))
+                .header("X-Workspace-ID","acl-control").contentType("application/json")
+                .content(mapper.writeValueAsString(Map.of("collection_id",collectionId))))
+            .andExpect(status().isOk());
+        assertThat(com.deepresearch.business.service.DocumentAccessService.allowed(jdbc,researcher,"legacy-document")).isFalse();
+        mvc.perform(put("/api/collections/"+collectionId+"/grants").with(jwt().jwt(t->t.subject("researcher")))
+                .header("X-Workspace-ID","acl-control").contentType("application/json")
+                .content("{\"subject\":\"researcher\",\"permission\":\"write\"}"))
+            .andExpect(status().isForbidden());
+        mvc.perform(put("/api/collections/"+collectionId+"/grants").with(jwt().jwt(t->t.subject("owner")))
+                .header("X-Workspace-ID","acl-control").contentType("application/json")
+                .content("{\"subject\":\"researcher\",\"permission\":\"read\"}"))
+            .andExpect(status().isOk());
+        assertThat(com.deepresearch.business.service.DocumentAccessService.allowed(jdbc,researcher,"legacy-document")).isTrue();
+        workspace("foreign","foreign-owner","admin",2);
+        jdbc.update("INSERT INTO documents VALUES('foreign-document','foreign','ready','hash',1)");
+        assertThat(com.deepresearch.business.service.DocumentAccessService.allowed(jdbc,
+            new WorkspaceIdentity("acl-control","owner","admin","Owner"),"foreign-document")).isFalse();
+    }
+
+    @Test
+    void conversationMarkdownRechecksDocumentPermissionBeforeStreamingEachRecord() throws Exception {
+        restrictedEvidenceReport();
+        jdbc.update("UPDATE threads SET created_by='writer' WHERE id='acl-original-thread'");
+        MvcResult allowed=mvc.perform(get("/api/threads/acl-original-thread/report")
+            .with(jwt().jwt(t->t.subject("writer"))).header("X-Workspace-ID","lifecycle"))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.request().asyncStarted()).andReturn();
+        String report=mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch(allowed))
+            .andExpect(status().isOk()).andReturn().getResponse().getContentAsString(java.nio.charset.StandardCharsets.UTF_8);
+        assertThat(report).contains("PRIVATE-REPORT");
+        jdbc.update("DELETE FROM collection_grants WHERE collection_id='private-collection' AND subject='writer'");
+        MvcResult denied=mvc.perform(get("/api/threads/acl-original-thread/report")
+            .with(jwt().jwt(t->t.subject("writer"))).header("X-Workspace-ID","lifecycle"))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.request().asyncStarted()).andReturn();
+        String body=mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch(denied))
+            .andExpect(status().isNotFound()).andReturn().getResponse().getContentAsString(java.nio.charset.StandardCharsets.UTF_8);
+        assertThat(body).doesNotContain("PRIVATE-REPORT");
+    }
+
+    private Map<String,Object> restrictedEvidenceReport() throws Exception {
+        workspace("lifecycle","writer","researcher",2);
+        jdbc.update("INSERT INTO memberships VALUES('lifecycle','reviewer','admin','now')");
+        jdbc.update("INSERT INTO memberships VALUES('lifecycle','doc-owner','researcher','now')");
+        jdbc.update("INSERT INTO workspace_corpus_revisions VALUES('lifecycle',0)");
+        jdbc.update("INSERT INTO collections(id,workspace_id,name,visibility,created_by,created_at) VALUES('private-collection','lifecycle','Private','restricted','reviewer','now')");
+        jdbc.update("INSERT INTO documents VALUES('acl-document','lifecycle','ready','acl-hash',1)");
+        jdbc.update("INSERT INTO chunks VALUES('acl-chunk','acl-document','lifecycle','PRIVATE-EVIDENCE')");
+        jdbc.update("INSERT INTO document_policies(document_id,workspace_id,collection_id,owner_subject) VALUES('acl-document','lifecycle','private-collection','doc-owner')");
+        jdbc.update("INSERT INTO collection_grants VALUES('private-collection','writer','read')");
+        run("acl-original","lifecycle");
+        completeLifecycleRun("acl-original","internal",0,"PRIVATE-REPORT");
+        String source=mapper.writeValueAsString(List.of(Map.of("id","L-1","kind","local","document_id","acl-document",
+            "chunk_id","acl-chunk","document_hash","acl-hash","index_version",1,"text","PRIVATE-EVIDENCE")));
+        jdbc.update("UPDATE runs SET report='# PRIVATE-REPORT [L-1]',sources=? WHERE id='acl-original'",source);
+        return publications.submit(new WorkspaceIdentity("lifecycle","writer","researcher","Writer"),"acl-original");
+    }
+
     private void completeLifecycleRun(String id, String policy, long revision, String text) {
         jdbc.update("""
             UPDATE runs SET created_by='writer',status='completed',attempt_count=1,data_policy=?,report=?,

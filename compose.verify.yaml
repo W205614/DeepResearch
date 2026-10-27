@@ -1,32 +1,38 @@
 name: dr-verify
 services:
   postgres:
-    image: postgres:17.6-alpine
+    image: dr-vendor-postgres:17.11-gosu-go1.27.3-vcs-20261026
+    platform: linux/amd64
+    build: {context: ., dockerfile: Dockerfile.postgres}
     environment: {POSTGRES_USER: deepresearch, POSTGRES_PASSWORD: verification-only, POSTGRES_DB: deepresearch}
     healthcheck: {test: [CMD-SHELL, "pg_isready -U deepresearch"], interval: 3s, timeout: 3s, retries: 30}
   redis:
-    image: redis:7.4.2-alpine
+    image: redis:7.4.11-alpine@sha256:57e4255cc971b1c8d6f8a6ca283ac01bc3ecdd914273ef6bfaede87aaecd6541
+    platform: linux/amd64
     healthcheck: {test: [CMD, redis-cli, ping], interval: 3s, timeout: 3s, retries: 30}
   etcd:
-    image: quay.io/coreos/etcd:v3.5.25
+    image: dr-vendor-etcd:3.5.34-go1.27.3-xnet0.60-vcs-20261026
+    platform: linux/amd64
+    build: {context: ., dockerfile: Dockerfile.etcd}
     command: etcd -advertise-client-urls=http://etcd:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
     healthcheck: {test: [CMD, etcdctl, endpoint, health], interval: 3s, timeout: 3s, retries: 30}
   minio:
     platform: linux/amd64
-    build:
-      context: .
-      dockerfile: Dockerfile.minio
+    image: deepresearch-approved-minio:20261026
     environment: {MINIO_ROOT_USER: deepresearch, MINIO_ROOT_PASSWORD: verification-only}
-    command: minio server /data
-    healthcheck: {test: [CMD, curl, -f, http://localhost:9000/minio/health/live], interval: 3s, timeout: 3s, retries: 30}
+    command: [silo, server, /data]
+    healthcheck: {test: [CMD, silo, healthcheck, --url, 'http://localhost:9000', --timeout, 3s, live], interval: 3s, timeout: 5s, retries: 30}
   milvus:
-    image: milvusdb/milvus:v3.0.0
+    image: dr-vendor-milvus:3.0.3-go1.26.10-locked-20261026
+    platform: linux/amd64
+    build: {context: ., dockerfile: Dockerfile.milvus}
     command: [milvus, run, standalone]
     environment: {ETCD_ENDPOINTS: 'etcd:2379', MINIO_ADDRESS: 'minio:9000', MINIO_REGION: us-east-1, MINIO_ACCESS_KEY_ID: deepresearch, MINIO_SECRET_ACCESS_KEY: verification-only}
     depends_on: {etcd: {condition: service_healthy}, minio: {condition: service_healthy}}
     healthcheck: {test: [CMD, curl, -f, http://localhost:9091/healthz], interval: 5s, timeout: 5s, retries: 40, start_period: 30s}
   clamav:
-    image: clamav/clamav:1.4.2_base
+    image: clamav/clamav:1.4.6_base@sha256:e73991068f2037e10cf15669dd3b48c24345658f5488430746b414c0f761270f
+    platform: linux/amd64
     healthcheck:
       test: [CMD-SHELL, "printf 'PING\\n' | nc -w 2 127.0.0.1 3310 | grep -q PONG"]
       interval: 5s

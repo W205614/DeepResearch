@@ -25,16 +25,25 @@ public class AgentProxyController {
     }
 
     @RequestMapping({
-        "/api/attachments", "/api/attachments/**",
+        "/api/attachments", "/api/attachments/**", "/api/reports/*/source-rechecks", "/api/usage",
         "/api/documents", "/api/documents/**",
-        "/api/config/check", "/api/capabilities", "/api/status", "/api/metrics",
+        "/api/config/check", "/api/config/probe", "/api/capabilities", "/api/status", "/api/metrics",
         "/api/data", "/api/data/**"
     })
     ResponseEntity<byte[]> proxy(@AuthenticationPrincipal Jwt jwt,
                                  @RequestHeader(value = "X-Workspace-ID", required = false) String requested,
                                  HttpServletRequest request) {
         WorkspaceIdentity identity = access.resolve(jwt, requested);
+        if (request.getRequestURI().equals("/api/config/probe")) {
+            String configured = System.getenv().getOrDefault("PLATFORM_OPERATOR_SUBJECTS", "");
+            boolean operator = java.util.Arrays.stream(configured.split(","))
+                .map(String::strip).anyMatch(identity.subject()::equals);
+            if (!operator) throw new org.springframework.web.server.ResponseStatusException(
+                org.springframework.http.HttpStatus.FORBIDDEN, "真实连接探测仅允许运维配置的主体执行");
+        }
         authorizeMutation(identity, request);
+        if(request.getRequestURI().endsWith("/source-rechecks"))
+            publications.get(identity,request.getRequestURI().split("/")[3]);
         if ("DELETE".equals(request.getMethod()) && request.getRequestURI().equals("/api/data")
             && ("all".equals(request.getParameter("scope")) || "reports".equals(request.getParameter("scope"))))
             publications.requireNoPublicationsForWorkspace(identity);
@@ -47,6 +56,6 @@ public class AgentProxyController {
         if (path.startsWith("/api/data")) access.require(identity, "admin");
         else if ("DELETE".equals(method) && path.startsWith("/api/documents/")) access.require(identity, "admin");
         else if (!"GET".equals(method) && !path.equals("/api/documents/search")
-            && !path.equals("/api/config/check")) access.require(identity, "admin", "researcher");
+            && !path.equals("/api/config/check") && !path.equals("/api/config/probe")) access.require(identity, "admin", "researcher");
     }
 }

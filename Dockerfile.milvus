@@ -1,0 +1,24 @@
+FROM golang@sha256:d1f3216ef30257c850cc136ba42a359ccd9d3e75f19b2c276e520c0b4ef327ce AS go
+FROM milvusdb/milvus@sha256:812cb91ad04e847e5ebb4d19593c69f2e207593073063ede0fd604bbba5fddf1 AS build
+USER root
+RUN apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=30 update && apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=30 install -y --no-install-recommends gcc g++ pkg-config libssl-dev
+COPY --from=go /usr/local/go /usr/local/go
+ENV PATH=/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin GOPATH=/go GOTOOLCHAIN=local GOMAXPROCS=2 GOMEMLIMIT=1024MiB CGO_ENABLED=1 GOPROXY="https://proxy.golang.org|https://goproxy.cn|direct" GOSUMDB=sum.golang.org
+WORKDIR /source
+ADD --checksum=sha256:1dd3a0ff960af532f04172b2aebdb9716b1244cad2fb81781b27641f67216cf9 https://codeload.github.com/milvus-io/milvus/tar.gz/328df0cd2f323c2d3c50cef91bfc9f2c412bcb09 /source/source.tar.gz
+RUN echo '1dd3a0ff960af532f04172b2aebdb9716b1244cad2fb81781b27641f67216cf9  source.tar.gz' | sha256sum -c - && tar -xzf source.tar.gz --strip-components=1
+COPY deployment/vendors/milvus/modules/ /source/
+RUN --mount=type=cache,target=/go/pkg/mod,id=dr-vendor-go-mod-20261026 --mount=type=cache,target=/root/.cache/go-build,id=dr-vendor-go-build-20261026 go build -p=2 -mod=readonly -buildvcs=false -buildmode=c-shared -o /out/libmilvus-planparser.so ./internal/parser/planparserv2/cwrapper
+COPY deployment/vendors/milvus/headers.tar.gz /tmp/headers-main-complete.tar.gz
+RUN echo 'b51ebe38edc6645968a0ecd9bda35a29222b08e6f008c40d96e05085cfc19a3a  /tmp/headers-main-complete.tar.gz' | sha256sum -c - && mkdir -p /source/c-api-headers /source/pkgconfig && tar -xzf /tmp/headers-main-complete.tar.gz -C /source/c-api-headers \
+ && printf 'Name: milvus_core\nDescription: unchanged3.0.3 runtime C ABI\nVersion:3.0.3\nLibs: -L/milvus/lib -lmilvus_core\nCflags: -I/source/c-api-headers\n' > /source/pkgconfig/milvus_core.pc \
+ && printf 'Name: milvus-storage\nDescription: unchanged3.0.3 runtime storage C ABI\nVersion:3.0.3\nLibs: -L/milvus/lib -lmilvus-storage\nCflags: -I/source/c-api-headers\n' > /source/pkgconfig/milvus-storage.pc
+RUN printf 'Name: rdkafka\nDescription: original2.6.1 runtime C ABI\nVersion:2.6.1\nLibs: -L/milvus/lib -lrdkafka\nCflags: -I/source/c-api-headers\n' > /source/pkgconfig/rdkafka.pc && printf 'Name: rocksdb\nDescription: original6.29.5 runtime C ABI\nVersion:6.29.5\nLibs: -L/milvus/lib -lrocksdb\nCflags: -I/source/c-api-headers\n' > /source/pkgconfig/rocksdb.pc
+RUN mkdir -p /source/c-api-headers/librdkafka && cp /source/c-api-headers/rdkafka/rdkafka.h /source/c-api-headers/librdkafka/rdkafka.h && printf 'Name: jemalloc\nDescription: existing runtime ABI used by unchanged upstream cgosymbolizer declarations\nVersion:0\nLibs: -L/milvus/lib -ljemalloc\nCflags: -I/source/c-api-headers\n' > /source/pkgconfig/jemalloc.pc
+COPY deployment/vendors/milvus/rdkafka_mock.h /source/c-api-headers/librdkafka/rdkafka_mock.h
+RUN echo '2d4d52168b669257fbe936554af6af543fa0fa4f2cccc5a201a2c7d301dad500  /source/c-api-headers/librdkafka/rdkafka_mock.h' | sha256sum -c -
+ENV PKG_CONFIG_PATH=/source/pkgconfig LIBRARY_PATH=/milvus/lib LD_LIBRARY_PATH=/milvus/lib
+RUN --mount=type=cache,target=/go/pkg/mod,id=dr-vendor-go-mod-20261026 --mount=type=cache,target=/root/.cache/go-build,id=dr-vendor-go-build-20261026 go build -p=2 -mod=readonly -buildvcs=false -pgo=/source/configs/pgo/default.pgo -tags=dynamic,sonic,with_jemalloc,bytedance_tango -ldflags='-checklinkname=0 -r /milvus/lib -X github.com/milvus-io/milvus/cmd/milvus.GitCommit=328df0cd2f323c2d3c50cef91bfc9f2c412bcb09-security-rebuild -X github.com/milvus-io/milvus/cmd/milvus.GoVersion=go1.26.10 -X github.com/milvus-io/milvus/cmd/milvus.MilvusVersion=3.0.3' -o /out/milvus ./cmd/main.go
+FROM milvusdb/milvus@sha256:812cb91ad04e847e5ebb4d19593c69f2e207593073063ede0fd604bbba5fddf1
+COPY --chmod=0755 --from=build /out/libmilvus-planparser.so /milvus/lib/libmilvus-planparser.so
+COPY --from=build /out/milvus /milvus/bin/milvus

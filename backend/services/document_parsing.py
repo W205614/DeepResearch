@@ -43,7 +43,7 @@ def tokens(text: str) -> list[str]:
     return re.findall(r"[A-Za-z0-9_]+|[\u4e00-\u9fff]", text.lower())
 
 
-def validate_upload(name: str, content: bytes) -> str:
+def validate_upload(name: str, content: bytes, *, decode_images: bool = True) -> str:
     suffix = Path(name).suffix.lower()
     if suffix not in ALLOWED_SUFFIXES:
         raise InvalidDocument("仅支持 TXT、Markdown、DOCX、PDF 与 JPG/PNG/GIF/WebP 图片")
@@ -52,6 +52,8 @@ def validate_upload(name: str, content: bytes) -> str:
     if suffix in IMAGE_SUFFIXES:
         if image_media_type(content) != IMAGE_MEDIA_TYPES[suffix]:
             raise InvalidDocument("图片文件签名无效或与扩展名不匹配")
+        if not decode_images:
+            return suffix
         try:
             with warnings.catch_warnings():
                 warnings.simplefilter("error", Image.DecompressionBombWarning)
@@ -245,7 +247,7 @@ def pdf_blocks(content):
     with PDFIUM_LOCK, closing(pdfium.PdfDocument(content)) as pdf:
         for index, source_page in enumerate(reader.pages):
             locator = f'第 {index + 1} 页'
-            # Limit decompressed stream size before text extraction/layout analysis.
+            # Output limit is checked after decompression; the parser process also has a hard memory/CPU cap.
             stream = source_page.get_contents()
             if stream and len(stream.get_data()) > 8 * 1024 * 1024:
                 raise ServiceError(f'{locator} 内容流过大，请优化 PDF 后上传')

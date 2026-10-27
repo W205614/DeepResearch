@@ -1,0 +1,168 @@
+{
+  "status": "local_integration_verified_GitHub_CI_not_yet_run",
+  "approved_index": "sha256:151cd83d5e6500f4d1b3d7f0a12756fe80e8ffcbf91150afd6b9b9605bc2369a",
+  "approved_config": "sha256:45b3d3e48a5b0a92e7ff52b046573268a241207fe6ddfafa504a48bc543cb1f3",
+  "archive_sha256": "4b337cbfbe438d9ca24c67cdbf284c523e2d06ea52e94e866ea09b945d0bb389",
+  "bound_recipe_and_raw_evidence_unchanged": true,
+  "binding_digest_constant": "2d8518f9ab275f97f0c98c68f3a94d42217b292a2fae50e0ce6461f46919d68e",
+  "review": {
+    "fail_closed": "loader verifies fixed source/evidence/authorization, full approved OCI archive and content chain before accepting Docker index/platform/config ID plus exact diffIDs; no rebuild route",
+    "redirect_credentials": "first request is fixed GitHub repository API; HTTPRedirectHandler disables automatic follow; only HTTPS approved storage hosts with no userinfo and443 accepted; new storage Request has no GitHub Authorization; failure output strips unknown error details/signed URLs",
+    "download_content": "bound exact byte length and SHA, byte ceiling, retained partials, no promotion of truncated/changed/oversized content, existing wrong archive preserved"
+  },
+  "changes": [
+    {
+      "path": "compose.yaml",
+      "sha256": "9f819cbfaa9a3073ba1bc0fcfc9fb745fb2992ac4cad2682fb91db388ef8a1f3"
+    },
+    {
+      "path": "scripts/runtime_ci_inventory.py",
+      "sha256": "e547af6824101a54a077bbed8f923596e1188ac3930f59fb7cfa459d82858719"
+    },
+    {
+      "path": ".github/workflows/security.yml",
+      "sha256": "d020d5dc5fe11b089cf11ae2a8caae3b3c16853d0fee76c50d7c7069570d2570"
+    },
+    {
+      "path": "scripts/image_disposition.py",
+      "sha256": "40ad12c3fbdc760b1ba70f8eb00327f55fd12195fbb3ec511ac63c1f97f39188"
+    },
+    {
+      "path": "tests/test_fetch_approved_image.py",
+      "sha256": "0919b1a6f85f5914929175064e1b22347acc33f1cc7afc1be2c91f9e25d0857a"
+    },
+    {
+      "path": "tests/test_image_disposition.py",
+      "sha256": "b23ae3804d4b00941cc9254af13d189738b12d7b28eda69a0b2c81b947dc21ab"
+    },
+    {
+      "path": "scripts/oci_artifact.py",
+      "sha256": "e921e644e4561472ecc87a2e5a4acc1edd03b27e554fca59dd53b7adeff825cc"
+    },
+    {
+      "path": "scripts/fetch_approved_image.py",
+      "sha256": "597dedad67f18eb4db4ac1f0901aa5950dc94d4aaf99b49ad6dfee792fc4b61e"
+    }
+  ],
+  "unit_tests": {
+    "command": ".venv/Scripts/python.exe -m pytest -q tests/test_fetch_approved_image.py",
+    "passed": 21,
+    "network": "none; mocked urllib/docker negatives",
+    "cases": [
+      "token only on fixed API, absent on storage",
+      "6 malicious redirect forms rejected before second request",
+      "truncated/overbound/changed/wrong declared length never promoted",
+      "wrong repository/existing archive not replaced",
+      "signed URL/token failure messages redacted",
+      "classic config ID requires exact linux/amd64/diffIDs",
+      "failed Dockerload cannot tag/rebuild",
+      "MinIO and Graf each independent exact artifact namespace; rebuilt or other service cannot inherit approval",
+      "63/65/nonhex/trailing digest rejected before matrix and up"
+    ],
+    "historical_passed_cases_before_descriptor_regression": 16,
+    "historical_passed_before_Graf_namespace": 20
+  },
+  "lint": "ruff changed Python/test files passed",
+  "workflow_validation": "YAML parsed; ordinary matrix keeps exit-code1 HIGH/CRITICAL; MinIO only load→raw exit-code0 allseverities+fullpackages→exact independent checker; no continue-on-error; missing/failed scan prevents successful gate",
+  "inventory": {
+    "path": ".cache/eval/runtime-image-inventory.json",
+    "sha256": "89c6232bdb5ede36756fc8acef2c01dfda20681979df195d41c8c14905b975ea"
+  },
+  "local_archive_load": {
+    "path": ".cache/eval/approved-image-load.json",
+    "sha256": "e32d92d64a45600c965eb7953c79e898491a5c6622804352e1291b2b551127f9"
+  },
+  "actual_loaded_inspection": {
+    "path": ".cache/eval/approved-image-load-inspect.json",
+    "sha256": "1a0157b07d99e23a46adb065c2ca9ee228ee3c99d2e6ea32d579d05145b847c5"
+  },
+  "local_disposition": {
+    "path": ".cache/eval/minio-ci-disposition.json",
+    "sha256": "f74c5f29c3946abf10d315d4b628704a61c8234229019ce162bc8b62b14676dc"
+  },
+  "scan_evidence_boundary": "local disposition reuses unchanged complete raw scan bound to approved identical image, not claimed as newly scanned; actual loaded image/OCI chain revalidated",
+  "raw_HIGH": 1,
+  "verified_FIXED": 1,
+  "unresolved": 0,
+  "compose_service_only": {
+    "image": "deepresearch-approved-minio:20261026",
+    "build": null,
+    "command": [
+      "silo",
+      "server",
+      "/minio_data",
+      "--console-address",
+      ":9001"
+    ],
+    "health": [
+      "CMD",
+      "silo",
+      "healthcheck",
+      "--url",
+      "http://localhost:9000",
+      "--timeout",
+      "3s",
+      "live"
+    ],
+    "live_binary_help_verified": true
+  },
+  "isolated_runtime_fixture": {
+    "path": ".cache/optimization-20261026/minio-ci-integration/entry-health.json",
+    "sha256": "919b30f09bfc5ba1b6114c82914d10bbd81d9cc8c01cdd17acec4e80a7a0b0a1"
+  },
+  "runtime_fixture_boundary": "new empty synthetic volume, networknone, actual command/native health0 and wrong endpoint1; retained stopped. Existing S3/IAM/storage/rollback compatibility remains prior exact-artifact evidence, not rerun",
+  "release_transport": "approved archive uploaded to draft release424228449 asset678114320; publication/finalsourceCI are root-owned pending; no deployed update",
+  "candidate_or_daily_changed": false,
+  "business_volume_changed": false,
+  "paid_calls": 0,
+  "historical_inventory_phase": {
+    "vendor_count": 14,
+    "boundary": "prior sourceComposephase before data/identity sourcebuild conversions; not finalmatrix size"
+  },
+  "current_inventory": {
+    "record": {
+      "path": ".cache/eval/runtime-image-inventory.json",
+      "sha256": "edffe68391de9c7998614eedb02904f2016ee14b7eb7764e391ae6bafd65698c"
+    },
+    "vendors": 9,
+    "custom_builds": 9,
+    "compose_sha256": "9f819cbfaa9a3073ba1bc0fcfc9fb745fb2992ac4cad2682fb91db388ef8a1f3"
+  },
+  "current_raw_counts": {
+    "HIGH": 1,
+    "CRITICAL": 0
+  },
+  "fresh_minio_disposition": {
+    "path": ".cache/optimization-20261026/vendor-final-scan/minio-disposition.json",
+    "sha256": "76355538093cf97f16e3fda199157cc475c9a73652c5f4fce8853928e6357fc8"
+  },
+  "allzero_counts_test": "explicit HIGH0/CRITICAL0 and FIXED0 covered; no fabricatedFixed when futureDB stopsmatching",
+  "native_gate": {
+    "path": "docs/evidence/optimization-20261026/native-jvm-ci.json",
+    "sha256": "74563ac882cfaa0d0ebbe78d3f23049a4638c04e5d734af95e5f77ebacdcafae"
+  },
+  "shared_verifier_regression": {
+    "path": ".cache/optimization-20261026/minio-ci-integration/shared-final-disposition.json",
+    "sha256": "76355538093cf97f16e3fda199157cc475c9a73652c5f4fce8853928e6357fc8"
+  },
+  "namespace_load_regression": {
+    "path": ".cache/optimization-20261026/minio-ci-integration/namespace-regression-load.json",
+    "sha256": "536dc28bd848e1a128097de5b7e6099e5c84e6d8845c069378cd1dec5e646633"
+  },
+  "shared_review": {
+    "path": "docs/evidence/optimization-20261026/oci-reuse-review.json",
+    "sha256": "e253b4b51a54af1f618049a718f21c2e605c18e231f94b91b5721a1422e00955"
+  },
+  "current_source_map": {
+    "path": "docs/evidence/optimization-20261026/approved-artifact-current-source-map.json",
+    "sha256": "24bd389e0b7ee6fac816a8d83b1e824bafd80709c02182b2488a75e9dceb874c",
+    "bytes": 72649
+  },
+  "hash_boundary": {
+    "existing_fields": "Existing changes/policy/inventory/test hash fields retain their prior-phase recorded values; they are historical where different from current map. No silent refresh and no repeated test claim.",
+    "as_of": "Original local integration/earlier99-case phase, before later live-publication gate and remote13part proof; use current_source_map for the mapped present bytes.",
+    "captured_before_this_annotation_sha256": "541a989f384130917dc3c1b30cf1b46d61a328d067bafb48e8e5bf88c2b42330",
+    "tests_rerun_for_annotation": false,
+    "frozen_binding_bytes_changed": false
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "binding": {
+    "schema": "deepresearch-fixed-artifact-v1",
+    "vulnerability": "CVE-2026-39414",
+    "disposition": "FIXED",
+    "index_digest": "sha256:151cd83d5e6500f4d1b3d7f0a12756fe80e8ffcbf91150afd6b9b9605bc2369a",
+    "platform_manifest_digest": "sha256:1a7bd6d07a350cd83ef332d8d2148f123306c7a5706d4184f4d83e5dce42bc83",
+    "config_digest": "sha256:45b3d3e48a5b0a92e7ff52b046573268a241207fe6ddfafa504a48bc543cb1f3",
+    "source_commit": "0cd388c666f8211f552604ae73448a066e9c25ce",
+    "expires": "2026-11-25T23:59:59+08:00",
+    "archive_sha256": "4b337cbfbe438d9ca24c67cdbf284c523e2d06ea52e94e866ea09b945d0bb389",
+    "archive_bytes": 102110720,
+    "architecture": "amd64",
+    "os": "linux",
+    "diff_ids": [
+      "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99",
+      "sha256:6e10a27c77d9a6a73577bd8d8bf37a1b0620ad9ccf489a2b01108a6642d8bc5c",
+      "sha256:bd250dd660c815efd2d451f5fce3b5d361fd435253e76e6d64539233bbcbff1c",
+      "sha256:1b4744aeef73e83c76419dd22b1cfcbdf7da7c3f575d675abb20658306315917",
+      "sha256:75202b75ba034f72c8f0650eec04f730cfbe40a97d6d50fc822d28d8e33aa1a4",
+      "sha256:58c9b5b0f2c9a7b7366fc7ed287869fe051e946fc2104e0632ad7bf36e8c8da4",
+      "sha256:c55c57e7b6539bf8039461fe247b59c18ceeeb7e01a7908f3d49622c593edfeb",
+      "sha256:5c3f3e3b45efc366ba174d9f850b92923195118993abadad8643e832d686daf1",
+      "sha256:c4a473e412444c2df97187857967b21f53a31fbd53cfffc641ce85385e69b913",
+      "sha256:f55834e2ab0b5f33f03330f3f76070a41f819754b7d958f5a092a7fbe5e267b3",
+      "sha256:c41ef0bde233118c05ff8febc3776277a17773433f8bb2b016eabdbb60304bd5",
+      "sha256:2a08a8b39a8a84a9c00a1e9015983e8de39ea77b803bc470911401d97b0c2af7",
+      "sha256:34ac5ca62975c7490466f6e818790f5080937fc85e72adf2ca614e700312e618",
+      "sha256:ea74ff81527a8a1a00213e393509b6ccecaa7864a0bd3a0af691deb8ba3b5015"
+    ],
+    "binary_sha256": {
+      "usr/bin/mcli": "66a22d1bada31f44635405a95fb8005e9d23e4c77a3b9d2a74cfb58735d4094a",
+      "usr/bin/silo": "865e488f9e455b6b7306482b2d4a147ea841f15f141c32678851d3168c624bc2"
+    },
+    "finding": {
+      "target": "usr/bin/silo",
+      "package": "github.com/minio/minio",
+      "version": "v0.0.0-20261018143912-0cd388c666f8+dirty",
+      "severity": "HIGH"
+    },
+    "minimum_package_coverage": {
+      "redhat": 22,
+      "usr/bin/mcli": 108,
+      "usr/bin/silo": 261
+    },
+    "authorization_sha256": "0f5b35dd559d3db2a51112c5085eba33dd1e8c0c59ea1adb44c3659026a002b4",
+    "evidence_files": {
+      "deployment/security/minio-fixed-evidence/image-go1273-compat-scan.json": "09b1e81710824900a4c1b84785f9db6ccafe20d9b6a64685b0d646efa255f21c",
+      "deployment/security/minio-fixed-evidence/compatibility-patched.json": "a15c94ff3cbb5769fdaed8b6e523de099340245b270c3f0270532c5416f862b9",
+      "deployment/security/minio-fixed-evidence/build-go1273-compat-retry.log": "edb5241f065c238a77084002ca51723e3dc771ca115df520cb62c5af752aba82",
+      "deployment/security/minio-fixed-evidence/silo-buildinfo.txt": "eabda05b2ba397f5ecae4f6a22c69ccf717785af3a7993f171c7d999799dc55b",
+      "deployment/security/minio-fixed-evidence/mcli-buildinfo.txt": "b437b65feaa7df1026c165ff6b6a9b8d9de992dc4aa512168a59212c78f74957",
+      "deployment/security/minio-fixed-evidence/csv-regression.txt": "f7dfc803f6dfcb3809ce00bcfc6a4bece002cf88fc6c2bc027f3b41123209b42",
+      "deployment/security/minio-fixed-evidence/legacy-multipart-regression.txt": "07d39637bb446d35ba30622a53b8a271df305651cc32480ae94706fea33de60a",
+      "deployment/security/minio-fixed-evidence/multipart-etag-check-b.json": "8a5ff9f91f58ac71047999d7e9eaf4faf9315ac9d67009709e43ade429ef9ec4",
+      "deployment/security/minio-fixed-evidence/image-go1273-compat-inspect.json": "4fb84c6656b0834c6d9fd9f40aa7f45a721a3830d6c2740d32973f7bf822c01c",
+      "deployment/security/minio-fixed-evidence/authorization.json": "0f5b35dd559d3db2a51112c5085eba33dd1e8c0c59ea1adb44c3659026a002b4",
+      "deployment/security/minio-fixed-evidence/independent-review.json": "0120d59f9edcef78c9a45398931193579f731c25b32722e3e92bf2864ac0f6ba",
+      "deployment/security/minio-fixed-evidence/upstream-go.mod.txt": "770370dcf5f21d0a1168b0dc99e6e3605d7021d942539c8d331eb68f2de924fd",
+      "deployment/security/minio-fixed-evidence/upstream-go.sum.txt": "bc8282ddff0d6f271bb4e99ead7f929e9b225883eddf1f80c29bc10e5c732249",
+      "deployment/security/minio-fixed-evidence/upstream-internal-s3select-csv-reader.go.txt": "51cece44627f51103893c5e8f84eda642523b415040e89e660d3802da773e496",
+      "deployment/security/minio-fixed-evidence/UPSTREAM-LICENSE.txt": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0"
+    },
+    "recipe_files": {
+      "Dockerfile.minio": "ee4d2ab77497a1681c0289ae5da0188c8ae758720f5e10dc0ca71a0132e165e3",
+      "deployment/vendors/minio/csv_record_bound_test.go": "cb51ba37bc33b66764b64c8ed214d372a1db4f945093f6d0c5103a5d16bacf16",
+      "deployment/vendors/minio/legacy-part-compat.patch": "d7ce090041a4353cf35ca58168cff11a47a17ee0bf9355a6c44c16a7352f2320",
+      "deployment/vendors/minio/legacy-part2024.msgp": "cca3483e758d59aa0fd0ad3cc0ccc0ecb1e2afcdc6ebf399c57d515e7c4598cb",
+      "deployment/vendors/minio/legacy_part_compat.go": "2fcd20ee874cf8cd837651224135463925a98a1209fd1dd7f3a4298ae41a3792",
+      "deployment/vendors/minio/legacy_part_compat_test.go": "a4d464887c7fbb89116ed3309f4cfa039c405755d9bfff55b51d01bc50008ad6"
+    },
+    "upstream_git_blob_lf": {
+      "go.mod": {
+        "git_blob_lf_sha256": "770370dcf5f21d0a1168b0dc99e6e3605d7021d942539c8d331eb68f2de924fd",
+        "evidence_file": "deployment/security/minio-fixed-evidence/upstream-go.mod.txt"
+      },
+      "go.sum": {
+        "git_blob_lf_sha256": "bc8282ddff0d6f271bb4e99ead7f929e9b225883eddf1f80c29bc10e5c732249",
+        "evidence_file": "deployment/security/minio-fixed-evidence/upstream-go.sum.txt"
+      },
+      "internal/s3select/csv/reader.go": {
+        "git_blob_lf_sha256": "51cece44627f51103893c5e8f84eda642523b415040e89e660d3802da773e496",
+        "evidence_file": "deployment/security/minio-fixed-evidence/upstream-internal-s3select-csv-reader.go.txt"
+      }
+    }
+  },
+  "transport": {
+    "state": "draft_uploaded_not_published",
+    "repository": "W205614/DeepResearch",
+    "release_id": 424228449,
+    "tag": "artifact-minio-fixed-20261026",
+    "asset_id": 678114320,
+    "asset_name": "approved-minio-151cd83d.oci.tar",
+    "asset_sha256": "4b337cbfbe438d9ca24c67cdbf284c523e2d06ea52e94e866ea09b945d0bb389",
+    "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/678114320",
+    "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/untagged-28466a26ad7ff5876667/approved-minio-151cd83d.oci.tar"
+  },
+  "reporting": "Keep raw1HIGH/0CRITICAL and separate verified-fixed1/unresolved0; never mutate raw report",
+  "activation": "User explicitly accepted exact artifact; no deployment window granted"
+}

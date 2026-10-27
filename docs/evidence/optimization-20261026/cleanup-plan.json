@@ -1,0 +1,2667 @@
+{
+  "schema_version": 1,
+  "status": "CONDITIONAL_PRE_REVIEW_ONLY",
+  "generated_at": "2026-10-26T15:21:32.655114+00:00",
+  "project": "DeepResearch",
+  "window_owner_at_generation": "Trip (parent instruction; not a new coordinator lock acquisition)",
+  "execution_authorized_now": false,
+  "docker_mutations_performed": false,
+  "execution_preconditions": [
+    {
+      "id": "window",
+      "required": "Coordinator explicitly grants ownerDeepResearch maintenance/cleanup window; current Trip ownership must have ended",
+      "satisfied_now": false
+    },
+    {
+      "id": "delivery",
+      "required": "Daily upgrade acceptance verified before releasing any present candidate or fixture context",
+      "satisfied_now": false
+    },
+    {
+      "id": "backups",
+      "required": "Required old/new local cold backups and separate isolated recovery validation complete and protected; user-deferred off-host exercise is not claimed complete",
+      "satisfied_now": false
+    },
+    {
+      "id": "approval",
+      "required": "Human/coordinator explicitly approves this exact plan and candidate exactID list; planning request itself does not authorize removal",
+      "satisfied_now": false
+    },
+    {
+      "id": "reinspect",
+      "required": "Immediately before each item re-inspect exact ID/name/image/state/mounts; abort on any change/new reference; refuse running/paused objects",
+      "satisfied_now": false
+    },
+    {
+      "id": "creation-evidence",
+      "required": "Every referenced creation receipt still exists and its SHA256 matches this plan; changed/missing evidence requires renewed review",
+      "satisfied_now": false
+    }
+  ],
+  "discovery_rule": "Labels/prefixes/find results are discovery only. Eligibility comes from exact creation-receipt resource identity plus current inspect and stopped synthetic/never-started audit evidence. Unknown assets are retained.",
+  "protected": {
+    "daily": {
+      "expected": 22,
+      "observed": 22,
+      "identity_source": ".cache/optimization-20261026/pre-upgrade-deployment/snapshot-redacted.json plus exact current real Compose name/configHash; used only to protect",
+      "containers": [
+        {
+          "id": "4b9994babf865c1d2a1c76c06c2391979b2f3e56a615db6cf3f496130c1b3996",
+          "name": "deepresearch-backend-1",
+          "image_id": "sha256:1e9798b27da7f14dfee840790b8fe28d1c9d0e2b063f3ab1adde6b5b5ae61d7a",
+          "created_at": "2026-10-25T10:28:36.371967797Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T07:11:03.475829966Z",
+          "finished_at": "2026-10-25T10:33:24.0806802Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "deepresearch",
+          "compose_service_discovery_only": "backend",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "deepresearch_alert-relay-token",
+              "destination": "/run/secrets",
+              "source": "/var/lib/docker/volumes/deepresearch_alert-relay-token/_data",
+              "rw": false
+            }
+          ],
+          "network_names": [
+            "deepresearch_default"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "4a286b53ef1f1630517263d71170df424a1c2449c24582d8b7ec285af19b1bbd",
+          "name": "deepresearch-agent-1",
+          "image_id": "sha256:19369a879f6748b26abb18b400a51190a9cf3678871b0686b8f02b699997cc06",
+          "created_at": "2026-10-25T09:56:24.3555Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T07:10:52.532505063Z",
+          "finished_at": "2026-10-25T10:33:25.126002467Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "deepresearch",
+          "compose_service_discovery_only": "agent",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "deepresearch_alert-relay-token",
+              "destination": "/run/secrets",
+              "source": "/var/lib/docker/volumes/deepresearch_alert-relay-token/_data",
+              "rw": false
+            }
+          ],
+          "network_names": [
+            "deepresearch_default"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "48631b2a5acf464c10b5fabf9e4bc6e83b4ce5c222fc1a14c5c5c494f73e624c",
+          "name": "deepresearch-web-1",
+          "image_id": "sha256:df0c37d83e6da52a6f7efa073c589c2e9962ecd07c2d881db58e4eccfb5dfd9f",
+          "created_at": "2026-10-25T09:56:24.301287996Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T07:11:24.28088418Z",
+          "finished_at": "2026-10-25T10:33:23.437233871Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "deepresearch",
+          "compose_service_discovery_only": "web",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/etc/nginx/conf.d/default.conf",
+              "source": "E:\\project\\DeepResearch\\.env.local-nginx.conf",
+              "rw": false
+            }
+          ],
+          "network_names": [
+            "deepresearch_default"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "b52ad5ad458245989bc686b87b0f340bd612aba53fc8845200712541d925ca9b",
+          "name": "deepresearch-worker-1",
+          "image_id": "sha256:93e82bff2a55a67418c145071491c611edd1d7df5583bd6c8985631e9b202e3f",
+          "created_at": "2026-10-25T09:56:24.280583817Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T07:10:53.012590963Z",
+          "finished_at": "2026-10-25T09:59:31.939950334Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "deepresearch",
+          "compose_service_discovery_only": "worker",
+          "actual_compose_config_hash_present": true,
+          "mounts": [],
+          "network_names": [
+            "deepresearch_default"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "e2a9d4ee9e49bd9c1a919dee767e85c0d3568deb95d8f218861b7626b4524f10",
+          "name": "deepresearch-document-worker-1",
+          "image_id": "sha256:4501fcc0ae708bacf68a53d14126964c00200770981ba65bd851926f182fd231",
+          "created_at": "2026-10-25T09:56:24.273430348Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T07:10:53.428862587Z",
+          "finished_at": "2026-10-25T09:59:31.936677403Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "deepresearch",
+          "compose_service_discovery_only": "document-worker",
+          "actual_compose_config_hash_present": true,
+          "mounts": [],
+          "network_names": [
+            "deepresearch_default"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "77600a76e15e7d819c35ad3baf6c7f71568113c3c98aef247442ad27be7e3fe3",
+          "name": "deepresearch-migrate-1",
+          "image_id": "sha256:2109736604d081d461d4556177cb23c9cb1893467ff69b64003e90a3169fe41a",
+          "created_at": "2026-10-20T11:16:40.428149593Z",
+          "state": "exited",
+          "running": false,
+          "started_at": "2026-10-26T07:13:31.303123019Z",
+          "finished_at": "2026-10-26T07:13:32.615475174Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "deepresearch",
+          "compose_service_discovery_only": "migrate",
+          "actual_compose_config_hash_present": true,
+          "mounts": [],
+          "network_names": [
+            "deepresearch_default"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "81181d3b5e8c94c25484d5a3f6b54babade4a5c6f66d01c93bf04f6f40664bf9",
+          "name": "deepresearch-alert-relay-1",
+          "image_id": "sha256:2353816ae963d3a401ea19c06394f5d0f471bbf7a162fff6b30abac32e2d0711",
+          "created_at": "2026-10-20T11:16:39.853426736Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T07:10:43.122530291Z",
+          "finished_at": "2026-10-20T12:40:00.065930848Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "deepresearch",
+          "compose_service_discovery_only": "alert-relay",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "deepresearch_alert-relay-token",
+              "destination": "/run/secrets",
+              "source": "/var/lib/docker/volumes/deepresearch_alert-relay-token/_data",
+              "rw": false
+            }
+          ],
+          "network_names": [
+            "deepresearch_default"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "65d7206d50ca8a3f105a11abef53c56a6a132fd9f0283d49c35e93f495fb24b4",
+          "name": "deepresearch-postgres-1",
+          "image_id": "sha256:ef257d85f76e48da1c64832459b59fcaba1a4dac97bf5d7450c77753542eee94",
+          "created_at": "2026-10-20T11:16:39.470083949Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T07:10:40.211125407Z",
+          "finished_at": "2026-10-25T10:33:25.397398052Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "deepresearch",
+          "compose_service_discovery_only": "postgres",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "deepresearch_postgres-data",
+              "destination": "/var/lib/postgresql/data",
+              "source": "/var/lib/docker/volumes/deepresearch_postgres-data/_data",
+              "rw": true
+            }
+          ],
+          "network_names": [
+            "deepresearch_default"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "28d3916cd2f2d884543341de7bfde787edda407be5551d95fea537ffecc49cfa",
+          "name": "deepresearch-redis-1",
+          "image_id": "sha256:02419de7eddf55aa5bcf49efb74e88fa8d931b4d77c07eff8a6b2144472b6952",
+          "created_at": "2026-10-20T11:16:39.466225854Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T07:10:41.342499128Z",
+          "finished_at": "2026-10-25T10:33:25.425898723Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "deepresearch",
+          "compose_service_discovery_only": "redis",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "deepresearch_redis-data",
+              "destination": "/data",
+              "source": "/var/lib/docker/volumes/deepresearch_redis-data/_data",
+              "rw": true
+            }
+          ],
+          "network_names": [
+            "deepresearch_default"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "ad1a5d2e9a3f0828bd1faf2635d4121db15f289acf02dc30b6be54300b714e76",
+          "name": "deepresearch-keycloak-postgres-1",
+          "image_id": "sha256:ef257d85f76e48da1c64832459b59fcaba1a4dac97bf5d7450c77753542eee94",
+          "created_at": "2026-10-20T11:16:39.458043423Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T07:10:42.489411198Z",
+          "finished_at": "2026-10-25T10:33:26.304430899Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "deepresearch",
+          "compose_service_discovery_only": "keycloak-postgres",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "deepresearch_keycloak-postgres-data",
+              "destination": "/var/lib/postgresql/data",
+              "source": "/var/lib/docker/volumes/deepresearch_keycloak-postgres-data/_data",
+              "rw": true
+            }
+          ],
+          "network_names": [
+            "deepresearch_default"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "4eca9ab927df8f37174186350b34561cf0ca8870e43bb3c0a5b3a5f7917e9881",
+          "name": "deepresearch-alert-token-init-1",
+          "image_id": "sha256:d9e853e87e55526f6b2917df91a2115c36dd7c696a35be12163d44e6e2a4b6bc",
+          "created_at": "2026-10-20T11:16:39.420139606Z",
+          "state": "exited",
+          "running": false,
+          "started_at": "2026-10-26T07:13:35.381702244Z",
+          "finished_at": "2026-10-26T07:13:35.5089436Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "deepresearch",
+          "compose_service_discovery_only": "alert-token-init",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "deepresearch_alert-relay-token",
+              "destination": "/token",
+              "source": "/var/lib/docker/volumes/deepresearch_alert-relay-token/_data",
+              "rw": true
+            }
+          ],
+          "network_names": [
+            "deepresearch_default"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "64a8ea97eeb78edf1b04ca7103f56b1d9d1972c981106b983b7ba9e8487bf9b0",
+          "name": "deepresearch-minio-1",
+          "image_id": "sha256:d1aa81d3a62ae1b5d7279f4d12fe9b1a1e6aba466b2f7adc83bbd4d0abe6f48b",
+          "created_at": "2026-10-20T11:16:39.379045387Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T07:10:40.616583332Z",
+          "finished_at": "2026-10-25T10:33:26.821054416Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "deepresearch",
+          "compose_service_discovery_only": "minio",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "deepresearch_minio-data",
+              "destination": "/minio_data",
+              "source": "/var/lib/docker/volumes/deepresearch_minio-data/_data",
+              "rw": true
+            }
+          ],
+          "network_names": [
+            "deepresearch_default"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "8ce05b8b9a93d3ebb0ba8f8f6f30857e1622bbe763b57dc4b4e60eb47e3ef7e6",
+          "name": "deepresearch-keycloak-1",
+          "image_id": "sha256:5f3fb534cde6bf006d79f5912473e5d2c828c707cdfc52e16972803aca9d43dd",
+          "created_at": "2026-09-29T10:22:34.513691843Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T07:10:48.304407413Z",
+          "finished_at": "2026-10-25T10:33:25.882511137Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "deepresearch",
+          "compose_service_discovery_only": "keycloak",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "deepresearch_keycloak-data",
+              "destination": "/opt/keycloak/data",
+              "source": "/var/lib/docker/volumes/deepresearch_keycloak-data/_data",
+              "rw": true
+            },
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/opt/keycloak/data/import/deepresearch-realm.json",
+              "source": "/run/desktop/mnt/host/e/project/DeepResearch/keycloak/deepresearch-realm.json",
+              "rw": false
+            }
+          ],
+          "network_names": [
+            "deepresearch_default"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "6e4fc3d8bc3b34539dab3375e06b3cb2b41a790c8182fd5e8566d6d022c73bdc",
+          "name": "deepresearch-alertmanager-1",
+          "image_id": "sha256:27c475db5fb156cab31d5c18a4251ac7ed567746a2483ff264516437a39b15ba",
+          "created_at": "2026-09-29T10:22:34.499607685Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T07:10:42.794405228Z",
+          "finished_at": "2026-10-20T12:39:59.667759487Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "deepresearch",
+          "compose_service_discovery_only": "alertmanager",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "524fbe74fea3163663dcace8adfd12bfab587c54cd02f46eca6991e67bed1f06",
+              "destination": "/alertmanager",
+              "source": "/var/lib/docker/volumes/524fbe74fea3163663dcace8adfd12bfab587c54cd02f46eca6991e67bed1f06/_data",
+              "rw": true
+            },
+            {
+              "type": "volume",
+              "name": "deepresearch_alert-relay-token",
+              "destination": "/run/secrets",
+              "source": "/var/lib/docker/volumes/deepresearch_alert-relay-token/_data",
+              "rw": false
+            },
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/etc/alertmanager/alertmanager.yml",
+              "source": "E:\\project\\DeepResearch\\observability\\alertmanager.yml",
+              "rw": false
+            }
+          ],
+          "network_names": [
+            "deepresearch_default"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "cf4987b0955a803f941beac32c5ed92df0e2a5f1525e0bfa4fa40fa665e70c53",
+          "name": "deepresearch-milvus-1",
+          "image_id": "sha256:49371c30af46b1013e4d3e0b980e691d81376d69cdbe1b372725baf1d7255862",
+          "created_at": "2026-09-29T10:22:34.451940052Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T07:10:51.411260505Z",
+          "finished_at": "2026-10-25T10:33:26.476337252Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "deepresearch",
+          "compose_service_discovery_only": "milvus",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "deepresearch_milvus-data",
+              "destination": "/var/lib/milvus",
+              "source": "/var/lib/docker/volumes/deepresearch_milvus-data/_data",
+              "rw": true
+            }
+          ],
+          "network_names": [
+            "deepresearch_default"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "ee39225458ee370b5b1f0faf99b5678c22ca9765bf136cb1876bb9530d573012",
+          "name": "deepresearch-grafana-1",
+          "image_id": "sha256:8b37a2f028f164ce7b9889e1765b9d6ee23fec80f871d156fbf436d6198d32b7",
+          "created_at": "2026-09-29T10:22:34.437502466Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T07:10:43.639971347Z",
+          "finished_at": "2026-10-20T12:39:59.723371568Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "deepresearch",
+          "compose_service_discovery_only": "grafana",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/etc/grafana/provisioning",
+              "source": "/run/desktop/mnt/host/e/project/DeepResearch/observability/grafana/provisioning",
+              "rw": false
+            },
+            {
+              "type": "volume",
+              "name": "deepresearch_grafana-data",
+              "destination": "/var/lib/grafana",
+              "source": "/var/lib/docker/volumes/deepresearch_grafana-data/_data",
+              "rw": true
+            }
+          ],
+          "network_names": [
+            "deepresearch_default"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "9724f11ab8cd658e8b4b6893f0a8417c23113910fa4a8713106e3b428f5dc4f5",
+          "name": "deepresearch-otel-collector-1",
+          "image_id": "sha256:85ac41c2db88d0df9bd6145e608a3cb023f5d8443868adbfbbf66efb51087917",
+          "created_at": "2026-09-29T10:22:34.428124625Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T07:10:43.357928325Z",
+          "finished_at": "2026-10-25T10:33:25.359168807Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "deepresearch",
+          "compose_service_discovery_only": "otel-collector",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/etc/otelcol-contrib/config.yaml",
+              "source": "E:\\project\\DeepResearch\\observability\\otel-collector.yaml",
+              "rw": false
+            }
+          ],
+          "network_names": [
+            "deepresearch_default"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "8f37555810382c110713e0ae6d844f0ceb01d04a358593faa85d7ceeb113d5d8",
+          "name": "deepresearch-loki-1",
+          "image_id": "sha256:58a6c186ce78ba04d58bfe2a927eff296ba733a430df09645d56cdc158f3ba08",
+          "created_at": "2026-09-29T10:22:34.219161186Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T07:10:41.887038316Z",
+          "finished_at": "2026-10-25T10:33:27.659560267Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "deepresearch",
+          "compose_service_discovery_only": "loki",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "deepresearch_loki-data",
+              "destination": "/loki",
+              "source": "/var/lib/docker/volumes/deepresearch_loki-data/_data",
+              "rw": true
+            },
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/etc/loki/loki.yaml",
+              "source": "E:\\project\\DeepResearch\\observability\\loki.yaml",
+              "rw": false
+            }
+          ],
+          "network_names": [
+            "deepresearch_default"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "ae32c557fcfbf91a3beab3d2924cc61f2e554aae82583bc60fbc4785d3a0702d",
+          "name": "deepresearch-etcd-1",
+          "image_id": "sha256:52f17f7e56e4f7239f0320dbfcbcc24721163d7d78ae710b466af3254ccf6366",
+          "created_at": "2026-09-29T10:22:34.213850427Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T07:10:40.406416341Z",
+          "finished_at": "2026-10-25T10:33:26.812575748Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "deepresearch",
+          "compose_service_discovery_only": "etcd",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "deepresearch_etcd-data",
+              "destination": "/etcd",
+              "source": "/var/lib/docker/volumes/deepresearch_etcd-data/_data",
+              "rw": true
+            }
+          ],
+          "network_names": [
+            "deepresearch_default"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "cf8a7de19ce5f623d3562efc1d2e2a757896c6d8a3d7392f0ef45862809b7cbd",
+          "name": "deepresearch-prometheus-1",
+          "image_id": "sha256:6927e0919a144aa7616fd0137d4816816d42f6b816de3af269ab065250859a62",
+          "created_at": "2026-09-29T10:22:34.211252111Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T07:10:41.647986291Z",
+          "finished_at": "2026-10-20T12:40:00.468354421Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "deepresearch",
+          "compose_service_discovery_only": "prometheus",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "3743676bf01f6587dd6eae6529aa6ba73a53109ee0e19a0cfcb9091ca2a55869",
+              "destination": "/prometheus",
+              "source": "/var/lib/docker/volumes/3743676bf01f6587dd6eae6529aa6ba73a53109ee0e19a0cfcb9091ca2a55869/_data",
+              "rw": true
+            },
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/etc/prometheus/alerts.yml",
+              "source": "E:\\project\\DeepResearch\\observability\\alerts.yml",
+              "rw": false
+            },
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/etc/prometheus/prometheus.yml",
+              "source": "E:\\project\\DeepResearch\\observability\\prometheus.yml",
+              "rw": false
+            }
+          ],
+          "network_names": [
+            "deepresearch_default"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "9fbd0c4d650a035699844200a756e961016bc9dc738bc51739bafdf1c5c0d7ff",
+          "name": "deepresearch-tempo-1",
+          "image_id": "sha256:4b0277a9b572a4b1fa43b01468e58911ec214dd69d033f2cd476596d14de9fe3",
+          "created_at": "2026-09-29T10:22:34.206542943Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T07:10:42.127101466Z",
+          "finished_at": "2026-10-25T10:33:27.413743512Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "deepresearch",
+          "compose_service_discovery_only": "tempo",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "deepresearch_tempo-data",
+              "destination": "/var/tempo",
+              "source": "/var/lib/docker/volumes/deepresearch_tempo-data/_data",
+              "rw": true
+            },
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/etc/tempo/tempo.yaml",
+              "source": "E:\\project\\DeepResearch\\observability\\tempo.yaml",
+              "rw": false
+            }
+          ],
+          "network_names": [
+            "deepresearch_default"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "8e15f33d799e460010bbd991d67fbd066bc707b1196d79926f87e3553e1ffe32",
+          "name": "deepresearch-clamav-1",
+          "image_id": "sha256:26a576bbed25fe1de510891ff54697c161124050a03e1c5d59b5b9bdf21c3366",
+          "created_at": "2026-09-29T10:22:34.206457495Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T07:10:40.877700531Z",
+          "finished_at": "2026-10-25T10:33:25.500916362Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "deepresearch",
+          "compose_service_discovery_only": "clamav",
+          "actual_compose_config_hash_present": true,
+          "mounts": [],
+          "network_names": [
+            "deepresearch_default"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        }
+      ]
+    },
+    "current_complete_candidate": {
+      "expected": 25,
+      "observed": 25,
+      "identity_source": "docs/evidence/optimization-20261026/observability-acceptance.json + current exact25 real Compose containers",
+      "containers": [
+        {
+          "id": "9f47b0107606b38750f52bf6ca65b6551310977b6f457a1ba56ecc9d6b9d1df1",
+          "name": "dr-opt-acceptance-grafana-1",
+          "image_id": "sha256:9a68d3a7f3b96ffa643af86e5be5f91a723cc051678b4d445a879861bc335132",
+          "created_at": "2026-10-26T14:26:52.592872085Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T14:26:55.776407612Z",
+          "finished_at": "0001-01-01T00:00:00Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "grafana",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/etc/grafana/provisioning",
+              "source": "/run/desktop/mnt/host/e/project/DeepResearch/observability/grafana/provisioning",
+              "rw": false
+            },
+            {
+              "type": "volume",
+              "name": "dr-opt-acceptance_grafana-data",
+              "destination": "/var/lib/grafana",
+              "source": "/var/lib/docker/volumes/dr-opt-acceptance_grafana-data/_data",
+              "rw": true
+            }
+          ],
+          "network_names": [
+            "dr-opt-acceptance_telemetry"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "95c9b8396f1608138860558e604e5a94bf4d770abb4ae2fb9b2386ae19578c13",
+          "name": "dr-opt-acceptance-alertmanager-1",
+          "image_id": "sha256:074c701cb3dd75766133cbd229ca6b6b285fc972f956ff6e6c1b326294a19d0c",
+          "created_at": "2026-10-26T14:26:52.539121029Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T14:26:59.979355809Z",
+          "finished_at": "0001-01-01T00:00:00Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "alertmanager",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "dr-opt-acceptance_alertmanager-data",
+              "destination": "/alertmanager",
+              "source": "/var/lib/docker/volumes/dr-opt-acceptance_alertmanager-data/_data",
+              "rw": true
+            },
+            {
+              "type": "volume",
+              "name": "dr-opt-acceptance_alert-relay-token-v2",
+              "destination": "/run/secrets",
+              "source": "/var/lib/docker/volumes/dr-opt-acceptance_alert-relay-token-v2/_data",
+              "rw": false
+            },
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/etc/alertmanager/alertmanager.yml",
+              "source": "E:\\project\\DeepResearch\\observability\\alertmanager.yml",
+              "rw": false
+            }
+          ],
+          "network_names": [
+            "dr-opt-acceptance_telemetry"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "ffb1091f491fba2ccd7665169003182eedb679957e8b54402906a5a8483034d0",
+          "name": "dr-opt-acceptance-otel-collector-1",
+          "image_id": "sha256:989669581ee1f89184f3fd9dd5adfc6615ed6c9692c026aaea89e07a20dfb177",
+          "created_at": "2026-10-26T14:26:52.478418615Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T14:26:55.288597513Z",
+          "finished_at": "0001-01-01T00:00:00Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "otel-collector",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/etc/otelcol-contrib/config.yaml",
+              "source": "E:\\project\\DeepResearch\\observability\\otel-collector.yaml",
+              "rw": false
+            }
+          ],
+          "network_names": [
+            "dr-opt-acceptance_telemetry"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "c0660dfe5cc6f0792c336829be550aa48b6981e41becd1c5faefa2bfa0fe2e53",
+          "name": "dr-opt-acceptance-ops-exporter-1",
+          "image_id": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7",
+          "created_at": "2026-10-26T14:26:52.337472217Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T14:26:53.112267465Z",
+          "finished_at": "0001-01-01T00:00:00Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "ops-exporter",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/host-metrics",
+              "source": "E:\\project\\DeepResearch\\.cache\\optimization-20261026\\monitoring-acceptance\\host-metrics",
+              "rw": false
+            }
+          ],
+          "network_names": [
+            "dr-opt-acceptance_database",
+            "dr-opt-acceptance_telemetry"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "6858aff34b86504a56cfcafec911ce66e0784819a29df6411f50cd980ea0f545",
+          "name": "dr-opt-acceptance-alert-relay-1",
+          "image_id": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7",
+          "created_at": "2026-10-26T14:26:52.329564848Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T14:26:53.958105424Z",
+          "finished_at": "0001-01-01T00:00:00Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "alert-relay",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "dr-opt-acceptance_alert-relay-state",
+              "destination": "/state",
+              "source": "/var/lib/docker/volumes/dr-opt-acceptance_alert-relay-state/_data",
+              "rw": true
+            },
+            {
+              "type": "volume",
+              "name": "dr-opt-acceptance_alert-relay-token-v2",
+              "destination": "/run/secrets",
+              "source": "/var/lib/docker/volumes/dr-opt-acceptance_alert-relay-token-v2/_data",
+              "rw": false
+            }
+          ],
+          "network_names": [
+            "dr-opt-acceptance_telemetry"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "c0b9dd187c555d9bc20e91aa3df15c844788af3c90c21aec1265a96f00401e17",
+          "name": "dr-opt-acceptance-tempo-1",
+          "image_id": "sha256:12b0820f13ffa10ce956b6e9acc3b03f3cffded99109be6cc09d106fe56e5d38",
+          "created_at": "2026-10-26T14:26:52.320676641Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T14:26:54.370829055Z",
+          "finished_at": "0001-01-01T00:00:00Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "tempo",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "dr-opt-acceptance_tempo-data",
+              "destination": "/var/tempo",
+              "source": "/var/lib/docker/volumes/dr-opt-acceptance_tempo-data/_data",
+              "rw": true
+            },
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/etc/tempo/tempo.yaml",
+              "source": "E:\\project\\DeepResearch\\observability\\tempo.yaml",
+              "rw": false
+            }
+          ],
+          "network_names": [
+            "dr-opt-acceptance_telemetry"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "0899d79c23cc1d5766163e245f90c3d157b8bf35949be48b1754b05b0237d213",
+          "name": "dr-opt-acceptance-prometheus-1",
+          "image_id": "sha256:d445d1806b38f85b5c394a1b87f94113fde0473b45245922c2e8b1bd41fa68ae",
+          "created_at": "2026-10-26T14:26:52.311439374Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T14:26:54.808444142Z",
+          "finished_at": "0001-01-01T00:00:00Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "prometheus",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "dr-opt-acceptance_prometheus-data",
+              "destination": "/prometheus",
+              "source": "/var/lib/docker/volumes/dr-opt-acceptance_prometheus-data/_data",
+              "rw": true
+            },
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/etc/prometheus/alerts.yml",
+              "source": "E:\\project\\DeepResearch\\observability\\alerts.yml",
+              "rw": false
+            },
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/etc/prometheus/prometheus.yml",
+              "source": "E:\\project\\DeepResearch\\observability\\prometheus.yml",
+              "rw": false
+            }
+          ],
+          "network_names": [
+            "dr-opt-acceptance_telemetry"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "6880d93f045f11165c1d477783497fcfded64418a975e26a3a1f96bfce318183",
+          "name": "dr-opt-acceptance-loki-1",
+          "image_id": "sha256:569e5cab050b7705eb82080335ff9a8bd329650b358bb0d42131e3ced8d9492e",
+          "created_at": "2026-10-26T14:26:52.308880718Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T14:26:53.590787582Z",
+          "finished_at": "0001-01-01T00:00:00Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "loki",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "dr-opt-acceptance_loki-data",
+              "destination": "/loki",
+              "source": "/var/lib/docker/volumes/dr-opt-acceptance_loki-data/_data",
+              "rw": true
+            },
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/etc/loki/loki.yaml",
+              "source": "E:\\project\\DeepResearch\\observability\\loki.yaml",
+              "rw": false
+            }
+          ],
+          "network_names": [
+            "dr-opt-acceptance_telemetry"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "fdc4dfe4605bb3340fe140e068600905904ceec9d6cbe796132744471023ed6d",
+          "name": "dr-opt-acceptance-web-1",
+          "image_id": "sha256:9b3db20c8227796cd1e991ccd3cfa69637a369f002e413d744aa68144665925e",
+          "created_at": "2026-10-26T13:47:23.258073603Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T13:47:26.44684195Z",
+          "finished_at": "0001-01-01T00:00:00Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "web",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/etc/nginx/conf.d/default.conf",
+              "source": "E:\\project\\DeepResearch\\.cache\\optimization-20261026\\nginx.conf",
+              "rw": false
+            }
+          ],
+          "network_names": [
+            "dr-opt-acceptance_edge"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "fb82175e701243063d9e16deb81afcad76b4e7893f464aee1698dc53f9ce9465",
+          "name": "dr-opt-acceptance-agent-1",
+          "image_id": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7",
+          "created_at": "2026-10-26T13:38:55.502451127Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T13:55:34.743340767Z",
+          "finished_at": "2026-10-26T13:55:34.113944855Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "agent",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "dr-opt-acceptance_internal-service-token",
+              "destination": "/run/internal",
+              "source": "/var/lib/docker/volumes/dr-opt-acceptance_internal-service-token/_data",
+              "rw": false
+            },
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/app/scripts/component_fixture.py",
+              "source": "/run/desktop/mnt/host/e/project/DeepResearch/scripts/component_fixture.py",
+              "rw": false
+            },
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/app/scripts/optimization_component_fixture.py",
+              "source": "/run/desktop/mnt/host/e/project/DeepResearch/scripts/optimization_component_fixture.py",
+              "rw": false
+            }
+          ],
+          "network_names": [
+            "dr-opt-acceptance_application",
+            "dr-opt-acceptance_database",
+            "dr-opt-acceptance_identity",
+            "dr-opt-acceptance_retrieval",
+            "dr-opt-acceptance_telemetry"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "567d5943b9062e5c4300bc0d45bd36e1aece5b6eba5e2a04d278518c92f933cb",
+          "name": "dr-opt-acceptance-worker-1",
+          "image_id": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7",
+          "created_at": "2026-10-26T13:38:54.648533822Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T13:39:18.088826848Z",
+          "finished_at": "0001-01-01T00:00:00Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "worker",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/app/scripts/component_fixture.py",
+              "source": "E:\\project\\DeepResearch\\scripts\\component_fixture.py",
+              "rw": false
+            },
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/app/scripts/optimization_component_fixture.py",
+              "source": "E:\\project\\DeepResearch\\scripts\\optimization_component_fixture.py",
+              "rw": false
+            }
+          ],
+          "network_names": [
+            "dr-opt-acceptance_database",
+            "dr-opt-acceptance_retrieval",
+            "dr-opt-acceptance_telemetry"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "d665de8b90b83b1ec8e154a2138d3e14c4fe3296b3a4934a170af84c31f0e4f1",
+          "name": "dr-opt-acceptance-document-worker-1",
+          "image_id": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7",
+          "created_at": "2026-10-26T13:38:54.603144479Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T13:39:17.678172584Z",
+          "finished_at": "0001-01-01T00:00:00Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "document-worker",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/app/scripts/component_fixture.py",
+              "source": "E:\\project\\DeepResearch\\scripts\\component_fixture.py",
+              "rw": false
+            },
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/app/scripts/optimization_component_fixture.py",
+              "source": "E:\\project\\DeepResearch\\scripts\\optimization_component_fixture.py",
+              "rw": false
+            }
+          ],
+          "network_names": [
+            "dr-opt-acceptance_database",
+            "dr-opt-acceptance_retrieval",
+            "dr-opt-acceptance_telemetry"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "7556ca3da294a5c8680d079e544a563ef6a25a57d1e32b8859a93fb5f1e59fc1",
+          "name": "dr-opt-acceptance-migrate-1",
+          "image_id": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7",
+          "created_at": "2026-10-26T13:38:51.239417074Z",
+          "state": "exited",
+          "running": false,
+          "started_at": "2026-10-26T13:39:04.661384866Z",
+          "finished_at": "2026-10-26T13:39:17.359865561Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "migrate",
+          "actual_compose_config_hash_present": true,
+          "mounts": [],
+          "network_names": [
+            "dr-opt-acceptance_database"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "6d534292579e708a45d899f6ebb73aa889791d673e23d4b34b67a14e8e7239c7",
+          "name": "dr-opt-acceptance-keycloak-1",
+          "image_id": "sha256:95e66ef578a2e6a7ed744252edf687d07713e4e50ee1e9eb194cd0db522361ca",
+          "created_at": "2026-10-26T13:38:50.33282228Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T13:39:04.230910117Z",
+          "finished_at": "0001-01-01T00:00:00Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "keycloak",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "dr-opt-acceptance_keycloak-data",
+              "destination": "/opt/keycloak/data",
+              "source": "/var/lib/docker/volumes/dr-opt-acceptance_keycloak-data/_data",
+              "rw": true
+            },
+            {
+              "type": "bind",
+              "name": null,
+              "destination": "/opt/keycloak/data/import/deepresearch-realm.json",
+              "source": "/run/desktop/mnt/host/e/project/DeepResearch/.cache/optimization-20261026/realm.json",
+              "rw": false
+            }
+          ],
+          "network_names": [
+            "dr-opt-acceptance_identity",
+            "dr-opt-acceptance_identity-db"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "a8694042208c19956c1b81f0efc8cceaa5bc15ab87e9d8e6afb5eedafeb8a0a3",
+          "name": "dr-opt-acceptance-milvus-1",
+          "image_id": "sha256:092814b9166eaddf75a4c959efd15542491378c2cdfedf67b36293b728b94f04",
+          "created_at": "2026-10-26T13:38:50.290091145Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T13:39:10.269273855Z",
+          "finished_at": "0001-01-01T00:00:00Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "milvus",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "dr-opt-acceptance_milvus-data",
+              "destination": "/var/lib/milvus",
+              "source": "/var/lib/docker/volumes/dr-opt-acceptance_milvus-data/_data",
+              "rw": true
+            }
+          ],
+          "network_names": [
+            "dr-opt-acceptance_index-store",
+            "dr-opt-acceptance_retrieval"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "31f61a91ea439af81a59874f282f9bf5f72ee80ec149ad07068da8f337b3727d",
+          "name": "dr-opt-acceptance-bootstrap-db-1",
+          "image_id": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7",
+          "created_at": "2026-10-26T13:38:50.249881952Z",
+          "state": "exited",
+          "running": false,
+          "started_at": "2026-10-26T13:39:03.710262483Z",
+          "finished_at": "2026-10-26T13:39:04.288434795Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "bootstrap-db",
+          "actual_compose_config_hash_present": true,
+          "mounts": [],
+          "network_names": [
+            "dr-opt-acceptance_database"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "547a1d86da7da45698548d9dc41c01f9707343e7b2fadb0115a276ea1d43a225",
+          "name": "dr-opt-acceptance-alert-token-init-1",
+          "image_id": "sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a",
+          "created_at": "2026-10-26T13:38:49.273087519Z",
+          "state": "exited",
+          "running": false,
+          "started_at": "2026-10-26T13:38:57.504120955Z",
+          "finished_at": "2026-10-26T13:38:57.682642583Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "alert-token-init",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "dr-opt-acceptance_alert-relay-token-v2",
+              "destination": "/alert",
+              "source": "/var/lib/docker/volumes/dr-opt-acceptance_alert-relay-token-v2/_data",
+              "rw": true
+            },
+            {
+              "type": "volume",
+              "name": "dr-opt-acceptance_internal-service-token",
+              "destination": "/internal",
+              "source": "/var/lib/docker/volumes/dr-opt-acceptance_internal-service-token/_data",
+              "rw": true
+            },
+            {
+              "type": "volume",
+              "name": "dr-opt-acceptance_alert-relay-state",
+              "destination": "/state",
+              "source": "/var/lib/docker/volumes/dr-opt-acceptance_alert-relay-state/_data",
+              "rw": true
+            }
+          ],
+          "network_names": [
+            "none"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "65cc7a5bc31dacb3f611d59a7836c1e0993362d864ac4886782405a82656ed4c",
+          "name": "dr-opt-acceptance-etcd-1",
+          "image_id": "sha256:d480cdd13835e01205ab75f296c6fafcc2e4c57d5711d6c3f2e9320021b81687",
+          "created_at": "2026-10-26T13:38:49.151279827Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T13:38:58.961730138Z",
+          "finished_at": "0001-01-01T00:00:00Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "etcd",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "dr-opt-acceptance_etcd-data",
+              "destination": "/etcd",
+              "source": "/var/lib/docker/volumes/dr-opt-acceptance_etcd-data/_data",
+              "rw": true
+            }
+          ],
+          "network_names": [
+            "dr-opt-acceptance_index-store"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "31546eb1e2090f4b2601dfe48d18ea5167c273c041fadc3a778566faae1c2e57",
+          "name": "dr-opt-acceptance-postgres-1",
+          "image_id": "sha256:2a792b05fff59ea5ba72747a925e22a211c3e07bb8d0cad1c18b9acf773462c8",
+          "created_at": "2026-10-26T13:38:49.147203281Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T13:38:57.745314632Z",
+          "finished_at": "0001-01-01T00:00:00Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "postgres",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "dr-opt-acceptance_postgres-data",
+              "destination": "/var/lib/postgresql/data",
+              "source": "/var/lib/docker/volumes/dr-opt-acceptance_postgres-data/_data",
+              "rw": true
+            }
+          ],
+          "network_names": [
+            "dr-opt-acceptance_database"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "5f847575537295d86ec76e0b13002dc1bf0003889e37598ac2097f58e799ccb5",
+          "name": "dr-opt-acceptance-redis-1",
+          "image_id": "sha256:57e4255cc971b1c8d6f8a6ca283ac01bc3ecdd914273ef6bfaede87aaecd6541",
+          "created_at": "2026-10-26T13:38:49.138802058Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T13:38:58.687152663Z",
+          "finished_at": "0001-01-01T00:00:00Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "redis",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "dr-opt-acceptance_redis-data",
+              "destination": "/data",
+              "source": "/var/lib/docker/volumes/dr-opt-acceptance_redis-data/_data",
+              "rw": true
+            }
+          ],
+          "network_names": [
+            "dr-opt-acceptance_database"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "06d8393ae2f84d8b052d66f9f8d33550ac65a9322cabd645bcb0c4cccc8d2421",
+          "name": "dr-opt-acceptance-keycloak-postgres-1",
+          "image_id": "sha256:2a792b05fff59ea5ba72747a925e22a211c3e07bb8d0cad1c18b9acf773462c8",
+          "created_at": "2026-10-26T13:38:49.12140421Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T13:38:58.318514096Z",
+          "finished_at": "0001-01-01T00:00:00Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "keycloak-postgres",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "dr-opt-acceptance_keycloak-postgres-data",
+              "destination": "/var/lib/postgresql/data",
+              "source": "/var/lib/docker/volumes/dr-opt-acceptance_keycloak-postgres-data/_data",
+              "rw": true
+            }
+          ],
+          "network_names": [
+            "dr-opt-acceptance_identity-db"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "b5afc7ff37bbc83c42d1c28e3b181411ed3fcc03644053029faf01c806dfa767",
+          "name": "dr-opt-acceptance-minio-1",
+          "image_id": "sha256:151cd83d5e6500f4d1b3d7f0a12756fe80e8ffcbf91150afd6b9b9605bc2369a",
+          "created_at": "2026-10-26T13:38:49.116702345Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T13:55:55.605481433Z",
+          "finished_at": "2026-10-26T13:55:53.172754987Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "minio",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "ea7e49ca785265daa1ab090ba8f1101ee83dfcde1d4dca1a1e6526e590f6927a",
+              "destination": "/data",
+              "source": "/var/lib/docker/volumes/ea7e49ca785265daa1ab090ba8f1101ee83dfcde1d4dca1a1e6526e590f6927a/_data",
+              "rw": true
+            },
+            {
+              "type": "volume",
+              "name": "dr-opt-acceptance_minio-data",
+              "destination": "/minio_data",
+              "source": "/var/lib/docker/volumes/dr-opt-acceptance_minio-data/_data",
+              "rw": true
+            }
+          ],
+          "network_names": [
+            "dr-opt-acceptance_index-store",
+            "dr-opt-acceptance_retrieval"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "a4a0144e9d64c65284c1898768e72cdd2d81b3bcb23d9b8de9b188af0aee80f5",
+          "name": "dr-opt-acceptance-clamav-1",
+          "image_id": "sha256:e73991068f2037e10cf15669dd3b48c24345658f5488430746b414c0f761270f",
+          "created_at": "2026-10-26T13:38:49.078728058Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T13:55:11.127590209Z",
+          "finished_at": "2026-10-26T13:55:06.945864102Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "clamav",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "dr-opt-acceptance_clamav-signatures",
+              "destination": "/var/lib/clamav",
+              "source": "/var/lib/docker/volumes/dr-opt-acceptance_clamav-signatures/_data",
+              "rw": true
+            }
+          ],
+          "network_names": [
+            "dr-opt-acceptance_retrieval"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "0e6eebb2dbca9f34c97a2a8b166977f72c9a189ac9a3582f198be306423f576d",
+          "name": "dr-opt-acceptance-backend-1",
+          "image_id": "sha256:20bae2ec4a9af26d8f730a5c21b2cb83ee093d4601a5df7cc7360f288ff7c3e7",
+          "created_at": "2026-10-26T13:11:34.578629248Z",
+          "state": "running",
+          "running": true,
+          "started_at": "2026-10-26T13:40:36.788323098Z",
+          "finished_at": "2026-10-26T13:34:19.58633306Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "backend",
+          "actual_compose_config_hash_present": true,
+          "mounts": [
+            {
+              "type": "volume",
+              "name": "dr-opt-acceptance_internal-service-token",
+              "destination": "/run/internal",
+              "source": "/var/lib/docker/volumes/dr-opt-acceptance_internal-service-token/_data",
+              "rw": false
+            }
+          ],
+          "network_names": [
+            "dr-opt-acceptance_application",
+            "dr-opt-acceptance_database",
+            "dr-opt-acceptance_edge",
+            "dr-opt-acceptance_identity",
+            "dr-opt-acceptance_telemetry"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        },
+        {
+          "id": "653847b3dae90a6f0ae63baaff4b0d327c5b62261cfd87866d7250b297087dcc",
+          "name": "dr-opt-acceptance-storage-init-1",
+          "image_id": "sha256:1e1c407af917ae878a5c22e8581c03bd427cd55f797f4444ebf825b8e00254ed",
+          "created_at": "2026-10-26T08:20:47.497281315Z",
+          "state": "exited",
+          "running": false,
+          "started_at": "2026-10-26T13:39:07.971941048Z",
+          "finished_at": "2026-10-26T13:39:09.688966963Z",
+          "exit_code": 0,
+          "oom_killed": false,
+          "compose_project_discovery_only": "dr-opt-acceptance",
+          "compose_service_discovery_only": "storage-init",
+          "actual_compose_config_hash_present": true,
+          "mounts": [],
+          "network_names": [
+            "dr-opt-acceptance_index-store"
+          ],
+          "size_rw_bytes": null,
+          "size_rootfs_bytes": null
+        }
+      ]
+    },
+    "approved_graphs": [
+      {
+        "policy": "deployment/security/minio-fixed-disposition.json",
+        "index_digest": "sha256:151cd83d5e6500f4d1b3d7f0a12756fe80e8ffcbf91150afd6b9b9605bc2369a",
+        "platform_manifest_digest": "sha256:1a7bd6d07a350cd83ef332d8d2148f123306c7a5706d4184f4d83e5dce42bc83",
+        "config_digest": "sha256:45b3d3e48a5b0a92e7ff52b046573268a241207fe6ddfafa504a48bc543cb1f3",
+        "rootfs_diff_ids": [
+          "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99",
+          "sha256:6e10a27c77d9a6a73577bd8d8bf37a1b0620ad9ccf489a2b01108a6642d8bc5c",
+          "sha256:bd250dd660c815efd2d451f5fce3b5d361fd435253e76e6d64539233bbcbff1c",
+          "sha256:1b4744aeef73e83c76419dd22b1cfcbdf7da7c3f575d675abb20658306315917",
+          "sha256:75202b75ba034f72c8f0650eec04f730cfbe40a97d6d50fc822d28d8e33aa1a4",
+          "sha256:58c9b5b0f2c9a7b7366fc7ed287869fe051e946fc2104e0632ad7bf36e8c8da4",
+          "sha256:c55c57e7b6539bf8039461fe247b59c18ceeeb7e01a7908f3d49622c593edfeb",
+          "sha256:5c3f3e3b45efc366ba174d9f850b92923195118993abadad8643e832d686daf1",
+          "sha256:c4a473e412444c2df97187857967b21f53a31fbd53cfffc641ce85385e69b913",
+          "sha256:f55834e2ab0b5f33f03330f3f76070a41f819754b7d958f5a092a7fbe5e267b3",
+          "sha256:c41ef0bde233118c05ff8febc3776277a17773433f8bb2b016eabdbb60304bd5",
+          "sha256:2a08a8b39a8a84a9c00a1e9015983e8de39ea77b803bc470911401d97b0c2af7",
+          "sha256:34ac5ca62975c7490466f6e818790f5080937fc85e72adf2ca614e700312e618",
+          "sha256:ea74ff81527a8a1a00213e393509b6ccecaa7864a0bd3a0af691deb8ba3b5015"
+        ],
+        "archive_path": ".cache/optimization-20261026/approved-minio-151cd83d.oci.tar",
+        "archive_bytes": 102110720,
+        "bound_archive_bytes": 102110720,
+        "bound_archive_sha256": "4b337cbfbe438d9ca24c67cdbf284c523e2d06ea52e94e866ea09b945d0bb389",
+        "archive_exists": true,
+        "archive_hash_not_repeated_in_this_readonly_plan": true,
+        "disposition": "retain entire graph, tag aliases, archive, evidence and copies; never rebuild to replace approved identity"
+      },
+      {
+        "policy": "deployment/security/grafana-reviewed-disposition.json",
+        "index_digest": "sha256:9a68d3a7f3b96ffa643af86e5be5f91a723cc051678b4d445a879861bc335132",
+        "platform_manifest_digest": "sha256:11d917a7da05e9effcd60934f9d16e7d485300b41e39e94f87d5485c5ed0f263",
+        "config_digest": "sha256:0bf2ff0e6cc8f6ca357aae46062ff8188ee7629736d3763c27788a80b4df1d5b",
+        "rootfs_diff_ids": [
+          "sha256:74d97c428c51a828f9051a7a40a53ff1fc99e54fc30323ce36760701b0b7f711",
+          "sha256:6f23e066a445990d27aa3b46f42e3f6fba62add3508978aee1c54dfdd6e66dc6",
+          "sha256:a418f5af3f7c57ac18bf1740a41d393906acf56a858fb5c07fb6294c4f05c460",
+          "sha256:8c08d2f57c3fb2cd6912771cf29b87b7dd8c10f65e3fa163b60f651788c1efe6",
+          "sha256:fcf20017e4fae0a2073500f22ee225b16d7405085df5aa37215f4a73f6aa3bcf",
+          "sha256:e37c8b6a0c3071ed1570654bd5c971f9ca924f6eb6a14f3fbfa84fd62ac84091",
+          "sha256:04dcdc387f96971ff1a29027d3f468073938ab31e93bb308b83b13e600ad28e5",
+          "sha256:5ed8daca7d5df36951edd502643150f1bac07fb9b85911a1ad4ae4d795644de5",
+          "sha256:099824293ac421537396cd4cc1ed03f5a8753359f7729dd294d4723a93eddf7e",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:f728a00de809ca5f6a9d4a428c4d8269a8a367654f6c8f5197303d66cb8e6640",
+          "sha256:b8b40081c7087c54853e1731412c349320d036e1635917933c8e5881453cd317",
+          "sha256:814b0bc3291f3bea3269e14971ab815af13e753e78fe3eb9ffb3fe53f1df55c7",
+          "sha256:5030eb122e75090cb0f4dd90cbd0410551271955c64ff35cd0a956d747987928",
+          "sha256:78c9c55782c7ca789e205a14ed99168aa5c47aa719877ce815d21a2a57ab5071",
+          "sha256:7130d0110a2047fbdc6ddedc8fbf3ce83d1297f00181632b2e1c339adc05d644",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:c7ee3337a5b0322550e7d305d04d5374cb792520e84c05cbc8f75ec40f599919",
+          "sha256:54232513f32537353514758e8e27ea13b1347dcd010e818cc61fb57d6cf813b9",
+          "sha256:495a2708d5626b1b4808124b93055d492b51e2bd41326d57635c3cf5e7102de7",
+          "sha256:155343dca7141f262e53db8ef0c82decaa51f9aaa77ebdac5f5d233a48f5cc53",
+          "sha256:552ab58958b4777b7a637ce4d253b7a76d5946ce567a090a99f86aa4227a6fe8",
+          "sha256:8cac044818a89cbb9f3d8bee6ab71d0c2877bba577deb5629b18f018c6f149b1"
+        ],
+        "archive_path": ".cache/optimization-20261026/grafana-9a68d3a7.oci.tar",
+        "archive_bytes": 849540608,
+        "bound_archive_bytes": 849540608,
+        "bound_archive_sha256": "02332c39f6daed922cd030fbcaa00e4949e07b1c157776a2ca60640327e4e59b",
+        "archive_exists": true,
+        "archive_hash_not_repeated_in_this_readonly_plan": true,
+        "disposition": "retain entire graph, tag aliases, archive, evidence and copies; never rebuild to replace approved identity"
+      }
+    ],
+    "paid_provider_evidence": {
+      "original_linux_volume": "dr-opt-acceptance-live-ledger-20261026",
+      "copy": ".cache/optimization-20261026/live/provider-budget.sqlite3",
+      "copy_sha256": "ff8b7b0606b829c6170705b60cb2ab933e33a21fb17a2519669a257c420fb04d",
+      "matches_original_ledger_sha256_in_real_provider_receipt": true,
+      "all_originals_raws_and_copies_retained": true
+    },
+    "filesystem": {
+      "no_filesystem_deletions": true,
+      "protected_scopes": [
+        ".cache/**",
+        "docs/evidence/**",
+        "deployment/security/**",
+        "all original/new cold backups and isolated restore artifacts wherever located",
+        "all unknown/shared/personal paths"
+      ],
+      "old_topology_freeze": ".cache/optimization-20261026/pre-upgrade-deployment/",
+      "new_candidate_cold_snapshot": ".cache/optimization-20261026/unified-candidate-before/",
+      "all_copied_Grafana_backup_upgrade_volumes_and_containers": "retain; copied backup components are recovery/history evidence, not pure empty fixtures"
+    },
+    "other_or_unattributed_containers": {
+      "count": 201,
+      "disposition": "retain; no ownership inferred from labels/prefixes/stopped-state"
+    },
+    "all_volumes": {
+      "count": 194,
+      "delete_actions": 0,
+      "disposition": "retain; even synthetic volumes have creation/compatibility/history references unless explicitly retired later"
+    },
+    "all_images": {
+      "count": 170,
+      "delete_actions": 0,
+      "disposition": "retain all; no global prune or redundant-image proof attempted",
+      "inventory_scope": "170 unique top-level image IDs listed by docker image ls; all intermediate images and global BuildKit cache also protected. No image removal/prune proposed."
+    },
+    "networks_and_build_cache": {
+      "delete_actions": 0,
+      "global_build_cache": "untouched; no builder prune/system prune/volume prune/network prune"
+    }
+  },
+  "conditional_container_actions": [
+    {
+      "resource": {
+        "id": "26bb2b547cee414947dd48a0e9e65bb062711b97a7b23ebb596521ee35dee2ef",
+        "name": "dr-native-jvm-inventory-59418824fcaa",
+        "image_id": "sha256:20bae2ec4a9af26d8f730a5c21b2cb83ee093d4601a5df7cc7360f288ff7c3e7",
+        "created_at": "2026-10-26T13:23:38.335531331Z",
+        "state": "created",
+        "running": false,
+        "started_at": "0001-01-01T00:00:00Z",
+        "finished_at": "0001-01-01T00:00:00Z",
+        "exit_code": 0,
+        "oom_killed": false,
+        "compose_project_discovery_only": "dr-opt-acceptance",
+        "compose_service_discovery_only": "backend",
+        "actual_compose_config_hash_present": false,
+        "mounts": [],
+        "network_names": [
+          "none"
+        ],
+        "size_rw_bytes": 4096,
+        "size_rootfs_bytes": 412430336,
+        "readonly_diff_verification": {
+          "docker_diff_empty": true,
+          "allocated_size_rw_bytes": 4096,
+          "interpretation": "Never started, no mounts and no logical filesystem changes;4KiB allocated writable-layer metadata is not user data."
+        },
+        "identity_mount_state_fingerprint_sha256": "3c853c0192e82ffd02873d09f3b3da8fbb10c35a12cf8a31d801eed95f08f01c"
+      },
+      "creation_evidence": {
+        "name": "dr-native-jvm-inventory-59418824fcaa",
+        "creation_receipt": ".cache/optimization-20261026/native-ci-business/summary.json",
+        "creation_receipt_sha256": "544137acf38701bf75133e017f47933bf5469b5d68aa38b5fd7b6493c12fc2da",
+        "json_pointer": "/created_audit_container_retained",
+        "creation_purpose": "never-started native JVM metadata audit",
+        "expected_image_id": null,
+        "extra": {}
+      },
+      "action": "conditional_remove_never_started_metadata_audit_container_only",
+      "argv": [
+        "docker",
+        "rm",
+        "26bb2b547cee414947dd48a0e9e65bb062711b97a7b23ebb596521ee35dee2ef"
+      ],
+      "force": false,
+      "remove_volumes": false,
+      "execute_now": false,
+      "pre_execution_required": "All global prerequisites plus exact identity/state/mount/diff/receipt fingerprint recheck; any nonempty Docker diff or new mount/reference aborts this item."
+    },
+    {
+      "resource": {
+        "id": "e906f53161402ae88c2c20c0c0bad6675660046a84a43398418bd72d28021cd6",
+        "name": "dr-native-jvm-inventory-a43ae951d1e3",
+        "image_id": "sha256:20bae2ec4a9af26d8f730a5c21b2cb83ee093d4601a5df7cc7360f288ff7c3e7",
+        "created_at": "2026-10-26T13:40:44.473376992Z",
+        "state": "created",
+        "running": false,
+        "started_at": "0001-01-01T00:00:00Z",
+        "finished_at": "0001-01-01T00:00:00Z",
+        "exit_code": 0,
+        "oom_killed": false,
+        "compose_project_discovery_only": "dr-opt-acceptance",
+        "compose_service_discovery_only": "backend",
+        "actual_compose_config_hash_present": false,
+        "mounts": [],
+        "network_names": [
+          "none"
+        ],
+        "size_rw_bytes": 4096,
+        "size_rootfs_bytes": 412430336,
+        "readonly_diff_verification": {
+          "docker_diff_empty": true,
+          "allocated_size_rw_bytes": 4096,
+          "interpretation": "Never started, no mounts and no logical filesystem changes;4KiB allocated writable-layer metadata is not user data."
+        },
+        "identity_mount_state_fingerprint_sha256": "8945cfd9d774419734616e34dcf7450c5571c5cc8f7a576927c029b4746bf1c5"
+      },
+      "creation_evidence": {
+        "name": "dr-native-jvm-inventory-a43ae951d1e3",
+        "creation_receipt": ".cache/optimization-20261026/native-ci-business-final/summary.json",
+        "creation_receipt_sha256": "aff0e8dc42fe01063503ef3bb7d0df1a4b1e47c547fbd5cc6ecda01e1a0eb8ea",
+        "json_pointer": "/created_audit_container_retained",
+        "creation_purpose": "never-started native JVM metadata audit",
+        "expected_image_id": null,
+        "extra": {}
+      },
+      "action": "conditional_remove_never_started_metadata_audit_container_only",
+      "argv": [
+        "docker",
+        "rm",
+        "e906f53161402ae88c2c20c0c0bad6675660046a84a43398418bd72d28021cd6"
+      ],
+      "force": false,
+      "remove_volumes": false,
+      "execute_now": false,
+      "pre_execution_required": "All global prerequisites plus exact identity/state/mount/diff/receipt fingerprint recheck; any nonempty Docker diff or new mount/reference aborts this item."
+    },
+    {
+      "resource": {
+        "id": "32541c147ce4a2e6bcb925db04c8843df399dc4b7d00c9daa62d3a84702bbd33",
+        "name": "dr-native-jvm-inventory-8d04a238e798",
+        "image_id": "sha256:20bae2ec4a9af26d8f730a5c21b2cb83ee093d4601a5df7cc7360f288ff7c3e7",
+        "created_at": "2026-10-26T13:47:14.303282075Z",
+        "state": "created",
+        "running": false,
+        "started_at": "0001-01-01T00:00:00Z",
+        "finished_at": "0001-01-01T00:00:00Z",
+        "exit_code": 0,
+        "oom_killed": false,
+        "compose_project_discovery_only": "dr-opt-acceptance",
+        "compose_service_discovery_only": "backend",
+        "actual_compose_config_hash_present": false,
+        "mounts": [],
+        "network_names": [
+          "none"
+        ],
+        "size_rw_bytes": 4096,
+        "size_rootfs_bytes": 412430336,
+        "readonly_diff_verification": {
+          "docker_diff_empty": true,
+          "allocated_size_rw_bytes": 4096,
+          "interpretation": "Never started, no mounts and no logical filesystem changes;4KiB allocated writable-layer metadata is not user data."
+        },
+        "identity_mount_state_fingerprint_sha256": "8b63588cfda9f2c7aff622163e5e91484fada77fa0a302ccfaec6c8dcebfa250"
+      },
+      "creation_evidence": {
+        "name": "dr-native-jvm-inventory-8d04a238e798",
+        "creation_receipt": ".cache/optimization-20261026/native-ci-business-verified/summary.json",
+        "creation_receipt_sha256": "bade5edb47c73b673f1697544e9d72019639f2ffa3c27aa0b65b4028aa59974d",
+        "json_pointer": "/created_audit_container_retained",
+        "creation_purpose": "never-started native JVM metadata audit",
+        "expected_image_id": null,
+        "extra": {}
+      },
+      "action": "conditional_remove_never_started_metadata_audit_container_only",
+      "argv": [
+        "docker",
+        "rm",
+        "32541c147ce4a2e6bcb925db04c8843df399dc4b7d00c9daa62d3a84702bbd33"
+      ],
+      "force": false,
+      "remove_volumes": false,
+      "execute_now": false,
+      "pre_execution_required": "All global prerequisites plus exact identity/state/mount/diff/receipt fingerprint recheck; any nonempty Docker diff or new mount/reference aborts this item."
+    },
+    {
+      "resource": {
+        "id": "0dad590aa51e50f61e9d31d9f575776b2ff4fb9ac024f638030e531ef38fcf55",
+        "name": "dr-native-jvm-inventory-339156ffc27f",
+        "image_id": "sha256:95e66ef578a2e6a7ed744252edf687d07713e4e50ee1e9eb194cd0db522361ca",
+        "created_at": "2026-10-26T13:26:21.614362893Z",
+        "state": "created",
+        "running": false,
+        "started_at": "0001-01-01T00:00:00Z",
+        "finished_at": "0001-01-01T00:00:00Z",
+        "exit_code": 0,
+        "oom_killed": false,
+        "compose_project_discovery_only": null,
+        "compose_service_discovery_only": null,
+        "actual_compose_config_hash_present": false,
+        "mounts": [],
+        "network_names": [
+          "none"
+        ],
+        "size_rw_bytes": 4096,
+        "size_rootfs_bytes": 419594240,
+        "readonly_diff_verification": {
+          "docker_diff_empty": true,
+          "allocated_size_rw_bytes": 4096,
+          "interpretation": "Never started, no mounts and no logical filesystem changes;4KiB allocated writable-layer metadata is not user data."
+        },
+        "identity_mount_state_fingerprint_sha256": "b7df5e2454f7610c584b182fb7b0ffc86cf8fcbac8df140c90cbe0b2077d1f0e"
+      },
+      "creation_evidence": {
+        "name": "dr-native-jvm-inventory-339156ffc27f",
+        "creation_receipt": ".cache/optimization-20261026/native-ci-keycloak/summary.json",
+        "creation_receipt_sha256": "8b1ab976703ccb26ba58ace9c600df7b437e548cffa7e813a20ad19b46601ab7",
+        "json_pointer": "/created_audit_container_retained",
+        "creation_purpose": "never-started native JVM metadata audit",
+        "expected_image_id": null,
+        "extra": {}
+      },
+      "action": "conditional_remove_never_started_metadata_audit_container_only",
+      "argv": [
+        "docker",
+        "rm",
+        "0dad590aa51e50f61e9d31d9f575776b2ff4fb9ac024f638030e531ef38fcf55"
+      ],
+      "force": false,
+      "remove_volumes": false,
+      "execute_now": false,
+      "pre_execution_required": "All global prerequisites plus exact identity/state/mount/diff/receipt fingerprint recheck; any nonempty Docker diff or new mount/reference aborts this item."
+    },
+    {
+      "resource": {
+        "id": "69c0cf6c04e8eee831707c1ab5f2d8c4d768c57e7c6b367eead82a8ed85b6ae3",
+        "name": "dr-native-jvm-inventory-c977c21ef29b",
+        "image_id": "sha256:95e66ef578a2e6a7ed744252edf687d07713e4e50ee1e9eb194cd0db522361ca",
+        "created_at": "2026-10-26T13:40:45.154154214Z",
+        "state": "created",
+        "running": false,
+        "started_at": "0001-01-01T00:00:00Z",
+        "finished_at": "0001-01-01T00:00:00Z",
+        "exit_code": 0,
+        "oom_killed": false,
+        "compose_project_discovery_only": null,
+        "compose_service_discovery_only": null,
+        "actual_compose_config_hash_present": false,
+        "mounts": [],
+        "network_names": [
+          "none"
+        ],
+        "size_rw_bytes": 4096,
+        "size_rootfs_bytes": 419594240,
+        "readonly_diff_verification": {
+          "docker_diff_empty": true,
+          "allocated_size_rw_bytes": 4096,
+          "interpretation": "Never started, no mounts and no logical filesystem changes;4KiB allocated writable-layer metadata is not user data."
+        },
+        "identity_mount_state_fingerprint_sha256": "45d0a23f3284665215438dcf01e7c225e58df457abb5ac522a5f0ac9fb2055bf"
+      },
+      "creation_evidence": {
+        "name": "dr-native-jvm-inventory-c977c21ef29b",
+        "creation_receipt": ".cache/optimization-20261026/native-ci-keycloak-final/summary.json",
+        "creation_receipt_sha256": "180b567b9087ca198175122b6f13951df125ede95fb897173223c3f7fa6fd1b9",
+        "json_pointer": "/created_audit_container_retained",
+        "creation_purpose": "never-started native JVM metadata audit",
+        "expected_image_id": null,
+        "extra": {}
+      },
+      "action": "conditional_remove_never_started_metadata_audit_container_only",
+      "argv": [
+        "docker",
+        "rm",
+        "69c0cf6c04e8eee831707c1ab5f2d8c4d768c57e7c6b367eead82a8ed85b6ae3"
+      ],
+      "force": false,
+      "remove_volumes": false,
+      "execute_now": false,
+      "pre_execution_required": "All global prerequisites plus exact identity/state/mount/diff/receipt fingerprint recheck; any nonempty Docker diff or new mount/reference aborts this item."
+    },
+    {
+      "resource": {
+        "id": "96027ba1498c531f64e82fd245861fe0111c2eda65b98be9657e656abc56a3c2",
+        "name": "dr-native-jvm-inventory-855347146ee9",
+        "image_id": "sha256:95e66ef578a2e6a7ed744252edf687d07713e4e50ee1e9eb194cd0db522361ca",
+        "created_at": "2026-10-26T13:47:14.23972075Z",
+        "state": "created",
+        "running": false,
+        "started_at": "0001-01-01T00:00:00Z",
+        "finished_at": "0001-01-01T00:00:00Z",
+        "exit_code": 0,
+        "oom_killed": false,
+        "compose_project_discovery_only": null,
+        "compose_service_discovery_only": null,
+        "actual_compose_config_hash_present": false,
+        "mounts": [],
+        "network_names": [
+          "none"
+        ],
+        "size_rw_bytes": 4096,
+        "size_rootfs_bytes": 419594240,
+        "readonly_diff_verification": {
+          "docker_diff_empty": true,
+          "allocated_size_rw_bytes": 4096,
+          "interpretation": "Never started, no mounts and no logical filesystem changes;4KiB allocated writable-layer metadata is not user data."
+        },
+        "identity_mount_state_fingerprint_sha256": "fb6a9f88fcac4e81e84335b35a74ae50c6812cabc04892adec2df5a580948ce9"
+      },
+      "creation_evidence": {
+        "name": "dr-native-jvm-inventory-855347146ee9",
+        "creation_receipt": ".cache/optimization-20261026/native-ci-keycloak-verified/summary.json",
+        "creation_receipt_sha256": "e1ef4d5f3b62f534a585af16e2b446f8c9de9e512c3996a1b8945cc5d613a3d4",
+        "json_pointer": "/created_audit_container_retained",
+        "creation_purpose": "never-started native JVM metadata audit",
+        "expected_image_id": null,
+        "extra": {}
+      },
+      "action": "conditional_remove_never_started_metadata_audit_container_only",
+      "argv": [
+        "docker",
+        "rm",
+        "96027ba1498c531f64e82fd245861fe0111c2eda65b98be9657e656abc56a3c2"
+      ],
+      "force": false,
+      "remove_volumes": false,
+      "execute_now": false,
+      "pre_execution_required": "All global prerequisites plus exact identity/state/mount/diff/receipt fingerprint recheck; any nonempty Docker diff or new mount/reference aborts this item."
+    },
+    {
+      "resource": {
+        "id": "b3a07fbbbd5a4b37e47a0669a2673052054367380a16e59e62e97f73d9c3449b",
+        "name": "dr-grafana-approved-module-read-2bfff0ad",
+        "image_id": "sha256:9a68d3a7f3b96ffa643af86e5be5f91a723cc051678b4d445a879861bc335132",
+        "created_at": "2026-10-26T14:57:18.808433092Z",
+        "state": "created",
+        "running": false,
+        "started_at": "0001-01-01T00:00:00Z",
+        "finished_at": "0001-01-01T00:00:00Z",
+        "exit_code": 0,
+        "oom_killed": false,
+        "compose_project_discovery_only": null,
+        "compose_service_discovery_only": null,
+        "actual_compose_config_hash_present": false,
+        "mounts": [],
+        "network_names": [
+          "none"
+        ],
+        "size_rw_bytes": 4096,
+        "size_rootfs_bytes": 2570031104,
+        "readonly_diff_verification": {
+          "docker_diff_empty": true,
+          "allocated_size_rw_bytes": 4096,
+          "interpretation": "Never started, no mounts and no logical filesystem changes;4KiB allocated writable-layer metadata is not user data."
+        },
+        "identity_mount_state_fingerprint_sha256": "7d33cfe82abb4bbe6146cfc04a76f2bbde56aa80ba6ec8fcc72aa9f60535d8f3"
+      },
+      "creation_evidence": {
+        "name": "dr-grafana-approved-module-read-2bfff0ad",
+        "creation_receipt": "deployment/security/grafana-fixed-evidence/local-module-inventory-identity.json",
+        "creation_receipt_sha256": "cd9ad43f955c5411adcba3cd58bcda0c3127db1eae9c18ec85550507b6ebb022",
+        "json_pointer": "/rows/27/created_read_only_container_retained",
+        "creation_purpose": "never-started approved-image module metadata audit",
+        "expected_image_id": null,
+        "extra": {}
+      },
+      "action": "conditional_remove_never_started_metadata_audit_container_only",
+      "argv": [
+        "docker",
+        "rm",
+        "b3a07fbbbd5a4b37e47a0669a2673052054367380a16e59e62e97f73d9c3449b"
+      ],
+      "force": false,
+      "remove_volumes": false,
+      "execute_now": false,
+      "pre_execution_required": "All global prerequisites plus exact identity/state/mount/diff/receipt fingerprint recheck; any nonempty Docker diff or new mount/reference aborts this item."
+    },
+    {
+      "resource": {
+        "id": "d8d35c2cadb26e8759dc3372788477ee10244daf8174d80ddae9e9e4d12e4503",
+        "name": "dr-opt-grafana-tamper-20261026",
+        "image_id": "sha256:3d947d14c4ff27e35df9854f3766eadbf527f28f33dcc87492f52d929271f8f0",
+        "created_at": "2026-10-26T12:55:01.126707052Z",
+        "state": "exited",
+        "running": false,
+        "started_at": "2026-10-26T13:07:20.979937887Z",
+        "finished_at": "2026-10-26T13:07:29.154132964Z",
+        "exit_code": 0,
+        "oom_killed": false,
+        "compose_project_discovery_only": null,
+        "compose_service_discovery_only": null,
+        "actual_compose_config_hash_present": false,
+        "mounts": [],
+        "network_names": [
+          "none"
+        ],
+        "size_rw_bytes": 1568768,
+        "size_rootfs_bytes": 2604716032,
+        "identity_mount_state_fingerprint_sha256": "91ad705620a0364ba7dc018c43cbe3f643b1310004f1d09aa5637601145e9d53"
+      },
+      "creation_evidence": {
+        "name": "dr-opt-grafana-tamper-20261026",
+        "creation_receipt": "docs/evidence/optimization-20261026/grafana-tamper-isolated.json",
+        "creation_receipt_sha256": "96d7d1fc02bc949a71861f4f6a1ee703d7882d197433aa9538268ffd78b26441",
+        "json_pointer": "/container",
+        "creation_purpose": "stopped synthetic Grafana tamper fixture; no live data/mounts",
+        "expected_image_id": "sha256:3d947d14c4ff27e35df9854f3766eadbf527f28f33dcc87492f52d929271f8f0",
+        "extra": {}
+      },
+      "action": "conditional_remove_stopped_container_only",
+      "argv": [
+        "docker",
+        "rm",
+        "d8d35c2cadb26e8759dc3372788477ee10244daf8174d80ddae9e9e4d12e4503"
+      ],
+      "force": false,
+      "remove_volumes": false,
+      "execute_now": false,
+      "pre_execution_required": "All global prerequisites plus re-inspect exactID/name/image/mounts/stopped-state and creation fingerprint. Any drift aborts this item."
+    },
+    {
+      "resource": {
+        "id": "6a60d6dee5752a43c5c79007fa5b80758eb835109a8eb862463b1acbe4176dd1",
+        "name": "dr-opt-grafana-musl-tamper-20261026",
+        "image_id": "sha256:bf6972e1653e4707c1e37d3a4c989fd5bc9be42641920164fb4a68fff02da371",
+        "created_at": "2026-10-26T13:58:25.643423861Z",
+        "state": "exited",
+        "running": false,
+        "started_at": "2026-10-26T13:58:26.902544385Z",
+        "finished_at": "2026-10-26T13:58:40.225050168Z",
+        "exit_code": 0,
+        "oom_killed": false,
+        "compose_project_discovery_only": null,
+        "compose_service_discovery_only": null,
+        "actual_compose_config_hash_present": false,
+        "mounts": [],
+        "network_names": [
+          "none"
+        ],
+        "size_rw_bytes": 1568768,
+        "size_rootfs_bytes": 2613260288,
+        "identity_mount_state_fingerprint_sha256": "8400c657e97c626c6929273e193d1f9d390f6644f70c73bfd92103a82806a0c7"
+      },
+      "creation_evidence": {
+        "name": "dr-opt-grafana-musl-tamper-20261026",
+        "creation_receipt": "docs/evidence/optimization-20261026/grafana-musl-fixed-tamper-isolated.json",
+        "creation_receipt_sha256": "8483e2e638683353bed1ec2ecdfed927d2d41cc72136bff64114f8f7ad8a608d",
+        "json_pointer": "/container",
+        "creation_purpose": "stopped synthetic Grafana tamper fixture; no live data/mounts",
+        "expected_image_id": "sha256:bf6972e1653e4707c1e37d3a4c989fd5bc9be42641920164fb4a68fff02da371",
+        "extra": {}
+      },
+      "action": "conditional_remove_stopped_container_only",
+      "argv": [
+        "docker",
+        "rm",
+        "6a60d6dee5752a43c5c79007fa5b80758eb835109a8eb862463b1acbe4176dd1"
+      ],
+      "force": false,
+      "remove_volumes": false,
+      "execute_now": false,
+      "pre_execution_required": "All global prerequisites plus re-inspect exactID/name/image/mounts/stopped-state and creation fingerprint. Any drift aborts this item."
+    },
+    {
+      "resource": {
+        "id": "6f92ae90edf4191e16fe1b60ad9e84b73360c7b54c43aa9f7955c827a57332de",
+        "name": "dr-opt-alertmanager-compat-20261026-receiver",
+        "image_id": "sha256:7c1c90f8cc705065a25f75540a9e737566cbc1d9a1866b6970add341628951b5",
+        "created_at": "2026-10-26T10:46:39.653860504Z",
+        "state": "exited",
+        "running": false,
+        "started_at": "2026-10-26T10:46:40.444283045Z",
+        "finished_at": "2026-10-26T10:47:12.432547945Z",
+        "exit_code": 137,
+        "oom_killed": false,
+        "compose_project_discovery_only": "dr-opt-acceptance",
+        "compose_service_discovery_only": "agent",
+        "actual_compose_config_hash_present": false,
+        "mounts": [
+          {
+            "type": "bind",
+            "name": null,
+            "destination": "/receipts",
+            "source": "E:\\project\\DeepResearch\\.cache\\optimization-20261026\\alertmanager-webhook",
+            "rw": true
+          },
+          {
+            "type": "bind",
+            "name": null,
+            "destination": "/receiver.py",
+            "source": "E:\\project\\DeepResearch\\.cache\\optimization-20261026\\alertmanager-receiver-fixture.py",
+            "rw": false
+          }
+        ],
+        "network_names": [
+          "dr-opt-alertmanager-compat-20261026"
+        ],
+        "size_rw_bytes": 8192,
+        "size_rootfs_bytes": 462069760,
+        "identity_mount_state_fingerprint_sha256": "7fcca844da5fb33ccbea5f46faaf06e4366938a9c0b57269127257e163b03d11"
+      },
+      "creation_evidence": {
+        "name": "dr-opt-alertmanager-compat-20261026-receiver",
+        "creation_receipt": "docs/evidence/optimization-20261026/alertmanager-upgrade-isolated.json",
+        "creation_receipt_sha256": "6ed2f8b627428ecaf373c61bcec5df0eb8228964c822d11baecba28db0c05956",
+        "json_pointer": "/resources_retained/containers/0",
+        "creation_purpose": "stopped synthetic silence/delivery fixture; preserve all named volumes and bind files",
+        "expected_image_id": null,
+        "extra": {
+          "synthetic_volume_retained": "dr-opt-alertmanager-compat-20261026-data"
+        }
+      },
+      "action": "conditional_remove_stopped_container_only",
+      "argv": [
+        "docker",
+        "rm",
+        "6f92ae90edf4191e16fe1b60ad9e84b73360c7b54c43aa9f7955c827a57332de"
+      ],
+      "force": false,
+      "remove_volumes": false,
+      "execute_now": false,
+      "pre_execution_required": "All global prerequisites plus re-inspect exactID/name/image/mounts/stopped-state and creation fingerprint. Any drift aborts this item."
+    },
+    {
+      "resource": {
+        "id": "5c6a0afba6029c2dee4ba9413634172219b0e35a7749e9463f417af71b200b63",
+        "name": "dr-opt-alertmanager-compat-20261026-old",
+        "image_id": "sha256:27c475db5fb156cab31d5c18a4251ac7ed567746a2483ff264516437a39b15ba",
+        "created_at": "2026-10-26T10:46:41.987538338Z",
+        "state": "exited",
+        "running": false,
+        "started_at": "2026-10-26T10:46:42.430114412Z",
+        "finished_at": "2026-10-26T10:46:46.130583951Z",
+        "exit_code": 0,
+        "oom_killed": false,
+        "compose_project_discovery_only": null,
+        "compose_service_discovery_only": null,
+        "actual_compose_config_hash_present": false,
+        "mounts": [
+          {
+            "type": "volume",
+            "name": "dr-opt-alertmanager-compat-20261026-data",
+            "destination": "/alertmanager",
+            "source": "/var/lib/docker/volumes/dr-opt-alertmanager-compat-20261026-data/_data",
+            "rw": true
+          },
+          {
+            "type": "bind",
+            "name": null,
+            "destination": "/etc/alertmanager.yml",
+            "source": "/run/desktop/mnt/host/e/project/DeepResearch/observability/alertmanager.yml",
+            "rw": false
+          },
+          {
+            "type": "bind",
+            "name": null,
+            "destination": "/run/secrets/alert_relay_token",
+            "source": "/run/desktop/mnt/host/e/project/DeepResearch/.cache/optimization-20261026/alertmanager-token-fixture",
+            "rw": false
+          }
+        ],
+        "network_names": [
+          "dr-opt-alertmanager-compat-20261026"
+        ],
+        "size_rw_bytes": 16384,
+        "size_rootfs_bytes": 75264000,
+        "identity_mount_state_fingerprint_sha256": "4259ca345d71f92dce479b5d9e99f6a176ce68d287bede32613f2e1714ab4ef6"
+      },
+      "creation_evidence": {
+        "name": "dr-opt-alertmanager-compat-20261026-old",
+        "creation_receipt": "docs/evidence/optimization-20261026/alertmanager-upgrade-isolated.json",
+        "creation_receipt_sha256": "6ed2f8b627428ecaf373c61bcec5df0eb8228964c822d11baecba28db0c05956",
+        "json_pointer": "/resources_retained/containers/1",
+        "creation_purpose": "stopped synthetic silence/delivery fixture; preserve all named volumes and bind files",
+        "expected_image_id": null,
+        "extra": {
+          "synthetic_volume_retained": "dr-opt-alertmanager-compat-20261026-data"
+        }
+      },
+      "action": "conditional_remove_stopped_container_only",
+      "argv": [
+        "docker",
+        "rm",
+        "5c6a0afba6029c2dee4ba9413634172219b0e35a7749e9463f417af71b200b63"
+      ],
+      "force": false,
+      "remove_volumes": false,
+      "execute_now": false,
+      "pre_execution_required": "All global prerequisites plus re-inspect exactID/name/image/mounts/stopped-state and creation fingerprint. Any drift aborts this item."
+    },
+    {
+      "resource": {
+        "id": "b72f5faf095edcbe88d10b1890c5768650137d48ac9fc87a6f3830cf0f2dd31c",
+        "name": "dr-opt-alertmanager-compat-20261026-new",
+        "image_id": "sha256:d9af99a479e9f3457b577e1c8d61aa7775e581631019879080c1d382348710c9",
+        "created_at": "2026-10-26T10:46:47.120289314Z",
+        "state": "exited",
+        "running": false,
+        "started_at": "2026-10-26T10:46:47.617989739Z",
+        "finished_at": "2026-10-26T10:47:13.780583665Z",
+        "exit_code": 0,
+        "oom_killed": false,
+        "compose_project_discovery_only": null,
+        "compose_service_discovery_only": null,
+        "actual_compose_config_hash_present": false,
+        "mounts": [
+          {
+            "type": "volume",
+            "name": "dr-opt-alertmanager-compat-20261026-data",
+            "destination": "/alertmanager",
+            "source": "/var/lib/docker/volumes/dr-opt-alertmanager-compat-20261026-data/_data",
+            "rw": true
+          },
+          {
+            "type": "bind",
+            "name": null,
+            "destination": "/etc/alertmanager.yml",
+            "source": "/run/desktop/mnt/host/e/project/DeepResearch/observability/alertmanager.yml",
+            "rw": false
+          },
+          {
+            "type": "bind",
+            "name": null,
+            "destination": "/run/secrets/alert_relay_token",
+            "source": "/run/desktop/mnt/host/e/project/DeepResearch/.cache/optimization-20261026/alertmanager-token-fixture",
+            "rw": false
+          }
+        ],
+        "network_names": [
+          "dr-opt-alertmanager-compat-20261026"
+        ],
+        "size_rw_bytes": 16384,
+        "size_rootfs_bytes": 139849728,
+        "identity_mount_state_fingerprint_sha256": "7f2d8cfddb4b299ab6633d96b325837d4a6d72766abed871a523db6a8f619c4a"
+      },
+      "creation_evidence": {
+        "name": "dr-opt-alertmanager-compat-20261026-new",
+        "creation_receipt": "docs/evidence/optimization-20261026/alertmanager-upgrade-isolated.json",
+        "creation_receipt_sha256": "6ed2f8b627428ecaf373c61bcec5df0eb8228964c822d11baecba28db0c05956",
+        "json_pointer": "/resources_retained/containers/2",
+        "creation_purpose": "stopped synthetic silence/delivery fixture; preserve all named volumes and bind files",
+        "expected_image_id": null,
+        "extra": {
+          "synthetic_volume_retained": "dr-opt-alertmanager-compat-20261026-data"
+        }
+      },
+      "action": "conditional_remove_stopped_container_only",
+      "argv": [
+        "docker",
+        "rm",
+        "b72f5faf095edcbe88d10b1890c5768650137d48ac9fc87a6f3830cf0f2dd31c"
+      ],
+      "force": false,
+      "remove_volumes": false,
+      "execute_now": false,
+      "pre_execution_required": "All global prerequisites plus re-inspect exactID/name/image/mounts/stopped-state and creation fingerprint. Any drift aborts this item."
+    },
+    {
+      "resource": {
+        "id": "71f7ce9d0fd29ed4044a2189c8b550f7e4312e447eb0ea42241e6ce1cfc039b0",
+        "name": "dr-opt-alertmanager-final-20261026-receiver",
+        "image_id": "sha256:7c1c90f8cc705065a25f75540a9e737566cbc1d9a1866b6970add341628951b5",
+        "created_at": "2026-10-26T13:22:34.262225607Z",
+        "state": "exited",
+        "running": false,
+        "started_at": "2026-10-26T13:22:34.532856945Z",
+        "finished_at": "2026-10-26T13:23:08.117226134Z",
+        "exit_code": 137,
+        "oom_killed": false,
+        "compose_project_discovery_only": "dr-opt-acceptance",
+        "compose_service_discovery_only": "agent",
+        "actual_compose_config_hash_present": false,
+        "mounts": [
+          {
+            "type": "bind",
+            "name": null,
+            "destination": "/receipts",
+            "source": "E:\\project\\DeepResearch\\.cache\\optimization-20261026\\alertmanager-final-vcs-fixture",
+            "rw": true
+          },
+          {
+            "type": "bind",
+            "name": null,
+            "destination": "/receiver.py",
+            "source": "E:\\project\\DeepResearch\\.cache\\optimization-20261026\\alertmanager-receiver-fixture.py",
+            "rw": false
+          }
+        ],
+        "network_names": [
+          "dr-opt-alertmanager-final-20261026"
+        ],
+        "size_rw_bytes": 8192,
+        "size_rootfs_bytes": 462069760,
+        "identity_mount_state_fingerprint_sha256": "8cdc56d9c378476f1250474c77ef352ccd9ad0a2af132d6218357b52fe9593fc"
+      },
+      "creation_evidence": {
+        "name": "dr-opt-alertmanager-final-20261026-receiver",
+        "creation_receipt": "docs/evidence/optimization-20261026/alertmanager-final-vcs-upgrade-isolated.json",
+        "creation_receipt_sha256": "b0976f8683b9720d8513176e94e7f2017ee12aa98e687580ed0f5e947d1a1204",
+        "json_pointer": "/resources_retained/containers/0",
+        "creation_purpose": "stopped synthetic silence/delivery fixture; preserve all named volumes and bind files",
+        "expected_image_id": null,
+        "extra": {
+          "synthetic_volume_retained": "dr-opt-alertmanager-final-20261026-data"
+        }
+      },
+      "action": "conditional_remove_stopped_container_only",
+      "argv": [
+        "docker",
+        "rm",
+        "71f7ce9d0fd29ed4044a2189c8b550f7e4312e447eb0ea42241e6ce1cfc039b0"
+      ],
+      "force": false,
+      "remove_volumes": false,
+      "execute_now": false,
+      "pre_execution_required": "All global prerequisites plus re-inspect exactID/name/image/mounts/stopped-state and creation fingerprint. Any drift aborts this item."
+    },
+    {
+      "resource": {
+        "id": "be3e1b0cc1080338174116749df37017e7f1f9738dd92518ac587405878b673a",
+        "name": "dr-opt-alertmanager-final-20261026-old",
+        "image_id": "sha256:27c475db5fb156cab31d5c18a4251ac7ed567746a2483ff264516437a39b15ba",
+        "created_at": "2026-10-26T13:22:35.721875286Z",
+        "state": "exited",
+        "running": false,
+        "started_at": "2026-10-26T13:22:36.104498548Z",
+        "finished_at": "2026-10-26T13:22:39.282461261Z",
+        "exit_code": 0,
+        "oom_killed": false,
+        "compose_project_discovery_only": null,
+        "compose_service_discovery_only": null,
+        "actual_compose_config_hash_present": false,
+        "mounts": [
+          {
+            "type": "volume",
+            "name": "dr-opt-alertmanager-final-20261026-data",
+            "destination": "/alertmanager",
+            "source": "/var/lib/docker/volumes/dr-opt-alertmanager-final-20261026-data/_data",
+            "rw": true
+          },
+          {
+            "type": "bind",
+            "name": null,
+            "destination": "/etc/alertmanager.yml",
+            "source": "/run/desktop/mnt/host/e/project/DeepResearch/observability/alertmanager.yml",
+            "rw": false
+          },
+          {
+            "type": "bind",
+            "name": null,
+            "destination": "/run/secrets/alert_relay_token",
+            "source": "/run/desktop/mnt/host/e/project/DeepResearch/.cache/optimization-20261026/alertmanager-token-fixture",
+            "rw": false
+          }
+        ],
+        "network_names": [
+          "dr-opt-alertmanager-final-20261026"
+        ],
+        "size_rw_bytes": 16384,
+        "size_rootfs_bytes": 75264000,
+        "identity_mount_state_fingerprint_sha256": "30fc2dfc49e684b6952eba44f8c816072cc053f2db39c4ab323309c89589d489"
+      },
+      "creation_evidence": {
+        "name": "dr-opt-alertmanager-final-20261026-old",
+        "creation_receipt": "docs/evidence/optimization-20261026/alertmanager-final-vcs-upgrade-isolated.json",
+        "creation_receipt_sha256": "b0976f8683b9720d8513176e94e7f2017ee12aa98e687580ed0f5e947d1a1204",
+        "json_pointer": "/resources_retained/containers/1",
+        "creation_purpose": "stopped synthetic silence/delivery fixture; preserve all named volumes and bind files",
+        "expected_image_id": null,
+        "extra": {
+          "synthetic_volume_retained": "dr-opt-alertmanager-final-20261026-data"
+        }
+      },
+      "action": "conditional_remove_stopped_container_only",
+      "argv": [
+        "docker",
+        "rm",
+        "be3e1b0cc1080338174116749df37017e7f1f9738dd92518ac587405878b673a"
+      ],
+      "force": false,
+      "remove_volumes": false,
+      "execute_now": false,
+      "pre_execution_required": "All global prerequisites plus re-inspect exactID/name/image/mounts/stopped-state and creation fingerprint. Any drift aborts this item."
+    },
+    {
+      "resource": {
+        "id": "4b88e6180aaf5f7fdfc98e624d1b39d6653dd4361053e3c8e1b92025933e9c38",
+        "name": "dr-opt-alertmanager-final-20261026-new",
+        "image_id": "sha256:074c701cb3dd75766133cbd229ca6b6b285fc972f956ff6e6c1b326294a19d0c",
+        "created_at": "2026-10-26T13:22:39.995415168Z",
+        "state": "exited",
+        "running": false,
+        "started_at": "2026-10-26T13:22:40.160439866Z",
+        "finished_at": "2026-10-26T13:22:57.084451133Z",
+        "exit_code": 0,
+        "oom_killed": false,
+        "compose_project_discovery_only": null,
+        "compose_service_discovery_only": null,
+        "actual_compose_config_hash_present": false,
+        "mounts": [
+          {
+            "type": "volume",
+            "name": "dr-opt-alertmanager-final-20261026-data",
+            "destination": "/alertmanager",
+            "source": "/var/lib/docker/volumes/dr-opt-alertmanager-final-20261026-data/_data",
+            "rw": true
+          },
+          {
+            "type": "bind",
+            "name": null,
+            "destination": "/etc/alertmanager.yml",
+            "source": "/run/desktop/mnt/host/e/project/DeepResearch/observability/alertmanager.yml",
+            "rw": false
+          },
+          {
+            "type": "bind",
+            "name": null,
+            "destination": "/run/secrets/alert_relay_token",
+            "source": "/run/desktop/mnt/host/e/project/DeepResearch/.cache/optimization-20261026/alertmanager-token-fixture",
+            "rw": false
+          }
+        ],
+        "network_names": [
+          "dr-opt-alertmanager-final-20261026"
+        ],
+        "size_rw_bytes": 16384,
+        "size_rootfs_bytes": 139898880,
+        "identity_mount_state_fingerprint_sha256": "1b1b537f94a1de15be8f4238592ff308c421c9cedf6813672ef69229edb12142"
+      },
+      "creation_evidence": {
+        "name": "dr-opt-alertmanager-final-20261026-new",
+        "creation_receipt": "docs/evidence/optimization-20261026/alertmanager-final-vcs-upgrade-isolated.json",
+        "creation_receipt_sha256": "b0976f8683b9720d8513176e94e7f2017ee12aa98e687580ed0f5e947d1a1204",
+        "json_pointer": "/resources_retained/containers/2",
+        "creation_purpose": "stopped synthetic silence/delivery fixture; preserve all named volumes and bind files",
+        "expected_image_id": null,
+        "extra": {
+          "synthetic_volume_retained": "dr-opt-alertmanager-final-20261026-data"
+        }
+      },
+      "action": "conditional_remove_stopped_container_only",
+      "argv": [
+        "docker",
+        "rm",
+        "4b88e6180aaf5f7fdfc98e624d1b39d6653dd4361053e3c8e1b92025933e9c38"
+      ],
+      "force": false,
+      "remove_volumes": false,
+      "execute_now": false,
+      "pre_execution_required": "All global prerequisites plus re-inspect exactID/name/image/mounts/stopped-state and creation fingerprint. Any drift aborts this item."
+    },
+    {
+      "resource": {
+        "id": "8c7f241f06726f0f32432dce11d63ebe06a7b3c1766f4ad6ca1262f3c9d05450",
+        "name": "dr-opt-monitor-storage-20261026-prometheus-1",
+        "image_id": "sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a",
+        "created_at": "2026-10-26T13:29:31.647912261Z",
+        "state": "exited",
+        "running": false,
+        "started_at": "2026-10-26T13:29:32.19851024Z",
+        "finished_at": "2026-10-26T13:29:37.571917143Z",
+        "exit_code": 137,
+        "oom_killed": false,
+        "compose_project_discovery_only": "dr-opt-monitor-storage-20261026",
+        "compose_service_discovery_only": "prometheus",
+        "actual_compose_config_hash_present": true,
+        "mounts": [
+          {
+            "type": "volume",
+            "name": "00c0ee102f7b3a49c1c7fee71a65a52c63905bc6d782a5f4477cb3b22401c428",
+            "destination": "/prometheus",
+            "source": "/var/lib/docker/volumes/00c0ee102f7b3a49c1c7fee71a65a52c63905bc6d782a5f4477cb3b22401c428/_data",
+            "rw": true
+          }
+        ],
+        "network_names": [
+          "none"
+        ],
+        "size_rw_bytes": 8192,
+        "size_rootfs_bytes": 9113600,
+        "readonly_data_path_verification": {
+          "path": "/prometheus",
+          "files": {
+            "state": {
+              "sha256": "81e66232fd1e32eb18b0b96340ce097b5feb3b5771e9170d685f954fd950e1fd",
+              "size": 15
+            }
+          },
+          "scope": "Only expected synthetic file bytes in managed data path; no claim that an unknown volume is disposable"
+        },
+        "identity_mount_state_fingerprint_sha256": "4231e3a450a000bdb4795519acd5315e075f4224c736483405ae17bf181108b9"
+      },
+      "creation_evidence": {
+        "name": "dr-opt-monitor-storage-20261026-prometheus-1",
+        "creation_receipt": ".cache/optimization-20261026/monitor-storage-fixture/prometheus-snapshot/snapshot.private.json",
+        "creation_receipt_sha256": "7966e5c0c301a3b83ee65b419706bc092743b961c008082edd498c238a430a71",
+        "json_pointer": "/source/container_id",
+        "creation_purpose": "stopped synthetic one-file monitoring-storage migration fixture",
+        "expected_image_id": null,
+        "extra": {
+          "exact_id_from_receipt": "8c7f241f06726f0f32432dce11d63ebe06a7b3c1766f4ad6ca1262f3c9d05450",
+          "path": "/prometheus",
+          "public_scope_receipt": "docs/evidence/optimization-20261026/monitoring-volume-migration-isolated.json"
+        }
+      },
+      "action": "conditional_remove_stopped_container_only",
+      "argv": [
+        "docker",
+        "rm",
+        "8c7f241f06726f0f32432dce11d63ebe06a7b3c1766f4ad6ca1262f3c9d05450"
+      ],
+      "force": false,
+      "remove_volumes": false,
+      "execute_now": false,
+      "pre_execution_required": "All global prerequisites plus re-inspect exactID/name/image/mounts/stopped-state and creation fingerprint. Any drift aborts this item."
+    },
+    {
+      "resource": {
+        "id": "d0a1688de18b3b877a2bd8449b79bbd13d2462e7723b176564623e86f32ad6ae",
+        "name": "dr-opt-monitor-storage-20261026-alertmanager-1",
+        "image_id": "sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a",
+        "created_at": "2026-10-26T13:29:31.637355402Z",
+        "state": "exited",
+        "running": false,
+        "started_at": "2026-10-26T13:29:31.76715451Z",
+        "finished_at": "2026-10-26T13:29:37.571496424Z",
+        "exit_code": 137,
+        "oom_killed": false,
+        "compose_project_discovery_only": "dr-opt-monitor-storage-20261026",
+        "compose_service_discovery_only": "alertmanager",
+        "actual_compose_config_hash_present": true,
+        "mounts": [],
+        "network_names": [
+          "none"
+        ],
+        "size_rw_bytes": 12288,
+        "size_rootfs_bytes": 9117696,
+        "readonly_data_path_verification": {
+          "path": "/alertmanager",
+          "files": {
+            "state": {
+              "sha256": "b38cd303dd3d2c5794a67fc26d86d6d149e5a708312beb1e84b0892eda602ad8",
+              "size": 15
+            }
+          },
+          "scope": "Only expected synthetic file bytes in managed data path; no claim that an unknown volume is disposable"
+        },
+        "identity_mount_state_fingerprint_sha256": "fc7811ff799537d325ba51022a63ecb64d99b8333b96a179de5285ea5f68a085"
+      },
+      "creation_evidence": {
+        "name": "dr-opt-monitor-storage-20261026-alertmanager-1",
+        "creation_receipt": ".cache/optimization-20261026/monitor-storage-fixture/alertmanager-snapshot/snapshot.private.json",
+        "creation_receipt_sha256": "e008b46fa942a68b671aef9963c32acc317162a12a4aea6f3b0be428d8e559b8",
+        "json_pointer": "/source/container_id",
+        "creation_purpose": "stopped synthetic one-file monitoring-storage migration fixture",
+        "expected_image_id": null,
+        "extra": {
+          "exact_id_from_receipt": "d0a1688de18b3b877a2bd8449b79bbd13d2462e7723b176564623e86f32ad6ae",
+          "path": "/alertmanager",
+          "public_scope_receipt": "docs/evidence/optimization-20261026/monitoring-volume-migration-isolated.json"
+        }
+      },
+      "action": "conditional_remove_stopped_container_only",
+      "argv": [
+        "docker",
+        "rm",
+        "d0a1688de18b3b877a2bd8449b79bbd13d2462e7723b176564623e86f32ad6ae"
+      ],
+      "force": false,
+      "remove_volumes": false,
+      "execute_now": false,
+      "pre_execution_required": "All global prerequisites plus re-inspect exactID/name/image/mounts/stopped-state and creation fingerprint. Any drift aborts this item."
+    },
+    {
+      "resource": {
+        "id": "542c9c0fb6031912f0c1ab961cc2b462f3bc2f55f46c82159c5bb14eba772a26",
+        "name": "dr-approved-minio-entry-21990e2b-server",
+        "image_id": "sha256:151cd83d5e6500f4d1b3d7f0a12756fe80e8ffcbf91150afd6b9b9605bc2369a",
+        "created_at": "2026-10-26T13:08:27.938346414Z",
+        "state": "exited",
+        "running": false,
+        "started_at": "2026-10-26T13:08:28.131194083Z",
+        "finished_at": "2026-10-26T13:08:30.868127837Z",
+        "exit_code": 0,
+        "oom_killed": false,
+        "compose_project_discovery_only": null,
+        "compose_service_discovery_only": null,
+        "actual_compose_config_hash_present": false,
+        "mounts": [
+          {
+            "type": "volume",
+            "name": "dr-approved-minio-entry-21990e2b-empty-data",
+            "destination": "/minio_data",
+            "source": "/var/lib/docker/volumes/dr-approved-minio-entry-21990e2b-empty-data/_data",
+            "rw": true
+          }
+        ],
+        "network_names": [
+          "none"
+        ],
+        "size_rw_bytes": 28672,
+        "size_rootfs_bytes": 295391232,
+        "identity_mount_state_fingerprint_sha256": "dfdd39d924c2e2f258af6cdaa3481b704148ab32ec5d7fa2cedaf5a446236c5f"
+      },
+      "creation_evidence": {
+        "name": "dr-approved-minio-entry-21990e2b-server",
+        "creation_receipt": ".cache/optimization-20261026/minio-ci-integration/entry-health.json",
+        "creation_receipt_sha256": "919b30f09bfc5ba1b6114c82914d10bbd81d9cc8c01cdd17acec4e80a7a0b0a1",
+        "json_pointer": "/resources_retained/container",
+        "creation_purpose": "stopped exact-approved MinIO empty synthetic startup/health fixture",
+        "expected_image_id": "sha256:151cd83d5e6500f4d1b3d7f0a12756fe80e8ffcbf91150afd6b9b9605bc2369a",
+        "extra": {
+          "synthetic_volume_retained": "dr-approved-minio-entry-21990e2b-empty-data"
+        }
+      },
+      "action": "conditional_remove_stopped_container_only",
+      "argv": [
+        "docker",
+        "rm",
+        "542c9c0fb6031912f0c1ab961cc2b462f3bc2f55f46c82159c5bb14eba772a26"
+      ],
+      "force": false,
+      "remove_volumes": false,
+      "execute_now": false,
+      "pre_execution_required": "All global prerequisites plus re-inspect exactID/name/image/mounts/stopped-state and creation fingerprint. Any drift aborts this item."
+    }
+  ],
+  "reviewed_but_retained": [],
+  "volume_actions": [],
+  "image_actions": [],
+  "network_actions": [],
+  "filesystem_actions": [],
+  "forbidden_operations": [
+    "docker rm -f",
+    "docker rm -v",
+    "docker compose down",
+    "any prune",
+    "global build-cache cleanup",
+    "PowerShell permanent filesystem deletion"
+  ],
+  "input_manifests": {
+    ".cache/optimization-20261026/cleanup-plan-inputs/containers-redacted.json": "bbed10dc8c19142802acb10dcd553ddd447f3d740aaebc58b13b02a420031a4e",
+    ".cache/optimization-20261026/cleanup-plan-inputs/volumes-redacted.json": "9fe86582b3088e40778daa688019a1c7cbfeebf64b0138c98b5e9e1c4a25aef9",
+    ".cache/optimization-20261026/cleanup-plan-inputs/images-retained.json": "586e4b9f5f6aebaee770c58d9cfb94485732cea201d3fb82701332c042f5e5c8",
+    ".cache/optimization-20261026/cleanup-plan-inputs/metadata-helper-readonly-diff.json": "7b5f3eac3fe744b6003add9175c84a415c022bcc5afa3ec0c5350b1baba1248f"
+  },
+  "execution_command_boundary": "The argv arrays are reviewable future commands only; no loop/script has been executed. Commands remove only exact stopped container IDs, never volumes/images/files.",
+  "space_reclaim_claim": "No disk-reclaim amount claimed; shared layers and Docker Desktop sparse VHDX make container counts insufficient.",
+  "metadata_helper_4k_allocation_note": "Seven exact never-started/no-mount helpers allocate4KiB; only those with docker diff empty qualify. Allocation size alone does not prove user data or emptiness.",
+  "unlisted_or_new_resources": "Always retain. Absence from this snapshot is never deletion authority."
+}

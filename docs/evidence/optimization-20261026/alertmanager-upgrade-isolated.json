@@ -1,0 +1,26 @@
+{
+  "status": "passed",
+  "original_version": "0.28.1",
+  "candidate": "dr-opt-alertmanager:20261026",
+  "silence_state_preserved": true,
+  "production_config_used": true,
+  "bearer_token_checked": true,
+  "receiver_scope": "isolated internal Docker network; no host published port; no real contact",
+  "received": [
+    {
+      "status": "firing",
+      "alertnames": [
+        "DeploymentFixture"
+      ]
+    }
+  ],
+  "resources_retained": {
+    "network": "dr-opt-alertmanager-compat-20261026",
+    "volume": "dr-opt-alertmanager-compat-20261026-data",
+    "containers": [
+      "dr-opt-alertmanager-compat-20261026-receiver",
+      "dr-opt-alertmanager-compat-20261026-old",
+      "dr-opt-alertmanager-compat-20261026-new"
+    ]
+  }
+}

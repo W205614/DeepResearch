@@ -20,8 +20,10 @@ from backend.core.reliability import ServiceError, estimate_tokens  # noqa: E402
 
 
 class Budget:
-    def __init__(self, path, policy, label="evaluation"):
+    def __init__(self, path, policy, label="evaluation", *, allow_ci_bootstrap=False):
         self.path, self.policy, self.label = Path(path), policy, label
+        if policy.get('ci_series_id') and not self.path.exists() and not allow_ci_bootstrap:
+            raise ValueError('Cumulative CI ledger must be reconciled; a new path cannot reset its quota')
         self.path.parent.mkdir(parents=True, exist_ok=True)
         encoded = json.dumps(policy, sort_keys=True)
         with self.connect() as db:
@@ -36,6 +38,10 @@ class Budget:
                 raise ValueError("Existing evaluation policy differs; ledger cannot be reset or enlarged")
             if not prior:
                 db.execute("INSERT INTO policy VALUES(?)", (encoded,))
+            if policy.get('ci_series_id') and not allow_ci_bootstrap:
+                series=db.execute("SELECT value FROM state WHERE key='ci_series'").fetchone()
+                if not series or series[0]!=policy['ci_series_id']:
+                    raise ValueError('Cumulative CI ledger series is missing or differs')
 
     def connect(self):
         return sqlite3.connect(self.path, timeout=30)
@@ -52,7 +58,9 @@ class Budget:
             counts = {key: sum(row[0] == key for row in rows) for key in ("llm", "search", "embedding", "reranker")}
             model_count = counts["llm"] + counts["search"]
             limits = self.policy
+            reserved_total = db.execute("SELECT coalesce(sum(input_bound+output_bound),0) FROM requests").fetchone()[0]
             exceeded = (len(rows) >= limits["total_http"] or counts[kind] >= limits[kind + "_http"]
+                        or ("reserved_tokens" in limits and reserved_total + input_bound + output_bound > limits["reserved_tokens"])
                         or (kind in {"llm", "search"} and model_count >= limits["model_http"])
                         or (kind in {"llm", "search"} and self.label in limits.get("stages", {})
                             and sum(row[0] in {"llm", "search"} and row[3] == self.label for row in rows)
@@ -61,10 +69,19 @@ class Budget:
                         or sum(row[2] for row in rows) + output_bound > limits["output_tokens"])
             if exceeded:
                 raise ServiceError("Evaluation budget exhausted before HTTP", code="evaluation_budget", retryable=False)
-            return db.execute("INSERT INTO requests(kind,label,model,payload_sha256,input_bound,output_bound) "
+            index = db.execute("INSERT INTO requests(kind,label,model,payload_sha256,input_bound,output_bound) "
                               "VALUES(?,?,?,?,?,?)", (kind, self.label, str(payload.get("model", "")),
                               hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest(),
                               input_bound, output_bound)).lastrowid
+            current = db.execute("SELECT value FROM state WHERE key='ci_current_run'").fetchone()
+            if self.policy.get('ci_series_id') and not current:
+                raise ValueError('Cumulative CI attempt identity is required before provider HTTP')
+            if current:
+                identity = json.loads(current[0])
+                start = int(db.execute("SELECT value FROM state WHERE key='ci_start_requests'").fetchone()[0])
+                db.execute("INSERT INTO ci_request_origins VALUES(?,?,?,?,?)", (index, identity['run_id'],
+                    identity['run_attempt'], identity['head_sha'], index-start))
+            return index
 
     def settle(self, index, status, usage):
         prompt = usage.get("prompt_tokens", usage.get("input_tokens"))
@@ -87,6 +104,7 @@ class Budget:
             changes = db.execute("SELECT value FROM state WHERE key LIKE 'policy_change_%' ORDER BY key").fetchall()
             contexts = db.execute("SELECT value FROM state WHERE key LIKE 'execution_context_%' ORDER BY key").fetchall()
         return {"policy": self.policy, "http_requests": len(rows), "halt": halt[0] if halt else None,
+                "cumulative_reserved_tokens": sum(row["input_bound"] + row["output_bound"] for row in rows),
                 "policy_changes": [json.loads(row[0]) for row in changes],
                 "execution_contexts": [json.loads(row[0]) for row in contexts],
                 "actual_prompt_tokens": sum(row["prompt_tokens"] or 0 for row in rows),
@@ -121,6 +139,8 @@ class Budget:
             db.execute("UPDATE policy SET value=?", (json.dumps(policy, sort_keys=True),))
 
     def install(self):
+        if self.policy.get('ci_series_id') and not getattr(self, 'ci_runtime_verified', False):
+            raise ValueError('CI transport requires verified interpreter and source/ledger binding')
         original = httpx.AsyncClient.__init__
         budget = self
 
@@ -160,6 +180,7 @@ def main():
     parser.add_argument("--ledger", required=True, type=Path)
     parser.add_argument("--label", default="evaluation")
     parser.add_argument("--report", type=Path)
+    parser.add_argument("--source-context", type=Path)
     parser.add_argument("--amend-stages", type=Path, metavar="AUTHORIZATION")
     parser.add_argument("target", nargs="?")
     parser.add_argument("arguments", nargs=argparse.REMAINDER)
@@ -172,6 +193,15 @@ def main():
     budget = Budget(args.ledger, policy, args.label)
     try:
         if args.target:
+            verified = None
+            if policy.get('ci_series_id'):
+                from scripts.ci_source_context import verify_bound_source
+                if args.source_context is None:
+                    raise ValueError('CI paid execution requires an independently bound source receipt')
+                verified = verify_bound_source(ROOT, budget, args.source_context)
+                budget.ci_runtime_verified = True
+            from scripts.evaluation_scope import configure_evaluator_limits
+            configure_evaluator_limits(budget)
             from backend.core.config import Settings
             settings = Settings()
             source = hashlib.sha256()
@@ -183,13 +213,17 @@ def main():
             context = {"label": args.label, "http_before": budget.report()["http_requests"],
                        "backend_source_sha256": source.hexdigest(),
                        "backend_normalized_source_sha256": normalized_source.hexdigest(),
-                       "checkout_sha": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
-                       "working_tree_dirty": bool(subprocess.check_output(["git", "status", "--porcelain"], cwd=ROOT, text=True).strip()),
+                       "checkout_sha": verified['checkout_sha'] if verified else subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+                       "working_tree_dirty": False if verified else bool(subprocess.check_output(["git", "status", "--porcelain"], cwd=ROOT, text=True).strip()),
                        "target_sha256": hashlib.sha256(Path(args.target).read_bytes()).hexdigest(),
                        "arguments_sha256": hashlib.sha256(json.dumps(args.arguments).encode()).hexdigest(),
                        "model": settings.llm_model_id,
                        "model_base_url_sha256": hashlib.sha256(settings.llm_base_url.encode()).hexdigest(),
                        "extra_body_sha256": hashlib.sha256(settings.llm_extra_body.encode()).hexdigest()}
+            if verified:
+                context.update(source_context_sha256=hashlib.sha256(args.source_context.read_bytes()).hexdigest(),
+                               runtime_image_id=verified['runtime_image_id'], python_version='3.11.18',
+                               interpreter_preflight_sha256=verified['preflight_sha256'])
             with budget.connect() as db:
                 db.execute("INSERT INTO state VALUES(?,?)", ("execution_context_" + str(time.time_ns()), json.dumps(context)))
             budget.install()

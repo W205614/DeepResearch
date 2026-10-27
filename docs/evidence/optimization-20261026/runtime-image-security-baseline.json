@@ -1,0 +1,294 @@
+{
+  "scope": "existing resolved runtime image IDs; no pull/start/rebuild",
+  "cached_database": true,
+  "scanner": "Trivy 0.75.0",
+  "passed": false,
+  "exploitability": "not established; package presence and service exposure require advisory-specific analysis",
+  "images": [
+    {
+      "image_id": "sha256:d9e853e87e55526f6b2917df91a2115c36dd7c696a35be12163d44e6e2a4b6bc",
+      "services": [
+        {
+          "service": "alert-token-init",
+          "published": [],
+          "exposure": "internal_only"
+        }
+      ],
+      "repo_digests": [
+        "alpine@sha256:d9e853e87e55526f6b2917df91a2115c36dd7c696a35be12163d44e6e2a4b6bc"
+      ],
+      "state": "scanned",
+      "finding_counts": {},
+      "raw_report": ".cache/optimization-20261026/runtime-image-scan/image-00.json"
+    },
+    {
+      "image_id": "sha256:27c475db5fb156cab31d5c18a4251ac7ed567746a2483ff264516437a39b15ba",
+      "services": [
+        {
+          "service": "alertmanager",
+          "published": [
+            {
+              "ip": "127.0.0.1",
+              "port": "9093",
+              "target": 9093
+            }
+          ],
+          "exposure": "loopback"
+        }
+      ],
+      "repo_digests": [
+        "prom/alertmanager@sha256:27c475db5fb156cab31d5c18a4251ac7ed567746a2483ff264516437a39b15ba"
+      ],
+      "state": "scanned",
+      "finding_counts": {
+        "HIGH": 95,
+        "CRITICAL": 2
+      },
+      "raw_report": ".cache/optimization-20261026/runtime-image-scan/image-01.json"
+    },
+    {
+      "image_id": "sha256:26a576bbed25fe1de510891ff54697c161124050a03e1c5d59b5b9bdf21c3366",
+      "services": [
+        {
+          "service": "clamav",
+          "published": [],
+          "exposure": "internal_only"
+        }
+      ],
+      "repo_digests": [
+        "clamav/clamav@sha256:26a576bbed25fe1de510891ff54697c161124050a03e1c5d59b5b9bdf21c3366"
+      ],
+      "state": "scanned",
+      "finding_counts": {
+        "HIGH": 34,
+        "CRITICAL": 3
+      },
+      "raw_report": ".cache/optimization-20261026/runtime-image-scan/image-02.json"
+    },
+    {
+      "image_id": "sha256:52f17f7e56e4f7239f0320dbfcbcc24721163d7d78ae710b466af3254ccf6366",
+      "services": [
+        {
+          "service": "etcd",
+          "published": [],
+          "exposure": "internal_only"
+        }
+      ],
+      "repo_digests": [
+        "quay.io/coreos/etcd@sha256:52f17f7e56e4f7239f0320dbfcbcc24721163d7d78ae710b466af3254ccf6366"
+      ],
+      "state": "scanned",
+      "finding_counts": {
+        "HIGH": 143,
+        "CRITICAL": 6
+      },
+      "raw_report": ".cache/optimization-20261026/runtime-image-scan/image-03.json"
+    },
+    {
+      "image_id": "sha256:8b37a2f028f164ce7b9889e1765b9d6ee23fec80f871d156fbf436d6198d32b7",
+      "services": [
+        {
+          "service": "grafana",
+          "published": [
+            {
+              "ip": "127.0.0.1",
+              "port": "3000",
+              "target": 3000
+            }
+          ],
+          "exposure": "loopback"
+        }
+      ],
+      "repo_digests": [
+        "grafana/grafana@sha256:8b37a2f028f164ce7b9889e1765b9d6ee23fec80f871d156fbf436d6198d32b7"
+      ],
+      "state": "scanned",
+      "finding_counts": {
+        "CRITICAL": 9,
+        "HIGH": 140
+      },
+      "raw_report": ".cache/optimization-20261026/runtime-image-scan/image-04.json"
+    },
+    {
+      "image_id": "sha256:5f3fb534cde6bf006d79f5912473e5d2c828c707cdfc52e16972803aca9d43dd",
+      "services": [
+        {
+          "service": "keycloak",
+          "published": [
+            {
+              "ip": "127.0.0.1",
+              "port": "18481",
+              "target": 8080
+            }
+          ],
+          "exposure": "loopback"
+        }
+      ],
+      "repo_digests": [
+        "quay.io/keycloak/keycloak@sha256:5f3fb534cde6bf006d79f5912473e5d2c828c707cdfc52e16972803aca9d43dd"
+      ],
+      "state": "scan_failed",
+      "finding_counts": null,
+      "raw_report": ".cache/optimization-20261026/runtime-image-scan/unavailable"
+    },
+    {
+      "image_id": "sha256:ef257d85f76e48da1c64832459b59fcaba1a4dac97bf5d7450c77753542eee94",
+      "services": [
+        {
+          "service": "keycloak-postgres",
+          "published": [],
+          "exposure": "internal_only"
+        },
+        {
+          "service": "postgres",
+          "published": [],
+          "exposure": "internal_only"
+        }
+      ],
+      "repo_digests": [
+        "postgres@sha256:ef257d85f76e48da1c64832459b59fcaba1a4dac97bf5d7450c77753542eee94"
+      ],
+      "state": "scanned",
+      "finding_counts": {
+        "CRITICAL": 3,
+        "HIGH": 51
+      },
+      "raw_report": ".cache/optimization-20261026/runtime-image-scan/image-06.json"
+    },
+    {
+      "image_id": "sha256:58a6c186ce78ba04d58bfe2a927eff296ba733a430df09645d56cdc158f3ba08",
+      "services": [
+        {
+          "service": "loki",
+          "published": [],
+          "exposure": "internal_only"
+        }
+      ],
+      "repo_digests": [
+        "grafana/loki@sha256:58a6c186ce78ba04d58bfe2a927eff296ba733a430df09645d56cdc158f3ba08"
+      ],
+      "state": "scanned",
+      "finding_counts": {
+        "HIGH": 57,
+        "CRITICAL": 2
+      },
+      "raw_report": ".cache/optimization-20261026/runtime-image-scan/image-07.json"
+    },
+    {
+      "image_id": "sha256:49371c30af46b1013e4d3e0b980e691d81376d69cdbe1b372725baf1d7255862",
+      "services": [
+        {
+          "service": "milvus",
+          "published": [],
+          "exposure": "internal_only"
+        }
+      ],
+      "repo_digests": [
+        "milvusdb/milvus@sha256:49371c30af46b1013e4d3e0b980e691d81376d69cdbe1b372725baf1d7255862"
+      ],
+      "state": "scanned",
+      "finding_counts": {
+        "HIGH": 49,
+        "CRITICAL": 1
+      },
+      "raw_report": ".cache/optimization-20261026/runtime-image-scan/image-08.json"
+    },
+    {
+      "image_id": "sha256:d1aa81d3a62ae1b5d7279f4d12fe9b1a1e6aba466b2f7adc83bbd4d0abe6f48b",
+      "services": [
+        {
+          "service": "minio",
+          "published": [],
+          "exposure": "internal_only"
+        }
+      ],
+      "repo_digests": [
+        "deepresearch-minio@sha256:d1aa81d3a62ae1b5d7279f4d12fe9b1a1e6aba466b2f7adc83bbd4d0abe6f48b",
+        "dr-opt-acceptance-minio@sha256:d1aa81d3a62ae1b5d7279f4d12fe9b1a1e6aba466b2f7adc83bbd4d0abe6f48b"
+      ],
+      "state": "scanned",
+      "finding_counts": {
+        "HIGH": 75,
+        "CRITICAL": 6
+      },
+      "raw_report": ".cache/optimization-20261026/runtime-image-scan/image-09.json"
+    },
+    {
+      "image_id": "sha256:85ac41c2db88d0df9bd6145e608a3cb023f5d8443868adbfbbf66efb51087917",
+      "services": [
+        {
+          "service": "otel-collector",
+          "published": [],
+          "exposure": "internal_only"
+        }
+      ],
+      "repo_digests": [
+        "otel/opentelemetry-collector-contrib@sha256:85ac41c2db88d0df9bd6145e608a3cb023f5d8443868adbfbbf66efb51087917"
+      ],
+      "state": "scanned",
+      "finding_counts": {
+        "HIGH": 79,
+        "CRITICAL": 7
+      },
+      "raw_report": ".cache/optimization-20261026/runtime-image-scan/image-10.json"
+    },
+    {
+      "image_id": "sha256:6927e0919a144aa7616fd0137d4816816d42f6b816de3af269ab065250859a62",
+      "services": [
+        {
+          "service": "prometheus",
+          "published": [],
+          "exposure": "internal_only"
+        }
+      ],
+      "repo_digests": [
+        "prom/prometheus@sha256:6927e0919a144aa7616fd0137d4816816d42f6b816de3af269ab065250859a62"
+      ],
+      "state": "scanned",
+      "finding_counts": {
+        "HIGH": 108,
+        "CRITICAL": 4
+      },
+      "raw_report": ".cache/optimization-20261026/runtime-image-scan/image-11.json"
+    },
+    {
+      "image_id": "sha256:02419de7eddf55aa5bcf49efb74e88fa8d931b4d77c07eff8a6b2144472b6952",
+      "services": [
+        {
+          "service": "redis",
+          "published": [],
+          "exposure": "internal_only"
+        }
+      ],
+      "repo_digests": [
+        "redis@sha256:02419de7eddf55aa5bcf49efb74e88fa8d931b4d77c07eff8a6b2144472b6952"
+      ],
+      "state": "scanned",
+      "finding_counts": {
+        "CRITICAL": 6,
+        "HIGH": 75
+      },
+      "raw_report": ".cache/optimization-20261026/runtime-image-scan/image-12.json"
+    },
+    {
+      "image_id": "sha256:4b0277a9b572a4b1fa43b01468e58911ec214dd69d033f2cd476596d14de9fe3",
+      "services": [
+        {
+          "service": "tempo",
+          "published": [],
+          "exposure": "internal_only"
+        }
+      ],
+      "repo_digests": [
+        "grafana/tempo@sha256:4b0277a9b572a4b1fa43b01468e58911ec214dd69d033f2cd476596d14de9fe3"
+      ],
+      "state": "scanned",
+      "finding_counts": {
+        "CRITICAL": 4,
+        "HIGH": 81
+      },
+      "raw_report": ".cache/optimization-20261026/runtime-image-scan/image-13.json"
+    }
+  ],
+  "pending": "vendor patch/compatibility work and failed Keycloak scan repair; not blocked_external"
+}

@@ -1,0 +1,75 @@
+{
+  "status": "passed",
+  "candidate_index": "sha256:9a68d3a7f3b96ffa643af86e5be5f91a723cc051678b4d445a879861bc335132",
+  "scope": "own synthetic empty Grafana container; runtime PGP validation only; no live volume or recipient",
+  "plugins": {
+    "stackdriver": {
+      "signature": "valid",
+      "signatureType": "grafana",
+      "signatureOrg": "Grafana Labs"
+    },
+    "loki": {
+      "signature": "valid",
+      "signatureType": "private",
+      "signatureOrg": "DeepResearch maintainer rebuild"
+    },
+    "zipkin": {
+      "signature": "valid",
+      "signatureType": "grafana",
+      "signatureOrg": "Grafana Labs"
+    },
+    "jaeger": {
+      "signature": "valid",
+      "signatureType": "private",
+      "signatureOrg": "DeepResearch maintainer rebuild"
+    },
+    "mysql": {
+      "signature": "valid",
+      "signatureType": "private",
+      "signatureOrg": "DeepResearch maintainer rebuild"
+    },
+    "prometheus": {
+      "signature": "valid",
+      "signatureType": "grafana",
+      "signatureOrg": "Grafana Labs"
+    },
+    "elasticsearch": {
+      "signature": "valid",
+      "signatureType": "grafana",
+      "signatureOrg": "Grafana Labs"
+    },
+    "opentsdb": {
+      "signature": "valid",
+      "signatureType": "private",
+      "signatureOrg": "DeepResearch maintainer rebuild"
+    },
+    "mssql": {
+      "signature": "valid",
+      "signatureType": "private",
+      "signatureOrg": "DeepResearch maintainer rebuild"
+    },
+    "grafana-pyroscope-datasource": {
+      "signature": "valid",
+      "signatureType": "private",
+      "signatureOrg": "DeepResearch maintainer rebuild"
+    },
+    "influxdb": {
+      "signature": "valid",
+      "signatureType": "private",
+      "signatureOrg": "DeepResearch maintainer rebuild"
+    },
+    "grafana-postgresql-datasource": {
+      "signature": "valid",
+      "signatureType": "private",
+      "signatureOrg": "DeepResearch maintainer rebuild"
+    },
+    "tempo": {
+      "signature": "valid",
+      "signatureType": "grafana",
+      "signatureOrg": "Grafana Labs"
+    }
+  },
+  "security_pass": false,
+  "version": "13.2.4",
+  "fixture_stopped": true
+}

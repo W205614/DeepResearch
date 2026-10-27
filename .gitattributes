@@ -4,3 +4,34 @@ eval/lifecycle/*.json -text
 eval/lifecycle/documents/** -text
 eval/lifecycle/evidence-includes/** -text
 docs/evidence/improvement-20261025/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+deployment/vendors/minio/*.patch text eol=lf
+deployment/vendors/minio/*.go text eol=lf
+deployment/vendors/minio/*.msgp -text
+deployment/vendors/python311/*.sh text eol=lf
+deployment/vendors/python311/*.asc text eol=lf
+deployment/vendors/python311/Dockerfile.upstream -text
+# These files bind an explicitly approved OCI artifact. Never normalize their bytes.
+Dockerfile.minio -text whitespace=cr-at-eol
+deployment/security/minio-fixed-evidence/** -text whitespace=cr-at-eol
+
+# Exact JVM archive/file fingerprints and signed publisher SBOMs.
+deployment/security/native-jvm-tools.json -text whitespace=cr-at-eol
+deployment/security/jre-manifests/*.json -text whitespace=cr-at-eol
+deployment/vendors/keycloak/*.json -text whitespace=cr-at-eol
+deployment/vendors/keycloak/*.sig -text
+
+# Original independent Grafana authorization and factual evidence bytes are immutable.
+deployment/security/grafana-fixed-evidence/** -text whitespace=cr-at-eol
+deployment/security/grafana-reviewed-disposition.json -text whitespace=cr-at-eol
+
+# The independently approved Grafana runtime recipe retains exact source bytes.
+Dockerfile.grafana -text whitespace=cr-at-eol
+deployment/vendors/grafana/** -text whitespace=cr-at-eol
+
+# Dated audit files retain the byte hashes recorded in their provenance chains.
+docs/evidence/optimization-20261026/** -text whitespace=cr-at-eol
+
+# Preserve raw compiler output and upstream diff context without style rewrites.
+deployment/security/minio-fixed-evidence/*-buildinfo.txt -whitespace
+deployment/vendors/keycloak/h2-manifest.diff -text -whitespace
+deployment/vendors/minio/legacy-part-compat.patch -whitespace

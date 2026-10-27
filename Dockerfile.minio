@@ -1,12 +1,38 @@
-FROM alpine:3.20
-
-# Quay no longer serves the pinned community image anonymously. Keep the same
-# MinIO release and verify the binary published with its official GitHub tag.
-RUN apk add --no-cache ca-certificates curl
-RUN curl --fail --location --silent --show-error --retry 3 \
-      https://github.com/minio/minio/releases/download/RELEASE.2024-05-28T17-19-04Z/minio.linux-amd64.RELEASE.2024-05-28T17-19-04Z \
-      --output /usr/local/bin/minio \
-    && echo '5708e53878085ab263c333b24fa7e59980425d64a9b085996b58799f9645e1db  /usr/local/bin/minio' | sha256sum -c - \
-    && chmod 0755 /usr/local/bin/minio
-
+# syntax=docker/dockerfile:1.7
+FROM golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c AS source
+ARG GOPROXY=https://proxy.golang.org
+ENV GOPROXY=${GOPROXY} GOTOOLCHAIN=local GOMAXPROCS=2 GOFLAGS=-p=2 GOMEMLIMIT=768MiB
+RUN apk add --no-cache git
+# Maintained fork, immutable release commit. Keep real VCS/module metadata so
+# complete image scans can still attribute inherited MinIO advisories honestly.
+ADD --keep-git-dir=true https://github.com/pgsty/silo.git#0cd388c666f8211f552604ae73448a066e9c25ce /src
+WORKDIR /src
+RUN test "$(git rev-parse HEAD)" = 0cd388c666f8211f552604ae73448a066e9c25ce
+COPY deployment/vendors/minio/legacy_part_compat.go cmd/legacy_part_compat.go
+COPY deployment/vendors/minio/legacy-part-compat.patch /tmp/legacy-part-compat.patch
+RUN git apply --check /tmp/legacy-part-compat.patch && git apply /tmp/legacy-part-compat.patch
+FROM source AS csv-regression
+COPY deployment/vendors/minio/csv_record_bound_test.go internal/s3select/csv/pinned_record_bound_test.go
+COPY deployment/vendors/minio/legacy_part_compat_test.go cmd/legacy_part_compat_test.go
+COPY deployment/vendors/minio/legacy-part2024.msgp cmd/testdata/deepresearch-legacy-part2024.msgp
+RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
+    go test -mod=readonly ./internal/s3select/csv -run '^TestPinnedCVE202639414' -count=1 -v > /tmp/csv-regression.txt && \
+    go test -mod=readonly ./cmd -run '^TestPinnedLegacyPart2024' -count=1 -v > /tmp/legacy-multipart-regression.txt
+FROM source AS build
+COPY --from=csv-regression /tmp/csv-regression.txt /out/csv-regression.txt
+COPY --from=csv-regression /tmp/legacy-multipart-regression.txt /out/legacy-multipart-regression.txt
+RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
+    CGO_ENABLED=0 go build -mod=readonly -buildvcs=true -tags kqueue -trimpath \
+      -ldflags="$(MINIO_RELEASE=RELEASE go run buildscripts/gen-ldflags.go 2026-10-18T00:00:00Z)" -o /out/silo . && \
+    CGO_ENABLED=0 go build -mod=readonly -trimpath \
+      -ldflags='-s -w -X github.com/minio/mc/cmd.Version=2026-10-18T00:00:00Z -X github.com/minio/mc/cmd.ReleaseTag=RELEASE.2026-10-18T00-00-00Z -X github.com/minio/mc/cmd.CommitID=fa3b8bf72458b9b5480c4da0ce63a4f224e058c8' \
+      -o /out/mcli github.com/minio/mc && \
+    go version -m /out/silo > /out/silo-buildinfo.txt && go version -m /out/mcli > /out/mcli-buildinfo.txt
+# Retain maintained runtime OS, console, S3/IAM and CLI entrypoint behavior.
+# This candidate is not eligible for deployment until the unsuppressed full
+# frozen-DB scan and old-volume compatibility gate both pass.
+FROM pgsty/silo@sha256:706e0d419d23bdab663486044165fb4de1ee6b82885a8637b2935216fb2286ec
+COPY --from=build /out/silo /usr/bin/silo
+COPY --from=build /out/mcli /usr/bin/mcli
+COPY --from=build /out/*txt /usr/share/deepresearch-build/
 EXPOSE 9000 9001

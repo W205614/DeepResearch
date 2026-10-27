@@ -90,6 +90,36 @@ class Settings(BaseSettings):
     reranker_timeout_seconds: float = Field(2, ge=0.1, le=30)
     reranker_candidate_limit: int = Field(20, ge=2, le=100)
     allow_internal_model_processing: bool = False
+    parser_memory_mb: int = Field(512, ge=256, le=2048)
+    parser_cpu_seconds: int = Field(20, ge=1, le=120)
+    parser_wall_seconds: float = Field(30, ge=0.05, le=180)
+    parser_output_mb: int = Field(36, ge=1, le=64)
+    checkpoint_schema_managed: bool = False
+    retention_cleanup_batch_size: int = Field(100, ge=1, le=1000)
+    retention_cache_days: int = Field(7, ge=1, le=90)
+    retention_archive_after_days: int = Field(0, ge=0, le=3650)
+    rag_small_corpus_chunks: int = Field(1000, ge=1, le=4000)
+    rag_db_candidate_limit: int = Field(128, ge=20, le=512)
+    workspace_document_limit: int = Field(500, ge=1, le=10000)
+    workspace_chunk_limit: int = Field(50000, ge=400, le=1000000)
+    # Operations-only hard caps; workspace administrators cannot raise them.
+    platform_operator_subjects: str = ""
+    provider_probe_cooldown_seconds: int = Field(300, ge=30, le=86400)
+    probe_period_calls: int = Field(20, ge=1, le=1000)
+    probe_period_tokens: int = Field(200000, ge=1000, le=20000000)
+    usage_period_seconds: int = Field(86400, ge=60, le=2678400)
+    platform_period_calls: int = Field(1000, ge=1, le=1000000)
+    platform_period_tokens: int = Field(20000000, ge=1000, le=2000000000)
+    subject_period_calls: int = Field(200, ge=1, le=1000000)
+    subject_period_tokens: int = Field(4000000, ge=1000, le=2000000000)
+    workspace_period_calls: int = Field(400, ge=1, le=1000000)
+    workspace_period_tokens: int = Field(8000000, ge=1000, le=2000000000)
+    account_period_calls: int = Field(1000, ge=1, le=1000000)
+    account_period_tokens: int = Field(20000000, ge=1000, le=2000000000)
+
+    @property
+    def operator_subjects(self) -> frozenset[str]:
+        return frozenset(value.strip() for value in self.platform_operator_subjects.split(",") if value.strip())
 
     @field_validator("llm_base_url", "embedding_base_url", "bocha_base_url")
     @classmethod

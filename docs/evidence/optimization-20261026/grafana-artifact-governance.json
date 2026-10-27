@@ -1,0 +1,203 @@
+{
+  "state": "local_exact_gate_and_actual_remote13part_archive_verified_publication_and_final_SHA_CI_pending",
+  "binding_sha256": "7e0ae656477b23d4cd3692987360ada987c40aa6f4c13e37dbb6655495b3e35d",
+  "subject": {
+    "archive_bytes": 849540608,
+    "archive_sha256": "02332c39f6daed922cd030fbcaa00e4949e07b1c157776a2ca60640327e4e59b",
+    "index_digest": "sha256:9a68d3a7f3b96ffa643af86e5be5f91a723cc051678b4d445a879861bc335132",
+    "platform_manifest_digest": "sha256:11d917a7da05e9effcd60934f9d16e7d485300b41e39e94f87d5485c5ed0f263",
+    "config_digest": "sha256:0bf2ff0e6cc8f6ca357aae46062ff8188ee7629736d3763c27788a80b4df1d5b",
+    "expires": "2026-11-25T23:59:59+08:00"
+  },
+  "authorization": {
+    "canonical_target_advisory_rows": 18,
+    "FIXED": 2,
+    "NOT_AFFECTED": 16,
+    "request_sha256": "7d1aca643d36c8fd1be26a520008663af8daa7b56f44a8c9f781c731efbe83fc",
+    "authorization_sha256": "f6118c9064e03772ca3a7c866b2025a206fc5e283730c6b3ade4ff066044b9f3",
+    "review_sha256": "63a2f4192a666a905493848bffc43341ba03ac66504e161378546bef2a6efbcb",
+    "bound_files": {
+      "path": "docs/evidence/optimization-20261026/grafana-bound-files.json",
+      "sha256": "1fbaa08f4a2d9a543f80e7bdc2fad53d52d38824247eeac79053afcf6b571a11"
+    },
+    "deployment_window_granted": false
+  },
+  "inventory_identity": {
+    "exact_missing_version_tuples": 28,
+    "raw_version_preserved": true,
+    "scope": "27 Graf workspace modules and 1 Prometheus local replacement; target/module/source-directive/source-hash/ELF match, separate from allowed_findings; no fabricated version or new finding waiver"
+  },
+  "local_gate": {
+    "passed": true,
+    "raw_counts": {
+      "Trivy": {
+        "CRITICAL": 2,
+        "HIGH": 11,
+        "MEDIUM": 20,
+        "LOW": 2,
+        "UNKNOWN": 5
+      },
+      "Grype": {
+        "Critical": 0,
+        "High": 2,
+        "Medium": 3,
+        "Low": 0,
+        "Unknown": 5,
+        "Negligible": 0
+      }
+    },
+    "verified_fixed_counts": {
+      "Trivy": 2,
+      "Grype": 2
+    },
+    "verified_not_affected_counts": {
+      "Trivy": 16,
+      "Grype": 5
+    }
+  },
+  "remaining_medium_records": 3,
+  "raw_preserved": true,
+  "new_or_unknown_or_missing_or_failed_blocks": true,
+  "actual_load": {
+    "path": ".cache/optimization-20261026/grafana-oci-review/approved-load-final.json",
+    "sha256": "ef656ef5e369d35c7514200cc71d1f824981ea28108562c5b3a3b72005f0fc2d"
+  },
+  "actual_complete_collector": {
+    "path": ".cache/optimization-20261026/grafana-approved-collector/collector.json",
+    "sha256": "e3b1b030d740bb277b96457730ae1ae75c443b9f3819599e8e7ac94941d82614"
+  },
+  "actual_disposition": {
+    "path": ".cache/optimization-20261026/grafana-oci-review/approved-disposition.json",
+    "sha256": "bdfd4167e07c1b81e5a3a91efe4ad6e54bcf66c7f37234197cbb8d0fe92abfff"
+  },
+  "actual_scan_boundary": "Full raw Trivy from frozen subject, actual complete Syft/default Grype rerun against same image; not a fresh whole-project security or paid-model result. No filtering/VEX/version rewriting. Medium/Low retained.",
+  "transport": {
+    "mode": "github_asset_parts",
+    "state": "remote_SHA_and_OCI_verified_not_published",
+    "complete": true,
+    "uploaded_parts_observed": 13,
+    "required_parts": 13,
+    "per_part_limit": 67108864,
+    "whole_archive_server_digest": null,
+    "monolithic_attempt": "failed after body read; old asset starter/digest null, not accepted",
+    "remote_download_and_assembly": "passed_all_13_remote_parts_whole_archive_SHA_and_production_OCI_verifier",
+    "archive_bytes": 849540608,
+    "archive_sha256": "02332c39f6daed922cd030fbcaa00e4949e07b1c157776a2ca60640327e4e59b",
+    "all_assembled_bytes_from_remote": true,
+    "local_source_archive_bytes_used_for_assembly": false,
+    "evidence": "grafana-remote-transport.json",
+    "historical_observation": {
+      "state": "upload_in_progress_not_verified",
+      "complete": false,
+      "uploaded_parts_observed": 4,
+      "remote_download_and_assembly": "not_yet_performed",
+      "superseded_by": "grafana-remote-transport.json; original partial-upload observation retained"
+    },
+    "failed_streams_and_range_attempts": "Retained in grafana-remote-transport.json and its hashed private receipts; incomplete whole streams rejected, first range attempt completed 8 parts and failed 5, second pass completed the remaining 5 verified remote parts",
+    "partial_cache_reuse": "only complete size+SHA verified parts; malformed inventory rejected before cache or request",
+    "release_draft": true,
+    "release_published": false,
+    "normal_CI_cold_transport": "pending final source publication and GitHub; private draft audit is not that run",
+    "publication_and_final_SHA_CI": "root_owned_pending"
+  },
+  "ci": {
+    "ordinary_high_gate_unchanged": true,
+    "grafana": "approved same archive loader -> full raw Trivy operational exit0 -> full Syft/Grype -> exact independent checker",
+    "inventory_vendors": 9,
+    "inventory_custom_builds": 9,
+    "matrix": {
+      "path": ".cache/eval/runtime-image-inventory.json",
+      "sha256": "edffe68391de9c7998614eedb02904f2016ee14b7eb7764e391ae6bafd65698c"
+    },
+    "github_run": "not_performed_for_final_source",
+    "enterprise_smoke": "root added separate --artifact grafana loader with GITHUB_TOKEN before Compose startup; smoke actually requires Graf health",
+    "enterprise_workflow": {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "78777a22647476837264c84fbaa2630af7fa9d6e2fc734f62a01c42178f416f3"
+    }
+  },
+  "changes": [
+    {
+      "path": "scripts/oci_artifact.py",
+      "sha256": "e921e644e4561472ecc87a2e5a4acc1edd03b27e554fca59dd53b7adeff825cc"
+    },
+    {
+      "path": "scripts/fetch_approved_image.py",
+      "sha256": "597dedad67f18eb4db4ac1f0901aa5950dc94d4aaf99b49ad6dfee792fc4b61e"
+    },
+    {
+      "path": "scripts/grafana_image_disposition.py",
+      "sha256": "36d2c348eb78e16d94f336b2d9713cf46b920e6dee88a58b493871de351517e1"
+    },
+    {
+      "path": "scripts/scan_grafana_image.py",
+      "sha256": "96403b86a12cf4c7fafb286f32495f64efb256d994e78abc433507eafadcc77f"
+    },
+    {
+      "path": "scripts/runtime_ci_inventory.py",
+      "sha256": "e547af6824101a54a077bbed8f923596e1188ac3930f59fb7cfa459d82858719"
+    },
+    {
+      "path": ".github/workflows/security.yml",
+      "sha256": "d020d5dc5fe11b089cf11ae2a8caae3b3c16853d0fee76c50d7c7069570d2570"
+    },
+    {
+      "path": "compose.yaml",
+      "sha256": "9f819cbfaa9a3073ba1bc0fcfc9fb745fb2992ac4cad2682fb91db388ef8a1f3"
+    },
+    {
+      "path": "tests/test_oci_artifact.py",
+      "sha256": "9b6e2fc197e1f79cec6b74b55703c7e9e777ab1945b5be62751564f66e2b1d37"
+    },
+    {
+      "path": "tests/test_grafana_parts_transport.py",
+      "sha256": "c5d709b941714b620537a84ef1600f776f4b05ce239881578af30ea15b955490"
+    },
+    {
+      "path": "tests/test_grafana_image_disposition.py",
+      "sha256": "338b6e137272ea205fec64722ee1e86292a91b713f3de246165ea8dff435e45c"
+    },
+    {
+      "path": "tests/test_fetch_approved_image.py",
+      "sha256": "0919b1a6f85f5914929175064e1b22347acc33f1cc7afc1be2c91f9e25d0857a"
+    },
+    {
+      "path": "tests/test_image_disposition.py",
+      "sha256": "b23ae3804d4b00941cc9254af13d189738b12d7b28eda69a0b2c81b947dc21ab"
+    }
+  ],
+  "test_evidence": {
+    "pure_oci_cases": 24,
+    "minio_checker_cases": 22,
+    "generic_fetch_cases": 21,
+    "grafana_checker_cases": 19,
+    "grafana_parts_cases": 13,
+    "unique_total_passed_across_scoped_runs": 107,
+    "boundary": "Previous99 scoped cases retained, newly8publication cases run; no full functional suite/paid call/raw scan repeated. Exactremote archive OCI contents freshly verified; finalSHA cold GitHub pending.",
+    "new_publication_cases_passed": 8
+  },
+  "candidate_or_daily_services_changed_by_this_integration": false,
+  "paid_calls": 0,
+  "remaining": [
+    "Publish both approved artifact draft releases against final source SHA as prerelease/nonlatest; recheck read-only official release state",
+    "Final sameSHA GitHub CI/Security plus fresh quality under cumulative515 authorization",
+    "Daily deployment/backup/restore/scheduler acceptance pending explicit projectwindow; finalcleanup waits bothprojects finalCI and separatewindow",
+    "Bound authorization expiry/newfindings rules remain in force"
+  ],
+  "validation": "Changed Python/test Ruff passed; both policy loads passed with exact source/evidence and per-row disposition; receipt JSON and CI/Security YAML parsed. Final GitHub run not yet performed.",
+  "remote_transport_evidence": "grafana-remote-transport.json",
+  "publication": "bothreleases remain draft; normal remote default rejects before cached-return; no new deployment permission",
+  "current_integration_source_hashes": {
+    "scripts/oci_artifact.py": "e921e644e4561472ecc87a2e5a4acc1edd03b27e554fca59dd53b7adeff825cc",
+    "scripts/fetch_approved_image.py": "973c6a59e42ab0c8a33ee35e5b9f62cc4d185a8d9b66c63924b0c278ca1a19f0",
+    "scripts/grafana_image_disposition.py": "36d2c348eb78e16d94f336b2d9713cf46b920e6dee88a58b493871de351517e1",
+    "scripts/scan_grafana_image.py": "96403b86a12cf4c7fafb286f32495f64efb256d994e78abc433507eafadcc77f",
+    "scripts/runtime_ci_inventory.py": "e547af6824101a54a077bbed8f923596e1188ac3930f59fb7cfa459d82858719",
+    ".github/workflows/security.yml": "d020d5dc5fe11b089cf11ae2a8caae3b3c16853d0fee76c50d7c7069570d2570",
+    ".github/workflows/ci.yml": "78777a22647476837264c84fbaa2630af7fa9d6e2fc734f62a01c42178f416f3",
+    "deployment/security/grafana-reviewed-disposition.json": "b5d8a4db005e4dc18621b123f2176bf47c46d60701f0d64e5be0e0e7d65fe8b2",
+    "tests/test_artifact_publication.py": "0e36648168c7c9ed55366ef9ed7b0852f4554250f77c7fb000c8198ad3da660b"
+  },
+  "current_source_map": "approved-artifact-current-source-map.json",
+  "hash_boundary": "Historical changes/source hashes retain original scoped-test provenance; current source map and current_integration_source_hashes bind later host integration. Original human-reviewed recipe/evidence bytes unchanged."
+}

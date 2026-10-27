@@ -1,0 +1,130 @@
+{
+  "scope": "infra functional handoff only; merge into existing guides without duplicating personal files",
+  "functions": [
+    {
+      "id": "database_upgrade",
+      "main_question": "旧库如何在不清空业务数据的前提下落实最小权限？",
+      "followups": [
+        "为什么不能直接REASSIGN OWNED初始化超级用户？",
+        "Java和Python共享runs时如何避免写入责任重叠？"
+      ],
+      "answer_points": [
+        "先冻结旧拓扑与实际镜像环境并完成冷备",
+        "bootstrap只转移public应用关系；系统对象不动",
+        "migrator准备Alembic/checkpoints/回填后白名单grant",
+        "运行账号非superuser且按列更新runs；隔离PG保留行和拒权证据"
+      ],
+      "sources": [
+        "scripts/freeze_deployment.py",
+        "scripts/bootstrap_services.py",
+        "scripts/migrate_services.py",
+        "migrations/versions/0016_service_privileges.py"
+      ],
+      "evidence_kind": "implementation plus isolated validation; activation/final CI pending where infra.json says so"
+    },
+    {
+      "id": "object_storage",
+      "main_question": "业务原件和向量存储为什么使用不同的身份？",
+      "followups": [
+        "如何验证bucket或前缀边界真正执行？",
+        "重复bootstrap与旧对象保留如何证明？"
+      ],
+      "answer_points": [
+        "root只进入短作业",
+        "business限uploads/quarantine，Milvus限a-bucket",
+        "实际S3四条越权请求拒绝；ListBuckets以过滤结果验收",
+        "幂等更换精确策略，保留既有对象hash"
+      ],
+      "sources": [
+        "scripts/storage-bootstrap/main.go",
+        "Dockerfile.storage-init",
+        "scripts/verify_storage_identity.py"
+      ],
+      "evidence_kind": "implementation plus isolated validation; activation/final CI pending where infra.json says so"
+    },
+    {
+      "id": "backup_schedule",
+      "main_question": "自动备份的目标、成功和恢复证据如何区分？",
+      "followups": [
+        "机器没开或白天补运行会发生什么？",
+        "异机目标未配置时如何报告RPO/RTO？"
+      ],
+      "answer_points": [
+        "只在已启用且承认维护窗口时冷备；互斥防重叠",
+        "上海03:15-04:30之外拒绝catchup；活跃任务拒绝冷备",
+        "仅完整校验manifest推进新鲜度",
+        "备份耗时不是恢复耗时；异机确认和实际演练保留外部缺口"
+      ],
+      "sources": [
+        "scripts/scheduled_backup.py",
+        "scripts/install_backup_task.ps1",
+        "scripts/recovery.py",
+        "scripts/ops_probe.py"
+      ],
+      "evidence_kind": "implementation plus isolated validation; activation/final CI pending where infra.json says so"
+    },
+    {
+      "id": "alert_reliability",
+      "main_question": "告警在重试、并发和服务重启时如何处理？",
+      "followups": [
+        "为什么不能保证Exactly Once？",
+        "如何在不通知真实个人的情况下验收？"
+      ],
+      "answer_points": [
+        "成功发送后持久化安全指纹/状态",
+        "串行门处理并发重复，7天/1万条有界历史",
+        "上游未知结果可能重复，不能保证Exactly Once",
+        "实际loopback接收端503/重试/恢复/重启去重通过"
+      ],
+      "sources": [
+        "scripts/alert_relay_service.py",
+        "backend/core/alerts.py",
+        "scripts/verify_alert_delivery.py",
+        "observability/alerts.yml"
+      ],
+      "evidence_kind": "implementation plus isolated validation; activation/final CI pending where infra.json says so"
+    },
+    {
+      "id": "capacity",
+      "main_question": "为什么容器存活不能代表运行可靠？",
+      "followups": [
+        "如何识别Keycloak native-thread失败？",
+        "容器内磁盘指标与主机Docker存储差别是什么？"
+      ],
+      "answer_points": [
+        "资源限制必须结合线程模型，KC固定可见CPU并使用HTTP ready",
+        "数据库/资料积压/主机盘/备份年龄分别观察",
+        "ops只读列权限，无Docker socket和用户正文",
+        "阈值是运维起点，不是容量或SLA结果"
+      ],
+      "sources": [
+        "compose.yaml",
+        "scripts/ops_metrics.py",
+        "scripts/ops_probe.py",
+        "scripts/check_identity_readiness.py"
+      ],
+      "evidence_kind": "implementation plus isolated validation; activation/final CI pending where infra.json says so"
+    },
+    {
+      "id": "source_and_ci",
+      "main_question": "如何证明运行容器与交付代码一致？",
+      "followups": [
+        "旧镜像标签为何不能证明新SHA？",
+        "扫描存在漏洞是否等于已有远程利用？"
+      ],
+      "answer_points": [
+        "镜像构建时记录输入，运行时逐文件与checkout核对",
+        "Java记录pom/src-main/JAR；Web输入及实际dist；Python全文件",
+        "最终receipt必须绑定确切SHA和CI，文档commit需证业务输入一致",
+        "镜像漏洞、暴露面、利用条件和实测攻击分开，失败不当零条"
+      ],
+      "sources": [
+        "scripts/verify_runtime_source.py",
+        "scripts/scan_runtime_images.py",
+        "scripts/runtime_ci_inventory.py",
+        ".github/workflows/security.yml"
+      ],
+      "evidence_kind": "implementation plus isolated validation; activation/final CI pending where infra.json says so"
+    }
+  ]
+}

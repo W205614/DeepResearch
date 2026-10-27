@@ -1,0 +1,54 @@
+{
+  "reviewed_at": "2026-10-26T14:24:00.539493+00:00",
+  "graphs": [
+    {
+      "target": "/usr/share/grafana/bin/grafana",
+      "raw": ".cache\\optimization-20261026\\grafana-unknown-attribution\\main-import-graph\\main-deps.json",
+      "sha256": "1592d81c6f58b34ed4985cec29005efe1950d5e27076f25d6fe320dba2d40c63",
+      "format": "go-list-json-stream",
+      "packages": 4200,
+      "legacy_imports": [],
+      "expected_count_matches": true
+    },
+    {
+      "target": "/usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+      "raw": ".cache\\optimization-20261026\\grafana-unknown-attribution\\official-plugin-import-graphs\\out\\elasticsearch-deps.json",
+      "sha256": "ac5b6bb4736dd43424df22c223eab9cf736f888327a44f9604d02f422d9d0e32",
+      "format": "go-list-json-stream",
+      "packages": 743,
+      "legacy_imports": [],
+      "expected_count_matches": true
+    },
+    {
+      "target": "/usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+      "raw": ".cache\\optimization-20261026\\grafana-unknown-attribution\\official-plugin-import-graphs\\out\\stackdriver-deps.json",
+      "sha256": "29b7ffc787069d370999248bede93c5a0499ea369158430d58919077383e6bec",
+      "format": "go-list-json-stream",
+      "packages": 676,
+      "legacy_imports": [],
+      "expected_count_matches": true
+    },
+    {
+      "target": "/usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+      "raw": ".cache\\optimization-20261026\\grafana-eight-built-v3\\out\\build-info\\loki.packages.txt",
+      "sha256": "8fc311c702a488fe58cfbff9d13b39c28f652197be67aa9a62dae37e9aca657e",
+      "format": "go-list-text-paths",
+      "packages": 1078,
+      "legacy_imports": [],
+      "expected_count_matches": true
+    },
+    {
+      "target": "/usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+      "raw": ".cache\\optimization-20261026\\grafana-eight-built-v3\\out\\build-info\\mssql.packages.txt",
+      "sha256": "3e27ddf19a2ecf738b967e1e56b969b1ebcf9824f04fb5f4c2f19379a552896e",
+      "format": "go-list-text-paths",
+      "packages": 726,
+      "legacy_imports": [],
+      "expected_count_matches": true
+    }
+  ],
+  "all_five_graphs_verified": true,
+  "five_cached_ELF_bytes_match": true,
+  "scope": "Read-only independent parsing of source-build dependency receipts plus hash-bound cached ELF bytes; not a fresh rebuild or complete independent image extraction.",
+  "reviewer_parser_note": "First assumption that all go-list receipts were JSON was rejected by plain-text source receipt; corrected by explicit input format before interpreting imports."
+}

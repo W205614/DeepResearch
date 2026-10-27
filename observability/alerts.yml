@@ -1,8 +1,50 @@
 groups:
+  - name: deepresearch-capacity-and-recovery
+    rules:
+      - alert: DeepResearchHostProbeStale
+        expr: time() - deepresearch_host_probe_timestamp_seconds > 3600
+        for: 5m
+        labels: {severity: warning}
+        annotations: {summary: "Host capacity probe is missing or older than one hour"}
+      - alert: DeepResearchBackupStale
+        expr: time() - deepresearch_backup_verified_timestamp_seconds > on(job,instance) deepresearch_backup_rpo_target_seconds
+        for: 5m
+        labels: {severity: critical}
+        annotations: {summary: "No checksum-verified complete backup within the 24 hour RPO target"}
+      - alert: DeepResearchHostDiskLow
+        expr: deepresearch_host_disk_free_bytes < 5368709120 or deepresearch_host_disk_free_bytes / deepresearch_host_disk_total_bytes < 0.10
+        for: 5m
+        labels: {severity: critical}
+        annotations: {summary: "Configured host disk has less than 5 GiB or ten percent free"}
+      - alert: DeepResearchHostDiskProbeFailed
+        expr: deepresearch_host_disk_available == 0
+        for: 5m
+        labels: {severity: warning}
+        annotations: {summary: "A configured host disk cannot be measured"}
+      - alert: DeepResearchDatabaseConnections
+        expr: deepresearch_database_connections / deepresearch_database_max_connections > 0.80
+        for: 5m
+        labels: {severity: warning}
+        annotations: {summary: "Database connection usage exceeds eighty percent"}
+      - alert: DeepResearchDatabaseCapacity
+        expr: deepresearch_database_size_bytes > 10737418240
+        for: 5m
+        labels: {severity: warning}
+        annotations: {summary: "Application database exceeds the initial 10 GiB review threshold"}
+      - alert: DeepResearchDocumentBacklog
+        expr: deepresearch_pending_documents > 20
+        for: 5m
+        labels: {severity: warning}
+        annotations: {summary: "More than twenty documents are waiting for scanning or indexing"}
+      - alert: DeepResearchOpsDatabaseUnavailable
+        expr: deepresearch_ops_database_up == 0
+        for: 1m
+        labels: {severity: critical}
+        annotations: {summary: "Read-only capacity exporter cannot query the database"}
   - name: deepresearch-enterprise
     rules:
       - alert: DeepResearchServiceDown
-        expr: up{job=~"deepresearch-api|deepresearch-business|deepresearch-worker|deepresearch-document-worker"} == 0
+        expr: up{job=~"deepresearch-api|deepresearch-business|deepresearch-worker|deepresearch-document-worker|deepresearch-ops"} == 0
         for: 1m
         labels: {severity: critical}
         annotations: {summary: "A DeepResearch service metrics endpoint is unavailable"}

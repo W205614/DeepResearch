@@ -1,0 +1,31 @@
+FROM golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c AS source
+ARG GOPROXY=https://proxy.golang.org
+ENV GOPROXY=${GOPROXY} GOTOOLCHAIN=local GOMAXPROCS=2 GOFLAGS=-p=2 GOMEMLIMIT=512MiB
+WORKDIR /src
+RUN apk add --no-cache git
+# Fetch the unmodified stable upstream source through the Go checksum database.
+RUN --mount=type=cache,target=/go/pkg/mod \
+    go mod download -json github.com/prometheus/alertmanager@v0.34.1 > /tmp/source.json && \
+    grep -F '"Sum": "h1:qtIIP4s20duq2fbafHIti5NYJGaZNh7irXKbJwe/W/E="' /tmp/source.json && \
+    cp -a /go/pkg/mod/github.com/prometheus/alertmanager@v0.34.1/. /src/ && \
+    git init && git remote add origin https://github.com/prometheus/alertmanager.git && \
+    git -c http.version=HTTP/1.1 fetch --filter=blob:none --depth=1 origin refs/tags/v0.34.1:refs/tags/v0.34.1 && \
+    test "$(git rev-parse 'refs/tags/v0.34.1^{commit}')" = 73c6bfe7393929211294c1954f30d8ed78e4d0ad && \
+    git reset --mixed 73c6bfe7393929211294c1954f30d8ed78e4d0ad
+FROM source AS build
+# The generated UI is an official stable-release asset, absent from the Go module.
+ADD --checksum=sha256:881fe0f7beb9573f35be47dd233af6220e72c8db72c03bcd1780402eb8dc1307 https://github.com/prometheus/alertmanager/releases/download/v0.34.1/alertmanager-web-ui-0.34.1.tar.gz /tmp/ui.tar.gz
+RUN tar -xzf /tmp/ui.tar.gz -C /src/ui/app
+COPY deployment/vendors/alertmanager/go.mod deployment/vendors/alertmanager/go.sum ./
+RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
+    CGO_ENABLED=0 go build -mod=readonly -buildvcs=true -trimpath -ldflags='-s -w -X github.com/prometheus/common/version.Version=0.34.1 -X github.com/prometheus/common/version.Revision=73c6bfe7393929211294c1954f30d8ed78e4d0ad-maintainer' -o /out/alertmanager ./cmd/alertmanager && \
+    CGO_ENABLED=0 go build -mod=readonly -buildvcs=true -trimpath -ldflags='-s -w -X github.com/prometheus/common/version.Version=0.34.1 -X github.com/prometheus/common/version.Revision=73c6bfe7393929211294c1954f30d8ed78e4d0ad-maintainer' -o /out/amtool ./cmd/amtool && \
+    go version -m /out/alertmanager > /out/build-info.txt && \
+    grep -F 'v0.34.1' /out/build-info.txt && \
+    grep -F 'vcs.revision=73c6bfe7393929211294c1954f30d8ed78e4d0ad' /out/build-info.txt
+# Retain the stable official runtime, configuration, CA roots and non-root user.
+FROM prom/alertmanager:v0.34.1@sha256:e9733bafb1bdef9b00e25a21f8f99dc26a22224bf16641ad754d1649f4c3357a
+COPY --from=build /out/alertmanager /bin/alertmanager
+COPY --from=build /out/amtool /bin/amtool
+COPY --from=build /out/build-info.txt /usr/share/deepresearch/alertmanager-build-info.txt
+COPY deployment/vendors/alertmanager/source.lock.json /usr/share/deepresearch/alertmanager-source.lock.json

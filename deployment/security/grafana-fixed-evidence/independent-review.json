@@ -1,0 +1,708 @@
+{
+  "reviewed_at": "2026-10-26T14:26:06.809158+00:00",
+  "status": "independently_reviewed_human_accepted_complete_final_v2_exact_subject",
+  "subject": {
+    "image": "dr-opt-grafana-musl-fixed:20261026",
+    "oci_index": "sha256:9a68d3a7f3b96ffa643af86e5be5f91a723cc051678b4d445a879861bc335132",
+    "linux_amd64_manifest": "sha256:11d917a7da05e9effcd60934f9d16e7d485300b41e39e94f87d5485c5ed0f263",
+    "config": "sha256:0bf2ff0e6cc8f6ca357aae46062ff8188ee7629736d3763c27788a80b4df1d5b",
+    "main_elf_sha256": "5b718e17a373c83547a720e0e5a048032388b0d9691da83a3ec3b8ec19d9d152",
+    "tempo_elf_sha256": "ee8eaf152c8ee65fba362a42643b79a80125297c4940f6382cd11d36b0035ebc"
+  },
+  "request_path": "E:\\project\\DeepResearch\\docs\\evidence\\optimization-20261026\\grafana-vulnerability-review-request-v2.json",
+  "request_sha256": "7d1aca643d36c8fd1be26a520008663af8daa7b56f44a8c9f781c731efbe83fc",
+  "prior_primary_review_reused": "Same main andTempo ELF hashes/source13.2.4 andfixancestry as previous independently read11CNA+2advisories. No repeatliveCNAcheck or freshcompatibilitytest claimed for reused facts.",
+  "new_primary_checks": {
+    "GO-2026-5932": "Official vuln.go.dev JSON live bytes matchf277b0400996200a7d5034c676661cd8cf18adeab1fdc5d0dc369e456ddf1fad; precisely7oldopenpgp packages, recommends maintainedProtonMail. No CVSS or CVE alias; Unknown not reclassified low.",
+    "go_graphs": "Root parsed5hash-bound rawgo-list files:4200/743/676/1078/726packages; all7legacy paths absent. FivecachedELFs SHA match. Same target/flags/module provenance reviewed in supplied evidence; absence of pclntab entries alone not used as proof.",
+    "musl": "OfficialAlpine3.24mainsecdb lists CVE-2026-107891 fixedin1.2.6-r3. Newrawscan3inputhashes match recordedbytes;2oldmusl findingsgone, exactpackageupgrade reported. Thisis actualpatch, no exception requested.",
+    "all_scanner_levels": "50rawmatchrows enumerated acrossfullTrivy/Grype; current5Unknowneachscanner maponlytoGO5932fiveexactELFs; no leftoverunknownID acceptedimplicitly.",
+    "runtime": "Newindex9a68 thirteenplugin runtimesignatures passed;fourmaliciousbackend/frontend/extrapath/unsigned mutationsrejected. Testsremain synthetic/API scope; modifiedtamperfixtureconfigdiffers bydesign.",
+    "remaining_risk": "Grype3Medium records are1BusyBoxwget CVE-2025-60876 acrossbusybox/busybox-binsh/ssl_client; no upstream/vendorfixdeclared, retainedasrisk. Medium/Low not excluded or reclassified andthresholdnotlowered."
+  },
+  "raw_all_severity_counts": {
+    "Trivy": {
+      "CRITICAL": 2,
+      "HIGH": 11,
+      "MEDIUM": 20,
+      "LOW": 2,
+      "UNKNOWN": 5
+    },
+    "Grype": {
+      "High": 2,
+      "Medium": 3,
+      "Unknown": 5
+    }
+  },
+  "requested_rows": [
+    {
+      "cve": "CVE-2018-15727",
+      "raw_severity": "CRITICAL",
+      "component": "github.com/grafana/grafana",
+      "raw_module_version": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "actual_native_application_version": "13.2.4",
+      "proposed_disposition": "not_affected",
+      "proposal_reason": "The authenticated13.2.4 source/CLI/native binary CPE is outside the CNA affected application ranges. Go module pseudo-version is not the Grafana application release version.",
+      "cna_source": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2018/15xxx/CVE-2018-15727.json",
+      "cna_record_sha256": "7df3e5f50a7076c1938c36e5c596bc6c84c49f073d2f217f43e0e0f70a05180d",
+      "affected": [
+        {
+          "product": "n/a",
+          "vendor": "n/a",
+          "versions": [
+            {
+              "status": "affected",
+              "version": "n/a"
+            }
+          ]
+        }
+      ],
+      "description_scope_for_unstructured_older_record": "Grafana2.x/3.x/4.x before4.6.4 or5.x before5.2.3; CNA description (its affected field is n/a)",
+      "cna_description": "Grafana 2.x, 3.x, and 4.x before 4.6.4 and 5.x before 5.2.3 allows authentication bypass because an attacker can generate a valid \"remember me\" cookie knowing only a username of an LDAP or OAuth user."
+    },
+    {
+      "cve": "CVE-2023-3128",
+      "raw_severity": "CRITICAL",
+      "component": "github.com/grafana/grafana",
+      "raw_module_version": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "actual_native_application_version": "13.2.4",
+      "proposed_disposition": "not_affected",
+      "proposal_reason": "The authenticated13.2.4 source/CLI/native binary CPE is outside the CNA affected application ranges. Go module pseudo-version is not the Grafana application release version.",
+      "cna_source": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2023/3xxx/CVE-2023-3128.json",
+      "cna_record_sha256": "7f1bb0f6fef77be7a9dc4b7b4d15016a381d83d5239386fd26488bb223561035",
+      "affected": [
+        {
+          "defaultStatus": "unaffected",
+          "product": "Grafana",
+          "vendor": "Grafana",
+          "versions": [
+            {
+              "lessThan": "9.5.4",
+              "status": "affected",
+              "version": "9.5.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "9.4.13",
+              "status": "affected",
+              "version": "9.4.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "9.3.16",
+              "status": "affected",
+              "version": "9.3.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "9.2.20",
+              "status": "affected",
+              "version": "9.2.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "8.5.27",
+              "status": "affected",
+              "version": "6.7.0",
+              "versionType": "semver"
+            }
+          ]
+        },
+        {
+          "defaultStatus": "unaffected",
+          "product": "Grafana Enterprise",
+          "vendor": "Grafana",
+          "versions": [
+            {
+              "lessThan": "9.5.4",
+              "status": "affected",
+              "version": "9.5.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "9.4.13",
+              "status": "affected",
+              "version": "9.4.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "9.3.16",
+              "status": "affected",
+              "version": "9.3.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "9.2.20",
+              "status": "affected",
+              "version": "9.2.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "8.5.27",
+              "status": "affected",
+              "version": "6.7.0",
+              "versionType": "semver"
+            }
+          ]
+        }
+      ],
+      "description_scope_for_unstructured_older_record": null,
+      "cna_description": null
+    },
+    {
+      "cve": "CVE-2020-12458",
+      "raw_severity": "HIGH",
+      "component": "github.com/grafana/grafana",
+      "raw_module_version": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "actual_native_application_version": "13.2.4",
+      "proposed_disposition": "not_affected",
+      "proposal_reason": "The authenticated13.2.4 source/CLI/native binary CPE is outside the CNA affected application ranges. Go module pseudo-version is not the Grafana application release version.",
+      "cna_source": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2020/12xxx/CVE-2020-12458.json",
+      "cna_record_sha256": "247b6a6218442734606f8960eb67724b9628c52c3deeec05a2ce7669cdf072a0",
+      "affected": [
+        {
+          "product": "n/a",
+          "vendor": "n/a",
+          "versions": [
+            {
+              "status": "affected",
+              "version": "n/a"
+            }
+          ]
+        }
+      ],
+      "description_scope_for_unstructured_older_record": "Grafana through6.7.3 with world-readable SQLite directory/database; CNA description (its affected field is n/a)",
+      "cna_description": "An information-disclosure flaw was found in Grafana through 6.7.3. The database directory /var/lib/grafana and database file /var/lib/grafana/grafana.db are world readable. This can result in exposure of sensitive information (e.g., cleartext or encrypted datasource passwords)."
+    },
+    {
+      "cve": "CVE-2021-39226",
+      "raw_severity": "HIGH",
+      "component": "github.com/grafana/grafana",
+      "raw_module_version": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "actual_native_application_version": "13.2.4",
+      "proposed_disposition": "not_affected",
+      "proposal_reason": "The authenticated13.2.4 source/CLI/native binary CPE is outside the CNA affected application ranges. Go module pseudo-version is not the Grafana application release version.",
+      "cna_source": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2021/39xxx/CVE-2021-39226.json",
+      "cna_record_sha256": "c4a238685f672e94b35514875d1372ae6988a3cf1807909c08d3769d386841c2",
+      "affected": [
+        {
+          "product": "grafana",
+          "vendor": "grafana",
+          "versions": [
+            {
+              "status": "affected",
+              "version": ">= 8.0.0, < 8.1.6"
+            },
+            {
+              "status": "affected",
+              "version": "< 7.5.11"
+            }
+          ]
+        }
+      ],
+      "description_scope_for_unstructured_older_record": null,
+      "cna_description": null
+    },
+    {
+      "cve": "CVE-2022-35957",
+      "raw_severity": "HIGH",
+      "component": "github.com/grafana/grafana",
+      "raw_module_version": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "actual_native_application_version": "13.2.4",
+      "proposed_disposition": "not_affected",
+      "proposal_reason": "The authenticated13.2.4 source/CLI/native binary CPE is outside the CNA affected application ranges. Go module pseudo-version is not the Grafana application release version.",
+      "cna_source": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2022/35xxx/CVE-2022-35957.json",
+      "cna_record_sha256": "69fd749e6af339ee36aef948d3a528d1588b3352e59e050f8d80d00944411232",
+      "affected": [
+        {
+          "vendor": "grafana",
+          "product": "grafana",
+          "versions": [
+            {
+              "version": "> 9.0.0, < 9.1.6",
+              "status": "affected"
+            },
+            {
+              "version": "< 8.5.13",
+              "status": "affected"
+            }
+          ]
+        }
+      ],
+      "description_scope_for_unstructured_older_record": null,
+      "cna_description": null
+    },
+    {
+      "cve": "CVE-2022-39307",
+      "raw_severity": "HIGH",
+      "component": "github.com/grafana/grafana",
+      "raw_module_version": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "actual_native_application_version": "13.2.4",
+      "proposed_disposition": "not_affected",
+      "proposal_reason": "The authenticated13.2.4 source/CLI/native binary CPE is outside the CNA affected application ranges. Go module pseudo-version is not the Grafana application release version.",
+      "cna_source": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2022/39xxx/CVE-2022-39307.json",
+      "cna_record_sha256": "1231a5dafcb510bafa8341cf2de77387b4b9e48249a461d7a7c8f80ccfd69c30",
+      "affected": [
+        {
+          "vendor": "grafana",
+          "product": "grafana",
+          "versions": [
+            {
+              "version": ">= v9.0.0-beta1, < 9.2.4",
+              "status": "affected"
+            },
+            {
+              "version": "< 8.5.15",
+              "status": "affected"
+            }
+          ]
+        }
+      ],
+      "description_scope_for_unstructured_older_record": null,
+      "cna_description": null
+    },
+    {
+      "cve": "CVE-2023-2801",
+      "raw_severity": "HIGH",
+      "component": "github.com/grafana/grafana",
+      "raw_module_version": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "actual_native_application_version": "13.2.4",
+      "proposed_disposition": "not_affected",
+      "proposal_reason": "The authenticated13.2.4 source/CLI/native binary CPE is outside the CNA affected application ranges. Go module pseudo-version is not the Grafana application release version.",
+      "cna_source": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2023/2xxx/CVE-2023-2801.json",
+      "cna_record_sha256": "f753ac42285bf0f1e8c5b153793dced33b05f174d02725e6dc392c7ab51dde9d",
+      "affected": [
+        {
+          "product": "Grafana",
+          "vendor": "Grafana",
+          "versions": [
+            {
+              "lessThan": "9.4.12",
+              "status": "affected",
+              "version": "9.4.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "9.5.3",
+              "status": "affected",
+              "version": "9.5.0",
+              "versionType": "semver"
+            }
+          ]
+        },
+        {
+          "product": "Grafana Enterprise",
+          "vendor": "Grafana",
+          "versions": [
+            {
+              "lessThan": "9.4.12",
+              "status": "affected",
+              "version": "9.4.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "9.5.3",
+              "status": "affected",
+              "version": "9.5.0",
+              "versionType": "semver"
+            }
+          ]
+        }
+      ],
+      "description_scope_for_unstructured_older_record": null,
+      "cna_description": null
+    },
+    {
+      "cve": "CVE-2025-6023",
+      "raw_severity": "HIGH",
+      "component": "github.com/grafana/grafana",
+      "raw_module_version": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "actual_native_application_version": "13.2.4",
+      "proposed_disposition": "not_affected",
+      "proposal_reason": "The authenticated13.2.4 source/CLI/native binary CPE is outside the CNA affected application ranges. Go module pseudo-version is not the Grafana application release version.",
+      "cna_source": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2025/6xxx/CVE-2025-6023.json",
+      "cna_record_sha256": "f3546638e34c0cf6e278abeeedf744baac5584e88a45f84a95a8af5f91e0a968",
+      "affected": [
+        {
+          "defaultStatus": "unaffected",
+          "product": "Grafana",
+          "vendor": "Grafana",
+          "versions": [
+            {
+              "lessThan": "12.0.2+security-01",
+              "status": "affected",
+              "version": "12.0.x",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "11.6.3+security-01",
+              "status": "affected",
+              "version": "11.6.x",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "11.5.6+security-01",
+              "status": "affected",
+              "version": "11.5.x",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "11.4.6+security-01",
+              "status": "affected",
+              "version": "11.4.x",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "11.3.8+security-01",
+              "status": "affected",
+              "version": "11.3.x",
+              "versionType": "semver"
+            }
+          ]
+        }
+      ],
+      "description_scope_for_unstructured_older_record": null,
+      "cna_description": null
+    },
+    {
+      "cve": "CVE-2026-42127",
+      "raw_severity": "HIGH",
+      "component": "github.com/grafana/grafana",
+      "raw_module_version": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "actual_native_application_version": "13.2.4",
+      "proposed_disposition": "not_affected",
+      "proposal_reason": "The authenticated13.2.4 source/CLI/native binary CPE is outside the CNA affected application ranges. Go module pseudo-version is not the Grafana application release version.",
+      "cna_source": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2026/42xxx/CVE-2026-42127.json",
+      "cna_record_sha256": "d20f987a29b4ed3313daf02b2808640c106b7b9003e03cb29eef81d5f376b8f8",
+      "affected": [
+        {
+          "vendor": "Grafana",
+          "product": "Grafana Enterprise",
+          "defaultStatus": "unaffected",
+          "versions": [
+            {
+              "version": "11.6.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "11.6.14"
+            },
+            {
+              "version": "12.2.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "12.2.8"
+            },
+            {
+              "version": "12.3.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "12.3.6"
+            },
+            {
+              "version": "12.4.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "12.4.3"
+            },
+            {
+              "version": "13.0.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "13.0.1"
+            }
+          ]
+        },
+        {
+          "vendor": "Grafana",
+          "product": "Grafana OSS",
+          "defaultStatus": "unaffected",
+          "versions": [
+            {
+              "version": "11.6.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "11.6.14"
+            },
+            {
+              "version": "12.2.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "12.2.8"
+            },
+            {
+              "version": "12.3.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "12.3.6"
+            },
+            {
+              "version": "12.4.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "12.4.3"
+            },
+            {
+              "version": "13.0.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "13.0.1"
+            }
+          ]
+        }
+      ],
+      "description_scope_for_unstructured_older_record": null,
+      "cna_description": null
+    },
+    {
+      "cve": "CVE-2026-42129",
+      "raw_severity": "HIGH",
+      "component": "github.com/grafana/grafana",
+      "raw_module_version": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "actual_native_application_version": "13.2.4",
+      "proposed_disposition": "not_affected",
+      "proposal_reason": "The authenticated13.2.4 source/CLI/native binary CPE is outside the CNA affected application ranges. Go module pseudo-version is not the Grafana application release version.",
+      "cna_source": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2026/42xxx/CVE-2026-42129.json",
+      "cna_record_sha256": "8219beac4af7e6f4af8ba7a90357f076c50f876cd818b6e03325886fe608f09c",
+      "affected": [
+        {
+          "vendor": "Grafana",
+          "product": "Grafana OSS",
+          "defaultStatus": "unaffected",
+          "versions": [
+            {
+              "version": "11.6.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "11.6.14"
+            },
+            {
+              "version": "12.2.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "12.2.8"
+            },
+            {
+              "version": "12.3.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "12.3.6"
+            },
+            {
+              "version": "12.4.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "12.4.3"
+            },
+            {
+              "version": "13.0.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "13.0.1"
+            }
+          ]
+        }
+      ],
+      "description_scope_for_unstructured_older_record": null,
+      "cna_description": null
+    },
+    {
+      "cve": "CVE-2026-9029",
+      "raw_severity": "HIGH",
+      "component": "github.com/grafana/grafana",
+      "raw_module_version": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "actual_native_application_version": "13.2.4",
+      "proposed_disposition": "not_affected",
+      "proposal_reason": "The authenticated13.2.4 source/CLI/native binary CPE is outside the CNA affected application ranges. Go module pseudo-version is not the Grafana application release version.",
+      "cna_source": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2026/9xxx/CVE-2026-9029.json",
+      "cna_record_sha256": "7e3284d90f3045e4d00f9c8bf8db7d9e4406d3faacfa9eedde0ba7cb43cebb7b",
+      "affected": [
+        {
+          "vendor": "Grafana",
+          "product": "Grafana OSS",
+          "defaultStatus": "unaffected",
+          "versions": [
+            {
+              "version": "12.4.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "12.4.3"
+            },
+            {
+              "version": "13.0.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "13.0.1"
+            }
+          ]
+        }
+      ],
+      "description_scope_for_unstructured_older_record": null,
+      "cna_description": null
+    },
+    {
+      "cve": "CVE-2026-21728",
+      "raw_severity": "HIGH",
+      "component": "github.com/grafana/tempo",
+      "raw_module_version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+      "proposed_disposition": "fixed",
+      "proposal_reason": "The actual fixed Git commit is included in the exact dependency source. This client ELF links only Tempo protobuf packages, not the affected Tempo frontend/S3 server packages.",
+      "source_ancestry": {
+        "fix_commit": "650eb1985a0776789c8564122990f588a742356f",
+        "module_commit": "bcfe9f230c1de0f79cfd2110b38062e0f41c81e9",
+        "ancestry": "fix is an ancestor of the exact module commit"
+      },
+      "exact_elf_sha256": "ee8eaf152c8ee65fba362a42643b79a80125297c4940f6382cd11d36b0035ebc",
+      "linked_function_evidence": "grafana-final-image-facts.json",
+      "caveat": "pclntab functions only; compiler inlining is not exhaustively excluded",
+      "primary_advisory": "https://grafana.com/security/security-advisories/cve-2026-21728/"
+    },
+    {
+      "cve": "CVE-2026-28377",
+      "raw_severity": "HIGH",
+      "component": "github.com/grafana/tempo",
+      "raw_module_version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+      "proposed_disposition": "fixed",
+      "proposal_reason": "The actual fixed Git commit is included in the exact dependency source. This client ELF links only Tempo protobuf packages, not the affected Tempo frontend/S3 server packages.",
+      "source_ancestry": {
+        "fix_commit": "bb8ca663db34a0980c9758b40d918fda3b4dbec3",
+        "module_commit": "bcfe9f230c1de0f79cfd2110b38062e0f41c81e9",
+        "ancestry": "fix is an ancestor of the exact module commit"
+      },
+      "exact_elf_sha256": "ee8eaf152c8ee65fba362a42643b79a80125297c4940f6382cd11d36b0035ebc",
+      "linked_function_evidence": "grafana-final-image-facts.json",
+      "caveat": "pclntab functions only; compiler inlining is not exhaustively excluded",
+      "primary_advisory": "https://grafana.com/security/security-advisories/cve-2026-28377/"
+    },
+    {
+      "raw_severity": "UNKNOWN",
+      "component": "golang.org/x/crypto",
+      "raw_module_version": "v0.57.0",
+      "target": "/usr/share/grafana/bin/grafana",
+      "exact_elf_sha256": "5b718e17a373c83547a720e0e5a048032388b0d9691da83a3ec3b8ec19d9d152",
+      "proposed_disposition": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "excluded_exact_old_packages": [
+        "golang.org/x/crypto/openpgp",
+        "golang.org/x/crypto/openpgp/packet",
+        "golang.org/x/crypto/openpgp/armor",
+        "golang.org/x/crypto/openpgp/clearsign",
+        "golang.org/x/crypto/openpgp/errors",
+        "golang.org/x/crypto/openpgp/elgamal",
+        "golang.org/x/crypto/openpgp/s2k"
+      ],
+      "proof": "grafana-openpgp-exact-package-facts-v2.json",
+      "scope_limit": "Only these7oldopenpgp packages in this exact ELF; other x/crypto packages remain scanned; does not cover new versions or targets.",
+      "advisory_id": "GO-2026-5932",
+      "identifier_kind": "GoVulnDB; noCVEalias"
+    },
+    {
+      "raw_severity": "UNKNOWN",
+      "component": "golang.org/x/crypto",
+      "raw_module_version": "v0.57.0",
+      "target": "/usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+      "exact_elf_sha256": "9506612c4e2b460e524ce10977214e197feba998fff597ff90f4ce1d9ca91c35",
+      "proposed_disposition": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "excluded_exact_old_packages": [
+        "golang.org/x/crypto/openpgp",
+        "golang.org/x/crypto/openpgp/packet",
+        "golang.org/x/crypto/openpgp/armor",
+        "golang.org/x/crypto/openpgp/clearsign",
+        "golang.org/x/crypto/openpgp/errors",
+        "golang.org/x/crypto/openpgp/elgamal",
+        "golang.org/x/crypto/openpgp/s2k"
+      ],
+      "proof": "grafana-openpgp-exact-package-facts-v2.json",
+      "scope_limit": "Only these7oldopenpgp packages in this exact ELF; other x/crypto packages remain scanned; does not cover new versions or targets.",
+      "advisory_id": "GO-2026-5932",
+      "identifier_kind": "GoVulnDB; noCVEalias"
+    },
+    {
+      "raw_severity": "UNKNOWN",
+      "component": "golang.org/x/crypto",
+      "raw_module_version": "v0.57.0",
+      "target": "/usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+      "exact_elf_sha256": "c1a538a81d72dca95c905931cc85dced95feae77683b64c935ac65111e9fbb53",
+      "proposed_disposition": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "excluded_exact_old_packages": [
+        "golang.org/x/crypto/openpgp",
+        "golang.org/x/crypto/openpgp/packet",
+        "golang.org/x/crypto/openpgp/armor",
+        "golang.org/x/crypto/openpgp/clearsign",
+        "golang.org/x/crypto/openpgp/errors",
+        "golang.org/x/crypto/openpgp/elgamal",
+        "golang.org/x/crypto/openpgp/s2k"
+      ],
+      "proof": "grafana-openpgp-exact-package-facts-v2.json",
+      "scope_limit": "Only these7oldopenpgp packages in this exact ELF; other x/crypto packages remain scanned; does not cover new versions or targets.",
+      "advisory_id": "GO-2026-5932",
+      "identifier_kind": "GoVulnDB; noCVEalias"
+    },
+    {
+      "raw_severity": "UNKNOWN",
+      "component": "golang.org/x/crypto",
+      "raw_module_version": "v0.57.0",
+      "target": "/usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+      "exact_elf_sha256": "2ce80b3f011682d265ec98fc882ef58a9314c0019847ba0404f486433d5d08aa",
+      "proposed_disposition": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "excluded_exact_old_packages": [
+        "golang.org/x/crypto/openpgp",
+        "golang.org/x/crypto/openpgp/packet",
+        "golang.org/x/crypto/openpgp/armor",
+        "golang.org/x/crypto/openpgp/clearsign",
+        "golang.org/x/crypto/openpgp/errors",
+        "golang.org/x/crypto/openpgp/elgamal",
+        "golang.org/x/crypto/openpgp/s2k"
+      ],
+      "proof": "grafana-openpgp-exact-package-facts-v2.json",
+      "scope_limit": "Only these7oldopenpgp packages in this exact ELF; other x/crypto packages remain scanned; does not cover new versions or targets.",
+      "advisory_id": "GO-2026-5932",
+      "identifier_kind": "GoVulnDB; noCVEalias"
+    },
+    {
+      "raw_severity": "UNKNOWN",
+      "component": "golang.org/x/crypto",
+      "raw_module_version": "v0.57.0",
+      "target": "/usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+      "exact_elf_sha256": "8e6c55fc90d0e94657e663b386cd6173c811133daef447d08b6bdddea3f6cc9d",
+      "proposed_disposition": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "excluded_exact_old_packages": [
+        "golang.org/x/crypto/openpgp",
+        "golang.org/x/crypto/openpgp/packet",
+        "golang.org/x/crypto/openpgp/armor",
+        "golang.org/x/crypto/openpgp/clearsign",
+        "golang.org/x/crypto/openpgp/errors",
+        "golang.org/x/crypto/openpgp/elgamal",
+        "golang.org/x/crypto/openpgp/s2k"
+      ],
+      "proof": "grafana-openpgp-exact-package-facts-v2.json",
+      "scope_limit": "Only these7oldopenpgp packages in this exact ELF; other x/crypto packages remain scanned; does not cover new versions or targets.",
+      "advisory_id": "GO-2026-5932",
+      "identifier_kind": "GoVulnDB; noCVEalias"
+    }
+  ],
+  "request_rows_count": 18,
+  "unique_advisory_ids": 14,
+  "policy_if_accepted": {
+    "subject_binding": "exactindex/platform/config/source/ELF and18enumerated target-advisory rows;13priorplus5GO5932",
+    "expires": "2026-11-25T23:59:59+08:00",
+    "keep_all_raw": true,
+    "unknown_or_new_or_failed_or_missing_blocks": true,
+    "any_source_or_binary_or_image_change_invalidates": true,
+    "no_medium_low_exclusions": true,
+    "no_broad_module_ignore": true,
+    "no_deployment_window": true
+  },
+  "source_fact_hashes": {
+    "grafana-final-image-facts-v3.json": "d0383e1b164783c68fa819f9ab5353782bd770e839a360d32fa07a58239ddde0",
+    "grafana-openpgp-exact-package-facts-v2.json": "1840c6c4d8306fd01210f1aefb3e5e2e5afd303231cf3f74b411c17066323677",
+    "grafana-all-severity-classification.json": "2511f35a9d5f2c82b5f465a478386cd9edc98d24d40ce644559717ff02d07e38",
+    "grafana-musl-fixed-runtime-signatures.json": "0c1736e1eb3337cc9efcd7504717b511c1eb2e3a4f87289afc2356e22fc1aac1",
+    "grafana-musl-fixed-tamper-isolated.json": "8483e2e638683353bed1ec2ecdfed927d2d41cc72136bff64114f8f7ad8a608d"
+  },
+  "approval_pending": false,
+  "human_authorization_path": "C:\\Users\\25452\\.codex\\visualizations\\2026\\10\\25\\01a172e2-8a39-7783-b536-b6dbe2f478cd\\execution-20261026\\deepresearch-grafana-final-v2-authorization.json"
+}

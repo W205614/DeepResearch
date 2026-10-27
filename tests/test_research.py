@@ -341,10 +341,10 @@ async def test_semantic_previous_question_uses_current_thread_without_search(run
 
 async def test_semantic_memory_requires_relevance_and_is_observable(runtime):
     thread = await runtime.new_thread("alice", "语义记忆会话")
-    await runtime.db.execute("""INSERT INTO runs(id,user_id,thread_id,topic,mode,status,created_at,updated_at,client_request_id)
-        VALUES('old-near','alice',?,'历史主题','auto','completed','today','today','old-near-request')""", (thread["id"],))
-    await runtime.db.execute("""INSERT INTO runs(id,user_id,thread_id,topic,mode,status,created_at,updated_at,client_request_id)
-        VALUES('old-far','alice','other-thread','另一历史主题','auto','completed','today','today','old-far-request')""")
+    await runtime.db.execute("""INSERT INTO runs(id,user_id,thread_id,topic,mode,status,created_at,updated_at,client_request_id,created_by)
+        VALUES('old-near','alice',?,'历史主题','auto','completed','today','today','old-near-request','alice')""", (thread["id"],))
+    await runtime.db.execute("""INSERT INTO runs(id,user_id,thread_id,topic,mode,status,created_at,updated_at,client_request_id,created_by)
+        VALUES('old-far','alice','other-thread','另一历史主题','auto','completed','today','today','old-far-request','alice')""")
     await runtime.db.execute("""INSERT INTO memories(id,user_id,kind,content,run_id,created_at)
         VALUES('near','alice','semantic','高度相关的历史研究','old-near','today')""")
     await runtime.db.execute("""INSERT INTO memories(id,user_id,kind,content,run_id,created_at)
@@ -371,8 +371,8 @@ async def test_context_keeps_thread_outline_beyond_recent_report_detail(runtime)
     thread = await runtime.new_thread("alice", "连续会话")
     for index in range(8):
         stamp = f"2026-01-01T00:00:{index:02d}+00:00"
-        await runtime.db.execute("""INSERT INTO runs(id,user_id,thread_id,topic,mode,status,created_at,updated_at,report,client_request_id)
-            VALUES(?,?,?,?,?,'completed',?,?,?,?)""",
+        await runtime.db.execute("""INSERT INTO runs(id,user_id,thread_id,topic,mode,status,created_at,updated_at,report,client_request_id,created_by)
+            VALUES(?,?,?,?,?,'completed',?,?,?,?,'alice')""",
             (f"history-{index}", "alice", thread["id"], f"历史问题 {index}", "auto", stamp, stamp,
              f"历史报告详情 {index}", uid()))
     context = await runtime.context({"id": "context-continuity", "user_id": "alice", "thread_id": thread["id"],

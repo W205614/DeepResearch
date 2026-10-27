@@ -56,6 +56,11 @@ class _Connection:
     async def executemany(self, sql, rows):
         await self.connection.executemany(self.db._sql(sql), rows)
 
+    async def rows(self, sql, args=()):
+        """Read within this transaction without borrowing a second pool slot."""
+        records=await self.connection.fetch(self.db._sql(sql),*args)
+        return [dict(row) for row in records]
+
     async def commit(self):
         return None
 

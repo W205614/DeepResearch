@@ -1,0 +1,121 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.minio
+#1 transferring dockerfile: 36B 0.0s
+#1 transferring dockerfile: 3.01kB 0.2s done
+#1 DONE 0.3s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1.7
+#2 DONE 4.8s
+
+#3 docker-image://docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+#3 resolve docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+#3 resolve docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e 0.3s done
+#3 CACHED
+
+#4 [internal] load metadata for docker.io/library/golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c
+#4 ...
+
+#5 [internal] load metadata for docker.io/pgsty/silo@sha256:706e0d419d23bdab663486044165fb4de1ee6b82885a8637b2935216fb2286ec
+#5 DONE 0.3s
+
+#4 [internal] load metadata for docker.io/library/golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c
+#4 DONE 0.3s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 33B 0.1s
+#6 transferring context: 207B 0.2s done
+#6 DONE 0.3s
+
+#7 [internal] load build context
+#7 DONE 0.0s
+
+#8 [source 3/8] ADD --keep-git-dir=true https://github.com/pgsty/silo.git#0cd388c666f8211f552604ae73448a066e9c25ce /src
+#8 DONE 0.0s
+
+#9 [stage-3 1/4] FROM docker.io/pgsty/silo@sha256:706e0d419d23bdab663486044165fb4de1ee6b82885a8637b2935216fb2286ec
+#9 resolve docker.io/pgsty/silo@sha256:706e0d419d23bdab663486044165fb4de1ee6b82885a8637b2935216fb2286ec 0.1s done
+#9 DONE 0.2s
+
+#10 [source 1/8] FROM docker.io/library/golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c
+#10 resolve docker.io/library/golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c
+#10 resolve docker.io/library/golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c 0.2s done
+#10 DONE 0.3s
+
+#7 [internal] load build context
+#7 transferring context: 5.40kB 0.3s done
+#7 DONE 0.5s
+
+#11 [source 2/8] RUN apk add --no-cache git
+#11 CACHED
+
+#12 [source 3/8] ADD --keep-git-dir=true https://github.com/pgsty/silo.git#0cd388c666f8211f552604ae73448a066e9c25ce /src
+#12 CACHED
+
+#13 [source 4/8] WORKDIR /src
+#13 CACHED
+
+#14 [source 5/8] RUN test "$(git rev-parse HEAD)" = 0cd388c666f8211f552604ae73448a066e9c25ce
+#14 CACHED
+
+#15 [source 6/8] COPY deployment/vendors/minio/legacy_part_compat.go cmd/legacy_part_compat.go
+#15 DONE 0.4s
+
+#16 [source 7/8] COPY deployment/vendors/minio/legacy-part-compat.patch /tmp/legacy-part-compat.patch
+#16 DONE 0.4s
+
+#17 [source 8/8] RUN git apply --check /tmp/legacy-part-compat.patch && git apply /tmp/legacy-part-compat.patch
+#17 DONE 1.8s
+
+#18 [csv-regression 1/4] COPY deployment/vendors/minio/csv_record_bound_test.go internal/s3select/csv/pinned_record_bound_test.go
+#18 DONE 0.2s
+
+#19 [csv-regression 2/4] COPY deployment/vendors/minio/legacy_part_compat_test.go cmd/legacy_part_compat_test.go
+#19 DONE 0.1s
+
+#20 [csv-regression 3/4] COPY deployment/vendors/minio/legacy-part2024.msgp cmd/testdata/deepresearch-legacy-part2024.msgp
+#20 DONE 0.1s
+
+#21 [csv-regression 4/4] RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build     go test -mod=readonly ./internal/s3select/csv -run '^TestPinnedCVE202639414' -count=1 -v > /tmp/csv-regression.txt &&     go test -mod=readonly ./cmd -run '^TestPinnedLegacyPart2024' -count=1 -v > /tmp/legacy-multipart-regression.txt
+#21 ...
+
+#10 [source 1/8] FROM docker.io/library/golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c
+#10 CACHED
+
+#21 [csv-regression 4/4] RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build     go test -mod=readonly ./internal/s3select/csv -run '^TestPinnedCVE202639414' -count=1 -v > /tmp/csv-regression.txt &&     go test -mod=readonly ./cmd -run '^TestPinnedLegacyPart2024' -count=1 -v > /tmp/legacy-multipart-regression.txt
+#21 DONE 266.9s
+
+#22 [build 1/3] COPY --from=csv-regression /tmp/csv-regression.txt /out/csv-regression.txt
+#22 DONE 0.0s
+
+#23 [build 2/3] COPY --from=csv-regression /tmp/legacy-multipart-regression.txt /out/legacy-multipart-regression.txt
+#23 DONE 0.0s
+
+#24 [build 3/3] RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build     CGO_ENABLED=0 go build -mod=readonly -buildvcs=true -tags kqueue -trimpath       -ldflags="$(MINIO_RELEASE=RELEASE go run buildscripts/gen-ldflags.go 2026-10-18T00:00:00Z)" -o /out/silo . &&     CGO_ENABLED=0 go build -mod=readonly -trimpath       -ldflags='-s -w -X github.com/minio/mc/cmd.Version=2026-10-18T00:00:00Z -X github.com/minio/mc/cmd.ReleaseTag=RELEASE.2026-10-18T00-00-00Z -X github.com/minio/mc/cmd.CommitID=fa3b8bf72458b9b5480c4da0ce63a4f224e058c8'       -o /out/mcli github.com/minio/mc &&     go version -m /out/silo > /out/silo-buildinfo.txt && go version -m /out/mcli > /out/mcli-buildinfo.txt
+#24 DONE 56.9s
+
+#9 [stage-3 1/4] FROM docker.io/pgsty/silo@sha256:706e0d419d23bdab663486044165fb4de1ee6b82885a8637b2935216fb2286ec
+#9 CACHED
+
+#25 [stage-3 2/4] COPY --from=build /out/silo /usr/bin/silo
+#25 DONE 0.2s
+
+#26 [stage-3 3/4] COPY --from=build /out/mcli /usr/bin/mcli
+#26 DONE 0.1s
+
+#27 [stage-3 4/4] COPY --from=build /out/*txt /usr/share/deepresearch-build/
+#27 DONE 0.0s
+
+#28 exporting to image
+#28 exporting layers
+#28 exporting layers 3.2s done
+#28 exporting manifest sha256:1a7bd6d07a350cd83ef332d8d2148f123306c7a5706d4184f4d83e5dce42bc83 0.0s done
+#28 exporting config sha256:45b3d3e48a5b0a92e7ff52b046573268a241207fe6ddfafa504a48bc543cb1f3 0.0s done
+#28 exporting attestation manifest sha256:739e4f3a051a73b45016f15a86469783019950e2c55b81f73574a59013b6925a 0.0s done
+#28 exporting manifest list sha256:151cd83d5e6500f4d1b3d7f0a12756fe80e8ffcbf91150afd6b9b9605bc2369a 0.0s done
+#28 naming to docker.io/library/dr-opt-minio-go1273-compat:20261026 done
+#28 unpacking to docker.io/library/dr-opt-minio-go1273-compat:20261026
+#28 unpacking to docker.io/library/dr-opt-minio-go1273-compat:20261026 0.5s done
+#28 DONE 3.8s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/cnrbgj9w5kr0p0uhs8onouglt

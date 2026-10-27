@@ -84,6 +84,12 @@ class Database:
         async with self.connection() as conn:
             from .attachments import ATTACHMENT_SCHEMA
             await conn.executescript(SCHEMA)
+            from .recovery_schema import SCHEMA as RECOVERY_SCHEMA
+            from .usage_governance import USAGE_SCHEMA
+            await conn.executescript(RECOVERY_SCHEMA)
+            await conn.executescript(USAGE_SCHEMA)
+            from .product_schema import SCHEMA as PRODUCT_SCHEMA
+            await conn.executescript(PRODUCT_SCHEMA)
             await conn.executescript(ATTACHMENT_SCHEMA)
             await conn.executescript(DAILY_SCHEMA)
             from .lifecycle_schema import SCHEMA as LIFECYCLE_SCHEMA, SQLITE_PUBLICATIONS, PUBLICATION_COLUMNS, PUBLICATION_INDEXES

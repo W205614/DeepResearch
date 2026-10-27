@@ -9,6 +9,8 @@ import java.util.Map;
 import com.deepresearch.business.security.WorkspaceAccess;
 import com.deepresearch.business.security.WorkspaceIdentity;
 import com.deepresearch.business.service.AgentClient;
+import com.deepresearch.business.service.DocumentAccessService;
+import tools.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -32,11 +34,13 @@ public class MemoryController {
     private final JdbcTemplate jdbc;
     private final WorkspaceAccess access;
     private final AgentClient agent;
+    private final ObjectMapper mapper;
 
-    public MemoryController(JdbcTemplate jdbc, WorkspaceAccess access, AgentClient agent) {
+    public MemoryController(JdbcTemplate jdbc, WorkspaceAccess access, AgentClient agent, ObjectMapper mapper) {
         this.jdbc = jdbc;
         this.access = access;
         this.agent = agent;
+        this.mapper = mapper;
     }
 
     @GetMapping("/api/memories")
@@ -44,9 +48,15 @@ public class MemoryController {
                                    @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
         WorkspaceIdentity identity = access.resolve(jwt, requested);
         return jdbc.queryForList("""
-            SELECT id,kind,content,created_at FROM memories WHERE
+            SELECT id,kind,content,created_at,run_id FROM memories WHERE
             (kind IN ('profile','preference') AND owner_subject=?) OR (kind='semantic' AND user_id=? )
-            ORDER BY created_at DESC""", identity.subject(), identity.workspaceId());
+            ORDER BY created_at DESC""", identity.subject(), identity.workspaceId()).stream().filter(memory -> {
+                if(!"semantic".equals(memory.get("kind"))) return true;
+                List<Map<String,Object>> runs=jdbc.queryForList("SELECT sources,created_by FROM runs WHERE id=? AND user_id=?",
+                    memory.get("run_id"),identity.workspaceId());
+                return !runs.isEmpty() && (identity.hasRole("admin") || identity.subject().equals(runs.getFirst().get("created_by")))
+                    && DocumentAccessService.sourcesAllowed(jdbc,mapper,identity,runs.getFirst().get("sources"));
+            }).peek(memory -> memory.remove("run_id")).toList();
     }
 
     @PostMapping("/api/memories")
@@ -88,8 +98,14 @@ public class MemoryController {
             (kind IN ('profile','preference') AND owner_subject=?) OR (kind='semantic' AND user_id=?))""",
             memoryId, identity.subject(), identity.workspaceId());
         if (rows.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "记忆不存在");
-        if ("semantic".equals(rows.getFirst().get("kind")))
+        if ("semantic".equals(rows.getFirst().get("kind"))) {
+            List<Map<String,Object>> runs=jdbc.queryForList("SELECT sources,created_by FROM runs WHERE id=? AND user_id=?",
+                rows.getFirst().get("run_id"),identity.workspaceId());
+            if(runs.isEmpty() || (!identity.hasRole("admin") && !identity.subject().equals(runs.getFirst().get("created_by"))))
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND,"记忆不存在");
+            DocumentAccessService.requireSources(jdbc,mapper,identity,runs.getFirst().get("sources"));
             return ThreadController.forwarded(agent.forward(request, new byte[0]));
+        }
         jdbc.update("DELETE FROM memories WHERE id=?", memoryId);
         return ResponseEntity.ok(Map.of("ok", true));
     }

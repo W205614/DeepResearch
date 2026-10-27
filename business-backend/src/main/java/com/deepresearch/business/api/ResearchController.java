@@ -117,6 +117,8 @@ public class ResearchController {
         int ticks = 0;
         try {
             while (true) {
+                // Re-read current membership and source permissions, including collection revocation.
+                views.visibleRun(runId, accessIdentity(identity));
                 if (jdbc.queryForObject("""
                     SELECT COUNT(*) FROM memberships m JOIN runs r ON r.user_id=m.workspace_id
                     WHERE m.workspace_id=? AND m.subject=? AND r.id=?
@@ -150,5 +152,12 @@ public class ResearchController {
         } catch (Exception disconnected) {
             emitter.complete();
         }
+    }
+
+    private WorkspaceIdentity accessIdentity(WorkspaceIdentity previous) {
+        List<Map<String,Object>> rows=jdbc.queryForList("SELECT role FROM memberships WHERE workspace_id=? AND subject=?",
+            previous.workspaceId(),previous.subject());
+        if(rows.isEmpty()) throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.FORBIDDEN);
+        return new WorkspaceIdentity(previous.workspaceId(),previous.subject(),String.valueOf(rows.getFirst().get("role")),previous.displayName());
     }
 }

@@ -1,0 +1,75 @@
+{
+  "status": "core_unified_real_role_lifecycle_dependency_faults_passed_monitoring_policy_and_release_pending",
+  "updated_at": "2026-10-26T13:57:38.891856+00:00",
+  "project": "dr-opt-acceptance",
+  "daily_services_changed": false,
+  "supplier_http": 0,
+  "production_python_full_recipe": true,
+  "source_fingerprints": "candidate-source-fingerprints-v5.json",
+  "snapshot": {
+    "receipt": {
+      "path": ".cache/optimization-20261026/unified-candidate-before/snapshot.json",
+      "sha256": "116b2202f619f57b13c98277260571a385d63db5b386c760802d823d5f123ff6"
+    },
+    "volumes": 11,
+    "bytes": 421442048,
+    "full_recovery_package": false,
+    "restore_exercised": false,
+    "includes_online_pre_mapper_PG_SQL": true
+  },
+  "existing_realm_mapper_migration": {
+    "base_url": "http://localhost:18481",
+    "realm": "deepresearch",
+    "client": "deepresearch-web",
+    "mapper": "deepresearch-api-audience",
+    "audience": "deepresearch-api",
+    "before_sha256": "a33834d7922615ed4cc1335081ae4c578298e26631189f770b4ab8602c1c530b",
+    "status": "applied",
+    "change_required": true,
+    "after_sha256": "4a930718be1fe168fe238951e6270a6f44286dc74db3ccf6693d8d054dc09213",
+    "backup": "E:\\project\\DeepResearch\\.cache\\optimization-20261026\\unified-candidate-before\\audience-before.private.json"
+  },
+  "checks": {
+    "five_roles_seconds": 39.8,
+    "java_recovery_seconds": 26.4,
+    "result": "2passed1.2min",
+    "model_embedding_search": "explicit deterministic fixture; actual supplier HTTP0",
+    "original_roles_and_data_retained": "snapshot + preupgradeSQL, verifiedupgradedrolebusinessflows; detailedoldfixturedatareadpending",
+    "document_lifecycle_seconds": 25.4,
+    "faults": "1passed1.3min",
+    "roles_recovery_result": "2passed1.2min"
+  },
+  "failures_retained": [
+    {
+      "kind": "compose_digest_defect",
+      "effect": "ClamAVdigestlengthinvalid beforestartup; corrected using actualdockerinspect digest andnewstrictCIinventory validation",
+      "log": {
+        "path": ".cache/optimization-20261026/unified-candidate-up.log",
+        "sha256": "76e0ef90906ebf3c742a8eeaddbeeb04412095b14a3e9c9bc36ce24f15f243ae"
+      }
+    },
+    {
+      "kind": "confirmed_UI_race",
+      "effect": "firstmembersaverefreshcleared nextenteredid; saveguard+inputidentity+workspaceguard added; sameactualroleworkflowpassed",
+      "log": {
+        "path": ".cache/optimization-20261026/unified-roles-recovery.log",
+        "sha256": "770f78325f987650fb80e90c871780eceac3a7c1b2f6213853bf187122b34407"
+      }
+    },
+    {
+      "kind": "test_precondition_cascade",
+      "effect": "recoverycase hadno docwhen firstcasefailed; independentactualuploadnowpreparesreadybeforefault; originalresumeassertionsunchanged"
+    }
+  ],
+  "remaining": [
+    "Grafcompletefindings/newsubjectpolicy",
+    "finaldailywindow_and_exactSHA_CI"
+  ],
+  "old_data_preservation": {
+    "evidence": "upgrade-old-row-preservation.json",
+    "old_rows_verified": 163,
+    "unchanged_selected_fixed_fields": 163,
+    "old_snapshot_markdown_and_stored_hashes": 11,
+    "full_storage_restore_claim": false
+  }
+}

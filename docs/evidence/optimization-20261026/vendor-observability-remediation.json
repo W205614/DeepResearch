@@ -1,0 +1,209 @@
+{
+  "updated_at": "2026-10-26T13:32:31.149549+00:00",
+  "scope": "monitoring group; same cached Trivy0.75.0 vulnerability DB; not daily deployment; final Linux exact-digest gate still required",
+  "eligible": [
+    {
+      "service": "prometheus",
+      "reference": "prom/prometheus:v3.15.1",
+      "image_id": "sha256:d445d1806b38f85b5c394a1b87f94113fde0473b45245922c2e8b1bd41fa68ae",
+      "repo_digests": [
+        "prom/prometheus@sha256:d445d1806b38f85b5c394a1b87f94113fde0473b45245922c2e8b1bd41fa68ae"
+      ],
+      "scan": {
+        "HIGH": 0,
+        "CRITICAL": 0
+      },
+      "scanner_results": [
+        {
+          "Target": "bin/prometheus",
+          "Class": "lang-pkgs",
+          "Type": "gobinary"
+        },
+        {
+          "Target": "bin/promtool",
+          "Class": "lang-pkgs",
+          "Type": "gobinary"
+        }
+      ],
+      "raw": ".cache\\optimization-20261026\\observability-prometheus-platform-candidate.json",
+      "raw_sha256": "c472d9f4ab73e7e4f8274910b62f536b9547d7106632f24611f227b3dafb81aa",
+      "not_deployed": true,
+      "status": "eligible_for_isolated_integration",
+      "coverage_note": "Scanner-recognized components only; upstream scratch/busybox images without package database have no OS package result"
+    },
+    {
+      "service": "tempo",
+      "reference": "grafana/tempo:2.10.10",
+      "image_id": "sha256:12b0820f13ffa10ce956b6e9acc3b03f3cffded99109be6cc09d106fe56e5d38",
+      "repo_digests": [
+        "grafana/tempo@sha256:12b0820f13ffa10ce956b6e9acc3b03f3cffded99109be6cc09d106fe56e5d38"
+      ],
+      "scan": {
+        "HIGH": 0,
+        "CRITICAL": 0
+      },
+      "scanner_results": [
+        {
+          "Target": "grafana/tempo:2.10.10 (debian 12.13)",
+          "Class": "os-pkgs",
+          "Type": "debian"
+        },
+        {
+          "Target": "tempo",
+          "Class": "lang-pkgs",
+          "Type": "gobinary"
+        }
+      ],
+      "raw": ".cache\\optimization-20261026\\observability-tempo-candidate.json",
+      "raw_sha256": "2835719c3922194fb7ba0788d4999d08b7aa440dae8467789621e66908114565",
+      "not_deployed": true,
+      "status": "eligible_for_isolated_integration",
+      "coverage_note": "OS package database and recognized Go binaries"
+    },
+    {
+      "service": "otel-collector",
+      "reference": "otel/opentelemetry-collector-contrib:0.163.2",
+      "image_id": "sha256:989669581ee1f89184f3fd9dd5adfc6615ed6c9692c026aaea89e07a20dfb177",
+      "repo_digests": [
+        "otel/opentelemetry-collector-contrib@sha256:989669581ee1f89184f3fd9dd5adfc6615ed6c9692c026aaea89e07a20dfb177"
+      ],
+      "scan": {
+        "HIGH": 0,
+        "CRITICAL": 0
+      },
+      "scanner_results": [
+        {
+          "Target": "otelcol-contrib",
+          "Class": "lang-pkgs",
+          "Type": "gobinary"
+        }
+      ],
+      "raw": ".cache\\optimization-20261026\\observability-otel-candidate.json",
+      "raw_sha256": "2bb1d6a1eb108dd9054f5979a3e1c08fa0fdf871d3f58cba37a0314e8fd9685b",
+      "not_deployed": true,
+      "status": "eligible_for_isolated_integration",
+      "coverage_note": "Scanner-recognized components only; upstream scratch/busybox images without package database have no OS package result"
+    },
+    {
+      "service": "alpine-helper",
+      "reference": "alpine:3.24.3",
+      "image_id": "sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a",
+      "repo_digests": [
+        "alpine@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a"
+      ],
+      "scan": {
+        "HIGH": 0,
+        "CRITICAL": 0
+      },
+      "scanner_results": [
+        {
+          "Target": "alpine:3.24.3 (alpine 3.24.3)",
+          "Class": "os-pkgs",
+          "Type": "alpine"
+        }
+      ],
+      "raw": ".cache\\optimization-20261026\\observability-alpine-candidate.json",
+      "raw_sha256": "cc4396d21e43c7e929e30eaf21b14953f5d9974a28f3b40fe869ebc74d679fae",
+      "not_deployed": true,
+      "status": "eligible_for_isolated_integration",
+      "coverage_note": "OS package database and recognized Go binaries"
+    },
+    {
+      "service": "alertmanager",
+      "reference": "dr-opt-alertmanager-vcs:20261026",
+      "image_id": "sha256:074c701cb3dd75766133cbd229ca6b6b285fc972f956ff6e6c1b326294a19d0c",
+      "repo_digests": [
+        "dr-opt-alertmanager-vcs@sha256:074c701cb3dd75766133cbd229ca6b6b285fc972f956ff6e6c1b326294a19d0c"
+      ],
+      "scan": {
+        "HIGH": 0,
+        "CRITICAL": 0
+      },
+      "scanner_results": [
+        {
+          "Target": "bin/alertmanager",
+          "Class": "lang-pkgs",
+          "Type": "gobinary"
+        },
+        {
+          "Target": "bin/amtool",
+          "Class": "lang-pkgs",
+          "Type": "gobinary"
+        }
+      ],
+      "raw": ".cache\\optimization-20261026\\observability-alertmanager-vcs-patched.json",
+      "raw_sha256": "d2c85b2697699764f7f9fe15b7cd1240793ba474f4d7fb63df5a71dc8ac08fc2",
+      "not_deployed": true,
+      "status": "eligible_for_isolated_integration",
+      "coverage_note": "Scanner-recognized components only; upstream scratch/busybox images without package database have no OS package result",
+      "main_module_version": "v0.34.1+dirty",
+      "actual_vcs_revision": "73c6bfe7393929211294c1954f30d8ed78e4d0ad",
+      "state_delivery_note": "previous binary-only candidate has isolated state/webhook pass; final VCS build requires refreshed receipt"
+    }
+  ],
+  "loki": {
+    "reference": "grafana/loki:3.7.9",
+    "original_digest_scan": "passed original OCI platform layout; 0 HIGH/CRITICAL; exact SHA256-closed manifest/config/18 compressed layers; not flattened",
+    "merged_rootfs_diagnostic": "0 HIGH/CRITICAL, not a deployment artifact or substitute for original digest scan",
+    "raw": ".cache/optimization-20261026/observability-loki-original-layout.json",
+    "receipt": ".cache\\optimization-20261026\\loki-rootfs-diagnostic-receipt.json",
+    "config_check": "passed",
+    "closure_receipt": ".cache/optimization-20261026/loki-original-oci-download.json",
+    "transport_tar_attempt": "Trivy Windows expects OCI directory layout, tar attempt failed and retained",
+    "platform": "linux/amd64",
+    "final_linux_ci": "still required"
+  },
+  "grafana": {
+    "11.6.16": "79 HIGH/CRITICAL; same-major official branch EOL2026-06-25",
+    "13.2.4": "76 HIGH,0 CRITICAL including bundled plugin binaries; not eligible for deployment",
+    "compatibility": "grafana-upgrade-isolated.json: v11.5.2 copied backup ->13.2.4 preserves1dashboard/3datasources and role boundary; API scope only",
+    "raw": ".cache\\optimization-20261026\\observability-grafana13-candidate.json",
+    "sources": [
+      "https://grafana.com/docs/grafana/latest/upgrade-guide/when-to-upgrade/",
+      "https://grafana.com/docs/grafana/latest/upgrade-guide/upgrade-v13/upgrade-v13.0/",
+      "https://github.com/grafana/grafana/releases/tag/v13.2.4"
+    ],
+    "official_catalog_candidate_scope": "13 complete backend ELF binaries only; no frontend or full Grafana security claim; runtime PGP verification still pending",
+    "official_catalog_backend_findings": 34,
+    "official_catalog_zero_backend_candidates": [
+      "elasticsearch",
+      "prometheus",
+      "stackdriver",
+      "zipkin"
+    ],
+    "official_catalog_raw": ".cache/optimization-20261026/grafana-official-backend-candidates.json",
+    "rebuilt_backends": {
+      "count": 8,
+      "scope": "complete backend ELF binaries with original module pseudo-versions+dirty, fixed real VCS and reviewed x/net0.60 dependencies; not full Grafana pass",
+      "findings": {
+        "HIGH": 0,
+        "CRITICAL": 0
+      },
+      "raw": ".cache/optimization-20261026/grafana-eight-rebuilt-backend-scan.json",
+      "build_info": ".cache/optimization-20261026/grafana-eight-built-v3/out/build-info",
+      "provenance": ".cache/optimization-20261026/grafana-reviewed-signature-patch/rebuild-provenance.json"
+    },
+    "status": "precise attribution and human authorization pending; 11HIGH2CRITICAL raw retained"
+  },
+  "known_build_failures": [
+    {
+      "alertmanager": "Go module omits generated embedded UI; first build failed, then official checksummed release UI asset used"
+    },
+    {
+      "alertmanager": "unnecessary npm UI build attempt failed ECONNRESET; no runtime control weakened; switched to official same-release prebuilt asset"
+    },
+    {
+      "grafana": "two official Go proxy EOF failures; exact failed genproto source seeded from same official proxy, still checksum-validated by Go; then generated TSV CRLF invalidated plugin version, normalized to LF before bounded retry"
+    }
+  ],
+  "actual_activation": false,
+  "alertmanager_state_and_delivery": "alertmanager-upgrade-isolated.json: synthetic old0.28.1 silence persisted through new0.34.1; real isolated HTTP receiver bearer check passed",
+  "final_fresh_database_scan": "monitoring-final-security-scan.json",
+  "grafana_final_review_request": "grafana-vulnerability-review-request.json",
+  "grafana_final_raw_counts": {
+    "HIGH": 11,
+    "CRITICAL": 2
+  },
+  "alertmanager_final_vcs_state_and_delivery": "alertmanager-final-vcs-upgrade-isolated.json",
+  "monitoring_persistence": "monitoring-volume-migration-isolated.json; daily actual anonymous volumes only inspected, not migrated"
+}

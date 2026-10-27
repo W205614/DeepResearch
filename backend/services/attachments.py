@@ -1,5 +1,4 @@
 """Private staged images, task ownership, and durable cleanup."""
-import asyncio
 import io
 import warnings
 from datetime import datetime, timedelta, timezone
@@ -44,7 +43,12 @@ class Attachments:
         self.db, self.settings, self.store = db, settings, store
 
     async def add(self, workspace, owner, name, content):
-        media = await asyncio.to_thread(validate_image, name, content)
+        if len(content) > MAX_IMAGE_BYTES:
+            raise ServiceError("图片超过 10 MB 限制")
+        suffix = validate_upload(name, content, decode_images=False)
+        if suffix not in IMAGE_SUFFIXES:
+            raise ServiceError("附件仅支持 JPEG、PNG、WebP 和静态 GIF 图片")
+        media = IMAGE_MEDIA_TYPES[suffix]
         image_id = uid()
         await self.db.execute("""INSERT INTO attachments
             (id,user_id,owner_subject,name,media_type,size,status,created_at)
@@ -53,6 +57,8 @@ class Attachments:
         try:
             await self.store.put("quarantine", image_id, content)
             await scan(self.settings, content)
+            from .parser_process import parse_document
+            await parse_document(name, content, self.settings)
             await self.store.move("quarantine", "uploads", image_id)
             await self.db.execute("UPDATE attachments SET status='ready' WHERE id=?", (image_id,))
         except BaseException:

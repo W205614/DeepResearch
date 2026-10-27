@@ -1,0 +1,29 @@
+[
+  {
+    "stage": "isolated_role_bootstrap_first_attempt",
+    "failure": "DependentObjectsStillExistError when REASSIGN OWNED on initdb superuser",
+    "resolution": "transfer only public application relations; never system catalog",
+    "daily_services_changed": false
+  },
+  {
+    "stage": "isolated_role_bootstrap_catalog_type",
+    "failure": "asyncpg pg_class relkind returned bytes; now explicitly cast to text",
+    "resolution": "catalog relkind::text"
+  },
+  {
+    "stage": "Windows_checkpoint_fixture",
+    "failure": "psycopg rejects ProactorEventLoop",
+    "resolution": "Windows selector policy in migration/fixture CLIs"
+  },
+  {
+    "stage": "storage_permission_negative_fixture",
+    "failure": "ListBuckets returned a policy-filtered list instead of 403",
+    "resolution": "assert authorized bucket set exactly; unrelated bucket access stays denied; policy unchanged"
+  },
+  {
+    "stage": "official_latest_mc_image_scan",
+    "failure": "52 HIGH/CRITICAL entries in latest official prebuilt mc client",
+    "resolution": "replace general mc binary with minimal source-built official SDK bootstrap; no advisory ignored",
+    "report": ".cache/improvement-20261025/security/storage-init-optimization.json"
+  }
+]

@@ -22,11 +22,13 @@ def copy_verified(source, destination):
     if destination.exists() or source == destination or source in destination.parents:
         raise ValueError("Destination must be a new directory outside the source")
     manifest = json.loads((source / "manifest.json").read_text(encoding="utf-8"))
-    if manifest.get("version") != 2 or not manifest.get("files"):
-        raise ValueError("A nonempty version 2 manifest is required")
+    if manifest.get("version") not in {2, 3} or not manifest.get("files"):
+        raise ValueError("A nonempty version 2 or 3 manifest is required")
     for name, digest in manifest["files"].items():
         path = (source / name).resolve()
-        if path.parent != source or not path.is_file() or checksum(path) != digest:
+        relative = Path(name)
+        if (relative.is_absolute() or ".." in relative.parts or not path.is_relative_to(source)
+                or path.is_symlink() or not path.is_file() or checksum(path) != digest):
             raise ValueError("Source backup checksum/path validation failed")
     files = list(source.rglob("*"))
     if any(path.is_symlink() for path in files):

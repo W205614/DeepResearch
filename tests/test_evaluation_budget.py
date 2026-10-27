@@ -13,6 +13,15 @@ def policy(**overrides):
                 total_http=2, input_tokens=100000, output_tokens=1000) | overrides
 
 
+def test_cumulative_reservation_is_not_reset_by_small_actual_usage(tmp_path):
+    budget = Budget(tmp_path / "cumulative.sqlite3", policy(reserved_tokens=800))
+    first = budget.reserve("llm", {"model": "fixture", "max_tokens": 200})
+    budget.settle(first, 200, {"prompt_tokens": 1, "completion_tokens": 1})
+    with pytest.raises(ServiceError, match="budget exhausted"):
+        budget.reserve("llm", {"model": "fixture", "max_tokens": 200})
+    assert budget.report()["cumulative_reserved_tokens"] > 400
+
+
 def test_budget_persists_and_counts_simultaneous_attempts(tmp_path):
     path = tmp_path / "ledger.sqlite3"
     Budget(path, policy())

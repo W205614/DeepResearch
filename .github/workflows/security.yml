@@ -17,12 +17,172 @@ jobs:
       - run: mvn -B dependency:resolve
         working-directory: business-backend
       - uses: aquasecurity/trivy-action@v0.36.0
-        with: { scan-type: fs, format: sarif, output: trivy-fs.sarif, severity: "HIGH,CRITICAL", limit-severities-for-sarif: true, exit-code: "1", version: v0.75.0 }
+        with: { scan-type: fs, scanners: "vuln,secret", format: sarif, output: trivy-fs.sarif, severity: "HIGH,CRITICAL", limit-severities-for-sarif: true, exit-code: "1", version: v0.75.0 }
       - uses: github/codeql-action/upload-sarif@v4
         with: { sarif_file: trivy-fs.sarif }
-      - run: docker build -t deepresearch-agent:ci .
+  inventory-runtime:
+    runs-on: ubuntu-latest
+    permissions: { contents: read }
+    outputs:
+      matrix: ${{ steps.images.outputs.matrix }}
+      custom_matrix: ${{ steps.images.outputs.custom_matrix }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: images
+        run: python scripts/runtime_ci_inventory.py
+      - uses: actions/upload-artifact@v6
+        with:
+          name: runtime-image-inventory-${{ github.sha }}
+          path: .cache/eval/runtime-image-inventory.json
+  runtime-image-scan:
+    needs: inventory-runtime
+    runs-on: ubuntu-latest
+    permissions: { contents: read }
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.inventory-runtime.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Load each independently approved OCI artifact without rebuilding
+        if: matrix.approved_artifact == true
+        run: python scripts/fetch_approved_image.py --artifact "$ARTIFACT" --tag "$SCAN_TAG" --output ".cache/eval/approved-$ARTIFACT-load.json"
+        env:
+          ARTIFACT: ${{ matrix.artifact }}
+          SCAN_TAG: deepresearch-scan-${{ matrix.artifact }}:ci
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Scan ordinary runtime image with unchanged HIGH gate
+        if: matrix.approved_artifact != true
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ${{ matrix.image }}
+          severity: HIGH,CRITICAL
+          exit-code: '1'
+          version: v0.75.0
+          timeout: 5m
+          format: json
+          output: runtime-image.json
+      - name: Keep complete raw approved-image scan for exact disposition
+        id: approved_scan
+        if: matrix.approved_artifact == true
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: deepresearch-scan-${{ matrix.artifact }}:ci
+          severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+          scanners: vuln
+          list-all-pkgs: 'true'
+          exit-code: '0'
+          version: v0.75.0
+          timeout: 5m
+          format: json
+          output: runtime-image.json
+      - name: Enforce only the exact authorized FIXED finding
+        if: matrix.artifact == 'minio' && steps.approved_scan.outcome == 'success'
+        run: >-
+          python scripts/image_disposition.py
+          --archive .cache/eval/approved-minio.oci.tar
+          --scan runtime-image.json
+          --inspect .cache/eval/approved-minio-load-inspect.json
+          --scanner-exit-code 0
+          --output .cache/eval/minio-ci-disposition.json
+      - name: Collect complete native and full Grafana reports
+        if: matrix.artifact == 'grafana' && steps.approved_scan.outcome == 'success'
+        run: python scripts/scan_grafana_image.py --image deepresearch-scan-grafana:ci --output-dir .cache/eval/grafana-native
+      - name: Enforce exact independently authorized Grafana per-finding dispositions
+        if: matrix.artifact == 'grafana' && steps.approved_scan.outcome == 'success'
+        run: >-
+          python scripts/grafana_image_disposition.py
+          --archive .cache/eval/approved-grafana.oci.tar
+          --scan runtime-image.json
+          --grype-scan .cache/eval/grafana-native/full-grype.json
+          --sbom .cache/eval/grafana-native/full-syft.json
+          --inspect .cache/eval/approved-grafana-load-inspect.json
+          --scanner-exit-code 0 --grype-exit-code 0
+          --output .cache/eval/grafana-ci-disposition.json
+      - name: Verify actual native JVM bytes and native/full advisory coverage
+        if: matrix.native_jvm_profile != ''
+        run: python scripts/check_native_jvm.py --image "$SCAN_IMAGE" --profile "$JVM_PROFILE" --output-dir .cache/eval/native-jvm
+        env:
+          SCAN_IMAGE: ${{ matrix.image }}
+          JVM_PROFILE: ${{ matrix.native_jvm_profile }}
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: runtime-security-${{ matrix.name }}-${{ github.sha }}
+          path: |
+            runtime-image.json
+            .cache/eval/approved-*-load*.json
+            .cache/eval/minio-ci-disposition.json
+            .cache/eval/grafana-ci-disposition.json
+            .cache/eval/grafana-native/*.json
+            .cache/eval/native-jvm/*.json
+  application-image-scan:
+    needs: inventory-runtime
+    runs-on: ubuntu-latest
+    permissions: { contents: read }
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.inventory-runtime.outputs.custom_matrix) }}
+    steps:
+      - uses: actions/checkout@v7
+      - run: python scripts/build_ci_image.py
+        env:
+          SCAN_BUILD_CONTEXT: ${{ matrix.context }}
+          SCAN_DOCKERFILE: ${{ matrix.dockerfile }}
+          SCAN_BUILD_NAME: ${{ matrix.name }}
       - uses: aquasecurity/trivy-action@v0.36.0
-        with: { image-ref: deepresearch-agent:ci, severity: "HIGH,CRITICAL", exit-code: "1", version: v0.75.0 }
-      - run: docker build -t deepresearch-business:ci business-backend
-      - uses: aquasecurity/trivy-action@v0.36.0
-        with: { image-ref: deepresearch-business:ci, severity: "HIGH,CRITICAL", exit-code: "1", version: v0.75.0 }
+        with:
+          image-ref: deepresearch-scan-${{ matrix.name }}:ci
+          severity: HIGH,CRITICAL
+          exit-code: '1'
+          version: v0.75.0
+          format: json
+          output: application-image.json
+      - name: Verify actual native JVM bytes and native/full advisory coverage
+        if: matrix.native_jvm_profile != ''
+        run: python scripts/check_native_jvm.py --image "$SCAN_IMAGE" --profile "$JVM_PROFILE" --output-dir .cache/eval/native-jvm
+        env:
+          SCAN_IMAGE: deepresearch-scan-${{ matrix.name }}:ci
+          JVM_PROFILE: ${{ matrix.native_jvm_profile }}
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: application-security-${{ matrix.name }}-${{ github.sha }}
+          path: |
+            application-image.json
+            .cache/eval/native-jvm/*.json
+  source-analysis:
+    runs-on: ubuntu-latest
+    permissions: { contents: read, security-events: write }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: github/codeql-action/init@v4
+        with: { languages: "python,javascript-typescript,java-kotlin", build-mode: none }
+      - uses: github/codeql-action/analyze@v4
+        with: { output: .cache/codeql }
+      - run: python scripts/check_codeql_results.py .cache/codeql
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: source-security-${{ github.sha }}
+          path: .cache/codeql/*.sarif
+  source-analysis-bootstrap:
+    runs-on: ubuntu-latest
+    permissions: { contents: read, security-events: write }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: scripts/storage-bootstrap/go.mod
+          cache-dependency-path: scripts/storage-bootstrap/go.sum
+      - uses: github/codeql-action/init@v4
+        with: { languages: go, build-mode: manual }
+      - run: go build -mod=readonly ./...
+        working-directory: scripts/storage-bootstrap
+      - uses: github/codeql-action/analyze@v4
+        with: { output: .cache/codeql-bootstrap }
+      - run: python scripts/check_codeql_results.py .cache/codeql-bootstrap
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: bootstrap-source-security-${{ github.sha }}
+          path: .cache/codeql-bootstrap/*.sarif

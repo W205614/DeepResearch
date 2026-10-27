@@ -1,0 +1,171 @@
+{
+  "stage": "two frozen candidate samples completed; final release pending",
+  "verified_at": "2026-10-26T11:03:07.839510+00:00",
+  "frozen_cases_sha256": "8b3ec54e838e31913e7419f8f6b07c706a6e791f6eca582d182e47a2040cc2cf",
+  "policy_sha256": "48bc064eee7f71ffafce5af3bb88079d3a234c9364ce5cb55155c5b5253bbfd0",
+  "linux_original_ledger_sha256": "ff8b7b0606b829c6170705b60cb2ab933e33a21fb17a2519669a257c420fb04d",
+  "source_fingerprints": "candidate-source-fingerprints-v3.json",
+  "recipe": "Source-only candidate refresh over immutable original runtime image4b648b8e; production Dockerfile rebuild/CI remains pending after registry HEAD timeout",
+  "ledger_shared_by": [
+    "agent",
+    "worker",
+    "document-worker"
+  ],
+  "database": "dr_opt_live",
+  "redis_db": 3,
+  "vector_prefix": "optlive20261026",
+  "model_http": 12,
+  "embedding_http": 4,
+  "search_http": 0,
+  "reranker_http": 0,
+  "actual_known_input_tokens": 12974,
+  "actual_known_output_tokens": 1775,
+  "usage_missing_requests": 0,
+  "cumulative_reserved_tokens": 155718,
+  "accounting_is_not_invoiced_currency": true,
+  "cases": [
+    {
+      "id": "development-visitor",
+      "split": "development",
+      "question_sha256": "eee337aebf9af308d53ccb0d91baca32a6246349992e4888b150ecf3e783fa28",
+      "document_sha256": "12c09ea10f1c28cee42f6656bc2bcf6ca1541f2bd124f104bf3968f50e45335e",
+      "workspace": "79361eea-cae2-4d83-80cc-b1979f38b2ac",
+      "attempt": 1,
+      "status": "completed_and_published",
+      "upload_status": 202,
+      "document_id": "6d501773a8be4eddaa581f9c5817f05f",
+      "create_status": 202,
+      "run_id": "d5a3c9cb1b7d48a0898ec1fbd6dbcb40",
+      "quality": "partial",
+      "report_sha256": "03ad5b66113c0574062e7eb884b31141c73796519067abf3960bdd164e26e6fe",
+      "report_id": "c2268d0f12e3454eae44bdaaace9f05f",
+      "snapshot_sha256": "ebd8f9e8c4a90e1cefac5c3a67901376eca03bb16e2cdadaba0b637f0fa345a8",
+      "original_request_answered": true,
+      "unanswered_questions": [],
+      "quality_reasons": [
+        "vector_unavailable"
+      ],
+      "retrieval_outcomes": [
+        {
+          "source": "web",
+          "outcome": "policy_blocked"
+        },
+        {
+          "source": "local",
+          "outcome": "vector_unavailable"
+        },
+        {
+          "source": "local",
+          "outcome": "ok"
+        }
+      ],
+      "checked_claims": 5,
+      "supported_claims": 5,
+      "raw_run_sha256": "68d4d6ab7cb0a16bbef50c64042076e5a91a04e4138b4db3d5f7da8b73fc3335",
+      "controlled_reviewer_is_not_human_blind_review": true
+    },
+    {
+      "id": "holdout-retention",
+      "split": "holdout",
+      "question_sha256": "8d3a0cb3d55f96a10bade31ac2dac615ffcf8c41914b7ac768e43e7c376094d6",
+      "document_sha256": "78188245ac79e9bcb949ae9ca8852d82a05396384f708070aaf904601b3904fb",
+      "workspace": "1df242a8-88b9-4c7d-92a1-3c6620d007d1",
+      "attempt": 1,
+      "status": "completed_and_published",
+      "upload_status": 202,
+      "document_id": "fe7a939420b94db792c25ee2e3d642c6",
+      "create_status": 202,
+      "run_id": "596bf7943b514823a0ff0f6f79e7eb81",
+      "quality": "partial",
+      "report_sha256": "9d94ff3cfd6aebb72c0e3964a60012171a6b7601305453344dc6ee68169b47a0",
+      "report_id": "57967b624b044064b0d2e77d4213802f",
+      "snapshot_sha256": "c31def7e8a1ff39fed36f5bf657efc3b26e4b28da20e793703dec96aec54c10b",
+      "original_request_answered": false,
+      "unanswered_questions": [
+        "所给资料中，北辰样本保留办法对已批准报告、未提交草稿、争议冻结记录和备份副本分别规定了多长保留期限？争议冻结记录能否按普通期限自动删除？",
+        "根据北辰样本保留办法，已批准报告和未提交草稿分别保留多久？争议冻结记录能否按普通期限自动删除？备份副本保留多久？只用所给资料回答。"
+      ],
+      "quality_reasons": [],
+      "retrieval_outcomes": [
+        {
+          "source": "web",
+          "outcome": "policy_blocked"
+        },
+        {
+          "source": "local",
+          "outcome": "ok"
+        }
+      ],
+      "checked_claims": 4,
+      "supported_claims": 4,
+      "raw_run_sha256": "0077dd6861a262fcc45a934ed0d5294d0921db64a8f5e482e75c1afc81117747",
+      "controlled_reviewer_is_not_human_blind_review": true
+    }
+  ],
+  "source_based_artifact_review": {
+    "reviewer": "coding agent; not independent human truth",
+    "observations": [
+      "Development report preserves7 natural days, restricted collections cannot automatically renew, workspace administrator reauthorization and source attribution",
+      "Holdout preserves24 months,30 days,dispute freeze exception and unknown backup retention; does not invent backup period"
+    ],
+    "limitations": [
+      "Both system quality flags remainpartial",
+      "Development vector_unavailable is observed; cold-start cause not independently established",
+      "Holdout coverage checker conservatively lists whole questions as not confirmed despite explicit statements in report; no threshold/prompt/input changes or best-run rerun",
+      "No general accuracy improvement or production capacity claim"
+    ]
+  },
+  "human_blind_review": "not_performed",
+  "new_complete_samples": 2,
+  "reruns": 0,
+  "retained_assets": [
+    "Linux original ledger volume",
+    "fresh isolated live database",
+    "optlive vector collections",
+    "private full run snapshots and role identities"
+  ],
+  "instrumentation_sources": {
+    "scripts\\bounded_server.py": "5ce392d5b6af9434aee828072a0efd125b05b5243ef3a0d5496c7c5acf9e286b",
+    "scripts\\bounded_evaluation.py": "e28dd2949bd9861f642eebe1925896d6ed008d6d9de7adaedb050d69ed82b1f4",
+    "frontend\\e2e\\optimization-live.e2e.ts": "4908229408cbb786bff38910624a169ab6e830b64e8b8996835e1c455f73ee50"
+  },
+  "sql_governance_summary": [
+    [
+      "embedding",
+      "indexing",
+      "2",
+      "180",
+      "0",
+      "0",
+      "0"
+    ],
+    [
+      "embedding",
+      "research",
+      "2",
+      "76",
+      "0",
+      "0",
+      "0"
+    ],
+    [
+      "model",
+      "research",
+      "12",
+      "12718",
+      "1775",
+      "0",
+      "0"
+    ]
+  ],
+  "sql_governance_columns": [
+    "kind",
+    "purpose",
+    "requests",
+    "actual_input",
+    "actual_output",
+    "unsettled",
+    "unknown_usage"
+  ],
+  "fixture_restored_afterward": true
+}

@@ -1,0 +1,70 @@
+{
+  "scope": "new scoped storage bootstrap image only; not whole stack certification",
+  "scanner": "Trivy 0.75.0",
+  "database": "existing verified local cached DB; final CI must fetch current data",
+  "high_critical": 0,
+  "raw_sha256": "1d5a216a954287978e75455be9da170ec4fcce15e27a2871cb2393bfaf210908",
+  "image_metadata": {
+    "Size": 10004480,
+    "ImageID": "sha256:1e1c407af917ae878a5c22e8581c03bd427cd55f797f4444ebf825b8e00254ed",
+    "DiffIDs": [
+      "sha256:71bdcf4228e80da1a1a139d6673e568d034c1ae96a2caf7ce7ba84834a3d110d"
+    ],
+    "RepoTags": [
+      "dr-opt-storage-init:20261026"
+    ],
+    "RepoDigests": [
+      "dr-opt-storage-init@sha256:1e1c407af917ae878a5c22e8581c03bd427cd55f797f4444ebf825b8e00254ed"
+    ],
+    "Reference": "dr-opt-storage-init:20261026",
+    "ImageConfig": {
+      "architecture": "amd64",
+      "created": "2026-10-26T07:59:50.216905947Z",
+      "history": [
+        {
+          "created": "2026-10-26T07:59:50Z",
+          "created_by": "COPY /storage-bootstrap /storage-bootstrap # buildkit",
+          "comment": "buildkit.dockerfile.v0"
+        },
+        {
+          "created": "2026-10-26T07:59:50Z",
+          "created_by": "USER 10001:10001",
+          "comment": "buildkit.dockerfile.v0",
+          "empty_layer": true
+        },
+        {
+          "created": "2026-10-26T07:59:50Z",
+          "created_by": "ENTRYPOINT [\"/storage-bootstrap\"]",
+          "comment": "buildkit.dockerfile.v0",
+          "empty_layer": true
+        }
+      ],
+      "os": "linux",
+      "rootfs": {
+        "type": "layers",
+        "diff_ids": [
+          "sha256:71bdcf4228e80da1a1a139d6673e568d034c1ae96a2caf7ce7ba84834a3d110d"
+        ]
+      },
+      "config": {
+        "Entrypoint": [
+          "/storage-bootstrap"
+        ],
+        "Env": [
+          "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        ],
+        "User": "10001:10001",
+        "WorkingDir": "/"
+      }
+    },
+    "Layers": [
+      {
+        "Size": 10004480,
+        "Digest": "sha256:7c17227673eb19b0653995adc400972bc8a707aab790f591442f1d71777f79c8",
+        "DiffID": "sha256:71bdcf4228e80da1a1a139d6673e568d034c1ae96a2caf7ce7ba84834a3d110d"
+      }
+    ]
+  },
+  "previous_mc_image_failed_high_critical": 52,
+  "remediation": "minimal source-built official SDK tool; Go/dependencies locked; no advisory ignored"
+}

@@ -1,0 +1,48 @@
+{
+  "item":7,
+  "status":"implemented_targeted_offline_validation",
+  "supplier_calls":0,
+  "implementation":[
+    "backend/services/lexical_retrieval.py: existing Chinese/Latin tokenizer; persisted term frequency, SQL authorized N/avgdl/df, exact BM25Plus k1=1.5 b=.75 delta=0 scoring",
+    "small corpus retains original in-memory BM25 behavior; larger corpus hydrates bounded candidate ids instead of all source texts",
+    "SQL candidate window deduplicates exact original text within one document before limiting; vector hits are rehydrated from current authorized SQL rows; neighbors at most two per selected block before existing final context caps",
+    "ingest updates chunks and derived postings in the same transaction; legacy backfill uses 32-row keyset batches and idempotent rows",
+    "Documents.capacity plus document-count and total-chunk admission; reads beyond old 4000 threshold use the database path",
+    "scripts/rebuild_lexical_index.py provides an explicit pre-admission operational backfill, progress every ten batches and resumable exit code 2"
+  ],
+  "fixed_fixture":"eval/lexical/optimization-20261026.json",
+  "tests":[
+    {"result":"8 passed in 43.92s","scope":"database lexical suite at that stage plus old-queue attempt fence, idempotent queue recovery and authenticated internal schedule"},
+    {"result":"5 passed in 25.68s","scope":"eight frozen Chinese queries match reference BM25 scores and ordering; 4202-chunk bounded search; grant/cache/revoke plus malicious vector metadata; upload admission; revoked-source partial guard"},
+    {"result":"3 passed with one unrelated fixture followup","scope":"SQL candidate dedup preserves a second document; operational keyset backfill resumes 32 then 33 then zero rows; versioned internal schedule"},
+    {"result":"1 passed in 3.76s","scope":"same-hash upload cannot disclose an inaccessible document name/id/status"}
+  ],
+  "baseline":{
+    "receipt":"lexical-baseline.json",
+    "description":"Original exact Git blob loaded into an isolated offline fixture after implementation; 4201 chunks produced corpus_capacity. This is a reproduced source baseline, not historical production evidence."
+  },
+  "memory_measurements":{
+    "fixture_chunks":4201,
+    "fixture_documents":11,
+    "characters_per_chunk":10000,
+    "source_text_utf8_bytes":126030000,
+    "cold_initial_receipt":"lexical-memory-cold-initial.json",
+    "cold_initial_heap_peak_bytes":5505536,
+    "cold_initial_elapsed_seconds":83.922,
+    "cold_initial_boundary":"Before final candidate-dedup refinement; tracemalloc includes cold legacy backfill. Motivated explicit operational backfill rather than a first-request latency promise.",
+    "final_warm_receipt":"lexical-memory-final.json",
+    "final_warm_heap_peak_bytes":727691,
+    "final_warm_process_peak_rss_bytes":143392768,
+    "final_warm_elapsed_seconds":2.812,
+    "final_warm_returned":6,
+    "boundary":"Offline SQLite fixture with source fingerprints in receipts. Python heap and total process RSS are distinct; no production concurrency, throughput, general relevance or SLA claim.",
+    "retained_diagnostics":"Initial Windows RSS collection failed before retrieval because a ctypes handle had no explicit signature. Corrected without changing fixture; original cold and intermediate warm receipts remain separate."
+  },
+  "deployment_requirements":[
+    "Run migrations through 0017_product_governance, then explicit lexical backfill before allowing Java research admission on a large existing database.",
+    "Supply RAG_SMALL_CORPUS_CHUNKS, RAG_DB_CANDIDATE_LIMIT, WORKSPACE_DOCUMENT_LIMIT and WORKSPACE_CHUNK_LIMIT through normal deployment settings.",
+    "RAG_MAX_CORPUS_CHUNKS now bounds the small-corpus in-memory path; it is not a global 4000-chunk rejection threshold.",
+    "Verify PostgreSQL query plans, actual authorization roles and real retrieval through Java in isolated component acceptance."
+  ],
+  "remaining_boundaries":["Database posting lists still grow with corpus size; source quota and SQL resource monitoring remain necessary.","Only eight fixed Chinese queries establish scorer equivalence; they do not measure general answer accuracy.","Archives and formal evidence are retained; total source-version storage needs operational monitoring."]
+}

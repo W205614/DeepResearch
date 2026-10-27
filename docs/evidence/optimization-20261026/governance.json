@@ -1,0 +1,60 @@
+{
+  "item": 2,
+  "date": "2026-10-26",
+  "status": "implemented_pending_combined_delivery",
+  "implementation": {
+    "static_configuration": "POST /api/config/check performs no provider calls",
+    "paid_probe": "POST /api/config/probe?target=llm|embedding|milvus requires PLATFORM_OPERATOR_SUBJECTS membership in both Java and Python; workspace admin alone is insufficient",
+    "probe_controls": "durable provider/account/model cooldown, shared cached safe result, audit before transport and after completion, separate probe period quota",
+    "ledger": "usage_periods, usage_attempts, provider_probes via migration 0015_usage_governance",
+    "dimensions": ["platform", "subject across workspaces", "workspace across tasks", "supplier origin and credential fingerprint", "additional shared probe quota"],
+    "reservation": "single database transaction conditionally reserves every dimension before each HTTP attempt; failure rolls back all counters and sends no request",
+    "http_paths": ["chat/completions including vision", "embeddings including index batches", "responses web search", "Bocha web-search", "reranker"],
+    "retries": "every transport retry and structured-format retry reserves another HTTP attempt; new provider instances reuse the durable counters",
+    "settlement": "cumulative reservations, actual input/output, pending exposure and unknown exposure remain separate; missing usage never refunds tokens; settlement is idempotent",
+    "identity": "paid_scope(workspace_id, subject, purpose); research Execution resolves its persisted run ownership; missing scope or unavailable ledger fails closed",
+    "demo": "local demo generation/embedding needs no real identity; any actual HTTP POST still needs an explicit accounting scope and ledger",
+    "defaults": {
+      "period_seconds": 86400,
+      "platform_calls": 1000,
+      "platform_tokens": 20000000,
+      "subject_calls": 200,
+      "subject_tokens": 4000000,
+      "workspace_calls": 400,
+      "workspace_tokens": 8000000,
+      "supplier_account_calls": 1000,
+      "supplier_account_tokens": 20000000,
+      "probe_calls": 20,
+      "probe_tokens": 200000,
+      "probe_cooldown_seconds": 300,
+      "platform_operator_subjects": "empty by default; paid diagnostics disabled"
+    }
+  },
+  "validation": {
+    "commands": [
+      ".venv/Scripts/python.exe -m pytest tests/test_usage_governance.py tests/test_providers.py tests/test_reranker_hot_update.py -q",
+      ".venv/Scripts/python.exe -m pytest tests/test_reliability.py::test_retry_attempts_share_durable_budget tests/test_reliability.py::test_auth_failure_breaks_circuit_without_repeated_calls tests/test_reliability.py::test_retry_after_does_not_sleep_beyond_budget tests/test_reliability.py::test_cancel_during_external_request_rejects_late_response -q",
+      ".venv/Scripts/python.exe -m ruff check backend/core/usage_governance.py backend/core/config.py backend/infrastructure/providers.py backend/infrastructure/reranker.py backend/api/app.py tests/test_usage_governance.py tests/helpers.py migrations/versions/0015_usage_governance.py"
+    ],
+    "first_governance_tests": "12 passed",
+    "initial_affected_adapter_run": "12 failed, 21 passed: existing MockTransport helpers lacked explicit accounting scope; test harness was updated without weakening production checks",
+    "affected_adapter_run_after_fixture_update": "48 passed in 121.66 seconds",
+    "latest_demo_http_hardening": "48 affected adapter tests passed in 131.62 seconds after removing the demo HTTP exemption; 17 governance tests passed in 13.00 seconds including the added pure-demo/no-scope boundary",
+    "directly_affected_reliability": "4 passed in 11.85 seconds; only the two direct MockTransport tests without Execution needed an explicit offline accounting scope",
+    "final_small_change_checks": "2 passed in 1.67 seconds for retry budget cutoff and pure-demo/no-scope boundary",
+    "ruff": "all selected implementation, migration and directly affected fixture files passed after final additions",
+    "git_diff_check": "passed; Windows LF/CRLF warnings only",
+    "evaluation_cli_compatibility": "All four real evaluation CLI entrypoints explicitly establish CLI-only paid_scope; retrieval/local QA create evaluator membership before ingestion. Production defaults remain fail-closed. Two mock/static checks passed, and the full retrieval CLI demo path passed separately in 7.41 seconds with every HTTP POST forbidden. An initial test selected the checkpoint SQLite file instead of the research ledger; the fixture was corrected. Existing bounded_evaluation transport budget still blocked the second mock request, and no thresholds, cases, 57-request CI allowance or transport policy changed.",
+    "paid_http_calls": 0,
+    "daily_containers_rebuilt": false,
+    "git_commit_or_push": false
+  },
+  "limitations": [
+    "This record is not final CI, deployed-image or real-supplier evidence.",
+    "Focused concurrency evidence uses SQLite; PostgreSQL migration and deployed privilege checks remain part of combined component acceptance.",
+    "Token quotas track conservative request exposure and supplier-reported usage, not currency charges or a guarantee that a supplier honors output bounds.",
+    "Unknown and crashed in-flight attempts keep their original-period exposure; UTC epoch periods roll forward while historical rows remain.",
+    "Model-evaluation transport budgets remain an additional stricter gate and are never replaced or relaxed by this application ledger.",
+    "Runtime/document identity wiring, Compose environment delivery, platform role privilege migration and frontend operator entry are integrated by the coordinating task."
+  ]
+}

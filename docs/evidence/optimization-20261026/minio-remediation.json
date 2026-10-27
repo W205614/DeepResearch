@@ -1,0 +1,199 @@
+{
+  "status": "raw1HIGH0CRITICAL_preserved_user_accepted_single_artifact_FIXED_machine_validation_passed_transport_pending",
+  "scope": "Candidate only; no production or daily volume modifications",
+  "source": {
+    "repository": "https://github.com/pgsty/silo",
+    "release": "RELEASE.2026-10-18T00-00-00Z",
+    "commit": "0cd388c666f8211f552604ae73448a066e9c25ce",
+    "upstream_module": "github.com/minio/minio",
+    "client_source": "github.com/pgsty/mc@v0.0.0-20261017101407-fa3b8bf72458",
+    "toolchain": "go1.27.3",
+    "module_or_version_renamed": false,
+    "vcs_preserved": true
+  },
+  "references": [
+    "https://github.com/minio/minio/security/advisories/GHSA-h749-fxx7-pwpg",
+    "https://github.com/pgsty/silo/releases/tag/RELEASE.2026-10-18T00-00-00Z",
+    "https://raw.githubusercontent.com/pgsty/silo/0cd388c666f8211f552604ae73448a066e9c25ce/internal/s3select/csv/reader.go"
+  ],
+  "source_fingerprints": {
+    "go.mod": "770370dcf5f21d0a1168b0dc99e6e3605d7021d942539c8d331eb68f2de924fd",
+    "go.sum": "bc8282ddff0d6f271bb4e99ead7f929e9b225883eddf1f80c29bc10e5c732249",
+    "internal\\s3select\\csv\\reader.go": "51cece44627f51103893c5e8f84eda642523b415040e89e660d3802da773e496"
+  },
+  "cve_2026_39414": {
+    "official_community_fixed_version": null,
+    "fork_code": "Reader.nextSplit uses bounded ReadSlice and maxCharsPerRecord=1MiB; errors OverMaxRecordSize, legal1MiB retained",
+    "source_line": 125,
+    "new_regression": "deployment/vendors/minio/csv_record_bound_test.go",
+    "regression_status": "passed in Docker teststage",
+    "scanner_attribution": "Prior release binary still has MinIO inherited module pseudo version matched by frozenDB all-version advisory; must retainunsuppressed HIGH until final scan/approved source rule correction",
+    "ignore_or_vex": false
+  },
+  "scan_policy": {
+    "trivy": "0.75.0",
+    "frozen_db_sha256": "05a1fa5372e54059b6a7c1fc41afb812fafd9bd56a8e0ab6aa20d7f3f154ff31",
+    "full_image_required": true,
+    "high_critical_gate": "0/0 unchanged",
+    "vendor_sbom_alone_sufficient": false,
+    "ignore": []
+  },
+  "remaining": [
+    "Exact immutable artifact transport to final CI pending; rebuilt images cannot inherit currentapproval",
+    "Other vendor and application interpreter/JRE security work ongoing",
+    "Final exactSHA CI/security and deployment window still required"
+  ],
+  "supplier_http": 0,
+  "candidate_image": "sha256:151cd83d5e6500f4d1b3d7f0a12756fe80e8ffcbf91150afd6b9b9605bc2369a",
+  "scan": {
+    "path": ".cache\\optimization-20261026\\vendor-candidates\\silo-source\\image-go1273-compat-scan.json",
+    "sha256": "09b1e81710824900a4c1b84785f9db6ccafe20d9b6a64685b0d646efa255f21c",
+    "HIGH": 1,
+    "CRITICAL": 0,
+    "targets": [
+      "dr-opt-minio-go1273-compat:20261026 (redhat 9.8)",
+      "usr/bin/mcli",
+      "usr/bin/silo"
+    ],
+    "findings": [
+      {
+        "VulnerabilityID": "CVE-2026-39414",
+        "PkgName": "github.com/minio/minio",
+        "InstalledVersion": "v0.0.0-20261018143912-0cd388c666f8+dirty",
+        "FixedVersion": null
+      }
+    ],
+    "all_packages_listed": true,
+    "main_module_identified": true,
+    "gate_passed": false
+  },
+  "buildinfo": {
+    "server_main_module": "github.com/minio/minio v0.0.0-20261018143912-0cd388c666f8+dirty",
+    "vcs_modified": true,
+    "server_and_client_toolchain": "go1.27.3",
+    "raw_path": ".cache\\optimization-20261026\\vendor-candidates\\silo-source\\compat-buildinfo",
+    "first_build": "two publicmodulezip downloads unexpectedEOF; unmodified retry succeeded",
+    "source_code_rewritten": "Explicit read-only legacy multipart compatibility patch only; upstream CSV security fix and all features retained"
+  },
+  "compatibility_progress": {
+    "passed": true,
+    "old_image": "sha256:d1aa81d3a62ae1b5d7279f4d12fe9b1a1e6aba466b2f7adc83bbd4d0abe6f48b",
+    "candidate_image": "sha256:151cd83d5e6500f4d1b3d7f0a12756fe80e8ffcbf91150afd6b9b9605bc2369a",
+    "checks": [
+      "old2024 object versions retained",
+      "old IAM identities retained",
+      "cross-bucket IAM denial retained",
+      "bucket anonymous prefix policy retained",
+      "old multipart part retained and completed afterupgrade",
+      "Milvus S3 location/list/get/put/delete/multipart interfaces",
+      "oversized plain andgzip Select rejected OverMaxRecordSize",
+      "legal CSV Select still works",
+      "old rollbackcopy reopens2024 original data/IAM/multipart"
+    ],
+    "real_milvus": {
+      "passed": true,
+      "milvus": "v3.0.0",
+      "rows": 2,
+      "new_s3_keys": 9,
+      "scope": "real insert/flush S3 binlogs/release/reload/search with scopeddr-milvus IAM",
+      "retained_volumes": [
+        "dr-opt-minio-compat-20261026c-etcd-data",
+        "dr-opt-minio-compat-20261026c-milvus-data"
+      ],
+      "private_env": ".cache\\optimization-20261026\\vendor-candidates\\silo-source\\dr-opt-minio-compat-20261026c-milvus.env"
+    },
+    "source_volumes_untouched_by_upgrade": true,
+    "rollback": "independent2024 pre-upgrade clone read by2024 binary; not an in-place downgrade",
+    "private_raw_receipt": ".cache\\optimization-20261026\\vendor-candidates\\silo-source\\compatibility-patched.json"
+  },
+  "compatibility_patch": {
+    "cause": "RELEASE2024 persisted multipart FileInfo28tuple vs maintained2026 ObjectPartInfo map; unpatchednew server ListParts returned emptyETag/size0 for valid5MiB oldpart",
+    "path": "deployment/vendors/minio/legacy_part_compat.go",
+    "decoder": "read-only exactlegacy tuple, normalize oldfieldnames, preserve allpartmetadata, validate number/etag/sizes and entiremessage; no sourcevolumerewrite",
+    "negative_fixture": "deployment/vendors/minio/legacy-part2024.msgp",
+    "fixture_sha256": "cca3483e758d59aa0fd0ad3cc0ccc0ecb1e2afcdc6ebf399c57d515e7c4598cb",
+    "oldnew_response_receipt": ".cache/optimization-20261026/vendor-candidates/silo-source/multipart-etag-check-b.json",
+    "unit_status": "passed selectedcmd TestPinnedLegacyPart2024PreservesCompleteMetadata in0.221s; actualoldpart resumed andcompleted afterupgrade",
+    "source_patch_sha256": {
+      "deployment\\vendors\\minio\\csv_record_bound_test.go": "cb51ba37bc33b66764b64c8ed214d372a1db4f945093f6d0c5103a5d16bacf16",
+      "deployment\\vendors\\minio\\legacy-part-compat.patch": "d7ce090041a4353cf35ca58168cff11a47a17ee0bf9355a6c44c16a7352f2320",
+      "deployment\\vendors\\minio\\legacy-part2024.msgp": "cca3483e758d59aa0fd0ad3cc0ccc0ecb1e2afcdc6ebf399c57d515e7c4598cb",
+      "deployment\\vendors\\minio\\legacy_part_compat.go": "2fcd20ee874cf8cd837651224135463925a98a1209fd1dd7f3a4298ae41a3792",
+      "deployment\\vendors\\minio\\legacy_part_compat_test.go": "a4d464887c7fbb89116ed3309f4cfa039c405755d9bfff55b51d01bc50008ad6"
+    }
+  },
+  "verified_at": "2026-10-26T11:27:42.517668+00:00",
+  "candidate_reference": "dr-opt-minio-go1273-compat:20261026",
+  "candidate_descriptor_type": "application/vnd.oci.image.index.v1+json",
+  "baseline": {
+    "image_id": "sha256:d1aa81d3a62ae1b5d7279f4d12fe9b1a1e6aba466b2f7adc83bbd4d0abe6f48b",
+    "release": "2024-05-28",
+    "scan_reused_byte_identical_image": ".cache/optimization-20261026/runtime-image-scan/image-09.json",
+    "HIGH": 75,
+    "CRITICAL": 6,
+    "same_frozen_db": true
+  },
+  "runtime_changes": {
+    "production": false,
+    "daily": false,
+    "acceptance_fault_service": false,
+    "compose_changed": false,
+    "candidate_servers_stopped_after_checks": true,
+    "retained_assets": "all dedicated fixture containers/volumes/network preserved, no prune/delete"
+  },
+  "receipts": [
+    {
+      "path": ".cache\\optimization-20261026\\vendor-candidates\\silo-source\\image-go1273-compat-scan.json",
+      "sha256": "09b1e81710824900a4c1b84785f9db6ccafe20d9b6a64685b0d646efa255f21c"
+    },
+    {
+      "path": ".cache\\optimization-20261026\\vendor-candidates\\silo-source\\compatibility-patched.json",
+      "sha256": "a15c94ff3cbb5769fdaed8b6e523de099340245b270c3f0270532c5416f862b9"
+    },
+    {
+      "path": ".cache\\optimization-20261026\\vendor-candidates\\silo-source\\build-go1273-compat-retry.log",
+      "sha256": "edb5241f065c238a77084002ca51723e3dc771ca115df520cb62c5af752aba82"
+    },
+    {
+      "path": ".cache\\optimization-20261026\\vendor-candidates\\silo-source\\compat-buildinfo\\silo-buildinfo.txt",
+      "sha256": "eabda05b2ba397f5ecae4f6a22c69ccf717785af3a7993f171c7d999799dc55b"
+    },
+    {
+      "path": ".cache\\optimization-20261026\\vendor-candidates\\silo-source\\compat-buildinfo\\mcli-buildinfo.txt",
+      "sha256": "b437b65feaa7df1026c165ff6b6a9b8d9de992dc4aa512168a59212c78f74957"
+    },
+    {
+      "path": ".cache\\optimization-20261026\\vendor-candidates\\silo-source\\compat-buildinfo\\csv-regression.txt",
+      "sha256": "f7dfc803f6dfcb3809ce00bcfc6a4bece002cf88fc6c2bc027f3b41123209b42"
+    },
+    {
+      "path": ".cache\\optimization-20261026\\vendor-candidates\\silo-source\\compat-buildinfo\\legacy-multipart-regression.txt",
+      "sha256": "07d39637bb446d35ba30622a53b8a271df305651cc32480ae94706fea33de60a"
+    },
+    {
+      "path": ".cache\\optimization-20261026\\vendor-candidates\\silo-source\\multipart-etag-check-b.json",
+      "sha256": "8a5ff9f91f58ac71047999d7e9eaf4faf9315ac9d67009709e43ade429ef9ec4"
+    },
+    {
+      "path": ".cache\\optimization-20261026\\vendor-candidates\\silo-source\\image-go1273-compat-inspect.json",
+      "sha256": "4fb84c6656b0834c6d9fd9f40aa7f45a721a3830d6c2740d32973f7bf822c01c"
+    }
+  ],
+  "reviewable_followup": {
+    "preferred": "Send upstream fork/advisory/tool maintainers pinned commit, bound tests, actualS3Select negative/positive receipts and identified module attribution; obtain authoritative scanner-rule/package attribution correction, then scan both byte-identicalold image andcandidate against a newly approved identicalDBsnapshot",
+    "frozen_db_constraint": "Current frozenDB unchanged and unsuppressed HIGH retained; no self-editeddatabase, module rename, fakeversion, feature removal, unknown package, ignore orVEX",
+    "alternative_scope": "If frozenDB literal0 must remain immutable, evaluate a separatelymaintained S3backend with explicit migration/IAM/version/multipart contracts; no compatibility orzero-finding guarantee made until implemented/scanned. Requires coordinator decision rather than silently replacingbackend."
+  },
+  "source_fingerprints_format": "Git blob SHA256 / LF bytes; Windows worktree CRLF is not the source blob identity",
+  "unavailable_reference_removed": "Pinned docs/security/advisories.md returned404; not used as evidence",
+  "effective_disposition": {
+    "evidence": "minio-fixed-disposition.json",
+    "raw_high": 1,
+    "raw_critical": 0,
+    "verified_fixed": 1,
+    "unresolved": 0,
+    "scope": "Exact approved index/platform/config/source/patch/binaries; all new findings, missing/failed scans and expiry fail closed",
+    "authorization": "deployment/security/minio-fixed-evidence/authorization.json",
+    "deployment_window": "not_granted"
+  }
+}

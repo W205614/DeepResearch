@@ -1,0 +1,3450 @@
+{
+  "artifact": "complete-functional-guide-handoff",
+  "date": "2026-10-26",
+  "baseline_git_head": "8768aa6c1e4f0d24a8c355ce769112e98b3b8c10",
+  "final_delivery_sha": null,
+  "source_state": "working tree; coordinator must refresh source lines after final code changes",
+  "personal_material_mapping": "由协调方映射到既有导学/面经；本工具未查找、读取或修改共享简历与个人面经",
+  "human_review": "not_performed",
+  "external_user_feedback": "not_established",
+  "feature_count": 59,
+  "change_0_12_mapping": {
+    "0": [
+      "testing-delivery",
+      "ci-cumulative-budget",
+      "approved-artifact"
+    ],
+    "1": [
+      "workspace-quota",
+      "task-admission",
+      "task-outbox",
+      "task-stream",
+      "task-cancel",
+      "task-resume",
+      "task-deadletter",
+      "report-draft",
+      "observability"
+    ],
+    "2": [
+      "workspace-quota",
+      "workspace-audit",
+      "task-admission",
+      "task-deadletter",
+      "retrieval-hybrid",
+      "diagnostics",
+      "usage-budget",
+      "testing-delivery",
+      "usage-visibility",
+      "ci-cumulative-budget"
+    ],
+    "3": [
+      "document-upload",
+      "document-scan",
+      "document-version",
+      "document-replace",
+      "document-reindex"
+    ],
+    "4": [
+      "document-parser",
+      "document-attachments",
+      "document-chunks",
+      "document-reindex"
+    ],
+    "5": [
+      "session-delete",
+      "personal-memory",
+      "semantic-memory",
+      "document-attachments",
+      "document-version",
+      "report-withdraw",
+      "report-series",
+      "data-export",
+      "data-purge",
+      "backup",
+      "monitoring-state-migration"
+    ],
+    "6": [
+      "workspace-create",
+      "workspace-member",
+      "workspace-audit",
+      "document-scan",
+      "data-export",
+      "identity-deploy",
+      "service-privileges",
+      "runtime-image-security",
+      "approved-artifact",
+      "native-runtime-coverage"
+    ],
+    "7": [
+      "task-orchestration",
+      "document-upload",
+      "document-reindex",
+      "retrieval-hybrid",
+      "retrieval-capacity",
+      "retrieval-acl-cache",
+      "evidence-judge"
+    ],
+    "8": [
+      "task-admission",
+      "report-revise",
+      "scope-intake"
+    ],
+    "9": [
+      "session-rename",
+      "session-page",
+      "session-download",
+      "session-delete",
+      "personal-memory",
+      "semantic-memory",
+      "workspace-create",
+      "workspace-member",
+      "workspace-audit",
+      "task-stream",
+      "document-upload",
+      "document-attachments",
+      "document-version",
+      "document-chunks",
+      "document-replace",
+      "document-reindex",
+      "retrieval-hybrid",
+      "retrieval-acl-cache",
+      "report-draft",
+      "report-submit",
+      "report-review",
+      "report-withdraw",
+      "report-series",
+      "report-revise",
+      "report-diff",
+      "report-download",
+      "data-export",
+      "collection-acl",
+      "usage-visibility",
+      "document-ui-scope"
+    ],
+    "10": [
+      "report-revise",
+      "report-diff",
+      "source-rechecks"
+    ],
+    "11": [
+      "session-create",
+      "task-admission",
+      "task-outbox",
+      "task-orchestration",
+      "task-cancel",
+      "task-resume",
+      "evidence-judge",
+      "report-draft",
+      "report-submit",
+      "report-review",
+      "contract-schema",
+      "testing-delivery",
+      "ci-cumulative-budget"
+    ],
+    "12": [
+      "session-create",
+      "session-rename",
+      "session-page",
+      "session-download",
+      "task-orchestration",
+      "report-download",
+      "data-purge",
+      "identity-deploy",
+      "backup",
+      "restore",
+      "observability",
+      "testing-delivery",
+      "document-ui-scope",
+      "runtime-image-security",
+      "approved-artifact",
+      "native-runtime-coverage",
+      "monitoring-state-migration"
+    ]
+  },
+  "learning_order": [
+    "身份与空间",
+    "数据写入所有权",
+    "任务状态/命令与恢复",
+    "资料扫描/解析/版本",
+    "检索与证据",
+    "报告审核/修订/权限",
+    "备份恢复与评测证据"
+  ],
+  "features": [
+    {
+      "id": "session-create",
+      "title": "会话创建与稳定标识",
+      "section": "会话与记忆",
+      "change_ids": [
+        11,
+        12
+      ],
+      "main_question": "为什么会话标识不能直接用显示标题？",
+      "followup_questions": [
+        "并发创建同一空间的会话如何分配短编号？",
+        "创建后没有任务时会话归属如何判定？"
+      ],
+      "answer_points": [
+        "数据库id与thread_key、title分开",
+        "Java创建并写作者",
+        "空间锁保护短编号分配"
+      ],
+      "failure_window": "并发创建或事务回滚后，客户端不能凭标题猜测另一个会话。",
+      "evidence_boundary": "源码说明标识与权限设计，不证明无限并发容量。",
+      "component_receipts": [],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/ThreadController.java",
+          "symbol": "create",
+          "line": 55,
+          "source_sha256": "39581891d9d3d8388dd766c1425bde0ce95fe9fef459fcb4ff1df5d34bc6f394",
+          "source_text_lf_sha256": "39581891d9d3d8388dd766c1425bde0ce95fe9fef459fcb4ff1df5d34bc6f394",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/ResearchCommandService.java",
+          "symbol": "createThread",
+          "line": 139,
+          "source_sha256": "fb9e7233c65386f82e1a73f74555b4fb36ddab7716151c1783ead8c5cc381231",
+          "source_text_lf_sha256": "fb9e7233c65386f82e1a73f74555b4fb36ddab7716151c1783ead8c5cc381231",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "session-rename",
+      "title": "会话改名",
+      "section": "会话与记忆",
+      "change_ids": [
+        9,
+        12
+      ],
+      "main_question": "改名为什么也必须检查会话作者与空间？",
+      "followup_questions": [
+        "知道另一个会话id是否能改名？",
+        "管理员与作者权限如何区分？"
+      ],
+      "answer_points": [
+        "入口解析当前工作空间",
+        "会话可见性在服务端检查",
+        "改显示标题不改变报告证据"
+      ],
+      "failure_window": "角色被撤销或会话删除后继续提交旧页面的改名请求。",
+      "evidence_boundary": "不把前端隐藏按钮当权限证据。",
+      "component_receipts": [],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/ThreadController.java",
+          "symbol": "rename",
+          "line": 78,
+          "source_sha256": "39581891d9d3d8388dd766c1425bde0ce95fe9fef459fcb4ff1df5d34bc6f394",
+          "source_text_lf_sha256": "39581891d9d3d8388dd766c1425bde0ce95fe9fef459fcb4ff1df5d34bc6f394",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/ResearchCommandService.java",
+          "symbol": "visibleThread",
+          "line": 160,
+          "source_sha256": "fb9e7233c65386f82e1a73f74555b4fb36ddab7716151c1783ead8c5cc381231",
+          "source_text_lf_sha256": "fb9e7233c65386f82e1a73f74555b4fb36ddab7716151c1783ead8c5cc381231",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "session-page",
+      "title": "会话和任务分页",
+      "section": "会话与记忆",
+      "change_ids": [
+        9,
+        12
+      ],
+      "main_question": "为什么历史列表采用游标而不是一次读取全部报告？",
+      "followup_questions": [
+        "相同创建时间如何避免漏页？",
+        "撤权后旧页和新页能否继续展示受限任务？"
+      ],
+      "answer_points": [
+        "时间与id组合排序",
+        "限制分页数量并验证游标",
+        "任务正文按作者和引用ACL过滤"
+      ],
+      "failure_window": "翻页期间新增、删除或撤权；游标不代表授权。",
+      "evidence_boundary": "固定分页用例不等同大数据量长期性能。",
+      "component_receipts": [
+        "acl.json"
+      ],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/ThreadController.java",
+          "symbol": "list",
+          "line": 63,
+          "source_sha256": "39581891d9d3d8388dd766c1425bde0ce95fe9fef459fcb4ff1df5d34bc6f394",
+          "source_text_lf_sha256": "39581891d9d3d8388dd766c1425bde0ce95fe9fef459fcb4ff1df5d34bc6f394",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/RunViewService.java",
+          "symbol": "page",
+          "line": 60,
+          "source_sha256": "5502af85483886735ff36b7142ca6491f017367e19052168280dfaf6908d64db",
+          "source_text_lf_sha256": "5502af85483886735ff36b7142ca6491f017367e19052168280dfaf6908d64db",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "session-download",
+      "title": "整个会话下载",
+      "section": "会话与记忆",
+      "change_ids": [
+        9,
+        12
+      ],
+      "main_question": "如何导出完整会话而不把无权查看的历史一起打包？",
+      "followup_questions": [
+        "导出是否只包含第一页？",
+        "撤销资料权限后批量下载会不会绕过单条限制？"
+      ],
+      "answer_points": [
+        "下载读取完整可见任务集合",
+        "逐任务应用引用权限",
+        "Markdown流式交付减少重复大对象"
+      ],
+      "failure_window": "列表已隐藏的任务被旧下载入口重新读取。",
+      "evidence_boundary": "下载文本校验与浏览器保存体验分别验证。",
+      "component_receipts": [
+        "acl.json"
+      ],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/ThreadController.java",
+          "symbol": "report",
+          "line": 110,
+          "source_sha256": "39581891d9d3d8388dd766c1425bde0ce95fe9fef459fcb4ff1df5d34bc6f394",
+          "source_text_lf_sha256": "39581891d9d3d8388dd766c1425bde0ce95fe9fef459fcb4ff1df5d34bc6f394",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/api/app.py",
+          "symbol": "thread_report",
+          "line": 428,
+          "source_sha256": "beec91341133af7fcc1a8203fbb09f5d7b6ed7374789004b2c5ecd18d3613d68",
+          "source_text_lf_sha256": "0cc75320cf57df6cc950a109505959c00d1145a3b8bf059eaa68084a38a34448",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "session-delete",
+      "title": "会话删除与依赖保护",
+      "section": "会话与记忆",
+      "change_ids": [
+        5,
+        9
+      ],
+      "main_question": "删除会话为何不能只删threads一行？",
+      "followup_questions": [
+        "有正式报告引用时为什么拒绝删除？",
+        "数据库删完但向量和检查点清理失败怎么办？"
+      ],
+      "answer_points": [
+        "正式报告依赖先检查",
+        "SQL关联记录在事务内清理",
+        "外部对象通过可重入清理回收"
+      ],
+      "failure_window": "事务提交与向量、对象存储、检查点删除之间不是同一事务。",
+      "evidence_boundary": "可恢复清理工具不等于任意文件都可直接删除。",
+      "component_receipts": [],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/ThreadController.java",
+          "symbol": "delete",
+          "line": 90,
+          "source_sha256": "39581891d9d3d8388dd766c1425bde0ce95fe9fef459fcb4ff1df5d34bc6f394",
+          "source_text_lf_sha256": "39581891d9d3d8388dd766c1425bde0ce95fe9fef459fcb4ff1df5d34bc6f394",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/runtime.py",
+          "symbol": "delete_thread",
+          "line": 215,
+          "source_sha256": "9f7343fcddfaace5b41f60dbcf421bdffd5550ed9e5754154b49c444b8f228b2",
+          "source_text_lf_sha256": "9e3ebce9ad1cb46a855a223f4c178ee45eac820c6fb5d50770eb10a3a020db71",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "personal-memory",
+      "title": "个人设定与偏好增删改",
+      "section": "会话与记忆",
+      "change_ids": [
+        5,
+        9
+      ],
+      "main_question": "个人偏好与工作空间资料为什么要采用不同所有权？",
+      "followup_questions": [
+        "切换空间后能否编辑他人偏好？",
+        "清理研究数据是否应该顺带抹除个人设定？"
+      ],
+      "answer_points": [
+        "profile/preference归subject",
+        "新增和编辑校验作者及写角色",
+        "上下文只装入当前作者的个人设定"
+      ],
+      "failure_window": "空间管理员权限被误当作其他账号个人偏好所有权。",
+      "evidence_boundary": "个人职责未知；不能声称完成用户画像效果验证。",
+      "component_receipts": [
+        "acl.json"
+      ],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/MemoryController.java",
+          "symbol": "add",
+          "line": 64,
+          "source_sha256": "5ed27e5ca0c42f2c0c101ada94ddea44ddf00103130d0c9d65cc4ceeefc56067",
+          "source_text_lf_sha256": "5ed27e5ca0c42f2c0c101ada94ddea44ddf00103130d0c9d65cc4ceeefc56067",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/MemoryController.java",
+          "symbol": "edit",
+          "line": 78,
+          "source_sha256": "5ed27e5ca0c42f2c0c101ada94ddea44ddf00103130d0c9d65cc4ceeefc56067",
+          "source_text_lf_sha256": "5ed27e5ca0c42f2c0c101ada94ddea44ddf00103130d0c9d65cc4ceeefc56067",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/runtime.py",
+          "symbol": "_authorized_context",
+          "line": 376,
+          "source_sha256": "9f7343fcddfaace5b41f60dbcf421bdffd5550ed9e5754154b49c444b8f228b2",
+          "source_text_lf_sha256": "9e3ebce9ad1cb46a855a223f4c178ee45eac820c6fb5d50770eb10a3a020db71",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "semantic-memory",
+      "title": "同会话历史与语义记忆及撤权",
+      "section": "会话与记忆",
+      "change_ids": [
+        5,
+        9
+      ],
+      "main_question": "为什么旧报告摘要不能绕过原文档权限进入下一次模型请求？",
+      "followup_questions": [
+        "向量库命中旧摘要时如何再次核对？",
+        "资料撤权与个人偏好保留如何同时成立？"
+      ],
+      "answer_points": [
+        "语义命中按SQL源任务重新取值",
+        "源任务作者/admin和当前资料ACL共同约束",
+        "等待向量返回后再次过滤历史",
+        "公开模式不装入私有上下文"
+      ],
+      "failure_window": "撤权发生在模型上下文组装或向量等待期间。",
+      "evidence_boundary": "摘要可用于理解上下文，不是新事实的证据。",
+      "component_receipts": [
+        "acl.json"
+      ],
+      "source_entries": [
+        {
+          "path": "backend/services/runtime.py",
+          "symbol": "context",
+          "line": 371,
+          "source_sha256": "9f7343fcddfaace5b41f60dbcf421bdffd5550ed9e5754154b49c444b8f228b2",
+          "source_text_lf_sha256": "9e3ebce9ad1cb46a855a223f4c178ee45eac820c6fb5d50770eb10a3a020db71",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/runtime.py",
+          "symbol": "_authorized_context",
+          "line": 376,
+          "source_sha256": "9f7343fcddfaace5b41f60dbcf421bdffd5550ed9e5754154b49c444b8f228b2",
+          "source_text_lf_sha256": "9e3ebce9ad1cb46a855a223f4c178ee45eac820c6fb5d50770eb10a3a020db71",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/MemoryController.java",
+          "symbol": "list",
+          "line": 47,
+          "source_sha256": "5ed27e5ca0c42f2c0c101ada94ddea44ddf00103130d0c9d65cc4ceeefc56067",
+          "source_text_lf_sha256": "5ed27e5ca0c42f2c0c101ada94ddea44ddf00103130d0c9d65cc4ceeefc56067",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "workspace-create",
+      "title": "空间创建与选择",
+      "section": "工作空间",
+      "change_ids": [
+        6,
+        9
+      ],
+      "main_question": "身份subject与工作空间id为什么不能混为一个字段？",
+      "followup_questions": [
+        "首次登录如何创建个人空间？",
+        "伪造X-Workspace-ID能否加入别人的空间？"
+      ],
+      "answer_points": [
+        "JWT身份和成员关系分别校验",
+        "请求头只选择已加入的空间",
+        "个人空间创建与默认额度持久化"
+      ],
+      "failure_window": "无成员时初始化与并发首次登录。",
+      "evidence_boundary": "共享数据库上的空间隔离不等于独立数据库隔离。",
+      "component_receipts": [],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/security/WorkspaceAccess.java",
+          "symbol": "resolve",
+          "line": 27,
+          "source_sha256": "8c2604f4c7e49c1aebf642098e4b50c29edf77cfc92052c29f68e6237c08a04e",
+          "source_text_lf_sha256": "8c2604f4c7e49c1aebf642098e4b50c29edf77cfc92052c29f68e6237c08a04e",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/WorkspaceController.java",
+          "symbol": "create",
+          "line": 62,
+          "source_sha256": "8ac78d6828866cc5daac4e4eee595ef19e059314ad054a6e66973df3d2fc0442",
+          "source_text_lf_sha256": "8ac78d6828866cc5daac4e4eee595ef19e059314ad054a6e66973df3d2fc0442",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "workspace-member",
+      "title": "成员添加、角色调整与移除",
+      "section": "工作空间",
+      "change_ids": [
+        6,
+        9
+      ],
+      "main_question": "成员管理如何防止移除最后管理员或用旧权限自提权？",
+      "followup_questions": [
+        "多个管理员同时降权如何处理？",
+        "已经打开的SSE在角色移除后多久停止？"
+      ],
+      "answer_points": [
+        "修改前锁空间并重查当前admin",
+        "保留管理员/创建者约束",
+        "流式连接逐批重查当前角色"
+      ],
+      "failure_window": "先鉴权后等待锁期间权限发生变化。",
+      "evidence_boundary": "已发给浏览器的字节无法因后续撤权召回。",
+      "component_receipts": [
+        "acl.json"
+      ],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/WorkspaceController.java",
+          "symbol": "upsertMember",
+          "line": 90,
+          "source_sha256": "8ac78d6828866cc5daac4e4eee595ef19e059314ad054a6e66973df3d2fc0442",
+          "source_text_lf_sha256": "8ac78d6828866cc5daac4e4eee595ef19e059314ad054a6e66973df3d2fc0442",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/WorkspaceController.java",
+          "symbol": "removeMember",
+          "line": 113,
+          "source_sha256": "8ac78d6828866cc5daac4e4eee595ef19e059314ad054a6e66973df3d2fc0442",
+          "source_text_lf_sha256": "8ac78d6828866cc5daac4e4eee595ef19e059314ad054a6e66973df3d2fc0442",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "workspace-quota",
+      "title": "空间并发额度与平台硬上限",
+      "section": "工作空间",
+      "change_ids": [
+        1,
+        2
+      ],
+      "main_question": "为什么工作空间并发额度不能替代平台费用上限？",
+      "followup_questions": [
+        "自建多个空间能否绕过个人周期预算？",
+        "管理员调高空间并发是否同时提高平台调用额度？"
+      ],
+      "answer_points": [
+        "并发额度控制任务准入",
+        "平台/subject/空间/供应商账号共同预留",
+        "周期硬上限来自运维配置而非空间API"
+      ],
+      "failure_window": "多个任务各自低于单任务预算但总供应商用量失控。",
+      "evidence_boundary": "Token预留不是货币价格，也不是生产容量承诺。",
+      "component_receipts": [
+        "governance.json"
+      ],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/WorkspaceController.java",
+          "symbol": "limits",
+          "line": 214,
+          "source_sha256": "8ac78d6828866cc5daac4e4eee595ef19e059314ad054a6e66973df3d2fc0442",
+          "source_text_lf_sha256": "8ac78d6828866cc5daac4e4eee595ef19e059314ad054a6e66973df3d2fc0442",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/ResearchCommandService.java",
+          "symbol": "create",
+          "line": 43,
+          "source_sha256": "fb9e7233c65386f82e1a73f74555b4fb36ddab7716151c1783ead8c5cc381231",
+          "source_text_lf_sha256": "fb9e7233c65386f82e1a73f74555b4fb36ddab7716151c1783ead8c5cc381231",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/core/usage_governance.py",
+          "symbol": "UsageGovernance.reserve",
+          "line": 92,
+          "source_sha256": "eb650285300f688698b409814c9b6cfa25ab80d1754ccb21c72ca8c94e43b2a2",
+          "source_text_lf_sha256": "eb650285300f688698b409814c9b6cfa25ab80d1754ccb21c72ca8c94e43b2a2",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "workspace-audit",
+      "title": "业务审计",
+      "section": "工作空间",
+      "change_ids": [
+        2,
+        6,
+        9
+      ],
+      "main_question": "审计日志与调试日志分别解决什么问题？",
+      "followup_questions": [
+        "操作成功但审计写入失败该如何取舍？",
+        "为什么不把原始密钥和模型回复写入告警？"
+      ],
+      "answer_points": [
+        "记录actor、动作、目标和结果",
+        "业务写操作尽量与审计同事务",
+        "运行诊断保留分类和计数而非原始凭证"
+      ],
+      "failure_window": "外部调用成功但本地结果或审计未确认。",
+      "evidence_boundary": "数据库审计不等同不可篡改合规存证。",
+      "component_receipts": [],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/security/WorkspaceAccess.java",
+          "symbol": "audit",
+          "line": 65,
+          "source_sha256": "8c2604f4c7e49c1aebf642098e4b50c29edf77cfc92052c29f68e6237c08a04e",
+          "source_text_lf_sha256": "8c2604f4c7e49c1aebf642098e4b50c29edf77cfc92052c29f68e6237c08a04e",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/WorkspaceController.java",
+          "symbol": "audit",
+          "line": 146,
+          "source_sha256": "8ac78d6828866cc5daac4e4eee595ef19e059314ad054a6e66973df3d2fc0442",
+          "source_text_lf_sha256": "8ac78d6828866cc5daac4e4eee595ef19e059314ad054a6e66973df3d2fc0442",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "task-admission",
+      "title": "任务准入与请求幂等",
+      "section": "任务可靠性",
+      "change_ids": [
+        1,
+        2,
+        8,
+        11
+      ],
+      "main_question": "同一个请求重试为什么应返回同一任务而不是再收费执行？",
+      "followup_questions": [
+        "同一请求号换题目或附件如何处理？",
+        "队列满与空间并发满应返回怎样的可操作状态？"
+      ],
+      "answer_points": [
+        "业务事务内判定重放和额度",
+        "请求号绑定请求内容及作者",
+        "先确认研究范围再建立Outbox命令"
+      ],
+      "failure_window": "客户端超时后不知道服务端是否已接单。",
+      "evidence_boundary": "请求幂等不等于每次供应商调用Exactly Once。",
+      "component_receipts": [],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/ResearchCommandService.java",
+          "symbol": "create",
+          "line": 43,
+          "source_sha256": "fb9e7233c65386f82e1a73f74555b4fb36ddab7716151c1783ead8c5cc381231",
+          "source_text_lf_sha256": "fb9e7233c65386f82e1a73f74555b4fb36ddab7716151c1783ead8c5cc381231",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/ResearchCommandService.java",
+          "symbol": "verifyReplay",
+          "line": 167,
+          "source_sha256": "fb9e7233c65386f82e1a73f74555b4fb36ddab7716151c1783ead8c5cc381231",
+          "source_text_lf_sha256": "fb9e7233c65386f82e1a73f74555b4fb36ddab7716151c1783ead8c5cc381231",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "task-outbox",
+      "title": "Outbox交付与租约",
+      "section": "任务可靠性",
+      "change_ids": [
+        1,
+        11
+      ],
+      "main_question": "为什么任务与投递命令要在一个数据库事务中保存？",
+      "followup_questions": [
+        "Python接收成功但Java没收到响应会怎样？",
+        "旧resume或abort延迟到达时如何拒绝旧代次？"
+      ],
+      "answer_points": [
+        "事务Outbox避免双写空窗",
+        "租约抢占不长持网络事务",
+        "命令版本和expected_attempt限制旧执行"
+      ],
+      "failure_window": "交付成功但确认丢失、租约过期或消息乱序。",
+      "evidence_boundary": "SKIP LOCKED不自动保证跨消息顺序；语义是至少一次。",
+      "component_receipts": [
+        "reliability.json"
+      ],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/OutboxService.java",
+          "symbol": "claimNext",
+          "line": 99,
+          "source_sha256": "4a00ef8227172aaaa6a7f736d64ba56b9ecf08ed4ee1c9acb7e4476615f59793",
+          "source_text_lf_sha256": "4a00ef8227172aaaa6a7f736d64ba56b9ecf08ed4ee1c9acb7e4476615f59793",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/OutboxService.java",
+          "symbol": "deliver",
+          "line": 153,
+          "source_sha256": "4a00ef8227172aaaa6a7f736d64ba56b9ecf08ed4ee1c9acb7e4476615f59793",
+          "source_text_lf_sha256": "4a00ef8227172aaaa6a7f736d64ba56b9ecf08ed4ee1c9acb7e4476615f59793",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/runtime.py",
+          "symbol": "accept_schedule",
+          "line": 329,
+          "source_sha256": "9f7343fcddfaace5b41f60dbcf421bdffd5550ed9e5754154b49c444b8f228b2",
+          "source_text_lf_sha256": "9e3ebce9ad1cb46a855a223f4c178ee45eac820c6fb5d50770eb10a3a020db71",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "task-stream",
+      "title": "流式进度与事件续传",
+      "section": "任务可靠性",
+      "change_ids": [
+        1,
+        9
+      ],
+      "main_question": "SSE断线续传为什么需要持久事件序号？",
+      "followup_questions": [
+        "Last-Event-ID与after冲突时怎样选择？",
+        "任务完成、撤权和断线怎样结束连接？"
+      ],
+      "answer_points": [
+        "事件仅追加并按id读取",
+        "游标避免重复重放",
+        "终态与权限失效发送或触发关闭",
+        "心跳维持连接"
+      ],
+      "failure_window": "事件已写入但客户端没有收到，或旧连接跨过撤权。",
+      "evidence_boundary": "事件续传能力不等于端到端实时延迟SLA。",
+      "component_receipts": [
+        "acl.json"
+      ],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/ResearchController.java",
+          "symbol": "events",
+          "line": 101,
+          "source_sha256": "ca2380237bf79cba01aca65983663d01cbcdfa5c96e5925a6f941d30dee5528e",
+          "source_text_lf_sha256": "ca2380237bf79cba01aca65983663d01cbcdfa5c96e5925a6f941d30dee5528e",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/ResearchController.java",
+          "symbol": "streamEvents",
+          "line": 116,
+          "source_sha256": "ca2380237bf79cba01aca65983663d01cbcdfa5c96e5925a6f941d30dee5528e",
+          "source_text_lf_sha256": "ca2380237bf79cba01aca65983663d01cbcdfa5c96e5925a6f941d30dee5528e",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/api/app.py",
+          "symbol": "events",
+          "line": 474,
+          "source_sha256": "beec91341133af7fcc1a8203fbb09f5d7b6ed7374789004b2c5ecd18d3613d68",
+          "source_text_lf_sha256": "0cc75320cf57df6cc950a109505959c00d1145a3b8bf059eaa68084a38a34448",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "task-orchestration",
+      "title": "研究路由与固定多角色编排",
+      "section": "研究过程",
+      "change_ids": [
+        7,
+        11,
+        12
+      ],
+      "main_question": "哪些问题进入聊天、快速回答或深度研究，角色间如何交接证据？",
+      "followup_questions": [
+        "角色很多是否代表独立分布式Agent？",
+        "内部资料模式为什么不能随意补网页搜索？"
+      ],
+      "answer_points": [
+        "LangGraph固定有界流程",
+        "planner/scout/judge/analyst/reflector/writer/validator分工",
+        "公开与内部资料策略隔离"
+      ],
+      "failure_window": "路由误判或无证据仍进入长链模型调用。",
+      "evidence_boundary": "同进程固定角色流程不能包装成自治分布式Agent系统。",
+      "component_receipts": [],
+      "source_entries": [
+        {
+          "path": "backend/research/graph.py",
+          "symbol": "ResearchGraph.build",
+          "line": 244,
+          "source_sha256": "592d63fd1359c4aabfab0fc7e9e4ef031474b96c8d2b3151026f7742b887b2db",
+          "source_text_lf_sha256": "7d9f61e48cc6d17cbeba33622da252ebb88ded077491b7eecf6e8345cd2d7486",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/research/graph.py",
+          "symbol": "ResearchGraph.router",
+          "line": 380,
+          "source_sha256": "592d63fd1359c4aabfab0fc7e9e4ef031474b96c8d2b3151026f7742b887b2db",
+          "source_text_lf_sha256": "7d9f61e48cc6d17cbeba33622da252ebb88ded077491b7eecf6e8345cd2d7486",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/research/agents.py",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "fe897f7a9b7e40fae6f59e29b6d91d59cec5b5d2dbff23a37119eb5c2ca124fa",
+          "source_text_lf_sha256": "e1cfc4f48c72f2c5f744d4b7ae2850cb9d2d9ecd08de7561cbe7818722271713",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "task-cancel",
+      "title": "任务取消与晚响应围栏",
+      "section": "任务可靠性",
+      "change_ids": [
+        1,
+        11
+      ],
+      "main_question": "取消成功后为什么还必须防止供应商晚响应写回？",
+      "followup_questions": [
+        "进程取消与持久取消状态谁是权威？",
+        "取消后立刻恢复会不会被旧abort杀掉？"
+      ],
+      "answer_points": [
+        "Java持久化取消状态",
+        "Worker每次调用和写入检查代次/状态",
+        "内部abort只是尽力停止执行"
+      ],
+      "failure_window": "外部HTTP已发出后不能保证撤销上游计费。",
+      "evidence_boundary": "取消不能承诺退还供应商已发生费用。",
+      "component_receipts": [
+        "reliability.json"
+      ],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/ResearchCommandService.java",
+          "symbol": "cancel",
+          "line": 97,
+          "source_sha256": "fb9e7233c65386f82e1a73f74555b4fb36ddab7716151c1783ead8c5cc381231",
+          "source_text_lf_sha256": "fb9e7233c65386f82e1a73f74555b4fb36ddab7716151c1783ead8c5cc381231",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/runtime.py",
+          "symbol": "cancel",
+          "line": 710,
+          "source_sha256": "9f7343fcddfaace5b41f60dbcf421bdffd5550ed9e5754154b49c444b8f228b2",
+          "source_text_lf_sha256": "9e3ebce9ad1cb46a855a223f4c178ee45eac820c6fb5d50770eb10a3a020db71",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/core/reliability.py",
+          "symbol": "Execution.check",
+          "line": 55,
+          "source_sha256": "293639e79b38e3735e5336fa604fb589bf74d5db080ac1c983a3c9174c639b10",
+          "source_text_lf_sha256": "293639e79b38e3735e5336fa604fb589bf74d5db080ac1c983a3c9174c639b10",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "task-resume",
+      "title": "检查点恢复与累计预算",
+      "section": "任务可靠性",
+      "change_ids": [
+        1,
+        11
+      ],
+      "main_question": "恢复应继续哪个检查点，何时必须清除终态失败并重新检索？",
+      "followup_questions": [
+        "终态next为空但检索失败怎么处理？",
+        "恢复如何共享原任务累计时间和调用预算？"
+      ],
+      "answer_points": [
+        "持久执行代次拒绝旧任务",
+        "检索失败的终态图重新准备入口",
+        "预算不因恢复重置",
+        "权限/来源失效不得保存旧部分证据"
+      ],
+      "failure_window": "检查点已结束、Worker心跳异常或旧schema不兼容。",
+      "evidence_boundary": "一次恢复通过不能证明所有崩溃窗口都能无损继续。",
+      "component_receipts": [
+        "reliability.json"
+      ],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/ResearchCommandService.java",
+          "symbol": "resume",
+          "line": 113,
+          "source_sha256": "fb9e7233c65386f82e1a73f74555b4fb36ddab7716151c1783ead8c5cc381231",
+          "source_text_lf_sha256": "fb9e7233c65386f82e1a73f74555b4fb36ddab7716151c1783ead8c5cc381231",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/runtime.py",
+          "symbol": "execute_run",
+          "line": 460,
+          "source_sha256": "9f7343fcddfaace5b41f60dbcf421bdffd5550ed9e5754154b49c444b8f228b2",
+          "source_text_lf_sha256": "9e3ebce9ad1cb46a855a223f4c178ee45eac820c6fb5d50770eb10a3a020db71",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/core/recovery_contract.py",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "6bdf1451b03b58f52fe794f48c33d18dceb8515f83001f263bba0f56b1dacf35",
+          "source_text_lf_sha256": "6bdf1451b03b58f52fe794f48c33d18dceb8515f83001f263bba0f56b1dacf35",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "task-deadletter",
+      "title": "任务及命令死信处理",
+      "section": "任务可靠性",
+      "change_ids": [
+        1,
+        2
+      ],
+      "main_question": "哪些错误进入死信，为什么不能无限自动重试？",
+      "followup_questions": [
+        "凭证错误和暂时网络错误如何区分？",
+        "管理员重投是否绕过已耗尽的任务预算？"
+      ],
+      "answer_points": [
+        "有限重试与静态错误类别",
+        "人工重投受RBAC保护",
+        "恢复仍检查原预算和当前权限"
+      ],
+      "failure_window": "永久错误被当作瞬态错误反复收费。",
+      "evidence_boundary": "死信治理工具不是自动修复所有供应商故障。",
+      "component_receipts": [],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/WorkspaceController.java",
+          "symbol": "deadLetters",
+          "line": 156,
+          "source_sha256": "8ac78d6828866cc5daac4e4eee595ef19e059314ad054a6e66973df3d2fc0442",
+          "source_text_lf_sha256": "8ac78d6828866cc5daac4e4eee595ef19e059314ad054a6e66973df3d2fc0442",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/WorkspaceController.java",
+          "symbol": "retryOutboxDeadLetter",
+          "line": 200,
+          "source_sha256": "8ac78d6828866cc5daac4e4eee595ef19e059314ad054a6e66973df3d2fc0442",
+          "source_text_lf_sha256": "8ac78d6828866cc5daac4e4eee595ef19e059314ad054a6e66973df3d2fc0442",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/runtime.py",
+          "symbol": "recover_dead_letter",
+          "line": 698,
+          "source_sha256": "9f7343fcddfaace5b41f60dbcf421bdffd5550ed9e5754154b49c444b8f228b2",
+          "source_text_lf_sha256": "9e3ebce9ad1cb46a855a223f4c178ee45eac820c6fb5d50770eb10a3a020db71",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "document-upload",
+      "title": "资料上传与内容去重",
+      "section": "资料处理",
+      "change_ids": [
+        3,
+        7,
+        9
+      ],
+      "main_question": "上传接收、内容去重、容量准入和资料所有权如何一起判断？",
+      "followup_questions": [
+        "同hash重传能否接管别人的受限资料？",
+        "用户看到indexing是否就代表可检索？"
+      ],
+      "answer_points": [
+        "体积/类型与内容哈希检查",
+        "扫描前先隔离",
+        "成功后异步索引",
+        "原作者策略不因重复上传覆盖"
+      ],
+      "failure_window": "对象写入失败或重复hash命中旧受限元数据。",
+      "evidence_boundary": "上传HTTP成功与资料ready是两个阶段。",
+      "component_receipts": [],
+      "source_entries": [
+        {
+          "path": "backend/api/app.py",
+          "symbol": "upload",
+          "line": 530,
+          "source_sha256": "beec91341133af7fcc1a8203fbb09f5d7b6ed7374789004b2c5ecd18d3613d68",
+          "source_text_lf_sha256": "0cc75320cf57df6cc950a109505959c00d1145a3b8bf059eaa68084a38a34448",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/documents.py",
+          "symbol": "Documents._add",
+          "line": 87,
+          "source_sha256": "bac11951f737bcaee882657d42471e780518c3fa2126cd96e28a2c5feb0414a8",
+          "source_text_lf_sha256": "1a9e4ba836ab25c607c76a891e41ef4239e6fd63859bc503285e354466c1c647",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "document-scan",
+      "title": "隔离扫描与中断恢复",
+      "section": "资料处理",
+      "change_ids": [
+        3,
+        6
+      ],
+      "main_question": "扫描拒绝、扫描服务不可用和扫描进程中断为什么要分开记录？",
+      "followup_questions": [
+        "重启后卡在scanning的文件如何恢复？",
+        "扫描不可用时能否先送模型解析？"
+      ],
+      "answer_points": [
+        "quarantine与uploads分区",
+        "拒绝/暂不可用状态分开",
+        "持久扫描重试次数和有界恢复",
+        "未通过不进入解析和索引"
+      ],
+      "failure_window": "ClamAV中断、对象移动失败或状态更新丢失。",
+      "evidence_boundary": "一次EICAR检查不代表能检出所有恶意文档。",
+      "component_receipts": [
+        "parser.json"
+      ],
+      "source_entries": [
+        {
+          "path": "backend/services/documents.py",
+          "symbol": "Documents._finish_scan",
+          "line": 147,
+          "source_sha256": "bac11951f737bcaee882657d42471e780518c3fa2126cd96e28a2c5feb0414a8",
+          "source_text_lf_sha256": "1a9e4ba836ab25c607c76a891e41ef4239e6fd63859bc503285e354466c1c647",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/documents.py",
+          "symbol": "Documents.recover_scans",
+          "line": 198,
+          "source_sha256": "bac11951f737bcaee882657d42471e780518c3fa2126cd96e28a2c5feb0414a8",
+          "source_text_lf_sha256": "1a9e4ba836ab25c607c76a891e41ef4239e6fd63859bc503285e354466c1c647",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/core/clamav.py",
+          "symbol": "scan",
+          "line": 16,
+          "source_sha256": "3d51cae854721c5501aed25b80a22b6e295bc240fc9d1d26db59744f4326b85d",
+          "source_text_lf_sha256": "6f1de18f96d14c2e1f1ff895e348a77b68e4dc74220b15ad88923b1b965035f6",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "document-parser",
+      "title": "受限PDF、DOCX与图片解析",
+      "section": "资料处理",
+      "change_ids": [
+        4
+      ],
+      "main_question": "复杂文档为什么改为可终止子进程而不是只放线程？",
+      "followup_questions": [
+        "PDF解压或原生解析卡死如何收回资源？",
+        "图片与解析输出分别受到什么约束？"
+      ],
+      "answer_points": [
+        "进程墙钟超时与终止回收",
+        "解析内存/CPU/输出大小约束",
+        "文档签名、像素、页数与解包限制",
+        "位置标识贯穿切块"
+      ],
+      "failure_window": "进程超时、过大解压流、损坏文档或解析后无正文。",
+      "evidence_boundary": "限制参数需Linux实际验收；离线正常样本不是解析器安全认证。",
+      "component_receipts": [
+        "parser.json"
+      ],
+      "source_entries": [
+        {
+          "path": "backend/services/parser_process.py",
+          "symbol": "parse_document",
+          "line": 14,
+          "source_sha256": "bf25d80f4d028bf308d445642680b073520c30d25baea235cd2a0e298acd2196",
+          "source_text_lf_sha256": "bf25d80f4d028bf308d445642680b073520c30d25baea235cd2a0e298acd2196",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/parser_worker.py",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "5e529f32b91853d77223a3fc15be7dc9d5c12dbf6f1d7309ac47e50ac51b5f5e",
+          "source_text_lf_sha256": "5e529f32b91853d77223a3fc15be7dc9d5c12dbf6f1d7309ac47e50ac51b5f5e",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/document_parsing.py",
+          "symbol": "extract_blocks",
+          "line": 286,
+          "source_sha256": "2ddc7917b27d97dca4128a1a4e25ae985f3e3e61128a458d7c299d53dadf7800",
+          "source_text_lf_sha256": "fe4b11ef4d6c1f984be807848a0ba06ea45c54c939ebc065630ecdd6d8afd0de",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "document-attachments",
+      "title": "图片附件暂存、绑定与读取",
+      "section": "资料处理",
+      "change_ids": [
+        4,
+        5,
+        9
+      ],
+      "main_question": "图片暂存与已绑定任务的访问规则为何不同？",
+      "followup_questions": [
+        "同一个暂存图片能否绑定多个任务？",
+        "未发送图片与已发送图片如何过期清理？"
+      ],
+      "answer_points": [
+        "图片属于上传subject和空间",
+        "任务绑定固定位置与归属",
+        "读取再次检查任务及作者/admin",
+        "未绑定图片有过期清理"
+      ],
+      "failure_window": "上传成功但任务创建失败，或图片已经被另一个任务绑定。",
+      "evidence_boundary": "视觉提取仅说明图中内容，不证明图中说法真实。",
+      "component_receipts": [],
+      "source_entries": [
+        {
+          "path": "backend/services/attachments.py",
+          "symbol": "Attachments.add",
+          "line": 45,
+          "source_sha256": "4b5474a1f4979edeeb1cfde99f2fa0d088017513c6725442b1077949ed2b6a11",
+          "source_text_lf_sha256": "1d07a48a1ee0e30cfe71917c379461dbb6a4793b4be341a8b33b72528c923f36",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/attachments.py",
+          "symbol": "Attachments.staged",
+          "line": 84,
+          "source_sha256": "4b5474a1f4979edeeb1cfde99f2fa0d088017513c6725442b1077949ed2b6a11",
+          "source_text_lf_sha256": "1d07a48a1ee0e30cfe71917c379461dbb6a4793b4be341a8b33b72528c923f36",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/attachments.py",
+          "symbol": "Attachments.visible",
+          "line": 69,
+          "source_sha256": "4b5474a1f4979edeeb1cfde99f2fa0d088017513c6725442b1077949ed2b6a11",
+          "source_text_lf_sha256": "1d07a48a1ee0e30cfe71917c379461dbb6a4793b4be341a8b33b72528c923f36",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "document-version",
+      "title": "资料版本、差异与当前/待发布切换",
+      "section": "资料处理",
+      "change_ids": [
+        3,
+        5,
+        9
+      ],
+      "main_question": "为什么新版本索引完成前仍保留旧ready版本？",
+      "followup_questions": [
+        "新解析或embedding失败是否会让旧文档失效？",
+        "历史版本缺失时能否推测一个差异？"
+      ],
+      "answer_points": [
+        "pending与current版本分开",
+        "成功后原子切换索引版本",
+        "历史版本和解析配置可追溯",
+        "没有历史材料时明确无法比较"
+      ],
+      "failure_window": "新向量写入成功但SQL版本切换失败。",
+      "evidence_boundary": "结构化差异不是模型对语义影响的完整证明。",
+      "component_receipts": [],
+      "source_entries": [
+        {
+          "path": "backend/services/evidence_lifecycle.py",
+          "symbol": "EvidenceLifecycle.versions",
+          "line": 65,
+          "source_sha256": "63e71ea77760db884b47e89ef7a8e4d5e4defe4c85e7d0e9b9418a2d69f2d47c",
+          "source_text_lf_sha256": "f63e58d884cc71bc2f121d9f723cdd446a6ca78c49df5cc2bf10b190bda6eec4",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/evidence_lifecycle.py",
+          "symbol": "EvidenceLifecycle.diff",
+          "line": 74,
+          "source_sha256": "63e71ea77760db884b47e89ef7a8e4d5e4defe4c85e7d0e9b9418a2d69f2d47c",
+          "source_text_lf_sha256": "f63e58d884cc71bc2f121d9f723cdd446a6ca78c49df5cc2bf10b190bda6eec4",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/documents.py",
+          "symbol": "Documents._ingest",
+          "line": 317,
+          "source_sha256": "bac11951f737bcaee882657d42471e780518c3fa2126cd96e28a2c5feb0414a8",
+          "source_text_lf_sha256": "1a9e4ba836ab25c607c76a891e41ef4239e6fd63859bc503285e354466c1c647",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "document-chunks",
+      "title": "原文片段和定位",
+      "section": "资料处理",
+      "change_ids": [
+        4,
+        9
+      ],
+      "main_question": "为什么引用必须带文档版本、块id和原文定位？",
+      "followup_questions": [
+        "用户如何验证否定条件没有被切块截断？",
+        "知道chunk id是否就能读取原文？"
+      ],
+      "answer_points": [
+        "切块保留章节/页/行定位",
+        "表格保留表头和单位",
+        "原文入口按当前文档ACL校验"
+      ],
+      "failure_window": "相邻条件、否定或表头被拆散，以及旧chunk命中。",
+      "evidence_boundary": "片段回查有助核实，不自动说明模型结论正确。",
+      "component_receipts": [
+        "acl.json"
+      ],
+      "source_entries": [
+        {
+          "path": "backend/api/app.py",
+          "symbol": "document_chunks",
+          "line": 593,
+          "source_sha256": "beec91341133af7fcc1a8203fbb09f5d7b6ed7374789004b2c5ecd18d3613d68",
+          "source_text_lf_sha256": "0cc75320cf57df6cc950a109505959c00d1145a3b8bf059eaa68084a38a34448",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/document_parsing.py",
+          "symbol": "semantic_chunks",
+          "line": 92,
+          "source_sha256": "2ddc7917b27d97dca4128a1a4e25ae985f3e3e61128a458d7c299d53dadf7800",
+          "source_text_lf_sha256": "fe4b11ef4d6c1f984be807848a0ba06ea45c54c939ebc065630ecdd6d8afd0de",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "document-replace",
+      "title": "资料替换与旧版保护",
+      "section": "资料处理",
+      "change_ids": [
+        3,
+        9
+      ],
+      "main_question": "替换失败为什么应恢复旧ready状态而不是留下不可用资料？",
+      "followup_questions": [
+        "两个替换请求并发时谁拥有待发布对象？",
+        "read grant是否允许替换？"
+      ],
+      "answer_points": [
+        "文档锁跨越暂存与扫描",
+        "pending对象与当前对象分开",
+        "owner/admin或write grant控制修改",
+        "失败登记清理而保留旧版"
+      ],
+      "failure_window": "扫描、对象移动或数据库写入在中间阶段失败。",
+      "evidence_boundary": "替换正确性与模型解析质量分别验证。",
+      "component_receipts": [
+        "acl.json"
+      ],
+      "source_entries": [
+        {
+          "path": "backend/api/app.py",
+          "symbol": "replace_document",
+          "line": 558,
+          "source_sha256": "beec91341133af7fcc1a8203fbb09f5d7b6ed7374789004b2c5ecd18d3613d68",
+          "source_text_lf_sha256": "0cc75320cf57df6cc950a109505959c00d1145a3b8bf059eaa68084a38a34448",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/documents.py",
+          "symbol": "Documents.replace",
+          "line": 224,
+          "source_sha256": "bac11951f737bcaee882657d42471e780518c3fa2126cd96e28a2c5feb0414a8",
+          "source_text_lf_sha256": "1a9e4ba836ab25c607c76a891e41ef4239e6fd63859bc503285e354466c1c647",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "document-reindex",
+      "title": "资料重建索引",
+      "section": "资料处理",
+      "change_ids": [
+        3,
+        4,
+        7,
+        9
+      ],
+      "main_question": "内容不变时为什么还可能需要显式重建索引？",
+      "followup_questions": [
+        "恢复次数耗尽后如何避免自动重建循环？",
+        "新解析规则与embedding维度变化如何区分？"
+      ],
+      "answer_points": [
+        "显式重建生成新索引版本",
+        "原件哈希验证",
+        "索引恢复次数有上限",
+        "失败保持旧可用版本"
+      ],
+      "failure_window": "解析合同、向量维度或服务端配置不兼容。",
+      "evidence_boundary": "重建成功不代表历史报告自动成为最新结论。",
+      "component_receipts": [],
+      "source_entries": [
+        {
+          "path": "backend/services/documents.py",
+          "symbol": "Documents.reindex",
+          "line": 730,
+          "source_sha256": "bac11951f737bcaee882657d42471e780518c3fa2126cd96e28a2c5feb0414a8",
+          "source_text_lf_sha256": "1a9e4ba836ab25c607c76a891e41ef4239e6fd63859bc503285e354466c1c647",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/documents.py",
+          "symbol": "Documents._reindex",
+          "line": 734,
+          "source_sha256": "bac11951f737bcaee882657d42471e780518c3fa2126cd96e28a2c5feb0414a8",
+          "source_text_lf_sha256": "1a9e4ba836ab25c607c76a891e41ef4239e6fd63859bc503285e354466c1c647",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "retrieval-hybrid",
+      "title": "关键词、向量与可选重排",
+      "section": "检索与证据",
+      "change_ids": [
+        2,
+        7,
+        9
+      ],
+      "main_question": "为什么先融合关键词与向量，再把重排作为可选层？",
+      "followup_questions": [
+        "向量超时后如何说明降级结果？",
+        "重排增加延迟时如何判断是否值得保留？"
+      ],
+      "answer_points": [
+        "归一化向量与BM25加权融合",
+        "向量不可用时保留关键词候选",
+        "重排严格验证索引/分数并可回退",
+        "重排计入同一费用账本"
+      ],
+      "failure_window": "供应商超时、无效分数、重复索引或外发未授权。",
+      "evidence_boundary": "固定语料排序指标不是最终报告准确率。",
+      "component_receipts": [],
+      "source_entries": [
+        {
+          "path": "backend/services/documents.py",
+          "symbol": "Documents.search",
+          "line": 420,
+          "source_sha256": "bac11951f737bcaee882657d42471e780518c3fa2126cd96e28a2c5feb0414a8",
+          "source_text_lf_sha256": "1a9e4ba836ab25c607c76a891e41ef4239e6fd63859bc503285e354466c1c647",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/infrastructure/reranker.py",
+          "symbol": "RerankerClient.rerank",
+          "line": 36,
+          "source_sha256": "91e8233548fecf286c8d710eef0955213331a88e861f6cf1f30eb06728493ff2",
+          "source_text_lf_sha256": "aec14379d15111641168bedacfab9364e96d6dd0be329db98df7da24f1dcc29a",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "retrieval-capacity",
+      "title": "大语料候选召回与内存边界",
+      "section": "检索与证据",
+      "change_ids": [
+        7
+      ],
+      "main_question": "为什么超过小语料阈值后不再把全空间所有片段装入BM25？",
+      "followup_questions": [
+        "中文词项索引如何保持可比召回？",
+        "大候选量和解析容量分别在哪里限制？"
+      ],
+      "answer_points": [
+        "SQL词项/统计下推",
+        "候选数量与hydrate有界",
+        "小语料保留原排序路线",
+        "上传阶段明确容量限制"
+      ],
+      "failure_window": "全量装载造成内存突增，或派生词项落后于SQL当前版本。",
+      "evidence_boundary": "一次合成规模内存测量不是生产容量上限。",
+      "component_receipts": [
+        "lexical-memory-final.json"
+      ],
+      "source_entries": [
+        {
+          "path": "backend/services/lexical_retrieval.py",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "db2a6b0473b9cb00f071f178f2fee0f9cea38bd2de8fd7bfbc87ab6d27cbe74b",
+          "source_text_lf_sha256": "db2a6b0473b9cb00f071f178f2fee0f9cea38bd2de8fd7bfbc87ab6d27cbe74b",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/documents.py",
+          "symbol": "Documents.capacity",
+          "line": 215,
+          "source_sha256": "bac11951f737bcaee882657d42471e780518c3fa2126cd96e28a2c5feb0414a8",
+          "source_text_lf_sha256": "1a9e4ba836ab25c607c76a891e41ef4239e6fd63859bc503285e354466c1c647",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "frontend/src/DocumentCapacity.vue",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "e4c97d4d9d32a77cd4430a30211380c425d2ee1a4540ed26bbc2e571164503fa",
+          "source_text_lf_sha256": "e4c97d4d9d32a77cd4430a30211380c425d2ee1a4540ed26bbc2e571164503fa",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "retrieval-acl-cache",
+      "title": "缓存和向量命中的当前授权",
+      "section": "检索与证据",
+      "change_ids": [
+        7,
+        9
+      ],
+      "main_question": "为什么向量metadata与缓存正文不能成为授权依据？",
+      "followup_questions": [
+        "集合撤权后缓存键没变怎么办？",
+        "向量库返回伪造正文与旧chunk如何处理？"
+      ],
+      "answer_points": [
+        "SQL当前版本和ACL重新hydrate",
+        "可读资料集合参与corpus指纹",
+        "返回前复核集合变化",
+        "旧命中只用于候选不直接信任正文"
+      ],
+      "failure_window": "权限撤销与检索等待并发发生。",
+      "evidence_boundary": "授权反例通过不等于完成全面渗透测试。",
+      "component_receipts": [
+        "acl.json"
+      ],
+      "source_entries": [
+        {
+          "path": "backend/services/documents.py",
+          "symbol": "Documents.check_corpus",
+          "line": 55,
+          "source_sha256": "bac11951f737bcaee882657d42471e780518c3fa2126cd96e28a2c5feb0414a8",
+          "source_text_lf_sha256": "1a9e4ba836ab25c607c76a891e41ef4239e6fd63859bc503285e354466c1c647",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/document_access.py",
+          "symbol": "require_document",
+          "line": 25,
+          "source_sha256": "b1f6de433ac03020aac61226efd4781f010d15e5afa0b16c959264b4c516d06a",
+          "source_text_lf_sha256": "b1f6de433ac03020aac61226efd4781f010d15e5afa0b16c959264b4c516d06a",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/lexical_retrieval.py",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "db2a6b0473b9cb00f071f178f2fee0f9cea38bd2de8fd7bfbc87ab6d27cbe74b",
+          "source_text_lf_sha256": "db2a6b0473b9cb00f071f178f2fee0f9cea38bd2de8fd7bfbc87ab6d27cbe74b",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "evidence-judge",
+      "title": "证据筛选、补搜与范围核验",
+      "section": "研究过程",
+      "change_ids": [
+        7,
+        11
+      ],
+      "main_question": "证据不足时如何补搜而不是把局限写成确定结论？",
+      "followup_questions": [
+        "已搜过同主题为什么还可能需要细化查询？",
+        "模型把未说明关系当事实时如何阻止？"
+      ],
+      "answer_points": [
+        "固定搜索/轮次上限",
+        "根据缺口细化查询",
+        "确定性范围/否定规则与模型判断协同",
+        "不足保留未答问题"
+      ],
+      "failure_window": "重复空查询、来源冲突或语义范围被模型扩大。",
+      "evidence_boundary": "补搜机制对照不能推广为通用准确率提升。",
+      "component_receipts": [],
+      "source_entries": [
+        {
+          "path": "backend/research/graph.py",
+          "symbol": "ResearchGraph.judge",
+          "line": 632,
+          "source_sha256": "592d63fd1359c4aabfab0fc7e9e4ef031474b96c8d2b3151026f7742b887b2db",
+          "source_text_lf_sha256": "7d9f61e48cc6d17cbeba33622da252ebb88ded077491b7eecf6e8345cd2d7486",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/research/graph.py",
+          "symbol": "ResearchGraph.reflect",
+          "line": 745,
+          "source_sha256": "592d63fd1359c4aabfab0fc7e9e4ef031474b96c8d2b3151026f7742b887b2db",
+          "source_text_lf_sha256": "7d9f61e48cc6d17cbeba33622da252ebb88ded077491b7eecf6e8345cd2d7486",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/research/evidence_policy.py",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "76b481ce6752cfcc25d4d1c8d5a2c6f7ce2400f3e76b4cdd2da7100c2a907ddc",
+          "source_text_lf_sha256": "617d601909d9e5ae0f81879d1aa27d24e067d31a0d5104678c3d6a8c26308746",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "report-draft",
+      "title": "报告草稿、引用支持与部分结果",
+      "section": "报告生命周期",
+      "change_ids": [
+        1,
+        9,
+        11
+      ],
+      "main_question": "完整、部分、证据不足与核验未完成应如何区分展示？",
+      "followup_questions": [
+        "格式修复耗尽后为什么保留草稿但阻止送审？",
+        "检查点中的旧主张什么时候不能恢复成部分报告？"
+      ],
+      "answer_points": [
+        "主张逐条引用核验",
+        "coverage与support分开",
+        "不完整核验保留明确状态",
+        "来源撤权及合同失效fail closed"
+      ],
+      "failure_window": "模型返回缺字段、截断或旧检查点证据失效。",
+      "evidence_boundary": "同模型核验结果是组件证据，不是独立真值。",
+      "component_receipts": [
+        "reliability.json",
+        "acl.json"
+      ],
+      "source_entries": [
+        {
+          "path": "backend/research/graph.py",
+          "symbol": "ResearchGraph.validator",
+          "line": 885,
+          "source_sha256": "592d63fd1359c4aabfab0fc7e9e4ef031474b96c8d2b3151026f7742b887b2db",
+          "source_text_lf_sha256": "7d9f61e48cc6d17cbeba33622da252ebb88ded077491b7eecf6e8345cd2d7486",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/runtime.py",
+          "symbol": "partial_report",
+          "line": 653,
+          "source_sha256": "9f7343fcddfaace5b41f60dbcf421bdffd5550ed9e5754154b49c444b8f228b2",
+          "source_text_lf_sha256": "9e3ebce9ad1cb46a855a223f4c178ee45eac820c6fb5d50770eb10a3a020db71",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/RunViewService.java",
+          "symbol": "visibleRun",
+          "line": 38,
+          "source_sha256": "5502af85483886735ff36b7142ca6491f017367e19052168280dfaf6908d64db",
+          "source_text_lf_sha256": "5502af85483886735ff36b7142ca6491f017367e19052168280dfaf6908d64db",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "report-submit",
+      "title": "送审与冻结快照",
+      "section": "报告生命周期",
+      "change_ids": [
+        9,
+        11
+      ],
+      "main_question": "为什么正式报告必须复制正文和证据而不能实时指向可变runs？",
+      "followup_questions": [
+        "重复送审如何保持幂等？",
+        "送审时资料版本或权限刚变化怎么办？"
+      ],
+      "answer_points": [
+        "作者提交已完成有效核验结果",
+        "当前来源和语料修订号围栏",
+        "复制正文/来源/验证/产物并计算哈希",
+        "同一任务仅一份快照"
+      ],
+      "failure_window": "资料热更新与送审并发，或旧任务清理后再次送审。",
+      "evidence_boundary": "内容哈希证明一致性，不证明事实真实。",
+      "component_receipts": [
+        "acl.json"
+      ],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/ReportPublicationService.java",
+          "symbol": "submit",
+          "line": 50,
+          "source_sha256": "3f61e3d0765405eb1f61f0d9ff3a8cac62c978b4008a40f45cc2f3f3cde1302a",
+          "source_text_lf_sha256": "3f61e3d0765405eb1f61f0d9ff3a8cac62c978b4008a40f45cc2f3f3cde1302a",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "report-review",
+      "title": "异人批准与驳回",
+      "section": "报告生命周期",
+      "change_ids": [
+        9,
+        11
+      ],
+      "main_question": "为什么作者不能审核自己，部分结果批准还要写范围说明？",
+      "followup_questions": [
+        "审批期间资料变化是否仍能发布？",
+        "驳回是删除报告还是保留记录？"
+      ],
+      "answer_points": [
+        "当前admin且非作者",
+        "验证快照指纹/来源/语料修订",
+        "部分结果强制说明发布边界",
+        "驳回保留原因与审计"
+      ],
+      "failure_window": "审核旧页面、篡改快照或资料刚被替换。",
+      "evidence_boundary": "工程上的双人审核机制不代表已经完成真人盲评。",
+      "component_receipts": [],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/ReportPublicationService.java",
+          "symbol": "approve",
+          "line": 139,
+          "source_sha256": "3f61e3d0765405eb1f61f0d9ff3a8cac62c978b4008a40f45cc2f3f3cde1302a",
+          "source_text_lf_sha256": "3f61e3d0765405eb1f61f0d9ff3a8cac62c978b4008a40f45cc2f3f3cde1302a",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/ReportPublicationService.java",
+          "symbol": "reject",
+          "line": 184,
+          "source_sha256": "3f61e3d0765405eb1f61f0d9ff3a8cac62c978b4008a40f45cc2f3f3cde1302a",
+          "source_text_lf_sha256": "3f61e3d0765405eb1f61f0d9ff3a8cac62c978b4008a40f45cc2f3f3cde1302a",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "report-withdraw",
+      "title": "撤回与审核记录清理",
+      "section": "报告生命周期",
+      "change_ids": [
+        5,
+        9
+      ],
+      "main_question": "撤回当前版本为什么不自动把旧版重新设为当前？",
+      "followup_questions": [
+        "有修订依赖的报告为什么不能物理删除？",
+        "撤回后还能否追溯批准原因？"
+      ],
+      "answer_points": [
+        "撤回保留正文证据和原因",
+        "清空系列当前指针",
+        "存在下游修订依赖时拒绝删除",
+        "显式清理仅针对允许状态"
+      ],
+      "failure_window": "清理当前报告或被引用报告导致审计链断裂。",
+      "evidence_boundary": "保留策略需与实际组织要求匹配，不宣称法律合规认证。",
+      "component_receipts": [],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/ReportPublicationService.java",
+          "symbol": "withdraw",
+          "line": 198,
+          "source_sha256": "3f61e3d0765405eb1f61f0d9ff3a8cac62c978b4008a40f45cc2f3f3cde1302a",
+          "source_text_lf_sha256": "3f61e3d0765405eb1f61f0d9ff3a8cac62c978b4008a40f45cc2f3f3cde1302a",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/ReportPublicationService.java",
+          "symbol": "delete",
+          "line": 212,
+          "source_sha256": "3f61e3d0765405eb1f61f0d9ff3a8cac62c978b4008a40f45cc2f3f3cde1302a",
+          "source_text_lf_sha256": "3f61e3d0765405eb1f61f0d9ff3a8cac62c978b4008a40f45cc2f3f3cde1302a",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "report-series",
+      "title": "报告系列与历史读取",
+      "section": "报告生命周期",
+      "change_ids": [
+        5,
+        9
+      ],
+      "main_question": "同一研究的多次正式发布如何展示当前版本与历史？",
+      "followup_questions": [
+        "历史资料已删时冻结引用怎样保留？",
+        "集合撤权后系列元数据是否也应过滤？"
+      ],
+      "answer_points": [
+        "系列id和revision_no固定演进关系",
+        "当前指针独立于是否发布",
+        "历史快照不可变",
+        "当前ACL控制每一历史版本及可见当前指针"
+      ],
+      "failure_window": "原件不可访问或系列当前版本被撤回。",
+      "evidence_boundary": "历史引用快照不意味着原始网页仍然存在。",
+      "component_receipts": [
+        "acl.json"
+      ],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/ReportPublicationService.java",
+          "symbol": "series",
+          "line": 365,
+          "source_sha256": "3f61e3d0765405eb1f61f0d9ff3a8cac62c978b4008a40f45cc2f3f3cde1302a",
+          "source_text_lf_sha256": "3f61e3d0765405eb1f61f0d9ff3a8cac62c978b4008a40f45cc2f3f3cde1302a",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/ReportPublicationService.java",
+          "symbol": "get",
+          "line": 240,
+          "source_sha256": "3f61e3d0765405eb1f61f0d9ff3a8cac62c978b4008a40f45cc2f3f3cde1302a",
+          "source_text_lf_sha256": "3f61e3d0765405eb1f61f0d9ff3a8cac62c978b4008a40f45cc2f3f3cde1302a",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "report-revise",
+      "title": "资料影响与定向修订",
+      "section": "报告生命周期",
+      "change_ids": [
+        8,
+        9,
+        10
+      ],
+      "main_question": "哪些旧结论可复用，哪些变化必须重新完整研究？",
+      "followup_questions": [
+        "只新增资料时为什么不能安全只改旧命中结论？",
+        "撤权后是否还能以旧快照发起修订？"
+      ],
+      "answer_points": [
+        "来源版本变化记录影响",
+        "修订绑定当前系列和原快照哈希",
+        "仅有效且未受影响主张可复用",
+        "新增/删除/缺历史时回退完整研究"
+      ],
+      "failure_window": "原系列当前版本、资料修订或权限在发起时改变。",
+      "evidence_boundary": "定向修订是受限优化，不能保证自动发现全部业务影响。",
+      "component_receipts": [
+        "acl.json"
+      ],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/ReportPublicationService.java",
+          "symbol": "impacts",
+          "line": 291,
+          "source_sha256": "3f61e3d0765405eb1f61f0d9ff3a8cac62c978b4008a40f45cc2f3f3cde1302a",
+          "source_text_lf_sha256": "3f61e3d0765405eb1f61f0d9ff3a8cac62c978b4008a40f45cc2f3f3cde1302a",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/ReportPublicationService.java",
+          "symbol": "revise",
+          "line": 311,
+          "source_sha256": "3f61e3d0765405eb1f61f0d9ff3a8cac62c978b4008a40f45cc2f3f3cde1302a",
+          "source_text_lf_sha256": "3f61e3d0765405eb1f61f0d9ff3a8cac62c978b4008a40f45cc2f3f3cde1302a",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/evidence_lifecycle.py",
+          "symbol": "EvidenceLifecycle.revision_context",
+          "line": 135,
+          "source_sha256": "63e71ea77760db884b47e89ef7a8e4d5e4defe4c85e7d0e9b9418a2d69f2d47c",
+          "source_text_lf_sha256": "f63e58d884cc71bc2f121d9f723cdd446a6ca78c49df5cc2bf10b190bda6eec4",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "report-diff",
+      "title": "报告结论与证据差异",
+      "section": "报告生命周期",
+      "change_ids": [
+        9,
+        10
+      ],
+      "main_question": "如何区分结论变了和仅引用版本变了？",
+      "followup_questions": [
+        "检索诊断分数改变应算结论变化吗？",
+        "比较接口是否分别校验两个历史版本的权限？"
+      ],
+      "answer_points": [
+        "稳定主张映射",
+        "结论语义字段与证据身份分开",
+        "双方get应用当前ACL",
+        "旧产物缺失时标明legacy"
+      ],
+      "failure_window": "把诊断字段噪声当结论改变或跨系列比较。",
+      "evidence_boundary": "结构差异不能替代专家对语义影响的判断。",
+      "component_receipts": [
+        "acl.json"
+      ],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/ReportPublicationService.java",
+          "symbol": "diff",
+          "line": 391,
+          "source_sha256": "3f61e3d0765405eb1f61f0d9ff3a8cac62c978b4008a40f45cc2f3f3cde1302a",
+          "source_text_lf_sha256": "3f61e3d0765405eb1f61f0d9ff3a8cac62c978b4008a40f45cc2f3f3cde1302a",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "report-download",
+      "title": "草稿与正式历史下载",
+      "section": "报告生命周期",
+      "change_ids": [
+        9,
+        12
+      ],
+      "main_question": "草稿导出与正式版本下载应如何保持身份和版本边界？",
+      "followup_questions": [
+        "下载前能否只看一次列表权限？",
+        "下载的正文是否跟随当前runs自动变化？"
+      ],
+      "answer_points": [
+        "草稿按任务作者/admin读取",
+        "正式下载取冻结report_markdown",
+        "每次入口重查当前来源权限",
+        "Markdown编码与文件名受控"
+      ],
+      "failure_window": "旧页面保留链接但当前权限已撤销。",
+      "evidence_boundary": "下载成功不说明文件内容已被真人确认。",
+      "component_receipts": [
+        "acl.json"
+      ],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/ResearchController.java",
+          "symbol": "report",
+          "line": 70,
+          "source_sha256": "ca2380237bf79cba01aca65983663d01cbcdfa5c96e5925a6f941d30dee5528e",
+          "source_text_lf_sha256": "ca2380237bf79cba01aca65983663d01cbcdfa5c96e5925a6f941d30dee5528e",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/ReportPublicationController.java",
+          "symbol": "download",
+          "line": 70,
+          "source_sha256": "7e3c5af5837a798ec3e6850460f23f424322ed18cde2ecdfd5d6336357e617d0",
+          "source_text_lf_sha256": "7e3c5af5837a798ec3e6850460f23f424322ed18cde2ecdfd5d6336357e617d0",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "data-export",
+      "title": "工作空间数据导出",
+      "section": "运维与数据",
+      "change_ids": [
+        5,
+        6,
+        9
+      ],
+      "main_question": "业务数据导出与灾备备份为什么要分开？",
+      "followup_questions": [
+        "管理员导出是否应包含别人的个人偏好？",
+        "导出包能否直接代替整个服务恢复包？"
+      ],
+      "answer_points": [
+        "工作空间管理员入口",
+        "业务数据与当前subject个人设定分开",
+        "导出行为审计",
+        "备份另外包含配置/存储/身份等恢复材料"
+      ],
+      "failure_window": "把局部业务ZIP误当全部持久卷备份。",
+      "evidence_boundary": "导出能力不自动构成完整可用恢复证明。",
+      "component_receipts": [],
+      "source_entries": [
+        {
+          "path": "backend/api/app.py",
+          "symbol": "export_data",
+          "line": 324,
+          "source_sha256": "beec91341133af7fcc1a8203fbb09f5d7b6ed7374789004b2c5ecd18d3613d68",
+          "source_text_lf_sha256": "0cc75320cf57df6cc950a109505959c00d1145a3b8bf059eaa68084a38a34448",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/runtime.py",
+          "symbol": "export_user",
+          "line": 966,
+          "source_sha256": "9f7343fcddfaace5b41f60dbcf421bdffd5550ed9e5754154b49c444b8f228b2",
+          "source_text_lf_sha256": "9e3ebce9ad1cb46a855a223f4c178ee45eac820c6fb5d50770eb10a3a020db71",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "data-purge",
+      "title": "研究数据清理与外部资源回收",
+      "section": "运维与数据",
+      "change_ids": [
+        5,
+        12
+      ],
+      "main_question": "SQL事务和外部删除如何避免半清理及孤儿数据？",
+      "followup_questions": [
+        "正式报告保护怎样阻止直接删除来源任务？",
+        "删除重试是否会误删仍被引用的文档版本？"
+      ],
+      "answer_points": [
+        "显式范围与确认头",
+        "正式依赖先校验",
+        "SQL事务与持久清理标记",
+        "对象/向量/检查点清理幂等且保护引用"
+      ],
+      "failure_window": "SQL提交后外部存储不可用；缓存/版本长期增长。",
+      "evidence_boundary": "运行数据清理与本机任意文件删除不是同一授权。",
+      "component_receipts": [],
+      "source_entries": [
+        {
+          "path": "backend/services/runtime.py",
+          "symbol": "purge_user",
+          "line": 984,
+          "source_sha256": "9f7343fcddfaace5b41f60dbcf421bdffd5550ed9e5754154b49c444b8f228b2",
+          "source_text_lf_sha256": "9e3ebce9ad1cb46a855a223f4c178ee45eac820c6fb5d50770eb10a3a020db71",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/run_cleanup.py",
+          "symbol": "RunCleanup.stage",
+          "line": 76,
+          "source_sha256": "8e24e9bcd52a71f0fd915ac40f121586028ba7239f67f8140f63e9736c1255c9",
+          "source_text_lf_sha256": "8e24e9bcd52a71f0fd915ac40f121586028ba7239f67f8140f63e9736c1255c9",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/run_cleanup.py",
+          "symbol": "RunCleanup.reconcile",
+          "line": 112,
+          "source_sha256": "8e24e9bcd52a71f0fd915ac40f121586028ba7239f67f8140f63e9736c1255c9",
+          "source_text_lf_sha256": "8e24e9bcd52a71f0fd915ac40f121586028ba7239f67f8140f63e9736c1255c9",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/retention.py",
+          "symbol": "Retention.reconcile",
+          "line": 13,
+          "source_sha256": "c8922617104fe59dbed990a9e3fd144594e6fc20b4ff51076b497101ae72aeda",
+          "source_text_lf_sha256": "c8922617104fe59dbed990a9e3fd144594e6fc20b4ff51076b497101ae72aeda",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "diagnostics",
+      "title": "静态诊断与真实运维探测",
+      "section": "运维与数据",
+      "change_ids": [
+        2
+      ],
+      "main_question": "为什么成员查看服务配置不能顺带触发付费模型调用？",
+      "followup_questions": [
+        "自建空间admin为什么不等于平台运维？",
+        "多个运维重复点击时如何共享冷却缓存？"
+      ],
+      "answer_points": [
+        "静态检查不外发",
+        "真实探测平台subject名单默认关闭",
+        "持久冷却、单独额度和意图/完成审计",
+        "失败返回安全错误码"
+      ],
+      "failure_window": "重复诊断绕过研究任务额度或服务重启清空冷却。",
+      "evidence_boundary": "配置齐全不等于供应商当前可用；探测只证明该次请求。",
+      "component_receipts": [
+        "governance.json"
+      ],
+      "source_entries": [
+        {
+          "path": "backend/api/app.py",
+          "symbol": "check",
+          "line": 342,
+          "source_sha256": "beec91341133af7fcc1a8203fbb09f5d7b6ed7374789004b2c5ecd18d3613d68",
+          "source_text_lf_sha256": "0cc75320cf57df6cc950a109505959c00d1145a3b8bf059eaa68084a38a34448",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/api/app.py",
+          "symbol": "probe",
+          "line": 354,
+          "source_sha256": "beec91341133af7fcc1a8203fbb09f5d7b6ed7374789004b2c5ecd18d3613d68",
+          "source_text_lf_sha256": "0cc75320cf57df6cc950a109505959c00d1145a3b8bf059eaa68084a38a34448",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/core/usage_governance.py",
+          "symbol": "UsageGovernance.claim_probe",
+          "line": 169,
+          "source_sha256": "eb650285300f688698b409814c9b6cfa25ab80d1754ccb21c72ca8c94e43b2a2",
+          "source_text_lf_sha256": "eb650285300f688698b409814c9b6cfa25ab80d1754ccb21c72ca8c94e43b2a2",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "usage-budget",
+      "title": "所有付费路径统一账本",
+      "section": "运维与数据",
+      "change_ids": [
+        2
+      ],
+      "main_question": "如何在重试和多任务并发下保持先记账、后发请求？",
+      "followup_questions": [
+        "usage缺失或进程崩溃后能否退回全部预留？",
+        "周期 rollover 是否抹除旧尝试记录？"
+      ],
+      "answer_points": [
+        "单事务预留所有维度",
+        "每次HTTP尝试累计",
+        "实耗/未知/待结算与历史预留分开",
+        "缺身份或账本不可用fail closed",
+        "评测另受更严传输账本限制"
+      ],
+      "failure_window": "上游已接受请求但本地不知道结果，或结算数据库故障。",
+      "evidence_boundary": "账本是费用暴露控制，不推算货币费用或保证上游计价。",
+      "component_receipts": [
+        "governance.json"
+      ],
+      "source_entries": [
+        {
+          "path": "backend/core/usage_governance.py",
+          "symbol": "UsageGovernance.reserve",
+          "line": 92,
+          "source_sha256": "eb650285300f688698b409814c9b6cfa25ab80d1754ccb21c72ca8c94e43b2a2",
+          "source_text_lf_sha256": "eb650285300f688698b409814c9b6cfa25ab80d1754ccb21c72ca8c94e43b2a2",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/core/usage_governance.py",
+          "symbol": "UsageGovernance.settle",
+          "line": 132,
+          "source_sha256": "eb650285300f688698b409814c9b6cfa25ab80d1754ccb21c72ca8c94e43b2a2",
+          "source_text_lf_sha256": "eb650285300f688698b409814c9b6cfa25ab80d1754ccb21c72ca8c94e43b2a2",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/infrastructure/providers.py",
+          "symbol": "Providers.post",
+          "line": 120,
+          "source_sha256": "077f680ea3a49ccf73fb35714b6f8efec1bacf40708d875f61e19d26811ffc3a",
+          "source_text_lf_sha256": "f5afb35299dc984bb08c4704f7ea7a01a05b387b517baf0d567a836e97a2612d",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "scope-intake",
+      "title": "研究范围澄清、保存、取消与过期",
+      "section": "新产品闭环",
+      "change_ids": [
+        8
+      ],
+      "main_question": "为什么宽泛需求应在付费执行前确认时间、地区、对象与交付标准？",
+      "followup_questions": [
+        "关闭页面后如何继续未确认草稿？",
+        "确认内容被改写、过期或重放时如何处理？"
+      ],
+      "answer_points": [
+        "不调用模型的保守词组预检",
+        "持久owner-bound intake",
+        "确认绑定真实请求并转任务",
+        "明确问题可直接执行",
+        "未限定范围披露为假设"
+      ],
+      "failure_window": "同一client_request_id携带不同请求、重复确认及锁顺序冲突。",
+      "evidence_boundary": "确定性词组门不是完美语义消歧；需保持内容绑定。",
+      "component_receipts": [
+        "scope-intake.json"
+      ],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/ResearchIntakeController.java",
+          "symbol": "preflight",
+          "line": 35,
+          "source_sha256": "96f604b8f0d9db1929f974d36698ae1db9bd7b51a52b1a94bb9430b7aa6becf5",
+          "source_text_lf_sha256": "96f604b8f0d9db1929f974d36698ae1db9bd7b51a52b1a94bb9430b7aa6becf5",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/ResearchIntakeController.java",
+          "symbol": "confirm",
+          "line": 59,
+          "source_sha256": "96f604b8f0d9db1929f974d36698ae1db9bd7b51a52b1a94bb9430b7aa6becf5",
+          "source_text_lf_sha256": "96f604b8f0d9db1929f974d36698ae1db9bd7b51a52b1a94bb9430b7aa6becf5",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/ResearchIntakePolicy.java",
+          "symbol": "requireConfirmed",
+          "line": 32,
+          "source_sha256": "9b258c4465ae62026f599a45db939a74fb1a0d46cd7dc7bfe5f1750e651b7190",
+          "source_text_lf_sha256": "9b258c4465ae62026f599a45db939a74fb1a0d46cd7dc7bfe5f1750e651b7190",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "collection-acl",
+      "title": "集合权限与文档归属",
+      "section": "新产品闭环",
+      "change_ids": [
+        9
+      ],
+      "main_question": "集合read/write、文档owner与空间admin之间如何取舍？",
+      "followup_questions": [
+        "撤回grant为什么不应剥夺owner的独立权限？",
+        "原文、检索、缓存、历史报告怎样保持一致？"
+      ],
+      "answer_points": [
+        "旧数据默认继承空间",
+        "restricted集合显式授权",
+        "owner/admin保留权限",
+        "源读取及发布链条统一当前SQL ACL"
+      ],
+      "failure_window": "旧缓存/旧向量或冻结报告成为撤权绕过入口。",
+      "evidence_boundary": "组件负例不等于全部攻击面已做渗透测试。",
+      "component_receipts": [
+        "acl.json"
+      ],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/CollectionController.java",
+          "symbol": "grant",
+          "line": 52,
+          "source_sha256": "66d28585a31753cad1a5b4366763c42af112b8901a1fd11932ea30f74e96cffb",
+          "source_text_lf_sha256": "66d28585a31753cad1a5b4366763c42af112b8901a1fd11932ea30f74e96cffb",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/CollectionController.java",
+          "symbol": "assign",
+          "line": 63,
+          "source_sha256": "66d28585a31753cad1a5b4366763c42af112b8901a1fd11932ea30f74e96cffb",
+          "source_text_lf_sha256": "66d28585a31753cad1a5b4366763c42af112b8901a1fd11932ea30f74e96cffb",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/services/document_access.py",
+          "symbol": "require_document",
+          "line": 25,
+          "source_sha256": "b1f6de433ac03020aac61226efd4781f010d15e5afa0b16c959264b4c516d06a",
+          "source_text_lf_sha256": "b1f6de433ac03020aac61226efd4781f010d15e5afa0b16c959264b4c516d06a",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "source-rechecks",
+      "title": "公开来源显式重核验",
+      "section": "新产品闭环",
+      "change_ids": [
+        10
+      ],
+      "main_question": "检测网页文本变化为什么不能叫事实重新验证？",
+      "followup_questions": [
+        "网页不可访问与事实不存在有什么区别？",
+        "如何保留旧正式报告而提示需要修订？"
+      ],
+      "answer_points": [
+        "报告当前可见性和资料ACL先检查",
+        "安全抓取、逐来源与整体时限",
+        "保存变化状态/时间/新文本摘要指纹",
+        "不改冻结正文与旧证据",
+        "变更提示needs_review"
+      ],
+      "failure_window": "网页已变、源站超时、只有摘要或比较合同不充分。",
+      "evidence_boundary": "哈希变化只证明提取文本变化，不代表事实真假或权威性。",
+      "component_receipts": [
+        "source-revalidation.json"
+      ],
+      "source_entries": [
+        {
+          "path": "backend/api/source_rechecks.py",
+          "symbol": "report_for",
+          "line": 15,
+          "source_sha256": "64279092fd9e8c68038197fc0a8fa31f32332034380d6149af177b8909a792aa",
+          "source_text_lf_sha256": "64279092fd9e8c68038197fc0a8fa31f32332034380d6149af177b8909a792aa",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/api/source_rechecks.py",
+          "symbol": "recheck",
+          "line": 26,
+          "source_sha256": "64279092fd9e8c68038197fc0a8fa31f32332034380d6149af177b8909a792aa",
+          "source_text_lf_sha256": "64279092fd9e8c68038197fc0a8fa31f32332034380d6149af177b8909a792aa",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "identity-deploy",
+      "title": "登录、OIDC与本机部署边界",
+      "section": "部署与恢复",
+      "change_ids": [
+        6,
+        12
+      ],
+      "main_question": "OIDC、浏览器PKCE与工作空间授权分别承担什么责任？",
+      "followup_questions": [
+        "身份服务管理台admin是否就是空间admin？",
+        "默认本机HTTP部署为什么不能直接视作公网配置？"
+      ],
+      "answer_points": [
+        "issuer/audience/有效期与签名校验",
+        "PKCE/state保护授权码流程",
+        "JWT只证明身份，成员关系决定空间权限",
+        "默认入口绑定回环地址"
+      ],
+      "failure_window": "登录回调、hostname、CSP或JWKS配置不一致。",
+      "evidence_boundary": "单机试用配置不等同公开互联网部署安全基线。",
+      "component_receipts": [],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/config/SecurityConfig.java",
+          "symbol": "apiSecurity",
+          "line": 21,
+          "source_sha256": "1fde010a6074a6a2df6d0871c5e84356c7132335fa134091608b66166e4db551",
+          "source_text_lf_sha256": "1fde010a6074a6a2df6d0871c5e84356c7132335fa134091608b66166e4db551",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/core/auth.py",
+          "symbol": "TokenVerifier.verify",
+          "line": 39,
+          "source_sha256": "b6666f5604f0ea441edbb74d86497b92c5c2ec281119304d4544aa44422c201f",
+          "source_text_lf_sha256": "a68b40310501f5df94cd8e41643dae8bb5e179b6727705825bd4cb3992e9966c",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "keycloak/deepresearch-realm.json",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "a2339cfacf38193bdd7f49dc75996b669c1d574279ee2a91907d8d55e444509b",
+          "source_text_lf_sha256": "85f2360b55fa8954a21ce1d1b01e35d8015c2c04f2b1f663af7588f738d24a2c",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "compose.yaml",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "9f819cbfaa9a3073ba1bc0fcfc9fb745fb2992ac4cad2682fb91db388ef8a1f3",
+          "source_text_lf_sha256": "c4e81c93b834b6dd6799d4ca44ed8a941c20d806fbbe2f951ba55de0178fcc67",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "service-privileges",
+      "title": "服务账号、对象存储身份与网络隔离",
+      "section": "部署与恢复",
+      "change_ids": [
+        6
+      ],
+      "main_question": "为什么迁移、Java、Python和Milvus不能共用最高权限凭证？",
+      "followup_questions": [
+        "告警组件为什么只挂载自己的token？",
+        "已有数据库如何无损切换受限运行账号？"
+      ],
+      "answer_points": [
+        "迁移角色与运行角色分开",
+        "存储按业务/Milvus划分身份",
+        "secret按文件/用途分发",
+        "必要服务网络与默认拒绝权限验证"
+      ],
+      "failure_window": "旧角色权限残留或新角色缺少业务必需写权限。",
+      "evidence_boundary": "角色脚本源码与隔离组件实测需分开陈述，不能推断日常部署已切换。",
+      "component_receipts": [
+        "privileges-isolated.json",
+        "storage-isolated.json"
+      ],
+      "source_entries": [
+        {
+          "path": "scripts/verify_service_privileges.py",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "fd1999f7cde200c520f33b1f2287c862261394eb311ebec2f833b9fee815f5fa",
+          "source_text_lf_sha256": "fd1999f7cde200c520f33b1f2287c862261394eb311ebec2f833b9fee815f5fa",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "scripts/verify_storage_identity.py",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "03f6b9105bdffaf5417780580539e43dd5250a3d4779b0f0ab8cfb1dfd09bfe6",
+          "source_text_lf_sha256": "03f6b9105bdffaf5417780580539e43dd5250a3d4779b0f0ab8cfb1dfd09bfe6",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "compose.yaml",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "9f819cbfaa9a3073ba1bc0fcfc9fb745fb2992ac4cad2682fb91db388ef8a1f3",
+          "source_text_lf_sha256": "c4e81c93b834b6dd6799d4ca44ed8a941c20d806fbbe2f951ba55de0178fcc67",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "backup",
+      "title": "自动备份、保留与异机复制接口",
+      "section": "部署与恢复",
+      "change_ids": [
+        5,
+        12
+      ],
+      "main_question": "为什么备份成功标记必须在完整校验后才更新？",
+      "followup_questions": [
+        "业务数据、Keycloak与ClamAV材料是否都能恢复？",
+        "复制到其他路径是否等于已经做异机灾备？"
+      ],
+      "answer_points": [
+        "清单与哈希绑定备份项",
+        "完成备份及查询镜像缓存前强制验证当前平台OCI链和实际DiffIDs",
+        "归档独立恢复脚本及标准库校验sidecar",
+        "Windows任务与子进程隐藏且保留日志和真实退出码",
+        "保留策略保护当前可恢复包",
+        "定时任务防重入",
+        "复制接口保留明确目标和校验"
+      ],
+      "failure_window": "调度器重叠、部分存储未复制、缓存掩盖镜像包缺失或目标盘不可用。",
+      "evidence_boundary": "历史包的linux/amd64内容验证不是空缓存导入或整栈恢复；静默合成入口检查不是日常调度实测；同机复制接口不是异机灾备证明，RPO/RTO必须有测量前提。",
+      "component_receipts": [
+        "backup-image-bundle.json",
+        "windows-host-task-silence.json"
+      ],
+      "source_entries": [
+        {
+          "path": "scripts/recovery.py",
+          "symbol": "backup",
+          "line": 223,
+          "source_sha256": "8ae8bec6324697b61c1f19b6588553e87fbcf4291c103441d4e2d2831522f53a",
+          "source_text_lf_sha256": "f0862b99a162f328764ad235e24bd21e38ba1b079904fb4c73f966db89e4445d",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "scripts/backup_images.py",
+          "symbol": "verify_image_bundle",
+          "line": 22,
+          "source_sha256": "34db6b3b5b431a85e3a2509967d51593bb512a25a5a1d19d68ad78d9cb558eb3",
+          "source_text_lf_sha256": "34db6b3b5b431a85e3a2509967d51593bb512a25a5a1d19d68ad78d9cb558eb3",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "scripts/scheduled_backup.py",
+          "symbol": "execute",
+          "line": 72,
+          "source_sha256": "9ad20ced86bc4687b65b77e5b0a24b1622df0dac51d1028201b8abc08440b975",
+          "source_text_lf_sha256": "9ad20ced86bc4687b65b77e5b0a24b1622df0dac51d1028201b8abc08440b975",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "scripts/host_task.py",
+          "symbol": "run_logged_target",
+          "line": 24,
+          "source_sha256": "3924f7557afc3646c37a7a396d0dabe6bf155599e5e9043a81c70fe3501d6cd2",
+          "source_text_lf_sha256": "3924f7557afc3646c37a7a396d0dabe6bf155599e5e9043a81c70fe3501d6cd2",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "scripts/copy_backup.py",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "ad67cfa5d6f24699de7a0cdede90ee690f742b9a49b4ee5f43ee59530042d3a7",
+          "source_text_lf_sha256": "ad67cfa5d6f24699de7a0cdede90ee690f742b9a49b4ee5f43ee59530042d3a7",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "restore",
+      "title": "隔离恢复与可用性演练",
+      "section": "部署与恢复",
+      "change_ids": [
+        12
+      ],
+      "main_question": "如何在不覆盖日常业务卷的情况下证明备份可用？",
+      "followup_questions": [
+        "为什么只检查哈希或healthz不够？",
+        "恢复后需要验证哪些业务关系与证据哈希？"
+      ],
+      "answer_points": [
+        "单独Compose项目与卷",
+        "校验双数据库、账号关系、业务报告与引用",
+        "验证最小接单/取消和扫描",
+        "记录原容器状态与恢复耗时"
+      ],
+      "failure_window": "归档可解压但配置/身份/派生索引无法恢复。",
+      "evidence_boundary": "同机隔离恢复不是跨主机高可用或生产RTO承诺。",
+      "component_receipts": [],
+      "source_entries": [
+        {
+          "path": "scripts/recovery.py",
+          "symbol": "restore",
+          "line": 370,
+          "source_sha256": "8ae8bec6324697b61c1f19b6588553e87fbcf4291c103441d4e2d2831522f53a",
+          "source_text_lf_sha256": "f0862b99a162f328764ad235e24bd21e38ba1b079904fb4c73f966db89e4445d",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "scripts/drill_logical_recovery.py",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "0f7c11c11476b7f7dbf19c5dc62141ae12a445b3dfded2af5b57235b082f6f23",
+          "source_text_lf_sha256": "0f7c11c11476b7f7dbf19c5dc62141ae12a445b3dfded2af5b57235b082f6f23",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "observability",
+      "title": "健康、指标、日志、追踪与告警",
+      "section": "部署与恢复",
+      "change_ids": [
+        1,
+        12
+      ],
+      "main_question": "进程活着、能够接单和业务质量良好为什么是不同信号？",
+      "followup_questions": [
+        "Worker PID健康检查能否发现队列卡住？",
+        "如何演练告警通道又避免泄露prompt或密钥？"
+      ],
+      "answer_points": [
+        "存活/依赖就绪分层",
+        "队列年龄、重试、费用和任务终态可观测",
+        "安全字段日志与trace上下文",
+        "告警转发鉴权/去重/退避"
+      ],
+      "failure_window": "进程未退出但依赖、循环或告警投递已经失效。",
+      "evidence_boundary": "可观测工具齐全不等于已经证明24小时稳定性。",
+      "component_receipts": [
+        "alert-delivery-isolated.json",
+        "observability-acceptance.json"
+      ],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/HealthController.java",
+          "symbol": "ready",
+          "line": 29,
+          "source_sha256": "cb07e0ef3d388c5326a07d1e601fd5de06d1f659bf3081ee3fc2e09ce83c32bc",
+          "source_text_lf_sha256": "cb07e0ef3d388c5326a07d1e601fd5de06d1f659bf3081ee3fc2e09ce83c32bc",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/core/observability.py",
+          "symbol": "configure_telemetry",
+          "line": 57,
+          "source_sha256": "ee8db815800c67bfa04c748c84ff331f68c490e45a4187a12ff4a76883ab31c8",
+          "source_text_lf_sha256": "ee8db815800c67bfa04c748c84ff331f68c490e45a4187a12ff4a76883ab31c8",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "observability/alerts.yml",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "8ff542990151f3167cd3ff939949287880939a79741d1ec2762091dfaf2554db",
+          "source_text_lf_sha256": "f296f5b51c003c5f7651c89b7143f5bffcd52fd2ebbbe29d1132e4a7dc38a47f",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "scripts/verify_alert_delivery.py",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "702d8c032fdaed642942a71969e310c9e873f3a6f5aeb05afc183e18fe2b455c",
+          "source_text_lf_sha256": "702d8c032fdaed642942a71969e310c9e873f3a6f5aeb05afc183e18fe2b455c",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "contract-schema",
+      "title": "跨语言契约和兼容迁移",
+      "section": "验证与交接",
+      "change_ids": [
+        11
+      ],
+      "main_question": "Java业务控制面与Python执行面怎样避免同一状态被双写覆盖？",
+      "followup_questions": [
+        "旧检查点合同不兼容时能否直接继续？",
+        "为什么数据库迁移必须保留历史顺序？"
+      ],
+      "answer_points": [
+        "明确表字段写入所有者",
+        "版本化命令和恢复合同",
+        "旧代次及不兼容产物拒绝",
+        "固定跨语言用例与向前兼容迁移"
+      ],
+      "failure_window": "一侧升级而另一侧仍按旧字段/状态理解。",
+      "evidence_boundary": "共享runs/events是渐进拆分，不是独立数据库微服务。",
+      "component_receipts": [
+        "reliability.json"
+      ],
+      "source_entries": [
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/ResearchCommandContract.java",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "ffebce3897665f5b136dee8a7460c39c1ba5c34db02b2895e626a711379accd0",
+          "source_text_lf_sha256": "ffebce3897665f5b136dee8a7460c39c1ba5c34db02b2895e626a711379accd0",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "backend/core/recovery_contract.py",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "6bdf1451b03b58f52fe794f48c33d18dceb8515f83001f263bba0f56b1dacf35",
+          "source_text_lf_sha256": "6bdf1451b03b58f52fe794f48c33d18dceb8515f83001f263bba0f56b1dacf35",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "migrations/versions/0017_product_governance.py",
+          "symbol": "upgrade",
+          "line": 9,
+          "source_sha256": "190a5a286eff699d648dd934667775694babe224c6f9985278de304df53e562b",
+          "source_text_lf_sha256": "190a5a286eff699d648dd934667775694babe224c6f9985278de304df53e562b",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "testing-delivery",
+      "title": "聚焦测试、预算评测和最终交付",
+      "section": "验证与交接",
+      "change_ids": [
+        0,
+        2,
+        11,
+        12
+      ],
+      "main_question": "如何证明修改有效，同时避免重跑无关功能或无界付费评测？",
+      "followup_questions": [
+        "本地组件通过与最终SHA CI通过有什么区别？",
+        "自动模型评分与真人盲评应怎样分账？"
+      ],
+      "answer_points": [
+        "只测修改及直接影响路径",
+        "所有评测重试共用更严传输账本",
+        "固定开发/留出题与阈值",
+        "最终SHA分别核对CI/Security/质量证据",
+        "人工职责和独立真值不推断"
+      ],
+      "failure_window": "复用旧评分被误标新模型通过，或未绑定最终提交。",
+      "evidence_boundary": "当前交接包不宣称真人评分、外部用户价值、HA或通用准确率。",
+      "component_receipts": [],
+      "source_entries": [
+        {
+          "path": ".github/workflows/ci.yml",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "78777a22647476837264c84fbaa2630af7fa9d6e2fc734f62a01c42178f416f3",
+          "source_text_lf_sha256": "bfe6f3f397eccfee9249964a4e33002e9885788b647a422b060d2a5928f06223",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": ".github/workflows/security.yml",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "d020d5dc5fe11b089cf11ae2a8caae3b3c16853d0fee76c50d7c7069570d2570",
+          "source_text_lf_sha256": "ff6b68566a719e9fc01f411a8acc74376113b474cf11912f137968967d302674",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "scripts/bounded_evaluation.py",
+          "symbol": "Budget.reserve",
+          "line": 49,
+          "source_sha256": "b9dcfdfb2c3d73d8dc0737b120c93de92603281bf9f1d86899d0c2cde62777d2",
+          "source_text_lf_sha256": "4abd832429260ed393efab9f89a30afbce7b0efe2b4588ab6f2f832aa72703a8",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "scripts/evaluation_scope.py",
+          "symbol": "scoped_evaluation",
+          "line": 7,
+          "source_sha256": "e3fa152c125b3d1267a67ab42994eb7440a44c982b2d1065298e2c1a554961a0",
+          "source_text_lf_sha256": "584eb173d0644f0a8c91bf0f45e4ec3253ae5ef9ca33442a1bd1ee0b279e6212",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "usage-visibility",
+      "title": "个人与空间费用可见性",
+      "section": "运维与数据",
+      "change_ids": [
+        2,
+        9
+      ],
+      "main_question": "费用面板如何避免泄露其他成员或其他空间的调用记录？",
+      "followup_questions": [
+        "空间管理员能否修改或查看平台总额度？",
+        "已知usage、尚未返回和未知结果为什么不能合计成已结算费用？"
+      ],
+      "answer_points": [
+        "服务端按当前subject及选中空间汇总",
+        "平台总额仅向明确运维subject提供",
+        "预留与已知输入输出分开",
+        "持久原子预留对所有供应商路径生效"
+      ],
+      "failure_window": "工作空间切换、无usage的网络失败、权限变化与并发扣额。",
+      "evidence_boundary": "供应商usage与保守预留不等同人民币账单或供应商最终退款。",
+      "component_receipts": [
+        "governance.json",
+        "usage-postgres.json",
+        "real-provider.json"
+      ],
+      "source_entries": [
+        {
+          "path": "backend/api/usage.py",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "a23763e9b472de4ff77f532f362d1a83a99a75f57e1d69cb440d3e8a208c9eb8",
+          "source_text_lf_sha256": "a23763e9b472de4ff77f532f362d1a83a99a75f57e1d69cb440d3e8a208c9eb8",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "frontend/src/UsageBudget.vue",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "45272d0c22afbb263f4e2d00a085f2fa7b6bb1a8b60094e20b3b317798d64b2a",
+          "source_text_lf_sha256": "45272d0c22afbb263f4e2d00a085f2fa7b6bb1a8b60094e20b3b317798d64b2a",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/src/main/java/com/deepresearch/business/api/AgentProxyController.java",
+          "symbol": "proxy",
+          "line": 33,
+          "source_sha256": "f81f0ecfbf502797025bc8a0f0365b207f67c88474659dde8c9a18844c58564b",
+          "source_text_lf_sha256": "f81f0ecfbf502797025bc8a0f0365b207f67c88474659dde8c9a18844c58564b",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "document-ui-scope",
+      "title": "资料界面与切换空间后的异步响应",
+      "section": "资料处理",
+      "change_ids": [
+        9,
+        12
+      ],
+      "main_question": "切换工作空间时，旧请求的资料和错误为什么不能覆盖新空间页面？",
+      "followup_questions": [
+        "只丢弃旧响应是否就足以防止请求发往错误空间？",
+        "异步上传结束后应刷新哪个空间？"
+      ],
+      "answer_points": [
+        "资料状态抽到独立组合函数",
+        "epoch丢弃旧响应与错误",
+        "请求显式捕获发起空间",
+        "api保留调用方明确的工作空间头",
+        "服务端仍执行当前权限"
+      ],
+      "failure_window": "慢请求跨越空间切换；迟到刷新导致误导或错误上下文。",
+      "evidence_boundary": "前端隔离改善展示与请求正确性，不能代替服务端鉴权。",
+      "component_receipts": [
+        "roles-and-scope.json",
+        "acl.json"
+      ],
+      "source_entries": [
+        {
+          "path": "frontend/src/useDocumentLibrary.ts",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "f21f63f29468d3a092edba30ec14b50cb893868b2021519d884d3aa5b21fadb7",
+          "source_text_lf_sha256": "f21f63f29468d3a092edba30ec14b50cb893868b2021519d884d3aa5b21fadb7",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "frontend/src/api.ts",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "d3bf45ec1f4413e2a9d24f605ede0fa4f3ae0117d4a75e67c55975c2bda4dee2",
+          "source_text_lf_sha256": "cf2867f375814574e1385d929c06c8d459a89b2e3e0fb1c68fc39acf2dbba729",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "frontend/src/CollectionAccess.vue",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "147527ebc3cea774ac671c800f7c1ff9e2952ec1357ed49290544f40cdf6eb26",
+          "source_text_lf_sha256": "0a8bb820d9682211046cb1dc6f50d2eed8d59b3863790ba84f4d8d5da3ef6498",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "runtime-image-security",
+      "title": "运行镜像漏洞与升级兼容证据",
+      "section": "部署与恢复",
+      "change_ids": [
+        6,
+        12
+      ],
+      "main_question": "如何把包扫描、源码修复、兼容性和实际交付分开证明？",
+      "followup_questions": [
+        "重编后的主模块变成devel或扫描失败能否算零漏洞？",
+        "源码已修但漏洞库仍报同一CVE时应如何处理？"
+      ],
+      "answer_points": [
+        "编排导出所有预制和自建运行镜像",
+        "固定工具和漏洞库分别保存原始报告",
+        "保留真实模块版本及包识别范围",
+        "新旧数据副本与回滚验证",
+        "未知与未处置HIGH保持门禁失败"
+      ],
+      "failure_window": "升级改变OIDC受众、存储格式或插件签名；扫描器归因与真实修复状态可能不一致。",
+      "evidence_boundary": "本地普通镜像和独立native门禁、获批MinIO/Grafana精确判定分别有证据；最终SHA冷CI仍待执行，不能把局部通过写成零风险。",
+      "component_receipts": [
+        "application-image-security.json",
+        "vendor-fresh-scan.json",
+        "minio-ci-integration.json",
+        "grafana-artifact-governance.json",
+        "native-jvm-ci.json",
+        "unified-candidate.json"
+      ],
+      "source_entries": [
+        {
+          "path": "scripts/runtime_ci_inventory.py",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "e547af6824101a54a077bbed8f923596e1188ac3930f59fb7cfa459d82858719",
+          "source_text_lf_sha256": "7181cbfc83c5948ceb8a4c002fb537321204c7d13fc46db156e43d696b5feefb",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "scripts/scan_runtime_images.py",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "0b57f3a54e6295cfdd64561a547a4dd0bcdf10b491202a5b0cd0f375165a2a3e",
+          "source_text_lf_sha256": "0b57f3a54e6295cfdd64561a547a4dd0bcdf10b491202a5b0cd0f375165a2a3e",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "frontend/Dockerfile",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "139bd2ed2a9b3a52dc5b7dd4a9e6e8dd77e1abc0e5ea2b28e4616f7dfbd2a4c1",
+          "source_text_lf_sha256": "139bd2ed2a9b3a52dc5b7dd4a9e6e8dd77e1abc0e5ea2b28e4616f7dfbd2a4c1",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "ci-cumulative-budget",
+      "title": "跨CI重跑的累计付费预算",
+      "section": "验证与交接",
+      "change_ids": [
+        0,
+        2,
+        11
+      ],
+      "main_question": "为什么每个CI运行新建账本会绕过用户允许的总调用次数？",
+      "followup_questions": [
+        "失败或重跑的原始artifact缺失时如何处理？",
+        "PR合并提交与分支提交不同，能否直接复用前置安全结果？"
+      ],
+      "answer_points": [
+        "保留历史逐次请求和来源run/attempt/SHA",
+        "所有新增尝试按同一授权累计",
+        "artifact摘要与前缀校验防重置/漏算",
+        "未知usage保守保留预留",
+        "同源码普通CI和Security成功后才开始付费"
+      ],
+      "failure_window": "工作流并发、artifact过期、取消或只重跑失败job；这些情况不能把未知消耗视为零。",
+      "evidence_boundary": "离线必要预算下界不保证通过；最终余额和质量结论以真实GitHub artifact为准。",
+      "component_receipts": [
+        "ci-budget-assessment.json"
+      ],
+      "source_entries": [
+        {
+          "path": "scripts/ci_budget_ledger.py",
+          "symbol": "contract",
+          "line": 33,
+          "source_sha256": "0a91425d182a23845816117c5799b039f3e6508d4ced7c1ea816d163714d678a",
+          "source_text_lf_sha256": "0a91425d182a23845816117c5799b039f3e6508d4ced7c1ea816d163714d678a",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "scripts/reconcile_ci_budget.py",
+          "symbol": "reconcile",
+          "line": 95,
+          "source_sha256": "6480bb6462f6b55cbff9a1b3dce8e521ab6c264102c4582c2884398cae76a76b",
+          "source_text_lf_sha256": "583e2569838b1a7e846db43e594b2bf98eaac7c94d73d463903f113b5ca018b8",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": ".github/workflows/answer-quality.yml",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "7f927cc853d30f6e2883cfffe5f43b61f449d17c867e0078c1c6b32489210ae5",
+          "source_text_lf_sha256": "3a6d3843d53f4724d909caa3dfab80270b554e5f1b69f2b3fd0103e1a5f2fe63",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "approved-artifact",
+      "title": "固定镜像判定与归档加载",
+      "section": "部署与恢复",
+      "change_ids": [
+        0,
+        6,
+        12
+      ],
+      "main_question": "为什么获批修复判定必须绑定实际运行的同一个镜像？",
+      "followup_questions": [
+        "重新构建相同源码能否直接继承旧镜像批准？",
+        "归档不完整、新漏洞或审批到期时能否回退可变标签？"
+      ],
+      "answer_points": [
+        "固定OCI索引、平台清单、config与实际解压DiffIDs",
+        "逐层摘要及whiteout后有效二进制绑定",
+        "分段远程校验后再验证完整归档",
+        "正常远程加载及缓存先核实际Release已发布",
+        "原始全级别告警与精确判定分账",
+        "各制品独立授权来源与到期校验",
+        "新发现或缺失证据失败关闭"
+      ],
+      "failure_window": "流水线重建新镜像却误用旧授权、分段不齐全、草稿或缓存绕过发布生命周期，或扫描失败被包装成零告警。",
+      "evidence_boundary": "MinIO仅一个精确FIXED；Grafana新subject独立授权FIXED2/NOT_AFFECTED16，仍保留原始中低危及Unknown；私密draft远程审计不是正式发布或最终SHA安全验收。",
+      "component_receipts": [
+        "minio-ci-integration.json",
+        "minio-remediation.json",
+        "grafana-artifact-governance.json",
+        "grafana-remote-transport.json",
+        "oci-reuse-review.json"
+      ],
+      "source_entries": [
+        {
+          "path": "scripts/image_disposition.py",
+          "symbol": "verify_archive",
+          "line": 86,
+          "source_sha256": "40ad12c3fbdc760b1ba70f8eb00327f55fd12195fbb3ec511ac63c1f97f39188",
+          "source_text_lf_sha256": "ca1508c238f78fb2513354d1d273bbb86ff97d773211f1de09a962629d3c9298",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "scripts/grafana_image_disposition.py",
+          "symbol": "load_binding",
+          "line": 31,
+          "source_sha256": "36d2c348eb78e16d94f336b2d9713cf46b920e6dee88a58b493871de351517e1",
+          "source_text_lf_sha256": "7999b98ed5a6cdc394635c802c84acd51126e31be54509ff21dbddab4c3645c6",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "scripts/oci_artifact.py",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "e921e644e4561472ecc87a2e5a4acc1edd03b27e554fca59dd53b7adeff825cc",
+          "source_text_lf_sha256": "edc9d3d168d6254af8f13a6ad723c07fbd0eaadd7156cb3c86487cb0aa2e9701",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "scripts/fetch_approved_image.py",
+          "symbol": "load_image",
+          "line": 281,
+          "source_sha256": "973c6a59e42ab0c8a33ee35e5b9f62cc4d185a8d9b66c63924b0c278ca1a19f0",
+          "source_text_lf_sha256": "bce4798029c799267405912a8a1b8f891e3f4ad2dba29a58b1234d8729ee33c2",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "scripts/runtime_ci_inventory.py",
+          "symbol": "matrices",
+          "line": 19,
+          "source_sha256": "e547af6824101a54a077bbed8f923596e1188ac3930f59fb7cfa459d82858719",
+          "source_text_lf_sha256": "7181cbfc83c5948ceb8a4c002fb537321204c7d13fc46db156e43d696b5feefb",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "native-runtime-coverage",
+      "title": "解释器与JVM的独立覆盖",
+      "section": "部署与恢复",
+      "change_ids": [
+        6,
+        12
+      ],
+      "main_question": "OS和依赖包零高危为什么仍可能漏掉Python或Java运行时？",
+      "followup_questions": [
+        "如何防止只修改版本文本伪装修复？",
+        "签名来源、真实安全回归和漏洞数据库各能证明什么？"
+      ],
+      "answer_points": [
+        "确认扫描实际识别的组件",
+        "官方签名和固定源码归档",
+        "实际进程版本与JRE文件树对比",
+        "原生CPE与完整包扫描分账",
+        "受损CA拒绝和合法TLS正例同时通过"
+      ],
+      "failure_window": "旧CPython扫描为零但仍接受受损证书；原JVM不在Trivy的OS/JAR识别范围内。",
+      "evidence_boundary": "版本和回归验证限于已列范围，不是所有漏洞不存在或一般可用性证明。",
+      "component_receipts": [
+        "application-image-security.json",
+        "full-python-build.json",
+        "ci-python-runtime.json"
+      ],
+      "source_entries": [
+        {
+          "path": "scripts/verify_python_runtime.py",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "5deb1d281a794befd3daff571c74cee4ab4af050e9b43099c8c8d48c49a3383e",
+          "source_text_lf_sha256": "798abdcf3f8f2a7af0472e6442277bc8de1d01935098fe6eb32651daf486861e",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "scripts/check_native_jvm.py",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "cc518fa7958d8b3ac26a7f70d36261f4c417f7c0f4c6a235bf414db2c9179f2a",
+          "source_text_lf_sha256": "bc8899481c416dd3c1d5fdb9089e17091d4c6b20d8f53befcc30cd56e235ee52",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "business-backend/Dockerfile",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "f55ee8dde86b030171a1744ddbe96268e394c805ccedaa4f097d1f501f1935e0",
+          "source_text_lf_sha256": "f55ee8dde86b030171a1744ddbe96268e394c805ccedaa4f097d1f501f1935e0",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "Dockerfile",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "2645dce3093bc3ca09ef7cb52727b98d73ec8eee3348722449576d450b3be00e",
+          "source_text_lf_sha256": "2645dce3093bc3ca09ef7cb52727b98d73ec8eee3348722449576d450b3be00e",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    },
+    {
+      "id": "monitoring-state-migration",
+      "title": "监控状态卷迁移",
+      "section": "部署与恢复",
+      "change_ids": [
+        5,
+        12
+      ],
+      "main_question": "把匿名监控卷改成命名卷为什么可能丢失数据？",
+      "followup_questions": [
+        "如何区分原数据在匿名卷还是容器可写层？",
+        "为什么迁移必须先停写且在新编排创建目标卷之前执行？"
+      ],
+      "answer_points": [
+        "核对实际容器归属与挂载",
+        "冷快照保留文件摘要及uid/gid/mode",
+        "只创建尚不存在的精确目标卷",
+        "校验后由新编排使用",
+        "保留原材料供回滚"
+      ],
+      "failure_window": "直接启动新命名卷产生空silence或丢指标；运行中复制并不提供一致快照。",
+      "evidence_boundary": "隔离夹具迁移通过不代表日常卷已经迁移；日常操作仍须部署窗口。",
+      "component_receipts": [
+        "monitoring-volume-migration-isolated.json"
+      ],
+      "source_entries": [
+        {
+          "path": "scripts/migrate_monitoring_storage.py",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "529a81ae7a7a23d26eaa78cfdc9b2b047f6abac88ae902b601e176730aa85250",
+          "source_text_lf_sha256": "529a81ae7a7a23d26eaa78cfdc9b2b047f6abac88ae902b601e176730aa85250",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        },
+        {
+          "path": "compose.yaml",
+          "symbol": "module/configuration",
+          "line": 1,
+          "source_sha256": "9f819cbfaa9a3073ba1bc0fcfc9fb745fb2992ac4cad2682fb91db388ef8a1f3",
+          "source_text_lf_sha256": "c4e81c93b834b6dd6799d4ca44ed8a941c20d806fbbe2f951ba55de0178fcc67",
+          "hash_boundary": "source_sha256 binds raw workspace bytes; source_text_lf_sha256 additionally permits explicit CRLF/LF comparison across checkouts, without claiming raw-byte identity"
+        }
+      ],
+      "evidence_classification": {
+        "source": "current source entries resolved, not inferred from old interview text",
+        "current_measurement": "only the named component receipts and their explicit cases; other feature behavior not re-executed by this handoff builder",
+        "historical": "README and dated delivery documents are historical context, not silently upgraded to current evidence",
+        "personal_responsibility": "unknown; coordinator must obtain human confirmation before first-person ownership claims",
+        "future_design": "improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered"
+      }
+    }
+  ],
+  "handoff_rules": [
+    "每个功能保留一个主问与至少两个追问；答案要点继续展开为问题、机制、失败兜底和证据边界。",
+    "不按简历篇幅删掉非简历功能；会话/记忆/运维/数据清理同样属于项目能力。",
+    "源码事实、组件实测、历史记录、个人职责未知、未来设计分开标记。",
+    "最终SHA及真实报告尚待协调方绑定；同模型评分不是独立真值。"
+  ],
+  "blind_review_package": "blind-review/README.md; prepare_blind_review.py; reviews.csv; manifest.example.json"
+}

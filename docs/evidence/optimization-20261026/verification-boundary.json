@@ -1,0 +1,22 @@
+{
+  "item":12,
+  "scope":"typed graph verification boundary and adjacent runtime responsibilities",
+  "supplier_calls":0,
+  "implementation":[
+    "backend/research/verification_contract.py defines VerificationClaim/VerificationTarget typed structures and frozen VerificationContract",
+    "graph preserves compatibility exports for atomic span checks, normalization, target generation, binding and supported-index selection",
+    "graph cache reuse, runtime completed-result acceptance and saved partial-result loading share current semantic/wire compatibility policy",
+    "duplicate program-owned claim indices are rejected before any supplier request; source text cannot replace immutable target text",
+    "corrupt/old-version cache is unusable; complete semantic false remains reusable; partial evidence can retain independently checked claims without treating an incomplete cache as complete",
+    "runtime delegates wire parsing to recovery_contract, automatic cache/archive reconciliation to Retention and lexical operations to LexicalRetrieval"
+  ],
+  "tests":[
+    {"phase":"red","result":"1 failed in 2.77s","case":"duplicate program claim indices silently overwrote one claim in original binder"},
+    {"phase":"focused regression","result":"31 passed, 1 failed in 30.89s","scope":"typed boundary, target binding, bounded shape retries and old checkpoint contract fences","failure":"Existing OneCallBudget stub did not provide the identity/workspace required by new shared paid governance."},
+    {"phase":"fixture repair","result":"1 passed in 0.64s","scope":"OneCallBudget now supplies a real fixture workspace/admin identity; still exactly one HTTP MockTransport call, unchanged retry/budget assertion."},
+    {"phase":"partial-result compatibility","result":"10 passed in 10.10s","scope":"independently checked partial claims retained; incomplete cache never reused as complete; typed corruption cases; operational backfill idempotency"},
+    {"phase":"static","result":"ruff passed","scope":"all changed verification/reliability/retrieval modules and new tests/scripts"}
+  ],
+  "remaining_runtime_acceptance":["Full CI and selected Java/Python component paths on final SHA; no new real-model quality evaluation was performed by this agent."],
+  "compatibility":"Semantic version verification-v3-claim-span and wire version verification-v4-target-id remain unchanged. Whole-claim targets, semantic rejection, attribution/negation preservation and existing bounded shape-retry budget are preserved."
+}

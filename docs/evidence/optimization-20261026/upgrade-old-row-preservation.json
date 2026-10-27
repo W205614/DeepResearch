@@ -1,0 +1,925 @@
+{
+  "schema": "upgrade-old-row-preservation-v1",
+  "recorded_at": "2026-10-26T13:57:08.812466+00:00",
+  "method": "Parsed selected COPY fields from pre-upgrade pg_dumpall; current SELECT json in default_transaction_read_only session, old-key subset comparison allowing added UUID rows.",
+  "databases": [
+    "deepresearch",
+    "dr_opt_live",
+    "dr_opt_reliability"
+  ],
+  "tables": [
+    {
+      "database": "deepresearch",
+      "table": "chunks",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "document_id",
+        "user_id",
+        "text",
+        "locator",
+        "ordinal"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 10,
+      "current_rows": 16,
+      "old_keys_present": 10,
+      "fixed_rows_matched": 10,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "deepresearch",
+      "table": "document_policies",
+      "key_fields": [
+        "document_id"
+      ],
+      "fixed_fields": [
+        "document_id",
+        "workspace_id",
+        "owner_subject"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 13,
+      "current_rows": 19,
+      "old_keys_present": 13,
+      "fixed_rows_matched": 13,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "deepresearch",
+      "table": "document_versions",
+      "key_fields": [
+        "document_id",
+        "version"
+      ],
+      "fixed_fields": [
+        "document_id",
+        "version",
+        "user_id",
+        "hash",
+        "name",
+        "object_key",
+        "blocks_json",
+        "chunks_json",
+        "parser_config",
+        "index_config",
+        "created_at"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 11,
+      "current_rows": 18,
+      "old_keys_present": 11,
+      "fixed_rows_matched": 11,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "deepresearch",
+      "table": "documents",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "user_id",
+        "created_at"
+      ],
+      "mutable_observed_fields": [
+        "hash",
+        "index_version"
+      ],
+      "old_rows": 13,
+      "current_rows": 19,
+      "old_keys_present": 13,
+      "fixed_rows_matched": 13,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "deepresearch",
+      "table": "memberships",
+      "key_fields": [
+        "workspace_id",
+        "subject"
+      ],
+      "fixed_fields": [
+        "workspace_id",
+        "subject",
+        "created_at"
+      ],
+      "mutable_observed_fields": [
+        "role"
+      ],
+      "old_rows": 24,
+      "current_rows": 34,
+      "old_keys_present": 24,
+      "fixed_rows_matched": 24,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "deepresearch",
+      "table": "memories",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "user_id",
+        "kind",
+        "content",
+        "run_id",
+        "created_at",
+        "owner_subject"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 0,
+      "current_rows": 0,
+      "old_keys_present": 0,
+      "fixed_rows_matched": 0,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "deepresearch",
+      "table": "report_publications",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "workspace_id",
+        "source_run_id",
+        "author_subject",
+        "topic",
+        "report_markdown",
+        "sources_json",
+        "validation_json",
+        "content_sha256",
+        "submitted_at",
+        "series_id",
+        "parent_report_id",
+        "revision_no",
+        "artifacts_json",
+        "corpus_revision"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 9,
+      "current_rows": 13,
+      "old_keys_present": 9,
+      "fixed_rows_matched": 9,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "deepresearch",
+      "table": "report_series",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "workspace_id",
+        "created_at"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 7,
+      "current_rows": 10,
+      "old_keys_present": 7,
+      "fixed_rows_matched": 7,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "deepresearch",
+      "table": "retention_archives",
+      "key_fields": [
+        "kind",
+        "source_id"
+      ],
+      "fixed_fields": [
+        "kind",
+        "source_id",
+        "workspace_id",
+        "payload_json",
+        "content_sha256",
+        "created_at"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 0,
+      "current_rows": 0,
+      "old_keys_present": 0,
+      "fixed_rows_matched": 0,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "deepresearch",
+      "table": "runs",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "user_id",
+        "thread_id",
+        "topic",
+        "mode",
+        "created_at",
+        "created_by",
+        "data_policy"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 13,
+      "current_rows": 21,
+      "old_keys_present": 13,
+      "fixed_rows_matched": 13,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "deepresearch",
+      "table": "threads",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "user_id",
+        "thread_key",
+        "created_by",
+        "created_at"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 13,
+      "current_rows": 21,
+      "old_keys_present": 13,
+      "fixed_rows_matched": 13,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "deepresearch",
+      "table": "workspaces",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "created_by",
+        "created_at"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 14,
+      "current_rows": 19,
+      "old_keys_present": 14,
+      "fixed_rows_matched": 14,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_live",
+      "table": "chunks",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "document_id",
+        "user_id",
+        "text",
+        "locator",
+        "ordinal"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 2,
+      "current_rows": 2,
+      "old_keys_present": 2,
+      "fixed_rows_matched": 2,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_live",
+      "table": "document_policies",
+      "key_fields": [
+        "document_id"
+      ],
+      "fixed_fields": [
+        "document_id",
+        "workspace_id",
+        "owner_subject"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 2,
+      "current_rows": 2,
+      "old_keys_present": 2,
+      "fixed_rows_matched": 2,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_live",
+      "table": "document_versions",
+      "key_fields": [
+        "document_id",
+        "version"
+      ],
+      "fixed_fields": [
+        "document_id",
+        "version",
+        "user_id",
+        "hash",
+        "name",
+        "object_key",
+        "blocks_json",
+        "chunks_json",
+        "parser_config",
+        "index_config",
+        "created_at"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 2,
+      "current_rows": 2,
+      "old_keys_present": 2,
+      "fixed_rows_matched": 2,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_live",
+      "table": "documents",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "user_id",
+        "created_at"
+      ],
+      "mutable_observed_fields": [
+        "hash",
+        "index_version"
+      ],
+      "old_rows": 2,
+      "current_rows": 2,
+      "old_keys_present": 2,
+      "fixed_rows_matched": 2,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_live",
+      "table": "memberships",
+      "key_fields": [
+        "workspace_id",
+        "subject"
+      ],
+      "fixed_fields": [
+        "workspace_id",
+        "subject",
+        "created_at"
+      ],
+      "mutable_observed_fields": [
+        "role"
+      ],
+      "old_rows": 5,
+      "current_rows": 5,
+      "old_keys_present": 5,
+      "fixed_rows_matched": 5,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_live",
+      "table": "memories",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "user_id",
+        "kind",
+        "content",
+        "run_id",
+        "created_at",
+        "owner_subject"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 0,
+      "current_rows": 0,
+      "old_keys_present": 0,
+      "fixed_rows_matched": 0,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_live",
+      "table": "report_publications",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "workspace_id",
+        "source_run_id",
+        "author_subject",
+        "topic",
+        "report_markdown",
+        "sources_json",
+        "validation_json",
+        "content_sha256",
+        "submitted_at",
+        "series_id",
+        "parent_report_id",
+        "revision_no",
+        "artifacts_json",
+        "corpus_revision"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 2,
+      "current_rows": 2,
+      "old_keys_present": 2,
+      "fixed_rows_matched": 2,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_live",
+      "table": "report_series",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "workspace_id",
+        "created_at"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 2,
+      "current_rows": 2,
+      "old_keys_present": 2,
+      "fixed_rows_matched": 2,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_live",
+      "table": "retention_archives",
+      "key_fields": [
+        "kind",
+        "source_id"
+      ],
+      "fixed_fields": [
+        "kind",
+        "source_id",
+        "workspace_id",
+        "payload_json",
+        "content_sha256",
+        "created_at"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 0,
+      "current_rows": 0,
+      "old_keys_present": 0,
+      "fixed_rows_matched": 0,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_live",
+      "table": "runs",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "user_id",
+        "thread_id",
+        "topic",
+        "mode",
+        "created_at",
+        "created_by",
+        "data_policy"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 2,
+      "current_rows": 2,
+      "old_keys_present": 2,
+      "fixed_rows_matched": 2,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_live",
+      "table": "threads",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "user_id",
+        "thread_key",
+        "created_by",
+        "created_at"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 2,
+      "current_rows": 2,
+      "old_keys_present": 2,
+      "fixed_rows_matched": 2,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_live",
+      "table": "workspaces",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "created_by",
+        "created_at"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 3,
+      "current_rows": 3,
+      "old_keys_present": 3,
+      "fixed_rows_matched": 3,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_reliability",
+      "table": "chunks",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "document_id",
+        "user_id",
+        "text",
+        "locator",
+        "ordinal"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 0,
+      "current_rows": 0,
+      "old_keys_present": 0,
+      "fixed_rows_matched": 0,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_reliability",
+      "table": "document_policies",
+      "key_fields": [
+        "document_id"
+      ],
+      "fixed_fields": [
+        "document_id",
+        "workspace_id",
+        "owner_subject"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 0,
+      "current_rows": 0,
+      "old_keys_present": 0,
+      "fixed_rows_matched": 0,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_reliability",
+      "table": "document_versions",
+      "key_fields": [
+        "document_id",
+        "version"
+      ],
+      "fixed_fields": [
+        "document_id",
+        "version",
+        "user_id",
+        "hash",
+        "name",
+        "object_key",
+        "blocks_json",
+        "chunks_json",
+        "parser_config",
+        "index_config",
+        "created_at"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 0,
+      "current_rows": 0,
+      "old_keys_present": 0,
+      "fixed_rows_matched": 0,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_reliability",
+      "table": "documents",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "user_id",
+        "created_at"
+      ],
+      "mutable_observed_fields": [
+        "hash",
+        "index_version"
+      ],
+      "old_rows": 0,
+      "current_rows": 0,
+      "old_keys_present": 0,
+      "fixed_rows_matched": 0,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_reliability",
+      "table": "memberships",
+      "key_fields": [
+        "workspace_id",
+        "subject"
+      ],
+      "fixed_fields": [
+        "workspace_id",
+        "subject",
+        "created_at"
+      ],
+      "mutable_observed_fields": [
+        "role"
+      ],
+      "old_rows": 2,
+      "current_rows": 2,
+      "old_keys_present": 2,
+      "fixed_rows_matched": 2,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_reliability",
+      "table": "memories",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "user_id",
+        "kind",
+        "content",
+        "run_id",
+        "created_at",
+        "owner_subject"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 4,
+      "current_rows": 4,
+      "old_keys_present": 4,
+      "fixed_rows_matched": 4,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_reliability",
+      "table": "report_publications",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "workspace_id",
+        "source_run_id",
+        "author_subject",
+        "topic",
+        "report_markdown",
+        "sources_json",
+        "validation_json",
+        "content_sha256",
+        "submitted_at",
+        "series_id",
+        "parent_report_id",
+        "revision_no",
+        "artifacts_json",
+        "corpus_revision"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 0,
+      "current_rows": 0,
+      "old_keys_present": 0,
+      "fixed_rows_matched": 0,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_reliability",
+      "table": "report_series",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "workspace_id",
+        "created_at"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 0,
+      "current_rows": 0,
+      "old_keys_present": 0,
+      "fixed_rows_matched": 0,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_reliability",
+      "table": "retention_archives",
+      "key_fields": [
+        "kind",
+        "source_id"
+      ],
+      "fixed_fields": [
+        "kind",
+        "source_id",
+        "workspace_id",
+        "payload_json",
+        "content_sha256",
+        "created_at"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 0,
+      "current_rows": 0,
+      "old_keys_present": 0,
+      "fixed_rows_matched": 0,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_reliability",
+      "table": "runs",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "user_id",
+        "thread_id",
+        "topic",
+        "mode",
+        "created_at",
+        "created_by",
+        "data_policy"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 2,
+      "current_rows": 2,
+      "old_keys_present": 2,
+      "fixed_rows_matched": 2,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_reliability",
+      "table": "threads",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "user_id",
+        "thread_key",
+        "created_by",
+        "created_at"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 2,
+      "current_rows": 2,
+      "old_keys_present": 2,
+      "fixed_rows_matched": 2,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    },
+    {
+      "database": "dr_opt_reliability",
+      "table": "workspaces",
+      "key_fields": [
+        "id"
+      ],
+      "fixed_fields": [
+        "id",
+        "created_by",
+        "created_at"
+      ],
+      "mutable_observed_fields": [],
+      "old_rows": 2,
+      "current_rows": 2,
+      "old_keys_present": 2,
+      "fixed_rows_matched": 2,
+      "missing_old_keys": 0,
+      "fixed_rows_changed": 0,
+      "mutable_observation_rows_changed": 0
+    }
+  ],
+  "old_rows": 163,
+  "old_keys_present": 163,
+  "fixed_rows_matched": 163,
+  "missing_old_keys": 0,
+  "fixed_rows_changed": 0,
+  "frozen_report_bodies": {
+    "old_rows": 11,
+    "body_sha256_matched": 11,
+    "stored_content_sha256_matched": 11
+  },
+  "source_dump_sha256": "697cf70effd457a7bb078088c3990c70092f5f6e627afe2a817cc52c5b524031",
+  "private_receipts": {
+    ".cache/optimization-20261026/store-preservation/deepresearch-current.private.json": "ce26a6068d41dbd8e2cd339b7bc16f41ad20863a1146879feb64b0f156481582",
+    ".cache/optimization-20261026/store-preservation/deepresearch-query.stderr.private": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/optimization-20261026/store-preservation/dr_opt_live-current.private.json": "62c35a0cc4d2f50250568da799fd7258d915ad8cf44b8ad101436516ae2b4bc1",
+    ".cache/optimization-20261026/store-preservation/dr_opt_live-query.stderr.private": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/optimization-20261026/store-preservation/dr_opt_reliability-current.private.json": "bc761622bdc0d0da5b17672aef8307ee1bb94ede5116c5bc4651ea610bfac8b8",
+    ".cache/optimization-20261026/store-preservation/dr_opt_reliability-query.stderr.private": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/optimization-20261026/store-preservation/old-row-comparison.private.json": "c03ea231654ba5d8865dc9474e0e9d95a7aec2d18d6a3f2c0631937901d670f6"
+  },
+  "script_sha256": "1bcfee9ebf897e7e9985cf0448ab939c24280d523dd77a76d669d9abbe9db261",
+  "supplier_http": 0,
+  "database_mutation": false,
+  "boundaries": [
+    "Not row-count equality; concurrent/new acceptance data may grow.",
+    "Run status, retries, progress and document current hash/version/membership role can change legitimately; selected fixed fields are compared separately.",
+    "No object/vector/Redis contents restored or verified by this SQL subset comparison.",
+    "No credentials or original row values printed or written to Git evidence."
+  ],
+  "target_postgres_version_verified": "17.11",
+  "target_project": "dr-opt-acceptance",
+  "selected_field_totals": {
+    "runs": {
+      "old_rows": 17,
+      "fixed_rows_matched": 17,
+      "mutable_observation_rows_changed": 0
+    },
+    "documents": {
+      "old_rows": 15,
+      "fixed_rows_matched": 15,
+      "mutable_observation_rows_changed": 0
+    },
+    "document_versions": {
+      "old_rows": 13,
+      "fixed_rows_matched": 13,
+      "mutable_observation_rows_changed": 0
+    },
+    "memberships": {
+      "old_rows": 31,
+      "fixed_rows_matched": 31,
+      "mutable_observation_rows_changed": 0
+    },
+    "report_publications": {
+      "old_rows": 11,
+      "fixed_rows_matched": 11,
+      "mutable_observation_rows_changed": 0
+    }
+  }
+}

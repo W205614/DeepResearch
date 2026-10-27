@@ -4,6 +4,7 @@ import hashlib
 import json
 import math
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 
@@ -16,9 +17,11 @@ from ..infrastructure.providers import ServiceError
 from ..infrastructure.object_store import ObjectStore
 from .document_parsing import (IMAGE_SUFFIXES as IMAGE_SUFFIXES, IMAGE_MEDIA_TYPES as IMAGE_MEDIA_TYPES,
                                validate_upload as validate_upload, semantic_chunks as semantic_chunks,
-                               split_document as split_document, extract_blocks, tokens)
+                               split_document as split_document, tokens)
 from .retrieval_contract import RetrievalResults, valid_chunk, normalize_hits, score
 from .evidence_lifecycle import EvidenceLifecycle
+from .document_access import access_sql, access_args, register_owner, require_document
+from .lexical_retrieval import LexicalRetrieval, CONTRACT as LEXICAL_CONTRACT
 
 
 
@@ -32,6 +35,7 @@ class Documents:
         self.lexical_pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix="rag-lexical")
         self.store = ObjectStore(settings)
         self._corpora: dict[str, tuple[str, list[dict], dict[str, dict], BM25Plus]] = {}
+        self.lexical_index = LexicalRetrieval(self)
 
     async def start(self) -> None:
         await self.store.start()
@@ -49,15 +53,34 @@ class Documents:
         return await asyncio.shield(future)
 
     async def check_corpus(self, user, expected):
-        rows = await self.db.rows("SELECT id,hash,index_version FROM documents WHERE user_id=? AND status IN ('ready','rebuilding') ORDER BY id", (user,))
+        rows = await self.db.rows(f"SELECT d.id,d.hash,d.index_version FROM documents d WHERE d.user_id=? AND d.status IN ('ready','rebuilding') AND {access_sql()} ORDER BY d.id", (user, *access_args(user)))
         current = hashlib.sha256(("rag-v4|" + "|".join(f"{r['id']}:{r['hash']}:{r['index_version']}" for r in rows)).encode()).hexdigest()
         if current != expected:
             raise ServiceError("检索期间资料发生变化，请重新检索", code="source_changed")
 
+    @staticmethod
+    async def _storage_mutation(operation):
+        # Cancelling asyncio.to_thread does not stop its underlying S3/filesystem
+        # mutation. Keep the document lock until it finishes, so a late write or
+        # delete cannot race the next replacement or lose its cleanup intent.
+        task=asyncio.create_task(operation)
+        cancelled=None
+        while not task.done():
+            try:
+                await asyncio.shield(task)
+            except asyncio.CancelledError as exc:
+                cancelled=exc
+        result=task.result()
+        if cancelled is not None:
+            raise cancelled
+        return result
+
     async def add(self, user: str, name: str, content: bytes):
         try:
             async with self.db.guard("documents:" + user):
-                return await self._add(user, name, content)
+                result = await self._add(user, name, content)
+                await register_owner(self.db, user, result['id'])
+                return result
         finally:
             await self.cleanup_pending()
 
@@ -65,16 +88,31 @@ class Documents:
         name = Path(name.replace("\\", "/")).name[:160]
         if len(content) > 10 * 1024 * 1024:
             raise ServiceError("文件不能超过 10 MB")
-        validate_upload(name, content)
+        validate_upload(name, content, decode_images=False)
         digest = hashlib.sha256(content).hexdigest()
         existing = await self.db.one("""SELECT * FROM documents WHERE user_id=? AND status!='deleted'
             AND (hash=? OR pending_hash=?)""", (user, digest, digest))
         if existing and (existing["pending_hash"] == digest
                          or existing["status"] in {"ready", "rebuilding", "indexing", "scanning"}):
+            from ..core.usage_governance import paid_identity
+            if paid_identity():
+                await require_document(self.db,user,existing['id'])
             return existing
         if not existing:
             existing = await self.db.one("SELECT * FROM documents WHERE user_id=? AND hash=? AND status='deleted'",
                                          (user, digest))
+        if existing:
+            from ..core.usage_governance import paid_identity
+            if paid_identity():
+                await require_document(self.db,user,existing['id'],write=True)
+        if not existing or existing["status"] == "deleted":
+            capacity = await self.capacity(user)
+            if capacity["documents"] >= capacity["document_limit"]:
+                raise ServiceError(f"工作空间资料数已达上限 {capacity['documents']}/{capacity['document_limit']}，请先归档或清理资料",
+                                   code="document_capacity", retryable=False)
+            if capacity["chunks"] >= capacity["chunk_limit"]:
+                raise ServiceError(f"工作空间片段已达上限 {capacity['chunks']}/{capacity['chunk_limit']}，请先归档或清理资料",
+                                   code="corpus_capacity", retryable=False)
         doc_id = existing["id"] if existing else uid()
         version = int(existing["index_version"]) + 1 if existing else 1
         object_key = f"{doc_id}.v{version}"
@@ -88,27 +126,106 @@ class Documents:
         else:
             await self.db.execute("""INSERT INTO documents(id,user_id,name,hash,status,created_at,updated_at,index_version,object_key)
                 VALUES(?,?,?,?,?,?,?,?,?)""", (doc_id, user, name, digest, "scanning", timestamp, timestamp, version, object_key))
-        await self.store.put("quarantine", object_key, content)
+        # Record the uploader before storage/scanning can fail or be interrupted;
+        # a recovered indexing job must charge the original subject.
+        await register_owner(self.db, user, doc_id)
+        await self.db.execute("""INSERT INTO document_scan_jobs(document_id,user_id,object_key,state,attempts,error_code,updated_at)
+            VALUES(?,?,?,'pending',0,'',?) ON CONFLICT(document_id) DO UPDATE SET
+            object_key=excluded.object_key,state='pending',attempts=0,error_code='',updated_at=excluded.updated_at""",
+            (doc_id, user, object_key, timestamp))
         try:
-            await scan(self.settings, content)
-        except ScanRejected as exc:
-            await self.db.execute("UPDATE documents SET status='quarantined',error=? WHERE id=?", (str(exc), doc_id))
+            await self._storage_mutation(self.store.put("quarantine", object_key, content))
+        except Exception as exc:
+            await self.db.execute("UPDATE documents SET status='scan_failed',error=?,updated_at=? WHERE id=?",
+                                  ("原文存储未完成，请重传文件；已保留可恢复记录", now(), doc_id))
+            await self.db.execute("UPDATE document_scan_jobs SET error_code='upload_storage_failed',updated_at=? WHERE document_id=?", (now(), doc_id))
             exc.document_id = doc_id
             raise
-        except ScanUnavailable as exc:
-            await self.db.execute("UPDATE documents SET status='scan_failed',error=? WHERE id=?", (str(exc), doc_id))
-            exc.document_id = doc_id
-            raise
-        await self.store.move("quarantine", "uploads", object_key)
-        await self.invalidate_search_cache(user)
-        await self.db.execute("UPDATE documents SET status='indexing',error='' WHERE id=?", (doc_id,))
+        await self._finish_scan(doc_id)
         return await self.db.one("SELECT * FROM documents WHERE id=?", (doc_id,))
+
+    async def _finish_scan(self, doc_id, *, recovery=False):
+        """Caller holds the workspace document lock; every recovery rescans bytes."""
+        job = await self.db.one("SELECT * FROM document_scan_jobs WHERE document_id=?", (doc_id,))
+        document = await self.db.one("SELECT * FROM documents WHERE id=?", (doc_id,))
+        if not job or job['state']!='pending' or not document or document["status"] not in {"scanning", "scan_failed"}:
+            return
+        if recovery and job['attempts']:
+            # Persisted cooldown is rechecked under the workspace lock. Several
+            # runtime recovery loops may have selected the same pending row before
+            # locking; only the first due retry can spend an attempt.
+            delay=min(300,20*(2**min(job['attempts']-1,10)))
+            try:
+                stamp=datetime.fromisoformat(job['updated_at']).astimezone(timezone.utc).timestamp()
+            except (TypeError,ValueError):
+                stamp=0
+            if time.time()-stamp<delay:
+                return
+        if job["attempts"] >= self.settings.max_job_retries + 1:
+            await self.db.execute("UPDATE document_scan_jobs SET state='failed',error_code='scan_budget_exhausted',updated_at=? WHERE document_id=?", (now(), doc_id))
+            await self.db.execute("UPDATE documents SET status='scan_failed',error=?,updated_at=? WHERE id=?", ("扫描恢复次数已耗尽，请检查服务后重传文件", now(), doc_id))
+            return
+        await self.db.execute("UPDATE document_scan_jobs SET attempts=attempts+1,updated_at=? WHERE document_id=?", (now(), doc_id))
+        try:
+            await self.store.ping()
+            area = "quarantine" if await self.store.exists("quarantine", job["object_key"]) else "uploads"
+            if not await self.store.exists(area, job["object_key"]):
+                await self.db.execute("UPDATE document_scan_jobs SET state='failed',error_code='upload_missing',updated_at=? WHERE document_id=?", (now(), doc_id))
+                await self.db.execute("UPDATE documents SET status='scan_failed',error=?,updated_at=? WHERE id=?", ("原文上传未完成，请重新上传相同文件", now(), doc_id))
+                return
+            content = await self.store.get(area, job["object_key"])
+            if hashlib.sha256(content).hexdigest() != document["hash"]:
+                raise ScanRejected("隔离原文校验失败，请重新上传")
+            await scan(self.settings, content)
+            if area == "quarantine":
+                await self._storage_mutation(self.store.move("quarantine", "uploads", job["object_key"]))
+            async with self.db.connection() as conn:
+                await conn.execute("UPDATE documents SET status='indexing',error='',updated_at=? WHERE id=? AND status IN ('scanning','scan_failed')", (now(), doc_id))
+                await conn.execute("UPDATE document_scan_jobs SET state='completed',error_code='',updated_at=? WHERE document_id=?", (now(), doc_id))
+                await conn.commit()
+            await self.invalidate_search_cache(document["user_id"])
+        except Exception as exc:
+            rejected = isinstance(exc, ScanRejected)
+            code = "scan_rejected" if rejected else "scan_unavailable" if isinstance(exc, ScanUnavailable) else "scan_storage_failed"
+            message = str(exc) if isinstance(exc, (ScanRejected, ScanUnavailable)) else "扫描或存储暂不可用，原件保持隔离并等待有界恢复"
+            await self.db.execute("UPDATE documents SET status=?,error=?,updated_at=? WHERE id=?",
+                                  ("quarantined" if rejected else "scan_failed", message, now(), doc_id))
+            await self.db.execute("UPDATE document_scan_jobs SET state=?,error_code=?,updated_at=? WHERE document_id=?",
+                                  ("failed" if rejected else "pending", code, now(), doc_id))
+            exc.document_id = doc_id
+            raise
+
+    async def recover_scans(self):
+        # Upgrade compatibility for an upload interrupted before the durable job
+        # record was added. No bytes are considered clean based on old state.
+        await self.db.execute("""INSERT OR IGNORE INTO document_scan_jobs(document_id,user_id,object_key,state,updated_at)
+            SELECT id,user_id,CASE WHEN object_key='' THEN id ELSE object_key END,'pending',updated_at
+            FROM documents WHERE status='scanning'""")
+        batch = getattr(self.settings, "retention_cleanup_batch_size", 100)
+        rows = await self.db.rows("""SELECT j.document_id,j.user_id FROM document_scan_jobs j
+            JOIN documents d ON d.id=j.document_id WHERE j.state='pending' AND d.status IN ('scanning','scan_failed')
+            ORDER BY j.updated_at,j.document_id LIMIT ?""", (batch,))
+        for row in rows:
+            try:
+                async with self.db.guard("documents:" + row["user_id"]):
+                    await self._finish_scan(row["document_id"],recovery=True)
+            except Exception:
+                continue  # Persisted state and bounded attempts are authoritative.
+
+    async def capacity(self, user):
+        documents = await self.db.one("SELECT COUNT(*) AS total FROM documents WHERE user_id=? AND status!='deleted'", (user,))
+        chunks = await self.db.one("SELECT COUNT(*) AS total FROM chunks WHERE user_id=?", (user,))
+        return {"documents": documents['total'], "chunks": chunks['total'],
+                "document_limit": getattr(self.settings, 'workspace_document_limit', 500),
+                "chunk_limit": getattr(self.settings, 'workspace_chunk_limit', 50000),
+                "max_file_bytes": 10 * 1024 * 1024, "max_chunks_per_document": 400,
+                "large_corpus_retrieval": "bounded_database_candidates"}
 
     async def replace(self, doc_id: str, user: str, name: str, content: bytes):
         name = Path(name.replace("\\", "/")).name[:160]
         if len(content) > 10 * 1024 * 1024:
             raise ServiceError("文件不能超过 10 MB")
-        validate_upload(name, content)
+        validate_upload(name, content, decode_images=False)
         digest = hashlib.sha256(content).hexdigest()
         failure = None
         # Keep the document/user lock through staging and scanning. Otherwise two
@@ -128,13 +245,19 @@ class Documents:
                 raise ServiceError("相同内容已存在于资料库", code="document_duplicate", retryable=False)
             target_version = int(document["index_version"]) + 1
             object_key = f"{doc_id}.v{target_version}"
-            await self.store.put("quarantine", object_key, content)
+            await self.db.execute("""INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version,object_key)
+                VALUES(?,?,?,?)""",(doc_id,user,target_version,object_key))
             try:
+                await self._storage_mutation(self.store.put("quarantine", object_key, content))
                 await scan(self.settings, content)
-                await self.store.move("quarantine", "uploads", object_key)
+                await self._storage_mutation(self.store.move("quarantine", "uploads", object_key))
                 await self.db.execute("""UPDATE documents SET status='rebuilding',error='',pending_version=?,
                     pending_name=?,pending_hash=?,pending_object_key=?,updated_at=? WHERE id=? AND status='ready' AND index_version=?""",
                     (target_version, name, digest, object_key, now(), doc_id, document["index_version"]))
+            except asyncio.CancelledError:
+                await self.db.execute("UPDATE documents SET error=?,updated_at=? WHERE id=? AND status='ready' AND index_version=?",
+                                      ("替换预处理已中断，旧版仍可用；请重传替换文件",now(),doc_id,document['index_version']))
+                raise
             except Exception as exc:
                 message = str(exc) if isinstance(exc, (ServiceError, ScanRejected, ScanUnavailable)) else "资料替换预处理失败，请稍后重试"
                 await self.db.execute("""INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version,object_key)
@@ -156,7 +279,8 @@ class Documents:
             await self.db.event(run_id, "local_retrieval", data)
 
     async def split_for_index(self, name: str, content: bytes) -> list[dict]:
-        blocks = await asyncio.to_thread(extract_blocks, name, content)
+        from .parser_process import parse_document
+        blocks = await parse_document(name, content, self.settings)
         assets = [block for block in blocks if block.image]
         if len(assets) > 20 or sum(len(block.image) for block in assets) > 20 * 1024 * 1024:
             raise ServiceError("资料图片超过 20 张或 20 MB，请拆分文件")
@@ -164,8 +288,7 @@ class Documents:
         for block in blocks:
             text = block.text
             if block.image:
-                suffix = next(key for key, value in IMAGE_MEDIA_TYPES.items() if value == block.media_type)
-                await asyncio.to_thread(validate_upload, "image" + suffix, block.image)
+                # Images were decoded/verified or rendered inside the bounded parser process.
                 try:
                     extracted = await self.providers.describe_image(block.image, block.media_type)
                 except ServiceError as exc:
@@ -181,6 +304,17 @@ class Documents:
         return chunks
 
     async def ingest(self, doc_id: str):
+        document = await self.db.one("SELECT * FROM documents WHERE id=?", (doc_id,))
+        if not document:
+            return
+        policy = await self.db.one("SELECT owner_subject FROM document_policies WHERE document_id=?", (doc_id,))
+        workspace = await self.db.one("SELECT created_by FROM workspaces WHERE id=?", (document["user_id"],))
+        subject = (policy["owner_subject"] if policy else None) or (workspace["created_by"] if workspace else document["user_id"])
+        from ..core.usage_governance import paid_scope
+        with paid_scope(document["user_id"], subject, "indexing"):
+            return await self._ingest(doc_id)
+
+    async def _ingest(self, doc_id: str):
         document = await self.db.one("SELECT * FROM documents WHERE id=? AND status IN ('indexing','rebuilding')", (doc_id,))
         if not document:
             return
@@ -216,6 +350,11 @@ class Documents:
                             or (current["pending_version"] or current["index_version"]) != target_version
                             or (rebuilding and current["pending_hash"] != target_hash)):
                         return
+                    count = await self.db.one("SELECT COUNT(*) AS total FROM chunks WHERE user_id=? AND document_id!=?", (document["user_id"], doc_id))
+                    chunk_limit = getattr(self.settings, 'workspace_chunk_limit', 50000)
+                    if count['total'] + len(rows) > chunk_limit:
+                        raise ServiceError(f"索引将超过工作空间片段上限 {chunk_limit}，旧可用版本保持不变，请拆分或清理资料",
+                                           code='corpus_capacity', retryable=False)
                     await self.db.execute("""INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version,object_key)
                         VALUES(?,?,?,?)""", (doc_id, document["user_id"], target_version, target_object_key))
                     await self.vectors.upsert("documents", rows)
@@ -250,9 +389,11 @@ class Documents:
                                 await conn.execute("""INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version,object_key)
                                     VALUES(?,?,?,?)""", (doc_id, document["user_id"], document["index_version"], old_object_key))
                             await conn.execute("DELETE FROM chunks WHERE document_id=?", (doc_id,))
+                            await self.lexical_index.remove_document(conn, doc_id)
                             await conn.executemany("INSERT INTO chunks(id,document_id,user_id,text,locator,vector,ordinal) VALUES(?,?,?,?,?,?,?)",
                                 [(row["id"], doc_id, document["user_id"], row["text"], row["locator"],
                                   json.dumps(row["vector"]) if self.settings.demo_mode else "[]", row["ordinal"]) for row in rows])
+                            await self.lexical_index.write(conn, rows)
                         else:
                             await conn.execute("""INSERT OR IGNORE INTO document_cleanup(document_id,user_id,version,object_key)
                                 VALUES(?,?,?,?)""", (doc_id, document["user_id"], target_version, target_object_key))
@@ -287,21 +428,36 @@ class Documents:
         if not queries:
             return RetrievalResults()
         reasons = set()
-        documents = await self.db.rows("SELECT id,hash,index_version FROM documents WHERE user_id=? AND status IN ('ready','rebuilding') ORDER BY id", (user,))
+        documents = await self.db.rows(f"SELECT d.id,d.hash,d.index_version FROM documents d WHERE d.user_id=? AND d.status IN ('ready','rebuilding') AND {access_sql()} ORDER BY d.id", (user, *access_args(user)))
         # Invalidate old cache entries when extraction/ranking contracts change.
         corpus_hash = hashlib.sha256(("rag-v4|" + "|".join(f"{r['id']}:{r['hash']}:{r['index_version']}" for r in documents)).encode()).hexdigest()
         original_query = rerank_query.strip() or queries[0]
         ranking_contract = self.reranker.contract_key if self.reranker else "fusion-v1"
         query_hash = hashlib.sha256(json.dumps({"queries": queries, "rerank_query": original_query,
-            "ranking": ranking_contract}, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
+            "ranking": ranking_contract, "lexical": LEXICAL_CONTRACT}, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
         corpus_started = time.monotonic()
-        cached_corpus = self._corpora.get(user)
+        count = await self.db.one(f"""SELECT COUNT(*) AS total FROM chunks c JOIN documents d ON d.id=c.document_id
+            WHERE c.user_id=? AND d.user_id=? AND d.status IN ('ready','rebuilding') AND {access_sql()}""", (user, user, *access_args(user)))
+        corpus_count = count["total"]
+        indexed = corpus_count > min(getattr(self.settings, "rag_small_corpus_chunks", 1000), self.settings.rag_max_corpus_chunks)
+        sql_lexical = {}
+        cached_corpus = self._corpora.get(user) if not indexed else None
         corpus_cache_hit = bool(cached_corpus and cached_corpus[0] == corpus_hash)
-        if corpus_cache_hit:
+        if indexed:
+            await self.lexical_index.ensure(user)
+            if (await self.lexical_index.stats(user))["total"] < corpus_count:
+                reasons.add("invalid_records")
+            candidate_limit = getattr(self.settings, "rag_db_candidate_limit", 128)
+            sql_lexical = {query: await self.lexical_index.scores(user, query, candidate_limit) for query in queries}
+            ids = {key for values in sql_lexical.values() for key in values}
+            all_chunks = await self.lexical_index.hydrate(user, ids)
+            chunks_by_id = {row["id"]: row for row in all_chunks}
+            bm25 = None
+        elif corpus_cache_hit:
             _, all_chunks, chunks_by_id, bm25 = cached_corpus
         else:
-            raw = await self.db.rows("""SELECT c.*,d.name AS title,d.index_version,d.hash AS document_hash FROM chunks c JOIN documents d ON c.document_id=d.id
-                WHERE c.user_id=? AND d.user_id=? AND d.status IN ('ready','rebuilding') LIMIT ?""", (user, user, self.settings.rag_max_corpus_chunks + 1))
+            raw = await self.db.rows(f"""SELECT c.*,d.name AS title,d.index_version,d.hash AS document_hash FROM chunks c JOIN documents d ON c.document_id=d.id
+                WHERE c.user_id=? AND d.user_id=? AND d.status IN ('ready','rebuilding') AND {access_sql()} LIMIT ?""", (user, user, *access_args(user), self.settings.rag_max_corpus_chunks + 1))
             if len(raw) > self.settings.rag_max_corpus_chunks:
                 raise ServiceError("工作空间资料超过安全检索容量，请归档资料或联系管理员", code="corpus_capacity", retryable=False)
             all_chunks = [{**row,"ranking_text": self.ranking_text(row)} for row in raw if valid_chunk(row, user)]
@@ -319,7 +475,7 @@ class Documents:
                 self._corpora[user] = (corpus_hash, all_chunks, chunks_by_id, bm25)
         corpus_ms = round((time.monotonic() - corpus_started) * 1000, 2)
         RAG_RETRIEVAL_SECONDS.labels(stage="corpus_load").observe(corpus_ms / 1000)
-        if not all_chunks:
+        if not all_chunks and not indexed:
             return RetrievalResults()
         cache_started = time.monotonic()
         cache_key = (user, corpus_hash, query_hash, limit)
@@ -337,6 +493,12 @@ class Documents:
                     if not isinstance(row, dict) or not isinstance(row.get("id"), str):
                         raise ValueError("cache id")
                     source = chunks_by_id.get(row["id"])
+                    if source is None and indexed:
+                        hydrated = await self.lexical_index.hydrate(user, [row["id"]])
+                        if hydrated:
+                            source = hydrated[0]
+                            chunks_by_id[source["id"]] = source
+                            all_chunks.append(source)
                     if not source or row["id"] in seen:
                         raise ValueError("cache provenance")
                     seen.add(row["id"])
@@ -351,11 +513,12 @@ class Documents:
                         rerank_value = float(rerank_value)
                     result.append({**source, **scores, "rerank_score": rerank_value, "ranking_stage": stage})
                 await self.record_retrieval(run_id, {"cache_hit": True, "queries": len(queries),
-                    "corpus_documents": len(documents), "corpus_chunks": len(all_chunks), "cache_ms": cache_ms,
+                    "corpus_documents": len(documents), "corpus_chunks": corpus_count, "cache_ms": cache_ms,
                     "total_ms": round((time.monotonic() - started) * 1000, 2)})
                 RAG_RETRIEVAL_SECONDS.labels(stage="total").observe(time.monotonic() - started)
                 await self.check_corpus(user, corpus_hash)
-                return RetrievalResults(self.with_context(result, all_chunks))
+                context_rows = await self.lexical_index.neighbors(user, result) if indexed else all_chunks
+                return RetrievalResults(self.with_context(result, context_rows))
             except (TypeError, ValueError, KeyError):
                 reasons.add("invalid_records")
                 await self.db.execute("DELETE FROM document_search_cache WHERE user_id=? AND corpus_hash=? AND query_hash=? AND limit_value=?", cache_key)
@@ -367,7 +530,7 @@ class Documents:
         vector_observations = []
         async def retrieve_query(query):
             lexical_started = time.monotonic()
-            lexical = await self.lexical(bm25.get_scores, tokens(query))
+            lexical = sql_lexical.get(query, {}) if indexed else await self.lexical(bm25.get_scores, tokens(query))
             RAG_RETRIEVAL_SECONDS.labels(stage="bm25_score").observe(time.monotonic() - lexical_started)
             hits, failures = {}, set()
             embed_started = time.monotonic()
@@ -389,6 +552,13 @@ class Documents:
                         cap = min(200, vector_candidate_limit * 4)
                         while True:
                             raw_hits = await self.vectors.search("documents", user, embeddings[0], limit=fetch_limit)
+                            if indexed and isinstance(raw_hits, list):
+                                hydrated = await self.lexical_index.hydrate(user,
+                                    [hit.get("id") for hit in raw_hits[:fetch_limit] if isinstance(hit, dict)])
+                                for source in hydrated:
+                                    if source["id"] not in chunks_by_id:
+                                        chunks_by_id[source["id"]] = source
+                                        all_chunks.append(source)
                             hits, rejected = normalize_hits(raw_hits, chunks_by_id, fetch_limit)
                             if len(hits) >= vector_candidate_limit or len(raw_hits) < fetch_limit or fetch_limit >= cap:
                                 break
@@ -419,8 +589,9 @@ class Documents:
             reasons.update(failures)
             embed_ms += embed_time
             vector_ms += vector_time
-            maximum = max(lexical) or 1
-            for row, value in zip(all_chunks, lexical):
+            maximum = (max(lexical.values(), default=0) if indexed else max(lexical)) or 1
+            lexical_rows = ((chunks_by_id[key], value) for key, value in lexical.items() if key in chunks_by_id) if indexed else zip(all_chunks, lexical)
+            for row, value in lexical_rows:
                 if value > 0:
                     entry = scores.setdefault(row["id"], {"row": row, "lexical": 0.0, "vector": 0.0})
                     entry["lexical"] = max(entry["lexical"], float(value / maximum))
@@ -467,7 +638,8 @@ class Documents:
                 (*cache_key, json.dumps([{k: row.get(k) for k in ("id", "score", "vector_score", "bm25_score",
                     "rerank_score", "ranking_stage")} for row in selected]), now()))
         await self.record_retrieval(run_id, {"cache_hit": False, "corpus_cache_hit": corpus_cache_hit,
-            "queries": len(queries), "corpus_documents": len(documents), "corpus_chunks": len(all_chunks),
+            "queries": len(queries), "corpus_documents": len(documents), "corpus_chunks": corpus_count,
+            "hydrated_chunks": len(all_chunks), "lexical_backend": "database" if indexed else "small_corpus_bm25",
             "cache_ms": cache_ms, "corpus_ms": corpus_ms, "embedding_ms": round(embed_ms, 2),
             "vector_ms": round(vector_ms, 2), "reranker_ms": round(reranker_ms, 2),
             "ranking_stage": selected[0]["ranking_stage"] if selected else "fusion",
@@ -475,7 +647,8 @@ class Documents:
             "candidates": len(ranked), "selected": len(selected), "reasons": sorted(reasons),
             "vector_candidates": {key:sum(item[key] for item in vector_observations) for key in ("requested","received","valid","invalid","refills")}})
         await self.check_corpus(user, corpus_hash)
-        selected = self.with_context(selected, all_chunks)
+        context_rows = await self.lexical_index.neighbors(user, selected) if indexed else all_chunks
+        selected = self.with_context(selected, context_rows)
         return RetrievalResults(selected, reasons=reasons)
 
     @staticmethod
@@ -526,6 +699,8 @@ class Documents:
                         json.dumps([{k:r[k] for k in ("text","locator")} for r in old_chunks],ensure_ascii=False),json.dumps(old_chunks,ensure_ascii=False),now()))
                     await self.lifecycle.changed(conn,user,doc_id,document["index_version"],0,"deleted")
                 await conn.execute("DELETE FROM chunks WHERE document_id=? AND user_id=?", (doc_id, user))
+                await self.lexical_index.remove_document(conn, doc_id)
+                await conn.execute("DELETE FROM document_scan_jobs WHERE document_id=?", (doc_id,))
                 await conn.commit()
             await self.invalidate_search_cache(user)
         await self.cleanup_pending()
@@ -545,7 +720,7 @@ class Documents:
                     if object_key and not archived and (not document or document["status"] == "deleted"
                                        or object_key not in {document["object_key"], document["pending_object_key"]}):
                         for directory in ("uploads", "quarantine"):
-                            await self.store.delete(directory, object_key)
+                            await self._storage_mutation(self.store.delete(directory, object_key))
                     await self.db.execute("DELETE FROM document_cleanup WHERE document_id=? AND version=?",
                                           (row["document_id"], row["version"]))
                 except Exception:

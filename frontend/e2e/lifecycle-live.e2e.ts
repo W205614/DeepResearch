@@ -31,9 +31,9 @@ async function waitRun(page:Page, id:string, headers:Record<string,string>) {
 
 test('real services: document update, impact, revision, independent review, viewer and revoked boundaries', async ({browser})=>{
   test.skip(process.env.E2E_LIFECYCLE!=='1','Run explicitly against the isolated lifecycle stack; no request interception or database fixtures.')
-  expect(process.env.E2E_COMPOSE_PROJECT,'Bind lifecycle acceptance to its isolated project').toBe('dr-lifecycle-acceptance')
+  expect(['dr-lifecycle-acceptance','dr-opt-acceptance'],'Bind lifecycle acceptance to an explicit isolated project').toContain(process.env.E2E_COMPOSE_PROJECT)
   const base=new URL(process.env.E2E_BASE_URL || '')
-  expect(['127.0.0.1','localhost']).toContain(base.hostname);expect(base.port).toBe('28080')
+  expect(['127.0.0.1','localhost']).toContain(base.hostname);expect(base.port).toBe(process.env.E2E_COMPOSE_PROJECT==='dr-opt-acceptance'?'28081':'28080')
   for(const [role,values] of Object.entries(accounts))expect(values.every(Boolean),`${role} credentials must be provisioned`).toBeTruthy()
   test.setTimeout(720_000)
   const contexts=await Promise.all([browser.newContext(),browser.newContext(),browser.newContext()])
@@ -140,7 +140,7 @@ test('real services: document update, impact, revision, independent review, view
     await expect(viewer.locator('.error-banner')).toBeVisible()
   } finally {
     if(process.env.E2E_PRESERVE_LIFECYCLE==='1'){
-      const directory=resolve('../.cache/lifecycle-acceptance');mkdirSync(directory,{recursive:true})
+      const directory=resolve(process.env.E2E_PRESERVE_DIRECTORY||'../.cache/lifecycle-acceptance');mkdirSync(directory,{recursive:true})
       writeFileSync(resolve(directory,'preserved-role-result.json'),JSON.stringify({docId,oldReportId,newReportId,threadIds:[...threadIds],author_subject:accounts.author[2],reviewer_subject:accounts.reviewer[2],published:publishedSnapshot},null,2))
     }else{
     if(reviewerHeaders)for(const id of [newReportId,oldReportId].filter(Boolean)) {

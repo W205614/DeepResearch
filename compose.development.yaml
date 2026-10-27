@@ -1,0 +1,13 @@
+# Live Python source only; Java/Web use their normal builds. OIDC, scanning,
+# role separation and usage governance remain identical to the base deployment.
+services:
+  agent:
+    command: ["uvicorn", "backend.api.app:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000", "--reload", "--no-access-log"]
+    volumes:
+      - ./backend:/app/backend:ro
+  worker:
+    volumes:
+      - ./backend:/app/backend:ro
+  document-worker:
+    volumes:
+      - ./backend:/app/backend:ro

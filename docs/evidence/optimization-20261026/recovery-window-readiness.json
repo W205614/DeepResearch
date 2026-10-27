@@ -1,0 +1,87 @@
+{
+  "schema": "recovery-window-readiness-v1",
+  "recorded_at": "2026-10-27T01:56:18.840991+00:00",
+  "source_freeze": {
+    "scripts/recovery.py": "8ae8bec6324697b61c1f19b6588553e87fbcf4291c103441d4e2d2831522f53a",
+    "scripts/scheduled_backup.py": "9ad20ced86bc4687b65b77e5b0a24b1622df0dac51d1028201b8abc08440b975",
+    "scripts/backup_images.py": "34db6b3b5b431a85e3a2509967d51593bb512a25a5a1d19d68ad78d9cb558eb3",
+    "tests/test_recovery_manifest.py": "fe61528b4e5e85a49325214c94e0e3cb1de1432cb0a7d542f543ea038148f516",
+    "tests/test_recovery_retention_mode.py": "bebe3bd223a1874f58a355adf10e531efe5f37b19db47abc1b81fa49972faaa2"
+  },
+  "frozen_old_topology": {
+    "path": ".cache/optimization-20261027-daily/pre-upgrade-deployment/rollback-frozen.private.compose.json",
+    "sha256": "88b10ee4216c65be698249c7b2379f4e6f5b195e91601cb4f318db08240f5397",
+    "service_count": 22,
+    "immutable_images": true,
+    "builds": 0,
+    "literal_dollar_bytes": 0,
+    "credentials_printed": false
+  },
+  "root_reported_live_prechecks": {
+    "long_lived_services_running_healthy": 20,
+    "old_migration_head": "0013_evidence_lifecycle",
+    "active_work": 0,
+    "published_reports": 1,
+    "documents": 13,
+    "subnet_docker_and_host_route_conflict": false,
+    "free_E_gb": 138,
+    "source": "parent readback; not an independent Docker observation by this reviewer"
+  },
+  "commands": {
+    "backup": ".venv/Scripts/python.exe scripts/recovery.py backup --path .cache/backup/deepresearch-pre-upgrade-window-20261027-01 --compose-file .cache/optimization-20261027-daily/pre-upgrade-deployment/rollback-frozen.private.compose.json --source-project deepresearch --retain-temporary-resources",
+    "restore": ".venv/Scripts/python.exe scripts/recovery.py restore --path .cache/backup/deepresearch-pre-upgrade-window-20261027-01 --project dr-restore-daily-preupgrade-20261027-01 --subnet 10.254.246.0/24 --retain-temporary-resources"
+  },
+  "schema_contract": {
+    "all_three_acl_tables_present": "current_collection_acl",
+    "all_absent_with_exact_known0013-0016_head": "legacy_workspace_acl",
+    "partial_or_unknown_or0017_missing_tables": "fail closed before synthetic writes",
+    "schema_migration_or_image_replacement": false
+  },
+  "retention_contract": {
+    "normal_default": false,
+    "current_window_required_flag": true,
+    "helper_containers": "unique operation/project/purpose/creator labels and exact name+ID inspection proof; no--rm",
+    "restore_finally": "stop fresh project only; do not down or remove network; retain containers/volumes/network",
+    "receipt": "intentional_retention=true,cleanup_performed=false,cleanup_complete=false with compose_stop_complete separately",
+    "backup_retained_receipt": "write once and hash before manifest; no finally rewrite on success",
+    "scope": "temporary Docker-resource retention; separately authorized upgrade recreation and exact synthetic identity cleanup are not falsely reported as global zero lifecycle deletion"
+  },
+  "direct_tests": [
+    {
+      "command": "uv run pytest -q tests/test_recovery_retention_mode.py tests/test_recovery_manifest.py -k 'retention or acl_contract or embedded_recovery or business_probe or recovery_viewer'",
+      "result": "12passed,27deselected in1.15s"
+    },
+    {
+      "command": "uv run ruff check scripts/recovery.py scripts/scheduled_backup.py tests/test_recovery_manifest.py tests/test_recovery_retention_mode.py",
+      "result": "passed"
+    }
+  ],
+  "window_remaining": [
+    "Root alone executes Docker mutations against exact fresh frozen source.",
+    "Fresh backup, current-platform image package validation and retained-helper ownership receipts.",
+    "Fresh restore and built-in SQL/vector/OIDC/report/ACL/document/scanner/accept-cancel checks; no supplier execution.",
+    "Task installation/readback/single scheduled run in an explicitly valid configured window."
+  ],
+  "scheduler_configuration_keys": [
+    "enabled=true",
+    "maintenance_window_acknowledged=true",
+    "timezone=Asia/Shanghai",
+    "maintenance_start/end include intended daily03:30; separately acknowledged current window for any immediate single run",
+    "backup_root absolute",
+    "compose_files match actual post-upgrade deployment, not old22 frozen topology",
+    "retain_temporary_resources=true for this window",
+    "remote_target=null",
+    "remote_deferred_by_user=true",
+    "host_status_file absolute",
+    "disks actual host paths"
+  ],
+  "no_actions_by_this_review": {
+    "Docker": false,
+    "scheduler_install_or_start": false,
+    "real_backup_or_restore": false,
+    "supplier_http": 0,
+    "private_env_file_read": false,
+    "private_compose_metadata_only": true
+  },
+  "command_execution_status": "planned exact entrypoints; Docker mutations executed only by root after source freeze"
+}

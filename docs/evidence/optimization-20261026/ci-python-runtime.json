@@ -1,0 +1,103 @@
+{
+  "schema": "ci-python-runtime-v1",
+  "recorded_at": "2026-10-26T13:29:36Z",
+  "status": "implemented_offline_and_no_network_container_verified_remote_pending",
+  "standalone": {
+    "latest_release": "20261021",
+    "latest_linux311": "3.11.17",
+    "linux31118_assets_in_six_recent_releases": 0,
+    "source": "https://github.com/astral-sh/python-build-standalone/releases/tag/20261021"
+  },
+  "production_image": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7",
+  "production_build_evidence": "docs/evidence/optimization-20261026/full-python-build.json",
+  "actual_preflight": {
+    "python_version": "3.11.18",
+    "source_sha256": "9120e0a653868f6e3698d36cdd99e5a58903ec9469e448f21d98f7b16d8fa290",
+    "compromised_ca_verify_code": 28,
+    "valid_tls": "TLSv1.3",
+    "uid": 10001,
+    "gid": 10001,
+    "fixture_sha256": "8a9874e20b8583e80e9d7d6c82ea566c22d50458a93bfef6400d70dde132a053",
+    "supplier_http": 0,
+    "network_http": 0
+  },
+  "image_source_files": 88,
+  "current_workspace_image_source_drift": [],
+  "source_hashes": {
+    ".github/workflows/answer-quality.yml": "7f927cc853d30f6e2883cfffe5f43b61f449d17c867e0078c1c6b32489210ae5",
+    "scripts/ci_python_preflight.py": "c3c41fc2c535296f5ea8b8dac62fec6510d58b20e31818bb1d6e5cb98372b0ad",
+    "scripts/ci_source_context.py": "e2d0c99ad9203a886d104e74e1f11dc83ee340a4e359d9f553802081592340e6",
+    "scripts/run_ci_evaluation.py": "320bef2c5fdd2a175e22f04e0a6cb61b96b532c0286c583cbf83a785560a8257",
+    "scripts/verify_python_runtime.py": "5deb1d281a794befd3daff571c74cee4ab4af050e9b43099c8c8d48c49a3383e",
+    "scripts/bounded_evaluation.py": "b9dcfdfb2c3d73d8dc0737b120c93de92603281bf9f1d86899d0c2cde62777d2",
+    "scripts/reconcile_ci_budget.py": "6480bb6462f6b55cbff9a1b3dce8e521ab6c264102c4582c2884398cae76a76b",
+    "scripts/ci_budget_ledger.py": "0a91425d182a23845816117c5799b039f3e6508d4ced7c1ea816d163714d678a",
+    "scripts/check_ci_evaluation_budget.py": "18dec71716f00ef762f329fd96d0f7c4bbf3ee12e8212fe411712fe9ac51cc1d",
+    "scripts/evaluate_research.py": "9b82f470d112e2a04b486dd3f6cb1aea7a2fd7f81607c7b817018aa22775b6e3",
+    "eval/ci-budget-source-basis.json": "5276dc0ebbdc3205cd323d2658e4b5c8cb8faff72ad33fcb3ca23d9b0c220042",
+    "eval/python-runtime/distrusted.zip": "8a9874e20b8583e80e9d7d6c82ea566c22d50458a93bfef6400d70dde132a053",
+    "eval/python-runtime/fixture.json": "a268c61edb5dc5b14491ec85a076c0d07ef2877880953ed20846af5ffab8ae15",
+    "tests/test_ci_python_runtime.py": "a62eb12c2d7551ce39b4e9fac3b80aab0109cd71fdb022c995ebaa853a4300a6",
+    "tests/test_ci_cumulative_budget.py": "566399adf53b6e2610ebf8c6af9f313e9678a24b6e2bfc21dbf8a2da48f9700e",
+    "tests/test_ci_budget_precheck.py": "fad3f0c66b9170cc31b23de443e7b2592843c61310c940c21d49fff261b8bd7a"
+  },
+  "private_receipts": {
+    ".cache/optimization-20261026/ci-python/official-releases.json": "6518fae91af693c85102723c3dbfb623d5512bc09a371ac989da2fa409d3b362",
+    ".cache/optimization-20261026/ci-python/official-release-assessment.json": "7d34221dc6107a18fb97c7153da7fc745ef5bfe1ca82cadf0497958f53b9b00f",
+    ".cache/optimization-20261026/ci-python/zero-network-preflight.json": "f505a05cc4cb86d754711e2dcb42a91e521e04ba552fcdcbe6556c6623eb96f4",
+    ".cache/optimization-20261026/ci-python/source-manifest.json": "302a29ac02c69a6ff1c0752e4f9ddff1d02d09a1bf5a5d75baa25f78fc963da0"
+  },
+  "verification": [
+    {
+      "command": "uv run pytest -q tests/test_ci_python_runtime.py tests/test_ci_budget_precheck.py tests/test_ci_cumulative_budget.py tests/test_evaluation_budget.py",
+      "result": "48passed,1failed in30.25s; only failure was previous45minute assertion; authorized90minute configuration retained"
+    },
+    {
+      "command": "uv run pytest -q tests/test_ci_cumulative_budget.py::test_workflow_budget_group_is_global_and_final_artifact_includes_original_ledgers tests/test_ci_python_runtime.py",
+      "result": "18passed in4.02s after assertion correction"
+    },
+    {
+      "command": "uv run pytest -q tests/test_ci_python_runtime.py::test_ci_report_revision_uses_bound_receipt_without_git",
+      "result": "1passed in0.69s"
+    },
+    {
+      "command": "ruff check affected scripts and tests",
+      "result": "passed"
+    },
+    {
+      "command": "uv run python scripts/run_ci_evaluation.py preflight --image dr-opt-full-python:20261026 --uid 10001 --gid 10001",
+      "result": "passed; Docker network none; no supplier environment variables forwarded"
+    }
+  ],
+  "unchanged": {
+    "new_model_http_cumulative_all_runs": 515,
+    "historical_requests": 843,
+    "lifetime_model_http": 1358,
+    "input_remaining_at_baseline": 9101235,
+    "output_remaining_at_baseline": 379122,
+    "four_cli_cases_flags_thresholds": true,
+    "supplier_http_by_this_work": 0,
+    "running_services_changed": false,
+    "commit_or_push": false
+  },
+  "limits": {
+    "job_minutes": 90,
+    "same_sha_prerequisite_wait_seconds": 900,
+    "container_cpu": 2,
+    "container_memory_gib": 2,
+    "container_pids": 256,
+    "tmpfs_mib": 128,
+    "uid": "host non-root UID/GID",
+    "only_bind_write": ".cache/eval",
+    "github_token_forwarded": false,
+    "source_and_preflight_independently_readonly": true
+  },
+  "source_binding": "host clean HEAD/tracked bytes/image-source inventory/preflight digest to reconciled SQLite run/attempt/SHA, verified again inside actual runtime before Budget.install; reports consume same receipt without Git",
+  "remaining_acceptance": [
+    "Final source commit GitHub production Dockerfile build",
+    "Exact same SHA ordinary CI and Security success",
+    "Live historical artifacts reconciliation and remaining balance",
+    "Fresh unchanged four-stage quality gate; no completion guarantee within515"
+  ],
+  "boundary": "No network preflight is CPython forced-trust SPKI regression plus valid local TLS, not Java default trust evidence; host interpreter only executes unpaid tools."
+}

@@ -57,6 +57,7 @@ public class ReportPublicationService {
         Map<String, Object> run = rows.getFirst();
         if (!identity.subject().equals(run.get("created_by")))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "只能提交本人创建的研究报告");
+        DocumentAccessService.requireSources(jdbc, mapper, identity, run.get("sources"));
         List<Map<String, Object>> existing = jdbc.queryForList(
             "SELECT * FROM report_publications WHERE source_run_id=?", runId);
         if (!existing.isEmpty()) return detail(existing.getFirst());
@@ -241,6 +242,7 @@ public class ReportPublicationService {
         if (!"published".equals(row.get("status")) && !identity.hasRole("admin")
             && !identity.subject().equals(row.get("author_subject")))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "报告不存在");
+        DocumentAccessService.requireSources(jdbc, mapper, identity, row.get("sources_json"));
         return detail(row);
     }
 
@@ -269,7 +271,7 @@ public class ReportPublicationService {
         };
         List<Map<String, Object>> rows = jdbc.queryForList("""
             SELECT id,source_run_id,topic,author_subject,content_sha256,submitted_at,reviewed_by,
-                reviewed_at,status,series_id,parent_report_id,revision_no,corpus_revision,evidence_status,
+                reviewed_at,status,series_id,parent_report_id,revision_no,corpus_revision,evidence_status,sources_json,
                 (SELECT s.current_report_id=report_publications.id FROM report_series s WHERE s.id=report_publications.series_id) AS is_current,
                 validation_json::jsonb->>'quality' AS quality
             FROM report_publications WHERE workspace_id=? AND status IN """ + statuses
@@ -277,7 +279,9 @@ public class ReportPublicationService {
             identity.workspaceId(), before, beforeTime, before, limit + 1);
         String next = rows.size() > limit ? Base64.getUrlEncoder().withoutPadding().encodeToString(
             (rows.get(limit - 1).get("submitted_at") + "\n" + rows.get(limit - 1).get("id")).getBytes(StandardCharsets.UTF_8)) : null;
-        List<Map<String, Object>> visible = new ArrayList<>(rows.subList(0, Math.min(limit, rows.size())));
+        List<Map<String, Object>> visible = new ArrayList<>(rows.subList(0, Math.min(limit, rows.size())).stream()
+            .filter(row -> DocumentAccessService.sourcesAllowed(jdbc,mapper,identity,row.get("sources_json"))).toList());
+        visible.forEach(row -> row.remove("sources_json"));
         long current = corpusRevision(identity.workspaceId(), false);
         visible.forEach(row -> { if (number(row.get("corpus_revision")) >= 0 && number(row.get("corpus_revision")) != current
             && !List.of("needs_review", "undetermined").contains(row.get("evidence_status"))) row.put("evidence_status", "check_pending"); });
@@ -309,6 +313,7 @@ public class ReportPublicationService {
         requireCurrentRole(identity, "admin", "researcher");
         lockPublicationWorkspace(identity.workspaceId());
         Map<String, Object> source = lookup(identity.workspaceId(), reportId, true);
+        DocumentAccessService.requireSources(jdbc, mapper, identity, source.get("sources_json"));
         boolean currentAdmin = "admin".equals(jdbc.queryForObject("SELECT role FROM memberships WHERE workspace_id=? AND subject=?", String.class, identity.workspaceId(), identity.subject()));
         if (!currentAdmin && !identity.subject().equals(source.get("author_subject")))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "只有报告作者或管理员可以修订");
@@ -345,6 +350,7 @@ public class ReportPublicationService {
         // The revision job owns replay identity; reserve a fresh run request key so a
         // normal research request cannot preoccupy a predictable internal namespace.
         run.setClientRequestId("revision-" + uid());
+        ResearchIntakePolicy.authorizeRevision(jdbc,mapper,identity,run);
         Map<String, Object> created = commands.create(identity, run);
         String id = uid();
         jdbc.update("""
@@ -361,14 +367,18 @@ public class ReportPublicationService {
         if (series.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "报告系列不存在");
         List<Map<String, Object>> reports = jdbc.queryForList("""
             SELECT id,source_run_id,topic,status,author_subject,revision_no,parent_report_id,content_sha256,
-              corpus_revision,evidence_status,submitted_at,reviewed_at
+              corpus_revision,evidence_status,submitted_at,reviewed_at,sources_json
             FROM report_publications WHERE series_id=? AND workspace_id=?
               AND (status='published' OR author_subject=? OR ?)
-            ORDER BY revision_no DESC LIMIT 100""", seriesId, identity.workspaceId(), identity.subject(), identity.hasRole("admin"));
+            ORDER BY revision_no DESC LIMIT 100""", seriesId, identity.workspaceId(), identity.subject(), identity.hasRole("admin"))
+            .stream().filter(row -> DocumentAccessService.sourcesAllowed(jdbc, mapper, identity, row.get("sources_json"))).toList();
         if (reports.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "报告系列不存在");
         Map<String, Object> result = new LinkedHashMap<>(series.getFirst());
+        if(reports.stream().noneMatch(report -> Objects.equals(report.get("id"), result.get("current_report_id"))))
+            result.put("current_report_id", null);
         long currentCorpus = corpusRevision(identity.workspaceId(), false);
         for (Map<String, Object> report : reports) {
+            report.remove("sources_json");
             report.put("is_current", Objects.equals(report.get("id"), result.get("current_report_id")));
             if (number(report.get("corpus_revision")) >= 0 && number(report.get("corpus_revision")) != currentCorpus
                 && !List.of("needs_review", "undetermined").contains(report.get("evidence_status")))

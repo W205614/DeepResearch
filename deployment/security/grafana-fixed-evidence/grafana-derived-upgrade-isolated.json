@@ -1,0 +1,106 @@
+{
+  "scope": "copied old backup -> derivedGrafana13.2.4, actual plugin signatures and internal Prom/Loki/Tempo health/query; API scope only, no browser rendering claim",
+  "backup_component_sha256": "916a3ff84afdec90e9e430a3aa8285d062173a4297f0a87434e4b48829a08689",
+  "backup_source_sha": "062b0763b37ebad2d8795caeae42fe72df89d0f4",
+  "resources_retained": {
+    "network": "dr-opt-grafana-20261026-204359-network",
+    "volume": "dr-opt-grafana-20261026-204359-data"
+  },
+  "images": {
+    "dr-opt-grafana-20261026-204359-old": "sha256:8b37a2f028f164ce7b9889e1765b9d6ee23fec80f871d156fbf436d6198d32b7",
+    "dr-opt-grafana-20261026-204359-new": "sha256:fbde117a3d4a29df6e20cb74b8ec629edb1677077cf4da99831e53891774ff3a"
+  },
+  "status": "compatibility_passed_security_pending",
+  "security_pass": false,
+  "old_version": "11.5.2",
+  "new_version": "13.2.4",
+  "runtime_plugin_signatures": {
+    "stackdriver": {
+      "signature": "valid",
+      "signatureType": "grafana",
+      "signatureOrg": "Grafana Labs"
+    },
+    "loki": {
+      "signature": "valid",
+      "signatureType": "private",
+      "signatureOrg": "DeepResearch maintainer rebuild"
+    },
+    "zipkin": {
+      "signature": "valid",
+      "signatureType": "grafana",
+      "signatureOrg": "Grafana Labs"
+    },
+    "jaeger": {
+      "signature": "valid",
+      "signatureType": "private",
+      "signatureOrg": "DeepResearch maintainer rebuild"
+    },
+    "mysql": {
+      "signature": "valid",
+      "signatureType": "private",
+      "signatureOrg": "DeepResearch maintainer rebuild"
+    },
+    "prometheus": {
+      "signature": "valid",
+      "signatureType": "grafana",
+      "signatureOrg": "Grafana Labs"
+    },
+    "elasticsearch": {
+      "signature": "valid",
+      "signatureType": "grafana",
+      "signatureOrg": "Grafana Labs"
+    },
+    "opentsdb": {
+      "signature": "valid",
+      "signatureType": "private",
+      "signatureOrg": "DeepResearch maintainer rebuild"
+    },
+    "mssql": {
+      "signature": "valid",
+      "signatureType": "private",
+      "signatureOrg": "DeepResearch maintainer rebuild"
+    },
+    "grafana-pyroscope-datasource": {
+      "signature": "valid",
+      "signatureType": "private",
+      "signatureOrg": "DeepResearch maintainer rebuild"
+    },
+    "influxdb": {
+      "signature": "valid",
+      "signatureType": "private",
+      "signatureOrg": "DeepResearch maintainer rebuild"
+    },
+    "grafana-postgresql-datasource": {
+      "signature": "valid",
+      "signatureType": "private",
+      "signatureOrg": "DeepResearch maintainer rebuild"
+    },
+    "tempo": {
+      "signature": "valid",
+      "signatureType": "grafana",
+      "signatureOrg": "Grafana Labs"
+    }
+  },
+  "actual_datasource_health": {
+    "loki": 200,
+    "prometheus": 200,
+    "tempo": 200
+  },
+  "actual_prometheus_query": "vector(1) returned1 through the actual Grafana plugin and Prometheus3.15.1",
+  "preserved_dashboard_count": 1,
+  "preserved_datasource_count": 3,
+  "functional_snapshot_sha256": "aaa3897f40acfcb97214449bf89b0cc9a3738990a747e15eea77d2fa4a1eeb0d",
+  "authorization_statuses": {
+    "anonymous_search": 401,
+    "viewer_search": 200,
+    "viewer_users": 403,
+    "viewer_datasource_create": 403
+  },
+  "authorization": {
+    "anonymous_search_denied": true,
+    "viewer_can_read_dashboards": true,
+    "viewer_cannot_list_users": true,
+    "viewer_cannot_create_datasource": true
+  },
+  "rollback": "original checksummed backup unchanged; restore it, never downgrade migrated volume"
+}

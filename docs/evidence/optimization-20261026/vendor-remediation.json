@@ -1,0 +1,2092 @@
+{
+  "date": "2026-10-26",
+  "group": "data-and-identity",
+  "state": "six_zero_finding_candidates_plus_one_exact_authorized_FIXED_candidate_local_integration_not_deployed",
+  "scan_policy": {
+    "trivy": "0.75.0",
+    "vulnerability_db_sha256": "05a1fa5372e54059b6a7c1fc41afb812fafd9bd56a8e0ab6aa20d7f3f154ff31",
+    "db_updates": false,
+    "severities": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "ignored_findings": []
+  },
+  "candidates": [
+    {
+      "service": "redis",
+      "from": "redis:7.4.2-alpine",
+      "candidate": "redis:7.4.11-alpine@sha256:57e4255cc971b1c8d6f8a6ca283ac01bc3ecdd914273ef6bfaede87aaecd6541",
+      "scope": "same 7.4 maintenance line",
+      "scan": {
+        "raw_report": ".cache/optimization-20261026/vendor-candidates/redis-7.4.11-alpine.json",
+        "raw_sha256": "4cfaf78714297160f20d60fe390a0a940656170ae9e58436916bcf47977de7b8",
+        "high": 0,
+        "critical": 0
+      },
+      "compatibility": {
+        "passed": true,
+        "old": "7.4.2",
+        "new": "7.4.11",
+        "checks": [
+          "old AOF reopened",
+          "string/hash/sorted queue/TTL retained",
+          "Lua enqueue-style command"
+        ],
+        "scope": "new synthetic private volume; not daily queue data"
+      },
+      "source": "https://github.com/redis/redis/releases/tag/7.4.11",
+      "decision": "eligible_for_isolated_stack_acceptance_not_deployed",
+      "oci_registry_metadata": {
+        "reference": "redis:7.4.11-alpine",
+        "index_digest": "sha256:57e4255cc971b1c8d6f8a6ca283ac01bc3ecdd914273ef6bfaede87aaecd6541",
+        "platform": "linux/amd64",
+        "platform_manifest": "sha256:8be847644e195abc4c10c8d9936cfa45332eccc6b714fa7b186ff43f1f4d5579",
+        "config_digest": "sha256:4df5c34dc41256fc4ed293482cb34281e17d133077e9aa3c6a87fda60a356c65",
+        "layers": [
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:759efa4719c9a44e7f2561a03bff2434dd66e99c916d2e4d50b055bedf554144",
+            "size": 3625395
+          },
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:964ae3503686ef4eeee7318a649cfc799fd655a5c4b18cb8aa192611b4cbb889",
+            "size": 948
+          },
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:6577e1d2b27e8b5f279db362288e87913100e4752f44a15e7d3daaa8d271a5e0",
+            "size": 198653
+          },
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:5e61c876e61530d1da2b99556cf8484f0fbe0b26b5721584ba9f393c1a4a54d9",
+            "size": 12415971
+          },
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:766c91354b275669e574ec8032781ff8115ac1db6272c8d9700b222bf3f1d536",
+            "size": 100
+          },
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+            "size": 32
+          },
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:8bfa4f5e3c401cd5345ac2f54a6fbe530d7f3b229c1ab44b07f79e0380d9b7b5",
+            "size": 603
+          }
+        ],
+        "compressed_layer_bytes": 16241702,
+        "pull_reference": "library/redis@sha256:8be847644e195abc4c10c8d9936cfa45332eccc6b714fa7b186ff43f1f4d5579",
+        "created": "2026-10-21T21:14:18.14788955Z",
+        "runtime_user": "",
+        "metadata_digests_verified": true
+      },
+      "latest_scan": {
+        "raw": {
+          "path": ".cache/optimization-20261026/vendor-final-scan/redis.json",
+          "sha256": "842b999496fac373332c1891b7e9f97619bbfe05553110dd9481b299b943fa63"
+        },
+        "HIGH": 0,
+        "CRITICAL": 0
+      }
+    },
+    {
+      "service": "clamav",
+      "from": "clamav/clamav:1.4.2_base",
+      "candidate": "clamav/clamav:1.4.6_base@sha256:e73991068f2037e10cf15669dd3b48c24345658f5488430746b414c0f761270f",
+      "scope": "same 1.4 LTS patch line",
+      "scan": {
+        "raw_report": ".cache/optimization-20261026/vendor-candidates/clamav-1.4.6_base.json",
+        "raw_sha256": "82f8e0156e85c41fee697f2fa75f5fc072ec58d01603c9c27ade539728b6dd8e",
+        "high": 0,
+        "critical": 0
+      },
+      "compatibility": {
+        "passed": true,
+        "new": "1.4.6",
+        "checks": [
+          "PING/PONG",
+          "clean INSTREAM accepted",
+          "EICAR INSTREAM rejected"
+        ],
+        "scope": "bounded isolated minimal custom EICAR signature database; full daily signed CVD not loaded",
+        "clean_output": "/fixture/clean.txt: OK\n\n----------- SCAN SUMMARY -----------\nInfected files: 0\nTime: 0.020 sec (0 m 0 s)\nStart Date: 2026:10:26 09:13:19\nEnd Date:   2026:10:26 09:13:19",
+        "eicar_output": "/tmp/eicar.txt: Fixture.EICAR.UNOFFICIAL FOUND\n\n----------- SCAN SUMMARY -----------\nInfected files: 1\nTime: 0.044 sec (0 m 0 s)\nStart Date: 2026:10:26 09:13:20\nEnd Date:   2026:10:26 09:13:20"
+      },
+      "source": "https://github.com/Cisco-Talos/clamav/releases/tag/clamav-1.4.6",
+      "decision": "eligible_for_isolated_stack_acceptance_not_deployed",
+      "fixture_retry": {
+        "initial_failure": "Windows CRLF in private test config prevented daemon startup",
+        "correction": "fixture config LF only; reran only ClamAV fixture",
+        "scope": "fixture error is preserved in compatibility.json; not hidden as engine success"
+      },
+      "oci_registry_metadata": {
+        "reference": "clamav/clamav:1.4.6_base",
+        "index_digest": "sha256:e73991068f2037e10cf15669dd3b48c24345658f5488430746b414c0f761270f",
+        "platform": "linux/amd64",
+        "platform_manifest": "sha256:96ba6697d9a7479baff0a03dedceb96e8c18d28f180fb0ed0046f935e6b90382",
+        "config_digest": "sha256:2386e662786b7156ab73c09d948e6367e498df125d36641d80b25bd7f0be52e1",
+        "layers": [
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:7b229517ed222597277036d94892173207d01a731ab3a88eeb1de2e963a2c788",
+            "size": 3853109
+          },
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:1d0aaffb0aaa06376dcb23ce991353182dff928448bbbf1126015bbd6dd620ad",
+            "size": 4865318
+          },
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:00cc294cd6cd24226c249be3fcd9a462f30329916114640c13a8635a1fffa208",
+            "size": 30984112
+          },
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:8def763cdffb68bbcb806b7cf3b8a1702e3f49fbd0664e26e9bee25c5df443b4",
+            "size": 344
+          },
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:194c9a37ca166fc9fe21c6f30e00aeb79aabfc679a70428e02f8fb143804ac27",
+            "size": 1561
+          },
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:069ac4fe01f77488b58332e8e1b9f63c8f9bd1f63352fe712b6ae31fed769f46",
+            "size": 1226
+          }
+        ],
+        "compressed_layer_bytes": 39705670,
+        "pull_reference": "clamav/clamav@sha256:96ba6697d9a7479baff0a03dedceb96e8c18d28f180fb0ed0046f935e6b90382",
+        "created": "2026-10-26T01:24:15.84893547Z",
+        "runtime_user": "",
+        "metadata_digests_verified": true
+      },
+      "latest_scan": {
+        "raw": {
+          "path": ".cache/optimization-20261026/vendor-final-scan/clamav.json",
+          "sha256": "6b85fcdb2a82a725246fa3e0cea018001c51a98829b0c82748b8c07ec92eb990"
+        },
+        "HIGH": 0,
+        "CRITICAL": 0
+      }
+    },
+    {
+      "service": "postgres and keycloak-postgres",
+      "from": "postgres:17.6-alpine",
+      "candidate": "dr-vendor-postgres:17.11-gosu-go1.27.3-vcs-20261026",
+      "scope": "same 17.x; not a database major upgrade",
+      "decision": "corrected source metadata, complete resulting image0H0C without losing any originally identified package version; fresh private17.6->17.11 cluster+JSONB+grant+UID fixture passed",
+      "experimental_route": "Rebuild unchanged gosu 1.19 commit 6456aaa0f3c854d199d0f037f068eb97515b7513 with pinned existing Go1.27.3; overlay only gosu in an isolated candidate image, then same-DB scan and copied private cluster compatibility test. No application Dockerfile/Compose edit.",
+      "source": "https://www.postgresql.org/docs/17/release-17-11.html",
+      "official_scan": {
+        "raw_report": ".cache/optimization-20261026/vendor-candidates/postgres-17.11-alpine.json",
+        "raw_sha256": "655e77d1b8770f0634545a46eb57fbaf543e362fab80e52e5dbc158b662de385",
+        "high": 25,
+        "critical": 1
+      },
+      "candidate_oci_index": "sha256:2a792b05fff59ea5ba72747a925e22a211c3e07bb8d0cad1c18b9acf773462c8",
+      "candidate_amd64_manifest": "sha256:8dcd4ec5c1e0858713e1d56b4fbd884aea97f991a6c248c7da3f7427b7bafa38",
+      "candidate_config": "sha256:b6346e520830e79c54378fae72fa002eaec5107148bfc062f052a0cbaacd9c7f",
+      "scan": {
+        "raw_report": ".cache/optimization-20261026/vendor-candidates/postgres-17.11-gosu-go1.27.3-vcs.json",
+        "raw_sha256": "1571759afe6893e540294095645d66ebc58b2dfcdf1dc34e52b34e99f710ee62",
+        "image_id": "sha256:2a792b05fff59ea5ba72747a925e22a211c3e07bb8d0cad1c18b9acf773462c8",
+        "high": 0,
+        "critical": 0,
+        "recognized_targets": [
+          {
+            "path": "dr-vendor-postgres:17.11-gosu-go1.27.3-vcs-20261026 (alpine 3.24.3)",
+            "packages": 45
+          },
+          {
+            "path": "usr/local/bin/gosu",
+            "packages": 4
+          }
+        ],
+        "findings": []
+      },
+      "compatibility": {
+        "passed": true,
+        "old": "17.6",
+        "new": "17.11",
+        "gosu": "1.19 (go1.27.3 on linux/amd64; gc)",
+        "fixture_data_and_grant_sha256": "6e7af34569d2decfe9679f9bb23797cab7e7e788d0e8909c11067d8cb1e9cdec",
+        "checks": [
+          "same-major old physical cluster reopened",
+          "JSONB row hash retained",
+          "role/grant retained",
+          "rebuilt gosu drops to postgres uid"
+        ],
+        "scope": "new synthetic private cluster; no daily volume and no claim of Keycloak schema migration"
+      },
+      "build_recipe": "Dockerfile.postgres",
+      "source_provenance": {
+        "gosu_tag": "1.19",
+        "gosu_commit": "6456aaa0f3c854d199d0f037f068eb97515b7513",
+        "gosu_source_sha256": "33d7537d588ea49458b9509bcf4554bdf5ceacc66da71e5caa1058ea3b689c3b",
+        "compiler": "golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c",
+        "application_changes": "unchanged gosu source and existing go.mod dependencies; only compiler changed; PostgreSQL distribution unchanged"
+      },
+      "status": "eligible_for_isolated_stack_acceptance_not_deployed",
+      "archive_build_without_version_scan": {
+        "raw_report": ".cache/optimization-20261026/vendor-candidates/postgres-17.11-gosu-go1.27.3.json",
+        "raw_sha256": "579143a9b2e01bebaa19ca2198593af887b1a226e4cdb594158c2996734a9cc8",
+        "high": 0,
+        "critical": 0,
+        "coverage": "image",
+        "recognized_targets": [
+          {
+            "path": "dr-vendor-postgres:17.11-gosu-go1.27.3-20261026 (alpine 3.24.3)",
+            "type": "alpine",
+            "packages": 45
+          },
+          {
+            "path": "usr/local/bin/gosu",
+            "type": "gobinary",
+            "packages": 4
+          }
+        ],
+        "findings": []
+      },
+      "main_version_coverage": {
+        "official": "github.com/tianon/gosu@v1.19.0",
+        "candidate": "github.com/tianon/gosu@v1.19.0",
+        "lost_identified_dependency_versions": [],
+        "method": "upstream exact gosu version.go1.19 canonicalization workflow; latest fixed upstream fake-git helper needed for Go1.27 end-of-options support, no application version change; symbol table retained for govulncheck"
+      },
+      "source_lock": "deployment/vendors/gosu/source.lock.json",
+      "latest_scan": {
+        "raw": {
+          "path": ".cache/optimization-20261026/vendor-final-scan/postgres.json",
+          "sha256": "6bda5b60dfff0266ad420e013c0742fe52f83d31fbbb4d36a6e5b080c70453c7"
+        },
+        "HIGH": 0,
+        "CRITICAL": 0
+      }
+    },
+    {
+      "service": "etcd",
+      "from": "quay.io/coreos/etcd:v3.5.25",
+      "candidate": "dr-vendor-etcd:3.5.34-go1.27.3-xnet0.60-vcs-20261026",
+      "scope": "same 3.5 line",
+      "status": "eligible_for_isolated_stack_acceptance_not_deployed",
+      "source": "https://github.com/etcd-io/etcd/releases/tag/v3.5.34",
+      "candidate_amd64_manifest": "sha256:d444dc47cd1e5c245378cbc50eb12cb0a2777fd221674752d003df9572c4918c",
+      "scan": {
+        "raw_report": ".cache/optimization-20261026/vendor-candidates/etcd-3.5.34-go1.27.3-xnet0.60-vcs.json",
+        "raw_sha256": "71c3f2302db5ef75728b83a4dd53db5fab5de4fd820f72853e14ce00271fcc0c",
+        "image_id": "sha256:d480cdd13835e01205ab75f296c6fafcc2e4c57d5711d6c3f2e9320021b81687",
+        "high": 0,
+        "critical": 0,
+        "recognized_targets": [
+          {
+            "path": "dr-vendor-etcd:3.5.34-go1.27.3-xnet0.60-vcs-20261026 (debian 11.10)",
+            "packages": 3
+          },
+          {
+            "path": "usr/local/bin/etcd",
+            "packages": 68
+          },
+          {
+            "path": "usr/local/bin/etcdctl",
+            "packages": 59
+          },
+          {
+            "path": "usr/local/bin/etcdutl",
+            "packages": 52
+          }
+        ],
+        "findings": []
+      },
+      "decision": "0HIGH complete image scan without losing any previously identified package/version; correct mainv3.5.34+dirty; fresh private old3.5.25 physical-data fixture passed",
+      "analysis_failure": {
+        "image": "Docker/containerd OCI export missing config blob; remote scan unexpected EOF",
+        "windows_binary_fs_scan": "did not recognize compiled Go; never treated as zero"
+      },
+      "build_recipe": "Dockerfile.etcd",
+      "source_provenance": {
+        "tag": "v3.5.34",
+        "commit": "38e57443c51fc9a3cc6a943fa8ed10381f66ce5c",
+        "url": "https://codeload.github.com/etcd-io/etcd/tar.gz/38e57443c51fc9a3cc6a943fa8ed10381f66ce5c",
+        "sha256": "6d575a3fbeece5230290314d74f5c93dbb53ee3bcb564465b63cbea673740805"
+      },
+      "official_go_binary_scan": {
+        "raw_report": ".cache/optimization-20261026/vendor-candidates/etcd-3.5.34-scratch-go.json",
+        "raw_sha256": "c29c147b7ba83a95be7d8e7d37441af07472ec8ff15082b46f11dc109a90999d",
+        "high": 15,
+        "critical": 0,
+        "coverage": "copied exact official etcd/etcdctl/etcdutl binaries rewrapped scratch with executable mode; OS not covered",
+        "recognized_targets": [
+          {
+            "path": "usr/local/bin/etcd",
+            "type": "gobinary",
+            "packages": 68
+          },
+          {
+            "path": "usr/local/bin/etcdctl",
+            "type": "gobinary",
+            "packages": 59
+          },
+          {
+            "path": "usr/local/bin/etcdutl",
+            "type": "gobinary",
+            "packages": 52
+          }
+        ],
+        "findings": [
+          {
+            "id": "CVE-2026-78669",
+            "package": "golang.org/x/net",
+            "installed": "v0.58.0",
+            "fixed": "0.60.0"
+          },
+          {
+            "id": "CVE-2026-111943",
+            "package": "stdlib",
+            "installed": "v1.26.8",
+            "fixed": "1.26.10, 1.27.3"
+          },
+          {
+            "id": "CVE-2026-78667",
+            "package": "stdlib",
+            "installed": "v1.26.8",
+            "fixed": "1.26.9, 1.27.2"
+          },
+          {
+            "id": "CVE-2026-78669",
+            "package": "stdlib",
+            "installed": "v1.26.8",
+            "fixed": "1.26.9, 1.27.2"
+          },
+          {
+            "id": "CVE-2026-97031",
+            "package": "stdlib",
+            "installed": "v1.26.8",
+            "fixed": "1.26.9, 1.27.2"
+          },
+          {
+            "id": "CVE-2026-78669",
+            "package": "golang.org/x/net",
+            "installed": "v0.58.0",
+            "fixed": "0.60.0"
+          },
+          {
+            "id": "CVE-2026-111943",
+            "package": "stdlib",
+            "installed": "v1.26.8",
+            "fixed": "1.26.10, 1.27.3"
+          },
+          {
+            "id": "CVE-2026-78667",
+            "package": "stdlib",
+            "installed": "v1.26.8",
+            "fixed": "1.26.9, 1.27.2"
+          },
+          {
+            "id": "CVE-2026-78669",
+            "package": "stdlib",
+            "installed": "v1.26.8",
+            "fixed": "1.26.9, 1.27.2"
+          },
+          {
+            "id": "CVE-2026-97031",
+            "package": "stdlib",
+            "installed": "v1.26.8",
+            "fixed": "1.26.9, 1.27.2"
+          },
+          {
+            "id": "CVE-2026-78669",
+            "package": "golang.org/x/net",
+            "installed": "v0.58.0",
+            "fixed": "0.60.0"
+          },
+          {
+            "id": "CVE-2026-111943",
+            "package": "stdlib",
+            "installed": "v1.26.8",
+            "fixed": "1.26.10, 1.27.3"
+          },
+          {
+            "id": "CVE-2026-78667",
+            "package": "stdlib",
+            "installed": "v1.26.8",
+            "fixed": "1.26.9, 1.27.2"
+          },
+          {
+            "id": "CVE-2026-78669",
+            "package": "stdlib",
+            "installed": "v1.26.8",
+            "fixed": "1.26.9, 1.27.2"
+          },
+          {
+            "id": "CVE-2026-97031",
+            "package": "stdlib",
+            "installed": "v1.26.8",
+            "fixed": "1.26.9, 1.27.2"
+          }
+        ]
+      },
+      "candidate_oci_index": "sha256:d480cdd13835e01205ab75f296c6fafcc2e4c57d5711d6c3f2e9320021b81687",
+      "candidate_config": "sha256:121e8235d29ea59be038e12d40f9072807d7ec90940172ca350ed4491a71a323",
+      "compatibility": {
+        "passed": true,
+        "observed_versions": [
+          "3.5.25",
+          "3.5.34"
+        ],
+        "checks": [
+          "old3.5.25 physical data directory reopened by correct-versioned patched3.5.34",
+          "keys and revisions retained",
+          "cluster identity and live lease retained",
+          "endpoint health and old snapshot save"
+        ],
+        "scope": "new single-node synthetic private volume; no HA or business Milvus integration claim"
+      },
+      "build_attempts": [
+        {
+          "state": "completed",
+          "exit_code": 1,
+          "duration_seconds": 121.64,
+          "bounded_go_build": {
+            "gomaxprocs": 2,
+            "gomemlimit": "768MiB",
+            "deadline_seconds": 600
+          }
+        },
+        {
+          "state": "completed",
+          "exit_code": 0,
+          "duration_seconds": 200.38,
+          "attempt": 2,
+          "per_module_go_download_build_attempts": 2,
+          "network_checksum_verification": "GOSUMDB=sum.golang.org unchanged"
+        }
+      ],
+      "dependency_change": "x/net0.58->0.60; Go module selection also brings x/crypto0.57,x/sys0.48,x/text0.42, all versioned by Go checksums; no API/storage code changed",
+      "archive_build_without_version_scan": {
+        "raw_report": ".cache/optimization-20261026/vendor-candidates/etcd-3.5.34-go1.27.3-xnet0.60.json",
+        "raw_sha256": "f4f9d956ff6d44179be338fdc47dd256e0b26042dbc8ebb1af033472dd2a2e63",
+        "high": 0,
+        "critical": 0,
+        "coverage": "complete resulting image including Debian package database3 packages and3 recognized Go executables68/59/52 modules"
+      },
+      "main_version_coverage": {
+        "official": "v3.5.34",
+        "candidate": "v3.5.34+dirty for actual declared module patch",
+        "lost_identified_dependency_versions": [],
+        "method": "real upstream server/etcdctl/etcdutl tags and commit checks; no fake app version/ignored scanner rules"
+      },
+      "source_lock": "deployment/vendors/etcd/source.lock.json",
+      "latest_scan": {
+        "raw": {
+          "path": ".cache/optimization-20261026/vendor-final-scan/etcd.json",
+          "sha256": "32cdc834f271515051c3cbc7b4e4e756a807b8aab5025b39c4cd12b138a89273"
+        },
+        "HIGH": 0,
+        "CRITICAL": 0
+      }
+    },
+    {
+      "service": "keycloak",
+      "from": "quay.io/keycloak/keycloak:26.4.0",
+      "candidate": "dr-vendor-keycloak:26.8.1-temurin21.0.13-locked-20261026",
+      "scope": "same major but different minor; database schema migration is NOT rollback-compatible without restored backup",
+      "status": "eligible_for_isolated_stack_acceptance_not_deployed",
+      "sources": [
+        "https://www.keycloak.org/2026/10/keycloak-2681-released",
+        "https://www.keycloak.org/docs/26.8.0/upgrading/",
+        "https://www.keycloak.org/security.html"
+      ],
+      "os_scan": {
+        "raw_report": ".cache/optimization-20261026/vendor-candidates/keycloak-26.8.1-os.json",
+        "raw_sha256": "846068fecd1e6402cfa05be9c5c9c1a9785168e4f709150446e8c0c226e8276f",
+        "high": 2,
+        "critical": 0,
+        "coverage": "OS packages only; Java Maven dependencies excluded",
+        "recognized_targets": [
+          {
+            "path": "quay.io/keycloak/keycloak:26.8.1 (redhat 9.8)",
+            "type": "redhat",
+            "packages": 44
+          }
+        ],
+        "findings": [
+          {
+            "id": "CVE-2026-91403",
+            "package": "java-21-openjdk-headless",
+            "installed": "1:21.0.12.1.1-1.2.el9",
+            "fixed": null
+          },
+          {
+            "id": "CVE-2026-91415",
+            "package": "java-21-openjdk-headless",
+            "installed": "1:21.0.12.1.1-1.2.el9",
+            "fixed": null
+          }
+        ]
+      },
+      "java_partial_scan": {
+        "raw_report": ".cache/optimization-20261026/vendor-candidates/keycloak-26.8.1-partial-sbom-scan.json",
+        "raw_sha256": "75a05f63c4ffb5fd36edf444f486dff40d597f6279cbcd3e32330873075cb5ec",
+        "high": 0,
+        "critical": 0,
+        "coverage": "420 exact embedded pom.properties coordinates from405 of482 jars; 77 jars unresolved; not full Java coverage",
+        "recognized_targets": [
+          {
+            "path": "Java",
+            "type": "jar",
+            "packages": 420
+          }
+        ],
+        "findings": [],
+        "superseded_by": "full_scan"
+      },
+      "old_java_partial_scan": {
+        "raw_report": ".cache/optimization-20261026/vendor-candidates/keycloak-26.4.0-partial-sbom-scan.json",
+        "raw_sha256": "98506beb43b6e8ab33f93530c4229262c8e1f80e105883a3ad26d63634fb2302",
+        "high": 46,
+        "critical": 2,
+        "coverage": "377 exact embedded pom.properties coordinates from363 of432 jars; 69 jars unresolved; not full baseline count",
+        "recognized_targets": [
+          {
+            "path": "Java",
+            "type": "jar",
+            "packages": 377
+          }
+        ],
+        "findings": [
+          {
+            "id": "CVE-2026-68494",
+            "package": "com.fasterxml.jackson.core:jackson-core",
+            "installed": "2.19.2",
+            "fixed": "2.18.8, 2.21.4"
+          },
+          {
+            "id": "CVE-2026-89407",
+            "package": "com.fasterxml.jackson.core:jackson-core",
+            "installed": "2.19.2",
+            "fixed": "2.18.11, 2.21.7, 2.22.3"
+          },
+          {
+            "id": "CVE-2026-89425",
+            "package": "com.fasterxml.jackson.core:jackson-core",
+            "installed": "2.19.2",
+            "fixed": "2.21.7, 2.22.3, 2.18.11"
+          },
+          {
+            "id": "CVE-2026-54512",
+            "package": "com.fasterxml.jackson.core:jackson-databind",
+            "installed": "2.19.2",
+            "fixed": "2.18.8, 3.1.4, 2.21.4"
+          },
+          {
+            "id": "CVE-2026-54513",
+            "package": "com.fasterxml.jackson.core:jackson-databind",
+            "installed": "2.19.2",
+            "fixed": "2.18.8, 2.21.4, 3.1.4"
+          },
+          {
+            "id": "CVE-2026-68497",
+            "package": "com.fasterxml.jackson.core:jackson-databind",
+            "installed": "2.19.2",
+            "fixed": "2.18.10, 2.21.6, 2.22.2"
+          },
+          {
+            "id": "CVE-2026-91776",
+            "package": "com.fasterxml.jackson.core:jackson-databind",
+            "installed": "2.19.2",
+            "fixed": "2.18.11, 2.21.7, 2.22.3"
+          },
+          {
+            "id": "CVE-2026-91777",
+            "package": "com.fasterxml.jackson.core:jackson-databind",
+            "installed": "2.19.2",
+            "fixed": "2.21.7, 2.18.11, 2.22.3"
+          },
+          {
+            "id": "CVE-2025-66021",
+            "package": "com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer",
+            "installed": "20240325.1",
+            "fixed": "20260101.1"
+          },
+          {
+            "id": "CVE-2026-42583",
+            "package": "io.netty:netty-codec",
+            "installed": "4.1.127.Final",
+            "fixed": "4.1.133.Final"
+          },
+          {
+            "id": "CVE-2026-59901",
+            "package": "io.netty:netty-codec",
+            "installed": "4.1.127.Final",
+            "fixed": "4.1.136.Final"
+          },
+          {
+            "id": "CVE-2026-42579",
+            "package": "io.netty:netty-codec-dns",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.13.Final, 4.1.133.Final"
+          },
+          {
+            "id": "CVE-2026-44893",
+            "package": "io.netty:netty-codec-haproxy",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.15.Final, 4.1.135.Final"
+          },
+          {
+            "id": "CVE-2026-48059",
+            "package": "io.netty:netty-codec-haproxy",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.15.Final, 4.1.135.Final"
+          },
+          {
+            "id": "CVE-2026-55851",
+            "package": "io.netty:netty-codec-haproxy",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.16.Final, 4.1.136.Final"
+          },
+          {
+            "id": "CVE-2026-33870",
+            "package": "io.netty:netty-codec-http",
+            "installed": "4.1.127.Final",
+            "fixed": "4.1.132.Final, 4.2.10.Final"
+          },
+          {
+            "id": "CVE-2026-42584",
+            "package": "io.netty:netty-codec-http",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.13.Final, 4.1.133.Final"
+          },
+          {
+            "id": "CVE-2026-42587",
+            "package": "io.netty:netty-codec-http",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.13.Final, 4.1.133.Final"
+          },
+          {
+            "id": "CVE-2026-55831",
+            "package": "io.netty:netty-codec-http",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.16.Final, 4.1.136.Final"
+          },
+          {
+            "id": "CVE-2026-55833",
+            "package": "io.netty:netty-codec-http",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.16.Final, 4.1.136.Final"
+          },
+          {
+            "id": "CVE-2026-56745",
+            "package": "io.netty:netty-codec-http",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.16.Final, 4.1.136.Final"
+          },
+          {
+            "id": "CVE-2026-33871",
+            "package": "io.netty:netty-codec-http2",
+            "installed": "4.1.127.Final",
+            "fixed": "4.1.132.Final, 4.2.11.Final"
+          },
+          {
+            "id": "CVE-2026-42587",
+            "package": "io.netty:netty-codec-http2",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.13.Final, 4.1.133.Final"
+          },
+          {
+            "id": "CVE-2026-56819",
+            "package": "io.netty:netty-codec-http2",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.16.Final, 4.1.136.Final"
+          },
+          {
+            "id": "CVE-2026-75595",
+            "package": "io.netty:netty-handler",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.17.Final, 4.1.137.Final"
+          },
+          {
+            "id": "CVE-2026-44249",
+            "package": "io.netty:netty-handler",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.15.Final, 4.1.135.Final"
+          },
+          {
+            "id": "CVE-2026-45416",
+            "package": "io.netty:netty-handler",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.15.Final, 4.1.135.Final"
+          },
+          {
+            "id": "CVE-2026-50010",
+            "package": "io.netty:netty-handler",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.15.Final, 4.1.135.Final"
+          },
+          {
+            "id": "CVE-2026-45674",
+            "package": "io.netty:netty-resolver-dns",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.15.Final, 4.1.135.Final"
+          },
+          {
+            "id": "CVE-2026-47691",
+            "package": "io.netty:netty-resolver-dns",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.15.Final, 4.1.135.Final"
+          },
+          {
+            "id": "CVE-2026-39852",
+            "package": "io.quarkus:quarkus-vertx-http",
+            "installed": "3.27.0",
+            "fixed": "3.20.6.1, 3.27.3.1, 3.33.1.1, 3.35.1.1"
+          },
+          {
+            "id": "CVE-2026-50559",
+            "package": "io.quarkus:quarkus-vertx-http",
+            "installed": "3.27.0",
+            "fixed": "3.20.6.2, 3.27.4.1, 3.33.2.1, 3.36.3, 3.37.0"
+          },
+          {
+            "id": "CVE-2026-7307",
+            "package": "org.keycloak:keycloak-saml-core",
+            "installed": "26.4.0",
+            "fixed": "26.6.2"
+          },
+          {
+            "id": "CVE-2026-2603",
+            "package": "org.keycloak:keycloak-server-spi-private",
+            "installed": "26.4.0",
+            "fixed": "26.5.5"
+          },
+          {
+            "id": "CVE-2026-18963",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.4.15, 26.6.6, 26.7.2"
+          },
+          {
+            "id": "CVE-2026-1486",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.5.3, 26.4.9"
+          },
+          {
+            "id": "CVE-2026-1529",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.5.3, 26.2.13, 26.4.9"
+          },
+          {
+            "id": "CVE-2026-2092",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.5.5"
+          },
+          {
+            "id": "CVE-2026-2603",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.5.5"
+          },
+          {
+            "id": "CVE-2026-3009",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.5.5"
+          },
+          {
+            "id": "CVE-2026-3872",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.5.7"
+          },
+          {
+            "id": "CVE-2026-4282",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.5.7"
+          },
+          {
+            "id": "CVE-2026-4634",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.5.7"
+          },
+          {
+            "id": "CVE-2026-4636",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.5.7"
+          },
+          {
+            "id": "CVE-2026-7504",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.6.2"
+          },
+          {
+            "id": "CVE-2026-7507",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.6.2"
+          },
+          {
+            "id": "CVE-2026-7571",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.6.2"
+          },
+          {
+            "id": "CVE-2026-9795",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.6.4"
+          }
+        ],
+        "superseded_by": "old_full_scan"
+      },
+      "decision": "same-frozen full Trivy0H0C43OS+518Java plus verified H2 supplemental0; actual nativeJVM inventory+frozenGrype CPE0;73noGAV exactSHA1 identities+H21066class fingerprint+3officialgenerated byte inheritance; actual privateDB-copy26.4to26.8 schema/auth/migration compatibility passed. Eligible only with actual existing-realm audience migration and DB rollback copy; not daily deployed.",
+      "java_db_preparation": {
+        "attempts": [
+          ".cache/optimization-20261026/vendor-candidates/java-db-seed.json",
+          ".cache/optimization-20261026/vendor-candidates/java-db-seed-dockerhub.json",
+          ".cache/optimization-20261026/vendor-candidates/java-db-seed-ecr.json"
+        ],
+        "per_attempt_deadline_seconds": 300,
+        "result": "direct exact layer Range resume completed; layer and extracted fingerprint DB SHA verified; no vulnerability DB changes",
+        "final_verified_download": {
+          "repository": "docker.io/aquasec/trivy-java-db:1",
+          "state": "complete_verified",
+          "deadline_seconds": 600,
+          "manifest_sha256": "sha256:e6efbc77761a95b1439613383ed6d39f914d62bf8fee17426790fc74a37f27ff",
+          "layer_sha256": "sha256:21ea19017bf411614b4d3c8eabea0c678dbf45850e0e934b3663547bc43de413",
+          "expected_bytes": 990073797,
+          "duration_seconds": 514.64,
+          "downloaded_bytes": 990073797,
+          "start_bytes": 496189440,
+          "prior_attempt_error": "AssertionError: ",
+          "layer_sha256_verified": true,
+          "extracted_java_db_sha256": "148a3e77d8a7df1c28ad261c4f72085fe0eb9d1354c4cf400e9abe963825a2c4",
+          "java_db_metadata": {
+            "Version": 1,
+            "NextUpdate": "2026-10-29T00:59:12.44483502Z",
+            "UpdatedAt": "2026-10-26T00:59:12.444835411Z",
+            "DownloadedAt": "0001-01-01T00:00:00Z"
+          }
+        }
+      },
+      "actionable_route": [
+        "actual original realm private backup before exclusive-writer audience migration; existing realm import alone is insufficient",
+        "database minor26.4to26.8 migration rollback needs restored original DB copy",
+        "root isolated fullstack acceptance before daily switch"
+      ],
+      "same_minor_release_check": {
+        "evidence": ".cache/optimization-20261026/vendor-candidates/keycloak-official-release-check.json",
+        "public_26_4_last": "26.4.7",
+        "note": "current official release API100 records checked; commercial downstream advisory fixed versions do not establish an available community26.4.15 release"
+      },
+      "full_scan": {
+        "raw_report": ".cache/optimization-20261026/vendor-candidates/keycloak-26.8.1-full.json",
+        "raw_sha256": "7f18090637f669a46b4bd91cf487205e9d85d3c2aa1b4ee40eaed96b2ff9935b",
+        "image_id": "sha256:a78d6b79572168cb25886b80a8b5b8d4ed4390743e3eecb810538683e209dd6b",
+        "high": 2,
+        "critical": 0,
+        "recognized_targets": [
+          {
+            "path": "quay.io/keycloak/keycloak:26.8.1 (redhat 9.8)",
+            "packages": 44
+          },
+          {
+            "path": "Java",
+            "packages": 518
+          }
+        ],
+        "findings": [
+          {
+            "id": "CVE-2026-91403",
+            "package": "java-21-openjdk-headless",
+            "installed": "1:21.0.12.1.1-1.2.el9",
+            "fixed": null
+          },
+          {
+            "id": "CVE-2026-91415",
+            "package": "java-21-openjdk-headless",
+            "installed": "1:21.0.12.1.1-1.2.el9",
+            "fixed": null
+          }
+        ]
+      },
+      "old_full_scan": {
+        "raw_report": ".cache/optimization-20261026/vendor-candidates/keycloak-26.4.0-full.json",
+        "raw_sha256": "fd8a0b4d41ebd53447742e45342f0fb80870f8c224f345f8632b85702abbe129",
+        "image_id": "sha256:5f3fb534cde6bf006d79f5912473e5d2c828c707cdfc52e16972803aca9d43dd",
+        "high": 80,
+        "critical": 8,
+        "recognized_targets": [
+          {
+            "path": "quay.io/keycloak/keycloak:26.4.0 (redhat 9.6)",
+            "packages": 43
+          },
+          {
+            "path": "Java",
+            "packages": 460
+          }
+        ],
+        "findings": [
+          {
+            "id": "CVE-2026-114406",
+            "package": "ca-certificates",
+            "installed": "2024.2.69_v8.0.303-91.4.el9_4",
+            "fixed": "2026.2.92_v9.0.319-90.3.el9_8"
+          },
+          {
+            "id": "CVE-2025-64720",
+            "package": "java-21-openjdk-headless",
+            "installed": "1:21.0.8.0.9-1.el9",
+            "fixed": "1:21.0.10.0.7-1.el9"
+          },
+          {
+            "id": "CVE-2025-65018",
+            "package": "java-21-openjdk-headless",
+            "installed": "1:21.0.8.0.9-1.el9",
+            "fixed": "1:21.0.10.0.7-1.el9"
+          },
+          {
+            "id": "CVE-2026-21945",
+            "package": "java-21-openjdk-headless",
+            "installed": "1:21.0.8.0.9-1.el9",
+            "fixed": "1:21.0.10.0.7-1.el9"
+          },
+          {
+            "id": "CVE-2026-22016",
+            "package": "java-21-openjdk-headless",
+            "installed": "1:21.0.8.0.9-1.el9",
+            "fixed": "1:21.0.11.0.10-2.el9"
+          },
+          {
+            "id": "CVE-2026-26740",
+            "package": "java-21-openjdk-headless",
+            "installed": "1:21.0.8.0.9-1.el9",
+            "fixed": "1:21.0.11.0.10-2.el9"
+          },
+          {
+            "id": "CVE-2026-34282",
+            "package": "java-21-openjdk-headless",
+            "installed": "1:21.0.8.0.9-1.el9",
+            "fixed": "1:21.0.11.0.10-2.el9"
+          },
+          {
+            "id": "CVE-2026-47063",
+            "package": "java-21-openjdk-headless",
+            "installed": "1:21.0.8.0.9-1.el9",
+            "fixed": "1:21.0.12.0.8-1.2.el9"
+          },
+          {
+            "id": "CVE-2026-91403",
+            "package": "java-21-openjdk-headless",
+            "installed": "1:21.0.8.0.9-1.el9",
+            "fixed": null
+          },
+          {
+            "id": "CVE-2026-91415",
+            "package": "java-21-openjdk-headless",
+            "installed": "1:21.0.8.0.9-1.el9",
+            "fixed": null
+          },
+          {
+            "id": "CVE-2026-54369",
+            "package": "libacl",
+            "installed": "2.3.1-4.el9",
+            "fixed": "2.4.0-1.el9_8"
+          },
+          {
+            "id": "CVE-2026-4878",
+            "package": "libcap",
+            "installed": "2.48-9.el9_2",
+            "fixed": "2.48-10.el9_8.1"
+          },
+          {
+            "id": "CVE-2026-103111",
+            "package": "pcre2",
+            "installed": "10.40-6.el9",
+            "fixed": "10.40-7.el9_8"
+          },
+          {
+            "id": "CVE-2026-86145",
+            "package": "pcre2",
+            "installed": "10.40-6.el9",
+            "fixed": "10.40-7.el9_8"
+          },
+          {
+            "id": "CVE-2026-89161",
+            "package": "pcre2",
+            "installed": "10.40-6.el9",
+            "fixed": "10.40-7.el9_8"
+          },
+          {
+            "id": "CVE-2026-103111",
+            "package": "pcre2-syntax",
+            "installed": "10.40-6.el9",
+            "fixed": "10.40-7.el9_8"
+          },
+          {
+            "id": "CVE-2026-86145",
+            "package": "pcre2-syntax",
+            "installed": "10.40-6.el9",
+            "fixed": "10.40-7.el9_8"
+          },
+          {
+            "id": "CVE-2026-89161",
+            "package": "pcre2-syntax",
+            "installed": "10.40-6.el9",
+            "fixed": "10.40-7.el9_8"
+          },
+          {
+            "id": "CVE-2025-6965",
+            "package": "sqlite-libs",
+            "installed": "3.34.1-8.el9_6",
+            "fixed": "3.34.1-9.el9_7"
+          },
+          {
+            "id": "CVE-2026-11822",
+            "package": "sqlite-libs",
+            "installed": "3.34.1-8.el9_6",
+            "fixed": "3.34.1-11.el9_8"
+          },
+          {
+            "id": "CVE-2026-11824",
+            "package": "sqlite-libs",
+            "installed": "3.34.1-8.el9_6",
+            "fixed": "3.34.1-11.el9_8"
+          },
+          {
+            "id": "CVE-2026-68494",
+            "package": "com.fasterxml.jackson.core:jackson-core",
+            "installed": "2.19.2",
+            "fixed": "2.18.8, 2.21.4"
+          },
+          {
+            "id": "CVE-2026-68494",
+            "package": "com.fasterxml.jackson.core:jackson-core",
+            "installed": "2.19.2",
+            "fixed": "2.18.8, 2.21.4"
+          },
+          {
+            "id": "CVE-2026-89407",
+            "package": "com.fasterxml.jackson.core:jackson-core",
+            "installed": "2.19.2",
+            "fixed": "2.18.11, 2.21.7, 2.22.3"
+          },
+          {
+            "id": "CVE-2026-89407",
+            "package": "com.fasterxml.jackson.core:jackson-core",
+            "installed": "2.19.2",
+            "fixed": "2.18.11, 2.21.7, 2.22.3"
+          },
+          {
+            "id": "CVE-2026-89425",
+            "package": "com.fasterxml.jackson.core:jackson-core",
+            "installed": "2.19.2",
+            "fixed": "2.21.7, 2.22.3, 2.18.11"
+          },
+          {
+            "id": "CVE-2026-89425",
+            "package": "com.fasterxml.jackson.core:jackson-core",
+            "installed": "2.19.2",
+            "fixed": "2.21.7, 2.22.3, 2.18.11"
+          },
+          {
+            "id": "CVE-2026-54512",
+            "package": "com.fasterxml.jackson.core:jackson-databind",
+            "installed": "2.19.2",
+            "fixed": "2.18.8, 3.1.4, 2.21.4"
+          },
+          {
+            "id": "CVE-2026-54512",
+            "package": "com.fasterxml.jackson.core:jackson-databind",
+            "installed": "2.19.2",
+            "fixed": "2.18.8, 3.1.4, 2.21.4"
+          },
+          {
+            "id": "CVE-2026-54513",
+            "package": "com.fasterxml.jackson.core:jackson-databind",
+            "installed": "2.19.2",
+            "fixed": "2.18.8, 2.21.4, 3.1.4"
+          },
+          {
+            "id": "CVE-2026-54513",
+            "package": "com.fasterxml.jackson.core:jackson-databind",
+            "installed": "2.19.2",
+            "fixed": "2.18.8, 2.21.4, 3.1.4"
+          },
+          {
+            "id": "CVE-2026-68497",
+            "package": "com.fasterxml.jackson.core:jackson-databind",
+            "installed": "2.19.2",
+            "fixed": "2.18.10, 2.21.6, 2.22.2"
+          },
+          {
+            "id": "CVE-2026-68497",
+            "package": "com.fasterxml.jackson.core:jackson-databind",
+            "installed": "2.19.2",
+            "fixed": "2.18.10, 2.21.6, 2.22.2"
+          },
+          {
+            "id": "CVE-2026-91776",
+            "package": "com.fasterxml.jackson.core:jackson-databind",
+            "installed": "2.19.2",
+            "fixed": "2.18.11, 2.21.7, 2.22.3"
+          },
+          {
+            "id": "CVE-2026-91776",
+            "package": "com.fasterxml.jackson.core:jackson-databind",
+            "installed": "2.19.2",
+            "fixed": "2.18.11, 2.21.7, 2.22.3"
+          },
+          {
+            "id": "CVE-2026-91777",
+            "package": "com.fasterxml.jackson.core:jackson-databind",
+            "installed": "2.19.2",
+            "fixed": "2.21.7, 2.18.11, 2.22.3"
+          },
+          {
+            "id": "CVE-2026-91777",
+            "package": "com.fasterxml.jackson.core:jackson-databind",
+            "installed": "2.19.2",
+            "fixed": "2.21.7, 2.18.11, 2.22.3"
+          },
+          {
+            "id": "CVE-2025-66021",
+            "package": "com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer",
+            "installed": "20240325.1",
+            "fixed": "20260101.1"
+          },
+          {
+            "id": "CVE-2025-59250",
+            "package": "com.microsoft.sqlserver:mssql-jdbc",
+            "installed": "13.2.0.jre11",
+            "fixed": "10.2.4.jre11, 11.2.4.jre11, 12.2.1.jre11, 12.6.5.jre11, 12.8.2.jre11, 12.10.2.jre11, 13.2.1.jre11"
+          },
+          {
+            "id": "CVE-2026-40984",
+            "package": "io.micrometer:micrometer-core",
+            "installed": "1.14.7",
+            "fixed": "1.16.6, 1.15.12"
+          },
+          {
+            "id": "CVE-2026-42583",
+            "package": "io.netty:netty-codec",
+            "installed": "4.1.127.Final",
+            "fixed": "4.1.133.Final"
+          },
+          {
+            "id": "CVE-2026-59901",
+            "package": "io.netty:netty-codec",
+            "installed": "4.1.127.Final",
+            "fixed": "4.1.136.Final"
+          },
+          {
+            "id": "CVE-2026-42579",
+            "package": "io.netty:netty-codec-dns",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.13.Final, 4.1.133.Final"
+          },
+          {
+            "id": "CVE-2026-44893",
+            "package": "io.netty:netty-codec-haproxy",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.15.Final, 4.1.135.Final"
+          },
+          {
+            "id": "CVE-2026-48059",
+            "package": "io.netty:netty-codec-haproxy",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.15.Final, 4.1.135.Final"
+          },
+          {
+            "id": "CVE-2026-55851",
+            "package": "io.netty:netty-codec-haproxy",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.16.Final, 4.1.136.Final"
+          },
+          {
+            "id": "CVE-2026-33870",
+            "package": "io.netty:netty-codec-http",
+            "installed": "4.1.127.Final",
+            "fixed": "4.1.132.Final, 4.2.10.Final"
+          },
+          {
+            "id": "CVE-2026-42584",
+            "package": "io.netty:netty-codec-http",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.13.Final, 4.1.133.Final"
+          },
+          {
+            "id": "CVE-2026-42587",
+            "package": "io.netty:netty-codec-http",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.13.Final, 4.1.133.Final"
+          },
+          {
+            "id": "CVE-2026-55831",
+            "package": "io.netty:netty-codec-http",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.16.Final, 4.1.136.Final"
+          },
+          {
+            "id": "CVE-2026-55833",
+            "package": "io.netty:netty-codec-http",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.16.Final, 4.1.136.Final"
+          },
+          {
+            "id": "CVE-2026-56745",
+            "package": "io.netty:netty-codec-http",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.16.Final, 4.1.136.Final"
+          },
+          {
+            "id": "CVE-2026-33871",
+            "package": "io.netty:netty-codec-http2",
+            "installed": "4.1.127.Final",
+            "fixed": "4.1.132.Final, 4.2.11.Final"
+          },
+          {
+            "id": "CVE-2026-42587",
+            "package": "io.netty:netty-codec-http2",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.13.Final, 4.1.133.Final"
+          },
+          {
+            "id": "CVE-2026-56819",
+            "package": "io.netty:netty-codec-http2",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.16.Final, 4.1.136.Final"
+          },
+          {
+            "id": "CVE-2026-75595",
+            "package": "io.netty:netty-handler",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.17.Final, 4.1.137.Final"
+          },
+          {
+            "id": "CVE-2026-44249",
+            "package": "io.netty:netty-handler",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.15.Final, 4.1.135.Final"
+          },
+          {
+            "id": "CVE-2026-45416",
+            "package": "io.netty:netty-handler",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.15.Final, 4.1.135.Final"
+          },
+          {
+            "id": "CVE-2026-50010",
+            "package": "io.netty:netty-handler",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.15.Final, 4.1.135.Final"
+          },
+          {
+            "id": "CVE-2026-45674",
+            "package": "io.netty:netty-resolver-dns",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.15.Final, 4.1.135.Final"
+          },
+          {
+            "id": "CVE-2026-47691",
+            "package": "io.netty:netty-resolver-dns",
+            "installed": "4.1.127.Final",
+            "fixed": "4.2.15.Final, 4.1.135.Final"
+          },
+          {
+            "id": "CVE-2026-39852",
+            "package": "io.quarkus:quarkus-vertx-http",
+            "installed": "3.27.0",
+            "fixed": "3.20.6.1, 3.27.3.1, 3.33.1.1, 3.35.1.1"
+          },
+          {
+            "id": "CVE-2026-50559",
+            "package": "io.quarkus:quarkus-vertx-http",
+            "installed": "3.27.0",
+            "fixed": "3.20.6.2, 3.27.4.1, 3.33.2.1, 3.36.3, 3.37.0"
+          },
+          {
+            "id": "CVE-2025-14813",
+            "package": "org.bouncycastle:bcprov-jdk18on",
+            "installed": "1.81",
+            "fixed": "1.80.2, 1.81.1, 1.84"
+          },
+          {
+            "id": "CVE-2025-14813",
+            "package": "org.bouncycastle:bcprov-jdk18on",
+            "installed": "1.81",
+            "fixed": "1.80.2, 1.81.1, 1.84"
+          },
+          {
+            "id": "CVE-2026-8763",
+            "package": "org.bouncycastle:bcprov-jdk18on",
+            "installed": "1.81",
+            "fixed": "1.85"
+          },
+          {
+            "id": "CVE-2026-8763",
+            "package": "org.bouncycastle:bcprov-jdk18on",
+            "installed": "1.81",
+            "fixed": "1.85"
+          },
+          {
+            "id": "CVE-2026-13506",
+            "package": "org.bouncycastle:bcprov-jdk18on",
+            "installed": "1.81",
+            "fixed": "1.85"
+          },
+          {
+            "id": "CVE-2026-13506",
+            "package": "org.bouncycastle:bcprov-jdk18on",
+            "installed": "1.81",
+            "fixed": "1.85"
+          },
+          {
+            "id": "CVE-2026-84939",
+            "package": "org.freemarker:freemarker",
+            "installed": "2.3.32",
+            "fixed": "2.3.35"
+          },
+          {
+            "id": "CVE-2026-7307",
+            "package": "org.keycloak:keycloak-saml-core",
+            "installed": "26.4.0",
+            "fixed": "26.6.2"
+          },
+          {
+            "id": "CVE-2026-2603",
+            "package": "org.keycloak:keycloak-server-spi-private",
+            "installed": "26.4.0",
+            "fixed": "26.5.5"
+          },
+          {
+            "id": "CVE-2026-18963",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.4.15, 26.6.6, 26.7.2"
+          },
+          {
+            "id": "CVE-2026-1486",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.5.3, 26.4.9"
+          },
+          {
+            "id": "CVE-2026-1529",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.5.3, 26.2.13, 26.4.9"
+          },
+          {
+            "id": "CVE-2026-2092",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.5.5"
+          },
+          {
+            "id": "CVE-2026-2603",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.5.5"
+          },
+          {
+            "id": "CVE-2026-3009",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.5.5"
+          },
+          {
+            "id": "CVE-2026-3872",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.5.7"
+          },
+          {
+            "id": "CVE-2026-4282",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.5.7"
+          },
+          {
+            "id": "CVE-2026-4634",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.5.7"
+          },
+          {
+            "id": "CVE-2026-4636",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.5.7"
+          },
+          {
+            "id": "CVE-2026-7504",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.6.2"
+          },
+          {
+            "id": "CVE-2026-7507",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.6.2"
+          },
+          {
+            "id": "CVE-2026-7571",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.6.2"
+          },
+          {
+            "id": "CVE-2026-9795",
+            "package": "org.keycloak:keycloak-services",
+            "installed": "26.4.0",
+            "fixed": "26.6.4"
+          },
+          {
+            "id": "CVE-2026-42198",
+            "package": "org.postgresql:postgresql",
+            "installed": "42.7.7",
+            "fixed": "42.7.11"
+          },
+          {
+            "id": "CVE-2026-54291",
+            "package": "org.postgresql:postgresql",
+            "installed": "42.7.7",
+            "fixed": "42.7.12"
+          }
+        ]
+      },
+      "candidate_overlay": "dr-vendor-keycloak:26.8.1-temurin21.0.13-overlay-20261026",
+      "overlay_scan": {
+        "raw_report": ".cache/optimization-20261026/vendor-candidates/keycloak-jre/overlay-full-scan.json",
+        "raw_sha256": "32f5a6f590e5be9d56d7ff932a86b3c48113c13ff962c3aa3d2fcc4f8d0cbdea",
+        "high": 2,
+        "critical": 0,
+        "coverage": [
+          {
+            "target": "dr-vendor-keycloak:26.8.1-temurin21.0.13-overlay-20261026 (redhat 9.8)",
+            "class": "os-pkgs",
+            "package_count": 44
+          },
+          {
+            "target": "Java",
+            "class": "lang-pkgs",
+            "package_count": 518
+          }
+        ]
+      },
+      "overlay_compatibility": {
+        "path": ".cache/optimization-20261026/vendor-candidates/keycloak-jre/compatibility-reconciled.json",
+        "sha256": "4e3a30afec6ba5c1e1f3ed47d42f86122135e88e78ae55b0d094eb43d7b01cb9"
+      },
+      "jdk_artifact_verification": [
+        {
+          "path": ".cache/optimization-20261026/vendor-candidates/keycloak-jre/download-receipt.json",
+          "sha256": "2e899e74a8b34b279bea1ecdb21e194c16351e002c9a056a0950476b49eb33c6"
+        },
+        {
+          "path": ".cache/optimization-20261026/vendor-candidates/keycloak-jre/gpg-receipt.json",
+          "sha256": "d03d021da5856f55ce174db0556e0aa0761c627c216f4f6711ce17957da5d488"
+        }
+      ],
+      "audience_migration": {
+        "path": "docs/evidence/optimization-20261026/keycloak-audience-migration.json",
+        "sha256": "6c75a879ffe523dfe88b8d5b56d1e610e640c8c368653dd4a7d42d39c1a4869a"
+      },
+      "candidate_oci_index": "sha256:95e66ef578a2e6a7ed744252edf687d07713e4e50ee1e9eb194cd0db522361ca",
+      "candidate_amd64_manifest": "sha256:f02ba58cc5faa60cff30f2b8224c2191758a6452dc181548d67dc1900e531140",
+      "candidate_config": "sha256:e767894fd95d5f88855a38393808d64339613ec0a9f36c9656353232d0b885d3",
+      "scan": {
+        "path": ".cache/optimization-20261026/vendor-candidates/keycloak-jre/locked-full-scan.json",
+        "sha256": "a02972c5852345d282a71f8d919453b68656ed96c9c57bdfd48c7b6ee579bb2c",
+        "HIGH": 0,
+        "CRITICAL": 0,
+        "coverage": [
+          {
+            "target": "dr-vendor-keycloak:26.8.1-temurin21.0.13-locked-20261026 (redhat 9.8)",
+            "packages": 43
+          },
+          {
+            "target": "Java",
+            "packages": 518
+          }
+        ]
+      },
+      "remediation_receipt": {
+        "path": "docs/evidence/optimization-20261026/keycloak-vendor-remediation.json",
+        "sha256": "15d6e1f1bbad385189a8e9650eb8585374bc8d999b1f41594d2ce2416b10d187"
+      },
+      "build_recipe": {
+        "path": "Dockerfile.keycloak",
+        "sha256": "9d046392007c27d5ee54d3e58069146e7c13a39630268ba5a7f5684888305343"
+      },
+      "source_lock": {
+        "path": "deployment/vendors/keycloak/source.lock.json",
+        "sha256": "1b5a9c7dff798d3596159d803984a080e9b98e0a6f95ee699f20c7b92134542a"
+      },
+      "compatibility": {
+        "passed": true,
+        "receipt": {
+          "path": ".cache/optimization-20261026/vendor-candidates/keycloak-jre/compatibility-rpm-removed.json",
+          "sha256": "c9141ad0d836a03bf8daa85a9b2150004c46c462066d9649042157a7f9532694"
+        },
+        "reuse": "full runtime layers/config exactly match experimental33a2 image; actual isolated SQL-copy/migration/PKCE results explicitly reused, not rerun",
+        "checks": [
+          "26.4 private realm SQL restored into separatePG17.11",
+          "26.8 Liquibase165to237",
+          "fixed mapper check/apply/privatebackup/readback/idempotence/rollback/reapply",
+          "actual signedJRE runtime",
+          "S256PKCE+JWKSRS256 signature+strictissuer/aud/sub+role+nonce",
+          "wrongaudience rejected",
+          "refresh+logoutinvalidatesrefresh+managementhealth"
+        ]
+      },
+      "latest_scan": {
+        "raw": {
+          "path": ".cache/optimization-20261026/vendor-final-scan/keycloak.json",
+          "sha256": "e3163803f4667062e08432ea266f75efb9ec8171561ac6c8b8bc8ad9bf560830"
+        },
+        "HIGH": 0,
+        "CRITICAL": 0
+      }
+    },
+    {
+      "service": "milvus",
+      "from": "milvusdb/milvus:v3.0.0",
+      "candidate": "dr-vendor-milvus:3.0.3-go1.26.10-locked-20261026",
+      "scope": "same 3.0 patch line, release notes still list behavior changes",
+      "status": "eligible_not_deployed",
+      "source": "https://github.com/milvus-io/milvus/releases/tag/v3.0.3",
+      "decision": "complete same-frozen-DB0H0C image; same Go1.26 maintenance line preserves Sonic paths; fixed original3.0.3 source, only main Go binary and c-shared plan parser rebuilt, original C++/Rust runtime libraries unchanged",
+      "actionable_route": [
+        "root may include immutable locked candidate in isolated full-stack acceptance; no daily deployment performed",
+        "retain original3.0.0 physical-data rollback copy; existing storage volumes not mutated"
+      ],
+      "oci_registry_metadata": {
+        "reference": "milvusdb/milvus:v3.0.3",
+        "index_digest": "sha256:08747249b27c64f158db79a53ba008f89314ee240c731e585a7ec4fb7140731e",
+        "platform": "linux/amd64",
+        "platform_manifest": "sha256:812cb91ad04e847e5ebb4d19593c69f2e207593073063ede0fd604bbba5fddf1",
+        "config_digest": "sha256:9eeb3cdbfb21315c3965c7168e96df46e80906df56c6a6c7ff56dc8ada3f69db",
+        "layers": [
+          {
+            "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+            "size": 29533754,
+            "digest": "sha256:7646c8da332499ae416b15479ce832db32e39a501c662e24324f595509a0d3db"
+          },
+          {
+            "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+            "size": 27337797,
+            "digest": "sha256:8c25f16b79d1270702df0f485d2e6c56fe31f3372dfcfe1c6ad924719fdef5cb"
+          },
+          {
+            "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+            "size": 9465,
+            "digest": "sha256:057214c12b939ce8be05f64869029c331a08adbd9b31e8fdd9fb14b2cd680274"
+          },
+          {
+            "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+            "size": 1824,
+            "digest": "sha256:ef4b194d6fe369676a5d0378f39e97f35600974cb16e84ee61a8b74a4a4e2860"
+          },
+          {
+            "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+            "size": 82497559,
+            "digest": "sha256:8ccc2fb3a3533ef616f74807f52cd624579fd183ff1fb122aeed4391469f8ae3"
+          },
+          {
+            "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+            "size": 49659,
+            "digest": "sha256:0197e20f53c5a339225008adab90fbc206d4623c0584cce9b053293710d6c912"
+          },
+          {
+            "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+            "size": 459195811,
+            "digest": "sha256:d0626fe82ac7423d1a754c44396802600841c680dcf92be3c78cb98636d8dff7"
+          },
+          {
+            "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+            "size": 437,
+            "digest": "sha256:8b536ae5070082e0cd7d05c34f36783d145490a43d78f70610399e868a9cb898"
+          },
+          {
+            "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+            "size": 32,
+            "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1"
+          }
+        ],
+        "compressed_layer_bytes": 598626338,
+        "pull_reference": "milvusdb/milvus@sha256:812cb91ad04e847e5ebb4d19593c69f2e207593073063ede0fd604bbba5fddf1",
+        "created": "2026-10-13T14:08:06.132855122Z",
+        "runtime_user": "milvus:milvus",
+        "metadata_digests_verified": true
+      },
+      "source_provenance": {
+        "tag": "v3.0.3",
+        "commit": "328df0cd2f323c2d3c50cef91bfc9f2c412bcb09",
+        "url": "https://codeload.github.com/milvus-io/milvus/tar.gz/328df0cd2f323c2d3c50cef91bfc9f2c412bcb09",
+        "sha256": "1dd3a0ff960af532f04172b2aebdb9716b1244cad2fb81781b27641f67216cf9"
+      },
+      "separate_go_rebuild": {
+        "status": "in_progress_not_safe_or_compatible_yet",
+        "recipe": ".cache/optimization-20261026/vendor-candidates/milvus-source/Dockerfile.candidate",
+        "strategy": "only main Go executable and c-shared planparser rebuilt; original exact3.0.3 C++/Rust/native .so retained; no claim full C++ rebuild is necessary",
+        "header_sources": [
+          {
+            "sources": [
+              {
+                "component": "milvus-storage C ABI headers",
+                "source_commit": "f38765d83a35d729a7cbfe8e1caed6246d45e06d",
+                "url": "https://codeload.github.com/milvus-io/milvus-storage/tar.gz/f38765d83a35d729a7cbfe8e1caed6246d45e06d",
+                "sha256": "15304295bbc1390391d6ef9f650f39ed0606f48df44e72a2c533713ab83082d1",
+                "contract": "exact short revision f38765d selected by fixed Milvus3.0.3 CMakeLists.txt"
+              },
+              {
+                "component": "Arrow17.0.0 C ABI abi.h",
+                "url": "https://raw.githubusercontent.com/apache/arrow/apache-arrow-17.0.0/cpp/src/arrow/c/abi.h",
+                "sha256": "0f26a9efe4a0a63facd179ff880ef5c6ee5b52a9b4ee2e7f34d1b31d412a8d66",
+                "contract": "fixed Milvus conanfile requires Arrow17.0.0"
+              },
+              {
+                "component": "Arrow17.0.0 C ABI helpers.h",
+                "url": "https://raw.githubusercontent.com/apache/arrow/apache-arrow-17.0.0/cpp/src/arrow/c/helpers.h",
+                "sha256": "7f4439d7d3f0a258851e9c6c1e9f90bdb3fa7e954c3761dadf94e4f9104ae96b",
+                "contract": "fixed Milvus conanfile requires Arrow17.0.0"
+              }
+            ],
+            "bundle_sha256": "622e15f183f85d27e0b8f56063f47237f1d734808cf6b8ee7d6612802a689649"
+          },
+          {
+            "url": "https://codeload.github.com/zilliztech/milvus-common/tar.gz/45fca32d72dbbe7f7a4336af67c59cb07d53bb66",
+            "commit": "45fca32d72dbbe7f7a4336af67c59cb07d53bb66",
+            "source_sha256": "be7c72abb42e0ff0e6c3e7b4bff9ea17402066687cc31b372be733343f4884b4",
+            "contract": "fixed Milvus3.0.3 Conan recipe revision ac7e38699... points zilliztech/milvus-common version45fca32; original runtime C++ libs unchanged",
+            "header_bundle_sha256": "a6f01087f7855848d6420a33167dcb1bcd7f7ab6a5f9349fe3e520fd80741862"
+          }
+        ],
+        "first_attempt": {
+          "state": "completed",
+          "exit_code": 1,
+          "duration_seconds": 580.75,
+          "timeout_seconds": 900,
+          "gomaxprocs": 2,
+          "gomemlimit": "1024MiB",
+          "scope": "only c-shared parser feasibility, not a final cleared image"
+        },
+        "first_attempt_correction": "network EOF on module zips; cache mount initially missed actual GOPATH; second attempt explicitly GOPATH=/go and checksum-verified proxy fallback",
+        "pending": [
+          "c-shared compile",
+          "main link against existing native .so using matching C ABI headers and original upstream build tags/PGO flags",
+          "complete image vulnerability gate",
+          "new isolated index/filter/schema/storage compatibility"
+        ]
+      },
+      "official_scan": {
+        "raw_report": ".cache/optimization-20261026/vendor-candidates/milvus-3.0.3.json",
+        "raw_sha256": "8fda583fed3f996d94a939eb78b21799841d624c0a57309e41f670832490bbc3",
+        "high": 10,
+        "critical": 0,
+        "coverage": "image",
+        "recognized_targets": [
+          {
+            "path": "milvusdb/milvus:v3.0.3 (ubuntu 22.04)",
+            "type": "ubuntu",
+            "packages": 117
+          },
+          {
+            "path": "milvus/bin/milvus",
+            "type": "gobinary",
+            "packages": 273
+          },
+          {
+            "path": "milvus/lib/libmilvus-planparser.so",
+            "type": "gobinary",
+            "packages": 114
+          }
+        ],
+        "findings": [
+          {
+            "id": "CVE-2026-78669",
+            "package": "golang.org/x/net",
+            "installed": "v0.58.0",
+            "fixed": "0.60.0"
+          },
+          {
+            "id": "CVE-2026-111943",
+            "package": "stdlib",
+            "installed": "v1.26.6",
+            "fixed": "1.26.10, 1.27.3"
+          },
+          {
+            "id": "CVE-2026-78667",
+            "package": "stdlib",
+            "installed": "v1.26.6",
+            "fixed": "1.26.9, 1.27.2"
+          },
+          {
+            "id": "CVE-2026-78669",
+            "package": "stdlib",
+            "installed": "v1.26.6",
+            "fixed": "1.26.9, 1.27.2"
+          },
+          {
+            "id": "CVE-2026-97031",
+            "package": "stdlib",
+            "installed": "v1.26.6",
+            "fixed": "1.26.9, 1.27.2"
+          },
+          {
+            "id": "CVE-2026-78669",
+            "package": "golang.org/x/net",
+            "installed": "v0.58.0",
+            "fixed": "0.60.0"
+          },
+          {
+            "id": "CVE-2026-111943",
+            "package": "stdlib",
+            "installed": "v1.26.6",
+            "fixed": "1.26.10, 1.27.3"
+          },
+          {
+            "id": "CVE-2026-78667",
+            "package": "stdlib",
+            "installed": "v1.26.6",
+            "fixed": "1.26.9, 1.27.2"
+          },
+          {
+            "id": "CVE-2026-78669",
+            "package": "stdlib",
+            "installed": "v1.26.6",
+            "fixed": "1.26.9, 1.27.2"
+          },
+          {
+            "id": "CVE-2026-97031",
+            "package": "stdlib",
+            "installed": "v1.26.6",
+            "fixed": "1.26.9, 1.27.2"
+          }
+        ]
+      },
+      "candidate_oci_index": "sha256:092814b9166eaddf75a4c959efd15542491378c2cdfedf67b36293b728b94f04",
+      "candidate_amd64_manifest": "sha256:9e6cb4953900d797ff5221acb5f551a5231a7d7f5314975de885be56d49fb90c",
+      "candidate_config": "sha256:0fa721aa4f930a2b7aaf4a6cbc5e6b4b5c1000a02e2ecce7429c07dcdd678dc4",
+      "scan": {
+        "raw_report": ".cache/optimization-20261026/vendor-candidates/milvus-3.0.3-go1.26.10-locked.json",
+        "raw_sha256": "da823abcc5b5b18c1d6f119c07317184eac033ed307cbf20e3bf3081df1d6aca",
+        "high": 0,
+        "critical": 0,
+        "coverage": [
+          {
+            "target": "dr-vendor-milvus:3.0.3-go1.26.10-locked-20261026 (ubuntu 22.04)",
+            "class": "os-pkgs",
+            "package_count": 117
+          },
+          {
+            "target": "milvus/bin/milvus",
+            "class": "lang-pkgs",
+            "package_count": 273
+          },
+          {
+            "target": "milvus/lib/libmilvus-planparser.so",
+            "class": "lang-pkgs",
+            "package_count": 114
+          }
+        ]
+      },
+      "build_recipe": {
+        "path": "Dockerfile.milvus",
+        "sha256": "2a50f62aa3210218341812934882d17459d70647b860919bb1959ed865c4651a"
+      },
+      "source_lock": {
+        "path": "deployment/vendors/milvus/source.lock.json",
+        "sha256": "60777b29f5e6a2ee8b47fd88fba67ac2febf758f5ba50fbaf6e6f6986e4d0854"
+      },
+      "compatibility": {
+        "passed": true,
+        "checks": [
+          "old3.0.0 synthetic data reopened by3.0.3",
+          "real HNSW index/filter/schema/text/PK/search checked",
+          "scoped dr-milvus IAM insert/flush9S3keys/release/reload/search"
+        ],
+        "receipts": [
+          {
+            "path": ".cache/optimization-20261026/vendor-candidates/compatibility-milvus-go12610.json",
+            "sha256": "3f51efb7eaebf493dda4993801c66030e0a6066060cf42f7af8053030a10b2b4"
+          },
+          {
+            "path": ".cache/optimization-20261026/vendor-candidates/milvus-go12610-silo-integration.json",
+            "sha256": "8a4c2284f531917064e4d8b4c04c8db760a960e51123db0004ba77d09e9d55f1"
+          }
+        ],
+        "locked_recipe_rebuild": {
+          "path": ".cache/optimization-20261026/vendor-candidates/milvus-locked-runtime-equivalence.json",
+          "sha256": "d88281e94f56a1c7f7df0e980003fe4d6b453bd47277e87231018507bd22686d"
+        },
+        "reuse_boundary": "actual Go1.26.10 compatibility receipts are reused for locked recipe image only after complete runtime layers and configuration byte identity; not represented as fresh reruns",
+        "minio_security_boundary": "Silo1HIGH gate still fails; successful S3IO is not a waiver"
+      },
+      "fallback_go127": "prior Go1.27.3 image0H0C+functional checks retained, but Sonic1.15.2 runtime guard falls back to standard JSON and performance was not measured; not preferred",
+      "latest_scan": {
+        "raw": {
+          "path": ".cache/optimization-20261026/vendor-final-scan/milvus.json",
+          "sha256": "1c85de7e1f65b6247da31254cfdbbb828e1373608583c6f136c9260df088ec8d"
+        },
+        "HIGH": 0,
+        "CRITICAL": 0
+      }
+    },
+    {
+      "service": "minio",
+      "from": "Dockerfile.minio RELEASE.2024-05-28T17-19-04Z",
+      "status": "raw1HIGH_exact_single_FIXED_authorized_local_loader_checker_integration_verified_not_deployed",
+      "sources": [
+        "https://github.com/minio/minio",
+        "https://github.com/minio/minio/releases/tag/RELEASE.2025-10-15T17-29-55Z",
+        "https://github.com/pgsty/silo"
+      ],
+      "routes": [
+        "Pinned official last-source build with dependency/security backports and explicit maintainer responsibility",
+        "Evaluate maintained fork as a downstream storage migration with S3/IAM/Milvus plus isolated backup/restore and rollback evidence; not a blind image substitution"
+      ],
+      "notes": "Maintainer states latest published Silo Oct18 uses Go1.27.2; a newer draft is not a released artifact. Do not invent a current zero-finding version.",
+      "candidate_considered": "pgsty/silo@sha256:2636fc4155d9a7e41ff58cdb65ddd13ba9304e67184e13c25bc5cb34016269d7",
+      "candidate_registry_metadata": {
+        "reference": "pgsty/silo@sha256:2636fc4155d9a7e41ff58cdb65ddd13ba9304e67184e13c25bc5cb34016269d7",
+        "index_digest": "sha256:2636fc4155d9a7e41ff58cdb65ddd13ba9304e67184e13c25bc5cb34016269d7",
+        "platform": "linux/amd64",
+        "platform_manifest": "sha256:706e0d419d23bdab663486044165fb4de1ee6b82885a8637b2935216fb2286ec",
+        "config_digest": "sha256:c676f34789e6598af571b590a782499df279d0d1cca41600752826634420d0bb",
+        "layers": [
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+            "size": 7257105
+          },
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:b6a335cfb3e4cfa81b5bea93c6098589cc02ef773583883b4121524bd4a43448",
+            "size": 128745
+          },
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:a07b95ecb9ba381aa2507234fda231b22fe6a32aae1416be2318253fffc15fce",
+            "size": 33870211
+          },
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:1f1f8efc4cd8eec95afa2149492a01d719ed5a01509da8cd178b98dc5019e51c",
+            "size": 11573167
+          },
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:b03517c76521497571e4a32d4bf9b9b17671c18a110e363055352665eee9e370",
+            "size": 3576959
+          },
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:5cbdd21cdfd2e92831a96ea27373f2c661f4a8e04f25b23163e2ac237d231de4",
+            "size": 1428
+          },
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:4e7804774632bdbbb148c3b183d8c6b046ef99453ff2b7540002e591e879b7b6",
+            "size": 813
+          },
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:b91454f96ef73ca50c425b739055d10c89cffb201b27b1612670cf50f1cb7130",
+            "size": 11867
+          },
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:83663d7dbf841eaff3d6d86b049f8665e975c8dfe37fcbf05fc4f3c4600bde5c",
+            "size": 502
+          },
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:c7b5d69c4c139decd9f312a0ddaffa7fd93868dd4925e89a51e1f6c66a608c51",
+            "size": 183010
+          },
+          {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:46259f62079e9694c3aa91831a86b27718e00d69e3a5948033fe7621972251ee",
+            "size": 151
+          }
+        ],
+        "compressed_layer_bytes": 56603958,
+        "pull_reference": "pgsty/silo@sha256:706e0d419d23bdab663486044165fb4de1ee6b82885a8637b2935216fb2286ec",
+        "created": "2026-10-18T16:24:01.362718788Z",
+        "runtime_user": "",
+        "metadata_digests_verified": true
+      },
+      "candidate_pull": {
+        "state": "completed",
+        "exit_code": 0,
+        "duration_seconds": 83.3,
+        "pull_reference": "pgsty/silo@sha256:706e0d419d23bdab663486044165fb4de1ee6b82885a8637b2935216fb2286ec"
+      },
+      "decision": "raw1HIGH0CRITICAL retained; exact user-authorized CVE2026-39414 FIXED1, unresolved0 verified locally through complete approvedOCI+actualDockerinspect+unchanged bound fullscan. Compose uses approved load-only tag; CI ordinary HIGH gate unchanged, this artifact gets raw fullscan then exactchecker. Draft release publication and actual GitHubCI are root-owned pending; other HIGH/unknown remain blocking.",
+      "compatibility": {
+        "passed": true,
+        "old_image": "sha256:d1aa81d3a62ae1b5d7279f4d12fe9b1a1e6aba466b2f7adc83bbd4d0abe6f48b",
+        "candidate_image": "sha256:151cd83d5e6500f4d1b3d7f0a12756fe80e8ffcbf91150afd6b9b9605bc2369a",
+        "checks": [
+          "old2024 object versions retained",
+          "old IAM identities retained",
+          "cross-bucket IAM denial retained",
+          "bucket anonymous prefix policy retained",
+          "old multipart part retained and completed afterupgrade",
+          "Milvus S3 location/list/get/put/delete/multipart interfaces",
+          "oversized plain andgzip Select rejected OverMaxRecordSize",
+          "legal CSV Select still works",
+          "old rollbackcopy reopens2024 original data/IAM/multipart"
+        ],
+        "real_milvus": {
+          "passed": true,
+          "milvus": "v3.0.0",
+          "rows": 2,
+          "new_s3_keys": 9,
+          "scope": "real insert/flush S3 binlogs/release/reload/search with scopeddr-milvus IAM",
+          "retained_volumes": [
+            "dr-opt-minio-compat-20261026c-etcd-data",
+            "dr-opt-minio-compat-20261026c-milvus-data"
+          ],
+          "private_env": ".cache\\optimization-20261026\\vendor-candidates\\silo-source\\dr-opt-minio-compat-20261026c-milvus.env"
+        },
+        "source_volumes_untouched_by_upgrade": true,
+        "rollback": "independent2024 pre-upgrade clone read by2024 binary; not an in-place downgrade",
+        "private_raw_receipt": ".cache\\optimization-20261026\\vendor-candidates\\silo-source\\compatibility-patched.json"
+      },
+      "actionable_route": {
+        "preferred": "Send upstream fork/advisory/tool maintainers pinned commit, bound tests, actualS3Select negative/positive receipts and identified module attribution; obtain authoritative scanner-rule/package attribution correction, then scan both byte-identicalold image andcandidate against a newly approved identicalDBsnapshot",
+        "frozen_db_constraint": "Current frozenDB unchanged and unsuppressed HIGH retained; no self-editeddatabase, module rename, fakeversion, feature removal, unknown package, ignore orVEX",
+        "alternative_scope": "If frozenDB literal0 must remain immutable, evaluate a separatelymaintained S3backend with explicit migration/IAM/version/multipart contracts; no compatibility orzero-finding guarantee made until implemented/scanned. Requires coordinator decision rather than silently replacingbackend."
+      },
+      "published_candidate_scan": {
+        "raw_report": ".cache/optimization-20261026/vendor-candidates/silo-source/image-scan.json",
+        "raw_sha256": "fb20fcd4904500169ed74bcdf5ebb437a18e390c7643647a19cdfb9f356b8ee4",
+        "high": 3,
+        "critical": 0,
+        "coverage": "complete exact amd64 candidate image; OS22, mcli108 Go modules, silo261 Go modules",
+        "findings": [
+          {
+            "id": "CVE-2026-111943",
+            "package": "stdlib",
+            "installed": "v1.27.2",
+            "fixed": "1.26.10, 1.27.3"
+          },
+          {
+            "id": "CVE-2026-39414",
+            "package": "github.com/minio/minio",
+            "installed": "v0.0.0-20261018143912-0cd388c666f8",
+            "fixed": null
+          },
+          {
+            "id": "CVE-2026-111943",
+            "package": "stdlib",
+            "installed": "v1.27.2",
+            "fixed": "1.26.10, 1.27.3"
+          }
+        ]
+      },
+      "remediation_receipt": {
+        "path": "docs/evidence/optimization-20261026/minio-remediation.json",
+        "sha256": "b5bc767ff16677d0b1137b0cc348ba50f09c0d1ac4b2fab1bd8d9268c6c98df0"
+      },
+      "candidate_reference": "dr-opt-minio-go1273-compat:20261026",
+      "scan": {
+        "path": ".cache\\optimization-20261026\\vendor-candidates\\silo-source\\image-go1273-compat-scan.json",
+        "sha256": "09b1e81710824900a4c1b84785f9db6ccafe20d9b6a64685b0d646efa255f21c",
+        "HIGH": 1,
+        "CRITICAL": 0,
+        "targets": [
+          "dr-opt-minio-go1273-compat:20261026 (redhat 9.8)",
+          "usr/bin/mcli",
+          "usr/bin/silo"
+        ],
+        "findings": [
+          {
+            "VulnerabilityID": "CVE-2026-39414",
+            "PkgName": "github.com/minio/minio",
+            "InstalledVersion": "v0.0.0-20261018143912-0cd388c666f8+dirty",
+            "FixedVersion": null
+          }
+        ],
+        "all_packages_listed": true,
+        "main_module_identified": true,
+        "gate_passed": false
+      },
+      "ci_integration": {
+        "path": "docs/evidence/optimization-20261026/minio-ci-integration.json",
+        "sha256": "541a989f384130917dc3c1b30cf1b46d61a328d067bafb48e8e5bf88c2b42330"
+      },
+      "latest_scan": {
+        "raw": {
+          "path": ".cache/optimization-20261026/vendor-final-scan/minio.json",
+          "sha256": "f9a224e83b3be4410c459531a9329917a6f9e6b76dad3f208e84503db3fcde4f"
+        },
+        "HIGH": 1,
+        "CRITICAL": 0
+      },
+      "latest_exact_disposition": {
+        "path": ".cache/optimization-20261026/vendor-final-scan/minio-disposition.json",
+        "sha256": "76355538093cf97f16e3fda199157cc475c9a73652c5f4fce8853928e6357fc8"
+      },
+      "historical_remaining_before_exact_authorization": [
+        "Full frozenDB HIGH/CRITICAL gate remains failed at1/0; do not deploy or label0H",
+        "Source-level bounded CSV fix is verified but inherited minio module matches all-version advisory with no fixed version in frozenDB; cannot satisfy literal0H without authoritative attribution/DB correction or an approved different backend",
+        "Ordinary final exactSHA CI/Security and fullrelease handoff remain with coordinator"
+      ],
+      "current_remaining": [
+        "Raw Trivy1HIGH0CRITICAL retained; exact approved single FIXED verified, unresolved0. No literal raw0 claim.",
+        "Publication and final exactSHA CI/Security remain coordinator-owned pending. New findings/unknown remain blocking."
+      ]
+    }
+  ],
+  "daily_stack_changes": false,
+  "business_volume_changes": false,
+  "image_pulls_are_not_deployment_or_compatibility_proof": true,
+  "cross_host_restore": "deferred_by_user_not_verified",
+  "compatibility_evidence": [
+    ".cache/optimization-20261026/vendor-candidates/compatibility.json",
+    ".cache/optimization-20261026/vendor-candidates/compatibility-clamav.json",
+    ".cache/optimization-20261026/vendor-candidates/compatibility-etcd.json",
+    ".cache/optimization-20261026/vendor-candidates/compatibility-vcs-postgres.json",
+    ".cache/optimization-20261026/vendor-candidates/compatibility-vcs-etcd.json",
+    ".cache/optimization-20261026/vendor-candidates/compatibility-milvus-go12610.json",
+    ".cache/optimization-20261026/vendor-candidates/milvus-go12610-silo-integration.json",
+    ".cache/optimization-20261026/vendor-candidates/keycloak-jre/compatibility-reconciled.json"
+  ],
+  "no_fake_zero_for_scan_failure": true,
+  "future_db_rule": "These results bind to the frozen2026-10-25 vulnerability DB, not a promise that future advisories remain zero.",
+  "latest_scan_policy": {
+    "database_sha256": "d941f76c20fd916816fd04fa80d67bcd8dec6a5f68d353cb0c00be3fd3c9d2f8",
+    "updated": "2026-10-26T07:15:18Z",
+    "raw_reports": {
+      "path": "docs/evidence/optimization-20261026/vendor-fresh-scan.json",
+      "sha256": "7c868274dcbd91334dd118d3aaac0aef48fed27fc532af3b7d8f803cdc92c613"
+    },
+    "historical_policy_retained": "scan_policy above binds earlier rawreports; latest_scan_policy is finalcurrent advisory pass",
+    "updates_during_scan": false
+  },
+  "current_compose_deployment_table": {
+    "path": "docs/evidence/optimization-20261026/vendor-deployment-candidates.json",
+    "sha256": "95ecb1b39edff824dff65ae99516dc75b88c40c99b23f779f0c1a1f414b79d2e"
+  }
+}

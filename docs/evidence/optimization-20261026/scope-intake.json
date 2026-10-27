@@ -1,0 +1,16 @@
+{
+  "item": 8,
+  "implementation": [
+    "ResearchIntakeController",
+    "ResearchIntakePolicy",
+    "frontend/src/ResearchScope.vue"
+  ],
+  "verification": {
+    "command": "mvn -Dtest=ResearchIntakeIntegrationTest test",
+    "result": "3 tests passed with real isolated PostgreSQL and Java HTTP controller; broad/no-cost draft/save/confirm/replay/cancel/expiry/read-only/precise paths"
+  },
+  "contract": "deterministic conservative phrase gate, does not claim perfect ambiguity detection",
+  "remaining": [],
+  "browser_evidence": "roles-and-scope.json",
+  "additional_integration": "ResearchIntakeIntegrationTest: 4 real PostgreSQL cases after immutable request/replay/mode binding changes"
+}

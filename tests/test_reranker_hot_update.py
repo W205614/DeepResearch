@@ -7,6 +7,14 @@ import pytest
 import backend.services.documents as documents_module
 from backend.core.clamav import ScanRejected
 from backend.infrastructure.providers import ServiceError
+from backend.core.usage_governance import paid_scope
+
+
+@pytest.fixture(autouse=True)
+def explicit_mock_accounting_identity():
+    # These adapters use MockTransport; pure demo model/embedding calls stay local.
+    with paid_scope("alice", "reranker-fixture", "evaluation"):
+        yield
 
 
 async def add_ready(runtime, name: str, text: str):

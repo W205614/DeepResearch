@@ -14,10 +14,13 @@ from ..core.db import now, uid
 from ..domain.models import DocumentSearchRequest, MemoryRequest, RunRequest, ThreadRequest
 from ..core.observability import configure_telemetry
 from ..core.metrics import ALERT_DELIVERIES, ALERT_SUPPRESSED
+from ..core.usage_governance import paid_scope, paid_identity, UsageScope, UsageGovernance, provider_account
+from ..core.reliability import fingerprint
 from ..core.alerts import AlertRelay, deliver_with_retry, format_alert_message, post_alert
 from ..domain.models import MembershipRequest, WorkspaceLimitRequest, WorkspaceRequest
 from ..infrastructure.providers import ServiceError
 from ..services.document_parsing import InvalidDocument
+from ..services.document_access import require_document, require_sources, access_sql, access_args
 from ..services.runtime import ConflictError, Runtime, TERMINAL
 
 
@@ -75,7 +78,26 @@ def create_app(settings: Settings | None = None):
         run = await runtime.db.owned_run(run_id, user)
         if not run:
             raise HTTPException(404, "任务不存在")
+        caller = paid_identity()
+        member = await runtime.db.membership(user, caller[1]) if caller and caller[0] == user else None
+        if not member or (member["role"] != "admin" and run.get("created_by") != caller[1]):
+            raise HTTPException(404, "任务不存在")
+        try:
+            await require_sources(runtime.db, user, run["sources"])
+        except ServiceError:
+            raise HTTPException(404, "任务不存在或资料访问权限已撤销") from None
         return run
+
+    async def visible_thread_runs(runtime: Runtime, thread_id: str, user: str):
+        rows = await runtime.db.rows("SELECT id FROM runs WHERE thread_id=? AND user_id=? ORDER BY created_at", (thread_id, user))
+        visible = []
+        for row in rows:
+            try:
+                visible.append(await owned_run(runtime, row["id"], user))
+            except HTTPException as error:
+                if error.status_code != 404:
+                    raise
+        return visible
 
     async def identity(request: Request, authorization: str = Header(""), x_workspace_id: str = Header("")):
         principal = await app.state.token_verifier.verify(authorization)
@@ -93,7 +115,8 @@ def create_app(settings: Settings | None = None):
             membership = memberships[0]
         request.state.principal = principal
         request.state.workspace_role = membership["role"]
-        return membership["id"]
+        with paid_scope(membership["id"], principal.subject):
+            yield membership["id"]
 
     def require_role(request: Request, *roles: str) -> None:
         if getattr(request.state, "workspace_role", "") not in roles:
@@ -164,8 +187,10 @@ def create_app(settings: Settings | None = None):
             raise HTTPException(404, "任务不存在")
         if run["status"] != "queued":
             return {"accepted": False, "status": run["status"]}
-        await runtime.schedule(run_id, resume=bool(payload.get("resume", False)))
-        return {"accepted": True, "status": "queued"}
+        try:
+            return await runtime.accept_schedule(run_id, payload)
+        except ValueError:
+            raise HTTPException(422, "研究命令合同无效或执行版本不匹配") from None
 
     @app.post("/internal/agent/runs/{run_id}/abort", status_code=202)
     async def abort_existing_run(run_id: str, authorization: str = Header(""), runtime=Depends(rt)):
@@ -315,29 +340,60 @@ def create_app(settings: Settings | None = None):
 
     @app.post("/api/config/check")
     async def check(runtime=Depends(rt), user=Depends(identity)):
+        """Static checks are safe for members and never contact a paid provider."""
+        return {
+            "mode": "static",
+            "llm": "configured" if settings.llm_api_key.get_secret_value() else "missing LLM_API_KEY",
+            "embedding": "configured" if settings.embedding_api_key.get_secret_value() else "missing EMBEDDING_API_KEY",
+            "search": "configured" if (settings.bocha_api_key.get_secret_value() if settings.web_search_provider == "bocha"
+                                        else settings.llm_api_key.get_secret_value()) else "missing search credential",
+            "live_probe": "platform_operator_only",
+        }
+
+    @app.post("/api/config/probe")
+    async def probe(request: Request, target: str = Query("llm", pattern="^(llm|embedding|milvus)$"),
+                    runtime=Depends(rt), user=Depends(identity)):
+        actor = request.state.principal.subject
+        if actor not in settings.operator_subjects:
+            raise HTTPException(403, "真实连接探测仅允许运维配置的主体执行")
         from ..domain.models import Route
-        results = {}
-        for name in ("llm", "embedding", "milvus"):
+        scope = UsageScope(user, actor, "probe")
+        config = {"llm": (settings.llm_base_url, settings.llm_api_key.get_secret_value(), settings.llm_model_id),
+                  "embedding": (settings.embedding_base_url, settings.embedding_api_key.get_secret_value(), settings.embedding_model),
+                  "milvus": (settings.milvus_uri, "", "")}[target]
+        probe_key = fingerprint([target, provider_account(config[0], config[1]), config[2]])
+        governance = UsageGovernance(runtime.db, settings)
+        try:
+            claimed = await governance.claim_probe(probe_key, scope)
+        except Exception:
+            raise HTTPException(503, "探测冷却账本不可用，未发送外部请求") from None
+        if not claimed:
+            cached = await runtime.db.one("SELECT result,next_allowed FROM provider_probes WHERE id=?", (probe_key,))
+            await runtime.db.audit(user, actor, "provider.probe.cached", "provider", target)
+            return {"cached": True, "result": json.loads(cached["result"]) or {"status": "in_progress_or_interrupted"},
+                    "next_allowed": cached["next_allowed"]}
+        # Record intent before sending. An audit failure prevents the paid probe.
+        await runtime.db.audit(user, actor, "provider.probe.started", "provider", target)
+        result = {"target": target}
+        with paid_scope(user, actor, "probe"):
             try:
-                if name == "llm":
+                if target == "llm":
                     await runtime.providers.structured("router", "返回 mode=quick 和 reason=连接测试。",
                         {"topic": "连接测试"}, Route, "")
-                elif name == "embedding":
+                elif target == "embedding":
                     vector = (await runtime.providers.embed(["连接测试"]))[0]
-                    results["actual_embedding_dimension"] = len(vector)
+                    result["actual_embedding_dimension"] = len(vector)
                     await runtime.vectors.fingerprint()
                 else:
                     await runtime.vectors.ping()
-                results[name] = "ok"
+                result["status"] = "ok"
             except ServiceError as exc:
-                results[name] = str(exc)
-        if settings.web_search_provider == "deepseek":
-            results["search"] = "DeepSeek web_search configured" if settings.llm_api_key.get_secret_value() else "missing LLM_API_KEY"
-        elif settings.web_search_provider == "bocha":
-            results["search"] = "Bocha configured" if settings.bocha_api_key.get_secret_value() else "missing BOCHA_API_KEY"
-        else:
-            results["search"] = "DeepSeek primary; Bocha fallback " + ("configured" if settings.bocha_api_key.get_secret_value() else "not configured")
-        return results
+                result.update(status="failed", code=exc.code)
+            except Exception:
+                result.update(status="failed", code="probe_failed")
+        await runtime.db.execute("UPDATE provider_probes SET result=? WHERE id=?", (json.dumps(result), probe_key))
+        await runtime.db.audit(user, actor, "provider.probe.finished", "provider", target, result["status"])
+        return {"cached": False, "result": result}
 
     @app.post("/api/threads", status_code=201)
     async def create_thread(body: ThreadRequest, runtime=Depends(rt), user=Depends(researcher)):
@@ -367,13 +423,11 @@ def create_app(settings: Settings | None = None):
     @app.get("/api/threads/{thread_id}/runs")
     async def thread_runs(thread_id: str, runtime=Depends(rt), user=Depends(identity)):
         thread = await owned_thread(runtime, thread_id, user)
-        rows = await runtime.db.rows("SELECT id FROM runs WHERE thread_id=? AND user_id=? ORDER BY created_at", (thread["id"], user))
-        return [await runtime.db.owned_run(row["id"], user) for row in rows]
+        return await visible_thread_runs(runtime, thread["id"], user)
     @app.get("/api/threads/{thread_id}/report")
     async def thread_report(thread_id: str, runtime=Depends(rt), user=Depends(identity)):
         thread = await owned_thread(runtime, thread_id, user)
-        rows = await runtime.db.rows("SELECT id FROM runs WHERE thread_id=? AND user_id=? ORDER BY created_at", (thread["id"], user))
-        runs = [await runtime.db.owned_run(row["id"], user) for row in rows]
+        runs = await visible_thread_runs(runtime, thread["id"], user)
         parts = [f"# {thread['title'] or '研究会话'}", "", "本文件包含该会话中的全部研究记录。"]
         for index, run in enumerate(runs, start=1):
             parts.extend(["", f"## {index}. {run['topic']}", "", f"- 状态：{run['status']}", f"- 创建时间：{run['created_at']}", "", run["report"] or "_此研究尚未生成 Markdown 报告。_"])
@@ -398,16 +452,19 @@ def create_app(settings: Settings | None = None):
 
     @app.post("/api/research/runs/{run_id}/cancel")
     async def cancel(run_id: str, request: Request, runtime=Depends(rt), user=Depends(researcher)):
+        await owned_run(runtime, run_id, user)
         run = await runtime.cancel(run_id, user)
         await runtime.db.audit(user, request.state.principal.subject, "research.cancel", "run", run_id)
         return run
 
     @app.post("/api/research/runs/{run_id}/resume", status_code=202)
     async def resume(run_id: str, runtime=Depends(rt), user=Depends(researcher)):
+        await owned_run(runtime, run_id, user)
         return await runtime.resume(run_id, user)
 
     @app.post("/api/research/runs/{run_id}/memory", status_code=201)
     async def save_run_memory(run_id: str, runtime=Depends(rt), user=Depends(identity)):
+        await owned_run(runtime, run_id, user)
         try:
             return await runtime.save_run_memory(run_id, user)
         except LookupError as exc:
@@ -428,6 +485,11 @@ def create_app(settings: Settings | None = None):
             while not await request.is_disconnected():
                 membership = await runtime.db.membership(user, request.state.principal.subject)
                 if not membership:
+                    yield "event: close\ndata: {}\n\n"
+                    return
+                try:
+                    await owned_run(runtime, run_id, user)
+                except HTTPException:
                     yield "event: close\ndata: {}\n\n"
                     return
                 rows = await runtime.db.rows("SELECT * FROM events WHERE run_id=? AND id>? ORDER BY id LIMIT 200", (run_id, cursor))
@@ -484,13 +546,18 @@ def create_app(settings: Settings | None = None):
 
     @app.get("/api/documents")
     async def documents(runtime=Depends(rt), user=Depends(identity)):
-        rows = await runtime.db.rows("""SELECT id,name,status,error,created_at,updated_at,index_version,pending_version
-            FROM documents WHERE user_id=? AND status!='deleted' ORDER BY created_at DESC""", (user,))
+        rows = await runtime.db.rows(f"""SELECT d.id,d.name,d.status,d.error,d.created_at,d.updated_at,d.index_version,d.pending_version
+            FROM documents d WHERE d.user_id=? AND d.status!='deleted' AND {access_sql()} ORDER BY d.created_at DESC""", (user, *access_args(user)))
         return [public_document(row) for row in rows]
+
+    @app.get("/api/documents/capacity")
+    async def document_capacity(runtime=Depends(rt), user=Depends(identity)):
+        return await runtime.documents.capacity(user)
 
     @app.put("/api/documents/{document_id}", status_code=202)
     async def replace_document(document_id: str, request: Request, file: UploadFile = File(),
                                runtime=Depends(rt), user=Depends(researcher)):
+        await require_document(runtime.db, user, document_id, write=True)
         content = await read_upload(file)
         try:
             document = await runtime.replace_document(document_id, user, file.filename or "document", content)
@@ -507,6 +574,7 @@ def create_app(settings: Settings | None = None):
 
     @app.get("/api/documents/{document_id}/versions")
     async def document_versions(document_id: str, runtime=Depends(rt), user=Depends(identity)):
+        await require_document(runtime.db, user, document_id)
         try:
             return await runtime.documents.lifecycle.versions(document_id, user)
         except LookupError as exc:
@@ -515,6 +583,7 @@ def create_app(settings: Settings | None = None):
     @app.get("/api/documents/{document_id}/diff")
     async def document_diff(document_id: str, from_version: int = Query(alias="from", ge=1),
                             to_version: int = Query(alias="to", ge=1), runtime=Depends(rt), user=Depends(identity)):
+        await require_document(runtime.db, user, document_id)
         try:
             return await runtime.documents.lifecycle.diff(document_id, user, from_version, to_version)
         except LookupError as exc:
@@ -522,6 +591,7 @@ def create_app(settings: Settings | None = None):
 
     @app.get("/api/documents/{document_id}/chunks")
     async def document_chunks(document_id: str, limit: int = 100, runtime=Depends(rt), user=Depends(identity)):
+        await require_document(runtime.db, user, document_id)
         if not await runtime.db.one("SELECT id FROM documents WHERE id=? AND user_id=? AND status!='deleted'", (document_id, user)):
             raise HTTPException(404, "资料不存在")
         limit = max(1, min(limit, 400))
@@ -535,6 +605,7 @@ def create_app(settings: Settings | None = None):
 
     @app.post("/api/documents/{document_id}/reindex", status_code=202)
     async def reindex_document(document_id: str, request: Request, runtime=Depends(rt), user=Depends(researcher)):
+        await require_document(runtime.db, user, document_id, write=True)
         try:
             document = await runtime.reindex_document(document_id, user)
         except LookupError as exc:
@@ -552,10 +623,22 @@ def create_app(settings: Settings | None = None):
 
     @app.get("/api/memories")
     async def memories(request: Request, runtime=Depends(rt), user=Depends(identity)):
-        return await runtime.db.rows("""SELECT id,kind,content,created_at FROM memories
+        rows = await runtime.db.rows("""SELECT id,kind,content,created_at,run_id FROM memories
             WHERE (kind IN ('profile','preference') AND owner_subject=?)
                OR (kind='semantic' AND user_id=?) ORDER BY created_at DESC""",
                                      (request.state.principal.subject, user))
+        visible = []
+        for row in rows:
+            if row["kind"] == "semantic":
+                try:
+                    await owned_run(runtime, row["run_id"], user)
+                except HTTPException as error:
+                    if error.status_code != 404:
+                        raise
+                    continue
+            row.pop("run_id", None)
+            visible.append(row)
+        return visible
 
     @app.post("/api/memories", status_code=201)
     async def add_memory(body: MemoryRequest, request: Request, runtime=Depends(rt), user=Depends(researcher)):
@@ -581,9 +664,15 @@ def create_app(settings: Settings | None = None):
                                       (memory_id, request.state.principal.subject, user))
         if not memory:
             raise HTTPException(404, "记忆不存在")
+        if memory["kind"] == "semantic":
+            await owned_run(runtime, memory["run_id"], user)
         await runtime.db.execute("DELETE FROM memories WHERE id=?", (memory_id,))
         if memory["kind"] == "semantic":
             await runtime.vectors.delete("memories", user, "id", memory_id)
         return {"ok": True}
 
+    from .source_rechecks import register_source_rechecks
+    register_source_rechecks(app, rt, identity, researcher)
+    from .usage import register_usage
+    register_usage(app, rt, identity)
     return app

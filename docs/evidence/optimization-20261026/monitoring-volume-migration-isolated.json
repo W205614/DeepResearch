@@ -1,0 +1,36 @@
+{
+  "status": "passed",
+  "scope": "own synthetic Compose fixtures only",
+  "cases": [
+    {
+      "service": "prometheus",
+      "running_source_rejected": true
+    },
+    {
+      "service": "alertmanager",
+      "running_source_rejected": true
+    },
+    {
+      "service": "prometheus",
+      "storage_kind": "volume",
+      "copied_files": 1,
+      "file_hash_uid_gid_mode_preserved": true,
+      "runtime_uid65534_can_read_write": true,
+      "wrong_project_rejected": true,
+      "source_retained_stopped": true
+    },
+    {
+      "service": "alertmanager",
+      "storage_kind": "container_layer",
+      "copied_files": 1,
+      "file_hash_uid_gid_mode_preserved": true,
+      "runtime_uid65534_can_read_write": true,
+      "wrong_project_rejected": true,
+      "source_retained_stopped": true
+    }
+  ],
+  "resources_retained": {
+    "project": "dr-opt-monitor-storage-20261026",
+    "compose": "E:\\project\\DeepResearch\\.cache\\optimization-20261026\\monitor-storage-fixture\\compose.yml"
+  }
+}

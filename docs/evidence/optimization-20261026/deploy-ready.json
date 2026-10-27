@@ -1,0 +1,61 @@
+{
+  "schema": "deepresearch-deploy-ready-v1",
+  "phase": "DEPLOY_READY",
+  "recorded_at": "2026-10-27T01:23:56.119386+00:00",
+  "baseline_head": "8768aa6c1e4f0d24a8c355ce769112e98b3b8c10",
+  "branch": "codex/optimization-20261026",
+  "final_sha": null,
+  "committed_or_pushed": false,
+  "scope_ids": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "scope_boundary": "All0-12 candidate implementation plus named component/role/fault/ops evidence. Daily upgrade, full cold restore, scheduler realrun, finalSHA CI and finalcleanup remain required.",
+  "evidence": {
+    "scope": "scope.json",
+    "prior_live_candidate": "unified-candidate.json",
+    "actual_old_SQL_preservation": "upgrade-old-row-preservation.json",
+    "observability": "observability-acceptance.json",
+    "fresh_stopped_source_bytes": "candidate-source-fingerprints-v7.json",
+    "stopped_daily_observation": "daily-state-before-window.json",
+    "backup_bundle": "backup-image-bundle.json",
+    "recovery_business_probe": "recovery-business-compatibility.json",
+    "Windows_hidden_entry": "windows-host-task-silence.json",
+    "remote_exact_Grafana": "grafana-remote-transport.json",
+    "exact_gates": "grafana-artifact-governance.json",
+    "guide_59feature_source_handoff": "guide-handoff.json",
+    "final_retention_preliminary": "final-retention-plan.preliminary.json"
+  },
+  "external_decisions": {
+    "offhost_restore": "deferred_by_user_not_verified",
+    "human_blind_review": "not_performed"
+  },
+  "daily_window_tasks": [
+    "Recheck ownership and actual stopped/running state before any changes; preserve current data and oldtopology immutable backup",
+    "Full cold backup with current-platform bundle guard, independent separate-project local restore with actual business probe, no paid fixture model calls",
+    "Migrate existing audience/least-privilege service credentials and actual monitoring storage with rollback materials before new compose creates volumes",
+    "Apply onlyinwindow Grafana panel8 percentunit min0/max1, preserve ratio query, check actual axis once",
+    "Normal latest daily build/rebuild and data/role/source identity verification",
+    "Install current-user Limited pythonw backup03:30 and5minute capacity probe; inspect real task definitions, single observed silent backup/status/log/native exit and failure restoration",
+    "Refresh README, final source freeze/commit/push, publish two artifact drafts bound finalSHA as prerelease/nonlatest, verify exactSHA CI/Security then cumulative515 quality"
+  ],
+  "cleanup_timing": "No cleanup during daily deployment. Both projects finalCI must pass and coordinator must approve fresh final retained IDs/reference/data plan and grant a separate FINAL_CLEANUP window.",
+  "residual_observations": [
+    "One prior266s worker checkpoint/event stall automatically resumed; cause not established, not labelled fixed",
+    "Two frozen real provider cases remainedpartial; no repeated local provider calls or generalaccuracy claim",
+    "Current candidate and daily service containers observed already stopped; sources read with docker cp, no new live availability claim"
+  ],
+  "supplier_http_this_resume": 0,
+  "releases": "Both artifact releases still draft; remote private audit passed, default CI publication guard blocks cached draft. No publication permission implied by readiness."
+}

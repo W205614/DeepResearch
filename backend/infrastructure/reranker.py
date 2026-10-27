@@ -8,14 +8,16 @@ import time
 import httpx
 
 from ..core.metrics import RERANKER_CALLS, RERANKER_SECONDS
-from ..core.reliability import ServiceError
+from ..core.reliability import ServiceError, estimate_tokens
+from ..core.usage_governance import UsageGovernance, provider_account
 
 
 class RerankerClient:
-    def __init__(self, settings, client: httpx.AsyncClient | None = None):
+    def __init__(self, settings, client: httpx.AsyncClient | None = None, *, db=None):
         self.settings = settings
         self.client = client or httpx.AsyncClient(timeout=settings.reranker_timeout_seconds, trust_env=False)
         self._owns_client = client is None
+        self.governance = UsageGovernance(db, settings)
 
     @property
     def enabled(self) -> bool:
@@ -54,9 +56,18 @@ class RerankerClient:
             "top_n": top_n,
         }
         started = time.monotonic()
+        attempt = await self.governance.reserve(provider_account(self.settings.reranker_url, secret),
+                                                "reranker", estimate_tokens(payload))
+        settled = False
         try:
             async with asyncio.timeout(self.settings.reranker_timeout_seconds):
                 response = await self.client.post(self.settings.reranker_url, json=payload, headers=headers)
+            try:
+                usage_body = response.json()
+            except ValueError:
+                usage_body = None
+            await self.governance.settle(attempt, f"http_{response.status_code}", usage_body)
+            settled = True
             response.raise_for_status()
             body = response.json()
         except (TimeoutError, httpx.TimeoutException):
@@ -66,6 +77,8 @@ class RerankerClient:
             RERANKER_CALLS.labels(outcome="error").inc()
             raise ServiceError("重排服务不可用，已回退融合排序", code="reranker_unavailable") from None
         finally:
+            if not settled:
+                await asyncio.shield(self.governance.settle(attempt, "unknown"))
             RERANKER_SECONDS.observe(time.monotonic() - started)
 
         try:

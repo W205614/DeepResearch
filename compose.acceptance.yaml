@@ -55,6 +55,7 @@ services:
     volumes:
       - ./scripts/mock_webhook.py:/app/mock_webhook.py:ro
     ports: ["127.0.0.1:18090:8090"]
+    networks: [telemetry]
 networks:
   default:
     ipam:

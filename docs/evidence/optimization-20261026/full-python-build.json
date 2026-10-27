@@ -1,0 +1,305 @@
+{
+  "status": "complete_full_recipe_source31118_runtime_probe_and_frozen_scan_passed",
+  "verified_at": "2026-10-26T12:48:38.786277+00:00",
+  "recipe": "Dockerfile",
+  "source_refresh": false,
+  "supplier_http": 0,
+  "candidate_or_daily_services_changed": false,
+  "image_reference": "dr-opt-full-python:20261026",
+  "image_descriptor": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7",
+  "platform": "linux/amd64",
+  "build_id": "desktop-linux/desktop-linux/t4o02eft54inf24ike3gvgmul",
+  "oci_image_digest": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7",
+  "oci_config_digest": null,
+  "runtime_container_id": "68d74adf189d9a3756700ef151c111efb68d7263c154a281103c2c2113da48ac",
+  "runtime_container_exit": 0,
+  "source_lock": "deployment/vendors/python311/source-lock.json",
+  "source_manifest": "full-python-source-manifest.json",
+  "runtime_source_files": 88,
+  "source_input_files": 97,
+  "source_drift": [],
+  "source_manifest_sha256": "4e4b3538aff9133cb8cecf00ba6d0d560629dbcbd529a64bb56a4be5664d05d9",
+  "build_materials": [
+    {
+      "uri": "pkg:docker/debian@trixie-slim?digest=sha256:38a76d01668772e381ad2826d876627c89e7133e2f8a0f5d567306798b0f2a16&platform=linux%2Famd64",
+      "digest": {
+        "sha256": "38a76d01668772e381ad2826d876627c89e7133e2f8a0f5d567306798b0f2a16"
+      }
+    },
+    {
+      "uri": "pkg:docker/gcr.io/distroless/cc-debian13@nonroot?digest=sha256:e792ab3d241a468a4fd7519ddbbebe66b49b5f365771716ea688ad40b6c6f1c2&platform=linux%2Famd64",
+      "digest": {
+        "sha256": "e792ab3d241a468a4fd7519ddbbebe66b49b5f365771716ea688ad40b6c6f1c2"
+      }
+    },
+    {
+      "uri": "pkg:docker/ghcr.io/astral-sh/uv@0.12.3?platform=linux%2Famd64",
+      "digest": {
+        "sha256": "2d890623d310b57771ce840f0da5eed5fc6d657da05ffaa45d82797b53fa3abc"
+      }
+    },
+    {
+      "uri": "https://www.python.org/ftp/python/3.11.18/Python-3.11.18.tar.xz",
+      "digest": {
+        "sha256": "9120e0a653868f6e3698d36cdd99e5a58903ec9469e448f21d98f7b16d8fa290"
+      }
+    }
+  ],
+  "interpreter_identity": {
+    "expat": "expat_2.9.0",
+    "native_package_records": [
+      "libbz2-1.0",
+      "libcrypt1",
+      "libdb5.3t64",
+      "libffi8",
+      "libgdbm6t64",
+      "liblzma5",
+      "libsqlite3-0",
+      "libzstd1",
+      "zlib1g"
+    ],
+    "openssl": "OpenSSL 3.5.7 9 Jun 2026",
+    "python_version": "3.11.18",
+    "scanner_boundary": "CPython interpreter/source security is verified independently of OS/PyPI findings",
+    "signed_source": {
+      "base": "debian:trixie-slim@sha256:38a76d01668772e381ad2826d876627c89e7133e2f8a0f5d567306798b0f2a16",
+      "changes_to_recipe": [
+        "fixedDebian13 parentdigest",
+        "sourceADDchecksum",
+        "vendoredpublickeyimport andfingerprintcheck",
+        "buildparallelism2",
+        "publicGPGfingerprint environment variable renamed to avoid confusing it with a privatekey",
+        "runtimesourceidentity JSON is distinct from scannerpackage inventory"
+      ],
+      "gpg_fingerprint": "A035C8C19219BA821ECEA86B64E628F8D684696D",
+      "key_asc_sha256": "36490870b1f9e2b4fb29411c17c1fca127b92c2745b52a7093ece1c062186f1f",
+      "platform": "linux/amd64",
+      "python_version": "3.11.18",
+      "recipe_sha256": "22b271478509a9f5c9a13965d63e08c4b3be7c75aa411070b4857ba33015208d",
+      "source_modified": false,
+      "source_sha256": "9120e0a653868f6e3698d36cdd99e5a58903ec9469e448f21d98f7b16d8fa290",
+      "source_url": "https://www.python.org/ftp/python/3.11.18/Python-3.11.18.tar.xz",
+      "upstream_commit": "83054588043b3a7ac1ce8324c9242164b632beb9",
+      "upstream_repository": "https://github.com/docker-library/python"
+    },
+    "sqlite": "3.46.1"
+  },
+  "signature": {
+    "verified": true,
+    "return_code": 0,
+    "primary_fingerprint": "A035C8C19219BA821ECEA86B64E628F8D684696D",
+    "validsig": [
+      "[GNUPG:] VALIDSIG CFDCA245B1043CF2A5F97865FFE87404168BD847 2026-10-25 1792960443 0 4 0 1 10 00 A035C8C19219BA821ECEA86B64E628F8D684696D"
+    ],
+    "archive_sha256": "9120e0a653868f6e3698d36cdd99e5a58903ec9469e448f21d98f7b16d8fa290",
+    "signature_sha256": "b3834c222d45c589db264bd1720f7ec459c388a59b0b10b1c446003db7f40f09",
+    "key_sha256": "36490870b1f9e2b4fb29411c17c1fca127b92c2745b52a7093ece1c062186f1f",
+    "trust_anchor": "fingerprint pinned in officialdocker-library/python83054588043b3a7ac1ce8324c9242164b632beb9; not arbitrary keyserver trust",
+    "initial_windows_helper_failure": "GitMSYS gpg required POSIX relative homedir; corrected, original failed receipt retained"
+  },
+  "runtime_verification": {
+    "passed": true,
+    "python_version": "3.11.18",
+    "openssl": "OpenSSL 3.5.7 9 Jun 2026",
+    "expat": "expat_2.9.0",
+    "uid": 10001,
+    "tls": "TLSv1.3",
+    "ca_count": 150,
+    "checks": [
+      "CVE2026-115557 compromised intermediate denied code28 using upstream fixture",
+      "valid verified TLS handshake accepted",
+      "CVE2026-114583 extraction-destination symbolic/hardlink rejected",
+      "valid tar member accepted",
+      "bundled Expat2.9.0 XML parse",
+      "gzip/bz2/lzma/sqlite nativeclosure",
+      "real DOCX validation+splitter",
+      "API/asyncpg/psycopg/PDFium/numpy imports"
+    ],
+    "source_archive_sha256": "9120e0a653868f6e3698d36cdd99e5a58903ec9469e448f21d98f7b16d8fa290",
+    "supplier_http": 0,
+    "network_http": 0,
+    "scope": "Direct signed-source interpreter/security/native ABI checks only; not fullmodelquality, deploymentrole oravailability evidence."
+  },
+  "dbm_native_closure": {
+    "old31115_import_failed": "libdb-5.3.so missing",
+    "repair": "libdb5.3t64 included with its realDebian package records",
+    "new31118_import_write_reopen_read_passed": true
+  },
+  "installed_dependency_freeze": {
+    "unchanged": true,
+    "count": 101,
+    "uv_lock_sha256": "d63ecb8cb8c56a301e92bbd2de405dabc351bcb5cfd51cd4d5bc5b0674af9dc0",
+    "pyproject_sha256": "62e5c3936b6c6e2e94c7dcc60c659f6f90a5381c74e13a10c9ce1dff9c28deb4",
+    "bundled_python_package_entries_outside_site_distributions": [],
+    "scanner_duplicate_python_entries": [
+      {
+        "Name": "packaging",
+        "Version": "26.3",
+        "FilePath": "opt/venv/lib/python3.11/site-packages/packaging-26.3.dist-info/METADATA",
+        "PkgPath": null
+      },
+      {
+        "Name": "packaging",
+        "Version": "26.3",
+        "FilePath": "usr/local/lib/python3.11/site-packages/packaging-26.3.dist-info/METADATA",
+        "PkgPath": null
+      }
+    ]
+  },
+  "scan": {
+    "trivy_version": "0.75.0",
+    "HIGH": 0,
+    "CRITICAL": 0,
+    "exit_code": 0,
+    "all_packages_listed": true,
+    "cache_backend": "memory",
+    "cache_dir": ".cache\\optimization-20261026\\trivy-candidate-cache",
+    "db_updates": false,
+    "ignore": [],
+    "vex": false,
+    "coverage": [
+      {
+        "target": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7 (debian 13.7)",
+        "type": "debian",
+        "packages": 21
+      },
+      {
+        "target": "Python",
+        "type": "python-pkg",
+        "packages": 102
+      },
+      {
+        "target": "usr/local/bin/uv",
+        "type": "rustbinary",
+        "packages": 506
+      }
+    ],
+    "cpython_interpreter_matched_as_package": false,
+    "java_targets": false,
+    "java_cache_supplied_but_no_JAR_targets": true,
+    "vulnerability_db_sha256": "05a1fa5372e54059b6a7c1fc41afb812fafd9bd56a8e0ab6aa20d7f3f154ff31",
+    "vulnerability_metadata": {
+      "Version": 2,
+      "NextUpdate": "2026-10-26T07:10:41.872962061Z",
+      "UpdatedAt": "2026-10-25T07:10:41.872962161Z",
+      "DownloadedAt": "2026-10-25T09:04:35.4539029Z"
+    },
+    "java_db_sha256": "148a3e77d8a7df1c28ad261c4f72085fe0eb9d1354c4cf400e9abe963825a2c4",
+    "java_db_bytes": 1564295168,
+    "java_metadata": {
+      "Version": 1,
+      "NextUpdate": "2026-10-29T00:59:12.44483502Z",
+      "UpdatedAt": "2026-10-26T00:59:12.444835411Z",
+      "DownloadedAt": "0001-01-01T00:00:00Z"
+    }
+  },
+  "security_regression_baseline": {
+    "old31115_fullrecipe_image": "sha256:81b946d5e13959ce73e86d71edf8b3fca31ae40f681655ae954d291c16911ca4",
+    "scan_HIGH": 0,
+    "scan_CRITICAL": 0,
+    "accepted_compromised_chain": true,
+    "new31118_rejects_compromised_chain_code": 28,
+    "meaning": "Oldzero packagefinding scan wasnot evidenceof patchedCPython; signednewsource andactualSSLregression independentlyclose this interpretergap."
+  },
+  "build_attempts": {
+    "old31115_normal_recipe": "succeeded, historicalbaselineonly",
+    "official31118_DockerHubtags": "twoexacttags notfound",
+    "signed_source_remote_ADD": "firstEOF; second checksum/signatureverifiedandPGO/LTOcompiledsuccessfully",
+    "final_normal_recipe": "reusedverifiedsourcebuildstagecache and rebuilt finalclosure/app layers normally; nooverlay"
+  },
+  "boundaries": [
+    "Scanner covers enumerated OS/PyPI/Rust packages; CPython andbundledExpat security is separatelybound tosignature/version/directregressions, not inferredfrom0Trivy",
+    "This is a build/security/ABI result, not freshrole/live/modelquality evidence; coordinator stilldoes unifiedfinaltag acceptance",
+    "No projectfulltest suite, suppliermodelcall, service switch, user.env change, Dockerprune or deletion performed"
+  ],
+  "references": [
+    "https://www.python.org/downloads/release/python-31118/",
+    "https://www.python.org/downloads/release/python-31115/",
+    "https://github.com/docker-library/python/blob/83054588043b3a7ac1ce8324c9242164b632beb9/3.11/slim-trixie/Dockerfile",
+    "https://github.com/python/cpython/issues/160040",
+    "https://github.com/python/cpython/issues/160097"
+  ],
+  "raw_receipts": [
+    {
+      "path": ".cache\\optimization-20261026\\full-python\\build-31118-final.log",
+      "sha256": "e9f232656f668284bfca6acf0fa8e365876de0c36fcd35031431de6ff11ca64e"
+    },
+    {
+      "path": ".cache\\optimization-20261026\\full-python\\build-31118-final-metadata.json",
+      "sha256": "0b8b540a625302bce88367e9d63522b412dedfb52e780f10039686deea32f407"
+    },
+    {
+      "path": ".cache\\optimization-20261026\\full-python\\image-31118-final-scan.json",
+      "sha256": "c15746403ea7a2c8c809138ca1ada71752885962cb670ca7bced722b6e8448a6"
+    },
+    {
+      "path": ".cache\\optimization-20261026\\full-python\\image-31118-final-inspect.json",
+      "sha256": "6eeb6722aeb26d041d63958c8f17e3a2419e4c7770b427196ebc1f03b0c02342"
+    },
+    {
+      "path": ".cache\\optimization-20261026\\full-python\\runtime-security-probe.json",
+      "sha256": "34d22b6088c0dfc1ac4428597df542540eaee22a3f6366c89ee4d9752d4e2782"
+    },
+    {
+      "path": ".cache\\optimization-20261026\\full-python\\runtime-interpreter-identity.json",
+      "sha256": "76b87982d1f4d566230250fe124fb9c6ab35eda5153caa5479cdab6c50f8ce0e"
+    },
+    {
+      "path": ".cache\\optimization-20261026\\full-python\\runtime-source-fingerprint.json",
+      "sha256": "821b202d47f7ededdd201364a5c23fdb4a81b6b78735e12d7363ee69e2794e1a"
+    },
+    {
+      "path": ".cache\\optimization-20261026\\full-python\\source-manifest-final.json",
+      "sha256": "4e4b3538aff9133cb8cecf00ba6d0d560629dbcbd529a64bb56a4be5664d05d9"
+    },
+    {
+      "path": ".cache\\optimization-20261026\\full-python\\signature-receipt.json",
+      "sha256": "cf35b16296b555dc6f9021911594074d8c2c34ce5ece130554677f7bd160ecd8"
+    },
+    {
+      "path": ".cache\\optimization-20261026\\full-python\\signature-verify-msys.log",
+      "sha256": "6ba3c830d73059fbef3913107c748d3adb66b1f605fd73411bb4115443b00724"
+    },
+    {
+      "path": ".cache\\optimization-20261026\\full-python\\ssl-old-baseline.json",
+      "sha256": "e949dcb7ad06d4aed9682d88e1c825af00c55a929aaa54ff5bdea6c422b8dab8"
+    },
+    {
+      "path": ".cache\\optimization-20261026\\full-python\\dbm-old-baseline.json",
+      "sha256": "6605d0f5424de3fea83acddd0d01d831b393e6b9a475fcb7a2020e144ad666a4"
+    },
+    {
+      "path": ".cache\\optimization-20261026\\full-python\\image-31115-baseline-scan.json",
+      "sha256": "da4ee69d9a7ca60d27f02e73ef748f5f5296537be33170e993278153ada61d5a"
+    },
+    {
+      "path": ".cache\\optimization-20261026\\full-python\\runtime-container-inspect.json",
+      "sha256": "3b785aa0830383eda349039e17dce5955e66ff1bc19e8394ba0ca71a93d562da"
+    },
+    {
+      "path": ".cache\\optimization-20261026\\full-python\\python-31118-dockerhub-tag-api.json",
+      "sha256": "9a082a00e3df82d7f0b3b87905030ebcba992dfa8f770b66e3affc17242ddfbd"
+    }
+  ],
+  "official_docker_tag_check": {
+    "path": ".cache\\optimization-20261026\\full-python\\python-31118-dockerhub-tag-api.json",
+    "sha256": "9a082a00e3df82d7f0b3b87905030ebcba992dfa8f770b66e3affc17242ddfbd",
+    "status": 404,
+    "meaning": "officialDockerHub tagAPI lookup returned404 atverificationtime; no claimaboutfuturepublication"
+  },
+  "lint": "Ruff changedPythonfilespassed; gitdiff checkpassed (Windowscoreautocrlf noticesonly)",
+  "source_file_hashes": {
+    "Dockerfile": {
+      "sha256": "2645dce3093bc3ca09ef7cb52727b98d73ec8eee3348722449576d450b3be00e",
+      "normalized_sha256": "2645dce3093bc3ca09ef7cb52727b98d73ec8eee3348722449576d450b3be00e"
+    },
+    "scripts/prepare_python_runtime.py": {
+      "sha256": "525f33ae76be011f7b617862277af09bc255be4e8c80586ec5a5e07cf0dba104",
+      "normalized_sha256": "525f33ae76be011f7b617862277af09bc255be4e8c80586ec5a5e07cf0dba104"
+    },
+    "scripts/verify_python_runtime.py": {
+      "sha256": "1c5431d915cd29faa33c0f3723ee722658bb0ee201c86e18263ad99b330632dd",
+      "normalized_sha256": "23f10d0aef90cd750d219a28c914fd3977cd16a318be9a6bca549641c38c658e"
+    }
+  }
+}

@@ -8,7 +8,6 @@ import asyncio
 import hashlib
 import json
 import re
-import subprocess
 import sys
 import time
 from pathlib import Path
@@ -16,6 +15,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from pydantic import BaseModel
 from backend.core.config import Settings
+from scripts.evaluation_scope import scoped_evaluation
 from backend.core.db import uid
 from backend.core.reliability import ServiceError
 from backend.domain.models import Claim
@@ -82,6 +82,7 @@ def summarize_repetitions(cases, results, repetitions, require_all=False):
     return summary
 
 
+@scoped_evaluation
 async def evaluate(case, root, live=False, external_results=None, debug_fixed_failures=False):
     settings = Settings(demo_mode=False, database_url="", queue_backend="local",
                         document_scan_mode="disabled", object_store_backend="filesystem",
@@ -193,8 +194,8 @@ async def main(args):
         source_hash.update(source.relative_to(source_root).as_posix().encode())
         source_hash.update(b'\0' + source.read_bytes() + b'\0')
     source_sha256 = source_hash.hexdigest()
-    working_tree_dirty = bool(subprocess.check_output(
-        ['git', 'status', '--porcelain', '--untracked-files=normal'], cwd=source_root, text=True).strip())
+    from scripts.ci_source_context import evaluation_revision
+    commit, working_tree_dirty = evaluation_revision(source_root)
     if args.debug_fixed_failures and (args.live or args.external_results or
             Path(args.cases).resolve() != Path('eval/research_quality_cases.json').resolve()):
         raise ValueError('Failure detail logging is restricted to the bundled synthetic fixed cases')
@@ -235,7 +236,7 @@ async def main(args):
         results.extend({**row, 'repetition': repetition} for row in rows)
     summary = summarize_repetitions(cases, results, repetitions, require_all)
     report = {'suite': 'research-quality-v2', 'fixture_sha256': hashlib.sha256(raw).hexdigest(),
-              'commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
+              'commit': commit,
               'working_tree_dirty': working_tree_dirty, 'backend_source_sha256': source_sha256,
               'model': Settings().llm_model_id, 'mode': 'live-web' if args.live else 'fixed-web-real-model',
               'repetitions': repetitions, 'require_all': require_all,

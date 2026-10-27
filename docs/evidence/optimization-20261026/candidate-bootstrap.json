@@ -1,0 +1,159 @@
+{
+  "project": "dr-opt-acceptance",
+  "web_url": "http://localhost:28081",
+  "keycloak_url": "http://localhost:18481",
+  "schema_head": "0017_product_governance",
+  "services": [
+    {
+      "service": "web",
+      "container_id": "f719e2facd16",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "image_id": "sha256:f7c8c1cd3830cdf42fd9a882403a73f6947baa03b913e8476b3b67ffa34c30de"
+    },
+    {
+      "service": "backend",
+      "container_id": "1a60e4c47da6",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "image_id": "sha256:ec11c0a400dddb7c9a8efa24e84043064a665601e0061ede6c7eaed579a9dfe2"
+    },
+    {
+      "service": "agent",
+      "container_id": "c3f73d509508",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "image_id": "sha256:4b648b8e603beb836a05b032b561c04f5e160374351711140641ca8699488ddb"
+    },
+    {
+      "service": "worker",
+      "container_id": "f3b43b8eb451",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "image_id": "sha256:4b648b8e603beb836a05b032b561c04f5e160374351711140641ca8699488ddb"
+    },
+    {
+      "service": "document-worker",
+      "container_id": "ebd8b6c30790",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "image_id": "sha256:4b648b8e603beb836a05b032b561c04f5e160374351711140641ca8699488ddb"
+    },
+    {
+      "service": "keycloak",
+      "container_id": "52252ace7c1b",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "image_id": "sha256:5f3fb534cde6bf006d79f5912473e5d2c828c707cdfc52e16972803aca9d43dd"
+    },
+    {
+      "service": "milvus",
+      "container_id": "680bef58a1b0",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "image_id": "sha256:49371c30af46b1013e4d3e0b980e691d81376d69cdbe1b372725baf1d7255862"
+    },
+    {
+      "service": "migrate",
+      "container_id": "9ef6aa2f259f",
+      "state": "exited",
+      "health": "unhealthy",
+      "exit_code": 0,
+      "image_id": "sha256:46d611e36e955d6954c9d89731afd60b226bdd737ef98cd92c0518b635ff1f26"
+    },
+    {
+      "service": "bootstrap-db",
+      "container_id": "509435402adf",
+      "state": "exited",
+      "health": "unhealthy",
+      "exit_code": 0,
+      "image_id": "sha256:46d611e36e955d6954c9d89731afd60b226bdd737ef98cd92c0518b635ff1f26"
+    },
+    {
+      "service": "storage-init",
+      "container_id": "653847b3dae9",
+      "state": "exited",
+      "health": null,
+      "exit_code": 0,
+      "image_id": "sha256:1e1c407af917ae878a5c22e8581c03bd427cd55f797f4444ebf825b8e00254ed"
+    },
+    {
+      "service": "postgres",
+      "container_id": "80d918feb51d",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "image_id": "sha256:ef257d85f76e48da1c64832459b59fcaba1a4dac97bf5d7450c77753542eee94"
+    },
+    {
+      "service": "redis",
+      "container_id": "c8e748b3fe66",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "image_id": "sha256:02419de7eddf55aa5bcf49efb74e88fa8d931b4d77c07eff8a6b2144472b6952"
+    },
+    {
+      "service": "keycloak-postgres",
+      "container_id": "26f145913d01",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "image_id": "sha256:ef257d85f76e48da1c64832459b59fcaba1a4dac97bf5d7450c77753542eee94"
+    },
+    {
+      "service": "etcd",
+      "container_id": "74c838e5c931",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "image_id": "sha256:52f17f7e56e4f7239f0320dbfcbcc24721163d7d78ae710b466af3254ccf6366"
+    },
+    {
+      "service": "minio",
+      "container_id": "87e6f2390443",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "image_id": "sha256:d1aa81d3a62ae1b5d7279f4d12fe9b1a1e6aba466b2f7adc83bbd4d0abe6f48b"
+    },
+    {
+      "service": "alert-token-init",
+      "container_id": "f81cacc91b0a",
+      "state": "exited",
+      "health": null,
+      "exit_code": 0,
+      "image_id": "sha256:d9e853e87e55526f6b2917df91a2115c36dd7c696a35be12163d44e6e2a4b6bc"
+    },
+    {
+      "service": "clamav",
+      "container_id": "f175a4982174",
+      "state": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "image_id": "sha256:26a576bbed25fe1de510891ff54697c161124050a03e1c5d59b5b9bdf21c3366"
+    }
+  ],
+  "supplier_mode": "explicit deterministic fixtures only",
+  "real_components": [
+    "OIDC",
+    "Java",
+    "Python",
+    "PostgreSQL",
+    "Redis",
+    "Milvus",
+    "MinIO",
+    "ClamAV"
+  ],
+  "keycloak_fixture_access_token_seconds": 1800,
+  "daily_services_changed": false,
+  "roles_e2e": "five-role/scope, terminal recovery, source revision and document lifecycle passed; real scanner outage repair pending rerun",
+  "config_location": "E:\\project\\DeepResearch\\.cache\\optimization-20261026\\acceptance-config.json"
+}

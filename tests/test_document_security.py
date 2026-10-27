@@ -71,11 +71,11 @@ async def test_indexing_document_recovers_after_runtime_restart(settings):
         await first.close()
     second = await Runtime(settings).start()
     try:
-        for _ in range(80):
-            row = await second.db.one("SELECT * FROM documents WHERE id=?", (document["id"],))
-            if row and row["status"] == "ready":
-                break
-            await asyncio.sleep(0.02)
+        key = f"document:{document['id']}:{document['index_version']}"
+        # Await the recovered job itself. Native parser process startup is machine
+        # dependent; a 1.6s polling loop did not assert any recovery contract.
+        await asyncio.wait_for(second.tasks[key], 20)
+        row = await second.db.one("SELECT * FROM documents WHERE id=?", (document["id"],))
         assert row["status"] == "ready"
     finally:
         await second.close()

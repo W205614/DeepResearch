@@ -1,0 +1,42 @@
+{
+  "status": "passed",
+  "scope": "synthetic isolated integrity fixture only",
+  "image_config": "sha256:bf6972e1653e4707c1e37d3a4c989fd5bc9be42641920164fb4a68fff02da371",
+  "container": "dr-opt-grafana-musl-tamper-20261026",
+  "security_pass": false,
+  "cases": [
+    {
+      "plugin": "loki",
+      "mutation": "reviewed backend ELF changed",
+      "settings_http": 500,
+      "signature": "modified",
+      "validation_log": "logger=plugins.signature.validation t=2026-10-26T13:58:32.348452442Z level=warn msg=\"Skipping loading plugin due to problem with signature\" pluginId=loki status=modified"
+    },
+    {
+      "plugin": "mysql",
+      "mutation": "signed frontend module changed",
+      "settings_http": 500,
+      "signature": "modified",
+      "validation_log": "logger=plugins.signature.validation t=2026-10-26T13:58:32.511160385Z level=warn msg=\"Skipping loading plugin due to problem with signature\" pluginId=mysql status=modified"
+    },
+    {
+      "plugin": "jaeger",
+      "mutation": "unknown extra path added",
+      "settings_http": 500,
+      "signature": "modified",
+      "validation_log": "logger=plugins.signature.validation t=2026-10-26T13:58:32.282855086Z level=warn msg=\"Skipping loading plugin due to problem with signature\" pluginId=jaeger status=modified"
+    },
+    {
+      "plugin": "deepresearch-unsigned-fixture",
+      "mutation": "unsigned new plugin added",
+      "settings_http": 500,
+      "signature": "unsigned",
+      "validation_log": "logger=plugins.signature.validation t=2026-10-26T13:58:31.803705084Z level=warn msg=\"Skipping loading plugin due to problem with signature\" pluginId=deepresearch-unsigned-fixture status=unsigned"
+    }
+  ],
+  "external_contacts": 0,
+  "version": "13.2.4",
+  "untouched_official_plugin_valid": "prometheus",
+  "log_sha256": "c776cd002562eeeede88f6cae64978d96551feb1708eb19a3bdfa79a12f58d44",
+  "fixture_stopped": true
+}

@@ -1,0 +1,744 @@
+{
+  "status": "functional_acceptance_passed_window_display_patch_required",
+  "observed_at": "2026-10-26T14:44:02.071227+00:00",
+  "project": "dr-opt-acceptance",
+  "scope": "single-host isolated candidate full monitoring components; controlled OTLP process; actual headless Grafana UI; no capacity or availability guarantee",
+  "startup": {
+    "compose_files": [
+      "E:\\project\\DeepResearch\\compose.yaml",
+      "E:\\project\\DeepResearch\\compose.core.yaml",
+      "E:\\project\\DeepResearch\\.cache\\optimization-20261026\\acceptance.compose.yaml",
+      "E:\\project\\DeepResearch\\.cache\\optimization-20261026\\monitoring.acceptance.compose.yaml"
+    ],
+    "profile": "observability",
+    "services": [
+      "otel-collector",
+      "tempo",
+      "loki",
+      "prometheus",
+      "grafana",
+      "alertmanager",
+      "alert-relay",
+      "ops-exporter"
+    ],
+    "flags": [
+      "up",
+      "-d",
+      "--no-deps",
+      "--no-build",
+      "--pull",
+      "never"
+    ],
+    "new_services_running": 8,
+    "actual_core_compose_services_preserved": 17,
+    "core_unchanged": {
+      "status": "passed",
+      "actual_compose_core_services": 17,
+      "services": [
+        {
+          "service": "web",
+          "container_id": "fdc4dfe4605bb3340fe140e068600905904ceec9d6cbe796132744471023ed6d",
+          "image_id": "sha256:9b3db20c8227796cd1e991ccd3cfa69637a369f002e413d744aa68144665925e",
+          "container_image_env_command_mount_network_unchanged": true,
+          "state_unchanged": true,
+          "started_at_unchanged": true
+        },
+        {
+          "service": "agent",
+          "container_id": "fb82175e701243063d9e16deb81afcad76b4e7893f464aee1698dc53f9ce9465",
+          "image_id": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7",
+          "container_image_env_command_mount_network_unchanged": true,
+          "state_unchanged": true,
+          "started_at_unchanged": true
+        },
+        {
+          "service": "worker",
+          "container_id": "567d5943b9062e5c4300bc0d45bd36e1aece5b6eba5e2a04d278518c92f933cb",
+          "image_id": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7",
+          "container_image_env_command_mount_network_unchanged": true,
+          "state_unchanged": true,
+          "started_at_unchanged": true
+        },
+        {
+          "service": "document-worker",
+          "container_id": "d665de8b90b83b1ec8e154a2138d3e14c4fe3296b3a4934a170af84c31f0e4f1",
+          "image_id": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7",
+          "container_image_env_command_mount_network_unchanged": true,
+          "state_unchanged": true,
+          "started_at_unchanged": true
+        },
+        {
+          "service": "migrate",
+          "container_id": "7556ca3da294a5c8680d079e544a563ef6a25a57d1e32b8859a93fb5f1e59fc1",
+          "image_id": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7",
+          "container_image_env_command_mount_network_unchanged": true,
+          "state_unchanged": true,
+          "started_at_unchanged": true
+        },
+        {
+          "service": "keycloak",
+          "container_id": "6d534292579e708a45d899f6ebb73aa889791d673e23d4b34b67a14e8e7239c7",
+          "image_id": "sha256:95e66ef578a2e6a7ed744252edf687d07713e4e50ee1e9eb194cd0db522361ca",
+          "container_image_env_command_mount_network_unchanged": true,
+          "state_unchanged": true,
+          "started_at_unchanged": true
+        },
+        {
+          "service": "milvus",
+          "container_id": "a8694042208c19956c1b81f0efc8cceaa5bc15ab87e9d8e6afb5eedafeb8a0a3",
+          "image_id": "sha256:092814b9166eaddf75a4c959efd15542491378c2cdfedf67b36293b728b94f04",
+          "container_image_env_command_mount_network_unchanged": true,
+          "state_unchanged": true,
+          "started_at_unchanged": true
+        },
+        {
+          "service": "bootstrap-db",
+          "container_id": "31f61a91ea439af81a59874f282f9bf5f72ee80ec149ad07068da8f337b3727d",
+          "image_id": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7",
+          "container_image_env_command_mount_network_unchanged": true,
+          "state_unchanged": true,
+          "started_at_unchanged": true
+        },
+        {
+          "service": "alert-token-init",
+          "container_id": "547a1d86da7da45698548d9dc41c01f9707343e7b2fadb0115a276ea1d43a225",
+          "image_id": "sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a",
+          "container_image_env_command_mount_network_unchanged": true,
+          "state_unchanged": true,
+          "started_at_unchanged": true
+        },
+        {
+          "service": "etcd",
+          "container_id": "65cc7a5bc31dacb3f611d59a7836c1e0993362d864ac4886782405a82656ed4c",
+          "image_id": "sha256:d480cdd13835e01205ab75f296c6fafcc2e4c57d5711d6c3f2e9320021b81687",
+          "container_image_env_command_mount_network_unchanged": true,
+          "state_unchanged": true,
+          "started_at_unchanged": true
+        },
+        {
+          "service": "postgres",
+          "container_id": "31546eb1e2090f4b2601dfe48d18ea5167c273c041fadc3a778566faae1c2e57",
+          "image_id": "sha256:2a792b05fff59ea5ba72747a925e22a211c3e07bb8d0cad1c18b9acf773462c8",
+          "container_image_env_command_mount_network_unchanged": true,
+          "state_unchanged": true,
+          "started_at_unchanged": true
+        },
+        {
+          "service": "redis",
+          "container_id": "5f847575537295d86ec76e0b13002dc1bf0003889e37598ac2097f58e799ccb5",
+          "image_id": "sha256:57e4255cc971b1c8d6f8a6ca283ac01bc3ecdd914273ef6bfaede87aaecd6541",
+          "container_image_env_command_mount_network_unchanged": true,
+          "state_unchanged": true,
+          "started_at_unchanged": true
+        },
+        {
+          "service": "keycloak-postgres",
+          "container_id": "06d8393ae2f84d8b052d66f9f8d33550ac65a9322cabd645bcb0c4cccc8d2421",
+          "image_id": "sha256:2a792b05fff59ea5ba72747a925e22a211c3e07bb8d0cad1c18b9acf773462c8",
+          "container_image_env_command_mount_network_unchanged": true,
+          "state_unchanged": true,
+          "started_at_unchanged": true
+        },
+        {
+          "service": "minio",
+          "container_id": "b5afc7ff37bbc83c42d1c28e3b181411ed3fcc03644053029faf01c806dfa767",
+          "image_id": "sha256:151cd83d5e6500f4d1b3d7f0a12756fe80e8ffcbf91150afd6b9b9605bc2369a",
+          "container_image_env_command_mount_network_unchanged": true,
+          "state_unchanged": true,
+          "started_at_unchanged": true
+        },
+        {
+          "service": "clamav",
+          "container_id": "a4a0144e9d64c65284c1898768e72cdd2d81b3bcb23d9b8de9b188af0aee80f5",
+          "image_id": "sha256:e73991068f2037e10cf15669dd3b48c24345658f5488430746b414c0f761270f",
+          "container_image_env_command_mount_network_unchanged": true,
+          "state_unchanged": true,
+          "started_at_unchanged": true
+        },
+        {
+          "service": "backend",
+          "container_id": "0e6eebb2dbca9f34c97a2a8b166977f72c9a189ac9a3582f198be306423f576d",
+          "image_id": "sha256:20bae2ec4a9af26d8f730a5c21b2cb83ee093d4601a5df7cc7360f288ff7c3e7",
+          "container_image_env_command_mount_network_unchanged": true,
+          "state_unchanged": true,
+          "started_at_unchanged": true
+        },
+        {
+          "service": "storage-init",
+          "container_id": "653847b3dae90a6f0ae63baaff4b0d327c5b62261cfd87866d7250b297087dcc",
+          "image_id": "sha256:1e1c407af917ae878a5c22e8581c03bd427cd55f797f4444ebf825b8e00254ed",
+          "container_image_env_command_mount_network_unchanged": true,
+          "state_unchanged": true,
+          "started_at_unchanged": true
+        }
+      ],
+      "inherited_image_build_labels_excluded": 22
+    },
+    "external_feishu_webhook_explicitly_empty": true,
+    "business_internal_token_not_mounted_to_observability": true,
+    "ports": {
+      "grafana": "127.0.0.1:13001",
+      "alertmanager": "127.0.0.1:19094"
+    },
+    "remaining_running_for_parent_acceptance": true,
+    "all_new_containers_and_volumes_retained": true
+  },
+  "resources": {
+    "docker_memory_total_bytes": 16341676032,
+    "vm_memory_available_before_kib": 8201432,
+    "max_added_service_memory_bytes": 3087007744,
+    "vm_memory_after": [
+      "MemTotal:       15958668 kB",
+      "MemAvailable:    7954428 kB"
+    ],
+    "observed_services": [
+      {
+        "Name": "dr-opt-acceptance-otel-collector-1",
+        "MemUsage": "138.1MiB / 256MiB",
+        "CPUPerc": "0.20%"
+      },
+      {
+        "Name": "dr-opt-acceptance-tempo-1",
+        "MemUsage": "76.27MiB / 512MiB",
+        "CPUPerc": "0.37%"
+      },
+      {
+        "Name": "dr-opt-acceptance-loki-1",
+        "MemUsage": "130.4MiB / 512MiB",
+        "CPUPerc": "1.14%"
+      },
+      {
+        "Name": "dr-opt-acceptance-prometheus-1",
+        "MemUsage": "73.7MiB / 256MiB",
+        "CPUPerc": "0.44%"
+      },
+      {
+        "Name": "dr-opt-acceptance-grafana-1",
+        "MemUsage": "395.9MiB / 1GiB",
+        "CPUPerc": "1.52%"
+      },
+      {
+        "Name": "dr-opt-acceptance-alertmanager-1",
+        "MemUsage": "20.93MiB / 128MiB",
+        "CPUPerc": "0.02%"
+      },
+      {
+        "Name": "dr-opt-acceptance-alert-relay-1",
+        "MemUsage": "39.84MiB / 128MiB",
+        "CPUPerc": "0.18%"
+      },
+      {
+        "Name": "dr-opt-acceptance-ops-exporter-1",
+        "MemUsage": "39.3MiB / 128MiB",
+        "CPUPerc": "4.08%"
+      }
+    ]
+  },
+  "runtime_services": [
+    {
+      "service": "otel-collector",
+      "container_id": "ffb1091f491fba2ccd7665169003182eedb679957e8b54402906a5a8483034d0",
+      "image_id": "sha256:989669581ee1f89184f3fd9dd5adfc6615ed6c9692c026aaea89e07a20dfb177",
+      "state": "running",
+      "health": "no Docker healthcheck; functional/API checks recorded separately",
+      "restarts": 0,
+      "oom_killed": false,
+      "memory_limit_bytes": 268435456,
+      "nano_cpus": 500000000,
+      "pids_limit": 128,
+      "log_config": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "ports": {
+        "4317/tcp": null,
+        "4318/tcp": null,
+        "55679/tcp": null
+      },
+      "mounts": [
+        {
+          "name": null,
+          "target": "/etc/otelcol-contrib/config.yaml",
+          "rw": false
+        }
+      ]
+    },
+    {
+      "service": "tempo",
+      "container_id": "c0b9dd187c555d9bc20e91aa3df15c844788af3c90c21aec1265a96f00401e17",
+      "image_id": "sha256:12b0820f13ffa10ce956b6e9acc3b03f3cffded99109be6cc09d106fe56e5d38",
+      "state": "running",
+      "health": "no Docker healthcheck; functional/API checks recorded separately",
+      "restarts": 0,
+      "oom_killed": false,
+      "memory_limit_bytes": 536870912,
+      "nano_cpus": 500000000,
+      "pids_limit": 128,
+      "log_config": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "ports": {},
+      "mounts": [
+        {
+          "name": "dr-opt-acceptance_tempo-data",
+          "target": "/var/tempo",
+          "rw": true
+        },
+        {
+          "name": null,
+          "target": "/etc/tempo/tempo.yaml",
+          "rw": false
+        }
+      ]
+    },
+    {
+      "service": "loki",
+      "container_id": "6880d93f045f11165c1d477783497fcfded64418a975e26a3a1f96bfce318183",
+      "image_id": "sha256:569e5cab050b7705eb82080335ff9a8bd329650b358bb0d42131e3ced8d9492e",
+      "state": "running",
+      "health": "no Docker healthcheck; functional/API checks recorded separately",
+      "restarts": 0,
+      "oom_killed": false,
+      "memory_limit_bytes": 536870912,
+      "nano_cpus": 500000000,
+      "pids_limit": 128,
+      "log_config": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "ports": {
+        "3100/tcp": null
+      },
+      "mounts": [
+        {
+          "name": "dr-opt-acceptance_loki-data",
+          "target": "/loki",
+          "rw": true
+        },
+        {
+          "name": null,
+          "target": "/etc/loki/loki.yaml",
+          "rw": false
+        }
+      ]
+    },
+    {
+      "service": "prometheus",
+      "container_id": "0899d79c23cc1d5766163e245f90c3d157b8bf35949be48b1754b05b0237d213",
+      "image_id": "sha256:d445d1806b38f85b5c394a1b87f94113fde0473b45245922c2e8b1bd41fa68ae",
+      "state": "running",
+      "health": "no Docker healthcheck; functional/API checks recorded separately",
+      "restarts": 0,
+      "oom_killed": false,
+      "memory_limit_bytes": 268435456,
+      "nano_cpus": 500000000,
+      "pids_limit": 128,
+      "log_config": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "ports": {
+        "9090/tcp": null
+      },
+      "mounts": [
+        {
+          "name": "dr-opt-acceptance_prometheus-data",
+          "target": "/prometheus",
+          "rw": true
+        },
+        {
+          "name": null,
+          "target": "/etc/prometheus/alerts.yml",
+          "rw": false
+        },
+        {
+          "name": null,
+          "target": "/etc/prometheus/prometheus.yml",
+          "rw": false
+        }
+      ]
+    },
+    {
+      "service": "grafana",
+      "container_id": "9f47b0107606b38750f52bf6ca65b6551310977b6f457a1ba56ecc9d6b9d1df1",
+      "image_id": "sha256:9a68d3a7f3b96ffa643af86e5be5f91a723cc051678b4d445a879861bc335132",
+      "state": "running",
+      "health": "no Docker healthcheck; functional/API checks recorded separately",
+      "restarts": 0,
+      "oom_killed": false,
+      "memory_limit_bytes": 1073741824,
+      "nano_cpus": 1000000000,
+      "pids_limit": 256,
+      "log_config": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "ports": {
+        "3000/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "13001"
+          }
+        ]
+      },
+      "mounts": [
+        {
+          "name": null,
+          "target": "/etc/grafana/provisioning",
+          "rw": false
+        },
+        {
+          "name": "dr-opt-acceptance_grafana-data",
+          "target": "/var/lib/grafana",
+          "rw": true
+        }
+      ]
+    },
+    {
+      "service": "alertmanager",
+      "container_id": "95c9b8396f1608138860558e604e5a94bf4d770abb4ae2fb9b2386ae19578c13",
+      "image_id": "sha256:074c701cb3dd75766133cbd229ca6b6b285fc972f956ff6e6c1b326294a19d0c",
+      "state": "running",
+      "health": "no Docker healthcheck; functional/API checks recorded separately",
+      "restarts": 0,
+      "oom_killed": false,
+      "memory_limit_bytes": 134217728,
+      "nano_cpus": 500000000,
+      "pids_limit": 128,
+      "log_config": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "ports": {
+        "9093/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "19094"
+          }
+        ]
+      },
+      "mounts": [
+        {
+          "name": "dr-opt-acceptance_alertmanager-data",
+          "target": "/alertmanager",
+          "rw": true
+        },
+        {
+          "name": "dr-opt-acceptance_alert-relay-token-v2",
+          "target": "/run/secrets",
+          "rw": false
+        },
+        {
+          "name": null,
+          "target": "/etc/alertmanager/alertmanager.yml",
+          "rw": false
+        }
+      ]
+    },
+    {
+      "service": "alert-relay",
+      "container_id": "6858aff34b86504a56cfcafec911ce66e0784819a29df6411f50cd980ea0f545",
+      "image_id": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7",
+      "state": "running",
+      "health": "healthy",
+      "restarts": 0,
+      "oom_killed": false,
+      "memory_limit_bytes": 134217728,
+      "nano_cpus": 500000000,
+      "pids_limit": 128,
+      "log_config": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "ports": {
+        "8000/tcp": null
+      },
+      "mounts": [
+        {
+          "name": "dr-opt-acceptance_alert-relay-state",
+          "target": "/state",
+          "rw": true
+        },
+        {
+          "name": "dr-opt-acceptance_alert-relay-token-v2",
+          "target": "/run/secrets",
+          "rw": false
+        }
+      ]
+    },
+    {
+      "service": "ops-exporter",
+      "container_id": "c0660dfe5cc6f0792c336829be550aa48b6981e41becd1c5faefa2bfa0fe2e53",
+      "image_id": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7",
+      "state": "running",
+      "health": "healthy",
+      "restarts": 0,
+      "oom_killed": false,
+      "memory_limit_bytes": 134217728,
+      "nano_cpus": 500000000,
+      "pids_limit": 128,
+      "log_config": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "ports": {
+        "8000/tcp": null
+      },
+      "mounts": [
+        {
+          "name": null,
+          "target": "/host-metrics",
+          "rw": false
+        }
+      ]
+    }
+  ],
+  "metrics_and_data_sources": {
+    "scrape_targets": [
+      {
+        "scrapeUrl": "http://agent:8000/metrics",
+        "health": "up",
+        "lastError": "",
+        "lastScrape": "2026-10-26T14:30:26.090417892Z",
+        "job": "deepresearch-api"
+      },
+      {
+        "scrapeUrl": "http://backend:8080/metrics",
+        "health": "up",
+        "lastError": "",
+        "lastScrape": "2026-10-26T14:30:18.85644905Z",
+        "job": "deepresearch-business"
+      },
+      {
+        "scrapeUrl": "http://document-worker:8001/metrics",
+        "health": "up",
+        "lastError": "",
+        "lastScrape": "2026-10-26T14:30:24.047294412Z",
+        "job": "deepresearch-document-worker"
+      },
+      {
+        "scrapeUrl": "http://ops-exporter:8003/metrics",
+        "health": "up",
+        "lastError": "",
+        "lastScrape": "2026-10-26T14:30:14.675983802Z",
+        "job": "deepresearch-ops"
+      },
+      {
+        "scrapeUrl": "http://worker:8001/metrics",
+        "health": "up",
+        "lastError": "",
+        "lastScrape": "2026-10-26T14:30:25.863075485Z",
+        "job": "deepresearch-worker"
+      }
+    ],
+    "ops": {
+      "database_up": true,
+      "capacity_sampled": true,
+      "verified_backup_timestamp": 0,
+      "backup_claim": "No isolated candidate backup verified; freshness correctly remains0",
+      "metric_names": [
+        "deepresearch_backup_invalid_count",
+        "deepresearch_backup_rpo_target_seconds",
+        "deepresearch_backup_rto_target_seconds",
+        "deepresearch_backup_verified_timestamp_seconds",
+        "deepresearch_database_connections",
+        "deepresearch_database_max_connections",
+        "deepresearch_database_size_bytes",
+        "deepresearch_host_disk_available",
+        "deepresearch_host_disk_free_bytes",
+        "deepresearch_host_disk_total_bytes",
+        "deepresearch_host_probe_timestamp_seconds",
+        "deepresearch_ops_database_up",
+        "deepresearch_pending_documents",
+        "deepresearch_persisted_pending_runs"
+      ]
+    },
+    "datasource_health": {
+      "Loki": {
+        "status": 200,
+        "response": {
+          "message": "Data source successfully connected.",
+          "status": "OK"
+        },
+        "uid": "loki"
+      },
+      "Prometheus": {
+        "status": 200,
+        "response": {
+          "details": {
+            "application": "Prometheus",
+            "features": {
+              "rulerApiEnabled": false
+            }
+          },
+          "message": "Successfully queried the Prometheus API.",
+          "status": "OK"
+        },
+        "uid": "PBFA97CFB590B2093"
+      },
+      "Tempo": {
+        "status": 200,
+        "response": {
+          "message": "Data source is working",
+          "status": "OK"
+        },
+        "uid": "tempo"
+      }
+    },
+    "controlled_telemetry": {
+      "trace_id": "23b0a1fab5ff86e72e6492825516ddb1",
+      "marker": "obs-1d15c0c4d0360c321ddd",
+      "trace_http": 200,
+      "log_http": 200,
+      "log_streams": 1,
+      "trace_log_same_id": true,
+      "producer": "independent docker exec process using actual backend.core.observability configure_telemetry/JsonFormatter/OTLPgrpc exporters; core service env/commands unchanged",
+      "core_automatic_tracing_enabled": false
+    }
+  },
+  "browser": {
+    "status": "passed",
+    "scope": "headless Chromium actual Grafana admin login and provisioned dashboard; no saved session or HAR",
+    "screenshots": [
+      "grafana-dashboard-top-v3.png",
+      "grafana-dashboard-bottom-v3.png"
+    ],
+    "javascript_errors": [],
+    "console_errors": [],
+    "http_error_responses": [],
+    "failed_requests": [],
+    "actual_admin_login": true,
+    "dashboard_query_http200": true,
+    "openfeature_evaluation_http": 200,
+    "dashboard_title": "DeepResearch",
+    "provisioned_panel_titles": [
+      "\u91c7\u96c6\u670d\u52a1\u53ef\u7528\u6027",
+      "\u961f\u5217\u6df1\u5ea6",
+      "\u4efb\u52a1\u6210\u529f\u7387\uff08\u8fd1 5 \u5206\u949f\uff09",
+      "\u5931\u8d25\u7c7b\u522b",
+      "\u4efb\u52a1\u65f6\u5ef6 P95",
+      "Token \u6d88\u8017",
+      "\u56fe\u7247\u7406\u89e3\u8017\u65f6 P95",
+      "\u56fe\u7247\u7406\u89e3\u9519\u8bef\u7387",
+      "\u89c6\u89c9 Token \u7528\u91cf",
+      "\u68c0\u7d22\u7ed3\u679c\u5206\u7c7b",
+      "\u515c\u5e95\u539f\u56e0\u5206\u5e03",
+      "\u56fe\u7247\u7406\u89e3\u8c03\u7528\u91cf"
+    ],
+    "rendered_provisioned_titles": [
+      "\u91c7\u96c6\u670d\u52a1\u53ef\u7528\u6027",
+      "\u961f\u5217\u6df1\u5ea6",
+      "\u4efb\u52a1\u6210\u529f\u7387\uff08\u8fd1 5 \u5206\u949f\uff09",
+      "\u5931\u8d25\u7c7b\u522b",
+      "\u4efb\u52a1\u65f6\u5ef6 P95",
+      "Token \u6d88\u8017",
+      "\u56fe\u7247\u7406\u89e3\u8017\u65f6 P95",
+      "\u56fe\u7247\u7406\u89e3\u9519\u8bef\u7387",
+      "\u89c6\u89c9 Token \u7528\u91cf",
+      "\u68c0\u7d22\u7ed3\u679c\u5206\u7c7b",
+      "\u515c\u5e95\u539f\u56e0\u5206\u5e03",
+      "\u56fe\u7247\u7406\u89e3\u8c03\u7528\u91cf"
+    ],
+    "no_data_text_occurrences": 0,
+    "body_has_datasource_error": false,
+    "final_path": "/d/deepresearch/deepresearch"
+  },
+  "screenshots": [
+    {
+      "file": "observability-acceptance/grafana-dashboard-top-v3.png",
+      "sha256": "fc8a7efbe14de17bb619d8967e4897e9c9a122a7b93d9959516639595e7252ab"
+    },
+    {
+      "file": "observability-acceptance/grafana-dashboard-bottom-v3.png",
+      "sha256": "2f521024f1b369ae14d36e3325b5bd446c39628ecbe44a5b28eed2449fdd0d02"
+    }
+  ],
+  "display_and_evidence_limits": [
+    {
+      "observation": "Task success ratio displays N/A",
+      "prometheus_expression": "(sum(rate(deepresearch_runs_total{status=~\"completed|insufficient\"}[5m])) / sum(rate(deepresearch_runs_total[5m]))) and (sum(increase(deepresearch_runs_total[5m])) > 0)",
+      "actual_query_values": [],
+      "interpretation": "No usable recent terminal-run rate/zero denominator in this short fixture scrape window; not a datasource failure or a measured success-rate/SLO result."
+    },
+    {
+      "observation": "Image-understanding error-rate chart axis reaches10000%",
+      "source_field_config": {
+        "unit": "percentunit",
+        "min": null,
+        "max": null
+      },
+      "interpretation": "Actual source has percentunit only, min/max unset. Current auto-axis renders10000%; add explicit min0/max1 only in an authorized window. Earlier textual claim of explicit max100 was incorrect; the source was not changed."
+    },
+    {
+      "observation": "First2 rapidly navigating UI attempts each recorded1OFREP console error and net::ERR_ABORTED; raw attempts retained",
+      "final_validation": "Same unchanged image/config, final page waits for home network idle before navigation:0JS exceptions,0console errors, feature evaluation endpoint HTTP200. No request suppression or error filtering."
+    },
+    {
+      "observation": "Core profile intentionally keeps automatic OTEL endpoint empty",
+      "interpretation": "Controlled export used an independent docker-exec process with the production telemetry/log formatter path; this does not claim automatic tracing of all core requests."
+    },
+    {
+      "observation": "Isolated host backup verification timestamp remains0",
+      "interpretation": "Capacity probe sampled real host disks only; no new verified backup or automatic scheduled backup is claimed."
+    }
+  ],
+  "security_scope": "Frozen exact Grafana9a68 artifact; authorization/checker/CI handled separately by root/security_review; no policy change in this fixture",
+  "daily_deployment_or_restart": false,
+  "model_or_embedding_or_search_provider_calls": 0,
+  "private_raw_evidence_directory": "E:\\project\\DeepResearch\\.cache\\optimization-20261026\\monitoring-acceptance",
+  "window_patch_required": [
+    {
+      "id": "WINDOW_PATCH_REQUIRED_GRAFANA_VISION_ERROR_AXIS",
+      "status": "WINDOW_PATCH_REQUIRED",
+      "file": "observability/grafana/provisioning/dashboards/deepresearch.json",
+      "panel_id": 8,
+      "panel_title": "\u56fe\u7247\u7406\u89e3\u9519\u8bef\u7387",
+      "panel_id_line": 183,
+      "unit_line": 200,
+      "field_defaults_line": 199,
+      "old_field_defaults": {
+        "unit": "percentunit"
+      },
+      "old_min": "unset",
+      "old_max": "unset",
+      "observed_rendered_auto_axis": "0% to10000% with current zero-valued series",
+      "proposed_field_defaults": {
+        "unit": "percentunit",
+        "min": 0,
+        "max": 1
+      },
+      "source_sha256_before_window": "737d0ce3d790df74bd27b323e6701ee022f85d1453d6d0fca338c540a3ca722f",
+      "reason_to_wait": "Shared read-only provisioning directory is mounted by daily Grafana and hot-reloads; no daily window granted",
+      "window_validation": [
+        "Parse JSON and assert exactly panel id8 has unit percentunit,min0,max1",
+        "After authorized update, inspect actual Grafana panel axis once and retain screenshot"
+      ],
+      "source_modified_now": false
+    }
+  ]
+}

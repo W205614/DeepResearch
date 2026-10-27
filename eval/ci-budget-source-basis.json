@@ -1,0 +1,197 @@
+{
+  "schema": "ci-budget-audited-source-v1",
+  "adversarial_cases": 3,
+  "positive_success_min_http": 8,
+  "refusal_success_min_http": 2,
+  "proof_conditions": [
+    "fresh isolated case databases; unchanged four workflow invocations; real model (demo false)",
+    "positive success requires a cited visible claim; escaped non-claim headings/limitations and excluded reference-list lines cannot create one",
+    "first approved claim requires first planner,judge,analyst,writer,validator,coverage asks plus separate support/coverage grading",
+    "critical cases must all pass; stability uses require_all; no noncritical-success assumption is used in the critical-path threshold"
+  ],
+  "symbols": [
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.build",
+      "ast_sha256": "5d6961371e795c74fab8c1d664e667b5233aed53a46c2efedf13611d1fb81524"
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.instrument",
+      "ast_sha256": "38ffd92797c8878fb1094e84693f3d24bfb19f921502ac7a3fd7892552448af3"
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.ask",
+      "ast_sha256": "b31d380bbe644ac9089e320c19de39b3fce8b20fc6691f196c9fd4665d931153"
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.router",
+      "ast_sha256": "fdfe2f4186023f2b9ec7b1d2c8df4db5fdfcc88209e3b0d06861e6fcfd18ef70"
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.planner",
+      "ast_sha256": "230a99a8cdf6a36c417c12e1f8b9718460c25fb6b40d6d68ee154121c8ce7847"
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.judge",
+      "ast_sha256": "4602608a2abf7a886c83c344b8d1e3df99b727cebb768fba628a3c97f068ef59"
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.analyst",
+      "ast_sha256": "d69fea12e4c2e9ec40911eed002697b7f47173f3f57ad19f4d1018e98d8689c1"
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.writer",
+      "ast_sha256": "f3b6861c0989877015d6712d396b8e5fe7ad293b3c27203b89b5de7a2b876dee"
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.check_draft",
+      "ast_sha256": "0e60e05396f534c9a0086a15b13affa6a02633a59a148767fa5a2c8f3c2e4577"
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.validator",
+      "ast_sha256": "d078dba53a6cf080bdee7330078f576be5fda29372b16e7fcb6153fb6295c01a"
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "md_text",
+      "ast_sha256": "5480a9472c4aff1f3cb2c2a99f97a87cecaa8ac960f9967a8ae02815ae6f5243"
+    },
+    {
+      "path": "backend/research/reporting.py",
+      "symbol": "assemble_report",
+      "ast_sha256": "c55b508ff70dbb3215e845b028c49b96464adfb9961420a41e9dab851652fc65"
+    },
+    {
+      "path": "backend/domain/models.py",
+      "symbol": "Plan",
+      "ast_sha256": "f0c78c52efeec29c8b359d59f56f103a62dcd02e489be348f366f0c473e27ed3"
+    },
+    {
+      "path": "backend/domain/models.py",
+      "symbol": "Claim",
+      "ast_sha256": "8a6b6e1bb117f4547b38587f4273da8ca2ce37eb5854d199f45cb0023b8e243e"
+    },
+    {
+      "path": "backend/domain/models.py",
+      "symbol": "ReportDraft",
+      "ast_sha256": "7914003e345013f37a0581eda6855a59168bf9dc80145b19150c86415cd083da"
+    },
+    {
+      "path": "backend/domain/models.py",
+      "symbol": "ReportSection",
+      "ast_sha256": "4845b58b72574c3bd13be584a2ca40a985250a9d2b752a246da0a17dbc41b605"
+    },
+    {
+      "path": "backend/services/runtime.py",
+      "symbol": "Runtime.execute_run",
+      "ast_sha256": "2fb34718ec87fa94bce7409ef01b3a70c510bc2ddd27e566a4b02ade62725e06"
+    },
+    {
+      "path": "backend/infrastructure/providers.py",
+      "symbol": "Providers.structured",
+      "ast_sha256": "252379880bd00138c44d6922b8f939b96f099a6fa44cd2532ca1091052973953"
+    },
+    {
+      "path": "backend/infrastructure/providers.py",
+      "symbol": "Providers.post",
+      "ast_sha256": "fd7a53e6ae5d825c1136f37f722d7c2ca272e125b66272e93dc888dec4a10e38"
+    },
+    {
+      "path": "backend/quality_gate.py",
+      "symbol": "assess_support",
+      "ast_sha256": "a30ffd97d416a956493140daeeda0720e457557cae38a5e37270fbfd90f0c40c"
+    },
+    {
+      "path": "backend/quality_gate.py",
+      "symbol": "evaluate_draft",
+      "ast_sha256": "80636fc05009397a1e556e2d0c83c8a6f10101c2dd9f61ddddef8737fb4fe2ac"
+    },
+    {
+      "path": "backend/quality_gate.py",
+      "symbol": "summarize",
+      "ast_sha256": "c65270e87a41c897b79caf35b62e8d8dbaaa73d8170c2831efb5c86f8070ad13"
+    },
+    {
+      "path": "scripts/evaluate_answers.py",
+      "symbol": "main_async",
+      "ast_sha256": "8fd14b71d2a7d48eed3b04e38aea57d677890f79c1e6bad81750ee4e68f777c0"
+    },
+    {
+      "path": "scripts/evaluate_research.py",
+      "symbol": "assess_report_support",
+      "ast_sha256": "5ab26ef110a7e7152d57f3f2f9a0c10576c4c5376ae252e1c135ad4598bdf70e"
+    },
+    {
+      "path": "scripts/evaluate_research.py",
+      "symbol": "evaluate",
+      "ast_sha256": "e3b9205cacb684d6867c102ef13a66661f16d62a1c62ed2ae5743d0ccf6eeec0"
+    },
+    {
+      "path": "scripts/evaluate_research.py",
+      "symbol": "summarize_research",
+      "ast_sha256": "01ad6c9b557628c7829929bd5ba5286db6ee1323922722c67eb14fccc04dd285"
+    },
+    {
+      "path": "scripts/evaluate_research.py",
+      "symbol": "summarize_repetitions",
+      "ast_sha256": "c82303ded704f125b8bf82ce54ad4af9d81edcef4bd936498dd9f67089dd47ff"
+    },
+    {
+      "path": "scripts/evaluate_research.py",
+      "symbol": "main",
+      "ast_sha256": "2325bf89d990e28df56b1b8414a5cd79bc299c705564524ce9c887b4c8586c10"
+    },
+    {
+      "path": "scripts/evaluation_scope.py",
+      "symbol": "scoped_evaluation",
+      "ast_sha256": "a6a358812c41d3e15d281d2b2b3957e9516a29f1ac08810b07583cd3ed3a6202"
+    },
+    {
+      "path": "scripts/bounded_evaluation.py",
+      "symbol": "main",
+      "ast_sha256": "c67e6fdc18ec7176389bc859ce659981c16b7201d446cc478a5fd80fb71bf935"
+    },
+    {
+      "path": "scripts/bounded_evaluation.py",
+      "symbol": "Budget.install",
+      "ast_sha256": "7d72d3bf99a55fda45603b5f994964658d74c939795d8f5fb3303a9856d4ebd1"
+    },
+    {
+      "path": "scripts/bounded_evaluation.py",
+      "symbol": "Budget.reserve",
+      "ast_sha256": "0a8b3540e2b1a108d2e65a22786c876f92c7d653bd0378082d2bb32cb09f65bb"
+    },
+    {
+      "path": "scripts/bounded_evaluation.py",
+      "symbol": "Budget.__init__",
+      "ast_sha256": "b9cd57027177bcdb95a369c939602c9fd5e6c727cf8d61d88c8530caea901c89"
+    },
+    {
+      "path": "scripts/evaluation_scope.py",
+      "symbol": "configure_evaluator_limits",
+      "ast_sha256": "30ca3662002d01d4b8c06c7739ad2016af3f229e4f97de3cc3f7b064f3dd8ef5"
+    }
+  ],
+  "case_fingerprints": {
+    "eval/answer_quality_cases.json": "dd8541e23260631539e0ca5afecdbb0e5520d6029796355a45cf850597484036",
+    "eval/research_quality_cases.json": "c23662922168f5ce04e3b2e0e9cf9b11fc1bee81a3bc8edc25b18e39b74f239f",
+    "eval/research_quality_extensions.json": "8e81a432a18f5360e169266d9ff584b30d43b897e34bad5bffc023aab4f50f50",
+    "pyproject.toml": "62e5c3936b6c6e2e94c7dcc60c659f6f90a5381c74e13a10c9ce1dff9c28deb4",
+    "uv.lock": "d63ecb8cb8c56a301e92bbd2de405dabc351bcb5cfd51cd4d5bc5b0674af9dc0"
+  },
+  "fresh_invocations": [
+    "- run: uv run python scripts/run_ci_evaluation.py paid --label answers scripts/evaluate_answers.py --output .cache/eval/answer-quality.json",
+    "- run: uv run python scripts/run_ci_evaluation.py paid --label research scripts/evaluate_research.py --debug-fixed-failures --output .cache/eval/research-quality.json",
+    "- run: uv run python scripts/run_ci_evaluation.py paid --label stability scripts/evaluate_research.py --only conflict-1,compare-3,single-5 --repetitions 3 --require-all --debug-fixed-failures --output .cache/eval/research-stability.json",
+    "- run: uv run python scripts/run_ci_evaluation.py paid --label extensions scripts/evaluate_research.py --cases eval/research_quality_extensions.json --output .cache/eval/research-quality-extensions.json"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "upstream_repository": "https://github.com/docker-library/python",
+  "upstream_commit": "83054588043b3a7ac1ce8324c9242164b632beb9",
+  "recipe_sha256": "22b271478509a9f5c9a13965d63e08c4b3be7c75aa411070b4857ba33015208d",
+  "python_version": "3.11.18",
+  "source_url": "https://www.python.org/ftp/python/3.11.18/Python-3.11.18.tar.xz",
+  "source_sha256": "9120e0a653868f6e3698d36cdd99e5a58903ec9469e448f21d98f7b16d8fa290",
+  "gpg_fingerprint": "A035C8C19219BA821ECEA86B64E628F8D684696D",
+  "key_asc_sha256": "36490870b1f9e2b4fb29411c17c1fca127b92c2745b52a7093ece1c062186f1f",
+  "changes_to_recipe": [
+    "fixedDebian13 parentdigest",
+    "sourceADDchecksum",
+    "vendoredpublickeyimport andfingerprintcheck",
+    "buildparallelism2",
+    "publicGPGfingerprint environment variable renamed to avoid confusing it with a privatekey",
+    "runtimesourceidentity JSON is distinct from scannerpackage inventory"
+  ],
+  "source_modified": false,
+  "base": "debian:trixie-slim@sha256:38a76d01668772e381ad2826d876627c89e7133e2f8a0f5d567306798b0f2a16",
+  "platform": "linux/amd64"
+}

@@ -1,0 +1,33 @@
+FROM golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c AS build
+ARG GOPROXY=https://proxy.golang.org
+ENV GOPROXY=${GOPROXY} CGO_ENABLED=0 GOTOOLCHAIN=local GOMAXPROCS=2 GOMEMLIMIT=768MiB
+RUN apk add --no-cache git
+WORKDIR /source
+ADD --checksum=sha256:6d575a3fbeece5230290314d74f5c93dbb53ee3bcb564465b63cbea673740805 https://codeload.github.com/etcd-io/etcd/tar.gz/38e57443c51fc9a3cc6a943fa8ed10381f66ce5c /tmp/etcd.tar.gz
+RUN tar -xzf /tmp/etcd.tar.gz --strip-components=1 \
+    && git init && git remote add origin https://github.com/etcd-io/etcd.git \
+    && git -c http.version=HTTP/1.1 fetch --depth=1 origin \
+       refs/tags/server/v3.5.34:refs/tags/server/v3.5.34 \
+       refs/tags/etcdctl/v3.5.34:refs/tags/etcdctl/v3.5.34 \
+       refs/tags/etcdutl/v3.5.34:refs/tags/etcdutl/v3.5.34 \
+    && test "$(git rev-parse 'refs/tags/server/v3.5.34^{commit}')" = 38e57443c51fc9a3cc6a943fa8ed10381f66ce5c \
+    && test "$(git rev-parse 'refs/tags/etcdctl/v3.5.34^{commit}')" = 38e57443c51fc9a3cc6a943fa8ed10381f66ce5c \
+    && test "$(git rev-parse 'refs/tags/etcdutl/v3.5.34^{commit}')" = 38e57443c51fc9a3cc6a943fa8ed10381f66ce5c \
+    && git reset --mixed 38e57443c51fc9a3cc6a943fa8ed10381f66ce5c
+COPY deployment/vendors/etcd/modules/ /source/
+# Real VCS metadata keeps the original version (+dirty for the declared patch).
+# Read-only locks prevent opportunistic dependency upgrades during image builds.
+RUN --mount=type=cache,target=/go/pkg/mod,id=dr-vendor-go-mod-20261026 \
+    --mount=type=cache,target=/root/.cache/go-build,id=dr-vendor-go-build-20261026 \
+    set -eu; for component in server etcdctl etcdutl; do \
+      cd /source/${component}; \
+      go build -p=2 -mod=readonly -buildvcs=true -trimpath \
+        -ldflags='-s -w -X=go.etcd.io/etcd/api/v3/version.GitSHA=38e57443c51fc9a3cc6a943fa8ed10381f66ce5c-security-rebuild' \
+        -o /out/${component} .; \
+      go version -m /out/${component} | tee /tmp/build-info; \
+      version="$(awk '$1 == "mod" {print $3}' /tmp/build-info)"; \
+      case "${version}" in v3.5.34|v3.5.34+dirty) ;; *) exit 1 ;; esac; \
+      grep -F 'vcs.revision=38e57443c51fc9a3cc6a943fa8ed10381f66ce5c' /tmp/build-info; \
+    done; mv /out/server /out/etcd; /out/etcd --version
+FROM quay.io/coreos/etcd@sha256:b3f8af4c73b64e25fe9ba7a6969a753c80917daa8c1633b1f247c13750afcd76
+COPY --from=build /out/ /usr/local/bin/

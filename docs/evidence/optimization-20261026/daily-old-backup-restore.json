@@ -1,0 +1,613 @@
+{
+  "recorded_at": "2026-10-27T02:05:15.309718+00:00",
+  "status": "fresh_old_daily_backup_and_independent_coldvolume_restore_passed",
+  "source_project": "deepresearch",
+  "old_schema": "0013_evidence_lifecycle",
+  "old_images_match_exact22": true,
+  "volume_archives": 14,
+  "actual_image_bundle": {
+    "version": 1,
+    "platform": "linux/amd64",
+    "image_roots": 22,
+    "descriptor_visits": 138,
+    "selected_manifests": 22,
+    "verified_required_blobs": 232,
+    "verified_unique_layer_diffids": 166,
+    "expanded_layer_bytes": 6559447552,
+    "archive_bytes": 2457196032,
+    "bundle_limit_bytes": 34359738368,
+    "expanded_limit_bytes": 68719476736,
+    "excluded_platform_refs": 94,
+    "excluded_missing_platform_refs": 80,
+    "full_multiarch_archive_verified": false,
+    "docker_cache_consulted": false
+  },
+  "old_running_restored": [
+    "agent",
+    "alert-relay",
+    "alertmanager",
+    "backend",
+    "clamav",
+    "document-worker",
+    "etcd",
+    "grafana",
+    "keycloak",
+    "keycloak-postgres",
+    "loki",
+    "milvus",
+    "minio",
+    "otel-collector",
+    "postgres",
+    "prometheus",
+    "redis",
+    "tempo",
+    "web",
+    "worker"
+  ],
+  "restoration": {
+    "passed": true,
+    "project": "dr-restore-daily-preupgrade-20261027-01",
+    "volumes": {
+      "alert-relay-token": "dr-restore-daily-preupgrade-20261027-01_alert-relay-token",
+      "etcd-data": "dr-restore-daily-preupgrade-20261027-01_etcd-data",
+      "grafana-data": "dr-restore-daily-preupgrade-20261027-01_grafana-data",
+      "keycloak-data": "dr-restore-daily-preupgrade-20261027-01_keycloak-data",
+      "keycloak-postgres-data": "dr-restore-daily-preupgrade-20261027-01_keycloak-postgres-data",
+      "loki-data": "dr-restore-daily-preupgrade-20261027-01_loki-data",
+      "milvus-data": "dr-restore-daily-preupgrade-20261027-01_milvus-data",
+      "minio-data": "dr-restore-daily-preupgrade-20261027-01_minio-data",
+      "postgres-data": "dr-restore-daily-preupgrade-20261027-01_postgres-data",
+      "redis-data": "dr-restore-daily-preupgrade-20261027-01_redis-data",
+      "tempo-data": "dr-restore-daily-preupgrade-20261027-01_tempo-data",
+      "runtime-alertmanager-7b12648a1f1d": "dr-restore-daily-preupgrade-20261027-01_runtime-alertmanager-7b12648a1f1d",
+      "runtime-clamav-database": "dr-restore-daily-preupgrade-20261027-01_runtime-clamav-database",
+      "runtime-prometheus-20d9e71df97b": "dr-restore-daily-preupgrade-20261027-01_runtime-prometheus-20d9e71df97b"
+    },
+    "created_volumes": [
+      "dr-restore-daily-preupgrade-20261027-01_alert-relay-token",
+      "dr-restore-daily-preupgrade-20261027-01_etcd-data",
+      "dr-restore-daily-preupgrade-20261027-01_grafana-data",
+      "dr-restore-daily-preupgrade-20261027-01_keycloak-data",
+      "dr-restore-daily-preupgrade-20261027-01_keycloak-postgres-data",
+      "dr-restore-daily-preupgrade-20261027-01_loki-data",
+      "dr-restore-daily-preupgrade-20261027-01_milvus-data",
+      "dr-restore-daily-preupgrade-20261027-01_minio-data",
+      "dr-restore-daily-preupgrade-20261027-01_postgres-data",
+      "dr-restore-daily-preupgrade-20261027-01_redis-data",
+      "dr-restore-daily-preupgrade-20261027-01_tempo-data",
+      "dr-restore-daily-preupgrade-20261027-01_runtime-alertmanager-7b12648a1f1d",
+      "dr-restore-daily-preupgrade-20261027-01_runtime-clamav-database",
+      "dr-restore-daily-preupgrade-20261027-01_runtime-prometheus-20d9e71df97b"
+    ],
+    "volumes_retained": true,
+    "cleanup_complete": false,
+    "stage": "verified",
+    "intentional_retention": true,
+    "container_states_phase": "before_final_stop_or_cleanup",
+    "volumes_verified": 14,
+    "source_sha": "8768aa6c1e4f0d24a8c355ce769112e98b3b8c10",
+    "images_bound": true,
+    "rto_seconds": 203.5,
+    "retrieval": {
+      "nonempty_collections_searched": 2,
+      "results_checked": 2
+    },
+    "business": {
+      "oidc_tokens_verified": 2,
+      "permission_boundaries_verified": 3,
+      "reports_sha_verified": 1,
+      "citation_snapshots_verified": 3,
+      "new_research_accepted": 1,
+      "new_research_cancelled": 1,
+      "authorized_document_retrieval_verified": 1,
+      "query_embedding_mode": "keyword fallback; upstream disabled",
+      "offline_antivirus_checks_verified": 2,
+      "synthetic_viewer_collection_grants": 0,
+      "restored_acl_contract": {
+        "collection_acl": false,
+        "mode": "legacy_workspace_acl",
+        "migration_head": "0013_evidence_lifecycle"
+      },
+      "execution_completed": false,
+      "upstream_calls_enabled": false
+    },
+    "checks": [
+      "all archived files match",
+      "both SQL dumps restored with exit-on-error",
+      "readyz",
+      "anonymous 401",
+      "OIDC discovery",
+      "Milvus search",
+      "real OIDC tokens",
+      "viewer/revoked permissions",
+      "published report SHA and citations",
+      "authorized SQL-filtered document retrieval (keyword fallback, upstream disabled)",
+      "offline ClamAV signatures: clean content accepted and EICAR rejected",
+      "new research accepted and explicitly cancelled"
+    ],
+    "container_states": [
+      {
+        "service": "web",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "backend",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "agent",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "alertmanager",
+        "state": "running",
+        "health": "none",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "alert-relay",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "grafana",
+        "state": "running",
+        "health": "none",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "otel-collector",
+        "state": "running",
+        "health": "none",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "milvus",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "migrate",
+        "state": "exited",
+        "health": "unhealthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "loki",
+        "state": "running",
+        "health": "none",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "keycloak",
+        "state": "running",
+        "health": "none",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "alert-token-init",
+        "state": "exited",
+        "health": "none",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "redis",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "prometheus",
+        "state": "running",
+        "health": "none",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "etcd",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "clamav",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "tempo",
+        "state": "running",
+        "health": "none",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "minio",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "postgres",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      },
+      {
+        "service": "keycloak-postgres",
+        "state": "running",
+        "health": "healthy",
+        "exit_code": 0,
+        "oom_killed": false,
+        "restarts": 0
+      }
+    ],
+    "cleanup_performed": false,
+    "retained_resources": {
+      "intentional_retention": true,
+      "cleanup_performed": false,
+      "project": "dr-restore-daily-preupgrade-20261027-01",
+      "operation": "fbab88f7f7f94317b2a824607686c42a",
+      "creator": "scripts/recovery.py",
+      "temporary_containers": [
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-000",
+          "purpose": "restore-extract",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "170809ce76f32354f893a9011516cd6738bdcbc597fbbb2d50e93a9d0ded0f17",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-001",
+          "purpose": "restore-verify",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "08986a28f32274700b02a27f80dc852464222876cb8e6a2cb75e4282d51a41fd",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-002",
+          "purpose": "restore-extract",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "7f238b8b9d559662e164d5fab5eb64da3c1357fc5eb8efe13d4e971153bc5951",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-003",
+          "purpose": "restore-verify",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "9c06219f10d4e060a4420acb8ce1752468b340ff8407721a1b82bd96abda538c",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-004",
+          "purpose": "restore-extract",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "4d153e7287ce7a4254d5dff63b0a79bf8d1d73473319ee9a6afbe3ba3bfdf15c",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-005",
+          "purpose": "restore-verify",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "88f2de2525849d4ba66439d1f47a7b3e3ec603b8d388e3ee7b60ce6abc469ccd",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-006",
+          "purpose": "restore-extract",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "a90be529cfc17e31d7a8569c894928c45f3097bf06265217b1249e69859d0850",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-007",
+          "purpose": "restore-verify",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "b9852764158fcf9edd97ef0eaef11f4cfef1ca1c0b6130384af876aa03abaa4f",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-008",
+          "purpose": "restore-extract",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "6d37922ea75d9c70f8d50663c6dafe33e90ee32d6d403f957a3fdcd66b72bdfb",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-009",
+          "purpose": "restore-verify",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "bfb67e21d207b424523d6c074e3f57407a47274b7e6327af63bc81fd8b0c0d70",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-010",
+          "purpose": "restore-extract",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "fb9d29ce1e3dd4abb57e204a01da63f5f5db6f3c4db32d32371cc5d6ff4c7bf2",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-011",
+          "purpose": "restore-verify",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "54bde619ad65e8c3dfe1e346b8aee8a0cc88989cedf698d43bb8223247e74384",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-012",
+          "purpose": "restore-extract",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "61b91ad329b192064d3f35b7a185c92237c4ea12522a061f20e6f2de2794e71d",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-013",
+          "purpose": "restore-verify",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "e4dfbafe0183dcaef24fcfb1d87b84acb61e2fcbd0c024935d449d4daf4aa259",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-014",
+          "purpose": "restore-extract",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "d109c469629748c21a2855bae4111fee5c9bfd2e1a209ad677e967f351a74e2a",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-015",
+          "purpose": "restore-verify",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "7fff1ebb6489fdfa5a066e6e1597a85e78add117ed6749afa022c51b60d8431c",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-016",
+          "purpose": "restore-extract",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "87753bdb16be70643e22658404ccd0ebd4133fb78ae1f5a20b73ec087d33bb13",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-017",
+          "purpose": "restore-verify",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "7ebc50aefc52e21f8fbee2364d50ffe5b6e341cd47d30cb4c6bb0e7164582a2b",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-018",
+          "purpose": "restore-extract",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "0a2a98c067d89b621551c168e0854ab198ad73f85a258a97d3feb63192a9d789",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-019",
+          "purpose": "restore-verify",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "f028d80dab9861681d0a4b99cf33df91ac06b0a80448e951edd5bc5ca4c30a91",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-020",
+          "purpose": "restore-extract",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "57a2d9026868a606384e66a4c43612ec9b7a9e609a56ab2ffb19b23007532ca6",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-021",
+          "purpose": "restore-verify",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "7cf44ecbdf23f6743b640f96797b2bd9b165bc26fb7668c970fc1b8c97512bde",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-022",
+          "purpose": "restore-extract",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "6c5dc15878ac93416b2a7d041f0acfaa31d2d649404080da9fa14fcc8d8c6e00",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-023",
+          "purpose": "restore-verify",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "662b64491242b47cc213c971b0170283201d5b66af53c2012b00806e97bfff79",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-024",
+          "purpose": "restore-extract",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "d03f0574a4221668dd7a4a5fbea676b330d0dc25d9e031efcd1a3c5178a463c6",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-025",
+          "purpose": "restore-verify",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "5547c9a792d329941e76c1e154247baab706a83246c1b32013a77b3184edd3e6",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-026",
+          "purpose": "restore-extract",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "2ba6959f76a8783f00ed49b9aac444b668c8f2a336aeba22eb038790cdc97e1d",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        },
+        {
+          "name": "dr-restore-daily-preupgrade-20261027-01-helper-fbab88f7f7f94317b2a824607686c42a-027",
+          "purpose": "restore-verify",
+          "operation": "fbab88f7f7f94317b2a824607686c42a",
+          "project": "dr-restore-daily-preupgrade-20261027-01",
+          "creator": "scripts/recovery.py",
+          "creator_proof_verified": true,
+          "container_id": "a0805d04de1552df50be45eb7efcd2ae08e061763115c94ebdc8f8c2657ddddb",
+          "image_id": "sha256:7415fbc3c9e4979cc717d92377ab2bc7b2b4a2af1ac03cc52b5f3f88efedaf3a"
+        }
+      ],
+      "compose_project": "dr-restore-daily-preupgrade-20261027-01",
+      "created_volumes": [
+        "dr-restore-daily-preupgrade-20261027-01_alert-relay-token",
+        "dr-restore-daily-preupgrade-20261027-01_etcd-data",
+        "dr-restore-daily-preupgrade-20261027-01_grafana-data",
+        "dr-restore-daily-preupgrade-20261027-01_keycloak-data",
+        "dr-restore-daily-preupgrade-20261027-01_keycloak-postgres-data",
+        "dr-restore-daily-preupgrade-20261027-01_loki-data",
+        "dr-restore-daily-preupgrade-20261027-01_milvus-data",
+        "dr-restore-daily-preupgrade-20261027-01_minio-data",
+        "dr-restore-daily-preupgrade-20261027-01_postgres-data",
+        "dr-restore-daily-preupgrade-20261027-01_redis-data",
+        "dr-restore-daily-preupgrade-20261027-01_tempo-data",
+        "dr-restore-daily-preupgrade-20261027-01_runtime-alertmanager-7b12648a1f1d",
+        "dr-restore-daily-preupgrade-20261027-01_runtime-clamav-database",
+        "dr-restore-daily-preupgrade-20261027-01_runtime-prometheus-20d9e71df97b"
+      ],
+      "network": "dr-restore-daily-preupgrade-20261027-01_isolated",
+      "network_id": "b42a63f4145bf80e307bb0192e4ddc405fecea0b63b9af20d362f3bb2b814ab7",
+      "compose_stop_complete": true
+    },
+    "cleanup_errors": []
+  },
+  "actual_retained_recovery_containers": 20,
+  "actual_retained_recovery_running": 0,
+  "private_backup_manifest_sha256": "cb6103578a6606a8acebd2e77e9ef85d6a14772429a2f85d63531fc883f42af0",
+  "private_restore_receipt_sha256": "c2f2d4587c56b0ea1a3c04b336ab532dcae6df6af61dba8b89dc96ee16322adb",
+  "boundaries": [
+    "Same host fresh project and new data volumes; existing Docker image cache; package contents verified before cache lookup",
+    "Oldschema exact workspace ACL verified, no automatic upgrade of restored old DB",
+    "Provider keys disabled, internal-only network, no local supplier rerun",
+    "No permanent resource cleanup; new helpers/recovery containers/network/volumes retained",
+    "Differenthost restore deferred by direct human decision"
+  ]
+}

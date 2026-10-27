@@ -41,6 +41,7 @@ public class RunViewService {
         if (rows.isEmpty() || !identity.hasRole("admin")
             && !identity.subject().equals(rows.getFirst().get("created_by")))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "任务不存在");
+        DocumentAccessService.requireSources(jdbc, mapper, identity, rows.getFirst().get("sources"));
         return render(rows.getFirst());
     }
 
@@ -48,7 +49,8 @@ public class RunViewService {
         return renderMany(jdbc.queryForList("""
             SELECT * FROM runs WHERE thread_id=? AND user_id=?
             AND (? OR created_by=?) ORDER BY created_at""",
-            threadId, identity.workspaceId(), identity.hasRole("admin"), identity.subject()));
+            threadId, identity.workspaceId(), identity.hasRole("admin"), identity.subject()).stream()
+            .filter(row -> DocumentAccessService.sourcesAllowed(jdbc, mapper, identity, row.get("sources"))).toList());
     }
 
     public List<Map<String, Object>> threadRuns(String threadId, String workspaceId) {
@@ -62,7 +64,8 @@ public class RunViewService {
             AND (?='' OR (created_at,id)<(?,?)) ORDER BY created_at DESC,id DESC LIMIT ?""",
             threadId, identity.workspaceId(), identity.hasRole("admin"), identity.subject(), keys[1], keys[0], keys[1], limit + 1);
         String next = rows.size() > limit ? PageCursor.encode(rows.get(limit - 1)) : null;
-        return new ReportPublicationService.Page(renderMany(rows.subList(0, Math.min(limit, rows.size()))), next);
+        return new ReportPublicationService.Page(renderMany(rows.subList(0, Math.min(limit, rows.size())).stream()
+            .filter(row -> DocumentAccessService.sourcesAllowed(jdbc, mapper, identity, row.get("sources"))).toList()), next);
     }
 
     public Map<String, Object> render(Map<String, Object> source) {
@@ -101,9 +104,8 @@ public class RunViewService {
         long calls = number(row.get("call_attempts"));
         long reserved = number(row.get("reserved_tokens"));
         String status = String.valueOf(row.get("status"));
-        boolean exhausted = Boolean.FALSE.equals(errorInfo.get("retryable")) || (deadline > 0 && deadline <= Instant.now().getEpochSecond());
-        boolean canResume = List.of("failed", "interrupted", "cancelled").contains(status) && !exhausted
-            && calls < properties.getMaxRunCallAttempts() && reserved < properties.getMaxRunReservedTokens();
+        boolean canResume = ResearchCommandContract.canResume(status, errorInfo.get("retryable"), deadline,
+            Instant.now().getEpochSecond(), calls, reserved, properties.getMaxRunCallAttempts(), properties.getMaxRunReservedTokens());
         row.put("can_resume", canResume);
         row.put("recovery", Map.of(
             "auto_recoveries", number(row.get("auto_recoveries")),

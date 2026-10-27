@@ -1,0 +1,51 @@
+{
+  "recorded_at": "2026-10-27T02:10:32.039988+00:00",
+  "status": "both_original_anonymous_monitoring_volumes_cold_copied_verified_and_retained",
+  "services": {
+    "prometheus": {
+      "source": {
+        "container_id": "cf8a7de19ce5f623d3562efc1d2e2a757896c6d8a3d7392f0ef45862809b7cbd",
+        "image_id": "sha256:6927e0919a144aa7616fd0137d4816816d42f6b816de3af269ab065250859a62",
+        "project": "deepresearch",
+        "service": "prometheus",
+        "path": "/prometheus",
+        "state": "exited",
+        "config_hash": "ccaed799b505e8e7d29beab500e0f817e35a7da5ff0cfb1836c14a3cc51ce4b6",
+        "storage_kind": "volume",
+        "source_volume": "3743676bf01f6587dd6eae6529aa6ba73a53109ee0e19a0cfcb9091ca2a55869"
+      },
+      "target_volume": "deepresearch_prometheus-data",
+      "files": 42,
+      "per_file_sha256_size_uid_gid_mode_equal": true,
+      "original_retained": true,
+      "retained_helper_ids": [
+        "c7d74f43d79110f1291d19b7eafd83b9cb7085e407d3531ac278c445a1ca1e9f",
+        "d844b716f21037dfcbb0a08ed2ddcd04a974a5c217aabe3f0b7722799784f133"
+      ],
+      "private_receipt_sha256": "b773f0653f17792dda36f9ff5aa3447972bfde07536b4b985e5805ed86cf3d08"
+    },
+    "alertmanager": {
+      "source": {
+        "container_id": "6e4fc3d8bc3b34539dab3375e06b3cb2b41a790c8182fd5e8566d6d022c73bdc",
+        "image_id": "sha256:27c475db5fb156cab31d5c18a4251ac7ed567746a2483ff264516437a39b15ba",
+        "project": "deepresearch",
+        "service": "alertmanager",
+        "path": "/alertmanager",
+        "state": "exited",
+        "config_hash": "cd00063e69afa250e1d646a02971c0f2c7cdcddadf4d46df7815d48e7493c505",
+        "storage_kind": "volume",
+        "source_volume": "524fbe74fea3163663dcace8adfd12bfab587c54cd02f46eca6991e67bed1f06"
+      },
+      "target_volume": "deepresearch_alertmanager-data",
+      "files": 2,
+      "per_file_sha256_size_uid_gid_mode_equal": true,
+      "original_retained": true,
+      "retained_helper_ids": [
+        "2a29b891919e497dc5d2e22a86dd9f811fd0f27be9d49438b851ae7a2e581836",
+        "72e477457a04c261b7976ea4fae033d3ebe9c3c2d468738f119a5e0952c24f4d"
+      ],
+      "private_receipt_sha256": "6bdef75ced1d6edfa7460a7461068c2045cbb09dfcaeed16e32c941b62f8c87f"
+    }
+  },
+  "cleanup": false
+}

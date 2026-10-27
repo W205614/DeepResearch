@@ -8,9 +8,9 @@ import pytest
 
 from scripts import recovery
 from scripts.recovery import load_archive, sha, freeze_binds
+from tests.image_bundle_fixture import bundle
 
-IMAGE = 'sha256:' + 'a' * 64
-HELPER_IMAGE = 'sha256:' + 'b' * 64
+IMAGE, HELPER_IMAGE = bundle()[1]
 
 
 def archive(tmp_path):
@@ -18,6 +18,7 @@ def archive(tmp_path):
     (tmp_path / 'deployment.private.json').write_text(json.dumps(configuration))
     for name in ('data.tgz', 'images.tar', 'restore.py', 'postgres.dump', 'keycloak-postgres.dump'):
         (tmp_path / name).write_bytes(b'fixture archive')
+    (tmp_path/'images.tar').write_bytes(bundle()[0])
     manifest = {'version': 3, 'volumes': ['data'], 'images': {'api': IMAGE},
                 'helper_image': HELPER_IMAGE, 'bind_mounts': [],
                 'files': {p.name: sha(p) for p in tmp_path.iterdir()}}
@@ -107,7 +108,7 @@ def backup_commands(monkeypatch, running, fail_query=False):
             return IMAGE.encode()
         if args[:3] == ['docker', 'image', 'save']:
             from pathlib import Path
-            Path(args[args.index('-o') + 1]).write_bytes(b'images')
+            Path(args[args.index('-o') + 1]).write_bytes(bundle()[0])
             assert HELPER_IMAGE in args
         if args[:2] == ['docker', 'run']:
             from pathlib import Path
@@ -184,6 +185,114 @@ def test_embedded_recovery_probes_compile_and_hash_real_newlines():
     compile(recovery.RESTORED_RETRIEVAL, '<retrieval-recovery-probe>', 'exec')
     constants = [node.value for node in ast.walk(ast.parse(recovery.RESTORED_BUSINESS)) if isinstance(node, ast.Constant)]
     assert '\n' in constants and r'\n' not in constants
+
+
+@pytest.mark.parametrize('project,labels', [
+    ('deepresearch', {}),
+    ('dr-opt-acceptance', {}),
+    ('dr-restore-validation', {'com.docker.compose.project':'deepresearch','com.docker.compose.service':'postgres'}),
+    ('dr-restore-validation', {'com.docker.compose.project':'dr-restore-validation','com.docker.compose.service':'agent'}),
+])
+def test_verifier_admin_dsn_cannot_escape_fresh_restore(project,labels,monkeypatch):
+    calls=[]
+    def inspect(args):
+        calls.append(args)
+        return json.dumps([{'Config':{'Labels':labels,'Env':['POSTGRES_PASSWORD=fixture-only']}}]).encode()
+    monkeypatch.setattr(recovery,'run',inspect)
+    with pytest.raises(ValueError):
+        recovery.verification_database_environment(project,'fixture-container')
+    if not project.startswith('dr-restore-'):
+        assert not calls
+
+
+def test_verifier_dsn_uses_effective_database_env_and_never_argv_password(monkeypatch):
+    calls=[]
+    def inspect(args):
+        calls.append(args)
+        return json.dumps([{'Config':{'Labels':{'com.docker.compose.project':'dr-restore-validation',
+            'com.docker.compose.service':'postgres'},'Env':['POSTGRES_USER=restore@admin','POSTGRES_DB=restore db',
+            'POSTGRES_PASSWORD=fixture$@/%literal']}}]).encode()
+    monkeypatch.setattr(recovery,'run',inspect)
+    environment=recovery.verification_database_environment('dr-restore-validation','fixture-container')
+    assert environment=={'RECOVERY_VERIFICATION_PROJECT':'dr-restore-validation',
+        'RECOVERY_DATABASE_URL':'postgresql://restore%40admin:fixture%24%40%2F%25literal@postgres:5432/restore%20db'}
+    assert calls==[['docker','inspect','fixture-container']]
+    assert 'DATABASE_URL' not in environment
+
+
+def test_business_probe_audience_and_acl_are_synthetic_subject_scoped():
+    source=recovery.RESTORED_BUSINESS
+    assert 'included.custom.audience' in source and 'included.client.audience' not in source
+    assert "asyncpg.connect(os.environ['RECOVERY_DATABASE_URL'])" in source
+    assert "VALUES($1,$2,'read') ON CONFLICT DO NOTHING" in source
+    assert "policy['collection_id'],users[1]" in source
+    assert "('collection_grants','memberships') if acl_contract['collection_acl'] else ('memberships',)" in source
+    assert "WHERE subject=ANY($1::text[])',users" in source
+    assert 'UPDATE document_policies' not in source and 'UPDATE report_publications' not in source
+    assert "'http://127.0.0.1:9'" in source and "'RECOVERY_ACCEPTANCE_ONLY'" in source
+
+
+@pytest.mark.asyncio
+async def test_recovery_viewer_gets_only_selected_restricted_collection_read():
+    module=ast.parse(recovery.RESTORED_BUSINESS)
+    loop=next(node for node in ast.walk(module) if isinstance(node,ast.For)
+              and isinstance(node.target,ast.Name) and node.target.id=='source'
+              and any(isinstance(child,ast.Constant) and isinstance(child.value,str)
+                      and 'SELECT p.collection_id' in child.value for child in ast.walk(node)))
+    function=ast.parse('async def prepare(db,workspace,original,users):\n granted_collections=set()\n return granted_collections').body[0]
+    function.body.insert(1,loop)
+    namespace={}
+    exec(compile(ast.Module(body=[function],type_ignores=[]),'<recovery-acl-preparation>','exec'),namespace)
+    class Database:
+        def __init__(self):
+            self.reads=[]
+            self.writes=[]
+        async def fetchrow(self,sql,document,workspace):
+            self.reads.append((document,workspace))
+            assert 'd.id=$1 AND d.user_id=$2' in sql
+            return {'collection_id':'only-selected' if document=='restricted' else 'public-collection',
+                    'visibility':'restricted' if document=='restricted' else 'workspace'}
+        async def execute(self,sql,*args):
+            self.writes.append((sql,args))
+    db=Database()
+    sources=[{'kind':'local','document_id':'restricted'},{'kind':'local','document_id':'public'},
+             {'kind':'web','document_id':'not-an-authorized-local-doc'}]
+    granted=await namespace['prepare'](db,'selected-workspace',sources,['new-admin','new-viewer'])
+    assert granted=={'only-selected'}
+    assert db.reads==[('restricted','selected-workspace'),('public','selected-workspace')]
+    assert len(db.writes)==1
+    sql,args=db.writes[0]
+    assert 'INSERT INTO collection_grants' in sql and "'read'" in sql
+    assert args==('only-selected','new-viewer')
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize('present,head,mode',[
+    ((True,True,True),'0017_product_governance','current_collection_acl'),
+    ((False,False,False),'0013_evidence_lifecycle','legacy_workspace_acl'),
+    ((False,False,False),'0016_service_privileges','legacy_workspace_acl'),
+    ((True,False,False),'0013_evidence_lifecycle',None),
+    ((False,False,False),'0017_product_governance',None),
+])
+async def test_recovery_acl_contract_requires_complete_current_or_explicit_legacy(present,head,mode):
+    module=ast.parse(recovery.RESTORED_BUSINESS)
+    function=next(node for node in module.body if isinstance(node,ast.AsyncFunctionDef) and node.name=='restored_acl_contract')
+    namespace={}
+    exec(compile(ast.Module(body=[function],type_ignores=[]),'<recovery-schema-contract>','exec'),namespace)
+    class Database:
+        async def fetchrow(self,sql):
+            assert 'to_regclass' in sql
+            return dict(zip(('policies','collections','grants'),present))
+        async def fetch(self,sql):
+            assert sql=='SELECT version_num FROM alembic_version'
+            return [{'version_num':head}]
+    if mode is None:
+        with pytest.raises(AssertionError):
+            await namespace['restored_acl_contract'](Database())
+    else:
+        result=await namespace['restored_acl_contract'](Database())
+        assert result['mode']==mode
+        assert result['collection_acl']==all(present)
 
 
 def test_runtime_volumes_and_clamav_container_layer_are_materialized(monkeypatch):

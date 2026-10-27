@@ -1,0 +1,43 @@
+{
+  "item": 9,
+  "date": "2026-10-26",
+  "status": "implemented_component_validated_pending_role_browser_delivery",
+  "contract": {
+    "migration": "Existing document policies inherit workspace access; missing legacy policies inherit membership only for a document whose workspace can be established.",
+    "restricted_collection": "Current workspace admins and the document owner retain access independently of collection grants. Other current members need an explicit collection read/write grant; write additionally requires researcher/admin role.",
+    "revocation": "Revoking a collection grant hides dependent private runs, report bodies/downloads/series/diffs/impacts/revisions and semantic summaries. It does not revoke the document owner's independent permission.",
+    "snapshots": "ACL changes affect visibility; stored report text, source excerpts and SHA-256 remain unchanged. Retained document policies keep frozen report visibility decidable even when current original rows/chunks are absent.",
+    "memory": "Personal profile/preferences remain subject-owned. A semantic summary follows the source run's author/admin visibility and every local document's current ACL; it is not a permission bypass through workspace memory sharing.",
+    "concurrency_boundary": "SSE rechecks current role and source ACL before each next event batch. Bytes already selected/sent under a preceding authorization cannot be recalled. Publication/revision and grant mutations share the workspace row lock; final execution also fences current source permissions."
+  },
+  "fixed_review_gaps": [
+    "Java submit replay and revise previously read a frozen source without the current document ACL check.",
+    "Report series previously exposed historical report metadata without per-report source ACL filtering; an inaccessible current report id is now hidden.",
+    "Python owned_run, conversation bulk exports and SSE previously relied only on workspace membership.",
+    "Semantic memory API and model context previously exposed old report/summary text after source grant revocation; both Java/Python listing/deletion and Python history/vector recall now enforce current source-run/document access.",
+    "DocumentAccessService previously treated unknown/nonexistent or cross-workspace document identifiers as legacy allowed records; it now fails closed when source ownership cannot be established.",
+    "Collection input null permissions and stale membership lock handling now reject explicitly.",
+    "Java test schema now clears product-governance tables between cases and includes source_rechecks.snapshot_json plus memories."
+  ],
+  "validation": {
+    "python_initial": "3 passed, 2 fixture failures because client_request_id was shorter than the existing eight-character contract; corrected the fixture without weakening validation.",
+    "python_followup": "2 corrected ACL cases plus existing API isolation/SSE/download regression: 3 passed in 27.53 seconds.",
+    "python_memory_context": "New semantic-summary revocation counterexample plus two directly affected history/semantic relevance tests: 3 passed in 18.49 seconds.",
+    "python_final_write_scope": "Two directly affected write-role and cross-workspace-context cases passed in 14.76 seconds after final helper hardening.",
+    "java_acl": "Two PostgreSQL Testcontainers business cases passed, zero failures/errors/skips: report get/download/page/series/impacts/diff/revise/submit replay denial, snapshot hash preservation, owner/admin retention, legacy inheritance, no self-promotion and cross-workspace denial. See acl-java-tests.xml.",
+    "java_memory_followup": "Extended PostgreSQL case including semantic-summary listing/deletion denial after revocation and retained personal preference passed: one case, zero failures/errors/skips. See acl-memory-java-tests.xml.",
+    "source_validation": "The Python final-source validator denies revoked collection grants; historical reads check ACL without replacing stored source versions.",
+    "retrieval": "The retrieval subtask owns test_database_lexical.py::test_large_corpus_vector_and_cached_provenance_obey_revoked_acl; its final receipt is recorded separately by the coordinating task.",
+    "execution_failure": "The reliability subtask adds source_permission_denied to fail-closed errors and verifies no checkpoint partial evidence is saved; final receipt is recorded separately.",
+    "lint": "Selected ACL/API/context and directly affected Python tests passed Ruff; ACL JSON parsed and selected git diff --check passed (LF/CRLF warnings only).",
+    "paid_http_calls": 0,
+    "daily_containers_rebuilt": false,
+    "git_commit_or_push": false
+  },
+  "remaining_combined_acceptance": [
+    "Real researcher/viewer/admin browser role flows through the deployed Java proxy and Python service using the final image.",
+    "Full migration/default inheritance and least-privilege service account verification on the isolated PostgreSQL deployment.",
+    "Final exact-SHA CI/security and coordinated deployment/rollback checks.",
+    "Do not describe component tests as a penetration test, production multi-tenant isolation certification or an external-user validation."
+  ]
+}

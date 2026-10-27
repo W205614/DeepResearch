@@ -1,0 +1,29 @@
+{
+  "item": 10,
+  "implementation": [
+    "backend/api/source_rechecks.py",
+    "frontend/src/SourceRechecks.vue"
+  ],
+  "verification": {
+    "command": "pytest tests/test_source_rechecks.py",
+    "result": "2 passed, unchanged/changed/unavailable/summary-only and immutable report hash snapshots"
+  },
+  "contract": "public fetched body change, not independent factual validation",
+  "remaining": [],
+  "paid_requests": 0,
+  "browser": {
+    "passed": true,
+    "mode": "real browser/OIDC/Java/Python/SQL; controlled source text and deterministic model fixtures",
+    "original_report_id": "33c5a61895ee4bb6a0a3190d9c0e6211",
+    "revision_report_id": "18bcc9bbf6c34cd9b559af692978c33c",
+    "old_snapshot_sha256": "993cd9a6d94a55946b7c8764a9231a411ce44ff3bb63217889b2a029f1bad0a1",
+    "old_snapshot_unchanged": true,
+    "new_version_independently_reviewed": true,
+    "reject_and_withdraw_preserve_history": true,
+    "supplier_http_requests": 0,
+    "raw_receipt_sha256": "ff8f5fd7389a3405500990d24ef57bd3863fc0a5e5aef5a1b562f894a5243788",
+    "browser_attempt": "browser-attempt-1793009349729",
+    "duration_seconds": 20.1,
+    "source_and_model": "controlled fixtures; actual OIDC/business/data components"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "item": 12,
+  "status": "typed_deletion_boundary_implemented_and_targeted_verified",
+  "supplier_http": 0,
+  "verified_at": "2026-10-26T11:42:10.672860+00:00",
+  "existing_boundaries": {
+    "recovery_contract": "strictPydantic version/bool/int/unknownfield validation plus shared Java qualification fixtures; real inputownership boundary, not scheduler orchestration",
+    "retention": "owns boundedcacheexpiry/orphanSQLcleanup/immutablearchive policy; doesnot own explicitrun deletion or external resources",
+    "verification_contract": "earlier separate typed verification/version/targetbinding boundary retained"
+  },
+  "new_boundary": {
+    "service": "backend/services/run_cleanup.py:RunCleanup",
+    "transaction_phase": "RunDeletion pins run/workspace; stage(SqlWriter,target) reads owner/intent on same connection, rejects crossworkspace, stages childdeletion/tombstone; protocol exposes no commit and does no checkpoint/object I/O",
+    "postcommit_phase": "reconcile reads only committed intents, locks execution, rereads intent+live run, cleans checkpoint andbothattachment areas idempotently; removes intent last; typedCleanupResult reportscleaned/deferred/absent/failed",
+    "runtime_responsibility": "authorization, publication/revisionretention, cancellation, admission/threadlocking, run/threadSQLdeletion and COMMIT remain coordinated inRuntime",
+    "compatibility_hooks": "_delete_run_records, _delete_execution_guards and cleanup_runs retained forpublicflow/tests; checkpoint accessor retains faultinjection/dynamic startupbinding",
+    "nonmovement_changes": [
+      "transaction-local workspace/intentownership validation",
+      "lock-inside intentreread prevents duplicateexternal cleanup acrossruntime loops",
+      "typed phase capabilities andbounded cleanup result",
+      "committed-intent visibility andlive-run protection independentlytested"
+    ],
+    "preserved_contract": [
+      "singletransaction rollback",
+      "publication/revisionaudit andindependentsavedmemories retained",
+      "same onePGconnection transactionadvisorylocks",
+      "postcommit externalfailure durable retry",
+      "modelbehavior andJavaadmission unchanged"
+    ]
+  },
+  "tests": [
+    {
+      "phase": "red",
+      "selection": "new wrongworkspace stage andtwo preselectedcleaners",
+      "result": "2failed in12.11s; original stage didnot rejectbob; originalcheckpointer deleteawait_count2"
+    },
+    {
+      "phase": "green",
+      "command": "uv run pytest tests/test_recovery_retention.py -k 'wrong_workspace or concurrent_run_cleaners or single_thread_delete or external_cleanup or deletion_sql_failure or opt_in_archive' -q",
+      "result": "6passed in34.66s"
+    },
+    {
+      "phase": "green",
+      "selection": "uncommittedintent/live-run safety plusAPI singlethread deletion andreportpurge",
+      "result": "3passed in23.49s"
+    },
+    {
+      "phase": "real_component",
+      "command": "existing dr-opt-reliability-probe-20261026 rerun withnewbackend source",
+      "result": "passed bothPGcreate/deleteinterleavings, realPostgrescheckpoint failure/retry, realMilvus tombstonecleanup andsemantic sourcehydration",
+      "raw_log": ".cache/optimization-20261026/runtime-cleanup-postgres.log",
+      "receipt": "runtime-cleanup-postgres.json"
+    },
+    {
+      "phase": "lint",
+      "result": "ruff scopedfilespassed"
+    }
+  ],
+  "source_files": {
+    "backend/services/runtime.py": {
+      "sha256": "9f7343fcddfaace5b41f60dbcf421bdffd5550ed9e5754154b49c444b8f228b2",
+      "normalized_sha256": "9e3ebce9ad1cb46a855a223f4c178ee45eac820c6fb5d50770eb10a3a020db71"
+    },
+    "backend/services/run_cleanup.py": {
+      "sha256": "8e24e9bcd52a71f0fd915ac40f121586028ba7239f67f8140f63e9736c1255c9",
+      "normalized_sha256": "8e24e9bcd52a71f0fd915ac40f121586028ba7239f67f8140f63e9736c1255c9"
+    },
+    "backend/core/recovery_contract.py": {
+      "sha256": "6bdf1451b03b58f52fe794f48c33d18dceb8515f83001f263bba0f56b1dacf35",
+      "normalized_sha256": "6bdf1451b03b58f52fe794f48c33d18dceb8515f83001f263bba0f56b1dacf35"
+    },
+    "backend/services/retention.py": {
+      "sha256": "c8922617104fe59dbed990a9e3fd144594e6fc20b4ff51076b497101ae72aeda",
+      "normalized_sha256": "c8922617104fe59dbed990a9e3fd144594e6fc20b4ff51076b497101ae72aeda"
+    },
+    "tests/test_recovery_retention.py": {
+      "sha256": "a09358c689472bc0eb0b42079f33517e6bc76f85282b4ffc44a4a07a93bd04d2",
+      "normalized_sha256": "c561ebfd9e33f3de4e543cde3fc6096af678df9f2495f56313b2306d311a10d9"
+    },
+    "scripts/verify_reliability_postgres.py": {
+      "sha256": "6ef0c5e723559f9a487d5ce94a7834bd23835d6a4b1b5a56c6f78d8470848bac",
+      "normalized_sha256": "260e381fcee2f33a6f38e22754b7c58d2dc0ed229a5bf49711ec79207f4cc753"
+    }
+  },
+  "remaining_boundary": "Runtime still coordinates scheduling/graphexecution andatomic finalsubmission. Those share durableattempt andworkspace/document fencing; no additional thin forwarding extraction was manufactured. This is incremental decomposition, not a claimRuntime isfullysmallor a newframework.",
+  "runtime_changes": {
+    "candidate_rebuilt": false,
+    "daily_changed": false,
+    "dedicated_probe_container_reused": true,
+    "database_reused": "dr_opt_reliability",
+    "new_model_calls": 0
+  },
+  "evidence_calibration": "Wrongworkspace red case directly misused an internal deletionhook; existingpublicflow already verifies authorization. This establishes a stronger internal typedcontract, not proof of a prior externallyreachable authorizationbypass."
+}

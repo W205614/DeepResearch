@@ -1,0 +1,39 @@
+{
+  "updated_at": "2026-10-26T10:20:25.428913+00:00",
+  "supplier_http_requests": 0,
+  "attempts": [
+    {
+      "attempt": "browser-attempt-1793006853069",
+      "case": "public source",
+      "result": "failed",
+      "reason": "first run remained running past120s; worker resumed and completed after266s stall; not reproduced in next public runs, root cause pending"
+    },
+    {
+      "attempt": "browser-attempt-1793009024872",
+      "case": "public source",
+      "result": "test script failed",
+      "reason": "incorrect revision button text; corrected to existing UI label"
+    },
+    {
+      "attempt": "browser-attempt-1793009471229",
+      "case": "real dependency faults",
+      "result": "test script failed",
+      "reason": "unindexed document chunks endpoint safely returned empty200; test corrected to assert no chunks"
+    },
+    {
+      "attempt": "browser-attempt-1793009644661",
+      "case": "real dependency faults",
+      "result": "confirmed internal failure",
+      "reason": "scanner restart exhausted3 scan attempts across recovery runtimes before readiness; durable backoff repair pending"
+    },
+    {
+      "attempt": "browser-attempt-1793011069677",
+      "case": "real dependency faults",
+      "result": "confirmed API classification defect repaired",
+      "reason": "ClamAV recovery passed after persistent backoff; MinIO raw EndpointConnectionError returned500. Runtime I/O now structured storage_unavailable/503; absence only true404;13 negative tests passed; affected real outage rerun passed"
+    }
+  ],
+  "raw_artifacts": "all private per-attempt screenshots/traces/accounts retained under ignored .cache; no passwords committed",
+  "no_best_run_selection": "successful reruns do not erase failed attempts",
+  "final_affected_fault_rerun": "passed1.6minutes, raw receipt retained, no supplierHTTP"
+}

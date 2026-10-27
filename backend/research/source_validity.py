@@ -5,6 +5,8 @@ from ..core.reliability import ServiceError
 async def validate_sources(db, user, sources):
     for source in sources:
         if source.get("kind") == "local":
+            from ..services.document_access import require_document
+            await require_document(db, user, source.get("document_id", ""))
             row = await db.one("""SELECT c.text,d.index_version,d.hash FROM chunks c JOIN documents d ON d.id=c.document_id
                 WHERE c.id=? AND d.id=? AND c.user_id=? AND d.user_id=? AND d.status IN ('ready','rebuilding')""",
                 (source.get("chunk_id", ""), source.get("document_id", ""), user, user))

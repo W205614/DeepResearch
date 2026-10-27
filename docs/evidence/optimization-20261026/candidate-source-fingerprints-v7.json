@@ -1,0 +1,83 @@
+{
+  "project": "dr-opt-acceptance",
+  "recorded_at": "2026-10-27T01:20:28.117014+00:00",
+  "mode": "read_only_docker_cp_existing_stopped_containers",
+  "passed": true,
+  "services": [
+    {
+      "service": "web",
+      "container_id": "fdc4dfe4605bb3340fe140e068600905904ceec9d6cbe796132744471023ed6d",
+      "image_id": "sha256:9b3db20c8227796cd1e991ccd3cfa69637a369f002e413d744aa68144665925e",
+      "state": "exited",
+      "finished_at": "2026-10-27T00:47:18.011351011Z",
+      "rootfs_readonly": false,
+      "checkout_differences": [],
+      "actual_files_modified": [],
+      "dist_files": 7,
+      "input_files": 31,
+      "passed": true
+    },
+    {
+      "service": "agent",
+      "container_id": "fb82175e701243063d9e16deb81afcad76b4e7893f464aee1698dc53f9ce9465",
+      "image_id": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7",
+      "state": "exited",
+      "finished_at": "2026-10-27T00:47:19.043076633Z",
+      "rootfs_readonly": false,
+      "checkout_differences": [],
+      "actual_files_modified": [],
+      "input_files": 88,
+      "passed": true
+    },
+    {
+      "service": "worker",
+      "container_id": "567d5943b9062e5c4300bc0d45bd36e1aece5b6eba5e2a04d278518c92f933cb",
+      "image_id": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7",
+      "state": "exited",
+      "finished_at": "2026-10-27T00:47:19.032460447Z",
+      "rootfs_readonly": false,
+      "checkout_differences": [],
+      "actual_files_modified": [],
+      "input_files": 88,
+      "passed": true
+    },
+    {
+      "service": "document-worker",
+      "container_id": "d665de8b90b83b1ec8e154a2138d3e14c4fe3296b3a4934a170af84c31f0e4f1",
+      "image_id": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7",
+      "state": "exited",
+      "finished_at": "2026-10-27T00:47:19.029028853Z",
+      "rootfs_readonly": false,
+      "checkout_differences": [],
+      "actual_files_modified": [],
+      "input_files": 88,
+      "passed": true
+    },
+    {
+      "service": "backend",
+      "container_id": "0e6eebb2dbca9f34c97a2a8b166977f72c9a189ac9a3582f198be306423f576d",
+      "image_id": "sha256:20bae2ec4a9af26d8f730a5c21b2cb83ee093d4601a5df7cc7360f288ff7c3e7",
+      "state": "exited",
+      "finished_at": "2026-10-27T00:47:18.366604683Z",
+      "rootfs_readonly": false,
+      "checkout_differences": [],
+      "actual_files_modified": [],
+      "jar_sha256": "6919453969bae01f31dcddebd1010b8bc553a065e80c7c0eb6a66bf43e4c6a1b",
+      "input_files": 29,
+      "passed": true
+    }
+  ],
+  "prior_live_acceptance": "unified-candidate.json and candidate-source-fingerprints-v5.json",
+  "previous_v6": "Live-only inspector returned0services because all candidate services were already stopped; retained failed receipt, not a source mismatch",
+  "current_availability": "All candidate and daily DR services observed stopped at2026-10-27T00:47Z; cause not established by this audit; no start/stop/rebuild by this audit",
+  "boundaries": [
+    "Actual Python88inputs each and Web7distfiles copied/hashes checked; Java29source inputs plus actual current JAR matched",
+    "This proves existing container source bytes against this Windows worktree, not current live health or future Linux finalSHA byte identity",
+    "Isolated provider fixture substitution remains explicit, no suppliers called"
+  ],
+  "mutations": {
+    "container_start_stop_or_create": 0,
+    "docker_resource_deletion": 0,
+    "supplier_http": 0
+  }
+}

@@ -12,6 +12,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from backend.core.config import Settings
+from scripts.evaluation_scope import scoped_evaluation
 from backend.quality_gate import QualityDraft, assess_support, evaluate_draft, summarize
 from backend.services.runtime import Runtime
 
@@ -20,6 +21,7 @@ def percentile(values, fraction):
     return sorted(values)[max(0, math.ceil(len(values) * fraction) - 1)] if values else 0
 
 
+@scoped_evaluation
 async def main_async(args):
     corpus_path = Path(args.corpus)
     corpus = json.loads(corpus_path.read_text(encoding="utf-8"))
@@ -44,6 +46,7 @@ async def main_async(args):
     llm_calls = 0
     reranker_calls = 0
     try:
+        await runtime.db.ensure_personal_workspace('evaluator', 'Isolated local QA evaluation', (0, 2))
         for row in corpus:
             path = (corpus_path.parent / row["path"]).resolve()
             document = await runtime.documents.add("evaluator", row["name"], path.read_bytes())

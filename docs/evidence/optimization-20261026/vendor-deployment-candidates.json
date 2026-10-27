@@ -1,0 +1,190 @@
+{
+  "compose_sha256": "2fdb52dfe17dbbba72f198ba35fa75ab01a8a88daa5816982fb6067cd6e7aa27",
+  "services": [
+    {
+      "service": "postgres",
+      "compose_image": "dr-vendor-postgres:17.11-gosu-go1.27.3-vcs-20261026",
+      "build_recipe": {
+        "context": ".",
+        "dockerfile": "Dockerfile.postgres"
+      },
+      "actual_local_image_id": "sha256:2a792b05fff59ea5ba72747a925e22a211c3e07bb8d0cad1c18b9acf773462c8",
+      "repo_digests": [
+        "dr-vendor-postgres@sha256:2a792b05fff59ea5ba72747a925e22a211c3e07bb8d0cad1c18b9acf773462c8"
+      ],
+      "runtime_diff_ids": [
+        "sha256:75c137aedfb2760f88629236cb7b797630aed0c3d91d626d1d1bb694878fc2ba",
+        "sha256:a46a3bafcb603dc97670597201246506f98e5a6372d6dd6bff95fbe82c2daaaf",
+        "sha256:957d26e53b1ed5152079038cf0de8c6d0bd52a816ad3e20cc4cdbd7cd55bf9d8",
+        "sha256:b9f6ca12141f3136dbd518d2a9ed11e7129b12951b8984be8a9477e064048831",
+        "sha256:fa51465d1f6a9413b09529e99f73b7154a15db7457fcc0fe0a11f875d919212f",
+        "sha256:b2711a83336c81a02ba25e3c640502b1a00e597add8ac44ef3231ca00cf46f48",
+        "sha256:9087553371de5b60cd2b27440cc4d6ee9da8bb1db1e9cf4cd684f8c91ffa5ef5",
+        "sha256:65a170ef4c1b8d8abe86b5f7b0ccc2f643f2d4f347545125b4d3632c409e136b",
+        "sha256:1da1a2dfe2071240acddfd3e74e462ce03490d59416a4cb3eef8e48a8b3ca37b",
+        "sha256:3936a53132a14ee4a433e0b6c5185bc6df36fb0b2b61196cf97890bdd7fa85de",
+        "sha256:375d899fe2d0f052be46c9accdc328fefc1d0accfab5f73c6c71d1628f829656"
+      ]
+    },
+    {
+      "service": "keycloak-postgres",
+      "compose_image": "dr-vendor-postgres:17.11-gosu-go1.27.3-vcs-20261026",
+      "build_recipe": {
+        "context": ".",
+        "dockerfile": "Dockerfile.postgres"
+      },
+      "actual_local_image_id": "sha256:2a792b05fff59ea5ba72747a925e22a211c3e07bb8d0cad1c18b9acf773462c8",
+      "repo_digests": [
+        "dr-vendor-postgres@sha256:2a792b05fff59ea5ba72747a925e22a211c3e07bb8d0cad1c18b9acf773462c8"
+      ],
+      "runtime_diff_ids": [
+        "sha256:75c137aedfb2760f88629236cb7b797630aed0c3d91d626d1d1bb694878fc2ba",
+        "sha256:a46a3bafcb603dc97670597201246506f98e5a6372d6dd6bff95fbe82c2daaaf",
+        "sha256:957d26e53b1ed5152079038cf0de8c6d0bd52a816ad3e20cc4cdbd7cd55bf9d8",
+        "sha256:b9f6ca12141f3136dbd518d2a9ed11e7129b12951b8984be8a9477e064048831",
+        "sha256:fa51465d1f6a9413b09529e99f73b7154a15db7457fcc0fe0a11f875d919212f",
+        "sha256:b2711a83336c81a02ba25e3c640502b1a00e597add8ac44ef3231ca00cf46f48",
+        "sha256:9087553371de5b60cd2b27440cc4d6ee9da8bb1db1e9cf4cd684f8c91ffa5ef5",
+        "sha256:65a170ef4c1b8d8abe86b5f7b0ccc2f643f2d4f347545125b4d3632c409e136b",
+        "sha256:1da1a2dfe2071240acddfd3e74e462ce03490d59416a4cb3eef8e48a8b3ca37b",
+        "sha256:3936a53132a14ee4a433e0b6c5185bc6df36fb0b2b61196cf97890bdd7fa85de",
+        "sha256:375d899fe2d0f052be46c9accdc328fefc1d0accfab5f73c6c71d1628f829656"
+      ]
+    },
+    {
+      "service": "redis",
+      "compose_image": "redis:7.4.11-alpine@sha256:57e4255cc971b1c8d6f8a6ca283ac01bc3ecdd914273ef6bfaede87aaecd6541",
+      "build_recipe": null,
+      "actual_local_image_id": "sha256:57e4255cc971b1c8d6f8a6ca283ac01bc3ecdd914273ef6bfaede87aaecd6541",
+      "repo_digests": [
+        "redis@sha256:57e4255cc971b1c8d6f8a6ca283ac01bc3ecdd914273ef6bfaede87aaecd6541"
+      ],
+      "runtime_diff_ids": [
+        "sha256:41058dd4c122275500b8ee145e3ff1692ea26c7c568f55c00caf2878e7c61db0",
+        "sha256:006e6be2c45cf39d25d84f8e6e7057a18e853b3850947e2e75370426a04b3de3",
+        "sha256:dcfe6036ae039ca46b9c98799b2d16578379e4e7f28133beb421a83c1d8273d5",
+        "sha256:18db2ba69d8364773392e4da34a6c6a86ad4e68eaf69a02968dc9c0fe726eddf",
+        "sha256:395ded6fa976c048ef1ad70e0891ea5f4e54c87e67cd50bc8aa71477390a4db7",
+        "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+        "sha256:f6a5665a3591433de5e1769be62915eea7e7fd9fad30909efe91adaa22067c97"
+      ]
+    },
+    {
+      "service": "clamav",
+      "compose_image": "clamav/clamav:1.4.6_base@sha256:e73991068f2037e10cf15669dd3b48c24345658f5488430746b414c0f761270f",
+      "build_recipe": null,
+      "actual_local_image_id": "sha256:e73991068f2037e10cf15669dd3b48c24345658f5488430746b414c0f761270f",
+      "repo_digests": [
+        "clamav/clamav@sha256:e73991068f2037e10cf15669dd3b48c24345658f5488430746b414c0f761270f"
+      ],
+      "runtime_diff_ids": [
+        "sha256:75c137aedfb2760f88629236cb7b797630aed0c3d91d626d1d1bb694878fc2ba",
+        "sha256:55c0c92449d9ecfaa9d0f5939cc1831bc8b33e6e6601a780753375d3ebee4586",
+        "sha256:3555879c6942c5a9e62e681b41d9b8d321cc32a97172cfc439ce3ee714244d2b",
+        "sha256:65650c7a01f70c063241bb2cbfd7449d3b5a95683bfaab718daa8f0e9aa2fbd1",
+        "sha256:828d8f26e520f88a19ef09ee25186eeba6aded0783740b5e6fc65fcf851ba8d3",
+        "sha256:d59f680ed5199dc233f3c1905e039803625915c2edd359b00220dd3c61a1752d"
+      ]
+    },
+    {
+      "service": "etcd",
+      "compose_image": "dr-vendor-etcd:3.5.34-go1.27.3-xnet0.60-vcs-20261026",
+      "build_recipe": {
+        "context": ".",
+        "dockerfile": "Dockerfile.etcd"
+      },
+      "actual_local_image_id": "sha256:d480cdd13835e01205ab75f296c6fafcc2e4c57d5711d6c3f2e9320021b81687",
+      "repo_digests": [
+        "dr-vendor-etcd@sha256:d480cdd13835e01205ab75f296c6fafcc2e4c57d5711d6c3f2e9320021b81687"
+      ],
+      "runtime_diff_ids": [
+        "sha256:5342a2647e8784b3afdeb9b148d5fe1e7e1089ed3650204077765c78b3b0f93c",
+        "sha256:577c8ee06f39e2bc276615f1058fa40081255ce5e2f072df4875e27868de5660",
+        "sha256:9ed498e122b248a801130d052c25418381ee7bf215cdf7990965bae0dc37dcc2",
+        "sha256:4d049f83d9cf21d1f5cc0e11deaf36df02790d0e60c1a3829538fb4b61685368",
+        "sha256:af5aa97ebe6ce1604747ec1e21af7136ded391bcabe4acef882e718a87c86bcc",
+        "sha256:ac805962e47900b616b2f4b4584a34ac7b07d64ac1fd2c077478cf65311addcc",
+        "sha256:bbb6cacb8c82e4da4e8143e03351e939eab5e21ce0ef333c42e637af86c5217b",
+        "sha256:2a92d6ac9e4fcc274d5168b217ca4458a9fec6f094ead68d99c77073f08caac1",
+        "sha256:1a73b54f556b477f0a8b939d13c504a3b4f4db71f7a09c63afbc10acb3de5849",
+        "sha256:c048279a7d9f8e94b4c022b699ad8e8a0cb08b717b014ce4af15afaf375a6ac2",
+        "sha256:2388d21e8e2b74e055216652e6af384768e97513ad568e10c27bacec389b7f0a",
+        "sha256:98d8780791ae2a4aaa54ceedce3514d0f90c78ec9eac126dbf1b9050e9e0a264",
+        "sha256:70f39004fb55d32f96fff77c17bdc2660a85da0303e822b2c5d18c7be5cfec5b",
+        "sha256:abc9546629f472553877d150ef9af0f800dc83a32ff3cd4040224ebe14f9581d",
+        "sha256:0347a309f56a5420d0e2994452f70a573dae1471ef6f081505c50349775383f2",
+        "sha256:bb0f35c6dc1e8e75d23459b5056b20b4dc0d47daa4c12bc106bd68d8f88a7f68",
+        "sha256:05ed9923b59f28d369c49f146542565f79c4c09f459f66869ff0b00b69a0f76b"
+      ]
+    },
+    {
+      "service": "milvus",
+      "compose_image": "dr-vendor-milvus:3.0.3-go1.26.10-locked-20261026",
+      "build_recipe": {
+        "context": ".",
+        "dockerfile": "Dockerfile.milvus"
+      },
+      "actual_local_image_id": "sha256:092814b9166eaddf75a4c959efd15542491378c2cdfedf67b36293b728b94f04",
+      "repo_digests": [
+        "dr-vendor-milvus@sha256:092814b9166eaddf75a4c959efd15542491378c2cdfedf67b36293b728b94f04"
+      ],
+      "runtime_diff_ids": [
+        "sha256:0b9c994b0484c0bc61f9de7c28a58745a504704254c5e8ed12349ebee3393a66",
+        "sha256:77438f2397c1259a82b2627dab5b347713795f473040ae0df92f70a8aa75388f",
+        "sha256:c2b568680372abb46674ba693816d1503a7b39fa92ba41e4d09cfbd097e75765",
+        "sha256:f5eb85c664bd801815f5cd9febb588c04baef040abe9a4deb3a5115be6d08f9b",
+        "sha256:97cfb4c6922a690d418f7664d49f6557e1f4262753da1d365061d58257bade55",
+        "sha256:7514f6b074dc0cd6f11deaf5016906804cf78cc233bbe6a37a9ea81f164075f3",
+        "sha256:63073f7e53e2be79cd665cbfd32eecccd5968ecf8901571a2aebc4bc3aaf744b",
+        "sha256:fed6a7d7d8499a4f3fd273e11e2fc462177941f9636b77a9a2b73e4b65194875",
+        "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+        "sha256:07bfcfdd6a8743c09bf810053e7c83354b766cf849ba478f76b3c7df3e75d1fb",
+        "sha256:b9885e33c2631ef45ba10d124d13bd5a57417d548dc8459da10883b78b6bc585"
+      ]
+    },
+    {
+      "service": "keycloak",
+      "compose_image": "dr-vendor-keycloak:26.8.1-temurin21.0.13-locked-20261026",
+      "build_recipe": {
+        "context": ".",
+        "dockerfile": "Dockerfile.keycloak"
+      },
+      "actual_local_image_id": "sha256:95e66ef578a2e6a7ed744252edf687d07713e4e50ee1e9eb194cd0db522361ca",
+      "repo_digests": [
+        "dr-vendor-keycloak@sha256:95e66ef578a2e6a7ed744252edf687d07713e4e50ee1e9eb194cd0db522361ca"
+      ],
+      "runtime_diff_ids": [
+        "sha256:aab4e89276512161fd2939bd06a8c0452a61eae67bdf537031633c12e5ddb070"
+      ]
+    },
+    {
+      "service": "minio",
+      "compose_image": "deepresearch-approved-minio:20261026",
+      "build_recipe": null,
+      "actual_local_image_id": "sha256:151cd83d5e6500f4d1b3d7f0a12756fe80e8ffcbf91150afd6b9b9605bc2369a",
+      "repo_digests": [
+        "deepresearch-approved-minio@sha256:151cd83d5e6500f4d1b3d7f0a12756fe80e8ffcbf91150afd6b9b9605bc2369a",
+        "dr-opt-minio-go1273-compat@sha256:151cd83d5e6500f4d1b3d7f0a12756fe80e8ffcbf91150afd6b9b9605bc2369a"
+      ],
+      "runtime_diff_ids": [
+        "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99",
+        "sha256:6e10a27c77d9a6a73577bd8d8bf37a1b0620ad9ccf489a2b01108a6642d8bc5c",
+        "sha256:bd250dd660c815efd2d451f5fce3b5d361fd435253e76e6d64539233bbcbff1c",
+        "sha256:1b4744aeef73e83c76419dd22b1cfcbdf7da7c3f575d675abb20658306315917",
+        "sha256:75202b75ba034f72c8f0650eec04f730cfbe40a97d6d50fc822d28d8e33aa1a4",
+        "sha256:58c9b5b0f2c9a7b7366fc7ed287869fe051e946fc2104e0632ad7bf36e8c8da4",
+        "sha256:c55c57e7b6539bf8039461fe247b59c18ceeeb7e01a7908f3d49622c593edfeb",
+        "sha256:5c3f3e3b45efc366ba174d9f850b92923195118993abadad8643e832d686daf1",
+        "sha256:c4a473e412444c2df97187857967b21f53a31fbd53cfffc641ce85385e69b913",
+        "sha256:f55834e2ab0b5f33f03330f3f76070a41f819754b7d958f5a092a7fbe5e267b3",
+        "sha256:c41ef0bde233118c05ff8febc3776277a17773433f8bb2b016eabdbb60304bd5",
+        "sha256:2a08a8b39a8a84a9c00a1e9015983e8de39ea77b803bc470911401d97b0c2af7",
+        "sha256:34ac5ca62975c7490466f6e818790f5080937fc85e72adf2ca614e700312e618",
+        "sha256:ea74ff81527a8a1a00213e393509b6ccecaa7864a0bd3a0af691deb8ba3b5015"
+      ]
+    }
+  ],
+  "daily_started_or_changed": false,
+  "candidate_window": "root-owned separate unified acceptance; table describes prepared source/verified local images, not a deployment attestation",
+  "scan_receipt": ".cache/optimization-20261026/vendor-final-scan/summary.json"
+}

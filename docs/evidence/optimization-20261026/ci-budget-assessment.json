@@ -1,0 +1,680 @@
+{
+  "schema": "ci-budget-assessment-v1",
+  "generated_at": "2026-10-26T10:30:53.555098+00:00",
+  "precheck_status": "cumulative_reconciliation_required",
+  "exit_code": 1,
+  "supplier_http_requests": 0,
+  "proof_verified": true,
+  "proof_drift": [],
+  "source_references": [
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.build",
+      "line": 244,
+      "ast_sha256": "5d6961371e795c74fab8c1d664e667b5233aed53a46c2efedf13611d1fb81524",
+      "audited": true
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.instrument",
+      "line": 266,
+      "ast_sha256": "38ffd92797c8878fb1094e84693f3d24bfb19f921502ac7a3fd7892552448af3",
+      "audited": true
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.ask",
+      "line": 304,
+      "ast_sha256": "b31d380bbe644ac9089e320c19de39b3fce8b20fc6691f196c9fd4665d931153",
+      "audited": true
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.router",
+      "line": 380,
+      "ast_sha256": "fdfe2f4186023f2b9ec7b1d2c8df4db5fdfcc88209e3b0d06861e6fcfd18ef70",
+      "audited": true
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.planner",
+      "line": 483,
+      "ast_sha256": "230a99a8cdf6a36c417c12e1f8b9718460c25fb6b40d6d68ee154121c8ce7847",
+      "audited": true
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.judge",
+      "line": 632,
+      "ast_sha256": "4602608a2abf7a886c83c344b8d1e3df99b727cebb768fba628a3c97f068ef59",
+      "audited": true
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.analyst",
+      "line": 697,
+      "ast_sha256": "d69fea12e4c2e9ec40911eed002697b7f47173f3f57ad19f4d1018e98d8689c1",
+      "audited": true
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.writer",
+      "line": 785,
+      "ast_sha256": "f3b6861c0989877015d6712d396b8e5fe7ad293b3c27203b89b5de7a2b876dee",
+      "audited": true
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.check_draft",
+      "line": 808,
+      "ast_sha256": "0e60e05396f534c9a0086a15b13affa6a02633a59a148767fa5a2c8f3c2e4577",
+      "audited": true
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.validator",
+      "line": 885,
+      "ast_sha256": "d078dba53a6cf080bdee7330078f576be5fda29372b16e7fcb6153fb6295c01a",
+      "audited": true
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "md_text",
+      "line": 169,
+      "ast_sha256": "5480a9472c4aff1f3cb2c2a99f97a87cecaa8ac960f9967a8ae02815ae6f5243",
+      "audited": true
+    },
+    {
+      "path": "backend/research/reporting.py",
+      "symbol": "assemble_report",
+      "line": 32,
+      "ast_sha256": "c55b508ff70dbb3215e845b028c49b96464adfb9961420a41e9dab851652fc65",
+      "audited": true
+    },
+    {
+      "path": "backend/domain/models.py",
+      "symbol": "Plan",
+      "line": 77,
+      "ast_sha256": "f0c78c52efeec29c8b359d59f56f103a62dcd02e489be348f366f0c473e27ed3",
+      "audited": true
+    },
+    {
+      "path": "backend/domain/models.py",
+      "symbol": "Claim",
+      "line": 111,
+      "ast_sha256": "8a6b6e1bb117f4547b38587f4273da8ca2ce37eb5854d199f45cb0023b8e243e",
+      "audited": true
+    },
+    {
+      "path": "backend/domain/models.py",
+      "symbol": "ReportDraft",
+      "line": 163,
+      "ast_sha256": "7914003e345013f37a0581eda6855a59168bf9dc80145b19150c86415cd083da",
+      "audited": true
+    },
+    {
+      "path": "backend/domain/models.py",
+      "symbol": "ReportSection",
+      "line": 158,
+      "ast_sha256": "4845b58b72574c3bd13be584a2ca40a985250a9d2b752a246da0a17dbc41b605",
+      "audited": true
+    },
+    {
+      "path": "backend/services/runtime.py",
+      "symbol": "Runtime.execute_run",
+      "line": 460,
+      "ast_sha256": "2fb34718ec87fa94bce7409ef01b3a70c510bc2ddd27e566a4b02ade62725e06",
+      "audited": true
+    },
+    {
+      "path": "backend/infrastructure/providers.py",
+      "symbol": "Providers.structured",
+      "line": 206,
+      "ast_sha256": "252379880bd00138c44d6922b8f939b96f099a6fa44cd2532ca1091052973953",
+      "audited": true
+    },
+    {
+      "path": "backend/infrastructure/providers.py",
+      "symbol": "Providers.post",
+      "line": 120,
+      "ast_sha256": "fd7a53e6ae5d825c1136f37f722d7c2ca272e125b66272e93dc888dec4a10e38",
+      "audited": true
+    },
+    {
+      "path": "backend/quality_gate.py",
+      "symbol": "assess_support",
+      "line": 18,
+      "ast_sha256": "a30ffd97d416a956493140daeeda0720e457557cae38a5e37270fbfd90f0c40c",
+      "audited": true
+    },
+    {
+      "path": "backend/quality_gate.py",
+      "symbol": "evaluate_draft",
+      "line": 39,
+      "ast_sha256": "80636fc05009397a1e556e2d0c83c8a6f10101c2dd9f61ddddef8737fb4fe2ac",
+      "audited": true
+    },
+    {
+      "path": "backend/quality_gate.py",
+      "symbol": "summarize",
+      "line": 78,
+      "ast_sha256": "c65270e87a41c897b79caf35b62e8d8dbaaa73d8170c2831efb5c86f8070ad13",
+      "audited": true
+    },
+    {
+      "path": "scripts/evaluate_answers.py",
+      "symbol": "main_async",
+      "line": 18,
+      "ast_sha256": "8fd14b71d2a7d48eed3b04e38aea57d677890f79c1e6bad81750ee4e68f777c0",
+      "audited": true
+    },
+    {
+      "path": "scripts/evaluate_research.py",
+      "symbol": "assess_report_support",
+      "line": 33,
+      "ast_sha256": "5ab26ef110a7e7152d57f3f2f9a0c10576c4c5376ae252e1c135ad4598bdf70e",
+      "audited": true
+    },
+    {
+      "path": "scripts/evaluate_research.py",
+      "symbol": "evaluate",
+      "line": 86,
+      "ast_sha256": "e3b9205cacb684d6867c102ef13a66661f16d62a1c62ed2ae5743d0ccf6eeec0",
+      "audited": true
+    },
+    {
+      "path": "scripts/evaluate_research.py",
+      "symbol": "summarize_research",
+      "line": 56,
+      "ast_sha256": "01ad6c9b557628c7829929bd5ba5286db6ee1323922722c67eb14fccc04dd285",
+      "audited": true
+    },
+    {
+      "path": "scripts/evaluate_research.py",
+      "symbol": "summarize_repetitions",
+      "line": 69,
+      "ast_sha256": "c82303ded704f125b8bf82ce54ad4af9d81edcef4bd936498dd9f67089dd47ff",
+      "audited": true
+    },
+    {
+      "path": "scripts/evaluate_research.py",
+      "symbol": "main",
+      "line": 190,
+      "ast_sha256": "2325bf89d990e28df56b1b8414a5cd79bc299c705564524ce9c887b4c8586c10",
+      "audited": true
+    },
+    {
+      "path": "scripts/evaluation_scope.py",
+      "symbol": "scoped_evaluation",
+      "line": 7,
+      "ast_sha256": "a6a358812c41d3e15d281d2b2b3957e9516a29f1ac08810b07583cd3ed3a6202",
+      "audited": true
+    },
+    {
+      "path": "scripts/bounded_evaluation.py",
+      "symbol": "main",
+      "line": 177,
+      "ast_sha256": "c67e6fdc18ec7176389bc859ce659981c16b7201d446cc478a5fd80fb71bf935",
+      "audited": true
+    },
+    {
+      "path": "scripts/bounded_evaluation.py",
+      "symbol": "Budget.install",
+      "line": 141,
+      "ast_sha256": "7d72d3bf99a55fda45603b5f994964658d74c939795d8f5fb3303a9856d4ebd1",
+      "audited": true
+    },
+    {
+      "path": "scripts/bounded_evaluation.py",
+      "symbol": "Budget.reserve",
+      "line": 49,
+      "ast_sha256": "0a8b3540e2b1a108d2e65a22786c876f92c7d653bd0378082d2bb32cb09f65bb",
+      "audited": true
+    },
+    {
+      "path": "scripts/bounded_evaluation.py",
+      "symbol": "Budget.__init__",
+      "line": 23,
+      "ast_sha256": "b9cd57027177bcdb95a369c939602c9fd5e6c727cf8d61d88c8530caea901c89",
+      "audited": true
+    },
+    {
+      "path": "scripts/evaluation_scope.py",
+      "symbol": "configure_evaluator_limits",
+      "line": 15,
+      "ast_sha256": "30ca3662002d01d4b8c06c7739ad2016af3f229e4f97de3cc3f7b064f3dd8ef5",
+      "audited": true
+    }
+  ],
+  "policy": {
+    "ci_series_id": "deepresearch-ci-provider-20261025",
+    "model_http": 1358,
+    "llm_http": 1358,
+    "embedding_http": 0,
+    "reranker_http": 0,
+    "search_http": 0,
+    "total_http": 1358,
+    "input_tokens": 10000000,
+    "output_tokens": 500000
+  },
+  "policy_sha256": "75ce5edc49c94fa251a6140e79dea2400bb744440278aed97ab7512ecd5f8141",
+  "ledger": {
+    "exists": false,
+    "http_requests": 0,
+    "model_requests": 0,
+    "llm_requests": 0,
+    "halt": null
+  },
+  "remaining_requests": null,
+  "available_model_and_total_http": null,
+  "critical_path_lower_bound": 245,
+  "cumulative_reconciliation_verified": false,
+  "authorization": {
+    "project": "DeepResearch",
+    "scope": "2026-10-26 complete quality CI, cumulative across all attempts and reruns",
+    "human_question": "是否允许将 DeepResearch 本轮完整质量 CI 的模型调用上限从 57 次提高到 515 次？仍保留现有剩余 Token 上限（输入 9,101,235、输出 379,122），达到任一上限即停；费用按实际用量产生，不保证一定通过。",
+    "human_answer": "允许最多515次调用",
+    "previous_remaining_model_http": 57,
+    "authorized_remaining_model_http": 515,
+    "additional_authorized_model_http": 458,
+    "remaining_input_tokens": 9101235,
+    "remaining_output_tokens": 379122,
+    "historical_ci_consumed_model_http": 843,
+    "previous_lifetime_model_http_cap": 900,
+    "new_lifetime_model_http_cap": 1358,
+    "do_not_reset_ledger": true,
+    "not_per_run": true,
+    "other_budgets_unchanged": true
+  },
+  "authorization_sha256": "29c6e5f0deed51f2002be94f6e271c118bba81690034a991d4203b6967d493af",
+  "additional_http_below_critical_bound": null,
+  "pass_rate_refinement_lower_bound": 296,
+  "additional_http_below_refined_bound": null,
+  "stages": [
+    {
+      "label": "answers",
+      "base_cases": 7,
+      "adversarial_cases": 3,
+      "result_count": 10,
+      "critical_required_support_case_ids": [
+        "forbidden-invention"
+      ],
+      "critical_path_lower_bound": 11
+    },
+    {
+      "label": "research",
+      "attempted_cases": 30,
+      "repetitions": 1,
+      "require_all": false,
+      "positive_case_ids": [
+        "single-1",
+        "compare-1",
+        "conflict-1",
+        "negation-1",
+        "injection-1",
+        "single-2",
+        "compare-2",
+        "conflict-2",
+        "negation-2",
+        "injection-2",
+        "single-3",
+        "compare-3",
+        "conflict-3",
+        "negation-3",
+        "injection-3",
+        "single-4",
+        "compare-4",
+        "conflict-4",
+        "negation-4",
+        "injection-4",
+        "single-5",
+        "compare-5",
+        "conflict-5",
+        "negation-5",
+        "injection-5"
+      ],
+      "refusal_case_ids": [
+        "refusal-1",
+        "refusal-2",
+        "refusal-3",
+        "refusal-4",
+        "refusal-5"
+      ],
+      "mandatory_positive_case_ids": [
+        "conflict-1",
+        "negation-1",
+        "injection-1",
+        "conflict-2",
+        "negation-2",
+        "injection-2",
+        "conflict-3",
+        "negation-3",
+        "injection-3",
+        "conflict-4",
+        "negation-4",
+        "injection-4",
+        "conflict-5",
+        "negation-5",
+        "injection-5"
+      ],
+      "mandatory_refusal_case_ids": [
+        "refusal-1",
+        "refusal-2",
+        "refusal-3",
+        "refusal-4",
+        "refusal-5"
+      ],
+      "mandatory_positive_http_each": 8,
+      "mandatory_refusal_http_each": 2,
+      "critical_path_lower_bound": 130
+    },
+    {
+      "label": "stability",
+      "attempted_cases": 9,
+      "repetitions": 3,
+      "require_all": true,
+      "positive_case_ids": [
+        "conflict-1",
+        "compare-3",
+        "single-5"
+      ],
+      "refusal_case_ids": [],
+      "mandatory_positive_case_ids": [
+        "conflict-1",
+        "compare-3",
+        "single-5",
+        "conflict-1",
+        "compare-3",
+        "single-5",
+        "conflict-1",
+        "compare-3",
+        "single-5"
+      ],
+      "mandatory_refusal_case_ids": [],
+      "mandatory_positive_http_each": 8,
+      "mandatory_refusal_http_each": 2,
+      "critical_path_lower_bound": 72
+    },
+    {
+      "label": "extensions",
+      "attempted_cases": 4,
+      "repetitions": 1,
+      "require_all": false,
+      "positive_case_ids": [
+        "pilot-negation-exception-1",
+        "pilot-conflicting-versions-1",
+        "pilot-partial-evidence-1",
+        "pilot-conflict-no-resolution-1"
+      ],
+      "refusal_case_ids": [],
+      "mandatory_positive_case_ids": [
+        "pilot-negation-exception-1",
+        "pilot-conflicting-versions-1",
+        "pilot-partial-evidence-1",
+        "pilot-conflict-no-resolution-1"
+      ],
+      "mandatory_refusal_case_ids": [],
+      "mandatory_positive_http_each": 8,
+      "mandatory_refusal_http_each": 2,
+      "critical_path_lower_bound": 32
+    }
+  ],
+  "theoretical_envelope": {
+    "structured_http_max": 6,
+    "format_attempts": 2,
+    "http_attempts_each": 3,
+    "graph_http_cap_each": 80,
+    "max_visible_claims_each": 96,
+    "external_support_group_nodes_max": 191,
+    "external_coverage_http_max": 6,
+    "per_research_case_http": 1232,
+    "answers_http": 102,
+    "all_four_stages_http": 53078,
+    "meaning": "Loose parameterized adapter envelope, not expected demand, recommended quota or a completion guarantee."
+  },
+  "model_conditions": {
+    "model_id": "deepseek-v4-flash",
+    "endpoint_sha256": "a34e2a4708ed1c61008a151688838dcf1c44d4e7f08054633e72ba7c0b16cfc1",
+    "extra_body_sha256": "b5870a3a4005fe6ccfc6195efbbebf92d7a2fb4d7534ed672272370e67dc1ad5",
+    "local_defaults_are_not_remote_secret_verification": true,
+    "fresh_isolated_case_databases": true,
+    "fixed_web_sources": true,
+    "embedding_reranker_search_http": 0
+  },
+  "file_fingerprints": {
+    ".github/workflows/answer-quality.yml": "3a6d3843d53f4724d909caa3dfab80270b554e5f1b69f2b3fd0103e1a5f2fe63",
+    "backend/core/config.py": "d2ccff0826a8c0668610f99b231dbeca1aaf2d32cb733b19edf104f0a95dd74e",
+    "backend/domain/models.py": "01b367d50515532d056a3b9f50084d5cab95c50e35ab41b78e11c26d72cc2f76",
+    "backend/infrastructure/providers.py": "f5afb35299dc984bb08c4704f7ea7a01a05b387b517baf0d567a836e97a2612d",
+    "backend/quality_gate.py": "03fb64e6536755531614c22da8508f449f5939bb46d99588ed65957e058870b7",
+    "backend/research/graph.py": "7d9f61e48cc6d17cbeba33622da252ebb88ded077491b7eecf6e8345cd2d7486",
+    "backend/research/reporting.py": "748c048b68c4b2453bbaf7e0207434f57933c77ff664c473464546fdd19d4ef1",
+    "backend/services/runtime.py": "9e3ebce9ad1cb46a855a223f4c178ee45eac820c6fb5d50770eb10a3a020db71",
+    "eval/answer_quality_cases.json": "dd8541e23260631539e0ca5afecdbb0e5520d6029796355a45cf850597484036",
+    "eval/ci-budget-source-basis.json": "8057939587cedcf00bd9318e03bc04d2f6f17cb2cdff64570b4767eb101160f5",
+    "eval/research_quality_cases.json": "c23662922168f5ce04e3b2e0e9cf9b11fc1bee81a3bc8edc25b18e39b74f239f",
+    "eval/research_quality_extensions.json": "8e81a432a18f5360e169266d9ff584b30d43b897e34bad5bffc023aab4f50f50",
+    "pyproject.toml": "62e5c3936b6c6e2e94c7dcc60c659f6f90a5381c74e13a10c9ce1dff9c28deb4",
+    "scripts/bounded_evaluation.py": "4abd832429260ed393efab9f89a30afbce7b0efe2b4588ab6f2f832aa72703a8",
+    "scripts/check_ci_evaluation_budget.py": "635e2e9b8fdaf2a6b9226d49c20c112d6b58d4784528511c340595dfdfffb707",
+    "scripts/evaluate_answers.py": "c0edf395e47a31115ee4272ef1a322a04596252aca08f84adbbc7deb5e5ee7f3",
+    "scripts/evaluate_research.py": "0ea1dc5c177bd218e4123ca1119a8c9d0bdc468a000574d1baca4f5ec10a70f0",
+    "scripts/evaluation_scope.py": "584eb173d0644f0a8c91bf0f45e4ec3253ae5ef9ca33442a1bd1ee0b279e6212",
+    "scripts/reuse_quality_evidence.py": "44e5ee11999c40271dc1761019a8620841c7b762f4c6ddeb271069b67c150600",
+    "uv.lock": "d63ecb8cb8c56a301e92bbd2de405dabc351bcb5cfd51cd4d5bc5b0674af9dc0"
+  },
+  "limitations": [
+    "A necessary lower bound is not a sufficient budget or a prediction.",
+    "Unknown source drift is reported as unverified, never invented as a known quota shortage.",
+    "No policy or ledger is enlarged, reset, reserved or amended by this script.",
+    "Old evidence reuse remains subject to the existing one-time direct-child Java-OS-only contract."
+  ],
+  "historical_observations": [
+    {
+      "path": ".cache\\improvement-20261025\\ci-062b076\\provider-budget.json",
+      "sha256": "b039fa21da0682e54d17fb25d1a1dcf88b162cbb2ede1c2f09c6f0f5b86827d2",
+      "http_requests": 429,
+      "by_stage": {
+        "answers": 16,
+        "research": 276,
+        "stability": 97,
+        "extensions": 40
+      },
+      "actual_input_tokens": 458509,
+      "actual_output_tokens": 60842,
+      "usage_missing_requests": 0,
+      "execution_contexts": [
+        {
+          "label": "answers",
+          "http_before": 0,
+          "backend_source_sha256": "de6763899d9ee0002346df57e1b73fa189291e7afee4bb5f44eaf3d3d813cbcd",
+          "backend_normalized_source_sha256": "de6763899d9ee0002346df57e1b73fa189291e7afee4bb5f44eaf3d3d813cbcd",
+          "checkout_sha": "062b0763b37ebad2d8795caeae42fe72df89d0f4",
+          "working_tree_dirty": false,
+          "target_sha256": "07c990aaabc52b9c133d8abb4a9de7cfb8e337e4c34ab5a8976860dfcd62e442",
+          "arguments_sha256": "e1ce5dad69e339000d27858909035e7a0549c9a552454ba5f86aad64937faa8b",
+          "model": "deepseek-v4-flash",
+          "model_base_url_sha256": "a34e2a4708ed1c61008a151688838dcf1c44d4e7f08054633e72ba7c0b16cfc1",
+          "extra_body_sha256": "b5870a3a4005fe6ccfc6195efbbebf92d7a2fb4d7534ed672272370e67dc1ad5"
+        },
+        {
+          "label": "research",
+          "http_before": 16,
+          "backend_source_sha256": "de6763899d9ee0002346df57e1b73fa189291e7afee4bb5f44eaf3d3d813cbcd",
+          "backend_normalized_source_sha256": "de6763899d9ee0002346df57e1b73fa189291e7afee4bb5f44eaf3d3d813cbcd",
+          "checkout_sha": "062b0763b37ebad2d8795caeae42fe72df89d0f4",
+          "working_tree_dirty": false,
+          "target_sha256": "ec503c100c30e1c2bd43a21db4c484eb6357e8bc0232f63b553c3b4fb29e04c6",
+          "arguments_sha256": "49b6ce8c193e1749277bfe0ee549ccd5744275d97e8f277851ff33c5ba3391d1",
+          "model": "deepseek-v4-flash",
+          "model_base_url_sha256": "a34e2a4708ed1c61008a151688838dcf1c44d4e7f08054633e72ba7c0b16cfc1",
+          "extra_body_sha256": "b5870a3a4005fe6ccfc6195efbbebf92d7a2fb4d7534ed672272370e67dc1ad5"
+        },
+        {
+          "label": "stability",
+          "http_before": 292,
+          "backend_source_sha256": "de6763899d9ee0002346df57e1b73fa189291e7afee4bb5f44eaf3d3d813cbcd",
+          "backend_normalized_source_sha256": "de6763899d9ee0002346df57e1b73fa189291e7afee4bb5f44eaf3d3d813cbcd",
+          "checkout_sha": "062b0763b37ebad2d8795caeae42fe72df89d0f4",
+          "working_tree_dirty": false,
+          "target_sha256": "ec503c100c30e1c2bd43a21db4c484eb6357e8bc0232f63b553c3b4fb29e04c6",
+          "arguments_sha256": "1f101075a8d0d63ebf0ebf9187e6d84d1e4e7db6ab8fa18370cfeac2f737628b",
+          "model": "deepseek-v4-flash",
+          "model_base_url_sha256": "a34e2a4708ed1c61008a151688838dcf1c44d4e7f08054633e72ba7c0b16cfc1",
+          "extra_body_sha256": "b5870a3a4005fe6ccfc6195efbbebf92d7a2fb4d7534ed672272370e67dc1ad5"
+        },
+        {
+          "label": "extensions",
+          "http_before": 389,
+          "backend_source_sha256": "de6763899d9ee0002346df57e1b73fa189291e7afee4bb5f44eaf3d3d813cbcd",
+          "backend_normalized_source_sha256": "de6763899d9ee0002346df57e1b73fa189291e7afee4bb5f44eaf3d3d813cbcd",
+          "checkout_sha": "062b0763b37ebad2d8795caeae42fe72df89d0f4",
+          "working_tree_dirty": false,
+          "target_sha256": "ec503c100c30e1c2bd43a21db4c484eb6357e8bc0232f63b553c3b4fb29e04c6",
+          "arguments_sha256": "e4580fb1e3c374d9477fbb3d044297eed896e25415158422eaeea861a528c485",
+          "model": "deepseek-v4-flash",
+          "model_base_url_sha256": "a34e2a4708ed1c61008a151688838dcf1c44d4e7f08054633e72ba7c0b16cfc1",
+          "extra_body_sha256": "b5870a3a4005fe6ccfc6195efbbebf92d7a2fb4d7534ed672272370e67dc1ad5"
+        }
+      ],
+      "meaning": "Historical exact-source/config observation, not a forecast for changed Python/prompt/evaluator inputs."
+    },
+    {
+      "path": ".cache\\improvement-20261025\\ci-c764c90\\provider-budget.json",
+      "sha256": "0aa9713284e7dabed26e6333df7687cde7a9b41d096fe653b7b9ab5db5923779",
+      "http_requests": 414,
+      "by_stage": {
+        "answers": 16,
+        "research": 272,
+        "stability": 86,
+        "extensions": 40
+      },
+      "actual_input_tokens": 440256,
+      "actual_output_tokens": 60036,
+      "usage_missing_requests": 0,
+      "execution_contexts": [
+        {
+          "label": "answers",
+          "http_before": 0,
+          "backend_source_sha256": "de6763899d9ee0002346df57e1b73fa189291e7afee4bb5f44eaf3d3d813cbcd",
+          "backend_normalized_source_sha256": "de6763899d9ee0002346df57e1b73fa189291e7afee4bb5f44eaf3d3d813cbcd",
+          "checkout_sha": "c764c907df7c6cc5f5cb781871dc0cf8c0fc50bb",
+          "working_tree_dirty": false,
+          "target_sha256": "07c990aaabc52b9c133d8abb4a9de7cfb8e337e4c34ab5a8976860dfcd62e442",
+          "arguments_sha256": "e1ce5dad69e339000d27858909035e7a0549c9a552454ba5f86aad64937faa8b",
+          "model": "deepseek-v4-flash",
+          "model_base_url_sha256": "a34e2a4708ed1c61008a151688838dcf1c44d4e7f08054633e72ba7c0b16cfc1",
+          "extra_body_sha256": "b5870a3a4005fe6ccfc6195efbbebf92d7a2fb4d7534ed672272370e67dc1ad5"
+        },
+        {
+          "label": "research",
+          "http_before": 16,
+          "backend_source_sha256": "de6763899d9ee0002346df57e1b73fa189291e7afee4bb5f44eaf3d3d813cbcd",
+          "backend_normalized_source_sha256": "de6763899d9ee0002346df57e1b73fa189291e7afee4bb5f44eaf3d3d813cbcd",
+          "checkout_sha": "c764c907df7c6cc5f5cb781871dc0cf8c0fc50bb",
+          "working_tree_dirty": false,
+          "target_sha256": "ec503c100c30e1c2bd43a21db4c484eb6357e8bc0232f63b553c3b4fb29e04c6",
+          "arguments_sha256": "49b6ce8c193e1749277bfe0ee549ccd5744275d97e8f277851ff33c5ba3391d1",
+          "model": "deepseek-v4-flash",
+          "model_base_url_sha256": "a34e2a4708ed1c61008a151688838dcf1c44d4e7f08054633e72ba7c0b16cfc1",
+          "extra_body_sha256": "b5870a3a4005fe6ccfc6195efbbebf92d7a2fb4d7534ed672272370e67dc1ad5"
+        },
+        {
+          "label": "stability",
+          "http_before": 288,
+          "backend_source_sha256": "de6763899d9ee0002346df57e1b73fa189291e7afee4bb5f44eaf3d3d813cbcd",
+          "backend_normalized_source_sha256": "de6763899d9ee0002346df57e1b73fa189291e7afee4bb5f44eaf3d3d813cbcd",
+          "checkout_sha": "c764c907df7c6cc5f5cb781871dc0cf8c0fc50bb",
+          "working_tree_dirty": false,
+          "target_sha256": "ec503c100c30e1c2bd43a21db4c484eb6357e8bc0232f63b553c3b4fb29e04c6",
+          "arguments_sha256": "1f101075a8d0d63ebf0ebf9187e6d84d1e4e7db6ab8fa18370cfeac2f737628b",
+          "model": "deepseek-v4-flash",
+          "model_base_url_sha256": "a34e2a4708ed1c61008a151688838dcf1c44d4e7f08054633e72ba7c0b16cfc1",
+          "extra_body_sha256": "b5870a3a4005fe6ccfc6195efbbebf92d7a2fb4d7534ed672272370e67dc1ad5"
+        },
+        {
+          "label": "extensions",
+          "http_before": 374,
+          "backend_source_sha256": "de6763899d9ee0002346df57e1b73fa189291e7afee4bb5f44eaf3d3d813cbcd",
+          "backend_normalized_source_sha256": "de6763899d9ee0002346df57e1b73fa189291e7afee4bb5f44eaf3d3d813cbcd",
+          "checkout_sha": "c764c907df7c6cc5f5cb781871dc0cf8c0fc50bb",
+          "working_tree_dirty": false,
+          "target_sha256": "ec503c100c30e1c2bd43a21db4c484eb6357e8bc0232f63b553c3b4fb29e04c6",
+          "arguments_sha256": "e4580fb1e3c374d9477fbb3d044297eed896e25415158422eaeea861a528c485",
+          "model": "deepseek-v4-flash",
+          "model_base_url_sha256": "a34e2a4708ed1c61008a151688838dcf1c44d4e7f08054633e72ba7c0b16cfc1",
+          "extra_body_sha256": "b5870a3a4005fe6ccfc6195efbbebf92d7a2fb4d7534ed672272370e67dc1ad5"
+        }
+      ],
+      "meaning": "Historical exact-source/config observation, not a forecast for changed Python/prompt/evaluator inputs."
+    }
+  ],
+  "reuse_assessment": {
+    "current_head": "8768aa6c1e4f0d24a8c355ce769112e98b3b8c10",
+    "required_source_parent": "c764c907df7c6cc5f5cb781871dc0cf8c0fc50bb",
+    "applicable": false,
+    "reason": "One-time authorization covers only the direct-child Java OS-only patch. Current Python, prompts/boundaries and evaluation adapters changed; no silent source-evidence reuse."
+  },
+  "implementation_status": "implemented_offline_verified_live_reconciliation_pending",
+  "authorization_original_source_sha256": "713a5a31b13ac9cd9e898a0a579e9a7a39b4ee9d9e68da20e8f4525da1054113",
+  "offline_seed_fixture": {
+    "path": ".cache\\optimization-20261026\\offline-ci-budget-baseline-cfaccb658f3443a38dc7942b4726a263.sqlite3",
+    "meaning": "Only an offline fixture populated with preserved historical843; not live GitHub remaining.",
+    "series_id": "deepresearch-ci-provider-20261025",
+    "cumulative_requests": 843,
+    "historical_requests": 843,
+    "authorized_new_requests": 515,
+    "new_requests_across_all_runs": 0,
+    "remaining_model_http": 515,
+    "remaining_total_http": 515,
+    "remaining_input_tokens": 9101235,
+    "remaining_output_tokens": 379122,
+    "known_requests_with_missing_usage": 0,
+    "halt": null,
+    "supplier_calls_by_reconciliation": 0
+  },
+  "authorization_accounting": {
+    "historical_requests": 843,
+    "previous_lifetime": 900,
+    "amendment": 458,
+    "new_lifetime": 1358,
+    "authorized_new_total_all_runs": 515,
+    "remaining_input_tokens_at_baseline": 9101235,
+    "remaining_output_tokens_at_baseline": 379122,
+    "new_supplier_requests_by_this_agent": 0
+  },
+  "runtime_controls": {
+    "concurrency_group": "deepresearch-ci-provider-cumulative-20261026",
+    "cancel_in_progress": false,
+    "same_sha_prerequisites": [
+      "CI",
+      "Security"
+    ],
+    "prerequisite_wait_seconds": 900,
+    "job_timeout_minutes": 90,
+    "artifact_retention_days": 90,
+    "known_reserved_missing_usage": "charge bounds and one request; preserve original halt",
+    "unknown_call_count_or_missing_paid_artifact": "fail closed",
+    "merge_sha_policy": "checkout == GITHUB_SHA == Actions.head_sha; reject head/merge mismatch",
+    "paid_interpreter": "same-source production Dockerfile CPython3.11.18; host Git/reconciliation/sealing remain unpaid",
+    "source_context": "clean HEAD+tracked bytes+runtime preflight digest bound to reconciled run/attempt/SHA and SQLite ledger, independently mounted read-only"
+  },
+  "local_verification": [
+    {
+      "command": "uv run pytest tests/test_ci_cumulative_budget.py tests/test_ci_budget_precheck.py tests/test_evaluation_budget.py -q",
+      "result": "31passed in20.63s; before final missingjobinventory test"
+    },
+    {
+      "command": "uv run pytest tests/test_ci_cumulative_budget.py -q",
+      "result": "18passed in34.65s; includes final missingjobtest andCLIcaps"
+    },
+    {
+      "command": "ruff scopedfiles",
+      "result": "passed"
+    }
+  ],
+  "live_remaining_verified": false,
+  "remaining_runtime_acceptance": [
+    "Finalcommit exactsourceSHA ordinaryCI/Securitysuccess, authenticatedGitHub inventory/digestreconciliation, freshfour-stage paidqualitygate; no modelcalls triggeredlocally."
+  ]
+}

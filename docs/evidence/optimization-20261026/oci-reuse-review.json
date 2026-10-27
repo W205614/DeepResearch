@@ -1,0 +1,39 @@
+{
+  "state": "actual_both_archives_verified_no_approval_from_shared_verifier",
+  "code": {
+    "path": "scripts/oci_artifact.py",
+    "sha256": "e921e644e4561472ecc87a2e5a4acc1edd03b27e554fca59dd53b7adeff825cc"
+  },
+  "limits": {
+    "minio_archive_bytes": 536870912,
+    "grafana_archive_bytes": 2147483648,
+    "default_uncompressed_bytes": 8589934592
+  },
+  "verification": [
+    "streaming outer/archive/blob SHA and strict descriptor graph",
+    "decompressed gzip/raw DiffIDs including trailing TAR padding",
+    "forward whiteout and opaque semantics",
+    "reject empty/dot/dotdot whiteout child names",
+    "final target and ancestor symlink/hardlink/non-directory rejection",
+    "bounded streams and metadata; no extraction to host; unknown compression fails closed"
+  ],
+  "actual_grafana": {
+    "path": ".cache/optimization-20261026/grafana-oci-review/approved-load-final.json",
+    "sha256": "ef656ef5e369d35c7514200cc71d1f824981ea28108562c5b3a3b72005f0fc2d"
+  },
+  "actual_minio": {
+    "path": ".cache/optimization-20261026/minio-ci-integration/shared-final-disposition.json",
+    "sha256": "76355538093cf97f16e3fda199157cc475c9a73652c5f4fce8853928e6357fc8"
+  },
+  "tests": {
+    "pure_oci_cases": 24,
+    "minio_checker_cases": 22,
+    "generic_fetch_cases": 21,
+    "grafana_checker_cases": 19,
+    "grafana_parts_cases": 13,
+    "unique_total_passed_across_scoped_runs": 99,
+    "boundary": "Scoped local tests previously passed; no full functional suite or paid call. Actual raw scans reused for identical image; OCI and loaded identity reverified."
+  },
+  "no_binding_inheritance": true,
+  "minio_binding_unchanged": "2d8518f9ab275f97f0c98c68f3a94d42217b292a2fae50e0ce6461f46919d68e"
+}

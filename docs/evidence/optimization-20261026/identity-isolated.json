@@ -1,0 +1,19 @@
+{
+  "scope": "read-only realm configuration; no email or enrollment performed",
+  "password_reset_enabled": true,
+  "smtp_host_configured": false,
+  "smtp_delivery_tested": false,
+  "account_recovery_tested": false,
+  "totp_supported": true,
+  "totp_new_user_enrollment_default": false,
+  "existing_user_mfa_enrollment_tested": false,
+  "brute_force_protected": true,
+  "permanent_lockout": false,
+  "https_endpoint": false,
+  "external_hostname_tls_verified": false,
+  "blocked_external": [
+    "real SMTP delivery/account recovery",
+    "target-user MFA enrollment and recovery",
+    "externally reachable TLS and hostname verification"
+  ]
+}

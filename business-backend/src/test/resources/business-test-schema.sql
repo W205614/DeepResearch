@@ -1,4 +1,11 @@
 DROP TABLE IF EXISTS business_outbox CASCADE;
+DROP TABLE IF EXISTS collection_grants CASCADE;
+DROP TABLE IF EXISTS document_policies CASCADE;
+DROP TABLE IF EXISTS collections CASCADE;
+DROP TABLE IF EXISTS research_intakes CASCADE;
+DROP TABLE IF EXISTS source_rechecks CASCADE;
+DROP TABLE IF EXISTS chunk_terms CASCADE;
+DROP TABLE IF EXISTS lexical_chunks CASCADE;
 DROP TABLE IF EXISTS report_revision_jobs CASCADE;
 DROP TABLE IF EXISTS report_impacts CASCADE;
 DROP TABLE IF EXISTS run_artifacts CASCADE;
@@ -8,6 +15,7 @@ DROP TABLE IF EXISTS report_publications CASCADE;
 DROP TABLE IF EXISTS dead_letter_runs CASCADE;
 DROP TABLE IF EXISTS audit_logs CASCADE;
 DROP TABLE IF EXISTS counters CASCADE;
+DROP TABLE IF EXISTS memories CASCADE;
 DROP TABLE IF EXISTS attachments CASCADE;
 DROP TABLE IF EXISTS chunks CASCADE;
 DROP TABLE IF EXISTS documents CASCADE;
@@ -89,6 +97,8 @@ CREATE TABLE counters(
     run_id TEXT PRIMARY KEY,search_calls INTEGER DEFAULT 0,llm_calls INTEGER DEFAULT 0,
     prompt_tokens INTEGER DEFAULT 0,completion_tokens INTEGER DEFAULT 0
 );
+CREATE TABLE memories(id TEXT PRIMARY KEY,user_id TEXT,kind TEXT,content TEXT,run_id TEXT DEFAULT '',created_at TEXT,
+    vector TEXT DEFAULT '[]',owner_subject TEXT NOT NULL DEFAULT '',UNIQUE(user_id,kind,run_id));
 CREATE TABLE audit_logs(
     id TEXT PRIMARY KEY,workspace_id TEXT NOT NULL,actor_subject TEXT NOT NULL,action TEXT NOT NULL,
     target_type TEXT NOT NULL,target_id TEXT NOT NULL,result TEXT NOT NULL,created_at TEXT NOT NULL
@@ -110,3 +120,17 @@ CREATE UNIQUE INDEX business_outbox_active_command
     ON business_outbox(aggregate_id,event_type) WHERE status IN ('pending','processing');
 CREATE INDEX business_outbox_pending
     ON business_outbox(status,next_attempt_at,lease_until,created_at);
+
+CREATE TABLE IF NOT EXISTS collections(id TEXT PRIMARY KEY,workspace_id TEXT NOT NULL,name TEXT NOT NULL,visibility TEXT NOT NULL DEFAULT 'workspace',created_by TEXT NOT NULL,revision INTEGER NOT NULL DEFAULT 0,created_at TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS collections_workspace ON collections(workspace_id,id);
+CREATE TABLE IF NOT EXISTS collection_grants(collection_id TEXT NOT NULL,subject TEXT NOT NULL,permission TEXT NOT NULL,PRIMARY KEY(collection_id,subject));
+CREATE TABLE IF NOT EXISTS document_policies(document_id TEXT PRIMARY KEY,workspace_id TEXT NOT NULL,collection_id TEXT NOT NULL DEFAULT '',owner_subject TEXT NOT NULL,revision INTEGER NOT NULL DEFAULT 0);
+CREATE INDEX IF NOT EXISTS document_policy_collection ON document_policies(workspace_id,collection_id);
+CREATE TABLE IF NOT EXISTS research_intakes(id TEXT PRIMARY KEY,workspace_id TEXT NOT NULL,subject TEXT NOT NULL,request_json TEXT NOT NULL,status TEXT NOT NULL,answers_json TEXT NOT NULL DEFAULT '{}',expires_at BIGINT NOT NULL,run_id TEXT NOT NULL DEFAULT '',created_at TEXT NOT NULL,updated_at TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS intakes_owner ON research_intakes(workspace_id,subject,status);
+CREATE TABLE IF NOT EXISTS source_rechecks(id TEXT PRIMARY KEY,workspace_id TEXT NOT NULL,report_id TEXT NOT NULL,source_id TEXT NOT NULL,status TEXT NOT NULL,old_hash TEXT NOT NULL,new_hash TEXT NOT NULL DEFAULT '',checked_at TEXT NOT NULL,actor_subject TEXT NOT NULL,error_code TEXT NOT NULL DEFAULT '',snapshot_json TEXT NOT NULL DEFAULT '{}');
+CREATE INDEX IF NOT EXISTS source_rechecks_report ON source_rechecks(workspace_id,report_id,checked_at);
+CREATE TABLE IF NOT EXISTS lexical_chunks(chunk_id TEXT PRIMARY KEY,workspace_id TEXT NOT NULL,document_id TEXT NOT NULL,content_hash TEXT NOT NULL,length INTEGER NOT NULL);
+CREATE INDEX IF NOT EXISTS lexical_workspace ON lexical_chunks(workspace_id,document_id);
+CREATE TABLE IF NOT EXISTS chunk_terms(workspace_id TEXT NOT NULL,term TEXT NOT NULL,chunk_id TEXT NOT NULL,frequency INTEGER NOT NULL,PRIMARY KEY(workspace_id,term,chunk_id));
+CREATE INDEX IF NOT EXISTS terms_chunk ON chunk_terms(chunk_id);

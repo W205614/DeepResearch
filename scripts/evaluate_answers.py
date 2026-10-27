@@ -8,11 +8,13 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from backend.core.config import Settings
+from scripts.evaluation_scope import scoped_evaluation
 from backend.core.db import Database
 from backend.infrastructure.providers import Providers, ServiceError
 from backend.quality_gate import QualityDraft, evaluate_draft, summarize, assess_support
 
 
+@scoped_evaluation
 async def main_async(args) -> int:
     cases = json.loads(Path(args.cases).read_text(encoding="utf-8"))
     output = Path(args.output)

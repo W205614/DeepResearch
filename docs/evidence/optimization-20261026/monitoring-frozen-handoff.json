@@ -1,0 +1,98 @@
+{
+  "status": "declarations_frozen_runtime_deployment_pending",
+  "generated_at": "2026-10-26T13:34:44.378721+00:00",
+  "services": [
+    {
+      "service": "otel-collector",
+      "compose_image": "otel/opentelemetry-collector-contrib:0.163.2@sha256:989669581ee1f89184f3fd9dd5adfc6615ed6c9692c026aaea89e07a20dfb177",
+      "recipe": null,
+      "tested_local_tag": "otel/opentelemetry-collector-contrib:0.163.2",
+      "local_descriptor_digest": "sha256:989669581ee1f89184f3fd9dd5adfc6615ed6c9692c026aaea89e07a20dfb177",
+      "security_status": "fresh_Trivy_HIGH0_CRITICAL0",
+      "daily_deployed": false
+    },
+    {
+      "service": "tempo",
+      "compose_image": "grafana/tempo:2.10.10@sha256:12b0820f13ffa10ce956b6e9acc3b03f3cffded99109be6cc09d106fe56e5d38",
+      "recipe": null,
+      "tested_local_tag": "grafana/tempo:2.10.10",
+      "local_descriptor_digest": "sha256:12b0820f13ffa10ce956b6e9acc3b03f3cffded99109be6cc09d106fe56e5d38",
+      "security_status": "fresh_Trivy_HIGH0_CRITICAL0",
+      "daily_deployed": false
+    },
+    {
+      "service": "loki",
+      "compose_image": "grafana/loki:3.7.9@sha256:569e5cab050b7705eb82080335ff9a8bd329650b358bb0d42131e3ced8d9492e",
+      "recipe": null,
+      "tested_local_tag": "grafana/loki:3.7.9",
+      "local_descriptor_digest": "sha256:569e5cab050b7705eb82080335ff9a8bd329650b358bb0d42131e3ced8d9492e",
+      "security_status": "fresh_Trivy_HIGH0_CRITICAL0",
+      "daily_deployed": false
+    },
+    {
+      "service": "prometheus",
+      "compose_image": "prom/prometheus:v3.15.1@sha256:d445d1806b38f85b5c394a1b87f94113fde0473b45245922c2e8b1bd41fa68ae",
+      "recipe": null,
+      "tested_local_tag": "prom/prometheus:v3.15.1",
+      "local_descriptor_digest": "sha256:d445d1806b38f85b5c394a1b87f94113fde0473b45245922c2e8b1bd41fa68ae",
+      "security_status": "fresh_Trivy_HIGH0_CRITICAL0",
+      "daily_deployed": false
+    },
+    {
+      "service": "alert-token-init",
+      "compose_image": "alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a",
+      "recipe": null,
+      "tested_local_tag": "alpine:3.24.3",
+      "local_descriptor_digest": "sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a",
+      "security_status": "fresh_Trivy_HIGH0_CRITICAL0",
+      "daily_deployed": false
+    },
+    {
+      "service": "alertmanager",
+      "compose_image": "deepresearch-alertmanager:0.34.1-maintainer-20261026",
+      "recipe": "Dockerfile.alertmanager",
+      "tested_local_tag": "dr-opt-alertmanager-vcs:20261026",
+      "local_descriptor_digest": "sha256:074c701cb3dd75766133cbd229ca6b6b285fc972f956ff6e6c1b326294a19d0c",
+      "security_status": "fresh_Trivy_HIGH0_CRITICAL0",
+      "daily_deployed": false
+    },
+    {
+      "service": "grafana",
+      "compose_image": "deepresearch-grafana:13.2.4-maintainer-20261026",
+      "recipe": "Dockerfile.grafana",
+      "tested_local_tag": "dr-opt-grafana-final:20261026",
+      "local_descriptor_digest": "sha256:646bfcd6b59befc2d20fa0220dc16aba899b4e0bb4e2991adccc9105cb1f517d",
+      "security_status": "attribution_review_pending_11HIGH2CRITICAL",
+      "daily_deployed": false
+    },
+    {
+      "service": "storage-init",
+      "compose_image": "project-generated image name",
+      "recipe": "Dockerfile.storage-init",
+      "tested_local_tag": "dr-opt-storage-init:20261026",
+      "local_descriptor_digest": "sha256:1e1c407af917ae878a5c22e8581c03bd427cd55f797f4444ebf825b8e00254ed",
+      "security_status": "fresh_Trivy_HIGH0_CRITICAL0",
+      "daily_deployed": false
+    }
+  ],
+  "new_persistent_volumes": {
+    "prometheus-data": "/prometheus",
+    "alertmanager-data": "/alertmanager"
+  },
+  "source_compose_validation": "docker compose --env-file <private acceptance env> -f compose.yaml config --quiet passed; no service starts",
+  "grafana_policy": "No VEX or CI suppression; raw gate still fails; any future rebuild requires new subject review",
+  "actual_activation": {
+    "daily_rebuilt": false,
+    "daily_stopped": false,
+    "native_tasks_installed": false
+  },
+  "evidence": [
+    "monitoring-final-security-scan.json",
+    "grafana-vulnerability-review-request.json",
+    "grafana-final-image-facts-v2.json",
+    "grafana-tamper-isolated.json",
+    "grafana-derived-upgrade-isolated.json",
+    "alertmanager-final-vcs-upgrade-isolated.json",
+    "monitoring-volume-migration-isolated.json"
+  ]
+}

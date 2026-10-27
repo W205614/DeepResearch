@@ -1,0 +1,36 @@
+{
+  "final_sha": null,
+  "sensitive_information_reviewed": true,
+  "review_note": "Synthetic policies and exact original reports/sources checked; no credentials, personal data or private endpoints. No generated answer editing or second supplier run. Bind finalSHA only as delivery identity, not generation identity.",
+  "generation_source_fingerprints": "candidate-source-fingerprints-v3.json",
+  "generation_receipt": "real-provider.json",
+  "explicit_redactions": [],
+  "cases": [
+    {
+      "case_id": "development-visitor",
+      "question": "根据青禾访客开放规则，访客临时授权的有效期是多少？受限集合是否可以自动续期，续期由谁批准？请保留适用范围。",
+      "outputs": [
+        {
+          "condition": "frozen-candidate-single-attempt",
+          "report_path": "live/development-visitor-report.md",
+          "sources_path": "live/development-visitor-sources.json",
+          "report_sha256": "03ad5b66113c0574062e7eb884b31141c73796519067abf3960bdd164e26e6fe",
+          "sources_sha256": "75807cfb05edf24a83e111939d80712a99f3eab3095de059c3444e9a61122c59"
+        }
+      ]
+    },
+    {
+      "case_id": "holdout-retention",
+      "question": "根据北辰样本保留办法，已批准报告和未提交草稿分别保留多久？争议冻结记录能否按普通期限自动删除？备份副本保留多久？只用所给资料回答。",
+      "outputs": [
+        {
+          "condition": "frozen-candidate-single-attempt",
+          "report_path": "live/holdout-retention-report.md",
+          "sources_path": "live/holdout-retention-sources.json",
+          "report_sha256": "9d94ff3cfd6aebb72c0e3964a60012171a6b7601305453344dc6ee68169b47a0",
+          "sources_sha256": "e8bab665c86bd1500a386e73c889a6f464c05c63e4646321ed148adf5686ce25"
+        }
+      ]
+    }
+  ]
+}

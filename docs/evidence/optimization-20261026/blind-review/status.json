@@ -1,0 +1,44 @@
+{
+  "human_review": "not_performed",
+  "reviewer_count": 0,
+  "ratings": [],
+  "independent_truth_labels": "not_established",
+  "final_delivery_sha": null,
+  "final_real_report_packet": "Two actual frozen candidate reports and sources retained; final delivery SHA and package generation pending. No further local supplier reruns allowed.",
+  "prepared_materials": [
+    "README.md",
+    "manifest.example.json",
+    "reviews.csv",
+    "prepare_blind_review.py"
+  ],
+  "packaging_validation": {
+    "command": ".venv/Scripts/python.exe -m pytest tests/test_blind_review_packaging.py -q",
+    "result": "5 passed in 0.73 seconds after final rule-binding addition; synthetic temporary fixtures only",
+    "checks": [
+      "condition and unknown source metadata excluded",
+      "all ratings blank",
+      "original hashes bound",
+      "placeholder/privacy/hash failures reject before creating output",
+      "private mapping outside reviewer package",
+      "existing output never overwritten"
+    ],
+    "paid_calls": 0
+  },
+  "evidence_boundary": "Packaging validation is not human scoring, real report generation, independent fact verification or business-user acceptance.",
+  "candidate_reports": [
+    {
+      "case": "development-visitor",
+      "report": "../live/development-visitor-report.md",
+      "sources": "../live/development-visitor-sources.json",
+      "quality": "partial",
+      "source_fingerprints": "../candidate-source-fingerprints-v3.json"
+    },
+    {
+      "case": "holdout-retention",
+      "report": "../live/holdout-retention-report.md",
+      "sources": "../live/holdout-retention-sources.json",
+      "quality": "partial",
+      "source_fingerprints": "../candidate-source-fingerprints-v3.json"
+    }
+  ]
+}

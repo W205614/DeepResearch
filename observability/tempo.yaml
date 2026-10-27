@@ -12,6 +12,10 @@ distributor:
         http:
           endpoint: 0.0.0.0:4318
 
+compactor:
+  compaction:
+    block_retention: 72h
+
 # Local blocks are deliberate for the enterprise single-node demonstration only.
 # A multi-replica production deployment must use shared object storage.
 storage:

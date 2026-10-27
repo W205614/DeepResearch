@@ -1,0 +1,81 @@
+{
+  "schema": "recovery-business-compatibility-v1",
+  "status": "implemented_direct_tests_and_current_candidate_probe_passed_full_restore_pending",
+  "affected_sources": {
+    "scripts/recovery.py": "dda52a45794f0e37f82941cd71c7dcbc02338041b9e799b2f295cbd87ebd1f84",
+    "tests/test_recovery_manifest.py": "a624c1c698c537831ae2a315d0c6ab3f5a48193c03916d8cbd33536d28d86acc"
+  },
+  "changes": [
+    "Temporary Keycloak client uses included.custom.audience, not an absent API client reference.",
+    "Host constructs percent-encoded verifier-only administrator DSN from actual inspected restore Postgres Env after dr-restore project/service-label validation; exec forwards environment names only, persistent agent DATABASE_URL unchanged.",
+    "Only new synthetic viewer receives selected local sources restricted-collection read grants; admin uses existing workspace-admin ACL bypass. Cleanup deletes only memberships/grants for newly created subjects and removes their KC users/client; cleanup failures remain failures.",
+    "Explicit dr-opt-acceptance-only verifier exception requires unreachable127.0.0.1:9 model/embedding fixture endpoints; production host privilege helper still rejects this project."
+  ],
+  "direct_tests": [
+    {
+      "command": "uv run pytest -q tests/test_recovery_manifest.py -k 'verifier or business_probe or embedded_recovery'",
+      "result": "7passed,22deselected in0.31s"
+    },
+    {
+      "command": "uv run pytest -q tests/test_recovery_manifest.py -k 'recovery_viewer or business_probe or embedded_recovery'",
+      "result": "3passed,27deselected in0.42s;8unique direct cases across runs"
+    },
+    {
+      "command": "uv run ruff check scripts/recovery.py tests/test_recovery_manifest.py",
+      "result": "passed"
+    }
+  ],
+  "actual_candidate": {
+    "returncode": 0,
+    "project": "dr-opt-acceptance",
+    "probe_sha256": "fd6a439ecd437906c07aaee1affcdb27ec13c3f0da95f5bac1a3245fd918ba1c",
+    "source_sha256": "dda52a45794f0e37f82941cd71c7dcbc02338041b9e799b2f295cbd87ebd1f84",
+    "agent_image": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7",
+    "postgres_image": "sha256:2a792b05fff59ea5ba72747a925e22a211c3e07bb8d0cad1c18b9acf773462c8",
+    "keycloak_image": "sha256:95e66ef578a2e6a7ed744252edf687d07713e4e50ee1e9eb194cd0db522361ca",
+    "guarded_fixture": true,
+    "provider_endpoints": "127.0.0.1:9",
+    "existing_report_policy_collection_fingerprints_unchanged": true,
+    "before_fingerprints": {
+      "published": "3d543405f64a8a785831a5beb9629a5f",
+      "policies": "aa40595441ce0f221860068967af9733",
+      "collections": "81f25cf182db6152f4774cdd20de211b"
+    },
+    "after_fingerprints": {
+      "published": "3d543405f64a8a785831a5beb9629a5f",
+      "policies": "aa40595441ce0f221860068967af9733",
+      "collections": "81f25cf182db6152f4774cdd20de211b"
+    },
+    "stdout_sha256": "228455bdf223925daabaf1e7f5dec4566a832436e78261eb3a78add77af6eb37",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "checks": {
+      "oidc_tokens_verified": 2,
+      "permission_boundaries_verified": 3,
+      "reports_sha_verified": 1,
+      "citation_snapshots_verified": 1,
+      "new_research_accepted": 1,
+      "new_research_cancelled": 1,
+      "authorized_document_retrieval_verified": 1,
+      "query_embedding_mode": "keyword fallback; upstream disabled",
+      "offline_antivirus_checks_verified": 2,
+      "synthetic_viewer_collection_grants": 0,
+      "execution_completed": false,
+      "upstream_calls_enabled": false
+    }
+  },
+  "restricted_acl_mock": "Extracted actual embedded source-preparation loop; restricted+public+web sources yield exactly one selected collection/read grant for new-viewer, no unrelated/public/web grants; workspace lookup is bound.",
+  "boundaries": [
+    "Actual probe selected a publication requiring0 restricted grants; restricted insertion is direct Mock evidence, not a claimed live restricted-grant scenario.",
+    "One live business probe only, against explicitly guarded existing candidate with deterministic supplier fixtures; no complete recovery stack recreated.",
+    "New synthetic personal workspace/research records may remain as normal cancelled/audit records; existing report/policy/collection fingerprints unchanged.",
+    "No original credentials/content printed or added to Git; no persistent privileged business DSN.",
+    "Full fresh-project cold-volume restore remains window acceptance."
+  ],
+  "private_receipts": {
+    ".cache/optimization-20261026/recovery-business/probe-stderr.private.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/optimization-20261026/recovery-business/probe-stdout.private.json": "228455bdf223925daabaf1e7f5dec4566a832436e78261eb3a78add77af6eb37",
+    ".cache/optimization-20261026/recovery-business/receipt.json": "040dcb70a8c15f7cf572c82a7e4dc1e21fb3185b414dfc3fc35146a7b71eb784"
+  },
+  "supplier_http": 0,
+  "running_services_rebuilt_or_restarted": false
+}

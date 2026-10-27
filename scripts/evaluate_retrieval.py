@@ -17,6 +17,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from backend.core.config import Settings
+from scripts.evaluation_scope import scoped_evaluation
 from backend.services.runtime import Runtime
 
 
@@ -83,6 +84,7 @@ def delta(baseline: float, optimized: float) -> dict:
             "relative_percent": round((optimized - baseline) / baseline * 100, 2) if baseline else None}
 
 
+@scoped_evaluation
 async def main_async(args):
     if args.with_reranker and 5 not in args.cutoffs:
         raise ValueError("Reranker gate requires cutoff 5")
@@ -102,10 +104,12 @@ async def main_async(args):
                                                vector_collection_prefix=f"dr_eval_{uuid.uuid4().hex[:12]}"))
     if not args.demo and settings.missing():
         raise ValueError("真实评测缺少配置：" + "、".join(settings.missing()))
+    settings.allow_internal_model_processing = True  # Explicit isolated corpus-evaluation CLI only.
     # Live embeddings and Milvus are intentional here, but evaluation metadata
     # stays in a disposable SQLite database rather than the product database.
     runtime = await Runtime(settings, isolated_mode=True).start()
     try:
+        await runtime.db.ensure_personal_workspace('evaluator', 'Isolated retrieval evaluation', (0, 2))
         configured_reranker = bool(runtime.settings.reranker_url and runtime.settings.reranker_model)
         if args.with_reranker and not configured_reranker:
             raise ValueError("--with-reranker requires RERANKER_URL and a reachable compatible service")

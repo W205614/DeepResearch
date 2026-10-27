@@ -1,0 +1,460 @@
+{
+  "status": "facts_verified_security_review_pending",
+  "image": "dr-opt-grafana-musl-fixed:20261026",
+  "index_digest": "sha256:9a68d3a7f3b96ffa643af86e5be5f91a723cc051678b4d445a879861bc335132",
+  "cli": "Version 13.2.4 (commit: af4a33e3786594ad72f72d97e6744010330c2977, branch: maintainer-security)",
+  "scanner_configuration_digest": "sha256:0bf2ff0e6cc8f6ca357aae46062ff8188ee7629736d3763c27788a80b4df1d5b",
+  "scanner_rootfs_diffids_equal": true,
+  "main_elf_sha256": "5b718e17a373c83547a720e0e5a048032388b0d9691da83a3ec3b8ec19d9d152",
+  "source": {
+    "url": "https://codeload.github.com/grafana/grafana/tar.gz/6259becc8e86265fdf35a73e08eef5bd92b5cd73",
+    "sha256": "31f1b1f049fa92201f07d5c31e248704060bfad3adf280edfee042bba1eeb676",
+    "bytes": 49030194,
+    "tag": "v13.2.4",
+    "annotated_tag_object": "6259becc8e86265fdf35a73e08eef5bd92b5cd73",
+    "commit": "af4a33e3786594ad72f72d97e6744010330c2977",
+    "runtime_image": "grafana/grafana:13.2.4@sha256:dbbc38ea21103cefb50396340cd88afec779c7e070b0a7bf5a75b4ce46651d3f",
+    "reviewed_overrides": {
+      "Go": "1.27.3",
+      "kin-openapi": "v0.149.0",
+      "jsonschema/v6": "v6.0.3 (required transitive)"
+    }
+  },
+  "upstream_build_contract": "the pinned upstream Makefile uses -buildvcs=false; this candidate retains real vcs metadata and +dirty",
+  "native_binary_cataloger": {
+    "name": "grafana",
+    "version": "13.2.4",
+    "type": "binary",
+    "cpes": [
+      {
+        "cpe": "cpe:2.3:a:grafana:grafana:13.2.4:*:*:*:*:*:*:*",
+        "source": "nvd-cpe-dictionary"
+      }
+    ]
+  },
+  "core_frontend_files_byte_identical_to_official": 11864,
+  "complete_catalog_files_checked": 690,
+  "compiled_backend_overrides": 8,
+  "tempo": {
+    "elf_sha256": "ee8eaf152c8ee65fba362a42643b79a80125297c4940f6382cd11d36b0035ebc",
+    "pclntab_functions": 38044,
+    "protobuf_functions_present": 1497,
+    "affected_packages_absent": [
+      "github.com/grafana/tempo/modules/frontend",
+      "github.com/grafana/tempo/tempodb/backend/s3"
+    ],
+    "limitation": "pclntab functions only; compiler inlining is not exhaustively excluded",
+    "fixed_source_ancestry": {
+      "CVE-2026-21728": {
+        "fix_commit": "650eb1985a0776789c8564122990f588a742356f",
+        "module_commit": "bcfe9f230c1de0f79cfd2110b38062e0f41c81e9",
+        "ancestry": "fix is an ancestor of the exact module commit"
+      },
+      "CVE-2026-28377": {
+        "fix_commit": "bb8ca663db34a0980c9758b40d918fda3b4dbec3",
+        "module_commit": "bcfe9f230c1de0f79cfd2110b38062e0f41c81e9",
+        "ancestry": "fix is an ancestor of the exact module commit"
+      }
+    }
+  },
+  "trivy_raw_counts": {
+    "CRITICAL": 2,
+    "HIGH": 11,
+    "MEDIUM": 20,
+    "LOW": 2,
+    "UNKNOWN": 5
+  },
+  "trivy_raw_findings": [
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2018-15727",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "4.6.4, 5.2.3",
+      "Severity": "CRITICAL"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2023-3128",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "9.4.13, 9.3.16, 9.2.20, 8.5.27",
+      "Severity": "CRITICAL"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2020-12458",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "7.2.1",
+      "Severity": "HIGH"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2021-39226",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "7.5.11, 8.1.6",
+      "Severity": "HIGH"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2022-35957",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "9.1.6, 9.0.9, 8.5.13",
+      "Severity": "HIGH"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2022-39307",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "9.2.4, 8.5.15",
+      "Severity": "HIGH"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2023-2801",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "9.4.12, 9.5.3",
+      "Severity": "HIGH"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2025-6023",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "1.9.2-0.20250521205822-0ba0b99665a9",
+      "Severity": "HIGH"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2026-42127",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "1.9.2-0.20260616075434-82ef13993059",
+      "Severity": "HIGH"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2026-42129",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "1.9.2-0.20260616075434-82ef13993059",
+      "Severity": "HIGH"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2026-9029",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "1.9.2-0.20260616075434-82ef13993059",
+      "Severity": "HIGH"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2018-1000816",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "5.3.2",
+      "Severity": "MEDIUM"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2018-12099",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "5.2.0-beta1",
+      "Severity": "MEDIUM"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2018-18623",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "6.0.0-beta1",
+      "Severity": "MEDIUM"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2018-18624",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "7.0.0",
+      "Severity": "MEDIUM"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2018-18625",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "6.0.0-beta1",
+      "Severity": "MEDIUM"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2019-13068",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "6.2.5",
+      "Severity": "MEDIUM"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2019-19499",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "6.4.4",
+      "Severity": "MEDIUM"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2020-11110",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "6.7.2",
+      "Severity": "MEDIUM"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2020-12245",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "6.7.3",
+      "Severity": "MEDIUM"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2020-13430",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "7.0.0",
+      "Severity": "MEDIUM"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2020-24303",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "7.1.0-beta1",
+      "Severity": "MEDIUM"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2022-39229",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "8.5.14, 9.1.8",
+      "Severity": "MEDIUM"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2022-39324",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "9.2.8, 8.5.16",
+      "Severity": "MEDIUM"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2023-2183",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "8.5.26, 9.2.19, 9.3.15, 9.4.12, 9.5.3",
+      "Severity": "MEDIUM"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2023-4822",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": null,
+      "Severity": "MEDIUM"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2025-3415",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "1.9.2-0.20250514160932-04111e9f2afd",
+      "Severity": "MEDIUM"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2026-10601",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "1.9.2-0.20260616075434-82ef13993059",
+      "Severity": "MEDIUM"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2026-21724",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "1.9.2-0.20260323180334-daffe750de85",
+      "Severity": "MEDIUM"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2026-33380",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "1.9.2-0.20260513165311-fb7336fc36c1",
+      "Severity": "MEDIUM"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2026-33381",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "1.9.2-0.20260513165311-fb7336fc36c1",
+      "Severity": "MEDIUM"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2024-10452",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": null,
+      "Severity": "LOW"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "CVE-2026-21727",
+      "PkgName": "github.com/grafana/grafana",
+      "InstalledVersion": "v0.0.0-20261013113655-af4a33e37865+dirty",
+      "FixedVersion": "1.9.2-0.20260127141016-e702db6096e0",
+      "Severity": "LOW"
+    },
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "VulnerabilityID": "GO-2026-5932",
+      "PkgName": "golang.org/x/crypto",
+      "InstalledVersion": "v0.57.0",
+      "FixedVersion": null,
+      "Severity": "UNKNOWN"
+    },
+    {
+      "target": "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+      "VulnerabilityID": "GO-2026-5932",
+      "PkgName": "golang.org/x/crypto",
+      "InstalledVersion": "v0.57.0",
+      "FixedVersion": null,
+      "Severity": "UNKNOWN"
+    },
+    {
+      "target": "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+      "VulnerabilityID": "GO-2026-5932",
+      "PkgName": "golang.org/x/crypto",
+      "InstalledVersion": "v0.57.0",
+      "FixedVersion": null,
+      "Severity": "UNKNOWN"
+    },
+    {
+      "target": "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+      "VulnerabilityID": "GO-2026-5932",
+      "PkgName": "golang.org/x/crypto",
+      "InstalledVersion": "v0.57.0",
+      "FixedVersion": null,
+      "Severity": "UNKNOWN"
+    },
+    {
+      "target": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+      "VulnerabilityID": "GO-2026-5932",
+      "PkgName": "golang.org/x/crypto",
+      "InstalledVersion": "v0.57.0",
+      "FixedVersion": null,
+      "Severity": "UNKNOWN"
+    },
+    {
+      "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "VulnerabilityID": "CVE-2026-21728",
+      "PkgName": "github.com/grafana/tempo",
+      "InstalledVersion": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+      "FixedVersion": "2.8.4, 2.9.2, 2.10.2",
+      "Severity": "HIGH"
+    },
+    {
+      "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "VulnerabilityID": "CVE-2026-28377",
+      "PkgName": "github.com/grafana/tempo",
+      "InstalledVersion": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+      "FixedVersion": "2.10.3",
+      "Severity": "HIGH"
+    }
+  ],
+  "grype_raw_high_critical": [
+    {
+      "id": "GHSA-p4r4-xvrq-gvmc",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260910130453-bcfe9f230c1d"
+    },
+    {
+      "id": "GHSA-ffqx-q65f-36jf",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260910130453-bcfe9f230c1d"
+    }
+  ],
+  "grype_raw_all_severity_counts": {
+    "High": 2,
+    "Medium": 3,
+    "Unknown": 5
+  },
+  "grype_raw_unknown": [
+    {
+      "id": "GO-2026-5932",
+      "package": "golang.org/x/crypto",
+      "version": "v0.57.0",
+      "targets": [
+        "/usr/share/grafana/bin/grafana"
+      ]
+    },
+    {
+      "id": "GO-2026-5932",
+      "package": "golang.org/x/crypto",
+      "version": "v0.57.0",
+      "targets": [
+        "/usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64"
+      ]
+    },
+    {
+      "id": "GO-2026-5932",
+      "package": "golang.org/x/crypto",
+      "version": "v0.57.0",
+      "targets": [
+        "/usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64"
+      ]
+    },
+    {
+      "id": "GO-2026-5932",
+      "package": "golang.org/x/crypto",
+      "version": "v0.57.0",
+      "targets": [
+        "/usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64"
+      ]
+    },
+    {
+      "id": "GO-2026-5932",
+      "package": "golang.org/x/crypto",
+      "version": "v0.57.0",
+      "targets": [
+        "/usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64"
+      ]
+    }
+  ],
+  "raw_input_sha256": {
+    "musl-fixed-trivy-full-raw.json": "7878aa2b4adf18906fd5216bcb6983189db3842646afb6e7480e31942a62cf58",
+    "musl-fixed-native-syft.json": "88f606ca86b120218c30cb9237a18b34459ca2f3c6788c51ee9ea5bae968cab7",
+    "musl-fixed-native-grype-full-raw.json": "06c23c9a43c99bca1349f77f91bc7a61471da7109264d44401bdf40028a872d0",
+    "grafana-tempo-linked-functions.json": "3ef9e32708afc7d351dba8159faadf2ae7023b3b36a4878a4e30930b15d3f97b"
+  },
+  "authorization": {
+    "granted": false,
+    "vex_enabled": false,
+    "ci_suppression_enabled": false,
+    "security_pass": false
+  }
+}

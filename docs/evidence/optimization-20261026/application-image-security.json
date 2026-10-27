@@ -1,0 +1,378 @@
+{
+  "updated_at": "2026-10-26T13:28:55.103432+00:00",
+  "scanner": "Trivy0.75.0",
+  "vulnerability_db_sha256": "05a1fa5372e54059b6a7c1fc41afb812fafd9bd56a8e0ab6aa20d7f3f154ff31",
+  "java_db_sha256": "148a3e77d8a7df1c28ad261c4f72085fe0eb9d1354c4cf400e9abe963825a2c4",
+  "ignored_findings": [],
+  "same_frozen_vulnerability_db": true,
+  "observations": [
+    {
+      "name": "python",
+      "artifact": "dr-opt-acceptance-python:20261026",
+      "image_id": "sha256:7c1c90f8cc705065a25f75540a9e737566cbc1d9a1866b6970add341628951b5",
+      "raw_report": ".cache\\optimization-20261026\\root-app-scan\\python.json",
+      "raw_sha256": "6d53bf4f6fa5de4a63092770d700c4435a8b42c0bed7867b3419d4cb3db862b2",
+      "findings": {},
+      "coverage": [
+        {
+          "type": "debian",
+          "packages": 20
+        },
+        {
+          "type": "python-pkg",
+          "packages": 102
+        },
+        {
+          "type": "rustbinary",
+          "packages": 506
+        }
+      ]
+    },
+    {
+      "name": "java",
+      "artifact": "dr-opt-acceptance-business:20261026",
+      "image_id": "sha256:ae1e625e623b867f165a0e1e67c9da9b8f8d0da5c116901fb0bc8643bb844236",
+      "raw_report": ".cache\\optimization-20261026\\root-app-scan\\java.json",
+      "raw_sha256": "50f3c47912c3412061b996f5b0dde2893d8a15c80195899a059c4e5c64a2506c",
+      "findings": {},
+      "coverage": [
+        {
+          "type": "alpine",
+          "packages": 73
+        },
+        {
+          "type": "jar",
+          "packages": 77
+        }
+      ]
+    },
+    {
+      "name": "web_before",
+      "artifact": "dr-opt-acceptance-web:20261026",
+      "image_id": "sha256:d3f34a85530ffbe478b15c4544b93dc47f4c0d77a35260a00762fbbffa508c5c",
+      "raw_report": ".cache\\optimization-20261026\\root-app-scan\\web.json",
+      "raw_sha256": "feeb7a1f688987a47da66ab16db2b07c0c9bf1606ec4e2f1fa3bf6ada4447519",
+      "findings": {
+        "HIGH": 55,
+        "CRITICAL": 2
+      },
+      "coverage": [
+        {
+          "type": "alpine",
+          "packages": 68
+        }
+      ]
+    },
+    {
+      "name": "web_after_base_update",
+      "artifact": "dr-opt-acceptance-web:20261026",
+      "image_id": "sha256:8bdcecb84e20869ff05c539526d36bbe7f12e0e68178ff4c5cd48e614caa9fdc",
+      "raw_report": ".cache\\optimization-20261026\\root-app-scan\\web-fixed.json",
+      "raw_sha256": "7f9467010e98ec173e97e4202c4f0fac5345dd758c30c7ca3822b0e49cf54ea0",
+      "findings": {
+        "HIGH": 1
+      },
+      "coverage": [
+        {
+          "type": "alpine",
+          "packages": 71
+        }
+      ]
+    },
+    {
+      "name": "web_final",
+      "artifact": "dr-opt-acceptance-web:20261026",
+      "image_id": "sha256:da1a3d11fbf48c85650cf5f61d72097e46b2e38dc4af66415ad6b44606787049",
+      "raw_report": ".cache\\optimization-20261026\\root-app-scan\\web-final.json",
+      "raw_sha256": "c5882250c76c0d96a7547457654930d037743a2bcd8a337bb44029424a18f9ed",
+      "findings": {},
+      "coverage": [
+        {
+          "type": "alpine",
+          "packages": 71
+        }
+      ]
+    },
+    {
+      "name": "java_signed_runtime_final",
+      "artifact": "dr-opt-acceptance-business:20261026",
+      "image_id": "sha256:20bae2ec4a9af26d8f730a5c21b2cb83ee093d4601a5df7cc7360f288ff7c3e7",
+      "raw_report": {
+        "path": ".cache/optimization-20261026/root-app-scan/java-runtime-updated.json",
+        "sha256": "e519868a8b80e075bcfc9b9c8363bdc555f3d4b8be481698cb38b04512673611"
+      },
+      "findings": {
+        "HIGH": 0,
+        "CRITICAL": 0
+      },
+      "coverage": [
+        {
+          "type": "alpine",
+          "packages": 73
+        },
+        {
+          "type": "jar",
+          "packages": 77
+        }
+      ],
+      "jre_version": "openjdk 21.0.13 2026-10-20 LTS\nOpenJDK Runtime Environment Temurin-21.0.13+9 (build 21.0.13+9-LTS)\nOpenJDK 64-Bit Server VM Temurin-21.0.13+9 (build 21.0.13+9-LTS, mixed mode, sharing)",
+      "candidate_running_image": "sha256:20bae2ec4a9af26d8f730a5c21b2cb83ee093d4601a5df7cc7360f288ff7c3e7",
+      "native_jvm": {
+        "scanner": "Syft1.55.0 java-jvm-cataloger + Grype0.121.0",
+        "detected": [
+          {
+            "name": "openjdk",
+            "version": "21.0.13+9-LTS",
+            "type": "binary",
+            "cpes": [
+              {
+                "cpe": "cpe:2.3:a:oracle:openjdk:21.0.13:*:*:*:*:*:*:*",
+                "source": "declared"
+              }
+            ]
+          }
+        ],
+        "raw_sbom": {
+          "path": ".cache/optimization-20261026/root-app-scan/java-native-sbom.json",
+          "sha256": "0f8412076e07ae45b40f66638a2ee694e0845fbfc0fbae5091f92651b907a149"
+        },
+        "raw_grype": {
+          "path": ".cache/optimization-20261026/root-app-scan/java-native-grype.json",
+          "sha256": "f05a65c543554509f9058507f32cfe69c38748b61ec99391836b0ca33cfcc78f"
+        },
+        "matches": 0,
+        "boundary": "JVM native CPE coverage is separate from Trivy OS/JAR package coverage; frozen Grype DB receipt held in vendor native tool receipts."
+      },
+      "provenance": {
+        "key_fingerprint": "3B04D753C9050D9A5D343F39843C48A565F8F04B",
+        "archive_sha256": "9138eab0f7d230e17163953f015ec9ae2431dbc49069c658b7f991e45b54fb9b",
+        "signed_sbom_sha256": "daf3c6b803ecc5286d3c4eadc913ab8ebdd72c22f575aed364704a4cdc11bcb4",
+        "recipe": {
+          "path": "business-backend/Dockerfile",
+          "sha256": "f55ee8dde86b030171a1744ddbe96268e394c805ccedaa4f097d1f501f1935e0"
+        },
+        "old_jre_physically_removed": true
+      },
+      "verification": {
+        "passed": true,
+        "scope": "Updated Java21.0.13+9 runtime with same application build: actual browser OIDC callback and four authenticated proxy reads passed; zero supplier calls",
+        "html_status": 200,
+        "csp_present": true,
+        "api_statuses": {
+          "/api/workspaces": 200,
+          "/api/config/check": 200,
+          "/api/usage": 200,
+          "/api/reports": 200
+        },
+        "supplier_http_requests": 0
+      }
+    }
+  ],
+  "web_change": {
+    "official_stable_source": "https://nginx.org/en/download.html",
+    "runtime": "nginx1.30.6-alpine3.24.3, pinned OCI index47928bf67eb62a1863cb08d9ecb52d3e704304ba614eaee17884204677702951",
+    "additional_os_fix": "brotli-libs1.2.0-r1 to1.2.1-r0",
+    "dist_bytes_unchanged": true,
+    "dist_manifest_sha256": "a5d1896acd5b5db79d72267606f31a0cad3d8226181a97f800f5356f13727038"
+  },
+  "verification": {
+    "passed": true,
+    "scope": "new nginx runtime, unchanged built frontend; real browser OIDC callback and authenticated Java/Python read paths",
+    "html_status": 200,
+    "csp_present": true,
+    "api_statuses": {
+      "/api/workspaces": 200,
+      "/api/config/check": 200,
+      "/api/usage": 200,
+      "/api/reports": 200
+    },
+    "supplier_http_requests": 0
+  },
+  "failures_retained": [
+    {
+      "file": "java.log",
+      "reason": "concurrent fs analysis cache lock; no zero claim"
+    },
+    {
+      "file": "java-memory.log",
+      "reason": "old cache missingJavaDB; no zero claim"
+    },
+    {
+      "stage": "python production Dockerfile candidate build",
+      "reason": "Docker Hub metadata timeout; source-only candidate refresh retained original runtime and precise source manifest; final production recipe rebuild pending"
+    },
+    {
+      "stage": "proxy harness",
+      "reason": "old per-attempt account snapshot missing; corrected to retained current fixture account"
+    },
+    {
+      "stage": "proxy harness",
+      "reason": "config/check wrongGET returned405; corrected to actual POST static endpoint; finalbrowser read/check passed"
+    }
+  ],
+  "boundaries": [
+    "No daily runtime upgrade performed",
+    "Exact candidate scans are not certification or zero risk",
+    "Vendor scans tracked separately; not yet complete release Security gate"
+  ],
+  "python_full_recipe": {
+    "evidence": "full-python-build.json",
+    "evidence_sha256": "86a1851ea0ad71ad7b9ff67322c3e3726bd9bcae7d4a85891dea65a16554d827",
+    "image": "dr-opt-full-python:20261026",
+    "index_digest": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7",
+    "interpreter": "3.11.18",
+    "raw_package_findings": {
+      "HIGH": 0,
+      "CRITICAL": 0
+    },
+    "independent_security_regression": {
+      "passed": true,
+      "python_version": "3.11.18",
+      "openssl": "OpenSSL 3.5.7 9 Jun 2026",
+      "expat": "expat_2.9.0",
+      "uid": 10001,
+      "tls": "TLSv1.3",
+      "ca_count": 150,
+      "checks": [
+        "CVE2026-115557 compromised intermediate denied code28 using upstream fixture",
+        "valid verified TLS handshake accepted",
+        "CVE2026-114583 extraction-destination symbolic/hardlink rejected",
+        "valid tar member accepted",
+        "bundled Expat2.9.0 XML parse",
+        "gzip/bz2/lzma/sqlite nativeclosure",
+        "real DOCX validation+splitter",
+        "API/asyncpg/psycopg/PDFium/numpy imports"
+      ],
+      "source_archive_sha256": "9120e0a653868f6e3698d36cdd99e5a58903ec9469e448f21d98f7b16d8fa290",
+      "supplier_http": 0,
+      "network_http": 0,
+      "scope": "Direct signed-source interpreter/security/native ABI checks only; not fullmodelquality, deploymentrole oravailability evidence."
+    },
+    "candidate_services_switched": false
+  },
+  "coverage_correction": {
+    "old_python_31115": "Trivy zero OS/PyPI findings did not cover CPython. Actual old interpreter accepted distrusted fixture; new signed3.11.18 rejects code28.",
+    "old_java_210121": "Trivy zero OS/JAR findings did not cover native JVM. Independent actual Java version led to signed21.0.13+9 update and native SBOM/CPE checks.",
+    "zero_finding_meaning": "Only exact image, DB and enumerated coverage at scan time; no zero-risk claim."
+  },
+  "fresh_database_recheck": {
+    "verified_at": "2026-10-26T13:28:55.101820+00:00",
+    "database": {
+      "path": ".cache\\optimization-20261026\\trivy-final-cache\\db\\trivy.db",
+      "sha256": "d941f76c20fd916816fd04fa80d67bcd8dec6a5f68d353cb0c00be3fd3c9d2f8",
+      "bytes": 1637429248,
+      "metadata": {
+        "Version": 2,
+        "NextUpdate": "2026-10-27T07:15:18.945936953Z",
+        "UpdatedAt": "2026-10-26T07:15:18.945937093Z",
+        "DownloadedAt": "2026-10-26T13:16:14.5358069Z"
+      }
+    },
+    "same_new_db_for_before_after": true,
+    "observations": [
+      {
+        "name": "java",
+        "image_id": "sha256:20bae2ec4a9af26d8f730a5c21b2cb83ee093d4601a5df7cc7360f288ff7c3e7",
+        "raw_report": {
+          "path": ".cache/optimization-20261026/root-app-scan/java-fresh-db.json",
+          "sha256": "bcb812c256e815e7dddef9317679a45a388530d88714119f909477e9d76ce174"
+        },
+        "HIGH": 0,
+        "CRITICAL": 0,
+        "coverage": [
+          {
+            "type": "alpine",
+            "packages": 73
+          },
+          {
+            "type": "jar",
+            "packages": 77
+          }
+        ]
+      },
+      {
+        "name": "python",
+        "image_id": "sha256:5ef79e4a19d68377be5d35ca195db7a0a7c51ab2d5bce0c5dbca8f8cecbd06b7",
+        "raw_report": {
+          "path": ".cache/optimization-20261026/root-app-scan/python-fresh-db.json",
+          "sha256": "909982000e458ae3821986cdad40fcb3c3277a82732a920dcea9f29e72946dd2"
+        },
+        "HIGH": 0,
+        "CRITICAL": 0,
+        "coverage": [
+          {
+            "type": "debian",
+            "packages": 21
+          },
+          {
+            "type": "python-pkg",
+            "packages": 102
+          },
+          {
+            "type": "rustbinary",
+            "packages": 506
+          }
+        ]
+      },
+      {
+        "name": "web_before_curl_repair",
+        "image_id": "sha256:da1a3d11fbf48c85650cf5f61d72097e46b2e38dc4af66415ad6b44606787049",
+        "raw_report": {
+          "path": ".cache/optimization-20261026/root-app-scan/web-fresh-db.json",
+          "sha256": "bcba4d7401395407d93405b27e174a95c4c4fa5c5451a007074db778cab01157"
+        },
+        "HIGH": 2,
+        "CRITICAL": 0,
+        "coverage": [
+          {
+            "type": "alpine",
+            "packages": 71
+          }
+        ]
+      },
+      {
+        "name": "web_after_curl_repair",
+        "image_id": "sha256:d84e97fb29532c53c8be2b4bf43c39ee360e104da7299a7c5593f9fb9e8987d4",
+        "raw_report": {
+          "path": ".cache/optimization-20261026/root-app-scan/web-curl-fresh-db.json",
+          "sha256": "5e05c66ef6f1ba4e8db6bf06c5b5561f7716ab0f5f7d1ae55534bc567a939275"
+        },
+        "HIGH": 0,
+        "CRITICAL": 0,
+        "coverage": [
+          {
+            "type": "alpine",
+            "packages": 71
+          }
+        ]
+      }
+    ],
+    "web_new_finding": {
+      "id": "CVE-2026-92392",
+      "old": "curl/libcurl8.22.0-r0",
+      "fixed": "8.23.0-r0",
+      "primary_advisory": "https://curl.se/docs/CVE-2026-92392.html",
+      "repair": "normal frontend Dockerfile apk package upgrade; no suppressions",
+      "runtime_probe": {
+        "path": ".cache/optimization-20261026/root-app-scan/web-curl-runtime.txt",
+        "sha256": "8610abe3372b39a8aa34b03729d82d88161e9de66c8b872146525f06b670e0ba"
+      },
+      "nginx_config_test_passed": true,
+      "frontend_dist_bytes_identical": true,
+      "fixture": "stopped owned network-none runtime container retained"
+    },
+    "boundary": "Fresh DB confirmed old frozen scan had aged. Java/nativeJVM and CPython checks remain separate; full final exactSHA CI and unifiedcandidate acceptance pending."
+  },
+  "final_web_after_member_fix": {
+    "source_fingerprints": "candidate-source-fingerprints-v5.json",
+    "raw_report": ".cache\\optimization-20261026\\root-app-scan\\web-v5-all-severity.json",
+    "raw_sha256": "dc8220ca454eb91067860cd2cb294f2587a76c3b50e0bbd5dac280ab10716bf6",
+    "all_severity_counts": {},
+    "packages": 71,
+    "UI": "member form next-input preservation and workspace-response guard; actual five-role browser workflow passed",
+    "supplier_http": 0,
+    "final_exactSHA_CI": "pending",
+    "trivy_image_id": "sha256:9b3db20c8227796cd1e991ccd3cfa69637a369f002e413d744aa68144665925e",
+    "image_id_boundary": "Docker29/Trivy image identifier is the OCIindex here, not an assumed configdigest; buildmetadata independently records platformmanifest/config."
+  }
+}

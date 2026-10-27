@@ -1,0 +1,30 @@
+{
+  "run_id": "d8f7d8a0011b4f66bc19b506064926b9",
+  "writer_node_end": "2026-10-26T09:28:01.880103+00:00",
+  "validator_node_start": "2026-10-26T09:32:28.669786+00:00",
+  "gap_seconds": 266.789683,
+  "interrupted_event": "2026-10-26T09:32:30.043606+00:00",
+  "final_attempt_count": 2,
+  "current_worker_old_time_logs": "empty_after_source_refresh_container_recreation",
+  "classification": "observed_unexplained_single_stall_not_confirmed_new_lock_bug",
+  "static_checks": [
+    "graph node wrapper has no long-lived workspace/document lock",
+    "checkpoint fence takes execution lock then saver operation",
+    "heartbeat checks/updates SQL directly without execution advisory lock",
+    "fresh dedicated PG create/delete interleavings and real checkpoint write/delete retry passed"
+  ],
+  "limitations": [
+    "Post-event state cannot reconstruct PG wait_event/lock tree or worker eventloop stack",
+    "Subsequent publicsource run2.44s didnot reproduce(parent observation)",
+    "Does not establish a fix or exclude CPU/VM/IO/saver latency"
+  ],
+  "supplier_http": 0,
+  "raw_pg_timeline": {
+    "path": ".cache\\optimization-20261026\\first-run-pg-events.json",
+    "sha256": "8a3340022decd2121a4f9026da7d0fe4b904d5958b4163513439e8f2cdebbe8c",
+    "scope": "durable PG node/interruption events only; not a substitute for lost worker raw logs"
+  },
+  "browser_trace": "Parent retained failed Playwright source-role attempt trace; first120s timeout",
+  "old_docker_raw_log": "No longer readable after container recreation. Prior parent tool excerpts d94ad8/0aa52d are retrieval observations, not an intact private Docker raw log.",
+  "current_worker_empty_window_file": ".cache/optimization-20261026/first-run-worker-stall.log is empty, not a complete raw receipt"
+}

@@ -49,8 +49,9 @@ public class ResearchCommandService {
             if (!identity.subject().equals(previous.getFirst().get("created_by")))
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "请求编号已被其他成员使用");
             verifyReplay(identity, request, previous.getFirst());
-            return views.render(previous.getFirst());
+            return views.visibleRun(String.valueOf(previous.getFirst().get("id")), identity);
         }
+        ResearchIntakePolicy.requireConfirmed(jdbc, mapper, identity, request);
         if ("restricted".equals(request.getDataPolicy()) ||
             ("internal".equals(request.getDataPolicy()) && !properties.isAllowInternalModelProcessing())) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
@@ -73,6 +74,8 @@ public class ResearchCommandService {
             ? createThread(identity, request.normalizedTopic()).get("id").toString()
             : visibleThread(identity, request.getThreadId()).get("id").toString();
         String runId = uid();
+        if (jdbc.queryForList("SELECT id FROM threads WHERE id=? AND user_id=? FOR KEY SHARE", threadId, identity.workspaceId()).isEmpty())
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "会话已删除，请刷新后重新提交");
         String stamp = now();
         jdbc.update("""
             INSERT INTO runs(
@@ -85,9 +88,9 @@ public class ResearchCommandService {
                 request.getAttachmentIds().get(index));
         }
         event(runId, "queued", Map.of("message", "研究任务已创建"));
-        outbox.enqueue(runId, "research.schedule", "{\"resume\":false}");
+        outbox.enqueue(runId, "research.schedule", commandPayload(false, 0));
         access.audit(identity, "research.create", "run", runId);
-        return views.ownedRun(runId, identity.workspaceId());
+        return views.visibleRun(runId, identity);
     }
 
     @Transactional
@@ -103,7 +106,7 @@ public class ResearchCommandService {
             outbox.enqueue(runId, "research.abort", "{}");
             access.audit(identity, "research.cancel", "run", runId);
         }
-        return views.ownedRun(runId, identity.workspaceId());
+        return views.visibleRun(runId, identity);
     }
 
     @Transactional
@@ -127,9 +130,9 @@ public class ResearchCommandService {
         if (active >= limit) throw new ResponseStatusException(HttpStatus.CONFLICT, "工作空间正在执行的研究已达到并发上限");
         jdbc.update("UPDATE runs SET status='queued',updated_at=? WHERE id=? AND user_id=?", now(), runId, identity.workspaceId());
         event(runId, "queued", Map.of("message", "任务已提交恢复"));
-        outbox.enqueue(runId, "research.resume", "{\"resume\":true}");
+        outbox.enqueue(runId, "research.resume", commandPayload(true, ((Number) run.get("attempt_count")).intValue()));
         access.audit(identity, "research.resume", "run", runId);
-        return views.ownedRun(runId, identity.workspaceId());
+        return views.visibleRun(runId, identity);
     }
 
     @Transactional
@@ -200,8 +203,21 @@ public class ResearchCommandService {
         lockWorkspaceAdmission(workspaceId);
     }
 
+    public void lockIntakeAdmission(WorkspaceIdentity identity) {
+        // The caller owns a transaction; lock in the same order as direct create before the intake row.
+        lockQueueAdmission(identity.workspaceId());
+    }
+
     private void lockWorkspaceAdmission(String workspaceId) {
         jdbc.query("SELECT pg_advisory_xact_lock(hashtextextended(?,0))", result -> null,
             "research-admission:" + workspaceId);
+    }
+
+    private String commandPayload(boolean resume, int attempt) {
+        try {
+            return mapper.writeValueAsString(ResearchCommandContract.schedule(resume, attempt));
+        } catch (JacksonException error) {
+            throw new IllegalStateException(error);
+        }
     }
 }

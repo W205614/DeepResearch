@@ -7,7 +7,7 @@ import asyncpg
 import statistics
 import time
 import zipfile
-from contextlib import AsyncExitStack
+from contextlib import AsyncExitStack, asynccontextmanager
 from datetime import datetime, timezone
 
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
@@ -20,7 +20,8 @@ from ..core.db import Database, now, uid
 from ..core.postgres import PostgresDatabase
 from .documents import Documents
 from .attachments import Attachments
-from ..research.graph import ResearchGraph, VERIFICATION_CONTRACT, VERIFICATION_WIRE
+from ..research.graph import ResearchGraph
+from ..research.verification_contract import CURRENT_VERIFICATION
 from ..core.observability import configure_task_logger, error_category, inject_trace_context, run_label
 from ..core.metrics import DLQ_DEPTH, DLQ_EVENTS, FAILURES, QUEUE_DEPTH, RUNS, RUN_SECONDS, FALLBACKS
 from ..infrastructure.providers import Providers, ServiceError
@@ -30,6 +31,10 @@ from ..core.reliability import Execution, execution, quality, ServiceError as Re
 from ..core.checkpoints import FencedCheckpointer
 from ..core.consistency import affected
 from ..research.source_validity import validate_sources
+from ..core.recovery_contract import parse_schedule
+from ..core.usage_governance import usage_scope, UsageScope
+from .retention import Retention
+from .run_cleanup import RunCleanup, RunDeletion, CleanupResult
 
 TERMINAL = {"completed", "insufficient", "failed", "cancelled", "interrupted"}
 RUN_HEARTBEAT_SECONDS = 10
@@ -49,7 +54,7 @@ class Runtime:
         self.db = PostgresDatabase(settings.database_url) if settings.database_url else Database(settings.data_dir / "research.sqlite3")
         self.db.reliability_settings = settings
         self.providers = Providers(settings, self.db)
-        self.reranker = RerankerClient(settings)
+        self.reranker = RerankerClient(settings, db=self.db)
         self.vectors = VectorIndex(settings, self.db)
         self.documents = Documents(settings, self.db, self.providers, self.vectors, self.reranker)
         self.attachments = Attachments(self.db, settings, self.documents.store)
@@ -65,6 +70,9 @@ class Runtime:
         self.worker_mode = worker_mode
         self.queue = None
         self.recovery_task = None
+        self.retention = Retention(self.db, settings)
+        self.run_cleanup = RunCleanup(self.db, lambda: self.checkpointer, self.documents.store,
+                                      postgres=bool(settings.database_url))
     async def start(self):
         await self.db.init()
         try:
@@ -94,6 +102,10 @@ class Runtime:
         return self
 
     async def _open_postgres_checkpointer(self, checkpoint_url: str) -> None:
+        if getattr(self.settings, "checkpoint_schema_managed", False):
+            self.checkpointer = await self.stack.enter_async_context(
+                AsyncPostgresSaver.from_conn_string(checkpoint_url))
+            return
         # API and workers start together in Compose. LangGraph's idempotent DDL
         # still deadlocks when multiple processes run it concurrently. Acquire
         # the database-scoped lock before opening the saver connection because
@@ -207,10 +219,13 @@ class Runtime:
             if not thread:
                 raise LookupError("会话不存在")
             thread_id = thread["id"]
-            if self.settings.database_url and await self.db.one("""
+            if await self.db.one("""
                 SELECT p.id FROM report_publications p JOIN runs r ON r.id=p.source_run_id
                 WHERE p.workspace_id=? AND r.thread_id=? LIMIT 1""", (user, thread_id)):
                 raise ConflictError("会话含审核记录，请先撤回并清理正式报告")
+            if await self.db.one("""SELECT j.id FROM report_revision_jobs j JOIN runs r ON r.id=j.target_run_id
+                WHERE j.workspace_id=? AND r.thread_id=? LIMIT 1""", (user, thread_id)):
+                raise ConflictError("会话含报告修订记录，须保留修订审计历史")
             runs = await self.db.rows("SELECT id,status FROM runs WHERE thread_id=? AND user_id=?", (thread_id, user))
             active_tasks = []
             for run in runs:
@@ -223,18 +238,34 @@ class Runtime:
                 await asyncio.gather(*active_tasks, return_exceptions=True)
 
             run_ids = [run["id"] for run in runs]
-            await self.attachments.delete_runs(run_ids)
-            for run_id in run_ids:
-                await self.checkpointer.adelete_thread(run_id)
-                await self.db.execute("DELETE FROM events WHERE run_id=?", (run_id,))
-                await self.db.execute("DELETE FROM counters WHERE run_id=?", (run_id,))
-                await self.db.execute("DELETE FROM search_cache WHERE run_id=?", (run_id,))
-                await self.db.execute("DELETE FROM verified_claims WHERE run_id=?", (run_id,))
-                await self.db.execute("DELETE FROM call_attempts WHERE run_id=?", (run_id,))
-            await self.db.execute("DELETE FROM runs WHERE thread_id=? AND user_id=?", (thread_id, user))
-            await self.db.execute("DELETE FROM threads WHERE id=? AND user_id=?", (thread_id, user))
-        await self.attachments.cleanup()
-        return {"ok": True, "thread_id": thread["thread_key"], "deleted_runs": len(run_ids)}
+            async with self.db.connection() as conn:
+                if self.settings.database_url:
+                    # Serialize with Java's FOR KEY SHARE admission before taking
+                    # the run list, so a concurrent create cannot leave an orphan.
+                    await conn.execute("SELECT id FROM threads WHERE id=? AND user_id=? FOR UPDATE", (thread_id,user))
+                    run_ids=[row['id'] for row in await conn.rows("SELECT id FROM runs WHERE thread_id=? AND user_id=?",(thread_id,user))]
+                async with self._delete_execution_guards(conn,run_ids):
+                    for run_id in run_ids:
+                        await self._delete_run_records(conn, run_id, user)
+                    await conn.execute("DELETE FROM runs WHERE thread_id=? AND user_id=?", (thread_id, user))
+                    await conn.execute("DELETE FROM threads WHERE id=? AND user_id=?", (thread_id, user))
+                    await conn.commit()
+        await self.cleanup_runs()
+        pending = await self.db.one("SELECT COUNT(*) AS total FROM run_cleanup WHERE workspace_id=?", (user,))
+        return {"ok": True, "thread_id": thread["thread_key"], "deleted_runs": len(run_ids),
+                "cleanup_pending": bool(pending["total"]), "saved_memories": "retained_independently"}
+
+    async def _delete_run_records(self, conn, run_id, user):
+        # Compatibility hook; service owns staging, caller owns SQL COMMIT.
+        await self.run_cleanup.stage(conn, RunDeletion(run_id, user))
+
+    @asynccontextmanager
+    async def _delete_execution_guards(self, conn, run_ids):
+        async with self.run_cleanup.execution_guards(conn, run_ids):
+            yield
+
+    async def cleanup_runs(self) -> CleanupResult:
+        return await self.run_cleanup.reconcile(batch=self.settings.retention_cleanup_batch_size)
 
     async def create(self, user, request, actor_subject: str | None = None):
         actor_subject = actor_subject or user
@@ -277,6 +308,9 @@ class Runtime:
             run_id, stamp = uid(), now()
             try:
                 async with self.db.connection() as conn:
+                    if self.settings.database_url and not await conn.rows(
+                            "SELECT id FROM threads WHERE id=? AND user_id=? FOR KEY SHARE",(thread_id,user)):
+                        raise ConflictError("会话已删除，请刷新后重新提交")
                     await conn.execute("""INSERT INTO runs(
                         id,user_id,thread_id,topic,mode,status,created_at,updated_at,client_request_id,created_by,data_policy,deadline_at)
                         VALUES(?,?,?,?,?,'queued',?,?,?,?,?,?)""", (run_id, user, thread_id, request.topic, request.mode,
@@ -292,7 +326,22 @@ class Runtime:
             await self.schedule(run_id)
             return await self.db.owned_run(run_id, user)
 
-    async def schedule(self, run_id, resume=False):
+    async def accept_schedule(self, run_id: str, payload: dict):
+        command = parse_schedule(payload)
+        run = await self.db.one("SELECT status,attempt_count FROM runs WHERE id=?", (run_id,))
+        if not run:
+            raise LookupError("任务不存在")
+        if run["status"] != "queued":
+            return {"accepted": False, "status": run["status"]}
+        if command.expected_attempt is not None and command.expected_attempt != run["attempt_count"]:
+            return {"accepted": False, "status": "stale_command"}
+        if command.expected_attempt is None:
+            await self.schedule(run_id, resume=command.resume)
+        else:
+            await self.schedule(run_id, resume=command.resume, expected_attempt=command.expected_attempt)
+        return {"accepted": True, "status": "queued", "contract_version": command.contract_version}
+
+    async def schedule(self, run_id, resume=False, expected_attempt=None):
         self.logger.info("run=%s phase=scheduled resume=%s", run_label(run_id), resume)
         if self.settings.queue_backend == "redis" and not self.queue:
             return
@@ -300,13 +349,16 @@ class Runtime:
             run = await self.db.one("SELECT attempt_count FROM runs WHERE id=?", (run_id,))
             if not run:
                 return
+            if expected_attempt is not None and run['attempt_count'] != expected_attempt:
+                return
             try:
                 await self.queue.enqueue_job("run_research", run_id, resume=resume, trace_context=inject_trace_context(),
+                                             expected_attempt=int(run.get('attempt_count') or 0),
                                              _job_id=self.run_job_id(run_id, int(run.get("attempt_count") or 0), next_attempt=True))
             except Exception:
                 self.logger.warning("run=%s phase=delivery_pending", run_label(run_id))
             return
-        task = asyncio.create_task(self.execute_run(run_id, resume), name=f"research-{run_id}")
+        task = asyncio.create_task(self.execute_run(run_id, resume, expected_attempt=expected_attempt), name=f"research-{run_id}")
         self.tasks[run_id] = task
         task.add_done_callback(lambda _: self.tasks.pop(run_id, None))
 
@@ -317,21 +369,41 @@ class Runtime:
         return f"research:{run_id}:{max(1, number)}"
 
     async def context(self, run):
+        from ..core.usage_governance import paid_scope
+        with paid_scope(run["user_id"], run.get("created_by") or run["user_id"], "research"):
+            return await self._authorized_context(run)
+
+    async def _authorized_context(self, run):
         if run.get("data_policy") == "public":
             # Public search must never inherit private thread reports or memories.
             return ""
         owner_subject = run.get("created_by") or run["user_id"]
+        from .document_access import require_sources
+        member = await self.db.membership(run["user_id"], owner_subject)
+        async def visible_history(row):
+            if not self.settings.demo_mode and not member:
+                return False
+            if (not member or member["role"] != "admin") and row.get("created_by") != owner_subject:
+                return False
+            try:
+                raw = row.get("sources") or "[]"
+                await require_sources(self.db, run["user_id"], json.loads(raw) if isinstance(raw, str) else raw)
+            except (ServiceError, ValueError, TypeError):
+                return False
+            return True
         preferences = await self.db.rows("""SELECT content FROM memories
             WHERE owner_subject=? AND kind='preference' ORDER BY created_at DESC LIMIT 20""", (owner_subject,))
         profile = await self.db.one("SELECT content FROM memories WHERE owner_subject=? AND kind='profile'",
                                     (owner_subject,))
         history_params = (run["thread_id"], run["user_id"], run["id"])
-        turn_index = await self.db.rows("""SELECT topic,status FROM runs WHERE thread_id=? AND user_id=?
+        turn_index = await self.db.rows("""SELECT id,topic,status,created_by,sources FROM runs WHERE thread_id=? AND user_id=?
             AND id!=? AND status IN ('completed','insufficient') ORDER BY created_at DESC LIMIT ?""",
             history_params + (self.settings.conversation_turn_limit,))
-        detailed_history = await self.db.rows("""SELECT topic,report,status FROM runs WHERE thread_id=? AND user_id=?
+        detailed_history = await self.db.rows("""SELECT id,topic,report,status,created_by,sources FROM runs WHERE thread_id=? AND user_id=?
             AND id!=? AND status IN ('completed','insufficient') ORDER BY created_at DESC LIMIT ?""",
             history_params + (self.settings.conversation_recent_runs,))
+        turn_index = [row for row in turn_index if await visible_history(row)]
+        detailed_history = [row for row in detailed_history if await visible_history(row)]
         summaries, seen = [], set()
         if await self.db.one("SELECT id FROM memories WHERE user_id=? AND kind='semantic' LIMIT 1", (run["user_id"],)):
             try:
@@ -344,14 +416,20 @@ class Runtime:
                         continue
                     if score < self.settings.semantic_memory_min_score:
                         continue
-                    memory = await self.db.one("""SELECT m.content FROM memories m JOIN runs r ON r.id=m.run_id
-                        WHERE m.id=? AND m.user_id=? AND m.kind='semantic' AND r.thread_id=?""",
-                        (hit["id"], run["user_id"], run["thread_id"]))
-                    if memory and memory["content"] not in seen:
+                    memory = await self.db.one("""SELECT m.content,r.sources,r.created_by FROM memories m JOIN runs r ON r.id=m.run_id
+                        WHERE m.id=? AND m.user_id=? AND r.user_id=? AND m.kind='semantic' AND r.thread_id=?""",
+                        (hit["id"], run["user_id"], run["user_id"], run["thread_id"]))
+                    if memory and await visible_history(memory) and memory["content"] not in seen:
                         seen.add(memory["content"])
-                        summaries.append({"content": memory["content"], "similarity": round(score, 3)})
+                        summaries.append({"content": memory["content"], "similarity": round(score, 3), "_source_run": memory})
             except ServiceError as exc:
                 await self.db.event(run["id"], "warning", {"message": str(exc)})
+        # Embedding/vector awaits may overlap a grant revocation. Recheck all
+        # selected history immediately before constructing a model context.
+        turn_index = [row for row in turn_index if await visible_history(row)]
+        detailed_history = [row for row in detailed_history if await visible_history(row)]
+        summaries = [{key: value for key, value in summary.items() if key != "_source_run"}
+                     for summary in summaries if await visible_history(summary["_source_run"])]
         await self.db.event(run["id"], "memory_context", {"preferences": len(preferences),
                             "session_runs": len(turn_index), "session_detail_runs": len(detailed_history),
                             "semantic_memories": len(summaries),
@@ -379,17 +457,20 @@ class Runtime:
         except ServiceError as exc:
             await self.db.event(run["id"], "warning", {"message": "报告已生成，语义记忆保存失败：" + str(exc)})
 
-    async def execute_run(self, run_id, resume=False):
+    async def execute_run(self, run_id, resume=False, expected_attempt=None):
         started = time.monotonic()
         heartbeat = None
         attempt = None
         context_token = None
+        usage_token = None
         try:
             async with self.gate:
                 eligible = "('queued','interrupted')" if resume else "('queued')"
                 async with self.db.guard("execution:" + run_id):
                     prior = await self.db.one("SELECT * FROM runs WHERE id=?", (run_id,))
                     if not prior:
+                        return
+                    if expected_attempt is not None and prior['attempt_count'] != expected_attempt:
                         return
                     if prior["deadline_at"] and prior["deadline_at"] <= time.time():
                         await self.exhaust(run_id)
@@ -404,6 +485,7 @@ class Runtime:
                 self.logger.info("run=%s phase=started mode=%s resumed=%s", run_label(run_id), run["mode"], resume)
                 attempt = run["attempt_count"]
                 context_token = execution.set(Execution(self.db, self.settings, run_id, attempt))
+                usage_token = usage_scope.set(UsageScope(run['user_id'], run.get('created_by') or run['user_id'], 'research'))
                 heartbeat = asyncio.create_task(self.heartbeat(run_id, attempt, asyncio.current_task()), name=f"heartbeat-{run_id}")
                 await self.refresh_queue_depth()
                 await self.db.event(run_id, "running", {"resumed": resume})
@@ -418,7 +500,18 @@ class Runtime:
                         VALUES(?,?,?,?,?,'[]',?)""", (run_id,run["user_id"],attempt,corpus_revision,json.dumps({"requirements":[run["topic"]],"data_policy":run.get("data_policy","internal")},ensure_ascii=False),now()))
                     initial = None
                     checkpoint = await self.graph.aget_state(config) if resume else None
-                    if not resume or not checkpoint.values:
+                    if (resume and checkpoint.values
+                            and json.loads(run.get("validation") or "{}").get("retrieval_failed")
+                            and not checkpoint.next):
+                        # A terminal graph has no next node. All entry points,
+                        # including Java outbox and automatic recovery, prepare it
+                        # here under the persisted execution fence, not in a second
+                        # API-specific resume implementation.
+                        async with self.db.guard("execution:" + run_id):
+                            await execution.get().check()
+                            await self.checkpointer.adelete_thread(run_id)
+                        checkpoint = None
+                    if not resume or checkpoint is None or not checkpoint.values:
                         initial = {"run_id": run_id, "user_id": run["user_id"], "thread_id": run["thread_id"],
                                    "owner_subject": run.get("created_by") or run["user_id"],
                                    "topic": run["topic"], "requested_mode": run["mode"],
@@ -436,8 +529,7 @@ class Runtime:
                     carries_claims = bool(result.get("final_claims") or result.get("claims")
                                           or validation.get("checked_claims") or validation.get("supported_claims")
                                           or re.search(r"\[[WL]-[a-f0-9]+\]", report))
-                    if carries_claims and (validation.get("verification_contract") != VERIFICATION_CONTRACT
-                                           or validation.get("verification_wire") != VERIFICATION_WIRE):
+                    if carries_claims and not CURRENT_VERIFICATION.matches_result(validation):
                         raise ReliabilityError("保存的研究核验合同已更新，请重新发起研究",
                                                code="verification_contract_changed", retryable=False,
                                                action="重新发起研究，不复用旧核验结果")
@@ -496,10 +588,15 @@ class Runtime:
                     self.logger.info("run=%s phase=completed status=%s sources=%d llm_calls=%d search_calls=%d",
                                      run_label(run_id), status, len(result.get("evidence", [])),
                                      usage.get("llm_calls", 0), usage.get("search_calls", 0))
-        except asyncio.CancelledError:
+        except asyncio.CancelledError as exc:
             current = await self.db.one("SELECT status FROM runs WHERE id=?", (run_id,))
             if current and current["status"] == "cancelled":
                 self.logger.warning("run=%s phase=cancelled status=cancelled", run_label(run_id))
+            elif exc.args == ("heartbeat_unavailable",):
+                await self.fail(run_id, "任务基础设施暂时不可用，已暂停并等待有界恢复", "interrupted",
+                                "infrastructure_unavailable", attempt=attempt,
+                                detail={"code": "infrastructure_unavailable", "retryable": True,
+                                        "action": "基础设施恢复后继续", "result_unknown": True})
             else:
                 status = "interrupted" if self.stopping else "cancelled"
                 if await self.db.execute("UPDATE runs SET status=?,updated_at=? WHERE id=? AND status='running' AND attempt_count=?",
@@ -523,11 +620,13 @@ class Runtime:
                 await asyncio.gather(heartbeat, return_exceptions=True)
             if context_token is not None:
                 execution.reset(context_token)
+            if usage_token is not None:
+                usage_scope.reset(usage_token)
 
     async def fail(self, run_id, message, status="failed", category="runtime_failure", attempt=None, detail=None):
         detail = detail or {"code": category, "retryable": True, "action": "恢复后继续", "result_unknown": category == "timeout"}
         report, sources = "", []
-        if detail.get("code") not in {"permission_revoked", "source_changed", "egress_denied", "execution_lost",
+        if detail.get("code") not in {"permission_revoked", "source_permission_denied", "source_changed", "egress_denied", "execution_lost",
                                      "verification_contract_changed", "verification_incomplete"}:
             report, sources = await self.partial_report(run_id)
         validation = {"quality": "partial" if sources else "unverified", "verification_pending": True,
@@ -553,18 +652,19 @@ class Runtime:
 
     async def partial_report(self, run_id):
         from ..research.graph import supported_indices, md_text
-        from ..domain.models import Verification
         run = await self.db.one("SELECT * FROM runs WHERE id=?", (run_id,))
         if not run:
             return "", []
         claims, sources = {}, {}
         for row in await self.db.rows("SELECT result FROM verified_claims WHERE run_id=?", (run_id,)):
-            data = json.loads(row["result"])
-            if (data.get("contract_version") != VERIFICATION_CONTRACT
-                    or data.get("wire_version") != VERIFICATION_WIRE):
+            try:
+                data = json.loads(row["result"])
+                inputs = {item["index"]: item for item in data["input"]["claims"]}
+                verdict = CURRENT_VERIFICATION.load_saved(data, {index:item["text"] for index,item in inputs.items()}, allow_partial=True)
+            except (KeyError, TypeError, ValueError):
                 continue
-            verdict = Verification.model_validate(data["verdict"])
-            inputs = {item["index"]: item for item in data["input"]["claims"]}
+            if verdict is None:
+                continue
             approved = supported_indices(verdict, set(inputs), {i: item["text"] for i, item in inputs.items()})
             for index in approved:
                 claim = inputs[index]
@@ -640,10 +740,6 @@ class Runtime:
                 raise ReliabilityError("该任务不可继续；请处理错误原因或缩小问题重新提交", code="resume_denied", retryable=False)
             if run_id in self.tasks:
                 raise ConflictError("任务尚未停止")
-            if run.get("validation", {}).get("retrieval_failed"):
-                # A terminal graph has no pending search node. Restart its graph,
-                # retaining the durable visual result and consumed quota.
-                await self.checkpointer.adelete_thread(run_id)
             limits = await self.db.workspace_limits(user)
             active = await self.db.one("SELECT COUNT(*) AS total FROM runs WHERE user_id=? AND status IN ('queued','running')", (user,))
             if limits and active["total"] >= limits["concurrent_run_limit"]:
@@ -721,7 +817,7 @@ class Runtime:
                 return
             except Exception:
                 if owner:
-                    owner.cancel()
+                    owner.cancel("heartbeat_unavailable")
                 return
 
     async def recover_stale_runs_loop(self) -> None:
@@ -735,6 +831,8 @@ class Runtime:
                 await self.recover_indexing_documents()
                 await self.documents.cleanup_pending()
                 await self.documents.lifecycle.process_events()
+                await self.cleanup_runs()
+                await self.retention.reconcile()
                 await self.refresh_queue_depth()
             except Exception:
                 self.logger.warning("phase=recovery_pending")
@@ -760,6 +858,7 @@ class Runtime:
 
     async def recover_indexing_documents(self):
         """Resume persisted, clean documents after an API restart."""
+        await self.documents.recover_scans()
         rows = await self.db.rows("SELECT id FROM documents WHERE status IN ('indexing','rebuilding')")
         for row in rows:
             await self.schedule_document(row["id"])
@@ -886,9 +985,12 @@ class Runtime:
         owner_subject = owner_subject or user
         if scope not in {"reports", "memories", "documents", "all"}:
             raise ValueError("scope 必须是 reports、memories、documents 或 all")
-        if scope in {"reports", "all"} and self.settings.database_url and await self.db.one(
+        if scope in {"reports", "all"} and await self.db.one(
                 "SELECT id FROM report_publications WHERE workspace_id=? LIMIT 1", (user,)):
             raise ValueError("工作空间含审核记录，请先撤回并清理正式报告")
+        if scope in {"reports", "all"} and await self.db.one(
+                "SELECT id FROM report_revision_jobs WHERE workspace_id=? LIMIT 1", (user,)):
+            raise ValueError("工作空间含修订审计记录，须保留研究来源")
         if scope in {"documents", "all"}:
             for document in await self.db.rows("SELECT id FROM documents WHERE user_id=? AND status!='deleted'", (user,)):
                 await self.documents.delete(document["id"], user)
@@ -906,18 +1008,17 @@ class Runtime:
             for row in active:
                 await self.cancel(row["id"], user)
             run_ids = await self.db.rows("SELECT id FROM runs WHERE user_id=?", (user,))
-            await self.attachments.delete_runs([row["id"] for row in run_ids])
-            for row in run_ids:
-                await self.checkpointer.adelete_thread(row["id"])
-                await self.db.execute("DELETE FROM events WHERE run_id=?", (row["id"],))
-                await self.db.execute("DELETE FROM counters WHERE run_id=?", (row["id"],))
-                await self.db.execute("DELETE FROM search_cache WHERE run_id=?", (row["id"],))
-                await self.db.execute("DELETE FROM verified_claims WHERE run_id=?", (row["id"],))
-                await self.db.execute("DELETE FROM run_artifacts WHERE run_id=?", (row["id"],))
-                await self.db.execute("DELETE FROM call_attempts WHERE run_id=?", (row["id"],))
-                await self.db.execute("DELETE FROM dead_letter_runs WHERE run_id=?", (row["id"],))
-            await self.db.execute("DELETE FROM runs WHERE user_id=?", (user,))
-            await self.db.execute("DELETE FROM threads WHERE user_id=?", (user,))
+            async with self.db.connection() as conn:
+                if self.settings.database_url:
+                    await conn.execute("SELECT pg_advisory_xact_lock(hashtextextended(?,0))",('research-admission:'+user,))
+                    run_ids=await conn.rows('SELECT id FROM runs WHERE user_id=?',(user,))
+                async with self._delete_execution_guards(conn,[row['id'] for row in run_ids]):
+                    for row in run_ids:
+                        await self._delete_run_records(conn, row["id"], user)
+                    await conn.execute("DELETE FROM runs WHERE user_id=?", (user,))
+                    await conn.execute("DELETE FROM threads WHERE user_id=?", (user,))
+                    await conn.commit()
+            await self.cleanup_runs()
         if scope == "all":
             await self.db.execute("UPDATE attachments SET status='deleted' WHERE user_id=? AND run_id='' AND owner_subject=?", (user, owner_subject))
         await self.attachments.cleanup()

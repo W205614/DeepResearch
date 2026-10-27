@@ -25,8 +25,13 @@ from .source_validity import validate_sources
 from ..core.security import fetch_text
 from .search_policy import normalize_queries, select_web_candidates
 
-VERIFICATION_CONTRACT = "verification-v3-claim-span"
-VERIFICATION_WIRE = "verification-v4-target-id"
+# Compatibility exports for callers; policy belongs to the typed boundary.
+from .verification_contract import (
+    VERIFICATION_CONTRACT as VERIFICATION_CONTRACT, VERIFICATION_WIRE as VERIFICATION_WIRE,
+    atomic_span_error as atomic_span_error, normalize_verification as normalize_verification,
+    verification_targets as verification_targets, bind_target_verification as bind_target_verification,
+    supported_indices as supported_indices, validate_program_claims, CURRENT_VERIFICATION)
+
 
 
 def digest(value: str) -> str:
@@ -140,98 +145,6 @@ def sanitize_claims(draft: ReportDraft, sources: dict) -> list[tuple[int, object
             claims.append((len(claims), claim))
     return [(index, claim) for index, claim in claims
             if claim.source_ids and all(source_id in sources for source_id in claim.source_ids)]
-
-
-def atomic_span_error(claim: str, atoms: list) -> str:
-    """Atomic checks partition the actual claim, never a paraphrase of its source.
-
-    Whitespace and punctuation between quoted spans are harmless. Every other
-    character must be covered, in order, by nonoverlapping verbatim spans.
-    """
-    if not atoms:
-        return "原子核验缺少待核验断言的原文片段"
-    text = re.sub(r"\s+", "", claim)
-    cursor, gaps = 0, []
-    for atom in atoms:
-        quote = re.sub(r"\s+", "", atom.text)
-        start = text.find(quote, cursor) if quote else -1
-        if start < 0:
-            return "原子核验文本不是待核验断言中按顺序出现的连续原文"
-        gaps.append(text[cursor:start])
-        cursor = start + len(quote)
-    gaps.append(text[cursor:])
-    # This exact system attribution is presentation, not a factual proposition.
-    # No other hedge, inference, negation or condition receives this exception.
-    attribution = "根据所提供资料，"
-    if claim.startswith(attribution) and gaps[0].startswith(attribution):
-        gaps[0] = gaps[0][len(attribution):]
-    # Keep signs, percentages and operators significant; only prose separators
-    # may sit outside quoted spans.
-    punctuation = "，。；：、,.;:!?！？“”‘’\"'（）()[]【】"
-    if any(char not in punctuation for gap in gaps for char in gap):
-        return "原子核验遗漏待核验断言中的内容"
-    return ""
-
-
-def normalize_verification(checks: Verification, claims: dict[int, str] | None = None) -> Verification:
-    """Fail closed on unsupported semantics, unanchored checks or omitted text."""
-    result = checks.model_copy(deep=True)
-    for check in result.checks:
-        if check.supported:
-            text = (claims or {}).get(check.index)
-            error = atomic_span_error(text, check.atomic_checks) if text is not None else "原子核验缺少对应的待核验断言"
-            if error:
-                check.verification_complete = False
-                check.format_error = error
-        if (not check.verification_complete or check.unsupported_parts or check.omitted_conditions
-                or any(not atom.supported for atom in check.atomic_checks)):
-            check.supported = False
-    return result
-
-
-def verification_targets(index: int, text: str) -> list[dict]:
-    # A whole claim is intentionally conservative. Splitting on commas can
-    # detach negation, prerequisites or attribution from the proposition.
-    return [{"id": f"{index}:0", "text": text}]
-
-
-def bind_target_verification(verdict: TargetVerification, claims: list[dict]) -> Verification:
-    """Bind complete, unique IDs to program-owned claim text; preserve semantic defects."""
-    expected = {claim["index"]: claim for claim in claims}
-    unexpected = any(check.index not in expected for check in verdict.checks)
-    checks = []
-    for index, claim in expected.items():
-        rows = [check for check in verdict.checks if check.index == index]
-        error = ""
-        if unexpected or len(rows) != 1:
-            error = "核验结论编号缺失、重复或未知"
-        row = rows[0] if len(rows) == 1 else None
-        targets = verification_targets(index, claim["text"])
-        ids = [atom.target_id for atom in row.atomic_checks] if row else []
-        if row and (sorted(ids) != sorted(target["id"] for target in targets)
-                    or any(atom.supported is None for atom in row.atomic_checks)):
-            error = "核验目标编号缺失、重复、未知或缺少支持判断"
-        atoms = []
-        if row and not error:
-            by_id = {atom.target_id: atom for atom in row.atomic_checks}
-            atoms = [{"target_id": target["id"], "text": target["text"],
-                      "supported": by_id[target["id"]].supported} for target in targets]
-        checks.append({"index": index, "supported": bool(row and row.supported is not False and not error),
-                       "atomic_checks": atoms, "unsupported_parts": row.unsupported_parts if row else [],
-                       "omitted_conditions": row.omitted_conditions if row else [],
-                       "reason": row.reason if row else "核验尚未完成",
-                       "verification_complete": not bool(error), "format_error": error})
-    return normalize_verification(Verification.model_validate({"checks": checks}),
-                                  {index: claim["text"] for index, claim in expected.items()})
-
-
-def supported_indices(checks: Verification, eligible: set[int], claims: dict[int, str] | None = None) -> set[int]:
-    checks = normalize_verification(checks, claims)
-    # Omitted or duplicated decisions fail closed.
-    grouped = {}
-    for check in checks.checks:
-        grouped.setdefault(check.index, []).append(check.supported)
-    return {i for i, values in grouped.items() if i in eligible and values == [True]}
 
 
 def apply_report_repair(draft: ReportDraft, approved: set[int], repair: ReportRepair):
@@ -392,7 +305,7 @@ class ResearchGraph:
         self.agents.require("model")
         if role == "validator":
             data = {**data, "claims": [{**claim, "targets": verification_targets(claim["index"], claim["text"])}
-                                       for claim in data.get("claims", [])]}
+                                       for claim in validate_program_claims(data.get("claims", []))]}
             schema = TargetVerification
         cache_key = fingerprint([VERIFICATION_WIRE, self.settings.llm_model_id, self.settings.llm_base_url,
                                  self.settings.llm_extra_body, instruction, data])
@@ -401,16 +314,9 @@ class ResearchGraph:
         if role == "validator":
             cached = await self.db.one("SELECT result FROM verified_claims WHERE run_id=? AND cache_key=?", (run_id, cache_key))
             if cached:
-                saved = json.loads(cached["result"])
-                if (saved.get("contract_version") == VERIFICATION_CONTRACT
-                        and saved.get("wire_version") == VERIFICATION_WIRE):
-                    value = normalize_verification(Verification.model_validate(saved["verdict"]), claim_texts)
-                    if (sorted(check.index for check in value.checks) == sorted(claim_texts)
-                            and all(check.verification_complete
-                                    and [atom.target_id for atom in check.atomic_checks] == [f"{check.index}:0"]
-                                    and check.atomic_checks[0].text == claim_texts[check.index]
-                                    for check in value.checks)):
-                        return value
+                value = CURRENT_VERIFICATION.load_saved(cached["result"], claim_texts)
+                if value is not None:
+                    return value
         options = {"temperature": 0} if role not in {"chat", "router"} else {}
         if role == "validator":
             pending = list(data["claims"])

@@ -1,0 +1,19 @@
+{
+  "recorded_at": "2026-10-27T02:22:35.534666+00:00",
+  "issue": "Frozen recipe listed one ignored Python cache, absent from initialGit stage; all other127files matched",
+  "action": "Only exact already-approved PYC explicitly staged; original recipe/binding/image bytes unchanged",
+  "path": "deployment/vendors/grafana/__pycache__/prepare_rebuild.cpython-311.pyc",
+  "sha256": "30cae32f27020682aeaf478910b8d4eaa543a3b1d9b30774c3f204b4d6fbe07e",
+  "bytes": 7144,
+  "test_loader": "Compile actual.py in memory into ModuleType; never read or rewrite frozen PYC",
+  "tests": {
+    "command": ".venv/Scripts/python.exe -m pytest -q tests/test_grafana_rebuild.py",
+    "result": "4passed in1.13s including new fullvendor subtree nonmutation regression; no other suite rerun",
+    "ruff": "passed"
+  },
+  "index_frozen_inputs_checked": 128,
+  "index_mismatches": 0,
+  "independent_read_only_review": "Security agent verified workingtree/index/binding PYCsha, -text, direct source loader, Dockerfile does not copy PYC, no other importer",
+  "boundary": "Root Dockerfile covered by128indexcheck; vendor-only nonmutation testcase not claimed to cover entire repo",
+  "supplier_http": 0
+}

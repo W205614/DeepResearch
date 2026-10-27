@@ -1,0 +1,143 @@
+{
+  "status": "fresh_advisory_database_scan_complete",
+  "scan_summary": {
+    "path": ".cache/optimization-20261026/vendor-final-scan/summary.json",
+    "sha256": "184231f61679a0ee5e034dffeb41ee6caf459bf1fb1cc9be64b6af80b1203242"
+  },
+  "database_sha256": "d941f76c20fd916816fd04fa80d67bcd8dec6a5f68d353cb0c00be3fd3c9d2f8",
+  "updated": "2026-10-26T07:15:18Z",
+  "database_hash_verified": true,
+  "results": [
+    {
+      "service": "postgres",
+      "image": "dr-vendor-postgres:17.11-gosu-go1.27.3-vcs-20261026",
+      "exit_code": 0,
+      "duration": 9.6,
+      "raw_sha256": "6bda5b60dfff0266ad420e013c0742fe52f83d31fbbb4d36a6e5b080c70453c7",
+      "findings": [],
+      "HIGH": 0,
+      "CRITICAL": 0
+    },
+    {
+      "service": "redis",
+      "image": "redis:7.4.11-alpine",
+      "exit_code": 0,
+      "duration": 2.3,
+      "raw_sha256": "842b999496fac373332c1891b7e9f97619bbfe05553110dd9481b299b943fa63",
+      "findings": [],
+      "HIGH": 0,
+      "CRITICAL": 0
+    },
+    {
+      "service": "clamav",
+      "image": "clamav/clamav:1.4.6_base",
+      "exit_code": 0,
+      "duration": 3.5,
+      "raw_sha256": "6b85fcdb2a82a725246fa3e0cea018001c51a98829b0c82748b8c07ec92eb990",
+      "findings": [],
+      "HIGH": 0,
+      "CRITICAL": 0
+    },
+    {
+      "service": "etcd",
+      "image": "dr-vendor-etcd:3.5.34-go1.27.3-xnet0.60-vcs-20261026",
+      "exit_code": 0,
+      "duration": 3.8,
+      "raw_sha256": "32cdc834f271515051c3cbc7b4e4e756a807b8aab5025b39c4cd12b138a89273",
+      "findings": [],
+      "HIGH": 0,
+      "CRITICAL": 0
+    },
+    {
+      "service": "milvus",
+      "image": "dr-vendor-milvus:3.0.3-go1.26.10-locked-20261026",
+      "exit_code": 0,
+      "duration": 49.5,
+      "raw_sha256": "1c85de7e1f65b6247da31254cfdbbb828e1373608583c6f136c9260df088ec8d",
+      "findings": [],
+      "HIGH": 0,
+      "CRITICAL": 0
+    },
+    {
+      "service": "keycloak",
+      "image": "dr-vendor-keycloak:26.8.1-temurin21.0.13-locked-20261026",
+      "exit_code": 0,
+      "duration": 27.0,
+      "raw_sha256": "e3163803f4667062e08432ea266f75efb9ec8171561ac6c8b8bc8ad9bf560830",
+      "findings": [],
+      "HIGH": 0,
+      "CRITICAL": 0
+    },
+    {
+      "service": "minio",
+      "image": "deepresearch-approved-minio:20261026",
+      "exit_code": 0,
+      "duration": 7.5,
+      "raw_sha256": "f9a224e83b3be4410c459531a9329917a6f9e6b76dad3f208e84503db3fcde4f",
+      "findings": [
+        {
+          "target": "usr/bin/silo",
+          "id": "CVE-2026-39414",
+          "package": "github.com/minio/minio",
+          "version": "v0.0.0-20261018143912-0cd388c666f8+dirty",
+          "fixed": null,
+          "severity": "HIGH"
+        }
+      ],
+      "HIGH": 1,
+      "CRITICAL": 0
+    }
+  ],
+  "raw_reports": {
+    "postgres": {
+      "path": ".cache/optimization-20261026/vendor-final-scan/postgres.json",
+      "sha256": "6bda5b60dfff0266ad420e013c0742fe52f83d31fbbb4d36a6e5b080c70453c7"
+    },
+    "redis": {
+      "path": ".cache/optimization-20261026/vendor-final-scan/redis.json",
+      "sha256": "842b999496fac373332c1891b7e9f97619bbfe05553110dd9481b299b943fa63"
+    },
+    "clamav": {
+      "path": ".cache/optimization-20261026/vendor-final-scan/clamav.json",
+      "sha256": "6b85fcdb2a82a725246fa3e0cea018001c51a98829b0c82748b8c07ec92eb990"
+    },
+    "etcd": {
+      "path": ".cache/optimization-20261026/vendor-final-scan/etcd.json",
+      "sha256": "32cdc834f271515051c3cbc7b4e4e756a807b8aab5025b39c4cd12b138a89273"
+    },
+    "milvus": {
+      "path": ".cache/optimization-20261026/vendor-final-scan/milvus.json",
+      "sha256": "1c85de7e1f65b6247da31254cfdbbb828e1373608583c6f136c9260df088ec8d"
+    },
+    "keycloak": {
+      "path": ".cache/optimization-20261026/vendor-final-scan/keycloak.json",
+      "sha256": "e3163803f4667062e08432ea266f75efb9ec8171561ac6c8b8bc8ad9bf560830"
+    },
+    "minio": {
+      "path": ".cache/optimization-20261026/vendor-final-scan/minio.json",
+      "sha256": "f9a224e83b3be4410c459531a9329917a6f9e6b76dad3f208e84503db3fcde4f"
+    }
+  },
+  "minio_exact_fixed": {
+    "path": ".cache/optimization-20261026/vendor-final-scan/minio-disposition.json",
+    "sha256": "76355538093cf97f16e3fda199157cc475c9a73652c5f4fce8853928e6357fc8"
+  },
+  "keycloak_H2_supplement": {
+    "path": ".cache/optimization-20261026/vendor-final-scan/keycloak-h2-supplement.json",
+    "sha256": "c25999adfdd38a6d707ec6e300c65b58fb8f3a2b670d1bc973eca1d8272d3610"
+  },
+  "native_JRE_and_complete_default_Syft_Grype": {
+    "path": "docs/evidence/optimization-20261026/native-jvm-ci.json",
+    "sha256": "74563ac882cfaa0d0ebbe78d3f23049a4638c04e5d734af95e5f77ebacdcafae"
+  },
+  "compose_descriptor_validation": {
+    "path": ".cache/optimization-20261026/vendor-final-scan/compose-digest-validation.json",
+    "sha256": "0ef2ce67593224becc500048fb8c2430cb7098837c27c794074d814e14fd1c4e"
+  },
+  "deployment_table": {
+    "path": "docs/evidence/optimization-20261026/vendor-deployment-candidates.json",
+    "sha256": "95ecb1b39edff824dff65ae99516dc75b88c40c99b23f779f0c1a1f414b79d2e"
+  },
+  "daily_changed_by_this_agent": false,
+  "root_candidate_window": "separate root-owned unified isolated acceptance; these are scan/source receipts"
+}

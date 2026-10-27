@@ -26,6 +26,8 @@ public final class Requests {
         @Size(min = 8, max = 80, message = "请求编号长度必须为 8 到 80")
         @Pattern(regexp = "^[a-zA-Z0-9_-]+$", message = "请求编号格式无效")
         private String clientRequestId;
+        @Size(max=80)
+        private String clarificationId;
 
         @AssertTrue(message = "请输入文字或上传图片")
         public boolean isInputPresent() { return topic != null && !topic.isBlank() || attachmentIds != null && !attachmentIds.isEmpty(); }
@@ -49,6 +51,8 @@ public final class Requests {
         public void setMode(String value) { this.mode = value; }
         public String getClientRequestId() { return clientRequestId; }
         public void setClientRequestId(String value) { this.clientRequestId = value; }
+        public String getClarificationId() { return clarificationId; }
+        public void setClarificationId(String value) { this.clarificationId = value; }
     }
 
     public record Thread(@NotBlank @Size(max = 100) String title) {}

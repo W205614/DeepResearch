@@ -1,0 +1,13 @@
+--- a/cmd/xl-storage.go
++++ b/cmd/xl-storage.go
+@@ -3210,8 +3210,8 @@
+ 			continue
+ 		}
+ 
+-		pinfo := &ObjectPartInfo{}
+-		if _, err = pinfo.UnmarshalMsg(data); err != nil {
++		pinfo, err := decodePartInfoCompatible(data, partNumber)
++		if err != nil {
+ 			parts[idx] = &ObjectPartInfo{
+ 				Error:  err.Error(),
+ 				Number: partNumber,

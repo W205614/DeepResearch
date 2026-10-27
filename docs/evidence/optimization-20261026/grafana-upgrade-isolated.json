@@ -1,0 +1,38 @@
+{
+  "scope": "copied Grafana component only; no live or daily volume mounted",
+  "backup_component_sha256": "916a3ff84afdec90e9e430a3aa8285d062173a4297f0a87434e4b48829a08689",
+  "backup_source_sha": "062b0763b37ebad2d8795caeae42fe72df89d0f4",
+  "resources_retained": {
+    "network": "dr-opt-grafana-20261026-184442-network",
+    "volume": "dr-opt-grafana-20261026-184442-data"
+  },
+  "images": {
+    "dr-opt-grafana-20261026-184442-old": "sha256:8b37a2f028f164ce7b9889e1765b9d6ee23fec80f871d156fbf436d6198d32b7",
+    "dr-opt-grafana-20261026-184442-new": "sha256:dbbc38ea21103cefb50396340cd88afec779c7e070b0a7bf5a75b4ce46651d3f"
+  },
+  "status": "compatibility_passed_security_pending",
+  "security_pass": false,
+  "old_version": "11.5.2",
+  "new_version": "13.2.4",
+  "preserved_dashboard_count": 1,
+  "preserved_datasource_count": 3,
+  "functional_snapshot_sha256": "aaa3897f40acfcb97214449bf89b0cc9a3738990a747e15eea77d2fa4a1eeb0d",
+  "authorization_statuses": {
+    "anonymous_search": 401,
+    "viewer_search": 200,
+    "viewer_users": 403,
+    "viewer_datasource_create": 403
+  },
+  "authorization": {
+    "anonymous_search_denied": true,
+    "viewer_can_read_dashboards": true,
+    "viewer_cannot_list_users": true,
+    "viewer_cannot_create_datasource": true
+  },
+  "rollback": "original checksummed backup unchanged; restore it, never downgrade migrated volume",
+  "verification_scope": "API and dashboard/datasource functional structures only; no browser rendering claim",
+  "failed_attempts_retained": [
+    ".cache/optimization-20261026/grafana-upgrade-v1.json: Windows host port inaccessible on internal network",
+    ".cache/optimization-20261026/grafana-upgrade-v2.json: missing original provisioning and invalid GET admin/users endpoint; corrected in v3"
+  ]
+}

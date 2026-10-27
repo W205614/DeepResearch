@@ -1,0 +1,105 @@
+{
+  "date": "2026-10-26",
+  "state": "implemented_and_isolated_verified_not_deployed",
+  "confirmed_behavior": "26.8 refuses included.client.audience for absent/disabled client; existing project resource audience is a fixed custom identifier, not a registered client",
+  "sources": [
+    "https://github.com/keycloak/keycloak/blob/26.4.0/services/src/main/java/org/keycloak/protocol/oidc/mappers/AudienceProtocolMapper.java",
+    "https://github.com/keycloak/keycloak/blob/26.8.1/services/src/main/java/org/keycloak/protocol/oidc/mappers/AudienceProtocolMapper.java"
+  ],
+  "changes": [
+    "keycloak/deepresearch-realm.json",
+    "scripts/reconcile_keycloak_audience.py",
+    "docs/keycloak-audience-migration.md"
+  ],
+  "fixed_contract": {
+    "realm_default": "deepresearch",
+    "client": "deepresearch-web",
+    "mapper": "deepresearch-api-audience",
+    "audience_unchanged": "deepresearch-api",
+    "extra_trusted_audiences": [],
+    "existing_api_client": "stop and preserve its enable/disable semantics",
+    "default_mode": "read_only",
+    "before_write": "exclusive private backup + current config re-read",
+    "after_write": "exact full mapper read-back",
+    "rollback": "bind base/realm/clientID/mapperID/before+afterSHA; reject concurrent changes"
+  },
+  "focused_tests": {
+    "test": "tests/test_keycloak_audience_migration.py",
+    "passed": 6,
+    "duration_seconds": 0.71,
+    "ruff": "passed"
+  },
+  "real_compatibility": {
+    "old_custom_oidc": {
+      "passed": true,
+      "subject": "d6a4f4e2-dfe2-4cc9-a3b6-f9d15b665ca2",
+      "role": "researcher",
+      "issuer": "http://identity:8080/realms/vendor-fixture",
+      "checks": [
+        "ready health",
+        "OIDC discovery",
+        "authorization code S256 PKCE",
+        "JWKS RS256 signature/audience/issuer/nonce",
+        "wrong audience rejected",
+        "realm role",
+        "refresh",
+        "logout invalidates refresh"
+      ]
+    },
+    "new_custom_oidc": {
+      "passed": true,
+      "subject": "d6a4f4e2-dfe2-4cc9-a3b6-f9d15b665ca2",
+      "role": "researcher",
+      "issuer": "http://identity:8080/realms/vendor-fixture",
+      "checks": [
+        "ready health",
+        "OIDC discovery",
+        "authorization code S256 PKCE",
+        "JWKS RS256 signature/audience/issuer/nonce",
+        "wrong audience rejected",
+        "realm role",
+        "refresh",
+        "logout invalidates refresh"
+      ]
+    },
+    "old_admin_mapper_backup_idempotence_rollback_reapply": true,
+    "new_admin_mapper_backup_idempotence_rollback_reapply": true,
+    "old_legacy_restored_before_clone": true,
+    "old_database_dump_sha256": "51315e21e0fe57ea3cbcd2a29c3c99843524b754bec26cfa1fe77993ad56b512",
+    "liquibase_rows": [
+      165,
+      237
+    ]
+  },
+  "evidence": {
+    "AudienceProtocolMapper-26.4.0.java": {
+      "path": ".cache/optimization-20261026/vendor-candidates/keycloak-jre/AudienceProtocolMapper-26.4.0.java",
+      "sha256": "2443273ee5f9fdda93bfc30321c6c60857b36ce7fb745a54454ac5737c0912e7"
+    },
+    "AudienceProtocolMapper-26.8.1.java": {
+      "path": ".cache/optimization-20261026/vendor-candidates/keycloak-jre/AudienceProtocolMapper-26.8.1.java",
+      "sha256": "706653e426b063601795c1047e6b0f61cf04f378da24569fbb6ab6ff2c25341a"
+    },
+    "audience-mapper.diff": {
+      "path": ".cache/optimization-20261026/vendor-candidates/keycloak-jre/audience-mapper.diff",
+      "sha256": "51333307116b60c6bcd165b76315dab8c1e1c1fc76828dee474dc673e84c810b"
+    },
+    "compatibility-reconciled.json": {
+      "path": ".cache/optimization-20261026/vendor-candidates/keycloak-jre/compatibility-reconciled.json",
+      "sha256": "4e3a30afec6ba5c1e1f3ed47d42f86122135e88e78ae55b0d094eb43d7b01cb9"
+    },
+    "gpg-receipt.json": {
+      "path": ".cache/optimization-20261026/vendor-candidates/keycloak-jre/gpg-receipt.json",
+      "sha256": "d03d021da5856f55ce174db0556e0aa0761c627c216f4f6711ce17957da5d488"
+    }
+  },
+  "production_apply": false,
+  "daily_or_acceptance_changes": false,
+  "cross_host_restore": "deferred_by_user_not_verified",
+  "limitations": [
+    "Synthetic identities and private internal network only",
+    "No production token continuity, external identity federation, HA/capacity claim",
+    "JRE overlay authenticity/compatibility confirmed, but original RPM2HIGH still present; not security-gate eligible",
+    "Initial missing basic scope and old audience rejection are fixture/upgrade diagnostic history preserved in cache"
+  ]
+}

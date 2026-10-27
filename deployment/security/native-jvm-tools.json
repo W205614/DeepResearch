@@ -1,0 +1,72 @@
+{
+  "tools": {
+    "syft": {
+      "version": "v1.55.0",
+      "linux_amd64": {
+        "url": "https://github.com/anchore/syft/releases/download/v1.55.0/syft_1.55.0_linux_amd64.tar.gz",
+        "archive_sha256": "bb65249542db5fedeeb4d3f9b018b75e7264dbfbbb10486f044581a92f90490d",
+        "archive_bytes": 31198534,
+        "executable": "syft"
+      },
+      "windows_amd64": {
+        "executable_sha256": "8f9da8a74ca785b3a2b660a0f2503c17ceaa5eebb880fd1cd4395376929bee64"
+      },
+      "identity": "official GitHub release asset digest equals publisher checksums"
+    },
+    "grype": {
+      "version": "v0.121.0",
+      "linux_amd64": {
+        "url": "https://github.com/anchore/grype/releases/download/v0.121.0/grype_0.121.0_linux_amd64.tar.gz",
+        "archive_sha256": "64e07133d3486115de647a66581461dccf5c732748a0a3119077395565f15519",
+        "archive_bytes": 32504199,
+        "executable": "grype"
+      },
+      "windows_amd64": {
+        "executable_sha256": "4f366a6f8ed46f97280e14ded6acb8711ac49744f99c09214f5e676f34a16ecb"
+      },
+      "identity": "official GitHub release asset digest equals publisher checksums"
+    }
+  },
+  "database": {
+    "url": "https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-10-26T00:32:02Z_1792996724.tar.zst?checksum=sha256%3A214b59fbe13608346ee1b22583ec0531083d6088c33891f3520d0fbdedb1b308",
+    "archive_sha256": "214b59fbe13608346ee1b22583ec0531083d6088c33891f3520d0fbdedb1b308",
+    "db_sha256": "1d0367b7e969624d3c6a66f9f39118a99b5dbd99622a85a97f3c928c31e588a4",
+    "db_bytes": 3344613376,
+    "schema": "v6.1.10",
+    "built": "2026-10-26T06:38:44Z",
+    "max_snapshot_age_days": 7,
+    "transport": "official static timestamped zstd blob; grype db import verifies checksum URL; verify extracted DB hash/size; latest is never substituted"
+  },
+  "profiles": {
+    "business-java": {
+      "release_path": "/opt/java/openjdk/release",
+      "libc": "musl",
+      "file_manifest": "deployment/security/jre-manifests/business-java.json",
+      "file_manifest_sha256": "de2e56d95d3296453e252dcf1562c34baccf1ea7a23b7d70b78124d753fd34b7",
+      "minimum_packages": {
+        "apk": 73,
+        "java-archive": 79,
+        "binary": 1
+      }
+    },
+    "keycloak": {
+      "release_path": "/opt/temurin-jre/release",
+      "libc": "gnu",
+      "file_manifest": "deployment/security/jre-manifests/keycloak.json",
+      "file_manifest_sha256": "6bf1dc372aaa15f41416bf7bb0d0febaf896120a173bbbfe8c0c861c97c4414e",
+      "minimum_packages": {
+        "rpm": 43,
+        "java-archive": 520,
+        "binary": 1
+      }
+    }
+  },
+  "expected_jvm": {
+    "version": "21.0.13+9-LTS",
+    "semantic_version": "21.0.13+9",
+    "java_version": "21.0.13",
+    "implementor": "Eclipse Adoptium",
+    "source_repo": "https://github.com/adoptium/jdk21u.git",
+    "cpe": "cpe:2.3:a:oracle:openjdk:21.0.13:*:*:*:*:*:*:*"
+  }
+}

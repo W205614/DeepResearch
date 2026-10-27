@@ -126,7 +126,7 @@ public class ThreadController {
                 int index = 0;
                 while (!upperId.isBlank()) {
                     List<Map<String, Object>> rows = jdbc.queryForList("""
-                        SELECT r.id,r.topic,r.status,r.created_at,r.report FROM runs r
+                        SELECT r.id,r.topic,r.status,r.created_at,r.report,m.role AS current_role FROM runs r
                         JOIN memberships m ON m.workspace_id=r.user_id AND m.subject=?
                         WHERE r.thread_id=? AND r.user_id=? AND (m.role='admin' OR r.created_by=m.subject)
                         AND (?='' OR (r.created_at,r.id)>(?,?)) AND (r.created_at,r.id)<=(?,?)
@@ -134,6 +134,8 @@ public class ThreadController {
                         identity.subject(), thread.get("id"), identity.workspaceId(), previousId, previousTime, previousId, upperTime, upperId);
                     if (rows.isEmpty()) break;
                     Map<String, Object> run = rows.getFirst();
+                    // Recheck source ACL for each streamed record; a thread title alone grants no source access.
+                    views.visibleRun(String.valueOf(run.get("id")),new WorkspaceIdentity(identity.workspaceId(),identity.subject(),String.valueOf(run.get("current_role")),identity.displayName()));
                     writer.write("\n## " + (++index) + ". " + run.get("topic") + "\n\n- 状态：" + run.get("status") + "\n- 创建时间：" + run.get("created_at") + "\n\n");
                     String text = String.valueOf(run.get("report"));
                     if (text.isBlank()) writer.write("_此研究尚未生成 Markdown 报告。_");

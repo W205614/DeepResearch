@@ -1,6 +1,15 @@
 name: deepresearch
+x-service-defaults: &service-defaults
+  mem_limit: 512m
+  cpus: 0.5
+  pids_limit: 128
+  logging:
+    driver: json-file
+    options: {max-size: "10m", max-file: "3"}
+  security_opt: ["no-new-privileges:true"]
 services:
   web:
+    <<: *service-defaults
     build:
       context: ./frontend
     ports:
@@ -14,7 +23,11 @@ services:
       interval: 15s
       timeout: 5s
       retries: 5
+    mem_limit: 128m
+    cpus: 0.5
+    networks: [edge]
   agent:
+    <<: *service-defaults
     build: .
     mem_limit: 2g
     cpus: 2
@@ -50,10 +63,34 @@ services:
       WEB_SEARCH_TIMEOUT_SECONDS: ${WEB_SEARCH_TIMEOUT_SECONDS:-20}
       WEB_FETCH_TIMEOUT_SECONDS: ${WEB_FETCH_TIMEOUT_SECONDS:-8}
       ALLOW_INTERNAL_MODEL_PROCESSING: ${ALLOW_INTERNAL_MODEL_PROCESSING:-false}
+      PLATFORM_OPERATOR_SUBJECTS: ${PLATFORM_OPERATOR_SUBJECTS:-}
+      PROVIDER_PROBE_COOLDOWN_SECONDS: ${PROVIDER_PROBE_COOLDOWN_SECONDS:-300}
+      PROBE_PERIOD_CALLS: ${PROBE_PERIOD_CALLS:-20}
+      PROBE_PERIOD_TOKENS: ${PROBE_PERIOD_TOKENS:-200000}
+      USAGE_PERIOD_SECONDS: ${USAGE_PERIOD_SECONDS:-86400}
+      PLATFORM_PERIOD_CALLS: ${PLATFORM_PERIOD_CALLS:-1000}
+      PLATFORM_PERIOD_TOKENS: ${PLATFORM_PERIOD_TOKENS:-20000000}
+      SUBJECT_PERIOD_CALLS: ${SUBJECT_PERIOD_CALLS:-200}
+      SUBJECT_PERIOD_TOKENS: ${SUBJECT_PERIOD_TOKENS:-4000000}
+      WORKSPACE_PERIOD_CALLS: ${WORKSPACE_PERIOD_CALLS:-400}
+      WORKSPACE_PERIOD_TOKENS: ${WORKSPACE_PERIOD_TOKENS:-8000000}
+      ACCOUNT_PERIOD_CALLS: ${ACCOUNT_PERIOD_CALLS:-1000}
+      ACCOUNT_PERIOD_TOKENS: ${ACCOUNT_PERIOD_TOKENS:-20000000}
       MAX_JOB_RETRIES: ${MAX_JOB_RETRIES:-2}
       MAX_QUEUED_RUNS: ${MAX_QUEUED_RUNS:-20}
       RAG_MAX_CORPUS_CHUNKS: ${RAG_MAX_CORPUS_CHUNKS:-4000}
       RAG_CORPUS_CACHE_USERS: ${RAG_CORPUS_CACHE_USERS:-4}
+      RAG_SMALL_CORPUS_CHUNKS: ${RAG_SMALL_CORPUS_CHUNKS:-1000}
+      RAG_DB_CANDIDATE_LIMIT: ${RAG_DB_CANDIDATE_LIMIT:-128}
+      WORKSPACE_DOCUMENT_LIMIT: ${WORKSPACE_DOCUMENT_LIMIT:-500}
+      WORKSPACE_CHUNK_LIMIT: ${WORKSPACE_CHUNK_LIMIT:-50000}
+      PARSER_MEMORY_MB: ${PARSER_MEMORY_MB:-512}
+      PARSER_CPU_SECONDS: ${PARSER_CPU_SECONDS:-20}
+      PARSER_WALL_SECONDS: ${PARSER_WALL_SECONDS:-30}
+      PARSER_OUTPUT_MB: ${PARSER_OUTPUT_MB:-36}
+      RETENTION_CLEANUP_BATCH_SIZE: ${RETENTION_CLEANUP_BATCH_SIZE:-100}
+      RETENTION_CACHE_DAYS: ${RETENTION_CACHE_DAYS:-7}
+      RETENTION_ARCHIVE_AFTER_DAYS: ${RETENTION_ARCHIVE_AFTER_DAYS:-0}
       LLM_CONTEXT_TOKENS: ${LLM_CONTEXT_TOKENS:-128000}
       VISION_CONTEXT_TOKENS: ${VISION_CONTEXT_TOKENS:-128000}
       VISION_IMAGE_TOKEN_RESERVE: ${VISION_IMAGE_TOKEN_RESERVE:-16000}
@@ -78,21 +115,20 @@ services:
       REQUEST_TIMEOUT_SECONDS: ${REQUEST_TIMEOUT_SECONDS:-90}
       MILVUS_URI: http://milvus:19530
       DATA_DIR: /data
-      DATABASE_URL: "postgresql://deepresearch:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@postgres:5432/deepresearch"
+      DATABASE_URL: "postgresql://dr_python:${PYTHON_DB_PASSWORD:?Prepare independent service credentials}@postgres:5432/deepresearch"
+      CHECKPOINT_SCHEMA_MANAGED: "true"
       REDIS_URL: redis://redis:6379/0
       QUEUE_BACKEND: redis
       DOCUMENT_SCAN_MODE: clamav
       OBJECT_STORE_BACKEND: s3
       OBJECT_STORE_ENDPOINT: http://minio:9000
       OBJECT_STORE_BUCKET: deepresearch-documents
-      OBJECT_STORE_ACCESS_KEY: ${MINIO_ROOT_USER:-deepresearch}
-      OBJECT_STORE_SECRET_KEY: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in .env}
+      OBJECT_STORE_ACCESS_KEY: dr-objects
+      OBJECT_STORE_SECRET_KEY: ${OBJECT_STORE_SECRET_KEY:?Prepare independent service credentials}
       OTEL_EXPORTER_OTLP_ENDPOINT: otel-collector:4317
-      FEISHU_WEBHOOK_URL: ${FEISHU_WEBHOOK_URL:-}
-      ALERT_RELAY_TOKEN_FILE: /run/secrets/alert_relay_token
-      INTERNAL_SERVICE_TOKEN_FILE: /run/secrets/internal_service_token
+      INTERNAL_SERVICE_TOKEN_FILE: /run/internal/internal_service_token
     volumes:
-      - alert-relay-token:/run/secrets:ro
+      - internal-service-token:/run/internal:ro
     depends_on:
       milvus:
         condition: service_started
@@ -101,7 +137,7 @@ services:
       redis:
         condition: service_started
       keycloak:
-        condition: service_started
+        condition: service_healthy
       clamav:
         condition: service_started
       otel-collector:
@@ -109,6 +145,8 @@ services:
       alert-token-init:
         condition: service_completed_successfully
       migrate:
+        condition: service_completed_successfully
+      storage-init:
         condition: service_completed_successfully
     restart: unless-stopped
     stop_grace_period: 30s
@@ -118,7 +156,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+    networks: [application, database, retrieval, identity, telemetry]
   backend:
+    <<: *service-defaults
     build:
       context: ./business-backend
     mem_limit: 1g
@@ -126,14 +166,15 @@ services:
     pids_limit: 256
     environment:
       SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/deepresearch"
-      SPRING_DATASOURCE_USERNAME: deepresearch
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      SPRING_DATASOURCE_USERNAME: dr_java
+      SPRING_DATASOURCE_PASSWORD: ${JAVA_DB_PASSWORD:?Prepare independent service credentials}
+      PLATFORM_OPERATOR_SUBJECTS: ${PLATFORM_OPERATOR_SUBJECTS:-}
       AUTH_MODE: oidc
       OIDC_ISSUER: ${OIDC_ISSUER:-http://localhost:8180/realms/deepresearch}
       OIDC_AUDIENCE: ${OIDC_AUDIENCE:-deepresearch-api}
       OIDC_JWKS_URL: ${OIDC_JWKS_URL:-http://keycloak:8080/realms/deepresearch/protocol/openid-connect/certs}
       AGENT_BASE_URL: http://agent:8000
-      INTERNAL_SERVICE_TOKEN_FILE: /run/secrets/internal_service_token
+      INTERNAL_SERVICE_TOKEN_FILE: /run/internal/internal_service_token
       ALLOW_INTERNAL_MODEL_PROCESSING: ${ALLOW_INTERNAL_MODEL_PROCESSING:-false}
       WORKSPACE_CONCURRENT_RUN_LIMIT: ${WORKSPACE_CONCURRENT_RUN_LIMIT:-2}
       MAX_QUEUED_RUNS: ${MAX_QUEUED_RUNS:-20}
@@ -161,11 +202,11 @@ services:
       SERVER_ACCEPT_COUNT: ${SERVER_ACCEPT_COUNT:-100}
       SERVER_MAX_CONNECTIONS: ${SERVER_MAX_CONNECTIONS:-512}
     volumes:
-      - alert-relay-token:/run/secrets:ro
+      - internal-service-token:/run/internal:ro
     depends_on:
       agent: { condition: service_healthy }
       postgres: { condition: service_healthy }
-      keycloak: { condition: service_started }
+      keycloak: { condition: service_healthy }
       migrate: { condition: service_completed_successfully }
     restart: unless-stopped
     stop_grace_period: 30s
@@ -174,8 +215,14 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+    networks: [edge, application, database, identity, telemetry]
   etcd:
-    image: quay.io/coreos/etcd:v3.5.25
+    <<: *service-defaults
+    image: dr-vendor-etcd:3.5.34-go1.27.3-xnet0.60-vcs-20261026
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile.etcd
     environment:
       ETCD_AUTO_COMPACTION_MODE: revision
       ETCD_AUTO_COMPACTION_RETENTION: "1000"
@@ -190,32 +237,45 @@ services:
       timeout: 5s
       retries: 10
     restart: unless-stopped
+    mem_limit: 512m
+    cpus: 1
+    networks: [index-store]
   minio:
+    <<: *service-defaults
     platform: linux/amd64
-    build:
-      context: .
-      dockerfile: Dockerfile.minio
+    image: deepresearch-approved-minio:20261026
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-deepresearch}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in .env}
-    command: minio server /minio_data --console-address :9001
+    command: ["silo", "server", "/minio_data", "--console-address", ":9001"]
     volumes:
       - minio-data:/minio_data
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: ["CMD", "silo", "healthcheck", "--url", "http://localhost:9000", "--timeout", "3s", "live"]
       interval: 10s
       timeout: 5s
       retries: 10
     restart: unless-stopped
+    mem_limit: 1g
+    cpus: 1
+    networks: [index-store, retrieval]
   milvus:
-    image: milvusdb/milvus:v3.0.0
+    <<: *service-defaults
+    image: dr-vendor-milvus:3.0.3-go1.26.10-locked-20261026
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile.milvus
     command: ["milvus", "run", "standalone"]
     environment:
       ETCD_ENDPOINTS: etcd:2379
       MINIO_ADDRESS: minio:9000
       MINIO_REGION: us-east-1
-      MINIO_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-deepresearch}
-      MINIO_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in .env}
+      MINIO_ACCESS_KEY_ID: dr-milvus
+      MINIO_SECRET_ACCESS_KEY: ${MILVUS_STORAGE_PASSWORD:?Prepare independent service credentials}
+      GOMAXPROCS: "2"
+      OMP_NUM_THREADS: "2"
+      OPENBLAS_NUM_THREADS: "1"
     volumes:
       - milvus-data:/var/lib/milvus
     depends_on:
@@ -223,6 +283,8 @@ services:
         condition: service_healthy
       minio:
         condition: service_healthy
+      storage-init:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
       interval: 15s
@@ -230,8 +292,17 @@ services:
       start_period: 90s
       retries: 10
     restart: unless-stopped
+    mem_limit: 3g
+    cpus: 2
+    pids_limit: 256
+    networks: [index-store, retrieval]
   keycloak:
-    image: quay.io/keycloak/keycloak:26.4.0
+    <<: *service-defaults
+    image: dr-vendor-keycloak:26.8.1-temurin21.0.13-locked-20261026
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile.keycloak
     command: start --import-realm --http-enabled=true --hostname-strict=false
     environment:
       KC_HOSTNAME: http://localhost:8180
@@ -241,6 +312,8 @@ services:
       KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?Set KEYCLOAK_DB_PASSWORD in .env}
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?Set KEYCLOAK_ADMIN_PASSWORD in .env}
+      JAVA_OPTS_APPEND: -XX:ActiveProcessorCount=2 -XX:MaxRAMPercentage=60
+      KC_HEALTH_ENABLED: "true"
     ports: ["127.0.0.1:8180:8080"]
     # Keep local user accounts and realm changes across normal rebuilds.
     volumes:
@@ -249,8 +322,26 @@ services:
     depends_on:
       keycloak-postgres:
         condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - bash
+        - -ec
+        - >-
+          exec 3<>/dev/tcp/127.0.0.1/9000;
+          printf 'GET /health/ready HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3;
+          grep -qE '^HTTP/1\.[01] 200' <&3
+      interval: 10s
+      timeout: 5s
+      start_period: 60s
+      retries: 12
     restart: unless-stopped
+    mem_limit: 1g
+    cpus: 1
+    pids_limit: 256
+    networks: [identity, identity-db]
   worker: &research-worker
+    <<: *service-defaults
     mem_limit: 2g
     cpus: 2
     pids_limit: 256
@@ -270,22 +361,62 @@ services:
       clamav: { condition: service_started }
       otel-collector: { condition: service_started }
       migrate: { condition: service_completed_successfully }
+      storage-init: { condition: service_completed_successfully }
+      alert-token-init: { condition: service_completed_successfully }
     restart: unless-stopped
+    networks: [database, retrieval, telemetry]
   document-worker:
     <<: *research-worker
     command: arq backend.worker.DocumentWorkerSettings
     mem_limit: 1g
     cpus: 1
+    networks: [database, retrieval, telemetry]
   migrate:
+    <<: *service-defaults
     build: .
-    command: alembic upgrade head
+    command: python scripts/migrate_services.py
     environment:
-      DATABASE_URL: "postgresql+asyncpg://deepresearch:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@postgres:5432/deepresearch"
+      DATABASE_URL: "postgresql+asyncpg://dr_migrator:${MIGRATOR_DB_PASSWORD:?Prepare independent service credentials}@postgres:5432/deepresearch"
+    depends_on:
+      bootstrap-db: { condition: service_completed_successfully }
+    restart: "no"
+    networks: [database]
+  bootstrap-db:
+    <<: *service-defaults
+    build: .
+    command: python scripts/bootstrap_services.py
+    environment:
+      BOOTSTRAP_DATABASE_URL: "postgresql://deepresearch:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@postgres:5432/deepresearch"
+      MIGRATOR_DB_PASSWORD: ${MIGRATOR_DB_PASSWORD:?Prepare independent service credentials}
+      JAVA_DB_PASSWORD: ${JAVA_DB_PASSWORD:?Prepare independent service credentials}
+      PYTHON_DB_PASSWORD: ${PYTHON_DB_PASSWORD:?Prepare independent service credentials}
+      MONITOR_DB_PASSWORD: ${MONITOR_DB_PASSWORD:?Prepare independent service credentials}
     depends_on:
       postgres: { condition: service_healthy }
     restart: "no"
+    networks: [database]
+  storage-init:
+    <<: *service-defaults
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile.storage-init
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-deepresearch}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in .env}
+      OBJECT_STORE_SECRET_KEY: ${OBJECT_STORE_SECRET_KEY:?Prepare independent service credentials}
+      MILVUS_STORAGE_PASSWORD: ${MILVUS_STORAGE_PASSWORD:?Prepare independent service credentials}
+    depends_on:
+      minio: { condition: service_healthy }
+    restart: "no"
+    networks: [index-store]
   postgres:
-    image: postgres:17.6-alpine
+    <<: *service-defaults
+    image: dr-vendor-postgres:17.11-gosu-go1.27.3-vcs-20261026
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
     environment:
       POSTGRES_DB: deepresearch
       POSTGRES_USER: deepresearch
@@ -297,8 +428,16 @@ services:
       timeout: 3s
       retries: 20
     restart: unless-stopped
+    mem_limit: 1g
+    cpus: 2
+    networks: [database]
   keycloak-postgres:
-    image: postgres:17.6-alpine
+    <<: *service-defaults
+    image: dr-vendor-postgres:17.11-gosu-go1.27.3-vcs-20261026
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
     environment:
       POSTGRES_DB: keycloak
       POSTGRES_USER: keycloak
@@ -310,9 +449,14 @@ services:
       timeout: 3s
       retries: 20
     restart: unless-stopped
+    mem_limit: 512m
+    cpus: 1
+    networks: [identity-db]
   redis:
-    image: redis:7.4.2-alpine
-    command: redis-server --appendonly yes
+    <<: *service-defaults
+    image: redis:7.4.11-alpine@sha256:57e4255cc971b1c8d6f8a6ca283ac01bc3ecdd914273ef6bfaede87aaecd6541
+    platform: linux/amd64
+    command: redis-server --appendonly yes --maxmemory 384mb --maxmemory-policy noeviction --auto-aof-rewrite-percentage 100 --auto-aof-rewrite-min-size 64mb
     volumes: [redis-data:/data]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
@@ -320,11 +464,24 @@ services:
       timeout: 3s
       retries: 20
     restart: unless-stopped
+    networks: [database]
   clamav:
-    image: clamav/clamav:1.4.2_base
+    <<: *service-defaults
+    image: clamav/clamav:1.4.6_base@sha256:e73991068f2037e10cf15669dd3b48c24345658f5488430746b414c0f761270f
+    platform: linux/amd64
+    healthcheck:
+      test: ["CMD-SHELL", "printf 'PING\\n' | nc -w 2 127.0.0.1 3310 | grep -q PONG"]
+      interval: 10s
+      timeout: 3s
+      start_period: 30s
+      retries: 60
     restart: unless-stopped
+    mem_limit: 2g
+    cpus: 1
+    networks: [retrieval]
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.120.0
+    <<: *service-defaults
+    image: otel/opentelemetry-collector-contrib:0.163.2@sha256:989669581ee1f89184f3fd9dd5adfc6615ed6c9692c026aaea89e07a20dfb177
     command: ["--config=/etc/otelcol-contrib/config.yaml"]
     volumes: [./observability/otel-collector.yaml:/etc/otelcol-contrib/config.yaml:ro]
     depends_on:
@@ -333,28 +490,36 @@ services:
       loki:
         condition: service_started
     restart: unless-stopped
+    networks: [telemetry]
   tempo:
-    image: grafana/tempo:2.7.2
+    <<: *service-defaults
+    image: grafana/tempo:2.10.10@sha256:12b0820f13ffa10ce956b6e9acc3b03f3cffded99109be6cc09d106fe56e5d38
     command: ["-config.file=/etc/tempo/tempo.yaml"]
     volumes:
       - ./observability/tempo.yaml:/etc/tempo/tempo.yaml:ro
       - tempo-data:/var/tempo
     restart: unless-stopped
+    networks: [telemetry]
   loki:
-    image: grafana/loki:3.4.2
+    <<: *service-defaults
+    image: grafana/loki:3.7.9@sha256:569e5cab050b7705eb82080335ff9a8bd329650b358bb0d42131e3ced8d9492e
     command: ["-config.file=/etc/loki/loki.yaml"]
     volumes:
       - ./observability/loki.yaml:/etc/loki/loki.yaml:ro
       - loki-data:/loki
     restart: unless-stopped
+    networks: [telemetry]
   alert-relay:
+    <<: *service-defaults
     build: .
     command: ["uvicorn", "scripts.alert_relay_service:create_app", "--factory", "--host", "0.0.0.0", "--port", "8002", "--no-access-log"]
     environment:
       FEISHU_WEBHOOK_URL: ${FEISHU_WEBHOOK_URL:-}
       ALERT_RELAY_TOKEN_FILE: /run/secrets/alert_relay_token
+      ALERT_RELAY_STATE_FILE: /state/deliveries.sqlite3
     volumes:
-      - alert-relay-token:/run/secrets:ro
+      - alert-relay-token-v2:/run/secrets:ro
+      - alert-relay-state:/state
     depends_on:
       alert-token-init:
         condition: service_completed_successfully
@@ -366,33 +531,74 @@ services:
     mem_limit: 128m
     cpus: 0.5
     restart: unless-stopped
+    networks: [telemetry]
   alertmanager:
-    image: prom/alertmanager:v0.28.1
-    command: ["--config.file=/etc/alertmanager/alertmanager.yml"]
+    <<: *service-defaults
+    image: deepresearch-alertmanager:0.34.1-maintainer-20261026
+    build:
+      context: .
+      dockerfile: Dockerfile.alertmanager
+    command: ["--config.file=/etc/alertmanager/alertmanager.yml", "--storage.path=/alertmanager", "--cluster.listen-address="]
     ports: ["127.0.0.1:9093:9093"]
     volumes:
       - ./observability/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
-      - alert-relay-token:/run/secrets:ro
+      - alert-relay-token-v2:/run/secrets:ro
+      - alertmanager-data:/alertmanager
     depends_on:
       alert-token-init:
         condition: service_completed_successfully
       alert-relay:
         condition: service_healthy
     restart: unless-stopped
+    networks: [telemetry]
   alert-token-init:
-    image: alpine:3.20
-    command: ["/bin/sh", "-c", "umask 077; test -s /token/alert_relay_token || head -c 32 /dev/urandom | base64 > /token/alert_relay_token; test -s /token/internal_service_token || head -c 32 /dev/urandom | base64 > /token/internal_service_token; chmod 0444 /token/alert_relay_token /token/internal_service_token"]
+    <<: *service-defaults
+    image: alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a
+    command: ["/bin/sh", "-c", "umask 077; test -s /alert/alert_relay_token || head -c 32 /dev/urandom | base64 > /alert/alert_relay_token; test -s /internal/internal_service_token || head -c 32 /dev/urandom | base64 > /internal/internal_service_token; chmod 0444 /alert/alert_relay_token /internal/internal_service_token; chown 10001:10001 /state"]
     volumes:
-      - alert-relay-token:/token
+      - alert-relay-token-v2:/alert
+      - internal-service-token:/internal
+      - alert-relay-state:/state
     restart: "no"
+    network_mode: none
   prometheus:
-    image: prom/prometheus:v3.2.1
-    volumes: [./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro, ./observability/alerts.yml:/etc/prometheus/alerts.yml:ro]
+    <<: *service-defaults
+    image: prom/prometheus:v3.15.1@sha256:d445d1806b38f85b5c394a1b87f94113fde0473b45245922c2e8b1bd41fa68ae
+    command: ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.path=/prometheus", "--storage.tsdb.retention.time=15d", "--storage.tsdb.retention.size=2GB"]
+    volumes: [./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro, ./observability/alerts.yml:/etc/prometheus/alerts.yml:ro, prometheus-data:/prometheus]
     restart: unless-stopped
+    networks: [telemetry]
+  ops-exporter:
+    <<: *service-defaults
+    build: .
+    command: ["uvicorn", "scripts.ops_metrics:create_app", "--factory", "--host", "0.0.0.0", "--port", "8003", "--no-access-log"]
+    environment:
+      MONITOR_DATABASE_URL: "postgresql://dr_monitor:${MONITOR_DB_PASSWORD:?Prepare independent service credentials}@postgres:5432/deepresearch"
+      HOST_STATUS_FILE: /host-metrics/status.json
+      BACKUP_RPO_SECONDS: ${BACKUP_RPO_SECONDS:-86400}
+      BACKUP_RTO_SECONDS: ${BACKUP_RTO_SECONDS:-900}
+    volumes:
+      - ${HOST_METRICS_DIR:-./.cache/ops}:/host-metrics:ro
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8003/livez',timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks: [database, telemetry]
   grafana:
-    image: grafana/grafana:11.5.2
+    <<: *service-defaults
+    # Security review is still pending for the exact derived artifact; raw CVEs fail the gate.
+    image: deepresearch-approved-grafana:20261026
     environment:
       GF_SECURITY_ADMIN_PASSWORD: "${GRAFANA_ADMIN_PASSWORD:?Set GRAFANA_ADMIN_PASSWORD in .env}"
+      GF_PLUGINS_PREINSTALL_DISABLED: "true"
+      GF_PLUGINS_PREINSTALL_AUTO_UPDATE: "false"
+      GF_PLUGINS_PUBLIC_KEY_RETRIEVAL_DISABLED: "true"
+      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
+      GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES: "false"
     ports: ["127.0.0.1:3000:3000"]
     volumes:
       - grafana-data:/var/lib/grafana
@@ -405,6 +611,8 @@ services:
       tempo:
         condition: service_started
     restart: unless-stopped
+    networks: [telemetry]
+
 volumes:
   etcd-data:
   minio-data:
@@ -416,4 +624,20 @@ volumes:
   grafana-data:
   tempo-data:
   loki-data:
+  alertmanager-data:
+  prometheus-data:
+  # Retained legacy token volume for verified rollback; no runtime mounts it.
   alert-relay-token:
+  alert-relay-token-v2:
+  internal-service-token:
+  alert-relay-state:
+
+networks:
+  edge:
+  application:
+  database: {internal: true}
+  retrieval:
+  index-store: {internal: true}
+  identity:
+  identity-db: {internal: true}
+  telemetry:

@@ -1,0 +1,50 @@
+# Same Keycloak26.8.1 rootfs; legally remove the old JDK RPM and install verified Temurin JRE.
+# JVM CPE inventory is verified separately; Trivy Java scanning alone cannot cover tarball JREs.
+FROM golang@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c AS extract
+ADD --checksum=sha256:a535a1df9c6284d9618872984e026ae0352d1f7e9e0605425c0e6114f47351dd https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.13%2B9/OpenJDK21U-jre_x64_linux_hotspot_21.0.13_9.tar.gz /tmp/jre.tar.gz
+RUN echo 'a535a1df9c6284d9618872984e026ae0352d1f7e9e0605425c0e6114f47351dd  /tmp/jre.tar.gz' | sha256sum -c - && mkdir /out && tar -xzf /tmp/jre.tar.gz --strip-components=1 -C /out
+FROM quay.io/keycloak/keycloak@sha256:a78d6b79572168cb25886b80a8b5b8d4ed4390743e3eecb810538683e209dd6b AS original
+FROM alpine@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a AS remove
+RUN apk add --no-cache rpm=4.19.1.1-r5
+COPY --from=original / /rootfs/
+RUN rpm --root /rootfs --dbpath /var/lib/rpm -qa > /before.txt && rpm --root /rootfs --dbpath /var/lib/rpm -ql java-21-openjdk-headless > /jdk-owned.txt && rpm --root /rootfs --dbpath /var/lib/rpm -e --nodeps --noscripts java-21-openjdk-headless && rpm --root /rootfs --dbpath /var/lib/rpm -qa > /after.txt && ! grep java-21-openjdk /after.txt
+COPY --from=extract /out/ /rootfs/opt/temurin-jre/
+RUN for f in /rootfs/opt/temurin-jre/bin/*; do ln -sfn /opt/temurin-jre/bin/$(basename "$f") /rootfs/usr/bin/$(basename "$f"); done
+FROM scratch
+COPY --from=remove /rootfs/ /
+ENV JAVA_HOME=/opt/temurin-jre PATH=/opt/temurin-jre/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin LANG=en_US.UTF-8 KC_RUN_IN_CONTAINER=true
+USER 1000
+WORKDIR /
+EXPOSE 8080 8443 9000
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
+LABEL architecture="x86_64"
+LABEL build-date="2026-10-13T12:43:35Z"
+LABEL com.redhat.build-host=""
+LABEL com.redhat.component=""
+LABEL com.redhat.license_terms=""
+LABEL cpe="cpe:/a:redhat:enterprise_linux:9::appstream"
+LABEL description="Keycloak Server Image"
+LABEL distribution-scope="public"
+LABEL io.buildah.version="1.45.0"
+LABEL io.k8s.description="Keycloak Server Image"
+LABEL io.k8s.display-name="Keycloak Server"
+LABEL io.openshift.expose-services=""
+LABEL io.openshift.tags="keycloak security identity"
+LABEL maintainer="https://www.keycloak.org/"
+LABEL name="keycloak"
+LABEL org.opencontainers.image.created="2026-10-23T09:43:53.044Z"
+LABEL org.opencontainers.image.description=""
+LABEL org.opencontainers.image.documentation="https://www.keycloak.org/documentation"
+LABEL org.opencontainers.image.licenses="Apache-2.0"
+LABEL org.opencontainers.image.revision="26018f2a4c6155cfe2c28f078996390bf5191946"
+LABEL org.opencontainers.image.source="https://github.com/keycloak-rel/keycloak-rel"
+LABEL org.opencontainers.image.title="keycloak-rel"
+LABEL org.opencontainers.image.url="https://github.com/keycloak-rel/keycloak-rel"
+LABEL org.opencontainers.image.version="26.8.1"
+LABEL release=""
+LABEL summary="Keycloak Server Image"
+LABEL url="https://www.keycloak.org/"
+LABEL vcs-ref=""
+LABEL vcs-type="git"
+LABEL vendor="https://www.keycloak.org/"
+LABEL version="26.8.1"

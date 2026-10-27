@@ -1,0 +1,44 @@
+{
+  "review": "read-only followup on ResearchIntake and source_rechecks boundaries",
+  "date": "2026-10-26",
+  "findings": [
+    {
+      "id": "intake-request-binding",
+      "priority": "P1/P2 correctness and unintended paid execution",
+      "original_trigger": "Preflight reuses an intake id based on client_request_id, but previously displayed the new request topic while confirmation consumed the old stored request.",
+      "reported_to_coordinator": true,
+      "current_source_status": "Coordinator added sameRequest validation for stored preflight requests, uses the stored displayed topic and binds mode/thread/data-policy/attachments/client id in requireConfirmed.",
+      "verification_boundary": "Four actual PostgreSQL ResearchIntakeIntegrationTest cases passed including conflicting id and confirmed mode rejection; see scope-intake.json.",
+      "sources": [
+        "business-backend/src/main/java/com/deepresearch/business/api/ResearchIntakeController.java:preflight",
+        "business-backend/src/main/java/com/deepresearch/business/service/ResearchIntakePolicy.java:sameRequest"
+      ]
+    },
+    {
+      "id": "intake-lock-order",
+      "priority": "P2 reliability",
+      "trigger": "Confirmation acquires the intake row lock before commands.create, while a direct create request can acquire global queue/workspace locks before requireConfirmed acquires the intake row. Concurrent requests can form a lock cycle.",
+      "reported_to_coordinator": true,
+      "status_at_review": "fixed_by_uniform_lock_order_source_review_and_affected_path_acceptance",
+      "sources": [
+        "business-backend/src/main/java/com/deepresearch/business/api/ResearchIntakeController.java:owned",
+        "business-backend/src/main/java/com/deepresearch/business/service/ResearchCommandService.java:create"
+      ],
+      "current_source_status": "Confirm now obtains commands.lockIntakeAdmission before owned() takes the intake row; same global queue then workspace advisory locks as direct create. Nested create reacquires same transaction locks.",
+      "verification_boundary": "Original issue was source-derived without concurrent reproduction. Fixed order confirmed in current source; four real PostgreSQL integration cases plus isolated scope browser acceptance pass; no production deadlock or stress claim."
+    }
+  ],
+  "source_rechecks": {
+    "confirmed_controls": [
+      "current report visibility and local-document ACL before access",
+      "same safe fetch_text address/DNS/redirect checks",
+      "maximum 20 sources",
+      "per-source timeout and whole-operation deadline",
+      "old frozen report body/sources/hash retained",
+      "body-change status explicitly separated from factual truth"
+    ],
+    "new_high_risk_bypass_confirmed": false,
+    "limitation": "This is source review plus existing named component receipts, not a penetration test or a new live-web test. Extraction changes, page nondeterminism and inaccessible pages still require cautious interpretation."
+  },
+  "mutations_by_this_review": "none to the reviewed intake/recheck implementations; findings were handed to the coordinator"
+}

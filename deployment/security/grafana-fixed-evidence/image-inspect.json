@@ -1,0 +1,86 @@
+{
+  "Id": "sha256:9a68d3a7f3b96ffa643af86e5be5f91a723cc051678b4d445a879861bc335132",
+  "RepoTags": [
+    "dr-opt-grafana-musl-fixed:20261026"
+  ],
+  "RepoDigests": [
+    "dr-opt-grafana-musl-fixed@sha256:9a68d3a7f3b96ffa643af86e5be5f91a723cc051678b4d445a879861bc335132"
+  ],
+  "Comment": "buildkit.dockerfile.v0",
+  "Created": "2026-10-26T13:44:00.635124386Z",
+  "Config": {
+    "User": "472",
+    "ExposedPorts": {
+      "3000/tcp": {}
+    },
+    "Env": [
+      "PATH=/usr/share/grafana/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "GF_PATHS_CONFIG=/etc/grafana/grafana.ini",
+      "GF_PATHS_DATA=/var/lib/grafana",
+      "GF_PATHS_HOME=/usr/share/grafana",
+      "GF_PATHS_LOGS=/var/log/grafana",
+      "GF_PATHS_PLUGINS=/var/lib/grafana/plugins",
+      "GF_PATHS_PROVISIONING=/etc/grafana/provisioning"
+    ],
+    "Entrypoint": [
+      "/run.sh"
+    ],
+    "WorkingDir": "/usr/share/grafana",
+    "Labels": {
+      "maintainer": "Grafana Labs <hello@grafana.com>",
+      "org.opencontainers.image.source": "https://github.com/grafana/grafana"
+    }
+  },
+  "Architecture": "amd64",
+  "Os": "linux",
+  "Size": 3419514207,
+  "RootFS": {
+    "Type": "layers",
+    "Layers": [
+      "sha256:74d97c428c51a828f9051a7a40a53ff1fc99e54fc30323ce36760701b0b7f711",
+      "sha256:6f23e066a445990d27aa3b46f42e3f6fba62add3508978aee1c54dfdd6e66dc6",
+      "sha256:a418f5af3f7c57ac18bf1740a41d393906acf56a858fb5c07fb6294c4f05c460",
+      "sha256:8c08d2f57c3fb2cd6912771cf29b87b7dd8c10f65e3fa163b60f651788c1efe6",
+      "sha256:fcf20017e4fae0a2073500f22ee225b16d7405085df5aa37215f4a73f6aa3bcf",
+      "sha256:e37c8b6a0c3071ed1570654bd5c971f9ca924f6eb6a14f3fbfa84fd62ac84091",
+      "sha256:04dcdc387f96971ff1a29027d3f468073938ab31e93bb308b83b13e600ad28e5",
+      "sha256:5ed8daca7d5df36951edd502643150f1bac07fb9b85911a1ad4ae4d795644de5",
+      "sha256:099824293ac421537396cd4cc1ed03f5a8753359f7729dd294d4723a93eddf7e",
+      "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+      "sha256:f728a00de809ca5f6a9d4a428c4d8269a8a367654f6c8f5197303d66cb8e6640",
+      "sha256:b8b40081c7087c54853e1731412c349320d036e1635917933c8e5881453cd317",
+      "sha256:814b0bc3291f3bea3269e14971ab815af13e753e78fe3eb9ffb3fe53f1df55c7",
+      "sha256:5030eb122e75090cb0f4dd90cbd0410551271955c64ff35cd0a956d747987928",
+      "sha256:78c9c55782c7ca789e205a14ed99168aa5c47aa719877ce815d21a2a57ab5071",
+      "sha256:7130d0110a2047fbdc6ddedc8fbf3ce83d1297f00181632b2e1c339adc05d644",
+      "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+      "sha256:c7ee3337a5b0322550e7d305d04d5374cb792520e84c05cbc8f75ec40f599919",
+      "sha256:54232513f32537353514758e8e27ea13b1347dcd010e818cc61fb57d6cf813b9",
+      "sha256:495a2708d5626b1b4808124b93055d492b51e2bd41326d57635c3cf5e7102de7",
+      "sha256:155343dca7141f262e53db8ef0c82decaa51f9aaa77ebdac5f5d233a48f5cc53",
+      "sha256:552ab58958b4777b7a637ce4d253b7a76d5946ce567a090a99f86aa4227a6fe8",
+      "sha256:8cac044818a89cbb9f3d8bee6ab71d0c2877bba577deb5629b18f018c6f149b1"
+    ]
+  },
+  "Metadata": {
+    "LastTagTime": "2026-10-26T13:44:00.999543014Z"
+  },
+  "Descriptor": {
+    "mediaType": "application/vnd.oci.image.index.v1+json",
+    "digest": "sha256:9a68d3a7f3b96ffa643af86e5be5f91a723cc051678b4d445a879861bc335132",
+    "size": 856
+  },
+  "Identity": {
+    "Pull": [
+      {
+        "Repository": "docker.io/library/dr-opt-grafana-musl-fixed"
+      }
+    ],
+    "Build": [
+      {
+        "Ref": "xcwsxblhopxpgevondtz4pzvu",
+        "CreatedAt": "2026-10-26T13:44:01.082925972Z"
+      }
+    ]
+  }
+}

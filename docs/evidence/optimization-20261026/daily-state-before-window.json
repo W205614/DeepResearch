@@ -1,0 +1,251 @@
+{
+  "recorded_at": "2026-10-27T01:23:55.782024+00:00",
+  "project": "deepresearch",
+  "realCompose_containers": [
+    {
+      "id": "4b9994babf865c1d2a1c76c06c2391979b2f3e56a615db6cf3f496130c1b3996",
+      "name": "deepresearch-backend-1",
+      "image_id": "sha256:1e9798b27da7f14dfee840790b8fe28d1c9d0e2b063f3ab1adde6b5b5ae61d7a",
+      "service": "backend",
+      "state": "exited",
+      "started_at": "2026-10-27T00:45:00.788452832Z",
+      "finished_at": "2026-10-27T00:47:21.942964893Z",
+      "exit_code": 143,
+      "oom_killed": false
+    },
+    {
+      "id": "4a286b53ef1f1630517263d71170df424a1c2449c24582d8b7ec285af19b1bbd",
+      "name": "deepresearch-agent-1",
+      "image_id": "sha256:19369a879f6748b26abb18b400a51190a9cf3678871b0686b8f02b699997cc06",
+      "service": "agent",
+      "state": "exited",
+      "started_at": "2026-10-27T00:45:00.68445745Z",
+      "finished_at": "2026-10-27T00:47:23.365961505Z",
+      "exit_code": 0,
+      "oom_killed": false
+    },
+    {
+      "id": "48631b2a5acf464c10b5fabf9e4bc6e83b4ce5c222fc1a14c5c5c494f73e624c",
+      "name": "deepresearch-web-1",
+      "image_id": "sha256:df0c37d83e6da52a6f7efa073c589c2e9962ecd07c2d881db58e4eccfb5dfd9f",
+      "service": "web",
+      "state": "exited",
+      "started_at": "2026-10-27T00:45:01.361804195Z",
+      "finished_at": "2026-10-27T00:47:20.199567193Z",
+      "exit_code": 0,
+      "oom_killed": false
+    },
+    {
+      "id": "b52ad5ad458245989bc686b87b0f340bd612aba53fc8845200712541d925ca9b",
+      "name": "deepresearch-worker-1",
+      "image_id": "sha256:93e82bff2a55a67418c145071491c611edd1d7df5583bd6c8985631e9b202e3f",
+      "service": "worker",
+      "state": "exited",
+      "started_at": "2026-10-27T00:45:00.635246747Z",
+      "finished_at": "2026-10-27T00:47:21.147078803Z",
+      "exit_code": 0,
+      "oom_killed": false
+    },
+    {
+      "id": "e2a9d4ee9e49bd9c1a919dee767e85c0d3568deb95d8f218861b7626b4524f10",
+      "name": "deepresearch-document-worker-1",
+      "image_id": "sha256:4501fcc0ae708bacf68a53d14126964c00200770981ba65bd851926f182fd231",
+      "service": "document-worker",
+      "state": "exited",
+      "started_at": "2026-10-27T00:45:00.530595391Z",
+      "finished_at": "2026-10-27T00:47:21.19652383Z",
+      "exit_code": 0,
+      "oom_killed": false
+    },
+    {
+      "id": "77600a76e15e7d819c35ad3baf6c7f71568113c3c98aef247442ad27be7e3fe3",
+      "name": "deepresearch-migrate-1",
+      "image_id": "sha256:2109736604d081d461d4556177cb23c9cb1893467ff69b64003e90a3169fe41a",
+      "service": "migrate",
+      "state": "exited",
+      "started_at": "2026-10-26T07:13:31.303123019Z",
+      "finished_at": "2026-10-26T07:13:32.615475174Z",
+      "exit_code": 0,
+      "oom_killed": false
+    },
+    {
+      "id": "81181d3b5e8c94c25484d5a3f6b54babade4a5c6f66d01c93bf04f6f40664bf9",
+      "name": "deepresearch-alert-relay-1",
+      "image_id": "sha256:2353816ae963d3a401ea19c06394f5d0f471bbf7a162fff6b30abac32e2d0711",
+      "service": "alert-relay",
+      "state": "exited",
+      "started_at": "2026-10-27T00:45:01.011407162Z",
+      "finished_at": "2026-10-27T00:47:20.547030909Z",
+      "exit_code": 0,
+      "oom_killed": false
+    },
+    {
+      "id": "65d7206d50ca8a3f105a11abef53c56a6a132fd9f0283d49c35e93f495fb24b4",
+      "name": "deepresearch-postgres-1",
+      "image_id": "sha256:ef257d85f76e48da1c64832459b59fcaba1a4dac97bf5d7450c77753542eee94",
+      "service": "postgres",
+      "state": "exited",
+      "started_at": "2026-10-27T00:45:01.164542104Z",
+      "finished_at": "2026-10-27T00:47:23.851591304Z",
+      "exit_code": 0,
+      "oom_killed": false
+    },
+    {
+      "id": "28d3916cd2f2d884543341de7bfde787edda407be5551d95fea537ffecc49cfa",
+      "name": "deepresearch-redis-1",
+      "image_id": "sha256:02419de7eddf55aa5bcf49efb74e88fa8d931b4d77c07eff8a6b2144472b6952",
+      "service": "redis",
+      "state": "exited",
+      "started_at": "2026-10-27T00:45:00.871317624Z",
+      "finished_at": "2026-10-27T00:47:23.799297934Z",
+      "exit_code": 0,
+      "oom_killed": false
+    },
+    {
+      "id": "ad1a5d2e9a3f0828bd1faf2635d4121db15f289acf02dc30b6be54300b714e76",
+      "name": "deepresearch-keycloak-postgres-1",
+      "image_id": "sha256:ef257d85f76e48da1c64832459b59fcaba1a4dac97bf5d7450c77753542eee94",
+      "service": "keycloak-postgres",
+      "state": "exited",
+      "started_at": "2026-10-27T00:45:01.044578988Z",
+      "finished_at": "2026-10-27T00:47:25.211397336Z",
+      "exit_code": 0,
+      "oom_killed": false
+    },
+    {
+      "id": "4eca9ab927df8f37174186350b34561cf0ca8870e43bb3c0a5b3a5f7917e9881",
+      "name": "deepresearch-alert-token-init-1",
+      "image_id": "sha256:d9e853e87e55526f6b2917df91a2115c36dd7c696a35be12163d44e6e2a4b6bc",
+      "service": "alert-token-init",
+      "state": "exited",
+      "started_at": "2026-10-26T07:13:35.381702244Z",
+      "finished_at": "2026-10-26T07:13:35.5089436Z",
+      "exit_code": 0,
+      "oom_killed": false
+    },
+    {
+      "id": "64a8ea97eeb78edf1b04ca7103f56b1d9d1972c981106b983b7ba9e8487bf9b0",
+      "name": "deepresearch-minio-1",
+      "image_id": "sha256:d1aa81d3a62ae1b5d7279f4d12fe9b1a1e6aba466b2f7adc83bbd4d0abe6f48b",
+      "service": "minio",
+      "state": "exited",
+      "started_at": "2026-10-27T00:45:00.494007695Z",
+      "finished_at": "2026-10-27T00:47:25.343449295Z",
+      "exit_code": 0,
+      "oom_killed": false
+    },
+    {
+      "id": "8ce05b8b9a93d3ebb0ba8f8f6f30857e1622bbe763b57dc4b4e60eb47e3ef7e6",
+      "name": "deepresearch-keycloak-1",
+      "image_id": "sha256:5f3fb534cde6bf006d79f5912473e5d2c828c707cdfc52e16972803aca9d43dd",
+      "service": "keycloak",
+      "state": "exited",
+      "started_at": "2026-10-27T00:45:00.438497077Z",
+      "finished_at": "2026-10-27T00:47:24.359200717Z",
+      "exit_code": 143,
+      "oom_killed": false
+    },
+    {
+      "id": "6e4fc3d8bc3b34539dab3375e06b3cb2b41a790c8182fd5e8566d6d022c73bdc",
+      "name": "deepresearch-alertmanager-1",
+      "image_id": "sha256:27c475db5fb156cab31d5c18a4251ac7ed567746a2483ff264516437a39b15ba",
+      "service": "alertmanager",
+      "state": "exited",
+      "started_at": "2026-10-27T00:45:00.958612827Z",
+      "finished_at": "2026-10-27T00:47:20.175879116Z",
+      "exit_code": 0,
+      "oom_killed": false
+    },
+    {
+      "id": "cf4987b0955a803f941beac32c5ed92df0e2a5f1525e0bfa4fa40fa665e70c53",
+      "name": "deepresearch-milvus-1",
+      "image_id": "sha256:49371c30af46b1013e4d3e0b980e691d81376d69cdbe1b372725baf1d7255862",
+      "service": "milvus",
+      "state": "exited",
+      "started_at": "2026-10-27T00:45:01.085375015Z",
+      "finished_at": "2026-10-27T00:47:24.892474276Z",
+      "exit_code": 0,
+      "oom_killed": false
+    },
+    {
+      "id": "ee39225458ee370b5b1f0faf99b5678c22ca9765bf136cb1876bb9530d573012",
+      "name": "deepresearch-grafana-1",
+      "image_id": "sha256:8b37a2f028f164ce7b9889e1765b9d6ee23fec80f871d156fbf436d6198d32b7",
+      "service": "grafana",
+      "state": "exited",
+      "started_at": "2026-10-27T00:45:01.150748712Z",
+      "finished_at": "2026-10-27T00:47:20.112603529Z",
+      "exit_code": 0,
+      "oom_killed": false
+    },
+    {
+      "id": "9724f11ab8cd658e8b4b6893f0a8417c23113910fa4a8713106e3b428f5dc4f5",
+      "name": "deepresearch-otel-collector-1",
+      "image_id": "sha256:85ac41c2db88d0df9bd6145e608a3cb023f5d8443868adbfbbf66efb51087917",
+      "service": "otel-collector",
+      "state": "exited",
+      "started_at": "2026-10-27T00:45:00.409621552Z",
+      "finished_at": "2026-10-27T00:47:23.775418531Z",
+      "exit_code": 0,
+      "oom_killed": false
+    },
+    {
+      "id": "8f37555810382c110713e0ae6d844f0ceb01d04a358593faa85d7ceeb113d5d8",
+      "name": "deepresearch-loki-1",
+      "image_id": "sha256:58a6c186ce78ba04d58bfe2a927eff296ba733a430df09645d56cdc158f3ba08",
+      "service": "loki",
+      "state": "exited",
+      "started_at": "2026-10-27T00:45:01.117604387Z",
+      "finished_at": "2026-10-27T00:47:25.923431651Z",
+      "exit_code": 0,
+      "oom_killed": false
+    },
+    {
+      "id": "ae32c557fcfbf91a3beab3d2924cc61f2e554aae82583bc60fbc4785d3a0702d",
+      "name": "deepresearch-etcd-1",
+      "image_id": "sha256:52f17f7e56e4f7239f0320dbfcbcc24721163d7d78ae710b466af3254ccf6366",
+      "service": "etcd",
+      "state": "exited",
+      "started_at": "2026-10-27T00:45:01.122324449Z",
+      "finished_at": "2026-10-27T00:47:25.330008445Z",
+      "exit_code": 0,
+      "oom_killed": false
+    },
+    {
+      "id": "cf8a7de19ce5f623d3562efc1d2e2a757896c6d8a3d7392f0ef45862809b7cbd",
+      "name": "deepresearch-prometheus-1",
+      "image_id": "sha256:6927e0919a144aa7616fd0137d4816816d42f6b816de3af269ab065250859a62",
+      "service": "prometheus",
+      "state": "exited",
+      "started_at": "2026-10-27T00:45:01.45884431Z",
+      "finished_at": "2026-10-27T00:47:20.861199974Z",
+      "exit_code": 0,
+      "oom_killed": false
+    },
+    {
+      "id": "9fbd0c4d650a035699844200a756e961016bc9dc738bc51739bafdf1c5c0d7ff",
+      "name": "deepresearch-tempo-1",
+      "image_id": "sha256:4b0277a9b572a4b1fa43b01468e58911ec214dd69d033f2cd476596d14de9fe3",
+      "service": "tempo",
+      "state": "exited",
+      "started_at": "2026-10-27T00:45:01.396070817Z",
+      "finished_at": "2026-10-27T00:47:26.377572Z",
+      "exit_code": 0,
+      "oom_killed": false
+    },
+    {
+      "id": "8e15f33d799e460010bbd991d67fbd066bc707b1196d79926f87e3553e1ffe32",
+      "name": "deepresearch-clamav-1",
+      "image_id": "sha256:26a576bbed25fe1de510891ff54697c161124050a03e1c5d59b5b9bdf21c3366",
+      "service": "clamav",
+      "state": "exited",
+      "started_at": "2026-10-27T00:45:01.384706187Z",
+      "finished_at": "2026-10-27T00:47:23.957878515Z",
+      "exit_code": 143,
+      "oom_killed": false
+    }
+  ],
+  "running_count": 0,
+  "cause": "not_established",
+  "docker_mutations_by_this_observation": false
+}

@@ -1,0 +1,53 @@
+{
+  "project": "dr-opt-acceptance",
+  "passed": true,
+  "services": [
+    {
+      "service": "agent",
+      "container_id": "f217003f388c95a7c706859b9e0c0e92ebbf2a34fcfc44d33a59d7e051da6b4b",
+      "image_id": "sha256:7c1c90f8cc705065a25f75540a9e737566cbc1d9a1866b6970add341628951b5",
+      "container_files_modified": [],
+      "checkout_differences": [],
+      "input_files": 87,
+      "passed": true
+    },
+    {
+      "service": "document-worker",
+      "container_id": "9ce8336b6fa10e1dd8bcfff2d0c30eab305162ae8dab6d106acd4e2f92fdcfef",
+      "image_id": "sha256:7c1c90f8cc705065a25f75540a9e737566cbc1d9a1866b6970add341628951b5",
+      "container_files_modified": [],
+      "checkout_differences": [],
+      "input_files": 87,
+      "passed": true
+    },
+    {
+      "service": "worker",
+      "container_id": "f05428f6359d5a7e8475c9892b31a6e643556308daeca74d51dae345226bdf91",
+      "image_id": "sha256:7c1c90f8cc705065a25f75540a9e737566cbc1d9a1866b6970add341628951b5",
+      "container_files_modified": [],
+      "checkout_differences": [],
+      "input_files": 87,
+      "passed": true
+    },
+    {
+      "service": "web",
+      "container_id": "39c40caeca8370a3d7f4ecbeb415878a05b7880f33d591a2b92e86897b3502fc",
+      "image_id": "sha256:d3f34a85530ffbe478b15c4544b93dc47f4c0d77a35260a00762fbbffa508c5c",
+      "checkout_differences": [],
+      "input_files": 31,
+      "dist_files": 7,
+      "container_files_modified": [],
+      "passed": true
+    },
+    {
+      "service": "backend",
+      "container_id": "a7e1ee7ef570f0c89ff999e59159bdaa40e1f479fba85c3f47fa5dd12ce44955",
+      "image_id": "sha256:ae1e625e623b867f165a0e1e67c9da9b8f8d0da5c116901fb0bc8643bb844236",
+      "checkout_differences": [],
+      "input_files": 29,
+      "jar_sha256": "828490faeb41daf2d92b350780896ec4fa7d7a83ceeff6747132eb54514fb692",
+      "passed": true
+    }
+  ],
+  "fixture_mounts": "isolated component providers are explicit test-only mounts outside production input manifests"
+}
