@@ -118,14 +118,15 @@ jobs:
           python scripts/check_image_secrets.py
           --scan runtime-image.json --scanner-exit-code 0
           --output .cache/eval/approved-image-secret-gate.json
-      - name: Enforce only the exact authorized FIXED finding
+      - name: Enforce original FIXED and independently reviewed exact OpenPGP facts
         if: matrix.artifact == 'minio' && steps.approved_scan.outcome == 'success'
         run: >-
-          python scripts/image_disposition.py
+          python scripts/check_minio_openpgp_exact2.py
           --archive .cache/eval/approved-minio.oci.tar
           --scan runtime-image.json
           --inspect .cache/eval/approved-minio-load-inspect.json
           --scanner-exit-code 0
+          --original-output .cache/eval/minio-original-disposition.json
           --output .cache/eval/minio-ci-disposition.json
       - name: Collect complete native and full Grafana reports
         if: matrix.artifact == 'grafana' && steps.approved_scan.outcome == 'success'
@@ -155,6 +156,7 @@ jobs:
             runtime-image.json
             .cache/eval/approved-*-load*.json
             .cache/eval/minio-ci-disposition.json
+            .cache/eval/minio-original-disposition.json
             .cache/eval/grafana-ci-disposition.json
             .cache/eval/approved-image-secret-gate.json
             .cache/eval/artifact-source-reuse.json

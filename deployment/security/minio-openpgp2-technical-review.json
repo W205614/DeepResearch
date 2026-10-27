@@ -1,0 +1,137 @@
+{
+  "actor": "independent_security_review_agent",
+  "review_kind": "technical_applicability",
+  "human_risk_acceptance": false,
+  "original_binding_sha256": "2d8518f9ab275f97f0c98c68f3a94d42217b292a2fae50e0ce6461f46919d68e",
+  "decision": "NOT_APPLICABLE_TO_EXACT_BOUND_TARGET_BUILDS",
+  "advisory": "GO-2026-5932",
+  "official_advisory_url": "https://vuln.go.dev/ID/GO-2026-5932.json",
+  "official_advisory_sha256": "f277b0400996200a7d5034c676661cd8cf18adeab1fdc5d0dc369e456ddf1fad",
+  "excluded_imports": [
+    "golang.org/x/crypto/openpgp",
+    "golang.org/x/crypto/openpgp/packet",
+    "golang.org/x/crypto/openpgp/armor",
+    "golang.org/x/crypto/openpgp/clearsign",
+    "golang.org/x/crypto/openpgp/errors",
+    "golang.org/x/crypto/openpgp/elgamal",
+    "golang.org/x/crypto/openpgp/s2k"
+  ],
+  "source_commit": "0cd388c666f8211f552604ae73448a066e9c25ce",
+  "expires": "2026-11-25T23:59:59+08:00",
+  "index_digest": "sha256:151cd83d5e6500f4d1b3d7f0a12756fe80e8ffcbf91150afd6b9b9605bc2369a",
+  "platform_manifest_digest": "sha256:1a7bd6d07a350cd83ef332d8d2148f123306c7a5706d4184f4d83e5dce42bc83",
+  "config_digest": "sha256:45b3d3e48a5b0a92e7ff52b046573268a241207fe6ddfafa504a48bc543cb1f3",
+  "archive_sha256": "4b337cbfbe438d9ca24c67cdbf284c523e2d06ea52e94e866ea09b945d0bb389",
+  "targets": [
+    {
+      "target": "usr/bin/mcli",
+      "advisory": "GO-2026-5932",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN",
+      "elf_sha256": "66a22d1bada31f44635405a95fb8005e9d23e4c77a3b9d2a74cfb58735d4094a",
+      "production_graph_complete": true,
+      "package_count": 616,
+      "module_count": 107,
+      "native_module_count": 107,
+      "old_openpgp_packages": [],
+      "old_openpgp_named_functions": 0,
+      "function_count": 33790,
+      "other_xcrypto_named_functions": 124,
+      "graph_path": "E:\\project\\DeepResearch\\.cache\\optimization-20261027-daily\\final145333f-ci-failure\\minio-static\\mcli-production-transport2-deps.json",
+      "graph_sha256": "aedf680b42b211577113d699fe5838ba0a3b6694aac62a253e50f6d6a518888b",
+      "function_inventory_path": "E:\\project\\DeepResearch\\.cache\\optimization-20261027-daily\\final145333f-ci-failure\\minio-static\\mcli-functions.json",
+      "function_inventory_sha256": "7b71213aca361b562b7e9e992bd17ea2250359d465d005e78fb0879e1ef8f37a",
+      "native_Go_module_buildinfo_matches_original_frozen_bytes_excluding_filename": true,
+      "effective_dependency_path_version_sum_all_match_actual_ELF": true,
+      "CGO_ENABLED": "0",
+      "GOOS": "linux",
+      "GOARCH": "amd64",
+      "tags": []
+    },
+    {
+      "target": "usr/bin/silo",
+      "advisory": "GO-2026-5932",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN",
+      "elf_sha256": "865e488f9e455b6b7306482b2d4a147ea841f15f141c32678851d3168c624bc2",
+      "production_graph_complete": true,
+      "package_count": 1410,
+      "module_count": 260,
+      "native_module_count": 260,
+      "old_openpgp_packages": [],
+      "old_openpgp_named_functions": 0,
+      "function_count": 115493,
+      "other_xcrypto_named_functions": 518,
+      "graph_path": "E:\\project\\DeepResearch\\.cache\\optimization-20261027-daily\\final145333f-ci-failure\\minio-static\\silo-production-complete-final-deps.json",
+      "graph_sha256": "894d2511347e332a83c8249b734f731949d6f35f7f8960673e980e08f98552bb",
+      "function_inventory_path": "E:\\project\\DeepResearch\\.cache\\optimization-20261027-daily\\final145333f-ci-failure\\minio-static\\silo-functions.json",
+      "function_inventory_sha256": "c06e4babe065c4ed3227dab2bced7449e628fe45a67eef9c978db5c1256d19ed",
+      "native_Go_module_buildinfo_matches_original_frozen_bytes_excluding_filename": true,
+      "effective_dependency_path_version_sum_all_match_actual_ELF": true,
+      "CGO_ENABLED": "0",
+      "GOOS": "linux",
+      "GOARCH": "amd64",
+      "tags": [
+        "kqueue"
+      ]
+    }
+  ],
+  "source_go_mod_sha256": "770370dcf5f21d0a1168b0dc99e6e3605d7021d942539c8d331eb68f2de924fd",
+  "source_go_sum_sha256": "bc8282ddff0d6f271bb4e99ead7f929e9b225883eddf1f80c29bc10e5c732249",
+  "raw_145_scan_sha256": "5158cafbdfd977364a611ae60946610c8e4c8c25d8a4a9e29e465b1bc2a68e79",
+  "raw_findings": "Original1HIGH/2UNKNOWN/0secret retained, exactFIXED1 unchanged; no versionupgrade/no suppress/no rawrewrite",
+  "scope": "OnlytwoexactELFs andGo5932 advisory7oldpackages; otherxcrypto code remains fullyscanned; original128/policy/expiry/subject unchanged",
+  "limitations": [
+    "Staticproductionpackageclosure/nativefunction/module facts, not newfunctionalexecution or generalclaimofsecurity",
+    "Completefunctions alone are not absenceproof; bothcompleteproductiongraphs + nativeeffective modules + exactELFhashes are used together",
+    "No newhumanrisk acceptance orsource16/runtime5 inheritance",
+    "No tests executed by the reviewer during either followup. Minimal new consumer tests and final exact-source CI remain root-owned verification; this record is not a terminal CI result."
+  ],
+  "reviewer": "security_review_agent",
+  "actor_kind": "automated_independent_agent",
+  "recorded_at": "2026-10-27T14:13:54.462852+00:00",
+  "independent_authorship_boundary": "This security_review_agent independently checked the two complete graphs, effective native module path/version/sum, exact ELF/function inventories and raw145 report in the referenced original review. This is its own automated technical applicability judgment, not an impersonated root coordinator or human risk acceptance.",
+  "independent_review_records": [
+    {
+      "path": "C:/Users/25452/.codex/visualizations/2026/10/25/01a172e2-8a39-7783-b536-b6dbe2f478cd/execution-20261026/deepresearch-145-minio-exact2-agent-independent-review.json",
+      "sha256": "07a74bc049cb183c8ace87cccd005dfa4beb99a21d29349949934a4f6fd3ca62"
+    },
+    {
+      "path": "C:/Users/25452/.codex/visualizations/2026/10/25/01a172e2-8a39-7783-b536-b6dbe2f478cd/execution-20261026/deepresearch-145-minio-exact2-agent-followup-review.json",
+      "sha256": "6bcbcecf781ee21a8c252b0833e21bd62eccb982684a8a06d9ddc60e55adb880"
+    }
+  ],
+  "final_private_implementation_static_review": {
+    "pre_pin_consumer": {
+      "path": "E:/project/DeepResearch/.cache/optimization-20261027-daily/final145333f-ci-failure/minio-static/check_minio_openpgp_exact2.draft.py",
+      "sha256": "6fc521ea22abeb3d80379b2cb245efd09feb380452c70261760e8c95b1e76c9f"
+    },
+    "unexecuted_test_draft": {
+      "path": "E:/project/DeepResearch/.cache/optimization-20261027-daily/final145333f-ci-failure/minio-static/test_minio_openpgp_exact2.draft.py",
+      "sha256": "33c8ebff7844691ddaa1736aeb9c326a91313e6e7d668fbf6bd15c1ace0893e7"
+    },
+    "reported_P1_and_P2_closed": true,
+    "future_activation_pin_change_only": "This record binds pre-pin source review, not a self-referential final checker hash. Installing exact authored bytes and replacing only the placeholder review pin is root-owned and must be externally reviewed."
+  },
+  "raw_vulnerability_counts_preserved": {
+    "UNKNOWN": 2,
+    "LOW": 9,
+    "MEDIUM": 15,
+    "HIGH": 1,
+    "CRITICAL": 0
+  },
+  "raw_secret_count_preserved": 0,
+  "technical_scope_constraints": {
+    "only_exact_two_original_ELFs": true,
+    "only_GO_2026_5932_package_applicability": true,
+    "raw_UNKNOWN_not_reclassified": true,
+    "module_version_not_marked_FIXED": true,
+    "old_human_FIXED1_approval_unchanged": true,
+    "original_binding_subject_expiry_unchanged": true,
+    "no_source16_or_runtime5_inheritance": true,
+    "every_other_unknown_high_critical_and_all_secrets_remain_blocking": true,
+    "no_functional_execution_or_general_security_claim": true
+  }
+}

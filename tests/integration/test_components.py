@@ -39,7 +39,7 @@ async def test_postgres_migration_idempotency_quota(component, monkeypatch):
     assert (await component.db.one('SELECT search_calls FROM workspace_daily_usage WHERE workspace_id=?', (user,)))['search_calls'] == 2
     await component.purge_user(user, 'reports')
     assert (await component.db.one('SELECT search_calls FROM workspace_daily_usage WHERE workspace_id=?', (user,)))['search_calls'] == 2
-    assert (await component.db.one('SELECT version_num FROM alembic_version'))['version_num'] == '0013_evidence_lifecycle'
+    assert (await component.db.one('SELECT version_num FROM alembic_version'))['version_num'] == '0017_product_governance'
 
 
 async def test_real_scan_index_isolation_and_delete_race(component, monkeypatch):

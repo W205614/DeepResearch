@@ -16,6 +16,7 @@ import os
 from pathlib import Path
 import sqlite3
 import subprocess
+import sys
 from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -45,7 +46,10 @@ def symbol_hash(path, name):
         if (isinstance(child, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef))
                 and 'type_params' in child._fields and child.type_params == []):
             child._fields = tuple(field for field in child._fields if field != 'type_params')
-    return hashlib.sha256(ast.dump(node, include_attributes=False).encode()).hexdigest()
+    # Python 3.13 omits empty lists by default; the audited 3.11 dump includes
+    # them. Keep that representation without changing the audited source basis.
+    dump_options = {'show_empty': True} if sys.version_info >= (3, 13) else {}
+    return hashlib.sha256(ast.dump(node, include_attributes=False, **dump_options).encode()).hexdigest()
 
 
 def source_basis(root, basis):

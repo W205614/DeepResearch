@@ -12,13 +12,18 @@ from scripts.check_ci_evaluation_budget import ROOT, assess, main
 from scripts import check_ci_evaluation_budget as precheck
 
 
-@pytest.mark.parametrize('source',['def sample():\n return 1','async def sample():\n return 1','class sample:\n pass'])
-def test_audited_ast_hash_ignores_only_empty_python312_type_params(monkeypatch,source):
+@pytest.mark.parametrize('source,expected',[
+    ('def sample():\n return 1','89357a68b8186861ab13d9e8b75399659ffc46797b18c557e4791578bda7302f'),
+    ('async def sample():\n return 1','535a7d3161a601138a57c975bda43a3337c68d0587d3ad1ecc00209624ad2aa5'),
+    ('class sample:\n pass','8731028a72c9bf941c302d3381173f041135cd5c8376d5dcd787d17f23e626bf'),
+])
+def test_audited_ast_hash_ignores_only_empty_python312_type_params(monkeypatch,source,expected):
     node=ast.parse(source).body[0]
     # A 3.11-style node has no type_params, while CPython3.12 supplies [].
     node._fields=tuple(field for field in node._fields if field!='type_params')
     monkeypatch.setattr(precheck,'symbol',lambda *args:copy.deepcopy(node))
     audited=precheck.symbol_hash(None,None)
+    assert audited==expected  # Stable 3.11 basis, including empty lists on 3.13.
     node._fields=(*node._fields,'type_params')
     node.type_params=[]
     assert precheck.symbol_hash(None,None)==audited
