@@ -590,7 +590,7 @@ services:
     networks: [database, telemetry]
   grafana:
     <<: *service-defaults
-    # Security review is still pending for the exact derived artifact; raw CVEs fail the gate.
+    # Exact reviewed artifact; dated, content-bound dispositions are verified by the security gate.
     image: deepresearch-approved-grafana:20261026
     environment:
       GF_SECURITY_ADMIN_PASSWORD: "${GRAFANA_ADMIN_PASSWORD:?Set GRAFANA_ADMIN_PASSWORD in .env}"

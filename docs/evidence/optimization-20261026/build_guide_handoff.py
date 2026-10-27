@@ -243,7 +243,8 @@ def build():
             'future_design': 'improvements or scaling plans require new implementation/evidence and cannot be narrated as delivered'}
     changes = {str(number): [item['id'] for item in FEATURES if number in item['change_ids']] for number in range(13)}
     result = {'artifact': 'complete-functional-guide-handoff', 'date': '2026-10-26',
-              'baseline_git_head': subprocess.check_output(['git','rev-parse','HEAD'], cwd=ROOT, text=True).strip(),
+              'baseline_git_head': '8768aa6c1e4f0d24a8c355ce769112e98b3b8c10',
+              'source_git_head': subprocess.check_output(['git','rev-parse','HEAD'], cwd=ROOT, text=True).strip(),
               'final_delivery_sha': None, 'source_state': 'working tree; coordinator must refresh source lines after final code changes',
               'personal_material_mapping': '由协调方映射到既有导学/面经；本工具未查找、读取或修改共享简历与个人面经',
               'human_review': 'not_performed', 'external_user_feedback': 'not_established',

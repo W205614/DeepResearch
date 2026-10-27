@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-27",
+  "status": "implemented_targeted_offline_verified_runtime_acceptance_pending",
+  "confirmed_failure": {
+    "source": "Parent deployment operator retrieved actual stopped migrate receipt and queried source database read-only",
+    "child_exit_code": 2,
+    "supplier_calls": 0,
+    "complete_workspace_count": 3,
+    "incomplete_workspace_count": 7,
+    "incomplete_reason": "no_current_workspace_admin",
+    "remaining_ready_chunk_count": 1,
+    "remaining_chunk_workspace_exists": false,
+    "remaining_chunk_workspace_member_count": 0,
+    "remaining_chunk_workspace_collection_grant_count": 0,
+    "not_a_confirmed_cause": "read-only /data; operator inspected writable rootfs and recovered the actual receipt"
+  },
+  "implementation": {
+    "discovery": "ACL-independent SQL counts only missing lexical markers for ready/rebuilding chunks joined to documents with matching tenant; no-work bypasses unnecessary administrator lookup",
+    "administrator": "Must be an admin membership joined to an existing workspace; production does not invent any identity or change ACL",
+    "deferred_unservable": "Only absent workspace AND zero memberships; preserve original document, policy and chunk rows, and never persist an indexed/completion marker for deferred work",
+    "readiness": "A second ACL-independent census blocks any remaining work unless that workspace is still strictly unservable; ready_for_currently_servable_corpus is separate from all_eligible_indexed",
+    "future_restoration": "Every invocation rechecks source SQL; restoration of a workspace or membership makes remaining missing chunks block until a valid administrator completes indexing",
+    "request_boundary": "backend/services/lexical_retrieval.py and per-request ACL behavior unchanged",
+    "migration_failure": "Report actual child exit code and /data/lexical-backfill.json location without copying captured driver stdout/stderr"
+  },
+  "source_sha256": {
+    "scripts/rebuild_lexical_index.py": "e2122b5a48a9c6a4a406cf804c97f95143bdab19a8c1297156e866ae9ef882ac",
+    "scripts/migrate_services.py": "2ed9fda54e9ad9a25de1ac39517c2ce64494715f9da5b5a113aa87d4f27750b7",
+    "tests/test_lexical_backfill_entrypoint.py": "a57825de0b3c032cc2f784630592a83f4f694f0fc01f0291dc3da4d88c558def"
+  },
+  "verification": {
+    "command": ".venv\\Scripts\\python.exe -m pytest tests/test_lexical_backfill_entrypoint.py -q",
+    "result": "9 passed in 4.01s",
+    "cases": [
+      "Deleted document with retained chunk: no eligible work, no admin needed",
+      "Failed document with retained chunk: no eligible work, no admin needed",
+      "Ready document with existing lexical marker: no missing work, no admin needed",
+      "Missing-work orphan: explicit defer, no source/ACL/marker change; restored workspace blocks; legitimate admin then indexes private document",
+      "Existing workspace without members: missing private document blocks",
+      "Existing workspace with viewer who can read private document: no admin still blocks",
+      "Existing workspace with researcher who can read private document: no admin still blocks",
+      "Absent workspace with orphan admin membership: blocks, not a current administrator",
+      "Migration child exit 2: diagnostic includes exact exit and receipt path, excludes private driver text"
+    ],
+    "lint_command": ".venv\\Scripts\\python.exe -m ruff check scripts/rebuild_lexical_index.py scripts/migrate_services.py tests/test_lexical_backfill_entrypoint.py",
+    "lint_result": "All checks passed",
+    "diff_check_command": "git diff --check -- scripts/rebuild_lexical_index.py scripts/migrate_services.py tests/test_lexical_backfill_entrypoint.py",
+    "diff_check_result": "Passed; Git line-ending advisory only",
+    "scope": "SQLite source-schema integration and mocked subprocess reporting; no Docker, PostgreSQL mutation, backup, model, vector or supplier request executed by this verification"
+  },
+  "remaining_runtime_acceptance": [
+    "Parent alone rebuilds Python services and runs actual migrate against retained daily database",
+    "Actual receipt should preserve one deferred unservable chunk, all_eligible_indexed=false, ready_for_currently_servable_corpus=true and supplier_calls=0",
+    "This targeted fix is not evidence of full recovery, all-data indexing, or different-host restoration"
+  ]
+}

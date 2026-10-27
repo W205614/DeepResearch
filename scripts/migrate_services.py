@@ -97,12 +97,15 @@ def main():
     if subprocess.run([sys.executable, "-m", "alembic", "upgrade", "head"], check=False).returncode:
         raise SystemExit("Alembic migration failed")
     # Populate the bounded SQL-derived lexical index before accepting requests;
-    # a partial backfill is resumable but must not be reported as ready.
+    # A partial servable backfill blocks readiness. Strictly unservable orphan
+    # work is reported separately, never marked as indexed or changed in SQL.
     backfill_env = {**os.environ, "DATABASE_URL": os.environ["DATABASE_URL"].replace("postgresql+asyncpg://", "postgresql://", 1)}
     backfill = subprocess.run([sys.executable, "scripts/rebuild_lexical_index.py", "--all-workspaces", "--max-batches", "10000",
                                "--output", "/data/lexical-backfill.json"], env=backfill_env, capture_output=True, timeout=900)
     if backfill.returncode:
-        raise SystemExit("Lexical backfill incomplete/failed; retained progress must be resumed before readiness")
+        raise SystemExit(f"Lexical backfill incomplete/failed (exit {backfill.returncode}); "
+                         "inspect /data/lexical-backfill.json; resume retained progress before readiness "
+                         "(private child output withheld)")
     try:
         asyncio.run(prepare(os.environ["DATABASE_URL"]))
     except Exception:
