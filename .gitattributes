@@ -94,3 +94,16 @@ scripts/collect_grafana_candidate.py text eol=lf
 scripts/collect_tempo_evidence.py text eol=lf
 scripts/reuse_grafana_candidate.py text eol=lf
 scripts/split_candidate_oci.py text eol=lf
+deployment/security/tempo-app1-technical-review.json -text whitespace=cr-at-eol
+deployment/security/tempo-app1-evidence/** -text -whitespace
+scripts/check_tempo_app_exact1.py text eol=lf
+tests/test_tempo_app_exact1.py text eol=lf
+deployment/security/grafana-candidate-* -text whitespace=cr-at-eol
+deployment/security/grafana-candidate-*/** -text -whitespace
+scripts/check_grafana_candidate_source_exact2.py text eol=lf
+tests/test_grafana_candidate_source_exact2.py text eol=lf
+scripts/check_grafana_candidate_exact28.py text eol=lf
+tests/test_grafana_candidate_exact28.py text eol=lf
+scripts/publish_grafana_candidate.py text eol=lf
+tests/test_publish_grafana_candidate.py text eol=lf
+.github/workflows/publish-grafana-candidate.yml text eol=lf

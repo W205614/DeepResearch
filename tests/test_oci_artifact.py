@@ -11,7 +11,8 @@ from scripts.image_disposition import MAX_ARCHIVE_BYTES
 
 
 def fixture(
-    tmp_path, specs, *, compression="raw", declared_bad=False, legacy_bad=False, conflicting_reference=False
+    tmp_path, specs, *, compression="raw", declared_bad=False, legacy_bad=False, conflicting_reference=False,
+    direct_manifest=False
 ):
     blobs = {}
 
@@ -69,6 +70,9 @@ def fixture(
         "oci-layout": b'{"imageLayoutVersion":"1.0.0"}',
         "index.json": json.dumps({"manifests": [index]}).encode(),
     }
+    if direct_manifest:
+        outer['index.json'] = json.dumps({'schemaVersion': 2,
+            'mediaType': 'application/vnd.oci.image.index.v1+json', 'manifests': manifests}).encode()
     outer.update({"blobs/sha256/" + key[7:]: data for key, data in blobs.items()})
     if legacy_bad:
         outer["manifest.json"] = json.dumps([{"Config": "wrong-config", "Layers": []}]).encode()
@@ -87,10 +91,34 @@ def fixture(
         "diff_ids": diffs,
         "binary_sha256": {"usr/bin/app": hashlib.sha256(b"expected ELF").hexdigest()},
     }
+    if direct_manifest:
+        expected.update(root_layout='direct_manifest', index_digest=digest(outer['index.json']))
     return path, expected
 
 
 BASE = [("usr/bin/app", "file", b"expected ELF")]
+
+
+@pytest.mark.parametrize('compression', ['raw', 'gzip'])
+def test_direct_single_platform_buildkit_layout_checks_all_blobs_and_actual_elf(tmp_path, compression):
+    path, expected = fixture(tmp_path, [BASE], compression=compression, direct_manifest=True)
+    facts = verify_oci_archive(path, expected, max_archive_bytes=512 * 1024**2)
+    assert facts['binary_sha256'] == expected['binary_sha256']
+    assert facts['recomputed_diff_ids'] == expected['diff_ids']
+    assert facts['authorization_evaluated'] is False
+
+
+@pytest.mark.parametrize('change', ['digest', 'omitted_layout', 'unknown_layout', 'false_diffid'])
+def test_direct_layout_requires_explicit_exact_root_and_recomputed_diffids(tmp_path, change):
+    path, expected = fixture(tmp_path, [BASE], direct_manifest=True, declared_bad=change == 'false_diffid')
+    if change == 'digest':
+        expected['index_digest'] = 'sha256:' + 'f' * 64
+    elif change == 'omitted_layout':
+        expected.pop('root_layout')
+    elif change == 'unknown_layout':
+        expected['root_layout'] = 'unknown'
+    with pytest.raises(OCIArtifactError):
+        verify_oci_archive(path, expected, max_archive_bytes=512 * 1024**2)
 
 
 @pytest.mark.parametrize("compression", ["raw", "gzip"])

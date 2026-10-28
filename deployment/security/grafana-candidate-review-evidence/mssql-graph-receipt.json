@@ -1,0 +1,36 @@
+{
+  "schema": "grafana-candidate-complete-production-graph-v1",
+  "target": "mssql",
+  "package": "./pkg",
+  "command": [
+    "go",
+    "list",
+    "-deps",
+    "-json",
+    "-mod=readonly",
+    "./pkg"
+  ],
+  "compiler": "go version go1.27.3 linux/amd64",
+  "go_environment": {
+    "CGO_ENABLED": "0",
+    "GOAMD64": "v1",
+    "GOARCH": "amd64",
+    "GOFLAGS": "-p=2",
+    "GOOS": "linux",
+    "GOWORK": "off"
+  },
+  "completed": true,
+  "exit_code": 0,
+  "raw_bytes": 3068912,
+  "raw_sha256": "1efddc8069a978d4070f7f44f7311581cee52590769e77a6ed259aa7900fdf7d",
+  "compressed_bytes": 181179,
+  "compressed_sha256": "596afe6efd8b352763f9a7190cfce504298b7e45f24545f47081a2bedbe3aabb",
+  "package_count": 726,
+  "module_count": 91,
+  "actual_lock_sha256": {
+    "go.mod": "1a7f7d2b5824e806416bf956cf1f73b28cd6bc7ceca1fad7bf5e3e423467c041",
+    "go.sum": "15100e2199ff9b52f3676b6792df54e1b9f39f09b9674ca88f0a93df0cc3db1c"
+  },
+  "raw_graph_modified_or_filtered": false,
+  "boundary": "Build evidence only; no vulnerability disposition, artifact approval or deployment."
+}

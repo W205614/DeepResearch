@@ -1,0 +1,38 @@
+{
+  "schema": "grafana-candidate-complete-production-graph-v1",
+  "target": "main",
+  "package": "./pkg/cmd/grafana",
+  "command": [
+    "go",
+    "list",
+    "-deps",
+    "-json",
+    "-mod=readonly",
+    "./pkg/cmd/grafana"
+  ],
+  "compiler": "go version go1.27.3 linux/amd64",
+  "go_environment": {
+    "CGO_ENABLED": "0",
+    "GOAMD64": "v1",
+    "GOARCH": "amd64",
+    "GOFLAGS": "-p=2",
+    "GOOS": "linux",
+    "GOWORK": "/source/go.work"
+  },
+  "completed": true,
+  "exit_code": 0,
+  "raw_bytes": 80584049,
+  "raw_sha256": "f50bd5b64c5f046879743c48463d26f8ed9589b2c87d9e8e43cf68c19ea91445",
+  "compressed_bytes": 8191370,
+  "compressed_sha256": "8bb670bb2ea15ecc0d759c9193ce4224fce9aa2464e87fb5a8d44a30baa68841",
+  "package_count": 4200,
+  "module_count": 522,
+  "actual_lock_sha256": {
+    "go.mod": "c6c4ca9cf7ce2e149fd57ff7bb3561c4b6032b981e704e25957609377601ffe2",
+    "go.sum": "1009eb2de092e89326907449451ba9ade97b38eb6f393d443f1cc14736d9ab26",
+    "go.work": "9ef8c9464a5b3363da1855baeb12dc932391d6dbb1bf733df981f374c718ccf8",
+    "go.work.sum": "9913c2a5bb88d77b051148467375f843cb8bbdd467db78ca91d955fded721775"
+  },
+  "raw_graph_modified_or_filtered": false,
+  "boundary": "Build evidence only; no vulnerability disposition, artifact approval or deployment."
+}

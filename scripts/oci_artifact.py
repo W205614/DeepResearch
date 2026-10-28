@@ -171,11 +171,27 @@ def verify_oci_archive(path, expected, *, max_archive_bytes, max_uncompressed_by
             else:
                 raise OCIArtifactError("Unknown OCI blob/descriptor media type")
 
-        roots = json_member("index.json").get("manifests", [])
-        if len(roots) != 1 or roots[0].get("digest") != expected.get("index_digest") or roots[0].get("mediaType") not in INDEX_TYPES:
-            raise OCIArtifactError("OCI root index differs from the exact factual subject")
-        visit(roots[0])
-        index = blob(roots[0], True)
+        root = json_member("index.json")
+        roots = root.get("manifests", [])
+        layout = expected.get("root_layout", "nested_index")
+        if layout == "direct_manifest":
+            # BuildKit's single-platform OCI layout puts the manifest directly in
+            # index.json. Bind those exact root bytes instead of inventing a blob.
+            with archive.extractfile(members["index.json"]) as stream:
+                root_digest = "sha256:" + sha256_stream(stream)
+            if (root_digest != expected.get("index_digest") or root.get("schemaVersion") != 2
+                    or root.get("mediaType") not in INDEX_TYPES or len(roots) != 1
+                    or roots[0].get("mediaType") not in MANIFEST_TYPES):
+                raise OCIArtifactError("Direct OCI root index differs from the exact factual subject")
+            visit(roots[0])
+            index = root
+        elif layout == "nested_index":
+            if len(roots) != 1 or roots[0].get("digest") != expected.get("index_digest") or roots[0].get("mediaType") not in INDEX_TYPES:
+                raise OCIArtifactError("OCI root index differs from the exact factual subject")
+            visit(roots[0])
+            index = blob(roots[0], True)
+        else:
+            raise OCIArtifactError("Unknown exact OCI root layout")
         platform = [d for d in index["manifests"] if d.get("digest") == expected.get("platform_manifest_digest")]
         if len(platform) != 1 or platform[0].get("platform") != {"os": expected.get("os", "linux"), "architecture": expected.get("architecture", "amd64")} or platform[0].get("mediaType") not in MANIFEST_TYPES:
             raise OCIArtifactError("Exact expected runtime platform is absent")

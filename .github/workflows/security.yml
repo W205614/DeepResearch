@@ -28,11 +28,21 @@ jobs:
           --source-sha "$EXPECTED_SOURCE_SHA"
         env:
           EXPECTED_SOURCE_SHA: ${{ github.sha }}
-      - name: Apply only pinned independent source2 technical facts; keep baseline HIGH,CRITICAL gate
+      - name: Preserve the original independently reviewed source2 verdict
+        id: source_original
+        continue-on-error: true
         run: >-
           python scripts/check_fs_source_applicability.py
           --scan .cache/eval/source-fs/raw.json
           --scan-receipt .cache/eval/source-fs/completion.json
+          --output .cache/eval/source-fs-original-verdict.json
+      - name: Recompute the original verdict and apply only the new exact candidate source2 facts
+        if: always() && steps.source_scan.outcome == 'success'
+        run: >-
+          python scripts/check_grafana_candidate_source_exact2.py
+          --scan .cache/eval/source-fs/raw.json
+          --scan-receipt .cache/eval/source-fs/completion.json
+          --original-verdict .cache/eval/source-fs-original-verdict.json
           --output .cache/eval/source-fs-verdict.json
       - name: Convert original complete source scan even when its gate fails
         if: always() && hashFiles('.cache/eval/source-fs/raw.json') != ''
@@ -50,6 +60,7 @@ jobs:
             .cache/eval/source-fs/scanner-version.log
             .cache/eval/source-fs/stdout.private.log
             .cache/eval/source-fs/stderr.private.log
+            .cache/eval/source-fs-original-verdict.json
             .cache/eval/source-fs-verdict.json
             trivy-fs.sarif
           if-no-files-found: error
@@ -187,6 +198,7 @@ jobs:
           python scripts/collect_tempo_evidence.py --image deepresearch-scan-tempo:ci
           --output-dir .cache/eval/tempo-native
       - uses: aquasecurity/trivy-action@v0.36.0
+        if: matrix.name != 'tempo'
         with:
           image-ref: deepresearch-scan-${{ matrix.name }}:ci
           severity: HIGH,CRITICAL
@@ -194,6 +206,21 @@ jobs:
           version: v0.75.0
           format: json
           output: application-image.json
+      - uses: aquasecurity/setup-trivy@3fb12ec12f41e471780db15c232d5dd185dcb514
+        if: matrix.name == 'tempo'
+        with: { version: v0.75.0, cache: true }
+      - name: Preserve complete fresh Tempo findings for exact technical review
+        if: matrix.name == 'tempo'
+        run: >-
+          trivy image --scanners vuln,secret --list-all-pkgs
+          --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --exit-code 0 --timeout 10m
+          --format json --output application-image.json deepresearch-scan-tempo:ci
+      - name: Apply only the independently reviewed exact Tempo ELF applicability fact
+        if: matrix.name == 'tempo'
+        run: >-
+          python scripts/check_tempo_app_exact1.py --scan application-image.json
+          --materials-dir .cache/eval/tempo-native --scanner-exit-code 0
+          --output .cache/eval/tempo-app1-disposition.json
       - name: Verify actual native JVM bytes and native/full advisory coverage
         if: matrix.native_jvm_profile != ''
         run: python scripts/check_native_jvm.py --image "$SCAN_IMAGE" --profile "$JVM_PROFILE" --output-dir .cache/eval/native-jvm
@@ -208,6 +235,7 @@ jobs:
             application-image.json
             .cache/eval/native-jvm/*.json
             .cache/eval/tempo-native/
+            .cache/eval/tempo-app1-disposition.json
   source-analysis:
     runs-on: ubuntu-latest
     permissions: { contents: read, security-events: write }
@@ -244,117 +272,3 @@ jobs:
         with:
           name: bootstrap-source-security-${{ github.sha }}
           path: .cache/codeql-bootstrap/*.sarif
-  grafana-maintenance-candidate-materials:
-    # Review material only. The approved runtime, all existing security gates and
-    # the human authorization are unchanged until a new exact subject is approved.
-    runs-on: ubuntu-latest
-    timeout-minutes: 90
-    permissions: { contents: read, actions: read }
-    steps:
-      - uses: actions/checkout@v7
-        with: { fetch-depth: 0 }
-      - uses: actions/setup-go@v6
-        with: { go-version: '1.27.3', cache: false }
-      - name: Reuse only byte-identical ancestor candidate compile inputs
-        id: candidate_reuse
-        run: python scripts/reuse_grafana_candidate.py --output-dir .cache/eval/grafana-candidate-existing
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-      - name: Build a complete separate OCI candidate without inherited approval
-        if: steps.candidate_reuse.outputs.reused != 'true'
-        run: |
-          mkdir -p .cache/eval
-          docker buildx create --name dr-grafana-maintenance --driver docker-container --use
-          docker buildx build --platform linux/amd64 --provenance=false --sbom=false \
-            --file deployment/docker/Dockerfile.grafana-security \
-            --tag deepresearch-grafana-candidate:ci \
-            --metadata-file .cache/eval/grafana-candidate-build.json \
-            --output type=oci,dest=.cache/eval/grafana-candidate.oci.tar .
-      - name: Load the complete candidate for fresh inspection
-        run: docker load --input .cache/eval/grafana-candidate.oci.tar
-      - uses: aquasecurity/setup-trivy@3fb12ec12f41e471780db15c232d5dd185dcb514
-        with: { version: v0.75.0, cache: true }
-      - name: Keep complete current vulnerability and secret findings for independent review
-        run: >-
-          trivy image --scanners vuln,secret --list-all-pkgs
-          --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --exit-code 0 --timeout 10m
-          --format json --output .cache/eval/grafana-candidate-raw.json
-          deepresearch-grafana-candidate:ci
-      - name: Reject every secret finding before collecting review materials
-        id: candidate_secrets
-        run: >-
-          python scripts/check_image_secrets.py
-          --scan .cache/eval/grafana-candidate-raw.json --scanner-exit-code 0
-          --output .cache/eval/grafana-candidate-secret-gate.json
-      - name: Collect full native inventories and actual ELF identities without granting a disposition
-        run: >-
-          python scripts/collect_grafana_candidate.py
-          --image deepresearch-grafana-candidate:ci
-          --archive .cache/eval/grafana-candidate.oci.tar
-          --scan .cache/eval/grafana-candidate-raw.json
-          --output-dir .cache/eval/grafana-candidate-reports
-      - name: Split the unapproved OCI into independently checked bounded transport parts
-        if: always() && steps.candidate_secrets.outcome == 'success'
-        run: >-
-          python scripts/split_candidate_oci.py --archive .cache/eval/grafana-candidate.oci.tar
-          --output-dir .cache/eval/grafana-candidate-parts
-      - uses: actions/upload-artifact@v6
-        if: always()
-        with:
-          name: grafana-maintenance-candidate-${{ github.sha }}
-          path: |
-            .cache/eval/grafana-candidate-build.json
-            .cache/eval/grafana-candidate-raw.json
-            .cache/eval/grafana-candidate-secret-gate.json
-            .cache/eval/grafana-candidate-reports/
-            .cache/eval/grafana-candidate-existing/reuse.json
-            .cache/eval/grafana-candidate-parts/parts-manifest.json
-          retention-days: 7
-          compression-level: 0
-          if-no-files-found: error
-      - uses: actions/upload-artifact@v6
-        if: always() && hashFiles('.cache/eval/grafana-candidate-parts/group-000/*') != ''
-        with: { name: 'grafana-candidate-oci-${{ github.sha }}-group-000', path: '.cache/eval/grafana-candidate-parts/group-000/', retention-days: 7, compression-level: 0 }
-      - uses: actions/upload-artifact@v6
-        if: always() && hashFiles('.cache/eval/grafana-candidate-parts/group-001/*') != ''
-        with: { name: 'grafana-candidate-oci-${{ github.sha }}-group-001', path: '.cache/eval/grafana-candidate-parts/group-001/', retention-days: 7, compression-level: 0 }
-      - uses: actions/upload-artifact@v6
-        if: always() && hashFiles('.cache/eval/grafana-candidate-parts/group-002/*') != ''
-        with: { name: 'grafana-candidate-oci-${{ github.sha }}-group-002', path: '.cache/eval/grafana-candidate-parts/group-002/', retention-days: 7, compression-level: 0 }
-      - uses: actions/upload-artifact@v6
-        if: always() && hashFiles('.cache/eval/grafana-candidate-parts/group-003/*') != ''
-        with: { name: 'grafana-candidate-oci-${{ github.sha }}-group-003', path: '.cache/eval/grafana-candidate-parts/group-003/', retention-days: 7, compression-level: 0 }
-      - uses: actions/upload-artifact@v6
-        if: always() && hashFiles('.cache/eval/grafana-candidate-parts/group-004/*') != ''
-        with: { name: 'grafana-candidate-oci-${{ github.sha }}-group-004', path: '.cache/eval/grafana-candidate-parts/group-004/', retention-days: 7, compression-level: 0 }
-      - uses: actions/upload-artifact@v6
-        if: always() && hashFiles('.cache/eval/grafana-candidate-parts/group-005/*') != ''
-        with: { name: 'grafana-candidate-oci-${{ github.sha }}-group-005', path: '.cache/eval/grafana-candidate-parts/group-005/', retention-days: 7, compression-level: 0 }
-      - uses: actions/upload-artifact@v6
-        if: always() && hashFiles('.cache/eval/grafana-candidate-parts/group-006/*') != ''
-        with: { name: 'grafana-candidate-oci-${{ github.sha }}-group-006', path: '.cache/eval/grafana-candidate-parts/group-006/', retention-days: 7, compression-level: 0 }
-      - uses: actions/upload-artifact@v6
-        if: always() && hashFiles('.cache/eval/grafana-candidate-parts/group-007/*') != ''
-        with: { name: 'grafana-candidate-oci-${{ github.sha }}-group-007', path: '.cache/eval/grafana-candidate-parts/group-007/', retention-days: 7, compression-level: 0 }
-  grafana-official-backend-profiles:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    permissions: { contents: read }
-    strategy:
-      fail-fast: false
-      matrix: { backend: [tempo, prometheus, zipkin] }
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-go@v6
-        with: { go-version: '1.27.3', cache: false }
-      - name: Collect exact official source graphs and compare every native dependency
-        run: >-
-          python deployment/vendors/grafana-security/capture_official_profiles.py
-          --only "${{ matrix.backend }}" --output .cache/eval/grafana-official-profiles
-      - uses: actions/upload-artifact@v6
-        if: always()
-        with:
-          name: grafana-official-profile-${{ matrix.backend }}-${{ github.sha }}
-          path: .cache/eval/grafana-official-profiles/
-          retention-days: 7
-          if-no-files-found: error

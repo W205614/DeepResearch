@@ -1,0 +1,87 @@
+{
+  "Id": "sha256:49e6d5ab6ec252e4b748b986ef5a3a7795b320a4c693796da15043ae21ca471a",
+  "RepoTags": [
+    "deepresearch-grafana-candidate:ci"
+  ],
+  "RepoDigests": [
+    "deepresearch-grafana-candidate@sha256:49e6d5ab6ec252e4b748b986ef5a3a7795b320a4c693796da15043ae21ca471a"
+  ],
+  "Comment": "buildkit.dockerfile.v0",
+  "Created": "2026-10-28T10:53:13.819804654Z",
+  "Config": {
+    "User": "472",
+    "ExposedPorts": {
+      "3000/tcp": {}
+    },
+    "Env": [
+      "PATH=/usr/share/grafana/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "GF_PATHS_CONFIG=/etc/grafana/grafana.ini",
+      "GF_PATHS_DATA=/var/lib/grafana",
+      "GF_PATHS_HOME=/usr/share/grafana",
+      "GF_PATHS_LOGS=/var/log/grafana",
+      "GF_PATHS_PLUGINS=/var/lib/grafana/plugins",
+      "GF_PATHS_PROVISIONING=/etc/grafana/provisioning"
+    ],
+    "Entrypoint": [
+      "/run.sh"
+    ],
+    "WorkingDir": "/usr/share/grafana",
+    "Labels": {
+      "maintainer": "Grafana Labs <hello@grafana.com>",
+      "org.opencontainers.image.source": "https://github.com/grafana/grafana"
+    }
+  },
+  "Architecture": "amd64",
+  "Os": "linux",
+  "Size": 859323480,
+  "RootFS": {
+    "Type": "layers",
+    "Layers": [
+      "sha256:74d97c428c51a828f9051a7a40a53ff1fc99e54fc30323ce36760701b0b7f711",
+      "sha256:6f23e066a445990d27aa3b46f42e3f6fba62add3508978aee1c54dfdd6e66dc6",
+      "sha256:a418f5af3f7c57ac18bf1740a41d393906acf56a858fb5c07fb6294c4f05c460",
+      "sha256:8c08d2f57c3fb2cd6912771cf29b87b7dd8c10f65e3fa163b60f651788c1efe6",
+      "sha256:fcf20017e4fae0a2073500f22ee225b16d7405085df5aa37215f4a73f6aa3bcf",
+      "sha256:e37c8b6a0c3071ed1570654bd5c971f9ca924f6eb6a14f3fbfa84fd62ac84091",
+      "sha256:04dcdc387f96971ff1a29027d3f468073938ab31e93bb308b83b13e600ad28e5",
+      "sha256:5ed8daca7d5df36951edd502643150f1bac07fb9b85911a1ad4ae4d795644de5",
+      "sha256:099824293ac421537396cd4cc1ed03f5a8753359f7729dd294d4723a93eddf7e",
+      "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+      "sha256:f728a00de809ca5f6a9d4a428c4d8269a8a367654f6c8f5197303d66cb8e6640",
+      "sha256:aa8dfb4e0f9b63ab849158cda0dfe15a7ba3f2abd4275b5daed2fb9b653431e7",
+      "sha256:5fcbfa93ddfd98c9d498d04c11f28a73db750f5835ad50ab8ae372d244f96690",
+      "sha256:6086049b8f9494692f84175c3112a4f1106cd15e02f293b4e9e53a54362f846a",
+      "sha256:30409b2fb64600cca9e9efed8eab14bed3984014476010b140c38646770a05d4",
+      "sha256:b7ee35fcc20b8d80a5a2591d6dc1e62a002e4055490dc089043e8481f33ff50a",
+      "sha256:0500c3deb5ea0c697321cf63b7c08c0528d0839031b2ee3c228f0c699bcdf202",
+      "sha256:c3496668a3723a5e8cc64a5a090c35e6731d47e0c08a61bab4699d851cd38e26",
+      "sha256:c361e16a9b8921dcc4b3bb87e5d7c1ca8e04de33581124a4d4898e193ffae24b",
+      "sha256:f92be763f8fc24f5ef0b144cadfb92032fe276fd94274ccf196d776f2f5fb62c",
+      "sha256:38a47ebf81224d66ea93a9e2b1359f666bc13e61a614c03a06cccf7bb49cbc20",
+      "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+      "sha256:3b3dac592da55f427f5c93f61e6dfa2fa20c580e89cd3fe602a29a9fd7d6109a",
+      "sha256:dfcd21c9642b78eafeb435718e37a7a8cef125307920d043ef2b85b76db91b1e",
+      "sha256:33e8fae37346e8126d2180fac3ac2921ced509e0d1d1f15acc8300c68636759c",
+      "sha256:090749b4fbe8aca3a8de9aad8c05652163ebc33584e0eebcb7c2d3ec2689653d",
+      "sha256:b309510364c5fa543e2dc07afaaa10ef2dbf6734a8cf402e57ad929eeebc7f91",
+      "sha256:671d88015feb387e9ed32e27a20645b4b573163bad86014e5734b7b6c9a4481f",
+      "sha256:3141309fb7055c3839fd1c3a81d9fe2a2e8dbaceb347c3f676fbc853e29b276b",
+      "sha256:a71526a3e913af3d1fec9a5b3f45eb7457c36146d5c9480be8e77d3153e5fb10",
+      "sha256:d5f71fba2175bf4a2d3ee5c0c466119b23d0058ce4c68a1a8739c262a4da92a9",
+      "sha256:9afb540d47146468373378f6a04131f5f13feea7f22eb8d03b0eb2fb9c9d3db5"
+    ]
+  },
+  "Metadata": {
+    "LastTagTime": "2026-10-28T12:08:24.61363697Z"
+  },
+  "Descriptor": {
+    "mediaType": "application/vnd.oci.image.manifest.v1+json",
+    "digest": "sha256:49e6d5ab6ec252e4b748b986ef5a3a7795b320a4c693796da15043ae21ca471a",
+    "size": 6384,
+    "annotations": {
+      "io.containerd.image.name": "docker.io/library/deepresearch-grafana-candidate:ci",
+      "org.opencontainers.image.created": "2026-10-28T10:53:31Z",
+      "org.opencontainers.image.ref.name": "ci"
+    }
+  }
+}

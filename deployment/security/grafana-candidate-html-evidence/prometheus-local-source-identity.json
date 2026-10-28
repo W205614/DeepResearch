@@ -1,0 +1,94 @@
+{
+  "schema": "grafana-prometheus-local-source-module-identity-v1",
+  "actor": "grafana_candidate_agent",
+  "actor_kind": "automated_independent_agent",
+  "human_risk_acceptance": false,
+  "new_candidate_approved": false,
+  "row": {
+    "target": "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64",
+    "module": "./pkg/promlib",
+    "source_commit": "7d5bbc86bd38f95ca5143c8490d1204787cc391b",
+    "source_archive_sha256": "e325f88b8efb51d21180192a50fb390a17ba46af47e6adeb247957c6dc0cca92",
+    "source_go_mod": "deployment/security/grafana-candidate-html-evidence/prometheus-promlib.go.mod",
+    "source_go_mod_sha256": "604446c17eb82c2186974f51498d1dd4c5e5e44269110f8d2a1884c60253ee6a",
+    "module_directive": "module github.com/grafana/grafana-prometheus-datasource/pkg/promlib",
+    "replace_file": "deployment/security/grafana-candidate-html-evidence/prometheus-root.go.mod",
+    "replace_file_sha256": "09bc1a522f995cbd665e07c2dc6280cb3ce6f55178d779efac0b46efdc5ca1db",
+    "replace_directive": "replace github.com/grafana/grafana-prometheus-datasource/pkg/promlib => ./pkg/promlib",
+    "elf_sha256": "3fb8397ce2284b9e0851e19092ba5748ed92bfbc4caadeec66dab1d0692267a1"
+  },
+  "source_archive": {
+    "kind": "Go parent module ZIP authenticated by default Go checksum database",
+    "module": "github.com/grafana/grafana-prometheus-datasource",
+    "version": "v0.0.0-20261022085610-7d5bbc86bd38",
+    "sha256": "e325f88b8efb51d21180192a50fb390a17ba46af47e6adeb247957c6dc0cca92",
+    "sum": "h1:St/J0PCRh/fBH6Md10NF6vcVsreuTXWxoj9oj/SSgpE=",
+    "go_mod_sum": "h1:t6W9urOYo+ydsQ54sqysRglz/vn3I+j79zEmwodeO44=",
+    "contains_nested_promlib_module": false,
+    "nested_source_identity_basis": "The complete pkg/promlib source tree belongs to the exact VCS commit reported by actual native build settings and source metadata; its independent reconstructed Git tree equals the cloud git rev-parse HEAD:pkg/promlib result. The parent module ZIP does not contain that nested module."
+  },
+  "verified_facts": {
+    "actual_native_dependency": {
+      "Path": "github.com/grafana/grafana-prometheus-datasource/pkg/promlib",
+      "Version": "v0.0.22",
+      "Replace": {
+        "Path": "./pkg/promlib",
+        "Version": "(devel)"
+      }
+    },
+    "complete_graph_dependency": {
+      "Path": "github.com/grafana/grafana-prometheus-datasource/pkg/promlib",
+      "Version": "v0.0.22",
+      "Replace": {
+        "Path": "./pkg/promlib",
+        "Dir": "/home/runner/work/DeepResearch/DeepResearch/.cache/eval/grafana-official-profiles/prometheus/source/pkg/promlib",
+        "GoMod": "/home/runner/work/DeepResearch/DeepResearch/.cache/eval/grafana-official-profiles/prometheus/source/pkg/promlib/go.mod",
+        "GoVersion": "1.27.3"
+      },
+      "Dir": "/home/runner/work/DeepResearch/DeepResearch/.cache/eval/grafana-official-profiles/prometheus/source/pkg/promlib",
+      "GoMod": "/home/runner/work/DeepResearch/DeepResearch/.cache/eval/grafana-official-profiles/prometheus/source/pkg/promlib/go.mod",
+      "GoVersion": "1.27.3"
+    },
+    "complete_graph_local_package_count": 11,
+    "local_source_tree": {
+      "path": "pkg/promlib",
+      "source_commit": "7d5bbc86bd38f95ca5143c8490d1204787cc391b",
+      "expected_git_tree_sha1": "6dd189a97f1b9f388049740ccfc1fd9e0fce1eb8",
+      "independently_reconstructed_git_tree_sha1": "6dd189a97f1b9f388049740ccfc1fd9e0fce1eb8",
+      "reconstruction": "Git blob/tree object hashing over all persisted files, file mode100644 and directory mode40000; the reconstructed complete tree equals the cloud Git tree."
+    },
+    "actual_root_go_mod_equals_parent_module_zip_entry": true,
+    "portable_files_equal_actual_downloaded_source_bytes": true,
+    "raw_missing_version_unchanged": true,
+    "candidate_trivy_raw_sha256": "4ceaee194febf104be2f50c06c7c51338530e6dfb0ee7b11f71f413bb1861ab8",
+    "old_trivy_raw_sha256": "7878aa2b4adf18906fd5216bcb6983189db3842646afb6e7480e31942a62cf58",
+    "old_and_candidate_trivy_package_record_literal_bytes_equal": true,
+    "raw_package_record_literal_sha256": "fb57738a7b9a7c4442a56856e3103d4624efca34131cb76f12def7acf0a91dba",
+    "raw_package_record_literal_bytes": 418,
+    "raw_package_record": {
+      "ID": "./pkg/promlib",
+      "Name": "./pkg/promlib",
+      "Identifier": {
+        "UID": "f32a500d384c5d70"
+      },
+      "Layer": {
+        "Digest": "sha256:6dab9fb0111ab39179faa7732ef98a66d7fb1af2d27957dc2a3bdda82817b177",
+        "DiffID": "sha256:5ed8daca7d5df36951edd502643150f1bac07fb9b85911a1ad4ae4d795644de5"
+      },
+      "AnalyzedBy": "gobinary"
+    },
+    "missing_version_preserved": true,
+    "declared_module_version_is_not_substituted_for_missing_Trivy_version": true,
+    "old_source_proof_is_not_reused": {
+      "source_commit": "6d21418acde6ce31c9f7a6418a88758842a881bb",
+      "source_commit_equals_actual": false,
+      "source_go_mod": "deployment/security/grafana-fixed-evidence/promlib-source-go.mod",
+      "source_go_mod_sha256": "53865cd11eb55b25d07708c71b6568d4c01ec01ffad1a0a264651d980e25b3cd",
+      "source_go_mod_equals_actual_bytes": false,
+      "replace_file": "deployment/security/grafana-fixed-evidence/prometheus-source-go.mod",
+      "replace_file_sha256": "fd23f133aec7529f83f1d867168777b9e5520f3ad37fe4c1da24465c681e83be",
+      "replace_file_equals_actual_bytes": false
+    }
+  },
+  "boundary": "This is one portable missing-version inventory identity for the exact ELF and local replace mapping. It does not inherit an old source commit, supply a fabricated semantic version, resolve any new vulnerability, or grant human authorization."
+}

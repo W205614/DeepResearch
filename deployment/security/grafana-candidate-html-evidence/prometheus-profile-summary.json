@@ -1,0 +1,47 @@
+{
+  "name": "prometheus",
+  "status": "materials_consistent",
+  "new_candidate_approved": false,
+  "CVE_disposition": "NOT_DECIDED",
+  "input_native_ELF_sha256": "3fb8397ce2284b9e0851e19092ba5748ed92bfbc4caadeec66dab1d0692267a1",
+  "native_ELF_bytes_read_during_this_collection": false,
+  "source_commit": "7d5bbc86bd38f95ca5143c8490d1204787cc391b",
+  "source_module_h1": "h1:St/J0PCRh/fBH6Md10NF6vcVsreuTXWxoj9oj/SSgpE=",
+  "source_go_mod_h1": "h1:t6W9urOYo+ydsQ54sqysRglz/vn3I+j79zEmwodeO44=",
+  "git_module_zip_members_compared": 379,
+  "module_zip_sha256": "e325f88b8efb51d21180192a50fb390a17ba46af47e6adeb247957c6dc0cca92",
+  "complete_graph_sha256": "8eaf59a3faabf911c8cb6cfdef41a430da728181ecdf3b7ad56b9258539519b0",
+  "native_buildinfo_sha256": "e9a264e1404efbb888d6c87e2889f2e088b6a40a61cc71262a10dd734f367c33",
+  "facts": {
+    "package_count": 723,
+    "module_count_including_main": 104,
+    "native_dependency_count": 103,
+    "complete_effective_dependencies_equal": true,
+    "local_replacements": [
+      {
+        "module": "github.com/grafana/grafana-prometheus-datasource/pkg/promlib",
+        "path": "pkg/promlib",
+        "source_commit": "7d5bbc86bd38f95ca5143c8490d1204787cc391b",
+        "native_replace": {
+          "Path": "./pkg/promlib",
+          "Version": "(devel)"
+        },
+        "graph_replace": {
+          "Path": "./pkg/promlib",
+          "Dir": "/home/runner/work/DeepResearch/DeepResearch/.cache/eval/grafana-official-profiles/prometheus/source/pkg/promlib",
+          "GoMod": "/home/runner/work/DeepResearch/DeepResearch/.cache/eval/grafana-official-profiles/prometheus/source/pkg/promlib/go.mod",
+          "GoVersion": "1.27.3"
+        },
+        "local_go_mod_sha256": "604446c17eb82c2186974f51498d1dd4c5e5e44269110f8d2a1884c60253ee6a"
+      }
+    ],
+    "html_packages": []
+  },
+  "source_go_mod_sha256_before_after": {
+    "devenv/prometheus/high-cardinality/go.mod": "12f1e16b6298372c470425cd44b6998067309be41e37c944067dd8d47d993170",
+    "devenv/prometheus/utf8/go.mod": "e2b22bd9585d3b6e9685d3f2435f3ef4dcefab1e4201169b69659733a3696cc9",
+    "go.mod": "09bc1a522f995cbd665e07c2dc6280cb3ce6f55178d779efac0b46efdc5ca1db",
+    "pkg/promlib/go.mod": "604446c17eb82c2186974f51498d1dd4c5e5e44269110f8d2a1884c60253ee6a"
+  },
+  "allowed_go_sum_changes": []
+}

@@ -1,0 +1,210 @@
+{
+  "commands": [
+    {
+      "label": "source-module",
+      "command": [
+        "go",
+        "mod",
+        "download",
+        "-json",
+        "github.com/grafana/grafana-prometheus-datasource@v0.0.0-20261022085610-7d5bbc86bd38"
+      ],
+      "cwd": "/home/runner/work/DeepResearch/DeepResearch/.cache/eval/grafana-official-profiles/prometheus",
+      "status": 0,
+      "duration_seconds": 0.551
+    },
+    {
+      "label": "git-init",
+      "command": [
+        "git",
+        "-c",
+        "http.sslVerify=true",
+        "-c",
+        "core.autocrlf=false",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "init"
+      ],
+      "cwd": "/home/runner/work/DeepResearch/DeepResearch/.cache/eval/grafana-official-profiles/prometheus/source",
+      "status": 0,
+      "duration_seconds": 0.004
+    },
+    {
+      "label": "git-origin",
+      "command": [
+        "git",
+        "-c",
+        "http.sslVerify=true",
+        "-c",
+        "core.autocrlf=false",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "remote",
+        "add",
+        "origin",
+        "https://github.com/grafana/grafana-prometheus-datasource.git"
+      ],
+      "cwd": "/home/runner/work/DeepResearch/DeepResearch/.cache/eval/grafana-official-profiles/prometheus/source",
+      "status": 0,
+      "duration_seconds": 0.002
+    },
+    {
+      "label": "git-fetch",
+      "command": [
+        "git",
+        "-c",
+        "http.sslVerify=true",
+        "-c",
+        "core.autocrlf=false",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "fetch",
+        "--depth=1",
+        "--no-tags",
+        "origin",
+        "7d5bbc86bd38f95ca5143c8490d1204787cc391b"
+      ],
+      "cwd": "/home/runner/work/DeepResearch/DeepResearch/.cache/eval/grafana-official-profiles/prometheus/source",
+      "status": 0,
+      "duration_seconds": 0.494
+    },
+    {
+      "label": "git-checkout",
+      "command": [
+        "git",
+        "-c",
+        "http.sslVerify=true",
+        "-c",
+        "core.autocrlf=false",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "checkout",
+        "--detach",
+        "FETCH_HEAD"
+      ],
+      "cwd": "/home/runner/work/DeepResearch/DeepResearch/.cache/eval/grafana-official-profiles/prometheus/source",
+      "status": 0,
+      "duration_seconds": 0.052
+    },
+    {
+      "label": "git-revision",
+      "command": [
+        "git",
+        "-c",
+        "http.sslVerify=true",
+        "-c",
+        "core.autocrlf=false",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/home/runner/work/DeepResearch/DeepResearch/.cache/eval/grafana-official-profiles/prometheus/source",
+      "status": 0,
+      "duration_seconds": 0.002
+    },
+    {
+      "label": "git-initial-status",
+      "command": [
+        "git",
+        "-c",
+        "http.sslVerify=true",
+        "-c",
+        "core.autocrlf=false",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "status",
+        "--porcelain",
+        "--untracked-files=no"
+      ],
+      "cwd": "/home/runner/work/DeepResearch/DeepResearch/.cache/eval/grafana-official-profiles/prometheus/source",
+      "status": 0,
+      "duration_seconds": 0.036
+    },
+    {
+      "label": "local-tree-promlib",
+      "command": [
+        "git",
+        "-c",
+        "http.sslVerify=true",
+        "-c",
+        "core.autocrlf=false",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "rev-parse",
+        "HEAD:pkg/promlib"
+      ],
+      "cwd": "/home/runner/work/DeepResearch/DeepResearch/.cache/eval/grafana-official-profiles/prometheus/source",
+      "status": 0,
+      "duration_seconds": 0.002
+    },
+    {
+      "label": "source-lock-inventory",
+      "command": [
+        "git",
+        "-c",
+        "http.sslVerify=true",
+        "-c",
+        "core.autocrlf=false",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "ls-files",
+        "--",
+        "go.mod",
+        "go.sum",
+        "**/go.mod",
+        "**/go.sum"
+      ],
+      "cwd": "/home/runner/work/DeepResearch/DeepResearch/.cache/eval/grafana-official-profiles/prometheus/source",
+      "status": 0,
+      "duration_seconds": 0.002
+    },
+    {
+      "label": "production-graph-1",
+      "command": [
+        "go",
+        "list",
+        "-deps",
+        "-mod=readonly",
+        "-tags=arrow_json_stdlib",
+        "-json",
+        "./pkg"
+      ],
+      "cwd": "/home/runner/work/DeepResearch/DeepResearch/.cache/eval/grafana-official-profiles/prometheus/source",
+      "status": 0,
+      "duration_seconds": 11.424
+    },
+    {
+      "label": "git-final-status",
+      "command": [
+        "git",
+        "-c",
+        "http.sslVerify=true",
+        "-c",
+        "core.autocrlf=false",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "status",
+        "--porcelain",
+        "--untracked-files=no"
+      ],
+      "cwd": "/home/runner/work/DeepResearch/DeepResearch/.cache/eval/grafana-official-profiles/prometheus/source",
+      "status": 0,
+      "duration_seconds": 0.004
+    }
+  ],
+  "environment": {
+    "GOTOOLCHAIN": "local",
+    "GOWORK": "off",
+    "GOPROXY": "https://proxy.golang.org",
+    "GOSUMDB": "sum.golang.org",
+    "GOPRIVATE": "",
+    "GONOPROXY": "",
+    "GONOSUMDB": "",
+    "GOINSECURE": "",
+    "GOOS": "linux",
+    "GOARCH": "amd64",
+    "GOAMD64": "v1",
+    "CGO_ENABLED": "0"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schema": "grafana-candidate-complete-production-graph-v1",
+  "target": "loki",
+  "package": "./pkg",
+  "command": [
+    "go",
+    "list",
+    "-deps",
+    "-json",
+    "-mod=readonly",
+    "./pkg"
+  ],
+  "compiler": "go version go1.27.3 linux/amd64",
+  "go_environment": {
+    "CGO_ENABLED": "0",
+    "GOAMD64": "v1",
+    "GOARCH": "amd64",
+    "GOFLAGS": "-p=2",
+    "GOOS": "linux",
+    "GOWORK": "off"
+  },
+  "completed": true,
+  "exit_code": 0,
+  "raw_bytes": 5379115,
+  "raw_sha256": "cb392bfe729fbcad448978cce7e0f4faadc78285ff6ac6432444d578135e0227",
+  "compressed_bytes": 351611,
+  "compressed_sha256": "9d421e63541a9a3e615375e80243bffd5385a3ab30f87f5ca541bb8b08807ca8",
+  "package_count": 1078,
+  "module_count": 204,
+  "actual_lock_sha256": {
+    "go.mod": "b6091ea96c703b9d274e3d848f26914a6f2024d97e834203784ee827d6dbc706",
+    "go.sum": "0515779cd971ad2ec387799b4e6bd804cc05bf8f3c2ae446b2d03f6fdbc47eb3"
+  },
+  "raw_graph_modified_or_filtered": false,
+  "boundary": "Build evidence only; no vulnerability disposition, artifact approval or deployment."
+}

@@ -1,0 +1,32 @@
+name: Publish explicitly authorized Grafana artifact
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - deployment/security/grafana-candidate-authorization.json
+      - scripts/publish_grafana_candidate.py
+      - .github/workflows/publish-grafana-candidate.yml
+  workflow_dispatch:
+
+jobs:
+  publish-exact-authorized-oci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions: { contents: write, actions: read }
+    steps:
+      - uses: actions/checkout@v7
+        with: { fetch-depth: 0 }
+      - name: Verify new human authorization, exact inputs and the complete existing OCI before publication
+        run: python scripts/publish_grafana_candidate.py
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: grafana-exact28-publication-${{ github.sha }}
+          path: |
+            .cache/eval/grafana-publication/transport.json
+            .cache/eval/grafana-publication/publication.json
+          if-no-files-found: error
+          retention-days: 7
