@@ -1,9 +1,11 @@
 """Exact28 loader boundaries using tiny bytes, mocked HTTPS and Docker only."""
 from copy import deepcopy
 from io import BytesIO
+import gzip
 import hashlib
 import json
 from pathlib import Path
+import tarfile
 from types import SimpleNamespace
 from urllib.error import URLError
 
@@ -228,7 +230,7 @@ def test_explicit_local_archive_still_requires_authority_transport_and_full_oci(
 
     actual = {'Id': f.binding['config_digest']}
     monkeypatch.setattr(fetch, 'verify_oci_archive', verify)
-    monkeypatch.setattr(fetch, 'load_image', lambda *a: events.append('load') or actual)
+    monkeypatch.setattr(fetch, 'load_image', lambda *a, **k: events.append('load') or actual)
     assert fetch.main(['--archive', str(archive)]) == 0
     result = json.loads((f.root / '.cache/eval/approved-grafana-load.json').read_text())
     inspection = json.loads(Path(result['inspection']).read_text())
@@ -255,7 +257,7 @@ def test_verification_or_authority_change_blocks_docker_after_bytes_arrive(fixtu
         return {}
 
     monkeypatch.setattr(fetch, 'verify_oci_archive', verify)
-    monkeypatch.setattr(fetch, 'load_image', lambda *a: pytest.fail('must not reach Docker'))
+    monkeypatch.setattr(fetch, 'load_image', lambda *a, **k: pytest.fail('must not reach Docker'))
     assert fetch.main([]) == 1
     assert f.destination.read_bytes() == f.data
 
@@ -270,7 +272,7 @@ def test_default_main_rechecks_live_release_after_full_oci_before_docker(fixture
         return {}
 
     monkeypatch.setattr(fetch, 'verify_oci_archive', verify)
-    monkeypatch.setattr(fetch, 'load_image', lambda *a: pytest.fail('release became unpublished'))
+    monkeypatch.setattr(fetch, 'load_image', lambda *a, **k: pytest.fail('release became unpublished'))
     assert fetch.main([]) == 1
     assert events == ['oci'] and len(f.metadata_calls) == 2
 
@@ -319,3 +321,170 @@ def test_result_cannot_overwrite_source_or_use_old_tag(fixture, monkeypatch):
     assert f.transport_path.read_bytes() == original and not f.metadata_calls
     with pytest.raises(fetch.FetchError, match='namespace'):
         fetch.load_image(f.destination, f.binding, 'deepresearch-approved-grafana:20261026')
+
+
+@pytest.fixture
+def compressed_oci(tmp_path):
+    """Two real gzip layers exercise identical compressed payloads and DiffIDs."""
+    blobs = {}
+
+    def add(raw, media):
+        digest = 'sha256:' + sha(raw)
+        blobs['blobs/sha256/' + digest[7:]] = raw
+        return {'digest': digest, 'size': len(raw), 'mediaType': media}
+
+    layers, diffs = [], []
+    for name, data in [('usr/bin/app', b'expected ELF'), ('etc/test.conf', b'fixture configuration')]:
+        stream = BytesIO()
+        with tarfile.open(fileobj=stream, mode='w') as archive:
+            member = tarfile.TarInfo(name)
+            member.size = len(data)
+            archive.addfile(member, BytesIO(data))
+        raw = stream.getvalue()
+        diffs.append('sha256:' + sha(raw))
+        layers.append(add(gzip.compress(raw, mtime=0), 'application/vnd.oci.image.layer.v1.tar+gzip'))
+    config = add(json.dumps({'os': 'linux', 'architecture': 'amd64',
+                            'rootfs': {'type': 'layers', 'diff_ids': diffs}}).encode(),
+                 'application/vnd.oci.image.config.v1+json')
+    manifest = add(json.dumps({'schemaVersion': 2, 'config': config, 'layers': layers}).encode(),
+                   'application/vnd.oci.image.manifest.v1+json')
+    index = json.dumps({'schemaVersion': 2, 'mediaType': 'application/vnd.oci.image.index.v1+json',
+                        'manifests': [{**manifest, 'platform': {'os': 'linux', 'architecture': 'amd64'}}]}).encode()
+    outer = {'oci-layout': b'{"imageLayoutVersion":"1.0.0"}', 'index.json': index, **blobs}
+    path = tmp_path / 'synthetic-compressed.oci.tar'
+    with tarfile.open(path, 'w') as archive:
+        for name in ('blobs', 'blobs/sha256'):
+            member = tarfile.TarInfo(name)
+            member.type = tarfile.DIRTYPE
+            archive.addfile(member)
+        for name, data in outer.items():
+            member = tarfile.TarInfo(name)
+            member.size = len(data)
+            archive.addfile(member, BytesIO(data))
+    binding = {'archive_bytes': path.stat().st_size, 'archive_sha256': sha(path.read_bytes()),
+               'root_layout': 'direct_manifest', 'index_digest': 'sha256:' + sha(index),
+               'platform_manifest_digest': manifest['digest'], 'config_digest': config['digest'],
+               'diff_ids': diffs, 'binary_sha256': {'usr/bin/app': sha(b'expected ELF')},
+               'source_tag': 'deepresearch-grafana-candidate:ci'}
+    return path, binding
+
+
+def test_manifest_bridge_preserves_gzip_blobs_config_index_diffids_and_final_executable(compressed_oci):
+    original, binding = compressed_oci
+    original_bytes = original.read_bytes()
+    fetch.verify_oci_archive(original, binding, max_archive_bytes=2 * 1024**3)
+    derived, proof = fetch.prepare_docker_load_archive(original, binding, original.parent / 'derived.tar')
+    assert original.read_bytes() == original_bytes
+    with tarfile.open(original) as source, tarfile.open(derived) as destination:
+        assert set(destination.getnames()) == {*source.getnames(), 'manifest.json'}
+        for member in source.getmembers():
+            if member.isfile():
+                assert source.extractfile(member).read() == destination.extractfile(member.name).read()
+        bridge = json.load(destination.extractfile('manifest.json'))
+        assert bridge[0]['RepoTags'] == [binding['source_tag']]
+        assert bridge[0]['Config'] == 'blobs/sha256/' + binding['config_digest'][7:]
+        for path, diff_id in zip(bridge[0]['Layers'], binding['diff_ids'], strict=True):
+            payload = destination.extractfile(path).read()
+            assert payload[:3] == b'\x1f\x8b\x08'
+            assert 'sha256:' + sha(gzip.decompress(payload)) == diff_id
+    # Derived SHA is solely a factual transport check; this supplies no approval.
+    facts = fetch.verify_oci_archive(derived, {**binding, 'archive_bytes': proof['derived_archive_bytes'],
+        'archive_sha256': proof['derived_archive_sha256']}, max_archive_bytes=2 * 1024**3)
+    assert facts['binary_sha256'] == binding['binary_sha256']
+    assert facts['recomputed_diff_ids'] == binding['diff_ids']
+    assert facts['config_digest'] == binding['config_digest']
+    assert not facts['authorization_evaluated'] and not proof['authorization_evaluated']
+
+
+def test_derived_integrity_rejects_a_changed_layer_and_source_hash_mismatch(compressed_oci):
+    original, binding = compressed_oci
+    derived, proof = fetch.prepare_docker_load_archive(original, binding, original.parent / 'derived.tar')
+    changed = original.parent / 'changed.tar'
+    with tarfile.open(derived) as source, tarfile.open(changed, 'w') as destination:
+        manifest_bytes = source.extractfile('manifest.json').read()
+        changed_path = json.loads(manifest_bytes)[0]['Layers'][0]
+        for member in source.getmembers():
+            if member.isfile():
+                payload = source.extractfile(member).read()
+                if member.name == changed_path:
+                    payload = bytes([payload[0] ^ 1]) + payload[1:]
+                destination.addfile(member, BytesIO(payload))
+            else:
+                destination.addfile(member)
+    with pytest.raises(fetch.FetchError, match='payload changed'):
+        fetch.verify_docker_load_archive(changed, proof['original_members'], manifest_bytes)
+    with pytest.raises(fetch.FetchError, match='Cached candidate bytes differ'):
+        fetch.prepare_docker_load_archive(original, {**binding, 'archive_sha256': 'f' * 64},
+                                           original.parent / 'never-created.tar')
+    assert not (original.parent / 'never-created.tar').exists()
+
+
+@pytest.mark.parametrize('stderr', [b'permission denied', b'no space left on device',
+    b'open /var/lib/docker/tmp/docker-import-123/blobs/json: permission denied',
+    b'open /var/lib/docker/tmp/docker-import-123/other/json: no such file or directory'])
+def test_unrelated_docker_errors_never_use_compatibility_fallback(compressed_oci, monkeypatch, stderr):
+    archive, binding = compressed_oci
+    monkeypatch.setattr(fetch, 'inspect', lambda *_: None)
+    monkeypatch.setattr(fetch.subprocess, 'run', lambda *a, **k: SimpleNamespace(returncode=1, stderr=stderr))
+    monkeypatch.setattr(fetch, 'prepare_docker_load_archive', lambda *a: pytest.fail('unrelated fallback'))
+    with pytest.raises(fetch.DockerLoadError) as error:
+        fetch.load_image(archive, binding, fetch.SCAN_TAG)
+    assert len(error.value.diagnostics['attempts']) == 1
+    assert error.value.diagnostics['attempts'][0]['stderr_excerpt'] == stderr.decode()
+
+
+@pytest.mark.parametrize('outcome', ['success', 'retry-failed', 'wrong-diffids'])
+def test_exact_legacy_lookup_allows_only_one_bridge_retry_with_private_temp_cleanup(
+    compressed_oci, monkeypatch, outcome
+):
+    archive, binding = compressed_oci
+    calls, loads = [], []
+    actual = {'Id': binding['config_digest'], 'Os': 'linux', 'Architecture': 'amd64',
+              'RootFS': {'Layers': binding['diff_ids']}}
+    stderr = b'open /var/lib/docker/tmp/docker-import-3554767565/blobs/json: no such file or directory\n'
+
+    def inspect(_reference):
+        if len(loads) < 2:
+            return None
+        return {**actual, 'RootFS': {'Layers': []}} if outcome == 'wrong-diffids' else actual
+
+    def run(command, **kwargs):
+        calls.append(command)
+        if command[:2] == ['docker', 'load']:
+            loads.append(Path(command[-1]))
+            if len(loads) == 1:
+                return SimpleNamespace(returncode=1, stderr=stderr)
+            assert len(loads) == 2 and loads[1].is_file() and loads[1].parent != archive.parent
+            with tarfile.open(loads[1]) as derived:
+                assert derived.getmember('manifest.json').isfile()
+            return SimpleNamespace(returncode=int(outcome == 'retry-failed'), stderr=b'retry diagnostic')
+        assert command[:2] == ['docker', 'tag']
+        return SimpleNamespace(returncode=0)
+
+    monkeypatch.setattr(fetch, 'inspect', inspect)
+    monkeypatch.setattr(fetch.subprocess, 'run', run)
+    receipt = {}
+    if outcome == 'success':
+        assert fetch.load_image(archive, binding, fetch.SCAN_TAG, load_receipt=receipt) == actual
+        assert len([c for c in calls if c[:2] == ['docker', 'tag']]) == 1
+    else:
+        with pytest.raises(fetch.DockerLoadError) as error:
+            fetch.load_image(archive, binding, fetch.SCAN_TAG)
+        receipt = error.value.diagnostics
+        assert not [c for c in calls if c[:2] == ['docker', 'tag']]
+    assert len(loads) == 2 and loads[0] == archive and not loads[1].exists()
+    assert not loads[1].parent.exists()
+    assert receipt['compatibility_fallback_used'] and len(receipt['attempts']) == 2
+    proof = receipt['derived_transport_integrity']
+    assert proof['private_temporary_directory_removed'] and Path(proof['integrity_receipt']).is_file()
+    assert json.loads(Path(proof['integrity_receipt']).read_text()) == proof
+    assert sha(archive.read_bytes()) == binding['archive_sha256']
+
+
+def test_docker_error_excerpt_is_bounded_and_redacts_urls_and_credentials(monkeypatch):
+    monkeypatch.setenv('GITHUB_TOKEN', 'secret-fixture-token')
+    stderr = b'Bearer secret-fixture-token https://host.invalid/?signed=PRIVATE ' + b'x' * 8192
+    result = fetch.load_diagnostic(SimpleNamespace(returncode=1, stderr=stderr), 'original_approved_oci')
+    assert result['stderr_bytes'] == len(stderr) and result['stderr_sha256'] == sha(stderr)
+    assert len(result['stderr_excerpt']) <= 4096 and result['stderr_excerpt_truncated']
+    assert 'secret-fixture-token' not in result['stderr_excerpt'] and 'PRIVATE' not in result['stderr_excerpt']
