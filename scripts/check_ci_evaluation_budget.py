@@ -20,6 +20,7 @@ import sys
 from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 STABILITY_IDS = ('conflict-1', 'compare-3', 'single-5')
 
 

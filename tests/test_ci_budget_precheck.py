@@ -2,14 +2,37 @@
 import json
 import ast
 import copy
+import os
 import sqlite3
 import socket
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
 
 from scripts.check_ci_evaluation_budget import ROOT, assess, main
 from scripts import check_ci_evaluation_budget as precheck
+
+
+def test_isolated_absolute_script_entrypoint_reports_budget_failure_from_another_directory(tmp_path):
+    workdir=tmp_path/'elsewhere'
+    workdir.mkdir()
+    output=tmp_path/'precheck.json'
+    ledger=tmp_path/'missing-ledger.sqlite3'
+    environment=dict(os.environ)
+    environment.pop('PYTHONPATH',None)
+    environment.pop('PYTHONHOME',None)
+    result=subprocess.run([sys.executable,'-I',str(ROOT/'scripts/check_ci_evaluation_budget.py'),
+                           '--ledger',str(ledger),'--output',str(output)],
+                          cwd=workdir,env=environment,capture_output=True,text=True,encoding='utf-8',timeout=30)
+    assert result.returncode==1,result.stderr
+    report=json.loads(output.read_text(encoding='utf-8'))
+    assert report['precheck_status']=='cumulative_reconciliation_required'
+    assert report['required_lower_bound']==296
+    assert report['supplier_http_requests']==0 and not ledger.exists()
+    assert json.loads(result.stdout)['precheck_status']=='cumulative_reconciliation_required'
+    assert 'ModuleNotFoundError' not in result.stderr
 
 
 @pytest.mark.parametrize('source,expected',[
