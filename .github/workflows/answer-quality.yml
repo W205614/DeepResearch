@@ -27,6 +27,15 @@ jobs:
       - run: uv sync --all-groups --frozen
       - id: quality-mode
         run: uv run python scripts/reuse_quality_evidence.py --probe
+      - name: Reconcile cumulative provider ledger before expensive runtime construction
+        id: cumulative-ledger
+        run: uv run python scripts/reconcile_ci_budget.py reconcile --accounting-only
+        if: steps.quality-mode.outputs.mode == 'fresh'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Check necessary fresh-evaluation budget without HTTP
+        run: uv run python scripts/check_ci_evaluation_budget.py --policy eval/ci-provider-budget.json --ledger .cache/eval/provider-budget.sqlite3 --output .cache/eval/ci-budget-precheck.json
+        if: steps.quality-mode.outputs.mode == 'fresh'
       - name: Build patched interpreter with the production Dockerfile for this checkout
         if: steps.quality-mode.outputs.mode == 'fresh'
         run: |
@@ -35,22 +44,18 @@ jobs:
       - name: Verify actual Python and CA rejection with no network before spending
         if: steps.quality-mode.outputs.mode == 'fresh'
         run: uv run python scripts/run_ci_evaluation.py preflight --image "ci-evaluation:${GITHUB_SHA}"
+      - name: Bind the verified runtime and exact source before model spending
+        run: uv run python scripts/reconcile_ci_budget.py bind
+        if: steps.quality-mode.outputs.mode == 'fresh'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - run: uv run python scripts/reuse_quality_evidence.py
         if: steps.quality-mode.outputs.mode == 'reuse'
         env:
           GITHUB_TOKEN: ${{ github.token }}
           LLM_API_KEY: ''
-      - name: Reconcile cumulative provider ledger across all run attempts
-        id: cumulative-ledger
-        run: uv run python scripts/reconcile_ci_budget.py reconcile
-        if: steps.quality-mode.outputs.mode == 'fresh'
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-      - name: Check necessary fresh-evaluation budget without HTTP
-        run: uv run python scripts/check_ci_evaluation_budget.py --policy eval/ci-provider-budget.json --ledger .cache/eval/provider-budget.sqlite3 --output .cache/eval/ci-budget-precheck.json
-        if: steps.quality-mode.outputs.mode == 'fresh'
       - name: Require exact-source CI and Security before any model spending
-        run: uv run python scripts/reconcile_ci_budget.py gate --prerequisite-wait-seconds 900
+        run: uv run python scripts/reconcile_ci_budget.py gate --prerequisite-wait-seconds 1800
         if: steps.quality-mode.outputs.mode == 'fresh'
         env:
           GITHUB_TOKEN: ${{ github.token }}

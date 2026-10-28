@@ -6,7 +6,7 @@ from types import SimpleNamespace
 import pytest
 
 from scripts.bounded_evaluation import Budget
-from scripts.ci_budget_ledger import contract, open_attempt
+from scripts.ci_budget_ledger import authorization_contract, contract, open_attempt
 from scripts import ci_python_preflight as probe
 from scripts import ci_source_context as source
 from scripts import run_ci_evaluation as runner
@@ -36,6 +36,7 @@ def bound(tmp_path, monkeypatch):
         return b'app.py\0'
     monkeypatch.setattr(source.subprocess, 'check_output', git)
     agreement=contract(ROOT)
+    agreement=authorization_contract(agreement,agreement['root_authorization_sha256'])
     ledger=root/'.cache/eval/provider-budget.sqlite3'
     open_attempt(ledger, agreement, current())
     budget=Budget(ledger, agreement['policy'])
@@ -159,7 +160,11 @@ def test_cli_subparsers_preserve_paid_flags_without_passing_host_tokens(bound,mo
 
 def test_workflow_preflight_precedes_start_and_only_paid_targets_use_container():
     workflow=(ROOT/'.github/workflows/answer-quality.yml').read_text(encoding='utf-8')
-    assert workflow.index('run_ci_evaluation.py preflight')<workflow.index('reconcile_ci_budget.py reconcile')
+    order=['reuse_quality_evidence.py --probe','reconcile_ci_budget.py reconcile --accounting-only',
+           'check_ci_evaluation_budget.py','docker buildx build','run_ci_evaluation.py preflight',
+           'reconcile_ci_budget.py bind','reconcile_ci_budget.py gate','reconcile_ci_budget.py start',
+           'run_ci_evaluation.py paid']
+    assert [workflow.index(value) for value in order]==sorted(workflow.index(value) for value in order)
     assert workflow.index('reconcile_ci_budget.py gate')<workflow.index('reconcile_ci_budget.py start')
     assert workflow.index('reconcile_ci_budget.py start')<workflow.index('run_ci_evaluation.py paid')
     assert workflow.count('- run: uv run python scripts/run_ci_evaluation.py paid ')==4

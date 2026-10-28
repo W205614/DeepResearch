@@ -1,0 +1,53 @@
+{
+  "schema": "ci-budget-amendment-v1",
+  "project": "DeepResearch",
+  "series_id": "deepresearch-ci-provider-20261025",
+  "recorded_at_utc": "2026-10-28 16:06:30 UTC",
+  "scope": "One cumulative allowance shared by all successful, failed and rerun attempts; no ledger reset.",
+  "human_question": "复核确认：245 次不足以完整通过现有门禁，更紧的必要下界是 296 次（14＋178＋72＋32）。我前面漏报了这点。等剩余功能 CI 通过后，采用哪个额度？所有重跑共用额度，历史消耗保留；达到上限即停，任何额度都不保证通过。",
+  "human_answer": "本轮总余额 296 次：在现有 89 次上补 207 次，按最低通过下界尝试",
+  "question_item_id": [
+    "request_user_input_async",
+    "call_d848f5c8dc9f4c2d8b08f48de1e05297",
+    0
+  ],
+  "root_authorization_sha256": "29c6e5f0deed51f2002be94f6e271c118bba81690034a991d4203b6967d493af",
+  "previous_policy_sha256": "b68fc8237a0bebb5b6c957d9885947876ee8d575a8995ff7ed683de527eeff18",
+  "baseline_sha256": "bbb75d082efa3f22355cfbb3556f766240ec234dc7e7733751ad0ffb581b0120",
+  "previous_lifetime_model_http_cap": 1358,
+  "verified_consumed_model_http": 1269,
+  "previous_remaining_model_http": 89,
+  "additional_authorized_model_http": 207,
+  "new_lifetime_model_http_cap": 1565,
+  "authorized_remaining_model_http": 296,
+  "preserved_requests_sha256": "152e56de6689194be64b30933adb15ee7604ae456c4abacc7a0f16877a42f607",
+  "preserved_origins_sha256": "bc71050fc73900492a2b6b8e447fdea164b387f1ae77c56816e77f49045a0935",
+  "verified_prefix_artifact": {
+    "id": 12830985462,
+    "run_id": 40718623823,
+    "run_attempt": 1,
+    "head_sha": "e97c1b2c14725d53f2e4c23736adb25d7f1e3054",
+    "zip_sha256": "c64d5d4a5986c827fb4c4e42fe2a5bd1880cafef485d7a6988b002d8b15c1aa4"
+  },
+  "activation_prerequisites": {
+    "head_sha": "e97c1b2c14725d53f2e4c23736adb25d7f1e3054",
+    "runs": {
+      "CI": 40718623640,
+      "Security": 40718623740
+    },
+    "required_conclusion": "success",
+    "fresh_source_prerequisites_still_required": true
+  },
+  "do_not_reset_ledger": true,
+  "not_per_run": true,
+  "other_budgets_unchanged": true,
+  "remaining_tokens_at_verified_prefix": {
+    "input_tokens": 8652144,
+    "output_tokens": 319536
+  },
+  "limitations": [
+    "296 is a verified necessary lower bound, not a completion or quality guarantee.",
+    "All original requests, per-request origins, usage, conservative reservations and irreversible HTTP halts remain in force.",
+    "Every fresh run still requires its own exact-source CI and Security success before any supplier call."
+  ]
+}

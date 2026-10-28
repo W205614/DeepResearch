@@ -48,7 +48,7 @@ def test_unverified_proof_fails_closed_without_inventing_shortage_or_spending(tm
     assert report['supplier_http_requests']==0 and not ledger.exists()
 
 
-@pytest.mark.parametrize('cap,code',[(57,1),(500,0)])
+@pytest.mark.parametrize('cap,code',[(57,1),(245,1),(296,0),(500,0)])
 def test_precheck_uses_proved_bound_without_network_or_new_ledger(tmp_path,monkeypatch,cap,code):
     def forbidden(*args,**kwargs):
         raise AssertionError('Static budget precheck attempted network access')
@@ -63,10 +63,14 @@ def test_precheck_uses_proved_bound_without_network_or_new_ledger(tmp_path,monke
     result=json.loads(output.read_text(encoding='utf-8'))
     assert result['proof_verified'] and result['critical_path_lower_bound']==245
     assert result['pass_rate_refinement_lower_bound']==296
+    assert result['required_lower_bound']==296
     assert result['supplier_http_requests']==0 and not ledger.exists()
     assert json.loads(fixture_policy.read_text())==policy
     if cap==57:
         assert result['additional_http_below_critical_bound']==188
+    elif cap==245:
+        assert result['additional_http_below_required_bound']==51
+        assert result['precheck_status']=='insufficient_known_budget'
     else:
         assert result['precheck_status']=='necessary_bound_not_violated'  # No sufficiency guarantee.
 

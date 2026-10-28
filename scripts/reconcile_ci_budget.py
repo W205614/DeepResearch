@@ -92,8 +92,23 @@ def audit_current(api,current,checkout_sha):
     return run
 
 
+def audit_amendment_prerequisites(api,agreement):
+    amendment=agreement.get('amendment')
+    if not amendment:
+        return
+    condition=amendment['activation_prerequisites']
+    for name,number in condition['runs'].items():
+        run=api.json(f'/actions/runs/{number}')
+        path='.github/workflows/'+('ci.yml' if name=='CI' else 'security.yml')
+        if (run.get('id')!=number or run.get('repository',{}).get('full_name')!=REPOSITORY
+                or run.get('head_sha')!=condition['head_sha'] or run.get('path')!=path
+                or run.get('status')!='completed' or run.get('conclusion')!=condition['required_conclusion']):
+            raise ValueError('Budget amendment waits for the explicitly required exact-source CI and Security success')
+
+
 def reconcile(api,current,agreement,ledger,checkout_sha):
     audit_current(api,current,checkout_sha)
+    audit_amendment_prerequisites(api,agreement)
     baseline={(run['run_id'],run['run_attempt']) for run in agreement['baseline']['runs']}
     frontier=min(run_id for run_id,_ in baseline)
     runs={}
@@ -175,13 +190,17 @@ def gate_prerequisites(api,current,checkout_sha,wait_seconds=900,sleep=time.slee
 
 def main(argv=None):
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('mode',choices=['reconcile','gate','start','seal'])
+    parser.add_argument('mode',choices=['reconcile','bind','gate','start','seal'])
+    parser.add_argument('--accounting-only',action='store_true',
+                        help='Reconcile and precheck before building; bind the real interpreter later before any paid call')
     parser.add_argument('--ledger',type=Path,default=ROOT/'.cache/eval/provider-budget.sqlite3')
     parser.add_argument('--output-dir',type=Path,default=ROOT/'.cache/eval')
     parser.add_argument('--prerequisite-wait-seconds',type=int,default=900)
     args=parser.parse_args(argv)
     args.output_dir.mkdir(parents=True,exist_ok=True)
     try:
+        if args.accounting_only and args.mode!='reconcile':
+            raise ValueError('--accounting-only is only valid for reconciliation')
         agreement=contract(ROOT)
         current=identity(os.environ)
         if args.mode=='seal':
@@ -206,9 +225,19 @@ def main(argv=None):
             checkout_sha=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
             if args.mode=='reconcile':
                 result=reconcile(api,current,agreement,args.ledger,checkout_sha)
+                if not args.accounting_only:
+                    from scripts.bounded_evaluation import Budget
+                    from scripts.ci_source_context import bind_source
+                    result['source_context']=bind_source(ROOT, Budget(args.ledger, agreement['policy']), current)
+                (args.output_dir/'ci-reconciliation.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
+            elif args.mode=='bind':
+                audit_current(api,current,checkout_sha)
                 from scripts.bounded_evaluation import Budget
                 from scripts.ci_source_context import bind_source
-                result['source_context']=bind_source(ROOT, Budget(args.ledger, agreement['policy']), current)
+                result=json.loads((args.output_dir/'ci-reconciliation.json').read_bytes())
+                if result.get('run')!=current or result.get('authorization_sha256')!=agreement['authorization_sha256']:
+                    raise ValueError('Interpreter binding requires this exact reconciled run and cumulative authorization')
+                result['source_context']=bind_source(ROOT,Budget(args.ledger,agreement['policy']),current)
                 (args.output_dir/'ci-reconciliation.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
             else:
                 result=gate_prerequisites(api,current,checkout_sha,args.prerequisite_wait_seconds)

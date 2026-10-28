@@ -9,7 +9,7 @@ import pytest
 from backend.core.reliability import ServiceError
 from scripts.bounded_evaluation import Budget
 from scripts.ci_budget_ledger import (FILES, REPOSITORY, WORKFLOW_ID, WORKFLOW_PATH, contract, digest,
-    merge_snapshots, open_attempt, seal, validate_snapshot)
+    authorization_contract, merge_snapshots, open_attempt, seal, validate_snapshot)
 from scripts.reconcile_ci_budget import ROOT, gate_prerequisites, reconcile
 
 
@@ -25,7 +25,8 @@ def run_of(value,status='completed'):
 
 @pytest.fixture
 def agreement():
-    return contract(ROOT)
+    agreement=contract(ROOT)
+    return authorization_contract(agreement,agreement['root_authorization_sha256'])
 
 
 def package(folder,agreement,owner,*,parent=None,model='fixture',known=True,status=200):
@@ -203,7 +204,7 @@ def test_exact_sha_pending_prerequisite_spends_nothing_and_success_binds_both_ru
     assert result['supplier_http']==0 and set(result['prerequisites'])=={'CI','Security'}
 
 
-def test_precheck_reads_515_from_reconciled_history_and_rejects_missing_series(tmp_path,agreement,monkeypatch):
+def test_precheck_rejects_unamended_history_and_missing_series(tmp_path,agreement,monkeypatch):
     from scripts.check_ci_evaluation_budget import assess
     now=current()
     ledger=tmp_path/'provider-budget.sqlite3'
@@ -215,14 +216,14 @@ def test_precheck_reads_515_from_reconciled_history_and_rejects_missing_series(t
     monkeypatch.setenv('GITHUB_RUN_ATTEMPT',str(now['run_attempt']))
     monkeypatch.setenv('GITHUB_SHA',now['head_sha'])
     result=assess(ledger_path=ledger)
-    assert result['cumulative_reconciliation_verified'] and result['available_model_and_total_http']==515
-    assert result['exit_code']==0
+    assert not result['cumulative_reconciliation_verified']
+    assert result['available_model_and_total_http'] is None and result['exit_code']==1
 
 
 def test_workflow_budget_group_is_global_and_final_artifact_includes_original_ledgers():
     workflow=(ROOT/'.github/workflows/answer-quality.yml').read_text(encoding='utf-8')
     assert 'group: deepresearch-ci-provider-cumulative-20261026' in workflow and 'cancel-in-progress: false' in workflow
-    assert 'timeout-minutes: 90' in workflow and '--prerequisite-wait-seconds 900' in workflow
+    assert 'timeout-minutes: 90' in workflow and '--prerequisite-wait-seconds 1800' in workflow
     assert workflow.index('reconcile_ci_budget.py gate')<workflow.index('reconcile_ci_budget.py start')<workflow.index('Paid answers')
     assert 'ci-provider-ledger-${{ github.run_id }}-${{ github.run_attempt }}' in workflow
     assert '.cache/eval/provider-budget.sqlite3' in workflow and '.cache/eval/ci-ledger-receipt.json' in workflow

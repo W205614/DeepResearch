@@ -50,15 +50,81 @@ def contract(root):
     if (baseline['series_id']!=SERIES or len(rows)!=authorization['historical_ci_consumed_model_http']
             or len(rows)+authorization['authorized_remaining_model_http']!=authorization['new_lifetime_model_http_cap']
             or authorization['new_lifetime_model_http_cap']-authorization['previous_lifetime_model_http_cap']!=authorization['additional_authorized_model_http']
-            or not authorization['not_per_run'] or not authorization['do_not_reset_ledger'] or policy!=expected
+            or not authorization['not_per_run'] or not authorization['do_not_reset_ledger']
             or any(row['kind']!='llm' for row in rows)):
         raise ValueError('Cumulative authorization, historical baseline or unchanged token/other budgets differ')
-    return {'authorization':authorization,'authorization_sha256':digest(encoded(authorization)),
+    original={'authorization':authorization,'authorization_sha256':digest(encoded(authorization)),
+              'policy':expected,'policy_sha256':digest(encoded(expected))}
+    agreement={**original,
             'baseline':baseline,'baseline_sha256':digest(encoded(baseline)),'baseline_requests':rows,'baseline_origins':origins,
-            'policy':policy,'policy_sha256':digest(encoded(policy))}
+            'root_authorization_sha256':original['authorization_sha256'],
+            'authorization_versions':{original['authorization_sha256']:original},'amendment':None}
+    amendment_path=root/'eval/ci-budget-amendment-20261029.json'
+    if amendment_path.exists():
+        amendment=json.loads(amendment_path.read_bytes())
+        required={'schema':'ci-budget-amendment-v1','project':'DeepResearch','series_id':SERIES,
+            'root_authorization_sha256':original['authorization_sha256'],
+            'previous_policy_sha256':original['policy_sha256'],
+            'previous_lifetime_model_http_cap':1358,'verified_consumed_model_http':1269,
+            'previous_remaining_model_http':89,'additional_authorized_model_http':207,
+            'new_lifetime_model_http_cap':1565,'authorized_remaining_model_http':296,
+            'do_not_reset_ledger':True,'not_per_run':True,'other_budgets_unchanged':True}
+        if (any(amendment.get(key)!=value for key,value in required.items())
+                or not amendment.get('human_question') or not amendment.get('human_answer')
+                or amendment.get('question_item_id')!=['request_user_input_async','call_d848f5c8dc9f4c2d8b08f48de1e05297',0]
+                or amendment.get('baseline_sha256')!=agreement['baseline_sha256']
+                or any(not re.fullmatch('[a-f0-9]{64}',amendment.get(key,''))
+                       for key in ('preserved_requests_sha256','preserved_origins_sha256'))
+                or amendment.get('activation_prerequisites')!={
+                    'head_sha':'e97c1b2c14725d53f2e4c23736adb25d7f1e3054',
+                    'runs':{'CI':40718623640,'Security':40718623740},
+                    'required_conclusion':'success','fresh_source_prerequisites_still_required':True}):
+            raise ValueError('Explicit cumulative budget amendment or its preserved accounting differs')
+        revised=dict(expected,model_http=1565,llm_http=1565,total_http=1565)
+        version={'authorization':amendment,'authorization_sha256':digest(encoded(amendment)),
+                 'policy':revised,'policy_sha256':digest(encoded(revised))}
+        agreement['authorization_versions'][version['authorization_sha256']]=version
+        agreement.update(version,amendment=amendment)
+    if policy!=agreement['policy']:
+        raise ValueError('Current budget policy differs from the explicit cumulative authorization')
+    return agreement
+
+
+def authorization_contract(agreement, authorization_sha256):
+    """Audit an original sealed artifact under its original policy, never a new cap."""
+    versions=agreement['authorization_versions']
+    if authorization_sha256 not in versions:
+        raise ValueError('Unknown cumulative authorization')
+    selected=versions[authorization_sha256]
+    result={**agreement,**selected}
+    if authorization_sha256==agreement['root_authorization_sha256']:
+        result.update(amendment=None,authorization_versions={authorization_sha256:selected})
+    return result
+
+
+def amendment_record(agreement, rows, origins, *, at_request=None):
+    amendment=agreement['amendment']
+    anchor=amendment['verified_consumed_model_http']
+    at_request=len(rows) if at_request is None else at_request
+    if (type(at_request) is not int or not anchor<=at_request<=len(rows)
+            or digest(encoded(rows[:anchor]))!=amendment['preserved_requests_sha256']
+            or digest(encoded(origins[:anchor]))!=amendment['preserved_origins_sha256']):
+        raise ValueError('Amendment requires the complete verified 1269-request accounting prefix')
+    return {'authorization_sha256':agreement['authorization_sha256'],
+        'previous_authorization_sha256':agreement['root_authorization_sha256'],
+        'previous_lifetime_model_http_cap':amendment['previous_lifetime_model_http_cap'],
+        'next_lifetime_model_http_cap':amendment['new_lifetime_model_http_cap'],
+        'additional_authorized_model_http':amendment['additional_authorized_model_http'],
+        'historical_requests_preserved':at_request,
+        'requests_sha256':digest(encoded(rows[:at_request])),
+        'origins_sha256':digest(encoded(origins[:at_request])),
+        'previous_policy_sha256':amendment['previous_policy_sha256'],
+        'next_policy_sha256':agreement['policy_sha256']}
 
 
 def initialize(path,agreement):
+    if agreement.get('amendment'):
+        raise ValueError('An amended budget requires a verified existing ledger, never a fresh baseline')
     if path.exists():
         raise ValueError('A local ledger already exists; never overwrite unsealed consumption')
     budget=Budget(path,agreement['policy'],allow_ci_bootstrap=True)
@@ -128,12 +194,14 @@ def validate_snapshot(blob,artifact,run,attempt,agreement):
             raise ValueError('Incomplete, duplicate or oversized budget artifact')
         files={name:archive.read(name) for name in FILES}
     receipt=json.loads(files['ci-ledger-receipt.json'])
+    version=agreement['authorization_versions'].get(receipt.get('authorization_sha256'))
+    if version is None:
+        raise ValueError('Budget receipt uses an unknown cumulative authorization')
     expected={'repository':REPOSITORY,'workflow_id':WORKFLOW_ID,'workflow_path':WORKFLOW_PATH,
               'run_id':run['id'],'run_attempt':attempt,'head_sha':run['head_sha']}
     if (receipt.get('run')!=expected or receipt.get('series_id')!=SERIES or receipt.get('sealed') is not True
-            or receipt.get('authorization_sha256')!=agreement['authorization_sha256']
             or receipt.get('baseline_sha256')!=agreement['baseline_sha256']
-            or receipt.get('policy_sha256')!=agreement['policy_sha256']
+            or receipt.get('policy_sha256')!=version['policy_sha256']
             or receipt.get('sqlite_sha256')!=digest(files['provider-budget.sqlite3'])
             or receipt.get('json_sha256')!=digest(files['provider-budget.json'])):
         raise ValueError('Budget receipt identity or file checksum mismatch')
@@ -142,15 +210,22 @@ def validate_snapshot(blob,artifact,run,attempt,agreement):
             and receipt['source_context_sha256'] != states.get('ci_source_context_sha256')):
         raise ValueError('Source binding differs between ledger and receipt')
     report=json.loads(files['provider-budget.json'])
-    if (policy!=agreement['policy'] or report.get('policy')!=policy or report.get('requests')!=rows
+    if (policy!=version['policy'] or report.get('policy')!=policy or report.get('requests')!=rows
             or report.get('http_requests')!=len(rows) or receipt.get('cumulative_requests')!=len(rows)
             or receipt.get('requests_sha256')!=digest(encoded(rows))
             or receipt.get('origins_sha256')!=digest(encoded(origins))
-            or states.get('ci_series')!=SERIES or states.get('ci_authorization_sha256')!=agreement['authorization_sha256']
+            or states.get('ci_series')!=SERIES or states.get('ci_authorization_sha256')!=version['authorization_sha256']
             or len(rows)<len(agreement['baseline_requests'])
             or rows[:len(agreement['baseline_requests'])]!=agreement['baseline_requests']
             or origins[:len(agreement['baseline_origins'])]!=agreement['baseline_origins']):
         raise ValueError('Cumulative ledger, policy or preserved historical prefix differs')
+    if version['authorization_sha256']!=agreement['root_authorization_sha256']:
+        record=json.loads(states.get('policy_change_authorized_20261029','null'))
+        if (not isinstance(record,dict)
+                or record!=amendment_record(agreement,rows,origins,at_request=record.get('historical_requests_preserved',-1))):
+            raise ValueError('Amended ledger lacks its exact original authorization transition')
+    elif 'policy_change_authorized_20261029' in states:
+        raise ValueError('An original authorization cannot erase an applied amendment')
     for row in rows:
         if (set(row)!=set(REQUEST_COLUMNS) or row['kind'] not in {'llm','search','embedding','reranker'}
                 or any(type(row[key]) is not int or row[key]<0 for key in ('id','input_bound','output_bound'))
@@ -175,15 +250,20 @@ def validate_snapshot(blob,artifact,run,attempt,agreement):
 
 
 def merge_snapshots(snapshots,agreement):
+    ranks={sha:rank for rank,sha in enumerate(agreement['authorization_versions'])}
     unique={}
     for snapshot in snapshots:
         key=(snapshot['artifact']['run_id'],snapshot['artifact']['run_attempt'])
-        if key in unique and (unique[key]['rows']!=snapshot['rows'] or unique[key]['origins']!=snapshot['origins']):
+        if key in unique and (unique[key]['rows']!=snapshot['rows'] or unique[key]['origins']!=snapshot['origins']
+                or unique[key]['receipt']['authorization_sha256']!=snapshot['receipt']['authorization_sha256']
+                or unique[key]['states'].get('halt')!=snapshot['states'].get('halt')):
             raise ValueError('Ambiguous duplicate attempt artifacts')
         unique[key]=snapshot
-    ordered=sorted(unique.values(),key=lambda value:(len(value['rows']),value['receipt']['start_requests']))
+    ordered=sorted(unique.values(),key=lambda value:(len(value['rows']),value['receipt']['start_requests'],
+                   ranks[value['receipt']['authorization_sha256']]))
     previous,previous_origins=agreement['baseline_requests'],agreement['baseline_origins']
     halted=False
+    previous_rank=0
     for snapshot in ordered:
         if snapshot['receipt']['start_requests']>len(previous):
             raise ValueError('An earlier consuming attempt is missing from the verified artifact chain')
@@ -191,8 +271,12 @@ def merge_snapshots(snapshots,agreement):
             raise ValueError('Divergent concurrent ledger prefixes; never union/reset away double spending')
         if halted and not snapshot['states'].get('halt'):
             raise ValueError('A later snapshot removed the original irreversible HTTP halt')
+        rank=ranks[snapshot['receipt']['authorization_sha256']]
+        if rank<previous_rank:
+            raise ValueError('A later snapshot removed the explicit budget amendment')
         previous,previous_origins=snapshot['rows'],snapshot['origins']
         halted=halted or bool(snapshot['states'].get('halt'))
+        previous_rank=rank
     return ordered[-1] if ordered else None
 
 
@@ -201,13 +285,42 @@ def open_attempt(path,agreement,current,snapshot=None,artifacts=()):
         raise ValueError('Existing local ledger cannot be replaced or renumbered')
     path.parent.mkdir(parents=True,exist_ok=True)
     if snapshot:
+        source=agreement['authorization_versions'].get(snapshot['receipt']['authorization_sha256'])
+        if source is None:
+            raise ValueError('Cannot restore an unrecognized authorization')
+        transition=None
+        if source['authorization_sha256']!=agreement['authorization_sha256']:
+            if not agreement.get('amendment') or source['authorization_sha256']!=agreement['root_authorization_sha256']:
+                raise ValueError('A ledger policy cannot be downgraded or changed without explicit authorization')
+            transition=amendment_record(agreement,snapshot['rows'],snapshot['origins'])
         path.write_bytes(snapshot['sqlite'])
+        if transition:
+            with sqlite3.connect(path) as db:
+                db.execute('BEGIN IMMEDIATE')
+                policies=db.execute('SELECT value FROM policy').fetchall()
+                states=dict(db.execute('SELECT key,value FROM state'))
+                if (len(policies)!=1 or json.loads(policies[0][0])!=source['policy']
+                        or states.get('ci_authorization_sha256')!=source['authorization_sha256']
+                        or 'policy_change_authorized_20261029' in states):
+                    raise ValueError('Restored policy or authorization differs before amendment')
+                db.execute('UPDATE policy SET value=?',(json.dumps(agreement['policy'],sort_keys=True),))
+                db.execute("UPDATE state SET value=? WHERE key='ci_authorization_sha256'",(agreement['authorization_sha256'],))
+                db.execute("INSERT INTO state VALUES('policy_change_authorized_20261029',?)",(json.dumps(transition,sort_keys=True),))
         budget=Budget(path,agreement['policy'])
     else:
         budget=initialize(path,agreement)
     report=budget.report()
     with budget.connect() as db:
         db.execute('BEGIN IMMEDIATE')
+        states=dict(db.execute('SELECT key,value FROM state'))
+        inherited=states.get('ci_source_context_sha256')
+        if inherited:
+            previous={'run':json.loads(states.get('ci_current_run','null')),'source_context_sha256':inherited}
+            db.execute('INSERT INTO state VALUES(?,?)',
+                (f"ci_inherited_source_context_{current['run_id']}_{current['run_attempt']}",json.dumps(previous,sort_keys=True)))
+        # A copied runtime receipt belongs to its original attempt. Keep it in
+        # the historical state, but require a new real preflight/bind for this run.
+        db.execute("INSERT OR REPLACE INTO state VALUES('ci_source_context_sha256',NULL)")
         db.execute("INSERT OR REPLACE INTO state VALUES('ci_current_run',?)",(json.dumps(current,sort_keys=True),))
         db.execute("INSERT OR REPLACE INTO state VALUES('ci_start_requests',?)",(str(report['http_requests']),))
         db.execute("INSERT OR REPLACE INTO state VALUES('ci_verified_artifacts',?)",(json.dumps(list(artifacts),sort_keys=True),))
@@ -220,7 +333,7 @@ def remaining(budget,agreement):
     policy=agreement['policy']
     return {'series_id':SERIES,'cumulative_requests':report['http_requests'],
             'historical_requests':len(agreement['baseline_requests']),
-            'authorized_new_requests':agreement['authorization']['authorized_remaining_model_http'],
+            'authorized_new_requests':policy['model_http']-len(agreement['baseline_requests']),
             'new_requests_across_all_runs':report['http_requests']-len(agreement['baseline_requests']),
             'remaining_model_http':max(0,policy['model_http']-model),
             'remaining_total_http':max(0,policy['total_http']-report['http_requests']),

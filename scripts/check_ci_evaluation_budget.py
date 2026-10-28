@@ -142,12 +142,13 @@ def assess(root=ROOT, *, policy_path=None, ledger_path=None, basis_path=None):
     rate_floor = answer_rate_floor+research_rate_floor+stages[2]['critical_path_lower_bound']+stages[3]['critical_path_lower_bound']
     ledger = read_ledger(ledger_path)
     cumulative_required = policy.get('ci_series_id')
-    authorization_path = root/'eval/ci-budget-authorization.json'
-    authorization = json.loads(authorization_path.read_bytes()) if cumulative_required else None
-    authorization_hash = (hashlib.sha256(json.dumps(authorization,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
-                          if authorization else None)
+    from scripts.ci_budget_ledger import contract
+    agreement = contract(root) if cumulative_required else None
+    authorization = agreement['authorization'] if agreement else None
+    authorization_hash = agreement['authorization_sha256'] if agreement else None
     reconciled = not cumulative_required or (ledger['exists'] and ledger.get('series_id')==cumulative_required
-                 and ledger.get('authorization_sha256')==authorization_hash and ledger.get('run_identity'))
+                 and ledger.get('authorization_sha256')==authorization_hash and ledger.get('run_identity')
+                 and policy==agreement['policy'])
     if reconciled and cumulative_required and os.environ.get('GITHUB_RUN_ID'):
         owner=ledger['run_identity']
         reconciled=(owner.get('run_id')==int(os.environ['GITHUB_RUN_ID'])
@@ -158,7 +159,8 @@ def assess(root=ROOT, *, policy_path=None, ledger_path=None, basis_path=None):
                  'total_http': policy['total_http']-ledger['http_requests']}
     available = max(0, min(remaining.values())) if reconciled else None
     known = not failures
-    insufficient = known and reconciled and available < lower
+    required_lower = max(lower, rate_floor)
+    insufficient = known and reconciled and available < required_lower
     max_claims, structured_http = 96, 6
     settings = symbol(root/'backend/core/config.py', 'Settings')
     cap_field = next(node for node in settings.body if isinstance(node, ast.AnnAssign)
@@ -181,11 +183,13 @@ def assess(root=ROOT, *, policy_path=None, ledger_path=None, basis_path=None):
             'policy': policy, 'policy_sha256': fingerprint(policy_path), 'ledger': ledger,
             'remaining_requests': remaining if reconciled else None, 'available_model_and_total_http': available,
             'critical_path_lower_bound': lower if known else None,
+            'required_lower_bound': required_lower if known else None,
             'cumulative_reconciliation_verified': bool(reconciled),
             'authorization': authorization, 'authorization_sha256': authorization_hash,
             'additional_http_below_critical_bound': max(0, lower-available) if known and reconciled else None,
             'pass_rate_refinement_lower_bound': rate_floor if known else None,
             'additional_http_below_refined_bound': max(0, rate_floor-available) if known and reconciled else None,
+            'additional_http_below_required_bound': max(0, required_lower-available) if known and reconciled else None,
             'stages': stages, 'theoretical_envelope': {'structured_http_max': structured_http, 'format_attempts': 2,
                 'http_attempts_each': 3, 'graph_http_cap_each': run_cap, 'max_visible_claims_each': max_claims,
                 'external_support_group_nodes_max': 2*max_claims-1, 'external_coverage_http_max': structured_http,
@@ -224,7 +228,8 @@ def main(argv=None):
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({key: report[key] for key in ('precheck_status', 'critical_path_lower_bound',
-        'available_model_and_total_http', 'additional_http_below_critical_bound', 'supplier_http_requests')}))
+        'pass_rate_refinement_lower_bound', 'required_lower_bound', 'available_model_and_total_http',
+        'additional_http_below_required_bound', 'supplier_http_requests')}))
     return report['exit_code']
 
 

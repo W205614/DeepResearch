@@ -90,7 +90,7 @@
   },
   "candidate_source2_review_sha256": "5603568f371240b2b2f31dcd322e95b8fd4e1e22e051d15f8e89d6f3b43ff6ad",
   "selector_files_sha256": {
-    ".github/workflows/answer-quality.yml": "3a6d3843d53f4724d909caa3dfab80270b554e5f1b69f2b3fd0103e1a5f2fe63",
+    ".github/workflows/answer-quality.yml": "9f69a238ddf0a933129c766e46b7a78e7a1e1f5322b32baf217c2712ecd13416",
     ".github/workflows/ci.yml": "4e11f925af198cc8941324ed4647a8ee210168a843c39e003754061cc076de58",
     ".github/workflows/publish-grafana-candidate.yml": "8d0e5cf409f5001eadd1802c1dcadd0f38d41b82f09143ff1c3bacdbe1c041b6",
     ".github/workflows/rag-quality.yml": "199cffb156333e03cc5b9af6407696797e243a5107c1e9d23b7d7af8054693ff",
@@ -185,7 +185,7 @@
     },
     "proof": "The independently verified exact main graph and actual extracted-ELF native modules select jose4.1.6; the old source file still declares4.1.4 but is overwritten before any compile in the current recipe. The old file remains unsafe for other compilations and rollback recipes."
   },
-  "selector_review_boundary": "All current workflow and Compose overlay file paths and bytes are bound. Main Compose has one approved Grafana image and no build; ordinary enterprise CI and runtime Security use the new published exact-subject loader, runtime exact28 remains mandatory, and the final filesystem gate cannot ignore failure. Other current overlays only change Grafana profile/port or do not mention Grafana; other workflow jobs do not introduce an old Grafana build or image. This confirms configured selection, not running-container replacement.",
+  "selector_review_boundary": "All current workflow and Compose overlay file paths and bytes are bound. Main Compose has one approved Grafana image and no build; ordinary enterprise CI and runtime Security use the new published exact-subject loader, runtime exact28 remains mandatory, and the final filesystem gate cannot ignore failure. Other current overlays only change Grafana profile/port or do not mention Grafana; other workflow jobs do not introduce an old Grafana build or image. This confirms configured selection, not running-container replacement. Answer Quality now reconciles only cumulative accounting and checks the necessary budget before constructing its evaluation runtime; the real no-network interpreter/CA preflight, explicit source/runtime bind, exact-current-SHA completed-success CI/Security gate and paid-start marker still precede the same four paid entrypoints. The prerequisite wait is 1800 seconds within the unchanged 90-minute job; waiting performs no supplier HTTP and timeout or a failed prerequisite still refuses payment. This scheduling change does not build, load or select Grafana or alter its approved image. Provider-budget amendments are separately governed by genuine append-only human authorization, the preserved cumulative ledger and their activation prerequisites; this Grafana technical review grants no model-call allowance.",
   "source_gate_policy": {
     "raw_HIGH_expected": 5,
     "old_source2_facts": 2,
