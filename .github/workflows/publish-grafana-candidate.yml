@@ -1,27 +1,37 @@
-name: Publish explicitly authorized Grafana artifact
-
+name: Collect exact Grafana Docker load diagnostics
 on:
   workflow_dispatch:
-
 jobs:
-  publish-exact-authorized-oci:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    permissions: { contents: write, actions: read }
+  docker-load-diagnostics:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions: { contents: read }
     steps:
       - uses: actions/checkout@v7
         with: { fetch-depth: 0 }
-      - name: Verify new human authorization, exact inputs and the complete existing OCI before publication
-        run: python scripts/publish_grafana_candidate.py
+      - name: Collect actual engine and original OCI load result
         env:
           GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          from scripts import fetch_grafana_candidate as fetch
+          from scripts.oci_artifact import verify_oci_archive
+          root=Path.cwd()
+          request=fetch.authorized_request(root);binding=request['binding']
+          transport=fetch.load_transport(root,binding)
+          archive,publication=fetch.download_parts(root/'.cache/eval/approved-grafana.oci.tar',binding,transport)
+          proof=verify_oci_archive(archive,binding,max_archive_bytes=2*1024**3)
+          engine=subprocess.run(['docker','info','--format','{{json .}}'],capture_output=True,text=True,check=True)
+          loaded=subprocess.run(['docker','load','--input',str(archive)],capture_output=True,text=True)
+          report={'diagnostic_collection_completed':True,'services_started':False,'image_approved':False,'original_oci_sha256':proof['archive_sha256'],'engine':json.loads(engine.stdout),'docker_load_exit':loaded.returncode,'docker_load_stdout':loaded.stdout[-4000:],'docker_load_stderr':loaded.stderr[-4000:]}
+          output=root/'.cache/eval/docker-load-diagnostics.json';output.write_text(json.dumps(report,indent=2))
+          print(json.dumps({k:v for k,v in report.items() if k!='engine'}))
+          PY
       - uses: actions/upload-artifact@v6
-        if: always() && hashFiles('.cache/eval/grafana-publication/*.json') != ''
+        if: always()
         with:
-          name: grafana-exact28-publication-${{ github.sha }}
-          path: |
-            .cache/eval/grafana-publication/transport.json
-            .cache/eval/grafana-publication/publication.json
-            .cache/eval/grafana-publication/publication-error.json
+          name: grafana-docker-load-diagnostics
+          path: .cache/eval/docker-load-diagnostics.json
           if-no-files-found: error
-          retention-days: 7
