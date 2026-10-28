@@ -1,27 +1,53 @@
-name: Publish explicitly authorized Grafana artifact
-
+name: Verify exact Grafana transport on Ubuntu 24.04
 on:
   workflow_dispatch:
-
 jobs:
-  publish-exact-authorized-oci:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    permissions: { contents: write, actions: read }
+  verify-classic-docker-transport:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions: { contents: read }
     steps:
       - uses: actions/checkout@v7
         with: { fetch-depth: 0 }
-      - name: Verify new human authorization, exact inputs and the complete existing OCI before publication
-        run: python scripts/publish_grafana_candidate.py
+      - name: Load the exact approved artifact through the actual maintained loader
+        run: python scripts/fetch_grafana_candidate.py
         env:
           GITHUB_TOKEN: ${{ github.token }}
+      - name: Verify actual config, every DiffID and all fourteen loaded ELF byte identities
+        run: |
+          python - <<'PY'
+          import hashlib,json,subprocess,tempfile
+          from pathlib import Path
+          from scripts import check_grafana_candidate_exact28 as gate
+          from scripts import fetch_grafana_candidate as fetch
+          root=Path.cwd();binding=fetch.authorized_request(root)['binding']
+          result=json.loads((root/'.cache/eval/approved-grafana-load.json').read_bytes())
+          assert result['passed'] is True and result['docker_load']['compatibility_fallback_used'] is True
+          actual=fetch.inspect(fetch.APPROVED_TAG);assert fetch.exact_image(actual,binding)
+          assert actual['Id']==binding['config_digest']
+          container=subprocess.check_output(['docker','create',actual['Id']]).decode().strip()
+          hashes={}
+          try:
+            with tempfile.TemporaryDirectory() as directory:
+              path=Path(directory)/'actual.elf'
+              for target,expected in binding['binary_sha256'].items():
+                subprocess.run(['docker','cp',container+':/'+target,str(path)],check=True)
+                with path.open('rb') as stream: hashes[target]=hashlib.file_digest(stream,'sha256').hexdigest()
+                assert hashes[target]==expected,target
+          finally:
+            state=json.loads(subprocess.check_output(['docker','inspect',container]))[0]
+            assert state['State']['Status']=='created' and state['Image']==actual['Id']
+            subprocess.run(['docker','rm',container],check=True)
+          record={'passed':True,'services_started':False,'actual_image_id':actual['Id'],'actual_diff_ids':actual['RootFS']['Layers'],'actual_elf_sha256':hashes,'original_approved_archive_sha256':binding['archive_sha256'],'request_sha256':gate.REQUEST_SHA256,'transport_sha256':fetch.TRANSPORT_SHA256,'load_result':result}
+          (root/'.cache/eval/bridge-verification.json').write_text(json.dumps(record,indent=2))
+          print(json.dumps({'passed':True,'ELFs':len(hashes),'DiffIDs':len(record['actual_diff_ids']),'actual_image_id':actual['Id']}))
+          PY
       - uses: actions/upload-artifact@v6
-        if: always() && hashFiles('.cache/eval/grafana-publication/*.json') != ''
+        if: always()
         with:
-          name: grafana-exact28-publication-${{ github.sha }}
+          name: grafana-ubuntu24-bridge-verification
           path: |
-            .cache/eval/grafana-publication/transport.json
-            .cache/eval/grafana-publication/publication.json
-            .cache/eval/grafana-publication/publication-error.json
+            .cache/eval/approved-grafana-load*.json
+            .cache/eval/grafana-docker-load-*-integrity.json
+            .cache/eval/bridge-verification.json
           if-no-files-found: error
-          retention-days: 7

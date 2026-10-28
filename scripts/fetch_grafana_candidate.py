@@ -2,13 +2,17 @@
 from __future__ import annotations
 
 import argparse
+from copy import copy
 from datetime import datetime
 import hashlib
+from io import BytesIO
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
+import tarfile
 import tempfile
 from urllib.request import Request, build_opener
 
@@ -16,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts import check_grafana_candidate_exact28 as exact  # noqa: E402
 from scripts.fetch_approved_image import NoRedirect, open_asset_response  # noqa: E402
-from scripts.oci_artifact import verify_oci_archive  # noqa: E402
+from scripts.oci_artifact import canonical_path, verify_oci_archive  # noqa: E402
 
 TRANSPORT_PATH = Path('deployment/security/grafana-candidate-transport.json')
 # Filled with the real, published release inventory hash after upload verification.
@@ -33,6 +37,12 @@ STORAGE_HOSTS = frozenset({'release-assets.githubusercontent.com', 'objects.gith
 
 class FetchError(ValueError):
     pass
+
+
+class DockerLoadError(FetchError):
+    def __init__(self, message, diagnostics):
+        super().__init__(message)
+        self.diagnostics = diagnostics
 
 
 def require(condition, message):
@@ -214,20 +224,203 @@ def exact_image(inspection, binding):
         and inspection.get('Os') == 'linux' and inspection.get('Architecture') == 'amd64')
 
 
-def load_image(archive, binding, tag):
+def load_diagnostic(result, representation):
+    raw = getattr(result, 'stderr', b'') or b''
+    if isinstance(raw, str):
+        raw = raw.encode('utf-8', errors='replace')
+    text = raw.decode('utf-8', errors='replace')
+    for name in ('GITHUB_TOKEN', 'GH_TOKEN', 'DOCKER_AUTH_CONFIG'):
+        if secret := os.environ.get(name):
+            text = text.replace(secret, '[redacted]')
+    text = re.sub(r'https?://\S+', '[redacted-url]', text)
+    text = re.sub(r'(?i)\bBearer\s+\S+', 'Bearer [redacted]', text)
+    text = re.sub(r'\b(?:gh[pousr]_[A-Za-z0-9_]+|github_pat_[A-Za-z0-9_]+)', '[redacted]', text)
+    return {'representation': representation, 'returncode': result.returncode,
+            'stderr_bytes': len(raw), 'stderr_sha256': hashlib.sha256(raw).hexdigest(),
+            'stderr_excerpt': text[:4096], 'stderr_excerpt_truncated': len(text) > 4096}
+
+
+def classic_manifest_missing(result):
+    """Only Moby's legacy-load lookup of the OCI blobs directory permits a retry."""
+    raw = getattr(result, 'stderr', b'') or b''
+    text = raw.decode('utf-8', errors='replace') if isinstance(raw, bytes) else raw
+    return bool(result.returncode and re.search(
+        r'open /[^\s:]*docker-import-[0-9]+/blobs/json: no such file or directory', text))
+
+
+class HashingReader:
+    def __init__(self, stream):
+        self.stream, self.hashed, self.count = stream, hashlib.sha256(), 0
+
+    def read(self, size=-1):
+        block = self.stream.read(size)
+        self.count += len(block)
+        self.hashed.update(block)
+        return block
+
+
+def verify_docker_load_archive(path, inventory, manifest_bytes):
+    """Integrity only: original member payloads plus exactly one Docker manifest."""
+    require(not path.is_symlink() and path.is_file(), 'Derived Docker transport is absent or linked')
+    with tarfile.open(path, 'r:') as archive:
+        members = archive.getmembers()
+        require(len(members) == len(inventory) + 1
+                and {member.name for member in members} == {*inventory, 'manifest.json'},
+                'Derived Docker transport member inventory changed')
+        for member in members:
+            require(member.name == canonical_path(member.name) and (member.isfile() or member.isdir()),
+                    'Derived Docker transport contains an unsafe member')
+            if member.name == 'manifest.json':
+                require(member.isfile() and member.size == len(manifest_bytes)
+                        and archive.extractfile(member).read() == manifest_bytes,
+                        'Derived Docker manifest differs from the exact config/layer mapping')
+                continue
+            expected = inventory[member.name]
+            require(member.size == expected['bytes']
+                    and ('file' if member.isfile() else 'directory') == expected['type'],
+                    'Derived original member type or length changed')
+            if member.isfile():
+                with archive.extractfile(member) as stream:
+                    digest = hashlib.file_digest(stream, 'sha256').hexdigest()
+                require(digest == expected['sha256'], 'Derived original member payload changed')
+    return {'bytes': path.stat().st_size, 'sha256': file_hash(path)}
+
+
+def prepare_docker_load_archive(source, binding, destination):
+    """Add manifest.json to a separate tar; the approved OCI remains untouched.
+
+    Moby v28 image/tarexport/load.go reads Config/Layers at their listed paths,
+    decompresses each layer with archive.DecompressStream, and checks each DiffID.
+    No image config, compressed layer, index, or manifest blob is rewritten.
+    """
+    checked_cache(source, binding['archive_bytes'], binding['archive_sha256'])
+    inventory = {}
+    with tarfile.open(source, 'r:') as original:
+        members = original.getmembers()
+        require(0 < len(members) <= 4096 and len({member.name for member in members}) == len(members)
+                and all(member.name == canonical_path(member.name)
+                        and (member.isfile() or member.isdir()) for member in members)
+                and 'manifest.json' not in {member.name for member in members},
+                'Compatibility bridge requires the exact pure OCI without a Docker manifest')
+        by_name = {member.name: member for member in members}
+
+        def read_json_member(name, expected_digest):
+            member = by_name.get(name)
+            require(member is not None and member.isfile() and 0 < member.size <= 4 * 1024**2,
+                    'Compatibility bridge metadata is absent or oversized')
+            raw = original.extractfile(member).read()
+            require('sha256:' + hashlib.sha256(raw).hexdigest() == expected_digest,
+                    'Compatibility bridge metadata digest differs')
+            return exact.strict_json(raw)
+
+        index = read_json_member('index.json', binding['index_digest'])
+        require(binding.get('root_layout') == 'direct_manifest' and len(index.get('manifests', [])) == 1
+                and index['manifests'][0].get('digest') == binding['platform_manifest_digest'],
+                'Compatibility bridge requires the exact direct OCI manifest')
+        manifest = read_json_member('blobs/sha256/' + binding['platform_manifest_digest'][7:],
+                                    binding['platform_manifest_digest'])
+        require(manifest['config']['digest'] == binding['config_digest'],
+                'Compatibility bridge config differs')
+        config_path = 'blobs/sha256/' + binding['config_digest'][7:]
+        config = read_json_member(config_path, binding['config_digest'])
+        layers = manifest['layers']
+        require(config.get('rootfs', {}).get('diff_ids') == binding['diff_ids']
+                and len(layers) == len(binding['diff_ids']) and config.get('os') == 'linux'
+                and config.get('architecture') == 'amd64', 'Compatibility bridge runtime identity differs')
+        layer_paths = []
+        for layer in layers:
+            require(type(layer.get('digest')) is str and exact.DIGEST.fullmatch(layer['digest'])
+                    and layer.get('mediaType') in {'application/vnd.oci.image.layer.v1.tar+gzip',
+                                                  'application/vnd.oci.image.layer.v1.tar'},
+                    'Compatibility bridge layer identity or encoding differs')
+            path = 'blobs/sha256/' + layer['digest'][7:]
+            require(path in by_name and by_name[path].isfile() and by_name[path].size == layer['size'],
+                    'Compatibility bridge layer blob is absent or changed')
+            layer_paths.append(path)
+        manifest_bytes = (json.dumps([{'Config': config_path, 'Layers': layer_paths,
+                                      'RepoTags': [binding['source_tag']]}], separators=(',', ':')) + '\n').encode()
+        require(destination.resolve() != source.resolve() and not destination.is_symlink(),
+                'Derived Docker transport must be distinct from the approved OCI')
+        with destination.open('xb') as output:
+            with tarfile.open(fileobj=output, mode='w', format=tarfile.PAX_FORMAT) as derived:
+                for member in members:
+                    expected = {'type': 'file' if member.isfile() else 'directory', 'bytes': member.size}
+                    if member.isfile():
+                        with original.extractfile(member) as stream:
+                            reader = HashingReader(stream)
+                            derived.addfile(copy(member), reader)
+                        require(reader.count == member.size, 'Source member length changed during bridging')
+                        expected['sha256'] = reader.hashed.hexdigest()
+                        if member.name.startswith('blobs/sha256/'):
+                            require(member.name == 'blobs/sha256/' + expected['sha256'],
+                                    'Source blob payload changed during bridging')
+                    else:
+                        derived.addfile(copy(member))
+                    inventory[member.name] = expected
+                info = tarfile.TarInfo('manifest.json')
+                info.size, info.mode, info.mtime = len(manifest_bytes), 0o644, 0
+                derived.addfile(info, BytesIO(manifest_bytes))
+    checked_cache(source, binding['archive_bytes'], binding['archive_sha256'])
+    require(destination.stat().st_size <= binding['archive_bytes'] + 1024**2,
+            'Derived Docker transport exceeds its independent size bound')
+    integrity = verify_docker_load_archive(destination, inventory, manifest_bytes)
+    receipt = {'mode': 'docker_manifest_transport_integrity_only', 'authorization_evaluated': False,
+               'original_approved_archive_sha256': binding['archive_sha256'],
+               'original_approved_archive_bytes': binding['archive_bytes'],
+               'derived_archive': str(destination), 'derived_archive_sha256': integrity['sha256'],
+               'derived_archive_bytes': integrity['bytes'], 'original_members': inventory,
+               'original_member_payloads_unchanged': True,
+               'added_member': {'path': 'manifest.json', 'bytes': len(manifest_bytes),
+                                'sha256': hashlib.sha256(manifest_bytes).hexdigest()},
+               'config_digest': binding['config_digest'], 'diff_ids': binding['diff_ids'],
+               'original_binary_sha256': binding['binary_sha256']}
+    return destination, receipt
+
+
+def load_image(archive, binding, tag, *, load_receipt=None):
     require(tag in {APPROVED_TAG, SCAN_TAG}, 'Candidate output tag belongs to another namespace')
+    diagnostics = {'attempts': [], 'compatibility_fallback_used': False}
     references = [binding['config_digest'], binding['platform_manifest_digest'],
                   binding['index_digest'], binding['source_tag']]
     selected = next((ref for ref in references if exact_image(inspect(ref), binding)), None)
     if selected is None:
         loaded = subprocess.run(['docker', 'load', '--input', str(archive)], capture_output=True, check=False)
-        require(loaded.returncode == 0, 'Docker could not load the verified exact28 OCI')
+        diagnostics['attempts'].append(load_diagnostic(loaded, 'original_approved_oci'))
+        if loaded.returncode:
+            if not classic_manifest_missing(loaded):
+                raise DockerLoadError('Docker could not load the verified exact28 OCI', diagnostics)
+            receipt = None
+            try:
+                with tempfile.TemporaryDirectory(prefix='grafana-docker-load-', dir=archive.parent) as temporary:
+                    derived, receipt = prepare_docker_load_archive(
+                        archive, binding, Path(temporary) / 'compatible.docker.tar')
+                    checked_cache(derived, receipt['derived_archive_bytes'], receipt['derived_archive_sha256'])
+                    diagnostics.update(compatibility_fallback_used=True, derived_transport_integrity=receipt)
+                    retry = subprocess.run(['docker', 'load', '--input', str(derived)],
+                                           capture_output=True, check=False)
+                    diagnostics['attempts'].append(load_diagnostic(retry, 'derived_docker_manifest_transport'))
+            except Exception as error:
+                diagnostics['compatibility_error_type'] = type(error).__name__
+                raise DockerLoadError('Docker compatibility transport preparation or loading failed', diagnostics) from None
+            finally:
+                if receipt is not None:
+                    receipt['private_temporary_directory_removed'] = not Path(temporary).exists()
+                    proof = archive.parent / ('grafana-docker-load-' + binding['archive_sha256'][:16] + '-integrity.json')
+                    receipt['integrity_receipt'] = str(proof)
+                    proof.write_text(json.dumps(receipt, indent=2) + '\n', encoding='utf-8')
+            if retry.returncode:
+                raise DockerLoadError('Docker could not load the compatible exact28 transport', diagnostics)
         selected = next((ref for ref in references if exact_image(inspect(ref), binding)), None)
-    require(selected is not None, 'Loaded candidate config, filesystem or platform differs')
+    if selected is None:
+        raise DockerLoadError('Loaded candidate config, filesystem or platform differs', diagnostics)
     tagged = subprocess.run(['docker', 'tag', selected, tag], capture_output=True, check=False)
-    require(tagged.returncode == 0, 'Docker could not label the verified candidate')
+    if tagged.returncode:
+        raise DockerLoadError('Docker could not label the verified candidate', diagnostics)
     actual = inspect(tag)
-    require(exact_image(actual, binding), 'Resulting tag is not the authorized exact28 candidate')
+    if not exact_image(actual, binding):
+        raise DockerLoadError('Resulting tag is not the authorized exact28 candidate', diagnostics)
+    if load_receipt is not None:
+        load_receipt.update(diagnostics)
     return actual
 
 
@@ -268,7 +461,8 @@ def main(argv=None):
                 'Candidate authority changed during verification')
         if args.archive is None:
             publication = verify_publication(transport, binding)
-        inspection = load_image(archive, binding, args.tag)
+        load_receipt = {}
+        inspection = load_image(archive, binding, args.tag, load_receipt=load_receipt)
         inspection_path.parent.mkdir(parents=True, exist_ok=True)
         inspection_path.write_text(json.dumps(inspection, indent=2) + '\n', encoding='utf-8')
         verified.pop('authorization_evaluated', None)
@@ -276,12 +470,15 @@ def main(argv=None):
                   'artifact': 'grafana', 'archive': str(archive), 'tag': args.tag,
                   'request_sha256': exact.REQUEST_SHA256, 'transport_sha256': TRANSPORT_SHA256,
                   'policy_authorization_verified': True, 'old_authorization_inherited': False,
-                  'archive_source': source, 'publication': publication, 'inspection': str(inspection_path)}
+                  'archive_source': source, 'publication': publication, 'inspection': str(inspection_path),
+                  'docker_load': load_receipt}
     except Exception as error:
         # Never echo credentials, signed URLs, HTTP bodies or Docker output.
         result = {'passed': False, 'mode': 'failed_closed', 'error_type': type(error).__name__}
         if isinstance(error, FetchError):
             result['error'] = str(error)
+        if isinstance(error, DockerLoadError):
+            result['docker_load'] = error.diagnostics
     try:
         output_paths(ROOT, output, args.archive)
         output.parent.mkdir(parents=True, exist_ok=True)
