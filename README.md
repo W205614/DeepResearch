@@ -84,7 +84,7 @@ docker compose up -d --build --wait --wait-timeout 300
 
 首次需要下载固定归档、构建应用及必要的受控组件，并初始化资料扫描服务，耗时取决于网络和机器资源。Compose 会自动执行数据库迁移并启动依赖服务。
 
-基础编排含完整观测组件；资源受限试用可显式使用 `docker compose -f compose.yaml -f compose.core.yaml up -d --build --wait --wait-timeout 300`。该模式关闭可选观测栈。生产控制、开发挂载和备份计划的区别见[部署安全与维护](docs/deployment-security-operations.md)，资源上限不是经测试的容量承诺。
+基础编排含完整观测组件；资源受限试用可显式使用 `docker compose -f compose.yaml -f deployment/compose/compose.core.yaml up -d --build --wait --wait-timeout 300`。该模式关闭可选观测栈。生产控制、开发挂载和备份计划的区别见[部署安全与维护](docs/deployment-security-operations.md)，资源上限不是经测试的容量承诺。
 
 | 入口 | 地址 | 登录方式 |
 | --- | --- | --- |

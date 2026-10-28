@@ -47,7 +47,7 @@ uv run python scripts/configure_local_oidc.py --web http://localhost:8080 --iden
 
 ```powershell
 uv run python scripts/prepare_lifecycle_acceptance.py
-docker compose -f compose.yaml -f compose.acceptance.yaml -p dr-lifecycle-acceptance up -d --build --wait --wait-timeout 300
+docker compose -f compose.yaml -f deployment/compose/compose.acceptance.yaml -p dr-lifecycle-acceptance up -d --build --wait --wait-timeout 300
 ```
 
 该覆盖文件包含专用私网段，端口和网段使用前应核对本机占用。不要为获取空闲网段清理其他项目网络。
@@ -57,7 +57,7 @@ docker compose -f compose.yaml -f compose.acceptance.yaml -p dr-lifecycle-accept
 备份会短暂停止所选项目，归档卷、镜像和私有部署快照，最后恢复原先运行的服务。目录含业务数据和密钥，应保留在本地：
 
 ```powershell
-uv run python scripts/recovery.py backup --path .cache/recovery-lifecycle-20261020-01 --compose-file compose.yaml --compose-file compose.acceptance.yaml --source-project dr-lifecycle-acceptance
+uv run python scripts/recovery.py backup --path .cache/recovery-lifecycle-20261020-01 --compose-file compose.yaml --compose-file deployment/compose/compose.acceptance.yaml --source-project dr-lifecycle-acceptance
 uv run python .cache/recovery-lifecycle-20261020-01/restore.py restore --path .cache/recovery-lifecycle-20261020-01 --project dr-restore-lifecycle-20261020-01 --subnet 10.254.245.0/24
 ```
 

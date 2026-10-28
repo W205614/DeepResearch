@@ -88,12 +88,12 @@ docker run --rm --network none -v "${PWD}:/workspace" -w /workspace python:3.13-
 # 完整单机环境，含可观测组件
 docker compose -f compose.yaml -f compose.production.yaml config --quiet
 # 本地开发源代码挂载，保留 OIDC、扫描、额度和服务角色
-docker compose -f compose.yaml -f compose.development.yaml config --quiet
+docker compose -f compose.yaml -f deployment/compose/compose.development.yaml config --quiet
 # 显式不运行可选的完整观测栈
-docker compose -f compose.yaml -f compose.core.yaml config --quiet
+docker compose -f compose.yaml -f deployment/compose/compose.core.yaml config --quiet
 ```
 
-发布时选择相应配置并在授权维护窗口启动。`compose.core.yaml` 是有意关闭外部遥测的资源受限模式，不应将该模式写成完整生产监控已启用。完整部署直接使用基本编排；生产覆盖为业务进程增加只读根文件系统、必要 tmpfs 和能力收敛。
+发布时选择相应配置并在授权维护窗口启动。`deployment/compose/compose.core.yaml` 是有意关闭外部遥测的资源受限模式，不应将该模式写成完整生产监控已启用。完整部署直接使用基本编排；生产覆盖为业务进程增加只读根文件系统、必要 tmpfs 和能力收敛。
 
 所有服务有 CPU/内存/PID 上限和 Docker 日志轮转。默认值是单机试用起点，不能当作容量测量结果。Prometheus 保留最长15天且最多2GB；日志保留7天、追踪保留3天；这些观测数据与业务正式证据的保留规则分开。历史匿名 Prometheus 卷仍需在重建前核对并按恢复清单保留，不因没有业务引用删除。
 
@@ -149,7 +149,7 @@ Unregister-ScheduledTask -TaskName DeepResearch-Host-Probe -Confirm:$false
 
 路径必须按当前主机核对；容器内 `/data` 的剩余空间不能替代宿主机、Docker VHDX 和数据库容量。探针缺失/过期、备份超出RPO、数据库连接占用、容量和文档积压均有告警规则。监控阈值需要随实际容量和业务时段校准。
 
-告警转发对重复状态串行去重，持久化安全指纹/状态，重启后不清空去重历史；不持久化 webhook 地址或原始告警载荷。先用 `compose.test.yaml` 的受控接收端验证触发、重复抑制与恢复通知，再由管理员配置真实接收端。网络不确定性仍可能产生重复外部通知，不宣称 Exactly Once。未配置 webhook 时返回未启用，不伪装送达成功。
+告警转发对重复状态串行去重，持久化安全指纹/状态，重启后不清空去重历史；不持久化 webhook 地址或原始告警载荷。先用 `deployment/compose/compose.test.yaml` 的受控接收端验证触发、重复抑制与恢复通知，再由管理员配置真实接收端。网络不确定性仍可能产生重复外部通知，不宣称 Exactly Once。未配置 webhook 时返回未启用，不伪装送达成功。
 
 账号恢复需要真实 SMTP 的可达性、发信授权和投递验收；MFA 需要在目标 Keycloak realm 配置并用独立测试账号验证新注册、已有账号、恢复码与会话失效。未进行这些真实外部设施配置时保留 `blocked_external`。
 

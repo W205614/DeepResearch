@@ -63,11 +63,11 @@ component=agent_proxy phase=bulkhead_reject path=/api/status active=8
 
 ```powershell
 docker build -t deepresearch-verify-base .
-docker build -f Dockerfile.verify -t deepresearch-verify .
-docker compose -p dr-perf -f compose.verify.yaml -f compose.performance.yaml up -d --build --wait
-docker compose -p dr-perf -f compose.verify.yaml -f compose.performance.yaml --profile performance run --rm --user 0 performance python scripts/load_system_performance.py --principals 64 --tokens-file /load/tokens.json
-docker compose -p dr-perf -f compose.verify.yaml -f compose.performance.yaml --profile performance run --rm performance-k6
-docker compose -p dr-perf -f compose.verify.yaml -f compose.performance.yaml down -v --remove-orphans
+docker build -f deployment/docker/Dockerfile.verify -t deepresearch-verify .
+docker compose --project-directory . -p dr-perf -f deployment/compose/compose.verify.yaml -f deployment/compose/compose.performance.yaml up -d --build --wait
+docker compose --project-directory . -p dr-perf -f deployment/compose/compose.verify.yaml -f deployment/compose/compose.performance.yaml --profile performance run --rm --user 0 performance python scripts/load_system_performance.py --principals 64 --tokens-file /load/tokens.json
+docker compose --project-directory . -p dr-perf -f deployment/compose/compose.verify.yaml -f deployment/compose/compose.performance.yaml --profile performance run --rm performance-k6
+docker compose --project-directory . -p dr-perf -f deployment/compose/compose.verify.yaml -f deployment/compose/compose.performance.yaml down -v --remove-orphans
 ```
 
 调参顺序应是：先用真实流量分布确定入口稳态容量，再调整 Nginx/Java 全局速率；随后按数据库等待、Tomcat busy、Agent 舱壁和 Worker 队列证据决定扩容。不要通过盲目增大线程池或连接池掩盖排队。

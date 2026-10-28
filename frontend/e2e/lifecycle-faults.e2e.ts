@@ -7,7 +7,7 @@ import { resolve } from 'node:path'
 
 const execute=promisify(execFile)
 const project='dr-lifecycle-acceptance'
-const compose=['compose','-f','compose.yaml','-f','compose.acceptance.yaml','-p',project]
+const compose=['compose','-f','compose.yaml','-f','deployment/compose/compose.acceptance.yaml','-p',project]
 async function docker(...args:string[]){return execute('docker',[...compose,...args],{cwd:'..',timeout:45_000,maxBuffer:2*1024*1024})}
 async function login(page:Page,username:string,password:string,workspace:string){
   await page.goto('/');await page.getByRole('button',{name:'登录并开始研究'}).click()

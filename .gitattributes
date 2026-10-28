@@ -38,7 +38,7 @@ deployment/vendors/minio/legacy-part-compat.patch -whitespace
 
 # Unbound runtime recipes and new trust tooling use reproducible Linux inputs.
 Dockerfile text eol=lf
-Dockerfile.etcd text eol=lf
+deployment/docker/Dockerfile.etcd text eol=lf
 Dockerfile.milvus text eol=lf
 deployment/vendors/etcd/source.lock.json text eol=lf
 deployment/vendors/milvus/source.lock.json text eol=lf
@@ -56,8 +56,8 @@ deployment/vendors/milvus/.gitattributes text eol=lf
 deployment/vendors/milvus/licenses/* text eol=lf
 deployment/vendors/milvus/headers.tar.gz -text
 scripts/storage-bootstrap/** text eol=lf
-Dockerfile.alertmanager text eol=lf
-Dockerfile.storage-init text eol=lf
+deployment/docker/Dockerfile.alertmanager text eol=lf
+deployment/docker/Dockerfile.storage-init text eol=lf
 Dockerfile.postgres text eol=lf
 scripts/check_fs_source_applicability.py text eol=lf
 tests/test_fs_source_applicability.py text eol=lf

@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - run: docker build -t deepresearch-rag-quality .
-      - run: docker compose -p dr-rag-quality -f compose.verify.yaml up -d --wait --wait-timeout 240 etcd minio milvus
+      - run: docker compose --project-directory . -p dr-rag-quality -f deployment/compose/compose.verify.yaml up -d --wait --wait-timeout 240 etcd minio milvus
       - name: Retrieval ablation and reranker gate
         env:
           EMBEDDING_MODEL: ${{ secrets.EMBEDDING_MODEL }}
@@ -77,4 +77,4 @@ jobs:
           name: rag-quality-results
           path: .cache/eval/*.json
       - if: always()
-        run: docker compose -p dr-rag-quality -f compose.verify.yaml down -v
+        run: docker compose --project-directory . -p dr-rag-quality -f deployment/compose/compose.verify.yaml down -v

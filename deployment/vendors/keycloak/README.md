@@ -1,6 +1,6 @@
 # Fixed Keycloak runtime
 
-`Dockerfile.keycloak` retains the official26.8.1 application and UBI rootfs, uses RPM to uninstall the old JDK package and actual owned files in a build stage, then installs the signed, checksum-bound Temurin21.0.13+9 glibc JRE. Builder RPM tooling never enters the runtime. Existing non-JDK RPM names/versions, application files, runtime UID/ports/entrypoint are retained. New JAVA_HOME/PATH and Java executable links select the new JRE.
+`deployment/docker/Dockerfile.keycloak` retains the official26.8.1 application and UBI rootfs, uses RPM to uninstall the old JDK package and actual owned files in a build stage, then installs the signed, checksum-bound Temurin21.0.13+9 glibc JRE. Builder RPM tooling never enters the runtime. Existing non-JDK RPM names/versions, application files, runtime UID/ports/entrypoint are retained. New JAVA_HOME/PATH and Java executable links select the new JRE.
 
 The release archive and publisher SBOM signatures were verified against the official Adoptium public-key fingerprint in `source.lock.json`. The source archive is fetched by immutable URL plus SHA256 at build time; no version-text editing or fake/devel component versions are used.
 

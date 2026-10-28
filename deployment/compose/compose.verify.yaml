@@ -13,7 +13,7 @@ services:
   etcd:
     image: dr-vendor-etcd:3.5.34-go1.27.3-xnet0.60-vcs-20261026
     platform: linux/amd64
-    build: {context: ., dockerfile: Dockerfile.etcd}
+    build: {context: ., dockerfile: deployment/docker/Dockerfile.etcd}
     command: etcd -advertise-client-urls=http://etcd:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
     healthcheck: {test: [CMD, etcdctl, endpoint, health], interval: 3s, timeout: 3s, retries: 30}
   minio:

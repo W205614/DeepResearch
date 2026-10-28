@@ -26,4 +26,4 @@ uv run python scripts/evaluate_research.py --cases eval/lifecycle/public_sample.
 
 检索评测需配置真实嵌入、Milvus 和可选重排服务，使用独立输出目录与集合，不能对日常数据运行破坏性清理。以 `scripts/evaluate_retrieval.py --help` 为准。
 
-`compose.acceptance.yaml` 的浏览器角色、故障和30分钟混合运行则使用本地确定性模型、嵌入与搜索夹具，关闭重排，不消耗真实模型 API 额度；数据库、索引、队列、身份与权限组件仍真实运行。这些检查证明组件协作与恢复行为，不能作为真实模型回答质量的证据。GitHub 的现有 Answer Quality Gate 属于真实模型评测，推送时会另行调用。
+`deployment/compose/compose.acceptance.yaml` 的浏览器角色、故障和30分钟混合运行则使用本地确定性模型、嵌入与搜索夹具，关闭重排，不消耗真实模型 API 额度；数据库、索引、队列、身份与权限组件仍真实运行。这些检查证明组件协作与恢复行为，不能作为真实模型回答质量的证据。GitHub 的现有 Answer Quality Gate 属于真实模型评测，推送时会另行调用。

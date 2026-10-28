@@ -222,7 +222,7 @@ services:
     platform: linux/amd64
     build:
       context: .
-      dockerfile: Dockerfile.etcd
+      dockerfile: deployment/docker/Dockerfile.etcd
     environment:
       ETCD_AUTO_COMPACTION_MODE: revision
       ETCD_AUTO_COMPACTION_RETENTION: "1000"
@@ -302,7 +302,7 @@ services:
     platform: linux/amd64
     build:
       context: .
-      dockerfile: Dockerfile.keycloak
+      dockerfile: deployment/docker/Dockerfile.keycloak
     command: start --import-realm --http-enabled=true --hostname-strict=false
     environment:
       KC_HOSTNAME: http://localhost:8180
@@ -400,7 +400,7 @@ services:
     platform: linux/amd64
     build:
       context: .
-      dockerfile: Dockerfile.storage-init
+      dockerfile: deployment/docker/Dockerfile.storage-init
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-deepresearch}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in .env}
@@ -537,7 +537,7 @@ services:
     image: deepresearch-alertmanager:0.34.1-maintainer-20261026
     build:
       context: .
-      dockerfile: Dockerfile.alertmanager
+      dockerfile: deployment/docker/Dockerfile.alertmanager
     command: ["--config.file=/etc/alertmanager/alertmanager.yml", "--storage.path=/alertmanager", "--cluster.listen-address="]
     ports: ["127.0.0.1:9093:9093"]
     volumes:

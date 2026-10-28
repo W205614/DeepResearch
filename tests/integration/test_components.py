@@ -5,7 +5,7 @@ import json
 import httpx
 import pytest
 
-pytestmark = pytest.mark.skipif(os.getenv('INTEGRATION') != '1', reason='Run isolated compose.verify.yaml')
+pytestmark = pytest.mark.skipif(os.getenv('INTEGRATION') != '1', reason='Run isolated deployment/compose/compose.verify.yaml')
 
 
 @pytest.fixture

@@ -5,7 +5,7 @@ import subprocess
 import time
 from pathlib import Path
 
-COMPOSE = ['docker', 'compose', '-f', 'compose.verify.yaml', '-p', 'dr-verify']
+COMPOSE = ['docker', 'compose', '--project-directory', '.', '-f', 'deployment/compose/compose.verify.yaml', '-p', 'dr-verify']
 
 
 def run(args, capture=False):
@@ -31,7 +31,7 @@ def main(args):
     try:
         if not args.reuse:
             run(['docker', 'build', '-t', 'deepresearch-verify-base', '.'])
-            run(['docker', 'build', '-f', 'Dockerfile.verify', '-t', 'deepresearch-verify', '.'])
+            run(['docker', 'build', '-f', 'deployment/docker/Dockerfile.verify', '-t', 'deepresearch-verify', '.'])
             run(COMPOSE + ['up', '-d', '--wait', '--wait-timeout', '600'])
         run(COMPOSE + ['run', '--rm', 'tests'])
         result['integration'] = 'passed'

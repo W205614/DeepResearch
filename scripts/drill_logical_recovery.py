@@ -4,7 +4,7 @@ from pathlib import Path
 import subprocess
 import time
 
-COMPOSE = ["docker", "compose", "-f", "compose.verify.yaml", "-p", "dr-verify"]
+COMPOSE = ["docker", "compose", "--project-directory", ".", "-f", "deployment/compose/compose.verify.yaml", "-p", "dr-verify"]
 TARGET = "reliability_restore_check"
 TABLES = ("runs", "memberships", "documents", "chunks", "verified_claims")
 
