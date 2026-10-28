@@ -18,6 +18,7 @@ from scripts.oci_artifact import verify_oci_archive  # noqa: E402
 
 REPOSITORY = 'W205614/DeepResearch'
 RELEASE_TAG = 'artifact-grafana-exact28-20261028'
+RELEASE_ID = 426729499
 ASSET_NAME = 'grafana-849d3d86.oci.tar'
 PART_BYTES = 64 * 1024**2
 OUTPUT = ROOT / '.cache/eval/grafana-publication'
@@ -84,23 +85,11 @@ def publish(client, request, archive, output):
     binding = request['binding']
     proof = verify_oci_archive(archive, binding, max_archive_bytes=gate.MAX_ARCHIVE_BYTES)
     parts = make_parts(archive, output / 'parts')
-    authorizing_commit = ancestor.git('rev-parse', 'HEAD').decode().strip()
-    body = (f'Explicitly authorized exact28 Grafana OCI.\nRequest SHA256: {gate.REQUEST_SHA256}\n'
-            f"OCI SHA256: {binding['archive_sha256']}\n"
-            f'Actual build commit: {ancestor.SOURCE}\n'
-            f'Authorization record: https://github.com/{REPOSITORY}/blob/{authorizing_commit}/'
-            'deployment/security/grafana-candidate-authorization.json\n'
-            'Complete raw scans, independent technical reviews and human decision are in the repository. '
-            'All parts must be reassembled and fully verified; no rebuild inherits this authorization.')
-    try:
-        release = client.call('/releases/tags/' + RELEASE_TAG)
-    except urllib.error.HTTPError as error:
-        if error.code != 404:
-            raise
-        release = client.call('/releases', method='POST', value={
-            'tag_name': RELEASE_TAG, 'target_commitish': ancestor.SOURCE, 'draft': True,
-            'prerelease': False, 'make_latest': 'false', 'name': 'Grafana exact28 reviewed 2026-10-28', 'body': body})
-    gate.require(release.get('tag_name') == RELEASE_TAG and type(release.get('id')) is int
+    # The authorized account created this draft and fixed its actual source tag.
+    # GET-by-tag is a published-release lookup and must not be used to discover
+    # or recreate this existing draft with the narrower Actions credential.
+    release = client.call(f'/releases/{RELEASE_ID}')
+    gate.require(release.get('tag_name') == RELEASE_TAG and release.get('id') == RELEASE_ID
                  and gate.REQUEST_SHA256 in release.get('body', '')
                  and binding['archive_sha256'] in release.get('body', '')
                  and release.get('prerelease') is False, 'Existing release is not this approved factual subject')
@@ -178,4 +167,19 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except urllib.error.HTTPError as error:
+        try:
+            message = json.loads(error.read(4096)).get('message', 'Publication HTTP request failed')
+        except (ValueError, AttributeError):
+            message = 'Publication HTTP request failed'
+        token = os.environ.get('GITHUB_TOKEN')
+        if token:
+            message = message.replace(token, '[redacted]')
+        failure = {'published': False, 'http_status': error.code, 'message': message[:300],
+                   'release_id': RELEASE_ID, 'request_sha256': gate.REQUEST_SHA256}
+        if OUTPUT.is_dir():
+            (OUTPUT / 'publication-error.json').write_text(json.dumps(failure, indent=2) + '\n', encoding='utf-8')
+        print(json.dumps(failure))
+        raise SystemExit(1)

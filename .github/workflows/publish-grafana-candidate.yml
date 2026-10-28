@@ -22,11 +22,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - uses: actions/upload-artifact@v6
-        if: always()
+        if: always() && hashFiles('.cache/eval/grafana-publication/*.json') != ''
         with:
           name: grafana-exact28-publication-${{ github.sha }}
           path: |
             .cache/eval/grafana-publication/transport.json
             .cache/eval/grafana-publication/publication.json
+            .cache/eval/grafana-publication/publication-error.json
           if-no-files-found: error
           retention-days: 7
