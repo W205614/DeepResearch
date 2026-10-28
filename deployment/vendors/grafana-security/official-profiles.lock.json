@@ -1,0 +1,93 @@
+{
+  "schema": "grafana-official-production-profile-inputs-v1",
+  "purpose": "Collect complete source and production-package facts for future review; this is not a CVE disposition or new-candidate approval.",
+  "source_of_native_inputs": "Fresh go version -m -json reads of the existing official signed ELF files; exact SHA256 cross-checked with the original frozen full native SBOM.",
+  "original_subject": {
+    "index_digest": "sha256:9a68d3a7f3b96ffa643af86e5be5f91a723cc051678b4d445a879861bc335132",
+    "platform_manifest_digest": "sha256:11d917a7da05e9effcd60934f9d16e7d485300b41e39e94f87d5485c5ed0f263",
+    "config_digest": "sha256:0bf2ff0e6cc8f6ca357aae46062ff8188ee7629736d3763c27788a80b4df1d5b",
+    "archive_sha256": "02332c39f6daed922cd030fbcaa00e4949e07b1c157776a2ca60640327e4e59b"
+  },
+  "original_frozen_sbom": {
+    "path": "deployment/security/grafana-fixed-evidence/musl-fixed-native-syft.json",
+    "sha256": "88f606ca86b120218c30cb9237a18b34459ca2f3c6788c51ee9ea5bae968cab7"
+  },
+  "native_inputs_apply_to_new_candidate": false,
+  "new_candidate_approved": false,
+  "profile": {
+    "go_version": "go1.27.3",
+    "host_os": "linux",
+    "host_arch": "amd64",
+    "GOOS": "linux",
+    "GOARCH": "amd64",
+    "GOAMD64": "v1",
+    "CGO_ENABLED": "0",
+    "GOWORK": "off",
+    "tags": [
+      "arrow_json_stdlib"
+    ],
+    "source_package": "./pkg"
+  },
+  "profiles": [
+    {
+      "name": "tempo",
+      "module": "github.com/grafana/grafana-tempo-datasource",
+      "version": "v0.0.0-20261021151041-7bbc067f7b95",
+      "module_h1": "h1:Gg9/7u2/RMQYydaMv/GhIlX7DCYAC7nVy0EFiZ0pfgg=",
+      "go_mod_h1": "h1:FAsp4Dr8tRo8I1J3dCY7WqdDsbRbF/NBwjqWPLP6AyU=",
+      "source_repository": "https://github.com/grafana/grafana-tempo-datasource.git",
+      "source_commit": "7bbc067f7b950057beebcaeeb910f16e98f2dacb",
+      "source_package": "./pkg",
+      "elf_target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "elf_sha256": "ee8eaf152c8ee65fba362a42643b79a80125297c4940f6382cd11d36b0035ebc",
+      "elf_bytes": 28864672,
+      "native_buildinfo": {
+        "path": "deployment/vendors/grafana-security/official-native/tempo.buildinfo.json",
+        "sha256": "5db8ec7b0520acb62dacf76d6a17d7a3935d3d613d266abe10effb1b5accf32c"
+      },
+      "local_replacements": []
+    },
+    {
+      "name": "prometheus",
+      "module": "github.com/grafana/grafana-prometheus-datasource",
+      "version": "v0.0.0-20261022085610-7d5bbc86bd38",
+      "module_h1": "h1:St/J0PCRh/fBH6Md10NF6vcVsreuTXWxoj9oj/SSgpE=",
+      "go_mod_h1": "h1:t6W9urOYo+ydsQ54sqysRglz/vn3I+j79zEmwodeO44=",
+      "source_repository": "https://github.com/grafana/grafana-prometheus-datasource.git",
+      "source_commit": "7d5bbc86bd38f95ca5143c8490d1204787cc391b",
+      "source_package": "./pkg",
+      "elf_target": "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64",
+      "elf_sha256": "3fb8397ce2284b9e0851e19092ba5748ed92bfbc4caadeec66dab1d0692267a1",
+      "elf_bytes": 33321120,
+      "native_buildinfo": {
+        "path": "deployment/vendors/grafana-security/official-native/prometheus.buildinfo.json",
+        "sha256": "e9a264e1404efbb888d6c87e2889f2e088b6a40a61cc71262a10dd734f367c33"
+      },
+      "local_replacements": [
+        {
+          "module": "github.com/grafana/grafana-prometheus-datasource/pkg/promlib",
+          "path": "pkg/promlib",
+          "source_commit": "7d5bbc86bd38f95ca5143c8490d1204787cc391b"
+        }
+      ]
+    },
+    {
+      "name": "zipkin",
+      "module": "github.com/grafana/grafana-zipkin-datasource",
+      "version": "v0.0.0-20261021144307-8d4b27908faf",
+      "module_h1": "h1:9jRKkRFLebK8Hfnn5mSjFYn4EfTUtF1YKm4ax8RIrzs=",
+      "go_mod_h1": "h1:DKzOVFu+WYGOPVGkNdTgZBKHWHrt/SfAdZvGght595I=",
+      "source_repository": "https://github.com/grafana/grafana-zipkin-datasource.git",
+      "source_commit": "8d4b27908faf474d2fee295ddddbd1c8ac9aa2e4",
+      "source_package": "./pkg",
+      "elf_target": "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64",
+      "elf_sha256": "18a962eaa7f4220b6a7c40cf282f267674dd64efe73dd4fe6b45cac62980abcd",
+      "elf_bytes": 27943072,
+      "native_buildinfo": {
+        "path": "deployment/vendors/grafana-security/official-native/zipkin.buildinfo.json",
+        "sha256": "f6c6b4b1cf69c0cdc630014189ba7a541f480aaf68546d11c6a051665518f07c"
+      },
+      "local_replacements": []
+    }
+  ]
+}

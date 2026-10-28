@@ -25,6 +25,7 @@ MAX_REPORT_BYTES = 128 * 1024**2
 MAX_SCAN_AGE_SECONDS = 7200
 SEVERITIES = ('CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'UNKNOWN')
 BASELINE_GATE_SEVERITIES = frozenset({'HIGH', 'CRITICAL'})
+MANIFEST_TYPES = {'go.mod': 'gomod', 'pom.xml': 'pom', 'package-lock.json': 'npm', 'uv.lock': 'uv'}
 EMPTY_SHA256 = hashlib.sha256(b'').hexdigest()
 
 
@@ -193,7 +194,17 @@ def verify_legacy_compiled_scope(root, scope, binding):
     require(not any(p.get('Name') == scope['module'] for p in selected[0]['Packages']), 'Tempo is present in main ELF inventory')
 
 
-def validate_completion(scan, receipt, raw_sha256, scope, source_commit, tracked_clean, findings, now):
+def committed_manifest_targets(root, source_commit):
+    """Derive current coverage independently from the committed tree, not the receipt."""
+    result = subprocess.run(['git', 'ls-tree', '-r', '--name-only', '-z', source_commit],
+                            cwd=root, capture_output=True, check=True)
+    names = [name.decode('utf-8') for name in result.stdout.split(b'\0') if name]
+    return sorted([[name, 'lang-pkgs', MANIFEST_TYPES[Path(name).name]]
+                   for name in names if Path(name).name in MANIFEST_TYPES])
+
+
+def validate_completion(scan, receipt, raw_sha256, scope, source_commit, tracked_clean, findings, now,
+                        expected_targets=None):
     require(type(raw_sha256) is str and bool(re.fullmatch('[0-9a-f]{64}', raw_sha256)), 'Raw report SHA256 is invalid')
     require(type(scan.get('SchemaVersion')) is int and scan['SchemaVersion'] == 2 and scan.get('ArtifactType') == 'filesystem'
             and type(scan.get('Trivy')) is dict and scan['Trivy'].get('Version') == scope['scanner_version'],
@@ -229,8 +240,12 @@ def validate_completion(scan, receipt, raw_sha256, scope, source_commit, tracked
             and 0 <= (finish - start).total_seconds() <= MAX_SCAN_AGE_SECONDS,
             'Raw scan is stale, future-dated or exceeds its completion bound')
     targets = [[r['Target'], r.get('Class', ''), r.get('Type', '')] for r in scan['Results']]
+    expected = scope['required_scan_targets'] if expected_targets is None else expected_targets
+    language = [target for target in targets if target[1] == 'lang-pkgs']
     require(len({tuple(t) for t in targets}) == len(targets)
-            and all(t in targets for t in scope['required_scan_targets'])
+            and expected and len({tuple(t) for t in expected}) == len(expected)
+            and all(t in expected for t in scope['required_scan_targets'])
+            and sorted(language) == sorted(expected)
             and receipt.get('result_targets_sha256') == hashlib.sha256(canonical(sorted(targets))).hexdigest(),
             'Full source result-target coverage is missing or ambiguous')
     result = [r for r in scan['Results'] if [r['Target'], r.get('Class', ''), r.get('Type', '')]
@@ -242,7 +257,8 @@ def validate_completion(scan, receipt, raw_sha256, scope, source_commit, tracked
             'Frozen manifest package inventory is incomplete or differs')
 
 
-def evaluate(scan, receipt, *, raw_sha256, source_commit, root=ROOT, now=None, tracked_clean=True, policy_path=POLICY):
+def evaluate(scan, receipt, *, raw_sha256, source_commit, root=ROOT, now=None, tracked_clean=True, policy_path=POLICY,
+             expected_targets=None):
     result = {'passed': False, 'mode': 'failed_closed', 'raw_counts': None, 'raw_secret_counts': None,
               'technical_not_applicable_count': 0, 'technical_not_applicable': [], 'scan_completion_verified': False,
               'retained_nonblocking_count': None, 'retained_nonblocking': [],
@@ -261,7 +277,8 @@ def evaluate(scan, receipt, *, raw_sha256, source_commit, root=ROOT, now=None, t
         result['scoped_raw_HIGH'] = sum(f['kind'] == 'vulnerability' and f['target'] == scope['source_path']
                                         and f['severity'] == 'HIGH' for f in findings)
         verify_legacy_compiled_scope(root, scope, binding)
-        validate_completion(scan, receipt, raw_sha256, scope, source_commit, tracked_clean, findings, now)
+        validate_completion(scan, receipt, raw_sha256, scope, source_commit, tracked_clean, findings, now,
+                            expected_targets=expected_targets)
         result['scan_completion_verified'] = True
         required = {(r['id'], r['target'], r['package'], r['version'], r['severity']) for r in scope['rows']}
         selected, unresolved, seen = [], [], set()
@@ -308,7 +325,8 @@ def main():
         dirty = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=no'], cwd=ROOT,
                                capture_output=True, text=True, check=True).stdout
         result = evaluate(scan, receipt, raw_sha256=file_hash(args.scan), source_commit=head,
-                          tracked_clean=not dirty, policy_path=args.policy)
+                          tracked_clean=not dirty, policy_path=args.policy,
+                          expected_targets=committed_manifest_targets(ROOT, head))
     except (ValueError, OSError, subprocess.SubprocessError) as error:
         result = {'passed': False, 'mode': 'failed_closed', 'technical_not_applicable_count': 0,
                   'error_type': type(error).__name__, 'error': 'Raw scan/completion evidence is unavailable', 'raw_counts': None}

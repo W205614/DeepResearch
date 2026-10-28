@@ -80,6 +80,7 @@ deployment/security/minio-openpgp2-technical-review.json -text whitespace=cr-at-
 # Additional independent technical records keep the reviewed raw byte identity.
 deployment/security/minio-html4-technical-review.json -text whitespace=cr-at-eol
 deployment/security/minio-html4-evidence/** -text whitespace=cr-at-eol
+deployment/security/minio-html4-evidence/*-buildinfo.txt -whitespace
 deployment/docker/Dockerfile.tempo text eol=lf
 deployment/docker/Dockerfile.otel-collector text eol=lf
 deployment/docker/Dockerfile.grafana-security text eol=lf
@@ -90,3 +91,6 @@ deployment/vendors/keycloak/guava.lock.json text eol=lf
 scripts/check_minio_html_exact4.py text eol=lf
 tests/test_minio_html_exact4.py text eol=lf
 scripts/collect_grafana_candidate.py text eol=lf
+scripts/collect_tempo_evidence.py text eol=lf
+scripts/reuse_grafana_candidate.py text eol=lf
+scripts/split_candidate_oci.py text eol=lf

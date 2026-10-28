@@ -102,6 +102,49 @@ def test_producer_receipt_matches_independent_checker_completion_contract(scan_f
                                 COMMIT, True, [], datetime.now(timezone.utc))
 
 
+def test_new_tracked_manifest_extends_full_coverage_without_changing_old_review(scan_fixture):
+    target = ['new-runtime/go.mod', 'lang-pkgs', 'gomod']
+    scan_fixture[5].append((target[0], 'd' * 40))
+    scan_fixture[3]['Results'].append({'Target': target[0], 'Class': target[1], 'Type': target[2],
+                                     'Packages': [{'Name': 'new/runtime', 'Version': '1'}]})
+    receipt = invoke(scan_fixture)
+    assert receipt['completed'] and receipt['language_target_count'] == 34
+    from scripts import check_fs_source_applicability as checker
+    baseline = [[r['Target'], r['Class'], r['Type']] for r in scan_fixture[3]['Results'][:-1]]
+    scope = {'scanner_version': '0.75.0', 'required_severities': producer.SEVERITIES,
+             'required_scan_targets': baseline, 'source_path': 'module-0/go.mod', 'source_inventory_count': 1,
+             'source_inventory_sha256': hashlib.sha256(producer.canonical([['fixture/module-0/go.mod', '1']])).hexdigest()}
+    checker.validate_completion(scan_fixture[3], receipt, receipt['raw_sha256'], scope,
+                                COMMIT, True, [], datetime.now(timezone.utc), expected_targets=baseline + [target])
+    with pytest.raises(checker.DispositionError, match='coverage'):
+        checker.validate_completion(scan_fixture[3], receipt, receipt['raw_sha256'], scope,
+                                    COMMIT, True, [], datetime.now(timezone.utc), expected_targets=baseline)
+
+
+def test_missing_new_tracked_manifest_is_still_incomplete(scan_fixture):
+    scan_fixture[5].append(('new-runtime/go.mod', 'd' * 40))
+    assert not invoke(scan_fixture)['completed']
+
+
+def test_old_required_manifest_cannot_be_removed_by_extending_the_inventory(scan_fixture):
+    scan_fixture[5].pop(0)
+    scan_fixture[5].append(('new-runtime/go.mod', 'd' * 40))
+    result = invoke(scan_fixture)
+    assert not result['completed'] and not scan_fixture[4]
+
+
+def test_consumer_derives_manifest_paths_from_the_commit_not_producer_data(tmp_path, monkeypatch):
+    from scripts import check_fs_source_applicability as checker
+    def execute(args, **kwargs):
+        assert args == ['git', 'ls-tree', '-r', '--name-only', '-z', COMMIT]
+        return subprocess.CompletedProcess(args, 0,
+            b'old/go.mod\0new/go.mod\0src/app.py\0frontend/package-lock.json\0', b'')
+    monkeypatch.setattr(checker.subprocess, 'run', execute)
+    assert checker.committed_manifest_targets(tmp_path, COMMIT) == [
+        ['frontend/package-lock.json', 'lang-pkgs', 'npm'], ['new/go.mod', 'lang-pkgs', 'gomod'],
+        ['old/go.mod', 'lang-pkgs', 'gomod']]
+
+
 @pytest.mark.parametrize('coverage', ['missing', False, None, 1, 'true'])
 def test_omitted_or_untyped_development_dependency_coverage_is_rejected(scan_fixture, coverage):
     from scripts import check_fs_source_applicability as checker

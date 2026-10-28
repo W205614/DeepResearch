@@ -132,8 +132,8 @@ def validate_report(scan, *, raw_sha, process_exit, started, finished, scope, ex
                 (secret_counts if key == 'Secrets' else vulnerability_counts)[value['Severity']] += 1
             findings += len(values)
     require(len(set(map(tuple, targets))) == len(targets), 'Duplicate result targets')
-    require(sorted(language) == sorted(expected_targets) and len(language) == 33,
-            'Complete 33 language-target coverage is missing or changed')
+    require(sorted(language) == sorted(expected_targets) and len(language) == len(expected_targets),
+            'Complete tracked language-target coverage is missing or changed')
     return {'schema': 'fs-scan-completion-v1', 'completed': True, 'operational_success': True,
             'timed_out': False, 'scanner_version': scope['scanner_version'], 'raw_sha256': raw_sha,
             'raw_report_id': report_id, 'source_commit': source_commit, 'tracked_clean': True,
@@ -171,8 +171,9 @@ def run(root, scanner, output, *, severities=None, source_sha=None):
         require(scope['scanner_version'] == '0.75.0', 'Scanner version differs from fixed coverage')
         expected = sorted([[name, 'lang-pkgs', MANIFESTS[Path(name).name]]
                            for name, _ in tracked if Path(name).name in MANIFESTS])
-        require(len(expected) == 33 and sorted(scope['required_scan_targets']) == expected,
-                'Tracked manifest inventory differs from complete scope')
+        require(expected and len({tuple(target) for target in expected}) == len(expected)
+                and all(target in expected for target in scope['required_scan_targets']),
+                'Previously reviewed source manifest coverage is missing or ambiguous')
         source = output / 'source'
         export_source(root, source, tracked)
         # Explicit neutral config and a zero-byte ignore file prevent repository,
