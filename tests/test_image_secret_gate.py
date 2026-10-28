@@ -81,7 +81,7 @@ def test_approved_workflow_scans_secrets_before_vulnerability_dispositions():
     steps = workflow['jobs']['runtime-image-scan']['steps']
     scan_index = next(i for i, step in enumerate(steps) if step.get('id') == 'approved_scan')
     gate_index = next(i for i, step in enumerate(steps) if 'scripts/check_image_secrets.py' in step.get('run', ''))
-    disposition_index = next(i for i, step in enumerate(steps) if 'scripts/check_minio_openpgp_exact2.py' in step.get('run', ''))
+    disposition_index = next(i for i, step in enumerate(steps) if 'scripts/check_minio_html_exact4.py' in step.get('run', ''))
     assert steps[scan_index]['with']['scanners'] == 'vuln,secret'
     assert scan_index < gate_index < disposition_index
     assert not steps[gate_index].get('continue-on-error', False)

@@ -1,0 +1,31 @@
+{
+  "schema": "keycloak-guava-runtime-override-v1",
+  "advisory": "CVE-2026-102554",
+  "advisory_source": "https://github.com/google/guava/security/advisories/GHSA-xxph-c9ww-hj94",
+  "release_source": "https://github.com/google/guava/releases/tag/v33.7.2",
+  "coordinates": "pkg:maven/com.google.guava/guava@33.7.2-jre",
+  "artifact_url": "https://repo.maven.apache.org/maven2/com/google/guava/guava/33.7.2-jre/guava-33.7.2-jre.jar",
+  "publisher_checksum_url": "https://repo.maven.apache.org/maven2/com/google/guava/guava/33.7.2-jre/guava-33.7.2-jre.jar.sha256",
+  "sha256": "b530942257fb935f8b2cfaa5f8eb5bd59c555fd8e8d01b8ce98912e077ea606c",
+  "bytes": 3057659,
+  "embedded_pom_properties": {
+    "groupId": "com.google.guava",
+    "artifactId": "guava",
+    "version": "33.7.2-jre"
+  },
+  "license_entry": "META-INF/LICENSE",
+  "runtime_path": "/opt/keycloak/lib/lib/main/com.google.guava.guava-33.6.0-jre.jar",
+  "runtime_path_reason": "The existing Quarkus bootstrap records this exact path. Keep its compatibility basename while replacing the complete JAR; never edit the embedded version metadata.",
+  "runtime_owner": "1000:0",
+  "runtime_mode": "0644",
+  "preserved": [
+    "official Keycloak 26.8.1 base image digest",
+    "Temurin 21.0.13+9 JRE and its independent file manifest",
+    "H2 2.4.240 JAR",
+    "Quarkus bootstrap bytes and classpath entries",
+    "Keycloak application code and database schema",
+    "non-JDK RPM inventory",
+    "runtime UID, ports and entrypoint"
+  ],
+  "validation_boundary": "Publisher checksum and embedded metadata were verified. Fresh runtime security scans and enterprise startup/OIDC CI are required for the resulting image."
+}

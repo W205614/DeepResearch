@@ -118,15 +118,16 @@ jobs:
           python scripts/check_image_secrets.py
           --scan runtime-image.json --scanner-exit-code 0
           --output .cache/eval/approved-image-secret-gate.json
-      - name: Enforce original FIXED and independently reviewed exact OpenPGP facts
+      - name: Enforce original FIXED and independently reviewed exact OpenPGP and HTML facts
         if: matrix.artifact == 'minio' && steps.approved_scan.outcome == 'success'
         run: >-
-          python scripts/check_minio_openpgp_exact2.py
+          python scripts/check_minio_html_exact4.py
           --archive .cache/eval/approved-minio.oci.tar
           --scan runtime-image.json
           --inspect .cache/eval/approved-minio-load-inspect.json
           --scanner-exit-code 0
           --original-output .cache/eval/minio-original-disposition.json
+          --exact2-output .cache/eval/minio-openpgp2-disposition.json
           --output .cache/eval/minio-ci-disposition.json
       - name: Collect complete native and full Grafana reports
         if: matrix.artifact == 'grafana' && steps.approved_scan.outcome == 'success'
@@ -157,6 +158,7 @@ jobs:
             .cache/eval/approved-*-load*.json
             .cache/eval/minio-ci-disposition.json
             .cache/eval/minio-original-disposition.json
+            .cache/eval/minio-openpgp2-disposition.json
             .cache/eval/grafana-ci-disposition.json
             .cache/eval/approved-image-secret-gate.json
             .cache/eval/artifact-source-reuse.json
@@ -233,3 +235,56 @@ jobs:
         with:
           name: bootstrap-source-security-${{ github.sha }}
           path: .cache/codeql-bootstrap/*.sarif
+  grafana-maintenance-candidate-materials:
+    # Review material only. The approved runtime, all existing security gates and
+    # the human authorization are unchanged until a new exact subject is approved.
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions: { contents: read }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v6
+        with: { go-version: '1.27.3', cache: false }
+      - name: Build a complete separate OCI candidate without inherited approval
+        run: |
+          mkdir -p .cache/eval
+          docker buildx create --name dr-grafana-maintenance --driver docker-container --use
+          docker buildx build --platform linux/amd64 --provenance=false --sbom=false \
+            --file deployment/docker/Dockerfile.grafana-security \
+            --tag deepresearch-grafana-candidate:ci \
+            --metadata-file .cache/eval/grafana-candidate-build.json \
+            --output type=oci,dest=.cache/eval/grafana-candidate.oci.tar .
+          docker load --input .cache/eval/grafana-candidate.oci.tar
+      - uses: aquasecurity/setup-trivy@3fb12ec12f41e471780db15c232d5dd185dcb514
+        with: { version: v0.75.0, cache: true }
+      - name: Keep complete current vulnerability and secret findings for independent review
+        run: >-
+          trivy image --scanners vuln,secret --list-all-pkgs
+          --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --exit-code 0 --timeout 10m
+          --format json --output .cache/eval/grafana-candidate-raw.json
+          deepresearch-grafana-candidate:ci
+      - name: Reject every secret finding before collecting review materials
+        run: >-
+          python scripts/check_image_secrets.py
+          --scan .cache/eval/grafana-candidate-raw.json --scanner-exit-code 0
+          --output .cache/eval/grafana-candidate-secret-gate.json
+      - name: Collect full native inventories and actual ELF identities without granting a disposition
+        run: >-
+          python scripts/collect_grafana_candidate.py
+          --image deepresearch-grafana-candidate:ci
+          --archive .cache/eval/grafana-candidate.oci.tar
+          --scan .cache/eval/grafana-candidate-raw.json
+          --output-dir .cache/eval/grafana-candidate-reports
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: grafana-maintenance-candidate-${{ github.sha }}
+          path: |
+            .cache/eval/grafana-candidate.oci.tar
+            .cache/eval/grafana-candidate-build.json
+            .cache/eval/grafana-candidate-raw.json
+            .cache/eval/grafana-candidate-secret-gate.json
+            .cache/eval/grafana-candidate-reports/
+          retention-days: 7
+          compression-level: 0
+          if-no-files-found: error

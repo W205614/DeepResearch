@@ -261,7 +261,7 @@ services:
     networks: [index-store, retrieval]
   milvus:
     <<: *service-defaults
-    image: dr-vendor-milvus:3.0.3-go1.26.10-locked-20261026
+    image: dr-vendor-milvus:3.0.3-go1.26.10-jose4.1.6-20261028
     platform: linux/amd64
     build:
       context: .
@@ -298,7 +298,7 @@ services:
     networks: [index-store, retrieval]
   keycloak:
     <<: *service-defaults
-    image: dr-vendor-keycloak:26.8.1-temurin21.0.13-locked-20261026
+    image: dr-vendor-keycloak:26.8.1-temurin21.0.13-guava33.7.2-20261028
     platform: linux/amd64
     build:
       context: .
@@ -481,7 +481,11 @@ services:
     networks: [retrieval]
   otel-collector:
     <<: *service-defaults
-    image: otel/opentelemetry-collector-contrib:0.163.2@sha256:989669581ee1f89184f3fd9dd5adfc6615ed6c9692c026aaea89e07a20dfb177
+    image: deepresearch-otel-collector:0.163.2-security-20261028
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: deployment/docker/Dockerfile.otel-collector
     command: ["--config=/etc/otelcol-contrib/config.yaml"]
     volumes: [./observability/otel-collector.yaml:/etc/otelcol-contrib/config.yaml:ro]
     depends_on:
@@ -493,7 +497,11 @@ services:
     networks: [telemetry]
   tempo:
     <<: *service-defaults
-    image: grafana/tempo:2.10.10@sha256:12b0820f13ffa10ce956b6e9acc3b03f3cffded99109be6cc09d106fe56e5d38
+    image: deepresearch-tempo:2.10.10-security-20261028
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: deployment/docker/Dockerfile.tempo
     command: ["-config.file=/etc/tempo/tempo.yaml"]
     volumes:
       - ./observability/tempo.yaml:/etc/tempo/tempo.yaml:ro

@@ -1,0 +1,24 @@
+{
+  "upstream": "https://github.com/grafana/tempo",
+  "tag": "v2.10.10",
+  "commit": "f317720e7e5191a7f282e8f7d6fe5387ae6015b4",
+  "go_version": "1.27.3",
+  "compiler_image": "golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c",
+  "original_runtime_image": "grafana/tempo:2.10.10@sha256:12b0820f13ffa10ce956b6e9acc3b03f3cffded99109be6cc09d106fe56e5d38",
+  "advisories": [
+    "https://github.com/go-jose/go-jose/security/advisories/GHSA-mgcc-cww5-fp2q"
+  ],
+  "security_dependencies": {
+    "github.com/go-jose/go-jose/v4": "v4.1.6",
+    "golang.org/x/net": "v0.62.0"
+  },
+  "locks": {
+    "go.mod": "b7780da539145adabcc30d5f0368bc25593467a30f0ffca8f51d4835aa5329e0",
+    "go.sum": "7d22fba88476234196910d713e2d1d079fcf14f12b1249f73e6a68febff1c55d"
+  },
+  "runtime_boundary": "Upstream 2.10.10 runtime, user, entrypoint and storage configuration retained; only the actual Go executable is rebuilt from the locked source graph. New image scan and compatibility checks remain required.",
+  "source_transport": "Official Git remote; Git-verified object graph; exact annotated tag object and peeled commit are checked before checkout.",
+  "tag_object": "bbe3be0e055f387b13a3ce45ecbecb0a9c997ae2",
+  "recipe_path": "deployment/docker/Dockerfile.tempo",
+  "recipe_sha256": "ade7511f2d323833c23be26be9c9f9a05007c0f89096cca625dc2595f4e9e8b5"
+}

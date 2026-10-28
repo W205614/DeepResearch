@@ -88,6 +88,13 @@ jobs:
         run: python scripts/fetch_approved_image.py --artifact grafana
         env:
           GITHUB_TOKEN: ${{ github.token }}
+      - name: Validate the maintained collector with the current complete telemetry configuration
+        run: |
+          docker compose build otel-collector
+          docker run --rm --network none --read-only --cap-drop ALL \
+            -v "$PWD/observability/otel-collector.yaml:/etc/otelcol-contrib/config.yaml:ro" \
+            deepresearch-otel-collector:0.163.2-security-20261028 \
+            validate --config=/etc/otelcol-contrib/config.yaml
       - run: python scripts/smoke-enterprise.py --start
       - run: curl --fail --retry 15 --retry-connrefused http://127.0.0.1:8080/livez
       - run: curl --fail --retry 15 --retry-connrefused http://127.0.0.1:8080/readyz

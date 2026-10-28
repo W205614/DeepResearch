@@ -1,0 +1,312 @@
+{
+  "schema": "minio-html4-technical-applicability-review-v1",
+  "actor_kind": "automated_independent_agent",
+  "actor": "/root/frozen_security_audit",
+  "review_kind": "technical_applicability",
+  "human_risk_acceptance": false,
+  "recorded_at": "2026-10-28T09:32:20.655279+00:00",
+  "decision": "NOT_APPLICABLE_TO_EXACT_BOUND_TARGET_BUILDS",
+  "facts_passed": true,
+  "original_binding_sha256": "2d8518f9ab275f97f0c98c68f3a94d42217b292a2fae50e0ce6461f46919d68e",
+  "index_digest": "sha256:151cd83d5e6500f4d1b3d7f0a12756fe80e8ffcbf91150afd6b9b9605bc2369a",
+  "platform_manifest_digest": "sha256:1a7bd6d07a350cd83ef332d8d2148f123306c7a5706d4184f4d83e5dce42bc83",
+  "config_digest": "sha256:45b3d3e48a5b0a92e7ff52b046573268a241207fe6ddfafa504a48bc543cb1f3",
+  "archive_sha256": "4b337cbfbe438d9ca24c67cdbf284c523e2d06ea52e94e866ea09b945d0bb389",
+  "source_commit": "0cd388c666f8211f552604ae73448a066e9c25ce",
+  "expires": "2026-11-25T23:59:59+08:00",
+  "rows": [
+    {
+      "target": "usr/bin/mcli",
+      "advisory": "CVE-2026-78661",
+      "go_advisory": "GO-2026-6860",
+      "package": "golang.org/x/net",
+      "version": "v0.61.0",
+      "raw_severity": "UNKNOWN",
+      "elf_sha256": "66a22d1bada31f44635405a95fb8005e9d23e4c77a3b9d2a74cfb58735d4094a",
+      "production_graph_complete": true,
+      "package_count": 616,
+      "module_count": 107,
+      "function_count": 33790,
+      "html_packages": [],
+      "html_named_functions": [],
+      "affected_import": "golang.org/x/net/html",
+      "fixed_version": "0.62.0",
+      "technical_disposition": "NOT_APPLICABLE_TO_EXACT_BOUND_TARGET_BUILD"
+    },
+    {
+      "target": "usr/bin/mcli",
+      "advisory": "CVE-2026-97045",
+      "go_advisory": "GO-2026-6866",
+      "package": "golang.org/x/net",
+      "version": "v0.61.0",
+      "raw_severity": "UNKNOWN",
+      "elf_sha256": "66a22d1bada31f44635405a95fb8005e9d23e4c77a3b9d2a74cfb58735d4094a",
+      "production_graph_complete": true,
+      "package_count": 616,
+      "module_count": 107,
+      "function_count": 33790,
+      "html_packages": [],
+      "html_named_functions": [],
+      "affected_import": "golang.org/x/net/html",
+      "fixed_version": "0.62.0",
+      "technical_disposition": "NOT_APPLICABLE_TO_EXACT_BOUND_TARGET_BUILD"
+    },
+    {
+      "target": "usr/bin/silo",
+      "advisory": "CVE-2026-78661",
+      "go_advisory": "GO-2026-6860",
+      "package": "golang.org/x/net",
+      "version": "v0.61.0",
+      "raw_severity": "UNKNOWN",
+      "elf_sha256": "865e488f9e455b6b7306482b2d4a147ea841f15f141c32678851d3168c624bc2",
+      "production_graph_complete": true,
+      "package_count": 1410,
+      "module_count": 260,
+      "function_count": 115493,
+      "html_packages": [],
+      "html_named_functions": [],
+      "affected_import": "golang.org/x/net/html",
+      "fixed_version": "0.62.0",
+      "technical_disposition": "NOT_APPLICABLE_TO_EXACT_BOUND_TARGET_BUILD"
+    },
+    {
+      "target": "usr/bin/silo",
+      "advisory": "CVE-2026-97045",
+      "go_advisory": "GO-2026-6866",
+      "package": "golang.org/x/net",
+      "version": "v0.61.0",
+      "raw_severity": "UNKNOWN",
+      "elf_sha256": "865e488f9e455b6b7306482b2d4a147ea841f15f141c32678851d3168c624bc2",
+      "production_graph_complete": true,
+      "package_count": 1410,
+      "module_count": 260,
+      "function_count": 115493,
+      "html_packages": [],
+      "html_named_functions": [],
+      "affected_import": "golang.org/x/net/html",
+      "fixed_version": "0.62.0",
+      "technical_disposition": "NOT_APPLICABLE_TO_EXACT_BOUND_TARGET_BUILD"
+    }
+  ],
+  "target_builds": {
+    "usr/bin/mcli": {
+      "elf_sha256": "66a22d1bada31f44635405a95fb8005e9d23e4c77a3b9d2a74cfb58735d4094a",
+      "elf_bytes": 31133856,
+      "production_graph_complete": true,
+      "package_count": 616,
+      "unique_package_count": 616,
+      "module_count": 107,
+      "native_module_count": 107,
+      "native_effective_dependency_path_version_sum_matches_graph": true,
+      "native_buildinfo_matches_original_frozen_bytes_excluding_filename": true,
+      "compiler": "go1.27.3",
+      "build_settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "0",
+        "GOARCH": "amd64",
+        "GOOS": "linux",
+        "GOAMD64": "v1"
+      },
+      "graph": {
+        "path": "deployment/security/minio-html4-evidence/mcli-production-graph-complete.json.gz",
+        "sha256": "3420ff491b27fe36423c835ebd543fca73912b60b629c93b7e000be0f5616f1f",
+        "bytes": 150830,
+        "compression": "gzip",
+        "raw_bytes": 2256030,
+        "raw_sha256": "aedf680b42b211577113d699fe5838ba0a3b6694aac62a253e50f6d6a518888b"
+      },
+      "functions": {
+        "path": "deployment/security/minio-html4-evidence/mcli-functions-complete.json.gz",
+        "sha256": "aba506cf6a31bca61bb082e69408a38a832c0305c655fd49a101f06c1b824ada",
+        "bytes": 186627,
+        "compression": "gzip",
+        "raw_bytes": 1997453,
+        "raw_sha256": "155cc5593d7a9f992a36792e2b1993fd1c8b20113e7a0b59779760ac138b398a"
+      },
+      "native_buildinfo": {
+        "path": "deployment/security/minio-html4-evidence/mcli-actual-native-buildinfo.txt",
+        "sha256": "dfa0c53e13ca524136a3f8c587ecc1d2332cdf20bfcb458b24b15526836b49bc",
+        "bytes": 10082
+      },
+      "html_packages": [],
+      "html_named_functions": [],
+      "function_count": 33790,
+      "package": "golang.org/x/net",
+      "version": "v0.61.0",
+      "module_sum": "h1:RR+6j/BTBCrggOLugxa+66R8FvoN6MHlzDlZIbN9YFw="
+    },
+    "usr/bin/silo": {
+      "elf_sha256": "865e488f9e455b6b7306482b2d4a147ea841f15f141c32678851d3168c624bc2",
+      "elf_bytes": 98566304,
+      "production_graph_complete": true,
+      "package_count": 1410,
+      "unique_package_count": 1410,
+      "module_count": 260,
+      "native_module_count": 260,
+      "native_effective_dependency_path_version_sum_matches_graph": true,
+      "native_buildinfo_matches_original_frozen_bytes_excluding_filename": true,
+      "compiler": "go1.27.3",
+      "build_settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-tags": "kqueue",
+        "-trimpath": "true",
+        "CGO_ENABLED": "0",
+        "GOARCH": "amd64",
+        "GOOS": "linux",
+        "GOAMD64": "v1",
+        "vcs": "git",
+        "vcs.revision": "0cd388c666f8211f552604ae73448a066e9c25ce",
+        "vcs.time": "2026-10-18T14:39:12Z",
+        "vcs.modified": "true"
+      },
+      "graph": {
+        "path": "deployment/security/minio-html4-evidence/silo-production-graph-complete.json.gz",
+        "sha256": "08d9048b758e9fa8541a6ca91a6b4857f73061228cfc37bfe575550dbcac1799",
+        "bytes": 445178,
+        "compression": "gzip",
+        "raw_bytes": 7865144,
+        "raw_sha256": "894d2511347e332a83c8249b734f731949d6f35f7f8960673e980e08f98552bb"
+      },
+      "functions": {
+        "path": "deployment/security/minio-html4-evidence/silo-functions-complete.json.gz",
+        "sha256": "fbd843d5393ac1d34996aee4c553619129f014bb376af2184dad2863b93016a0",
+        "bytes": 617728,
+        "compression": "gzip",
+        "raw_bytes": 8894956,
+        "raw_sha256": "64a68e5796a2580c199efb921cbb6efbeaae77378315c9954f3dc99f7edf73dd"
+      },
+      "native_buildinfo": {
+        "path": "deployment/security/minio-html4-evidence/silo-actual-native-buildinfo.txt",
+        "sha256": "dfadf9b3485a2a7cde5a9286de58689b1ebdc87ef8aacf552ae223d8cab4e81a",
+        "bytes": 24517
+      },
+      "html_packages": [],
+      "html_named_functions": [],
+      "function_count": 115493,
+      "package": "golang.org/x/net",
+      "version": "v0.61.0",
+      "module_sum": "h1:RR+6j/BTBCrggOLugxa+66R8FvoN6MHlzDlZIbN9YFw="
+    }
+  },
+  "advisories": [
+    {
+      "advisory": "CVE-2026-78661",
+      "go_advisory": "GO-2026-6860",
+      "affected_import": "golang.org/x/net/html",
+      "affected_symbols": [
+        "Parse",
+        "ParseFragment",
+        "ParseFragmentWithOptions",
+        "ParseWithOptions",
+        "parser.addText",
+        "parser.fosterParent",
+        "parser.parse"
+      ],
+      "fixed_version": "0.62.0",
+      "go_record": {
+        "path": "deployment/security/minio-html4-evidence/GO-2026-6860.json",
+        "sha256": "3358f66a8ce854391765d1113e2f2720436779797ec86c099deb82e4f00ed8f6",
+        "bytes": 1979
+      },
+      "cna_record": {
+        "path": "deployment/security/minio-html4-evidence/CVE-2026-78661.json",
+        "sha256": "474bea6be369ac9ce7c74ee264df1c8dda3672cdb2a6b98b0cfa15af2a3634eb",
+        "bytes": 3781
+      },
+      "official_go_url": "https://raw.githubusercontent.com/golang/vulndb/master/data/osv/GO-2026-6860.json",
+      "official_cna_url": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2026/78xxx/CVE-2026-78661.json",
+      "go_record_timestamps_unavailable": true
+    },
+    {
+      "advisory": "CVE-2026-97045",
+      "go_advisory": "GO-2026-6866",
+      "affected_import": "golang.org/x/net/html",
+      "affected_symbols": [
+        "Render",
+        "childTextNodesAreLiteral"
+      ],
+      "fixed_version": "0.62.0",
+      "go_record": {
+        "path": "deployment/security/minio-html4-evidence/GO-2026-6866.json",
+        "sha256": "e52568294169344cb65b73fa26f1b4239553edeec6db6998ce1cbd8000f916ab",
+        "bytes": 2032
+      },
+      "cna_record": {
+        "path": "deployment/security/minio-html4-evidence/CVE-2026-97045.json",
+        "sha256": "3d20b1afc798095320ff294782ad4743771d03594b4057c844fb22f8c4642892",
+        "bytes": 3407
+      },
+      "official_go_url": "https://raw.githubusercontent.com/golang/vulndb/master/data/osv/GO-2026-6866.json",
+      "official_cna_url": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2026/97xxx/CVE-2026-97045.json",
+      "go_record_timestamps_unavailable": true
+    }
+  ],
+  "evidence_files": {
+    "deployment/security/minio-html4-evidence/actual-native-module-inventory-complete.json.gz": "085ae0f848571c0d459d40fe49ad56d619d48d987077fc68224678087c388510",
+    "deployment/security/minio-html4-evidence/CVE-2026-78661.json": "474bea6be369ac9ce7c74ee264df1c8dda3672cdb2a6b98b0cfa15af2a3634eb",
+    "deployment/security/minio-html4-evidence/CVE-2026-97045.json": "3d20b1afc798095320ff294782ad4743771d03594b4057c844fb22f8c4642892",
+    "deployment/security/minio-html4-evidence/GO-2026-6860.json": "3358f66a8ce854391765d1113e2f2720436779797ec86c099deb82e4f00ed8f6",
+    "deployment/security/minio-html4-evidence/GO-2026-6866.json": "e52568294169344cb65b73fa26f1b4239553edeec6db6998ce1cbd8000f916ab",
+    "deployment/security/minio-html4-evidence/mcli-actual-native-buildinfo.txt": "dfa0c53e13ca524136a3f8c587ecc1d2332cdf20bfcb458b24b15526836b49bc",
+    "deployment/security/minio-html4-evidence/mcli-functions-complete.json.gz": "aba506cf6a31bca61bb082e69408a38a832c0305c655fd49a101f06c1b824ada",
+    "deployment/security/minio-html4-evidence/mcli-production-graph-complete.json.gz": "3420ff491b27fe36423c835ebd543fca73912b60b629c93b7e000be0f5616f1f",
+    "deployment/security/minio-html4-evidence/runtime-image-complete-raw.json.gz": "a4e1be19377942cb208c701a9f85e4cf049284048a09ff4c5f1da1fdab4ae2f5",
+    "deployment/security/minio-html4-evidence/runtime-image-inspect.json": "69de776ef25bf8a75ab3401c3713734c473fde8c529efab4625a74aa5fbf79e8",
+    "deployment/security/minio-html4-evidence/silo-actual-native-buildinfo.txt": "dfadf9b3485a2a7cde5a9286de58689b1ebdc87ef8aacf552ae223d8cab4e81a",
+    "deployment/security/minio-html4-evidence/silo-functions-complete.json.gz": "fbd843d5393ac1d34996aee4c553619129f014bb376af2184dad2863b93016a0",
+    "deployment/security/minio-html4-evidence/silo-production-graph-complete.json.gz": "08d9048b758e9fa8541a6ca91a6b4857f73061228cfc37bfe575550dbcac1799"
+  },
+  "current_raw_scan": {
+    "workflow_run": 40654642942,
+    "job": 122702676087,
+    "artifact_id": 12801236031,
+    "source_commit": "3ea0ecbc4d1b9f35b3b6b92d3190b9e6d6861dcf",
+    "artifact_zip_sha256": "49dfea568fe392b82f7922b86725835c6f39eaac65d40283b8e85b79bdb36440",
+    "report": {
+      "path": "deployment/security/minio-html4-evidence/runtime-image-complete-raw.json.gz",
+      "sha256": "a4e1be19377942cb208c701a9f85e4cf049284048a09ff4c5f1da1fdab4ae2f5",
+      "bytes": 104834,
+      "compression": "gzip",
+      "raw_bytes": 1199876,
+      "raw_sha256": "20b7dacedc1a45a82735381fbb66649a76e283c2655ad7575e66a425a0a7e591"
+    },
+    "inspection": {
+      "path": "deployment/security/minio-html4-evidence/runtime-image-inspect.json",
+      "sha256": "69de776ef25bf8a75ab3401c3713734c473fde8c529efab4625a74aa5fbf79e8",
+      "bytes": 4495
+    },
+    "scanner_exit_code": 0,
+    "raw_original_gate_passed": false,
+    "raw_HIGH": 1,
+    "raw_CRITICAL": 0,
+    "raw_UNKNOWN": 6,
+    "raw_secrets": 0,
+    "new_html_unknown_exact_rows": 4,
+    "existing_openpgp_unknown_rows": 2,
+    "raw_report_modified": false
+  },
+  "original_oci_archive_reverified": {
+    "index_digest": "sha256:151cd83d5e6500f4d1b3d7f0a12756fe80e8ffcbf91150afd6b9b9605bc2369a",
+    "platform_manifest_digest": "sha256:1a7bd6d07a350cd83ef332d8d2148f123306c7a5706d4184f4d83e5dce42bc83",
+    "config_digest": "sha256:45b3d3e48a5b0a92e7ff52b046573268a241207fe6ddfafa504a48bc543cb1f3",
+    "archive_sha256": "4b337cbfbe438d9ca24c67cdbf284c523e2d06ea52e94e866ea09b945d0bb389",
+    "binary_sha256": {
+      "usr/bin/mcli": "66a22d1bada31f44635405a95fb8005e9d23e4c77a3b9d2a74cfb58735d4094a",
+      "usr/bin/silo": "865e488f9e455b6b7306482b2d4a147ea841f15f141c32678851d3168c624bc2"
+    },
+    "verified_blobs": 20
+  },
+  "original_128_frozen_source_evidence_bytes_unchanged": true,
+  "independent_authorship_boundary": "This is the independent automated technical judgment of /root/frozen_security_audit, based on its own current official-record, complete graph, effective native buildinfo, actual ELF/function-table, OCI and raw scan checks. It is not a human CVE-risk acceptance, not the coordinator impersonating an independent author, and not a CI pass.",
+  "method": "Both official Go records and CNA records restrict the affected import to golang.org/x/net/html. Neither exact native build has that package or its children in its error-free full production import closure. Actual ELF hashes, full pclntab inventories and all effective module path/version/sum records corroborate that exact closure. The x/net module remains version0.61.0 and remains fully scanned; no version upgrade or module-wide immunity is claimed.",
+  "limitations": [
+    "Named function absence alone does not prove absence of every inlined instruction; the complete production package closure is the primary package-absence evidence.",
+    "No runtime exploit, functional test, new image build, new scanner invocation or supplier-model call was performed in this review.",
+    "Only the four rows above are decided. The original CVE-2026-39414 FIXED authorization and GO-2026-5932 exact2 review remain separate and unchanged.",
+    "New or duplicated findings, any secret, another target/version/ELF/graph/image/source, missing or failed scan, changed advisory bytes or expiry invalidate this exact scope.",
+    "No policy, checker, original frozen authorization or threshold was edited by this reviewer. Consumer changes require separate coordinator review."
+  ]
+}

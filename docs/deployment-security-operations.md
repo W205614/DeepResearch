@@ -28,7 +28,11 @@ python scripts/fetch_approved_image.py --artifact grafana
 
 原始扫描保留1个HIGH、0个CRITICAL；仅 CVE-2026-39414 按这一个镜像的源码修复、二进制和兼容性证据判定为 `FIXED`。该授权最晚于2026-11-25上海时间结束，其他高危、未知结果、失败或缺失扫描均阻断。`Dockerfile.minio` 保留作为后续重建配方；重新构建得到的新镜像不能继承本次授权，必须重新审查。禁止用包级忽略、可变标签或改写原始扫描计数替代这个边界。
 
+2026-10-28 新增的 MinIO HTML 告警由[独立技术审查](../deployment/security/minio-html4-technical-review.json)单独处理：两个实际 ELF 的完整生产依赖图、native 模块与函数清单均不包含 `golang.org/x/net/html`。新消费者 `scripts/check_minio_html_exact4.py` 保留原 FIXED 检查及原 OpenPGP exact2 检查的失败报告，只在原始告警恰好对应既有两条 OpenPGP 与新四条 HTML 精确目标记录时应用已审技术事实。当前原始 1 HIGH、6 UNKNOWN 和秘密扫描结果均原样保留；新增、重复、缺失、版本或级别变化及任何 secret 继续阻断。原128个冻结文件、授权、有效期和镜像身份不变。
+
 Grafana同样在2026-11-25到期，并绑定其独立索引、平台清单、config、源码、补丁与二进制。`Dockerfile.grafana` 是后续显式重建配方，新构建不能继承现有判定。当前归档加载成功、候选界面通过、日常运行和最终同SHA安全CI是不同阶段，分别保留证据。
+
+新的 [Grafana 依赖维护候选](../deployment/vendors/grafana-security/README.md)使用单独配方、锁和 CI 制品材料流程，不替换当前 Compose 中的批准镜像。候选构建、完整扫描、独立技术审查与新 subject 授权是不同阶段，生成材料不代表批准或通过安全门禁。
 
 ## 现有数据升级
 

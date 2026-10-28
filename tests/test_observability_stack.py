@@ -6,7 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_enterprise_compose_persists_safe_logs_and_traces_without_docker_socket():
     compose = (ROOT / "compose.yaml").read_text(encoding="utf-8")
-    assert "grafana/tempo:" in compose
+    assert "\n  tempo:\n" in compose
     assert "grafana/loki:" in compose
     assert "/var/run/docker.sock" not in compose
 

@@ -3,6 +3,9 @@
 FROM golang@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c AS extract
 ADD --checksum=sha256:a535a1df9c6284d9618872984e026ae0352d1f7e9e0605425c0e6114f47351dd https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.13%2B9/OpenJDK21U-jre_x64_linux_hotspot_21.0.13_9.tar.gz /tmp/jre.tar.gz
 RUN echo 'a535a1df9c6284d9618872984e026ae0352d1f7e9e0605425c0e6114f47351dd  /tmp/jre.tar.gz' | sha256sum -c - && mkdir /out && tar -xzf /tmp/jre.tar.gz --strip-components=1 -C /out
+# Official Guava bytes; keep the path recorded in Keycloak's Quarkus bootstrap.
+# The embedded Maven metadata, not that compatibility basename, identifies 33.7.2-jre.
+ADD --checksum=sha256:b530942257fb935f8b2cfaa5f8eb5bd59c555fd8e8d01b8ce98912e077ea606c --chmod=0644 https://repo.maven.apache.org/maven2/com/google/guava/guava/33.7.2-jre/guava-33.7.2-jre.jar /tmp/guava-33.7.2-jre.jar
 FROM quay.io/keycloak/keycloak@sha256:a78d6b79572168cb25886b80a8b5b8d4ed4390743e3eecb810538683e209dd6b AS original
 FROM alpine@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a AS remove
 RUN apk add --no-cache rpm=4.19.1.1-r5
@@ -10,6 +13,8 @@ COPY --from=original / /rootfs/
 RUN rpm --root /rootfs --dbpath /var/lib/rpm -qa > /before.txt && rpm --root /rootfs --dbpath /var/lib/rpm -ql java-21-openjdk-headless > /jdk-owned.txt && rpm --root /rootfs --dbpath /var/lib/rpm -e --nodeps --noscripts java-21-openjdk-headless && rpm --root /rootfs --dbpath /var/lib/rpm -qa > /after.txt && ! grep java-21-openjdk /after.txt
 COPY --from=extract /out/ /rootfs/opt/temurin-jre/
 RUN for f in /rootfs/opt/temurin-jre/bin/*; do ln -sfn /opt/temurin-jre/bin/$(basename "$f") /rootfs/usr/bin/$(basename "$f"); done
+COPY --from=extract --chown=1000:0 /tmp/guava-33.7.2-jre.jar /rootfs/opt/keycloak/lib/lib/main/com.google.guava.guava-33.6.0-jre.jar
+RUN echo 'b530942257fb935f8b2cfaa5f8eb5bd59c555fd8e8d01b8ce98912e077ea606c  /rootfs/opt/keycloak/lib/lib/main/com.google.guava.guava-33.6.0-jre.jar' | sha256sum -c -
 FROM scratch
 COPY --from=remove /rootfs/ /
 ENV JAVA_HOME=/opt/temurin-jre PATH=/opt/temurin-jre/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin LANG=en_US.UTF-8 KC_RUN_IN_CONTAINER=true

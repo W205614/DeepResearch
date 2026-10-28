@@ -1,0 +1,62 @@
+{
+  "upstream_components": "https://github.com/open-telemetry/opentelemetry-collector-releases/blob/v0.163.2/distributions/otelcol/manifest.yaml",
+  "basis_release": "v0.163.2",
+  "distribution": "DeepResearch OTLP Collector",
+  "module": "deepresearch/otelcol",
+  "version": "0.163.2-security-20261028",
+  "generator": {
+    "asset": "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/cmd%2Fbuilder%2Fv0.163.2/ocb_0.163.2_windows_amd64.exe",
+    "asset_sha256": "88029af9f72b5ea2c39dc045d592bb489a9a478bdfc2b0204decb4e6012819d2",
+    "actual_version_output": "OpenTelemetry Collector Builder (v0.163.0+dirty)",
+    "flags": [
+      "--skip-compilation",
+      "--skip-get-modules"
+    ]
+  },
+  "compiler_image": "golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c",
+  "runtime_image": "otel/opentelemetry-collector-contrib:0.163.2@sha256:989669581ee1f89184f3fd9dd5adfc6615ed6c9692c026aaea89e07a20dfb177",
+  "components": {
+    "receivers": [
+      "otlp"
+    ],
+    "processors": [
+      "batch"
+    ],
+    "exporters": [
+      "otlp",
+      "otlphttp"
+    ],
+    "providers": [
+      "env",
+      "file",
+      "http",
+      "https",
+      "yaml"
+    ]
+  },
+  "module_selection": {
+    "golang.org/x/net": "v0.62.0"
+  },
+  "build_profile": {
+    "GOOS": "linux",
+    "GOARCH": "amd64",
+    "CGO_ENABLED": "0",
+    "tags": [
+      "grpcnotrace"
+    ],
+    "buildvcs": false
+  },
+  "files": {
+    "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "manifest.yaml": "902ff3d71631de044dd2821bb1f2ec9b62bbd3e2ae7ba453b48ca7297fd56c23",
+    "source/components.go": "a566bb1ec54a371deada7ee420423709396b94fe612f22fcba6c63869c4c7139",
+    "source/go.mod": "86eb72e23a69b1a95ed7db10e89b487391ca9815a5e12ff1afecc785a8a2aaa4",
+    "source/go.sum": "8bd4a6f6cc6d103d92af46f033a61eef19e6a0a4859fef3db47e1630f8a9aaa6",
+    "source/main.go": "e6f7833ff71b03da33efd2e5493ea4d17ab25792edff466f0566e1a6b1dfcdf6",
+    "source/main_others.go": "0cd81e903710b93f8d16d205678aaeed914f334aaf63a2fda77eae845c7e5bd7",
+    "source/main_windows.go": "1e941b0fb681f58969660b0fc85d905f3c15a735e1212a25c76c336b604ade2c"
+  },
+  "validation_boundary": "Go1.27.3 offline linux/amd64 production dependency graph resolves with readonly locks:172 modules, x/net0.62.0, no go-jose. Actual ELF and complete configuration validation remain remote CI requirements.",
+  "recipe_path": "deployment/docker/Dockerfile.otel-collector",
+  "recipe_sha256": "66b5d109ab3a1c125c19fecae3420934ac66b26c44a641c2a6c15e140823b81e"
+}

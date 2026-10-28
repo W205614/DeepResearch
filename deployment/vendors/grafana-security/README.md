@@ -1,0 +1,21 @@
+# Grafana dependency maintenance candidate
+
+This candidate keeps Grafana 13.2.4, its original source/archive/tag, all thirteen complete official plugin packages, the eight maintained backend source revisions, existing backend-signature verification, frontend resources, runtime base and UID 472. It upgrades `github.com/go-jose/go-jose/v4` to `v4.1.6` in the main module and `golang.org/x/net` to `v0.62.0` in the main and eight backend modules, together with the minimum `golang.org/x/*` versions declared by the fixed publisher modules. The nine lock pairs pass Go 1.27.3 parsing and targeted read-only module selection; actual compilation and full production graph collection remain cloud-CI work.
+
+The original `Dockerfile.grafana`, vendor locks, fixed OCI archive, human authorization and evidence bindings stay unchanged. The new recipe overlays the dependency locks in this directory on the original authenticated sources. It does not edit package version metadata, disable VCS information, filter findings, weaken signature checks, or inherit prior artifact decisions.
+
+Build from the repository root:
+
+```sh
+docker build -f deployment/docker/Dockerfile.grafana-security -t deepresearch-grafana-candidate:20261028 .
+```
+
+`source.lock.json` records the actual lock hashes and original source identities. This is a candidate build, not an approved deployment. Review must bind the resulting full OCI archive and exact ELF hashes to fresh all-severity vulnerability and secret scans; each finding requiring technical disposition must be independently checked, and the new artifact needs renewed authorization before replacing the current approved image. No daily deployment is performed by these files.
+
+Primary references: [Go JOSE RSA JWK advisory](https://github.com/go-jose/go-jose/security/advisories/GHSA-mgcc-cww5-fp2q), [Go html parser advisory](https://pkg.go.dev/vuln/GO-2026-6860), [Go html renderer advisory](https://pkg.go.dev/vuln/GO-2026-6866).
+
+When built, the candidate recipe exports lossless full `go list -deps -json -mod=readonly` graphs, graph receipts, actual build-time locks and `go version -m` results under `/usr/share/deepresearch/grafana-candidate/`. These are build materials for independent review, not dispositions or approval. The collector preserves the full Go JSON, checks command completion and package errors, and records both raw and gzip SHA-256.
+
+The five official backend packages that are not maintained in the eight-source rebuild set remain complete and unchanged: `elasticsearch`, `stackdriver`, `tempo`, `prometheus` and `zipkin`. Their existing `x/net` UNKNOWN findings may still require exact production-build applicability review. This candidate must not be described as a zero-finding image.
+
+`build_candidate_backends.py` imports `candidate_build_backends.py`, a small, auditable copy of the frozen backend builder. The original helper stays byte-for-byte unchanged. The copy still requires the source archive h1 and actual pinned Git revision; a present proxy `Origin` must match. When an authentic proxy omits `Origin`, it records that absence without inventing metadata and relies on the same archive checksum plus actual Git fetch/reset/revision checks. Actual source verification receipts are exported alongside the graphs. Immediately before each compile it runs `go mod download` with the default `sum.golang.org`, requires the `go.mod` SHA-256 to stay identical, and records the before/after `go.sum` hashes. The main stage applies the same guard before testing/building. All compilations still use `-mod=readonly`. Declared input `go.sum` hashes in `source.lock.json` are **not** claims about the final build-time sums; the image exports the actual locks and checksum-preparation receipts for independent review. No lock resolution result itself approves an artifact.

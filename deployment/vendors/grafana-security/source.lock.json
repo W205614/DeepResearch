@@ -1,0 +1,206 @@
+{
+  "schema": "grafana-dependency-maintenance-candidate-v1",
+  "application": "Grafana 13.2.4",
+  "upstream": {
+    "url": "https://codeload.github.com/grafana/grafana/tar.gz/6259becc8e86265fdf35a73e08eef5bd92b5cd73",
+    "sha256": "31f1b1f049fa92201f07d5c31e248704060bfad3adf280edfee042bba1eeb676",
+    "bytes": 49030194,
+    "tag": "v13.2.4",
+    "annotated_tag_object": "6259becc8e86265fdf35a73e08eef5bd92b5cd73",
+    "commit": "af4a33e3786594ad72f72d97e6744010330c2977",
+    "runtime_image": "grafana/grafana:13.2.4@sha256:dbbc38ea21103cefb50396340cd88afec779c7e070b0a7bf5a75b4ce46651d3f",
+    "reviewed_overrides": {
+      "Go": "1.27.3",
+      "kin-openapi": "v0.149.0",
+      "jsonschema/v6": "v6.0.3 (required transitive)"
+    }
+  },
+  "toolchain": "Go 1.27.3",
+  "dependency_overrides": {
+    "github.com/go-jose/go-jose/v4": "v4.1.6",
+    "golang.org/x/net": "v0.62.0"
+  },
+  "override_scope": "main plus eight maintained plugin backends; only dependency locks change",
+  "original_recipe_unchanged_sha256": "7f1eca3e13edfe46405d460592e792cbf7fbb4b2b79b8d25a71bac6a5710dcf8",
+  "original_plugin_inventory_sha256": "6d3bf844aafaad0853a5c2309c4612cc256b070e3900b69c1330cf0d0184549a",
+  "original_official_plugins_sha256": "05e10edb211030f74167e78992ace9c24bb7ab974bb555e799e247ba9bf14149",
+  "module_sources": {
+    "loki": {
+      "Path": "github.com/grafana/grafana-loki-datasource",
+      "Version": "v0.0.0-20261008182227-6d076df3d695",
+      "Sum": "h1:PFy7d0rbcD86U3x6Fwji+1HOtAlEIQ1DdiCN9jwlc6c=",
+      "GoModSum": "h1:fUdgdu/paUszT1i0j7gpk/dNZOGSpfQejfnTaB/GaoA=",
+      "Origin": null
+    },
+    "jaeger": {
+      "Path": "github.com/grafana/grafana-jaeger-datasource",
+      "Version": "v0.0.0-20261008182416-f2e2b7c6e0c2",
+      "Sum": "h1:UfVAV4ahEuxhCxm2PQA1jwjGOwmD9yfwO0QczTNVbRY=",
+      "GoModSum": "h1:mHLRHE9p9QJYqWrSRQWnODFfx1ozdUL+t7hbemFypWo=",
+      "Origin": null
+    },
+    "mysql": {
+      "Path": "github.com/grafana/grafana-mysql-datasource",
+      "Version": "v0.0.0-20261008182016-453ec30a1245",
+      "Sum": "h1:fmAr3Wp/SFDjI1/ZdzSJhnu5O2JhplvlcDQeGgWQwC8=",
+      "GoModSum": "h1:sCCk3wwQluf/IXYkx0CbzQXAH8/GnBY8cBcmd3F1j2Y=",
+      "Origin": null
+    },
+    "opentsdb": {
+      "Path": "github.com/grafana/grafana-opentsdb-datasource",
+      "Version": "v0.0.0-20261021111301-5cca6a3c8a9a",
+      "Sum": "h1:dAjLOwVdvgXAFvC3zntLkS24MCQjAti8dwmx/oY2DN4=",
+      "GoModSum": "h1:vD9K3R/6YcF8a1vFRXsD7T1HmIJGFcbROYv5LBSDRq8=",
+      "Origin": {
+        "VCS": "git",
+        "URL": "https://github.com/grafana/grafana-opentsdb-datasource",
+        "Hash": "5cca6a3c8a9a139a4787249502f7c84adbdaeafd"
+      }
+    },
+    "mssql": {
+      "Path": "github.com/grafana/grafana-mssql-datasource",
+      "Version": "v0.0.0-20261008182622-e0ad61ae0451",
+      "Sum": "h1:2j1enJqqwqb14jSIMxITqTxJyreW04GcV0qNrqR3uPQ=",
+      "GoModSum": "h1:z+IuIIE+VlIYaB0NEeeO9SbMkxNdctAbCyL1rTsBx+c=",
+      "Origin": {
+        "VCS": "git",
+        "URL": "https://github.com/grafana/grafana-mssql-datasource",
+        "Hash": "e0ad61ae045182f7869ba35afd1c48069b6add43"
+      }
+    },
+    "grafana-pyroscope-datasource": {
+      "Path": "github.com/grafana/grafana-pyroscope-datasource",
+      "Version": "v0.0.0-20261021111211-93cacbfb4693",
+      "Sum": "h1:kLOJ+yqas6HGexHE3MdzqDrO2a3o2k8Ltt50scPvikA=",
+      "GoModSum": "h1:XfjbsrtDNcQs0KxBgMvsiVLAcw9nOc/O8GDc68KjkoA=",
+      "Origin": {
+        "VCS": "git",
+        "URL": "https://github.com/grafana/grafana-pyroscope-datasource",
+        "Hash": "93cacbfb4693341fbdf78a7ecfb04033922c072b"
+      }
+    },
+    "influxdb": {
+      "Path": "github.com/grafana/grafana-influxdb-datasource",
+      "Version": "v0.0.0-20261007193059-030eec102c9c",
+      "Sum": "h1:ZV207g4Ayo1dwmkf1LVVUVRiplCIM16P3pBR11JEztQ=",
+      "GoModSum": "h1:MAVp42esyZhmbcZFQZOHKPzDPh0sK7mP83Rj3BK6k8A=",
+      "Origin": {
+        "VCS": "git",
+        "URL": "https://github.com/grafana/grafana-influxdb-datasource",
+        "Hash": "030eec102c9cfab314b73c87a2599ba8bb80bc40"
+      }
+    },
+    "grafana-postgresql-datasource": {
+      "Path": "github.com/grafana/grafana-postgresql-datasource",
+      "Version": "v0.0.0-20260925110940-4d167c25053d",
+      "Sum": "h1:cGw2qQVt4SDDH0ezwzVRs+UHMgrsUMES+ikXRQbrFTU=",
+      "GoModSum": "h1:BoRdUZ7cDNThCZwbz06S9qacSjlkHaitAD6o6bJGWZw=",
+      "Origin": {
+        "VCS": "git",
+        "URL": "https://github.com/grafana/grafana-postgresql-datasource",
+        "Hash": "4d167c25053dc0444178451abf8a3f171e9e4471"
+      }
+    }
+  },
+  "module_locks": [
+    {
+      "target": "main",
+      "go_mod_sha256": "c6c4ca9cf7ce2e149fd57ff7bb3561c4b6032b981e704e25957609377601ffe2",
+      "go_sum_sha256": "1009eb2de092e89326907449451ba9ade97b38eb6f393d443f1cc14736d9ab26",
+      "go_1_27_3_parser_passed": true,
+      "readonly_targeted_module_selection_passed": true,
+      "selection_log": "main-selection.stdout.log"
+    },
+    {
+      "target": "loki",
+      "go_mod_sha256": "b6091ea96c703b9d274e3d848f26914a6f2024d97e834203784ee827d6dbc706",
+      "go_sum_sha256": "0515779cd971ad2ec387799b4e6bd804cc05bf8f3c2ae446b2d03f6fdbc47eb3",
+      "go_1_27_3_parser_passed": true,
+      "readonly_targeted_module_selection_passed": true,
+      "selection_log": "loki-selection.stdout.log"
+    },
+    {
+      "target": "jaeger",
+      "go_mod_sha256": "89d9401a890fedabc448547be7bd3aecdba1d24636f0f2668b672db0fa16c91a",
+      "go_sum_sha256": "2fdedd004f1108fd3e05d9f51cd3bc592b6314f89708d6bf5f0169b85536745d",
+      "go_1_27_3_parser_passed": true,
+      "readonly_targeted_module_selection_passed": true,
+      "selection_log": "jaeger-selection.stdout.log"
+    },
+    {
+      "target": "mysql",
+      "go_mod_sha256": "fe51374281306f768183433aef883602391bda54d606fde0d0bea65a0d9c442c",
+      "go_sum_sha256": "1ea6ffe4fa43c7d7b5895730f8b6f5e22268f6500e8a6aaf19a952b1785ad63c",
+      "go_1_27_3_parser_passed": true,
+      "readonly_targeted_module_selection_passed": true,
+      "selection_log": "mysql-selection.stdout.log"
+    },
+    {
+      "target": "opentsdb",
+      "go_mod_sha256": "4a173b81a8d6bd0895009dfbd8c5e8e3edf7d72234d3396d99c8a55a4c874757",
+      "go_sum_sha256": "2248a00e33a107907a0c0a6a7b43b7400a39f62a4b06a06f63bbd2bfa7cdd349",
+      "go_1_27_3_parser_passed": true,
+      "readonly_targeted_module_selection_passed": true,
+      "selection_log": "opentsdb-selection.stdout.log"
+    },
+    {
+      "target": "mssql",
+      "go_mod_sha256": "1a7f7d2b5824e806416bf956cf1f73b28cd6bc7ceca1fad7bf5e3e423467c041",
+      "go_sum_sha256": "15100e2199ff9b52f3676b6792df54e1b9f39f09b9674ca88f0a93df0cc3db1c",
+      "go_1_27_3_parser_passed": true,
+      "readonly_targeted_module_selection_passed": true,
+      "selection_log": "mssql-selection.stdout.log"
+    },
+    {
+      "target": "grafana-pyroscope-datasource",
+      "go_mod_sha256": "496e8b3582442befdbe1ea20dde247643e7e3bcd86472e68952351cb8c7fde99",
+      "go_sum_sha256": "fd1ef72c3425d4cf05910c78ec99bd0d3ae04e140957abed6dd27ec03e1e64ac",
+      "go_1_27_3_parser_passed": true,
+      "readonly_targeted_module_selection_passed": true,
+      "selection_log": "grafana-pyroscope-datasource-selection.stdout.log"
+    },
+    {
+      "target": "influxdb",
+      "go_mod_sha256": "027aef447a7dcc55405dc6a0b64b408136f90a75c8ef98915d64e10309a7b40e",
+      "go_sum_sha256": "20ec258adcdd0cf7470c44647108409bba8310081eac47d41a6281ec8cc9e23c",
+      "go_1_27_3_parser_passed": true,
+      "readonly_targeted_module_selection_passed": true,
+      "selection_log": "influxdb-selection.stdout.log"
+    },
+    {
+      "target": "grafana-postgresql-datasource",
+      "go_mod_sha256": "799c95f763e62feec7f4f612f05f8075181a50e5f0ecf4a47b8b70d5b76572cb",
+      "go_sum_sha256": "0a3f3139e4a3df45775e3e8b54e5b025ed69803d67eb417e53dfeca478626917",
+      "go_1_27_3_parser_passed": true,
+      "readonly_targeted_module_selection_passed": true,
+      "selection_log": "grafana-postgresql-datasource-selection.stdout.log"
+    }
+  ],
+  "lock_generation": "Minimal declared version overrides from the fixed modules and their publisher go.mod requirements; original module checksums retained and new Go-verified cache checksum records added.",
+  "local_validation_boundary": "Go 1.27.3 mod edit JSON parser and targeted read-only module selection only. Full Go get was blocked by missing historical metadata in the local transport cache; actual build and complete production graphs remain required.",
+  "approval": "CANDIDATE_ONLY: no prior artifact authorization applies; actual OCI and ELF review remains required",
+  "checksum_preparation": {
+    "command": "go mod download",
+    "sumdb": "sum.golang.org",
+    "fixed_go_mod_versions_must_not_change": true,
+    "go_mod_sha256_before_and_after_must_match": true,
+    "declared_input_sum_hashes_are_not_actual_build_sum_hashes": true,
+    "actual_build_lock_export": "/usr/share/deepresearch/grafana-candidate/actual-locks/",
+    "checksum_receipt_export": "/usr/share/deepresearch/grafana-candidate/checksum-preparation/",
+    "version_resolution_or_checksum_updates_do_not_grant_artifact_approval": true
+  },
+  "backend_source_verification": {
+    "original_frozen_builder_sha256": "cfc6007d389bf7ab02cb79b20c6abcd6e8f0b86b85562c65c801a570a78ca87b",
+    "candidate_builder_sha256": "d5d0bff3bd2ac4314f6b320e42a07a25d1251ba6b9ddd682ad160b03ec381826",
+    "proxy_origin_must_match_when_present": true,
+    "missing_proxy_origin_is_not_fabricated": true,
+    "archive_h1_and_actual_pinned_git_revision_are_always_required": true,
+    "actual_source_provenance_export": "/usr/share/deepresearch/grafana-candidate/provenance/plugins/"
+  },
+  "candidate_build_inputs": {
+    "deployment/docker/Dockerfile.grafana-security": "5e9190b4ed6cceeaa56d15dffb0caec2660cfd29b5d56a483bb1cc386e6ff383",
+    "deployment/vendors/grafana-security/capture_graphs.py": "b97de122a42fcf58043f5e298aa66b01610ca47237a1112a7f445057163aca9e",
+    "deployment/vendors/grafana-security/build_candidate_backends.py": "b29a16a792cd443fc968db1b44e927602bd23482d9588453b5f38d9ea3e0e62c",
+    "deployment/vendors/grafana-security/candidate_build_backends.py": "d5d0bff3bd2ac4314f6b320e42a07a25d1251ba6b9ddd682ad160b03ec381826"
+  }
+}

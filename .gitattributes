@@ -76,3 +76,17 @@ deployment/security/grafana-source2-technical-review.json -text whitespace=cr-at
 deployment/vendors/milvus/patches/internal-tls-fail-closed.patch -text -whitespace
 
 deployment/security/minio-openpgp2-technical-review.json -text whitespace=cr-at-eol
+
+# Additional independent technical records keep the reviewed raw byte identity.
+deployment/security/minio-html4-technical-review.json -text whitespace=cr-at-eol
+deployment/security/minio-html4-evidence/** -text whitespace=cr-at-eol
+deployment/docker/Dockerfile.tempo text eol=lf
+deployment/docker/Dockerfile.otel-collector text eol=lf
+deployment/docker/Dockerfile.grafana-security text eol=lf
+deployment/vendors/tempo/** text eol=lf
+deployment/vendors/otel-collector/** text eol=lf
+deployment/vendors/grafana-security/** text eol=lf
+deployment/vendors/keycloak/guava.lock.json text eol=lf
+scripts/check_minio_html_exact4.py text eol=lf
+tests/test_minio_html_exact4.py text eol=lf
+scripts/collect_grafana_candidate.py text eol=lf

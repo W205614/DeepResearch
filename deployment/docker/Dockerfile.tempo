@@ -1,0 +1,26 @@
+FROM golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c AS build
+ENV CGO_ENABLED=0 GOTOOLCHAIN=local GOWORK=off GOMAXPROCS=2 GOMEMLIMIT=1024MiB
+RUN test "$(go env GOVERSION)" = go1.27.3
+RUN apk add --no-cache git
+WORKDIR /source
+RUN git init && git remote add origin https://github.com/grafana/tempo.git \
+    && git -c http.version=HTTP/1.1 fetch --depth=1 origin refs/tags/v2.10.10:refs/tags/v2.10.10 \
+    && test "$(git rev-parse refs/tags/v2.10.10)" = bbe3be0e055f387b13a3ce45ecbecb0a9c997ae2 \
+    && test "$(git rev-parse 'refs/tags/v2.10.10^{commit}')" = f317720e7e5191a7f282e8f7d6fe5387ae6015b4 \
+    && git checkout --detach f317720e7e5191a7f282e8f7d6fe5387ae6015b4
+COPY deployment/vendors/tempo/go.mod deployment/vendors/tempo/go.sum /source/
+RUN --mount=type=cache,target=/go/pkg/mod,id=dr-telemetry-go-mod-20261028 \
+    --mount=type=cache,target=/root/.cache/go-build,id=dr-telemetry-go-build-20261028 \
+    go build -p=2 -mod=readonly -buildvcs=true -trimpath \
+      -ldflags='-s -w -X main.Branch=v2.10.10-security -X main.Revision=f317720e -X main.Version=2.10.10' \
+      -o /out/tempo ./cmd/tempo \
+    && go version -m /out/tempo | tee /out/buildinfo.txt \
+    && grep -F 'github.com/go-jose/go-jose/v4' /out/buildinfo.txt | grep -F 'v4.1.6' \
+    && grep -F 'golang.org/x/net' /out/buildinfo.txt | grep -F 'v0.62.0'
+FROM grafana/tempo:2.10.10@sha256:12b0820f13ffa10ce956b6e9acc3b03f3cffded99109be6cc09d106fe56e5d38
+COPY --from=build /out/tempo /tempo
+COPY --from=build /source/LICENSE /usr/share/licenses/tempo/LICENSE
+COPY --from=build /out/buildinfo.txt /usr/share/tempo/security-buildinfo.txt
+LABEL org.opencontainers.image.source="https://github.com/W205614/DeepResearch" \
+      org.opencontainers.image.version="2.10.10-security-20261028" \
+      org.opencontainers.image.description="Tempo 2.10.10 maintainer rebuild with locked security dependencies"

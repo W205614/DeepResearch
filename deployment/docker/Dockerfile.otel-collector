@@ -1,0 +1,19 @@
+FROM golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c AS build
+ENV CGO_ENABLED=0 GOTOOLCHAIN=local GOWORK=off GOMAXPROCS=2 GOMEMLIMIT=1024MiB
+RUN test "$(go env GOVERSION)" = go1.27.3
+WORKDIR /source
+COPY deployment/vendors/otel-collector/source/ /source/
+RUN --mount=type=cache,target=/go/pkg/mod,id=dr-telemetry-go-mod-20261028 \
+    --mount=type=cache,target=/root/.cache/go-build,id=dr-telemetry-go-build-20261028 \
+    go build -p=2 -mod=readonly -buildvcs=false -trimpath -tags=grpcnotrace \
+      -ldflags='-s -w' -o /out/otelcol-contrib . \
+    && go version -m /out/otelcol-contrib | tee /out/buildinfo.txt \
+    && grep -F 'golang.org/x/net' /out/buildinfo.txt | grep -F 'v0.62.0' \
+    && if grep -F 'github.com/go-jose/go-jose/' /out/buildinfo.txt; then exit 1; fi
+FROM otel/opentelemetry-collector-contrib:0.163.2@sha256:989669581ee1f89184f3fd9dd5adfc6615ed6c9692c026aaea89e07a20dfb177
+COPY --from=build /out/otelcol-contrib /otelcol-contrib
+COPY deployment/vendors/otel-collector/LICENSE /usr/share/licenses/otel-collector/LICENSE
+COPY --from=build /out/buildinfo.txt /usr/share/otelcol/security-buildinfo.txt
+LABEL org.opencontainers.image.source="https://github.com/W205614/DeepResearch" \
+      org.opencontainers.image.version="0.163.2-security-20261028" \
+      org.opencontainers.image.description="DeepResearch OTLP collector with the configured core components"

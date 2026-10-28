@@ -78,10 +78,10 @@
     "modules/examples/telemetry_demo/go.sum": "d3f61e362c3955b6a6a8a7217b6bf8683485d4d5c6dd5169091679aef1dca4d0",
     "modules/examples/telemetry_e2e_test/go.mod": "922a7953b933e97b4410e1e198751c912b6b11241627a8a39c3d28baac2fda0d",
     "modules/examples/telemetry_e2e_test/go.sum": "d1beb166990ff0f8e4ab9b5b9d4ea8cffe1c4a322d6beee6d4435d639821751c",
-    "modules/go.mod": "9b1c592be228d108c9c045069cbe2789c0e6426cb417d404e85e6f273f4f49c3",
-    "modules/go.sum": "ff9a24224b0758bf8d91beec29214c57c73b73740dd72becba3ee4ce540cbb1d",
-    "modules/pkg/go.mod": "bb8ca1a22fb368a7227a1a934e25207bd813087fea25f54a305383512b65778c",
-    "modules/pkg/go.sum": "5d1786819a1de0149ff322c1f8b1ebb99c1904c2cc20af7ba745951e52d019a3",
+    "modules/go.mod": "31c78b3e3ae597faa78348246908929c0fa9fb86a94b4cf2f09e88c4615a5ae5",
+    "modules/go.sum": "a8f1edd94c15745b277f8bfb2dfa090c6e77c790c8b43a9c9a80e1a11fb316a6",
+    "modules/pkg/go.mod": "bc7f73fea394bf839ab2cd318a5ea65f1e6ac6b49933c6477b0eaacacd763dd6",
+    "modules/pkg/go.sum": "510326ed8d2bd722885597986f3d12cec747016ea20b44b74df26829a45fdc52",
     "modules/tests/go_client/go.mod": "da138767eb2564434d47758a4a7ba373a97ca069798e39c7d5f8467cd0f39bdf",
     "modules/tests/go_client/go.sum": "2610ddfe0bdeae151434267da181fa4b160ff0b99215f2f83e90ff668659daed",
     "rdkafka_mock.h": "2d4d52168b669257fbe936554af6af543fa0fa4f2cccc5a201a2c7d301dad500",
@@ -702,5 +702,15 @@
     "no_module_dependency_change": true,
     "derived_source_not_pristine_upstream": true,
     "source_patch_permission": "explicit root task authorized this narrow internal TLS fail-closed change; deployment window not granted"
+  },
+  "go_jose_security_update_20261028": {
+    "advisory": "CVE-2026-116587",
+    "upstream_advisory": "https://github.com/go-jose/go-jose/security/advisories/GHSA-mgcc-cww5-fp2q",
+    "module": "github.com/go-jose/go-jose/v4",
+    "previous": "v4.1.4",
+    "fixed": "v4.1.6",
+    "go_mod_sum": "h1:x4oUasVrzR7071A4TnHLGSPpNOm2a21K9Kf04k1rs08=",
+    "module_sum": "h1:sNRkftxFJxwsILiQukqp5z83QBSmntVwmgRY7AqBDO4=",
+    "scope": "Only the root and pkg production module locks; upstream source, compiler, native libraries and existing source patch unchanged. A new binary must be built and scanned; historical ELF graphs do not describe it."
   }
 }
