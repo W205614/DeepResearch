@@ -39,3 +39,22 @@ def test_human_authorization_failure_prevents_network_or_filesystem_writes(monke
     monkeypatch.setattr(Path, 'mkdir', lambda *_a, **_k: pytest.fail('Write before auth'))
     with pytest.raises(ValueError, match='Not authorized'):
         publication.main()
+
+
+def test_existing_draft_is_addressed_by_fixed_id_before_any_creation_attempt(tmp_path, monkeypatch):
+    request = {'binding': {}}
+    monkeypatch.setattr(publication.gate, 'load_request', lambda *_: request)
+    monkeypatch.setattr(publication.gate, 'read_json', lambda *_: {'accepted': True})
+    monkeypatch.setattr(publication.gate, 'validate_authorization', lambda *_: None)
+    monkeypatch.setattr(publication, 'verify_oci_archive', lambda *_a, **_k: {})
+    monkeypatch.setattr(publication, 'make_parts', lambda *_: [])
+    observed = []
+
+    class Client:
+        def call(self, path, **kwargs):
+            observed.append((path, kwargs))
+            raise RuntimeError('Stop after the first request')
+
+    with pytest.raises(RuntimeError, match='first request'):
+        publication.publish(Client(), request, tmp_path / 'fixture.tar', tmp_path)
+    assert observed == [(f'/releases/{publication.RELEASE_ID}', {})]

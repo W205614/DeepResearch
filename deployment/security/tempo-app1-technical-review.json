@@ -486,7 +486,62 @@
       "sigs.k8s.io/randfill": 12,
       "sigs.k8s.io/structured-merge-diff/v6": 12,
       "sigs.k8s.io/yaml": 12
-    }
+    },
+    "os_package_provenance": [
+      {
+        "ID": "base-files@12.4+deb12u13",
+        "Name": "base-files",
+        "Version": "12.4+deb12u13",
+        "Identifier": {
+          "PURL": "pkg:deb/debian/base-files@12.4%2Bdeb12u13?arch=amd64&distro=debian-12.13",
+          "UID": "c507a6a7ecfdded2"
+        },
+        "Layer": {
+          "Digest": "sha256:03c9b64681eef07f903b45cfbe5c064db1f1c7f682863b895104ac2680a271a7",
+          "DiffID": "sha256:a33ba213ad26a605d904a741f67154f3904c74a43182c872c35f36b10fa005e0"
+        }
+      },
+      {
+        "ID": "media-types@10.0.0",
+        "Name": "media-types",
+        "Version": "10.0.0",
+        "Identifier": {
+          "PURL": "pkg:deb/debian/media-types@10.0.0?arch=all&distro=debian-12.13",
+          "UID": "d381521693a5ea32"
+        },
+        "Layer": {
+          "Digest": "sha256:e1089d61b200106053b1717881bf0c1c47551478f01569d9224d33cccf3e4692",
+          "DiffID": "sha256:114dde0fefebbca13165d0da9c500a66190e497a82a53dcaabc3172d630be1e9"
+        }
+      },
+      {
+        "ID": "netbase@6.4",
+        "Name": "netbase",
+        "Version": "6.4",
+        "Identifier": {
+          "PURL": "pkg:deb/debian/netbase@6.4?arch=all&distro=debian-12.13",
+          "UID": "64adcbea2e4e887c"
+        },
+        "Layer": {
+          "Digest": "sha256:2e4cf50eeb92ac3a7afe75e15d96a26dee99449f86b46c75b5d95f4418a5bca0",
+          "DiffID": "sha256:8fa10c0194df9b7c054c90dbe482585f768a54428fc90a5b78a0066a123b1bba"
+        }
+      },
+      {
+        "ID": "tzdata@2025b-0+deb12u2",
+        "Name": "tzdata",
+        "Version": "2025b",
+        "Release": "0+deb12u2",
+        "Identifier": {
+          "PURL": "pkg:deb/debian/tzdata@2025b-0%2Bdeb12u2?arch=all&distro=debian-12.13",
+          "UID": "a8a72310d4d932e1"
+        },
+        "Layer": {
+          "Digest": "sha256:56ce5a7a0a8cc3aded9e8cab00fd85f0a1c50376aa9f2318c4e66beb03eadf8f",
+          "DiffID": "sha256:4840c7c54023c867f19564429c89ddae4e9589c83dce82492183a7e9f7dab1fa"
+        }
+      }
+    ]
   },
   "review_sample": {
     "artifact_id": 12814658649,
@@ -547,11 +602,10 @@
     "deployment/security/tempo-app1-evidence/native-buildinfo.json": "0ec66ca1793d765011cf81ee100bb68fe7aabe08f0e1a7585ecdf7f2fcd82c4c",
     "deployment/security/tempo-app1-evidence/native-buildinfo.txt": "f17ba3b51a28c9b3f6c5f86bac5d8f2efc9bb5fc33e26354815d60e8941860a4",
     "deployment/security/tempo-app1-evidence/runtime-version.txt": "f8504bb5a190bb1c3b46bf674977be1293f5503167d3bda83419e76fd1c457d8",
-    "deployment/security/tempo-app1-evidence/source-receipt.json": "c0971ed6d2ba42db40e80ee67691c0429ca6399252e8f80682c188035b3f15c7",
+    "deployment/security/tempo-app1-evidence/source-receipt.json": "ace6ace4828ae22429323505f56fa1e0b788748fb426ed272568fe655ac4c3c4",
     "deployment/security/tempo-app1-evidence/backport_commit.raw.json": "94fc7d0e187e684a8134bea9fcefae123a15de5dc6173d5043c1099fc2d4df5d",
     "deployment/security/tempo-app1-evidence/upstream_main_fix.raw.json": "ec7cf895850e81616507d9057f9c65137674d1f12c21911ea3a6b6caac26b6cc",
     "deployment/security/tempo-app1-evidence/backport-ancestry.projection.json": "9151e487be7cfff57f73d2a8714cbe8d1e6df9944e84b70f084fa98f5f0e77ff",
-    "deployment/security/tempo-app1-evidence/upstream-source/go.mod": "1909bf7611ee81a86e2f4a38e58eab981f28a590458642ebc498c42e1a123ad3",
     "deployment/security/tempo-app1-evidence/upstream-source/VERSION": "008a7b9d408847c72db88e45a791e0270d81f74bf58995daa3340fec13d91a7d",
     "deployment/security/tempo-app1-evidence/upstream-source/tempodb/backend/s3/config.go": "203ca5f57ebc06acd152415c533657c9a7f07ba998afd861a2c401dd52f6edb6",
     "deployment/security/tempo-app1-evidence/upstream-source/tempodb/backend/s3/config_test.go": "01c9334179b28a38edfb003874097910323fe2bd34e3567cb2818bbe7e2c06ea",
@@ -559,7 +613,11 @@
     "deployment/security/tempo-app1-evidence/upstream-source/cmd/tempo/main.go": "29a29466bb247ad93f5cdb44220de4cea0fd5e237de3b7b6a0da55f5e21e8861",
     "deployment/security/tempo-app1-evidence/dskit/flagext/secret.go": "5c432e12158e56871e2de116a4541897ee94f3b45773ac46196bfbc4f314e9a2",
     "deployment/security/tempo-app1-evidence/reviewed-high-only-raw.json.gz": "cb032e62463290160ddf9ca2b4e6dc5a16ccaeff678c96ea4dc13fb31807c62f",
-    "deployment/security/tempo-app1-evidence/CVE-2026-28377.cna.json": "857e1970e8ee064d03cc5de4f0a7e4dba61a29a2a3c3a2c8a0dcfd4ba6f9b945"
+    "deployment/security/tempo-app1-evidence/CVE-2026-28377.cna.json": "857e1970e8ee064d03cc5de4f0a7e4dba61a29a2a3c3a2c8a0dcfd4ba6f9b945",
+    "deployment/security/tempo-app1-evidence/upstream-source/go.mod.source.txt": "1909bf7611ee81a86e2f4a38e58eab981f28a590458642ebc498c42e1a123ad3",
+    "deployment/security/tempo-app1-evidence/full-trivy-0fe-raw.json": "67ccb53dd224bccd436eb2d01868a7d98dfa1c497c0ba03b622db7836e01c636",
+    "deployment/security/tempo-app1-evidence/full-trivy-0fe-image-inspect.json": "7bd1655be7c801a9f9c6f450f27d199f966594eeeaba21421d3d746815d8afdf",
+    "deployment/security/tempo-app1-evidence/full-trivy-0fe-materials.json": "12ff8c9abf6dd8fba563815d7edd05db61cf437807303d3bdc45db2b6a96a707"
   },
   "advisory_metadata_conflict": {
     "cna_affected_literal": {
@@ -577,5 +635,7 @@
     "scanner_fixed_version": "2.10.3",
     "range_comparison_used_as_proof": false,
     "resolution_for_this_exact_subject": "Verified stable backport4aeafc ancestry, exact fixed-source Git blobs and actual fixed-subject ELF/native/source binding establish the code fix independently of the conflicting range metadata."
-  }
+  },
+  "evidence_storage_note": "The original upstream go.mod is immutable reference text stored as go.mod.source.txt, retaining upstream original path and Git blob/byte hashes in source-receipt.json. It is not a runnable module or Docker COPY input. The real deployment/vendors/tempo/go.mod remains locked to go-jose/v4 v4.1.6 and is checked separately; no scanner exclusion or raw report change is used.",
+  "debian_version_binding_note": "The four actual Debian package provenance records are unchanged between af5 and full 0fe scans. Match Debian InstalledVersion against optional epoch:Version-Release plus the exact actual PkgID, PURL, UID and Layer; do not mistake the upstream Version component for the complete dpkg version. This changes no HIGH/CRITICAL or secret policy and keeps all lower-severity/UNKNOWN rows visible."
 }

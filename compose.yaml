@@ -599,7 +599,7 @@ services:
   grafana:
     <<: *service-defaults
     # Exact reviewed artifact; dated, content-bound dispositions are verified by the security gate.
-    image: deepresearch-approved-grafana:20261026
+    image: deepresearch-approved-grafana:20261028
     environment:
       GF_SECURITY_ADMIN_PASSWORD: "${GRAFANA_ADMIN_PASSWORD:?Set GRAFANA_ADMIN_PASSWORD in .env}"
       GF_PLUGINS_PREINSTALL_DISABLED: "true"

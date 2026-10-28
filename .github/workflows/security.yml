@@ -38,11 +38,25 @@ jobs:
           --output .cache/eval/source-fs-original-verdict.json
       - name: Recompute the original verdict and apply only the new exact candidate source2 facts
         if: always() && steps.source_scan.outcome == 'success'
+        continue-on-error: true
         run: >-
           python scripts/check_grafana_candidate_source_exact2.py
           --scan .cache/eval/source-fs/raw.json
           --scan-receipt .cache/eval/source-fs/completion.json
           --original-verdict .cache/eval/source-fs-original-verdict.json
+          --output .cache/eval/source-fs-candidate-verdict.json
+      - name: Derive the actual current Compose and CI runtime selection
+        if: always() && steps.source_scan.outcome == 'success'
+        run: python scripts/runtime_ci_inventory.py
+      - name: Enforce exact source findings against the approved current runtime selection
+        if: always() && steps.source_scan.outcome == 'success'
+        run: >-
+          python scripts/check_grafana_active_source_retirement.py
+          --scan .cache/eval/source-fs/raw.json
+          --scan-receipt .cache/eval/source-fs/completion.json
+          --original-verdict .cache/eval/source-fs-original-verdict.json
+          --candidate-verdict .cache/eval/source-fs-candidate-verdict.json
+          --runtime-inventory .cache/eval/runtime-image-inventory.json
           --output .cache/eval/source-fs-verdict.json
       - name: Convert original complete source scan even when its gate fails
         if: always() && hashFiles('.cache/eval/source-fs/raw.json') != ''
@@ -61,6 +75,8 @@ jobs:
             .cache/eval/source-fs/stdout.private.log
             .cache/eval/source-fs/stderr.private.log
             .cache/eval/source-fs-original-verdict.json
+            .cache/eval/source-fs-candidate-verdict.json
+            .cache/eval/runtime-image-inventory.json
             .cache/eval/source-fs-verdict.json
             trivy-fs.sarif
           if-no-files-found: error
@@ -92,11 +108,16 @@ jobs:
         if: matrix.approved_artifact == true
         run: python scripts/check_artifact_source_reuse.py --output .cache/eval/artifact-source-reuse.json
       - name: Load each independently approved OCI artifact without rebuilding
-        if: matrix.approved_artifact == true
+        if: matrix.artifact == 'minio'
         run: python scripts/fetch_approved_image.py --artifact "$ARTIFACT" --tag "$SCAN_TAG" --output ".cache/eval/approved-$ARTIFACT-load.json"
         env:
           ARTIFACT: ${{ matrix.artifact }}
           SCAN_TAG: deepresearch-scan-${{ matrix.artifact }}:ci
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Load only the newly authorized exact28 Grafana artifact without rebuilding
+        if: matrix.artifact == 'grafana'
+        run: python scripts/fetch_grafana_candidate.py --tag deepresearch-scan-grafana:ci --output .cache/eval/approved-grafana-load.json
+        env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Scan ordinary runtime image with unchanged HIGH gate
         if: matrix.approved_artifact != true
@@ -142,11 +163,11 @@ jobs:
           --output .cache/eval/minio-ci-disposition.json
       - name: Collect complete native and full Grafana reports
         if: matrix.artifact == 'grafana' && steps.approved_scan.outcome == 'success'
-        run: python scripts/scan_grafana_image.py --image deepresearch-scan-grafana:ci --output-dir .cache/eval/grafana-native
+        run: python scripts/scan_grafana_candidate.py --image deepresearch-scan-grafana:ci --output-dir .cache/eval/grafana-native
       - name: Enforce exact independently authorized Grafana per-finding dispositions
         if: matrix.artifact == 'grafana' && steps.approved_scan.outcome == 'success'
         run: >-
-          python scripts/grafana_image_disposition.py
+          python scripts/check_grafana_candidate_exact28.py
           --archive .cache/eval/approved-grafana.oci.tar
           --scan runtime-image.json
           --grype-scan .cache/eval/grafana-native/full-grype.json

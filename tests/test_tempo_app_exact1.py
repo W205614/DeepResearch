@@ -239,3 +239,71 @@ def test_review_evidence_and_recipe_are_currently_pinned():
     assert review['review_sample']['native_rederived_from_actual_elf'] is True
     assert review['human_risk_acceptance'] is False
     assert Path('deployment/docker/Dockerfile.tempo').as_posix() in review['fixed_subject']['input_sha256']
+    evidence = gate.ROOT / gate.EVIDENCE
+    receipt = json.loads((evidence / 'source-receipt.json').read_bytes())
+    upstream = next(row for row in receipt['sources'] if row['path'] == 'go.mod')
+    reference = evidence / upstream['stored_path']
+    raw = reference.read_bytes()
+    assert reference.name == 'go.mod.source.txt'
+    assert not (evidence / 'upstream-source/go.mod').exists()
+    assert hashlib.sha256(raw).hexdigest() == upstream['sha256']
+    assert hashlib.sha1(b'blob ' + str(len(raw)).encode() + b'\0' + raw).hexdigest() == upstream['git_blob']
+
+
+@pytest.fixture
+def full_raw_facts():
+    folder = gate.ROOT / gate.EVIDENCE
+    raw = (folder / 'full-trivy-0fe-raw.json').read_bytes()
+    assert hashlib.sha256(raw).hexdigest() == '67ccb53dd224bccd436eb2d01868a7d98dfa1c497c0ba03b622db7836e01c636'
+    report = gate.strict_json(raw)
+    inspection = gate.strict_json((folder / 'full-trivy-0fe-image-inspect.json').read_bytes())
+    material = gate.strict_json((folder / 'full-trivy-0fe-materials.json').read_bytes())
+    native = gate.strict_json((folder / 'native-buildinfo.json').read_bytes())
+    review = gate.load_review()
+    assert material['elf_sha256'] == review['scope']['elf_sha256']
+    assert material['native_buildinfo_sha256'] == review['fixed_subject']['native_buildinfo_sha256']
+    return report, inspection, material, native, review
+
+
+def test_full_raw_debian_release_findings_remain_visible_and_bound(full_raw_facts):
+    before = copy.deepcopy(full_raw_facts)
+    result = assess(full_raw_facts)
+    assert result['passed'] is True
+    assert result['raw_counts'] == {'UNKNOWN': 3, 'HIGH': 1, 'MEDIUM': 1}
+    assert result['original_gate']['raw_counts'] == {'HIGH': 1, 'CRITICAL': 0}
+    assert full_raw_facts == before and result['raw_report_modified'] is False
+
+
+@pytest.mark.parametrize('field', ['PkgID', 'PURL', 'UID', 'Layer', 'InstalledVersion', 'Release', 'Epoch'])
+def test_full_raw_debian_provenance_mismatch_does_not_inherit_a_match(full_raw_facts, field):
+    record = full_raw_facts[0]['Results'][0]
+    finding = next(row for row in record['Vulnerabilities'] if row['PkgName'] == 'tzdata')
+    package = next(row for row in record['Packages'] if row['Name'] == 'tzdata')
+    if field in {'PURL', 'UID'}:
+        finding['PkgIdentifier'][field] = 'UNBOUND'
+    elif field == 'Layer':
+        finding['Layer']['DiffID'] = 'sha256:' + '0' * 64
+    elif field in {'Release', 'Epoch'}:
+        package[field] = 2 if field == 'Epoch' else 'CHANGED'
+    else:
+        finding[field] = 'UNBOUND'
+    with pytest.raises(ValueError):
+        assess(full_raw_facts)
+
+
+@pytest.mark.parametrize('blocker', ['new_high', 'secret'])
+def test_full_raw_debian_version_match_never_waives_other_blockers(full_raw_facts, blocker):
+    record = full_raw_facts[0]['Results'][0]
+    if blocker == 'new_high':
+        finding = next(row for row in record['Vulnerabilities'] if row['PkgName'] == 'tzdata')
+        finding['Severity'] = 'HIGH'
+        finding['VulnerabilityID'] = 'NEW-UNREVIEWED-HIGH'
+    else:
+        record['Secrets'] = [{'RuleID': 'fixture', 'Severity': 'LOW'}]
+    with pytest.raises(ValueError):
+        assess(full_raw_facts)
+
+
+@pytest.mark.parametrize('epoch,expected', [(0, '2025b-0+deb12u2'), (2, '2:2025b-0+deb12u2')])
+def test_debian_version_composes_epoch_upstream_and_release(epoch, expected):
+    assert gate.debian_version({'Version': '2025b', 'Release': '0+deb12u2', 'Epoch': epoch}) == expected

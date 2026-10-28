@@ -17,7 +17,7 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 REVIEW_PATH = Path('deployment/security/tempo-app1-technical-review.json')
-REVIEW_SHA256 = 'c319a8662c5142a382ddab4088ea48763fcba5cf952d93621175dffd656823d9'
+REVIEW_SHA256 = '98fe9396a93510c6e42fe9aa2bf5a02ed6c0ea9afb4f3213b3be84461b079200'
 EVIDENCE = Path('deployment/security/tempo-app1-evidence')
 TAG = 'deepresearch-scan-tempo:ci'
 TARGET = 'tempo'
@@ -145,6 +145,39 @@ def empty_filter_markers(record):
                 'Incomplete, filtered or suppressed scanner evidence')
 
 
+def debian_version(package):
+    version, release, epoch = package['Version'], package.get('Release', ''), package.get('Epoch', 0)
+    require(type(version) is str and version and type(release) is str
+            and type(epoch) is int and epoch >= 0, 'Malformed Debian version components')
+    return (str(epoch) + ':' if epoch else '') + version + ('-' + release if release else '')
+
+
+def os_package_provenance(package):
+    return {key: package[key] for key in ('ID', 'Name', 'Version', 'Release', 'Epoch', 'Identifier', 'Layer')
+            if key in package}
+
+
+def finding_package_matches(record, finding):
+    matches = []
+    for package in record['Packages']:
+        if package['Name'] != finding['PkgName']:
+            continue
+        if record['Type'] != 'debian':
+            if package['Version'] == finding['InstalledVersion']:
+                matches.append(package)
+            continue
+        complete_version = debian_version(package)
+        identifier = package.get('Identifier')
+        if (complete_version == finding['InstalledVersion']
+                and package.get('ID') == finding.get('PkgID') == package['Name'] + '@' + complete_version
+                and type(identifier) is dict
+                and all(type(identifier.get(key)) is str and identifier[key] for key in ('PURL', 'UID'))
+                and finding.get('PkgIdentifier') == identifier
+                and type(package.get('Layer')) is dict and finding.get('Layer') == package['Layer']):
+            matches.append(package)
+    return len(matches) == 1
+
+
 def assess(report, inspection, material, native, review, scanner_exit_code, now=None):
     require(type(scanner_exit_code) is int and scanner_exit_code == 0,
             'Full vulnerability/secret scanner did not complete successfully')
@@ -202,9 +235,11 @@ def assess(report, inspection, material, native, review, scanner_exit_code, now=
     require(Counter((pkg['Name'], pkg['Version']) for pkg in os_result['Packages'])
             == Counter(map(tuple, review['fixed_subject']['os_package_inventory'])),
             'Runtime OS package identity differs')
+    require(Counter(json.dumps(os_package_provenance(pkg), sort_keys=True) for pkg in os_result['Packages'])
+            == Counter(json.dumps(pkg, sort_keys=True) for pkg in review['fixed_subject']['os_package_provenance']),
+            'Runtime OS package release/epoch/provenance differs')
     blocking, all_rows, counts = Counter(), Counter(), Counter()
     for record in results:
-        inventory = {(pkg['Name'], pkg['Version']) for pkg in record['Packages']}
         for finding in record.get('Vulnerabilities', []):
             require(type(finding) is dict and finding.get('Severity') in LEVELS
                     and all(type(finding.get(key)) is str and finding[key]
@@ -212,7 +247,7 @@ def assess(report, inspection, material, native, review, scanner_exit_code, now=
                     'Malformed vulnerability finding')
             row = (record['Target'], finding['VulnerabilityID'], finding['PkgName'],
                    finding['InstalledVersion'], finding['Severity'])
-            require((finding['PkgName'], finding['InstalledVersion']) in inventory,
+            require(finding_package_matches(record, finding),
                     'Vulnerability row has no matching actual package')
             all_rows[row] += 1
             counts[finding['Severity']] += 1
