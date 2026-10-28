@@ -16,13 +16,13 @@ python scripts/fetch_approved_image.py --archive <归档路径>
 
 此工具只依赖本机 Python 标准库与 Docker。下载来源固定为本仓库 GitHub Release asset，归档内容按 [固定判定清单](../deployment/security/minio-fixed-disposition.json) 校验；私有仓库可从进程环境传入 `GITHUB_TOKEN`，不要写入配置或命令参数。下载失败、内容变化或判定到期均阻断，不回退其他标签。加载成功仅证明内容一致，不能代替完整漏洞扫描。
 
-完整观测栈的 Grafana 使用独立的[固定判定清单](../deployment/security/grafana-reviewed-disposition.json)、归档和标签；core 模式不需要加载它：
+完整观测栈的 Grafana 使用独立的[精确请求](../deployment/security/grafana-candidate-request.json)、[明确授权](../deployment/security/grafana-candidate-authorization.json)、归档和标签；core 模式不需要加载它：
 
 ```powershell
-python scripts/fetch_approved_image.py --artifact grafana
+python scripts/fetch_grafana_candidate.py
 ```
 
-该镜像保留真实 VCS、实际13.2.4应用身份及全部原始告警。授权仅覆盖18条精确目标/告警记录，其中2条Tempo为源码已修复，11条Grafana历史CVE及5条指定ELF的OpenPGP记录为不受影响；后者只针对官方告警列明的7个未链接旧包。不能扩大为整个 `x/crypto` 模块忽略，也不能给本地源码模块编造版本号。原始Trivy记录为2CRITICAL/11HIGH/20MEDIUM/2LOW/5UNKNOWN，Grype为2HIGH/3MEDIUM/5UNKNOWN；3条BusyBox中危记录没有上游修复版本，仍保留风险。
+该镜像保留真实 VCS、实际13.2.4应用身份及全部原始告警。当前授权仅覆盖28条精确目标/告警：11条Grafana产品版本范围归因校正，2条Tempo后端仅编入 protobuf 数据结构的范围判定，5条OpenPGP与10条HTML完整生产闭包不适用判定。不能扩大为模块级忽略，也不能给本地源码模块编造版本号。原始Trivy为2CRITICAL/11HIGH/20MEDIUM/2LOW/15UNKNOWN，Grype为2HIGH/3MEDIUM/5UNKNOWN；3条BusyBox中危记录没有上游修复版本，仍保留风险。
 
 8个重建插件后端由维护者的精确编译哈希认可，界面标记为维护者私有信任；原始PGP签名继续保护官方其余资产，并不声称改过的二进制由上游签名。签名、前端、未知文件及未签名插件的实际拒绝测试分别保存。原始报告不会被过滤或改写。
 
@@ -30,9 +30,9 @@ python scripts/fetch_approved_image.py --artifact grafana
 
 2026-10-28 新增的 MinIO HTML 告警由[独立技术审查](../deployment/security/minio-html4-technical-review.json)单独处理：两个实际 ELF 的完整生产依赖图、native 模块与函数清单均不包含 `golang.org/x/net/html`。新消费者 `scripts/check_minio_html_exact4.py` 保留原 FIXED 检查及原 OpenPGP exact2 检查的失败报告，只在原始告警恰好对应既有两条 OpenPGP 与新四条 HTML 精确目标记录时应用已审技术事实。当前原始 1 HIGH、6 UNKNOWN 和秘密扫描结果均原样保留；新增、重复、缺失、版本或级别变化及任何 secret 继续阻断。原128个冻结文件、授权、有效期和镜像身份不变。
 
-Grafana同样在2026-11-25到期，并绑定其独立索引、平台清单、config、源码、补丁与二进制。`Dockerfile.grafana` 是后续显式重建配方，新构建不能继承现有判定。当前归档加载成功、候选界面通过、日常运行和最终同SHA安全CI是不同阶段，分别保留证据。
+Grafana授权同样在2026-11-25到期，固定归档SHA为 `849d3d86c9d51c6bda4c78d3091f7d457ba93dbd37e66aefcc87ef57b25cda70`，并绑定其独立索引、平台清单、config、源码和二进制。当前 Compose/CI 标签为 `deepresearch-approved-grafana:20261028`，由加载器验证固定发布后取得。后续显式重建使用独立配方 `deployment/docker/Dockerfile.grafana-security`，新构建必须重新审查。归档加载、隔离端到端验证、日常部署与同SHA最终安全CI分别保留证据。
 
-新的 [Grafana 依赖维护候选](../deployment/vendors/grafana-security/README.md)使用单独配方、锁和 CI 制品材料流程，不替换当前 Compose 中的批准镜像。候选构建、完整扫描、独立技术审查与新 subject 授权是不同阶段，生成材料不代表批准或通过安全门禁。
+本次 [Grafana 依赖维护](../deployment/vendors/grafana-security/README.md)已完成新subject明确授权与固定发布，并更新当前配置选择；本地日常服务尚未由本次维护重启。原有配方及旧批准记录保留为历史证据。完整扫描、独立技术审查、授权与运行验证各自记录，材料生成本身不授予批准。
 
 ## 现有数据升级
 
