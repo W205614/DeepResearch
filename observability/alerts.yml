@@ -9,7 +9,8 @@ groups:
       - alert: DeepResearchBackupStale
         # Local backup/recovery policy disabled by explicit user request on 2026-10-29.
         # Previous expression: time() - deepresearch_backup_verified_timestamp_seconds > on(job,instance) deepresearch_backup_rpo_target_seconds
-        expr: vector(0)
+        # Omit bool: the false comparison must return no samples.
+        expr: vector(0) > 0
         for: 5m
         labels: {severity: critical}
         annotations: {summary: "No checksum-verified complete backup within the 24 hour RPO target"}
