@@ -1,0 +1,33 @@
+{
+  "schema": "change-driven-security-review-policy-v1",
+  "accepted": true,
+  "actor_kind": "human_user_via_chat",
+  "recorded_at": "2026-10-29T04:58:38.257485+00:00",
+  "human_instruction": "取消固定日期到期的限制，改成镜像、源码变化或出现新漏洞时再复核，保留原有安全检查，避免项目正常使用却因为日期导致CI失败。",
+  "validity": "change-driven",
+  "conditions": {
+    "exact_finding_scope": true,
+    "fresh_complete_scans": true,
+    "no_blanket_ignore": true,
+    "original_severity_thresholds": true,
+    "raw_reports_preserved": true,
+    "source_image_evidence_binding": true
+  },
+  "records_sha256": {
+    "deployment/security/grafana-active-source-retirement-technical-review.json": "cef83aa76627dbd63cbc72c8533180156fd4a7072e8f57cb68273bf42e8f011e",
+    "deployment/security/grafana-candidate-request.json": "7ab4c179c5224a4c7acde032640f71b84422120d92ae82ad251c506d37e8381d",
+    "deployment/security/grafana-candidate-source2-technical-review.json": "5603568f371240b2b2f31dcd322e95b8fd4e1e22e051d15f8e89d6f3b43ff6ad",
+    "deployment/security/grafana-reviewed-disposition.json": "b5d8a4db005e4dc18621b123f2176bf47c46d60701f0d64e5be0e0e7d65fe8b2",
+    "deployment/security/grafana-source2-technical-scope.json": "3e02329af6494b337a7ea0dc12edfbf9e6e203f6fcd7b7b414cc6d89cd4a6a55",
+    "deployment/security/minio-fixed-disposition.json": "46c99a0de3ffd4dae88560bdacb72c3570bed1cc079490de4799cf3811a508fe",
+    "deployment/security/tempo-app1-technical-review.json": "98fe9396a93510c6e42fe9aa2bf5a02ed6c0ea9afb4f3213b3be84461b079200"
+  },
+  "review_triggers": [
+    "image_or_binary_change",
+    "bound_source_recipe_or_evidence_change",
+    "new_or_changed_scanner_findings"
+  ],
+  "finding_policy": "New findings cannot inherit any existing exact disposition; retain original severity thresholds and unmodified raw reports.",
+  "historical_dates": "Original expires fields remain immutable historical evidence; this explicit instruction supersedes only calendar expiry for the listed exact records.",
+  "scope_boundary": "No new image approval, source applicability verdict, vulnerability exception, model budget, scan freshness exemption or deployment authorization is created."
+}

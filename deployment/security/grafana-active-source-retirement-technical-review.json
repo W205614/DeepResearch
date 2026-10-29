@@ -122,7 +122,7 @@
     "deployment/security/grafana-candidate-authorization.json": "f757ab0f20b5924ee811d03919472f546ac69df24d49c1e545481224937c8fe0",
     "deployment/security/grafana-candidate-transport.json": "e4376eb6e5e44059f0b029b1d8e2872a6b3dd6acdda405a012e16ab3017383c8",
     "scripts/fetch_grafana_candidate.py": "aad9e073ff43f782f008b51c0df3657e06e6b6f04c4e7708f1e24440fcc14155",
-    "scripts/check_grafana_candidate_exact28.py": "14310a7b140b44242a6bd006d71083f7d9c7a269707fa9a403aeb5e98cba414d",
+    "scripts/check_grafana_candidate_exact28.py": "7f9b465121d84c95e59ad64dbcdc94f393352d80f43653e1f5f47bcb73ab5645",
     "scripts/runtime_ci_inventory.py": "6dde0d38cc43278064d0acd46ee6849558a40446699e6ae311d879f205777629",
     "scripts/scan_grafana_candidate.py": "063ebba250b95c601490b63c1bac9952bd8a7300846a1b3dc6f001df28d539f3",
     "deployment/security/grafana-candidate-publication.json": "0d48a269d6a31e489fc19a11c51dabe8ad23d5108177c77367417a675a49992a",
@@ -204,5 +204,33 @@
     "new human approval was authored by this automated reviewer",
     "running containers were replaced",
     "a final current CI run passed before its actual terminal result"
-  ]
+  ],
+  "policy_amendment_technical_review": {
+    "schema": "security-policy-input-amendment-technical-review-v1",
+    "recorded_at": "2026-10-29T04:57:49.434453+00:00",
+    "actor": "/root/refresh_policy_input_review",
+    "actor_kind": "automated_independent_agent",
+    "review_kind": "change_driven_review_policy_input_revalidation",
+    "human_risk_acceptance": false,
+    "new_oci_authorization": false,
+    "previous_record_sha256": "c5a3eb70b78cb93b6ab401b5485e4b631ee561f2162c402c2917ebeb7abd742a",
+    "human_instruction": "取消固定日期到期的限制，改成镜像、源码变化或出现新漏洞时再复核，保留原有安全检查，避免项目正常使用却因为日期导致CI失败。",
+    "authorization_source": "Direct human instruction in the current chat; this technical record does not author a human approval.",
+    "changed_input": {
+      "path": "scripts/check_grafana_candidate_exact28.py",
+      "previous_sha256": "14310a7b140b44242a6bd006d71083f7d9c7a269707fa9a403aeb5e98cba414d",
+      "current_sha256": "7f9b465121d84c95e59ad64dbcdc94f393352d80f43653e1f5f47bcb73ab5645"
+    },
+    "verified_facts": {
+      "only_date_comparison_replaced_by_pinned_exact_record_policy": true,
+      "exact_request_authorization_subject_and_finding_scope_unchanged": true,
+      "source_recipe_evidence_and_complete_inventory_checks_unchanged": true,
+      "full_scanner_failure_secret_and_original_severity_gates_unchanged": true,
+      "other_thirteen_input_files_unchanged": true,
+      "all_twelve_selector_files_unchanged": true,
+      "original_human_authorization_reference_unchanged": true,
+      "historical_expiry_metadata_preserved": true
+    },
+    "boundary": "This independently reviews the control-input amendment only. It does not grant approval to any new image or source, suppress any new blocking finding, lower severity thresholds, alter fresh complete scans, claim new runtime validation, or claim a terminal CI result. The parent must pin the exact amendment record and complete targeted tests and current-source CI."
+  }
 }

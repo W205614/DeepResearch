@@ -89,7 +89,7 @@ def apply_layer(state, entries, whiteouts, opaque):
 
 
 def verify_oci_archive(path, expected, *, max_archive_bytes, max_uncompressed_bytes=8 * 1024**3):
-    """Check facts only. The caller must separately establish human approval, policy and expiry."""
+    """Check facts only. The caller must separately establish human approval and review policy."""
     if type(max_archive_bytes) is not int or not 0 < max_archive_bytes <= HARD_ARCHIVE_LIMIT:
         raise OCIArtifactError("Per-policy archive limit must be explicit and at most2GiB")
     if type(max_uncompressed_bytes) is not int or not 0 < max_uncompressed_bytes <= 16 * 1024**3:

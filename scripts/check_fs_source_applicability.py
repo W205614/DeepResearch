@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts import grafana_image_disposition as gfx  # noqa: E402
 from scripts.image_disposition import DispositionError, canonical, checked_file, file_hash  # noqa: E402
+from scripts.security_review_policy import validate_review_policy  # noqa: E402
 
 POLICY = 'deployment/security/grafana-source2-technical-scope.json'
 EXPECTED_SCOPE_SHA256 = '12dd01ca6c46961ebc89adfb6a4b9c263047410ec9c51229de90a1239945e051'
@@ -114,7 +115,10 @@ def load_scope(root, policy_path, now):
             'Technical source2 schema differs')
     scope = policy['scope']
     require(hashlib.sha256(canonical(scope)).hexdigest() == EXPECTED_SCOPE_SHA256, 'Exact source2 scope changed')
-    require(now.tzinfo is not None and now < datetime.fromisoformat(scope['expires']), 'Source2 technical review expired')
+    try:
+        validate_review_policy(root, POLICY, now=now)
+    except ValueError as error:
+        raise DispositionError(str(error)) from None
     review_file = checked_file(root, scope['technical_review_path'])
     require(file_hash(review_file) == scope['technical_review_sha256'] == TECHNICAL_REVIEW_SHA256,
             'Independent technical review bytes changed')

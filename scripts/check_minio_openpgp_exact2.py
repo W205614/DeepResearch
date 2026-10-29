@@ -169,7 +169,7 @@ def main(argv=None):
         print(json.dumps({'passed': False, 'mode': 'failed_closed', 'error': str(error)[:220]}))
         return 1
     try:
-        binding = original.load_binding()  # All original pins, evidence, expiry and authorization.
+        binding = original.load_binding()  # All original pins, evidence, authorization and review policy.
         archive = original.verify_archive(args.archive, binding)  # Exact full OCI/ELF facts.
         report = strict_json(args.scan.read_bytes())
         validate_report(report)
@@ -186,7 +186,8 @@ def main(argv=None):
         result = {**apply_exact_technical_facts(base, report, binding, review),
                   'mode': 'original_FIXED_plus_exact2_independent_technical_facts',
                   'raw_scan_sha256': base['raw_scan_sha256'], 'raw_report_modified': False,
-                  'original_approval_expires': binding['expires'], 'review_sha256': REVIEW_SHA256}
+                  'validity_policy': 'change-driven', 'superseded_calendar_expiry': binding['expires'],
+                  'review_sha256': REVIEW_SHA256}
     except (ValueError, TypeError, KeyError, OSError, tarfile.TarError) as error:
         result = {'passed': False, 'mode': 'failed_closed', 'error': str(error)[:220]}
     try:

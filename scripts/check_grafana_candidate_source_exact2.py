@@ -19,6 +19,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts import check_fs_source_applicability as old  # noqa: E402
+from scripts.security_review_policy import validate_review_policy  # noqa: E402
 
 REVIEW_PATH = 'deployment/security/grafana-candidate-source2-technical-review.json'
 REVIEW_SHA256 = '5603568f371240b2b2f31dcd322e95b8fd4e1e22e051d15f8e89d6f3b43ff6ad'
@@ -143,7 +144,10 @@ def load_review(root, now):
             and review['review_kind'] == 'technical_applicability' and review['facts_passed'] is True
             and review['human_risk_acceptance'] is False and review['artifact_approved'] is False
             and review['old_human_authorization_inherited'] is False, 'No independent exact technical review')
-    require(now.tzinfo is not None and now < datetime.fromisoformat(review['expires']), 'Independent review expired')
+    try:
+        validate_review_policy(root, REVIEW_PATH, now=now)
+    except ValueError as error:
+        raise old.DispositionError(str(error)) from None
     require(review['source']['path'] == SOURCE and review['source']['module'] == MODULE
             and review['source']['declared_version'] == VERSION, 'Reviewed source tuple differs')
     require(review['source']['rows'] == sorted(IDS), 'Reviewed advisory set differs')

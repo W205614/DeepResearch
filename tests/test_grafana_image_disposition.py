@@ -161,10 +161,9 @@ def test_fake_replace_and_source_hash_drift_are_rejected(inputs, tmp_path, monke
         gate.load_binding(tmp_path, now=datetime.fromisoformat("2026-10-26T15:00:00+00:00"))
 
 
-def test_expired_or_changed_binding_cannot_inherit_old_subject(inputs, tmp_path):
+def test_calendar_does_not_expire_unchanged_binding_but_changed_subject_fails(inputs, tmp_path):
     binding, _ = inputs
-    with pytest.raises(DispositionError, match="expired"):
-        gate.load_binding(now=datetime.fromisoformat("2026-11-26T00:00:00+00:00"))
+    assert gate.load_binding(now=datetime.fromisoformat("2099-01-01T00:00:00+00:00")) == binding
     changed = deepcopy(binding)
     changed["index_digest"] = "sha256:" + "f" * 64
     path = tmp_path / gate.POLICY

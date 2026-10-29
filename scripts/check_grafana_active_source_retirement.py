@@ -24,7 +24,7 @@ from scripts import check_grafana_candidate_source_exact2 as source  # noqa: E40
 from scripts import runtime_ci_inventory as inventory  # noqa: E402
 
 REVIEW_PATH = 'deployment/security/grafana-active-source-retirement-technical-review.json'
-REVIEW_SHA256 = 'c5a3eb70b78cb93b6ab401b5485e4b631ee561f2162c402c2917ebeb7abd742a'
+REVIEW_SHA256 = 'cef83aa76627dbd63cbc72c8533180156fd4a7072e8f57cb68273bf42e8f011e'
 OLD_SOURCE = 'deployment/vendors/grafana/main/go.mod'
 PACKAGE = 'github.com/go-jose/go-jose/v4'
 SCOPE = ('CVE-2026-116587', OLD_SOURCE, PACKAGE, 'v4.1.4', 'HIGH')
@@ -186,7 +186,7 @@ def load_review(root, now):
             and review['human_risk_acceptance'] is False and review['facts_passed'] is True
             and review.get('enabled') is True,
             'No independent conditional source-selection review')
-    require(now.tzinfo is not None and now < datetime.fromisoformat(review['expires']), 'Conditional retirement review expired')
+    approved.validate_review_policy(root, REVIEW_PATH, now=now)
     require(tuple(review['scope'][key] for key in ('id', 'target', 'package', 'version', 'severity')) == SCOPE,
             'Exact legacy constraint retirement tuple changed')
     for name, sha in review['input_files'].items():

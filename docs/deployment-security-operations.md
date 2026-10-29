@@ -14,7 +14,7 @@ python scripts/fetch_approved_image.py
 python scripts/fetch_approved_image.py --archive <归档路径>
 ```
 
-此工具只依赖本机 Python 标准库与 Docker。下载来源固定为本仓库 GitHub Release asset，归档内容按 [固定判定清单](../deployment/security/minio-fixed-disposition.json) 校验；私有仓库可从进程环境传入 `GITHUB_TOKEN`，不要写入配置或命令参数。下载失败、内容变化或判定到期均阻断，不回退其他标签。加载成功仅证明内容一致，不能代替完整漏洞扫描。
+此工具只依赖本机 Python 标准库与 Docker。下载来源固定为本仓库 GitHub Release asset，归档内容按 [固定判定清单](../deployment/security/minio-fixed-disposition.json) 校验；私有仓库可从进程环境传入 `GITHUB_TOKEN`，不要写入配置或命令参数。下载失败、内容变化或审查证据缺失均阻断，不回退其他标签。加载成功仅证明内容一致，不能代替完整漏洞扫描。
 
 完整观测栈的 Grafana 使用独立的[精确请求](../deployment/security/grafana-candidate-request.json)、[明确授权](../deployment/security/grafana-candidate-authorization.json)、归档和标签；core 模式不需要加载它：
 
@@ -26,13 +26,17 @@ python scripts/fetch_grafana_candidate.py
 
 8个重建插件后端由维护者的精确编译哈希认可，界面标记为维护者私有信任；原始PGP签名继续保护官方其余资产，并不声称改过的二进制由上游签名。签名、前端、未知文件及未签名插件的实际拒绝测试分别保存。原始报告不会被过滤或改写。
 
-原始扫描保留1个HIGH、0个CRITICAL；仅 CVE-2026-39414 按这一个镜像的源码修复、二进制和兼容性证据判定为 `FIXED`。该授权最晚于2026-11-25上海时间结束，其他高危、未知结果、失败或缺失扫描均阻断。`Dockerfile.minio` 保留作为后续重建配方；重新构建得到的新镜像不能继承本次授权，必须重新审查。禁止用包级忽略、可变标签或改写原始扫描计数替代这个边界。
+原始扫描保留1个HIGH、0个CRITICAL；仅 CVE-2026-39414 按这一个镜像的源码修复、二进制和兼容性证据判定为 `FIXED`。根据2026-10-29用户明确指令，[政策修订](../deployment/security/change-driven-review-policy.json)将固定日期到期改为变化触发复核；其他高危、未知结果、失败或缺失扫描均继续阻断。`Dockerfile.minio` 保留作为后续重建配方；重新构建得到的新镜像不能继承本次授权，必须重新审查。禁止用包级忽略、可变标签或改写原始扫描计数替代这个边界。
 
-2026-10-28 新增的 MinIO HTML 告警由[独立技术审查](../deployment/security/minio-html4-technical-review.json)单独处理：两个实际 ELF 的完整生产依赖图、native 模块与函数清单均不包含 `golang.org/x/net/html`。新消费者 `scripts/check_minio_html_exact4.py` 保留原 FIXED 检查及原 OpenPGP exact2 检查的失败报告，只在原始告警恰好对应既有两条 OpenPGP 与新四条 HTML 精确目标记录时应用已审技术事实。当前原始 1 HIGH、6 UNKNOWN 和秘密扫描结果均原样保留；新增、重复、缺失、版本或级别变化及任何 secret 继续阻断。原128个冻结文件、授权、有效期和镜像身份不变。
+2026-10-28 新增的 MinIO HTML 告警由[独立技术审查](../deployment/security/minio-html4-technical-review.json)单独处理：两个实际 ELF 的完整生产依赖图、native 模块与函数清单均不包含 `golang.org/x/net/html`。新消费者 `scripts/check_minio_html_exact4.py` 保留原 FIXED 检查及原 OpenPGP exact2 检查的失败报告，只在原始告警恰好对应既有两条 OpenPGP 与新四条 HTML 精确目标记录时应用已审技术事实。当前原始 1 HIGH、6 UNKNOWN 和秘密扫描结果均原样保留；新增、重复、缺失、版本或级别变化及任何 secret 继续阻断。原128个冻结文件、原始授权与镜像身份保持逐字节绑定，历史日期由新政策单独覆盖。
 
-Grafana授权同样在2026-11-25到期，固定归档SHA为 `849d3d86c9d51c6bda4c78d3091f7d457ba93dbd37e66aefcc87ef57b25cda70`，并绑定其独立索引、平台清单、config、源码和二进制。当前 Compose/CI 标签为 `deepresearch-approved-grafana:20261028`，由加载器验证固定发布后取得。后续显式重建使用独立配方 `deployment/docker/Dockerfile.grafana-security`，新构建必须重新审查。归档加载、隔离端到端验证、日常部署与同SHA最终安全CI分别保留证据。
+Grafana同样采用变化触发复核，固定归档SHA为 `849d3d86c9d51c6bda4c78d3091f7d457ba93dbd37e66aefcc87ef57b25cda70`，并绑定其独立索引、平台清单、config、源码和二进制。当前 Compose/CI 标签为 `deepresearch-approved-grafana:20261028`，由加载器验证固定发布后取得。后续显式重建使用独立配方 `deployment/docker/Dockerfile.grafana-security`，新构建必须重新审查。归档加载、隔离端到端验证、日常部署与同SHA最终安全CI分别保留证据。
 
-本次 [Grafana 依赖维护](../deployment/vendors/grafana-security/README.md)已完成新subject明确授权与固定发布，并更新当前配置选择；本地日常服务尚未由本次维护重启。原有配方及旧批准记录保留为历史证据。完整扫描、独立技术审查、授权与运行验证各自记录，材料生成本身不授予批准。
+新政策只覆盖列出的7份精确记录及其摘要，包括已有 MinIO/Grafana 授权、源码适用性和 Tempo 固定源码技术判定。历史审批中的 `expires` 保留为证据，不再按日历触发失败；报告使用 `validity_policy: change-driven` 和 `superseded_calendar_expiry` 明示这一点。政策缺失、被改写或记录变化都会拒绝，不能把政策复制给新镜像继承授权。
+
+镜像、绑定源码、配方或证据变化须重新复核；新发现不能继承既有精确漏洞判定，仍按原有严重级别门槛处理。MEDIUM/LOW 等原本不阻断的记录继续保留，不能将本次修改理解为忽略新漏洞，也不增加零漏洞门槛。提交及每周 Security 继续扫描；扫描报告时效、漏洞数据库新鲜度、完整覆盖、扫描错误及秘密泄露检查保持。取消的仅是授权记录固定日期到期。
+
+本次 [Grafana 依赖维护](../deployment/vendors/grafana-security/README.md)已完成新subject明确授权与固定发布，并更新当前配置选择；2026-10-29已完成本地日常服务切换及受影响功能验证。原有配方及旧批准记录保留为历史证据。完整扫描、独立技术审查、授权与运行验证各自记录，材料生成本身不授予批准。
 
 ## 自动 CI 与付费质量评测
 

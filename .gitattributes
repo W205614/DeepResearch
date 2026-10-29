@@ -119,3 +119,10 @@ scripts/scan_grafana_candidate.py text eol=lf
 tests/test_scan_grafana_candidate.py text eol=lf
 .github/workflows/*.yml text eol=lf
 deployment/compose/*.yaml text eol=lf
+
+# The change-driven amendment pins raw record bytes on Windows and Linux.
+deployment/security/minio-fixed-disposition.json text eol=lf
+deployment/security/change-driven-review-policy.json -text whitespace=cr-at-eol
+scripts/security_review_policy.py text eol=lf
+tests/test_security_review_policy.py text eol=lf
+tests/test_security_review_policy_integration.py text eol=lf

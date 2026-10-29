@@ -34,6 +34,9 @@ def repin(fixture, monkeypatch):
 
 @pytest.fixture
 def technical_fixture(tmp_path, monkeypatch):
+    # Synthetic source/scan facts; the real change-driven policy has separate
+    # integration coverage and cannot authorize this deliberately different scope.
+    monkeypatch.setattr(gate, 'validate_review_policy', lambda *_a, **_k: None)
     original = json.loads((gate.ROOT / gate.POLICY).read_bytes())
     scope = deepcopy(original['scope'])
     review = json.loads((gate.ROOT / scope['technical_review_path']).read_bytes())
@@ -179,7 +182,7 @@ def test_source_and_actual_bound_image_identity_drift_stays_closed(technical_fix
     assert not assess(technical_fixture)['passed']
 
 
-def test_review_expiry_is_not_extended(technical_fixture):
+def test_old_scan_still_fails_after_calendar_expiry_is_removed(technical_fixture):
     assert not assess(technical_fixture, now=datetime(2026, 11, 26, tzinfo=timezone.utc))['passed']
 
 

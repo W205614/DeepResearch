@@ -14,8 +14,12 @@ import json
 from pathlib import Path
 import re
 import subprocess
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from scripts.security_review_policy import validate_review_policy  # noqa: E402
+
 REVIEW_PATH = Path('deployment/security/tempo-app1-technical-review.json')
 REVIEW_SHA256 = '98fe9396a93510c6e42fe9aa2bf5a02ed6c0ea9afb4f3213b3be84461b079200'
 EVIDENCE = Path('deployment/security/tempo-app1-evidence')
@@ -77,8 +81,7 @@ def load_review(now=None):
     require((scope['target'], scope['advisory'], scope['package'],
              scope['installed_version'], scope['raw_severity']) == SCOPE
             and scope['fixed_version'] == '2.10.3', 'Technical review subject changed')
-    require(datetime.fromisoformat(review['expires']) > (now or datetime.now(timezone.utc)),
-            'Technical review expired; independent re-review is required')
+    validate_review_policy(ROOT, REVIEW_PATH.as_posix(), now=now)
     for relative, digest in (review['evidence_files'] | review['fixed_subject']['input_sha256']).items():
         require(file_hash(checked_file(ROOT, relative)) == digest,
                 'Reviewed source, recipe, collector, lock or technical evidence changed')

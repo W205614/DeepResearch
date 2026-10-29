@@ -9,7 +9,6 @@ from __future__ import annotations
 import argparse
 import base64
 from collections import Counter
-from datetime import datetime, timezone
 import hashlib
 import json
 import os
@@ -24,6 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts import grafana_image_disposition as legacy  # noqa: E402
 from scripts.oci_artifact import verify_oci_archive  # noqa: E402
+from scripts.security_review_policy import validate_review_policy  # noqa: E402
 
 REQUEST_PATH = Path('deployment/security/grafana-candidate-request.json')
 AUTH_PATH = Path('deployment/security/grafana-candidate-authorization.json')
@@ -208,9 +208,7 @@ def load_request(root=ROOT, now=None):
             and request['technical_ready'] is True, 'New technical request is incomplete')
     binding = request['binding']
     require(request['expires'] == binding['expires'], 'New request expiry differs')
-    expiry, current = datetime.fromisoformat(binding['expires']), now or datetime.now(timezone.utc)
-    require(expiry.tzinfo is not None and current.tzinfo is not None and current < expiry,
-            'New exact-subject request expired or clock is invalid')
+    validate_review_policy(root, REQUEST_PATH.as_posix(), now=now)
     files = request['files_sha256']
     require(type(files) is dict and files and REQUEST_PATH.as_posix() not in files
             and AUTH_PATH.as_posix() not in files, 'Evidence binding is empty or circular')

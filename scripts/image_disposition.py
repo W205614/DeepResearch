@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter
-from datetime import datetime, timezone
 import hashlib
 import json
 from pathlib import Path, PurePosixPath
@@ -14,6 +13,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts.oci_artifact import OCIArtifactError, verify_oci_archive  # noqa: E402
+from scripts.security_review_policy import validate_review_policy  # noqa: E402
 
 POLICY = Path("deployment/security/minio-fixed-disposition.json")
 APPROVED_BINDING_SHA256 = "2d8518f9ab275f97f0c98c68f3a94d42217b292a2fae50e0ce6461f46919d68e"
@@ -62,10 +62,6 @@ def load_binding(root=ROOT, *, now=None):
 
 
 def validate_evidence(binding, root, *, now=None):
-    now = now or datetime.now(timezone.utc)
-    expires = datetime.fromisoformat(binding["expires"])
-    if now.tzinfo is None or now > expires:
-        raise DispositionError("Exact-artifact FIXED approval expired or clock lacks timezone")
     for name, digest in {**binding["evidence_files"], **binding["recipe_files"]}.items():
         if file_hash(checked_file(root, name)) != digest:
             raise DispositionError("Approved source/patch/build evidence digest differs")
@@ -81,6 +77,10 @@ def validate_evidence(binding, root, *, now=None):
         or binding["disposition"] != "FIXED"
     ):
         raise DispositionError("Human authorization has a different artifact or scope")
+    try:
+        validate_review_policy(root, POLICY.as_posix(), now=now)
+    except ValueError as error:
+        raise DispositionError(str(error)) from None
 
 
 def verify_archive(path, binding):
@@ -169,7 +169,8 @@ def evaluate_scan(report, inspection, binding, *, scanner_exit_code):
         "unresolved": unresolved,
         "coverage": coverage,
         "raw_report_modified": False,
-        "approval_expires": binding["expires"],
+        "validity_policy": "change-driven",
+        "superseded_calendar_expiry": binding["expires"],
     }
 
 

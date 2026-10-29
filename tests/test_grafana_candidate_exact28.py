@@ -267,6 +267,9 @@ def test_new_exact_subject_can_pass_after_separate_complete_authorization(facts)
 
 
 def pinned_request(facts, tmp_path, monkeypatch):
+    # Synthetic request tests isolate its existing factual contract. The real
+    # policy/subject binding is exercised in test_security_review_policy_integration.
+    monkeypatch.setattr(gate, 'validate_review_policy', lambda *_a, **_k: None)
     request = copy.deepcopy(facts[4])
     files = {'sources/local.mod': b'module fixture-local\n',
              'sources/main.mod': b'replace fixture-local => ./fixture-local\n',
@@ -342,7 +345,7 @@ def test_request_and_every_new_review_source_file_are_pinned(facts, tmp_path, mo
         gate.load_request(tmp_path)
 
 
-@pytest.mark.parametrize('change', ['unset_pin', 'request_bytes', 'technical_not_ready', 'expired',
+@pytest.mark.parametrize('change', ['unset_pin', 'request_bytes', 'technical_not_ready',
                                    'old_review', 'missing_review', 'old18'])
 def test_request_cannot_inherit_old_scope_or_skip_review(facts, tmp_path, monkeypatch, change):
     request, path = pinned_request(facts, tmp_path, monkeypatch)
@@ -353,8 +356,6 @@ def test_request_cannot_inherit_old_scope_or_skip_review(facts, tmp_path, monkey
     else:
         if change == 'technical_not_ready':
             request['technical_ready'] = False
-        elif change == 'expired':
-            request['expires'] = request['binding']['expires'] = '2020-01-01T00:00:00+00:00'
         elif change == 'old_review':
             request['independent_reviews'][0]['path'] = (
                 'deployment/security/grafana-fixed-evidence/independent-review.json')

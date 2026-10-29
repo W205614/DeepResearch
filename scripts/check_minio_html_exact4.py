@@ -158,7 +158,8 @@ def main(argv=None):
         else:
             result = apply_review(base, report, binding, openpgp_review, load_review(binding))
         result.update(mode='original_FIXED_plus_independent_exact2_and_html4_facts',
-                      raw_scan_sha256=base['raw_scan_sha256'], original_approval_expires=binding['expires'])
+                      raw_scan_sha256=base['raw_scan_sha256'], validity_policy='change-driven',
+                      superseded_calendar_expiry=binding['expires'])
     except (ValueError, TypeError, KeyError, OSError, tarfile.TarError) as error:
         result = {'passed': False, 'mode': 'failed_closed', 'error': str(error)[:220]}
     try:

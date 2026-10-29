@@ -127,6 +127,5 @@ def test_json_duplicate_fields_are_not_allowed():
         gate.old.json_loads('{"human_risk_acceptance":true,"human_risk_acceptance":false}')
 
 
-def test_review_expiry_cannot_be_inherited_indefinitely():
-    with pytest.raises(gate.old.DispositionError, match='expired'):
-        gate.load_review(gate.ROOT, datetime(2027, 1, 1, tzinfo=timezone.utc))
+def test_exact_review_stays_valid_after_historical_calendar_expiry():
+    assert gate.load_review(gate.ROOT, datetime(2099, 1, 1, tzinfo=timezone.utc))['facts_passed']

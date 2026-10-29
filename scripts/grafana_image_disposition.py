@@ -4,7 +4,6 @@ from __future__ import annotations
 import argparse
 import base64
 from collections import Counter
-from datetime import datetime, timezone
 import gzip
 import hashlib
 import json
@@ -15,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts.image_disposition import DispositionError, canonical, checked_file, file_hash  # noqa: E402
 from scripts.oci_artifact import verify_oci_archive  # noqa: E402
+from scripts.security_review_policy import validate_review_policy  # noqa: E402
 
 POLICY = Path("deployment/security/grafana-reviewed-disposition.json")
 APPROVED_BINDING_SHA256 = "7e0ae656477b23d4cd3692987360ada987c40aa6f4c13e37dbb6655495b3e35d"
@@ -33,9 +33,6 @@ def load_binding(root=ROOT, *, now=None):
     binding = policy["binding"]
     if hashlib.sha256(canonical(binding)).hexdigest() != APPROVED_BINDING_SHA256:
         raise DispositionError("Grafana artifact/source/evidence binding changed; refreeze review binding")
-    now = now or datetime.now(timezone.utc)
-    if now.tzinfo is None or now > datetime.fromisoformat(binding["expires"]):
-        raise DispositionError("Grafana exact-artifact approval expired or clock is invalid")
     if binding["archive_limit_bytes"] != MAX_ARCHIVE_BYTES or binding["artifact"] != "grafana":
         raise DispositionError("Grafana artifact namespace/cap differs")
     for name, digest in {**binding["evidence_files"], **binding["recipe_files"]}.items():
@@ -74,6 +71,10 @@ def load_binding(root=ROOT, *, now=None):
         if size != row["raw_bytes"] or hashed.hexdigest() != row["raw_sha256"]:
             raise DispositionError("Bound compile graph differs from independently reviewed raw bytes")
     validate_local_sources(binding, root)
+    try:
+        validate_review_policy(root, POLICY.as_posix(), now=now)
+    except ValueError as error:
+        raise DispositionError(str(error)) from None
     return binding
 
 
@@ -214,7 +215,7 @@ def evaluate_scans(trivy, grype, sbom, inspection, binding, *, trivy_exit_code, 
                 observe("Grype", vuln.get("id"), target, artifact.get("name"), artifact.get("version"), severity)
         else:
             remaining.append({"scanner":"Grype", "id":vuln.get("id"), "severity":severity, "package":artifact.get("name"), "fix":vuln.get("fix")})
-    return {"passed":not unresolved, "raw_counts":{"Trivy":dict(tr_counts),"Grype":dict(gr_counts)}, "verified_fixed_counts":{k:sum(r["disposition"]=="FIXED" for r in v) for k,v in matched.items()}, "verified_not_affected_counts":{k:sum(r["disposition"]=="NOT_AFFECTED" for r in v) for k,v in matched.items()}, "verified_dispositions":matched, "unresolved_count":len(unresolved), "unresolved":unresolved, "remaining_unexcluded_medium_low":remaining, "trivy_coverage":coverage, "syft_types":inventory, "raw_reports_modified":False, "identified_local_source_tuple_count":len(binding["inventory_identity"]["local_source_modules"]), "local_inventory_identity_is_not_a_vulnerability_disposition":True, "approval_expires":binding["expires"]}
+    return {"passed":not unresolved, "raw_counts":{"Trivy":dict(tr_counts),"Grype":dict(gr_counts)}, "verified_fixed_counts":{k:sum(r["disposition"]=="FIXED" for r in v) for k,v in matched.items()}, "verified_not_affected_counts":{k:sum(r["disposition"]=="NOT_AFFECTED" for r in v) for k,v in matched.items()}, "verified_dispositions":matched, "unresolved_count":len(unresolved), "unresolved":unresolved, "remaining_unexcluded_medium_low":remaining, "trivy_coverage":coverage, "syft_types":inventory, "raw_reports_modified":False, "identified_local_source_tuple_count":len(binding["inventory_identity"]["local_source_modules"]), "local_inventory_identity_is_not_a_vulnerability_disposition":True, "validity_policy":"change-driven", "superseded_calendar_expiry":binding["expires"]}
 
 
 def main():

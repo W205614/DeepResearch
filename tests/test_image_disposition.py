@@ -1,5 +1,5 @@
 from copy import deepcopy
-from datetime import datetime, timedelta
+from datetime import datetime
 import hashlib
 import io
 import json
@@ -144,10 +144,8 @@ def test_unknown_or_mismatched_scan_fails_closed(scan, inspection, binding, case
         evaluate_scan(scan, inspection, binding, scanner_exit_code=code)
 
 
-def test_expired_authorization_cannot_pass_even_the_same_artifact(binding):
-    expired = datetime.fromisoformat(binding["expires"]) + timedelta(seconds=1)
-    with pytest.raises(DispositionError, match="expired"):
-        validate_evidence(binding, ROOT, now=expired)
+def test_same_artifact_evidence_remains_valid_after_historical_calendar_date(binding):
+    validate_evidence(binding, ROOT, now=datetime.fromisoformat("2099-01-01T00:00:00+00:00"))
 
 
 def test_tampered_or_missing_evidence_cannot_pass(binding, tmp_path):

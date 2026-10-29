@@ -218,14 +218,14 @@ def test_output_never_overwrites_any_prior_file(tmp_path, monkeypatch):
     assert result.value.code == 1 and output.read_bytes() == b'IMMUTABLE-RAW-OR-PRIOR-VERDICT'
 
 
-def test_expired_conditional_record_fails_before_selector_use(monkeypatch):
+def test_missing_change_driven_policy_fails_before_selector_use(monkeypatch):
     record = {'schema': 'grafana-active-source-retirement-technical-review-v1',
         'actor_kind': 'automated_independent_agent', 'review_kind': 'conditional_source_retirement',
         'human_risk_acceptance': False, 'facts_passed': True, 'enabled': True, 'expires': '2026-11-25T23:59:59+08:00'}
     monkeypatch.setattr(gate.approved, 'repository_file', lambda root, name: Path('fixture'))
     monkeypatch.setattr(gate.approved, 'read_json', lambda path: record)
     monkeypatch.setattr(gate.approved, 'file_hash', lambda path: gate.REVIEW_SHA256)
-    with pytest.raises(ValueError, match='expired'):
+    with pytest.raises(ValueError):
         gate.load_review(Path('fixture'), datetime(2027, 1, 1, tzinfo=timezone.utc))
 
 
