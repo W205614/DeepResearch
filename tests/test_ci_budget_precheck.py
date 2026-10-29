@@ -10,9 +10,27 @@ import sys
 from pathlib import Path
 
 import pytest
+import yaml
 
 from scripts.check_ci_evaluation_budget import ROOT, assess, main
 from scripts import check_ci_evaluation_budget as precheck
+
+
+def test_paid_evaluation_requires_dispatch_and_automatic_ci_keeps_offline_regressions():
+    # BaseLoader preserves GitHub's `on` key instead of treating it as YAML 1.1 true.
+    paid = yaml.load((ROOT/'.github/workflows/answer-quality.yml').read_text(encoding='utf-8'),
+                     Loader=yaml.BaseLoader)
+    assert set(paid['on']) == {'workflow_dispatch'}
+    assert 'continue-on-error' not in paid['jobs']['answer-quality']
+    ci = yaml.load((ROOT/'.github/workflows/ci.yml').read_text(encoding='utf-8'), Loader=yaml.BaseLoader)
+    assert {'push', 'pull_request'} <= set(ci['on'])
+    quality = ci['jobs']['quality']
+    commands = [step.get('run', '') for step in quality['steps']]
+    assert 'uv run pytest -q' in commands
+    assert any('scripts/evaluate.py --verify' in command for command in commands)
+    assert not quality.get('env', {}).get('LLM_API_KEY')
+    assert not any('LLM_API_KEY' in step.get('env', {}) for step in quality['steps'])
+    assert not any('scripts/run_ci_evaluation.py paid' in command for command in commands)
 
 
 def test_isolated_absolute_script_entrypoint_reports_budget_failure_from_another_directory(tmp_path):

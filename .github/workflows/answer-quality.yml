@@ -1,9 +1,8 @@
-name: Answer Quality Gate
+name: Answer Quality (manual, paid)
 
 on:
-  pull_request:
-  push:
-    branches: [main, "codex/**"]
+  # Paid supplier calls require an explicit run. Ordinary CI keeps the offline
+  # regressions; its success is not a claim that this live evaluation passed.
   workflow_dispatch:
 
 jobs:
