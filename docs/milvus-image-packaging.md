@@ -2,7 +2,7 @@
 
 此前 Security job `122017588234`、artifact `12711121662` 的 Milvus 镜像报告没有 HIGH/CRITICAL 漏洞项，但在 `/milvus/configs/cert/{ca,client,server}.key` 检出3项 HIGH private-key secret。这是镜像包含公开示例密钥的问题，不通过 ignore、关闭 secret scanner 或路径豁免解决。
 
-2026-10-30 的 Security job `123963781181`、artifact `12964077371` 新扫描检出 Ubuntu `libbrotli1 1.0.9-2build6` 的 HIGH 漏洞 `CVE-2026-111497`，无 secret 项。[Ubuntu USN-8956-1](https://ubuntu.com/security/notices/USN-8956-1) 指定 Jammy 修复版本为 `1.0.9-2ubuntu0.1`。当前配方先升级这一运行时包，再从升级后的文件树移除示例证书并导出完整运行时，保留更新后的库与 dpkg 元数据；Go 源码、编译器及 Milvus 自带 native 库不变。Compose 使用 `20261030` 标签；新制品仍须通过完整扫描和运行验证，历史通过结果不替代新制品验收。
+2026-10-30 的 Security job `123963781181`、artifact `12964077371` 新扫描检出 Ubuntu `libbrotli1 1.0.9-2build6` 的 HIGH 漏洞 `CVE-2026-111497`，无 secret 项。[Ubuntu USN-8956-1](https://ubuntu.com/security/notices/USN-8956-1) 指定 Jammy 修复版本为 `1.0.9-2ubuntu0.1`。当前配方先升级这一运行时包，再从升级后的文件树移除示例证书并导出完整运行时，保留更新后的库与 dpkg 元数据；Go 源码、编译器及 Milvus 自带 native 库不变。继续使用现有 Compose 镜像名，实际制品以本次构建摘要、扫描和运行证据为准；历史通过结果不替代新制品验收。
 
 固定源码为 Milvus v3.0.3 commit `328df0cd2f323c2d3c50cef91bfc9f2c412bcb09`，源码归档 SHA256 `1dd3a0ff960af532f04172b2aebdb9716b1244cad2fb81781b27641f67216cf9`。[上游 configs/cert](https://github.com/milvus-io/milvus/tree/328df0cd2f323c2d3c50cef91bfc9f2c412bcb09/configs/cert) 包含9个公开文件（3个 key、3个 PEM、2个 CSR、1个 CA serial）；[上游 proxy 测试](https://github.com/milvus-io/milvus/blob/328df0cd2f323c2d3c50cef91bfc9f2c412bcb09/internal/distributed/proxy/service_test.go#L1093) 直接使用这些材料。只记录其路径与散列，不复制或打印密钥内容。
 

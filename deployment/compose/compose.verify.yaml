@@ -23,7 +23,7 @@ services:
     command: [silo, server, /data]
     healthcheck: {test: [CMD, silo, healthcheck, --url, 'http://localhost:9000', --timeout, 3s, live], interval: 3s, timeout: 5s, retries: 30}
   milvus:
-    image: dr-vendor-milvus:3.0.3-go1.26.10-jose4.1.6-20261030
+    image: dr-vendor-milvus:3.0.3-go1.26.10-jose4.1.6-20261028
     platform: linux/amd64
     build: {context: ., dockerfile: Dockerfile.milvus}
     command: [milvus, run, standalone]

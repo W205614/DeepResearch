@@ -261,7 +261,7 @@ services:
     networks: [index-store, retrieval]
   milvus:
     <<: *service-defaults
-    image: dr-vendor-milvus:3.0.3-go1.26.10-jose4.1.6-20261030
+    image: dr-vendor-milvus:3.0.3-go1.26.10-jose4.1.6-20261028
     platform: linux/amd64
     build:
       context: .
