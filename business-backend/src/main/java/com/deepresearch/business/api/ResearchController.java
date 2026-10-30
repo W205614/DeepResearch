@@ -1,6 +1,7 @@
 package com.deepresearch.business.api;
 
 import java.nio.charset.StandardCharsets;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -149,8 +150,13 @@ public class ResearchController {
                 if (ticks++ % 20 == 0) emitter.send(SseEmitter.event().comment("keep-alive"));
                 Thread.sleep(500);
             }
-        } catch (Exception disconnected) {
+        } catch (IOException disconnected) {
             emitter.complete();
+        } catch (InterruptedException interrupted) {
+            Thread.currentThread().interrupt();
+            emitter.complete();
+        } catch (RuntimeException error) {
+            emitter.completeWithError(error);
         }
     }
 

@@ -6,13 +6,6 @@ from ..core.db import now, uid
 from ..infrastructure.providers import ServiceError
 
 
-def loads(value, fallback):
-    try:
-        return json.loads(value) if isinstance(value, str) else value
-    except (TypeError, ValueError):
-        return fallback
-
-
 def structural_diff(old, new):
     changes = []
     a = [(x.get('locator', ''), x.get('text', '')) for x in old]
@@ -68,8 +61,8 @@ class EvidenceLifecycle:
             raise LookupError('资料不存在')
         rows = await self.db.rows('SELECT * FROM document_versions WHERE document_id=? AND user_id=? ORDER BY version DESC', (document, workspace))
         return [{k: row[k] for k in ('document_id','version','name','hash','status','created_at')} |
-                {'current': row['version'] == current['index_version'], 'chunk_count': len(loads(row['chunks_json'], [])),
-                 'parser_config': loads(row['parser_config'], {}), 'index_config': loads(row['index_config'], {})} for row in rows]
+                {'current': row['version'] == current['index_version'], 'chunk_count': len(json.loads(row['chunks_json'])),
+                 'parser_config': json.loads(row['parser_config']), 'index_config': json.loads(row['index_config'])} for row in rows]
 
     async def diff(self, document, workspace, before, after):
         await self.versions(document, workspace)
@@ -78,7 +71,7 @@ class EvidenceLifecycle:
             row = await self.db.one('SELECT blocks_json FROM document_versions WHERE document_id=? AND user_id=? AND version=?', (document, workspace, version))
             if not row:
                 raise LookupError('资料版本不存在；历史版本未归档时不能推测差异')
-            rows.append(loads(row['blocks_json'], []))
+            rows.append(json.loads(row['blocks_json']))
         return {'document_id': document, 'from_version': before, 'to_version': after,
                 'changes': structural_diff(*rows), 'semantic_judgment': False, 'truncated': False}
 
@@ -99,10 +92,10 @@ class EvidenceLifecycle:
                     for report in reports:
                         if report['corpus_revision'] < 0 or report['corpus_revision'] >= event['revision']:
                             continue
-                        artifacts = loads(report['artifacts_json'], {})
+                        artifacts = json.loads(report['artifacts_json'])
                         claims = artifacts.get('claims', [])
                         direct = [claim['id'] for claim in claims if any(e.get('document_id') == event['document_id'] for e in claim.get('evidence', []))]
-                        sources = loads(report['sources_json'], [])
+                        sources = json.loads(report['sources_json'])
                         internal = any(source.get('kind') == 'local' for source in sources)
                         # Reports with no structured artifacts need full research. New material may add exceptions
                         # to a conclusion even if no prior citation pointed to that document.
@@ -144,9 +137,9 @@ class EvidenceLifecycle:
         report = await self.db.one('SELECT * FROM report_publications WHERE id=? AND workspace_id=?', (job['source_report_id'], run['user_id']))
         if not report or report['content_sha256'] != job['source_content_sha256']:
             raise ServiceError('原报告指纹已变化，不能继续修订', code='revision_stale', retryable=False)
-        artifacts = loads(report['artifacts_json'], {})
+        artifacts = json.loads(report['artifacts_json'])
         impacts = await self.db.rows('SELECT * FROM report_impacts WHERE report_id=? AND target_revision>? ORDER BY target_revision', (report['id'], report['corpus_revision']))
-        affected = set(x for impact in impacts for x in loads(impact['affected_claims_json'], []))
+        affected = set(x for impact in impacts for x in json.loads(impact['affected_claims_json']))
         plan = {'strategy': 'full_research', 'reason': 'scope_cannot_be_proven_unchanged',
                 'source_report_id': report['id'], 'target_revision': job['target_corpus_revision'], 'affected_claim_ids': sorted(affected),
                 'original_requirements': artifacts.get('requirements', [report['topic']])}

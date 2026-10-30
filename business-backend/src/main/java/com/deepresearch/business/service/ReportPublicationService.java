@@ -21,6 +21,7 @@ import com.deepresearch.business.api.Requests;
 import com.deepresearch.business.security.WorkspaceAccess;
 import com.deepresearch.business.security.WorkspaceIdentity;
 import tools.jackson.core.type.TypeReference;
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -96,7 +97,8 @@ public class ReportPublicationService {
         if (!artifacts.isEmpty() && number(artifacts.get("corpus_revision")) != corpus)
             throw new ResponseStatusException(HttpStatus.CONFLICT, "资料版本已变化，请重新研究后送审");
         requireSourcesCurrent(identity.workspaceId(), sources);
-        Map<String, Object> structured = new LinkedHashMap<>(parseMap(artifacts.get("requirements_json")));
+        Map<String, Object> structured = artifacts.isEmpty() ? new LinkedHashMap<>()
+            : new LinkedHashMap<>(parseMap(artifacts.get("requirements_json")));
         if (!artifacts.isEmpty()) structured.put("claims", parseList(artifacts.get("claims_json")));
         String artifactsJson = json(structured);
         List<Map<String, Object>> jobs = jdbc.queryForList("SELECT * FROM report_revision_jobs WHERE target_run_id=? FOR UPDATE", runId);
@@ -293,9 +295,9 @@ public class ReportPublicationService {
         long current = number(report.get("corpus_revision")) < 0 ? -1 : corpusRevision(identity.workspaceId(), false);
         List<Map<String, Object>> assessments = jdbc.queryForList("SELECT * FROM report_impacts WHERE report_id=? ORDER BY target_revision DESC LIMIT 20", reportId);
         for (Map<String, Object> assessment : assessments) {
-            assessment.put("reasons", parseValue(assessment.remove("reasons_json"), List.of()));
-            assessment.put("affected_claims", parseValue(assessment.remove("affected_claims_json"), List.of()));
-            assessment.put("diff", parseValue(assessment.remove("diff_json"), Map.of()));
+            assessment.put("reasons", parseValue(assessment.remove("reasons_json")));
+            assessment.put("affected_claims", parseValue(assessment.remove("affected_claims_json")));
+            assessment.put("diff", parseValue(assessment.remove("diff_json")));
         }
         List<Map<String, Object>> jobs = jdbc.queryForList("""
             SELECT j.id,j.target_run_id,CASE WHEN j.status='queued' THEN r.status ELSE j.status END AS status,
@@ -563,19 +565,19 @@ public class ReportPublicationService {
         catch (Exception error) { throw new IllegalStateException(error); }
     }
 
-    private Object parseValue(Object raw, Object fallback) {
-        try { Object parsed = mapper.readValue(String.valueOf(raw), Object.class); return parsed == null ? fallback : parsed; }
-        catch (Exception error) { return fallback; }
+    private Object parseValue(Object raw) {
+        try { return Objects.requireNonNull(mapper.readValue((String) raw, Object.class), "Stored report JSON value is null"); }
+        catch (JacksonException error) { throw new IllegalStateException("Stored report JSON value is invalid", error); }
     }
 
     private Map<String, Object> parseMap(Object raw) {
-        try { Map<String, Object> parsed = mapper.readValue(String.valueOf(raw), MAP); return parsed == null ? Map.of() : parsed; }
-        catch (Exception error) { return Map.of(); }
+        try { return Objects.requireNonNull(mapper.readValue((String) raw, MAP), "Stored report JSON object is null"); }
+        catch (JacksonException error) { throw new IllegalStateException("Stored report JSON object is invalid", error); }
     }
 
     private List<Map<String, Object>> parseList(Object raw) {
-        try { List<Map<String, Object>> parsed = mapper.readValue(String.valueOf(raw), LIST); return parsed == null ? List.of() : parsed; }
-        catch (Exception error) { return List.of(); }
+        try { return Objects.requireNonNull(mapper.readValue((String) raw, LIST), "Stored report JSON list is null"); }
+        catch (JacksonException error) { throw new IllegalStateException("Stored report JSON list is invalid", error); }
     }
 
     private static long number(Object value) {

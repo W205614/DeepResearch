@@ -33,6 +33,7 @@ import com.deepresearch.business.service.AgentClient;
 import com.deepresearch.business.service.OutboxService;
 import com.deepresearch.business.service.ResearchCommandService;
 import com.deepresearch.business.service.ReportPublicationService;
+import com.deepresearch.business.service.RunViewService;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -84,6 +85,7 @@ class BusinessBackendIntegrationTest {
     @Autowired ResearchCommandService commands;
     @Autowired OutboxService outbox;
     @Autowired ReportPublicationService publications;
+    @Autowired RunViewService views;
     @Autowired DeepResearchProperties properties;
     @Autowired MeterRegistry registry;
     @MockitoBean AgentClient agent;
@@ -1034,6 +1036,31 @@ class BusinessBackendIntegrationTest {
             "chunk_id","acl-chunk","document_hash","acl-hash","index_version",1,"text","PRIVATE-EVIDENCE")));
         jdbc.update("UPDATE runs SET report='# PRIVATE-REPORT [L-1]',sources=? WHERE id='acl-original'",source);
         return publications.submit(new WorkspaceIdentity("lifecycle","writer","researcher","Writer"),"acl-original");
+    }
+
+    @Test
+    void corruptRunJsonIsNotRenderedAsAnEmptyObject() {
+        workspace("corrupt", "corrupt", "researcher", 2);
+        run("corrupt-run", "corrupt");
+        jdbc.update("UPDATE runs SET validation='{broken' WHERE id='corrupt-run'");
+        assertThatThrownBy(() -> views.ownedRun("corrupt-run", "corrupt"))
+            .isInstanceOf(IllegalStateException.class).hasMessageContaining("Stored run JSON");
+        jdbc.update("UPDATE runs SET validation='{}',sources='{broken' WHERE id='corrupt-run'");
+        assertThatThrownBy(() -> views.ownedRun("corrupt-run", "corrupt"))
+            .isInstanceOf(IllegalStateException.class).hasMessageContaining("Stored run JSON");
+    }
+
+    @Test
+    void corruptPublishedJsonIsNotRenderedAsMissingValidationOrArtifacts() {
+        Map<String, Object> report = lifecycleReport("public", -1);
+        String id = String.valueOf(report.get("id"));
+        WorkspaceIdentity writer = new WorkspaceIdentity("lifecycle", "writer", "researcher", "Writer");
+        jdbc.update("UPDATE report_publications SET validation_json='{broken' WHERE id=?", id);
+        assertThatThrownBy(() -> publications.get(writer, id))
+            .isInstanceOf(IllegalStateException.class).hasMessageContaining("Stored report JSON");
+        jdbc.update("UPDATE report_publications SET validation_json='{}',artifacts_json='{broken' WHERE id=?", id);
+        assertThatThrownBy(() -> publications.get(writer, id))
+            .isInstanceOf(IllegalStateException.class).hasMessageContaining("Stored report JSON");
     }
 
     private void completeLifecycleRun(String id, String policy, long revision, String text) {

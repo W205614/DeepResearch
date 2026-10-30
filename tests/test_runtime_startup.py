@@ -1,9 +1,27 @@
 from contextlib import asynccontextmanager
 from types import SimpleNamespace
+from unittest.mock import AsyncMock
 
 import pytest
 
 from backend.services.runtime import Runtime
+
+
+@pytest.mark.parametrize('phase', ['storage', 'archive', 'cleanup'])
+async def test_startup_does_not_hide_initialization_errors(settings, monkeypatch, phase):
+    runtime = Runtime(settings)
+    target, method = {
+        'storage': (runtime.documents.store, 'start'),
+        'archive': (runtime.documents.lifecycle, 'archive_current_versions'),
+        'cleanup': (runtime.attachments, 'cleanup'),
+    }[phase]
+    monkeypatch.setattr(target, method, AsyncMock(side_effect=TypeError('initialization defect')))
+    try:
+        with pytest.raises(TypeError, match='initialization defect'):
+            await runtime.start()
+        assert runtime.attachment_cleanup_task is None
+    finally:
+        await runtime.close()
 
 
 @pytest.mark.asyncio

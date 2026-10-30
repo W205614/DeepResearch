@@ -135,8 +135,10 @@ async def test_no_zero_score_evidence_or_partial_embedding_publication(runtime, 
     monkeypatch.setattr(runtime.vectors, 'search', AsyncMock(return_value=[]))
     assert not await runtime.documents.search('alice', ['unrelated'])
     doc = await runtime.documents.add('alice', 'new.txt', b'New source text')
-    monkeypatch.setattr(runtime.providers, 'embed', AsyncMock(return_value=[]))
-    with pytest.raises(ServiceError, match='数量'):
+    runtime.settings.demo_mode = False
+    runtime.settings.allow_internal_model_processing = True
+    monkeypatch.setattr(runtime.providers, 'post', AsyncMock(return_value={'data': []}))
+    with pytest.raises(ServiceError, match='向量'):
         await runtime.documents.ingest(doc['id'])
     assert (await runtime.db.one('SELECT status FROM documents WHERE id=?', (doc['id'],)))['status'] == 'failed'
     assert not await runtime.db.one('SELECT id FROM chunks WHERE document_id=?', (doc['id'],))

@@ -1,4 +1,4 @@
-import { accessToken, AuthExpiredError, expireSession } from './auth'
+import { accessToken, expireSession } from './auth'
 
 export type EventItem = { id: number; type: string; created_at: string; data: Record<string, any> }
 export type Source = { id: string; kind: 'web'|'local'|'attachment'; attachment_id?:string; title: string; url: string; text: string; access: string; locator: string; published_at: string; retrieved_at: string; domain?: string; evidence_level?: string; trust_label?: string; original_available?: boolean|null }
@@ -63,34 +63,61 @@ export function parseFrame(frame: string): EventItem | 'close' | null {
   if(!data) return null
   return JSON.parse(data)
 }
+class StreamConnectionError extends Error {}
+async function progressResponse(path: string, signal: AbortSignal): Promise<Response> {
+  let response: Response
+  try { response = await authenticatedFetch(path, {signal}) }
+  catch (error) {
+    if (!(error instanceof TypeError)) throw error
+    throw new StreamConnectionError('进度连接暂时不可用', {cause: error})
+  }
+  if (!response.ok) {
+    const message = `进度连接失败（${response.status}）`
+    if ([429, 500, 502, 503, 504].includes(response.status)) throw new StreamConnectionError(message)
+    throw new Error(message)
+  }
+  return response
+}
 export async function subscribe(runId: string, onEvent: (event: EventItem)=>void, onEnd: ()=>Promise<void>, signal: AbortSignal) {
-  let cursor = 0
+  let cursor = 0, failures = 0
   while(!signal.aborted) {
     try {
-      const response = await authenticatedFetch(`/api/research/runs/${runId}/events?after=${cursor}`, {signal})
-      if(!response.ok || !response.body) throw new Error(`进度连接失败（${response.status}）`)
+      const response = await progressResponse(`/api/research/runs/${runId}/events?after=${cursor}`, signal)
+      if(!response.body) throw new Error('进度响应缺少事件流')
       const reader = response.body.getReader(), decoder = new TextDecoder()
       let buffer = ''
       try {
         while(!signal.aborted) {
-          const {value,done} = await reader.read()
+          let result: ReadableStreamReadResult<Uint8Array>
+          try { result = await reader.read() }
+          catch (error) {
+            if (!(error instanceof TypeError)) throw error
+            throw new StreamConnectionError('进度连接已断开', {cause: error})
+          }
+          const {value,done} = result
           if(done) break
           buffer += decoder.decode(value,{stream:true}).replace(/\r\n/g,'\n')
           let index: number
           while((index = buffer.indexOf('\n\n')) >= 0) {
             const frame = parseFrame(buffer.slice(0,index)); buffer = buffer.slice(index+2)
             if(frame === 'close') { await onEnd(); return }
-            if(frame && frame.id > cursor) { cursor = frame.id; onEvent(frame) }
+            if(frame && frame.id > cursor) { onEvent(frame); cursor = frame.id; failures = 0 }
           }
         }
       } finally { await reader.cancel().catch(()=>{}) }
       await onEnd()
+      throw new StreamConnectionError('进度连接已断开')
     } catch(error) {
       if(signal.aborted) return
-      if(error instanceof AuthExpiredError) throw error
-      const run = await api<Run>(`/api/research/runs/${runId}`).catch(()=>null)
+      if(!(error instanceof StreamConnectionError)) throw error
+      const status = await progressResponse(`/api/research/runs/${runId}`, signal).catch(cause=>{
+        if (!(cause instanceof StreamConnectionError) && !signal.aborted) throw cause
+        return null
+      })
+      if(signal.aborted) return
+      const run: Run | null = status ? await status.json() : null
       if(run && terminal(run.status)) { await onEnd(); return }
-      if(error instanceof Error && /401|403|404/.test(error.message)) throw error
+      if(++failures >= 3) throw new Error('进度连接连续失败，请刷新页面重试', {cause: error})
     }
     await new Promise<void>(resolve=>{
       const timer = setTimeout(done,1500)

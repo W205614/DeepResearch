@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.deepresearch.business.config.DeepResearchProperties;
 import com.deepresearch.business.security.WorkspaceIdentity;
 import tools.jackson.core.type.TypeReference;
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -118,32 +120,18 @@ public class RunViewService {
     }
 
     private Map<String, Object> jsonMap(Object value) {
-        if (value instanceof Map<?, ?> map) {
-            Map<String, Object> copy = new LinkedHashMap<>();
-            map.forEach((key, item) -> copy.put(String.valueOf(key), item));
-            return copy;
-        }
         try {
-            return mapper.readValue(value == null || String.valueOf(value).isBlank() ? "{}" : String.valueOf(value), MAP);
-        } catch (Exception ignored) {
-            return new LinkedHashMap<>();
+            return Objects.requireNonNull(mapper.readValue((String) value, MAP), "Stored run JSON object is null");
+        } catch (JacksonException error) {
+            throw new IllegalStateException("Stored run JSON object is invalid", error);
         }
     }
 
     private List<Map<String, Object>> jsonList(Object value) {
-        if (value instanceof List<?> list) {
-            List<Map<String, Object>> copy = new ArrayList<>();
-            for (Object item : list) if (item instanceof Map<?, ?> map) {
-                Map<String, Object> row = new LinkedHashMap<>();
-                map.forEach((key, entry) -> row.put(String.valueOf(key), entry));
-                copy.add(row);
-            }
-            return copy;
-        }
         try {
-            return mapper.readValue(value == null || String.valueOf(value).isBlank() ? "[]" : String.valueOf(value), LIST);
-        } catch (Exception ignored) {
-            return List.of();
+            return Objects.requireNonNull(mapper.readValue((String) value, LIST), "Stored run JSON list is null");
+        } catch (JacksonException error) {
+            throw new IllegalStateException("Stored run JSON list is invalid", error);
         }
     }
 

@@ -11,8 +11,8 @@ class Retention:
         self.db, self.settings = db, settings
 
     async def reconcile(self):
-        batch = getattr(self.settings, 'retention_cleanup_batch_size', 100)
-        days = getattr(self.settings, 'retention_cache_days', 7)
+        batch = self.settings.retention_cleanup_batch_size
+        days = self.settings.retention_cache_days
         cutoff = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat()
         deleted = {}
         # Only expendable caches expire automatically. Run history, source
@@ -34,7 +34,7 @@ class Retention:
             deleted[table + '_orphans'] = await self.db.execute(f"""DELETE FROM {table} WHERE run_id IN
                 (SELECT a.run_id FROM {table} a LEFT JOIN runs r ON r.id=a.run_id
                  WHERE r.id IS NULL ORDER BY a.run_id LIMIT ?)""", (batch,))
-        archive_days = getattr(self.settings, 'retention_archive_after_days', 0)
+        archive_days = self.settings.retention_archive_after_days
         archived = 0
         if archive_days:
             archive_cutoff = (datetime.now(timezone.utc) - timedelta(days=archive_days)).isoformat()

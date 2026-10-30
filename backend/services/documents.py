@@ -201,7 +201,7 @@ class Documents:
         await self.db.execute("""INSERT OR IGNORE INTO document_scan_jobs(document_id,user_id,object_key,state,updated_at)
             SELECT id,user_id,CASE WHEN object_key='' THEN id ELSE object_key END,'pending',updated_at
             FROM documents WHERE status='scanning'""")
-        batch = getattr(self.settings, "retention_cleanup_batch_size", 100)
+        batch = self.settings.retention_cleanup_batch_size
         rows = await self.db.rows("""SELECT j.document_id,j.user_id FROM document_scan_jobs j
             JOIN documents d ON d.id=j.document_id WHERE j.state='pending' AND d.status IN ('scanning','scan_failed')
             ORDER BY j.updated_at,j.document_id LIMIT ?""", (batch,))
@@ -216,8 +216,8 @@ class Documents:
         documents = await self.db.one("SELECT COUNT(*) AS total FROM documents WHERE user_id=? AND status!='deleted'", (user,))
         chunks = await self.db.one("SELECT COUNT(*) AS total FROM chunks WHERE user_id=?", (user,))
         return {"documents": documents['total'], "chunks": chunks['total'],
-                "document_limit": getattr(self.settings, 'workspace_document_limit', 500),
-                "chunk_limit": getattr(self.settings, 'workspace_chunk_limit', 50000),
+                "document_limit": self.settings.workspace_document_limit,
+                "chunk_limit": self.settings.workspace_chunk_limit,
                 "max_file_bytes": 10 * 1024 * 1024, "max_chunks_per_document": 400,
                 "large_corpus_retrieval": "bounded_database_candidates"}
 
@@ -339,8 +339,6 @@ class Documents:
                     raise ServiceError("原文内容已变化，请重新上传", code="source_changed", retryable=False)
                 chunks = await self.split_for_index(target_name, content)
                 vectors = await self.providers.embed([part["text"] for part in chunks])
-                if len(vectors) != len(chunks):
-                    raise ServiceError("嵌入结果数量与片段不一致，资料未发布，请重试导入")
                 rows = [dict(part, ordinal=i, id=hashlib.sha256(f"{doc_id}:{target_version}:{i}".encode()).hexdigest()[:32],
                     user_id=document["user_id"], document_id=doc_id, index_version=target_version, title=target_name, vector=vector)
                     for i, (part, vector) in enumerate(zip(chunks, vectors))]
@@ -351,7 +349,7 @@ class Documents:
                             or (rebuilding and current["pending_hash"] != target_hash)):
                         return
                     count = await self.db.one("SELECT COUNT(*) AS total FROM chunks WHERE user_id=? AND document_id!=?", (document["user_id"], doc_id))
-                    chunk_limit = getattr(self.settings, 'workspace_chunk_limit', 50000)
+                    chunk_limit = self.settings.workspace_chunk_limit
                     if count['total'] + len(rows) > chunk_limit:
                         raise ServiceError(f"索引将超过工作空间片段上限 {chunk_limit}，旧可用版本保持不变，请拆分或清理资料",
                                            code='corpus_capacity', retryable=False)
@@ -439,7 +437,7 @@ class Documents:
         count = await self.db.one(f"""SELECT COUNT(*) AS total FROM chunks c JOIN documents d ON d.id=c.document_id
             WHERE c.user_id=? AND d.user_id=? AND d.status IN ('ready','rebuilding') AND {access_sql()}""", (user, user, *access_args(user)))
         corpus_count = count["total"]
-        indexed = corpus_count > min(getattr(self.settings, "rag_small_corpus_chunks", 1000), self.settings.rag_max_corpus_chunks)
+        indexed = corpus_count > min(self.settings.rag_small_corpus_chunks, self.settings.rag_max_corpus_chunks)
         sql_lexical = {}
         cached_corpus = self._corpora.get(user) if not indexed else None
         corpus_cache_hit = bool(cached_corpus and cached_corpus[0] == corpus_hash)
@@ -447,7 +445,7 @@ class Documents:
             await self.lexical_index.ensure(user)
             if (await self.lexical_index.stats(user))["total"] < corpus_count:
                 reasons.add("invalid_records")
-            candidate_limit = getattr(self.settings, "rag_db_candidate_limit", 128)
+            candidate_limit = self.settings.rag_db_candidate_limit
             sql_lexical = {query: await self.lexical_index.scores(user, query, candidate_limit) for query in queries}
             ids = {key for values in sql_lexical.values() for key in values}
             all_chunks = await self.lexical_index.hydrate(user, ids)
@@ -541,8 +539,6 @@ class Documents:
                 async with asyncio.timeout(self.settings.rag_vector_timeout_seconds):
                     embeddings = await self.providers.embed([query])
                 embed_ms = (time.monotonic() - embed_started) * 1000
-                if len(embeddings) != 1:
-                    raise ServiceError("查询嵌入结果格式无效")
                 vector_started = time.monotonic()
                 try:
                     remaining = self.settings.rag_vector_timeout_seconds - (time.monotonic() - embed_started)

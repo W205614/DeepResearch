@@ -75,11 +75,8 @@ class Runtime:
                                       postgres=bool(settings.database_url))
     async def start(self):
         await self.db.init()
-        try:
-            await self.documents.start()
-            await self.attachments.cleanup()
-        except Exception:
-            self.logger.warning("component=object_store phase=degraded_start")
+        await self.documents.start()
+        await self.attachments.cleanup()
         self.attachment_cleanup_task = asyncio.create_task(self.cleanup_attachments_loop())
         if self.settings.database_url:
             # Workers can resume a run started by another replica, so checkpoints
@@ -102,7 +99,7 @@ class Runtime:
         return self
 
     async def _open_postgres_checkpointer(self, checkpoint_url: str) -> None:
-        if getattr(self.settings, "checkpoint_schema_managed", False):
+        if self.settings.checkpoint_schema_managed:
             self.checkpointer = await self.stack.enter_async_context(
                 AsyncPostgresSaver.from_conn_string(checkpoint_url))
             return

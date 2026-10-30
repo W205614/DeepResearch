@@ -86,6 +86,26 @@ def test_structural_difference_does_not_infer_meaning():
     changes=structural_diff([{'locator':'p1','text':'允许'}],[{'locator':'p1','text':'不允许'}])
     assert changes==[{'kind':'modified','old':{'locator':'p1','text':'允许'},'new':{'locator':'p1','text':'不允许'}}]
 
+
+@pytest.mark.parametrize('corrupt_versions', [(1,), (1, 2)])
+async def test_corrupt_version_json_cannot_be_reported_as_a_valid_diff(runtime, corrupt_versions):
+    doc = await ready(runtime)
+    await runtime.documents.replace(doc['id'], 'alice', 'policy.md', '更新后的内容'.encode())
+    await runtime.documents.ingest(doc['id'])
+    for version in corrupt_versions:
+        await runtime.db.execute('UPDATE document_versions SET blocks_json=? WHERE document_id=? AND version=?',
+                                 ('{broken', doc['id'], version))
+    with pytest.raises(json.JSONDecodeError):
+        await runtime.documents.lifecycle.diff(doc['id'], 'alice', 1, 2)
+
+
+@pytest.mark.parametrize('column', ['chunks_json', 'parser_config', 'index_config'])
+async def test_corrupt_version_metadata_is_not_replaced_by_empty_values(runtime, column):
+    doc = await ready(runtime)
+    await runtime.db.execute(f'UPDATE document_versions SET {column}=? WHERE document_id=?', ('{broken', doc['id']))
+    with pytest.raises(json.JSONDecodeError):
+        await runtime.documents.lifecycle.versions(doc['id'], 'alice')
+
 async def test_new_material_during_generation_fails_before_artifact_commit(runtime,monkeypatch):
     from unittest.mock import AsyncMock
     from backend.domain.models import RunRequest
