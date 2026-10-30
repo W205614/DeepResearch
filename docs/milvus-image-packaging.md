@@ -1,6 +1,8 @@
 # Milvus 示例证书的运行时打包边界
 
-本次 Security job `122017588234`、artifact `12711121662` 的 Milvus 镜像报告没有 HIGH/CRITICAL 漏洞项，但在 `/milvus/configs/cert/{ca,client,server}.key` 检出3项 HIGH private-key secret。这是镜像包含公开示例密钥的问题，本记录没有新增 CVE 的结论，也不通过 ignore、关闭 secret scanner 或路径豁免解决。
+此前 Security job `122017588234`、artifact `12711121662` 的 Milvus 镜像报告没有 HIGH/CRITICAL 漏洞项，但在 `/milvus/configs/cert/{ca,client,server}.key` 检出3项 HIGH private-key secret。这是镜像包含公开示例密钥的问题，不通过 ignore、关闭 secret scanner 或路径豁免解决。
+
+2026-10-30 的 Security job `123963781181`、artifact `12964077371` 新扫描检出 Ubuntu `libbrotli1 1.0.9-2build6` 的 HIGH 漏洞 `CVE-2026-111497`，无 secret 项。[Ubuntu USN-8956-1](https://ubuntu.com/security/notices/USN-8956-1) 指定 Jammy 修复版本为 `1.0.9-2ubuntu0.1`。当前配方先升级这一运行时包，再从升级后的文件树移除示例证书并导出完整运行时，保留更新后的库与 dpkg 元数据；Go 源码、编译器及 Milvus 自带 native 库不变。Compose 使用 `20261030` 标签；新制品仍须通过完整扫描和运行验证，历史通过结果不替代新制品验收。
 
 固定源码为 Milvus v3.0.3 commit `328df0cd2f323c2d3c50cef91bfc9f2c412bcb09`，源码归档 SHA256 `1dd3a0ff960af532f04172b2aebdb9716b1244cad2fb81781b27641f67216cf9`。[上游 configs/cert](https://github.com/milvus-io/milvus/tree/328df0cd2f323c2d3c50cef91bfc9f2c412bcb09/configs/cert) 包含9个公开文件（3个 key、3个 PEM、2个 CSR、1个 CA serial）；[上游 proxy 测试](https://github.com/milvus-io/milvus/blob/328df0cd2f323c2d3c50cef91bfc9f2c412bcb09/internal/distributed/proxy/service_test.go#L1093) 直接使用这些材料。只记录其路径与散列，不复制或打印密钥内容。
 
@@ -8,7 +10,7 @@
 
 原最终阶段直接继承固定 Milvus 镜像，覆盖一个不含 cert 的配置目录仍会留下旧文件。在继承层上 `rm` 也不足以消除归档中的密钥：[Trivy v0.75.0 的 layer applier](https://github.com/aquasecurity/trivy/blob/v0.75.0/pkg/fanal/applier/docker.go#L358) 明确保留后续层删除的 secret 发现。
 
-`Dockerfile.milvus` 因此新增独立包装阶段：从固定原 runtime-base 的文件系统快照复制到 `/runtime-root`，仅移除其 `/milvus/configs/cert` 整个示例目录，最终从 scratch 复制过滤后的完整树及原有两个 Go 构建产物。最终镜像不继承含密钥的原层，也不复制编译器、开发包或源码目录。原 OS 包数据库、全部 native 库、系统 CA、OpenSSL/FIPS 模块及正常配置保留在文件树中；最终重声明原 Config 的6个 ENV、非 root User、tini Entrypoint、WorkingDir 和2个已有 OCI label，不虚构原本没有的 CMD、VOLUME、EXPOSE、HEALTHCHECK、STOPSIGNAL 或 SHELL。
+`Dockerfile.milvus` 使用独立包装阶段：从已应用上述安全更新的运行时文件系统快照复制到 `/runtime-root`，移除其 `/milvus/configs/cert` 整个示例目录，最终从 scratch 复制过滤后的完整树及原有两个 Go 构建产物。最终镜像不继承含密钥的原层，也不复制编译器、开发包或源码目录。更新后的 OS 包数据库、Milvus 自带 native 库、系统 CA、OpenSSL/FIPS 模块及正常配置保留在文件树中；最终重声明原 Config 的6个 ENV、非 root User、tini Entrypoint、WorkingDir 和2个已有 OCI label，不虚构原本没有的 CMD、VOLUME、EXPOSE、HEALTHCHECK、STOPSIGNAL 或 SHELL。
 
 这是新镜像打包方式，必须在云端正常 build 后重新进行完整漏洞和 secret 扫描及运行时验证。静态检查不能证明新镜像已经构建、没有其他 secret、保留所有文件元数据或实际 TLS 已通过。此前已验证镜像的 digest/运行证据不能自动绑定新制品；原报告及失败记录保留。
 

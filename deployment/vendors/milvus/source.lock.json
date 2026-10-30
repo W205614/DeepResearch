@@ -703,6 +703,14 @@
     "derived_source_not_pristine_upstream": true,
     "source_patch_permission": "explicit root task authorized this narrow internal TLS fail-closed change; deployment window not granted"
   },
+  "runtime_os_security_update_20261030": {
+    "advisory": "CVE-2026-111497",
+    "upstream_advisory": "https://ubuntu.com/security/notices/USN-8956-1",
+    "package": "libbrotli1",
+    "previous": "1.0.9-2build6",
+    "fixed": "1.0.9-2ubuntu0.1",
+    "scope": "Upgrade the Ubuntu runtime package before exporting the filtered runtime tree, preserving its installed libraries and dpkg metadata. No vulnerability or secret scan exclusions."
+  },
   "go_jose_security_update_20261028": {
     "advisory": "CVE-2026-116587",
     "upstream_advisory": "https://github.com/go-jose/go-jose/security/advisories/GHSA-mgcc-cww5-fp2q",

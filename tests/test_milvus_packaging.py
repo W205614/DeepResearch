@@ -18,8 +18,8 @@ def instructions():
 def test_final_image_copies_filtered_runtime_without_inheriting_sample_key_layers():
     lines = instructions()
     assert [line for line in lines if line.startswith('FROM ')][-1] == 'FROM scratch'
-    package = lines[lines.index('FROM runtime-base AS runtime-package'):lines.index('FROM scratch')]
-    assert 'COPY --from=runtime-base / /runtime-root/' in package
+    package = lines[lines.index('FROM runtime-security AS runtime-package'):lines.index('FROM scratch')]
+    assert 'COPY --from=runtime-security / /runtime-root/' in package
     prune = next(line for line in package if line.startswith('RUN '))
     assert 'test -d /runtime-root/milvus/configs/cert' in prune
     assert 'test ! -L /runtime-root/milvus/configs/cert' in prune

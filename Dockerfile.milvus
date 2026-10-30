@@ -28,11 +28,16 @@ RUN echo '2d4d52168b669257fbe936554af6af543fa0fa4f2cccc5a201a2c7d301dad500  /sou
 ENV PKG_CONFIG_PATH=/source/pkgconfig LIBRARY_PATH=/milvus/lib LD_LIBRARY_PATH=/milvus/lib
 RUN --mount=type=cache,target=/go/pkg/mod,id=dr-vendor-go-mod-20261026 --mount=type=cache,target=/root/.cache/go-build,id=dr-vendor-go-build-20261026 go test -v -p=2 -mod=readonly -tags=dynamic,sonic,with_jemalloc,bytedance_tango -ldflags='-checklinkname=0 -r /milvus/lib' ./internal/distributed/utils -run '^TestInternalTLSCredentials' -count=1
 RUN --mount=type=cache,target=/go/pkg/mod,id=dr-vendor-go-mod-20261026 --mount=type=cache,target=/root/.cache/go-build,id=dr-vendor-go-build-20261026 go build -p=2 -mod=readonly -buildvcs=false -pgo=/source/configs/pgo/default.pgo -tags=dynamic,sonic,with_jemalloc,bytedance_tango -ldflags='-checklinkname=0 -r /milvus/lib -X github.com/milvus-io/milvus/cmd/milvus.GitCommit=328df0cd2f323c2d3c50cef91bfc9f2c412bcb09-security-rebuild -X github.com/milvus-io/milvus/cmd/milvus.GoVersion=go1.26.10 -X github.com/milvus-io/milvus/cmd/milvus.MilvusVersion=3.0.3' -o /out/milvus ./cmd/main.go
-FROM runtime-base AS runtime-package
+FROM runtime-base AS runtime-security
+USER root
+RUN apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=30 update \
+ && apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=30 install -y --no-install-recommends --only-upgrade libbrotli1=1.0.9-2ubuntu0.1 \
+ && rm -rf /var/lib/apt/lists/*
+FROM runtime-security AS runtime-package
 USER root
 # Copy the fixed runtime only, without compiler packages or the build source.
 # A later whiteout on an inherited layer would still expose its sample keys.
-COPY --from=runtime-base / /runtime-root/
+COPY --from=runtime-security / /runtime-root/
 RUN test -d /runtime-root/milvus/configs/cert && test ! -L /runtime-root/milvus/configs/cert \
  && rm -r -- /runtime-root/milvus/configs/cert \
  && test ! -e /runtime-root/milvus/configs/cert && test -f /runtime-root/milvus/configs/milvus.yaml
