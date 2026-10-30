@@ -6,6 +6,8 @@
 
 运行镜像的 OS、应用依赖和解释器/JVM 必须分别确认扫描覆盖。包扫描未发现 HIGH/CRITICAL，不代表未被识别的运行时已经修复。本轮 Python 使用签名的3.11.18源码构建；Java 使用签名的Temurin21.0.13+9运行时，另有实际版本、安全回归及 native JVM/CPE 检查。最终放行仍需对应源码的完整 CI 和 Security 成功。
 
+前端构建阶段固定使用官方 Node.js 22.23.4 Alpine 镜像及 OCI 摘要，包含 [2026-10-21 安全更新](https://nodejs.org/en/blog/vulnerability/october-2026-security-releases)中的 Brotli、TLS 等修复。Milvus 的 Ubuntu `libbrotli1` 运行时包更新及其扫描边界见[打包记录](milvus-image-packaging.md)。
+
 文件存储采用精确批准的 MinIO/Silo OCI 归档，Compose 不自动重建该镜像：
 
 ```powershell
