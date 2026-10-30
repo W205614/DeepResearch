@@ -185,13 +185,36 @@
     "eval/answer_quality_cases.json": "dd8541e23260631539e0ca5afecdbb0e5520d6029796355a45cf850597484036",
     "eval/research_quality_cases.json": "c23662922168f5ce04e3b2e0e9cf9b11fc1bee81a3bc8edc25b18e39b74f239f",
     "eval/research_quality_extensions.json": "8e81a432a18f5360e169266d9ff584b30d43b897e34bad5bffc023aab4f50f50",
-    "pyproject.toml": "62e5c3936b6c6e2e94c7dcc60c659f6f90a5381c74e13a10c9ce1dff9c28deb4",
-    "uv.lock": "d63ecb8cb8c56a301e92bbd2de405dabc351bcb5cfd51cd4d5bc5b0674af9dc0"
+    "pyproject.toml": "c69ce885ab35a0d94e835c2ebb6bab828097b67c064d4200e0b0ebeb431cb3b2",
+    "uv.lock": "e4b21d08172940e08e47bf60330f80a239808fb07303ec7cc64cc617b1c78d19"
   },
   "fresh_invocations": [
     "- run: uv run python scripts/run_ci_evaluation.py paid --label answers scripts/evaluate_answers.py --output .cache/eval/answer-quality.json",
     "- run: uv run python scripts/run_ci_evaluation.py paid --label research scripts/evaluate_research.py --debug-fixed-failures --output .cache/eval/research-quality.json",
     "- run: uv run python scripts/run_ci_evaluation.py paid --label stability scripts/evaluate_research.py --only conflict-1,compare-3,single-5 --repetitions 3 --require-all --debug-fixed-failures --output .cache/eval/research-stability.json",
     "- run: uv run python scripts/run_ci_evaluation.py paid --label extensions scripts/evaluate_research.py --cases eval/research_quality_extensions.json --output .cache/eval/research-quality-extensions.json"
-  ]
+  ],
+  "dependency_reaudit_20261030": {
+    "reason": "Security-only dependency refresh; unchanged audited application/evaluator ASTs, cases and four fresh workflow commands.",
+    "reviewed_scope": "ResearchGraph.build still requires planner, judge, analyst, writer and validator in the successful positive path; application validator/coverage and external support/coverage calls remain separately required. No new graph cache or provider call bypass is enabled. Checkpoint namespace and trace parsing fixes do not change that application call graph.",
+    "selected_versions": {
+      "langgraph": "1.2.18",
+      "langgraph-checkpoint": "4.3.1",
+      "langgraph-checkpoint-postgres": "3.2.0",
+      "langgraph-checkpoint-sqlite": "3.1.2",
+      "langgraph-sdk": "0.4.10",
+      "mako": "1.4.3",
+      "opentelemetry-api": "1.45.2",
+      "opentelemetry-sdk": "1.45.2"
+    },
+    "previous_dependency_fingerprints": {
+      "pyproject.toml": "62e5c3936b6c6e2e94c7dcc60c659f6f90a5381c74e13a10c9ce1dff9c28deb4",
+      "uv.lock": "d63ecb8cb8c56a301e92bbd2de405dabc351bcb5cfd51cd4d5bc5b0674af9dc0"
+    },
+    "unchanged_bounds": {
+      "critical_path_lower_bound": 245,
+      "pass_rate_refinement_lower_bound": 296
+    },
+    "authorization_boundary": "No paid evaluation executed; no policy, authorization, ledger, budget limit, case or success threshold changed. This static necessary bound is not a model quality result or sufficient quota claim."
+  }
 }
