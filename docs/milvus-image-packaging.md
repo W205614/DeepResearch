@@ -6,6 +6,8 @@
 
 固定源码为 Milvus v3.0.3 commit `328df0cd2f323c2d3c50cef91bfc9f2c412bcb09`，源码归档 SHA256 `1dd3a0ff960af532f04172b2aebdb9716b1244cad2fb81781b27641f67216cf9`。[上游 configs/cert](https://github.com/milvus-io/milvus/tree/328df0cd2f323c2d3c50cef91bfc9f2c412bcb09/configs/cert) 包含9个公开文件（3个 key、3个 PEM、2个 CSR、1个 CA serial）；[上游 proxy 测试](https://github.com/milvus-io/milvus/blob/328df0cd2f323c2d3c50cef91bfc9f2c412bcb09/internal/distributed/proxy/service_test.go#L1093) 直接使用这些材料。只记录其路径与散列，不复制或打印密钥内容。
 
+完整扫描还发现 `curl`/`libcurl4` 的低危更新，本次一并固定为 Ubuntu `7.81.0-1ubuntu1.30`，覆盖 [USN-8927-1](https://ubuntu.com/security/notices/USN-8927-1) 的相关修复。上游自带 Go 模块的低危及未定级告警仍保留在完整扫描中，不使用忽略规则掩盖，也不将本次 OS 包更新称为所有第三方依赖已无漏洞。
+
 [默认配置](https://github.com/milvus-io/milvus/blob/328df0cd2f323c2d3c50cef91bfc9f2c412bcb09/configs/milvus.yaml#L1191) 的外部与内部证书路径指向该目录，但 `common.security.tlsMode=0`、`internaltlsEnabled=false`。这说明默认未启用这两种 Milvus TLS，不能据此宣称已经加密传输。移除示例材料的打包阶段不会替运维启用 TLS；后续单独授权的源码补丁只改变凭据初始化失败的处理，见下文。
 
 原最终阶段直接继承固定 Milvus 镜像，覆盖一个不含 cert 的配置目录仍会留下旧文件。在继承层上 `rm` 也不足以消除归档中的密钥：[Trivy v0.75.0 的 layer applier](https://github.com/aquasecurity/trivy/blob/v0.75.0/pkg/fanal/applier/docker.go#L358) 明确保留后续层删除的 secret 发现。

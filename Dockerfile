@@ -1,4 +1,4 @@
-FROM ghcr.io/astral-sh/uv:0.12.3@sha256:2d890623d310b57771ce840f0da5eed5fc6d657da05ffaa45d82797b53fa3abc AS uv
+FROM ghcr.io/astral-sh/uv:0.13.6@sha256:af22a52f5eafef3d78e551599d405c02df61919d18028f0cea8eda93bc9986d0 AS uv
 FROM gcr.io/distroless/cc-debian13:nonroot@sha256:e792ab3d241a468a4fd7519ddbbebe66b49b5f365771716ea688ad40b6c6f1c2 AS runtime-base
 # DockerHub3.11.18 tags were not published at verification time. Build the
 # official signed CPython release using its pinned upstream slim recipe.
@@ -28,7 +28,7 @@ RUN uv sync --frozen --no-dev --no-install-project --no-python-downloads --link-
 COPY deployment/vendors/python311/source-lock.json /usr/local/share/deepresearch-python-source.json
 COPY scripts/prepare_python_runtime.py /tmp/prepare_python_runtime.py
 COPY scripts/prepare_runtime_trust.py /tmp/prepare_runtime_trust.py
-RUN python /tmp/prepare_python_runtime.py
+RUN python /tmp/prepare_python_runtime.py && rm /usr/local/bin/uv
 
 FROM builder AS runtime-package
 COPY --from=runtime-base / /runtime-root/

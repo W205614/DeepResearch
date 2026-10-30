@@ -8,6 +8,8 @@
 
 前端构建阶段固定使用官方 Node.js 22.23.4 Alpine 镜像及 OCI 摘要，包含 [2026-10-21 安全更新](https://nodejs.org/en/blog/vulnerability/october-2026-security-releases)中的 Brotli、TLS 等修复。Milvus 的 Ubuntu `libbrotli1` 运行时包更新及其扫描边界见[打包记录](milvus-image-packaging.md)。
 
+2026-10-30 的完整运行镜像扫描还发现了有修复版本的 Python 中危依赖问题。本次更新锁文件中兼容的一组 LangGraph、SDK、Postgres/SQLite 检查点存储及 OpenTelemetry 依赖，分别对应[认证请求路径](https://github.com/langchain-ai/langgraph/security/advisories/GHSA-3fx2-cqw9-xr3c)、[跨命名空间访问](https://github.com/langchain-ai/langgraph/security/advisories/GHSA-6hmw-9432-67qq)和 [tracestate 解析耗时](https://github.com/open-telemetry/opentelemetry-python/security/advisories/GHSA-xcq7-p3pf-p88h)问题；同时更新 Mako，覆盖本地 Windows 开发环境的[模板路径问题](https://github.com/sqlalchemy/mako/security/advisories/GHSA-5639-2j2p-m4mx)。`uv` 构建阶段更新到固定摘要的 0.13.6，并在导出运行镜像前移除该构建工具。安全门槛及既有第三方风险记录不变；检查通过不代表所有无修复版本的系统库告警已消失。
+
 文件存储采用精确批准的 MinIO/Silo OCI 归档，Compose 不自动重建该镜像：
 
 ```powershell
