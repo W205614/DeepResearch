@@ -76,7 +76,7 @@ Copy-Item .env.example .env
 
 ### 3. 启动服务
 
-先取得并校验本轮批准的文件存储与 Grafana 镜像。工具核对归档、完整 OCI 描述符、解压层、配置和最终二进制摘要，成功后才标记为 Compose 使用的镜像；无网络时可用 `--archive <已取得的归档路径>`。只使用下述 core 模式时可略过 Grafana 归档。具体判定、到期时间和更新方式见[镜像安全与升级](docs/deployment-security-operations.md#固定镜像与安全判定)。
+先取得并校验本轮批准的文件存储与 Grafana 镜像。工具核对归档、完整 OCI 描述符、解压层、配置和最终二进制摘要，成功后才标记为 Compose 使用的镜像；无网络时可用 `--archive <已取得的归档路径>`。只使用下述 core 模式时可略过 Grafana 归档。具体判定、变更复核条件和更新方式见[镜像安全与升级](docs/deployment-security-operations.md#固定镜像与安全判定)。
 
 ```powershell
 python scripts/fetch_approved_image.py
@@ -209,6 +209,7 @@ Java 负责身份权限、工作空间与任务生命周期；Python 负责研�
 - [本轮交付验证状态](docs/lifecycle-delivery-20261020.md)
 - [2026-10-25 改善、效果对照与交付边界](docs/evidence/improvement-20261025/README.md)
 - [部署隔离、凭据、自动备份与运维](docs/deployment-security-operations.md)
+- [2026-10-30 第三方中低危、未定级告警与日常使用边界](docs/third-party-security-20261030.md)
 - [2026-10-26 架构优化与验证边界](docs/evidence/optimization-20261026/README.md) · [逐项状态](docs/evidence/optimization-20261026/scope.json)
 
 当前部署面向单机内部试用。引用和模型核验有助于回查依据，重要结论仍需人工核实。历史扩展集的6题现已补保存报告组件闭环，混合了精确复用的历史评分与本轮核验，不能称60题全新端到端通过；ConfigMap、Secret仍保留部分结果边界。新增两个固定留出问题验证了有界补搜在可控证据缺口下的作用，范围和失败记录见[本轮说明](docs/evidence/improvement-20261025/README.md)。截图与固定题集结果不代表通用回答准确率或生产可用性承诺。

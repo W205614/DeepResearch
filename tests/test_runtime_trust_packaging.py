@@ -122,6 +122,16 @@ def test_metadata_only_or_wrong_suite_package_is_rejected(tmp_path):
         trust.package_record("tzdata", tmp_path, control)
 
 
+def test_explicit_suite_version_requires_matching_genuine_control(tmp_path):
+    control = tmp_path / "control"
+    control.write_text("Package: tzdata\nVersion: 2026f-0+deb12u1\nArchitecture: all\n")
+    version, record = trust.package_record("tzdata", tmp_path, control, "2026f-0+deb12u1")
+    assert version == "2026f-0+deb12u1"
+    assert control.read_text().strip() in record
+    with pytest.raises(ValueError, match="identity differs"):
+        trust.package_record("tzdata", tmp_path, control, "2026e-0+deb13u1")
+
+
 def test_timezone_replaces_data_and_its_real_record_without_changing_os(layout):
     root, source = layout
     require_symlink(root.parent)

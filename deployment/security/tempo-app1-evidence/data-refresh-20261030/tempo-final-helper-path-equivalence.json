@@ -1,0 +1,11 @@
+{
+  "actor": "/root/remaining_advisories",
+  "recorded_at": "2026-10-30T12:40:26.244730+00:00",
+  "final_public_recipe_timezone_stage_image": "sha256:26b4ba3e8f5a1f47cdb9b22cec7b4c04d093bb970fe9bba532066050cc32c335",
+  "original_reviewed_runtime_image": "sha256:bffb0665071ad069dd7664a76e902d6272e42bdf1106508942a2639779950e2b",
+  "actual_helper_bytes_match_final_source_sha256": "18318d9913c9aa0404bd5afa80b79be31ef915e57cae7b392f3e153cf5f09c21",
+  "actual_overlay_bytes_match_final_source_sha256": "6b54afa5812ed743c54c2c27cda337c6c34624d0b48bfabc489fa5b47f29272d",
+  "current_kind_tz_full_payload_closure_byte_identical_to_reviewed_runtime": true,
+  "payload_closure_sha256": "35d10f1e5accbe5c37556040c59958ed1d4b820d58554fd099a666cce11e82e3",
+  "scope": "Final helper adds only explicit tz-with-legacy branch for etcd. Tempo still calls kind=tz. The actual final public Dockerfile timezone-data stage was rebuilt and produced byte-identical complete payload hash manifest to the runtime already independently verified against official deb. No new runtime/OCI approval or future CI pass is asserted."
+}

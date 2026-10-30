@@ -1,0 +1,34 @@
+{
+  "upstream": "https://github.com/prometheus/prometheus",
+  "tag": "v3.15.1",
+  "tag_object": "291390e28c0686b824af4596102cd23b49d785d4",
+  "commit": "bae3eced0a5369e050e83ea73bc381d7c4b1a719",
+  "module": "github.com/prometheus/prometheus",
+  "module_version": "v0.315.1",
+  "module_sum": "h1:ZXaNKyUO5szJhhw7gKiP6b2jpx1QkS0S3CI1R1bPqIA=",
+  "ui_url": "https://github.com/prometheus/prometheus/releases/download/v3.15.1/prometheus-web-ui-3.15.1.tar.gz",
+  "ui_sha256": "adf30f35abf0d23ffd25616afe75d1966a7ceb18ddad4161fe8ad76e28f2b48f",
+  "compiler": "Go1.27.3 pinned builder",
+  "dependency_override": {
+    "golang.org/x/net": "v0.62.0"
+  },
+  "application_source_changes": false,
+  "version_metadata": "Real upstream tag and commit; buildvcs=true; actual patched dependency closure remains dirty; runtime CLI release version retained.",
+  "files": {
+    "go.mod": "6e2dfa8d25b5cd3da5513334134e63549aff7e70915958f98893893c825d609e",
+    "go.sum": "cc38ed0a8b5d051d3fd1af7c1c1ed6b4615fb6d3532cd11615f86cd34546dd13"
+  },
+  "production_readonly_completion_20261030": {
+    "reason": "Generate checksums and minimum required MVS alignment from the actual production entrypoints, not only standalone override go.mod files.",
+    "targets": [
+      {
+        "module": "prometheus-git",
+        "packages": [
+          "./cmd/prometheus",
+          "./cmd/promtool"
+        ]
+      }
+    ],
+    "generator": "Go1.27.3 go get specified existing targets; no -u and no tidy checksum deletions."
+  }
+}

@@ -1,0 +1,3 @@
+Independent data refresh evidence for Tempo.
+
+independent-full-trivy-0.75.json.gz preserves the complete genuine local scanner output. derived-*-unit-test-fixture.json.gz normalize image aliases for unit tests; the high-only fixture additionally projects HIGH/CRITICAL rows. They are explicitly derived fixtures, never operational scan evidence. Actual image-inspect and native/runtime materials are retained separately from the alias-normalized unit-test inspection. Historical source/backport evidence stays in the parent directory and is not changed. This bundle does not assert future GitHub CI success.

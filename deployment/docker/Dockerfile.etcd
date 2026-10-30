@@ -29,17 +29,15 @@ RUN --mount=type=cache,target=/go/pkg/mod,id=dr-vendor-go-mod-20261026 \
       case "${version}" in v3.5.34|v3.5.34+dirty) ;; *) exit 1 ;; esac; \
       grep -F 'vcs.revision=38e57443c51fc9a3cc6a943fa8ed10381f66ce5c' /tmp/build-info; \
     done; mv /out/server /out/etcd; /out/etcd --version
-FROM gcr.io/distroless/cc-debian13:nonroot@sha256:e792ab3d241a468a4fd7519ddbbebe66b49b5f365771716ea688ad40b6c6f1c2 AS runtime-base
+FROM gcr.io/distroless/static-debian13:nonroot@sha256:18f4cc26c9ffa7f20a359298be7deadac5c607c8e03a02b8119f1a5fc2f82c99 AS runtime-base
 FROM debian:trixie-slim@sha256:38a76d01668772e381ad2826d876627c89e7133e2f8a0f5d567306798b0f2a16 AS trust-source
 # Only genuine CA/timezone data and records leave this authenticated packaging
 # stage; its Python/APT tooling never enters the runtime.
-RUN apt-get update && apt-get install -y --no-install-recommends python3 \
-    && apt-cache policy tzdata \
-    && test "$(apt-cache policy tzdata | awk '/Candidate:/ {print $2}')" = '2026e-0+deb13u1' \
-    && cd /tmp && apt-get download ca-certificates=20250419+deb13u1 tzdata=2026e-0+deb13u1 \
-    && echo 'c10585ac22c7f617a73d394eea29ba71d0356f350ae973b19043d1b017f80f54  ca-certificates_20250419+deb13u1_all.deb' | sha256sum -c - \
-    && echo '165fbf909c02150f62091c64f751ae84c66ff86da124a46a58614d8e174a6acd  tzdata_2026e-0+deb13u1_all.deb' | sha256sum -c - \
-    && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y --no-install-recommends /tmp/ca-certificates_20250419+deb13u1_all.deb /tmp/tzdata_2026e-0+deb13u1_all.deb \
+RUN apt-get update && apt-get install -y --no-install-recommends python3
+ADD --checksum=sha256:c10585ac22c7f617a73d394eea29ba71d0356f350ae973b19043d1b017f80f54 https://security.debian.org/debian-security/pool/updates/main/c/ca-certificates/ca-certificates_20250419+deb13u1_all.deb /tmp/ca-certificates.deb
+ADD --checksum=sha256:165fbf909c02150f62091c64f751ae84c66ff86da124a46a58614d8e174a6acd https://deb.debian.org/debian/pool/main/t/tzdata/tzdata_2026e-0+deb13u1_all.deb /tmp/tzdata.deb
+ADD --checksum=sha256:bc1912d3e805b6071bcc3fbe55c171e0d9c8cf44eeebafcaa825a724577cf8de https://deb.debian.org/debian/pool/main/t/tzdata/tzdata-legacy_2026e-0+deb13u1_all.deb /tmp/tzdata-legacy.deb
+RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y --no-install-recommends /tmp/ca-certificates.deb /tmp/tzdata.deb /tmp/tzdata-legacy.deb \
     && update-ca-certificates --fresh \
     && mkdir -p /tmp/authenticated-package-inputs \
     && cp /var/lib/apt/lists/*InRelease /tmp/authenticated-package-inputs/ \
@@ -48,7 +46,7 @@ COPY scripts/prepare_runtime_trust.py /tmp/prepare_runtime_trust.py
 FROM trust-source AS runtime-package
 COPY --from=runtime-base / /runtime-root/
 RUN python3 /tmp/prepare_runtime_trust.py --runtime-root /runtime-root --kind ca \
-    && python3 /tmp/prepare_runtime_trust.py --runtime-root /runtime-root --kind tz
+    && python3 /tmp/prepare_runtime_trust.py --runtime-root /runtime-root --kind tz-with-legacy
 FROM scratch
 COPY --from=runtime-package /runtime-root/ /
 COPY --from=build /out/ /usr/local/bin/

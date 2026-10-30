@@ -1,0 +1,149 @@
+{
+  "actor": "/root/remaining_advisories",
+  "recorded_at": "2026-10-30T12:38:55.545524+00:00",
+  "review_kind": "independent_new_two_ELF_OpenPGP_package_applicability",
+  "human_risk_acceptance": false,
+  "new_waiver": false,
+  "image_id": "sha256:75cd7503a14a9bf8c4af0f9f8c42470c9b6e6fb9e8b8f4b62139ec2cce1ad85d",
+  "scope_count": 2,
+  "targets": [
+    {
+      "target": "milvus/bin/milvus",
+      "advisory": "GO-2026-5932",
+      "raw_severity": "UNKNOWN",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "elf_sha256": "265959bcd4a2254bd7fb64966c06ce608ad704b16a776b15be40e9c20bc8e06f",
+      "elf_bytes": 326900976,
+      "entry": "./cmd/main.go",
+      "build_settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-ldflags": "-checklinkname=0 -r /milvus/lib -X github.com/milvus-io/milvus/cmd/milvus.GitCommit=328df0cd2f323c2d3c50cef91bfc9f2c412bcb09-security-rebuild -X github.com/milvus-io/milvus/cmd/milvus.GoVersion=go1.26.10 -X github.com/milvus-io/milvus/cmd/milvus.MilvusVersion=3.0.3",
+        "-pgo": "/source/configs/pgo/default.pgo",
+        "-tags": "dynamic,sonic,with_jemalloc,bytedance_tango",
+        "CGO_CFLAGS": "",
+        "CGO_CPPFLAGS": "",
+        "CGO_CXXFLAGS": "",
+        "CGO_ENABLED": "1",
+        "CGO_LDFLAGS": "",
+        "GOAMD64": "v1",
+        "GOARCH": "amd64",
+        "GOOS": "linux"
+      },
+      "complete_production_package_count": 2147,
+      "effective_module_count": 272,
+      "graph_errors": 0,
+      "missing_imports": [],
+      "old_OpenPGP_packages": [],
+      "native_module_path_version_sum_match": true,
+      "graph_sha256": "6c0d0176d0d5a2eab25b6f742f8909da8621c8684c51362fa96f65378fa580de",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "local_replacement_normalization": "Only local ./pkg and the file-built local root module missing vs(devel), each with exact current source GoMod/vendor hash bound. The root module is included as a dependency only when present in actual native Deps; remote versions/sums are not normalized.",
+      "technical_conclusion": "AFFECTED_SEVEN_OPENPGP_IMPORTS_NOT_COMPILED_IN_THIS_EXACT_CURRENT_ELF"
+    },
+    {
+      "target": "milvus/lib/libmilvus-planparser.so",
+      "advisory": "GO-2026-5932",
+      "raw_severity": "UNKNOWN",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "elf_sha256": "05f6f0d5cba1df4bbc0f89d6fba0ce3123186deecd84eef5424ef61a93b3aa5b",
+      "elf_bytes": 58339416,
+      "entry": "./internal/parser/planparserv2/cwrapper",
+      "build_settings": {
+        "-buildmode": "c-shared",
+        "-compiler": "gc",
+        "CGO_ENABLED": "1",
+        "CGO_CFLAGS": "",
+        "CGO_CPPFLAGS": "",
+        "CGO_CXXFLAGS": "",
+        "CGO_LDFLAGS": "",
+        "GOARCH": "amd64",
+        "GOOS": "linux",
+        "GOAMD64": "v1"
+      },
+      "complete_production_package_count": 818,
+      "effective_module_count": 112,
+      "graph_errors": 0,
+      "missing_imports": [],
+      "old_OpenPGP_packages": [],
+      "native_module_path_version_sum_match": true,
+      "graph_sha256": "cd19d47bdbcf1160e723c47feafd244c8acd99f83afa64c841b09dcf6e445c05",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "local_replacement_normalization": "Only local ./pkg and the file-built local root module missing vs(devel), each with exact current source GoMod/vendor hash bound. The root module is included as a dependency only when present in actual native Deps; remote versions/sums are not normalized.",
+      "technical_conclusion": "AFFECTED_SEVEN_OPENPGP_IMPORTS_NOT_COMPILED_IN_THIS_EXACT_CURRENT_ELF"
+    }
+  ],
+  "primary_url": "https://vuln.go.dev/ID/GO-2026-5932.json",
+  "module_advisory_has_no_fixed_version": true,
+  "module_remains_scanned": true,
+  "current_Source_ModLocks_verified": [
+    {
+      "path": "deployment\\vendors\\milvus\\modules\\go.mod",
+      "sha256": "10008b93ef0b11c547689b9bdf2c8f7cbf5d0744cd1436f9318a57bc3551d9e7",
+      "source_matches": true
+    },
+    {
+      "path": "deployment\\vendors\\milvus\\modules\\go.sum",
+      "sha256": "028ee266d44fe9685b39af757ae606826e42b730a4370c9bcf8014819be86348",
+      "source_matches": true
+    },
+    {
+      "path": "deployment\\vendors\\milvus\\modules\\client\\go.mod",
+      "sha256": "3747aed71c48e5b7fcbdd69ff3e78b981c2149fd7588a04686897bc644ff2491",
+      "source_matches": true
+    },
+    {
+      "path": "deployment\\vendors\\milvus\\modules\\client\\go.sum",
+      "sha256": "249eea0730bf64761eb1a10ecd737cda0ca0a1f1b2ab8d3e4e1c8ff48c7e82d8",
+      "source_matches": true
+    },
+    {
+      "path": "deployment\\vendors\\milvus\\modules\\pkg\\go.mod",
+      "sha256": "37f00a2ab8e365c4eed70b492c05173ddb47c4a08ddd9833e92b10e60babfb89",
+      "source_matches": true
+    },
+    {
+      "path": "deployment\\vendors\\milvus\\modules\\pkg\\go.sum",
+      "sha256": "ae7f76cf5c330e81ec1790d1e8ff5b3dadbb49cce794e1b5de032eaa22b16d99",
+      "source_matches": true
+    },
+    {
+      "path": "deployment\\vendors\\milvus\\modules\\tests\\go_client\\go.mod",
+      "sha256": "62df09c4e62e8230e901d34df5bc91cfdb3180651472d313591ce6f7e71e74d0",
+      "source_matches": true
+    },
+    {
+      "path": "deployment\\vendors\\milvus\\modules\\tests\\go_client\\go.sum",
+      "sha256": "8e3ef5277421e126e832cd49fde01c81ec34e1267c968222a4507d1f642fbe7a",
+      "source_matches": true
+    },
+    {
+      "path": "deployment\\vendors\\milvus\\modules\\examples\\telemetry_demo\\go.mod",
+      "sha256": "9666f472fecd7eaacfa32fa5df9b0994726011146809ee397e3330b4211d09bc",
+      "source_matches": true
+    },
+    {
+      "path": "deployment\\vendors\\milvus\\modules\\examples\\telemetry_demo\\go.sum",
+      "sha256": "10c1f1347016579574fba28f39702c935b6fb54739740bfaf97f6a6add20826f",
+      "source_matches": true
+    },
+    {
+      "path": "deployment\\vendors\\milvus\\modules\\examples\\telemetry_e2e_test\\go.mod",
+      "sha256": "922a7953b933e97b4410e1e198751c912b6b11241627a8a39c3d28baac2fda0d",
+      "source_matches": true
+    },
+    {
+      "path": "deployment\\vendors\\milvus\\modules\\examples\\telemetry_e2e_test\\go.sum",
+      "sha256": "d1beb166990ff0f8e4ab9b5b9d4ea8cffe1c4a322d6beee6d4435d639821751c",
+      "source_matches": true
+    }
+  ],
+  "source_command_completion": "Root supplied actual main command session47318 and parser session50033 exit0; independent parser checks every returned record, errors, missing imports, effective modules and native ELF identities. Main exact file+4tags, parser c-shared has no-tags.",
+  "go_exe_sha256": "de14a33fd6ab5937941f0573e5b6537f04d24979aaf1b0557de1005a28cb7add",
+  "source_build_recipe_sha256": "e26b2b570e4a9a7c591fcb7bab682496591704123a594123bd81663ec749962a",
+  "actual_native_receipt_sha256": "f214520644176ee782e977d52a4e3b762f6631d91e9d43d0c255432bbd0dcfbc",
+  "actual_raw_scan_sha256": "ea25feddc22ef48a4b2e21a7acad603e3a7ef2ae1a4504865c7d2419f0071aae",
+  "daily_use_impact": "Deprecated OpenPGP code is absent from these two exact current Go builds. Other x/crypto functionality remains in use and scanned. Raw2 UNKNOWN rows remain visible; neither module nor product is labeled generally fixed. No old ELF result or unrelated image authorization is inherited."
+}

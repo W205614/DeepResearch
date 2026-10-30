@@ -218,7 +218,7 @@ services:
     networks: [edge, application, database, identity, telemetry]
   etcd:
     <<: *service-defaults
-    image: dr-vendor-etcd:3.5.34-go1.27.3-xnet0.60-vcs-20261026
+    image: dr-vendor-etcd:3.5.34-go1.27.3-xnet0.62-20261030
     platform: linux/amd64
     build:
       context: .
@@ -510,7 +510,10 @@ services:
     networks: [telemetry]
   loki:
     <<: *service-defaults
-    image: grafana/loki:3.7.9@sha256:569e5cab050b7705eb82080335ff9a8bd329650b358bb0d42131e3ced8d9492e
+    image: dr-vendor-loki:3.7.9-security-20261030
+    build:
+      context: .
+      dockerfile: deployment/docker/Dockerfile.loki
     command: ["-config.file=/etc/loki/loki.yaml"]
     volumes:
       - ./observability/loki.yaml:/etc/loki/loki.yaml:ro
@@ -571,7 +574,10 @@ services:
     network_mode: none
   prometheus:
     <<: *service-defaults
-    image: prom/prometheus:v3.15.1@sha256:d445d1806b38f85b5c394a1b87f94113fde0473b45245922c2e8b1bd41fa68ae
+    image: dr-vendor-prometheus:3.15.1-security-20261030
+    build:
+      context: .
+      dockerfile: deployment/docker/Dockerfile.prometheus
     command: ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.path=/prometheus", "--storage.tsdb.retention.time=15d", "--storage.tsdb.retention.size=2GB"]
     volumes: [./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro, ./observability/alerts.yml:/etc/prometheus/alerts.yml:ro, prometheus-data:/prometheus]
     restart: unless-stopped

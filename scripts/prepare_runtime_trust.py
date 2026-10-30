@@ -79,7 +79,8 @@ def copy_tree(root: Path, source: Path, relative: str) -> None:
         destination.mkdir()
 
 
-def package_record(package: str, source: Path, control: Path | None = None) -> tuple[str, str]:
+def package_record(package: str, source: Path, control: Path | None = None,
+                   expected_version: str | None = None) -> tuple[str, str]:
     if control is None:
         record = subprocess.check_output(["dpkg-query", "-s", package], text=True)
     else:
@@ -88,7 +89,7 @@ def package_record(package: str, source: Path, control: Path | None = None) -> t
         # package's original control fields, not a fabricated version override.
         record += "Status: install ok installed\n"
     fields = dict(line.split(": ", 1) for line in record.splitlines() if ": " in line and not line[0].isspace())
-    expected = CA_VERSION if package == "ca-certificates" else TZ_VERSION
+    expected = (CA_VERSION if package == "ca-certificates" else TZ_VERSION) if expected_version is None else expected_version
     if fields.get("Package") != package or fields.get("Version") != expected:
         raise ValueError("Installed Debian package identity differs from the reviewed closure")
     return fields["Version"], record
@@ -195,7 +196,8 @@ print(json.dumps({'certifi_version':importlib.metadata.version('certifi'),
     return value
 
 
-def prepare(root: Path, source: Path, kind: str, control: Path | None = None) -> dict:
+def prepare(root: Path, source: Path, kind: str, control: Path | None = None,
+            expected_version: str | None = None) -> dict:
     root, source = root.absolute(), source.absolute()
     if (root == source or root == Path(root.anchor) or root.is_symlink() or root != root.resolve()
             or root.name != "runtime-root"):
@@ -203,7 +205,7 @@ def prepare(root: Path, source: Path, kind: str, control: Path | None = None) ->
     if not (root / "etc/os-release").exists():
         raise ValueError("The original runtime OS identity must be present")
     package = "ca-certificates" if kind == "ca" else "tzdata"
-    version, record = package_record(package, source, control)
+    version, record = package_record(package, source, control, expected_version)
     if kind == "ca":
         for relative in CA_TREES:
             copy_tree(root, source, relative)
@@ -230,6 +232,10 @@ def prepare(root: Path, source: Path, kind: str, control: Path | None = None) ->
     write_package_record(root, package, record, source)
     report = {"package": package, "version": version, "verification": verification,
               "payload": tree_manifest(root, paths), "metadata_only_fix": False}
+    if kind == "tz-with-legacy":
+        legacy_version, legacy_record = package_record("tzdata-legacy", source, expected_version=expected_version)
+        write_package_record(root, "tzdata-legacy", legacy_record, source)
+        report["additional_packages"] = {"tzdata-legacy": legacy_version}
     output = staged_path(root, "usr/share/deepresearch/" + package + "-closure.json")
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, sort_keys=True), encoding="utf-8")
@@ -240,7 +246,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--runtime-root", required=True, type=Path)
     parser.add_argument("--source-root", default="/", type=Path)
-    parser.add_argument("--kind", required=True, choices=("ca", "tz"))
+    parser.add_argument("--kind", required=True, choices=("ca", "tz", "tz-with-legacy"))
     parser.add_argument("--control", type=Path)
+    parser.add_argument("--expected-version", help="Pinned Debian package version for this runtime release")
     args = parser.parse_args()
-    print(json.dumps(prepare(args.runtime_root, args.source_root, args.kind, args.control)["verification"]))
+    print(json.dumps(prepare(args.runtime_root, args.source_root, args.kind, args.control,
+                             args.expected_version)["verification"]))

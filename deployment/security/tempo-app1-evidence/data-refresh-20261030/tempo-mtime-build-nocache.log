@@ -1,0 +1,74 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.tempo-mtime-experiment
+#1 transferring dockerfile: 53B 0.1s
+#1 transferring dockerfile: 993B 0.2s done
+#1 DONE 0.3s
+
+#2 [internal] load metadata for docker.io/grafana/tempo:2.10.10@sha256:12b0820f13ffa10ce956b6e9acc3b03f3cffded99109be6cc09d106fe56e5d38
+#2 ...
+
+#3 [internal] load metadata for docker.io/library/deepresearch-tempo:2.10.10-security-20261028
+#3 DONE 0.5s
+
+#4 [internal] load metadata for docker.io/library/deepresearch-thirdparty-tempo-timezone:20261030
+#4 DONE 0.5s
+
+#2 [internal] load metadata for docker.io/grafana/tempo:2.10.10@sha256:12b0820f13ffa10ce956b6e9acc3b03f3cffded99109be6cc09d106fe56e5d38
+#2 DONE 0.5s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 33B 0.0s
+#5 transferring context: 207B 0.2s done
+#5 DONE 0.2s
+
+#6 [stage-2 1/4] FROM docker.io/grafana/tempo:2.10.10@sha256:12b0820f13ffa10ce956b6e9acc3b03f3cffded99109be6cc09d106fe56e5d38
+#6 resolve docker.io/grafana/tempo:2.10.10@sha256:12b0820f13ffa10ce956b6e9acc3b03f3cffded99109be6cc09d106fe56e5d38
+#6 ...
+
+#7 [current-app 1/1] FROM docker.io/library/deepresearch-tempo:2.10.10-security-20261028@sha256:a0511b89de5000504383165cab95d0b9228529708bd1a26e8a7d0e41d9c10e41
+#7 resolve docker.io/library/deepresearch-tempo:2.10.10-security-20261028@sha256:a0511b89de5000504383165cab95d0b9228529708bd1a26e8a7d0e41d9c10e41 0.3s done
+#7 DONE 0.3s
+
+#7 [current-app 1/1] FROM docker.io/library/deepresearch-tempo:2.10.10-security-20261028@sha256:a0511b89de5000504383165cab95d0b9228529708bd1a26e8a7d0e41d9c10e41
+#7 CACHED
+
+#8 [timezone-package 1/3] FROM docker.io/library/deepresearch-thirdparty-tempo-timezone:20261030@sha256:5fcf536a2756be8a9f42c82b96fa006882c39b8374d13c857b9a7886a2565a45
+#8 resolve docker.io/library/deepresearch-thirdparty-tempo-timezone:20261030@sha256:5fcf536a2756be8a9f42c82b96fa006882c39b8374d13c857b9a7886a2565a45 0.2s done
+#8 CACHED
+
+#6 [stage-2 1/4] FROM docker.io/grafana/tempo:2.10.10@sha256:12b0820f13ffa10ce956b6e9acc3b03f3cffded99109be6cc09d106fe56e5d38
+#6 resolve docker.io/grafana/tempo:2.10.10@sha256:12b0820f13ffa10ce956b6e9acc3b03f3cffded99109be6cc09d106fe56e5d38 0.3s done
+#6 CACHED
+
+#9 [timezone-package 2/3] COPY --from=current-app /usr/share/tempo/security-buildinfo.txt /runtime-overlay/usr/share/tempo/security-buildinfo.txt
+#9 DONE 0.6s
+
+#10 [stage-2 2/4] COPY --from=current-app /tempo /tempo
+#10 DONE 0.6s
+
+#11 [stage-2 3/4] COPY --from=current-app /usr/share/licenses/tempo/LICENSE /usr/share/licenses/tempo/LICENSE
+#11 DONE 0.4s
+
+#12 [timezone-package 3/3] RUN python3 -c "import os; os.utime('/runtime-overlay/usr/share/tempo/security-buildinfo.txt', (1793000000,1793000000))"
+#12 DONE 0.6s
+
+#13 [stage-2 4/4] COPY --from=timezone-package /runtime-overlay/ /
+#13 DONE 1.1s
+
+#14 exporting to image
+#14 exporting layers
+#14 exporting layers 10.7s done
+#14 exporting manifest sha256:6fc677812b4aec570d0981b277c49f044355fa7ddd3f4709d1e5c4cccf0c843a 0.1s done
+#14 exporting config sha256:62acfaf2687b0e2f6ccaad0918e255ff4c999ab480b3dda8a287624891025871 0.0s done
+#14 exporting attestation manifest sha256:0268f4b6f725e6e4e8c26aa12db49414a26c5f82b432964c68c569b8f7119127
+#14 exporting attestation manifest sha256:0268f4b6f725e6e4e8c26aa12db49414a26c5f82b432964c68c569b8f7119127 0.3s done
+#14 exporting manifest list sha256:5e3ab8bd077e3ed13bda955e46b642180176edec6912632cb04c845ce57f3606
+#14 exporting manifest list sha256:5e3ab8bd077e3ed13bda955e46b642180176edec6912632cb04c845ce57f3606 0.1s done
+#14 naming to docker.io/library/deepresearch-thirdparty-tempo-mtime-review:20261030
+#14 naming to docker.io/library/deepresearch-thirdparty-tempo-mtime-review:20261030 0.0s done
+#14 unpacking to docker.io/library/deepresearch-thirdparty-tempo-mtime-review:20261030
+#14 unpacking to docker.io/library/deepresearch-thirdparty-tempo-mtime-review:20261030 0.7s done
+#14 DONE 12.2s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/ut26dqsfa65bd2pmc7s5q7h7y

@@ -1,0 +1,44 @@
+FROM golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c AS build
+ARG GOPROXY=https://proxy.golang.org
+ENV GOPROXY=${GOPROXY} GOTOOLCHAIN=local CGO_ENABLED=0 GOMAXPROCS=2 GOMEMLIMIT=1024MiB
+RUN apk add --no-cache git
+WORKDIR /source
+RUN --mount=type=cache,target=/go/pkg/mod \
+    go mod download -json github.com/grafana/loki/v3@v3.7.9 > /tmp/source.json \
+    && grep -F '"Sum": "h1:AI9auwgBKmh43/U3U1TUOZmlPgtxP7mgNCAXb5DSs8I="' /tmp/source.json \
+    && cp -a /go/pkg/mod/github.com/grafana/loki/v3@v3.7.9/. /source/ \
+    && git init && git remote add origin https://github.com/grafana/loki.git \
+    && git -c http.version=HTTP/1.1 fetch --depth=1 origin refs/tags/v3.7.9:refs/tags/v3.7.9 \
+    && test "$(git rev-parse 'refs/tags/v3.7.9^{commit}')" = d3b4a2f76bfc5625abee7ceb00b8896fa3c31549 \
+    && git reset --mixed d3b4a2f76bfc5625abee7ceb00b8896fa3c31549
+# This upstream local module is omitted from the checksummed root module zip.
+COPY deployment/vendors/loki/push/ /source/pkg/push/
+COPY deployment/vendors/loki/go.mod deployment/vendors/loki/go.sum ./
+RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
+    go build -p=2 -mod=readonly -buildvcs=true -trimpath -tags=netgo \
+      -ldflags='-s -w -X github.com/grafana/loki/v3/pkg/util/build.Version=3.7.9 -X github.com/grafana/loki/v3/pkg/util/build.Revision=d3b4a2f76 -X github.com/grafana/loki/v3/pkg/util/build.Branch=v3.7.9-security' \
+      -o /out/loki ./cmd/loki \
+    && go version -m /out/loki > /out/build-info.txt \
+    && grep -F 'vcs.revision=d3b4a2f76bfc5625abee7ceb00b8896fa3c31549' /out/build-info.txt \
+    && grep -F 'golang.org/x/net' /out/build-info.txt | grep -F 'v0.62.0' \
+    && /out/loki -version
+FROM grafana/loki:3.7.9@sha256:569e5cab050b7705eb82080335ff9a8bd329650b358bb0d42131e3ced8d9492e AS runtime-base
+FROM debian:trixie-slim@sha256:38a76d01668772e381ad2826d876627c89e7133e2f8a0f5d567306798b0f2a16 AS trust-source
+RUN apt-get update && apt-get install -y --no-install-recommends python3 openssl
+ADD --checksum=sha256:c10585ac22c7f617a73d394eea29ba71d0356f350ae973b19043d1b017f80f54 https://security.debian.org/debian-security/pool/updates/main/c/ca-certificates/ca-certificates_20250419+deb13u1_all.deb /tmp/ca-certificates.deb
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends /tmp/ca-certificates.deb \
+    && update-ca-certificates --fresh
+COPY scripts/prepare_runtime_trust.py /tmp/prepare_runtime_trust.py
+FROM trust-source AS runtime-package
+COPY --from=runtime-base / /runtime-root/
+RUN python3 /tmp/prepare_runtime_trust.py --runtime-root /runtime-root --kind ca
+FROM scratch
+COPY --from=runtime-package /runtime-root/ /
+COPY --from=build /out/loki /usr/bin/loki
+ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+    SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+USER 10001
+WORKDIR /
+EXPOSE 3100
+ENTRYPOINT ["/usr/bin/loki"]
+CMD ["-config.file=/etc/loki/local-config.yaml"]

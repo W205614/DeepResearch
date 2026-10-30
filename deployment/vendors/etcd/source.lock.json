@@ -5,33 +5,33 @@
   "source_archive_sha256": "6d575a3fbeece5230290314d74f5c93dbb53ee3bcb564465b63cbea673740805",
   "runtime_amd64_manifest": "sha256:20afe6a70f2565277b704cc17289cb557f353a3619f6350f52a2317106598df4",
   "compiler": "Go1.27.3 pinned Dockerfile.etcd",
-  "source_changes": "locked dependency graph x/net0.60 and required x/crypto0.57,x/sys0.48,x/text0.42; no API or storage code changes",
+  "source_changes": "locked dependency graph x/net0.62, OTel1.45 and their required Go module dependencies; no API or storage code changes",
   "main_version_provenance": "real official server/etcdctl/etcdutl tags fetched and commit checked; Go buildvcs=true retains3.5.34+dirty for actual patched source instead of devel",
   "files": {
-    "modules/api/go.mod": "c8439c44c9ff0a52438daccf2af3705e94225745c65078d6132a99efe57b1c83",
-    "modules/api/go.sum": "6669bd4b5e87ffa8c4c1f6e4f6db38327a6cf4769ff5ec2fb86686226579ffbf",
+    "modules/api/go.mod": "f1ae87158486bceb31739eaae6845adc2a882068d0ad5356772e9e81d17935d1",
+    "modules/api/go.sum": "a83b4c5c0aa44198f98a162b1d2321e90e146425430c2d726056fe2e3f354919",
     "modules/client/pkg/go.mod": "fd971a142620db6515d05f72b9412f189e76eba58db1c6d4b5abef3eca796fb9",
     "modules/client/pkg/go.sum": "d10cf8b0c605f5d007b0f11dd84b402f1bb319a6fb6487a5bd64d40af02a4bc5",
     "modules/client/v2/go.mod": "c36da6df7e88e01542f8fbb6a78c857dcd9e2d2158cab9140175f6a125aefbb2",
     "modules/client/v2/go.sum": "01dc4c3d74d032ea6d87c5a9fc85ffbad4252f7f2d5dd75c0689a7110a71da35",
-    "modules/client/v3/go.mod": "7d744cc2353b023a9a5cdcd9afee38ef80776afc7533c16df95f7b96d60dff3e",
-    "modules/client/v3/go.sum": "27b1441dd623210bcac43afe163ce609827b2ec7038aa1f838ab058eefd7cfd3",
-    "modules/etcdctl/go.mod": "8f0352386b43f9475e746aec93ba564d04bd4f2c660fd6531cd30f6684c83765",
-    "modules/etcdctl/go.sum": "38c85f83a555cbe366745e3cb7a87cfcff90d78565e90c04ae092ad1ba428c70",
-    "modules/etcdutl/go.mod": "bc4f6226ba9a34af20eebbae321562e48c04672cd48ac1f673033411027c6043",
-    "modules/etcdutl/go.sum": "4624d3e82642e3ef66b8464df7d71856325aab0588214e8c13c43aacb9b3d85c",
-    "modules/go.mod": "b029fef669627e81366e9b433a7c7839d6ce8569d0d424d76489918a70c058e5",
-    "modules/go.sum": "b65b2944602fcc71cc6297a1297202c776eb746c9f64dd2d43299e70e43d267b",
-    "modules/pkg/go.mod": "948209b5028b829c64d82c51e49bc657b4f1264022ded3bf85bbd6d286978e94",
-    "modules/pkg/go.sum": "8648757c7347303bbcad9298fb4ef805110ceadbbaf37bd476ca3f3cd4d1139d",
+    "modules/client/v3/go.mod": "b2950fc5adc6c8fd281c21ab47b8328057a184128b9548393f09f5151d2ce9f2",
+    "modules/client/v3/go.sum": "5755292d69d779ce82d7b36e3990eacfbcddf161d65f34fa014d21714e8739be",
+    "modules/etcdctl/go.mod": "e14d6c8643096f49ce579321bf0a99b7009b4e0e7388fdd2a9326e665402b823",
+    "modules/etcdctl/go.sum": "b0f42a3ef8c9ac0898ae026ea4f573d05b3f5553c0b7cd64f5fde17fbf8212b6",
+    "modules/etcdutl/go.mod": "8b58c91f8aa167f3580f3cf17b7f1695c37ebcf9a2e9e9e0864005e36cc3df83",
+    "modules/etcdutl/go.sum": "3607f2b54e212637c63a59acc82d92ca4438e29e4660bf7c636d29006d6c49f0",
+    "modules/go.mod": "7736cde984ac615e0801dee4baae1e0adc63605cbfbb6543d3c3618a4ce13195",
+    "modules/go.sum": "06c60a25d82d31e4fe8e1dfd043352490a78bebb285685f2e2f9f0c578491bba",
+    "modules/pkg/go.mod": "0f0d1c90e1660c282c47e03d43892e9b49961f2b3d2d6c0a4d02febe53c20320",
+    "modules/pkg/go.sum": "f8b3a2f9642b8ff56eea5733ad935b8bfa14d850bff40aa6700ed9b3810827bc",
     "modules/raft/go.mod": "089247a6557eeb928b41f4cf526b7d376ef5b478b61cf106057ea9e30e60cd38",
     "modules/raft/go.sum": "38f9d084c00dc4e7dfd2d42fa6be0a332c33c6de6a1a75fea1260e84f58f6807",
-    "modules/server/go.mod": "de27d11341a29768065a4a9484d954b0308cee4f9be8cc57e75567050b7270c7",
-    "modules/server/go.sum": "3b14f04da468c39c996fa480a777e4740dad36f5da5fd9341a524105d15f7449",
-    "modules/tests/go.mod": "681610132f11d5cf28a120ac2592c77703dcccc1834e2922a4d24c6e3618751d",
-    "modules/tests/go.sum": "2d56990727f65a8daaa902e034750debf5cf7b769aa00239a1597e718148af95",
-    "modules/tools/mod/go.mod": "5f19670503559285304e2e580e0c8ca30d39428fd94b1dc88206b57a130d6ec0",
-    "modules/tools/mod/go.sum": "92bdf2495784b79f3b33d8de35fb6f4d1cc1fb417aae67527462f81f61f4c089"
+    "modules/server/go.mod": "3498592e659669027ac7d9142d1a3b370b2babdb80f2f6dc3680f7b917ef1d36",
+    "modules/server/go.sum": "9e9c2d1c0c12fe1a6c7374c2f7d8b74844454d824d4f1e7a87536cd2d0377204",
+    "modules/tests/go.mod": "89fed8c63d48c6333ec8083874fb4ff2c6f33d243d09fd88a114a5b845dc32ef",
+    "modules/tests/go.sum": "ed07090873f34285be974427248e0ecbcdb56d8e98cbef4a9f7b08ce86887704",
+    "modules/tools/mod/go.mod": "666d2260d5a8a8c50cfdcb877f7e69d7fa1a759b89404abebe81f1f377a41d3b",
+    "modules/tools/mod/go.sum": "221cfe6df7fd0b429cb04d337609e20bd298d3934e3a437ecdcc5d7d354f4652"
   },
   "nonruntime_module_dependency_update_20261027": {
     "basis": "Exact6bec source FS scan,30 HIGH/CRITICAL finding rows across these three independent modules; repair dependencies rather than waive source findings.",
@@ -187,8 +187,8 @@
     "independent_readonly_graph_retry": "pending security_review; no compilation or test execution claimed"
   },
   "original_runtime_amd64_manifest": "sha256:b3f8af4c73b64e25fe9ba7a6969a753c80917daa8c1633b1f247c13750afcd76",
-  "runtime_base_index": "sha256:e792ab3d241a468a4fd7519ddbbebe66b49b5f365771716ea688ad40b6c6f1c2",
-  "runtime_base_input": "gcr.io/distroless/cc-debian13:nonroot@sha256:e792ab3d241a468a4fd7519ddbbebe66b49b5f365771716ea688ad40b6c6f1c2",
+  "runtime_base_index": "sha256:18f4cc26c9ffa7f20a359298be7deadac5c607c8e03a02b8119f1a5fc2f82c99",
+  "runtime_base_input": "gcr.io/distroless/static-debian13:nonroot@sha256:18f4cc26c9ffa7f20a359298be7deadac5c607c8e03a02b8119f1a5fc2f82c99",
   "runtime_package_repair_20261027": {
     "authorization": "deepresearch-supported-etcd-base-build-amendment.json",
     "prior_runtime_OS": "Debian11.10 EOSLtrue actualphase1raw",
@@ -208,5 +208,69 @@
       "root_subject": "sha256:e792ab3d241a468a4fd7519ddbbebe66b49b5f365771716ea688ad40b6c6f1c2"
     },
     "validation": "source/LF/direct11Linuxfixtures passed; normalcandidate image/CA/timezone/EOSL/native/fullscan pending"
+  },
+  "dependency_security_refresh_20261030": {
+    "reason": "Repair all directly fixable lower-severity/unknown runtime dependency findings; retain actual upstream application source and Go1.27.3 compiler.",
+    "x_net": "v0.62.0",
+    "otel": "v1.45.0",
+    "moby_sys_user": null,
+    "files": {
+      "modules/api/go.mod": "f1ae87158486bceb31739eaae6845adc2a882068d0ad5356772e9e81d17935d1",
+      "modules/api/go.sum": "a83b4c5c0aa44198f98a162b1d2321e90e146425430c2d726056fe2e3f354919",
+      "modules/client/pkg/go.mod": "fd971a142620db6515d05f72b9412f189e76eba58db1c6d4b5abef3eca796fb9",
+      "modules/client/pkg/go.sum": "d10cf8b0c605f5d007b0f11dd84b402f1bb319a6fb6487a5bd64d40af02a4bc5",
+      "modules/client/v2/go.mod": "c36da6df7e88e01542f8fbb6a78c857dcd9e2d2158cab9140175f6a125aefbb2",
+      "modules/client/v2/go.sum": "01dc4c3d74d032ea6d87c5a9fc85ffbad4252f7f2d5dd75c0689a7110a71da35",
+      "modules/client/v3/go.mod": "b2950fc5adc6c8fd281c21ab47b8328057a184128b9548393f09f5151d2ce9f2",
+      "modules/client/v3/go.sum": "5755292d69d779ce82d7b36e3990eacfbcddf161d65f34fa014d21714e8739be",
+      "modules/etcdctl/go.mod": "e14d6c8643096f49ce579321bf0a99b7009b4e0e7388fdd2a9326e665402b823",
+      "modules/etcdctl/go.sum": "b0f42a3ef8c9ac0898ae026ea4f573d05b3f5553c0b7cd64f5fde17fbf8212b6",
+      "modules/etcdutl/go.mod": "8b58c91f8aa167f3580f3cf17b7f1695c37ebcf9a2e9e9e0864005e36cc3df83",
+      "modules/etcdutl/go.sum": "3607f2b54e212637c63a59acc82d92ca4438e29e4660bf7c636d29006d6c49f0",
+      "modules/go.mod": "7736cde984ac615e0801dee4baae1e0adc63605cbfbb6543d3c3618a4ce13195",
+      "modules/go.sum": "06c60a25d82d31e4fe8e1dfd043352490a78bebb285685f2e2f9f0c578491bba",
+      "modules/pkg/go.mod": "0f0d1c90e1660c282c47e03d43892e9b49961f2b3d2d6c0a4d02febe53c20320",
+      "modules/pkg/go.sum": "f8b3a2f9642b8ff56eea5733ad935b8bfa14d850bff40aa6700ed9b3810827bc",
+      "modules/raft/go.mod": "089247a6557eeb928b41f4cf526b7d376ef5b478b61cf106057ea9e30e60cd38",
+      "modules/raft/go.sum": "38f9d084c00dc4e7dfd2d42fa6be0a332c33c6de6a1a75fea1260e84f58f6807",
+      "modules/server/go.mod": "3498592e659669027ac7d9142d1a3b370b2babdb80f2f6dc3680f7b917ef1d36",
+      "modules/server/go.sum": "9e9c2d1c0c12fe1a6c7374c2f7d8b74844454d824d4f1e7a87536cd2d0377204",
+      "modules/tests/go.mod": "89fed8c63d48c6333ec8083874fb4ff2c6f33d243d09fd88a114a5b845dc32ef",
+      "modules/tests/go.sum": "ed07090873f34285be974427248e0ecbcdb56d8e98cbef4a9f7b08ce86887704",
+      "modules/tools/mod/go.mod": "666d2260d5a8a8c50cfdcb877f7e69d7fa1a759b89404abebe81f1f377a41d3b",
+      "modules/tools/mod/go.sum": "221cfe6df7fd0b429cb04d337609e20bd298d3934e3a437ecdcc5d7d354f4652"
+    }
+  },
+  "production_readonly_completion_20261030": {
+    "reason": "Generate checksums and minimum required MVS alignment from the actual production entrypoints, not only standalone override go.mod files.",
+    "targets": [
+      {
+        "module": "etcd-git/server",
+        "packages": [
+          "."
+        ]
+      },
+      {
+        "module": "etcd-git/etcdctl",
+        "packages": [
+          "."
+        ]
+      },
+      {
+        "module": "etcd-git/etcdutl",
+        "packages": [
+          "."
+        ]
+      }
+    ],
+    "generator": "Go1.27.3 go get specified existing targets; no -u and no tidy checksum deletions."
+  },
+  "runtime_static_refresh_20261030": {
+    "reason": "The three CGO_ENABLED=0 runtime ELFs have no PT_INTERP or DT_NEEDED entries. Remove unused native runtime libraries rather than retain their no-fix findings. Same Debian13 suite, CA/tzdata and runtime Config preserved.",
+    "upstream_release_recipe": "https://github.com/etcd-io/etcd/blob/38e57443c51fc9a3cc6a943fa8ed10381f66ce5c/Dockerfile-release.amd64",
+    "upstream_runtime": "gcr.io/distroless/static-debian11:nonroot",
+    "new_runtime_index": "sha256:18f4cc26c9ffa7f20a359298be7deadac5c607c8e03a02b8119f1a5fc2f82c99",
+    "inspection": "Actual baseline three ELFs checked with Go debug/elf; final newly rebuilt ELFs must pass the same check, CLI health and full image scan before deployment.",
+    "historical_cc_base_repair": "runtime_package_repair_20261027 retained unchanged as historical evidence"
   }
 }

@@ -1,0 +1,32 @@
+FROM golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c AS build
+ARG GOPROXY=https://proxy.golang.org
+ENV GOPROXY=${GOPROXY} GOTOOLCHAIN=local CGO_ENABLED=0 GOMAXPROCS=2 GOMEMLIMIT=1024MiB
+RUN apk add --no-cache git
+WORKDIR /source
+RUN --mount=type=cache,target=/go/pkg/mod \
+    go mod download -json github.com/prometheus/prometheus@v0.315.1 > /tmp/source.json \
+    && grep -F '"Sum": "h1:ZXaNKyUO5szJhhw7gKiP6b2jpx1QkS0S3CI1R1bPqIA="' /tmp/source.json \
+    && cp -a /go/pkg/mod/github.com/prometheus/prometheus@v0.315.1/. /source/ \
+    && git init && git remote add origin https://github.com/prometheus/prometheus.git \
+    && git -c http.version=HTTP/1.1 fetch --depth=1 origin refs/tags/v3.15.1:refs/tags/v3.15.1 \
+    && test "$(git rev-parse 'refs/tags/v3.15.1^{commit}')" = bae3eced0a5369e050e83ea73bc381d7c4b1a719 \
+    && git reset --mixed bae3eced0a5369e050e83ea73bc381d7c4b1a719
+ADD --checksum=sha256:adf30f35abf0d23ffd25616afe75d1966a7ceb18ddad4161fe8ad76e28f2b48f https://github.com/prometheus/prometheus/releases/download/v3.15.1/prometheus-web-ui-3.15.1.tar.gz /tmp/ui.tar.gz
+RUN tar -xzf /tmp/ui.tar.gz -C /source/web/ui
+COPY deployment/vendors/prometheus/go.mod deployment/vendors/prometheus/go.sum ./
+RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
+    go build -p=2 -mod=readonly -buildvcs=true -trimpath -tags=netgo,builtinassets \
+      -ldflags='-s -w -X github.com/prometheus/common/version.Version=3.15.1 -X github.com/prometheus/common/version.Revision=bae3eced0a5369e050e83ea73bc381d7c4b1a719 -X github.com/prometheus/common/version.Branch=v3.15.1-security' \
+      -o /out/prometheus ./cmd/prometheus \
+    && go build -p=2 -mod=readonly -buildvcs=true -trimpath -tags=netgo,builtinassets \
+      -ldflags='-s -w -X github.com/prometheus/common/version.Version=3.15.1 -X github.com/prometheus/common/version.Revision=bae3eced0a5369e050e83ea73bc381d7c4b1a719 -X github.com/prometheus/common/version.Branch=v3.15.1-security' \
+      -o /out/promtool ./cmd/promtool \
+    && go version -m /out/prometheus > /out/build-info.txt \
+    && grep -F 'vcs.revision=bae3eced0a5369e050e83ea73bc381d7c4b1a719' /out/build-info.txt \
+    && grep -F 'golang.org/x/net' /out/build-info.txt | grep -F 'v0.62.0' \
+    && /out/prometheus --version
+FROM prom/prometheus:v3.15.1@sha256:d445d1806b38f85b5c394a1b87f94113fde0473b45245922c2e8b1bd41fa68ae
+COPY --from=build /out/prometheus /bin/prometheus
+COPY --from=build /out/promtool /bin/promtool
+COPY --from=build /out/build-info.txt /usr/share/deepresearch/prometheus-build-info.txt
+COPY deployment/vendors/prometheus/source.lock.json /usr/share/deepresearch/prometheus-source.lock.json

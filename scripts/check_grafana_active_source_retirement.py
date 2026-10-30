@@ -24,7 +24,7 @@ from scripts import check_grafana_candidate_source_exact2 as source  # noqa: E40
 from scripts import runtime_ci_inventory as inventory  # noqa: E402
 
 REVIEW_PATH = 'deployment/security/grafana-active-source-retirement-technical-review.json'
-REVIEW_SHA256 = 'cef83aa76627dbd63cbc72c8533180156fd4a7072e8f57cb68273bf42e8f011e'
+REVIEW_SHA256 = 'b74a4685f70056a795f76a3f63a6aca3bf4685d6526d143223e43559b10d3a74'
 OLD_SOURCE = 'deployment/vendors/grafana/main/go.mod'
 PACKAGE = 'github.com/go-jose/go-jose/v4'
 SCOPE = ('CVE-2026-116587', OLD_SOURCE, PACKAGE, 'v4.1.4', 'HIGH')

@@ -1,0 +1,131 @@
+{
+  "upstream": "https://github.com/grafana/loki",
+  "tag": "v3.7.9",
+  "commit": "d3b4a2f76bfc5625abee7ceb00b8896fa3c31549",
+  "module": "github.com/grafana/loki/v3",
+  "module_version": "v3.7.9",
+  "module_sum": "h1:AI9auwgBKmh43/U3U1TUOZmlPgtxP7mgNCAXb5DSs8I=",
+  "nested_push_source": "Go/proto/LICENSE source files are unmodified files from the pinned upstream commit. Original Git blob and SHA256 receipts include the original module files; the two module locks are explicitly overlaid below to repair their source inventory.",
+  "nested_push_files": [
+    {
+      "path": "LICENSE",
+      "git_blob_sha1": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "bytes": 11358,
+      "source": "https://raw.githubusercontent.com/grafana/loki/d3b4a2f76bfc5625abee7ceb00b8896fa3c31549/pkg/push/LICENSE"
+    },
+    {
+      "path": "go.mod",
+      "git_blob_sha1": "d02f5fa1eb84f882574279148a1164e43b491ad7",
+      "sha256": "fd73de0d66794b358b9613642971f487317e4e0684c0f472efec7e88fefae733",
+      "bytes": 568,
+      "source": "https://raw.githubusercontent.com/grafana/loki/d3b4a2f76bfc5625abee7ceb00b8896fa3c31549/pkg/push/go.mod"
+    },
+    {
+      "path": "go.sum",
+      "git_blob_sha1": "a3a4ceb9bc7024eed4ac9de4e7e2770a1dfa215b",
+      "sha256": "f0917086f98ce168e44e78062a0b01a84c403ecc3c57431dd4cb498d613c44dd",
+      "bytes": 7301,
+      "source": "https://raw.githubusercontent.com/grafana/loki/d3b4a2f76bfc5625abee7ceb00b8896fa3c31549/pkg/push/go.sum"
+    },
+    {
+      "path": "push-rf1.pb.go",
+      "git_blob_sha1": "7d87f4a1cc718a7e173c51ad1b270ccf989ce755",
+      "sha256": "ba136cb569f99c5cd69541e4633722f2ee6f863d19d29a3d12b47dc540a05ba3",
+      "bytes": 4991,
+      "source": "https://raw.githubusercontent.com/grafana/loki/d3b4a2f76bfc5625abee7ceb00b8896fa3c31549/pkg/push/push-rf1.pb.go"
+    },
+    {
+      "path": "push-rf1.proto",
+      "git_blob_sha1": "1c5a3e039341d7884acd92d3e0ab80a6965c2eef",
+      "sha256": "94d3844b64d621455955bc2226fb8465be94c3451294243b9e786cef3c7bcc99",
+      "bytes": 272,
+      "source": "https://raw.githubusercontent.com/grafana/loki/d3b4a2f76bfc5625abee7ceb00b8896fa3c31549/pkg/push/push-rf1.proto"
+    },
+    {
+      "path": "push.pb.go",
+      "git_blob_sha1": "616fc3b1ec4490c25006f9211425bceb3513f607",
+      "sha256": "5f76c7efa437059c558e2f5cf949b39bb0bfe2b7e3e7be08c3ba548b3490bf33",
+      "bytes": 43993,
+      "source": "https://raw.githubusercontent.com/grafana/loki/d3b4a2f76bfc5625abee7ceb00b8896fa3c31549/pkg/push/push.pb.go"
+    },
+    {
+      "path": "push.proto",
+      "git_blob_sha1": "bbdd59084f7377972be46446a3e336b6b9b0281f",
+      "sha256": "0ca32209c1b4a7cdca8d70716729cfb487791cc6f39b685df5aaa6aff1a7886b",
+      "bytes": 1576,
+      "source": "https://raw.githubusercontent.com/grafana/loki/d3b4a2f76bfc5625abee7ceb00b8896fa3c31549/pkg/push/push.proto"
+    },
+    {
+      "path": "timestamp.go",
+      "git_blob_sha1": "6f64b56a41c97f298f6e62f961c5694ed06fd5b1",
+      "sha256": "3a67cd936f2a0f04e99af003c3c44339e4ee59e16428fce79d554756e62f0b00",
+      "bytes": 2828,
+      "source": "https://raw.githubusercontent.com/grafana/loki/d3b4a2f76bfc5625abee7ceb00b8896fa3c31549/pkg/push/timestamp.go"
+    },
+    {
+      "path": "types.go",
+      "git_blob_sha1": "6644e2db7f4701a4c0faa8ab51ebead8a8bcb21b",
+      "sha256": "5ef465cd18ee0b660e4079a2974fcfb27e0610c17a539065ce431abb138dd0bd",
+      "bytes": 18861,
+      "source": "https://raw.githubusercontent.com/grafana/loki/d3b4a2f76bfc5625abee7ceb00b8896fa3c31549/pkg/push/types.go"
+    },
+    {
+      "path": "types_test.go",
+      "git_blob_sha1": "9cf89b928837426220e74511cfd56869f13f36a1",
+      "sha256": "f15acd27c1518c9bfd8f9051bab2b291444222996c77c8d3e9791ea41eb188b6",
+      "bytes": 2838,
+      "source": "https://raw.githubusercontent.com/grafana/loki/d3b4a2f76bfc5625abee7ceb00b8896fa3c31549/pkg/push/types_test.go"
+    }
+  ],
+  "compiler": "Go1.27.3 pinned builder",
+  "dependency_override": {
+    "golang.org/x/net": "v0.62.0"
+  },
+  "application_source_changes": false,
+  "version_metadata": "Real upstream tag and commit; buildvcs=true; actual patched dependency closure remains dirty; runtime CLI release version retained.",
+  "files": {
+    "go.mod": "8941b81787970cbd4c3344ecdae625a240487a495ccac2e421658e3fdf828944",
+    "go.sum": "abad3fdbeec10d717e9c72c93d6feee205a44939eaf694c208444c6238438b1f",
+    "push/go.mod": "596e84e0e0bef987e22f3a1060c731b0f67c7b7952f54ed11a77d6b2903a46bc",
+    "push/go.sum": "925acb4f95642975e8a2ccef3d2554ed147e05d4673525fbd9ad08ea8f71e820",
+    "push/LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "push/push-rf1.pb.go": "ba136cb569f99c5cd69541e4633722f2ee6f863d19d29a3d12b47dc540a05ba3",
+    "push/push-rf1.proto": "94d3844b64d621455955bc2226fb8465be94c3451294243b9e786cef3c7bcc99",
+    "push/push.pb.go": "5f76c7efa437059c558e2f5cf949b39bb0bfe2b7e3e7be08c3ba548b3490bf33",
+    "push/push.proto": "0ca32209c1b4a7cdca8d70716729cfb487791cc6f39b685df5aaa6aff1a7886b",
+    "push/timestamp.go": "3a67cd936f2a0f04e99af003c3c44339e4ee59e16428fce79d554756e62f0b00",
+    "push/types.go": "5ef465cd18ee0b660e4079a2974fcfb27e0610c17a539065ce431abb138dd0bd",
+    "push/types_test.go": "f15acd27c1518c9bfd8f9051bab2b291444222996c77c8d3e9791ea41eb188b6"
+  },
+  "nested_push_module_override_20261030": {
+    "reason": "Fix x/net lower-severity/unknown findings in the independently scannable nested source module as well as the production MVS graph.",
+    "versions": {
+      "golang.org/x/net": "v0.62.0"
+    },
+    "files": [
+      {
+        "file": "push/go.mod",
+        "original_upstream_sha256": "fd73de0d66794b358b9613642971f487317e4e0684c0f472efec7e88fefae733",
+        "patched_sha256": "596e84e0e0bef987e22f3a1060c731b0f67c7b7952f54ed11a77d6b2903a46bc"
+      },
+      {
+        "file": "push/go.sum",
+        "original_upstream_sha256": "f0917086f98ce168e44e78062a0b01a84c403ecc3c57431dd4cb498d613c44dd",
+        "patched_sha256": "925acb4f95642975e8a2ccef3d2554ed147e05d4673525fbd9ad08ea8f71e820"
+      }
+    ]
+  },
+  "production_readonly_completion_20261030": {
+    "reason": "Generate checksums and minimum required MVS alignment from the actual production entrypoints, not only standalone override go.mod files.",
+    "targets": [
+      {
+        "module": "loki-git",
+        "packages": [
+          "./cmd/loki"
+        ]
+      }
+    ],
+    "generator": "Go1.27.3 go get specified existing targets; no -u and no tidy checksum deletions."
+  }
+}

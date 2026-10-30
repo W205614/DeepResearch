@@ -9,8 +9,8 @@
   "metadata_tool_commit": "aaa875961611764a86a21cf80c250929a7786179",
   "metadata_tool_sha256": "6ffaef5b0b820070c02253fb27bd07f62d1e501e757f71d8b501f1c8e17d828e",
   "files": {
-    "go.mod": "c29d3a92f3cae2a45faab57ad6656fb54e8d77cd26248b3f859dcef6bbcc6e2a",
-    "go.sum": "fe68cfefef81c6e10bce5a8fc1e1ff6852ff878fff639346ff955515af73057b"
+    "go.mod": "ae1ddde8ee44bccffcc7df1ac03ccfed4ac75776ad20b370b7b9c37298ea9bfa",
+    "go.sum": "c5e9371c88ff9fe7e8b8047cd9fb01409bce591409ed21e858f5c368bc471e63"
   },
   "metadata_tool_update": "upstream fake-git Go1.27 --end-of-options compatibility fix; canonical gosu v1.19.0 semantics retained",
   "dependency_patch_20261027": {
@@ -27,5 +27,15 @@
       "go.sum": "2a8f3fb6adb84839bbb9999f12f1416fb86c184135aaa1c2e489b35203c08346"
     },
     "new_PostgreSQL_image_build_and_runtime_validation": "build_only_scope_granted_in_deepresearch-gosu-correction-build-amendment.json; operator_validation_pending; no daily switch granted"
+  },
+  "dependency_security_refresh_20261030": {
+    "reason": "Repair all directly fixable lower-severity/unknown runtime dependency findings; retain actual upstream application source and Go1.27.3 compiler.",
+    "x_net": null,
+    "otel": null,
+    "moby_sys_user": "v0.4.1",
+    "files": {
+      "go.mod": "ae1ddde8ee44bccffcc7df1ac03ccfed4ac75776ad20b370b7b9c37298ea9bfa",
+      "go.sum": "c5e9371c88ff9fe7e8b8047cd9fb01409bce591409ed21e858f5c368bc471e63"
+    }
   }
 }

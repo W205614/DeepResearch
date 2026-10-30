@@ -1,14 +1,14 @@
 {
   "schema": "tempo-app1-fixed-source-technical-review-v1",
   "actor_kind": "automated_independent_agent",
-  "actor": "/root/tempo_identity_review",
+  "actor": "/root/remaining_advisories",
   "review_kind": "technical_fixed_source_applicability",
   "human_risk_acceptance": false,
   "decision": "FIXED_IN_EXACT_BOUND_ELF_SOURCE",
   "facts_passed": true,
-  "recorded_at": "2026-10-28T12:38:57.429501+00:00",
+  "recorded_at": "2026-10-30T12:41:05.284770+00:00",
   "expires": "2026-11-25T23:59:59+08:00",
-  "source_commit": "af5fc229a7feba5e5e903121344342d22cb4ce8a",
+  "source_commit": "e88ec0eace686541df2f7be33071c455608441c6",
   "scope": {
     "target": "tempo",
     "advisory": "CVE-2026-28377",
@@ -24,12 +24,15 @@
   },
   "fixed_subject": {
     "input_sha256": {
-      "deployment/docker/Dockerfile.tempo": "ade7511f2d323833c23be26be9c9f9a05007c0f89096cca625dc2595f4e9e8b5",
+      "deployment/docker/Dockerfile.tempo": "455e0c79a19cdc9b6852580f67dee8e578a5c429f8d3f3ae5810c287c5b807ef",
       "deployment/vendors/tempo/go.mod": "b7780da539145adabcc30d5f0368bc25593467a30f0ffca8f51d4835aa5329e0",
       "deployment/vendors/tempo/go.sum": "7d22fba88476234196910d713e2d1d079fcf14f12b1249f73e6a68febff1c55d",
       "deployment/vendors/tempo/source.lock.json": "5bdb0f7039b5f0a7819f699c67ec593b419ed3aea5a38a61c389d1b7370c2d28",
       "scripts/collect_tempo_evidence.py": "7a049270c24c839de6a22829aaaf3448a5bb4adc821dabf4160e8866a1aaea56",
-      "scripts/build_ci_image.py": "e00705da248f15a22e461e5cdf20f14b75f0298971a8174a597ab14cad9bde88"
+      "scripts/build_ci_image.py": "e00705da248f15a22e461e5cdf20f14b75f0298971a8174a597ab14cad9bde88",
+      "scripts/prepare_runtime_trust.py": "18318d9913c9aa0404bd5afa80b79be31ef915e57cae7b392f3e153cf5f09c21",
+      "deployment/vendors/runtime-data/prepare_tempo_overlay.py": "6b54afa5812ed743c54c2c27cda337c6c34624d0b48bfabc489fa5b47f29272d",
+      "deployment/vendors/runtime-data/packages.lock.json": "f3e20382c6d48d7d418d6592b7c7a7b59fd3b4ee2d7ae6fc37214f661bdcc8d5"
     },
     "native_buildinfo_sha256": "0ec66ca1793d765011cf81ee100bb68fe7aabe08f0e1a7585ecdf7f2fcd82c4c",
     "native_text_body_sha256": "167cd78756cfc6a96a80bbeb25ebabe665acc0c6cb5d955a2fce9a73c00d9c22",
@@ -89,7 +92,7 @@
       ],
       [
         "tzdata",
-        "2025b"
+        "2026f"
       ]
     ],
     "go_package_layer_index": {
@@ -528,22 +531,151 @@
         }
       },
       {
-        "ID": "tzdata@2025b-0+deb12u2",
+        "ID": "tzdata@2026f-0+deb12u1",
         "Name": "tzdata",
-        "Version": "2025b",
-        "Release": "0+deb12u2",
+        "Version": "2026f",
+        "Release": "0+deb12u1",
         "Identifier": {
-          "PURL": "pkg:deb/debian/tzdata@2025b-0%2Bdeb12u2?arch=all&distro=debian-12.13",
-          "UID": "a8a72310d4d932e1"
+          "PURL": "pkg:deb/debian/tzdata@2026f-0%2Bdeb12u1?arch=all&distro=debian-12.13",
+          "UID": "d32bbd7c895f79cf"
         },
         "Layer": {
-          "Digest": "sha256:56ce5a7a0a8cc3aded9e8cab00fd85f0a1c50376aa9f2318c4e66beb03eadf8f",
-          "DiffID": "sha256:4840c7c54023c867f19564429c89ddae4e9589c83dce82492183a7e9f7dab1fa"
+          "Digest": "sha256:86df8a5eea1a7b88fa168558521a6b86e95facd5b98963f35493809600aa411b",
+          "DiffID": "sha256:9c4fac6b98e65ccc5c0510f33f9bb876c08c896e54b41c1b68ca8cf1f3486405"
         }
       }
-    ]
+    ],
+    "os_package_layer_index": {
+      "tzdata": 19
+    }
   },
   "review_sample": {
+    "image_id": "sha256:bffb0665071ad069dd7664a76e902d6272e42bdf1106508942a2639779950e2b",
+    "diff_ids": [
+      "sha256:a33ba213ad26a605d904a741f67154f3904c74a43182c872c35f36b10fa005e0",
+      "sha256:8fa10c0194df9b7c054c90dbe482585f768a54428fc90a5b78a0066a123b1bba",
+      "sha256:4840c7c54023c867f19564429c89ddae4e9589c83dce82492183a7e9f7dab1fa",
+      "sha256:114dde0fefebbca13165d0da9c500a66190e497a82a53dcaabc3172d630be1e9",
+      "sha256:4d049f83d9cf21d1f5cc0e11deaf36df02790d0e60c1a3829538fb4b61685368",
+      "sha256:af5aa97ebe6ce1604747ec1e21af7136ded391bcabe4acef882e718a87c86bcc",
+      "sha256:6f1cdceb6a3146f0ccb986521156bef8a422cdbb0863396f7f751f575ba308f4",
+      "sha256:bd3cdfae1d3fdd83a2231d608969b38b82349777c2fff9a7c12d54f8ac5c9b38",
+      "sha256:4cde6b0bb6f50a5f255eef7b2a42162c661cf776b803225dcac9a659e396bb6b",
+      "sha256:1a73b54f556b477f0a8b939d13c504a3b4f4db71f7a09c63afbc10acb3de5849",
+      "sha256:6e7fbcf090d09b73a4aa85f9dce690d0ace73877c150b7c56955487b6e7a822a",
+      "sha256:33b37ab0b0901175c2699d81c10b0c887f0dff944de74763cca00c155904d6fb",
+      "sha256:19711cfbc968b92edd5a633304798ebb693351c3864c5a27fa171d04532b3431",
+      "sha256:ef2d3cc7ec7d8cac55d23fe68d10dba21a0366b61896f088823466f632d557a0",
+      "sha256:4fb22fd46c9b5d0e4d1b7cb2a84b47a18103da956330c20ebd74e1cefdd5b74b",
+      "sha256:edc6889ddf8eb5f3791085ff88086ec2d4eb82c278ca9ad4ef221b274512b11e",
+      "sha256:890a4e9e1cde636aeef739751e4125896b6535a9171dbd5d9ba759328d08f2f3",
+      "sha256:7aae62f5584b4ce6fcd008299ab868869238892d1e66d8de69f23b60c2b1fa0a",
+      "sha256:bceb6a8365f00e36b18107ab2a7d3320b494facdbe03c5322640e13922f7cdef",
+      "sha256:9c4fac6b98e65ccc5c0510f33f9bb876c08c896e54b41c1b68ca8cf1f3486405"
+    ],
+    "native_rederived_from_actual_elf": true,
+    "scanner": "Trivy 0.75.0",
+    "scan_sha256": "01564ca3700fcbb71a44bf8e3bffeaca5499df57d7ec429b44e386092906524f",
+    "scan_coverage": "Completed full os,library vuln,secret scan; all severities; list-all-pkgs; local scanner exit0, not a future GitHub CI result.",
+    "actual_raw_artifact_name": "sha256:bffb0665071ad069dd7664a76e902d6272e42bdf1106508942a2639779950e2b",
+    "scan_report_id": "01a18cbe-d75d-7d41-b8bb-3150f0487c76",
+    "raw_counts": {
+      "HIGH": 1,
+      "MEDIUM": 1,
+      "UNKNOWN": 1
+    },
+    "secret_count": 0,
+    "native_version_run_context": "independent collector runs /tempo -version in exact image with --network none --read-only --cap-drop ALL"
+  },
+  "technical_basis": [
+    "Grafana vendor advisory and GitHub GHSA-ffqx-q65f-36jf state that 2.10.3 is fixed, and Trivy reports FixedVersion=2.10.3. This is explicitly their release-range statement, not an unambiguous inference from the CNA affected array. The retained current CNA record instead lists exactly version2.10.3 with status affected and no lessThan boundary; the metadata sources conflict. The technical conclusion relies on verified backport/source/ELF evidence, not on comparing application version numbers.",
+    "Main fix bb8ca663 is not an ancestor of this release branch. Official stable backport 4aeafc237b8d9a8d62e45735131e8a89eb741a00 is an ancestor of f317720e (ahead82/behind0).",
+    "Exact pinned config.go, s3.go and config_test.go Git blobs equal both official main fix and stable backport blobs. CustomerEncryptionKey uses flagext.Secret, flag registration uses f.Var, and consumer uses String().",
+    "Pinned dskit Secret.MarshalYAML returns a redaction marker rather than the plaintext key; upstream includes an exact YAML redaction regression test. No new upstream or business tests were run.",
+    "Actual downloaded ELF SHA256 was independently recomputed; native go version -m -json was rederived locally from those bytes and equals cloud-native JSON byte for byte. Main VCS revision is the fixed f317720e; modified=true matches only locked go.mod/go.sum overlays in the exact pinned build recipe.",
+    "Actual runtime -version reports 2.10.10/f317720e/go1.27.3. Native module version remains the true v0 pseudo-version; no application or Go module version is rewritten.",
+    "Raw scanner Go inventory equals all391 effective native dependency path/version pairs plus main and stdlib. Fresh scan ImageID and DiffIDs equal the actual collected image inspection and materials.",
+    "The one raw HIGH is a release-version classification mismatch for this fixed-source ELF. Raw evidence and HIGH stay visible. This conclusion is not a general runtime risk acceptance or an OCI authorization.",
+    "Trivy preserves original-layer provenance for unchanged dependencies (layer index12) while main/stdlib/updated dependencies use rebuilt layer17. The exact native inventory and per-module layer indices are bound; no assumption that every dependency originates in the new COPY layer is made.",
+    "2026-10-30 independent data refresh: same exact source build-stage bytes, same17 base layers, same original application ELF SHA256/native inventory/runtime-version/Config and3 final COPY design. Genuine tzdata2026f-0+deb12u1 official deb replaces1265 zoneinfo file/link entries; control and md5sums independently compared to that deb. Old3 tzdata advisories disappear in real full Trivy0.75.0; remaining original HIGH1/MEDIUM1/UNKNOWN1 remain visible.",
+    "An independently executed no-cache repackaging experiment changes COPY19 digest while keeping package identity fields and3 original OS package provenance records exact. This is source-layer metadata variation, not changed code approval. Only tzdata.Layer is derived from fresh layer index19, cross-bound through actual inspection/materials/scanner metadata as for existing Go package layer checks. ID/Version/Release/Epoch/PURL/UID stay fixed; no other OS package may use this mapping."
+  ],
+  "run_binding_policy": "Future metadata timestamps may produce another ImageID; every run must cross-bind its fresh scan, actual inspection, collected materials, extracted same ELF and rederived identical native identity. Compiler/source/recipe/config/ELF/native drift fails. The review sample ImageID is retained for audit, not inherited as an OCI approval.",
+  "gate_boundary": "Apply only the exact one reviewed HIGH tuple. Every other HIGH/CRITICAL and every secret blocks; LOW/MEDIUM/UNKNOWN remain visible and counted under the pre-existing HIGH,CRITICAL threshold. Missing/duplicate/changed reviewed finding blocks. Fresh complete raw vuln,secret scan with list-all-pkgs and operational exit0 is supplied by workflow.",
+  "official_sources": [
+    "https://grafana.com/security/security-advisories/cve-2026-28377/",
+    "https://github.com/advisories/GHSA-ffqx-q65f-36jf",
+    "https://github.com/grafana/tempo/commit/4aeafc237b8d9a8d62e45735131e8a89eb741a00",
+    "https://github.com/grafana/tempo/compare/4aeafc237b8d9a8d62e45735131e8a89eb741a00...f317720e7e5191a7f282e8f7d6fe5387ae6015b4",
+    "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2026/28xxx/CVE-2026-28377.json"
+  ],
+  "evidence_files": {
+    "deployment/security/tempo-app1-evidence/materials.json": "62f206276d107d6b1725c40586d1a0e8cb69bff36a0a65b86d718d83757e8bd2",
+    "deployment/security/tempo-app1-evidence/image-inspect.json": "ba6841d4e5a087ae603b5b76c1f320b56dc82d6e9683ce241bc8f2eeff68d65e",
+    "deployment/security/tempo-app1-evidence/native-buildinfo.json": "0ec66ca1793d765011cf81ee100bb68fe7aabe08f0e1a7585ecdf7f2fcd82c4c",
+    "deployment/security/tempo-app1-evidence/native-buildinfo.txt": "f17ba3b51a28c9b3f6c5f86bac5d8f2efc9bb5fc33e26354815d60e8941860a4",
+    "deployment/security/tempo-app1-evidence/runtime-version.txt": "f8504bb5a190bb1c3b46bf674977be1293f5503167d3bda83419e76fd1c457d8",
+    "deployment/security/tempo-app1-evidence/source-receipt.json": "ace6ace4828ae22429323505f56fa1e0b788748fb426ed272568fe655ac4c3c4",
+    "deployment/security/tempo-app1-evidence/backport_commit.raw.json": "94fc7d0e187e684a8134bea9fcefae123a15de5dc6173d5043c1099fc2d4df5d",
+    "deployment/security/tempo-app1-evidence/upstream_main_fix.raw.json": "ec7cf895850e81616507d9057f9c65137674d1f12c21911ea3a6b6caac26b6cc",
+    "deployment/security/tempo-app1-evidence/backport-ancestry.projection.json": "9151e487be7cfff57f73d2a8714cbe8d1e6df9944e84b70f084fa98f5f0e77ff",
+    "deployment/security/tempo-app1-evidence/upstream-source/VERSION": "008a7b9d408847c72db88e45a791e0270d81f74bf58995daa3340fec13d91a7d",
+    "deployment/security/tempo-app1-evidence/upstream-source/tempodb/backend/s3/config.go": "203ca5f57ebc06acd152415c533657c9a7f07ba998afd861a2c401dd52f6edb6",
+    "deployment/security/tempo-app1-evidence/upstream-source/tempodb/backend/s3/config_test.go": "01c9334179b28a38edfb003874097910323fe2bd34e3567cb2818bbe7e2c06ea",
+    "deployment/security/tempo-app1-evidence/upstream-source/tempodb/backend/s3/s3.go": "0ca7936c828cef70a0a92420166cd599185177028e2d93cd834b5c9e7e40353d",
+    "deployment/security/tempo-app1-evidence/upstream-source/cmd/tempo/main.go": "29a29466bb247ad93f5cdb44220de4cea0fd5e237de3b7b6a0da55f5e21e8861",
+    "deployment/security/tempo-app1-evidence/dskit/flagext/secret.go": "5c432e12158e56871e2de116a4541897ee94f3b45773ac46196bfbc4f314e9a2",
+    "deployment/security/tempo-app1-evidence/reviewed-high-only-raw.json.gz": "cb032e62463290160ddf9ca2b4e6dc5a16ccaeff678c96ea4dc13fb31807c62f",
+    "deployment/security/tempo-app1-evidence/CVE-2026-28377.cna.json": "857e1970e8ee064d03cc5de4f0a7e4dba61a29a2a3c3a2c8a0dcfd4ba6f9b945",
+    "deployment/security/tempo-app1-evidence/upstream-source/go.mod.source.txt": "1909bf7611ee81a86e2f4a38e58eab981f28a590458642ebc498c42e1a123ad3",
+    "deployment/security/tempo-app1-evidence/full-trivy-0fe-raw.json": "67ccb53dd224bccd436eb2d01868a7d98dfa1c497c0ba03b622db7836e01c636",
+    "deployment/security/tempo-app1-evidence/full-trivy-0fe-image-inspect.json": "7bd1655be7c801a9f9c6f450f27d199f966594eeeaba21421d3d746815d8afdf",
+    "deployment/security/tempo-app1-evidence/full-trivy-0fe-materials.json": "12ff8c9abf6dd8fba563815d7edd05db61cf437807303d3bdc45db2b6a96a707",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/derived-full-unit-test-fixture.json.gz": "e5112071022dfd23501d4f22e2959cd701bd9a98d25080a6e391f51f82cdf998",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/derived-high-only-unit-test-fixture.json.gz": "578f9418787b7b6a5f565e7c5d541451c4f5e70051081e90107c0c85071e599d",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/Dockerfile.tempo-mtime-experiment": "fe302eacec9de68487b4ed112ed423d153f327401601247ecf21f7fc4549cab5",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/image-inspect.unit-test-fixture.json": "b91efc804175c3675248e2ff124faeedce34d9ee2b835211c6fcd16a96097501",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/independent-full-trivy-0.75.json.gz": "3333de1b561c45024b83834e3699b6842f7546c0de109984496abd4b828ab544",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/independent-image-inspect.json": "bebffc60b3c70156d1d87c9ef902ae127214922d7af34516b25a0cf9f2325160",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/independent-input-receipt.json": "a1cbc4a1f7bd531908e80b8a75b88846129a4c66dcac389b743f3e0cd9047e7b",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/independent-materials.json": "c0108bbe352744e626d044c60fa61bb89cd17781c2d4874f1eed3b2d3f2c35ed",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/independent-native-buildinfo.json": "0ec66ca1793d765011cf81ee100bb68fe7aabe08f0e1a7585ecdf7f2fcd82c4c",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/independent-native-buildinfo.txt": "fadf5391c4b533b9c3fa265429eb6e8861db4769fc00e9e4db0c5b3ee40435dc",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/independent-repack-os-trivy-0.75.json.gz": "338ca9344ee260b7f3a19530565812c78e94ff19a5230ec412a6829bed06e70c",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/independent-runtime-version.txt": "f8504bb5a190bb1c3b46bf674977be1293f5503167d3bda83419e76fd1c457d8",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/materials.json": "c0108bbe352744e626d044c60fa61bb89cd17781c2d4874f1eed3b2d3f2c35ed",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/native-buildinfo.json": "0ec66ca1793d765011cf81ee100bb68fe7aabe08f0e1a7585ecdf7f2fcd82c4c",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/native-buildinfo.txt": "fadf5391c4b533b9c3fa265429eb6e8861db4769fc00e9e4db0c5b3ee40435dc",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/README.md": "54619fa463ffcdc630d3832bcc9d3a25de7404eb8e7b20877ef12fd1e226b22a",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/runtime-version.txt": "f8504bb5a190bb1c3b46bf674977be1293f5503167d3bda83419e76fd1c457d8",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/tempo-layer-repack-independent-review.json": "4677928aab3e14d0f979e02b03fed6809278618c3f6089695964850a432c1737",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/tempo-mtime-build-nocache.log": "767da550c1b6353b00a25758f65fb976676b9795bff1970a0605231386632cb2",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/tempo-payload-independent-verification.json": "8221836cd571a132b2872f40d83cc864be9518a727db0ca7e3f3f7d66bb69285",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/tempo-payload-manifest.json.gz": "90b07a642fa74703e7a695681eedd7c6835629fd76718fa812c32fad8533ad73",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/tempo-final-helper-path-equivalence.json": "120b54da373724cb233e83ce310f3d41850e1944b827593eebde2fde5fe070a7",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/tempo-final-public-timezone-stage-build.log": "1dc5a9577dce334755b26687782469f57f4b89a855773bbcb4d13788c257af4b",
+    "deployment/security/tempo-app1-evidence/data-refresh-20261030/tempo-final-stage-closure.json": "35d10f1e5accbe5c37556040c59958ed1d4b820d58554fd099a666cce11e82e3"
+  },
+  "advisory_metadata_conflict": {
+    "cna_affected_literal": {
+      "defaultStatus": "unaffected",
+      "versions": [
+        {
+          "version": "2.10.3",
+          "status": "affected",
+          "versionType": "semver"
+        }
+      ]
+    },
+    "cna_lessThan_present": false,
+    "vendor_advisory_and_ghsa_fixed_version": "2.10.3",
+    "scanner_fixed_version": "2.10.3",
+    "range_comparison_used_as_proof": false,
+    "resolution_for_this_exact_subject": "Verified stable backport4aeafc ancestry, exact fixed-source Git blobs and actual fixed-subject ELF/native/source binding establish the code fix independently of the conflicting range metadata."
+  },
+  "evidence_storage_note": "The original upstream go.mod is immutable reference text stored as go.mod.source.txt, retaining upstream original path and Git blob/byte hashes in source-receipt.json. It is not a runnable module or Docker COPY input. The real deployment/vendors/tempo/go.mod remains locked to go-jose/v4 v4.1.6 and is checked separately; no scanner exclusion or raw report change is used.",
+  "debian_version_binding_note": "Three original Debian package provenance records remain unchanged. The genuine tzdata control now identifies2026f-0+deb12u1; all identity fields are frozen from a completed full0.75 scan. Only its Layer is bound to the actual final COPY at index19 because observed build metadata changes its digest across same-payload repackaging. Every new run must cross-bind fresh raw scan, actual image inspection, native materials and ordered DiffIDs; original severity threshold, scan freshness and raw reports remain unchanged.",
+  "previous_review_sample": {
     "artifact_id": 12814658649,
     "artifact_zip_sha256": "efbecac064de7133dff34856e25124b90e96b3f053f2cd2e5758a3b4d896fb0a",
     "artifact_zip_bytes": 34290602,
@@ -576,66 +708,72 @@
     "scan_coverage": "HIGH,CRITICAL only; not proof that no lower-severity vulnerabilities or secrets exist",
     "native_version_run_context": "collector runs /tempo -version in exact image with --network none --read-only --cap-drop ALL"
   },
-  "technical_basis": [
-    "Grafana vendor advisory and GitHub GHSA-ffqx-q65f-36jf state that 2.10.3 is fixed, and Trivy reports FixedVersion=2.10.3. This is explicitly their release-range statement, not an unambiguous inference from the CNA affected array. The retained current CNA record instead lists exactly version2.10.3 with status affected and no lessThan boundary; the metadata sources conflict. The technical conclusion relies on verified backport/source/ELF evidence, not on comparing application version numbers.",
-    "Main fix bb8ca663 is not an ancestor of this release branch. Official stable backport 4aeafc237b8d9a8d62e45735131e8a89eb741a00 is an ancestor of f317720e (ahead82/behind0).",
-    "Exact pinned config.go, s3.go and config_test.go Git blobs equal both official main fix and stable backport blobs. CustomerEncryptionKey uses flagext.Secret, flag registration uses f.Var, and consumer uses String().",
-    "Pinned dskit Secret.MarshalYAML returns a redaction marker rather than the plaintext key; upstream includes an exact YAML redaction regression test. No new upstream or business tests were run.",
-    "Actual downloaded ELF SHA256 was independently recomputed; native go version -m -json was rederived locally from those bytes and equals cloud-native JSON byte for byte. Main VCS revision is the fixed f317720e; modified=true matches only locked go.mod/go.sum overlays in the exact pinned build recipe.",
-    "Actual runtime -version reports 2.10.10/f317720e/go1.27.3. Native module version remains the true v0 pseudo-version; no application or Go module version is rewritten.",
-    "Raw scanner Go inventory equals all391 effective native dependency path/version pairs plus main and stdlib. Fresh scan ImageID and DiffIDs equal the actual collected image inspection and materials.",
-    "The one raw HIGH is a release-version classification mismatch for this fixed-source ELF. Raw evidence and HIGH stay visible. This conclusion is not a general runtime risk acceptance or an OCI authorization.",
-    "Trivy preserves original-layer provenance for unchanged dependencies (layer index12) while main/stdlib/updated dependencies use rebuilt layer17. The exact native inventory and per-module layer indices are bound; no assumption that every dependency originates in the new COPY layer is made."
-  ],
-  "run_binding_policy": "Future metadata timestamps may produce another ImageID; every run must cross-bind its fresh scan, actual inspection, collected materials, extracted same ELF and rederived identical native identity. Compiler/source/recipe/config/ELF/native drift fails. The review sample ImageID is retained for audit, not inherited as an OCI approval.",
-  "gate_boundary": "Apply only the exact one reviewed HIGH tuple. Every other HIGH/CRITICAL and every secret blocks; LOW/MEDIUM/UNKNOWN remain visible and counted under the pre-existing HIGH,CRITICAL threshold. Missing/duplicate/changed reviewed finding blocks. Fresh complete raw vuln,secret scan with list-all-pkgs and operational exit0 is supplied by workflow.",
-  "official_sources": [
-    "https://grafana.com/security/security-advisories/cve-2026-28377/",
-    "https://github.com/advisories/GHSA-ffqx-q65f-36jf",
-    "https://github.com/grafana/tempo/commit/4aeafc237b8d9a8d62e45735131e8a89eb741a00",
-    "https://github.com/grafana/tempo/compare/4aeafc237b8d9a8d62e45735131e8a89eb741a00...f317720e7e5191a7f282e8f7d6fe5387ae6015b4",
-    "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2026/28xxx/CVE-2026-28377.json"
-  ],
-  "evidence_files": {
-    "deployment/security/tempo-app1-evidence/materials.json": "62f206276d107d6b1725c40586d1a0e8cb69bff36a0a65b86d718d83757e8bd2",
-    "deployment/security/tempo-app1-evidence/image-inspect.json": "ba6841d4e5a087ae603b5b76c1f320b56dc82d6e9683ce241bc8f2eeff68d65e",
-    "deployment/security/tempo-app1-evidence/native-buildinfo.json": "0ec66ca1793d765011cf81ee100bb68fe7aabe08f0e1a7585ecdf7f2fcd82c4c",
-    "deployment/security/tempo-app1-evidence/native-buildinfo.txt": "f17ba3b51a28c9b3f6c5f86bac5d8f2efc9bb5fc33e26354815d60e8941860a4",
-    "deployment/security/tempo-app1-evidence/runtime-version.txt": "f8504bb5a190bb1c3b46bf674977be1293f5503167d3bda83419e76fd1c457d8",
-    "deployment/security/tempo-app1-evidence/source-receipt.json": "ace6ace4828ae22429323505f56fa1e0b788748fb426ed272568fe655ac4c3c4",
-    "deployment/security/tempo-app1-evidence/backport_commit.raw.json": "94fc7d0e187e684a8134bea9fcefae123a15de5dc6173d5043c1099fc2d4df5d",
-    "deployment/security/tempo-app1-evidence/upstream_main_fix.raw.json": "ec7cf895850e81616507d9057f9c65137674d1f12c21911ea3a6b6caac26b6cc",
-    "deployment/security/tempo-app1-evidence/backport-ancestry.projection.json": "9151e487be7cfff57f73d2a8714cbe8d1e6df9944e84b70f084fa98f5f0e77ff",
-    "deployment/security/tempo-app1-evidence/upstream-source/VERSION": "008a7b9d408847c72db88e45a791e0270d81f74bf58995daa3340fec13d91a7d",
-    "deployment/security/tempo-app1-evidence/upstream-source/tempodb/backend/s3/config.go": "203ca5f57ebc06acd152415c533657c9a7f07ba998afd861a2c401dd52f6edb6",
-    "deployment/security/tempo-app1-evidence/upstream-source/tempodb/backend/s3/config_test.go": "01c9334179b28a38edfb003874097910323fe2bd34e3567cb2818bbe7e2c06ea",
-    "deployment/security/tempo-app1-evidence/upstream-source/tempodb/backend/s3/s3.go": "0ca7936c828cef70a0a92420166cd599185177028e2d93cd834b5c9e7e40353d",
-    "deployment/security/tempo-app1-evidence/upstream-source/cmd/tempo/main.go": "29a29466bb247ad93f5cdb44220de4cea0fd5e237de3b7b6a0da55f5e21e8861",
-    "deployment/security/tempo-app1-evidence/dskit/flagext/secret.go": "5c432e12158e56871e2de116a4541897ee94f3b45773ac46196bfbc4f314e9a2",
-    "deployment/security/tempo-app1-evidence/reviewed-high-only-raw.json.gz": "cb032e62463290160ddf9ca2b4e6dc5a16ccaeff678c96ea4dc13fb31807c62f",
-    "deployment/security/tempo-app1-evidence/CVE-2026-28377.cna.json": "857e1970e8ee064d03cc5de4f0a7e4dba61a29a2a3c3a2c8a0dcfd4ba6f9b945",
-    "deployment/security/tempo-app1-evidence/upstream-source/go.mod.source.txt": "1909bf7611ee81a86e2f4a38e58eab981f28a590458642ebc498c42e1a123ad3",
-    "deployment/security/tempo-app1-evidence/full-trivy-0fe-raw.json": "67ccb53dd224bccd436eb2d01868a7d98dfa1c497c0ba03b622db7836e01c636",
-    "deployment/security/tempo-app1-evidence/full-trivy-0fe-image-inspect.json": "7bd1655be7c801a9f9c6f450f27d199f966594eeeaba21421d3d746815d8afdf",
-    "deployment/security/tempo-app1-evidence/full-trivy-0fe-materials.json": "12ff8c9abf6dd8fba563815d7edd05db61cf437807303d3bdc45db2b6a96a707"
-  },
-  "advisory_metadata_conflict": {
-    "cna_affected_literal": {
-      "defaultStatus": "unaffected",
-      "versions": [
-        {
-          "version": "2.10.3",
-          "status": "affected",
-          "versionType": "semver"
-        }
-      ]
+  "data_refresh_20261030": {
+    "actor": "/root/remaining_advisories",
+    "review_kind": "independent_exact_application_identity_and_data_payload_refresh",
+    "previous_review_sha256": "98fe9396a93510c6e42fe9aa2bf5a02ed6c0ea9afb4f3213b3be84461b079200",
+    "previous_actor": "/root/tempo_identity_review",
+    "previous_recorded_at": "2026-10-28T12:38:57.429501+00:00",
+    "baseline_source_commit": "e88ec0eace686541df2f7be33071c455608441c6",
+    "uncommitted_reviewed_change": "tzdata packaging only; complete current source input SHA256 map above, no invented future commit SHA.",
+    "original_SCOPE_unchanged": true,
+    "source_build_stage_byte_equal_to_baseline": true,
+    "all_original_evidence_hashes_reverified": true,
+    "all_original_non_recipe_input_hashes_unchanged": true,
+    "all_native_identity_hashes_ELF_Config_and_base17_unchanged": true,
+    "official_data_package": {
+      "version": "2026f-0+deb12u1",
+      "url": "https://security.debian.org/debian-security/pool/updates/main/t/tzdata/tzdata_2026f-0+deb12u1_all.deb",
+      "sha256": "3254eb870c8a949518214805aee5e4276af7699988ea8b9a3a583cd0f1eab31c",
+      "sha256_source": "https://packages.debian.org/bookworm/all/tzdata/download",
+      "advisory": "https://security-tracker.debian.org/tracker/DLA-4867-1"
     },
-    "cna_lessThan_present": false,
-    "vendor_advisory_and_ghsa_fixed_version": "2.10.3",
-    "scanner_fixed_version": "2.10.3",
-    "range_comparison_used_as_proof": false,
-    "resolution_for_this_exact_subject": "Verified stable backport4aeafc ancestry, exact fixed-source Git blobs and actual fixed-subject ELF/native/source binding establish the code fix independently of the conflicting range metadata."
-  },
-  "evidence_storage_note": "The original upstream go.mod is immutable reference text stored as go.mod.source.txt, retaining upstream original path and Git blob/byte hashes in source-receipt.json. It is not a runnable module or Docker COPY input. The real deployment/vendors/tempo/go.mod remains locked to go-jose/v4 v4.1.6 and is checked separately; no scanner exclusion or raw report change is used.",
-  "debian_version_binding_note": "The four actual Debian package provenance records are unchanged between af5 and full 0fe scans. Match Debian InstalledVersion against optional epoch:Version-Release plus the exact actual PkgID, PURL, UID and Layer; do not mistake the upstream Version component for the complete dpkg version. This changes no HIGH/CRITICAL or secret policy and keeps all lower-severity/UNKNOWN rows visible."
+    "independently_verified_payload": {
+      "version": "2026f-0+deb12u1",
+      "official_payload_entries_exact": 1265,
+      "control_exact": true,
+      "md5sums_exact": true,
+      "actor": "/root/remaining_advisories",
+      "image_id": "sha256:bffb0665071ad069dd7664a76e902d6272e42bdf1106508942a2639779950e2b",
+      "source_verifier_sha256": "241781fc6bdef077547d4c5c54870c0bc9360b83903d88d9f6c9c2f94b9dda7e",
+      "independently_executed": true,
+      "payload_manifest_sha256": "fddf60182eca59edd89482a77232cad2e8b86fea3871077f2b93d085d03f089f"
+    },
+    "repackaging_evidence": "deployment/security/tempo-app1-evidence/data-refresh-20261030/tempo-layer-repack-independent-review.json",
+    "os_provenance_minimal_change": "Only tzdata Layer references fresh metadata layer19; identity fields and other3 OS sources remain frozen.",
+    "no_new_waiver": true,
+    "no_new_oci_approval": true,
+    "raw_full_scan_not_rewritten": true,
+    "local_raw_full_scan_source": "deployment/security/tempo-app1-evidence/data-refresh-20261030/independent-full-trivy-0.75.json.gz",
+    "test_fixture_boundary": "Alias-normalized full/high-only fixtures are explicitly DERIVED UNIT TEST FIXTURES, not fresh scans. Original complete raw bytes remain separately frozen. Raw original ArtifactName is retained in review_sample.",
+    "fresh_CI_required": "Future CI must run true Trivy0.75.0 full vuln,secret scan and actual native collector, then the unchanged exact1 HIGH/CRITICAL policy with this limited layer-source mapping. No CI pass is asserted here.",
+    "final_shared_input_refresh": {
+      "actor": "/root/remaining_advisories",
+      "recorded_at": "2026-10-30T12:41:05.283174+00:00",
+      "changes": {
+        "scripts/prepare_runtime_trust.py": {
+          "before": "18e19091b2b1b2ec53e13e58676954c861338bdd0063f68186b7a3630c4084f1",
+          "after": "18318d9913c9aa0404bd5afa80b79be31ef915e57cae7b392f3e153cf5f09c21"
+        },
+        "deployment/vendors/runtime-data/packages.lock.json": {
+          "before": "a91495a828b98e0414e70850c7b37f400381f7de52ceef0e6bb357ca6c5ef588",
+          "after": "f3e20382c6d48d7d418d6592b7c7a7b59fd3b4ee2d7ae6fc37214f661bdcc8d5"
+        }
+      },
+      "scope": "Shared lock adds official etcd static base and matching tzdata-legacy; helper adds only explicit tz-with-legacy branch. Tempo kind=tz actual final public packaging-stage helper/overlay bytes matched source; its full payload closure is byte-identical to independently verified runtime."
+    },
+    "previous_signed_data_review_sha256": "4981b1078dedb08a8080d8e8f973f5e27ff15d0bbd4911cfb34276e02ffddd5a",
+    "final_source_freeze_confirmed_by": "/root/runtime_data_updates",
+    "final_helper_actual_stage_equivalence": {
+      "actor": "/root/remaining_advisories",
+      "recorded_at": "2026-10-30T12:40:26.244730+00:00",
+      "final_public_recipe_timezone_stage_image": "sha256:26b4ba3e8f5a1f47cdb9b22cec7b4c04d093bb970fe9bba532066050cc32c335",
+      "original_reviewed_runtime_image": "sha256:bffb0665071ad069dd7664a76e902d6272e42bdf1106508942a2639779950e2b",
+      "actual_helper_bytes_match_final_source_sha256": "18318d9913c9aa0404bd5afa80b79be31ef915e57cae7b392f3e153cf5f09c21",
+      "actual_overlay_bytes_match_final_source_sha256": "6b54afa5812ed743c54c2c27cda337c6c34624d0b48bfabc489fa5b47f29272d",
+      "current_kind_tz_full_payload_closure_byte_identical_to_reviewed_runtime": true,
+      "payload_closure_sha256": "35d10f1e5accbe5c37556040c59958ed1d4b820d58554fd099a666cce11e82e3",
+      "scope": "Final helper adds only explicit tz-with-legacy branch for etcd. Tempo still calls kind=tz. The actual final public Dockerfile timezone-data stage was rebuilt and produced byte-identical complete payload hash manifest to the runtime already independently verified against official deb. No new runtime/OCI approval or future CI pass is asserted."
+    }
+  }
 }

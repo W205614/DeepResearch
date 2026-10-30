@@ -1,0 +1,38 @@
+{
+  "actor": "/root/remaining_advisories",
+  "experiment": "Pure local second data packaging build --no-cache. All source image file contents reused. Explicit os.utime changes only staged buildinfo mtime; no program content or Config edit. Cached first attempt is retained separately and not used as proof.",
+  "original_image_id": "sha256:bffb0665071ad069dd7664a76e902d6272e42bdf1106508942a2639779950e2b",
+  "repacked_image_id": "sha256:5e3ab8bd077e3ed13bda955e46b642180176edec6912632cb04c845ce57f3606",
+  "same_base17_and_binary_copy17": true,
+  "config_identical": true,
+  "changed_copy_layers": [
+    18,
+    19
+  ],
+  "license_copy_layer18_changed": "Fresh no-cache directory/file metadata; this application ancillary layer was never frozen by the existing guard.",
+  "old_final_copy_diffid": "sha256:9c4fac6b98e65ccc5c0510f33f9bb876c08c896e54b41c1b68ca8cf1f3486405",
+  "new_final_copy_diffid": "sha256:7f6be2d3c89058159879499a71ab2b0c220b275c7ebbf95aa95b7df8e3313a6b",
+  "changed_os_package_provenance_fields": [
+    [
+      "tzdata",
+      "Layer",
+      {
+        "Digest": "sha256:86df8a5eea1a7b88fa168558521a6b86e95facd5b98963f35493809600aa411b",
+        "DiffID": "sha256:9c4fac6b98e65ccc5c0510f33f9bb876c08c896e54b41c1b68ca8cf1f3486405"
+      },
+      {
+        "Digest": "sha256:f301fc429894844729ccbde48d9c8a04fa3a69936554dab6af3fba800d434a3b",
+        "DiffID": "sha256:7f6be2d3c89058159879499a71ab2b0c220b275c7ebbf95aa95b7df8e3313a6b"
+      }
+    ]
+  ],
+  "conclusion": "Freezing tzdata Layer bytes rejects same-payload repackaging. Bind this package Layer to fresh report/inspection layer index19 as existing Go provenance does; keep package ID/Version/Release/Epoch/PURL/UID frozen and three other OS records fully frozen.",
+  "production_image_approval": false,
+  "cleanup_candidate": "deepresearch-thirdparty-tempo-mtime-review:20261030",
+  "evidence": {
+    "Dockerfile.tempo-mtime-experiment": "fe302eacec9de68487b4ed112ed423d153f327401601247ecf21f7fc4549cab5",
+    "tempo-full-075.json": "01564ca3700fcbb71a44bf8e3bffeaca5499df57d7ec429b44e386092906524f",
+    "tempo-mtime-nocache-os-075.json": "8d7af565964b3869cf1d9c12c7fee1fb9d84c63fe12bd70eeb62ab10fe7fe9be",
+    "tempo-mtime-build-nocache.log": "767da550c1b6353b00a25758f65fb976676b9795bff1970a0605231386632cb2"
+  }
+}

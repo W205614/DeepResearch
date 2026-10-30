@@ -1,0 +1,43 @@
+{
+  "verified_at": "2026-10-30",
+  "etcd_runtime_base": {
+    "image": "gcr.io/distroless/static-debian13:nonroot",
+    "index_digest": "sha256:18f4cc26c9ffa7f20a359298be7deadac5c607c8e03a02b8119f1a5fc2f82c99",
+    "amd64_manifest": "sha256:433bb346cd0b6b8346462f879adaa4ac0fbb463a72901b46736ede4aeca3dadc",
+    "official_source": "https://github.com/GoogleContainerTools/distroless",
+    "upstream_etcd_static_recipe": "https://github.com/etcd-io/etcd/blob/38e57443c51fc9a3cc6a943fa8ed10381f66ce5c/Dockerfile-release.amd64",
+    "condition": "All three actual application ELF files must have no PT_INTERP or DT_NEEDED; the maintained Go build keeps CGO_ENABLED=0. This does not support arbitrary dynamically linked programs passed explicitly to etcdctl watch/lock."
+  },
+  "packages": {
+    "ca-certificates-debian13": {
+      "version": "20250419+deb13u1",
+      "url": "https://security.debian.org/debian-security/pool/updates/main/c/ca-certificates/ca-certificates_20250419+deb13u1_all.deb",
+      "sha256": "c10585ac22c7f617a73d394eea29ba71d0356f350ae973b19043d1b017f80f54",
+      "sha256_source": "https://packages.debian.org/trixie/all/ca-certificates/download",
+      "advisory": "https://www.debian.org/security/2026/dsa-6572"
+    },
+    "tzdata-debian13": {
+      "version": "2026e-0+deb13u1",
+      "url": "https://deb.debian.org/debian/pool/main/t/tzdata/tzdata_2026e-0+deb13u1_all.deb",
+      "sha256": "165fbf909c02150f62091c64f751ae84c66ff86da124a46a58614d8e174a6acd",
+      "sha256_source": "https://packages.debian.org/trixie-updates/all/tzdata/download",
+      "authenticated_index": "https://deb.debian.org/debian/dists/trixie-updates/InRelease"
+    },
+    "tzdata-legacy-debian13": {
+      "version": "2026e-0+deb13u1",
+      "url": "https://deb.debian.org/debian/pool/main/t/tzdata/tzdata-legacy_2026e-0+deb13u1_all.deb",
+      "sha256": "bc1912d3e805b6071bcc3fbe55c171e0d9c8cf44eeebafcaa825a724577cf8de",
+      "sha256_source": "APT authenticated trixie-updates amd64 Packages stanza: Filename pool/main/t/tzdata/tzdata-legacy_2026e-0+deb13u1_all.deb; Size 185772; SHA256 bc1912d3e805b6071bcc3fbe55c171e0d9c8cf44eeebafcaa825a724577cf8de",
+      "authenticated_index": "https://deb.debian.org/debian/dists/trixie-updates/InRelease"
+    },
+    "tzdata-debian12": {
+      "version": "2026f-0+deb12u1",
+      "url": "https://security.debian.org/debian-security/pool/updates/main/t/tzdata/tzdata_2026f-0+deb12u1_all.deb",
+      "sha256": "3254eb870c8a949518214805aee5e4276af7699988ea8b9a3a583cd0f1eab31c",
+      "sha256_source": "https://packages.debian.org/bookworm/all/tzdata/download",
+      "advisory": "https://security-tracker.debian.org/tracker/DLA-4867-1"
+    }
+  },
+  "authentication": "BuildKit ADD checksum pins official Debian package bytes. Debian APT authenticates packaging-stage tooling against the pinned base's Debian archive keyring. Extracted package control and md5sums accompany the real runtime data; package records are never used as a substitute for replacing payloads.",
+  "scope": "Genuine CA/timezone data and etcd's minimal same-release static base; no general OS support claim. Tempo retains its original application ELF and runtime-base layers."
+}

@@ -1,0 +1,11 @@
+FROM deepresearch-tempo:2.10.10-security-20261028 AS current-app
+FROM deepresearch-thirdparty-tempo-timezone:20261030 AS timezone-package
+COPY --from=current-app /usr/share/tempo/security-buildinfo.txt /runtime-overlay/usr/share/tempo/security-buildinfo.txt
+RUN python3 -c "import os; os.utime('/runtime-overlay/usr/share/tempo/security-buildinfo.txt', (1793000000,1793000000))"
+FROM grafana/tempo:2.10.10@sha256:12b0820f13ffa10ce956b6e9acc3b03f3cffded99109be6cc09d106fe56e5d38
+COPY --from=current-app /tempo /tempo
+COPY --from=current-app /usr/share/licenses/tempo/LICENSE /usr/share/licenses/tempo/LICENSE
+COPY --from=timezone-package /runtime-overlay/ /
+LABEL org.opencontainers.image.source="https://github.com/W205614/DeepResearch" \
+      org.opencontainers.image.version="2.10.10-security-20261028" \
+      org.opencontainers.image.description="Tempo 2.10.10 maintainer rebuild with locked security dependencies"

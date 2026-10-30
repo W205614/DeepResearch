@@ -15,8 +15,8 @@ from scripts import check_tempo_app_exact1 as gate
 def facts():
     review = gate.load_review()
     folder = gate.ROOT / gate.EVIDENCE
-    report = gate.strict_json(gzip.decompress((folder / 'reviewed-high-only-raw.json.gz').read_bytes()))
-    inspection = gate.strict_json((folder / 'image-inspect.json').read_bytes())
+    report = gate.strict_json(gzip.decompress((folder / 'derived-high-only-unit-test-fixture.json.gz').read_bytes()))
+    inspection = gate.strict_json((folder / 'image-inspect.unit-test-fixture.json').read_bytes())
     material = gate.strict_json((folder / 'materials.json').read_bytes())
     native = gate.strict_json((folder / 'native-buildinfo.json').read_bytes())
     return report, inspection, material, native, review
@@ -145,7 +145,8 @@ def material_files(facts, tmp_path, monkeypatch):
     folder = gate.ROOT / gate.EVIDENCE
     for name in gate.MATERIAL_NAMES:
         if name != 'tempo.elf':
-            (tmp_path / name).write_bytes((folder / name).read_bytes())
+            source_name = 'image-inspect.unit-test-fixture.json' if name == 'image-inspect.json' else name
+            (tmp_path / name).write_bytes((folder / source_name).read_bytes())
     elf = b'\x7fELFunit-test-only-the-native-parser-is-mocked'
     (tmp_path / 'tempo.elf').write_bytes(elf)
     review['scope']['elf_bytes'] = len(elf)
@@ -239,7 +240,7 @@ def test_review_evidence_and_recipe_are_currently_pinned():
     assert review['review_sample']['native_rederived_from_actual_elf'] is True
     assert review['human_risk_acceptance'] is False
     assert Path('deployment/docker/Dockerfile.tempo').as_posix() in review['fixed_subject']['input_sha256']
-    evidence = gate.ROOT / gate.EVIDENCE
+    evidence = gate.ROOT / gate.EVIDENCE.parent
     receipt = json.loads((evidence / 'source-receipt.json').read_bytes())
     upstream = next(row for row in receipt['sources'] if row['path'] == 'go.mod')
     reference = evidence / upstream['stored_path']
@@ -253,11 +254,12 @@ def test_review_evidence_and_recipe_are_currently_pinned():
 @pytest.fixture
 def full_raw_facts():
     folder = gate.ROOT / gate.EVIDENCE
-    raw = (folder / 'full-trivy-0fe-raw.json').read_bytes()
-    assert hashlib.sha256(raw).hexdigest() == '67ccb53dd224bccd436eb2d01868a7d98dfa1c497c0ba03b622db7836e01c636'
+    raw = gzip.decompress((folder / 'derived-full-unit-test-fixture.json.gz').read_bytes())
     report = gate.strict_json(raw)
-    inspection = gate.strict_json((folder / 'full-trivy-0fe-image-inspect.json').read_bytes())
-    material = gate.strict_json((folder / 'full-trivy-0fe-materials.json').read_bytes())
+    assert report['DerivedUnitTestFixture']['source_full_raw_sha256'] == hashlib.sha256(
+        gzip.decompress((folder / 'independent-full-trivy-0.75.json.gz').read_bytes())).hexdigest()
+    inspection = gate.strict_json((folder / 'image-inspect.unit-test-fixture.json').read_bytes())
+    material = gate.strict_json((folder / 'materials.json').read_bytes())
     native = gate.strict_json((folder / 'native-buildinfo.json').read_bytes())
     review = gate.load_review()
     assert material['elf_sha256'] == review['scope']['elf_sha256']
@@ -265,20 +267,72 @@ def full_raw_facts():
     return report, inspection, material, native, review
 
 
-def test_full_raw_debian_release_findings_remain_visible_and_bound(full_raw_facts):
+def test_full_raw_all_levels_remain_visible_and_bound(full_raw_facts):
     before = copy.deepcopy(full_raw_facts)
     result = assess(full_raw_facts)
     assert result['passed'] is True
-    assert result['raw_counts'] == {'UNKNOWN': 3, 'HIGH': 1, 'MEDIUM': 1}
+    assert result['raw_counts'] == {'UNKNOWN': 1, 'HIGH': 1, 'MEDIUM': 1}
     assert result['original_gate']['raw_counts'] == {'HIGH': 1, 'CRITICAL': 0}
     assert full_raw_facts == before and result['raw_report_modified'] is False
+
+
+def test_timezone_repackaging_uses_the_actual_final_copy_layer(full_raw_facts):
+    report, inspection, material, _native, _review = full_raw_facts
+    metadata = report['Metadata']
+    diff_id = 'sha256:' + 'a' * 64
+    metadata['DiffIDs'][19] = diff_id
+    metadata['ImageConfig']['rootfs']['diff_ids'][19] = diff_id
+    inspection['RootFS']['Layers'][19] = diff_id
+    material['actual_diff_ids'][19] = diff_id
+    metadata['Layers'][19] = {'Digest': 'sha256:' + 'b' * 64, 'DiffID': diff_id}
+    timezone = next(pkg for pkg in report['Results'][0]['Packages'] if pkg['Name'] == 'tzdata')
+    timezone['Layer'] = copy.deepcopy(metadata['Layers'][19])
+    before = copy.deepcopy(full_raw_facts)
+    assert assess(full_raw_facts)['passed']
+    assert full_raw_facts == before
+
+
+@pytest.mark.parametrize('change', ['timezone_uid', 'timezone_version', 'timezone_wrong_layer',
+                                   'timezone_unbound_digest', 'timezone_invalid_digest',
+                                   'other_os_layer', 'extra_dynamic_package'])
+def test_timezone_mapping_never_relaxes_other_package_identity_or_provenance(full_raw_facts, change):
+    report, _inspection, _material, _native, review = full_raw_facts
+    packages = report['Results'][0]['Packages']
+    timezone = next(pkg for pkg in packages if pkg['Name'] == 'tzdata')
+    if change == 'timezone_uid':
+        timezone['Identifier']['UID'] = 'CHANGED'
+    elif change == 'timezone_version':
+        timezone['Version'] = '2025b'
+    elif change == 'timezone_wrong_layer':
+        timezone['Layer'] = copy.deepcopy(report['Metadata']['Layers'][2])
+    elif change == 'timezone_unbound_digest':
+        timezone['Layer']['Digest'] = 'sha256:' + 'c' * 64
+    elif change == 'timezone_invalid_digest':
+        report['Metadata']['Layers'][19]['Digest'] = 'not-a-digest'
+        timezone['Layer']['Digest'] = 'not-a-digest'
+    elif change == 'other_os_layer':
+        next(pkg for pkg in packages if pkg['Name'] == 'base-files')['Layer'] = copy.deepcopy(timezone['Layer'])
+    else:
+        review['fixed_subject']['os_package_layer_index']['base-files'] = 19
+    with pytest.raises(ValueError):
+        assess(full_raw_facts)
+
+
+def add_os_test_finding(record):
+    package = next(row for row in record['Packages'] if row['Name'] == 'tzdata')
+    finding = {'VulnerabilityID': 'UNIT-TEST-OS-FINDING', 'Severity': 'LOW',
+               'PkgName': package['Name'], 'PkgID': package['ID'],
+               'InstalledVersion': gate.debian_version(package),
+               'PkgIdentifier': copy.deepcopy(package['Identifier']),
+               'Layer': copy.deepcopy(package['Layer'])}
+    record.setdefault('Vulnerabilities', []).append(finding)
+    return finding, package
 
 
 @pytest.mark.parametrize('field', ['PkgID', 'PURL', 'UID', 'Layer', 'InstalledVersion', 'Release', 'Epoch'])
 def test_full_raw_debian_provenance_mismatch_does_not_inherit_a_match(full_raw_facts, field):
     record = full_raw_facts[0]['Results'][0]
-    finding = next(row for row in record['Vulnerabilities'] if row['PkgName'] == 'tzdata')
-    package = next(row for row in record['Packages'] if row['Name'] == 'tzdata')
+    finding, package = add_os_test_finding(record)
     if field in {'PURL', 'UID'}:
         finding['PkgIdentifier'][field] = 'UNBOUND'
     elif field == 'Layer':
@@ -295,7 +349,7 @@ def test_full_raw_debian_provenance_mismatch_does_not_inherit_a_match(full_raw_f
 def test_full_raw_debian_version_match_never_waives_other_blockers(full_raw_facts, blocker):
     record = full_raw_facts[0]['Results'][0]
     if blocker == 'new_high':
-        finding = next(row for row in record['Vulnerabilities'] if row['PkgName'] == 'tzdata')
+        finding, _package = add_os_test_finding(record)
         finding['Severity'] = 'HIGH'
         finding['VulnerabilityID'] = 'NEW-UNREVIEWED-HIGH'
     else:

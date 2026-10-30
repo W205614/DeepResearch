@@ -1,0 +1,40 @@
+{
+  "actor": "/root/remaining_advisories",
+  "source_inputs": {
+    "deployment/docker/Dockerfile.tempo": "455e0c79a19cdc9b6852580f67dee8e578a5c429f8d3f3ae5810c287c5b807ef",
+    "deployment/vendors/tempo/go.mod": "b7780da539145adabcc30d5f0368bc25593467a30f0ffca8f51d4835aa5329e0",
+    "deployment/vendors/tempo/go.sum": "7d22fba88476234196910d713e2d1d079fcf14f12b1249f73e6a68febff1c55d",
+    "deployment/vendors/tempo/source.lock.json": "5bdb0f7039b5f0a7819f699c67ec593b419ed3aea5a38a61c389d1b7370c2d28",
+    "scripts/collect_tempo_evidence.py": "7a049270c24c839de6a22829aaaf3448a5bb4adc821dabf4160e8866a1aaea56",
+    "scripts/build_ci_image.py": "e00705da248f15a22e461e5cdf20f14b75f0298971a8174a597ab14cad9bde88",
+    "scripts/prepare_runtime_trust.py": "18318d9913c9aa0404bd5afa80b79be31ef915e57cae7b392f3e153cf5f09c21",
+    "deployment/vendors/runtime-data/prepare_tempo_overlay.py": "6b54afa5812ed743c54c2c27cda337c6c34624d0b48bfabc489fa5b47f29272d",
+    "deployment/vendors/runtime-data/packages.lock.json": "f3e20382c6d48d7d418d6592b7c7a7b59fd3b4ee2d7ae6fc37214f661bdcc8d5"
+  },
+  "actual_raw_scan_sha256": "01564ca3700fcbb71a44bf8e3bffeaca5499df57d7ec429b44e386092906524f",
+  "raw_trivy_tool_receipt": {
+    "url": "https://github.com/aquasecurity/trivy/releases/download/v0.75.0/trivy_0.75.0_windows-64bit.zip",
+    "version": "0.75.0",
+    "bytes": 52927180,
+    "archive_sha256": "4e43bd71a30f51aee39525f60f2b47043af77eb8df8fe082aae4372b69c6660f",
+    "sha256_source": "https://github.com/aquasecurity/trivy/releases/download/v0.75.0/trivy_0.75.0_checksums.txt",
+    "tool_sha256": "3b4fcf6fec53c4c73c325cfd518c7264100695b19e6c59c6a777e4a67dc9f0e6"
+  },
+  "debian_deb_sha256": "3254eb870c8a949518214805aee5e4276af7699988ea8b9a3a583cd0f1eab31c",
+  "data_payload_verifier_sha256": "8eabd870e40b99f3557b1d10f0d087bc01b9f948a0b03354c3da23ff1b17214f",
+  "final_shared_input_refresh": {
+    "actor": "/root/remaining_advisories",
+    "recorded_at": "2026-10-30T12:41:05.283174+00:00",
+    "changes": {
+      "scripts/prepare_runtime_trust.py": {
+        "before": "18e19091b2b1b2ec53e13e58676954c861338bdd0063f68186b7a3630c4084f1",
+        "after": "18318d9913c9aa0404bd5afa80b79be31ef915e57cae7b392f3e153cf5f09c21"
+      },
+      "deployment/vendors/runtime-data/packages.lock.json": {
+        "before": "a91495a828b98e0414e70850c7b37f400381f7de52ceef0e6bb357ca6c5ef588",
+        "after": "f3e20382c6d48d7d418d6592b7c7a7b59fd3b4ee2d7ae6fc37214f661bdcc8d5"
+      }
+    },
+    "scope": "Shared lock adds official etcd static base and matching tzdata-legacy; helper adds only explicit tz-with-legacy branch. Tempo kind=tz actual final public packaging-stage helper/overlay bytes matched source; its full payload closure is byte-identical to independently verified runtime."
+  }
+}

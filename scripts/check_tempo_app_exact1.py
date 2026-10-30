@@ -21,8 +21,8 @@ sys.path.insert(0, str(ROOT))
 from scripts.security_review_policy import validate_review_policy  # noqa: E402
 
 REVIEW_PATH = Path('deployment/security/tempo-app1-technical-review.json')
-REVIEW_SHA256 = '98fe9396a93510c6e42fe9aa2bf5a02ed6c0ea9afb4f3213b3be84461b079200'
-EVIDENCE = Path('deployment/security/tempo-app1-evidence')
+REVIEW_SHA256 = 'b5b2e58748d4083750d71438fc81de2c2ec62ac1271a59b652f3b3d07575d434'
+EVIDENCE = Path('deployment/security/tempo-app1-evidence/data-refresh-20261030')
 TAG = 'deepresearch-scan-tempo:ci'
 TARGET = 'tempo'
 PACKAGE = 'github.com/grafana/tempo'
@@ -238,8 +238,19 @@ def assess(report, inspection, material, native, review, scanner_exit_code, now=
     require(Counter((pkg['Name'], pkg['Version']) for pkg in os_result['Packages'])
             == Counter(map(tuple, review['fixed_subject']['os_package_inventory'])),
             'Runtime OS package identity differs')
+    subject = review['fixed_subject']
+    require(subject['os_package_layer_index'] == {'tzdata': len(subject['base_diff_ids']) + 2},
+            'Only timezone data may use the final reviewed COPY layer')
+    timezone_layer = metadata['Layers'][subject['os_package_layer_index']['tzdata']]
+    require(SHA256.fullmatch(timezone_layer['Digest']), 'Timezone COPY layer digest is malformed')
+    expected_os_provenance = []
+    for package in subject['os_package_provenance']:
+        expected = dict(package)
+        if package['Name'] == 'tzdata':
+            expected['Layer'] = {key: timezone_layer[key] for key in ('Digest', 'DiffID')}
+        expected_os_provenance.append(expected)
     require(Counter(json.dumps(os_package_provenance(pkg), sort_keys=True) for pkg in os_result['Packages'])
-            == Counter(json.dumps(pkg, sort_keys=True) for pkg in review['fixed_subject']['os_package_provenance']),
+            == Counter(json.dumps(pkg, sort_keys=True) for pkg in expected_os_provenance),
             'Runtime OS package release/epoch/provenance differs')
     blocking, all_rows, counts = Counter(), Counter(), Counter()
     for record in results:

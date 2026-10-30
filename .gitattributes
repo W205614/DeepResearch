@@ -126,3 +126,10 @@ deployment/security/change-driven-review-policy.json -text whitespace=cr-at-eol
 scripts/security_review_policy.py text eol=lf
 tests/test_security_review_policy.py text eol=lf
 tests/test_security_review_policy_integration.py text eol=lf
+
+# Security rebuild inputs must keep the same hashes on Windows and Linux.
+deployment/docker/Dockerfile.loki text eol=lf
+deployment/docker/Dockerfile.prometheus text eol=lf
+deployment/vendors/loki/** text eol=lf
+deployment/vendors/prometheus/** text eol=lf
+deployment/vendors/runtime-data/** text eol=lf
