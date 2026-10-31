@@ -66,7 +66,7 @@ def test_moved_tag_or_missing_ancestor_blocks(repository):
 def test_approved_artifact_jobs_fetch_ancestor_history():
     import yaml
     root = Path(__file__).parents[1]
-    for name in ('ci.yml', 'security.yml'):
+    for name in ('ci.yml', 'security.yml', 'rag-quality.yml'):
         jobs = yaml.safe_load((root / '.github/workflows' / name).read_text(encoding='utf-8'))['jobs']
         for job in jobs.values():
             if not any('scripts/fetch_approved_image.py' in step.get('run', '') for step in job['steps']):

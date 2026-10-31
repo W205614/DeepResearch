@@ -196,6 +196,12 @@ docker compose down
 
 下次启动使用上面的启动命令。**不要添加 `-v`**，否则会删除包含账号、资料和研究记录的数据卷。
 
+## 验证与评测
+
+提交到 `main` 会自动运行 `CI` 和 `Security`，覆盖离线回归、构建、隔离组件与安全检查。`Answer Quality (manual, paid)` 和 `RAG Quality (manual)` 为独立手动入口，自动检查通过不代表真实模型质量验收通过。
+
+RAG 工作流默认保留 `prepare_only=true`，只验证批准镜像加载、评测命令和隔离检索服务启动，不调用模型、嵌入或重排供应商。真实评测需已有费用授权后再取消该选项；最新付费验收边界、预算记录与运行方式见[部署与维护](docs/deployment-security-operations.md#自动-ci-与付费质量评测)。本机自动备份继续停用，目前没有有效完整恢复集。
+
 ## 更多文档
 
 Java 负责身份权限、工作空间与任务生命周期；Python 负责研究编排、检索与文档处理；Vue 提供工作台。底层使用 PostgreSQL、Redis、Milvus 和 MinIO，默认编排同时包含身份、扫描与监控服务。

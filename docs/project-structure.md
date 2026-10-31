@@ -55,13 +55,13 @@ docker compose --project-directory . -f deployment/compose/compose.verify.yaml c
 docker compose --project-directory . -f deployment/compose/compose.verify.yaml -f deployment/compose/compose.performance.yaml config --quiet
 ```
 
-## 本地备份保留
+## 本地备份状态与历史记录
 
-2026-10-28 整理时，最新完整恢复快照为 `.cache/backup/scheduled/scheduled-20261027-042116/`，创建于北京时间 2026-10-27 12:27:48。已重新检查 39 个清单文件的 SHA-256、冻结配置、镜像归档及 OCI 镜像层；保留原有成功恢复报告。本次未重新启动恢复环境。该快照是当时的完整状态，不能当作 2026-10-28 部署的新全量备份。
+截至 2026-10-31，本机自动备份继续停用，旧完整备份和离线恢复集已退役，目前没有有效完整恢复集。`DeepResearch-Verified-Cold-Backup` 计划任务及私密备份配置保持禁用；容量探测任务继续保留。当前策略与重新启用条件见[部署与维护](deployment-security-operations.md#现有数据升级)。备份脚本仍保留为按需工具，不代表备份调度正在运行。
 
-较新的数据库逻辑备份位于 `.cache/cleanup-current-20261028/probes/database-backups/`，与完整快照用途不同，一并保留。7 份更旧全量备份移入 Windows 回收站；当前私密配置、备份调度状态、独有计费账本和现行部署恢复材料保留。完整回收清单与核验记录见本机 `.cache/structure-cleanup-20261028/`。
+2026-10-28 结构整理曾保留 `.cache/backup/scheduled/scheduled-20261027-042116/` 完整快照及数据库逻辑备份，并校验当时的清单和镜像内容。该记录已被 2026-10-29 的备份退役决定取代，不能继续将这些路径、旧恢复报告或回收站内容当作当前可用恢复点。历史整理记录见本机 `.cache/structure-cleanup-20261028/`，退役状态记录在 `.cache/backup/RECOVERY-DISABLED.json`。
 
-备份调度入口仍为 `.cache/backup/scheduled/`；计划任务还依赖 `.cache/optimization-20261027-daily/` 内的配置，不整体搬移或清空这些目录。后续只在新完整备份通过校验后替换旧快照；不同用途的逻辑备份、运行恢复包及审计材料不能仅按日期去重。
+私密配置、独有计费账本、运行数据及历史验收证据仍按用途保留，不能因备份停用就整目录清理 `.cache/`。
 
 ## 整理与验证
 
