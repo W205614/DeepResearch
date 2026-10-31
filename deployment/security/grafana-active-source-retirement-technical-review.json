@@ -93,7 +93,7 @@
     ".github/workflows/answer-quality.yml": "b96c968217ebca7e2fc82c563da0b90eae4eee235c2e2903f8466fd212004a64",
     ".github/workflows/ci.yml": "4e11f925af198cc8941324ed4647a8ee210168a843c39e003754061cc076de58",
     ".github/workflows/publish-grafana-candidate.yml": "8d0e5cf409f5001eadd1802c1dcadd0f38d41b82f09143ff1c3bacdbe1c041b6",
-    ".github/workflows/rag-quality.yml": "199cffb156333e03cc5b9af6407696797e243a5107c1e9d23b7d7af8054693ff",
+    ".github/workflows/rag-quality.yml": "9ff180378df80b7541a645d47bf7f5900d0b72caa797571f413a8ea8b0a04816",
     ".github/workflows/security.yml": "36049443fa1f4462c662c2ea67d99547c63c9067a6070df1364bdab996f63cf1",
     "compose.yaml": "6f6112c46eb274b0076f6339cdfc3c4116d32b72aa7e50239b41abd0a25f8771",
     "deployment/compose/compose.acceptance.yaml": "c6d723e5b25cf38130d815117dcbf9eef469c1e7f05ca85f9c4bbb404c4da62b",
@@ -365,5 +365,32 @@
     ],
     "constraint_scope_original_severity_raw_reports_thresholds_and_human_authorization_unchanged": true,
     "not_a_claim": "No approval or applicability verdict for the newly built Loki/Prometheus binaries, no calendar or scan freshness exemption, and no new Grafana/MinIO artifact approval. CI must still build and scan these new custom entries."
+  },
+  "selector_refresh_20261031": {
+    "recorded_at": "2026-10-31T05:31:12.178670+00:00",
+    "review_actor": "/root",
+    "review_kind": "exact_rag_workflow_selector_revalidation",
+    "previous_review_sha256": "b74a4685f70056a795f76a3f63a6aca3bf4685d6526d143223e43559b10d3a74",
+    "previous_independent_actor": "/root/remaining_advisories",
+    "only_selector_byte_change": ".github/workflows/rag-quality.yml",
+    "previous_workflow_sha256": "199cffb156333e03cc5b9af6407696797e243a5107c1e9d23b7d7af8054693ff",
+    "current_workflow_sha256": "9ff180378df80b7541a645d47bf7f5900d0b72caa797571f413a8ea8b0a04816",
+    "reviewed_workflow_commit": "90b757eb87d6b07f37c175eefb1e81bb94d91b75",
+    "original_independent_actor_and_CVE_facts_preserved": true,
+    "new_independent_CVE_applicability_judgment": false,
+    "new_human_risk_acceptance": false,
+    "all_original_input_hashes_unchanged": true,
+    "all_other_selector_hashes_unchanged": true,
+    "grafana_subject_authorization_and_workflow_facts_unchanged": true,
+    "manual_trigger_only_preparation_default_and_live_commands_opt_in": true,
+    "all_three_evaluation_script_arguments_and_thresholds_unchanged": true,
+    "changes": [
+      "Fetch complete ancestor/tag history and verify the existing exact artifact source binding.",
+      "Load only the already approved MinIO archive before building the isolated fixture.",
+      "Check CLI imports/output access with provider network disabled; start the existing isolated services with explicit builds.",
+      "Use runner UID/GID for mounted output and provide the required LLM configuration to live retrieval.",
+      "Default to preparation only, leave all supplier steps opt-in, preserve artifacts and cleanup."
+    ],
+    "boundary": "Only the exact RAG workflow selector fingerprint is renewed. The original actor fields identify the preserved independent CVE review, not a new independent review of this workflow implementation. No new image approval, CVE exception, model budget, severity reduction, scan freshness exemption or runtime deployment is created."
   }
 }
