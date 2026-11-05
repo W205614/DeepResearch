@@ -52,17 +52,20 @@ test('real OIDC accounts review, publish, read and withdraw a frozen report', as
   const reviewerContext = await browser.newContext()
   const author = await authorContext.newPage()
   const reviewer = await reviewerContext.newPage()
-  let reportId = ''
-  let threadId = ''
-  let cleanupHeaders: Record<string, string> | null = null
   const runId = randomUUID().replaceAll('-', '')
   const docId = randomUUID().replaceAll('-', '')
   const chunkId = randomUUID().replaceAll('-', '')
   try {
     const authorHeaders = await login(author, authorName!, authorPassword!)
-    const workspace = authorSubject!
+    // Each attempt owns its report list and document hashes, even if a previous worker crashed.
+    const createdWorkspace = await author.request.post('/api/workspaces', {
+      headers: authorHeaders, data: { name: '报告审核验收' },
+    })
+    expect(createdWorkspace.status()).toBe(201)
+    const workspace = (await createdWorkspace.json()).id
+    await author.reload()
+    await author.getByLabel('切换工作空间').selectOption(workspace)
     const shared = { ...authorHeaders, 'X-Workspace-ID': workspace }
-    cleanupHeaders = shared
     await author.getByRole('button', { name: '工作台设置' }).click()
     await author.getByLabel('已注册用户的账号 ID').fill(reviewerSubject!)
     await author.getByLabel('工作空间角色').selectOption('admin')
@@ -72,7 +75,7 @@ test('real OIDC accounts review, publish, read and withdraw a frozen report', as
       headers: shared, data: { title: '审核真实链路验收' },
     })
     expect(createdThread.status()).toBe(201)
-    threadId = (await createdThread.json()).id
+    const threadId = (await createdThread.json()).id
     // A deterministic completed Agent result exercises real OIDC, Java, PostgreSQL and UI review
     // without charging a model or treating generated fixture text as a researched fact.
     const sources = JSON.stringify([{ id: 'L-1', kind: 'local', title: '验收资料', text: '冻结证据原文',
@@ -122,13 +125,17 @@ test('real OIDC accounts review, publish, read and withdraw a frozen report', as
     await reviewer.setViewportSize({ width: 1440, height: 1000 })
     await capture(reviewer, 'report-review')
     const listed = await (await reviewer.request.get('/api/reports', { headers: reviewShared })).json()
-    reportId = listed[0].id
+    const reportId = listed[0].id
     const before = await (await reviewer.request.get(`/api/reports/${reportId}`, { headers: reviewShared })).json()
     expect(before.report_markdown).toContain('# 冻结报告 [L-1]')
     expect(before.validation.quality).toBe('partial')
     expect(before.validation.unanswered_questions).toEqual(['长期效果'])
     expect(before.sources[0].original_available).toBe(true)
-    expect((await reviewer.request.get(`/api/reports/${reportId}/download`, { headers: reviewShared })).status()).toBe(200)
+    const download = await reviewer.request.get(`/api/reports/${reportId}/download`, { headers: reviewShared })
+    expect(download.status()).toBe(200)
+    expect(download.headers()['x-frame-options']).toBe('DENY')
+    expect(download.headers()['content-disposition']).toBe(`attachment; filename="report-${reportId}.md"`)
+    expect(await download.text()).toBe(before.report_markdown)
     await sql(`UPDATE runs SET report='# 被修改的任务内容 [L-1]' WHERE id='${runId}'; ` +
       `UPDATE documents SET index_version=2 WHERE id='${docId}';`)
     const frozen = await (await reviewer.request.get(`/api/reports/${reportId}`, { headers: reviewShared })).json()
@@ -156,9 +163,8 @@ test('real OIDC accounts review, publish, read and withdraw a frozen report', as
     const removalAudit = await (await author.request.get(`/api/workspaces/${workspace}/audit`, { headers: shared })).json()
     expect(removalAudit.map((entry: { action: string }) => entry.action)).toContain('membership.remove')
   } finally {
-    if (reportId && cleanupHeaders) await author.request.delete(`/api/reports/${reportId}`, { headers: cleanupHeaders })
     await authorContext.close()
     await reviewerContext.close()
-    // The enterprise runner removes both temporary identities and all fixture rows.
+    // The enterprise runner removes all attempt workspaces, including partial fixtures.
   }
 })

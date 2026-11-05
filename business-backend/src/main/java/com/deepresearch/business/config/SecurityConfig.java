@@ -6,10 +6,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.ObjectPostProcessor;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.header.HeaderWriterFilter;
 import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 
 import com.deepresearch.business.security.ApiRateLimitFilter;
@@ -20,6 +22,14 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain apiSecurity(HttpSecurity http, ApiRateLimitFilter rateLimitFilter) throws Exception {
         return http
+            // An async download can flush while the request thread is leaving the filter.
+            .headers(headers -> headers.withObjectPostProcessor(new ObjectPostProcessor<HeaderWriterFilter>() {
+                @Override
+                public <O extends HeaderWriterFilter> O postProcess(O filter) {
+                    filter.setShouldWriteHeadersEagerly(true);
+                    return filter;
+                }
+            }))
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
