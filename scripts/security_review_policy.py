@@ -13,7 +13,7 @@ import re
 import stat
 
 POLICY_PATH = 'deployment/security/change-driven-review-policy.json'
-POLICY_SHA256 = 'b88950befb16fccfed186fbb93ff4411056d43545e25ef51e9412ebcaf930c9c'
+POLICY_SHA256 = '75b9b2acd3d70b7e0f7272be3bb2c2ac108e8471887fd1b6701e24359cbc8f2f'
 VALIDITY_POLICY = 'change-driven'
 HUMAN_INSTRUCTION = (
     '取消固定日期到期的限制，改成镜像、源码变化或出现新漏洞时再复核，'

@@ -13,6 +13,14 @@ COPY deployment/vendors/python311/build-python.sh /tmp/build-python.sh
 RUN sh /tmp/build-python.sh
 FROM python-security AS builder
 COPY --from=uv /uv /usr/local/bin/uv
+# Debian 13 has no fixed SQLite package yet. This official Debian package keeps
+# the same SONAME and needs libc >=2.38 (the pinned Debian 13 runtime has 2.41).
+ADD --checksum=sha256:7789bf0b2338b781de388d83d7c473f9386c9ef638af110b5c1b3d1debb36f00 https://deb.debian.org/debian/pool/main/s/sqlite3/libsqlite3-0_3.54.1-2_amd64.deb /tmp/sqlite.deb
+ADD --checksum=sha256:8506ce550a81ac14b047608e0df121037d9cbb10c3cc28446f68cf8c1d9d31ce https://deb.debian.org/debian/pool/main/z/zlib/zlib1g_1.3.dfsg+really1.3.2-4_amd64.deb /tmp/zlib.deb
+RUN dpkg -i /tmp/sqlite.deb /tmp/zlib.deb \
+    && test "$(dpkg-query -W -f='${Version}' libsqlite3-0)" = '3.54.1-2' \
+    && test "$(dpkg-query -W -f='${Version}' zlib1g)" = '1:1.3.dfsg+really1.3.2-4' \
+    && python3 -c 'import sqlite3,zlib; assert sqlite3.sqlite_version == "3.54.1"; assert zlib.ZLIB_RUNTIME_VERSION == "1.3.2"'
 RUN apt-get update && apt-get upgrade -y \
     && cd /tmp && apt-get download ca-certificates=20250419+deb13u1 \
     && echo 'c10585ac22c7f617a73d394eea29ba71d0356f350ae973b19043d1b017f80f54  ca-certificates_20250419+deb13u1_all.deb' | sha256sum -c - \

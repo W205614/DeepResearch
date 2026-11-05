@@ -51,7 +51,7 @@ jobs:
       - name: Enforce exact source findings against the approved current runtime selection
         if: always() && steps.source_scan.outcome == 'success'
         run: >-
-          python scripts/check_grafana_active_source_retirement.py
+          python scripts/check_grafana_active_source_retirement.py --profile maintenance
           --scan .cache/eval/source-fs/raw.json
           --scan-receipt .cache/eval/source-fs/completion.json
           --original-verdict .cache/eval/source-fs-original-verdict.json
@@ -114,9 +114,9 @@ jobs:
           ARTIFACT: ${{ matrix.artifact }}
           SCAN_TAG: deepresearch-scan-${{ matrix.artifact }}:ci
           GITHUB_TOKEN: ${{ github.token }}
-      - name: Load only the newly authorized exact28 Grafana artifact without rebuilding
+      - name: Load only the independently reviewed maintenance Grafana artifact without rebuilding
         if: matrix.artifact == 'grafana'
-        run: python scripts/fetch_grafana_candidate.py --tag deepresearch-scan-grafana:ci --output .cache/eval/approved-grafana-load.json
+        run: python scripts/fetch_grafana_candidate.py --profile maintenance --tag deepresearch-scan-grafana:ci --output .cache/eval/approved-grafana-load.json
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Scan ordinary runtime image with unchanged HIGH gate
@@ -163,11 +163,11 @@ jobs:
           --output .cache/eval/minio-ci-disposition.json
       - name: Collect complete native and full Grafana reports
         if: matrix.artifact == 'grafana' && steps.approved_scan.outcome == 'success'
-        run: python scripts/scan_grafana_candidate.py --image deepresearch-scan-grafana:ci --output-dir .cache/eval/grafana-native
+        run: python scripts/scan_grafana_candidate.py --profile maintenance --image deepresearch-scan-grafana:ci --output-dir .cache/eval/grafana-native
       - name: Enforce exact independently authorized Grafana per-finding dispositions
         if: matrix.artifact == 'grafana' && steps.approved_scan.outcome == 'success'
         run: >-
-          python scripts/check_grafana_candidate_exact28.py
+          python scripts/check_grafana_maintenance.py
           --archive .cache/eval/approved-grafana.oci.tar
           --scan runtime-image.json
           --grype-scan .cache/eval/grafana-native/full-grype.json
@@ -219,7 +219,7 @@ jobs:
           python scripts/collect_tempo_evidence.py --image deepresearch-scan-tempo:ci
           --output-dir .cache/eval/tempo-native
       - uses: aquasecurity/trivy-action@v0.36.0
-        if: matrix.name != 'tempo'
+        if: matrix.name != 'tempo' && matrix.name != 'agent'
         with:
           image-ref: deepresearch-scan-${{ matrix.name }}:ci
           severity: HIGH,CRITICAL
@@ -228,8 +228,19 @@ jobs:
           format: json
           output: application-image.json
       - uses: aquasecurity/setup-trivy@3fb12ec12f41e471780db15c232d5dd185dcb514
-        if: matrix.name == 'tempo'
+        if: matrix.name == 'tempo' || matrix.name == 'agent'
         with: { version: v0.75.0, cache: true }
+      - name: Preserve complete fresh agent scan before checking fixed native bytes
+        if: matrix.name == 'agent'
+        run: >-
+          trivy image --scanners vuln,secret --list-all-pkgs
+          --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --exit-code 0 --timeout 10m
+          --format json --output application-image.json deepresearch-scan-agent:ci
+      - name: Keep the HIGH gate and verify the exact fixed SQLite and zlib libraries
+        if: matrix.name == 'agent'
+        run: >-
+          python scripts/check_agent_native_packages.py --image deepresearch-scan-agent:ci
+          --scan application-image.json --scanner-exit-code 0 --output-dir .cache/eval/agent-native
       - name: Preserve complete fresh Tempo findings for exact technical review
         if: matrix.name == 'tempo'
         run: >-
@@ -257,6 +268,7 @@ jobs:
             .cache/eval/native-jvm/*.json
             .cache/eval/tempo-native/
             .cache/eval/tempo-app1-disposition.json
+            .cache/eval/agent-native/
   source-analysis:
     runs-on: ubuntu-latest
     permissions: { contents: read, security-events: write }

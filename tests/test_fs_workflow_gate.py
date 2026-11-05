@@ -57,7 +57,8 @@ def assert_source_gate_contract(steps):
     assert old_args == raw | {'--output': BASE + 'source-fs-original-verdict.json'}
     assert new_args == raw | {'--original-verdict': BASE + 'source-fs-original-verdict.json',
         '--output': BASE + 'source-fs-candidate-verdict.json'}
-    assert final_args == raw | {'--original-verdict': BASE + 'source-fs-original-verdict.json',
+    assert final_args == raw | {'--profile': 'maintenance',
+        '--original-verdict': BASE + 'source-fs-original-verdict.json',
         '--candidate-verdict': BASE + 'source-fs-candidate-verdict.json',
         '--runtime-inventory': BASE + 'runtime-image-inventory.json', '--output': BASE + 'source-fs-verdict.json'}
     setup = next(step for step in steps if step.get('uses', '').startswith('aquasecurity/setup-trivy@'))
@@ -71,7 +72,7 @@ def test_raw_source_scan_completion_cannot_replace_the_independent_technical_gat
 
 @pytest.mark.parametrize('mutation', ['missing_final', 'disabled_final', 'ignored_final', 'conditional_skip',
     'shell_bypass', 'duplicate_final', 'wrong_order', 'ignored_producer', 'disabled_producer',
-    'duplicate_producer', 'overwritten_old', 'missing_candidate_input'])
+    'duplicate_producer', 'overwritten_old', 'missing_candidate_input', 'old_profile'])
 def test_missing_disabled_or_bypassed_final_gate_breaks_the_workflow_contract(mutation):
     steps = deepcopy(source_steps())
     final = next(step for step in steps if 'scripts/check_grafana_active_source_retirement.py' in step.get('run', ''))
@@ -101,6 +102,8 @@ def test_missing_disabled_or_bypassed_final_gate_breaks_the_workflow_contract(mu
     elif mutation == 'overwritten_old':
         new['run'] = new['run'].replace('--output ' + BASE + 'source-fs-candidate-verdict.json',
                                        '--output ' + BASE + 'source-fs-original-verdict.json')
+    elif mutation == 'old_profile':
+        final['run'] = final['run'].replace('--profile maintenance', '--profile exact28')
     else:
         final['run'] = final['run'].replace('--candidate-verdict ' + BASE + 'source-fs-candidate-verdict.json', '')
     with pytest.raises(AssertionError):

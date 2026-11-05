@@ -28,6 +28,7 @@
     }
   },
   "database": {
+    "distribution_url": "https://grype.anchore.io/databases/v6/latest.json",
     "url": "https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-10-26T00:32:02Z_1792996724.tar.zst?checksum=sha256%3A214b59fbe13608346ee1b22583ec0531083d6088c33891f3520d0fbdedb1b308",
     "archive_sha256": "214b59fbe13608346ee1b22583ec0531083d6088c33891f3520d0fbdedb1b308",
     "db_sha256": "1d0367b7e969624d3c6a66f9f39118a99b5dbd99622a85a97f3c928c31e588a4",
@@ -36,7 +37,7 @@
     "built": "2026-10-26T06:38:44Z",
     "max_snapshot_age_days": 7,
     "db_fingerprint_role": "db_sha256 and db_bytes are historical hydrated observations, not a cross-import byte gate; identity is the immutable archive plus a fresh pinned-tool controlled import",
-    "transport": "explicit bounded download of the unchanged timestamped zstd URL; exact archive SHA256 before one local pinned-Grype import in a fresh exclusive cache; force Grype checksum validation and exact schema/built/path/manual-import status; record derived SHA256/size and reject subsequent change; latest is never substituted"
+    "transport": "resolve the official schema-v6 publisher once per scan and preserve its response; require active status, exact schema, a timestamped basename, SHA256 and a build within seven days; pin that immutable archive for the complete run, verify its bytes before a fresh controlled import, force Grype checksum validation and exact schema/built/path/manual-import status, and reject subsequent change; the stored url/checksums remain historical observations, never a stale fallback"
   },
   "profiles": {
     "business-java": {
@@ -56,7 +57,7 @@
       "file_manifest": "deployment/security/jre-manifests/keycloak.json",
       "file_manifest_sha256": "6bf1dc372aaa15f41416bf7bb0d0febaf896120a173bbbfe8c0c861c97c4414e",
       "minimum_packages": {
-        "rpm": 43,
+        "rpm": 39,
         "java-archive": 520,
         "binary": 1
       }

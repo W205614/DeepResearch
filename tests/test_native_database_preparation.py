@@ -223,3 +223,113 @@ def test_unchanged_db_cannot_hide_a_replaced_import_receipt(controlled_import):
     prepared.metadata_path.write_text(json.dumps(metadata))
     with pytest.raises(gate.NativeGateError):
         prepared.assert_unchanged("after-full-scan")
+
+
+@pytest.fixture
+def publisher(tmp_path, monkeypatch):
+    url = "https://grype.anchore.io/databases/v6/latest.json"
+    spec = {"distribution_url": url, "schema": "v6.1.10", "max_snapshot_age_days": 7}
+    published = {"status": "active", "schemaVersion": "v6.1.10", "built": "2026-11-04T06:20:59Z",
+                 "path": "vulnerability-db_v6.1.10_2026-11-04T00:19:46Z_1793773259.tar.zst",
+                 "checksum": "sha256:" + "a" * 64}
+    state = {"document": published, "requests": []}
+
+    class Response(io.BytesIO):
+        def geturl(self):
+            return state.get("redirect", url)
+
+    def fetch(request, timeout):
+        assert request.full_url == url and timeout == 60
+        state["requests"].append(request)
+        return Response(state.get("raw", json.dumps(state["document"]).encode()))
+
+    monkeypatch.setattr(gate, "urlopen", fetch)
+    return spec, state, tmp_path, {}
+
+
+def test_official_publisher_resolves_one_immutable_fresh_snapshot_and_preserves_its_bytes(publisher):
+    spec, state, output, evidence = publisher
+    resolved = gate.current_database_snapshot(spec, output, evidence,
+                                             now=datetime(2026, 11, 5, tzinfo=timezone.utc))
+    assert resolved["built"] == "2026-11-04T06:20:59Z"
+    assert resolved["archive_sha256"] == "a" * 64
+    assert resolved["url"] == ("https://grype.anchore.io/databases/v6/"
+                               + state["document"]["path"] + "?checksum=sha256%3A" + "a" * 64)
+    assert len(state["requests"]) == 1
+    raw = (output / "publisher-snapshot.json").read_bytes()
+    assert json.loads(raw) == state["document"]
+    assert evidence["distribution"]["response_sha256"] == hashlib.sha256(raw).hexdigest()
+    assert spec == {"distribution_url": "https://grype.anchore.io/databases/v6/latest.json",
+                    "schema": "v6.1.10", "max_snapshot_age_days": 7}
+
+
+@pytest.mark.parametrize("updates", [
+    {"status": "deprecated"}, {"schemaVersion": "v6.1.11"}, {"checksum": "sha256:unverified"},
+    {"path": "https://attacker.invalid/db.tar.zst"}, {"path": "../db.tar.zst"},
+    {"built": "2026-10-26T06:38:44Z"}, {"built": "2026-11-06T00:00:00Z"}, {"built": None},
+])
+def test_invalid_stale_or_future_publisher_data_is_rejected_without_a_stale_fallback(publisher, updates):
+    spec, state, output, evidence = publisher
+    state["document"].update(updates)
+    with pytest.raises(gate.NativeGateError):
+        gate.current_database_snapshot(spec, output, evidence,
+                                       now=datetime(2026, 11, 5, tzinfo=timezone.utc))
+    assert not (output / "publisher-snapshot.json").exists()
+
+
+@pytest.mark.parametrize("case", ["duplicate", "oversize", "redirect", "non-object"])
+def test_publisher_transport_rejects_ambiguous_or_unbound_metadata(publisher, case):
+    spec, state, output, evidence = publisher
+    if case == "duplicate":
+        state["raw"] = b'{"status":"active","status":"deprecated"}'
+    elif case == "oversize":
+        state["raw"] = b" " * (1024 * 1024 + 1)
+    elif case == "non-object":
+        state["raw"] = b"[]"
+    else:
+        state["redirect"] = "https://attacker.invalid/latest.json"
+    with pytest.raises(gate.NativeGateError):
+        gate.current_database_snapshot(spec, output, evidence,
+                                       now=datetime(2026, 11, 5, tzinfo=timezone.utc))
+
+
+def test_fresh_publisher_snapshot_flows_through_verified_import_without_mutating_historical_lock(
+        controlled_import, monkeypatch):
+    prepare, state, evidence, _, _, spec = controlled_import
+    spec["distribution_url"] = "https://grype.anchore.io/databases/v6/latest.json"
+    original_fetch = gate.urlopen
+    published = {"status": "active", "schemaVersion": "v6.1.10", "built": "2026-11-04T06:20:59Z",
+                 "path": "vulnerability-db_v6.1.10_2026-11-04T00:19:46Z_1793773259.tar.zst",
+                 "checksum": "sha256:" + spec["archive_sha256"]}
+
+    class Response(io.BytesIO):
+        def geturl(self):
+            return spec["distribution_url"]
+
+    def fetch(request, timeout):
+        if request.full_url == spec["distribution_url"]:
+            return Response(json.dumps(published).encode())
+        return original_fetch(request, timeout)
+
+    monkeypatch.setattr(gate, "urlopen", fetch)
+    state["status_updates"]["built"] = published["built"]
+    prepared = prepare(now=datetime(2026, 11, 5, tzinfo=timezone.utc))
+    prepared.assert_unchanged("after-scan")
+    assert evidence["snapshot"]["built"] == published["built"]
+    assert spec["built"] == "2026-10-26T06:38:44Z"
+    assert len(state["imports"]) == len(state["statuses"]) == 1
+
+
+def test_publisher_network_failure_is_recorded_and_does_not_import_old_snapshot(controlled_import, monkeypatch):
+    prepare, state, evidence, _, output, spec = controlled_import
+    spec["distribution_url"] = "https://grype.anchore.io/databases/v6/latest.json"
+
+    def unavailable(*args, **kwargs):
+        raise OSError("publisher unavailable")
+
+    monkeypatch.setattr(gate, "urlopen", unavailable)
+    with pytest.raises(OSError, match="publisher unavailable"):
+        prepare()
+    assert not state["imports"]
+    assert evidence["failure_stage"] == "resolve-snapshot"
+    assert json.loads((output / "database-preparation.json").read_bytes())["error_type"] == "OSError"

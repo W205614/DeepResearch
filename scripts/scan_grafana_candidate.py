@@ -18,14 +18,15 @@ from scripts.check_native_jvm import digest, executable, prepare_database, run  
 from scripts.grafana_image_disposition import validate_loaded, validate_sbom  # noqa: E402
 
 
-def collect(args):
+def collect(args, *, consumer=None):
+    api = gate if consumer is None else consumer
     result = {'operational_success': False, 'security_gate_claim': False, 'artifact_approved': False}
     output_created = False
     try:
         # No tool download, database operation or Docker operation precedes the
         # independently pinned new request and its explicit new authorization.
-        request = gate.load_request(ROOT)
-        gate.validate_authorization(gate.read_json(ROOT / gate.AUTH_PATH), request)
+        request = api.load_request(ROOT)
+        api.validate_authorization(api.read_json(ROOT / api.AUTH_PATH), request)
         binding = request['binding']
         cache = (ROOT / '.cache/eval').resolve()
         gate.require(cache.is_relative_to(ROOT.resolve())
@@ -63,9 +64,10 @@ def collect(args):
                      'Native scanner produced no complete structured report')
         result.update(operational_success=True, actual_image_id=actual['Id'], syft_types=types,
             sbom_sha256=digest(sbom), raw_grype_sha256=digest(report),
-            request_sha256=gate.REQUEST_SHA256, new_subject_authorization_validated=True,
+            request_sha256=api.REQUEST_SHA256, new_subject_authorization_validated=True,
             old_authorization_inherited=False,
-            required_next_step='check_grafana_candidate_exact28.py with full raw Trivy, '
+            required_next_step=('check_grafana_candidate_exact28.py' if consumer is None else
+                                'check_grafana_maintenance.py') + ' with full raw Trivy, '
                                'native/full Grype, actual inspection and exact authorized OCI')
     except Exception as error:
         result.update(error_type=type(error).__name__)
@@ -82,7 +84,13 @@ def main(argv=None):
     parser.add_argument('--output-dir', required=True, type=Path)
     parser.add_argument('--tool-dir', type=Path, default=ROOT / '.cache/native-jvm/tools')
     parser.add_argument('--db-cache', type=Path, default=ROOT / '.cache/native-jvm/grype-db')
-    result = collect(parser.parse_args(argv))
+    parser.add_argument('--profile', choices=['exact28', 'maintenance'], default='exact28')
+    args = parser.parse_args(argv)
+    consumer = None
+    if args.profile == 'maintenance':
+        from scripts import check_grafana_maintenance
+        consumer = check_grafana_maintenance
+    result = collect(args, consumer=consumer)
     print(json.dumps({key: result[key] for key in
         ('operational_success', 'security_gate_claim', 'actual_image_id', 'error_type', 'error') if key in result}))
     return 0 if result['operational_success'] else 1

@@ -235,3 +235,70 @@ def test_new_selector_file_cannot_escape_the_current_review(selector_fixture, na
     put(root, name, 'new selector requiring review')
     with pytest.raises(ValueError, match='selector path set'):
         gate.verify_selectors(root, observed, review, 'd' * 40)
+
+
+@pytest.fixture
+def maintenance_selector_fixture(selector_fixture):
+    root, observed, review = selector_fixture
+    replacements = (
+        ('scripts/fetch_grafana_candidate.py', 'scripts/fetch_grafana_candidate.py --profile maintenance'),
+        ('scripts/scan_grafana_candidate.py', 'scripts/scan_grafana_candidate.py --profile maintenance'),
+        ('scripts/check_grafana_candidate_exact28.py', 'scripts/check_grafana_maintenance.py'),
+        ('scripts/check_grafana_active_source_retirement.py',
+         'scripts/check_grafana_active_source_retirement.py --profile maintenance'),
+    )
+    for name in ('.github/workflows/ci.yml', '.github/workflows/security.yml'):
+        path = root / name
+        text = path.read_text()
+        for old, new in replacements:
+            text = text.replace(old, new)
+        path.write_text(text)
+    put(root, 'compose.yaml', 'services: {grafana: {image: ' + inventory.APPROVED_GRAFANA + '}}')
+    observed['grafana_selection']['profile'] = 'maintenance'
+    review['selector_files_sha256'] = {name: gate.approved.file_hash(root / name) for name in gate.SELECTOR_FILES}
+    review['workflow_facts'] = gate.workflow_facts(root, profile='maintenance')
+    return root, observed, review
+
+
+def test_maintenance_selected_artifact_requires_explicit_new_loader_collector_and_consumer(maintenance_selector_fixture):
+    root, observed, review = maintenance_selector_fixture
+    assert gate.verify_selectors(root, deepcopy(observed), review, 'd' * 40, profile='maintenance') == observed
+    assert 'check_grafana_maintenance.py' in review['workflow_facts']['runtime_gate']
+    for key in ('ci_loader', 'runtime_loader', 'runtime_collector', 'final_source_gate'):
+        assert '--profile maintenance' in review['workflow_facts'][key]
+    with pytest.raises(ValueError, match='profile'):
+        gate.workflow_facts(root)
+
+
+@pytest.mark.parametrize('surface', ['ci_loader', 'runtime_loader', 'runtime_collector', 'final_source_gate', 'runtime_gate'])
+def test_maintenance_cannot_fall_back_to_old_approved_profile(maintenance_selector_fixture, surface):
+    root, _, review = maintenance_selector_fixture
+    name = '.github/workflows/ci.yml' if surface == 'ci_loader' else '.github/workflows/security.yml'
+    path = root / name
+    old = review['workflow_facts'][surface]
+    new = (old.replace('check_grafana_maintenance.py', 'check_grafana_candidate_exact28.py')
+           if surface == 'runtime_gate' else old.replace('--profile maintenance', '--profile exact28'))
+    # Folded YAML cannot be replaced as one string; mutate the selected script token instead.
+    if surface == 'runtime_gate':
+        path.write_text(path.read_text().replace('scripts/check_grafana_maintenance.py',
+                                               'scripts/check_grafana_candidate_exact28.py'))
+    elif surface == 'final_source_gate':
+        path.write_text(path.read_text().replace('scripts/check_grafana_active_source_retirement.py --profile maintenance',
+                                               'scripts/check_grafana_active_source_retirement.py --profile exact28'))
+    else:
+        path.write_text(path.read_text().replace(old, new))
+    with pytest.raises(ValueError):
+        gate.workflow_facts(root, profile='maintenance')
+
+
+def test_maintenance_inventory_cannot_claim_the_legacy_approval_profile(maintenance_selector_fixture):
+    root, observed, review = maintenance_selector_fixture
+    observed['grafana_selection']['profile'] = 'exact28'
+    with pytest.raises(ValueError, match='authorization profile'):
+        gate.verify_selectors(root, deepcopy(observed), review, 'd' * 40, profile='maintenance')
+
+
+def test_maintenance_retirement_fails_before_reading_unpublished_binding(tmp_path, monkeypatch):
+    monkeypatch.setattr(gate, 'MAINTENANCE_REVIEW_SHA256', None)
+    with pytest.raises(ValueError, match='finalized after publication'):
+        gate.load_review(tmp_path, datetime(2026, 11, 5, tzinfo=timezone.utc), profile='maintenance')

@@ -11,6 +11,12 @@ FROM alpine@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2
 RUN apk add --no-cache rpm=4.19.1.1-r5
 COPY --from=original / /rootfs/
 RUN rpm --root /rootfs --dbpath /var/lib/rpm -qa > /before.txt && rpm --root /rootfs --dbpath /var/lib/rpm -ql java-21-openjdk-headless > /jdk-owned.txt && rpm --root /rootfs --dbpath /var/lib/rpm -e --nodeps --noscripts java-21-openjdk-headless && rpm --root /rootfs --dbpath /var/lib/rpm -qa > /after.txt && ! grep java-21-openjdk /after.txt
+# These NSS/SQLite libraries belonged to the removed Red Hat JDK. Temurin's
+# default JCA/JSSE providers do not use NSS; let RPM check all remaining consumers.
+RUN rpm --root /rootfs --dbpath /var/lib/rpm -e --noscripts nss nss-sysinit nss-softokn sqlite-libs \
+    && rpm --root /rootfs --dbpath /var/lib/rpm -qa > /after.txt \
+    && ! grep -E '^(sqlite-libs-|nss-sysinit-|nss-softokn-[0-9]|nss-[0-9])' /after.txt \
+    && test ! -e /rootfs/usr/lib64/libsqlite3.so.0
 COPY --from=extract /out/ /rootfs/opt/temurin-jre/
 RUN for f in /rootfs/opt/temurin-jre/bin/*; do ln -sfn /opt/temurin-jre/bin/$(basename "$f") /rootfs/usr/bin/$(basename "$f"); done
 COPY --from=extract --chown=1000:0 /tmp/guava-33.7.2-jre.jar /rootfs/opt/keycloak/lib/lib/main/com.google.guava.guava-33.6.0-jre.jar

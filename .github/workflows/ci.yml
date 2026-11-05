@@ -85,7 +85,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Load the exact approved Grafana artifact before Compose startup
-        run: python scripts/fetch_grafana_candidate.py
+        run: python scripts/fetch_grafana_candidate.py --profile maintenance
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Validate the maintained collector with the current complete telemetry configuration

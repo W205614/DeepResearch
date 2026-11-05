@@ -20,13 +20,13 @@ python scripts/fetch_approved_image.py --archive <归档路径>
 
 此工具只依赖本机 Python 标准库与 Docker。下载来源固定为本仓库 GitHub Release asset，归档内容按 [固定判定清单](../deployment/security/minio-fixed-disposition.json) 校验；私有仓库可从进程环境传入 `GITHUB_TOKEN`，不要写入配置或命令参数。下载失败、内容变化或审查证据缺失均阻断，不回退其他标签。加载成功仅证明内容一致，不能代替完整漏洞扫描。
 
-完整观测栈的 Grafana 使用独立的[精确请求](../deployment/security/grafana-candidate-request.json)、[明确授权](../deployment/security/grafana-candidate-authorization.json)、归档和标签；core 模式不需要加载它：
+完整观测栈的 Grafana 使用独立的[精确请求](../deployment/security/grafana-maintenance-request.json)、[明确授权](../deployment/security/grafana-maintenance-authorization.json)、归档和标签；core 模式不需要加载它：
 
 ```powershell
-python scripts/fetch_grafana_candidate.py
+python scripts/fetch_grafana_candidate.py --profile maintenance
 ```
 
-该镜像保留真实 VCS、实际13.2.4应用身份及全部原始告警。当前授权仅覆盖28条精确目标/告警：11条Grafana产品版本范围归因校正，2条Tempo后端仅编入 protobuf 数据结构的范围判定，5条OpenPGP与10条HTML完整生产闭包不适用判定。不能扩大为模块级忽略，也不能给本地源码模块编造版本号。原始Trivy为2CRITICAL/11HIGH/20MEDIUM/2LOW/15UNKNOWN，Grype为2HIGH/3MEDIUM/5UNKNOWN；3条BusyBox中危记录没有上游修复版本，仍保留风险。
+Grafana 13.2.5 的授权绑定实际源码、14 个 ELF 和完整镜像归档。独立复核覆盖 Trivy 的 28 条和 Grype 的 12 条阻断记录，按目标、包、版本、公告和严重级别共形成 33 个精确条目。5 条 Grype HTML 告警保留 HIGH。完整原始报告、独立审查和逐项结论见[维护证据](../deployment/security/grafana-maintenance-evidence/)。
 
 8个重建插件后端由维护者的精确编译哈希认可，界面标记为维护者私有信任；原始PGP签名继续保护官方其余资产，并不声称改过的二进制由上游签名。签名、前端、未知文件及未签名插件的实际拒绝测试分别保存。原始报告不会被过滤或改写。
 
@@ -34,7 +34,7 @@ python scripts/fetch_grafana_candidate.py
 
 2026-10-28 新增的 MinIO HTML 告警由[独立技术审查](../deployment/security/minio-html4-technical-review.json)单独处理：两个实际 ELF 的完整生产依赖图、native 模块与函数清单均不包含 `golang.org/x/net/html`。新消费者 `scripts/check_minio_html_exact4.py` 保留原 FIXED 检查及原 OpenPGP exact2 检查的失败报告，只在原始告警恰好对应既有两条 OpenPGP 与新四条 HTML 精确目标记录时应用已审技术事实。当前原始 1 HIGH、6 UNKNOWN 和秘密扫描结果均原样保留；新增、重复、缺失、版本或级别变化及任何 secret 继续阻断。原128个冻结文件、原始授权与镜像身份保持逐字节绑定，历史日期由新政策单独覆盖。
 
-Grafana同样采用变化触发复核，固定归档SHA为 `849d3d86c9d51c6bda4c78d3091f7d457ba93dbd37e66aefcc87ef57b25cda70`，并绑定其独立索引、平台清单、config、源码和二进制。当前 Compose/CI 标签为 `deepresearch-approved-grafana:20261028`，由加载器验证固定发布后取得。后续显式重建使用独立配方 `deployment/docker/Dockerfile.grafana-security`，新构建必须重新审查。归档加载、隔离端到端验证、日常部署与同SHA最终安全CI分别保留证据。
+Grafana 归档 SHA256 为 `408744f9d8d357a9b7dfd97ac802efbbdee662cb1177b80d8020bdc24c019e25`。Compose 与 CI 使用 `deepresearch-approved-grafana:20261105`。维护配方见 `deployment/docker/Dockerfile.grafana-maintenance`，重新构建或扫描条目变化会触发复核。
 
 新政策只覆盖列出的7份精确记录及其摘要，包括已有 MinIO/Grafana 授权、源码适用性和 Tempo 固定源码技术判定。历史审批中的 `expires` 保留为证据，不再按日历触发失败；报告使用 `validity_policy: change-driven` 和 `superseded_calendar_expiry` 明示这一点。政策缺失、被改写或记录变化都会拒绝，不能把政策复制给新镜像继承授权。
 

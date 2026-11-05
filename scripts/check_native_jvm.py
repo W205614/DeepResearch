@@ -85,7 +85,51 @@ def validate_snapshot_age(spec, *, now=None):
     built = datetime.fromisoformat(spec["built"].replace("Z", "+00:00"))
     age = (now - built).total_seconds()
     if age < -300 or age > spec["max_snapshot_age_days"] * 86400:
-        raise NativeGateError("Pinned advisory snapshot is stale or in the future; explicitly refresh its lock")
+        raise NativeGateError("Native advisory snapshot is stale or in the future")
+
+
+def _unique_pairs(pairs):
+    value = {}
+    for key, item in pairs:
+        if key in value:
+            raise NativeGateError("Duplicate database metadata key")
+        value[key] = item
+    return value
+
+
+def current_database_snapshot(spec, output_dir, evidence, *, now=None):
+    """Pin one fresh publisher snapshot before downloading or importing its bytes."""
+    url = spec["distribution_url"]
+    if url != "https://grype.anchore.io/databases/v6/latest.json":
+        raise NativeGateError("Native database distribution must be the official schema-v6 publisher")
+    request = Request(url, headers={"User-Agent": "grype/0.121.0", "Accept-Encoding": "identity"})
+    with urlopen(request, timeout=60) as response:
+        if response.geturl() != url:
+            raise NativeGateError("Native database distribution redirected outside its pinned publisher")
+        raw = response.read(1024 * 1024 + 1)
+    if len(raw) > 1024 * 1024:
+        raise NativeGateError("Native database distribution exceeds its bound")
+    published = json.loads(raw, object_pairs_hook=_unique_pairs)
+    if not isinstance(published, dict):
+        raise NativeGateError("Native database publisher metadata must be an object")
+    path = published.get("path")
+    checksum = published.get("checksum")
+    built = published.get("built")
+    if (published.get("status") != "active" or published.get("schemaVersion") != spec["schema"]
+            or not isinstance(path, str)
+            or not re.fullmatch(r"vulnerability-db_" + re.escape(spec["schema"])
+                                + r"_\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z_\d+\.tar\.zst", path)
+            or not isinstance(checksum, str) or not re.fullmatch(r"sha256:[0-9a-f]{64}", checksum)
+            or not isinstance(built, str)
+            or not re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", built)):
+        raise NativeGateError("Native database publisher schema/path/checksum/build metadata is invalid")
+    resolved = dict(spec, url=url.rsplit("/", 1)[0] + "/" + path + "?" + urlencode({"checksum": checksum}),
+                    archive_sha256=checksum.removeprefix("sha256:"), built=built)
+    validate_snapshot_age(resolved, now=now)
+    (output_dir / "publisher-snapshot.json").write_bytes(raw)
+    evidence["distribution"] = {"url": url, "response_sha256": hashlib.sha256(raw).hexdigest(),
+                                "selected_archive": resolved["url"]}
+    return resolved
 
 
 def validate_database(path, spec, *, now=None):
@@ -191,11 +235,14 @@ class PreparedDatabase:
 
 def prepare_database(grype, spec, cache_root, output_dir, env, evidence, *, now=None):
     """Authenticate the immutable archive, then attest one pinned-tool local import."""
-    evidence.update(stage="validate-snapshot", identity="immutable-archive-controlled-import",
-                    snapshot={k: spec[k] for k in ("url", "archive_sha256", "schema", "built", "max_snapshot_age_days")},
-                    historical_hydrated_reference={"sha256": spec["db_sha256"], "bytes": spec["db_bytes"],
-                                                   "role": "historical observation, not the derived-byte gate"})
+    evidence.update(stage="resolve-snapshot", identity="immutable-archive-controlled-import")
     try:
+        if "distribution_url" in spec:
+            spec = current_database_snapshot(spec, output_dir, evidence, now=now)
+        evidence.update(stage="validate-snapshot",
+                        snapshot={k: spec[k] for k in ("url", "archive_sha256", "schema", "built", "max_snapshot_age_days")},
+                        historical_hydrated_reference={"sha256": spec["db_sha256"], "bytes": spec["db_bytes"],
+                                                       "role": "historical observation, not the derived-byte gate"})
         validate_snapshot_age(spec, now=now)
         evidence["import_tool"] = {"path": str(grype), "sha256": digest(grype)}
         cache_root.mkdir(parents=True, exist_ok=True)
@@ -228,14 +275,7 @@ def prepare_database(grype, spec, cache_root, output_dir, env, evidence, *, now=
         if (db.resolve() != db or metadata_path.resolve() != metadata_path or not metadata_path.is_file()
                 or not stat.S_ISREG(metadata_path.lstat().st_mode) or metadata_path.stat().st_size > 65536):
             raise NativeGateError("Imported database metadata/path is unsafe")
-        def unique_pairs(pairs):
-            value = {}
-            for key, item in pairs:
-                if key in value:
-                    raise NativeGateError("Duplicate imported database metadata key")
-                value[key] = item
-            return value
-        metadata = json.loads(metadata_path.read_text(encoding="utf-8"), object_pairs_hook=unique_pairs)
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"), object_pairs_hook=_unique_pairs)
         evidence["import_metadata"] = metadata
         if (set(metadata) != {"digest", "source", "client_version"}
                 or metadata.get("source") != "manual import" or metadata.get("client_version") != spec["schema"]

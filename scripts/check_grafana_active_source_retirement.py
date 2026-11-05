@@ -24,7 +24,9 @@ from scripts import check_grafana_candidate_source_exact2 as source  # noqa: E40
 from scripts import runtime_ci_inventory as inventory  # noqa: E402
 
 REVIEW_PATH = 'deployment/security/grafana-active-source-retirement-technical-review.json'
-REVIEW_SHA256 = 'f31ec34135f907fdfd7dea81a7970d7ba4aafb5a494667e3289e15985d3d45c7'
+REVIEW_SHA256 = '6e38ee2752a1d6c40fbe671db7db776e7ed88156a63df734f9140bf0d78dcd97'
+MAINTENANCE_REVIEW_PATH = 'deployment/security/grafana-maintenance-source-retirement-review.json'
+MAINTENANCE_REVIEW_SHA256 = '033d64c376da507f55b90b48cac960697b075dce1d2b7aa6afc61deb8184c5eb'
 OLD_SOURCE = 'deployment/vendors/grafana/main/go.mod'
 PACKAGE = 'github.com/go-jose/go-jose/v4'
 SCOPE = ('CVE-2026-116587', OLD_SOURCE, PACKAGE, 'v4.1.4', 'HIGH')
@@ -107,14 +109,19 @@ def enabled_gate(step, condition=None):
     require(field(step, 'if') == condition, 'Required CI gate condition differs')
 
 
-def workflow_facts(root):
+def workflow_facts(root, *, profile='exact28'):
+    require(profile in {'exact28', 'maintenance'}, 'Unknown current selector profile')
+    maintenance_args = {'--profile': 'maintenance'} if profile == 'maintenance' else {}
+    runtime_gate_script = ('check_grafana_maintenance.py' if profile == 'maintenance'
+                           else 'check_grafana_candidate_exact28.py')
     ci = (root / '.github/workflows/ci.yml').read_text(encoding='utf-8')
     security = (root / '.github/workflows/security.yml').read_text(encoding='utf-8')
     enterprise = job(ci, 'enterprise-compose-smoke')
     ci_index, ci_step, ci_run = script_step(enterprise, 'fetch_grafana_candidate.py')
     enabled_gate(ci_step)
     ci_args = command_arguments(ci_run, 'fetch_grafana_candidate.py')
-    require(ci_args in ({}, {'--tag': inventory.APPROVED_GRAFANA}), 'Enterprise CI selects another artifact tag')
+    require(ci_args in (maintenance_args, maintenance_args | {'--tag': inventory.APPROVED_GRAFANA}),
+            'Enterprise CI selects another artifact profile or tag')
     start_index, _, start_run = script_step(enterprise, 'smoke-enterprise.py')
     require(ci_index < start_index and start_run == 'python scripts/smoke-enterprise.py --start',
             'Approved Grafana must be loaded before Compose starts')
@@ -124,18 +131,18 @@ def workflow_facts(root):
     load_index, load_step, load_run = script_step(runtime, 'fetch_grafana_candidate.py')
     enabled_gate(load_step, "matrix.artifact == 'grafana'")
     load_args = command_arguments(load_run, 'fetch_grafana_candidate.py')
-    require(load_args == {'--tag': 'deepresearch-scan-grafana:ci',
+    require(load_args == maintenance_args | {'--tag': 'deepresearch-scan-grafana:ci',
             '--output': BASE + 'approved-grafana-load.json'}, 'Security loader tag/output differs')
     collect_index, collect_step, collect_run = script_step(runtime, 'scan_grafana_candidate.py')
     enabled_gate(collect_step, "matrix.artifact == 'grafana' && steps.approved_scan.outcome == 'success'")
-    require(command_arguments(collect_run, 'scan_grafana_candidate.py') == {
+    require(command_arguments(collect_run, 'scan_grafana_candidate.py') == maintenance_args | {
         '--image': 'deepresearch-scan-grafana:ci', '--output-dir': BASE + 'grafana-native'},
         'Actual full native collector targets another image or output')
     require('scripts/scan_grafana_image.py' not in runtime, 'Old Grafana native collector remains active')
-    gate_index, gate_step, gate_run = script_step(runtime, 'check_grafana_candidate_exact28.py')
+    gate_index, gate_step, gate_run = script_step(runtime, runtime_gate_script)
     enabled_gate(gate_step, "matrix.artifact == 'grafana' && steps.approved_scan.outcome == 'success'")
     require(load_index < collect_index < gate_index, 'Runtime native collection/gate must follow the new loader')
-    require(command_arguments(gate_run, 'check_grafana_candidate_exact28.py') == {
+    require(command_arguments(gate_run, runtime_gate_script) == {
         '--archive': BASE + 'approved-grafana.oci.tar', '--scan': 'runtime-image.json',
         '--grype-scan': BASE + 'grafana-native/full-grype.json', '--sbom': BASE + 'grafana-native/full-syft.json',
         '--inspect': BASE + 'approved-grafana-load-inspect.json', '--scanner-exit-code': '0',
@@ -167,7 +174,7 @@ def workflow_facts(root):
     require(command_arguments(new_run, 'check_grafana_candidate_source_exact2.py') == raw | {
         '--original-verdict': BASE + 'source-fs-original-verdict.json',
         '--output': BASE + 'source-fs-candidate-verdict.json'}, 'New source2 output is not separately preserved')
-    require(command_arguments(final_run, 'check_grafana_active_source_retirement.py') == raw | {
+    require(command_arguments(final_run, 'check_grafana_active_source_retirement.py') == raw | maintenance_args | {
         '--original-verdict': BASE + 'source-fs-original-verdict.json',
         '--candidate-verdict': BASE + 'source-fs-candidate-verdict.json',
         '--runtime-inventory': BASE + 'runtime-image-inventory.json',
@@ -177,7 +184,10 @@ def workflow_facts(root):
             'candidate_source_gate': new_run, 'final_source_gate': final_run}
 
 
-def load_review(root, now):
+def load_review(root, now, *, profile='exact28'):
+    if profile == 'maintenance':
+        return load_maintenance_review(root, now)
+    require(profile == 'exact28', 'Unknown conditional review profile')
     review = approved.read_json(approved.repository_file(root, REVIEW_PATH))
     require(approved.file_hash(root / REVIEW_PATH) == REVIEW_SHA256, 'Conditional retirement review bytes changed')
     require(review['schema'] == 'grafana-active-source-retirement-technical-review-v1'
@@ -228,12 +238,113 @@ def load_review(root, now):
     return review
 
 
-def verify_selectors(root, recorded, review, source_commit):
+def maintenance_selection_facts(root, now=None):
+    """Derive the new selection only from an authorized, really published subject."""
+    from scripts import check_grafana_maintenance as maintenance
+    from scripts import fetch_grafana_candidate as fetch
+
+    request = maintenance.load_request(root, now=now)
+    auth = maintenance.read_json(root / maintenance.AUTH_PATH)
+    maintenance.validate_authorization(auth, request)
+    require(auth.get('actor_kind') == 'human_user_via_chat'
+            and auth.get('status') == 'EXPLICIT_HUMAN_APPROVAL_RECORDED'
+            and type(auth.get('authorization_source')) is str and auth['authorization_source'],
+            'Maintenance selection has no genuine new human instruction reference')
+    subject = maintenance.subject_for(request['binding'])
+    core_path = 'deployment/security/grafana-maintenance-evidence/core-independent-review.json'
+    core = maintenance.read_json(maintenance.repository_file(root, core_path))
+    core_sha = maintenance.file_hash(root / core_path)
+    require(request['files_sha256'].get(core_path) == core_sha
+            and core.get('actor_kind') == 'automated_independent_agent'
+            and core.get('facts_passed') is True and core.get('human_risk_acceptance') is False
+            and core.get('artifact_approved') is False
+            and all(core['subject'].get(key) == value for key, value in subject.items()),
+            'New independent core selection facts bind another subject')
+    scope = core['source_selection_retirement']
+    require(tuple(scope[key] for key in ('id', 'target', 'package', 'version', 'severity')) == SCOPE
+            and scope.get('decision') == 'NOT_SELECTED_BY_EXACT_MAINTENANCE_PRODUCTION_BUILD'
+            and scope.get('conditional_only') is True
+            and scope.get('formal_selection_or_authorization_granted') is False
+            and scope.get('actual_core_elf_sha256') == subject['binary_sha256']['usr/share/grafana/bin/grafana'],
+            'Independent exact legacy source-retirement scope changed')
+    expected_jose = {'Path': PACKAGE, 'Version': 'v4.1.6',
+                     'Sum': 'h1:sNRkftxFJxwsILiQukqp5z83QBSmntVwmgRY7AqBDO4='}
+    require(scope.get('actual_native_dependency') == expected_jose,
+            'Independent selected native jose dependency differs')
+    native_path = 'deployment/security/grafana-maintenance-evidence/core-actual-actual-native-buildinfo.json'
+    require(core['input_files_sha256'].get(native_path) == maintenance.file_hash(root / native_path),
+            'Independently read native build metadata changed')
+    native = maintenance.read_json(root / native_path)
+    require([row for row in native['Deps'] if row['Path'] == PACKAGE] == [expected_jose],
+            'Actually selected native jose dependency differs')
+    for path_key, hash_key in (('actual_production_go_mod', 'actual_production_go_mod_sha256'),
+                               ('superseding_source', 'superseding_source_sha256')):
+        require(maintenance.file_hash(maintenance.repository_file(root, scope[path_key])) == scope[hash_key],
+                'Actually compiled fixed module source changed')
+    require(scope['actual_production_go_mod_sha256'] == scope['superseding_source_sha256']
+            and scope['superseding_source'] == 'deployment/vendors/grafana-security/main/go.mod'
+            and maintenance.file_hash(root / OLD_SOURCE) == scope['old_source_sha256'],
+            'Actual production overlay no longer shadows the old constraint')
+    dockerfile_path = 'deployment/docker/Dockerfile.grafana-maintenance'
+    dockerfile = (root / dockerfile_path).read_text(encoding='utf-8')
+    require('COPY deployment/vendors/grafana/main/ ./\nCOPY deployment/vendors/grafana-security/main/ ./\n'
+            in dockerfile, 'Old constraint is not immediately overlaid before production compilation')
+    profile = fetch.maintenance_profile()
+    transport = fetch.load_transport(root, request['binding'], profile=profile)
+    require(maintenance.TRANSPORT_SHA256 == maintenance.file_hash(root / maintenance.TRANSPORT_PATH),
+            'Maintenance published transport bytes changed')
+    publication_path = 'deployment/security/grafana-maintenance-publication.json'
+    publication = maintenance.read_json(maintenance.repository_file(root, publication_path))
+    proof = publication['proof']
+    require(publication.get('published') is True
+            and publication['release_id'] == transport['release_id']
+            and publication['release_tag'] == transport['release_tag']
+            and publication['request_sha256'] == maintenance.REQUEST_SHA256
+            and all(proof[key] == subject[key] for key in ('index_digest', 'platform_manifest_digest',
+                'config_digest', 'archive_sha256', 'binary_sha256'))
+            and proof['recomputed_diff_ids'] == subject['diff_ids']
+            and proof['authorization_evaluated'] is False,
+            'New publication lacks a complete verified exact OCI receipt')
+    input_files = (core_path, native_path, dockerfile_path, OLD_SOURCE, scope['actual_production_go_mod'],
+                   scope['superseding_source'], 'scripts/runtime_ci_inventory.py',
+                   'scripts/check_grafana_maintenance.py', 'scripts/fetch_grafana_candidate.py',
+                   'scripts/scan_grafana_candidate.py')
+    return {'schema': 'grafana-maintenance-active-source-retirement-v1', 'validity': 'change-driven',
+            'actor_kind': 'automated_execution_agent', 'review_kind': 'conditional_source_selection_binding',
+            'facts_passed': True, 'enabled': True, 'human_risk_acceptance': False,
+            'scope': dict(zip(('id', 'target', 'package', 'version', 'severity'), SCOPE)),
+            'subject': subject, 'request_sha256': maintenance.REQUEST_SHA256,
+            'authorization_sha256': maintenance.file_hash(root / maintenance.AUTH_PATH),
+            'human_authorization_reference': auth['authorization_source'],
+            'core_independent_review_sha256': core_sha,
+            'source_selection_retirement': scope,
+            'transport_sha256': maintenance.TRANSPORT_SHA256,
+            'publication_sha256': maintenance.file_hash(root / publication_path),
+            'candidate_source2_review_sha256': source.REVIEW_SHA256,
+            'input_files': {name: maintenance.file_hash(root / name) for name in sorted(set(input_files))},
+            'selector_files_sha256': {name: maintenance.file_hash(root / name) for name in selector_files(root)},
+            'workflow_facts': workflow_facts(root, profile='maintenance')}
+
+
+def load_maintenance_review(root, now):
+    require(type(MAINTENANCE_REVIEW_SHA256) is str and approved.HEX.fullmatch(MAINTENANCE_REVIEW_SHA256),
+            'Maintenance selection binding has not been finalized after publication')
+    review = approved.read_json(approved.repository_file(root, MAINTENANCE_REVIEW_PATH))
+    require(approved.file_hash(root / MAINTENANCE_REVIEW_PATH) == MAINTENANCE_REVIEW_SHA256,
+            'New conditional selection binding bytes changed')
+    require(review == maintenance_selection_facts(root, now),
+            'Current independent source facts, authorization, publication or selectors differ')
+    return review
+
+
+def verify_selectors(root, recorded, review, source_commit, *, profile='exact28'):
     current = inventory.build_record(root)
     require(recorded == current and recorded['schema'] == 'runtime-image-inventory-v2'
             and recorded['source_commit'] == source_commit
             and recorded['github_sha'] in (None, source_commit), 'Current independently derived runtime inventory differs')
     selected = recorded['grafana_selection']
+    if profile == 'maintenance':
+        require(selected.get('profile') == 'maintenance', 'Current inventory selects another authorization profile')
     require(selected['authorization_verified'] is True and selected['image'] == inventory.APPROVED_GRAFANA
             and selected['subject'] == review['subject'] and selected['request_sha256'] == review['request_sha256']
             and selected['authorization_sha256'] == review['authorization_sha256'], 'Active inventory selects another artifact')
@@ -252,11 +363,11 @@ def verify_selectors(root, recorded, review, source_commit):
     for name in selector_files(root):
         require(approved.file_hash(root / name) == review['selector_files_sha256'][name],
                 'Reviewed current Compose/CI selector bytes changed')
-    require(workflow_facts(root) == review['workflow_facts'], 'Concrete CI loader or gate references differ')
+    require(workflow_facts(root, profile=profile) == review['workflow_facts'], 'Concrete CI loader or gate references differ')
     return current
 
 
-def apply_retirement(previous, scan):
+def apply_retirement(previous, scan, *, review_sha256=REVIEW_SHA256):
     require(previous.get('scan_completion_verified') is True and 'error' not in previous
             and previous.get('technical_not_applicable_count') == 4
             and previous.get('candidate_source2_technical_not_applicable_count') == 2,
@@ -277,11 +388,12 @@ def apply_retirement(previous, scan):
             'technical_not_applicable': deepcopy(previous['technical_not_applicable']) + [retired],
             'unresolved': [], 'unresolved_count': 0, 'configured_selectors_verified': True, 'existing_human_authorization_verified': True,
             'running_container_replacement_claimed': False, 'new_human_risk_acceptance': False,
-            'old_and_candidate_source_verdicts_preserved': True, 'conditional_review_sha256': REVIEW_SHA256}
+            'old_and_candidate_source_verdicts_preserved': True, 'conditional_review_sha256': review_sha256}
 
 
 def evaluate(scan, receipt, original, candidate, recorded_inventory, *, original_file_sha256,
-             raw_sha256, source_commit, root=ROOT, now=None, tracked_clean=True, expected_targets=None):
+             raw_sha256, source_commit, root=ROOT, now=None, tracked_clean=True, expected_targets=None,
+             profile='exact28'):
     result = {'passed': False, 'mode': 'failed_closed', 'retired_old_constraint_count': 0,
               'raw_report_modified': False, 'new_human_risk_acceptance': False}
     try:
@@ -291,9 +403,10 @@ def evaluate(scan, receipt, original, candidate, recorded_inventory, *, original
         saved = {k: v for k, v in candidate.items() if k != 'preserved_original_verdict_file_sha256'}
         require(saved == previous and candidate.get('preserved_original_verdict_file_sha256') == original_file_sha256,
                 'Preserved candidate source2 verdict differs from independent recomputation')
-        review = load_review(root, now)
-        verify_selectors(root, recorded_inventory, review, source_commit)
-        result = apply_retirement(previous, scan)
+        review = load_review(root, now, profile=profile)
+        verify_selectors(root, recorded_inventory, review, source_commit, profile=profile)
+        result = apply_retirement(previous, scan, review_sha256=(MAINTENANCE_REVIEW_SHA256
+            if profile == 'maintenance' else REVIEW_SHA256))
         result['original_verdict_file_sha256'] = original_file_sha256
         result['candidate_verdict_canonical_sha256'] = digest(source.old.canonical(candidate))
         result['runtime_inventory_canonical_sha256'] = digest(source.old.canonical(recorded_inventory))
@@ -307,6 +420,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ('scan', 'scan-receipt', 'original-verdict', 'candidate-verdict', 'runtime-inventory', 'output'):
         parser.add_argument('--' + name, required=True, type=Path)
+    parser.add_argument('--profile', choices=['exact28', 'maintenance'], default='exact28')
     args = parser.parse_args()
     cache = ROOT.resolve() / '.cache'
     if args.output.exists() or args.output.is_symlink() or not args.output.resolve().is_relative_to(cache):
@@ -322,7 +436,7 @@ def main():
                                capture_output=True, text=True, check=True).stdout
         result = evaluate(*values, original_file_sha256=approved.file_hash(args.original_verdict),
                           raw_sha256=approved.file_hash(args.scan), source_commit=head, tracked_clean=not dirty,
-                          expected_targets=source.old.committed_manifest_targets(ROOT, head))
+                          expected_targets=source.old.committed_manifest_targets(ROOT, head), profile=args.profile)
         result['preserved_input_files_sha256'] = {p.resolve().relative_to(ROOT.resolve()).as_posix(): approved.file_hash(p) for p in paths}
     except (ValueError, OSError, subprocess.SubprocessError):
         result = {'passed': False, 'mode': 'failed_closed', 'error': 'Original source-selection inputs are unavailable'}

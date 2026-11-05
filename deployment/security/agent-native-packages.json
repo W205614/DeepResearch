@@ -1,0 +1,64 @@
+{
+  "schema": "agent-native-fixed-packages-v1",
+  "scope": "Exact verified official Debian library bytes; no image approval, risk acceptance or blanket advisory ignore. All other HIGH/CRITICAL rows and every secret remain blocking.",
+  "evidence": {
+    "deployment/security/agent-native-evidence/sqlite-CVE-2026-119373.json": {
+      "url": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2026/119xxx/CVE-2026-119373.json",
+      "sha256": "cba383b898a73c797ed513025852a7625fb40f28bf2eb6b3014246691a390ad8"
+    },
+    "deployment/security/agent-native-evidence/zlib-CVE-2026-76844.json": {
+      "url": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2026/76xxx/CVE-2026-76844.json",
+      "sha256": "2118510ec4f83919d22f05c7e4d622a4db983bd55ea5d57aa7924c42074e169a"
+    },
+    "deployment/security/agent-native-evidence/zlib-fix.patch": {
+      "url": "https://github.com/madler/zlib/commit/df84af25dc1942490e1d1c899a07619152a46148.patch",
+      "sha256": "110ff14375733173d8aa54574473424fbd7dfe4b81f1ca34a759c6fe14b15b14"
+    },
+    "deployment/security/agent-native-evidence/sqlite-package.txt": {
+      "sha256": "d995fbbca6d07e9f0630c71a9d61661762622fba31019f35de7ecf3086687438",
+      "url": "https://deb.debian.org/debian/dists/sid/main/binary-amd64/Packages.xz"
+    },
+    "deployment/security/agent-native-evidence/zlib-package.txt": {
+      "sha256": "04efc4e17a486b9abc503d99e3c56347623e0de35ccf530f1bbb037a2d2f95b5",
+      "url": "https://deb.debian.org/debian/dists/sid/main/binary-amd64/Packages.xz"
+    },
+    "deployment/security/agent-native-evidence/debian-zlib-fix.patch": {
+      "sha256": "3ccf8babf34c73e51c4e14697f5501e797d1f4ce34b338a73ad3c1c749cd0de7"
+    },
+    "deployment/security/agent-native-evidence/sqlite-fix.patch": {
+      "url": "https://github.com/sqlite/sqlite/commit/e1c9934f9f11a499029abb020ea715a08970da80.patch",
+      "sha256": "4e79bd367bf1411e66d15fe4bfca410d5ca9f29d462855e7c5c07987967bb42e"
+    }
+  },
+  "packages": [
+    {
+      "name": "libsqlite3-0",
+      "version": "3.54.1-2",
+      "source": "sqlite3",
+      "upstream": "3.54.1",
+      "archive_url": "https://deb.debian.org/debian/pool/main/s/sqlite3/libsqlite3-0_3.54.1-2_amd64.deb",
+      "archive_sha256": "7789bf0b2338b781de388d83d7c473f9386c9ef638af110b5c1b3d1debb36f00",
+      "library": "/usr/lib/x86_64-linux-gnu/libsqlite3.so.3.54.1",
+      "library_sha256": "225ceb839db2c1dd484cfcaa5ef9fbdd429eb1d5f1e0c39fbd50150bca5fc7bc",
+      "soname": "/usr/lib/x86_64-linux-gnu/libsqlite3.so.0",
+      "fixed_advisories": [
+        "CVE-2026-119373"
+      ]
+    },
+    {
+      "name": "zlib1g",
+      "version": "1:1.3.dfsg+really1.3.2-4",
+      "source": "zlib",
+      "upstream": "1.3.2",
+      "archive_url": "https://deb.debian.org/debian/pool/main/z/zlib/zlib1g_1.3.dfsg+really1.3.2-4_amd64.deb",
+      "archive_sha256": "8506ce550a81ac14b047608e0df121037d9cbb10c3cc28446f68cf8c1d9d31ce",
+      "library": "/usr/lib/x86_64-linux-gnu/libz.so.1.3.2",
+      "library_sha256": "e0d5aa725cb684e7bcc048c1cb1fbb314f7cb7b7203e8d623044bb6a043e1d61",
+      "soname": "/usr/lib/x86_64-linux-gnu/libz.so.1",
+      "fixed_advisories": [
+        "CVE-2026-76844",
+        "CVE-2026-85091"
+      ]
+    }
+  ]
+}

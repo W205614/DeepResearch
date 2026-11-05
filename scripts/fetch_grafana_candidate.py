@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 from copy import copy
+from dataclasses import dataclass
 from datetime import datetime
 import hashlib
 from io import BytesIO
@@ -35,6 +36,27 @@ MAX_PARTS = 32
 STORAGE_HOSTS = frozenset({'release-assets.githubusercontent.com', 'objects.githubusercontent.com'})
 
 
+@dataclass(frozen=True)
+class LoaderProfile:
+    consumer: object
+    transport_path: Path
+    transport_sha256: str | None
+    release_tag: str
+    approved_tag: str
+    scan_tag: str
+
+
+def maintenance_profile():
+    from scripts import check_grafana_maintenance as maintenance
+    return LoaderProfile(maintenance, maintenance.TRANSPORT_PATH, maintenance.TRANSPORT_SHA256,
+                         maintenance.RELEASE_TAG, maintenance.APPROVED_TAG, maintenance.SCAN_TAG)
+
+
+def selected_profile(profile):
+    return profile or LoaderProfile(exact, TRANSPORT_PATH, TRANSPORT_SHA256, RELEASE_TAG,
+                                    APPROVED_TAG, SCAN_TAG)
+
+
 class FetchError(ValueError):
     pass
 
@@ -55,26 +77,28 @@ def file_hash(path):
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
-def authorized_request(root):
+def authorized_request(root, *, profile=None):
     # This checks all pinned compilation inputs and evidence, rather than requiring
     # unrelated Compose/workflow changes to leave the entire Git checkout clean.
-    request = exact.load_request(root)
-    auth = exact.read_json(exact.repository_file(root, exact.AUTH_PATH.as_posix()))
-    exact.validate_authorization(auth, request)
+    consumer = selected_profile(profile).consumer
+    request = consumer.load_request(root)
+    auth = consumer.read_json(consumer.repository_file(root, consumer.AUTH_PATH.as_posix()))
+    consumer.validate_authorization(auth, request)
     return request
 
 
-def validate_transport(transport, binding):
+def validate_transport(transport, binding, *, profile=None):
+    selected = selected_profile(profile)
     require(type(transport) is dict, 'Missing candidate transport object')
     total = binding['archive_bytes']
     name = 'grafana-' + binding['archive_sha256'][:8] + '.oci.tar'
     require(transport.get('schema') == 'deepresearch-grafana-candidate-transport-v1'
             and transport.get('artifact') == 'grafana'
             and transport.get('repository') == REPOSITORY
-            and transport.get('request_sha256') == exact.REQUEST_SHA256
+            and transport.get('request_sha256') == selected.consumer.REQUEST_SHA256
             and transport.get('transport_mode') == 'github_asset_parts'
             and type(transport.get('release_id')) is int and transport['release_id'] > 0
-            and transport.get('release_tag') == RELEASE_TAG
+            and transport.get('release_tag') == selected.release_tag
             and transport.get('asset_name') == name
             and transport.get('asset_sha256') == binding['archive_sha256']
             and type(transport.get('archive_bytes')) is int and transport['archive_bytes'] == total
@@ -103,18 +127,19 @@ def validate_transport(transport, binding):
     return parts
 
 
-def load_transport(root, binding):
-    require(type(TRANSPORT_SHA256) is str and exact.HEX.fullmatch(TRANSPORT_SHA256),
+def load_transport(root, binding, *, profile=None):
+    selected = selected_profile(profile)
+    require(type(selected.transport_sha256) is str and exact.HEX.fullmatch(selected.transport_sha256),
             'Final published candidate transport SHA256 pin is not set')
-    path = exact.repository_file(root, TRANSPORT_PATH.as_posix())
-    require(file_hash(path) == TRANSPORT_SHA256, 'Published candidate transport bytes changed')
+    path = exact.repository_file(root, selected.transport_path.as_posix())
+    require(file_hash(path) == selected.transport_sha256, 'Published candidate transport bytes changed')
     transport = exact.read_json(path)
-    validate_transport(transport, binding)
+    validate_transport(transport, binding, **({} if profile is None else {'profile': profile}))
     return transport
 
 
-def verify_publication(transport, binding):
-    parts = validate_transport(transport, binding)
+def verify_publication(transport, binding, *, profile=None):
+    parts = validate_transport(transport, binding, **({} if profile is None else {'profile': profile}))
     url = f"https://api.github.com/repos/{REPOSITORY}/releases/{transport['release_id']}"
     headers = {'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28',
                'User-Agent': 'DeepResearch-exact28-artifact-loader'}
@@ -126,7 +151,8 @@ def verify_publication(transport, binding):
     require(len(raw) <= 4 * 1024**2, 'Release metadata exceeds its bound')
     release = exact.strict_json(raw)
     require(type(release) is dict and type(release.get('id')) is int
-            and release['id'] == transport['release_id'] and release.get('tag_name') == RELEASE_TAG
+            and release['id'] == transport['release_id']
+            and release.get('tag_name') == selected_profile(profile).release_tag
             and release.get('draft') is False and type(release.get('published_at')) is str,
             'Candidate release is unpublished or its live identity changed')
     try:
@@ -156,10 +182,11 @@ def checked_cache(path, size, digest):
             and file_hash(path) == digest, 'Cached candidate bytes differ; preserve them for investigation')
 
 
-def download_parts(destination, binding, transport):
-    parts = validate_transport(transport, binding)
+def download_parts(destination, binding, transport, *, profile=None):
+    options = {} if profile is None else {'profile': profile}
+    parts = validate_transport(transport, binding, **options)
     # Publication and live per-asset identities are checked even when every byte is cached.
-    publication = verify_publication(transport, binding)
+    publication = verify_publication(transport, binding, **options)
     require(not destination.is_symlink(), 'Candidate destination is a symbolic link')
     if destination.exists():
         checked_cache(destination, binding['archive_bytes'], binding['archive_sha256'])
@@ -377,8 +404,10 @@ def prepare_docker_load_archive(source, binding, destination):
     return destination, receipt
 
 
-def load_image(archive, binding, tag, *, load_receipt=None):
-    require(tag in {APPROVED_TAG, SCAN_TAG}, 'Candidate output tag belongs to another namespace')
+def load_image(archive, binding, tag, *, load_receipt=None, profile=None):
+    selected_profile_value = selected_profile(profile)
+    require(tag in {selected_profile_value.approved_tag, selected_profile_value.scan_tag},
+            'Candidate output tag belongs to another namespace')
     diagnostics = {'attempts': [], 'compatibility_fallback_used': False}
     references = [binding['config_digest'], binding['platform_manifest_digest'],
                   binding['index_digest'], binding['source_tag']]
@@ -438,17 +467,25 @@ def output_paths(root, output, archive):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--archive', type=Path, help='Explicit local recovery OCI; never a default CI cache bypass')
-    parser.add_argument('--tag', default=APPROVED_TAG, choices=[APPROVED_TAG, SCAN_TAG])
+    parser.add_argument('--profile', choices=['exact28', 'maintenance'], default='exact28')
+    parser.add_argument('--tag')
     parser.add_argument('--output', type=Path)
     args = parser.parse_args(argv)
+    profile = maintenance_profile() if args.profile == 'maintenance' else None
+    selected = selected_profile(profile)
+    options = {} if profile is None else {'profile': profile}
+    args.tag = args.tag or selected.approved_tag
     output = args.output or ROOT / '.cache/eval/approved-grafana-load.json'
     try:
         inspection_path = output_paths(ROOT, output, args.archive)
-        request = authorized_request(ROOT)
+        require(args.tag in {selected.approved_tag, selected.scan_tag},
+                'Candidate output tag belongs to another namespace')
+        request = authorized_request(ROOT, **options)
         binding = request['binding']
-        transport = load_transport(ROOT, binding)
+        transport = load_transport(ROOT, binding, **options)
         if args.archive is None:
-            archive, publication = download_parts(ROOT / '.cache/eval/approved-grafana.oci.tar', binding, transport)
+            archive, publication = download_parts(ROOT / '.cache/eval/approved-grafana.oci.tar',
+                                                  binding, transport, **options)
             source = 'fixed_published_candidate_release_parts'
         else:
             archive = args.archive
@@ -457,18 +494,21 @@ def main(argv=None):
         require(not archive.is_symlink() and archive.is_file(), 'Candidate archive is absent or linked')
         verified = verify_oci_archive(archive, binding, max_archive_bytes=exact.MAX_ARCHIVE_BYTES)
         # Recheck inputs/auth/transport after downloads and full OCI verification, before Docker.
-        require(authorized_request(ROOT) == request and load_transport(ROOT, binding) == transport,
+        require(authorized_request(ROOT, **options) == request
+                and load_transport(ROOT, binding, **options) == transport,
                 'Candidate authority changed during verification')
         if args.archive is None:
-            publication = verify_publication(transport, binding)
+            publication = verify_publication(transport, binding, **options)
         load_receipt = {}
-        inspection = load_image(archive, binding, args.tag, load_receipt=load_receipt)
+        inspection = load_image(archive, binding, args.tag, load_receipt=load_receipt, **options)
         inspection_path.parent.mkdir(parents=True, exist_ok=True)
         inspection_path.write_text(json.dumps(inspection, indent=2) + '\n', encoding='utf-8')
         verified.pop('authorization_evaluated', None)
-        result = {**verified, 'passed': True, 'mode': 'new_exact28_authorized_load_only_scan_gate_still_required',
+        result = {**verified, 'passed': True,
+                  'mode': f'new_{args.profile}_authorized_load_only_scan_gate_still_required',
                   'artifact': 'grafana', 'archive': str(archive), 'tag': args.tag,
-                  'request_sha256': exact.REQUEST_SHA256, 'transport_sha256': TRANSPORT_SHA256,
+                  'request_sha256': selected.consumer.REQUEST_SHA256,
+                  'transport_sha256': selected.transport_sha256,
                   'policy_authorization_verified': True, 'old_authorization_inherited': False,
                   'archive_source': source, 'publication': publication, 'inspection': str(inspection_path),
                   'docker_load': load_receipt}
