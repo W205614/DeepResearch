@@ -1,0 +1,63 @@
+{
+  "schema": "etcd-official-debian-runtime-data-v1",
+  "verified_at": "2026-11-05T10:36:12.086140+00:00",
+  "reason": "Two fresh CI jobs returned the same unauthenticated wrong digest for the remote ADD. Vendor the already authenticated exact package bytes; retain the original checksum and installed-version gates.",
+  "failed_ci_jobs": [
+    127179686902,
+    127190196744
+  ],
+  "rejected_remote_response_sha256": "891cfae3be3e8ba306e2964836ec2a360058613289d434586ec262d97a12324e",
+  "version": "2026e-0+deb13u1",
+  "packages": {
+    "tzdata": {
+      "file": "tzdata_2026e-0+deb13u1_all.deb",
+      "version": "2026e-0+deb13u1",
+      "architecture": "all",
+      "bytes": 266488,
+      "sha256": "165fbf909c02150f62091c64f751ae84c66ff86da124a46a58614d8e174a6acd",
+      "official_url": "https://deb.debian.org/debian/pool/main/t/tzdata/tzdata_2026e-0+deb13u1_all.deb"
+    },
+    "tzdata-legacy": {
+      "file": "tzdata-legacy_2026e-0+deb13u1_all.deb",
+      "version": "2026e-0+deb13u1",
+      "architecture": "all",
+      "bytes": 185772,
+      "sha256": "bc1912d3e805b6071bcc3fbe55c171e0d9c8cf44eeebafcaa825a724577cf8de",
+      "official_url": "https://deb.debian.org/debian/pool/main/t/tzdata/tzdata-legacy_2026e-0+deb13u1_all.deb"
+    }
+  },
+  "publisher_index": {
+    "suite": "trixie-updates",
+    "official_url": "https://deb.debian.org/debian/dists/trixie-updates/InRelease",
+    "historical_signed_release": "InRelease.20261027",
+    "historical_packages_index": "Packages.20261027.xz",
+    "packages_index_sha256": "235fb859490d45c1490bc69836bd2607c9a8557b629ebc33bab1008edb6e9e6d",
+    "packages_index_bytes": 720,
+    "signature_verifier": "Debian sqv with default current cryptographic policy",
+    "valid_signatures": 2,
+    "signer_fingerprints": [
+      "04B54C3CDCA79751B16BC6B5225629DF75B188BD",
+      "B8B80B5B623EAB6AD8775C45B7C5D7D6350947F8"
+    ],
+    "archive_keyring_source": "debian:trixie-slim@sha256:38a76d01668772e381ad2826d876627c89e7133e2f8a0f5d567306798b0f2a16 /usr/share/keyrings/debian-archive-keyring.gpg",
+    "freshness_boundary": "Historical signed metadata authenticates the immutable package bytes only. Its expired Valid-Until is not reused for live APT freshness and is not bypassed. Build tooling still uses current authenticated APT indexes."
+  },
+  "upstream_source_package": "https://deb.debian.org/debian/pool/main/t/tzdata/tzdata_2026e-0+deb13u1.dsc",
+  "license": "Original Debian package copyright is retained in tzdata.copyright and inside the unmodified .deb archives; tzdata-legacy documentation is a symlink to tzdata.",
+  "transport_only_change": true,
+  "original_package_bytes_and_versions_unchanged": true,
+  "frozen_shared_inputs_unchanged": [
+    "scripts/prepare_runtime_trust.py",
+    "deployment/vendors/runtime-data/packages.lock.json"
+  ],
+  "files_sha256": {
+    "debian-archive-keyring.gpg": "506b815cbb32d9b6066b4a2aa524071e071761e7e7f68c3ac74f3061ba852017",
+    "InRelease.20261027": "1f9c70a9c308a0a9cc550e509427bbc22f805f14f12af8f65ec3cdaa09d8fdb4",
+    "Packages.20261027.xz": "235fb859490d45c1490bc69836bd2607c9a8557b629ebc33bab1008edb6e9e6d",
+    "signature-verification.txt": "cc5dfdc1b1ba2a1b20ad41f63f498c7fafbc0147a4af770678b6191324ec442d",
+    "tzdata-legacy.copyright": "cb61132bc0fc7b26ef5a82ee18b2fb644a1362f4f286ed980ff22e408471f59a",
+    "tzdata-legacy_2026e-0+deb13u1_all.deb": "bc1912d3e805b6071bcc3fbe55c171e0d9c8cf44eeebafcaa825a724577cf8de",
+    "tzdata.copyright": "cb61132bc0fc7b26ef5a82ee18b2fb644a1362f4f286ed980ff22e408471f59a",
+    "tzdata_2026e-0+deb13u1_all.deb": "165fbf909c02150f62091c64f751ae84c66ff86da124a46a58614d8e174a6acd"
+  }
+}

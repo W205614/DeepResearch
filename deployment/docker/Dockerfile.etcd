@@ -35,9 +35,13 @@ FROM debian:trixie-slim@sha256:38a76d01668772e381ad2826d876627c89e7133e2f8a0f5d5
 # stage; its Python/APT tooling never enters the runtime.
 RUN apt-get update && apt-get install -y --no-install-recommends python3
 ADD --checksum=sha256:c10585ac22c7f617a73d394eea29ba71d0356f350ae973b19043d1b017f80f54 https://security.debian.org/debian-security/pool/updates/main/c/ca-certificates/ca-certificates_20250419+deb13u1_all.deb /tmp/ca-certificates.deb
-ADD --checksum=sha256:165fbf909c02150f62091c64f751ae84c66ff86da124a46a58614d8e174a6acd https://deb.debian.org/debian/pool/main/t/tzdata/tzdata_2026e-0+deb13u1_all.deb /tmp/tzdata.deb
-ADD --checksum=sha256:bc1912d3e805b6071bcc3fbe55c171e0d9c8cf44eeebafcaa825a724577cf8de https://deb.debian.org/debian/pool/main/t/tzdata/tzdata-legacy_2026e-0+deb13u1_all.deb /tmp/tzdata-legacy.deb
-RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y --no-install-recommends /tmp/ca-certificates.deb /tmp/tzdata.deb /tmp/tzdata-legacy.deb \
+COPY deployment/vendors/etcd/runtime-data/tzdata_2026e-0+deb13u1_all.deb /tmp/tzdata.deb
+COPY deployment/vendors/etcd/runtime-data/tzdata-legacy_2026e-0+deb13u1_all.deb /tmp/tzdata-legacy.deb
+RUN printf '%s\n' \
+      '165fbf909c02150f62091c64f751ae84c66ff86da124a46a58614d8e174a6acd  /tmp/tzdata.deb' \
+      'bc1912d3e805b6071bcc3fbe55c171e0d9c8cf44eeebafcaa825a724577cf8de  /tmp/tzdata-legacy.deb' \
+      | sha256sum -c - \
+    && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y --no-install-recommends /tmp/ca-certificates.deb /tmp/tzdata.deb /tmp/tzdata-legacy.deb \
     && update-ca-certificates --fresh \
     && mkdir -p /tmp/authenticated-package-inputs \
     && cp /var/lib/apt/lists/*InRelease /tmp/authenticated-package-inputs/ \

@@ -97,3 +97,5 @@ Trivy 的 Debian 检测器对没有发行版修复版本的公告直接报告受
 Grafana 的精确制品门禁和 agent 的原生库门禁在提交 `c61d466` 的远端 Security 中通过。该次扫描还发现前端镜像的 Expat 2.9.0 和 Milvus 镜像的 APT 2.4.14 受影响。前端运行镜像要求 `libexpat >= 2.10.0-r0`，Milvus 构建和运行镜像使用 Ubuntu Jammy 修复包 `apt`、`libapt-pkg6.0` 2.4.15ubuntu0.1。两个本地修复候选的完整扫描均无 HIGH、CRITICAL 或 secret。Milvus 本地候选复用已核对的同源二进制并更新 APT 包，标准源码构建由 CI 执行。
 
 同次企业栈构建收到的 etcd 时区包与固定 SHA256 不符。独立核验 Debian 签名索引和官方包字节后，原校验值正确。本地重新执行原配方的信任材料和运行时包装阶段均通过，保留签名与字节校验。
+
+在第二次 CI 重现相同摘要错误后，etcd 构建改为复制两份经签名索引核验的 Debian 安装包，安装前仍检查原 SHA256。重建后核对整个运行时目录的 1853 个条目，文件内容、类型、权限和链接目标一致。安装包、签名索引和来源记录位于 [etcd 构建材料](../deployment/vendors/etcd/runtime-data/)。
