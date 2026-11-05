@@ -1,0 +1,1044 @@
+{
+  "schema": "grafana-maintenance-core-independent-technical-review-v1",
+  "recorded_at": "2026-11-05T09:24:35.781775+00:00",
+  "actor": "/root/grafana_core_review",
+  "actor_kind": "automated_independent_agent",
+  "review_kind": "technical_applicability_for_new_exact_subject",
+  "human_risk_acceptance": false,
+  "artifact_approved": false,
+  "old_authorization_inherited": false,
+  "facts_passed": true,
+  "subject": {
+    "artifact": "grafana",
+    "root_layout": "nested_index",
+    "archive_bytes": 776297984,
+    "archive_sha256": "408744f9d8d357a9b7dfd97ac802efbbdee662cb1177b80d8020bdc24c019e25",
+    "index_digest": "sha256:5a14435f088e735cbaba6e6375c5ea03e34424ea3934b55e098a2fb660db452a",
+    "platform_manifest_digest": "sha256:0f354ce9c25e92e811c3f09382c0d317bc7193bee58b97e4b1170049f2b007aa",
+    "config_digest": "sha256:bde24c79bbb09619d33a912b8487e573e3ddbbdadf4f923afe3b4f0988a439fe",
+    "diff_ids": [
+      "sha256:75c137aedfb2760f88629236cb7b797630aed0c3d91d626d1d1bb694878fc2ba",
+      "sha256:3b65ad5d0600ae408b194a3e00c3ce5f18e2f3775b6efe2578fbded330a241a3",
+      "sha256:afbd9e1d092a95dec6977836724da893497654babce2e3f73ea99afd6476f2ed",
+      "sha256:f50fbeb907e1d2ba1a7a2260aa2cbe90973b8473e3ef78d60fbffdf109d14386",
+      "sha256:add892858f9122df35d1762b499f17c25f23f5875892df265a15d3858904ad74",
+      "sha256:20418aa06f25a38cebd5a9906c2db0f8d3e3e1c0924f1be4ee287ff75389522c",
+      "sha256:71c22afd8a267f1aa3262b8e5c821f3ca221071dade6b45dbb9cc2cb900156ee",
+      "sha256:840eb78f709d0ce8bc53370f86f5266aac9d721d49896a3809060ef779ff7eaf",
+      "sha256:f95a81142d494a928d5ccf90ef6c19c6c3f8da7dc246a53d368f1034c2fb6fb8",
+      "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+      "sha256:7e722b084590d46a61b9e42d1a0bce61657c39ab1e04a9f522e3e97fb15506f8",
+      "sha256:abb6d46b4018d7d5f49f19782b0faeda15317f2ed57355b6489c87d57b770e10",
+      "sha256:d732edb6be89e6df45f45cfc5549199b465e7d5d59eab7cd6958b6a3589c477c",
+      "sha256:cbd87404141e0e391d311d08e8c22aeb243fef50a2c4199911f987c278f39264",
+      "sha256:ab177e090e3b33c43006a0f29604fbfc2084e1bc3a66410ca10d9d161cf12383",
+      "sha256:c265a495c474abef280e32994f6af74be5625d4587587cf7627247c3b75dfab3",
+      "sha256:cce18224fcc067daf12978050c22b421210aae08860551ed032b59e4849eb8e2"
+    ],
+    "binary_sha256": {
+      "usr/share/grafana/bin/grafana": "71a29721333128bb3c4c0c32daf68fc95073235fe44a84d0b935c6196705948c",
+      "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64": "9506612c4e2b460e524ce10977214e197feba998fff597ff90f4ce1d9ca91c35",
+      "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64": "2f844f15400d3f96ec9a3351df3fc76f46ae9abe7a49797632bdb85666156fc7",
+      "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64": "e754b55d6bb4bdc60ba9feddfe675b4d6011fb6eb1427709838a542418445c4c",
+      "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64": "ca2705f001f1c13540aef61894759e9b837f3a4b66fc915a5098a406b1886e00",
+      "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64": "7a70b6271a922e7307034cf0046aa5b95799ee75052452c03e03b6f17557d23a",
+      "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64": "77d9bc857651d41028da2694a50dea3f41643d71466b1f9cf6753931c115bd36",
+      "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64": "280b114823ff994daf2e2714fade6703e14fc9860a050c998bbcc68403b5c0e3",
+      "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64": "afcc0824b8e3b3258edfa4c98951a2113fa896c777cd442df6550117d5f10d11",
+      "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64": "a7b652cd0fd297c37d2a2e306f7cbdf67688cb9a50b8a3fd7d90948d1c49b8a7",
+      "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64": "3fb8397ce2284b9e0851e19092ba5748ed92bfbc4caadeec66dab1d0692267a1",
+      "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64": "8e6c55fc90d0e94657e663b386cd6173c811133daef447d08b6bdddea3f6cc9d",
+      "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": "ee8eaf152c8ee65fba362a42643b79a80125297c4940f6382cd11d36b0035ebc",
+      "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": "18a962eaa7f4220b6a7c40cf282f267674dd64efe73dd4fe6b45cac62980abcd"
+    },
+    "os": "linux",
+    "architecture": "amd64"
+  },
+  "reviewed_rows": [
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2018-15727",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "CRITICAL",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "71a29721333128bb3c4c0c32daf68fc95073235fe44a84d0b935c6196705948c",
+      "technical_conclusion": "PSEUDO_VERSION_PRODUCT_RANGE_MISATTRIBUTION",
+      "actual_product_version": "13.2.5",
+      "actual_source_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+      "basis": "CNA description limits affected products to Grafana2.x/3.x/4.x before4.6.4 and5.x before5.2.3; n/a structured versions alone are not range evidence. Actual13.2.5 is outside those product ranges.",
+      "cna_affected": [
+        {
+          "product": "n/a",
+          "vendor": "n/a",
+          "versions": [
+            {
+              "status": "affected",
+              "version": "n/a"
+            }
+          ]
+        }
+      ],
+      "cna_product_range_descriptions": [
+        "Grafana 2.x, 3.x, and 4.x before 4.6.4 and 5.x before 5.2.3 allows authentication bypass because an attacker can generate a valid \"remember me\" cookie knowing only a username of an LDAP or OAuth user."
+      ],
+      "evidence": "deployment/security/grafana-maintenance-evidence/core-CVE-2018-15727.json"
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2023-3128",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "CRITICAL",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "71a29721333128bb3c4c0c32daf68fc95073235fe44a84d0b935c6196705948c",
+      "technical_conclusion": "PSEUDO_VERSION_PRODUCT_RANGE_MISATTRIBUTION",
+      "actual_product_version": "13.2.5",
+      "actual_source_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+      "basis": "CNA explicitly affected branches6.7-8.5.27,9.2.0-9.2.20,9.3.0-9.3.16,9.4.0-9.4.13 and9.5.0-9.5.4; default unaffected.13.2.5 is outside all affected intervals.",
+      "cna_affected": [
+        {
+          "defaultStatus": "unaffected",
+          "product": "Grafana",
+          "vendor": "Grafana",
+          "versions": [
+            {
+              "lessThan": "9.5.4",
+              "status": "affected",
+              "version": "9.5.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "9.4.13",
+              "status": "affected",
+              "version": "9.4.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "9.3.16",
+              "status": "affected",
+              "version": "9.3.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "9.2.20",
+              "status": "affected",
+              "version": "9.2.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "8.5.27",
+              "status": "affected",
+              "version": "6.7.0",
+              "versionType": "semver"
+            }
+          ]
+        },
+        {
+          "defaultStatus": "unaffected",
+          "product": "Grafana Enterprise",
+          "vendor": "Grafana",
+          "versions": [
+            {
+              "lessThan": "9.5.4",
+              "status": "affected",
+              "version": "9.5.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "9.4.13",
+              "status": "affected",
+              "version": "9.4.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "9.3.16",
+              "status": "affected",
+              "version": "9.3.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "9.2.20",
+              "status": "affected",
+              "version": "9.2.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "8.5.27",
+              "status": "affected",
+              "version": "6.7.0",
+              "versionType": "semver"
+            }
+          ]
+        }
+      ],
+      "cna_product_range_descriptions": [
+        "Grafana is validating Azure AD accounts based on the email claim. \n\nOn Azure AD, the profile email field is not unique and can be easily modified. \n\nThis leads to account takeover and authentication bypass when Azure AD OAuth is configured with a multi-tenant app."
+      ],
+      "evidence": "deployment/security/grafana-maintenance-evidence/core-CVE-2023-3128.json"
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2020-12458",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "HIGH",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "71a29721333128bb3c4c0c32daf68fc95073235fe44a84d0b935c6196705948c",
+      "technical_conclusion": "PSEUDO_VERSION_PRODUCT_RANGE_MISATTRIBUTION",
+      "actual_product_version": "13.2.5",
+      "actual_source_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+      "basis": "CNA description limits the flaw to Grafana through6.7.3; n/a structured versions alone are not range evidence. Actual13.2.5 is outside that range; this does not assert all possible custom data-directory permissions are safe.",
+      "cna_affected": [
+        {
+          "product": "n/a",
+          "vendor": "n/a",
+          "versions": [
+            {
+              "status": "affected",
+              "version": "n/a"
+            }
+          ]
+        }
+      ],
+      "cna_product_range_descriptions": [
+        "An information-disclosure flaw was found in Grafana through 6.7.3. The database directory /var/lib/grafana and database file /var/lib/grafana/grafana.db are world readable. This can result in exposure of sensitive information (e.g., cleartext or encrypted datasource passwords)."
+      ],
+      "evidence": "deployment/security/grafana-maintenance-evidence/core-CVE-2020-12458.json"
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2021-39226",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "HIGH",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "71a29721333128bb3c4c0c32daf68fc95073235fe44a84d0b935c6196705948c",
+      "technical_conclusion": "PSEUDO_VERSION_PRODUCT_RANGE_MISATTRIBUTION",
+      "actual_product_version": "13.2.5",
+      "actual_source_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+      "basis": "CNA/Grafana lists7.x before7.5.11 and8.0.0 through before8.1.6.13.2.5 is outside both product intervals.",
+      "cna_affected": [
+        {
+          "product": "grafana",
+          "vendor": "grafana",
+          "versions": [
+            {
+              "status": "affected",
+              "version": ">= 8.0.0, < 8.1.6"
+            },
+            {
+              "status": "affected",
+              "version": "< 7.5.11"
+            }
+          ]
+        }
+      ],
+      "cna_product_range_descriptions": [
+        "Grafana is an open source data visualization platform. In affected versions unauthenticated and authenticated users are able to view the snapshot with the lowest database key by accessing the literal paths: /dashboard/snapshot/:key, or /api/snapshots/:key. If the snapshot \"public_mode\" configuration setting is set to true (vs default of false), unauthenticated users are able to delete the snapshot with the lowest database key by accessing the literal path: /api/snapshots-delete/:deleteKey. Regardless of the snapshot \"public_mode\" setting, authenticated users are able to delete the snapshot with the lowest database key by accessing the literal paths: /api/snapshots/:key, or /api/snapshots-delete/:deleteKey. The combination of deletion and viewing enables a complete walk through all snapshot data while resulting in complete snapshot data loss. This issue has been resolved in versions 8.1.6 and 7.5.11. If for some reason you cannot upgrade you can use a reverse proxy or similar to block access to the literal paths: /api/snapshots/:key, /api/snapshots-delete/:deleteKey, /dashboard/snapshot/:key, and /api/snapshots/:key. They have no normal function and can be disabled without side effects."
+      ],
+      "evidence": "deployment/security/grafana-maintenance-evidence/core-CVE-2021-39226.json"
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2022-35957",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "HIGH",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "71a29721333128bb3c4c0c32daf68fc95073235fe44a84d0b935c6196705948c",
+      "technical_conclusion": "PSEUDO_VERSION_PRODUCT_RANGE_MISATTRIBUTION",
+      "actual_product_version": "13.2.5",
+      "actual_source_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+      "basis": "CNA/Grafana lists affected releases before8.5.13 and9.0.0 through before9.1.6; description confirms fixed9.1.6/8.5.13.13.2.5 is outside these product versions.",
+      "cna_affected": [
+        {
+          "vendor": "grafana",
+          "product": "grafana",
+          "versions": [
+            {
+              "version": "> 9.0.0, < 9.1.6",
+              "status": "affected"
+            },
+            {
+              "version": "< 8.5.13",
+              "status": "affected"
+            }
+          ]
+        }
+      ],
+      "cna_product_range_descriptions": [
+        "Grafana is an open-source platform for monitoring and observability. Versions prior to 9.1.6 and 8.5.13 are vulnerable to an escalation from admin to server admin when auth proxy is used, allowing an admin to take over the server admin account and gain full control of the grafana instance. All installations should be upgraded as soon as possible. As a workaround deactivate auth proxy following the instructions at: https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/auth-proxy/"
+      ],
+      "evidence": "deployment/security/grafana-maintenance-evidence/core-CVE-2022-35957.json"
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2022-39307",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "HIGH",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "71a29721333128bb3c4c0c32daf68fc95073235fe44a84d0b935c6196705948c",
+      "technical_conclusion": "PSEUDO_VERSION_PRODUCT_RANGE_MISATTRIBUTION",
+      "actual_product_version": "13.2.5",
+      "actual_source_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+      "basis": "CNA/Grafana fixes8.5.15 and9.2.4; affected>=9.0.0-beta1,<9.2.4 or<8.5.15.13.2.5 is outside these product versions.",
+      "cna_affected": [
+        {
+          "vendor": "grafana",
+          "product": "grafana",
+          "versions": [
+            {
+              "version": ">= v9.0.0-beta1, < 9.2.4",
+              "status": "affected"
+            },
+            {
+              "version": "< 8.5.15",
+              "status": "affected"
+            }
+          ]
+        }
+      ],
+      "cna_product_range_descriptions": [
+        "Grafana is an open-source platform for monitoring and observability. When using the forget password on the login page, a POST request is made to the `/api/user/password/sent-reset-email` URL. When the username or email does not exist, a JSON response contains a “user not found” message. This leaks information to unauthenticated users and introduces a security risk. This issue has been patched in 9.2.4 and backported to 8.5.15. There are no known workarounds."
+      ],
+      "evidence": "deployment/security/grafana-maintenance-evidence/core-CVE-2022-39307.json"
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2023-2801",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "HIGH",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "71a29721333128bb3c4c0c32daf68fc95073235fe44a84d0b935c6196705948c",
+      "technical_conclusion": "PSEUDO_VERSION_PRODUCT_RANGE_MISATTRIBUTION",
+      "actual_product_version": "13.2.5",
+      "actual_source_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+      "basis": "CNA/Grafana affects9.4.0..<9.4.12 and9.5.0..<9.5.3.13.2.5 is outside both intervals.",
+      "cna_affected": [
+        {
+          "product": "Grafana",
+          "vendor": "Grafana",
+          "versions": [
+            {
+              "lessThan": "9.4.12",
+              "status": "affected",
+              "version": "9.4.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "9.5.3",
+              "status": "affected",
+              "version": "9.5.0",
+              "versionType": "semver"
+            }
+          ]
+        },
+        {
+          "product": "Grafana Enterprise",
+          "vendor": "Grafana",
+          "versions": [
+            {
+              "lessThan": "9.4.12",
+              "status": "affected",
+              "version": "9.4.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "9.5.3",
+              "status": "affected",
+              "version": "9.5.0",
+              "versionType": "semver"
+            }
+          ]
+        }
+      ],
+      "cna_product_range_descriptions": [
+        "Grafana is an open-source platform for monitoring and observability. \n\nUsing public dashboards users can query multiple distinct data sources using mixed queries. However such query has a possibility of crashing a Grafana instance.\n\nThe only feature that uses mixed queries at the moment is public dashboards, but it's also possible to cause this by calling the query API directly.\n\nThis might enable malicious users to crash Grafana instances through that endpoint.\n\nUsers may upgrade to version 9.4.12 and 9.5.3 to receive a fix."
+      ],
+      "evidence": "deployment/security/grafana-maintenance-evidence/core-CVE-2023-2801.json"
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2025-6023",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "HIGH",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "71a29721333128bb3c4c0c32daf68fc95073235fe44a84d0b935c6196705948c",
+      "technical_conclusion": "PSEUDO_VERSION_PRODUCT_RANGE_MISATTRIBUTION",
+      "actual_product_version": "13.2.5",
+      "actual_source_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+      "basis": "CNA/Grafana default unaffected; affected11.3.x through11.6.x and12.0.x before their listed security fixes.13.2.5 is outside every affected product branch.",
+      "cna_affected": [
+        {
+          "defaultStatus": "unaffected",
+          "product": "Grafana",
+          "vendor": "Grafana",
+          "versions": [
+            {
+              "lessThan": "12.0.2+security-01",
+              "status": "affected",
+              "version": "12.0.x",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "11.6.3+security-01",
+              "status": "affected",
+              "version": "11.6.x",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "11.5.6+security-01",
+              "status": "affected",
+              "version": "11.5.x",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "11.4.6+security-01",
+              "status": "affected",
+              "version": "11.4.x",
+              "versionType": "semver"
+            },
+            {
+              "lessThan": "11.3.8+security-01",
+              "status": "affected",
+              "version": "11.3.x",
+              "versionType": "semver"
+            }
+          ]
+        }
+      ],
+      "cna_product_range_descriptions": [
+        "An open redirect vulnerability has been identified in Grafana OSS that can be exploited to achieve XSS attacks. The vulnerability was introduced in Grafana v11.5.0.\n\nThe open redirect can be chained with path traversal vulnerabilities to achieve XSS.\n\nFixed in versions 12.0.2+security-01, 11.6.3+security-01, 11.5.6+security-01, 11.4.6+security-01 and 11.3.8+security-01"
+      ],
+      "evidence": "deployment/security/grafana-maintenance-evidence/core-CVE-2025-6023.json"
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-42127",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "HIGH",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "71a29721333128bb3c4c0c32daf68fc95073235fe44a84d0b935c6196705948c",
+      "technical_conclusion": "PSEUDO_VERSION_PRODUCT_RANGE_MISATTRIBUTION",
+      "actual_product_version": "13.2.5",
+      "actual_source_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+      "basis": "CNA/Grafana default unaffected, with affected11.6<=11.6.14,12.2<=12.2.8,12.3<=12.3.6,12.4<=12.4.3 and13.0<=13.0.1 intervals.13.2.5 is outside all.",
+      "cna_affected": [
+        {
+          "vendor": "Grafana",
+          "product": "Grafana Enterprise",
+          "defaultStatus": "unaffected",
+          "versions": [
+            {
+              "version": "11.6.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "11.6.14"
+            },
+            {
+              "version": "12.2.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "12.2.8"
+            },
+            {
+              "version": "12.3.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "12.3.6"
+            },
+            {
+              "version": "12.4.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "12.4.3"
+            },
+            {
+              "version": "13.0.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "13.0.1"
+            }
+          ]
+        },
+        {
+          "vendor": "Grafana",
+          "product": "Grafana OSS",
+          "defaultStatus": "unaffected",
+          "versions": [
+            {
+              "version": "11.6.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "11.6.14"
+            },
+            {
+              "version": "12.2.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "12.2.8"
+            },
+            {
+              "version": "12.3.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "12.3.6"
+            },
+            {
+              "version": "12.4.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "12.4.3"
+            },
+            {
+              "version": "13.0.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "13.0.1"
+            }
+          ]
+        }
+      ],
+      "cna_product_range_descriptions": [
+        "The public dashboard query endpoint does not limit request body size before processing, allowing unauthenticated attackers to trigger excessive memory allocation by sending arbitrarily large JSON payloads. This can lead to denial of service through memory exhaustion. No valid dashboard access token or authentication is required to exploit this vulnerability."
+      ],
+      "evidence": "deployment/security/grafana-maintenance-evidence/core-CVE-2026-42127.json"
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-42129",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "HIGH",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "71a29721333128bb3c4c0c32daf68fc95073235fe44a84d0b935c6196705948c",
+      "technical_conclusion": "PSEUDO_VERSION_PRODUCT_RANGE_MISATTRIBUTION",
+      "actual_product_version": "13.2.5",
+      "actual_source_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+      "basis": "CNA/Grafana OSS default unaffected, with affected11.6<=11.6.14,12.2<=12.2.8,12.3<=12.3.6,12.4<=12.4.3 and13.0<=13.0.1 intervals.13.2.5 is outside all.",
+      "cna_affected": [
+        {
+          "vendor": "Grafana",
+          "product": "Grafana OSS",
+          "defaultStatus": "unaffected",
+          "versions": [
+            {
+              "version": "11.6.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "11.6.14"
+            },
+            {
+              "version": "12.2.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "12.2.8"
+            },
+            {
+              "version": "12.3.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "12.3.6"
+            },
+            {
+              "version": "12.4.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "12.4.3"
+            },
+            {
+              "version": "13.0.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "13.0.1"
+            }
+          ]
+        }
+      ],
+      "cna_product_range_descriptions": [
+        "A user with Viewer permissions can use a path traversal in the Loki data source plugin to reach administrative Loki endpoints and read sensitive backend configuration and internal service information."
+      ],
+      "evidence": "deployment/security/grafana-maintenance-evidence/core-CVE-2026-42129.json"
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-9029",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "HIGH",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "71a29721333128bb3c4c0c32daf68fc95073235fe44a84d0b935c6196705948c",
+      "technical_conclusion": "PSEUDO_VERSION_PRODUCT_RANGE_MISATTRIBUTION",
+      "actual_product_version": "13.2.5",
+      "actual_source_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+      "basis": "CNA/Grafana OSS default unaffected; affected12.4.0<=12.4.3 and13.0.0<=13.0.1.13.2.5 is outside both.",
+      "cna_affected": [
+        {
+          "vendor": "Grafana",
+          "product": "Grafana OSS",
+          "defaultStatus": "unaffected",
+          "versions": [
+            {
+              "version": "12.4.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "12.4.3"
+            },
+            {
+              "version": "13.0.0",
+              "status": "affected",
+              "versionType": "semver",
+              "lessThanOrEqual": "13.0.1"
+            }
+          ]
+        }
+      ],
+      "cna_product_range_descriptions": [
+        "A user with Editor permissions can place a malicious script in the attribution field of a Geomap panel's XYZ tile layer via a template variable. The script then executes in the browser of any user who views the affected dashboard (stored cross-site scripting)."
+      ],
+      "evidence": "deployment/security/grafana-maintenance-evidence/core-CVE-2026-9029.json"
+    },
+    {
+      "scanner": "Trivy",
+      "id": "GO-2026-5932",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "71a29721333128bb3c4c0c32daf68fc95073235fe44a84d0b935c6196705948c",
+      "technical_conclusion": "ADVISORY_LISTED_UNSAFE_PACKAGES_NOT_COMPILED",
+      "basis": "Fresh official Go advisory lists the same seven unsafe old OpenPGP packages in both affected modules. None is in the complete error-free production dependency graph; independent openpgp module absent in actual native dependencies. Other x/crypto packages stay fully scanned. Maintained ProtonMail implementation is present.",
+      "excluded_exact_old_packages": [
+        "golang.org/x/crypto/openpgp",
+        "golang.org/x/crypto/openpgp/armor",
+        "golang.org/x/crypto/openpgp/clearsign",
+        "golang.org/x/crypto/openpgp/elgamal",
+        "golang.org/x/crypto/openpgp/errors",
+        "golang.org/x/crypto/openpgp/packet",
+        "golang.org/x/crypto/openpgp/s2k"
+      ],
+      "evidence": "deployment/security/grafana-maintenance-evidence/core-GO-2026-5932.json"
+    },
+    {
+      "scanner": "Grype",
+      "id": "GO-2026-5932",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "71a29721333128bb3c4c0c32daf68fc95073235fe44a84d0b935c6196705948c",
+      "technical_conclusion": "ADVISORY_LISTED_UNSAFE_PACKAGES_NOT_COMPILED",
+      "basis": "Fresh official Go advisory lists the same seven unsafe old OpenPGP packages in both affected modules. None is in the complete error-free production dependency graph; independent openpgp module absent in actual native dependencies. Other x/crypto packages stay fully scanned. Maintained ProtonMail implementation is present.",
+      "excluded_exact_old_packages": [
+        "golang.org/x/crypto/openpgp",
+        "golang.org/x/crypto/openpgp/armor",
+        "golang.org/x/crypto/openpgp/clearsign",
+        "golang.org/x/crypto/openpgp/elgamal",
+        "golang.org/x/crypto/openpgp/errors",
+        "golang.org/x/crypto/openpgp/packet",
+        "golang.org/x/crypto/openpgp/s2k"
+      ],
+      "evidence": "deployment/security/grafana-maintenance-evidence/core-GO-2026-5932.json"
+    }
+  ],
+  "reviewed_trivy_rows": 12,
+  "reviewed_grype_rows": 1,
+  "canonical_target_advisory_scope": 12,
+  "product_upgrade_cves": [
+    {
+      "id": "CVE-2026-103506",
+      "technical_conclusion": "FIXED_IN_ACTUAL_UPSTREAM_GRAFANA_13.2.5",
+      "actual_product_version": "13.2.5",
+      "upstream_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+      "cna_affected": [
+        {
+          "defaultStatus": "unaffected",
+          "product": "Grafana Enterprise",
+          "vendor": "Grafana",
+          "versions": [
+            {
+              "lessThanOrEqual": "13.2.4",
+              "status": "affected",
+              "version": "13.2.0",
+              "versionType": "semver"
+            }
+          ]
+        },
+        {
+          "defaultStatus": "unaffected",
+          "product": "Grafana OSS",
+          "vendor": "Grafana",
+          "versions": [
+            {
+              "lessThanOrEqual": "13.2.4",
+              "status": "affected",
+              "version": "13.2.0",
+              "versionType": "semver"
+            }
+          ]
+        }
+      ],
+      "official_advisory": "https://grafana.com/security/security-advisories/cve-2026-103506/",
+      "evidence": "deployment/security/grafana-maintenance-evidence/core-CVE-2026-103506.json",
+      "not_in_both_unmodified_complete_raw_reports": true,
+      "basis": "Official product advisory fixes13.2.5; freshly read CNA excludes actual13.2.5. Actual runtime CLI, ELF native VCS revision, exact upstream tag object and package.json, pinned build recipe and immutable OCI all agree. This is not inferred from scanner absence or a disabled feature."
+    },
+    {
+      "id": "CVE-2026-100105",
+      "technical_conclusion": "FIXED_IN_ACTUAL_UPSTREAM_GRAFANA_13.2.5",
+      "actual_product_version": "13.2.5",
+      "upstream_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+      "cna_affected": [
+        {
+          "defaultStatus": "unaffected",
+          "product": "Grafana Enterprise",
+          "vendor": "Grafana",
+          "versions": [
+            {
+              "lessThanOrEqual": "12.4.13",
+              "status": "affected",
+              "version": "12.4.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThanOrEqual": "13.0.11",
+              "status": "affected",
+              "version": "13.0.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThanOrEqual": "13.1.8",
+              "status": "affected",
+              "version": "13.1.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThanOrEqual": "13.2.4",
+              "status": "affected",
+              "version": "13.2.0",
+              "versionType": "semver"
+            }
+          ]
+        },
+        {
+          "defaultStatus": "unaffected",
+          "product": "Grafana OSS",
+          "vendor": "Grafana",
+          "versions": [
+            {
+              "lessThanOrEqual": "12.4.13",
+              "status": "affected",
+              "version": "12.4.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThanOrEqual": "13.0.11",
+              "status": "affected",
+              "version": "13.0.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThanOrEqual": "13.1.8",
+              "status": "affected",
+              "version": "13.1.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThanOrEqual": "13.2.4",
+              "status": "affected",
+              "version": "13.2.0",
+              "versionType": "semver"
+            }
+          ]
+        }
+      ],
+      "official_advisory": "https://grafana.com/security/security-advisories/cve-2026-100105/",
+      "evidence": "deployment/security/grafana-maintenance-evidence/core-CVE-2026-100105.json",
+      "not_in_both_unmodified_complete_raw_reports": true,
+      "basis": "Official product advisory fixes13.2.5; freshly read CNA excludes actual13.2.5. Actual runtime CLI, ELF native VCS revision, exact upstream tag object and package.json, pinned build recipe and immutable OCI all agree. This is not inferred from scanner absence or a disabled feature."
+    },
+    {
+      "id": "CVE-2026-88967",
+      "technical_conclusion": "FIXED_IN_ACTUAL_UPSTREAM_GRAFANA_13.2.5",
+      "actual_product_version": "13.2.5",
+      "upstream_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+      "cna_affected": [
+        {
+          "defaultStatus": "unaffected",
+          "product": "Grafana Enterprise",
+          "vendor": "Grafana",
+          "versions": [
+            {
+              "lessThanOrEqual": "11.6.16",
+              "status": "affected",
+              "version": "10.0.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThanOrEqual": "12.2.10",
+              "status": "affected",
+              "version": "12.0.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThanOrEqual": "12.3.11",
+              "status": "affected",
+              "version": "12.3.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThanOrEqual": "12.4.13",
+              "status": "affected",
+              "version": "12.4.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThanOrEqual": "13.0.11",
+              "status": "affected",
+              "version": "13.0.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThanOrEqual": "13.1.8",
+              "status": "affected",
+              "version": "13.1.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThanOrEqual": "13.2.4",
+              "status": "affected",
+              "version": "13.2.0",
+              "versionType": "semver"
+            }
+          ]
+        },
+        {
+          "defaultStatus": "unaffected",
+          "product": "Grafana OSS",
+          "vendor": "Grafana",
+          "versions": [
+            {
+              "lessThanOrEqual": "11.6.16",
+              "status": "affected",
+              "version": "10.0.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThanOrEqual": "12.2.10",
+              "status": "affected",
+              "version": "12.0.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThanOrEqual": "12.3.11",
+              "status": "affected",
+              "version": "12.3.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThanOrEqual": "12.4.13",
+              "status": "affected",
+              "version": "12.4.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThanOrEqual": "13.0.11",
+              "status": "affected",
+              "version": "13.0.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThanOrEqual": "13.1.8",
+              "status": "affected",
+              "version": "13.1.0",
+              "versionType": "semver"
+            },
+            {
+              "lessThanOrEqual": "13.2.4",
+              "status": "affected",
+              "version": "13.2.0",
+              "versionType": "semver"
+            }
+          ]
+        }
+      ],
+      "official_advisory": "https://grafana.com/security/security-advisories/cve-2026-88967/",
+      "evidence": "deployment/security/grafana-maintenance-evidence/core-CVE-2026-88967.json",
+      "not_in_both_unmodified_complete_raw_reports": true,
+      "basis": "Official product advisory fixes13.2.5; freshly read CNA excludes actual13.2.5. Actual runtime CLI, ELF native VCS revision, exact upstream tag object and package.json, pinned build recipe and immutable OCI all agree. This is not inferred from scanner absence or a disabled feature."
+    }
+  ],
+  "source_selection_retirement": {
+    "id": "CVE-2026-116587",
+    "target": "deployment/vendors/grafana/main/go.mod",
+    "package": "github.com/go-jose/go-jose/v4",
+    "version": "v4.1.4",
+    "severity": "HIGH",
+    "decision": "NOT_SELECTED_BY_EXACT_MAINTENANCE_PRODUCTION_BUILD",
+    "conditional_only": true,
+    "formal_selection_or_authorization_granted": false,
+    "actual_native_dependency": {
+      "Path": "github.com/go-jose/go-jose/v4",
+      "Version": "v4.1.6",
+      "Sum": "h1:sNRkftxFJxwsILiQukqp5z83QBSmntVwmgRY7AqBDO4="
+    },
+    "actual_core_elf_sha256": "71a29721333128bb3c4c0c32daf68fc95073235fe44a84d0b935c6196705948c",
+    "actual_production_go_mod": "deployment/security/grafana-maintenance-evidence/core-actual-go.mod",
+    "actual_production_go_mod_sha256": "c6c4ca9cf7ce2e149fd57ff7bb3561c4b6032b981e704e25957609377601ffe2",
+    "superseding_source": "deployment/vendors/grafana-security/main/go.mod",
+    "superseding_source_sha256": "c6c4ca9cf7ce2e149fd57ff7bb3561c4b6032b981e704e25957609377601ffe2",
+    "old_source_sha256": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda",
+    "evidence": "deployment/security/grafana-maintenance-evidence/core-CVE-2026-116587.json",
+    "basis": "Dockerfile first copies old main then immediately overwrites go.mod/go.sum with existing fixed security/main before readonly dependency closure/build. Actual image go.mod matches that fixed source exactly. Independent native dependencies and full production graph select4.1.6 with the same h1 sum. Official CVE scope is<4.1.6. Retirement remains conditional on formal selection of this exact newly authorized artifact; any new source/image/selector/finding must be rechecked."
+  },
+  "full_graph": {
+    "package_count": 4199,
+    "native_dependency_count": 521,
+    "graph_effective_dependencies_equal_native": true,
+    "missing_imports": [],
+    "graph_errors": 0,
+    "old_unsafe_openpgp_packages": [],
+    "advisory_imports": [
+      "golang.org/x/crypto/openpgp",
+      "golang.org/x/crypto/openpgp/armor",
+      "golang.org/x/crypto/openpgp/clearsign",
+      "golang.org/x/crypto/openpgp/elgamal",
+      "golang.org/x/crypto/openpgp/errors",
+      "golang.org/x/crypto/openpgp/packet",
+      "golang.org/x/crypto/openpgp/s2k"
+    ],
+    "maintained_protonmail_packages": [
+      "github.com/ProtonMail/go-crypto/openpgp",
+      "github.com/ProtonMail/go-crypto/openpgp/aes/keywrap",
+      "github.com/ProtonMail/go-crypto/openpgp/armor",
+      "github.com/ProtonMail/go-crypto/openpgp/clearsign",
+      "github.com/ProtonMail/go-crypto/openpgp/ecdh",
+      "github.com/ProtonMail/go-crypto/openpgp/ecdsa",
+      "github.com/ProtonMail/go-crypto/openpgp/ed25519",
+      "github.com/ProtonMail/go-crypto/openpgp/ed448",
+      "github.com/ProtonMail/go-crypto/openpgp/eddsa",
+      "github.com/ProtonMail/go-crypto/openpgp/elgamal",
+      "github.com/ProtonMail/go-crypto/openpgp/errors",
+      "github.com/ProtonMail/go-crypto/openpgp/internal/algorithm",
+      "github.com/ProtonMail/go-crypto/openpgp/internal/ecc",
+      "github.com/ProtonMail/go-crypto/openpgp/internal/encoding",
+      "github.com/ProtonMail/go-crypto/openpgp/packet",
+      "github.com/ProtonMail/go-crypto/openpgp/s2k",
+      "github.com/ProtonMail/go-crypto/openpgp/x25519",
+      "github.com/ProtonMail/go-crypto/openpgp/x448"
+    ],
+    "raw_sha256": "917b8a03cc53a221fed3b65ca8022847bb61f4b1604e671c3b6d09921635c6f9",
+    "raw_bytes": 80582494,
+    "compressed_sha256": "70696c1fd60a05efee4a733bfb4b595799d7dff60957e96d14710e29d4e9eb72",
+    "complete_graph_image_path": "/usr/share/deepresearch/grafana-maintenance/graphs/main.json.gz"
+  },
+  "local_source_module_identity": {
+    "record": "deployment/security/grafana-maintenance-evidence/core-local-source-identity.json",
+    "count": 27,
+    "missing_version_scanner_packages_exactly_match": true,
+    "source_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6"
+  },
+  "actual_image_inspected": true,
+  "actual_ELF_bytes_read_during_this_review": true,
+  "independent_OCI_integrity": "deployment/security/grafana-maintenance-evidence/core-independent-oci-integrity.json",
+  "runtime_cli": "grafana version 13.2.5",
+  "review_container_retained_stopped": "dr-grafana-core-independent-review-20261105",
+  "raw_reports_modified": false,
+  "raw_medium_low_not_dispositioned": true,
+  "input_files_sha256": {
+    "deployment/security/grafana-maintenance-evidence/core-actual-actual-native-buildinfo.json": "cadba9d3f306b8fb36d7a9be1fdc3b236640f12ae66a3f5801ab9fe25fde5012",
+    "deployment/security/grafana-maintenance-evidence/core-actual-go.mod": "c6c4ca9cf7ce2e149fd57ff7bb3561c4b6032b981e704e25957609377601ffe2",
+    "deployment/security/grafana-maintenance-evidence/core-actual-go.sum": "1009eb2de092e89326907449451ba9ade97b38eb6f393d443f1cc14736d9ab26",
+    "deployment/security/grafana-maintenance-evidence/core-actual-go.work": "9ef8c9464a5b3363da1855baeb12dc932391d6dbb1bf733df981f374c718ccf8",
+    "deployment/security/grafana-maintenance-evidence/core-actual-go.work.sum": "a7ae603676ef2c0284a67542be9c333ad4126bb291c284f5331aa950168a6841",
+    "deployment/security/grafana-maintenance-evidence/core-actual-main.receipt.json": "14c9313d1096f338a8c96ef8245e439111928a1609e7b12e5ff788d48ed13aec",
+    "deployment/security/grafana-maintenance-evidence/core-CVE-2018-15727.json": "686a2cd34a056e428f2998bb74663d8fb83142be999371d9f8bc83143c94af3a",
+    "deployment/security/grafana-maintenance-evidence/core-CVE-2020-12458.json": "c4077d0ec095e5c207857199d2aba0c90eff32ca12d33f38a8dcc76dd5da5453",
+    "deployment/security/grafana-maintenance-evidence/core-CVE-2021-39226.json": "5cdf5f38bb500f6bbac1af42ac955164f110410185fb04d6127805afb13b5ff8",
+    "deployment/security/grafana-maintenance-evidence/core-CVE-2022-35957.json": "858f53f53d33eb5c1bb76fea95aa10875d0c62dee8d0a1b2755bed9dc1ca81c4",
+    "deployment/security/grafana-maintenance-evidence/core-CVE-2022-39307.json": "22732328a25842f2670e00d8ecc0cdfe82ad78cc9c21429f11b699b8ec67849a",
+    "deployment/security/grafana-maintenance-evidence/core-CVE-2023-2801.json": "e4503e0021cd95b230101578c2bff405134550206647803a9bbe303a97d6b240",
+    "deployment/security/grafana-maintenance-evidence/core-CVE-2023-3128.json": "803e537a29ca31262cc5bde384e9c8338b3a90792e2cfb24d1613846e5c4bbc2",
+    "deployment/security/grafana-maintenance-evidence/core-CVE-2025-6023.json": "6475ff5cdbc48cfc52b7caad62a4560aefa5fe76718dfd384811fcf3cadfd69e",
+    "deployment/security/grafana-maintenance-evidence/core-CVE-2026-100105.json": "a55f839f8925c3840b9c082cd530f4726972d8abc275773b0afd6365d5e9db01",
+    "deployment/security/grafana-maintenance-evidence/core-CVE-2026-103506.json": "66ed4d2d95b22cdc0ac341587ef94452534bf7dadbe937e6cb7f5f9cff1f5894",
+    "deployment/security/grafana-maintenance-evidence/core-CVE-2026-116587.json": "76cd594b546fb52d264909c34189fae18d67b32ad9cb9181f7d26015a74cf76f",
+    "deployment/security/grafana-maintenance-evidence/core-CVE-2026-42127.json": "915a6dc7bde9a2580bbb0ddd103b40eb210385bb6546c83912b40344d65ebf58",
+    "deployment/security/grafana-maintenance-evidence/core-CVE-2026-42129.json": "7d3f209871fa4818865f3bbc2a57c5eee7b2b7ccd8c7f334d5998cb7e4ef09b8",
+    "deployment/security/grafana-maintenance-evidence/core-CVE-2026-88967.json": "1a1acb2531fdc688bebfc037e0167b62d3e519f937607dc1d43a6ee31daf9dd4",
+    "deployment/security/grafana-maintenance-evidence/core-CVE-2026-9029.json": "eacf6fae7a5c092d8b61454952897130916fcb8a335174566c0765e1aa2791b2",
+    "deployment/security/grafana-maintenance-evidence/core-GO-2026-5932.json": "77a8310ca0472b01df7bb110adcad22a446e39f3217841d598859c531e54d550",
+    "deployment/security/grafana-maintenance-evidence/core-independent-oci-integrity.json": "ff6d46f063fabdef263b9eaef89fc12443023ab0582243225115aaf031d94194",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-identity.json": "e1777ee15f0bb3197690dc791c56354f796c358cc5e02a3bc653994444f05297",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-module-provenance.json": "cf5db21429fc29edf8637f4b5a6a754b07d3afcb4db3e01e4e7f41419052f09f",
+    "deployment/security/grafana-maintenance-evidence/core-runtime-version.txt": "ebee595aa93f6c853104af474f6dad2d564c916206520bc2083ef5bcc043477f",
+    "deployment/security/grafana-maintenance-evidence/core-upstream-package.json": "4c1da4b1992361d8a5a785f3efd71d523c5d460f4109c228dc4c2cbfdab418bd",
+    "deployment/security/grafana-maintenance-evidence/core-upstream-tag-object.json": "c9995e089215399f9cb3a2c6160349a4907b12dcd99b1cedbc486577bd5baa5b",
+    "deployment/security/grafana-maintenance-evidence/core-upstream-tag.json": "044083e5be081426bb845e9491f5b2c607c54b7bdb10b8634dd33d0772109872",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-00.go.mod": "bb8016e8dae161d101675daa82439aa65ae40a4b288efc789cc8dd6e948f3e3b",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-01.go.mod": "f3ccfd21c3cbbeb087503aa1cda98cb4c0a5de9cd387f2d41521526d7ac4b9e1",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-02.go.mod": "0462248baa9f62c79682aeb028b51cad254985307bc58e765ceddc984cd4215a",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-03.go.mod": "843d170d0deaa1f0450df16b490d288405d3590748d6979cae501594e44d4fa7",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-04.go.mod": "3737da6d6a828e09d5f226b84588440a3ac0452c5049caf10efe63bc08329693",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-05.go.mod": "8e92fa3b9ed6808b8f16c1f64052e011dcf0284366685ed629c4aafaac12b67e",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-06.go.mod": "6665e48753a8813cfe60506d3f7a483e78bd56391622dd730690f4550b63142d",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-07.go.mod": "9c68368480a05f004c56c8ff4e7006b55ea5b8c67de38a99cc77e463e7c01ea4",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-08.go.mod": "834034bc09f8cff0450e13e392246f574ff6dbdac544908feae148174434c28d",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-09.go.mod": "6594154dafdf97bde68a4394ec79e13d74c1bc436497f9cca3c0048cc16cf912",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-10.go.mod": "6690c817838cf7ee20a6e12a887532bd70994bec8a68817fb37ca4fcea790f21",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-11.go.mod": "e77b8a23de88de71349e08b41c26ff2dc10b5a8a52969c872ec856b5712cb233",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-12.go.mod": "83f5d7aece319a85cf5a6481de1927b461e8dd7e360d3804c5a7803ca1e764ca",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-13.go.mod": "5253689c0c2b33ef60ff7419640ebe7590111a5bc72915d114b7de40332c382a",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-14.go.mod": "ab615e3b921f5003e114e144533265737581741b72fe734b7e8faae2e59e0fd1",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-15.go.mod": "481101f0b0799bfbde0ae310c4967ffb994f033f2fc97820419a9cecd0ef16b4",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-16.go.mod": "b2d066950307b2aeadb1f275b413a619d2a5c4b47d376c44d3fc0a83fac056d2",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-17.go.mod": "1dc46b7fd73866ae21b178f9cbb409284d90516c832913585411ae74288c9b4d",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-18.go.mod": "6fe33e372b28661cf89ac770b8cd572e21cdf1f569fc3a8eb28b4dd6e30c9589",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-19.go.mod": "f8c5cd747b19eebd40e4bc39677cabae246b87c135f40a8feb3303209dd95c05",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-20.go.mod": "55332c858e7a4b8c89b0aed961d33045e6937d43a31a8ab487464bca58e06de4",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-21.go.mod": "6120f70f1b7e59987529c7c86ab49fab08e7252b3b003e973857d8cb1e6750ac",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-22.go.mod": "e69261f4f304e5376d5ab672324a3d5125f97646819f2648d7b08d30407260f2",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-23.go.mod": "d962b5184e9e7c4b3f2800eed85f62c3f4dc60612c9c467e165f5d7bf01f8d2b",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-24.go.mod": "4e928ded750c58ae56dca5f61902c947d05117ef73a0c314d8d6cc62b097b2f8",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-25.go.mod": "9029e0f1951deb1529d2e982f7f4574d34fd7926ae3cbd019f6c83e9c57b91ba",
+    "deployment/security/grafana-maintenance-evidence/core-local-source-modules/module-26.go.mod": "bea2f7d6d2c36469933b95949f2fa10d2e1fa61c8a36d0fa2f9aad788760d5b0",
+    "deployment/security/grafana-maintenance-preparation.json": "5ff0e334bb51cd3875a6fa275c6a416be2bc581f9f4d32187edb72cd5665bfad",
+    "deployment/security/grafana-maintenance-evidence/candidate-full-trivy.json.gz": "05e61b284bc43aa9f7ee0ad85b6fd4eb7d2039db2b92ddbdfeaab78562be57a8",
+    "deployment/security/grafana-maintenance-evidence/candidate-full-grype.json.gz": "2741f25a125779a4e275f6c460291018d5383208063373d1ae41714731791ade",
+    "deployment/security/grafana-maintenance-evidence/candidate-full-syft.json.gz": "b64d5aa7ffcf7bcd9360b317a456603b578266e46fa002ec2c4430bcd0bc3f4a",
+    "deployment/docker/Dockerfile.grafana-maintenance": "f78cf6fc6b55c13cfa17f57b5fc7dc3b0e6ab2e129c0f208ea2a422b3d995cc5",
+    "deployment/vendors/grafana/main/go.mod": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda",
+    "deployment/vendors/grafana/main/go.sum": "9df9d3bc91c69dbea45632447c4d88190f5e8a18ee7a768be585dfa1780dd2b2",
+    "deployment/vendors/grafana/main/go.work": "9ef8c9464a5b3363da1855baeb12dc932391d6dbb1bf733df981f374c718ccf8",
+    "deployment/vendors/grafana/main/go.work.sum": "66fd6bab1829660d3edbb463037193a66d1a2fe76c03228ec91b2aec5a154c42",
+    "deployment/vendors/grafana/plugin-modules.json": "6d3bf844aafaad0853a5c2309c4612cc256b070e3900b69c1330cf0d0184549a",
+    "deployment/vendors/grafana/prepare_rebuild.py": "1dca9180a31c4bd37a6036002ae386a6320bb61f91f49a01d2f903b8cb56e636",
+    "deployment/vendors/grafana/reviewed_backend_verifier.go": "021048a6577579118047211890f8b615e457ee428677f30d88285fb05a8144aa",
+    "deployment/vendors/grafana/reviewed_backend_verifier_test.go": "a2af7375d16d90d3b7c749c9110bc2e439b1fcf1514c0d09beb83bb34b5d2c63",
+    "deployment/vendors/grafana-security/capture_graphs.py": "b97de122a42fcf58043f5e298aa66b01610ca47237a1112a7f445057163aca9e",
+    "deployment/vendors/grafana-security/main/go.mod": "c6c4ca9cf7ce2e149fd57ff7bb3561c4b6032b981e704e25957609377601ffe2",
+    "deployment/vendors/grafana-security/main/go.sum": "1009eb2de092e89326907449451ba9ade97b38eb6f393d443f1cc14736d9ab26"
+  },
+  "not_decided": [
+    "Other13 plugin ELF applicability is outside this core review and requires its separate independent record",
+    "No artifact authorization, release publication, CI selector change or deployment authorization is granted by this technical record."
+  ]
+}

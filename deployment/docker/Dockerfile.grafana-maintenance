@@ -1,0 +1,53 @@
+# Local maintenance candidate. It never inherits the old artifact authorization.
+# Load the existing exact reviewed artifact before building; reuse its verified
+# plugin bytes and signature manifests, and rebuild the patched upstream core.
+FROM deepresearch-approved-grafana@sha256:49e6d5ab6ec252e4b748b986ef5a3a7795b320a4c693796da15043ae21ca471a AS reviewed
+FROM golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c AS build
+ENV CGO_ENABLED=0 GOTOOLCHAIN=local GOMAXPROCS=2 GOFLAGS=-p=2 GOMEMLIMIT=768MiB GOPROXY=https://proxy.golang.org
+RUN apk add --no-cache git python3
+WORKDIR /source
+# Git verifies the object graph; no unverified source-archive checksum is invented.
+RUN git init && git remote add origin https://github.com/grafana/grafana.git \
+    && git config core.hooksPath /dev/null \
+    && git -c http.version=HTTP/1.1 -c http.lowSpeedLimit=1024 -c http.lowSpeedTime=60 \
+       fetch --depth=1 origin refs/tags/v13.2.5:refs/tags/v13.2.5 \
+    && test "$(git rev-parse 'refs/tags/v13.2.5^{commit}')" = ce471d869a4810cd83c987dd3521c4b67689dbb6 \
+    && git checkout --detach ce471d869a4810cd83c987dd3521c4b67689dbb6
+ARG GOPROXY=https://proxy.golang.org
+ENV GOPROXY=${GOPROXY}
+COPY deployment/vendors/grafana/main/ ./
+COPY deployment/vendors/grafana-security/main/ ./
+COPY --from=reviewed /usr/share/grafana/data/plugins-bundled/ /reviewed-plugins/
+COPY deployment/vendors/grafana/prepare_rebuild.py deployment/vendors/grafana/plugin-modules.json /tools/
+COPY deployment/vendors/grafana-security/capture_graphs.py /tools/
+RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
+    test "$(go env GOSUMDB)" = sum.golang.org \
+    && mkdir -p /out \
+    && sha256sum go.mod go.work > /out/fixed-modules.sha256 \
+    && go list -deps -json -mod=readonly ./pkg/cmd/grafana > /out/preflight-production-graph.json \
+    && sha256sum -c /out/fixed-modules.sha256
+RUN python3 /tools/prepare_rebuild.py --inventory /tools/plugin-modules.json \
+    --upstream /reviewed-plugins --rebuilt /reviewed-plugins \
+    --source /source/pkg/plugins/manager/signature/manifest.go --output /generated \
+    && cp /generated/*.go /source/pkg/plugins/manager/signature/
+COPY deployment/vendors/grafana/reviewed_backend_verifier.go deployment/vendors/grafana/reviewed_backend_verifier_test.go /source/pkg/plugins/manager/signature/
+RUN gofmt -w /source/pkg/plugins/manager/signature/reviewed_backend*.go
+RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
+    go test -mod=readonly ./pkg/plugins/manager/signature -run TestMaintainerReviewedBackendIntegrity -count=1 \
+    && go build -mod=readonly -buildvcs=true -trimpath \
+       -ldflags='-s -w -X main.version=13.2.5 -X main.commit=ce471d869a4810cd83c987dd3521c4b67689dbb6 -X main.buildBranch=maintainer-security' \
+       -o /out/grafana ./pkg/cmd/grafana \
+    && go version -m /out/grafana > /out/build-info.txt
+RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
+    python3 /tools/capture_graphs.py --source /source --package ./pkg/cmd/grafana --target main --output /out/graphs
+FROM grafana/grafana:13.2.5@sha256:ffeeebf613b00fede764821c5e5b1545fb376aba561ae91c488e91f219adb25a
+USER 0
+RUN rm -rf /usr/share/grafana/data/plugins-bundled
+COPY --from=reviewed /usr/share/grafana/data/plugins-bundled/ /usr/share/grafana/data/plugins-bundled/
+COPY --from=build /out/grafana /usr/share/grafana/bin/grafana
+COPY --from=build /out/build-info.txt /out/fixed-modules.sha256 /usr/share/deepresearch/grafana-maintenance/
+COPY --from=build /out/graphs/ /usr/share/deepresearch/grafana-maintenance/graphs/
+COPY --from=build /generated/rebuild-provenance.json /usr/share/deepresearch/grafana-maintenance/rebuild-provenance.json
+USER 472
+LABEL org.opencontainers.image.revision="ce471d869a4810cd83c987dd3521c4b67689dbb6" \
+      org.opencontainers.image.version="13.2.5-maintainer-security"

@@ -133,3 +133,10 @@ deployment/docker/Dockerfile.prometheus text eol=lf
 deployment/vendors/loki/** text eol=lf
 deployment/vendors/prometheus/** text eol=lf
 deployment/vendors/runtime-data/** text eol=lf
+
+# Keep the exact bytes used for the native package and maintenance subject reviews.
+deployment/security/agent-native-* -text
+deployment/security/agent-native-evidence/** -text -whitespace
+deployment/security/grafana-maintenance-* -text
+deployment/security/grafana-maintenance-evidence/** -text -whitespace
+deployment/docker/Dockerfile.grafana-maintenance text eol=lf

@@ -1,0 +1,137 @@
+{
+  "sha": "bb8ca663db34a0980c9758b40d918fda3b4dbec3",
+  "node_id": "C_kwDODhHskNoAKGJiOGNhNjYzZGIzNGEwOTgwYzk3NThiNDBkOTE4ZmRhM2I0ZGJlYzM",
+  "commit": {
+    "author": {
+      "name": "mattdurham",
+      "email": "mattdurham@ppog.org",
+      "date": "2026-03-17T15:52:32Z"
+    },
+    "committer": {
+      "name": "GitHub",
+      "email": "noreply@github.com",
+      "date": "2026-03-17T15:52:32Z"
+    },
+    "message": "fix(s3): treat SSE-C encryption_key as a secret (CVE-2026-28377) (#6711)\n\n* fix(s3): treat SSE-C encryption_key as a secret to prevent plaintext exposure (CVE-2026-28377)\n\nCo-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>\n\n* chore: update changelog with PR number and author\n\nCo-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>\n\n* test(s3): assert SSE-C encryption_key is redacted in YAML output\n\nCo-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>\n\n* fix(s3): gofmt config.go and move SSE redaction test to config_test.go\n\nCo-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>\n\n* fix(s3): address review feedback - local var for key, yaml.v3 in test, changelog grammar\n\nCo-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Sonnet 4.6 <noreply@anthropic.com>",
+    "tree": {
+      "sha": "26dcbe017cbb9fecb9b2b5c86ad0c928058662d5",
+      "url": "https://api.github.com/repos/grafana/tempo/git/trees/26dcbe017cbb9fecb9b2b5c86ad0c928058662d5"
+    },
+    "url": "https://api.github.com/repos/grafana/tempo/git/commits/bb8ca663db34a0980c9758b40d918fda3b4dbec3",
+    "comment_count": 0,
+    "verification": {
+      "verified": true,
+      "reason": "valid",
+      "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJpuXjACRC1aQ7uu5UhlAAATOUQABOqHT8TEEp1hToc40z1GxZn\nmFT96ey0CBxJKHWIcgeRnO/U1bkuZ6Y+XOluBvttGtxlILupN/cbxqTve9Xpox8A\nOOXdmv47j+nlRbZJZrQHW4gC/ilY2NgGuK3oX8LbNc0ucRc3IuJXDaBXXzEML7dU\nwG/CKPX4KUgX18gj5+nzmTlb9DCWywxj3DYdEbFPKRsOcWZl3eeCDih5tfD1V00u\n1Jtz5GYTZOcQ9UuY1vb98mjeKXvuE/FlnmfTiAQ8M0sFsTLvUYNXbLZ8T+tkKU6t\n6D/pQ/B8lhTdKwFVRC2fkuHQwy9CJYCcfLlbOSKQuxyTlaHAnUHyZ6/V5pjtrDcC\nEE5gZos1heG7Ob/DcY7qiSeHCnwAcZTiDR37ZrJrdm+sRQKO6qJ6uKQ2ihRQTcgk\n7E7/wi08L3xU37hd3Xq8ZHyCHIYIdi6efqFD1whoc6Ct7usRqJA9NzaUE1pWFtcc\naYhSZKSRjwcmUOzf1p4aX9PqSgvKH4biKKm4nCKJ6DN0r5muBqUlPRE4NaTZlFsB\nvPZnTpz0hBQIlJJpgTKKr0XunBdcdr3TqFTK3bavh5lmnH7O2G0wlerIXsNbsuyo\n9HU8hMUpKGjaNYQ2hiEe3S3WHa74NDMlLO2Qqw6kyLP/sNqFynOqks3k7S4FSp0V\ntqbQpl7AXJ6bxhzuBVK4\n=eYGU\n-----END PGP SIGNATURE-----\n",
+      "payload": "tree 26dcbe017cbb9fecb9b2b5c86ad0c928058662d5\nparent e49f6d95fccb4ebaee872499bdee2deae6f408b7\nauthor mattdurham <mattdurham@ppog.org> 1773762752 -0400\ncommitter GitHub <noreply@github.com> 1773762752 -0400\n\nfix(s3): treat SSE-C encryption_key as a secret (CVE-2026-28377) (#6711)\n\n* fix(s3): treat SSE-C encryption_key as a secret to prevent plaintext exposure (CVE-2026-28377)\n\nCo-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>\n\n* chore: update changelog with PR number and author\n\nCo-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>\n\n* test(s3): assert SSE-C encryption_key is redacted in YAML output\n\nCo-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>\n\n* fix(s3): gofmt config.go and move SSE redaction test to config_test.go\n\nCo-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>\n\n* fix(s3): address review feedback - local var for key, yaml.v3 in test, changelog grammar\n\nCo-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Sonnet 4.6 <noreply@anthropic.com>",
+      "verified_at": "2026-03-17T15:52:33Z"
+    }
+  },
+  "url": "https://api.github.com/repos/grafana/tempo/commits/bb8ca663db34a0980c9758b40d918fda3b4dbec3",
+  "html_url": "https://github.com/grafana/tempo/commit/bb8ca663db34a0980c9758b40d918fda3b4dbec3",
+  "comments_url": "https://api.github.com/repos/grafana/tempo/commits/bb8ca663db34a0980c9758b40d918fda3b4dbec3/comments",
+  "author": {
+    "login": "mattdurham",
+    "id": 3036838,
+    "node_id": "MDQ6VXNlcjMwMzY4Mzg=",
+    "avatar_url": "https://avatars.githubusercontent.com/u/3036838?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/mattdurham",
+    "html_url": "https://github.com/mattdurham",
+    "followers_url": "https://api.github.com/users/mattdurham/followers",
+    "following_url": "https://api.github.com/users/mattdurham/following{/other_user}",
+    "gists_url": "https://api.github.com/users/mattdurham/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/mattdurham/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/mattdurham/subscriptions",
+    "organizations_url": "https://api.github.com/users/mattdurham/orgs",
+    "repos_url": "https://api.github.com/users/mattdurham/repos",
+    "events_url": "https://api.github.com/users/mattdurham/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/mattdurham/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "committer": {
+    "login": "web-flow",
+    "id": 19864447,
+    "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+    "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/web-flow",
+    "html_url": "https://github.com/web-flow",
+    "followers_url": "https://api.github.com/users/web-flow/followers",
+    "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+    "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+    "organizations_url": "https://api.github.com/users/web-flow/orgs",
+    "repos_url": "https://api.github.com/users/web-flow/repos",
+    "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/web-flow/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "parents": [
+    {
+      "sha": "e49f6d95fccb4ebaee872499bdee2deae6f408b7",
+      "url": "https://api.github.com/repos/grafana/tempo/commits/e49f6d95fccb4ebaee872499bdee2deae6f408b7",
+      "html_url": "https://github.com/grafana/tempo/commit/e49f6d95fccb4ebaee872499bdee2deae6f408b7"
+    }
+  ],
+  "stats": {
+    "total": 44,
+    "additions": 37,
+    "deletions": 7
+  },
+  "files": [
+    {
+      "sha": "6d64212cd2f4caff1c97716dc33a0c4e67e2044e",
+      "filename": "CHANGELOG.md",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/grafana/tempo/blob/bb8ca663db34a0980c9758b40d918fda3b4dbec3/CHANGELOG.md",
+      "raw_url": "https://github.com/grafana/tempo/raw/bb8ca663db34a0980c9758b40d918fda3b4dbec3/CHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/grafana/tempo/contents/CHANGELOG.md?ref=bb8ca663db34a0980c9758b40d918fda3b4dbec3",
+      "patch": "@@ -1,5 +1,6 @@\n ## main / unreleased\n \n+* [BUGFIX] S3 SSE-C `encryption_key` is now treated as a secret to prevent it from being exposed in plaintext. Resolves CVE-2026-28377. [#6711](https://github.com/grafana/tempo/pull/6711) (@mattdurham)\n * [BUGFIX] Fix integer overflow in query parameters by using `strconv.ParseUint` instead of `strconv.Atoi`/`strconv.ParseInt` for unsigned integer fields. [#6612](https://github.com/grafana/tempo/pull/6612) (@bejaratommy)\n * [CHANGE] **BREAKING CHANGE** Centralize block and WAL config: `block_builder` and `live_store` now always use `storage.trace.block` settings; per-module block config fields are removed. [#6647](https://github.com/grafana/tempo/pull/6647) (@stoewer)\n * [CHANGE] **BREAKING CHANGE** Remove Opencensus receiver [#6523](https://github.com/grafana/tempo/pull/6523) (@javiermolinar)"
+    },
+    {
+      "sha": "10fc342fb76cf270d8a1c1553d98d88c6aa3c1ac",
+      "filename": "tempodb/backend/s3/config.go",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 5,
+      "changes": 10,
+      "blob_url": "https://github.com/grafana/tempo/blob/bb8ca663db34a0980c9758b40d918fda3b4dbec3/tempodb%2Fbackend%2Fs3%2Fconfig.go",
+      "raw_url": "https://github.com/grafana/tempo/raw/bb8ca663db34a0980c9758b40d918fda3b4dbec3/tempodb%2Fbackend%2Fs3%2Fconfig.go",
+      "contents_url": "https://api.github.com/repos/grafana/tempo/contents/tempodb%2Fbackend%2Fs3%2Fconfig.go?ref=bb8ca663db34a0980c9758b40d918fda3b4dbec3",
+      "patch": "@@ -37,10 +37,10 @@ var (\n )\n \n type SSEConfig struct {\n-\tType                  string `yaml:\"type\"`\n-\tKMSKeyID              string `yaml:\"kms_key_id\"`\n-\tKMSEncryptionContext  string `yaml:\"kms_encryption_context\"`\n-\tCustomerEncryptionKey string `yaml:\"encryption_key\"`\n+\tType                  string         `yaml:\"type\"`\n+\tKMSKeyID              string         `yaml:\"kms_key_id\"`\n+\tKMSEncryptionContext  string         `yaml:\"kms_encryption_context\"`\n+\tCustomerEncryptionKey flagext.Secret `yaml:\"encryption_key\"`\n }\n \n type Config struct {\n@@ -85,7 +85,7 @@ func (cfg *Config) RegisterFlagsAndApplyDefaults(prefix string, f *flag.FlagSet)\n \tf.StringVar(&cfg.SSE.Type, util.PrefixConfig(prefix, \"s3.sse.type\"), \"\", fmt.Sprintf(\"Enable AWS Server Side Encryption. Supported values: %s.\", strings.Join(supportedSSETypes, \", \")))\n \tf.StringVar(&cfg.SSE.KMSKeyID, util.PrefixConfig(prefix, \"s3.sse.kms-key-id\"), \"\", \"KMS Key ID used to encrypt objects in S3\")\n \tf.StringVar(&cfg.SSE.KMSEncryptionContext, util.PrefixConfig(prefix, \"s3.sse.kms-encryption-context\"), \"\", \"KMS Encryption Context used for object encryption. It expects JSON formatted string.\")\n-\tf.StringVar(&cfg.SSE.CustomerEncryptionKey, util.PrefixConfig(prefix, \"s3.sse.encryption-key\"), \"\", \"SSE-C Encryption Key used for object encryption.\")\n+\tf.Var(&cfg.SSE.CustomerEncryptionKey, util.PrefixConfig(prefix, \"s3.sse.encryption-key\"), \"SSE-C Encryption Key used for object encryption.\")\n \tcfg.HedgeRequestsUpTo = 2\n }\n "
+    },
+    {
+      "sha": "b4ce7a3192663836c9ecfa8fc2abb9a230539381",
+      "filename": "tempodb/backend/s3/config_test.go",
+      "status": "added",
+      "additions": 28,
+      "deletions": 0,
+      "changes": 28,
+      "blob_url": "https://github.com/grafana/tempo/blob/bb8ca663db34a0980c9758b40d918fda3b4dbec3/tempodb%2Fbackend%2Fs3%2Fconfig_test.go",
+      "raw_url": "https://github.com/grafana/tempo/raw/bb8ca663db34a0980c9758b40d918fda3b4dbec3/tempodb%2Fbackend%2Fs3%2Fconfig_test.go",
+      "contents_url": "https://api.github.com/repos/grafana/tempo/contents/tempodb%2Fbackend%2Fs3%2Fconfig_test.go?ref=bb8ca663db34a0980c9758b40d918fda3b4dbec3",
+      "patch": "@@ -0,0 +1,28 @@\n+package s3\n+\n+import (\n+\t\"testing\"\n+\n+\t\"github.com/grafana/dskit/flagext\"\n+\t\"github.com/stretchr/testify/assert\"\n+\t\"github.com/stretchr/testify/require\"\n+\t\"gopkg.in/yaml.v3\"\n+)\n+\n+func TestSSEConfigEncryptionKeyRedacted(t *testing.T) {\n+\tconst plaintext = \"my-super-secret-key\"\n+\n+\tvar key flagext.Secret\n+\trequire.NoError(t, key.Set(plaintext))\n+\n+\tcfg := SSEConfig{\n+\t\tType:                  SSEC,\n+\t\tCustomerEncryptionKey: key,\n+\t}\n+\n+\tout, err := yaml.Marshal(cfg)\n+\trequire.NoError(t, err)\n+\n+\tassert.NotContains(t, string(out), plaintext, \"plaintext encryption key must not appear in YAML output\")\n+\tassert.Contains(t, string(out), \"********\", \"redacted marker must appear in YAML output\")\n+}"
+    },
+    {
+      "sha": "6cdd8452b3688cd06e020cdaae73fc0ffae5c6f4",
+      "filename": "tempodb/backend/s3/s3.go",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 2,
+      "changes": 5,
+      "blob_url": "https://github.com/grafana/tempo/blob/bb8ca663db34a0980c9758b40d918fda3b4dbec3/tempodb%2Fbackend%2Fs3%2Fs3.go",
+      "raw_url": "https://github.com/grafana/tempo/raw/bb8ca663db34a0980c9758b40d918fda3b4dbec3/tempodb%2Fbackend%2Fs3%2Fs3.go",
+      "contents_url": "https://api.github.com/repos/grafana/tempo/contents/tempodb%2Fbackend%2Fs3%2Fs3.go?ref=bb8ca663db34a0980c9758b40d918fda3b4dbec3",
+      "patch": "@@ -809,10 +809,11 @@ func buildSSEConfig(cfg *Config) (encrypt.ServerSide, error) {\n \tcase SSES3:\n \t\treturn encrypt.NewSSE(), nil\n \tcase SSEC:\n-\t\tif cfg.SSE.CustomerEncryptionKey == \"\" {\n+\t\tkey := cfg.SSE.CustomerEncryptionKey.String()\n+\t\tif key == \"\" {\n \t\t\treturn nil, errors.New(\"SSE-C EncryptionKey is missing\")\n \t\t}\n-\t\treturn encrypt.NewSSEC([]byte(cfg.SSE.CustomerEncryptionKey))\n+\t\treturn encrypt.NewSSEC([]byte(key))\n \tdefault:\n \t\treturn nil, errUnsupportedSSEType\n \t}"
+    }
+  ]
+}

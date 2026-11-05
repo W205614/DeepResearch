@@ -1,0 +1,458 @@
+{
+  "schema": "grafana-maintenance-preparation-v1",
+  "recorded_at": "2026-11-05T09:08:35.177879+00:00",
+  "actor": "/root",
+  "actor_kind": "automated_execution_agent",
+  "status": "LOCAL_CANDIDATE_VERIFIED_REVIEW_AND_AUTHORIZATION_PENDING",
+  "artifact_approved": false,
+  "human_risk_acceptance": false,
+  "old_authorization_inherited": false,
+  "formal_runtime_selection_changed": false,
+  "formal_security_gate_passed": false,
+  "independent_new_subject_review_completed": false,
+  "new_exact_subject_authorization_created": false,
+  "subject": {
+    "artifact": "grafana",
+    "root_layout": "nested_index",
+    "archive_bytes": 776297984,
+    "archive_sha256": "408744f9d8d357a9b7dfd97ac802efbbdee662cb1177b80d8020bdc24c019e25",
+    "index_digest": "sha256:5a14435f088e735cbaba6e6375c5ea03e34424ea3934b55e098a2fb660db452a",
+    "platform_manifest_digest": "sha256:0f354ce9c25e92e811c3f09382c0d317bc7193bee58b97e4b1170049f2b007aa",
+    "config_digest": "sha256:bde24c79bbb09619d33a912b8487e573e3ddbbdadf4f923afe3b4f0988a439fe",
+    "diff_ids": [
+      "sha256:75c137aedfb2760f88629236cb7b797630aed0c3d91d626d1d1bb694878fc2ba",
+      "sha256:3b65ad5d0600ae408b194a3e00c3ce5f18e2f3775b6efe2578fbded330a241a3",
+      "sha256:afbd9e1d092a95dec6977836724da893497654babce2e3f73ea99afd6476f2ed",
+      "sha256:f50fbeb907e1d2ba1a7a2260aa2cbe90973b8473e3ef78d60fbffdf109d14386",
+      "sha256:add892858f9122df35d1762b499f17c25f23f5875892df265a15d3858904ad74",
+      "sha256:20418aa06f25a38cebd5a9906c2db0f8d3e3e1c0924f1be4ee287ff75389522c",
+      "sha256:71c22afd8a267f1aa3262b8e5c821f3ca221071dade6b45dbb9cc2cb900156ee",
+      "sha256:840eb78f709d0ce8bc53370f86f5266aac9d721d49896a3809060ef779ff7eaf",
+      "sha256:f95a81142d494a928d5ccf90ef6c19c6c3f8da7dc246a53d368f1034c2fb6fb8",
+      "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+      "sha256:7e722b084590d46a61b9e42d1a0bce61657c39ab1e04a9f522e3e97fb15506f8",
+      "sha256:abb6d46b4018d7d5f49f19782b0faeda15317f2ed57355b6489c87d57b770e10",
+      "sha256:d732edb6be89e6df45f45cfc5549199b465e7d5d59eab7cd6958b6a3589c477c",
+      "sha256:cbd87404141e0e391d311d08e8c22aeb243fef50a2c4199911f987c278f39264",
+      "sha256:ab177e090e3b33c43006a0f29604fbfc2084e1bc3a66410ca10d9d161cf12383",
+      "sha256:c265a495c474abef280e32994f6af74be5625d4587587cf7627247c3b75dfab3",
+      "sha256:cce18224fcc067daf12978050c22b421210aae08860551ed032b59e4849eb8e2"
+    ],
+    "binary_sha256": {
+      "usr/share/grafana/bin/grafana": "71a29721333128bb3c4c0c32daf68fc95073235fe44a84d0b935c6196705948c",
+      "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64": "9506612c4e2b460e524ce10977214e197feba998fff597ff90f4ce1d9ca91c35",
+      "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64": "2f844f15400d3f96ec9a3351df3fc76f46ae9abe7a49797632bdb85666156fc7",
+      "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64": "e754b55d6bb4bdc60ba9feddfe675b4d6011fb6eb1427709838a542418445c4c",
+      "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64": "ca2705f001f1c13540aef61894759e9b837f3a4b66fc915a5098a406b1886e00",
+      "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64": "7a70b6271a922e7307034cf0046aa5b95799ee75052452c03e03b6f17557d23a",
+      "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64": "77d9bc857651d41028da2694a50dea3f41643d71466b1f9cf6753931c115bd36",
+      "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64": "280b114823ff994daf2e2714fade6703e14fc9860a050c998bbcc68403b5c0e3",
+      "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64": "afcc0824b8e3b3258edfa4c98951a2113fa896c777cd442df6550117d5f10d11",
+      "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64": "a7b652cd0fd297c37d2a2e306f7cbdf67688cb9a50b8a3fd7d90948d1c49b8a7",
+      "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64": "3fb8397ce2284b9e0851e19092ba5748ed92bfbc4caadeec66dab1d0692267a1",
+      "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64": "8e6c55fc90d0e94657e663b386cd6173c811133daef447d08b6bdddea3f6cc9d",
+      "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": "ee8eaf152c8ee65fba362a42643b79a80125297c4940f6382cd11d36b0035ebc",
+      "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": "18a962eaa7f4220b6a7c40cf282f267674dd64efe73dd4fe6b45cac62980abcd"
+    },
+    "os": "linux",
+    "architecture": "amd64"
+  },
+  "local_archive": ".cache/security-fix-20261105/continued/grafana-maintenance-final.oci.tar",
+  "upstream_source": {
+    "tag": "v13.2.5",
+    "commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+    "repository": "https://github.com/grafana/grafana",
+    "git_object_commit_checked": true,
+    "readonly_production_build": true,
+    "sumdb": "sum.golang.org",
+    "local_build_goproxy": "https://goproxy.cn",
+    "build_log": ".cache/security-fix-20261105/continued/grafana-maintenance-build-a5.log"
+  },
+  "build_recipe_files_sha256": {
+    "deployment/docker/Dockerfile.grafana-maintenance": "f78cf6fc6b55c13cfa17f57b5fc7dc3b0e6ab2e129c0f208ea2a422b3d995cc5",
+    "deployment/vendors/grafana/main/go.mod": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda",
+    "deployment/vendors/grafana/main/go.sum": "9df9d3bc91c69dbea45632447c4d88190f5e8a18ee7a768be585dfa1780dd2b2",
+    "deployment/vendors/grafana/main/go.work": "9ef8c9464a5b3363da1855baeb12dc932391d6dbb1bf733df981f374c718ccf8",
+    "deployment/vendors/grafana/main/go.work.sum": "66fd6bab1829660d3edbb463037193a66d1a2fe76c03228ec91b2aec5a154c42",
+    "deployment/vendors/grafana/plugin-modules.json": "6d3bf844aafaad0853a5c2309c4612cc256b070e3900b69c1330cf0d0184549a",
+    "deployment/vendors/grafana/prepare_rebuild.py": "1dca9180a31c4bd37a6036002ae386a6320bb61f91f49a01d2f903b8cb56e636",
+    "deployment/vendors/grafana/reviewed_backend_verifier.go": "021048a6577579118047211890f8b615e457ee428677f30d88285fb05a8144aa",
+    "deployment/vendors/grafana/reviewed_backend_verifier_test.go": "a2af7375d16d90d3b7c749c9110bc2e439b1fcf1514c0d09beb83bb34b5d2c63",
+    "deployment/vendors/grafana-security/capture_graphs.py": "b97de122a42fcf58043f5e298aa66b01610ca47237a1112a7f445057163aca9e",
+    "deployment/vendors/grafana-security/main/go.mod": "c6c4ca9cf7ce2e149fd57ff7bb3561c4b6032b981e704e25957609377601ffe2",
+    "deployment/vendors/grafana-security/main/go.sum": "1009eb2de092e89326907449451ba9ade97b38eb6f393d443f1cc14736d9ab26"
+  },
+  "raw_reports": {
+    "trivy": {
+      "path": "deployment/security/grafana-maintenance-evidence/candidate-full-trivy.json.gz",
+      "compressed_sha256": "05e61b284bc43aa9f7ee0ad85b6fd4eb7d2039db2b92ddbdfeaab78562be57a8",
+      "raw_sha256": "ade6a29fa400513d8cf24ac3ca8a6b491a60d0917759f6fb054797bd86ce8c23",
+      "raw_bytes": 1371782,
+      "local_unmodified_original": ".cache/security-fix-20261105/continued/grafana-maintenance-final-trivy.json"
+    },
+    "grype": {
+      "path": "deployment/security/grafana-maintenance-evidence/candidate-full-grype.json.gz",
+      "compressed_sha256": "2741f25a125779a4e275f6c460291018d5383208063373d1ae41714731791ade",
+      "raw_sha256": "15bd9f236a0e9a8f59a16b5e6231d6f2f7f9c63696f9313539b48803185944ee",
+      "raw_bytes": 90801,
+      "local_unmodified_original": ".cache/security-fix-20261105/verified-grafana-maintenance-final-13.2.5/full-grype.json"
+    },
+    "syft": {
+      "path": "deployment/security/grafana-maintenance-evidence/candidate-full-syft.json.gz",
+      "compressed_sha256": "b64d5aa7ffcf7bcd9360b317a456603b578266e46fa002ec2c4430bcd0bc3f4a",
+      "raw_sha256": "dee263529793c442ae1e510808ad610df3394eb59069f4066df2dd63923fd09a",
+      "raw_bytes": 2916557,
+      "local_unmodified_original": ".cache/security-fix-20261105/verified-grafana-maintenance-final-13.2.5/full-syft.json"
+    }
+  },
+  "observed_counts": {
+    "Trivy": {
+      "CRITICAL": 2,
+      "HIGH": 11,
+      "MEDIUM": 20,
+      "LOW": 2,
+      "UNKNOWN": 15
+    },
+    "Grype": {
+      "High": 7,
+      "Medium": 8,
+      "Unknown": 5
+    },
+    "secrets": 0
+  },
+  "product_cves_absent_in_both_complete_reports": [
+    "CVE-2026-100105",
+    "CVE-2026-103506",
+    "CVE-2026-88967"
+  ],
+  "remaining_blocking_rows_require_new_subject_review": {
+    "Trivy": [
+      {
+        "id": "CVE-2018-15727",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "CRITICAL"
+      },
+      {
+        "id": "CVE-2023-3128",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "CRITICAL"
+      },
+      {
+        "id": "CVE-2020-12458",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "HIGH"
+      },
+      {
+        "id": "CVE-2021-39226",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "HIGH"
+      },
+      {
+        "id": "CVE-2022-35957",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "HIGH"
+      },
+      {
+        "id": "CVE-2022-39307",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "HIGH"
+      },
+      {
+        "id": "CVE-2023-2801",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "HIGH"
+      },
+      {
+        "id": "CVE-2025-6023",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "HIGH"
+      },
+      {
+        "id": "CVE-2026-42127",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "HIGH"
+      },
+      {
+        "id": "CVE-2026-42129",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "HIGH"
+      },
+      {
+        "id": "CVE-2026-9029",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "HIGH"
+      },
+      {
+        "id": "GO-2026-5932",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "golang.org/x/crypto",
+        "version": "v0.58.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "GO-2026-5932",
+        "target": "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+        "package": "golang.org/x/crypto",
+        "version": "v0.57.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "CVE-2026-78661",
+        "target": "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+        "package": "golang.org/x/net",
+        "version": "v0.60.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "CVE-2026-97045",
+        "target": "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+        "package": "golang.org/x/net",
+        "version": "v0.60.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "GO-2026-5932",
+        "target": "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+        "package": "golang.org/x/crypto",
+        "version": "v0.58.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "GO-2026-5932",
+        "target": "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+        "package": "golang.org/x/crypto",
+        "version": "v0.58.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "CVE-2026-78661",
+        "target": "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64",
+        "package": "golang.org/x/net",
+        "version": "v0.61.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "CVE-2026-97045",
+        "target": "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64",
+        "package": "golang.org/x/net",
+        "version": "v0.61.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "GO-2026-5932",
+        "target": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+        "package": "golang.org/x/crypto",
+        "version": "v0.57.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "CVE-2026-78661",
+        "target": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+        "package": "golang.org/x/net",
+        "version": "v0.60.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "CVE-2026-97045",
+        "target": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+        "package": "golang.org/x/net",
+        "version": "v0.60.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "CVE-2026-21728",
+        "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+        "package": "github.com/grafana/tempo",
+        "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+        "severity": "HIGH"
+      },
+      {
+        "id": "CVE-2026-28377",
+        "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+        "package": "github.com/grafana/tempo",
+        "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+        "severity": "HIGH"
+      },
+      {
+        "id": "CVE-2026-78661",
+        "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+        "package": "golang.org/x/net",
+        "version": "v0.60.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "CVE-2026-97045",
+        "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+        "package": "golang.org/x/net",
+        "version": "v0.60.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "CVE-2026-78661",
+        "target": "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64",
+        "package": "golang.org/x/net",
+        "version": "v0.60.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "CVE-2026-97045",
+        "target": "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64",
+        "package": "golang.org/x/net",
+        "version": "v0.60.0",
+        "severity": "UNKNOWN"
+      }
+    ],
+    "Grype": [
+      {
+        "id": "GHSA-p4r4-xvrq-gvmc",
+        "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+        "package": "github.com/grafana/tempo",
+        "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+        "severity": "HIGH"
+      },
+      {
+        "id": "GO-2026-6860",
+        "target": "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+        "package": "golang.org/x/net",
+        "version": "v0.60.0",
+        "severity": "HIGH"
+      },
+      {
+        "id": "GO-2026-6860",
+        "target": "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64",
+        "package": "golang.org/x/net",
+        "version": "v0.60.0",
+        "severity": "HIGH"
+      },
+      {
+        "id": "GO-2026-6860",
+        "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+        "package": "golang.org/x/net",
+        "version": "v0.60.0",
+        "severity": "HIGH"
+      },
+      {
+        "id": "GO-2026-6860",
+        "target": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+        "package": "golang.org/x/net",
+        "version": "v0.60.0",
+        "severity": "HIGH"
+      },
+      {
+        "id": "GO-2026-6860",
+        "target": "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64",
+        "package": "golang.org/x/net",
+        "version": "v0.61.0",
+        "severity": "HIGH"
+      },
+      {
+        "id": "GHSA-ffqx-q65f-36jf",
+        "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+        "package": "github.com/grafana/tempo",
+        "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+        "severity": "HIGH"
+      },
+      {
+        "id": "GO-2026-5932",
+        "target": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+        "package": "golang.org/x/crypto",
+        "version": "v0.57.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "GO-2026-5932",
+        "target": "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+        "package": "golang.org/x/crypto",
+        "version": "v0.57.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "GO-2026-5932",
+        "target": "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+        "package": "golang.org/x/crypto",
+        "version": "v0.58.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "GO-2026-5932",
+        "target": "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+        "package": "golang.org/x/crypto",
+        "version": "v0.58.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "GO-2026-5932",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "golang.org/x/crypto",
+        "version": "v0.58.0",
+        "severity": "UNKNOWN"
+      }
+    ]
+  },
+  "validation": {
+    "go_signature_integrity_unit_test": "passed",
+    "sqlite_database_ready_and_version": "13.2.5",
+    "valid_plugin_signatures": 13,
+    "tamper_negative_cases_passed": 4,
+    "untouched_official_plugin_still_valid": "prometheus",
+    "production_graph_packages": 4199,
+    "actual_native_dependencies_equal_complete_graph": 521,
+    "main_unsafe_old_openpgp_packages": [],
+    "all_isolated_fixtures_stopped": true
+  },
+  "unchanged_gate_boundary": {
+    "consumer": "scripts/check_grafana_candidate_exact28.py",
+    "source": "validate_authorization requires new exact-subject human authorization; load_request requires independently bound new-subject reviews. Old request/source/image binding cannot be reused for this new subject.",
+    "next_required_steps": [
+      "Independent review of this new subject and all actual blocking rows",
+      "Explicit exact-subject authorization bound to the finalized reviewed request",
+      "Separately authorized publication and CI/runtime selection update; no publication or deployment done here"
+    ],
+    "current_request": "deployment/security/grafana-candidate-request.json",
+    "current_authorization": "deployment/security/grafana-candidate-authorization.json"
+  },
+  "evidence_files_sha256": {
+    "deployment/security/grafana-maintenance-evidence/actual-native-buildinfo.json": "cadba9d3f306b8fb36d7a9be1fdc3b236640f12ae66a3f5801ab9fe25fde5012",
+    "deployment/security/grafana-maintenance-evidence/authorization-boundary.json": "44baf8c5e4d6865b177a9d59970dacc13edea9e39df6882da99cf932883f6fac",
+    "deployment/security/grafana-maintenance-evidence/candidate-full-grype.json.gz": "2741f25a125779a4e275f6c460291018d5383208063373d1ae41714731791ade",
+    "deployment/security/grafana-maintenance-evidence/candidate-full-syft.json.gz": "b64d5aa7ffcf7bcd9360b317a456603b578266e46fa002ec2c4430bcd0bc3f4a",
+    "deployment/security/grafana-maintenance-evidence/candidate-full-trivy.json.gz": "05e61b284bc43aa9f7ee0ad85b6fd4eb7d2039db2b92ddbdfeaab78562be57a8",
+    "deployment/security/grafana-maintenance-evidence/CVE-2026-100105.json": "e397e6486604fcebe4f1df79b29462fa8990a308a6228cb2c5c3725be1aee15c",
+    "deployment/security/grafana-maintenance-evidence/CVE-2026-103506.json": "3f9d96e84d0879c9eab3c674bc76ca85f471d1aec4c837bf3968b6e66dadb22d",
+    "deployment/security/grafana-maintenance-evidence/CVE-2026-88967.json": "1d8c7e886ff4b33b4b8d011c7a7e765003acf22735833c98cbd686c467b6edc9",
+    "deployment/security/grafana-maintenance-evidence/main-graph-consistency.json": "5e905339af9bdeb28bb5b97c681771c3197bb881c55b7c2a66a7255d1ef5b301",
+    "deployment/security/grafana-maintenance-evidence/main.receipt.json": "14c9313d1096f338a8c96ef8245e439111928a1609e7b12e5ff788d48ed13aec",
+    "deployment/security/grafana-maintenance-evidence/subject.json": "abaa0491ecc665e5b856dcb38bd4f6fd7f54279b4e90b03ecb50573e7a9854c2",
+    "deployment/security/grafana-maintenance-evidence/tamper-verification.json": "f01b3d56bf8ca6ae2cae107c503e573bf0d7ff300db22b66f8f38d89e2aac509",
+    "deployment/security/grafana-maintenance-evidence/verification.json": "fd6a5003df7acdeb48c00dc7b0cf499c538a4304ece0457ca3d35cd1ab8eceb8",
+    "deployment/security/grafana-maintenance-evidence/whole-oci-integrity.json": "ff6d46f063fabdef263b9eaef89fc12443023ab0582243225115aaf031d94194"
+  },
+  "local_graph": {
+    "path": ".cache/security-fix-20261105/continued/grafana-final-local-verification/main.json.gz",
+    "compressed_sha256": "70696c1fd60a05efee4a733bfb4b595799d7dff60957e96d14710e29d4e9eb72",
+    "image_path": "/usr/share/deepresearch/grafana-maintenance/graphs/main.json.gz"
+  },
+  "scope": "Preparation only, not an authorization file or gate consumer. Full raw HIGH/CRITICAL/UNKNOWN findings remain blocking pending the existing review and exact-subject authorization process."
+}

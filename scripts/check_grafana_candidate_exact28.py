@@ -88,7 +88,7 @@ def subject_for(binding):
     return {key: binding[key] for key in SUBJECT_KEYS}
 
 
-def validate_copied_source_inventory(root, binding):
+def validate_copied_source_inventory(root, binding, *, copied_dirs=COPIED_SOURCE_DIRS):
     """A new COPY input is a source change even if every old file still hashes."""
     resolved_root = root.resolve()
 
@@ -101,7 +101,7 @@ def validate_copied_source_inventory(root, binding):
                 'Linked or escaping compile-input file/directory is not approved')
         return info.st_mode
 
-    for relative in COPIED_SOURCE_DIRS:
+    for relative in copied_dirs:
         directory = root / relative
         # Protect the COPY root and every repository-relative ancestor too.
         for parent in (directory, *directory.parents):
@@ -155,8 +155,12 @@ def canonical_grype(row, binding):
     return (aliases[0]['canonical_id'], *key[1:]) if aliases else key
 
 
-def validate_contract(binding):
-    require(binding['artifact'] == 'grafana' and binding['root_layout'] == 'direct_manifest'
+def validate_contract(binding, *, profile='exact28'):
+    require(profile in {'exact28', 'maintenance'}, 'Unknown exact artifact contract')
+    maintenance = profile == 'maintenance'
+    allowed_count, grype_count = (33, 12) if maintenance else (28, 7)
+    require(binding['artifact'] == 'grafana'
+            and binding['root_layout'] == ('nested_index' if maintenance else 'direct_manifest')
             and binding['archive_limit_bytes'] == MAX_ARCHIVE_BYTES
             and type(binding['archive_bytes']) is int and 0 < binding['archive_bytes'] <= MAX_ARCHIVE_BYTES
             and HEX.fullmatch(binding['archive_sha256'])
@@ -170,21 +174,42 @@ def validate_contract(binding):
                     for path, digest in binaries.items())
             and type(layers) is list and layers and all(DIGEST.fullmatch(value) for value in layers),
             'Complete fourteen-ELF/runtime DiffID identity is required')
-    allowed = row_counter(binding['allowed_findings'], 28, with_disposition=True)
+    allowed = row_counter(binding['allowed_findings'], allowed_count, with_disposition=True)
     expected_trivy = row_counter(binding['exact_trivy_rows'], 28)
-    require(Counter(key[:-1] for key in allowed) == expected_trivy,
-            'Exact28 and requested disposition identities differ')
-    expected_grype = row_counter(binding['exact_grype_rows'], 7)
+    allowed_rows = Counter(key[:-1] for key in allowed)
+    require(all(key in allowed_rows for key in expected_trivy),
+            'Exact Trivy and requested disposition identities differ')
+    if not maintenance:
+        require(allowed_rows == expected_trivy, 'Exact28 and requested disposition identities differ')
+    expected_grype = row_counter(binding['exact_grype_rows'], grype_count)
     aliases = binding['scanner_exact_aliases']
-    require(type(aliases) is list and len(aliases) == 2
-            and {(a['raw_id'], a['canonical_id']) for a in aliases} == {
+    require(type(aliases) is list and len(aliases) == (7 if maintenance else 2)
+            and {(a['raw_id'], a['canonical_id']) for a in aliases} == ({
+                ('GO-2026-6860', 'CVE-2026-78661'),
                 ('GHSA-p4r4-xvrq-gvmc', 'CVE-2026-21728'),
-                ('GHSA-ffqx-q65f-36jf', 'CVE-2026-28377')}
+                ('GHSA-ffqx-q65f-36jf', 'CVE-2026-28377')} if maintenance else {
+                ('GHSA-p4r4-xvrq-gvmc', 'CVE-2026-21728'),
+                ('GHSA-ffqx-q65f-36jf', 'CVE-2026-28377')})
             and all(a['scanner'] == 'Grype' and a['severity'] == 'HIGH'
                     and (a['raw_id'], a['target'], a['package'], a['version'], a['severity'])
                     in expected_grype for a in aliases), 'Unreviewed or broad scanner alias')
-    require(all(canonical_grype(row, binding) in expected_trivy for row in binding['exact_grype_rows']),
+    canonical_native = {canonical_grype(row, binding) for row in binding['exact_grype_rows']}
+    require(all(key in allowed_rows for key in canonical_native),
             'Grype rows do not map to the exact new reviewed subjects')
+    if maintenance:
+        html = {('usr/share/grafana/data/plugins-bundled/' + directory + '/' + binary, version)
+                for directory, binary, version in (
+                    ('elasticsearch', 'gpx_grafana_elasticsearch_datasource_linux_amd64', 'v0.60.0'),
+                    ('prometheus', 'gpx_grafana-prometheus-datasource_linux_amd64', 'v0.61.0'),
+                    ('stackdriver', 'gpx_grafana_cloudmonitoring_datasource_linux_amd64', 'v0.60.0'),
+                    ('tempo', 'gpx_grafana-tempo-datasource_linux_amd64', 'v0.60.0'),
+                    ('zipkin', 'gpx_grafana-zipkin-datasource_linux_amd64', 'v0.60.0'))}
+        html_aliases = [a for a in aliases if a['raw_id'] == 'GO-2026-6860']
+        require(len(html_aliases) == 5
+                and {(a['target'], a['version']) for a in html_aliases} == html
+                and all(a['package'] == 'golang.org/x/net' for a in html_aliases)
+                and set(allowed_rows) == set(expected_trivy) | canonical_native,
+                'Maintenance aliases or independently reviewed HIGH scope differ')
     coverage, inventory = binding['exact_trivy_coverage'], binding['exact_trivy_inventory']
     require(type(coverage) is dict and set(coverage) == {'alpine', 'Node.js', *binaries}
             and type(inventory) is dict and set(inventory) == set(coverage),
@@ -257,7 +282,10 @@ def package_counter(packages, *, bound=False):
     return result
 
 
-def verify_full_scans(trivy, grype, sbom, inspection, binding, *, trivy_exit_code, grype_exit_code):
+def verify_full_scans(trivy, grype, sbom, inspection, binding, *, trivy_exit_code, grype_exit_code,
+                      profile='exact28'):
+    require(profile in {'exact28', 'maintenance'}, 'Unknown exact artifact contract')
+    grype_count = 12 if profile == 'maintenance' else 7
     require(type(trivy_exit_code) is int and trivy_exit_code == 0
             and type(grype_exit_code) is int and grype_exit_code == 0,
             'Full operational scanner success is required')
@@ -322,7 +350,7 @@ def verify_full_scans(trivy, grype, sbom, inspection, binding, *, trivy_exit_cod
                        'package': artifact.get('name'), 'version': artifact.get('version'),
                        'severity': severity.upper()}
                 grype_rows[row_key(row)] += 1
-    require(grype_rows == row_counter(binding['exact_grype_rows'], 7),
+    require(grype_rows == row_counter(binding['exact_grype_rows'], grype_count),
             'Exact7 native blocking findings are missing, extra, duplicate or changed')
     require(type(sbom) is dict and type(sbom.get('artifacts')) is list and sbom['artifacts'],
             'Complete native SBOM is required')
@@ -337,7 +365,7 @@ def verify_full_scans(trivy, grype, sbom, inspection, binding, *, trivy_exit_cod
         trivy_exit_code=trivy_exit_code, grype_exit_code=grype_exit_code)
     require(result['passed'] is True and result['unresolved_count'] == 0
             and len(result['verified_dispositions']['Trivy']) == 28
-            and len(result['verified_dispositions']['Grype']) == 7,
+            and len(result['verified_dispositions']['Grype']) == grype_count,
             'Pure scanner evaluation does not match the complete exact subject')
     return result
 
@@ -370,17 +398,19 @@ def final_result(facts, request, auth=None, *, prepare=False):
             'mode': 'new_human_authorized_exact28_Grafana_artifact'}
 
 
-def validate_output(args):
-    cache = (ROOT / '.cache/eval').resolve()
+def validate_output(args, *, root=None):
+    root = ROOT if root is None else root
+    cache = (root / '.cache/eval').resolve()
     output = args.output.resolve()
-    require(cache.is_relative_to(ROOT.resolve()) and output.is_relative_to(cache)
+    require(cache.is_relative_to(root.resolve()) and output.is_relative_to(cache)
             and not args.output.exists() and not args.output.is_symlink()
             and output not in {getattr(args, name).resolve() for name in
                                ('archive', 'scan', 'grype_scan', 'sbom', 'inspect')},
             'Output must be a distinct new workspace .cache/eval file')
 
 
-def main(argv=None):
+def main(argv=None, *, consumer=None):
+    api = sys.modules[__name__] if consumer is None else consumer
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ('archive', 'scan', 'grype-scan', 'sbom', 'inspect', 'output'):
         parser.add_argument('--' + name, required=True, type=Path)
@@ -389,28 +419,28 @@ def main(argv=None):
     parser.add_argument('--prepare', action='store_true')
     args = parser.parse_args(argv)
     try:
-        validate_output(args)
-        request = load_request(ROOT)
+        api.validate_output(args)
+        request = api.load_request(api.ROOT)
         binding = request['binding']
         archive = verify_oci_archive(args.archive, binding, max_archive_bytes=MAX_ARCHIVE_BYTES)
         inspection = read_json(args.inspect)
         if type(inspection) is list:
             require(len(inspection) == 1, 'Exactly one actual image inspection is required')
             inspection = inspection[0]
-        facts = verify_full_scans(read_json(args.scan), read_json(args.grype_scan), read_json(args.sbom),
+        facts = api.verify_full_scans(read_json(args.scan), read_json(args.grype_scan), read_json(args.sbom),
             inspection, binding, trivy_exit_code=args.scanner_exit_code, grype_exit_code=args.grype_exit_code)
         facts.update(archive=archive, raw_scan_sha256=file_hash(args.scan),
                      raw_grype_sha256=file_hash(args.grype_scan), raw_sbom_sha256=file_hash(args.sbom))
-        auth_path = ROOT / AUTH_PATH
+        auth_path = api.ROOT / api.AUTH_PATH
         auth = read_json(auth_path) if not args.prepare and auth_path.is_file() else None
-        result = final_result(facts, request, auth, prepare=args.prepare)
+        result = api.final_result(facts, request, auth, prepare=args.prepare)
     except (ValueError, TypeError, KeyError, OSError, IndexError, AttributeError,
             subprocess.SubprocessError, tarfile.TarError) as error:
         result = {'passed': False, 'mode': 'failed_closed', 'error_type': type(error).__name__}
         if isinstance(error, ValueError):
             result['error'] = str(error)[:220]
     try:
-        validate_output(args)
+        api.validate_output(args)
         args.output.parent.mkdir(parents=True, exist_ok=True)
         with args.output.open('x', encoding='utf-8') as stream:
             stream.write(json.dumps(result, indent=2) + '\n')

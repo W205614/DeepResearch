@@ -1,0 +1,874 @@
+{
+  "schema": "grafana-maintenance-plugin-independent-review-v1",
+  "actor": "/root/grafana_plugins_review",
+  "actor_kind": "automated_independent_agent",
+  "recorded_at": "2026-11-05T09:23:34.817041+00:00",
+  "review_kind": "exact_new_subject_per_finding_technical_applicability",
+  "facts_passed": true,
+  "artifact_approved": false,
+  "human_risk_acceptance": false,
+  "old_authorization_inherited": false,
+  "subject": {
+    "artifact": "grafana",
+    "root_layout": "nested_index",
+    "archive_bytes": 776297984,
+    "archive_sha256": "408744f9d8d357a9b7dfd97ac802efbbdee662cb1177b80d8020bdc24c019e25",
+    "index_digest": "sha256:5a14435f088e735cbaba6e6375c5ea03e34424ea3934b55e098a2fb660db452a",
+    "platform_manifest_digest": "sha256:0f354ce9c25e92e811c3f09382c0d317bc7193bee58b97e4b1170049f2b007aa",
+    "config_digest": "sha256:bde24c79bbb09619d33a912b8487e573e3ddbbdadf4f923afe3b4f0988a439fe",
+    "diff_ids": [
+      "sha256:75c137aedfb2760f88629236cb7b797630aed0c3d91d626d1d1bb694878fc2ba",
+      "sha256:3b65ad5d0600ae408b194a3e00c3ce5f18e2f3775b6efe2578fbded330a241a3",
+      "sha256:afbd9e1d092a95dec6977836724da893497654babce2e3f73ea99afd6476f2ed",
+      "sha256:f50fbeb907e1d2ba1a7a2260aa2cbe90973b8473e3ef78d60fbffdf109d14386",
+      "sha256:add892858f9122df35d1762b499f17c25f23f5875892df265a15d3858904ad74",
+      "sha256:20418aa06f25a38cebd5a9906c2db0f8d3e3e1c0924f1be4ee287ff75389522c",
+      "sha256:71c22afd8a267f1aa3262b8e5c821f3ca221071dade6b45dbb9cc2cb900156ee",
+      "sha256:840eb78f709d0ce8bc53370f86f5266aac9d721d49896a3809060ef779ff7eaf",
+      "sha256:f95a81142d494a928d5ccf90ef6c19c6c3f8da7dc246a53d368f1034c2fb6fb8",
+      "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+      "sha256:7e722b084590d46a61b9e42d1a0bce61657c39ab1e04a9f522e3e97fb15506f8",
+      "sha256:abb6d46b4018d7d5f49f19782b0faeda15317f2ed57355b6489c87d57b770e10",
+      "sha256:d732edb6be89e6df45f45cfc5549199b465e7d5d59eab7cd6958b6a3589c477c",
+      "sha256:cbd87404141e0e391d311d08e8c22aeb243fef50a2c4199911f987c278f39264",
+      "sha256:ab177e090e3b33c43006a0f29604fbfc2084e1bc3a66410ca10d9d161cf12383",
+      "sha256:c265a495c474abef280e32994f6af74be5625d4587587cf7627247c3b75dfab3",
+      "sha256:cce18224fcc067daf12978050c22b421210aae08860551ed032b59e4849eb8e2"
+    ],
+    "binary_sha256": {
+      "usr/share/grafana/bin/grafana": "71a29721333128bb3c4c0c32daf68fc95073235fe44a84d0b935c6196705948c",
+      "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64": "9506612c4e2b460e524ce10977214e197feba998fff597ff90f4ce1d9ca91c35",
+      "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64": "2f844f15400d3f96ec9a3351df3fc76f46ae9abe7a49797632bdb85666156fc7",
+      "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64": "e754b55d6bb4bdc60ba9feddfe675b4d6011fb6eb1427709838a542418445c4c",
+      "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64": "ca2705f001f1c13540aef61894759e9b837f3a4b66fc915a5098a406b1886e00",
+      "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64": "7a70b6271a922e7307034cf0046aa5b95799ee75052452c03e03b6f17557d23a",
+      "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64": "77d9bc857651d41028da2694a50dea3f41643d71466b1f9cf6753931c115bd36",
+      "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64": "280b114823ff994daf2e2714fade6703e14fc9860a050c998bbcc68403b5c0e3",
+      "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64": "afcc0824b8e3b3258edfa4c98951a2113fa896c777cd442df6550117d5f10d11",
+      "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64": "a7b652cd0fd297c37d2a2e306f7cbdf67688cb9a50b8a3fd7d90948d1c49b8a7",
+      "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64": "3fb8397ce2284b9e0851e19092ba5748ed92bfbc4caadeec66dab1d0692267a1",
+      "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64": "8e6c55fc90d0e94657e663b386cd6173c811133daef447d08b6bdddea3f6cc9d",
+      "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": "ee8eaf152c8ee65fba362a42643b79a80125297c4940f6382cd11d36b0035ebc",
+      "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": "18a962eaa7f4220b6a7c40cf282f267674dd64efe73dd4fe6b45cac62980abcd"
+    },
+    "os": "linux",
+    "architecture": "amd64"
+  },
+  "reviewed_rows": [
+    {
+      "scanner": "Trivy",
+      "id": "GO-2026-5932",
+      "target": "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+      "package": "golang.org/x/crypto",
+      "version": "v0.57.0",
+      "severity": "UNKNOWN",
+      "canonical_id": "GO-2026-5932",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "9506612c4e2b460e524ce10977214e197feba998fff597ff90f4ce1d9ca91c35",
+      "primary_evidence": [
+        "plugins-GO-2026-5932.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-html-evidence/elasticsearch-production-graph-complete.json.gz",
+      "basis": "Latest Go advisory, including both affected package entries, names only the seven old x/crypto/openpgp imports. None is present in this exact complete error-free build graph; actual ELF hash, build settings and all effective dependencies match. Actual pclntab contains none of their function names."
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-78661",
+      "target": "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "UNKNOWN",
+      "canonical_id": "CVE-2026-78661",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "9506612c4e2b460e524ce10977214e197feba998fff597ff90f4ce1d9ca91c35",
+      "primary_evidence": [
+        "plugins-GO-2026-6860.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-html-evidence/elasticsearch-production-graph-complete.json.gz",
+      "basis": "Fresh official Go advisory locates vulnerable parser/rendering code specifically in x/net/html. The exact complete graph contains neither that package nor its subpackages; all native effective dependencies/build flags and actual ELF bytes match. HIGH raw Grype rows are independently reviewed and retain HIGH; they are not converted to the older UNKNOWN tuple."
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-97045",
+      "target": "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "UNKNOWN",
+      "canonical_id": "CVE-2026-97045",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "9506612c4e2b460e524ce10977214e197feba998fff597ff90f4ce1d9ca91c35",
+      "primary_evidence": [
+        "plugins-GO-2026-6866.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-html-evidence/elasticsearch-production-graph-complete.json.gz",
+      "basis": "Fresh official Go advisory locates vulnerable parser/rendering code specifically in x/net/html. The exact complete graph contains neither that package nor its subpackages; all native effective dependencies/build flags and actual ELF bytes match. HIGH raw Grype rows are independently reviewed and retain HIGH; they are not converted to the older UNKNOWN tuple."
+    },
+    {
+      "scanner": "Trivy",
+      "id": "GO-2026-5932",
+      "target": "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN",
+      "canonical_id": "GO-2026-5932",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "77d9bc857651d41028da2694a50dea3f41643d71466b1f9cf6753931c115bd36",
+      "primary_evidence": [
+        "plugins-GO-2026-5932.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-review-evidence/loki-production-graph.json.gz",
+      "basis": "Latest Go advisory, including both affected package entries, names only the seven old x/crypto/openpgp imports. None is present in this exact complete error-free build graph; actual ELF hash, build settings and all effective dependencies match. Actual pclntab contains none of their function names."
+    },
+    {
+      "scanner": "Trivy",
+      "id": "GO-2026-5932",
+      "target": "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN",
+      "canonical_id": "GO-2026-5932",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "280b114823ff994daf2e2714fade6703e14fc9860a050c998bbcc68403b5c0e3",
+      "primary_evidence": [
+        "plugins-GO-2026-5932.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-review-evidence/mssql-production-graph.json.gz",
+      "basis": "Latest Go advisory, including both affected package entries, names only the seven old x/crypto/openpgp imports. None is present in this exact complete error-free build graph; actual ELF hash, build settings and all effective dependencies match. Actual pclntab contains none of their function names."
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-78661",
+      "target": "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64",
+      "package": "golang.org/x/net",
+      "version": "v0.61.0",
+      "severity": "UNKNOWN",
+      "canonical_id": "CVE-2026-78661",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "3fb8397ce2284b9e0851e19092ba5748ed92bfbc4caadeec66dab1d0692267a1",
+      "primary_evidence": [
+        "plugins-GO-2026-6860.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-html-evidence/prometheus-production-graph-complete.json.gz",
+      "basis": "Fresh official Go advisory locates vulnerable parser/rendering code specifically in x/net/html. The exact complete graph contains neither that package nor its subpackages; all native effective dependencies/build flags and actual ELF bytes match. HIGH raw Grype rows are independently reviewed and retain HIGH; they are not converted to the older UNKNOWN tuple."
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-97045",
+      "target": "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64",
+      "package": "golang.org/x/net",
+      "version": "v0.61.0",
+      "severity": "UNKNOWN",
+      "canonical_id": "CVE-2026-97045",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "3fb8397ce2284b9e0851e19092ba5748ed92bfbc4caadeec66dab1d0692267a1",
+      "primary_evidence": [
+        "plugins-GO-2026-6866.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-html-evidence/prometheus-production-graph-complete.json.gz",
+      "basis": "Fresh official Go advisory locates vulnerable parser/rendering code specifically in x/net/html. The exact complete graph contains neither that package nor its subpackages; all native effective dependencies/build flags and actual ELF bytes match. HIGH raw Grype rows are independently reviewed and retain HIGH; they are not converted to the older UNKNOWN tuple."
+    },
+    {
+      "scanner": "Trivy",
+      "id": "GO-2026-5932",
+      "target": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+      "package": "golang.org/x/crypto",
+      "version": "v0.57.0",
+      "severity": "UNKNOWN",
+      "canonical_id": "GO-2026-5932",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "8e6c55fc90d0e94657e663b386cd6173c811133daef447d08b6bdddea3f6cc9d",
+      "primary_evidence": [
+        "plugins-GO-2026-5932.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-html-evidence/stackdriver-production-graph-complete.json.gz",
+      "basis": "Latest Go advisory, including both affected package entries, names only the seven old x/crypto/openpgp imports. None is present in this exact complete error-free build graph; actual ELF hash, build settings and all effective dependencies match. Actual pclntab contains none of their function names."
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-78661",
+      "target": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "UNKNOWN",
+      "canonical_id": "CVE-2026-78661",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "8e6c55fc90d0e94657e663b386cd6173c811133daef447d08b6bdddea3f6cc9d",
+      "primary_evidence": [
+        "plugins-GO-2026-6860.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-html-evidence/stackdriver-production-graph-complete.json.gz",
+      "basis": "Fresh official Go advisory locates vulnerable parser/rendering code specifically in x/net/html. The exact complete graph contains neither that package nor its subpackages; all native effective dependencies/build flags and actual ELF bytes match. HIGH raw Grype rows are independently reviewed and retain HIGH; they are not converted to the older UNKNOWN tuple."
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-97045",
+      "target": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "UNKNOWN",
+      "canonical_id": "CVE-2026-97045",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "8e6c55fc90d0e94657e663b386cd6173c811133daef447d08b6bdddea3f6cc9d",
+      "primary_evidence": [
+        "plugins-GO-2026-6866.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-html-evidence/stackdriver-production-graph-complete.json.gz",
+      "basis": "Fresh official Go advisory locates vulnerable parser/rendering code specifically in x/net/html. The exact complete graph contains neither that package nor its subpackages; all native effective dependencies/build flags and actual ELF bytes match. HIGH raw Grype rows are independently reviewed and retain HIGH; they are not converted to the older UNKNOWN tuple."
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-21728",
+      "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+      "severity": "HIGH",
+      "canonical_id": "CVE-2026-21728",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "ee8eaf152c8ee65fba362a42643b79a80125297c4940f6382cd11d36b0035ebc",
+      "primary_evidence": [
+        "plugins-CVE-2026-21728.json",
+        "plugins-tempo-fix-21728.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-html-evidence/tempo-production-graph-complete.json.gz",
+      "basis": "Fresh CNA and actual upstream fix identify Tempo server query frontend (21728) or S3 backend/status configuration disclosure (28377). This datasource binary compiles only the four Tempo tempopb generated protocol packages, with neither vulnerable server component. The complete native dependency/build identity and actual ELF function inventory were rechecked; no version-only exemption is used."
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-28377",
+      "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+      "severity": "HIGH",
+      "canonical_id": "CVE-2026-28377",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "ee8eaf152c8ee65fba362a42643b79a80125297c4940f6382cd11d36b0035ebc",
+      "primary_evidence": [
+        "plugins-CVE-2026-28377.json",
+        "plugins-tempo-fix-28377.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-html-evidence/tempo-production-graph-complete.json.gz",
+      "basis": "Fresh CNA and actual upstream fix identify Tempo server query frontend (21728) or S3 backend/status configuration disclosure (28377). This datasource binary compiles only the four Tempo tempopb generated protocol packages, with neither vulnerable server component. The complete native dependency/build identity and actual ELF function inventory were rechecked; no version-only exemption is used."
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-78661",
+      "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "UNKNOWN",
+      "canonical_id": "CVE-2026-78661",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "ee8eaf152c8ee65fba362a42643b79a80125297c4940f6382cd11d36b0035ebc",
+      "primary_evidence": [
+        "plugins-GO-2026-6860.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-html-evidence/tempo-production-graph-complete.json.gz",
+      "basis": "Fresh official Go advisory locates vulnerable parser/rendering code specifically in x/net/html. The exact complete graph contains neither that package nor its subpackages; all native effective dependencies/build flags and actual ELF bytes match. HIGH raw Grype rows are independently reviewed and retain HIGH; they are not converted to the older UNKNOWN tuple."
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-97045",
+      "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "UNKNOWN",
+      "canonical_id": "CVE-2026-97045",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "ee8eaf152c8ee65fba362a42643b79a80125297c4940f6382cd11d36b0035ebc",
+      "primary_evidence": [
+        "plugins-GO-2026-6866.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-html-evidence/tempo-production-graph-complete.json.gz",
+      "basis": "Fresh official Go advisory locates vulnerable parser/rendering code specifically in x/net/html. The exact complete graph contains neither that package nor its subpackages; all native effective dependencies/build flags and actual ELF bytes match. HIGH raw Grype rows are independently reviewed and retain HIGH; they are not converted to the older UNKNOWN tuple."
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-78661",
+      "target": "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "UNKNOWN",
+      "canonical_id": "CVE-2026-78661",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "18a962eaa7f4220b6a7c40cf282f267674dd64efe73dd4fe6b45cac62980abcd",
+      "primary_evidence": [
+        "plugins-GO-2026-6860.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-html-evidence/zipkin-production-graph-complete.json.gz",
+      "basis": "Fresh official Go advisory locates vulnerable parser/rendering code specifically in x/net/html. The exact complete graph contains neither that package nor its subpackages; all native effective dependencies/build flags and actual ELF bytes match. HIGH raw Grype rows are independently reviewed and retain HIGH; they are not converted to the older UNKNOWN tuple."
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-97045",
+      "target": "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "UNKNOWN",
+      "canonical_id": "CVE-2026-97045",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "18a962eaa7f4220b6a7c40cf282f267674dd64efe73dd4fe6b45cac62980abcd",
+      "primary_evidence": [
+        "plugins-GO-2026-6866.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-html-evidence/zipkin-production-graph-complete.json.gz",
+      "basis": "Fresh official Go advisory locates vulnerable parser/rendering code specifically in x/net/html. The exact complete graph contains neither that package nor its subpackages; all native effective dependencies/build flags and actual ELF bytes match. HIGH raw Grype rows are independently reviewed and retain HIGH; they are not converted to the older UNKNOWN tuple."
+    },
+    {
+      "scanner": "Grype",
+      "id": "GHSA-p4r4-xvrq-gvmc",
+      "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+      "severity": "HIGH",
+      "canonical_id": "CVE-2026-21728",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "ee8eaf152c8ee65fba362a42643b79a80125297c4940f6382cd11d36b0035ebc",
+      "primary_evidence": [
+        "plugins-CVE-2026-21728.json",
+        "plugins-tempo-fix-21728.json",
+        "plugins-GHSA-p4r4-xvrq-gvmc.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-html-evidence/tempo-production-graph-complete.json.gz",
+      "basis": "Fresh CNA and actual upstream fix identify Tempo server query frontend (21728) or S3 backend/status configuration disclosure (28377). This datasource binary compiles only the four Tempo tempopb generated protocol packages, with neither vulnerable server component. The complete native dependency/build identity and actual ELF function inventory were rechecked; no version-only exemption is used."
+    },
+    {
+      "scanner": "Grype",
+      "id": "GO-2026-6860",
+      "target": "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "HIGH",
+      "canonical_id": "CVE-2026-78661",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "9506612c4e2b460e524ce10977214e197feba998fff597ff90f4ce1d9ca91c35",
+      "primary_evidence": [
+        "plugins-GO-2026-6860.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-html-evidence/elasticsearch-production-graph-complete.json.gz",
+      "basis": "Fresh official Go advisory locates vulnerable parser/rendering code specifically in x/net/html. The exact complete graph contains neither that package nor its subpackages; all native effective dependencies/build flags and actual ELF bytes match. HIGH raw Grype rows are independently reviewed and retain HIGH; they are not converted to the older UNKNOWN tuple."
+    },
+    {
+      "scanner": "Grype",
+      "id": "GO-2026-6860",
+      "target": "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "HIGH",
+      "canonical_id": "CVE-2026-78661",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "18a962eaa7f4220b6a7c40cf282f267674dd64efe73dd4fe6b45cac62980abcd",
+      "primary_evidence": [
+        "plugins-GO-2026-6860.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-html-evidence/zipkin-production-graph-complete.json.gz",
+      "basis": "Fresh official Go advisory locates vulnerable parser/rendering code specifically in x/net/html. The exact complete graph contains neither that package nor its subpackages; all native effective dependencies/build flags and actual ELF bytes match. HIGH raw Grype rows are independently reviewed and retain HIGH; they are not converted to the older UNKNOWN tuple."
+    },
+    {
+      "scanner": "Grype",
+      "id": "GO-2026-6860",
+      "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "HIGH",
+      "canonical_id": "CVE-2026-78661",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "ee8eaf152c8ee65fba362a42643b79a80125297c4940f6382cd11d36b0035ebc",
+      "primary_evidence": [
+        "plugins-GO-2026-6860.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-html-evidence/tempo-production-graph-complete.json.gz",
+      "basis": "Fresh official Go advisory locates vulnerable parser/rendering code specifically in x/net/html. The exact complete graph contains neither that package nor its subpackages; all native effective dependencies/build flags and actual ELF bytes match. HIGH raw Grype rows are independently reviewed and retain HIGH; they are not converted to the older UNKNOWN tuple."
+    },
+    {
+      "scanner": "Grype",
+      "id": "GO-2026-6860",
+      "target": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "HIGH",
+      "canonical_id": "CVE-2026-78661",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "8e6c55fc90d0e94657e663b386cd6173c811133daef447d08b6bdddea3f6cc9d",
+      "primary_evidence": [
+        "plugins-GO-2026-6860.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-html-evidence/stackdriver-production-graph-complete.json.gz",
+      "basis": "Fresh official Go advisory locates vulnerable parser/rendering code specifically in x/net/html. The exact complete graph contains neither that package nor its subpackages; all native effective dependencies/build flags and actual ELF bytes match. HIGH raw Grype rows are independently reviewed and retain HIGH; they are not converted to the older UNKNOWN tuple."
+    },
+    {
+      "scanner": "Grype",
+      "id": "GO-2026-6860",
+      "target": "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64",
+      "package": "golang.org/x/net",
+      "version": "v0.61.0",
+      "severity": "HIGH",
+      "canonical_id": "CVE-2026-78661",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "3fb8397ce2284b9e0851e19092ba5748ed92bfbc4caadeec66dab1d0692267a1",
+      "primary_evidence": [
+        "plugins-GO-2026-6860.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-html-evidence/prometheus-production-graph-complete.json.gz",
+      "basis": "Fresh official Go advisory locates vulnerable parser/rendering code specifically in x/net/html. The exact complete graph contains neither that package nor its subpackages; all native effective dependencies/build flags and actual ELF bytes match. HIGH raw Grype rows are independently reviewed and retain HIGH; they are not converted to the older UNKNOWN tuple."
+    },
+    {
+      "scanner": "Grype",
+      "id": "GHSA-ffqx-q65f-36jf",
+      "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+      "severity": "HIGH",
+      "canonical_id": "CVE-2026-28377",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "ee8eaf152c8ee65fba362a42643b79a80125297c4940f6382cd11d36b0035ebc",
+      "primary_evidence": [
+        "plugins-CVE-2026-28377.json",
+        "plugins-tempo-fix-28377.json",
+        "plugins-GHSA-ffqx-q65f-36jf.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-html-evidence/tempo-production-graph-complete.json.gz",
+      "basis": "Fresh CNA and actual upstream fix identify Tempo server query frontend (21728) or S3 backend/status configuration disclosure (28377). This datasource binary compiles only the four Tempo tempopb generated protocol packages, with neither vulnerable server component. The complete native dependency/build identity and actual ELF function inventory were rechecked; no version-only exemption is used."
+    },
+    {
+      "scanner": "Grype",
+      "id": "GO-2026-5932",
+      "target": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+      "package": "golang.org/x/crypto",
+      "version": "v0.57.0",
+      "severity": "UNKNOWN",
+      "canonical_id": "GO-2026-5932",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "8e6c55fc90d0e94657e663b386cd6173c811133daef447d08b6bdddea3f6cc9d",
+      "primary_evidence": [
+        "plugins-GO-2026-5932.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-html-evidence/stackdriver-production-graph-complete.json.gz",
+      "basis": "Latest Go advisory, including both affected package entries, names only the seven old x/crypto/openpgp imports. None is present in this exact complete error-free build graph; actual ELF hash, build settings and all effective dependencies match. Actual pclntab contains none of their function names."
+    },
+    {
+      "scanner": "Grype",
+      "id": "GO-2026-5932",
+      "target": "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+      "package": "golang.org/x/crypto",
+      "version": "v0.57.0",
+      "severity": "UNKNOWN",
+      "canonical_id": "GO-2026-5932",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "9506612c4e2b460e524ce10977214e197feba998fff597ff90f4ce1d9ca91c35",
+      "primary_evidence": [
+        "plugins-GO-2026-5932.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-html-evidence/elasticsearch-production-graph-complete.json.gz",
+      "basis": "Latest Go advisory, including both affected package entries, names only the seven old x/crypto/openpgp imports. None is present in this exact complete error-free build graph; actual ELF hash, build settings and all effective dependencies match. Actual pclntab contains none of their function names."
+    },
+    {
+      "scanner": "Grype",
+      "id": "GO-2026-5932",
+      "target": "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN",
+      "canonical_id": "GO-2026-5932",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "280b114823ff994daf2e2714fade6703e14fc9860a050c998bbcc68403b5c0e3",
+      "primary_evidence": [
+        "plugins-GO-2026-5932.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-review-evidence/mssql-production-graph.json.gz",
+      "basis": "Latest Go advisory, including both affected package entries, names only the seven old x/crypto/openpgp imports. None is present in this exact complete error-free build graph; actual ELF hash, build settings and all effective dependencies match. Actual pclntab contains none of their function names."
+    },
+    {
+      "scanner": "Grype",
+      "id": "GO-2026-5932",
+      "target": "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN",
+      "canonical_id": "GO-2026-5932",
+      "disposition": "NOT_AFFECTED",
+      "elf_sha256": "77d9bc857651d41028da2694a50dea3f41643d71466b1f9cf6753931c115bd36",
+      "primary_evidence": [
+        "plugins-GO-2026-5932.json"
+      ],
+      "graph_evidence": "deployment/security/grafana-candidate-review-evidence/loki-production-graph.json.gz",
+      "basis": "Latest Go advisory, including both affected package entries, names only the seven old x/crypto/openpgp imports. None is present in this exact complete error-free build graph; actual ELF hash, build settings and all effective dependencies match. Actual pclntab contains none of their function names."
+    }
+  ],
+  "scanner_row_counts": {
+    "Trivy": 16,
+    "Grype": 11
+  },
+  "actual_elfs_read": {
+    "elasticsearch": {
+      "target": "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+      "sha256": "9506612c4e2b460e524ce10977214e197feba998fff597ff90f4ce1d9ca91c35",
+      "bytes": 36405408
+    },
+    "grafana-postgresql-datasource": {
+      "target": "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64",
+      "sha256": "2f844f15400d3f96ec9a3351df3fc76f46ae9abe7a49797632bdb85666156fc7",
+      "bytes": 32235680
+    },
+    "grafana-pyroscope-datasource": {
+      "target": "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64",
+      "sha256": "e754b55d6bb4bdc60ba9feddfe675b4d6011fb6eb1427709838a542418445c4c",
+      "bytes": 32465056
+    },
+    "influxdb": {
+      "target": "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64",
+      "sha256": "ca2705f001f1c13540aef61894759e9b837f3a4b66fc915a5098a406b1886e00",
+      "bytes": 31899808
+    },
+    "jaeger": {
+      "target": "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64",
+      "sha256": "7a70b6271a922e7307034cf0046aa5b95799ee75052452c03e03b6f17557d23a",
+      "bytes": 28389536
+    },
+    "loki": {
+      "target": "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+      "sha256": "77d9bc857651d41028da2694a50dea3f41643d71466b1f9cf6753931c115bd36",
+      "bytes": 40878240
+    },
+    "mssql": {
+      "target": "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+      "sha256": "280b114823ff994daf2e2714fade6703e14fc9860a050c998bbcc68403b5c0e3",
+      "bytes": 32276640
+    },
+    "mysql": {
+      "target": "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64",
+      "sha256": "afcc0824b8e3b3258edfa4c98951a2113fa896c777cd442df6550117d5f10d11",
+      "bytes": 28737696
+    },
+    "opentsdb": {
+      "target": "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64",
+      "sha256": "a7b652cd0fd297c37d2a2e306f7cbdf67688cb9a50b8a3fd7d90948d1c49b8a7",
+      "bytes": 28106912
+    },
+    "prometheus": {
+      "target": "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64",
+      "sha256": "3fb8397ce2284b9e0851e19092ba5748ed92bfbc4caadeec66dab1d0692267a1",
+      "bytes": 33321120
+    },
+    "stackdriver": {
+      "target": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+      "sha256": "8e6c55fc90d0e94657e663b386cd6173c811133daef447d08b6bdddea3f6cc9d",
+      "bytes": 30261408
+    },
+    "tempo": {
+      "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "sha256": "ee8eaf152c8ee65fba362a42643b79a80125297c4940f6382cd11d36b0035ebc",
+      "bytes": 28864672
+    },
+    "zipkin": {
+      "target": "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64",
+      "sha256": "18a962eaa7f4220b6a7c40cf282f267674dd64efe73dd4fe6b45cac62980abcd",
+      "bytes": 27943072
+    }
+  },
+  "compile_graph_checks": {
+    "elasticsearch": {
+      "target": "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+      "elf_sha256": "9506612c4e2b460e524ce10977214e197feba998fff597ff90f4ce1d9ca91c35",
+      "graph": "deployment/security/grafana-candidate-html-evidence/elasticsearch-production-graph-complete.json.gz",
+      "compressed_sha256": "384c7f8e888cf015196dad55f34e31a6801ee01e6408b1ac3fe3ec40b89518cb",
+      "raw_sha256": "ac5b6bb4736dd43424df22c223eab9cf736f888327a44f9604d02f422d9d0e32",
+      "raw_bytes": 3148365,
+      "package_count": 743,
+      "module_count_including_main": 104,
+      "complete_effective_native_dependencies_equal": true,
+      "missing_imports": [],
+      "excluded_packages": {
+        "old_openpgp": [],
+        "xnet_html": [],
+        "tempo_query_frontend": [],
+        "tempo_s3_backend": []
+      },
+      "native_build_settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-ldflags": "-w -s -extldflags \"-static\" -X 'github.com/grafana/grafana-plugin-sdk-go/build/buildinfo.buildInfoJSON={\"time\":1792580753831,\"pluginID\":\"elasticsearch\",\"version\":\"12.9.3\"}' -X 'main.pluginID=elasticsearch' -X 'main.version=12.9.3'",
+        "-tags": "arrow_json_stdlib",
+        "CGO_ENABLED": "0",
+        "GOARCH": "amd64",
+        "GOOS": "linux",
+        "GOAMD64": "v1",
+        "vcs": "git",
+        "vcs.revision": "815316bda4b87ba342e4a13940d6566dac82ef46",
+        "vcs.time": "2026-10-21T10:54:43Z",
+        "vcs.modified": "false"
+      },
+      "linked_function_count": 47617,
+      "affected_linked_function_names": [],
+      "tempo_compiled_packages": [],
+      "graph_reuse_boundary": "Immutable compile evidence is revalidated against its original pinned request, actual unchanged ELF, exact build settings and every effective native module. Technical applicability is recomputed from freshly fetched primary advisories; no old disposition or authorization is inherited."
+    },
+    "stackdriver": {
+      "target": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+      "elf_sha256": "8e6c55fc90d0e94657e663b386cd6173c811133daef447d08b6bdddea3f6cc9d",
+      "graph": "deployment/security/grafana-candidate-html-evidence/stackdriver-production-graph-complete.json.gz",
+      "compressed_sha256": "3addf61a9ff90704760a41e3d0be60051d9797f277bdb1ff97384d2875bde75a",
+      "raw_sha256": "29b7ffc787069d370999248bede93c5a0499ea369158430d58919077383e6bec",
+      "raw_bytes": 2967076,
+      "package_count": 676,
+      "module_count_including_main": 85,
+      "complete_effective_native_dependencies_equal": true,
+      "missing_imports": [],
+      "excluded_packages": {
+        "old_openpgp": [],
+        "xnet_html": [],
+        "tempo_query_frontend": [],
+        "tempo_s3_backend": []
+      },
+      "native_build_settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-ldflags": "-w -s -extldflags \"-static\" -X 'github.com/grafana/grafana-plugin-sdk-go/build/buildinfo.buildInfoJSON={\"time\":1792582898917,\"pluginID\":\"stackdriver\",\"version\":\"12.6.4\"}' -X 'main.pluginID=stackdriver' -X 'main.version=12.6.4'",
+        "-tags": "arrow_json_stdlib",
+        "CGO_ENABLED": "0",
+        "GOARCH": "amd64",
+        "GOOS": "linux",
+        "GOAMD64": "v1",
+        "vcs": "git",
+        "vcs.revision": "8ef6e781f03294367a7ed700d33fe227bf507fd8",
+        "vcs.time": "2026-10-21T11:16:39Z",
+        "vcs.modified": "false"
+      },
+      "linked_function_count": 39077,
+      "affected_linked_function_names": [],
+      "tempo_compiled_packages": [],
+      "graph_reuse_boundary": "Immutable compile evidence is revalidated against its original pinned request, actual unchanged ELF, exact build settings and every effective native module. Technical applicability is recomputed from freshly fetched primary advisories; no old disposition or authorization is inherited."
+    },
+    "tempo": {
+      "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "elf_sha256": "ee8eaf152c8ee65fba362a42643b79a80125297c4940f6382cd11d36b0035ebc",
+      "graph": "deployment/security/grafana-candidate-html-evidence/tempo-production-graph-complete.json.gz",
+      "compressed_sha256": "c2c894dbcc2ab43d4131215f771e814f18c90a84356f9ad190ae5381912f71e0",
+      "raw_sha256": "0c4c42f3a49c9f73ce3578a6887090fb031658533fa953875b1d0fe4f2dabcb6",
+      "raw_bytes": 2532050,
+      "package_count": 605,
+      "module_count_including_main": 75,
+      "complete_effective_native_dependencies_equal": true,
+      "missing_imports": [],
+      "excluded_packages": {
+        "old_openpgp": [],
+        "xnet_html": [],
+        "tempo_query_frontend": [],
+        "tempo_s3_backend": []
+      },
+      "native_build_settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-ldflags": "-w -s -extldflags \"-static\" -X 'github.com/grafana/grafana-plugin-sdk-go/build/buildinfo.buildInfoJSON={\"time\":1792597528739,\"pluginID\":\"tempo\",\"version\":\"13.3.0\"}' -X 'main.pluginID=tempo' -X 'main.version=13.3.0'",
+        "-tags": "arrow_json_stdlib",
+        "CGO_ENABLED": "0",
+        "GOARCH": "amd64",
+        "GOOS": "linux",
+        "GOAMD64": "v1",
+        "vcs": "git",
+        "vcs.revision": "7bbc067f7b950057beebcaeeb910f16e98f2dacb",
+        "vcs.time": "2026-10-21T15:10:41Z",
+        "vcs.modified": "false"
+      },
+      "linked_function_count": 38044,
+      "affected_linked_function_names": [],
+      "tempo_compiled_packages": [
+        "github.com/grafana/tempo/pkg/tempopb",
+        "github.com/grafana/tempo/pkg/tempopb/common/v1",
+        "github.com/grafana/tempo/pkg/tempopb/resource/v1",
+        "github.com/grafana/tempo/pkg/tempopb/trace/v1"
+      ],
+      "graph_reuse_boundary": "Immutable compile evidence is revalidated against its original pinned request, actual unchanged ELF, exact build settings and every effective native module. Technical applicability is recomputed from freshly fetched primary advisories; no old disposition or authorization is inherited."
+    },
+    "prometheus": {
+      "target": "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64",
+      "elf_sha256": "3fb8397ce2284b9e0851e19092ba5748ed92bfbc4caadeec66dab1d0692267a1",
+      "graph": "deployment/security/grafana-candidate-html-evidence/prometheus-production-graph-complete.json.gz",
+      "compressed_sha256": "3a48f200c808ef62fc26551b84ceca167dcf55f32b445fcd07d23e3ec0dd910a",
+      "raw_sha256": "8eaf59a3faabf911c8cb6cfdef41a430da728181ecdf3b7ad56b9258539519b0",
+      "raw_bytes": 3253916,
+      "package_count": 723,
+      "module_count_including_main": 104,
+      "complete_effective_native_dependencies_equal": true,
+      "missing_imports": [],
+      "excluded_packages": {
+        "old_openpgp": [],
+        "xnet_html": [],
+        "tempo_query_frontend": [],
+        "tempo_s3_backend": []
+      },
+      "native_build_settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-ldflags": "-w -s -extldflags \"-static\" -X 'github.com/grafana/grafana-plugin-sdk-go/build/buildinfo.buildInfoJSON={\"time\":1792660644654,\"pluginID\":\"prometheus\",\"version\":\"13.2.4\"}' -X 'main.pluginID=prometheus' -X 'main.version=13.2.4'",
+        "-tags": "arrow_json_stdlib",
+        "CGO_ENABLED": "0",
+        "GOARCH": "amd64",
+        "GOOS": "linux",
+        "GOAMD64": "v1",
+        "vcs": "git",
+        "vcs.revision": "7d5bbc86bd38f95ca5143c8490d1204787cc391b",
+        "vcs.time": "2026-10-22T08:56:10Z",
+        "vcs.modified": "false"
+      },
+      "linked_function_count": 42162,
+      "affected_linked_function_names": [],
+      "tempo_compiled_packages": [],
+      "graph_reuse_boundary": "Immutable compile evidence is revalidated against its original pinned request, actual unchanged ELF, exact build settings and every effective native module. Technical applicability is recomputed from freshly fetched primary advisories; no old disposition or authorization is inherited."
+    },
+    "zipkin": {
+      "target": "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64",
+      "elf_sha256": "18a962eaa7f4220b6a7c40cf282f267674dd64efe73dd4fe6b45cac62980abcd",
+      "graph": "deployment/security/grafana-candidate-html-evidence/zipkin-production-graph-complete.json.gz",
+      "compressed_sha256": "c9e53c39ff113c0ef0e704f652506b00831c5101951b437af65314ea4d80183f",
+      "raw_sha256": "127e500e76626732cb0138ff473359024c2339ad8331d62505eae3fc164c41cc",
+      "raw_bytes": 2403649,
+      "package_count": 586,
+      "module_count_including_main": 71,
+      "complete_effective_native_dependencies_equal": true,
+      "missing_imports": [],
+      "excluded_packages": {
+        "old_openpgp": [],
+        "xnet_html": [],
+        "tempo_query_frontend": [],
+        "tempo_s3_backend": []
+      },
+      "native_build_settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-ldflags": "-w -s -extldflags \"-static\" -X 'github.com/grafana/grafana-plugin-sdk-go/build/buildinfo.buildInfoJSON={\"time\":1792596022952,\"pluginID\":\"zipkin\",\"version\":\"12.4.11\"}' -X 'main.pluginID=zipkin' -X 'main.version=12.4.11'",
+        "-tags": "arrow_json_stdlib",
+        "CGO_ENABLED": "0",
+        "GOARCH": "amd64",
+        "GOOS": "linux",
+        "GOAMD64": "v1",
+        "vcs": "git",
+        "vcs.revision": "8d4b27908faf474d2fee295ddddbd1c8ac9aa2e4",
+        "vcs.time": "2026-10-21T14:43:07Z",
+        "vcs.modified": "false"
+      },
+      "linked_function_count": 37247,
+      "affected_linked_function_names": [],
+      "tempo_compiled_packages": [],
+      "graph_reuse_boundary": "Immutable compile evidence is revalidated against its original pinned request, actual unchanged ELF, exact build settings and every effective native module. Technical applicability is recomputed from freshly fetched primary advisories; no old disposition or authorization is inherited."
+    },
+    "loki": {
+      "target": "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+      "elf_sha256": "77d9bc857651d41028da2694a50dea3f41643d71466b1f9cf6753931c115bd36",
+      "graph": "deployment/security/grafana-candidate-review-evidence/loki-production-graph.json.gz",
+      "compressed_sha256": "9d421e63541a9a3e615375e80243bffd5385a3ab30f87f5ca541bb8b08807ca8",
+      "raw_sha256": "cb392bfe729fbcad448978cce7e0f4faadc78285ff6ac6432444d578135e0227",
+      "raw_bytes": 5379115,
+      "package_count": 1078,
+      "module_count_including_main": 204,
+      "complete_effective_native_dependencies_equal": true,
+      "missing_imports": [],
+      "excluded_packages": {
+        "old_openpgp": [],
+        "xnet_html": [],
+        "tempo_query_frontend": [],
+        "tempo_s3_backend": []
+      },
+      "native_build_settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "0",
+        "GOARCH": "amd64",
+        "GOOS": "linux",
+        "GOAMD64": "v1",
+        "vcs": "git",
+        "vcs.revision": "6d076df3d695f5fda342fbbad1f52547b55a96e2",
+        "vcs.time": "2026-10-08T18:22:27Z",
+        "vcs.modified": "true"
+      },
+      "linked_function_count": 52374,
+      "affected_linked_function_names": [],
+      "tempo_compiled_packages": [],
+      "graph_reuse_boundary": "Immutable compile evidence is revalidated against its original pinned request, actual unchanged ELF, exact build settings and every effective native module. Technical applicability is recomputed from freshly fetched primary advisories; no old disposition or authorization is inherited."
+    },
+    "mssql": {
+      "target": "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+      "elf_sha256": "280b114823ff994daf2e2714fade6703e14fc9860a050c998bbcc68403b5c0e3",
+      "graph": "deployment/security/grafana-candidate-review-evidence/mssql-production-graph.json.gz",
+      "compressed_sha256": "596afe6efd8b352763f9a7190cfce504298b7e45f24545f47081a2bedbe3aabb",
+      "raw_sha256": "1efddc8069a978d4070f7f44f7311581cee52590769e77a6ed259aa7900fdf7d",
+      "raw_bytes": 3068912,
+      "package_count": 726,
+      "module_count_including_main": 91,
+      "complete_effective_native_dependencies_equal": true,
+      "missing_imports": [],
+      "excluded_packages": {
+        "old_openpgp": [],
+        "xnet_html": [],
+        "tempo_query_frontend": [],
+        "tempo_s3_backend": []
+      },
+      "native_build_settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "0",
+        "GOARCH": "amd64",
+        "GOOS": "linux",
+        "GOAMD64": "v1",
+        "vcs": "git",
+        "vcs.revision": "e0ad61ae045182f7869ba35afd1c48069b6add43",
+        "vcs.time": "2026-10-08T18:26:22Z",
+        "vcs.modified": "true"
+      },
+      "linked_function_count": 40262,
+      "affected_linked_function_names": [],
+      "tempo_compiled_packages": [],
+      "graph_reuse_boundary": "Immutable compile evidence is revalidated against its original pinned request, actual unchanged ELF, exact build settings and every effective native module. Technical applicability is recomputed from freshly fetched primary advisories; no old disposition or authorization is inherited."
+    }
+  },
+  "raw_reports_modified": false,
+  "severity_thresholds_changed": false,
+  "independent_read_method": "Fresh docker create pinned to the new immutable index; docker cp of thirteen actual ELF files, SHA256 and native Go build info read by this agent. No fixture was started.",
+  "retained_fixture": "dr-grafana-plugin-review-20261105",
+  "fixture_started": false,
+  "baseline_evidence_identity": {
+    "source_commit": "fbe9d05fe99490c09fa99b2b4ecd946d03217b14",
+    "original_request_sha256": "7ab4c179c5224a4c7acde032640f71b84422120d92ae82ad251c506d37e8381d",
+    "use": "Verifies immutable graph/build provenance and unchanged exact plugin bytes only; no historical verdict/authorization is inherited."
+  },
+  "evidence_files_sha256": {
+    "deployment/security/grafana-candidate-html-evidence/elasticsearch-production-graph-complete.json.gz": "384c7f8e888cf015196dad55f34e31a6801ee01e6408b1ac3fe3ec40b89518cb",
+    "deployment/security/grafana-candidate-html-evidence/independent-review.json": "17c0577273b321773b80c370cfac4533104de30bea619793ed728a097a3930ed",
+    "deployment/security/grafana-candidate-html-evidence/prometheus-production-graph-complete.json.gz": "3a48f200c808ef62fc26551b84ceca167dcf55f32b445fcd07d23e3ec0dd910a",
+    "deployment/security/grafana-candidate-html-evidence/stackdriver-production-graph-complete.json.gz": "3addf61a9ff90704760a41e3d0be60051d9797f277bdb1ff97384d2875bde75a",
+    "deployment/security/grafana-candidate-html-evidence/tempo-production-graph-complete.json.gz": "c2c894dbcc2ab43d4131215f771e814f18c90a84356f9ad190ae5381912f71e0",
+    "deployment/security/grafana-candidate-html-evidence/zipkin-production-graph-complete.json.gz": "c9e53c39ff113c0ef0e704f652506b00831c5101951b437af65314ea4d80183f",
+    "deployment/security/grafana-candidate-review-evidence/loki-graph-receipt.json": "d8dbf84c39e9cd829bffc7de6e9aaa79cafb16f4c729408be05e22f6934c2106",
+    "deployment/security/grafana-candidate-review-evidence/loki-production-graph.json.gz": "9d421e63541a9a3e615375e80243bffd5385a3ab30f87f5ca541bb8b08807ca8",
+    "deployment/security/grafana-candidate-review-evidence/mssql-graph-receipt.json": "6856e5ed1533651665541707ae763785b2ab1681223326cc9001eae13d1bfc07",
+    "deployment/security/grafana-candidate-review-evidence/mssql-production-graph.json.gz": "596afe6efd8b352763f9a7190cfce504298b7e45f24545f47081a2bedbe3aabb",
+    "deployment/security/grafana-maintenance-evidence/candidate-full-grype.json.gz": "2741f25a125779a4e275f6c460291018d5383208063373d1ae41714731791ade",
+    "deployment/security/grafana-maintenance-evidence/candidate-full-syft.json.gz": "b64d5aa7ffcf7bcd9360b317a456603b578266e46fa002ec2c4430bcd0bc3f4a",
+    "deployment/security/grafana-maintenance-evidence/candidate-full-trivy.json.gz": "05e61b284bc43aa9f7ee0ad85b6fd4eb7d2039db2b92ddbdfeaab78562be57a8",
+    "deployment/security/grafana-maintenance-evidence/plugins-actual-native-buildinfo.json": "11fd0ebf5ffa1e4b7c862f3fd08926a02c8b261688a2af930f97cdbff4108b98",
+    "deployment/security/grafana-maintenance-evidence/plugins-CVE-2026-21728.json": "5860812a0c1b503ad9f7689a7fd3bdcaef2797e35fbcc95663b7c968dc61a486",
+    "deployment/security/grafana-maintenance-evidence/plugins-CVE-2026-28377.json": "857e1970e8ee064d03cc5de4f0a7e4dba61a29a2a3c3a2c8a0dcfd4ba6f9b945",
+    "deployment/security/grafana-maintenance-evidence/plugins-elasticsearch-linked-functions.json.gz": "d78b90b9e870b2327f15d82d113ee76287590d516f1da89b5687dd600c4ec35d",
+    "deployment/security/grafana-maintenance-evidence/plugins-GHSA-ffqx-q65f-36jf.json": "9f3f3ea564d274b2772ac57628328b64442d031d2f0dfc2f8912bd8a70de9f63",
+    "deployment/security/grafana-maintenance-evidence/plugins-GHSA-p4r4-xvrq-gvmc.json": "42e23955b3205b7803638638d5670213898121add56f38073dfe183425ca8984",
+    "deployment/security/grafana-maintenance-evidence/plugins-GO-2026-5932.json": "bde8769150ec1368d9a8dbd61fbbde52296de692c57147e02e3ae295e1981f11",
+    "deployment/security/grafana-maintenance-evidence/plugins-GO-2026-6860.json": "443304c129b9540dc46d28392b973a136db90644019dc20c3e25941833d49df3",
+    "deployment/security/grafana-maintenance-evidence/plugins-GO-2026-6866.json": "c0d687be9779f000941b6c847646075598b659cdd51476951559208956bd0f82",
+    "deployment/security/grafana-maintenance-evidence/plugins-loki-linked-functions.json.gz": "e9f5fe2f84d5b2d5574519f543828cba8e040af57e7028a08d64f5d9a33b63d8",
+    "deployment/security/grafana-maintenance-evidence/plugins-mssql-linked-functions.json.gz": "a3b96e9bf553c9d29bb007c873ff6c056442422d1b715fc071138bf9918769c2",
+    "deployment/security/grafana-maintenance-evidence/plugins-prometheus-linked-functions.json.gz": "7c1210aecac31f3c2dc2876f230fc08e9668d126fcc4402e8044196ad4d5992e",
+    "deployment/security/grafana-maintenance-evidence/plugins-stackdriver-linked-functions.json.gz": "f48323bfd0ba10edb633b443b808c0a64499f5c5b6892d6317c4d97eb8c4345f",
+    "deployment/security/grafana-maintenance-evidence/plugins-tempo-fix-21728.json": "ca457db5a4cd30a776a8d9ccd9a1dc7237e80c367dd031bb34ef9d9d6cbe23eb",
+    "deployment/security/grafana-maintenance-evidence/plugins-tempo-fix-28377.json": "ec7cf895850e81616507d9057f9c65137674d1f12c21911ea3a6b6caac26b6cc",
+    "deployment/security/grafana-maintenance-evidence/plugins-tempo-linked-functions.json.gz": "cb215062e277d238f4b98090d671af09439e83247a314024bb0e7c25c47be172",
+    "deployment/security/grafana-maintenance-evidence/plugins-zipkin-linked-functions.json.gz": "e5d941ee40edf6c354c9f009ef6696f52ac7d46bad0f83d3ed2745c69c72af0c",
+    "deployment/security/grafana-maintenance-evidence/subject.json": "abaa0491ecc665e5b856dcb38bd4f6fd7f54279b4e90b03ecb50573e7a9854c2",
+    "deployment/vendors/grafana/inspect_gopcln.go": "01f4bab7344a9d20343ffa7542ef974fb087b58fc3552882fe4202110f3cbf36"
+  },
+  "limitations": [
+    "Only the exact scanner/advisory/target/package/version/severity tuples and actual ELF identities listed in reviewed_rows receive these technical conclusions.",
+    "Pclntab is supplemental; inlined-code absence is supported by complete compile-package graphs, never inferred solely from missing function names.",
+    "Main Grafana core and all other CVEs are outside this agent review; human exact-subject authorization, final full gate, publication and deployment are separate."
+  ]
+}
