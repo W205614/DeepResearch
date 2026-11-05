@@ -65,6 +65,7 @@ def create_app(settings: Settings | None = None):
     app.state.internal_service_token = internal_token
     configure_telemetry(app, settings.otel_exporter_otlp_endpoint)
     app.mount("/metrics", make_asgi_app())
+
     def rt(request: Request) -> Runtime:
         return request.app.state.runtime
 
@@ -89,7 +90,9 @@ def create_app(settings: Settings | None = None):
         return run
 
     async def visible_thread_runs(runtime: Runtime, thread_id: str, user: str):
-        rows = await runtime.db.rows("SELECT id FROM runs WHERE thread_id=? AND user_id=? ORDER BY created_at", (thread_id, user))
+        rows = await runtime.db.rows(
+            "SELECT id FROM runs WHERE thread_id=? AND user_id=? ORDER BY created_at", (thread_id, user)
+        )
         visible = []
         for row in rows:
             try:
@@ -105,8 +108,10 @@ def create_app(settings: Settings | None = None):
         memberships = await runtime.db.memberships(principal.subject)
         if not memberships:
             membership = await runtime.db.ensure_personal_workspace(
-                principal.subject, principal.display_name + " 的工作空间",
-                (0, settings.workspace_concurrent_run_limit))
+                principal.subject,
+                principal.display_name + " 的工作空间",
+                (0, settings.workspace_concurrent_run_limit),
+            )
         elif x_workspace_id:
             membership = await runtime.db.membership(x_workspace_id, principal.subject)
             if not membership:
@@ -129,13 +134,16 @@ def create_app(settings: Settings | None = None):
     async def administrator(request: Request, user=Depends(identity)):
         require_role(request, "admin")
         return user
+
     @app.exception_handler(InvalidDocument)
     async def invalid_document(request, exc):
         return JSONResponse({"detail": str(exc)}, status_code=422)
 
     @app.exception_handler(ServiceError)
     async def service_error(request, exc):
-        return JSONResponse({"detail": str(exc), "error": exc.detail()}, status_code=503 if exc.retryable else 422)
+        return JSONResponse(
+            {"detail": str(exc), "error": exc.detail()}, status_code=503 if exc.retryable else 422
+        )
 
     @app.exception_handler(ConflictError)
     async def conflict_error(request, exc):
@@ -148,7 +156,9 @@ def create_app(settings: Settings | None = None):
     @app.post("/internal/alerts")
     async def forward_alert(payload: dict, authorization: str = Header("")):
         expected = app.state.alert_relay_token
-        supplied = authorization.removeprefix("Bearer ").strip() if authorization.startswith("Bearer ") else ""
+        supplied = (
+            authorization.removeprefix("Bearer ").strip() if authorization.startswith("Bearer ") else ""
+        )
         if not expected:
             raise HTTPException(503, "告警转发令牌未配置")
         if not supplied or not hmac.compare_digest(supplied, expected):
@@ -168,18 +178,26 @@ def create_app(settings: Settings | None = None):
             raise HTTPException(502, "alert delivery failed") from exc
         app.state.alert_relay.mark_delivered(events)
         ALERT_DELIVERIES.labels("succeeded").inc()
-        return {"delivered": True, "count": len(events), "statuses": sorted({event["status"] for event in events})}
+        return {
+            "delivered": True,
+            "count": len(events),
+            "statuses": sorted({event["status"] for event in events}),
+        }
 
     def require_internal(authorization: str) -> None:
         expected = app.state.internal_service_token
-        supplied = authorization.removeprefix("Bearer ").strip() if authorization.startswith("Bearer ") else ""
+        supplied = (
+            authorization.removeprefix("Bearer ").strip() if authorization.startswith("Bearer ") else ""
+        )
         if not expected:
             raise HTTPException(503, "内部服务令牌未配置")
         if not supplied or not hmac.compare_digest(supplied, expected):
             raise HTTPException(401, "内部服务调用未授权")
 
     @app.post("/internal/agent/runs/{run_id}/schedule", status_code=202)
-    async def schedule_existing_run(run_id: str, payload: dict, authorization: str = Header(""), runtime=Depends(rt)):
+    async def schedule_existing_run(
+        run_id: str, payload: dict, authorization: str = Header(""), runtime=Depends(rt)
+    ):
         """Idempotent command adapter used only by the Java business outbox."""
         require_internal(authorization)
         run = await runtime.db.one("SELECT id,status FROM runs WHERE id=?", (run_id,))
@@ -211,14 +229,19 @@ def create_app(settings: Settings | None = None):
             await asyncio.gather(task, return_exceptions=True)
         if runtime.queue:
             from arq.jobs import Job
+
             try:
                 await asyncio.wait_for(
-                    Job(runtime.run_job_id(run_id, int(run.get("attempt_count") or 0), next_attempt=False), runtime.queue).abort(),
+                    Job(
+                        runtime.run_job_id(run_id, int(run.get("attempt_count") or 0), next_attempt=False),
+                        runtime.queue,
+                    ).abort(),
                     1,
                 )
             except Exception:
                 pass
         return {"accepted": True}
+
     @app.get("/healthz")
     async def health():
         return {"status": "ok"}
@@ -226,7 +249,10 @@ def create_app(settings: Settings | None = None):
     @app.get("/api/auth/config")
     async def auth_config():
         """Public mode metadata; it never exposes a key, token, or issuer secret."""
-        return {"mode": settings.auth_mode, "issuer": settings.oidc_issuer if settings.auth_mode == "oidc" else ""}
+        return {
+            "mode": settings.auth_mode,
+            "issuer": settings.oidc_issuer if settings.auth_mode == "oidc" else "",
+        }
 
     @app.get("/livez")
     async def livez():
@@ -249,12 +275,15 @@ def create_app(settings: Settings | None = None):
         return await runtime.db.memberships(request.state.principal.subject)
 
     @app.post("/api/workspaces", status_code=201)
-    async def create_workspace(body: WorkspaceRequest, request: Request, runtime=Depends(rt), user=Depends(identity)):
+    async def create_workspace(
+        body: WorkspaceRequest, request: Request, runtime=Depends(rt), user=Depends(identity)
+    ):
         workspace = await runtime.db.create_workspace(
-            request.state.principal.subject, body.name,
-            (0, settings.workspace_concurrent_run_limit))
-        await runtime.db.audit(workspace["id"], request.state.principal.subject, "workspace.create",
-                               "workspace", workspace["id"])
+            request.state.principal.subject, body.name, (0, settings.workspace_concurrent_run_limit)
+        )
+        await runtime.db.audit(
+            workspace["id"], request.state.principal.subject, "workspace.create", "workspace", workspace["id"]
+        )
         return workspace
 
     @app.get("/api/workspaces/{workspace_id}/members")
@@ -262,17 +291,27 @@ def create_app(settings: Settings | None = None):
         if workspace_id != user:
             raise HTTPException(403, "请先切换到目标工作空间")
         require_role(request, "admin")
-        return await runtime.db.rows("SELECT subject,role,created_at FROM memberships WHERE workspace_id=? ORDER BY created_at", (user,))
+        return await runtime.db.rows(
+            "SELECT subject,role,created_at FROM memberships WHERE workspace_id=? ORDER BY created_at",
+            (user,),
+        )
 
     @app.put("/api/workspaces/{workspace_id}/members")
-    async def upsert_member(workspace_id: str, body: MembershipRequest, request: Request,
-                            runtime=Depends(rt), user=Depends(identity)):
+    async def upsert_member(
+        workspace_id: str,
+        body: MembershipRequest,
+        request: Request,
+        runtime=Depends(rt),
+        user=Depends(identity),
+    ):
         if workspace_id != user:
             raise HTTPException(403, "请先切换到目标工作空间")
         require_role(request, "admin")
         async with runtime.db.guard("workspace:" + user):
             await runtime.db.upsert_membership(user, body.subject, body.role)
-        await runtime.db.audit(user, request.state.principal.subject, "membership.upsert", "member", body.subject)
+        await runtime.db.audit(
+            user, request.state.principal.subject, "membership.upsert", "member", body.subject
+        )
         return {"ok": True}
 
     @app.get("/api/workspaces/{workspace_id}/audit")
@@ -290,7 +329,9 @@ def create_app(settings: Settings | None = None):
         return await runtime.dead_letters(user)
 
     @app.post("/api/workspaces/{workspace_id}/dead-letters/{run_id}/recover", status_code=202)
-    async def recover_dead_letter(workspace_id: str, run_id: str, request: Request, runtime=Depends(rt), user=Depends(identity)):
+    async def recover_dead_letter(
+        workspace_id: str, run_id: str, request: Request, runtime=Depends(rt), user=Depends(identity)
+    ):
         if workspace_id != user:
             raise HTTPException(403, "请先切换到目标工作空间")
         require_role(request, "admin")
@@ -302,16 +343,26 @@ def create_app(settings: Settings | None = None):
         return run
 
     @app.put("/api/workspaces/{workspace_id}/limits")
-    async def update_limits(workspace_id: str, body: WorkspaceLimitRequest, request: Request,
-                            runtime=Depends(rt), user=Depends(identity)):
+    async def update_limits(
+        workspace_id: str,
+        body: WorkspaceLimitRequest,
+        request: Request,
+        runtime=Depends(rt),
+        user=Depends(identity),
+    ):
         if workspace_id != user:
             raise HTTPException(403, "请先切换到目标工作空间")
         require_role(request, "admin")
-        await runtime.db.execute("""UPDATE workspace_limits SET daily_search_limit=0,concurrent_run_limit=?
+        await runtime.db.execute(
+            """UPDATE workspace_limits SET daily_search_limit=0,concurrent_run_limit=?
                                  WHERE workspace_id=?""",
-                                 (body.concurrent_run_limit, user))
-        await runtime.db.audit(user, request.state.principal.subject, "workspace.limits.update", "workspace", user)
+            (body.concurrent_run_limit, user),
+        )
+        await runtime.db.audit(
+            user, request.state.principal.subject, "workspace.limits.update", "workspace", user
+        )
         return await runtime.db.workspace_limits(user)
+
     @app.get("/api/status")
     async def status(runtime=Depends(rt), user=Depends(identity)):
         return await runtime.status()
@@ -323,11 +374,20 @@ def create_app(settings: Settings | None = None):
     @app.get("/api/data/export")
     async def export_data(request: Request, runtime=Depends(rt), user=Depends(administrator)):
         await runtime.db.audit(user, request.state.principal.subject, "data.export", "workspace", user)
-        return Response(await runtime.export_user(user, request.state.principal.subject), media_type="application/zip",
-                        headers={"Content-Disposition": "attachment; filename=deepresearch-export.zip"})
+        return Response(
+            await runtime.export_user(user, request.state.principal.subject),
+            media_type="application/zip",
+            headers={"Content-Disposition": "attachment; filename=deepresearch-export.zip"},
+        )
 
     @app.delete("/api/data")
-    async def purge_data(scope: str, request: Request, x_confirm_delete: str = Header(""), runtime=Depends(rt), user=Depends(administrator)):
+    async def purge_data(
+        scope: str,
+        request: Request,
+        x_confirm_delete: str = Header(""),
+        runtime=Depends(rt),
+        user=Depends(administrator),
+    ):
         if x_confirm_delete != "DELETE":
             raise HTTPException(400, "请使用 X-Confirm-Delete: DELETE 确认清理")
         try:
@@ -344,23 +404,41 @@ def create_app(settings: Settings | None = None):
         return {
             "mode": "static",
             "llm": "configured" if settings.llm_api_key.get_secret_value() else "missing LLM_API_KEY",
-            "embedding": "configured" if settings.embedding_api_key.get_secret_value() else "missing EMBEDDING_API_KEY",
-            "search": "configured" if (settings.bocha_api_key.get_secret_value() if settings.web_search_provider == "bocha"
-                                        else settings.llm_api_key.get_secret_value()) else "missing search credential",
+            "embedding": "configured"
+            if settings.embedding_api_key.get_secret_value()
+            else "missing EMBEDDING_API_KEY",
+            "search": "configured"
+            if (
+                settings.bocha_api_key.get_secret_value()
+                if settings.web_search_provider == "bocha"
+                else settings.llm_api_key.get_secret_value()
+            )
+            else "missing search credential",
             "live_probe": "platform_operator_only",
         }
 
     @app.post("/api/config/probe")
-    async def probe(request: Request, target: str = Query("llm", pattern="^(llm|embedding|milvus)$"),
-                    runtime=Depends(rt), user=Depends(identity)):
+    async def probe(
+        request: Request,
+        target: str = Query("llm", pattern="^(llm|embedding|milvus)$"),
+        runtime=Depends(rt),
+        user=Depends(identity),
+    ):
         actor = request.state.principal.subject
         if actor not in settings.operator_subjects:
             raise HTTPException(403, "真实连接探测仅允许运维配置的主体执行")
         from ..domain.models import Route
+
         scope = UsageScope(user, actor, "probe")
-        config = {"llm": (settings.llm_base_url, settings.llm_api_key.get_secret_value(), settings.llm_model_id),
-                  "embedding": (settings.embedding_base_url, settings.embedding_api_key.get_secret_value(), settings.embedding_model),
-                  "milvus": (settings.milvus_uri, "", "")}[target]
+        config = {
+            "llm": (settings.llm_base_url, settings.llm_api_key.get_secret_value(), settings.llm_model_id),
+            "embedding": (
+                settings.embedding_base_url,
+                settings.embedding_api_key.get_secret_value(),
+                settings.embedding_model,
+            ),
+            "milvus": (settings.milvus_uri, "", ""),
+        }[target]
         probe_key = fingerprint([target, provider_account(config[0], config[1]), config[2]])
         governance = UsageGovernance(runtime.db, settings)
         try:
@@ -368,18 +446,24 @@ def create_app(settings: Settings | None = None):
         except Exception:
             raise HTTPException(503, "探测冷却账本不可用，未发送外部请求") from None
         if not claimed:
-            cached = await runtime.db.one("SELECT result,next_allowed FROM provider_probes WHERE id=?", (probe_key,))
+            cached = await runtime.db.one(
+                "SELECT result,next_allowed FROM provider_probes WHERE id=?", (probe_key,)
+            )
             await runtime.db.audit(user, actor, "provider.probe.cached", "provider", target)
-            return {"cached": True, "result": json.loads(cached["result"]) or {"status": "in_progress_or_interrupted"},
-                    "next_allowed": cached["next_allowed"]}
+            return {
+                "cached": True,
+                "result": json.loads(cached["result"]) or {"status": "in_progress_or_interrupted"},
+                "next_allowed": cached["next_allowed"],
+            }
         # Record intent before sending. An audit failure prevents the paid probe.
         await runtime.db.audit(user, actor, "provider.probe.started", "provider", target)
         result = {"target": target}
         with paid_scope(user, actor, "probe"):
             try:
                 if target == "llm":
-                    await runtime.providers.structured("router", "返回 mode=quick 和 reason=连接测试。",
-                        {"topic": "连接测试"}, Route, "")
+                    await runtime.providers.structured(
+                        "router", "返回 mode=quick 和 reason=连接测试。", {"topic": "连接测试"}, Route, ""
+                    )
                 elif target == "embedding":
                     vector = (await runtime.providers.embed(["连接测试"]))[0]
                     result["actual_embedding_dimension"] = len(vector)
@@ -391,7 +475,9 @@ def create_app(settings: Settings | None = None):
                 result.update(status="failed", code=exc.code)
             except Exception:
                 result.update(status="failed", code="probe_failed")
-        await runtime.db.execute("UPDATE provider_probes SET result=? WHERE id=?", (json.dumps(result), probe_key))
+        await runtime.db.execute(
+            "UPDATE provider_probes SET result=? WHERE id=?", (json.dumps(result), probe_key)
+        )
         await runtime.db.audit(user, actor, "provider.probe.finished", "provider", target, result["status"])
         return {"cached": False, "result": result}
 
@@ -401,21 +487,31 @@ def create_app(settings: Settings | None = None):
 
     @app.get("/api/threads")
     async def threads(runtime=Depends(rt), user=Depends(identity)):
-        return await runtime.db.rows("SELECT * FROM threads WHERE user_id=? ORDER BY created_at DESC", (user,))
+        return await runtime.db.rows(
+            "SELECT * FROM threads WHERE user_id=? ORDER BY created_at DESC", (user,)
+        )
 
     @app.patch("/api/threads/{thread_id}")
-    async def rename_thread(thread_id: str, body: ThreadRequest, runtime=Depends(rt), user=Depends(researcher)):
+    async def rename_thread(
+        thread_id: str, body: ThreadRequest, runtime=Depends(rt), user=Depends(researcher)
+    ):
         thread = await owned_thread(runtime, thread_id, user)
-        if not await runtime.db.execute("UPDATE threads SET title=? WHERE id=? AND user_id=?", (body.title, thread["id"], user)):
+        if not await runtime.db.execute(
+            "UPDATE threads SET title=? WHERE id=? AND user_id=?", (body.title, thread["id"], user)
+        ):
             raise HTTPException(404, "会话不存在")
         return {"ok": True}
 
     @app.delete("/api/threads/{thread_id}")
-    async def delete_thread(thread_id: str, request: Request, runtime=Depends(rt), user=Depends(administrator)):
+    async def delete_thread(
+        thread_id: str, request: Request, runtime=Depends(rt), user=Depends(administrator)
+    ):
         try:
             async with runtime.db.guard("publication:" + user):
                 result = await runtime.delete_thread(thread_id, user)
-            await runtime.db.audit(user, request.state.principal.subject, "thread.delete", "thread", thread_id)
+            await runtime.db.audit(
+                user, request.state.principal.subject, "thread.delete", "thread", thread_id
+            )
             return result
         except LookupError as exc:
             raise HTTPException(404, str(exc)) from None
@@ -424,15 +520,29 @@ def create_app(settings: Settings | None = None):
     async def thread_runs(thread_id: str, runtime=Depends(rt), user=Depends(identity)):
         thread = await owned_thread(runtime, thread_id, user)
         return await visible_thread_runs(runtime, thread["id"], user)
+
     @app.get("/api/threads/{thread_id}/report")
     async def thread_report(thread_id: str, runtime=Depends(rt), user=Depends(identity)):
         thread = await owned_thread(runtime, thread_id, user)
         runs = await visible_thread_runs(runtime, thread["id"], user)
         parts = [f"# {thread['title'] or '研究会话'}", "", "本文件包含该会话中的全部研究记录。"]
         for index, run in enumerate(runs, start=1):
-            parts.extend(["", f"## {index}. {run['topic']}", "", f"- 状态：{run['status']}", f"- 创建时间：{run['created_at']}", "", run["report"] or "_此研究尚未生成 Markdown 报告。_"])
-        return PlainTextResponse("\n".join(parts) + "\n", media_type="text/markdown",
-                                 headers={"Content-Disposition": f'attachment; filename="conversation-{thread["id"]}.md"'})
+            parts.extend(
+                [
+                    "",
+                    f"## {index}. {run['topic']}",
+                    "",
+                    f"- 状态：{run['status']}",
+                    f"- 创建时间：{run['created_at']}",
+                    "",
+                    run["report"] or "_此研究尚未生成 Markdown 报告。_",
+                ]
+            )
+        return PlainTextResponse(
+            "\n".join(parts) + "\n",
+            media_type="text/markdown",
+            headers={"Content-Disposition": f'attachment; filename="conversation-{thread["id"]}.md"'},
+        )
 
     @app.post("/api/research/runs", status_code=202)
     async def start_run(body: RunRequest, request: Request, runtime=Depends(rt), user=Depends(researcher)):
@@ -447,8 +557,11 @@ def create_app(settings: Settings | None = None):
     @app.get("/api/research/runs/{run_id}/report")
     async def report(run_id: str, runtime=Depends(rt), user=Depends(identity)):
         run = await owned_run(runtime, run_id, user)
-        return PlainTextResponse(run["report"], media_type="text/markdown",
-                                 headers={"Content-Disposition": f'attachment; filename="research-{run_id}.md"'})
+        return PlainTextResponse(
+            run["report"],
+            media_type="text/markdown",
+            headers={"Content-Disposition": f'attachment; filename="research-{run_id}.md"'},
+        )
 
     @app.post("/api/research/runs/{run_id}/cancel")
     async def cancel(run_id: str, request: Request, runtime=Depends(rt), user=Depends(researcher)):
@@ -471,8 +584,14 @@ def create_app(settings: Settings | None = None):
             raise HTTPException(409, str(exc)) from None
 
     @app.get("/api/research/runs/{run_id}/events")
-    async def events(run_id: str, request: Request, after: int = 0, last_event_id: str = Header("0"),
-                     runtime=Depends(rt), user=Depends(identity)):
+    async def events(
+        run_id: str,
+        request: Request,
+        after: int = 0,
+        last_event_id: str = Header("0"),
+        runtime=Depends(rt),
+        user=Depends(identity),
+    ):
         await owned_run(runtime, run_id, user)
         try:
             cursor = max(after, int(last_event_id), 0)
@@ -492,11 +611,20 @@ def create_app(settings: Settings | None = None):
                 except HTTPException:
                     yield "event: close\ndata: {}\n\n"
                     return
-                rows = await runtime.db.rows("SELECT * FROM events WHERE run_id=? AND id>? ORDER BY id LIMIT 200", (run_id, cursor))
+                rows = await runtime.db.rows(
+                    "SELECT * FROM events WHERE run_id=? AND id>? ORDER BY id LIMIT 200", (run_id, cursor)
+                )
                 for row in rows:
                     cursor = row["id"]
-                    data = json.dumps({"id": cursor, "type": row["type"], "created_at": row["created_at"],
-                                       "data": json.loads(row["data"])}, ensure_ascii=False)
+                    data = json.dumps(
+                        {
+                            "id": cursor,
+                            "type": row["type"],
+                            "created_at": row["created_at"],
+                            "data": json.loads(row["data"]),
+                        },
+                        ensure_ascii=False,
+                    )
                     yield f"id: {cursor}\ndata: {data}\n\n"
                 run = await runtime.db.one("SELECT status FROM runs WHERE id=? AND user_id=?", (run_id, user))
                 if not run or (run["status"] in TERMINAL and not rows):
@@ -506,57 +634,102 @@ def create_app(settings: Settings | None = None):
                     yield ": keep-alive\n\n"
                 ticks += 1
                 await asyncio.sleep(0.5)
-        return StreamingResponse(stream(), media_type="text/event-stream", headers={
-            "Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+        return StreamingResponse(
+            stream(),
+            media_type="text/event-stream",
+            headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+        )
 
     @app.post("/api/attachments", status_code=201)
-    async def upload_attachment(request: Request, file: UploadFile = File(), runtime=Depends(rt), user=Depends(researcher)):
+    async def upload_attachment(
+        request: Request, file: UploadFile = File(), runtime=Depends(rt), user=Depends(researcher)
+    ):
         content = await read_upload(file)
         async with runtime.upload_lock:
-            return await runtime.attachments.add(user, request.state.principal.subject, file.filename or "image", content)
+            return await runtime.attachments.add(
+                user, request.state.principal.subject, file.filename or "image", content
+            )
 
     @app.get("/api/attachments/{image_id}")
-    async def attachment_content(image_id: str, request: Request, runtime=Depends(rt), user=Depends(identity)):
+    async def attachment_content(
+        image_id: str, request: Request, runtime=Depends(rt), user=Depends(identity)
+    ):
         row = await runtime.attachments.visible(image_id, user, request.state.principal.subject)
         content = await runtime.documents.store.get("uploads", image_id)
-        return Response(content, media_type=row["media_type"], headers={"Cache-Control": "no-store", "X-Content-Type-Options": "nosniff"})
+        return Response(
+            content,
+            media_type=row["media_type"],
+            headers={"Cache-Control": "no-store", "X-Content-Type-Options": "nosniff"},
+        )
 
     @app.delete("/api/attachments/{image_id}")
-    async def delete_attachment(image_id: str, request: Request, runtime=Depends(rt), user=Depends(researcher)):
+    async def delete_attachment(
+        image_id: str, request: Request, runtime=Depends(rt), user=Depends(researcher)
+    ):
         await runtime.attachments.remove(image_id, user, request.state.principal.subject)
         return {"ok": True}
 
     @app.post("/api/documents", status_code=202)
-    async def upload(request: Request, file: UploadFile = File(), runtime=Depends(rt), user=Depends(researcher)):
+    async def upload(
+        request: Request, file: UploadFile = File(), runtime=Depends(rt), user=Depends(researcher)
+    ):
         content = await read_upload(file)
         async with runtime.upload_lock:
             try:
                 document = await runtime.upload_document(user, file.filename or "document", content)
             except ServiceError as exc:
-                await runtime.db.audit(user, request.state.principal.subject, "document.upload", "document",
-                                       str(getattr(exc, "document_id", "upload")), "rejected")
+                await runtime.db.audit(
+                    user,
+                    request.state.principal.subject,
+                    "document.upload",
+                    "document",
+                    str(getattr(exc, "document_id", "upload")),
+                    "rejected",
+                )
                 raise
-        await runtime.db.audit(user, request.state.principal.subject, "document.upload", "document",
-                               document["id"], document["status"])
+        await runtime.db.audit(
+            user,
+            request.state.principal.subject,
+            "document.upload",
+            "document",
+            document["id"],
+            document["status"],
+        )
         return public_document(document)
 
     def public_document(row: dict) -> dict:
-        return {key: row.get(key) for key in ("id", "name", "status", "error", "created_at", "updated_at",
-                                                "index_version", "pending_version")}
+        return {
+            key: row.get(key)
+            for key in (
+                "id",
+                "name",
+                "status",
+                "error",
+                "created_at",
+                "updated_at",
+                "index_version",
+                "pending_version",
+            )
+        }
 
     async def require_api_document(runtime, user: str, document_id: str, *, write=False):
         # Preserve the object's workspace/not-found contract before evaluating
         # current collection grants; an existing but revoked document still uses
         # the structured source_permission_denied error.
-        if not await runtime.db.one("SELECT id FROM documents WHERE id=? AND user_id=? AND status!='deleted'",
-                                    (document_id, user)):
+        if not await runtime.db.one(
+            "SELECT id FROM documents WHERE id=? AND user_id=? AND status!='deleted'", (document_id, user)
+        ):
             raise HTTPException(404, "资料不存在")
         await require_document(runtime.db, user, document_id, write=write)
 
     @app.get("/api/documents")
     async def documents(runtime=Depends(rt), user=Depends(identity)):
-        rows = await runtime.db.rows(f"""SELECT d.id,d.name,d.status,d.error,d.created_at,d.updated_at,d.index_version,d.pending_version
-            FROM documents d WHERE d.user_id=? AND d.status!='deleted' AND {access_sql()} ORDER BY d.created_at DESC""", (user, *access_args(user)))
+        rows = await runtime.db.rows(
+            f"""SELECT d.id,d.name,d.status,d.error,d.created_at,d.updated_at,d.index_version,d.pending_version
+            FROM documents d WHERE d.user_id=? AND d.status!='deleted' AND {access_sql()} ORDER BY d.created_at DESC""",
+            (user, *access_args(user)),
+        )
         return [public_document(row) for row in rows]
 
     @app.get("/api/documents/capacity")
@@ -564,21 +737,32 @@ def create_app(settings: Settings | None = None):
         return await runtime.documents.capacity(user)
 
     @app.put("/api/documents/{document_id}", status_code=202)
-    async def replace_document(document_id: str, request: Request, file: UploadFile = File(),
-                               runtime=Depends(rt), user=Depends(researcher)):
+    async def replace_document(
+        document_id: str,
+        request: Request,
+        file: UploadFile = File(),
+        runtime=Depends(rt),
+        user=Depends(researcher),
+    ):
         await require_api_document(runtime, user, document_id, write=True)
         content = await read_upload(file)
         try:
             document = await runtime.replace_document(document_id, user, file.filename or "document", content)
         except LookupError as exc:
-            await runtime.db.audit(user, request.state.principal.subject, "document.replace", "document", document_id, "rejected")
+            await runtime.db.audit(
+                user, request.state.principal.subject, "document.replace", "document", document_id, "rejected"
+            )
             raise HTTPException(404, str(exc)) from None
         except ServiceError as exc:
-            await runtime.db.audit(user, request.state.principal.subject, "document.replace", "document", document_id, "rejected")
+            await runtime.db.audit(
+                user, request.state.principal.subject, "document.replace", "document", document_id, "rejected"
+            )
             if exc.code in {"document_busy", "document_unchanged", "document_duplicate", "source_changed"}:
                 raise HTTPException(409, str(exc)) from None
             raise
-        await runtime.db.audit(user, request.state.principal.subject, "document.replace", "document", document_id, "rebuilding")
+        await runtime.db.audit(
+            user, request.state.principal.subject, "document.replace", "document", document_id, "rebuilding"
+        )
         return public_document(document)
 
     @app.get("/api/documents/{document_id}/versions")
@@ -590,8 +774,13 @@ def create_app(settings: Settings | None = None):
             raise HTTPException(404, str(exc)) from None
 
     @app.get("/api/documents/{document_id}/diff")
-    async def document_diff(document_id: str, from_version: int = Query(alias="from", ge=1),
-                            to_version: int = Query(alias="to", ge=1), runtime=Depends(rt), user=Depends(identity)):
+    async def document_diff(
+        document_id: str,
+        from_version: int = Query(alias="from", ge=1),
+        to_version: int = Query(alias="to", ge=1),
+        runtime=Depends(rt),
+        user=Depends(identity),
+    ):
         await require_api_document(runtime, user, document_id)
         try:
             return await runtime.documents.lifecycle.diff(document_id, user, from_version, to_version)
@@ -599,41 +788,59 @@ def create_app(settings: Settings | None = None):
             raise HTTPException(404, str(exc)) from None
 
     @app.get("/api/documents/{document_id}/chunks")
-    async def document_chunks(document_id: str, limit: int = 100, runtime=Depends(rt), user=Depends(identity)):
+    async def document_chunks(
+        document_id: str, limit: int = 100, runtime=Depends(rt), user=Depends(identity)
+    ):
         await require_api_document(runtime, user, document_id)
         limit = max(1, min(limit, 400))
-        return await runtime.db.rows("SELECT id,locator,text,ordinal FROM chunks WHERE document_id=? AND user_id=? ORDER BY ordinal,id LIMIT ?",
-                                     (document_id, user, limit))
+        return await runtime.db.rows(
+            "SELECT id,locator,text,ordinal FROM chunks WHERE document_id=? AND user_id=? ORDER BY ordinal,id LIMIT ?",
+            (document_id, user, limit),
+        )
 
     @app.post("/api/documents/search")
-    async def search_documents(body: DocumentSearchRequest, diagnostics: bool = False, runtime=Depends(rt), user=Depends(identity)):
-        results = await runtime.documents.search(user, [body.query], limit=body.limit, rerank_query=body.query)
+    async def search_documents(
+        body: DocumentSearchRequest, diagnostics: bool = False, runtime=Depends(rt), user=Depends(identity)
+    ):
+        results = await runtime.documents.search(
+            user, [body.query], limit=body.limit, rerank_query=body.query
+        )
         return {"results": results, "reasons": getattr(results, "reasons", [])} if diagnostics else results
 
     @app.post("/api/documents/{document_id}/reindex", status_code=202)
-    async def reindex_document(document_id: str, request: Request, runtime=Depends(rt), user=Depends(researcher)):
+    async def reindex_document(
+        document_id: str, request: Request, runtime=Depends(rt), user=Depends(researcher)
+    ):
         await require_api_document(runtime, user, document_id, write=True)
         try:
             document = await runtime.reindex_document(document_id, user)
         except LookupError as exc:
             raise HTTPException(404, str(exc)) from None
-        await runtime.db.audit(user, request.state.principal.subject, "document.reindex", "document", document_id)
+        await runtime.db.audit(
+            user, request.state.principal.subject, "document.reindex", "document", document_id
+        )
         return public_document(document)
 
     @app.delete("/api/documents/{document_id}")
-    async def delete_document(document_id: str, request: Request, runtime=Depends(rt), user=Depends(administrator)):
+    async def delete_document(
+        document_id: str, request: Request, runtime=Depends(rt), user=Depends(administrator)
+    ):
         if not await runtime.db.one("SELECT id FROM documents WHERE id=? AND user_id=?", (document_id, user)):
             raise HTTPException(404, "资料不存在")
         await runtime.documents.delete(document_id, user)
-        await runtime.db.audit(user, request.state.principal.subject, "document.delete", "document", document_id)
+        await runtime.db.audit(
+            user, request.state.principal.subject, "document.delete", "document", document_id
+        )
         return {"ok": True}
 
     @app.get("/api/memories")
     async def memories(request: Request, runtime=Depends(rt), user=Depends(identity)):
-        rows = await runtime.db.rows("""SELECT id,kind,content,created_at,run_id FROM memories
+        rows = await runtime.db.rows(
+            """SELECT id,kind,content,created_at,run_id FROM memories
             WHERE (kind IN ('profile','preference') AND owner_subject=?)
                OR (kind='semantic' AND user_id=?) ORDER BY created_at DESC""",
-                                     (request.state.principal.subject, user))
+            (request.state.principal.subject, user),
+        )
         visible = []
         for row in rows:
             if row["kind"] == "semantic":
@@ -648,27 +855,36 @@ def create_app(settings: Settings | None = None):
         return visible
 
     @app.post("/api/memories", status_code=201)
-    async def add_memory(body: MemoryRequest, request: Request, runtime=Depends(rt), user=Depends(researcher)):
+    async def add_memory(
+        body: MemoryRequest, request: Request, runtime=Depends(rt), user=Depends(researcher)
+    ):
         memory_id = uid()
-        await runtime.db.execute("""INSERT INTO memories(
+        await runtime.db.execute(
+            """INSERT INTO memories(
             id,user_id,kind,content,run_id,created_at,owner_subject) VALUES(?,?,'preference',?,?,?,?)""",
-            (memory_id, user, body.content, memory_id, now(), request.state.principal.subject))
+            (memory_id, user, body.content, memory_id, now(), request.state.principal.subject),
+        )
         return {"id": memory_id, "content": body.content}
 
     @app.put("/api/memories/{memory_id}")
-    async def edit_memory(memory_id: str, body: MemoryRequest, request: Request,
-                          runtime=Depends(rt), user=Depends(researcher)):
-        if not await runtime.db.execute("""UPDATE memories SET content=?
+    async def edit_memory(
+        memory_id: str, body: MemoryRequest, request: Request, runtime=Depends(rt), user=Depends(researcher)
+    ):
+        if not await runtime.db.execute(
+            """UPDATE memories SET content=?
             WHERE id=? AND owner_subject=? AND kind='preference'""",
-                                         (body.content, memory_id, request.state.principal.subject)):
+            (body.content, memory_id, request.state.principal.subject),
+        ):
             raise HTTPException(404, "可编辑的用户偏好不存在")
         return {"ok": True}
 
     @app.delete("/api/memories/{memory_id}")
     async def delete_memory(memory_id: str, request: Request, runtime=Depends(rt), user=Depends(researcher)):
-        memory = await runtime.db.one("""SELECT * FROM memories WHERE id=? AND (
+        memory = await runtime.db.one(
+            """SELECT * FROM memories WHERE id=? AND (
             (kind IN ('profile','preference') AND owner_subject=?) OR (kind='semantic' AND user_id=?))""",
-                                      (memory_id, request.state.principal.subject, user))
+            (memory_id, request.state.principal.subject, user),
+        )
         if not memory:
             raise HTTPException(404, "记忆不存在")
         if memory["kind"] == "semantic":
@@ -679,7 +895,9 @@ def create_app(settings: Settings | None = None):
         return {"ok": True}
 
     from .source_rechecks import register_source_rechecks
+
     register_source_rechecks(app, rt, identity, researcher)
     from .usage import register_usage
+
     register_usage(app, rt, identity)
     return app
