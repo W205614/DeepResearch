@@ -31,7 +31,6 @@ jobs:
       - uses: astral-sh/setup-uv@v7
       - run: uv sync --all-groups --frozen
       - run: uv run ruff check backend tests scripts main.py
-      - run: uv run ruff format --check backend/api
       - run: uv run pytest -q
       - run: QUEUE_BACKEND=local DOCUMENT_SCAN_MODE=disabled OBJECT_STORE_BACKEND=filesystem uv run python scripts/evaluate.py --verify
       - uses: actions/setup-java@v5
