@@ -20,14 +20,36 @@
 | `docs/` | 使用说明、职责边界、运维与历史交付证据 |
 | `.github/workflows/` | CI、安全扫描和模型评测入口 |
 
+## 一条研究请求的调用路径
+
+以工作台发起一条公开研究为例，按请求实际经过的顺序阅读。
+
+1. **提交问题**　[App.vue](../frontend/src/App.vue) 先请求 `POST /api/research/intakes` 判断是否需要确认范围。无需确认时直接提交 `POST /api/research/runs`。
+2. **身份与任务**　[ResearchController](../business-backend/src/main/java/com/deepresearch/business/api/ResearchController.java) 接收请求，通过 [WorkspaceAccess](../business-backend/src/main/java/com/deepresearch/business/security/WorkspaceAccess.java) 解析工作空间身份。[ResearchCommandService](../business-backend/src/main/java/com/deepresearch/business/service/ResearchCommandService.java) 创建任务，并写入 `research.schedule` 待发命令。
+3. **调度与执行**　[OutboxService](../business-backend/src/main/java/com/deepresearch/business/service/OutboxService.java) 投递命令，[Python 内部 API](../backend/api/app.py) 接受调度。[Worker](../backend/worker.py) 调用 [Runtime.execute_run](../backend/services/runtime.py) 执行[研究图](../backend/research/graph.py)。调整公开检索策略看 [search_policy.py](../backend/research/search_policy.py)，调整内部资料检索看 [documents.py](../backend/services/documents.py)。
+4. **进度与报告**　[前端 API](../frontend/src/api.ts) 按事件游标接收进度；工作台加载报告并处理引用点击，[ReportReader.vue](../frontend/src/ReportReader.vue) 负责报告阅读布局。
+
+## 常用脚本
+
+从仓库根目录使用。先按任务选入口，再核对其运行前提。
+
+| 任务 | 入口与效果 |
+| --- | --- |
+| 部署与迁移 | [prepare_service_credentials.py](../scripts/prepare_service_credentials.py) 补齐本机配置中的服务凭据；Compose 的迁移作业调用 [migrate_services.py](../scripts/migrate_services.py)，执行 Alembic、索引回填和数据库授权。 |
+| 评测 | [回答质量工作流](../.github/workflows/answer-quality.yml) 调用 [evaluate_research.py](../scripts/evaluate_research.py)；[检索质量工作流](../.github/workflows/rag-quality.yml) 默认只准备环境。真实供应商评测会产生费用。 |
+| 压测 | [load-health.js](../scripts/load-health.js) 是 k6 健康端点负载场景；通过 `BASE_URL` 选择目标，`VUS` 和 `DURATION` 控制负载。 |
+| 运维：本地备份轮换 | 从根目录手动运行 [install-backup-task.ps1](../scripts/install-backup-task.ps1)，无必填参数。它注册或覆盖 Windows 任务 `DeepResearchDailyBackup`，默认 02:00 调用 [backup-retention.ps1](../scripts/backup-retention.ps1)，保留最近七份并清理过期备份。 |
+| 运维：校验冷备与容量探测 | [运维手册](deployment-security-operations.md#配置调度) 使用 [install_backup_task.ps1](../scripts/install_backup_task.ps1)，必填 `-Configuration` 私密配置。它在宿主机注册 `DeepResearch-Verified-Cold-Backup` 与 `DeepResearch-Host-Probe` 两个任务，分别调用 [scheduled_backup.py](../scripts/scheduled_backup.py) 和 [ops_probe.py](../scripts/ops_probe.py)。安装这两类调度均应在明确选择备份策略后进行。 |
+| 安全审查 | [fetch_approved_image.py](../scripts/fetch_approved_image.py) 和 [fetch_grafana_candidate.py](../scripts/fetch_grafana_candidate.py) 按批准记录验证镜像，成功后载入本机 Docker；首次部署的参数见[快速部署](../README.md#快速部署)。 |
+
 ## 根目录入口
 
 - `pyproject.toml` 与 `uv.lock` 分别声明和锁定 Python 依赖，应配套保留。
 - `main.py` 是 Python 入口；`alembic.ini` 配合 `migrations/` 使用。
 - `compose.yaml` 是默认部署编排；`compose.production.yaml` 与当前本机覆盖文件的路径已记录在现有容器中，因此保留在根目录，保证停止环境仍可按原入口恢复。
-- `deployment/compose/` 保存 6 个不同场景的编排，不是重复备份。覆盖文件以根目录 `compose.yaml` 为第一份配置；单独使用组件验证编排时，显式指定 `--project-directory .`，保持构建上下文和挂载路径以仓库根目录为基准。
+- `deployment/compose/` 按运行场景保存覆盖配置和独立验证编排。覆盖文件以根目录 `compose.yaml` 为第一份配置；单独使用组件验证编排时，显式指定 `--project-directory .`，保持构建上下文和挂载路径以仓库根目录为基准。
 - `Dockerfile` 是应用构建入口；`Dockerfile.minio`、`Dockerfile.grafana` 和 `Dockerfile.milvus` 按原路径及文件哈希参与安全证据绑定，原位保留。`Dockerfile.postgres` 保留既有数据库构建入口。
-- 其余 5 个配方归入 `deployment/docker/`，Compose、脚本、工作流和使用说明同步引用新路径；构建上下文仍是仓库根目录。
+- 组件配方按服务命名，例如 `deployment/docker/Dockerfile.tempo`，可从相应 Compose 服务的 build 配置追到配方；构建上下文仍是仓库根目录。
 - `.env.example`、`.dockerignore`、`.gitattributes`、`.gitignore` 保留在根目录。
 - Java 的 `pom.xml` 在 `business-backend/`；前端的 `package.json` 和 `package-lock.json` 在 `frontend/`，不移动到根目录或删除锁文件。
 
@@ -55,13 +77,9 @@ docker compose --project-directory . -f deployment/compose/compose.verify.yaml c
 docker compose --project-directory . -f deployment/compose/compose.verify.yaml -f deployment/compose/compose.performance.yaml config --quiet
 ```
 
-## 本地备份状态与历史记录
+## 手写源码格式
 
-截至 2026-10-31，本机自动备份继续停用，旧完整备份和离线恢复集已退役，目前没有有效完整恢复集。`DeepResearch-Verified-Cold-Backup` 计划任务及私密备份配置保持禁用；容量探测任务继续保留。当前策略与重新启用条件见[部署与维护](deployment-security-operations.md#现有数据升级)。备份脚本仍保留为按需工具，不代表备份调度正在运行。
-
-2026-10-28 结构整理曾保留 `.cache/backup/scheduled/scheduled-20261027-042116/` 完整快照及数据库逻辑备份，并校验当时的清单和镜像内容。该记录已被 2026-10-29 的备份退役决定取代，不能继续将这些路径、旧恢复报告或回收站内容当作当前可用恢复点。历史整理记录见本机 `.cache/structure-cleanup-20261028/`，退役状态记录在 `.cache/backup/RECOVERY-DISABLED.json`。
-
-私密配置、独有计费账本、运行数据及历史验收证据仍按用途保留，不能因备份停用就整目录清理 `.cache/`。
+Vue 和 TypeScript 使用两空格缩进，Java 和 Python 使用四空格缩进；根目录的 [.editorconfig](../.editorconfig) 将设置限定在应用源码路径。Python 格式试点为 `backend/api/`，从仓库根目录运行 `uv run --frozen ruff format --check backend/api`，与 CI 的检查范围一致。固定语料、安全证据和上游快照按 [.gitattributes](../.gitattributes) 保留原始字节。
 
 ## 整理与验证
 

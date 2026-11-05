@@ -129,6 +129,16 @@ docker compose -f compose.yaml -f deployment/compose/compose.core.yaml config --
 
 ## 备份、异机目标与恢复目标
 
+### 维护者本机的备份记录
+
+截至 2026-10-31，本机自动备份继续停用，旧完整备份和离线恢复集已退役，目前没有有效完整恢复集。`DeepResearch-Verified-Cold-Backup` 计划任务及私密备份配置保持禁用；容量探测任务继续保留。备份脚本仍保留为按需工具，不代表备份调度正在运行。
+
+2026-10-28 结构整理曾保留 `.cache/backup/scheduled/scheduled-20261027-042116/` 完整快照及数据库逻辑备份，并校验当时的清单和镜像内容。该记录已被 2026-10-29 的备份退役决定取代，不能继续将这些路径、旧恢复报告或回收站内容当作当前可用恢复点。历史整理记录见本机 `.cache/structure-cleanup-20261028/`，退役状态记录在 `.cache/backup/RECOVERY-DISABLED.json`。
+
+私密配置、独有计费账本、运行数据及历史验收证据仍按用途保留，不能因备份停用就整目录清理 `.cache/`。
+
+### 配置调度
+
 现有 `scripts/recovery.py` 继续负责完整冷备和独立项目恢复，备份包含私密数据库、配置、认证材料及镜像。新增调度入口复用该机制，不用只导出一个表的“备份”替代它。
 
 1. 将 `examples/backup-schedule.example.json` 复制到被忽略的私密维护位置，核对备份目录、实际 Compose 覆盖文件、磁盘路径和维护时段。
