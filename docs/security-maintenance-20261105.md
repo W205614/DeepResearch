@@ -91,3 +91,9 @@ Trivy 的 Debian 检测器对没有发行版修复版本的公告直接报告受
 本次精确授权绑定请求摘要 `4e06f257a627bbbecaf3f2c3d867b8f0edbe5be7e32c317660b1296a1d8c7758`，完整归档、扫描结果和实际加载镜像通过本地门禁。正式加载命令和镜像标识见[部署与维护](deployment-security-operations.md)。
 
 完整归档已按 12 个分块发布，每个分块的编号、长度和 SHA256 均经 GitHub 核验。正式选择绑定发布记录、逐项授权与运行时摘要。参见[本次制品](https://github.com/W205614/DeepResearch/releases/tag/artifact-grafana-maintenance-20261105)。
+
+### 首次远端检查后的修复
+
+Grafana 的精确制品门禁和 agent 的原生库门禁在提交 `c61d466` 的远端 Security 中通过。该次扫描还发现前端镜像的 Expat 2.9.0 和 Milvus 镜像的 APT 2.4.14 受影响。前端运行镜像要求 `libexpat >= 2.10.0-r0`，Milvus 构建和运行镜像使用 Ubuntu Jammy 修复包 `apt`、`libapt-pkg6.0` 2.4.15ubuntu0.1。两个本地修复候选的完整扫描均无 HIGH、CRITICAL 或 secret。Milvus 本地候选复用已核对的同源二进制并更新 APT 包，标准源码构建由 CI 执行。
+
+同次企业栈构建收到的 etcd 时区包与固定 SHA256 不符。独立核验 Debian 签名索引和官方包字节后，原校验值正确。本地重新执行原配方的信任材料和运行时包装阶段均通过，保留签名与字节校验。

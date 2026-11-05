@@ -2,7 +2,11 @@ FROM golang@sha256:d1f3216ef30257c850cc136ba42a359ccd9d3e75f19b2c276e520c0b4ef32
 FROM milvusdb/milvus@sha256:812cb91ad04e847e5ebb4d19593c69f2e207593073063ede0fd604bbba5fddf1 AS runtime-base
 FROM runtime-base AS build
 USER root
-RUN apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=30 update && apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=30 install -y --no-install-recommends gcc g++ pkg-config libssl-dev patch
+# Disable retries only while bootstrapping the inherited APT client: non-zero
+# retries are a prerequisite for CVE-2026-109518 in the original2.4.14 client.
+RUN apt-get -o Acquire::Retries=0 -o Acquire::http::Timeout=30 update \
+ && apt-get -o Acquire::Retries=0 -o Acquire::http::Timeout=30 install -y --no-install-recommends --only-upgrade apt=2.4.15ubuntu0.1 libapt-pkg6.0=2.4.15ubuntu0.1 \
+ && apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=30 install -y --no-install-recommends gcc g++ pkg-config libssl-dev patch
 COPY --from=go /usr/local/go /usr/local/go
 ENV PATH=/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin GOPATH=/go GOTOOLCHAIN=local GOMAXPROCS=2 GOMEMLIMIT=1024MiB CGO_ENABLED=1 GOPROXY="https://proxy.golang.org|https://goproxy.cn|direct" GOSUMDB=sum.golang.org
 WORKDIR /source
@@ -30,8 +34,8 @@ RUN --mount=type=cache,target=/go/pkg/mod,id=dr-vendor-go-mod-20261026 --mount=t
 RUN --mount=type=cache,target=/go/pkg/mod,id=dr-vendor-go-mod-20261026 --mount=type=cache,target=/root/.cache/go-build,id=dr-vendor-go-build-20261026 go build -p=2 -mod=readonly -buildvcs=false -pgo=/source/configs/pgo/default.pgo -tags=dynamic,sonic,with_jemalloc,bytedance_tango -ldflags='-checklinkname=0 -r /milvus/lib -X github.com/milvus-io/milvus/cmd/milvus.GitCommit=328df0cd2f323c2d3c50cef91bfc9f2c412bcb09-security-rebuild -X github.com/milvus-io/milvus/cmd/milvus.GoVersion=go1.26.10 -X github.com/milvus-io/milvus/cmd/milvus.MilvusVersion=3.0.3' -o /out/milvus ./cmd/main.go
 FROM runtime-base AS runtime-security
 USER root
-RUN apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=30 update \
- && apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=30 install -y --no-install-recommends --only-upgrade libbrotli1=1.0.9-2ubuntu0.1 curl=7.81.0-1ubuntu1.30 libcurl4=7.81.0-1ubuntu1.30 \
+RUN apt-get -o Acquire::Retries=0 -o Acquire::http::Timeout=30 update \
+ && apt-get -o Acquire::Retries=0 -o Acquire::http::Timeout=30 install -y --no-install-recommends --only-upgrade apt=2.4.15ubuntu0.1 libapt-pkg6.0=2.4.15ubuntu0.1 libbrotli1=1.0.9-2ubuntu0.1 curl=7.81.0-1ubuntu1.30 libcurl4=7.81.0-1ubuntu1.30 \
  && rm -rf /var/lib/apt/lists/*
 FROM runtime-security AS runtime-package
 USER root

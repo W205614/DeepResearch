@@ -26,7 +26,7 @@ from scripts import runtime_ci_inventory as inventory  # noqa: E402
 REVIEW_PATH = 'deployment/security/grafana-active-source-retirement-technical-review.json'
 REVIEW_SHA256 = '6e38ee2752a1d6c40fbe671db7db776e7ed88156a63df734f9140bf0d78dcd97'
 MAINTENANCE_REVIEW_PATH = 'deployment/security/grafana-maintenance-source-retirement-review.json'
-MAINTENANCE_REVIEW_SHA256 = '033d64c376da507f55b90b48cac960697b075dce1d2b7aa6afc61deb8184c5eb'
+MAINTENANCE_REVIEW_SHA256 = '23da0b40d801a7f680973c20279455a3409bde31af0ebea3cd862015f326e5d1'
 OLD_SOURCE = 'deployment/vendors/grafana/main/go.mod'
 PACKAGE = 'github.com/go-jose/go-jose/v4'
 SCOPE = ('CVE-2026-116587', OLD_SOURCE, PACKAGE, 'v4.1.4', 'HIGH')
@@ -332,7 +332,15 @@ def load_maintenance_review(root, now):
     review = approved.read_json(approved.repository_file(root, MAINTENANCE_REVIEW_PATH))
     require(approved.file_hash(root / MAINTENANCE_REVIEW_PATH) == MAINTENANCE_REVIEW_SHA256,
             'New conditional selection binding bytes changed')
-    require(review == maintenance_selection_facts(root, now),
+    refresh = review.get('selection_refresh')
+    if refresh is not None:
+        require(type(refresh) is dict and set(refresh) == {'actor', 'reason', 'scope_boundary'}
+                and refresh['actor'] == '/root/grafana_plugins_review'
+                and type(refresh['reason']) is str and 0 < len(refresh['reason']) <= 1000
+                and refresh['scope_boundary'] == 'Selector refresh only; no artifact, CVE disposition or authorization change.',
+                'Malformed selector refresh annotation')
+    require({key: value for key, value in review.items() if key != 'selection_refresh'}
+            == maintenance_selection_facts(root, now),
             'Current independent source facts, authorization, publication or selectors differ')
     return review
 

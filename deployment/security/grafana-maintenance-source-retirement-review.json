@@ -104,13 +104,13 @@
     ".github/workflows/publish-grafana-candidate.yml": "8d0e5cf409f5001eadd1802c1dcadd0f38d41b82f09143ff1c3bacdbe1c041b6",
     ".github/workflows/rag-quality.yml": "9ff180378df80b7541a645d47bf7f5900d0b72caa797571f413a8ea8b0a04816",
     ".github/workflows/security.yml": "0b182b3c8b015d714908e4342d46ecb7b10d60f7bfd138c8e027df9241905b2b",
-    "compose.yaml": "6e3d7623935d7561e7990539db55465db8ef266162e0912ab2ddb404f80400df",
+    "compose.yaml": "87f493f883b74b2f9365c60485b54f72f6df8e510974dac43b3d0fa522c955ce",
     "deployment/compose/compose.acceptance.yaml": "c6d723e5b25cf38130d815117dcbf9eef469c1e7f05ca85f9c4bbb404c4da62b",
     "deployment/compose/compose.core.yaml": "a06281c614f357658e056dcae643227e683f8b10ca32f6b6dca4da81810f524e",
     "deployment/compose/compose.development.yaml": "79ad4d30cc7513d73995ced1419ba9df4886ab00f1815f0d5cab7466195ffb2b",
     "deployment/compose/compose.performance.yaml": "3f6fd96ae205e88eaaf92197fbf5d1163508eb3f385614b8c2ca24f6a39034fd",
     "deployment/compose/compose.test.yaml": "ed39969eae23a84dc043c3408553f203f57738a0417d01813addd5c97c86ac96",
-    "deployment/compose/compose.verify.yaml": "f0d6fd4d5b4846352afebe314865566937966f5ed299cdd0baba195f7af3c3c1"
+    "deployment/compose/compose.verify.yaml": "3cc1aedd37a1fab92c5ce22ffb970df67e64ed9f6b344f119266fcaa3794c203"
   },
   "workflow_facts": {
     "ci_loader": "python scripts/fetch_grafana_candidate.py --profile maintenance",
@@ -121,5 +121,10 @@
     "original_source_gate": "python scripts/check_fs_source_applicability.py --scan .cache/eval/source-fs/raw.json --scan-receipt .cache/eval/source-fs/completion.json --output .cache/eval/source-fs-original-verdict.json",
     "candidate_source_gate": "python scripts/check_grafana_candidate_source_exact2.py --scan .cache/eval/source-fs/raw.json --scan-receipt .cache/eval/source-fs/completion.json --original-verdict .cache/eval/source-fs-original-verdict.json --output .cache/eval/source-fs-candidate-verdict.json",
     "final_source_gate": "python scripts/check_grafana_active_source_retirement.py --profile maintenance --scan .cache/eval/source-fs/raw.json --scan-receipt .cache/eval/source-fs/completion.json --original-verdict .cache/eval/source-fs-original-verdict.json --candidate-verdict .cache/eval/source-fs-candidate-verdict.json --runtime-inventory .cache/eval/runtime-image-inventory.json --output .cache/eval/source-fs-verdict.json"
+  },
+  "selection_refresh": {
+    "actor": "/root/grafana_plugins_review",
+    "reason": "Milvus runtime selection moved from the 20261028 image to the 20261105 APT2.4.15 image for Ubuntu CVE-2026-109518. Recomputed actual selector/workflow hashes after revalidating the unchanged exact Grafana request, human authorization, independent core facts, published transport and complete OCI proof.",
+    "scope_boundary": "Selector refresh only; no artifact, CVE disposition or authorization change."
   }
 }

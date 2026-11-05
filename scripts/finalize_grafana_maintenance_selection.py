@@ -14,12 +14,17 @@ from scripts import check_grafana_active_source_retirement as gate  # noqa: E402
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, default=ROOT / gate.MAINTENANCE_REVIEW_PATH)
+    parser.add_argument('--refresh-reason')
     args = parser.parse_args(argv)
     output = args.output.resolve()
     gate.require(output.is_relative_to(ROOT.resolve())
                  and not output.exists() and not args.output.is_symlink(),
                  'Use a new distinct workspace selector binding file')
     facts = gate.maintenance_selection_facts(ROOT)
+    if args.refresh_reason is not None:
+        gate.require(0 < len(args.refresh_reason) <= 1000, 'A bounded selector refresh reason is required')
+        facts['selection_refresh'] = {'actor': '/root/grafana_plugins_review', 'reason': args.refresh_reason,
+            'scope_boundary': 'Selector refresh only; no artifact, CVE disposition or authorization change.'}
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open('x', encoding='utf-8') as stream:
         stream.write(json.dumps(facts, indent=2) + '\n')
