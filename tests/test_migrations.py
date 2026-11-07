@@ -1,8 +1,21 @@
 import sqlite3
+from pathlib import Path
+import subprocess
+import sys
 
 import pytest
 
 from backend.core.db import Database
+
+
+def test_alembic_heads_from_console_entrypoint_can_import_application():
+    result = subprocess.run(
+        [sys.executable, "-I", "-c", "from alembic.config import main; main()", "heads"],
+        cwd=Path(__file__).resolve().parents[1], capture_output=True, text=True, check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    assert len(result.stdout.strip().splitlines()) == 1
+    assert result.stdout.strip().endswith(" (head)")
 
 
 @pytest.mark.asyncio
