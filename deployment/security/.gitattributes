@@ -25,3 +25,7 @@
 /grafana-fixed-20261107-evidence/native/build-evidence/build-info/plugins/stackdriver.txt -whitespace
 /grafana-fixed-20261107-evidence/native/build-evidence/build-info/plugins/tempo.txt -whitespace
 /grafana-fixed-20261107-evidence/native/build-evidence/build-info/plugins/zipkin.txt -whitespace
+
+# Preserve the exact observed publication data pins on every checkout.
+/grafana-fixed-20261107-transport.json -text whitespace=cr-at-eol
+/grafana-fixed-20261107-publication.json -text whitespace=cr-at-eol

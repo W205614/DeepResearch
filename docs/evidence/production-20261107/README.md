@@ -13,7 +13,8 @@
 | [账号治理](governance-live.json)、[管理概览](admin-overview-live.json) | 双Java/双Python实际停用、恢复、旧令牌失效、重新登录、交接保留作者、在途取消及迟到结果不发布；概览仅返回安全元数据 |
 | [本地验证汇总](local-validation.md) | 测试覆盖、执行版本和仍待外部验收项；跳过不计通过 |
 | [精确提交CI](github-c6acf98.json) | c6acf98完整CI四个Job成功、告警规则通过；Python1528/8跳过、Java61、前端33、真实组件5、企业浏览器22/14跳过；安全21成功/旧Grafana1阻断 |
-| [新候选审查](grafana-candidate-review.md)、[本地准备](candidate-preparation.json) | 固定新归档与d9请求；两独立18项技术审查、77目标源码取证、严格28本地未知版本及真实CLI准备。尚无人类发布授权，不代表生产部署 |
+| [新候选审查](grafana-candidate-review.md)、[本地准备](candidate-preparation.json) | 固定新归档与d9请求；两独立18项技术审查、77目标源码取证、严格28本地未知版本及真实CLI准备。审批前状态保留；现已独立授权并发布，见发布后回执；不代表生产部署 |
+| [授权发布回执](grafana-publication.json) | 真实14分片发布、独立远端身份核对、验证选择器切换、本地归档加载及切换后177项测试；最终提交CI/安全结果单独核验，未部署日常容器 |
 | [证据字节保留](source-byte-preservation.json) | 三个精确路径的原字节、真实Git index与LF检出/loader独立核验；128冻结材料不变 |
 | [首轮安全阻断](security-review.md) | 真实Security失败、精确补充审查边界与未授权候选流程；应用测试通过不代表安全放行 |
 | [精确技术补充](security-supplements.json) | SQLite确修、MinIO原OCI与源码快照的离线重算及独立复核；旧raw/verdict保留，Grafana新增16项仍阻断 |

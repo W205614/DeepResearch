@@ -51,7 +51,7 @@ jobs:
       - name: Enforce exact source findings against the approved current runtime selection
         if: always() && steps.source_scan.outcome == 'success'
         run: >-
-          python scripts/check_grafana_active_source_retirement.py --profile maintenance
+          python scripts/check_grafana_source_fixed_20261107.py
           --scan .cache/eval/source-fs/raw.json
           --scan-receipt .cache/eval/source-fs/completion.json
           --original-verdict .cache/eval/source-fs-original-verdict.json
@@ -116,7 +116,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Load only the independently reviewed maintenance Grafana artifact without rebuilding
         if: matrix.artifact == 'grafana'
-        run: python scripts/fetch_grafana_candidate.py --profile maintenance --tag deepresearch-scan-grafana:ci --output .cache/eval/approved-grafana-load.json
+        run: python scripts/fetch_grafana_fixed_20261107.py --tag deepresearch-scan-grafana:20261107 --output .cache/eval/approved-grafana-load.json
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Scan ordinary runtime image with unchanged HIGH gate
@@ -135,7 +135,7 @@ jobs:
         if: matrix.approved_artifact == true
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: deepresearch-scan-${{ matrix.artifact }}:ci
+          image-ref: ${{ matrix.artifact == 'grafana' && 'deepresearch-scan-grafana:20261107' || 'deepresearch-scan-minio:ci' }}
           severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
           scanners: vuln,secret
           list-all-pkgs: 'true'
@@ -163,12 +163,12 @@ jobs:
           --output .cache/eval/minio-ci-disposition.json
       - name: Collect complete native and full Grafana reports
         if: matrix.artifact == 'grafana' && steps.approved_scan.outcome == 'success'
-        run: python scripts/scan_grafana_candidate.py --profile maintenance --image deepresearch-scan-grafana:ci --output-dir .cache/eval/grafana-native
+        run: python scripts/scan_grafana_fixed_20261107.py --image deepresearch-scan-grafana:20261107 --output-dir .cache/eval/grafana-native
       - name: Enforce exact independently authorized Grafana per-finding dispositions
         if: matrix.artifact == 'grafana' && steps.approved_scan.outcome == 'success'
         run: >-
-          python scripts/check_grafana_maintenance.py
-          --archive .cache/eval/approved-grafana.oci.tar
+          python scripts/check_grafana_release_20261107.py
+          --archive .cache/eval/approved-grafana-fixed-20261107.oci.tar
           --scan runtime-image.json
           --grype-scan .cache/eval/grafana-native/full-grype.json
           --sbom .cache/eval/grafana-native/full-syft.json

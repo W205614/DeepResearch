@@ -1,0 +1,40 @@
+{
+  "schema": "authorized-grafana-publication-v1",
+  "request_sha256": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+  "archive_sha256": "83b436c99dce9568431c26bef58599f13aceca98e68f2fb7f0d1440e651f16c3",
+  "authorization_sha256": "567d27db01ab0d82fe7d146603b9b942e93d8ccef25fe7cb5db5bf1b49a4440d",
+  "transport_sha256": "784f80a9a359ee742e6003391071caf6990adf4b370d3a654fdd76208c204680",
+  "publication_sha256": "b1306cc1df73f12a812dff2ad40be122cb38252bab29a17731c4c4207f9f5c4e",
+  "release_id": 437518277,
+  "release_url": "https://github.com/W205614/DeepResearch/releases/tag/artifact-grafana-fixed-20261107",
+  "published_at": "2026-11-07T11:37:42Z",
+  "release_draft": false,
+  "release_tag_commit": "c6acf98ca5d753b6981153f49108f43c62dbef0d",
+  "parts": 14,
+  "archive_bytes": 916224512,
+  "remote_metadata_independently_verified": true,
+  "local_load": {
+    "passed": true,
+    "archive_source": "explicit_local_recovery",
+    "request_sha256": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+    "remote_download_tested_by_this_local_load": false
+  },
+  "post_activation_tests": {
+    "passed": 177,
+    "skipped": 0,
+    "seconds": 78.44,
+    "files": [
+      "tests/test_fs_workflow_gate.py",
+      "tests/test_grafana_fixed_20261107.py",
+      "tests/test_source_html_retirement.py",
+      "tests/test_security_review_policy_integration.py",
+      "tests/test_grafana_source_candidate4.py"
+    ]
+  },
+  "final_commit_ci": "Must be verified separately for the activated commit.",
+  "historical_preparation_receipt": "candidate-preparation.json",
+  "production_deployed": false,
+  "historical_vectors_rebuilt": false,
+  "additional_model_requests": 0,
+  "backups_enabled": false
+}

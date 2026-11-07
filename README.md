@@ -57,7 +57,7 @@ Copy-Item .env.example .env
 
 ```powershell
 python scripts/fetch_approved_image.py
-python scripts/fetch_grafana_candidate.py --profile maintenance
+python scripts/fetch_grafana_fixed_20261107.py
 docker compose up -d --build --wait --wait-timeout 300
 ```
 

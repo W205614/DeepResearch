@@ -10,7 +10,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts.image_disposition import load_binding  # noqa: E402
-from scripts import check_grafana_maintenance as candidate  # noqa: E402
+from scripts import check_grafana_release_20261107 as candidate  # noqa: E402
 
 APPROVED_MINIO = "deepresearch-approved-minio:20261026"
 APPROVED_GRAFANA = candidate.APPROVED_TAG
@@ -28,7 +28,7 @@ def load_grafana_binding(root):
 
 def grafana_selection(root):
     binding = load_grafana_binding(root)
-    return {'image': APPROVED_GRAFANA, 'profile': 'maintenance', 'request_sha256': candidate.REQUEST_SHA256,
+    return {'image': APPROVED_GRAFANA, 'profile': 'fixed20261107', 'request_sha256': candidate.REQUEST_SHA256,
             'authorization_sha256': candidate.file_hash(root / candidate.AUTH_PATH),
             'authorization_verified': True, 'subject': candidate.subject_for(binding)}
 

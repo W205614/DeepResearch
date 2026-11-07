@@ -20,9 +20,9 @@ AUTH_PATH = Path('deployment/security/grafana-fixed-20261107-authorization.json'
 # these data pins. Missing values intentionally fail before HTTP or Docker.
 REQUEST_SHA256 = 'd9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96'
 TRANSPORT_PATH = Path('deployment/security/grafana-fixed-20261107-transport.json')
-TRANSPORT_SHA256 = None
+TRANSPORT_SHA256 = '784f80a9a359ee742e6003391071caf6990adf4b370d3a654fdd76208c204680'
 PUBLICATION_PATH = Path('deployment/security/grafana-fixed-20261107-publication.json')
-PUBLICATION_SHA256 = None
+PUBLICATION_SHA256 = 'b1306cc1df73f12a812dff2ad40be122cb38252bab29a17731c4c4207f9f5c4e'
 RELEASE_TAG = 'artifact-grafana-fixed-20261107'
 RELEASE_SOURCE_COMMIT = SOURCE_COMMIT
 APPROVED_TAG = 'deepresearch-approved-grafana:20261107'
