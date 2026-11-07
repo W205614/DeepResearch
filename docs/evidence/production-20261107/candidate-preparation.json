@@ -1,0 +1,58 @@
+{
+  "schema": "grafana-candidate-local-preparation-receipt-v1",
+  "request_sha256": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+  "archive_sha256": "83b436c99dce9568431c26bef58599f13aceca98e68f2fb7f0d1440e651f16c3",
+  "actual_runtime_prepare": {
+    "technical_ready": true,
+    "passed": false,
+    "approval_pending": true,
+    "receipt_sha256": "20e7190f09d03a9428619500ce96e94a3a9bec78e8d742b81d5a437eb3ce3039"
+  },
+  "actual_publication_prepare": {
+    "technical_ready": true,
+    "passed": false,
+    "approval_pending": true,
+    "parts": 14,
+    "network_or_Docker_operations": false,
+    "authorization_granted": false,
+    "receipt_sha256": "f122b28c523b3ab202d8cdf5bfbd1b53edb5e7be7ef4c0133ea50994ff43e6bf"
+  },
+  "independent_staged_index_and_clean_LF_checkout": {
+    "bound_files": 340,
+    "passed": true,
+    "receipt_sha256": "5a24ecf00d591d266939d979b4dbf0e675287332bc6bbfead1a2901a14766988"
+  },
+  "actual_source_discovery": {
+    "source_commit": "2c34a4f5b0b6c9d4641548d026c8d83a05780c05",
+    "targets": 77,
+    "HIGH": 22,
+    "UNKNOWN": 31,
+    "MEDIUM": 12,
+    "secrets": 0,
+    "raw_sha256": "a39da160332a3b4adb4564b173b68b446b557c9e3ffbb383d38d229a025d3c18",
+    "final_committed_head_recheck_required": true
+  },
+  "local_tests": {
+    "canonical_new_tools": {
+      "passed": 64,
+      "skipped": 0,
+      "seconds": 25.43
+    },
+    "related_legacy_and_new_batch": {
+      "passed": 195,
+      "skipped": 0,
+      "seconds": 78.24
+    },
+    "shared_history_and_two_profile_workflow_batch": {
+      "passed": 177,
+      "skipped": 0,
+      "seconds": 72.77
+    },
+    "warning": "These batches overlap; do not add their counts. Final fixture key-case delta is checked separately."
+  },
+  "human_authorized": false,
+  "published": false,
+  "active_selectors_changed": false,
+  "production_deployed": false,
+  "boundary": "Preparation facts only; final source/CI and exact human artifact authorization remain separate required steps."
+}

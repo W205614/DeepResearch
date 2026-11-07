@@ -18,16 +18,16 @@ EVIDENCE = ROOT / 'deployment/security/grafana-source-candidate4-evidence-202611
 
 
 @pytest.fixture(scope='module')
-def context():
+def context(historical_grafana_maintenance_root):
     scan = json.loads(gzip.decompress((EVIDENCE / 'ci-source-fs.raw.json.gz').read_bytes()))
     receipt = json.loads((EVIDENCE / 'ci-completion.json').read_bytes())
     original = json.loads((EVIDENCE / 'ci-source-fs-original-verdict.json').read_bytes())
     candidate = json.loads((EVIDENCE / 'ci-source-fs-candidate-verdict.json').read_bytes())
     inventory = json.loads((EVIDENCE / 'ci-runtime-image-inventory.json').read_bytes())
     previous = json.loads((EVIDENCE / 'ci-source-fs-verdict.json').read_bytes())
-    selection = gate.load_review(ROOT, datetime.fromisoformat(receipt['finished_at']), profile='maintenance')
-    html = gate.load_html_review(ROOT, selection)
-    review, builds = addon.load_review(gate, ROOT)
+    selection = gate.load_review(historical_grafana_maintenance_root, datetime.fromisoformat(receipt['finished_at']), profile='maintenance')
+    html = gate.load_html_review(historical_grafana_maintenance_root, selection)
+    review, builds = addon.load_review(gate, historical_grafana_maintenance_root)
     prior = {key: value for key, value in candidate.items() if key != 'preserved_original_verdict_file_sha256'}
     return scan, receipt, original, candidate, inventory, previous, html, review, builds, prior
 
@@ -50,14 +50,16 @@ def test_full_fresh_eighteen_rows_preserve_both_real_failed_routes_and_unknown_v
     assert builds['main']['tempo_packages'] == [] and len(builds['tempo']['tempo_packages']) == 4
 
 
-def test_historical_ci_replay_uses_full_62_manifest_coverage_and_preserves_raw_verdict_files(context, monkeypatch):
+def test_historical_ci_replay_uses_full_62_manifest_coverage_and_preserves_raw_verdict_files(context, historical_grafana_maintenance_root, monkeypatch):
     scan, receipt, original, candidate, inventory, _, _, _, _, _ = context
     # Only the historical CI Git/environment inventory boundary is supplied from its
-    # original artifact; live Windows paths and HEAD differ from the Linux merge job.
+    # original artifact; the temporary Git tree independently retains those62
+    # manifests. The current checkout has77 and is never described as the old CI.
     monkeypatch.setattr(gate.inventory, 'build_record', lambda root: copy.deepcopy(inventory))
-    targets = gate.source.old.committed_manifest_targets(ROOT, 'HEAD')
+    monkeypatch.setattr(gate.inventory, 'APPROVED_GRAFANA', inventory['grafana_selection']['image'])
+    targets = gate.source.old.committed_manifest_targets(historical_grafana_maintenance_root, 'HEAD')
     assert len(targets) == 62
-    args = dict(root=ROOT, now=datetime.fromisoformat(receipt['finished_at']), tracked_clean=True,
+    args = dict(root=historical_grafana_maintenance_root, now=datetime.fromisoformat(receipt['finished_at']), tracked_clean=True,
                 source_commit=receipt['source_commit'], expected_targets=targets, raw_sha256=receipt['raw_sha256'],
                 original_file_sha256=hashlib.sha256((EVIDENCE / 'ci-source-fs-original-verdict.json').read_bytes()).hexdigest())
     previous = gate.evaluate(scan, receipt, original, candidate, inventory, profile='maintenance', **args)
@@ -209,3 +211,12 @@ def test_exact_review_metadata_survive_actual_git_index_and_clean_lf_checkout(tm
     loaded, builds = addon.load_review(gate, checkout)
     assert loaded == review and builds['main']['complete_effective_native_dependencies_equal']
     assert builds['main']['tempo_packages'] == [] and len(builds['tempo']['tempo_packages']) == 4
+
+
+def test_old_selection_review_rejects_changed_live_helper_inputs():
+    receipt = json.loads((EVIDENCE / 'ci-completion.json').read_bytes())
+    # The new optional consumer hooks changed real source hashes. Historical
+    # replay must not silently refresh this immutable old selection binding.
+    # Profile changes may invalidate a selector before the source-hash check.
+    with pytest.raises(ValueError):
+        gate.load_review(ROOT, datetime.fromisoformat(receipt['finished_at']), profile='maintenance')

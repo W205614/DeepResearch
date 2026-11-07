@@ -1,6 +1,6 @@
 """Exact HTML snapshot facts supplement, and never rewrite, the real failed source scan."""
 import copy
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 import gzip
 import hashlib
 import inspect
@@ -17,9 +17,11 @@ EVIDENCE = ROOT / 'deployment/security/grafana-source-html9-evidence-20261107'
 
 
 @pytest.fixture(scope='module')
-def context():
-    selection = gate.load_review(ROOT, datetime.now(timezone.utc), profile='maintenance')
-    review = gate.load_html_review(ROOT, selection)
+def context(historical_grafana_maintenance_root):
+    receipt = json.loads((EVIDENCE / 'ci-completion-20261107.json').read_bytes())
+    selection = gate.load_review(historical_grafana_maintenance_root,
+        datetime.fromisoformat(receipt['finished_at']), profile='maintenance')
+    review = gate.load_html_review(historical_grafana_maintenance_root, selection)
     scan = gate.source.old.json_loads(gzip.decompress((EVIDENCE / 'ci-source-fs-20261107.raw.json.gz').read_bytes()))
     previous = gate.source.old.json_loads((EVIDENCE / 'ci-candidate-failed-verdict-20261107.json').read_bytes())
     return selection, review, scan, previous
@@ -40,7 +42,7 @@ def test_real_fourteen_high_rows_are_recomputed_without_filtering_or_rewriting_o
     assert hashlib.sha256(inspect.getsource(gate.apply_retirement).encode()).hexdigest() == review['reviewed_ci']['old_five_row_function_sha256']
 
 
-def test_historical_ci_completion_and_both_failed_verdicts_recompute_from_the_real_commit_tree(context):
+def test_historical_ci_completion_and_both_failed_verdicts_recompute_from_the_real_commit_tree(context, historical_grafana_maintenance_root):
     review, scan = context[1], context[2]
     tree = json.loads((ROOT / review['reviewed_ci']['historical_source_tree']).read_bytes())
     assert tree['sha'] == review['reviewed_ci']['commit_tree_sha'] and tree['truncated'] is False
@@ -50,10 +52,10 @@ def test_historical_ci_completion_and_both_failed_verdicts_recompute_from_the_re
     receipt = json.loads((EVIDENCE / 'ci-completion-20261107.json').read_bytes())
     clock = datetime.fromisoformat(receipt['finished_at']) + timedelta(seconds=1)
     original = gate.source.old.evaluate(scan, receipt, raw_sha256=review['reviewed_ci']['raw_sha256'],
-        source_commit=receipt['source_commit'], root=ROOT, now=clock, tracked_clean=receipt['tracked_clean'], expected_targets=targets)
+        source_commit=receipt['source_commit'], root=historical_grafana_maintenance_root, now=clock, tracked_clean=receipt['tracked_clean'], expected_targets=targets)
     assert original == json.loads((EVIDENCE / 'ci-original-failed-verdict-20261107.json').read_bytes())
     candidate = gate.source.evaluate(scan, receipt, original, raw_sha256=review['reviewed_ci']['raw_sha256'],
-        source_commit=receipt['source_commit'], root=ROOT, now=clock, tracked_clean=receipt['tracked_clean'], expected_targets=targets)
+        source_commit=receipt['source_commit'], root=historical_grafana_maintenance_root, now=clock, tracked_clean=receipt['tracked_clean'], expected_targets=targets)
     assert candidate == {key: value for key, value in context[3].items() if key != 'preserved_original_verdict_file_sha256'}
     assert original['passed'] is False and candidate['passed'] is False
     assert review['reviewed_ci']['historical_replay_is_not_a_fresh_security_scan'] is True

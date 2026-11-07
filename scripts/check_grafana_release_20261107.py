@@ -18,7 +18,7 @@ REQUEST_PATH = Path('deployment/security/grafana-fixed-20261107-request.json')
 AUTH_PATH = Path('deployment/security/grafana-fixed-20261107-authorization.json')
 # A real independently reviewed request and real published transport must fill
 # these data pins. Missing values intentionally fail before HTTP or Docker.
-REQUEST_SHA256 = None
+REQUEST_SHA256 = 'd9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96'
 TRANSPORT_PATH = Path('deployment/security/grafana-fixed-20261107-transport.json')
 TRANSPORT_SHA256 = None
 PUBLICATION_PATH = Path('deployment/security/grafana-fixed-20261107-publication.json')
@@ -153,6 +153,31 @@ def verify_reviews(root, request):
     return actors
 
 
+def verify_sbom_local_versions(sbom, binding):
+    local = Counter()
+    for row in binding['inventory_identity']['local_source_modules']:
+        directive = row['module_directive'].split()
+        require(len(directive) == 2 and directive[0] == 'module'
+                and row['elf_sha256'] == binding['binary_sha256'].get(row['target']),
+                'Exact local SBOM source/ELF identity differs')
+        local[(row['target'], directive[1])] += 1
+    require(len(local) == 28 and all(n == 1 for n in local.values()),
+            'Only the exact twenty-eight local SBOM identities are supported')
+    observed = Counter()
+    for artifact in sbom['artifacts']:
+        version = artifact.get('version')
+        require(type(version) is str and version.strip(), 'Full SBOM package version is absent')
+        if version.strip().casefold() in {'unknown', '(devel)', 'devel'}:
+            locations = artifact.get('locations')
+            require(version == 'UNKNOWN' and artifact.get('type') == 'go-module'
+                    and type(locations) is list and len(locations) == 1,
+                    'Only the exact literal UNKNOWN local Go-module version is reviewed')
+            key = (shared.legacy.normalized_target(locations[0]['path']), artifact['name'])
+            require(key in local, 'Unknown SBOM target/module is outside the exact source binding')
+            observed[key] += 1
+    require(observed == local, 'Exact local SBOM identities are missing, extra, duplicate or changed')
+
+
 def verify_full_scans(trivy, grype, sbom, inspection, binding, *, trivy_exit_code, grype_exit_code):
     now = datetime.now(timezone.utc)
     old_maintenance.fresh_timestamp(trivy.get('CreatedAt'), timedelta(hours=24), now=now)
@@ -198,8 +223,9 @@ def verify_full_scans(trivy, grype, sbom, inspection, binding, *, trivy_exit_cod
                         artifact['version'], vuln['severity'].upper())] += 1
     require(native == expected_counter(binding, 'exact_grype_rows'), 'New exact native rows are missing, extra, duplicate or changed')
     require(Counter(a['type'] for a in sbom['artifacts']) == Counter(binding['exact_syft_types']), 'Full Syft inventory type counts differ')
-    # Keep the original exact source identity checks for the final Syft's 28
-    # UNKNOWN local modules; this profile adds no general version bypass.
+    # Syft emits UNKNOWN for these exact28 source-bound local modules. Preserve
+    # the raw versions and reject every other missing or special-version tuple.
+    verify_sbom_local_versions(sbom, binding)
     result = shared.legacy.evaluate_scans(trivy, grype, sbom, inspection, binding,
         trivy_exit_code=trivy_exit_code, grype_exit_code=grype_exit_code)
     require(result['passed'] is True and result['unresolved_count'] == 0

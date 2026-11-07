@@ -1,0 +1,110 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  real-components:
+    runs-on: ubuntu-latest
+    permissions: { contents: read }
+    steps:
+      - uses: actions/checkout@v7
+        with: { fetch-depth: 0, fetch-tags: true }
+      - name: Verify immutable ancestor artifact source reuse
+        run: python scripts/check_artifact_source_reuse.py --output .cache/eval/artifact-source-reuse.json
+      - uses: actions/upload-artifact@v6
+        if: always() && hashFiles('.cache/eval/artifact-source-reuse.json') != ''
+        with:
+          name: component-artifact-source-${{ github.sha }}
+          path: .cache/eval/artifact-source-reuse.json
+      - name: Load the approved storage artifact for the isolated component fixture
+        run: python scripts/fetch_approved_image.py
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - run: python scripts/verify_components.py --drill
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+      - run: uv sync --all-groups --frozen
+      - run: uv run ruff check backend tests scripts main.py
+      - run: uv run pytest -q
+      - run: QUEUE_BACKEND=local DOCUMENT_SCAN_MODE=disabled OBJECT_STORE_BACKEND=filesystem uv run python scripts/evaluate.py --verify
+      - uses: actions/setup-java@v5
+        with: { distribution: temurin, java-version: "21", cache: maven }
+      - run: mvn -B test
+        working-directory: business-backend
+      - uses: actions/setup-node@v7
+        with: { node-version: 22, cache: npm, cache-dependency-path: frontend/package-lock.json }
+      - run: npm ci
+        working-directory: frontend
+      - run: npm test -- --run
+        working-directory: frontend
+      - run: npm run build
+        working-directory: frontend
+  compose-smoke:
+    # Keep the existing check name without building a second enterprise stack.
+    needs: enterprise-compose-smoke
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - run: test "$ENTERPRISE_RESULT" = success
+        env:
+          ENTERPRISE_RESULT: ${{ needs.enterprise-compose-smoke.result }}
+  enterprise-compose-smoke:
+    # The locked Playwright 1.55 browser dependencies support Ubuntu 24.04.
+    runs-on: ubuntu-24.04
+    permissions: { contents: read }
+    env:
+      POSTGRES_PASSWORD: ci-postgres-password
+      MIGRATOR_DB_PASSWORD: ci-migrator-password
+      JAVA_DB_PASSWORD: ci-java-password-distinct
+      PYTHON_DB_PASSWORD: ci-python-password-distinct
+      MONITOR_DB_PASSWORD: ci-monitor-password-distinct
+      OBJECT_STORE_SECRET_KEY: ci-business-objects-password
+      MILVUS_STORAGE_PASSWORD: ci-milvus-storage-password
+      KEYCLOAK_DB_PASSWORD: ci-keycloak-db-password
+      KEYCLOAK_ADMIN_PASSWORD: ci-keycloak-admin-password
+      MINIO_ROOT_PASSWORD: ci-minio-password
+      GRAFANA_ADMIN_PASSWORD: ci-grafana-password
+    steps:
+      - uses: actions/checkout@v7
+        with: { fetch-depth: 0, fetch-tags: true }
+      - name: Verify immutable ancestor artifact source reuse
+        run: python scripts/check_artifact_source_reuse.py --output .cache/eval/artifact-source-reuse.json
+      - uses: actions/upload-artifact@v6
+        if: always() && hashFiles('.cache/eval/artifact-source-reuse.json') != ''
+        with:
+          name: enterprise-artifact-source-${{ github.sha }}
+          path: .cache/eval/artifact-source-reuse.json
+      - name: Load the exact approved storage artifact before Compose startup
+        run: python scripts/fetch_approved_image.py
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Load the exact approved Grafana artifact before Compose startup
+        run: python scripts/fetch_grafana_candidate.py --profile maintenance
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Validate the maintained collector with the current complete telemetry configuration
+        run: |
+          docker compose build otel-collector
+          docker run --rm --network none --read-only --cap-drop ALL \
+            -v "$PWD/observability/otel-collector.yaml:/etc/otelcol-contrib/config.yaml:ro" \
+            deepresearch-otel-collector:0.163.2-security-20261028 \
+            validate --config=/etc/otelcol-contrib/config.yaml
+      - run: python scripts/smoke-enterprise.py --start
+      - run: curl --fail --retry 15 --retry-connrefused http://127.0.0.1:8080/livez
+      - run: curl --fail --retry 15 --retry-connrefused http://127.0.0.1:8080/readyz
+      - uses: actions/setup-node@v7
+        with: { node-version: 22, cache: npm, cache-dependency-path: frontend/package-lock.json }
+      - run: npm ci
+        working-directory: frontend
+      - run: npx playwright install --with-deps chromium
+        working-directory: frontend
+      - run: npm run test:e2e:enterprise
+        working-directory: frontend
+      - if: always()
+        run: docker compose logs --no-color && docker compose down

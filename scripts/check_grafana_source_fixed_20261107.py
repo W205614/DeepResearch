@@ -1,4 +1,4 @@
-"""Exact source18 applicability for the new final subject; old authority is never reused."""
+"""Exact source22 applicability for the new final subject; old authority is never reused."""
 from __future__ import annotations
 
 import argparse
@@ -77,6 +77,28 @@ def verify_profiles(root, request, scope):
         'Every compiled profile must bind this exact final fourteen-ELF subject')
     facts, names_seen = {}, set()
     inventory = {m['plugin_directory']: m for m in api.read_json(root / 'deployment/vendors/grafana-20261107/plugin-modules.json')}
+    copies = scope['manifest_copies']
+    prefix = 'deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/'
+    expected_copies = {}
+    for name in sorted({'main', *inventory}):
+        tail = 'main/main/go.mod' if name == 'main' else 'plugins/' + name + '/go.mod'
+        source = 'deployment/vendors/grafana-20261107/' + ('main/go.mod' if name == 'main' else 'plugins/' + name + '/go.mod')
+        expected_copies[prefix + tail] = (name, 'root', source, binding['recipe_files'][source])
+    expected_copies[prefix + 'plugins/prometheus/pkg/promlib/go.mod'] = (
+        'prometheus', 'nested', None, PROM_LOCKS['nested_go_mod'])
+    api.require(type(copies) is list and len(copies) == 15
+        and {row['target'] for row in copies} == set(expected_copies),
+        'All fifteen exact compiled lock snapshots must remain visible to source scanning')
+    for row in copies:
+        name, kind, source, digest = expected_copies[row['target']]
+        api.require(row['compiled_profile'] == name and row['lock_kind'] == kind
+            and row['compiled_source'] == source and row['sha256'] == digest
+            and request['files_sha256'].get(row['target']) == digest
+            and api.file_hash(root / row['target']) == digest,
+            'Source snapshot escaped its exact compiled source/profile/hash')
+        lines = (root / row['target']).read_text(encoding='utf8').splitlines()
+        api.require(row['module_directive'] in lines and row['module_directive'].startswith('module '),
+                    'Exact copied source module identity differs')
     for profile in profiles:
         name, target = profile['name'], profile['target']
         api.require(name not in names_seen and (name == 'main' or name in inventory)
@@ -116,24 +138,32 @@ def verify_profiles(root, request, scope):
     return facts
 
 
-def source_rows():
-    return Counter([original.SCOPE]
+def source_rows(*, include_copies=False):
+    rows = Counter([original.SCOPE]
         + [(id, path, original.source.MODULE, original.source.VERSION, 'HIGH')
            for path in (original.OLD_SOURCE, original.source.SOURCE) for id in sorted(original.source.IDS)]
         + [('CVE-2026-78661', path, original.HTML_MODULE, 'v0.60.0', 'HIGH') for path in original.HTML_SOURCES]
         + [(id, path, source4.TEMPO, version, 'HIGH') for path, (_, version) in source4.SOURCES.items() for id in source4.IDS])
+    if include_copies:
+        prefix = 'deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/'
+        for tail, version in [('main/main/go.mod', 'v1.5.1-0.20260427112133-525d1bab07e0'),
+                              ('plugins/tempo/go.mod', 'v1.5.1-0.20260910130453-bcfe9f230c1d')]:
+            rows.update((advisory, prefix + tail, source4.TEMPO, version, 'HIGH') for advisory in source4.IDS)
+    return rows
 
 
 def assess_source(scan, scope, compiled):
     findings, counts, secrets = original.source.old.summarize(scan)
     api.require(not any(secrets.values()), 'Every source secret blocks')
-    expected = source_rows()
+    copies = scope.get('manifest_copies', [])
+    expected = source_rows(include_copies=bool(copies))
+    copy_profiles = {row['target']: row['compiled_profile'] for row in copies}
     observed = row_counter([r for r in findings if r['severity'] in original.source.old.BASELINE_GATE_SEVERITIES])
     scoped = row_counter([r for r in findings if r['id'] in {key[0] for key in expected}])
-    api.require(observed == scoped == row_counter(scope['rows']) == expected and sum(expected.values()) == 18,
-                'Exact source18 tuples are missing, extra, duplicate or reclassified')
+    api.require(observed == scoped == row_counter(scope['rows']) == expected and sum(expected.values()) == (22 if copies else 18),
+                'Exact source tuples are missing, extra, duplicate or reclassified')
     targets = sorted([r['Target'], r.get('Class', ''), r.get('Type', '')] for r in scan['Results'])
-    api.require(targets == scope['scan_targets'] and len(targets) == 62, 'Full current source coverage differs')
+    api.require(targets == scope['scan_targets'] and len(targets) == (77 if copies else 62), 'Full current source coverage differs')
     for row in findings:
         if row['severity'] not in original.source.old.BASELINE_GATE_SEVERITIES:
             continue
@@ -145,7 +175,8 @@ def assess_source(scan, scope, compiled):
             dependency = compiled[name]['native']['golang.org/x/net']
             api.require(dependency.get('Version') == 'v0.62.0' and not dependency.get('Replace'), 'Actual fixed HTML module differs')
         else:
-            name = 'tempo' if row['target'] == source4.PREFIX + 'plugins/tempo/go.mod' else 'main'
+            name = copy_profiles.get(row['target'],
+                'tempo' if row['target'] == source4.PREFIX + 'plugins/tempo/go.mod' else 'main')
             fact = compiled[name]
             affected = [p for p in fact['packages'] if any(p == prefix or p.startswith(prefix + '/') for prefix in source4.AFFECTED)]
             api.require(not affected, 'An affected Tempo server package is compiled')
@@ -159,7 +190,7 @@ def assess_source(scan, scope, compiled):
                     'Version': 'v1.5.1-0.20260910130453-bcfe9f230c1d',
                     'Sum': 'h1:BphMCaYqWY+j1fdRPNFPkYE4A4QIev1KlHjRkSVJ8O4='}, 'Actual Tempo dependency differs')
     return {'technical_ready': True, 'passed': False, 'approval_pending': True, 'raw_report_modified': False,
-            'raw_blocking_count': 18, 'full_source_targets': 62, 'raw_counts': counts,
+            'raw_blocking_count': sum(expected.values()), 'full_source_targets': len(targets), 'raw_counts': counts,
             'compiled_profile_count': 14, 'actual_elf_sha256': {n: f['elf_sha256'] for n, f in compiled.items()},
             'unknown_dispositions_granted': 0, 'old_authorization_inherited': False, 'artifact_approved': False}
 
@@ -203,7 +234,7 @@ def main(argv=None):
             api.require(scope['planned_selector_sha256'] and all(api.file_hash(ROOT / n) == s
                 for n, s in scope['planned_selector_sha256'].items()), 'Actual selection differs from the reviewed activation patch')
             api.verify_published_delivery(ROOT, request)
-            result.update(passed=True, approval_pending=False, mode='new_exact_source18_selection_verified')
+            result.update(passed=True, approval_pending=False, mode='new_exact_source22_selection_verified')
     except (ValueError, TypeError, KeyError, OSError, EOFError, subprocess.SubprocessError) as error:
         result = {'passed': False, 'mode': 'new_source_failed_closed', 'error_type': type(error).__name__,
                   'artifact_approved': False, 'error': str(error) if isinstance(error, ValueError) else 'Exact new source evidence unavailable'}

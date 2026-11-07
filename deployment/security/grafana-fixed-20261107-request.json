@@ -1,6 +1,6 @@
 {
   "schema": "deepresearch-grafana-candidate-request-v1",
-  "technical_ready": false,
+  "technical_ready": true,
   "status": "UNAPPROVED_DRAFT",
   "approval_pending": true,
   "artifact_approved": false,
@@ -9118,8 +9118,11 @@
       "deployment/security/grafana-fixed-20261107-evidence/independent-primary/primary-download-receipt.json": "c575e3cb40fd7c664b7e2db10c3de2351fedc359d6a6d303b390da4d457b90a1",
       "deployment/security/grafana-fixed-20261107-evidence/independent-primary/vendor-primary-download-receipt.json": "a37d1f135ea747ff53198eab57825f901ce72f16e91f0955f27c5a22c0e036b3",
       "deployment/security/grafana-fixed-20261107-evidence/disposition-enum-correspondence.json": "951299c1ebfdb4efe984824637fa162cfb5de1220bfe66cafc79137393f876f0",
-      "deployment/security/grafana-fixed-20261107-evidence/tamper-pointer-independent-receipt.json": "b4b7f9deb75631b0985d977740d5c26be4fda4aafc2700fdd4a95a9befda70c0"
-    }
+      "deployment/security/grafana-fixed-20261107-evidence/tamper-pointer-independent-receipt.json": "b4b7f9deb75631b0985d977740d5c26be4fda4aafc2700fdd4a95a9befda70c0",
+      "deployment/security/grafana-fixed-20261107-evidence/independent-second-runtime-review.json": "e8a9befae03fd9bf045cf52621cf24e2d407ab928169c19696b6fcf963291b59",
+      "deployment/security/grafana-fixed-20261107-evidence/second-review-actual14-native-and-graph-replay.json": "bb6629c665391241b1e163371cbd47d06f26d585f1608ddc6ef6e061b8d5630a"
+    },
+    "source_scope_file": "deployment/security/grafana-fixed-20261107-source-scope.json"
   },
   "files_sha256": {
     ".dockerignore": "1d8e946efddff008720d2f3ce79cdbc24b281bd734778c479b580d36eb4e276c",
@@ -9458,17 +9461,24 @@
     "deployment/security/grafana-fixed-20261107-evidence/independent-primary/primary-download-receipt.json": "c575e3cb40fd7c664b7e2db10c3de2351fedc359d6a6d303b390da4d457b90a1",
     "deployment/security/grafana-fixed-20261107-evidence/independent-primary/vendor-primary-download-receipt.json": "a37d1f135ea747ff53198eab57825f901ce72f16e91f0955f27c5a22c0e036b3",
     "deployment/security/grafana-fixed-20261107-evidence/disposition-enum-correspondence.json": "951299c1ebfdb4efe984824637fa162cfb5de1220bfe66cafc79137393f876f0",
-    "deployment/security/grafana-fixed-20261107-evidence/tamper-pointer-independent-receipt.json": "b4b7f9deb75631b0985d977740d5c26be4fda4aafc2700fdd4a95a9befda70c0"
+    "deployment/security/grafana-fixed-20261107-evidence/tamper-pointer-independent-receipt.json": "b4b7f9deb75631b0985d977740d5c26be4fda4aafc2700fdd4a95a9befda70c0",
+    "deployment/security/grafana-fixed-20261107-evidence/independent-second-runtime-review.json": "e8a9befae03fd9bf045cf52621cf24e2d407ab928169c19696b6fcf963291b59",
+    "deployment/security/grafana-fixed-20261107-evidence/second-review-actual14-native-and-graph-replay.json": "bb6629c665391241b1e163371cbd47d06f26d585f1608ddc6ef6e061b8d5630a",
+    "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101"
   },
   "independent_reviews": [
     {
       "path": "deployment/security/grafana-fixed-20261107-evidence/independent-runtime-review.json",
       "sha256": "dff6face8a37d3b6c689af2aab02b8e285d61918f0b4cc277fa9dbc957d5ff15"
+    },
+    {
+      "path": "deployment/security/grafana-fixed-20261107-evidence/independent-second-runtime-review.json",
+      "sha256": "e8a9befae03fd9bf045cf52621cf24e2d407ab928169c19696b6fcf963291b59"
     }
   ],
   "pending": [
-    "Second independent same-subject technical review and independent consumer/delivery-tool review",
-    "New exact-subject human authorization before publication or selector changes"
+    "New exact-subject human authorization before artifact publication or runtime selector changes",
+    "Final committed-head source/CI verification, authorized publication transport binding and deployment acceptance"
   ],
   "candidate_author": "/root/grafana_plugins_review",
   "provenance": {

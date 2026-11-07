@@ -30,6 +30,10 @@
 
 修复后的 `c6acf98ca5d753b6981153f49108f43c62dbef0d` 已完成[完整CI](https://github.com/W205614/DeepResearch/actions/runs/42356591589)：Python1528 passed / 8 skipped、Java61项、前端33项及构建；真实组件5项通过，Worker恢复50.8秒、Redis只读恢复与Milvus就绪恢复通过；企业整栈与浏览器22 passed / 14 skipped。四个CI Job与告警规则全部通过，跳过项不计通过。[精确提交回执](github-c6acf98.json)保留各Job链接。Security为21个成功Job、1个旧Grafana运行制品失败；新候选仍须完整技术复核与独立精确授权，不能把CI成功写成生产放行。
 
+新候选运行制品的两份独立审查已完成，精确18条阻断元组及7条原生扫描元组均绑定同一新归档。原始Syft的28个大写`UNKNOWN`为本地源码模块，新消费者逐模块、目标ELF和来源精确核对；其他未知、缺失或错配版本拒绝。实际ROOT新工具64项、相关旧/新组合195项、共享历史及双profile工作流177项分别通过，批次有重叠，不相加。历史回放隔离原始文件与62目标Git上下文，当前旧绑定仍正确拒绝，不更新旧授权或原失败记录。
+
+本地中间提交`2c34a4f`的全源码扫描实际为77目标、22 HIGH、31 UNKNOWN、12 MEDIUM、0 secret：新增15份实际构建锁快照全部入扫，额外4条HIGH逐SHA映射到已审main/Tempo编译范围。最终提交仍须取得自身的新鲜扫描回执。真实运行制品与发布CLI的`--prepare`已完成技术核验，均保持`passed=false`及`approval_pending=true`，14个拟发布分片仅在本地核算，无上传或选择器切换。[准备回执](candidate-preparation.json)不代替最终CI、人类精确授权和目标环境验收。
+
 ## 真实组件与模型
 
 - 四次真实OpenAI HTTP探测全部通过；之后没有追加真实模型请求。重排保持BGE/SiliconFlow。

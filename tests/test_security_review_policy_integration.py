@@ -46,9 +46,15 @@ def test_legacy_selection_cannot_inherit_the_new_maintenance_controls():
         retirement.load_review(retirement.ROOT, FUTURE)
 
 
-def test_current_maintenance_selection_survives_date_only_after_complete_real_binding():
-    review = retirement.load_review(retirement.ROOT, FUTURE, profile='maintenance')
+def test_historical_maintenance_selection_survives_date_only_after_complete_real_binding(historical_grafana_maintenance_root):
+    review = retirement.load_review(historical_grafana_maintenance_root, FUTURE, profile='maintenance')
     assert review['validity'] == 'change-driven'
     assert review['facts_passed'] is True
     assert review['subject']['archive_sha256'] == '408744f9d8d357a9b7dfd97ac802efbbdee662cb1177b80d8020bdc24c019e25'
     assert review['publication_sha256'] and review['transport_sha256']
+
+
+def test_date_amendment_cannot_refresh_changed_live_maintenance_controls():
+    # Rejecting an earlier selector check after profile activation is valid too.
+    with pytest.raises(ValueError):
+        retirement.load_review(retirement.ROOT, FUTURE, profile='maintenance')
