@@ -90,6 +90,52 @@ def test_image_reuse_requires_explicit_baseline_before_runner_or_docker(tmp_path
         acceptance.execute(args, root=tmp_path)
 
 
+@pytest.mark.parametrize('volume_name,blocked', [
+    ('dr-production-test_postgres-data', True),
+    ('other-project_postgres-data', False),
+    ('dr-production-test_previous-run', False),
+])
+def test_detached_planned_volumes_block_before_startup(tmp_path, monkeypatch, volume_name, blocked):
+    from types import SimpleNamespace
+
+    steps = []
+
+    class FixtureRunner:
+        def __init__(self, root, report_dir):
+            self.environment, self.steps = {}, steps
+
+        def run(self, label, command, **kwargs):
+            steps.append(label)
+            if label == 'compose-config':
+                config = fixture_config()
+                for service in config['services'].values():
+                    service['image'] = 'fixture-image'
+                return json.dumps(config)
+            if label == 'container-ids':
+                return ''
+            if label == 'volume-inventory':
+                return volume_name + '\n'
+            if label == 'startup':
+                raise RuntimeError('startup reached')
+            pytest.fail('Unexpected Docker action: ' + label)
+
+    def inspect_image(command, **kwargs):
+        assert command[:3] == ['docker', 'image', 'inspect']
+        return SimpleNamespace(returncode=0, stdout='sha256:fixture-image\n')
+
+    monkeypatch.setattr(acceptance, 'Runner', FixtureRunner)
+    monkeypatch.setattr(acceptance, 'source_identity', lambda *args: {'git_head': 'fixture-source'})
+    monkeypatch.setattr(subprocess, 'run', inspect_image)
+    args = acceptance.parser().parse_args(['smoke', '--isolated', '--reuse-images', '--image-baseline', 'fixture-source'])
+    if blocked:
+        with pytest.raises(ValueError, match='volumes have no matching containers'):
+            acceptance.execute(args, root=tmp_path)
+        assert 'startup' not in steps
+    else:
+        with pytest.raises(RuntimeError, match='startup reached'):
+            acceptance.execute(args, root=tmp_path)
+
+
 def test_isolated_help_entrypoint_from_other_directory_has_no_runtime_side_effect(tmp_path):
     script = Path(acceptance.__file__).resolve()
     result = subprocess.run([sys.executable, '-I', str(script), '--help'], cwd=tmp_path,

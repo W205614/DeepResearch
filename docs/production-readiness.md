@@ -124,6 +124,8 @@ PLATFORM_OPERATOR_SUBJECTS 是 IdP sub 的逗号分隔受控白名单，空间�
 
 `scripts/production_acceptance.py prepare|smoke|load|faults|all` 固定 project=dr-production-test、`.env.production-test` 及 base/core/replicas/production-test 四文件。prepare 只创建带标记、内容固定的假配置，绝不读取私密.env或覆盖未知文件；继承进程中的模型/云凭据和COMPOSE覆盖变量不会进入子进程。启动动作须显式 --isolated，存在同一checkout隔离容器时还须 --reuse-stack；别的checkout同名project拒绝复用。
 
+没有匹配容器但计划使用的命名卷已经存在时，入口会在构建和启动前拒绝执行；新假配置不能证明旧卷可以复用。保留这些卷，核对其原配置和归属，改用独立的新卷名进行验收；不要为绕过检查删除旧卷或重置存储身份。既有 `--reuse-stack` 不授权复用失去容器关联的卷。
+
 默认 compose build 使用仓库 canonical Python/Java/Web/PostgreSQL/Keycloak/storage-init Dockerfile，测试专用 dr-production-*:candidate tags 不替换日常image tag。源树在构建前后核对。已有批准MinIO/Milvus/etcd等本地artifact需按原安全流程加载；只有锁定digest可拉取，入口不擅自重批安全结论。--reuse-images必须同时给非秘密--image-baseline说明，报告记录实际镜像和容器ID，并明确未验证最新源码。
 
 smoke 是短时、小资料功能检查；load 固定1800秒/50账号/10在线/5研究并发/500资料×100片段，预置资料有界等待后才计时，默认每批2份、最多4份，不放宽产品队列/并发/资源阈值。faults复用现有Redis只读/单副本退出/Worker恢复工具；all按smoke→load→faults执行。每次实际准备50个隔离OIDC测试身份，令牌存私密receipts文件，不打印令牌。结果、manifest、构建/执行日志和数据均保留，失败不被计为通过，不自动清理服务或卷。

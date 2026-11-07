@@ -207,6 +207,14 @@ def execute(args, *, root=ROOT):
         report['containers_before'] = existing
         if existing and not args.reuse_stack:
             raise ValueError('Existing isolated project retained; pass --reuse-stack explicitly to reuse it')
+        if not existing:
+            volume_names = set(runner.run('volume-inventory', ['docker', 'volume', 'ls', '--format', '{{.Name}}'],
+                                          capture=True).splitlines())
+            retained_volumes = sorted(resource['name'] for resource in config.get('volumes', {}).values()
+                                      if resource['name'] in volume_names)
+            report['detached_volumes_before'] = retained_volumes
+            if retained_volumes:
+                raise ValueError('Existing isolated volumes have no matching containers; preserve them and use separate volume names')
         if not args.reuse_images:
             runner.run('canonical-build', compose + ['build', *BUILD_SERVICES], timeout=args.build_timeout)
             if source_identity(root, runner.environment) != report['source']:
