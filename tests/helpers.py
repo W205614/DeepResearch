@@ -17,7 +17,9 @@ async def finish(rt, run):
 async def make_provider(tmp_path, response):
     db = Database(tmp_path / 'test.sqlite3')
     await db.init()
-    settings = Settings(_env_file=None, llm_api_key='test-key', embedding_api_key='test-key', embedding_dimension=3)
+    settings = Settings(_env_file=None, llm_provider='compatible', llm_base_url='https://api.deepseek.com',
+                        vision_model_id='deepseek-v4-flash-vision-exp', web_search_provider='deepseek',
+                        llm_api_key='test-key', embedding_api_key='test-key', embedding_dimension=3)
     client = httpx.AsyncClient(transport=httpx.MockTransport(response))
     class GovernedFixtureProviders(Providers):
         async def post(self, *args, **kwargs):

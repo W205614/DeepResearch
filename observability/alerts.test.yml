@@ -1,0 +1,156 @@
+rule_files: [alerts.yml, alerts.production-cloud.yml]
+evaluation_interval: 1m
+tests:
+  - name: replica SQL gauges are not summed and event counters are summed
+    interval: 1m
+    input_series:
+      - series: 'deepresearch_queue_depth{deployment="test",instance="a"}'
+        values: '6+0x12'
+      - series: 'deepresearch_queue_depth{deployment="test",instance="b"}'
+        values: '6+0x12'
+      - series: 'deepresearch_usage_budget_rejections_total{deployment="test",instance="a"}'
+        values: '0+1x12'
+      - series: 'deepresearch_usage_budget_rejections_total{deployment="test",instance="b"}'
+        values: '0+1x12'
+    alert_rule_test:
+      - eval_time: 6m
+        alertname: DeepResearchQueueBacklog
+        exp_alerts: []
+      - eval_time: 6m
+        alertname: DeepResearchUsageBudgetExhausted
+        exp_alerts:
+          - exp_labels: {deployment: test, severity: warning}
+            exp_annotations: {summary: "A paid call was refused by the durable period budget; adjust scope or authorize a budget change"}
+    promql_expr_test:
+      - expr: max by (deployment) (deepresearch_queue_depth)
+        eval_time: 5m
+        exp_samples:
+          - labels: '{deployment="test"}'
+            value: 6
+      - expr: sum by (deployment) (increase(deepresearch_usage_budget_rejections_total[5m]))
+        eval_time: 5m
+        exp_samples:
+          - labels: '{deployment="test"}'
+            value: 10
+  - name: real queue backlog is one deployment alert
+    interval: 1m
+    input_series:
+      - series: 'deepresearch_queue_depth{deployment="test",instance="a"}'
+        values: '11+0x8'
+      - series: 'deepresearch_queue_depth{deployment="test",instance="b"}'
+        values: '11+0x8'
+    alert_rule_test:
+      - eval_time: 6m
+        alertname: DeepResearchQueueBacklog
+        exp_alerts:
+          - exp_labels: {deployment: test, severity: warning}
+            exp_annotations: {summary: "Research queue backlog exceeds 10 for five minutes"}
+  - name: planned worker drain preserves role availability but prolonged drain alerts
+    interval: 1m
+    input_series:
+      - series: 'deepresearch_worker_ready{deployment="test",job="deepresearch-worker",instance="a"}'
+        values: '0+0x12'
+      - series: 'deepresearch_worker_draining{deployment="test",job="deepresearch-worker",instance="a"}'
+        values: '1+0x12'
+      - series: 'deepresearch_worker_ready{deployment="test",job="deepresearch-worker",instance="b"}'
+        values: '1+0x12'
+      - series: 'deepresearch_worker_draining{deployment="test",job="deepresearch-worker",instance="b"}'
+        values: '0+0x12'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: DeepResearchNoReadyWorker
+        exp_alerts: []
+      - eval_time: 5m
+        alertname: DeepResearchWorkerNotReady
+        exp_alerts: []
+      - eval_time: 5m
+        alertname: DeepResearchWorkerDrainStuck
+        exp_alerts: []
+      - eval_time: 11m
+        alertname: DeepResearchWorkerDrainStuck
+        exp_alerts:
+          - exp_labels: {deployment: test, job: deepresearch-worker, instance: a, severity: warning}
+            exp_annotations: {summary: "Worker drain exceeded ten minutes; inspect shutdown without deleting recovery state"}
+  - name: no worker can accept work
+    interval: 1m
+    input_series:
+      - series: 'deepresearch_worker_ready{deployment="test",job="deepresearch-worker",instance="a"}'
+        values: '0+0x4'
+      - series: 'deepresearch_worker_draining{deployment="test",job="deepresearch-worker",instance="a"}'
+        values: '0+0x4'
+    alert_rule_test:
+      - eval_time: 3m
+        alertname: DeepResearchNoReadyWorker
+        exp_alerts:
+          - exp_labels: {deployment: test, job: deepresearch-worker, severity: critical}
+            exp_annotations: {summary: "No worker in this role is ready; queued work cannot progress"}
+  - name: managed backup RPO alerts independently of disabled workstation policy
+    start_timestamp: 1700000000
+    interval: 1m
+    input_series:
+      - series: 'deepresearch_cloud_backup_last_success_timestamp_seconds{deployment="test",job="deepresearch-cloud-backup",instance="exporter",resource="postgres-primary"}'
+        values: '1699990000+0x20'
+      - series: 'deepresearch_cloud_backup_observed_timestamp_seconds{deployment="test",job="deepresearch-cloud-backup",instance="exporter",resource="postgres-primary"}'
+        values: '1700000000+0x20'
+      - series: 'deepresearch_cloud_backup_rpo_target_seconds{deployment="test",job="deepresearch-cloud-backup",instance="exporter",resource="postgres-primary"}'
+        values: '3600+0x20'
+      - series: 'deepresearch_backup_verified_timestamp_seconds{instance="workstation"}'
+        values: '0+0x20'
+      - series: 'deepresearch_backup_rpo_target_seconds{instance="workstation"}'
+        values: '60+0x20'
+    alert_rule_test:
+      - eval_time: 6m
+        alertname: DeepResearchCloudBackupStale
+        exp_alerts:
+          - exp_labels: {deployment: test, job: deepresearch-cloud-backup, instance: exporter, resource: postgres-primary, severity: critical}
+            exp_annotations: {summary: "A managed resource has no successful backup within its configured RPO; verify provider backup and recovery evidence"}
+      - eval_time: 6m
+        alertname: DeepResearchBackupStale
+        exp_alerts: []
+      - eval_time: 18m
+        alertname: DeepResearchCloudBackupProbeStale
+        exp_alerts:
+          - exp_labels: {deployment: test, job: deepresearch-cloud-backup, instance: exporter, resource: postgres-primary, severity: warning}
+            exp_annotations: {summary: "Managed-backup status has not been observed in fifteen minutes"}
+  - name: missing provider inventory or resource fields is observable
+    interval: 1m
+    input_series:
+      - series: 'up{deployment="test",job="deepresearch-cloud-backup",instance="no-inventory"}'
+        values: '1+0x4'
+      - series: 'up{deployment="test",job="deepresearch-cloud-backup",instance="partial"}'
+        values: '1+0x4'
+      - series: 'deepresearch_cloud_backup_required{deployment="test",job="deepresearch-cloud-backup",instance="partial",resource="postgres-primary"}'
+        values: '1+0x4'
+    alert_rule_test:
+      - eval_time: 3m
+        alertname: DeepResearchCloudBackupMetricsMissing
+        exp_alerts:
+          - exp_labels: {deployment: test, job: deepresearch-cloud-backup, instance: no-inventory, severity: critical}
+            exp_annotations: {summary: "Configured managed-backup exporter exposes no required resource inventory"}
+      - eval_time: 3m
+        alertname: DeepResearchCloudBackupResourceMetricsMissing
+        exp_alerts:
+          - exp_labels: {deployment: test, job: deepresearch-cloud-backup, instance: partial, resource: postgres-primary, severity: critical}
+            exp_annotations: {summary: "A required managed-backup resource has incomplete success, policy or observation metrics"}
+  - name: only server-side POST admission failures trigger admission alert
+    interval: 1m
+    input_series:
+      - series: 'http_server_requests_seconds_count{deployment="test",job="deepresearch-business",method="POST",uri="/api/research/runs",status="503"}'
+        values: '0+1x8'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: DeepResearchAdmissionFailure
+        exp_alerts:
+          - exp_labels: {deployment: test, severity: warning}
+            exp_annotations: {summary: "Research admission or resume returned a server error; inspect queue capacity and SQL before retrying"}
+  - name: historical reads and expected rate limits are not admission failures
+    interval: 1m
+    input_series:
+      - series: 'http_server_requests_seconds_count{deployment="test",job="deepresearch-business",method="GET",uri="/api/research/runs",status="500"}'
+        values: '0+1x8'
+      - series: 'http_server_requests_seconds_count{deployment="test",job="deepresearch-business",method="POST",uri="/api/research/runs",status="429"}'
+        values: '0+1x8'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: DeepResearchAdmissionFailure
+        exp_alerts: []

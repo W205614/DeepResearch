@@ -31,3 +31,10 @@ async def test_sqlite_upgrade_backfills_personal_owners_from_workspace_creator(t
 
     assert (await db.one("SELECT created_by FROM runs WHERE id='run'"))["created_by"] == "alice"
     assert (await db.one("SELECT owner_subject FROM memories WHERE id='preference'"))["owner_subject"] == "alice"
+    assert (await db.one("SELECT owner_subject FROM workspaces WHERE id='shared'"))["owner_subject"] == "alice"
+    assert (await db.one("SELECT status FROM platform_users WHERE subject='alice'"))["status"] == "active"
+    await db.execute("UPDATE workspaces SET owner_subject='bob' WHERE id='shared'")
+    await db.execute("UPDATE platform_users SET status='disabled',revoked_before=99 WHERE subject='alice'")
+    await db.init()
+    assert (await db.one("SELECT created_by,owner_subject FROM workspaces WHERE id='shared'")) == {'created_by': 'alice', 'owner_subject': 'bob'}
+    assert (await db.one("SELECT status,revoked_before FROM platform_users WHERE subject='alice'")) == {'status': 'disabled', 'revoked_before': 99}

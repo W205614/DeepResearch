@@ -25,8 +25,8 @@ from scripts import runtime_ci_inventory as inventory  # noqa: E402
 
 REVIEW_PATH = 'deployment/security/grafana-active-source-retirement-technical-review.json'
 REVIEW_SHA256 = '6e38ee2752a1d6c40fbe671db7db776e7ed88156a63df734f9140bf0d78dcd97'
-MAINTENANCE_REVIEW_PATH = 'deployment/security/grafana-maintenance-source-retirement-review.json'
-MAINTENANCE_REVIEW_SHA256 = '23da0b40d801a7f680973c20279455a3409bde31af0ebea3cd862015f326e5d1'
+MAINTENANCE_REVIEW_PATH = 'deployment/security/grafana-maintenance-source-retirement-review-20261107.json'
+MAINTENANCE_REVIEW_SHA256 = 'da8142af63ff91a481782474841677b1e1b7298db44dc57ee9edcb6a623c159d'
 OLD_SOURCE = 'deployment/vendors/grafana/main/go.mod'
 PACKAGE = 'github.com/go-jose/go-jose/v4'
 SCOPE = ('CVE-2026-116587', OLD_SOURCE, PACKAGE, 'v4.1.4', 'HIGH')

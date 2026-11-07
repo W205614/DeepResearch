@@ -48,7 +48,7 @@ class Budget:
 
     def reserve(self, kind, payload):
         input_bound = estimate_tokens(payload)
-        output_bound = int(payload.get("max_tokens", payload.get("max_output_tokens", 0)))
+        output_bound = int(payload.get("max_completion_tokens", payload.get("max_tokens", payload.get("max_output_tokens", 0))))
         with self.connect() as db:
             db.execute("BEGIN IMMEDIATE")
             if db.execute("SELECT 1 FROM state WHERE key='halt'").fetchone():

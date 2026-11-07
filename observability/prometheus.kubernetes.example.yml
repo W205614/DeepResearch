@@ -1,0 +1,62 @@
+# Run in the private cluster with the pod-reader RoleBinding from the companion policy.
+global:
+  scrape_interval: 15s
+  evaluation_interval: 30s
+rule_files:
+  - /etc/prometheus/alerts.yml
+  - /etc/prometheus/alerts.production-cloud.yml
+alerting:
+  alertmanagers:
+    - static_configs: [{targets: ["alertmanager.monitoring.svc:9093"]}]
+scrape_configs:
+  - job_name: deepresearch-pods
+    kubernetes_sd_configs:
+      - role: pod
+        namespaces: {names: [deepresearch]}
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_phase]
+        regex: Running
+        action: keep
+      - source_labels: [__meta_kubernetes_pod_label_app]
+        regex: backend|agent|worker|document-worker
+        action: keep
+      - source_labels: [__meta_kubernetes_pod_container_port_number]
+        regex: 8080|8000|8001
+        action: keep
+      - source_labels: [__meta_kubernetes_pod_label_app]
+        regex: backend
+        target_label: job
+        replacement: deepresearch-business
+      - source_labels: [__meta_kubernetes_pod_label_app]
+        regex: agent
+        target_label: job
+        replacement: deepresearch-api
+      - source_labels: [__meta_kubernetes_pod_label_app]
+        regex: worker
+        target_label: job
+        replacement: deepresearch-worker
+      - source_labels: [__meta_kubernetes_pod_label_app]
+        regex: document-worker
+        target_label: job
+        replacement: deepresearch-document-worker
+      - source_labels: [__meta_kubernetes_namespace]
+        target_label: namespace
+      - source_labels: [__meta_kubernetes_pod_name]
+        target_label: pod
+      - target_label: deployment
+        replacement: deepresearch-production
+    metrics_path: /metrics
+    sample_limit: 20000
+  - job_name: deepresearch-cloud-backup
+    scheme: https
+    static_configs:
+      - targets: ["REPLACE_PRIVATE_BACKUP_EXPORTER:9100"]
+        labels: {deployment: deepresearch-production}
+    tls_config:
+      ca_file: /run/certs/monitoring-ca.pem
+    authorization:
+      credentials_file: /run/secrets/backup-exporter-token
+  - job_name: deepresearch-ops
+    static_configs:
+      - targets: ["REPLACE_PRIVATE_OPS_EXPORTER:8003"]
+        labels: {deployment: deepresearch-production, host_probes: disabled}

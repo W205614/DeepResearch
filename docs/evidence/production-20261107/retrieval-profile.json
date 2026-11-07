@@ -1,0 +1,82 @@
+{
+  "read_only": true,
+  "source_mutations": 0,
+  "supplier_http_requests": 0,
+  "scope": "idle single probe after formal load; not a repeat of the 30-minute capacity run",
+  "cache_record_present": true,
+  "cached_candidates": 6,
+  "pre_cache_elapsed_ms": 1172.474,
+  "operations_before_cache": [
+    {
+      "stage": "authorized_document_snapshot",
+      "elapsed_ms": 6.367,
+      "returned_rows": 500
+    },
+    {
+      "stage": "authorized_chunk_count",
+      "elapsed_ms": 24.201,
+      "returned_rows": 1
+    },
+    {
+      "stage": "lexical_missing_batch",
+      "elapsed_ms": 32.519,
+      "returned_rows": 0
+    },
+    {
+      "stage": "lexical_missing_count",
+      "elapsed_ms": 25.084,
+      "returned_rows": 1
+    },
+    {
+      "stage": "lexical_stats",
+      "elapsed_ms": 38.769,
+      "returned_rows": 1
+    },
+    {
+      "stage": "lexical_stats",
+      "elapsed_ms": 34.931,
+      "returned_rows": 1
+    },
+    {
+      "stage": "lexical_scores",
+      "elapsed_ms": 1003.334,
+      "returned_rows": 128
+    },
+    {
+      "stage": "candidate_hydration",
+      "elapsed_ms": 3.489,
+      "returned_rows": 128
+    },
+    {
+      "stage": "result_cache_lookup",
+      "elapsed_ms": 1.631,
+      "returned_rows": 1
+    }
+  ],
+  "score_baseline_ms": 1406.609,
+  "score_jit_generated": false,
+  "shared_read_mib": 547.938,
+  "temp_write_mib": 91.398,
+  "temp_read_mib": 79.727,
+  "postings_rows": 150000,
+  "scored_chunk_rows": 50000,
+  "existing_pk_covers_frequency": false,
+  "session_variants_ms": {
+    "jit_off": 1051.869,
+    "jit_off_work_mem_64mb": 888.221
+  },
+  "session_64mb_temp_write_blocks": 0,
+  "recommendations": [
+    "Move valid result-cache lookup ahead of full lexical scoring, retaining ACL/version hydration and source-revision checks.",
+    "Evaluate a PostgreSQL covering index on chunk_terms(workspace_id,term,chunk_id) INCLUDE(frequency); no index was created.",
+    "Consider bounded per-query work_mem using a memory budget; do not globally apply the experimental 64MB to the 2GB PostgreSQL container.",
+    "JIT was not used by the captured plans; the jit_off timing difference is not evidence that JIT caused the slowdown."
+  ],
+  "limitations": [
+    "Probe stops at stored cache lookup before remaining cached-result validation/context assembly.",
+    "EXPLAIN shared-read blocks may be served by OS page cache; they do not prove physical disk IO latency.",
+    "A single idle profile cannot assign the full 24652.72ms loaded P95 to one node or predict post-change P95."
+  ],
+  "raw_report_sha256": "78485e2bbbbff385ef0e2d273e621054e107e84fc9bb490279e08dd396c339a2",
+  "raw_report_retained_locally": ".cache/production-acceptance/retrieval-profile.json"
+}

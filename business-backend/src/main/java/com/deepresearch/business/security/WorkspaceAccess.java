@@ -17,21 +17,29 @@ import org.springframework.web.server.ResponseStatusException;
 public class WorkspaceAccess {
     private final JdbcTemplate jdbc;
     private final DeepResearchProperties properties;
+    private final PlatformAccess platform;
+    private final SharedApiRateLimiter limiter;
 
-    public WorkspaceAccess(JdbcTemplate jdbc, DeepResearchProperties properties) {
+    public WorkspaceAccess(JdbcTemplate jdbc, DeepResearchProperties properties, PlatformAccess platform, SharedApiRateLimiter limiter) {
         this.jdbc = jdbc;
         this.properties = properties;
+        this.platform = platform;
+        this.limiter = limiter;
     }
 
     @Transactional
     public WorkspaceIdentity resolve(Jwt jwt, String requestedWorkspace) {
         String subject = jwt.getSubject();
+        platform.requireCurrent(subject, jwt.getIssuedAt());
         String displayName = claim(jwt, "preferred_username", claim(jwt, "name", subject));
         List<Map<String, Object>> memberships = memberships(subject);
         if (memberships.isEmpty()) {
+            if (!limiter.available() || platform.migrationBarrierActive())
+                throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "当前仅允许读取历史资料，不能创建新工作空间");
+            platform.lockCurrent(subject, jwt.getIssuedAt());
             String stamp = now();
-            jdbc.update("INSERT INTO workspaces(id,name,created_by,created_at) VALUES(?,?,?,?) ON CONFLICT(id) DO NOTHING",
-                subject, displayName + " 的工作空间", subject, stamp);
+            jdbc.update("INSERT INTO workspaces(id,name,created_by,owner_subject,created_at) VALUES(?,?,?,?,?) ON CONFLICT(id) DO NOTHING",
+                subject, displayName + " 的工作空间", subject, subject, stamp);
             jdbc.update("INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES(?,?,?,?) ON CONFLICT(workspace_id,subject) DO NOTHING",
                 subject, subject, "admin", stamp);
             jdbc.update("""
@@ -47,7 +55,7 @@ public class WorkspaceAccess {
             selected = memberships.getFirst();
         }
         return new WorkspaceIdentity(String.valueOf(selected.get("id")), subject,
-            String.valueOf(selected.get("role")), displayName);
+            String.valueOf(selected.get("role")), displayName, jwt.getIssuedAt());
     }
 
     public List<Map<String, Object>> memberships(String subject) {

@@ -1,0 +1,93 @@
+{
+  "scope": "dr-production-test; fixture models and real OIDC/PG/Redis/Milvus",
+  "passed": true,
+  "checks": {
+    "redis_readonly": {
+      "read_statuses": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "history_available": true,
+      "write_statuses": [
+        503,
+        503,
+        503
+      ],
+      "writes_denied": true
+    },
+    "backend_replica_exit": {
+      "read_statuses": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "history_available": true
+    },
+    "agent_replica_exit": {
+      "read_statuses": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "history_available": true
+    },
+    "worker_recovery": {
+      "runs": [
+        {
+          "id": "a761edceb6c74df5a502eb22f9efd2d4",
+          "status": "completed",
+          "attempt_count": 1
+        },
+        {
+          "id": "1980335af0884a599819b0ff37b33e2c",
+          "status": "completed",
+          "attempt_count": 2
+        },
+        {
+          "id": "63e0226a07794ded9c5a9f5b2854b07f",
+          "status": "completed",
+          "attempt_count": 1
+        },
+        {
+          "id": "818c1510f97f47658f7934adee2b5a32",
+          "status": "completed",
+          "attempt_count": 1
+        },
+        {
+          "id": "2d69bd75dd174ee5989d8cec8db911a9",
+          "status": "completed",
+          "attempt_count": 2
+        }
+      ],
+      "paused": 5,
+      "done_events": {
+        "1980335af0884a599819b0ff37b33e2c": 1,
+        "2d69bd75dd174ee5989d8cec8db911a9": 1,
+        "63e0226a07794ded9c5a9f5b2854b07f": 1,
+        "818c1510f97f47658f7934adee2b5a32": 1,
+        "a761edceb6c74df5a502eb22f9efd2d4": 1
+      },
+      "passed": true,
+      "seconds": 52.52
+    }
+  }
+}

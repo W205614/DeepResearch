@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.Instant;
 import java.util.Map;
 import com.deepresearch.business.service.AgentClient;
+import com.deepresearch.business.security.SharedApiRateLimiter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ import org.testcontainers.junit.jupiter.*;
 import org.testcontainers.postgresql.PostgreSQLContainer;
 import tools.jackson.databind.ObjectMapper;
 
-@SpringBootTest(properties={"deepresearch.outbox-dispatch-initial-delay-ms=3600000"})
+@SpringBootTest(properties={"deepresearch.outbox-dispatch-initial-delay-ms=3600000","deepresearch.auth-mode=development"})
 @AutoConfigureMockMvc @Testcontainers
 @Sql(scripts="/business-test-schema.sql",executionPhase=Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class ResearchIntakeIntegrationTest {
@@ -31,7 +32,10 @@ class ResearchIntakeIntegrationTest {
     @DynamicPropertySource static void properties(DynamicPropertyRegistry r){r.add("spring.datasource.url",PG::getJdbcUrl);r.add("spring.datasource.username",PG::getUsername);r.add("spring.datasource.password",PG::getPassword);r.add("spring.security.oauth2.resourceserver.jwt.jwk-set-uri",()->"http://127.0.0.1:1/jwks");}
     @Autowired MockMvc mvc;@Autowired JdbcTemplate jdbc;@Autowired ObjectMapper mapper;
     @MockitoBean AgentClient agent;
+    @MockitoBean SharedApiRateLimiter limiter;
     @BeforeEach void seed(){
+        org.mockito.Mockito.when(limiter.consume(org.mockito.ArgumentMatchers.anyString())).thenReturn(SharedApiRateLimiter.Result.ALLOWED);
+        org.mockito.Mockito.when(limiter.available()).thenReturn(true);
         jdbc.update("INSERT INTO workspaces(id,name,created_by,created_at) VALUES('scope-space','scope','author',?)",Instant.now().toString());
         jdbc.update("INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES('scope-space','author','admin',?)",Instant.now().toString());
         jdbc.update("INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES('scope-space','reader','viewer',?)",Instant.now().toString());

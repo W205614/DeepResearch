@@ -1,7 +1,9 @@
 import { expect, test } from '@playwright/test'
+import { fixtureIssuer, fixtureAuthConfig, simulateIdentity } from './fixtures/identity'
 
 test('report renderer strips active HTML while preserving readable evidence', async ({ page }) => {
-  const token = `e30.${Buffer.from(JSON.stringify({ sub: 'sanitization-reader', exp: Math.floor(Date.now() / 1000) + 3600 })).toString('base64url')}.fixture`
+  await simulateIdentity(page)
+  const token = `e30.${Buffer.from(JSON.stringify({ sub: 'sanitization-reader', iss: fixtureIssuer, exp: Math.floor(Date.now() / 1000) + 3600 })).toString('base64url')}.fixture`
   await page.addInitScript(value => sessionStorage.setItem('dr-token', value), token)
   const run = {
     id: 'sanitization-run', thread_id: 'sanitization-thread', topic: 'HTML净化回归', status: 'completed',
@@ -11,7 +13,7 @@ test('report renderer strips active HTML while preserving readable evidence', as
   await page.route('**/api/**', async route => {
     const path = new URL(route.request().url()).pathname
     const data: Record<string, unknown> = {
-      '/api/auth/config': { mode: 'oidc' },
+      '/api/auth/config': fixtureAuthConfig(),
       '/api/workspaces': [{ id: 'sanitization-reader', name: '净化回归', role: 'viewer' }],
       '/api/threads': [{ id: run.thread_id, title: run.topic }],
       '/api/status': { mode: 'enterprise', missing: [] },

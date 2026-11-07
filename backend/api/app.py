@@ -4,12 +4,13 @@ import json
 import httpx
 from contextlib import asynccontextmanager
 
-from fastapi import Depends, FastAPI, File, Header, HTTPException, Request, UploadFile, Query
+from fastapi import Body, Depends, FastAPI, File, Header, HTTPException, Request, UploadFile, Query
 from fastapi.responses import JSONResponse, PlainTextResponse, Response, StreamingResponse
 
 from prometheus_client import make_asgi_app
 from ..core.config import Settings
 from ..core.auth import TokenVerifier
+from ..core.governance import register_account, require_current_account, require_active_subject
 from ..core.db import now, uid
 from ..domain.models import DocumentSearchRequest, MemoryRequest, RunRequest, ThreadRequest
 from ..core.observability import configure_telemetry
@@ -80,6 +81,11 @@ def create_app(settings: Settings | None = None):
         if not run:
             raise HTTPException(404, "任务不存在")
         caller = paid_identity()
+        if caller:
+            try:
+                await require_active_subject(runtime.db, caller[1])
+            except ServiceError as exc:
+                raise HTTPException(403, str(exc)) from None
         member = await runtime.db.membership(user, caller[1]) if caller and caller[0] == user else None
         if not member or (member["role"] != "admin" and run.get("created_by") != caller[1]):
             raise HTTPException(404, "任务不存在")
@@ -102,11 +108,22 @@ def create_app(settings: Settings | None = None):
                     raise
         return visible
 
+    async def current_account(runtime, principal):
+        try:
+            await require_current_account(runtime.db, principal)
+        except ServiceError as exc:
+            raise HTTPException(403 if exc.code == "account_disabled" else 401, str(exc)) from None
+
     async def identity(request: Request, authorization: str = Header(""), x_workspace_id: str = Header("")):
         principal = await app.state.token_verifier.verify(authorization)
         runtime = rt(request)
+        await register_account(runtime.db, principal)
+        await current_account(runtime, principal)
+        if request.method not in {"GET", "HEAD", "OPTIONS"}:
+            await runtime.require_queue()
         memberships = await runtime.db.memberships(principal.subject)
         if not memberships:
+            await runtime.require_queue()
             membership = await runtime.db.ensure_personal_workspace(
                 principal.subject,
                 principal.display_name + " 的工作空间",
@@ -211,21 +228,36 @@ def create_app(settings: Settings | None = None):
             raise HTTPException(422, "研究命令合同无效或执行版本不匹配") from None
 
     @app.post("/internal/agent/runs/{run_id}/abort", status_code=202)
-    async def abort_existing_run(run_id: str, authorization: str = Header(""), runtime=Depends(rt)):
+    async def abort_existing_run(
+        run_id: str,
+        payload: dict | None = Body(default=None),
+        authorization: str = Header(""),
+        runtime=Depends(rt),
+    ):
         """Best-effort process/queue abort; Java has already made cancellation durable."""
         require_internal(authorization)
-        run = await runtime.db.one("SELECT id,status,attempt_count FROM runs WHERE id=?", (run_id,))
-        if not run:
-            raise HTTPException(404, "任务不存在")
-        if run["status"] != "cancelled":
-            return {"accepted": False, "status": run["status"]}
-        # Outbox delivery can arrive after resume. Abort only an attempt that
-        # actually started; attempt zero would target the future first job.
-        if not run.get("attempt_count"):
-            return {"accepted": True}
-        task = runtime.tasks.get(run_id)
+        expected = (payload or {}).get("expected_attempt")
+        if expected is not None and (
+            isinstance(expected, bool) or not isinstance(expected, int) or expected < 0
+        ):
+            raise HTTPException(422, "执行版本必须是非负整数")
+        async with runtime.db.guard("execution:" + run_id):
+            run = await runtime.db.one("SELECT id,status,attempt_count FROM runs WHERE id=?", (run_id,))
+            if not run:
+                raise HTTPException(404, "任务不存在")
+            if expected is not None and run["attempt_count"] != expected:
+                return {"accepted": False, "stale": True, "status": run["status"]}
+            if run["status"] != "cancelled":
+                return {"accepted": False, "status": run["status"]}
+            # Attempt zero would abort the future first job after a resume.
+            if not run["attempt_count"]:
+                return {"accepted": True}
+            task = runtime.tasks.get(run_id)
+            if task and getattr(task, "research_attempt", None) != run["attempt_count"]:
+                task = None
+            if task:
+                task.cancel()
         if task:
-            task.cancel()
             await asyncio.gather(task, return_exceptions=True)
         if runtime.queue:
             from arq.jobs import Job
@@ -252,6 +284,9 @@ def create_app(settings: Settings | None = None):
         return {
             "mode": settings.auth_mode,
             "issuer": settings.oidc_issuer if settings.auth_mode == "oidc" else "",
+            "client_id": settings.oidc_client_id,
+            "scopes": settings.oidc_scopes,
+            "registration_enabled": settings.oidc_registration_enabled,
         }
 
     @app.get("/livez")
@@ -602,6 +637,11 @@ def create_app(settings: Settings | None = None):
             nonlocal cursor
             ticks = 0
             while not await request.is_disconnected():
+                try:
+                    await current_account(runtime, request.state.principal)
+                except HTTPException:
+                    yield "event: close\ndata: {}\n\n"
+                    return
                 membership = await runtime.db.membership(user, request.state.principal.subject)
                 if not membership:
                     yield "event: close\ndata: {}\n\n"
@@ -657,6 +697,7 @@ def create_app(settings: Settings | None = None):
     ):
         row = await runtime.attachments.visible(image_id, user, request.state.principal.subject)
         content = await runtime.documents.store.get("uploads", image_id)
+        await current_account(runtime, request.state.principal)
         return Response(
             content,
             media_type=row["media_type"],

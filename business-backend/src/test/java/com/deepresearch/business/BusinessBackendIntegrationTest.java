@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import com.deepresearch.business.api.Requests;
 import com.deepresearch.business.config.DeepResearchProperties;
 import com.deepresearch.business.security.WorkspaceIdentity;
+import com.deepresearch.business.security.SharedApiRateLimiter;
 import com.deepresearch.business.service.AgentClient;
 import com.deepresearch.business.service.OutboxService;
 import com.deepresearch.business.service.ResearchCommandService;
@@ -59,6 +60,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest(properties = {
+    "deepresearch.auth-mode=development",
     "deepresearch.outbox-dispatch-initial-delay-ms=3600000",
     "deepresearch.outbox-dispatch-delay-ms=3600000"
 })
@@ -89,9 +91,12 @@ class BusinessBackendIntegrationTest {
     @Autowired DeepResearchProperties properties;
     @Autowired MeterRegistry registry;
     @MockitoBean AgentClient agent;
+    @MockitoBean SharedApiRateLimiter limiter;
 
     @BeforeEach
     void defaults() {
+        when(limiter.consume(anyString())).thenReturn(SharedApiRateLimiter.Result.ALLOWED);
+        when(limiter.available()).thenReturn(true);
         properties.setOutboxBatchSize(20);
         properties.setOutboxLeaseSeconds(30);
         properties.setOutboxMaxAttempts(8);
@@ -182,7 +187,7 @@ class BusinessBackendIntegrationTest {
     }
 
     @Test
-    void concurrentAdmissionCannotExceedWorkspaceLimit() throws Exception {
+    void sameWorkspaceCanQueueMoreThanItsExecutionLimit() throws Exception {
         workspace("limited", "owner", "admin", 1);
         WorkspaceIdentity identity = new WorkspaceIdentity("limited", "owner", "admin", "Owner");
 
@@ -190,9 +195,20 @@ class BusinessBackendIntegrationTest {
             () -> commands.create(identity, request("limit-request-01", "第一个研究")),
             () -> commands.create(identity, request("limit-request-02", "第二个研究")));
 
-        assertThat(results.stream().filter(Map.class::isInstance).count()).isEqualTo(1);
-        assertThat(results.stream().filter(ResponseStatusException.class::isInstance).count()).isEqualTo(1);
-        assertThat(count("runs")).isEqualTo(1);
+        assertThat(results.stream().filter(Map.class::isInstance).count()).isEqualTo(2);
+        assertThat(count("runs")).isEqualTo(2);
+    }
+
+    @Test
+    void twoExecutingRunsPermitAThirdQueuedRunInTheSameWorkspace() {
+        workspace("busy-space", "owner", "admin", 2);
+        run("executing-first", "busy-space");
+        run("executing-second", "busy-space");
+        jdbc.update("UPDATE runs SET status='running' WHERE user_id='busy-space'");
+        WorkspaceIdentity identity = new WorkspaceIdentity("busy-space", "owner", "admin", "Owner");
+        assertThat(commands.create(identity, request("queued-third-request", "等待执行的第三个任务")).get("status")).isEqualTo("queued");
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM runs WHERE status='running'", Integer.class)).isEqualTo(2);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM runs WHERE status='queued'", Integer.class)).isEqualTo(1);
     }
 
     @Test
@@ -275,6 +291,52 @@ class BusinessBackendIntegrationTest {
         outbox.enqueue("outbox-run", "research.schedule", "{\"resume\":false}");
 
         assertThat(count("business_outbox")).isEqualTo(1);
+    }
+
+    @Test
+    void abortOutboxSupersedesOnlyOlderExecutionAndForwardsItsFence() {
+        run("fenced-run", "workspace");
+        jdbc.update("UPDATE runs SET status='cancelled',attempt_count=1 WHERE id='fenced-run'");
+        outbox.enqueueAbort("fenced-run");
+        jdbc.update("UPDATE business_outbox SET status='processing',attempts=1,lease_owner='old-dispatcher',lease_until=?",
+            Instant.now().getEpochSecond() + 100);
+        outbox.enqueueAbort("fenced-run");
+        assertThat(jdbc.queryForObject("SELECT status FROM business_outbox", String.class)).isEqualTo("processing");
+        jdbc.update("UPDATE runs SET attempt_count=2 WHERE id='fenced-run'");
+        outbox.enqueueAbort("fenced-run");
+        Map<String, Object> replacement = jdbc.queryForMap("SELECT * FROM business_outbox");
+        assertThat(replacement.get("status")).isEqualTo("pending");
+        assertThat(replacement.get("lease_owner")).isEqualTo("");
+        assertThat(replacement.get("payload")).isEqualTo("{\"expected_attempt\":2}");
+        outbox.dispatch();
+        verify(agent).internal("/internal/agent/runs/fenced-run/abort", "{\"expected_attempt\":2}");
+        assertThat(jdbc.queryForObject("SELECT status FROM business_outbox", String.class)).isEqualTo("delivered");
+    }
+
+    @Test
+    void obsoleteAbortDeliveryCannotAcknowledgeReplacement() throws Exception {
+        properties.setOutboxBatchSize(1);
+        run("replaced-run", "workspace");
+        jdbc.update("UPDATE runs SET status='cancelled',attempt_count=1 WHERE id='replaced-run'");
+        outbox.enqueueAbort("replaced-run");
+        CountDownLatch entered = new CountDownLatch(1);
+        CountDownLatch release = new CountDownLatch(1);
+        when(agent.internal(anyString(), anyString())).thenAnswer(invocation -> {
+            entered.countDown();
+            assertThat(release.await(10, TimeUnit.SECONDS)).isTrue();
+            return accepted();
+        });
+        try (ExecutorService pool = Executors.newVirtualThreadPerTaskExecutor()) {
+            Future<?> delivery = pool.submit(outbox::dispatch);
+            assertThat(entered.await(10, TimeUnit.SECONDS)).isTrue();
+            jdbc.update("UPDATE runs SET attempt_count=2 WHERE id='replaced-run'");
+            outbox.enqueueAbort("replaced-run");
+            release.countDown();
+            delivery.get(10, TimeUnit.SECONDS);
+        }
+        Map<String, Object> replacement = jdbc.queryForMap("SELECT * FROM business_outbox");
+        assertThat(replacement.get("status")).isEqualTo("pending");
+        assertThat(replacement.get("payload")).isEqualTo("{\"expected_attempt\":2}");
     }
 
     @Test
@@ -533,10 +595,14 @@ class BusinessBackendIntegrationTest {
         mvc.perform(put("/api/workspaces/member-space/members").with(jwt().jwt(t -> t.subject("owner")))
                 .header("X-Workspace-ID", "member-space").contentType("application/json")
                 .content("{\"subject\":\"owner\",\"role\":\"researcher\"}"))
+            .andExpect(status().isConflict());
+        mvc.perform(put("/api/workspaces/member-space/members").with(jwt().jwt(t -> t.subject("owner")))
+                .header("X-Workspace-ID", "member-space").contentType("application/json")
+                .content("{\"subject\":\"reviewer\",\"role\":\"researcher\"}"))
             .andExpect(status().isOk());
-        mvc.perform(get("/api/workspaces/member-space/members").with(jwt().jwt(t -> t.subject("reviewer")))
+        mvc.perform(get("/api/workspaces/member-space/members").with(jwt().jwt(t -> t.subject("owner")))
                 .header("X-Workspace-ID", "member-space"))
-            .andExpect(status().isOk()).andExpect(jsonPath("$[?(@.subject == 'owner')].role").value("researcher"));
+            .andExpect(status().isOk()).andExpect(jsonPath("$[?(@.subject == 'owner')].role").value("admin"));
     }
 
     @Test

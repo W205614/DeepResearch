@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- * Per-subject token bucket for the single-node business API. Cross-node quotas still belong in a shared gateway/Redis.
+ * Shared admission limits, plus per-process overload bounds for degraded reads.
  */
 @Component
 public class ApiRateLimitFilter extends OncePerRequestFilter {
@@ -33,6 +33,8 @@ public class ApiRateLimitFilter extends OncePerRequestFilter {
     private static final long IDLE_NANOS = Duration.ofMinutes(10).toNanos();
 
     private final DeepResearchProperties properties;
+    private final SharedApiRateLimiter shared;
+    private final PlatformAccess platform;
     private final ConcurrentHashMap<String, Bucket> buckets = new ConcurrentHashMap<>();
     private final AtomicLong calls = new AtomicLong();
     private final Counter rejected;
@@ -42,8 +44,10 @@ public class ApiRateLimitFilter extends OncePerRequestFilter {
     private final AtomicLong lastConcurrencyLog = new AtomicLong();
     private final Bucket globalBucket;
 
-    public ApiRateLimitFilter(DeepResearchProperties properties, MeterRegistry registry) {
+    public ApiRateLimitFilter(DeepResearchProperties properties, MeterRegistry registry, SharedApiRateLimiter shared, PlatformAccess platform) {
         this.properties = properties;
+        this.shared = shared;
+        this.platform = platform;
         this.rejected = registry.counter("deepresearch.business.rate_limit.rejected");
         this.concurrencyRejected = registry.counter("deepresearch.business.concurrency.rejected");
         this.requestPermits = new Semaphore(Math.max(1, properties.getApiMaxConcurrent()), true);
@@ -71,6 +75,29 @@ public class ApiRateLimitFilter extends OncePerRequestFilter {
         cleanupOccasionally(now);
         // Never key on the caller-supplied workspace header: an unauthorized value could bypass the bucket.
         String key = token.getToken().getSubject();
+        boolean reading = java.util.Set.of("GET", "HEAD", "OPTIONS").contains(request.getMethod());
+        if (!reading && platform.migrationBarrierActive()) {
+            response.setStatus(503);
+            response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+            response.setContentType("application/json");
+            response.getWriter().write("{\"code\":\"embedding_migration_active\",\"detail\":\"索引迁移维护中，当前仅允许读取历史资料\"}");
+            return;
+        }
+        SharedApiRateLimiter.Result admission = shared.consume(key);
+        if (admission == SharedApiRateLimiter.Result.LIMITED) {
+            reject(response, key, "shared_rate");
+            return;
+        }
+        if (admission == SharedApiRateLimiter.Result.UNAVAILABLE
+                && !reading) {
+            response.setStatus(503);
+            response.setHeader("Retry-After", "1");
+            response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+            response.setContentType("application/json");
+            response.getWriter().write("{\"detail\":\"任务队列暂不可用，当前仅允许读取历史资料\",\"code\":\"read_only\"}");
+            return;
+        }
+        if (admission == SharedApiRateLimiter.Result.UNAVAILABLE) response.setHeader("X-DeepResearch-Read-Only", "true");
         Bucket bucket = buckets.get(key);
         if (bucket == null && buckets.size() >= Math.max(1, properties.getApiRateLimitMaxPrincipals())) {
             reject(response, key, "principal_capacity");
@@ -78,11 +105,11 @@ public class ApiRateLimitFilter extends OncePerRequestFilter {
         }
         bucket = buckets.computeIfAbsent(key, ignored -> new Bucket(
             Math.max(1, properties.getApiRateLimitPerSecond()), Math.max(1, properties.getApiRateLimitBurst()), now));
-        if (!bucket.tryConsume(now)) {
+        if (admission == SharedApiRateLimiter.Result.UNAVAILABLE && !bucket.tryConsume(now)) {
             reject(response, key, "rate");
             return;
         }
-        if (!globalBucket.tryConsume(now)) {
+        if (admission == SharedApiRateLimiter.Result.UNAVAILABLE && !globalBucket.tryConsume(now)) {
             reject(response, key, "global_rate");
             return;
         }

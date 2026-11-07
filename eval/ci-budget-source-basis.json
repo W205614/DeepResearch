@@ -93,12 +93,12 @@
     {
       "path": "backend/services/runtime.py",
       "symbol": "Runtime.execute_run",
-      "ast_sha256": "2fb34718ec87fa94bce7409ef01b3a70c510bc2ddd27e566a4b02ade62725e06"
+      "ast_sha256": "e6f8ab0ba4474ae253396f56df1da0dfec26ebbd6f1ef4c8a05f2308a81282d4"
     },
     {
       "path": "backend/infrastructure/providers.py",
       "symbol": "Providers.structured",
-      "ast_sha256": "252379880bd00138c44d6922b8f939b96f099a6fa44cd2532ca1091052973953"
+      "ast_sha256": "068026d778a3070f3898f6286ca958878770999c435f2fbaa7e872ad07aaf37e"
     },
     {
       "path": "backend/infrastructure/providers.py",
@@ -168,7 +168,7 @@
     {
       "path": "scripts/bounded_evaluation.py",
       "symbol": "Budget.reserve",
-      "ast_sha256": "0a8b3540e2b1a108d2e65a22786c876f92c7d653bd0378082d2bb32cb09f65bb"
+      "ast_sha256": "52c0d9108fb515b99014edec434e929e37f6b817e258dcab2dd66320c4cc4b10"
     },
     {
       "path": "scripts/bounded_evaluation.py",
@@ -179,6 +179,21 @@
       "path": "scripts/evaluation_scope.py",
       "symbol": "configure_evaluator_limits",
       "ast_sha256": "30ca3662002d01d4b8c06c7739ad2016af3f229e4f97de3cc3f7b064f3dd8ef5"
+    },
+    {
+      "path": "backend/services/runtime.py",
+      "symbol": "Runtime.claim_run",
+      "ast_sha256": "5b67edf0c3038f68d9bdd5f741ccfc0d24e065199b6820dfa0f97c3a6c2c551f"
+    },
+    {
+      "path": "backend/infrastructure/providers.py",
+      "symbol": "Providers.chat_payload",
+      "ast_sha256": "c36faa8dfae59685eb71da5267368008851b4d5f4b1163d92154c68f954c6137"
+    },
+    {
+      "path": "backend/infrastructure/providers.py",
+      "symbol": "Providers.require_official_openai",
+      "ast_sha256": "80851fb04d745ac0e03485e7cf203b04d3a2da36d879f0b2e97c1981649e5329"
     }
   ],
   "case_fingerprints": {
@@ -232,5 +247,25 @@
       "pass_rate_refinement_lower_bound": 296
     },
     "authorization_boundary": "Static proof re-audit only. No supplier HTTP, paid quality result, authorization change, budget increase, ledger reset, threshold change or claim that this necessary bound is sufficient."
+  },
+  "production_reaudit_20261107": {
+    "reason": "Production account/admission fencing and OpenAI request dialect; re-audit the static necessary-call proof, not historical model quality.",
+    "previous_symbol_fingerprints": {
+      "backend/services/runtime.py:Runtime.execute_run": "2fb34718ec87fa94bce7409ef01b3a70c510bc2ddd27e566a4b02ade62725e06",
+      "backend/infrastructure/providers.py:Providers.structured": "252379880bd00138c44d6922b8f939b96f099a6fa44cd2532ca1091052973953",
+      "scripts/bounded_evaluation.py:Budget.reserve": "0a8b3540e2b1a108d2e65a22786c876f92c7d653bd0378082d2bb32cb09f65bb"
+    },
+    "reviewed_scope": [
+      "Runtime.claim_run extracts eligibility/attempt claim and adds global/workspace/account/migration checks. Rejected admissions do not run a graph or yield a successful graded report. Fresh eligible case execution still invokes the same ResearchGraph with fresh case/checkpoint state; no successful-result cache or alternate graph path was added.",
+      "Runtime.execute_run still awaits the graph and existing source/claim verification before writing a successful report; the new active-account SQL predicate can only reject publication, not manufacture a passing case.",
+      "Providers.structured changes payload construction only. For demo_mode=false, every successful structured result still requires at least one awaited Providers.post. chat_payload and official-endpoint validation perform no HTTP and no cached/model result bypass; both helpers are newly pinned.",
+      "Budget.reserve adds max_completion_tokens to output reservation, including reasoning output. It does not decrease request counts or bypass before-HTTP reservation; settlement still uses supplier completion/output totals without double-counting reasoning details.",
+      "All graph/formatter/grader case ASTs, input/dependency fingerprints and four paid invocations remain unchanged. Admission failures cannot satisfy the critical success/refusal gates."
+    ],
+    "unchanged_bounds": {
+      "critical_path_lower_bound": 245,
+      "pass_rate_refinement_lower_bound": 296
+    },
+    "authorization_boundary": "Zero supplier HTTP. No quality evaluation, policy/authorization amendment, cumulative ledger mutation/reset, budget increase, success-threshold change, or claim that this necessary bound is sufficient. OpenAI quality still requires separate authorization."
   }
 }

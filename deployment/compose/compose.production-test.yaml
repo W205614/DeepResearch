@@ -1,0 +1,93 @@
+# Non-paid fixtures ONLY. Combine with base + core + replicas; use an isolated
+# project named dr-production-test and a separate fake-credential env file.
+x-fixture-environment: &fixture
+  INTEGRATION: '1'
+  LLM_API_KEY: fixture-no-external-calls
+  EMBEDDING_API_KEY: fixture-no-external-calls
+  LLM_PROVIDER: compatible
+  LLM_BASE_URL: http://fixture.invalid/v1
+  EMBEDDING_BASE_URL: http://fixture.invalid/v1
+  EMBEDDING_MODEL: fixture-hash-3072
+  EMBEDDING_DIMENSION: '3072'
+  ALLOW_INTERNAL_MODEL_PROCESSING: 'true'
+  RERANKER_ENABLED: 'false'
+  WEB_SEARCH_PROVIDER: openai
+  PLATFORM_PERIOD_CALLS: '1000000'
+  PLATFORM_PERIOD_TOKENS: '1000000000'
+  SUBJECT_PERIOD_CALLS: '1000000'
+  SUBJECT_PERIOD_TOKENS: '1000000000'
+  WORKSPACE_PERIOD_CALLS: '1000000'
+  WORKSPACE_PERIOD_TOKENS: '1000000000'
+  ACCOUNT_PERIOD_CALLS: '1000000'
+  ACCOUNT_PERIOD_TOKENS: '1000000000'
+services:
+  agent:
+    image: dr-production-python:candidate
+    command: uvicorn scripts.component_fixture:create_app --factory --host 0.0.0.0 --port 8000 --no-access-log
+    environment: *fixture
+    volumes: ['./scripts:/app/scripts:ro', './.cache/production-acceptance:/receipts']
+  worker:
+    image: dr-production-python:candidate
+    command: python -m scripts.component_fixture research
+    environment: *fixture
+    volumes: ['./scripts:/app/scripts:ro', './.cache/production-acceptance:/receipts']
+  document-worker:
+    image: dr-production-python:candidate
+    command: python -m scripts.component_fixture documents
+    environment: *fixture
+    volumes: ['./scripts:/app/scripts:ro', './.cache/production-acceptance:/receipts']
+  backend:
+    image: dr-production-java:candidate
+    environment: {ALLOW_INTERNAL_MODEL_PROCESSING: 'true'}
+  web:
+    image: dr-production-web:candidate
+  migrate:
+    image: dr-production-python:candidate
+  bootstrap-db:
+    image: dr-production-python:candidate
+  storage-init:
+    image: dr-production-storage-init:candidate
+  keycloak:
+    image: dr-production-keycloak:candidate
+    ports: !override ['127.0.0.1:28180:8080']
+    environment: {KC_HOSTNAME: 'http://localhost:28180'}
+    volumes:
+      - ./keycloak/deepresearch-perf-realm.json:/opt/keycloak/data/import/deepresearch-perf-realm.json:ro
+  postgres:
+    image: dr-production-postgres:candidate
+  keycloak-postgres:
+    image: dr-production-postgres:candidate
+  acceptance:
+    image: dr-production-python:candidate
+    profiles: [acceptance]
+    command: python scripts/production_load.py --help
+    environment:
+      <<: *fixture
+      AUTH_MODE: oidc
+      OIDC_ISSUER: ${OIDC_ISSUER}
+      OIDC_AUDIENCE: deepresearch-api
+      OIDC_JWKS_URL: ${OIDC_JWKS_URL}
+      DATABASE_URL: 'postgresql://dr_python:${PYTHON_DB_PASSWORD}@postgres:5432/deepresearch'
+      REDIS_URL: redis://redis:6379/0
+      QUEUE_BACKEND: redis
+      DEMO_MODE: 'false'
+      DATA_DIR: /tmp/acceptance
+      MILVUS_URI: http://milvus:19530
+      OBJECT_STORE_BACKEND: s3
+      OBJECT_STORE_ENDPOINT: http://minio:9000
+      OBJECT_STORE_BUCKET: deepresearch-documents
+      OBJECT_STORE_ACCESS_KEY: dr-objects
+      OBJECT_STORE_SECRET_KEY: ${OBJECT_STORE_SECRET_KEY}
+      DOCUMENT_SCAN_MODE: clamav
+      CLAMAV_HOST: clamav
+    volumes: ['./scripts:/app/scripts:ro', './.cache/production-acceptance:/receipts']
+    networks: [edge, application, database, retrieval, identity, telemetry]
+networks:
+  edge: {ipam: {config: [{subnet: '10.254.110.0/28'}]}}
+  application: {ipam: {config: [{subnet: '10.254.110.16/28'}]}}
+  database: {ipam: {config: [{subnet: '10.254.110.32/27'}]}}
+  retrieval: {ipam: {config: [{subnet: '10.254.110.64/27'}]}}
+  index-store: {ipam: {config: [{subnet: '10.254.110.96/28'}]}}
+  identity: {ipam: {config: [{subnet: '10.254.110.112/28'}]}}
+  identity-db: {ipam: {config: [{subnet: '10.254.110.128/28'}]}}
+  telemetry: {ipam: {config: [{subnet: '10.254.110.160/27'}]}}

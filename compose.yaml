@@ -12,6 +12,8 @@ services:
     <<: *service-defaults
     build:
       context: ./frontend
+    environment:
+      OIDC_CONNECT_ORIGINS: ${OIDC_CONNECT_ORIGINS:-http://localhost:8180}
     ports:
       - "127.0.0.1:${APP_PORT:-8080}:80"
     depends_on:
@@ -33,23 +35,29 @@ services:
     cpus: 2
     pids_limit: 256
     environment: &runtime-environment
-      LLM_MODEL_ID: ${LLM_MODEL_ID:-deepseek-v4-flash}
-      VISION_MODEL_ID: ${VISION_MODEL_ID:-deepseek-v4-flash-vision-exp}
-      LLM_BASE_URL: ${LLM_BASE_URL:-https://api.deepseek.com}
+      LLM_PROVIDER: ${LLM_PROVIDER:-openai}
+      LLM_REASONING_EFFORT: ${LLM_REASONING_EFFORT:-low}
+      LLM_MODEL_ID: ${LLM_MODEL_ID:-gpt-6.1-sol}
+      VISION_MODEL_ID: ${VISION_MODEL_ID:-gpt-6.1-sol}
+      LLM_BASE_URL: ${LLM_BASE_URL:-https://api.openai.com/v1}
       LLM_API_KEY: ${LLM_API_KEY:-}
       LLM_EXTRA_BODY: '${LLM_EXTRA_BODY:-}'
       EMBEDDING_MODEL: ${EMBEDDING_MODEL:-text-embedding-3-large}
-      EMBEDDING_BASE_URL: ${EMBEDDING_BASE_URL:-https://api.openai-proxy.org/v1}
+      EMBEDDING_BASE_URL: ${EMBEDDING_BASE_URL:-https://api.openai.com/v1}
       EMBEDDING_API_KEY: ${EMBEDDING_API_KEY:-}
       EMBEDDING_DIMENSION: ${EMBEDDING_DIMENSION:-3072}
-      SEND_EMBEDDING_DIMENSIONS: ${SEND_EMBEDDING_DIMENSIONS:-false}
-      WEB_SEARCH_PROVIDER: ${WEB_SEARCH_PROVIDER:-deepseek}
+      SEND_EMBEDDING_DIMENSIONS: ${SEND_EMBEDDING_DIMENSIONS:-true}
+      WEB_SEARCH_PROVIDER: ${WEB_SEARCH_PROVIDER:-openai}
       BOCHA_BASE_URL: ${BOCHA_BASE_URL:-https://api.bochaai.com/v1}
       BOCHA_API_KEY: ${BOCHA_API_KEY:-}
       AUTH_MODE: oidc
       OIDC_ISSUER: ${OIDC_ISSUER:-http://localhost:8180/realms/deepresearch}
       OIDC_AUDIENCE: ${OIDC_AUDIENCE:-deepresearch-api}
       OIDC_JWKS_URL: ${OIDC_JWKS_URL:-http://keycloak:8080/realms/deepresearch/protocol/openid-connect/certs}
+      OIDC_CA_CERTS: ${OIDC_CA_CERTS:-}
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-deepresearch-web}
+      OIDC_SCOPES: ${OIDC_SCOPES:-openid profile email}
+      OIDC_REGISTRATION_ENABLED: ${OIDC_REGISTRATION_ENABLED:-true}
       SOURCE_TRUST_OVERRIDES: '${SOURCE_TRUST_OVERRIDES:-{}}'
       WEB_CACHE_TTL_HOURS: ${WEB_CACHE_TTL_HOURS:-168}
       AUTO_SAVE_SEMANTIC_MEMORY: ${AUTO_SAVE_SEMANTIC_MEMORY:-false}
@@ -106,7 +114,10 @@ services:
       RERANKER_TIMEOUT_SECONDS: ${RERANKER_TIMEOUT_SECONDS:-2}
       RERANKER_CANDIDATE_LIMIT: ${RERANKER_CANDIDATE_LIMIT:-20}
       MAX_RUN_SECONDS: ${MAX_RUN_SECONDS:-600}
-      MAX_CONCURRENT_RUNS: ${MAX_CONCURRENT_RUNS:-2}
+      MAX_CONCURRENT_RUNS: ${MAX_CONCURRENT_RUNS:-3}
+      PLATFORM_ACTIVE_RUN_LIMIT: ${PLATFORM_ACTIVE_RUN_LIMIT:-5}
+      RESEARCH_WORKER_MAX_JOBS: ${RESEARCH_WORKER_MAX_JOBS:-3}
+      WORKER_DRAIN_SECONDS: ${WORKER_DRAIN_SECONDS:-30}
       MAX_LLM_CONCURRENCY: ${MAX_LLM_CONCURRENCY:-3}
       TASK_LOG_LEVEL: ${TASK_LOG_LEVEL:-INFO}
       SEMANTIC_MEMORY_MIN_SCORE: ${SEMANTIC_MEMORY_MIN_SCORE:-0.35}
@@ -114,10 +125,14 @@ services:
       CONVERSATION_TURN_LIMIT: ${CONVERSATION_TURN_LIMIT:-30}
       REQUEST_TIMEOUT_SECONDS: ${REQUEST_TIMEOUT_SECONDS:-90}
       MILVUS_URI: http://milvus:19530
+      MILVUS_TOKEN: ${MILVUS_TOKEN:-}
+      MILVUS_DB_NAME: ${MILVUS_DB_NAME:-default}
+      MILVUS_SERVER_PEM_PATH: ${MILVUS_SERVER_PEM_PATH:-}
       DATA_DIR: /data
       DATABASE_URL: "postgresql://dr_python:${PYTHON_DB_PASSWORD:?Prepare independent service credentials}@postgres:5432/deepresearch"
       CHECKPOINT_SCHEMA_MANAGED: "true"
       REDIS_URL: redis://redis:6379/0
+      REDIS_SSL_CA_CERTS: ${REDIS_SSL_CA_CERTS:-}
       QUEUE_BACKEND: redis
       DOCUMENT_SCAN_MODE: clamav
       OBJECT_STORE_BACKEND: s3
@@ -125,6 +140,12 @@ services:
       OBJECT_STORE_BUCKET: deepresearch-documents
       OBJECT_STORE_ACCESS_KEY: dr-objects
       OBJECT_STORE_SECRET_KEY: ${OBJECT_STORE_SECRET_KEY:?Prepare independent service credentials}
+      OBJECT_STORE_REGION: ${OBJECT_STORE_REGION:-us-east-1}
+      OBJECT_STORE_ADDRESSING_STYLE: ${OBJECT_STORE_ADDRESSING_STYLE:-auto}
+      OBJECT_STORE_AUTO_CREATE_BUCKET: ${OBJECT_STORE_AUTO_CREATE_BUCKET:-true}
+      OBJECT_STORE_SESSION_TOKEN: ${OBJECT_STORE_SESSION_TOKEN:-}
+      OBJECT_STORE_SSE: ${OBJECT_STORE_SSE:-}
+      OBJECT_STORE_KMS_KEY_ID: ${OBJECT_STORE_KMS_KEY_ID:-}
       OTEL_EXPORTER_OTLP_ENDPOINT: otel-collector:4317
       INTERNAL_SERVICE_TOKEN_FILE: /run/internal/internal_service_token
     volumes:
@@ -149,7 +170,7 @@ services:
       storage-init:
         condition: service_completed_successfully
     restart: unless-stopped
-    stop_grace_period: 30s
+    stop_grace_period: 45s
     expose: ["8000"]
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/readyz',timeout=3)"]
@@ -165,14 +186,21 @@ services:
     cpus: 1
     pids_limit: 256
     environment:
+      REDIS_URL: redis://redis:6379/0
+      DEPLOYMENT_ID: ${DEPLOYMENT_ID:-deepresearch}
+      PLATFORM_ACTIVE_RUN_LIMIT: ${PLATFORM_ACTIVE_RUN_LIMIT:-5}
       SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/deepresearch"
       SPRING_DATASOURCE_USERNAME: dr_java
+      SPRING_APPLICATION_JSON: '{"management":{"metrics":{"distribution":{"percentiles-histogram":{"http.server.requests":true}}}}}'
       SPRING_DATASOURCE_PASSWORD: ${JAVA_DB_PASSWORD:?Prepare independent service credentials}
       PLATFORM_OPERATOR_SUBJECTS: ${PLATFORM_OPERATOR_SUBJECTS:-}
       AUTH_MODE: oidc
       OIDC_ISSUER: ${OIDC_ISSUER:-http://localhost:8180/realms/deepresearch}
       OIDC_AUDIENCE: ${OIDC_AUDIENCE:-deepresearch-api}
       OIDC_JWKS_URL: ${OIDC_JWKS_URL:-http://keycloak:8080/realms/deepresearch/protocol/openid-connect/certs}
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-deepresearch-web}
+      OIDC_SCOPES: ${OIDC_SCOPES:-openid profile email}
+      OIDC_REGISTRATION_ENABLED: ${OIDC_REGISTRATION_ENABLED:-true}
       AGENT_BASE_URL: http://agent:8000
       INTERNAL_SERVICE_TOKEN_FILE: /run/internal/internal_service_token
       ALLOW_INTERNAL_MODEL_PROCESSING: ${ALLOW_INTERNAL_MODEL_PROCESSING:-false}
@@ -346,10 +374,10 @@ services:
     cpus: 2
     pids_limit: 256
     build: .
-    command: arq backend.worker.WorkerSettings
+    command: python -m backend.worker research
     expose: ["8001"]
     healthcheck:
-      test: ["CMD", "python", "-c", "import os; os.kill(1, 0)"]
+      test: ["CMD", "python", "-m", "backend.core.worker_health", "--ready"]
       interval: 15s
       timeout: 5s
       retries: 3
@@ -367,7 +395,7 @@ services:
     networks: [database, retrieval, telemetry]
   document-worker:
     <<: *research-worker
-    command: arq backend.worker.DocumentWorkerSettings
+    command: python -m backend.worker documents
     mem_limit: 1g
     cpus: 1
     networks: [database, retrieval, telemetry]

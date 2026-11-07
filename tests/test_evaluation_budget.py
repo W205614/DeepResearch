@@ -22,6 +22,17 @@ def test_cumulative_reservation_is_not_reset_by_small_actual_usage(tmp_path):
     assert budget.report()["cumulative_reserved_tokens"] > 400
 
 
+def test_openai_completion_limit_reserves_reasoning_and_visible_output(tmp_path):
+    budget = Budget(tmp_path / "openai.sqlite3", policy(output_tokens=100))
+    index = budget.reserve("llm", {"model": "gpt-6.1-sol", "max_completion_tokens": 100})
+    assert budget.report()["requests"][0]["output_bound"] == 100
+    with pytest.raises(ServiceError, match="budget"):
+        budget.reserve("llm", {"max_completion_tokens": 1})
+    budget.settle(index, 200, {"prompt_tokens": 5, "completion_tokens": 20,
+                               "completion_tokens_details": {"reasoning_tokens": 15}})
+    assert budget.report()["actual_completion_tokens"] == 20
+
+
 def test_budget_persists_and_counts_simultaneous_attempts(tmp_path):
     path = tmp_path / "ledger.sqlite3"
     Budget(path, policy())

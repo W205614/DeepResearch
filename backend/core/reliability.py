@@ -60,6 +60,8 @@ class Execution:
             raise ServiceError("任务累计时限已耗尽，请缩小问题重新提交", code="budget_exhausted", retryable=False)
         # Offline evaluations have no memberships; deployed jobs must retain write permission.
         if not self.settings.demo_mode:
+            from .governance import require_active_subject
+            await require_active_subject(self.db, row["created_by"])
             member = await self.db.membership(row["user_id"], row["created_by"])
             if not member or member["role"] not in {"admin", "researcher"}:
                 raise ServiceError("任务发起人的权限已失效", code="permission_revoked", retryable=False)

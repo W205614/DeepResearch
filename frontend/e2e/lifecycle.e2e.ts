@@ -1,9 +1,11 @@
 import { expect, test, type Page } from '@playwright/test'
+import { simulateIdentity } from './fixtures/identity'
 
 // Contract/UI simulations only. Real authentication and authorization are checked in lifecycle-live.
 async function simulatedAccount(page: Page, role = 'researcher', subject = 'author', pending = false, slowDiagnostics = false) {
+  await simulateIdentity(page, 'http://localhost:8480/realms/deepresearch')
   const state = { revision: 2, posts: [] as Record<string, unknown>[], rejectFirst: false }
-  const token = `${Buffer.from('{}').toString('base64url')}.${Buffer.from(JSON.stringify({sub:subject, exp:Math.floor(Date.now()/1000)+3600})).toString('base64url')}.signature`
+  const token = `${Buffer.from('{}').toString('base64url')}.${Buffer.from(JSON.stringify({sub:subject, iss:'http://localhost:8480/realms/deepresearch', exp:Math.floor(Date.now()/1000)+3600})).toString('base64url')}.signature`
   await page.addInitScript(value => sessionStorage.setItem('dr-token',value), token)
   const report = (id = 'r1') => ({id, source_run_id:'run1', topic:id === 'r1' ? '报销研究' : '旧版报销研究', author_subject:'author', report_markdown:'# 报销研究\n上限 800 元。', sources:[], validation:{verification_contract:'verification-v3-claim-span',quality:'complete'}, content_sha256:'a'.repeat(64), status:pending?'pending':'published', submitted_at:'2026-10-20T00:00:00Z', reviewed_at:'2026-10-20T00:00:00Z', series_id:'s1', revision_no:id === 'r1'?2:1, corpus_revision:1, evidence_status:'check_pending'})
   await page.route('**/api/**', async route => {

@@ -1,0 +1,48 @@
+{
+  "provider": "deterministic fixture; no real model speed/cost/quality claim",
+  "functional_passed": true,
+  "production_capacity_passed": true,
+  "workspace": "0492aa0b99654bd4a8f30d22242e0df8",
+  "accounts": 50,
+  "online_clients": 10,
+  "requested_seconds": 1800,
+  "observed_seconds": 1806.62,
+  "documents": 500,
+  "sql_chunks": 50000,
+  "milvus_vectors": 50000,
+  "dataset_reused": true,
+  "vector_sql_ids_equal": true,
+  "embedding_dimension": 3072,
+  "requests": 17209,
+  "unexpected_errors": 8,
+  "error_rate": 0.000465,
+  "control_p95_ms": 210.95,
+  "search_p95_ms": 24652.72,
+  "accepted": 601,
+  "completed": 601,
+  "max_global_running": 5,
+  "max_workspace_running": 1,
+  "max_global_waiting": 5,
+  "duplicate_requests": 62,
+  "duplicate_or_missing_done_events": 0,
+  "failures_by_type": {
+    "RequestFailure": 8
+  },
+  "request_error_contexts": [
+    {
+      "code": "http_503",
+      "http_status": 503,
+      "method": "GET",
+      "route": "/api/documents",
+      "count": 3
+    },
+    {
+      "code": "http_503",
+      "http_status": 503,
+      "method": "POST",
+      "route": "/api/documents/search",
+      "count": 5
+    }
+  ],
+  "dataset_content_sha256": "333f25b2a4821987389a2ba9e432a75bdda203cb19b18f1cd1f7b4e02d0f255a"
+}

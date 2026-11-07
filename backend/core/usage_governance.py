@@ -70,8 +70,10 @@ async def resolve_scope(db, settings):
     if not scope or not scope.workspace_id or not scope.subject:
         raise ServiceError("付费调用缺少费用归属，已阻止外发", code="usage_scope_required", retryable=False)
     if not settings.demo_mode and scope.purpose != "evaluation":
+        from .governance import require_active_subject
+        await require_active_subject(db, scope.subject)
         member = await db.membership(scope.workspace_id, scope.subject)
-        if not member or (scope.purpose == "indexing" and member["role"] not in {"admin", "researcher"}):
+        if not member or (scope.purpose in {"indexing", "embedding_migration"} and member["role"] not in {"admin", "researcher"}):
             # Platform operators may perform probes in a read-only membership.
             if scope.purpose != "probe" or scope.subject not in settings.operator_subjects:
                 raise ServiceError("费用主体的工作空间写权限已失效", code="permission_revoked", retryable=False)
@@ -117,6 +119,8 @@ class UsageGovernance:
                         AND actual_input+actual_output+pending_tokens+unknown_tokens+?<=?""",
                         (tokens, tokens, dimension, period, max_calls, tokens, max_tokens))
                     if not affected(changed):
+                        from .metrics import USAGE_BUDGET_REJECTIONS
+                        USAGE_BUDGET_REJECTIONS.inc()
                         raise ServiceError("周期调用或 Token 费用预算已耗尽", code="usage_budget_exhausted", retryable=False)
                 await conn.execute("""INSERT INTO usage_attempts(id,workspace_id,subject,purpose,provider_account,
                     kind,period_start,scope_keys,reserved_tokens,created_at) VALUES(?,?,?,?,?,?,?,?,?,?)""",

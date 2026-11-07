@@ -1,5 +1,6 @@
 """OIDC verification and local-only development tokens."""
 from dataclasses import dataclass
+import ssl
 import time
 
 import httpx
@@ -11,11 +12,13 @@ from fastapi import HTTPException
 class Principal:
     subject: str
     display_name: str
+    issued_at: int = 0
 
 
 class TokenVerifier:
     def __init__(self, settings):
         self.settings = settings
+        self._verify = ssl.create_default_context(cafile=str(settings.oidc_ca_certs)) if settings.oidc_ca_certs else True
         self._jwks: dict | None = None
         self._jwks_at = 0.0
 
@@ -25,7 +28,7 @@ class TokenVerifier:
         if not self.settings.oidc_jwks_url:
             raise HTTPException(503, "OIDC JWKS 地址未配置")
         try:
-            async with httpx.AsyncClient(timeout=5, trust_env=False) as client:
+            async with httpx.AsyncClient(timeout=5, trust_env=False, verify=self._verify) as client:
                 response = await client.get(self.settings.oidc_jwks_url)
                 response.raise_for_status()
                 result = response.json()
@@ -57,14 +60,17 @@ class TokenVerifier:
                     raise jwt.InvalidTokenError("unknown key")
                 claims = jwt.decode(token, jwt.PyJWK.from_dict(key).key, algorithms=["RS256"],
                                     audience=self.settings.oidc_audience, issuer=self.settings.oidc_issuer,
-                                    options={"require": ["exp", "sub", "aud", "iss"]})
+                                    options={"require": ["exp", "sub", "aud", "iss", "iat"]})
         except jwt.PyJWTError:
             raise HTTPException(401, "登录凭证无效或已过期") from None
         subject = str(claims.get("sub", ""))
         if not subject or len(subject) > 128:
             raise HTTPException(401, "登录凭证缺少有效主体")
         display = str(claims.get("preferred_username") or claims.get("name") or subject)[:100]
-        return Principal(subject, display)
+        issued_at = claims.get("iat", 0)
+        if isinstance(issued_at, bool) or not isinstance(issued_at, (int, float)):
+            raise HTTPException(401, "登录凭证缺少有效签发时间")
+        return Principal(subject, display, int(issued_at))
 
 
 def issue_development_token(settings, subject: str, *, expires_in: int = 3600) -> str:

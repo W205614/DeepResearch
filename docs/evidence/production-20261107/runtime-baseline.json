@@ -1,0 +1,58 @@
+{
+  "build_method": "Candidate source overlays on the existing maintained local runtime dependency bases; not a canonical release image build.",
+  "base_git_commit": "d57479e976c9230bea54e17bf8e8cea86a39c010",
+  "capacity_containers": [
+    {
+      "name": "dr-production-test-agent-1",
+      "container_id": "048561285a9b13bb5d00a7eaed8e9176c6fbd69a5a90527c20f611bdfb6ce45c",
+      "image_id": "sha256:09c9c2497f36e5f7be4329a04718180d07fde789586b449a0dd2931834fec6ce"
+    },
+    {
+      "name": "dr-production-test-agent-2",
+      "container_id": "f16de2d58a88736d86c6aa14d22b784385d961cc1c28dec69b16f504712f595a",
+      "image_id": "sha256:09c9c2497f36e5f7be4329a04718180d07fde789586b449a0dd2931834fec6ce"
+    },
+    {
+      "name": "dr-production-test-backend-1",
+      "container_id": "7fc7b375884400e682c7e8aa733c1932538735549194267e6e9489c126e246d2",
+      "image_id": "sha256:a21d256a8b616cc5af8da838f1221f2c8e9e88e96a336f30461af66bc862c140"
+    },
+    {
+      "name": "dr-production-test-backend-2",
+      "container_id": "a75c00ee7cff67999920574d591f838f7f90a8bf70a0f565b69b73c1d8b2c071",
+      "image_id": "sha256:a21d256a8b616cc5af8da838f1221f2c8e9e88e96a336f30461af66bc862c140"
+    },
+    {
+      "name": "dr-production-test-worker-1",
+      "container_id": "e098a096a1f6a785eaceff24ef3ab12f21bdd743e320d67bae937784d82d2c6e",
+      "image_id": "sha256:09c9c2497f36e5f7be4329a04718180d07fde789586b449a0dd2931834fec6ce"
+    },
+    {
+      "name": "dr-production-test-worker-2",
+      "container_id": "37562f9c0054d30d4502021a28a2c6227f8284e2650db738a1c787e26853efa3",
+      "image_id": "sha256:09c9c2497f36e5f7be4329a04718180d07fde789586b449a0dd2931834fec6ce"
+    },
+    {
+      "name": "dr-production-test-document-worker-1",
+      "container_id": "59f5902ae3b5cfc4fbedebcc6b0c1b84305f9fb9a57b0f2d5e30873f978cd10d",
+      "image_id": "sha256:09c9c2497f36e5f7be4329a04718180d07fde789586b449a0dd2931834fec6ce"
+    },
+    {
+      "name": "dr-production-test-document-worker-2",
+      "container_id": "0ece7ddca043b291fbe53841898cd9d1733f857b470aac0fbc56c9a4ca1d10b3",
+      "image_id": "sha256:09c9c2497f36e5f7be4329a04718180d07fde789586b449a0dd2931834fec6ce"
+    },
+    {
+      "name": "dr-production-test-web-1",
+      "container_id": "deed4b42db438c47fe3a3d536bfbfef4d9e763e91ba1170aa5a01ee474d38ade",
+      "image_id": "sha256:ba30c774ec0f47e81d3ff475bbeebda6acd4cf3aafb94141ca16bdf4a1d3bdb9"
+    },
+    {
+      "name": "dr-production-test-web-2",
+      "container_id": "e73b8585fc2d93ab7101a256f7ba6041cf70f4f0c0b78d40df65c020d431c0f7",
+      "image_id": "sha256:ba30c774ec0f47e81d3ff475bbeebda6acd4cf3aafb94141ca16bdf4a1d3bdb9"
+    }
+  ],
+  "capacity_java_jar_sha256": "3B8B59B223BCC34B0BA04A259370FEDFF81AA639C297AFD1207FA7F5EEAAB6A9",
+  "final_java_admin_change": "Additional read-only usage/dependency metadata, separately tested after capacity; no research control or worker change."
+}

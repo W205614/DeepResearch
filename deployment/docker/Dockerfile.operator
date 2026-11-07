@@ -1,0 +1,23 @@
+# Build with the immutable Python application image for the same release.
+# This operator-only image is never used by API or Worker Deployments.
+ARG APP_IMAGE=deepresearch-agent:latest
+FROM ${APP_IMAGE} AS application
+FROM debian:trixie-slim@sha256:38a76d01668772e381ad2826d876627c89e7133e2f8a0f5d567306798b0f2a16
+USER 0:0
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends postgresql-client-17 libsqlite3-0 libstdc++6 libgomp1 libffi8 ca-certificates \
+ && rm -rf /var/lib/apt/lists/*
+COPY --from=application /usr/local /usr/local
+COPY --from=application /opt/venv /opt/venv
+COPY --from=application /app/backend /app/backend
+# Retain the application's reviewed patched native Python dependencies instead
+# of reintroducing older distribution SQLite/zlib through the operator tools.
+COPY --from=application /usr/lib/x86_64-linux-gnu/libsqlite3.so.3.54.1 /usr/lib/x86_64-linux-gnu/libsqlite3.so.3.54.1
+COPY --from=application /usr/lib/x86_64-linux-gnu/libz.so.1.3.2 /usr/lib/x86_64-linux-gnu/libz.so.1.3.2
+RUN ln -sf libsqlite3.so.3.54.1 /usr/lib/x86_64-linux-gnu/libsqlite3.so.0 \
+ && ln -sf libz.so.1.3.2 /usr/lib/x86_64-linux-gnu/libz.so.1
+ENV PATH=/opt/venv/bin:/usr/local/bin:/usr/lib/postgresql/17/bin:/usr/bin:/bin LD_LIBRARY_PATH=/usr/local/lib PYTHONDONTWRITEBYTECODE=1
+WORKDIR /app
+COPY scripts/external_recovery.py scripts/production_load.py scripts/migrate_services.py ./scripts/
+USER 10001:10001
+ENTRYPOINT ["python", "scripts/external_recovery.py"]

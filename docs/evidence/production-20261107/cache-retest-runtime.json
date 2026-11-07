@@ -1,0 +1,47 @@
+{
+  "build_method": "Candidate source overlays on maintained local runtime dependency bases; not a canonical release build.",
+  "python_changes": "Only existing-cache lookup ordering and five direct regression tests after the 30-minute capacity run; no schema, index, work_mem, resource, or threshold changes.",
+  "java_jar_sha256": "6af604479a41be74342bd42ae52dea26c148c9dbd91526d3a6cb5b28f3bda243",
+  "containers": [
+    {
+      "name": "dr-production-test-agent-2",
+      "container_id": "79a14bdc3e07a4a356ddf6448e9963a28171a5d83a963dbd2d33311c0531bcc6",
+      "image_id": "sha256:a4205a527d7fb4810bc42bf9db44b7d4715322029d914f37ef0f6220db916b19"
+    },
+    {
+      "name": "dr-production-test-agent-1",
+      "container_id": "66ef47dc5d2bb6c129a295abf9ed86f3305c21045293de8b42cf045e2847af23",
+      "image_id": "sha256:a4205a527d7fb4810bc42bf9db44b7d4715322029d914f37ef0f6220db916b19"
+    },
+    {
+      "name": "dr-production-test-document-worker-1",
+      "container_id": "4dc3e9791d200d1546551ce8753dfe714224c30e9efbaa981c70b67c173fd0c8",
+      "image_id": "sha256:a4205a527d7fb4810bc42bf9db44b7d4715322029d914f37ef0f6220db916b19"
+    },
+    {
+      "name": "dr-production-test-worker-1",
+      "container_id": "8ce01c423cb2bfedb5d3323a5a662deff80ded420e22fec8fcd8b8a141f228dc",
+      "image_id": "sha256:a4205a527d7fb4810bc42bf9db44b7d4715322029d914f37ef0f6220db916b19"
+    },
+    {
+      "name": "dr-production-test-document-worker-2",
+      "container_id": "bd8db904a97eea6cd3895dff40c182ebc5640e17fd6b39fcde47fea73eeb9dce",
+      "image_id": "sha256:a4205a527d7fb4810bc42bf9db44b7d4715322029d914f37ef0f6220db916b19"
+    },
+    {
+      "name": "dr-production-test-worker-2",
+      "container_id": "d9813d60d690d22a775395e575dbe5f645cadf8071da2da545f94d5934c9243e",
+      "image_id": "sha256:a4205a527d7fb4810bc42bf9db44b7d4715322029d914f37ef0f6220db916b19"
+    },
+    {
+      "name": "dr-production-test-backend-2",
+      "container_id": "695d98195f2a7230ad469f38dd3384432178a9518520ced45d5063c5b7574e4e",
+      "image_id": "sha256:11c2dabdbf70750dcefb39e8e1a1449c01248a1784b1df75c51a524f16c587dc"
+    },
+    {
+      "name": "dr-production-test-backend-1",
+      "container_id": "9283a0f587df75542dd15e623f62e7f7bcedcef652e34397c91c8a5da8490506",
+      "image_id": "sha256:11c2dabdbf70750dcefb39e8e1a1449c01248a1784b1df75c51a524f16c587dc"
+    }
+  ]
+}

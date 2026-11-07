@@ -3,32 +3,39 @@ import json
 from pathlib import Path
 from typing import Literal
 
-from pydantic import AliasChoices, Field, SecretStr, field_validator
+from pydantic import AliasChoices, Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore", populate_by_name=True)
-    llm_model_id: str = Field("deepseek-v4-flash", validation_alias=AliasChoices("LLM_MODEL_ID", "LLM_MODEL"))
-    vision_model_id: str = "deepseek-v4-flash-vision-exp"
-    llm_base_url: str = "https://api.deepseek.com"
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore", populate_by_name=True, hide_input_in_errors=True)
+    llm_provider: Literal["openai", "compatible"] = "openai"
+    llm_model_id: str = Field("gpt-6.1-sol", validation_alias=AliasChoices("LLM_MODEL_ID", "LLM_MODEL"))
+    vision_model_id: str = "gpt-6.1-sol"
+    llm_base_url: str = "https://api.openai.com/v1"
+    llm_reasoning_effort: Literal["low", "medium", "high", "xhigh", "max"] = "low"
     llm_api_key: SecretStr = SecretStr("")
     llm_extra_body: str = '{}'
     embedding_model: str = "text-embedding-3-large"
-    embedding_base_url: str = "https://api.openai-proxy.org/v1"
+    embedding_base_url: str = "https://api.openai.com/v1"
     embedding_api_key: SecretStr = SecretStr("")
     embedding_dimension: int = Field(3072, ge=2, le=32768)
-    send_embedding_dimensions: bool = False
-    web_search_provider: Literal["deepseek", "bocha", "auto"] = "deepseek"
+    send_embedding_dimensions: bool = True
+    web_search_provider: Literal["openai", "deepseek", "bocha", "auto"] = "openai"
     bocha_base_url: str = "https://api.bochaai.com/v1"
     bocha_api_key: SecretStr = SecretStr("")
     auth_mode: Literal["oidc", "development"] = "oidc"
     oidc_issuer: str = ""
     oidc_audience: str = "deepresearch-api"
     oidc_jwks_url: str = ""
+    oidc_ca_certs: Path | None = None
+    oidc_client_id: str = "deepresearch-web"
+    oidc_scopes: str = "openid profile email"
+    oidc_registration_enabled: bool = True
     development_jwt_secret: SecretStr = SecretStr("development-only-secret-must-be-32-bytes")
     database_url: str = ""
     redis_url: str = "redis://127.0.0.1:6379/0"
+    redis_ssl_ca_certs: str = ""
     queue_backend: Literal["redis", "local"] = "redis"
     max_job_retries: int = Field(2, ge=0, le=10)
     otel_exporter_otlp_endpoint: str = ""
@@ -46,11 +53,20 @@ class Settings(BaseSettings):
     object_store_bucket: str = "deepresearch-documents"
     object_store_access_key: SecretStr = SecretStr("")
     object_store_secret_key: SecretStr = SecretStr("")
+    object_store_session_token: SecretStr = SecretStr("")
+    object_store_region: str = "us-east-1"
+    object_store_addressing_style: Literal["auto", "path", "virtual"] = "auto"
+    object_store_auto_create_bucket: bool = True
+    object_store_sse: Literal["", "AES256", "aws:kms"] = ""
+    object_store_kms_key_id: str = ""
     source_trust_overrides: str = '{}'
     web_cache_ttl_hours: int = Field(168, ge=1, le=24 * 90)
     auto_save_semantic_memory: bool = False
     data_dir: Path = Path("data")
     milvus_uri: str = "http://127.0.0.1:19530"
+    milvus_token: SecretStr = SecretStr("")
+    milvus_db_name: str = "default"
+    milvus_server_pem_path: str = ""
     vector_collection_prefix: str = "dr"
     demo_mode: bool = False
     rag_min_vector_score: float = Field(0.2, ge=0, le=1)
@@ -63,7 +79,11 @@ class Settings(BaseSettings):
     web_search_timeout_seconds: float = Field(20, ge=1, le=120)
     web_fetch_timeout_seconds: float = Field(8, ge=1, le=60)
     max_run_seconds: int = Field(600, ge=10, le=3600)
-    max_concurrent_runs: int = Field(2, ge=1, le=8)
+    max_concurrent_runs: int = Field(3, ge=1, le=8)
+    platform_active_run_limit: int = Field(5, ge=1, le=100)
+    research_worker_max_jobs: int = Field(3, ge=1, le=8)
+    worker_health_file: Path = Path("/tmp/deepresearch-worker-health.json")
+    worker_drain_seconds: int = Field(30, ge=1, le=300)
     max_llm_concurrency: int = Field(3, ge=1, le=8)
     task_log_level: str = "INFO"
     semantic_memory_min_score: float = Field(0.35, ge=-1, le=1)
@@ -117,6 +137,42 @@ class Settings(BaseSettings):
     account_period_calls: int = Field(1000, ge=1, le=1000000)
     account_period_tokens: int = Field(20000000, ge=1000, le=2000000000)
 
+    @field_validator("object_store_endpoint")
+    @classmethod
+    def validate_storage_endpoint(cls, value: str) -> str:
+        if not value:
+            return ""
+        from urllib.parse import urlsplit
+        url = urlsplit(value)
+        if (url.scheme not in {"http", "https"} or not url.hostname or url.username or url.password
+                or url.query or url.fragment):
+            raise ValueError("OBJECT_STORE_ENDPOINT must be an HTTP(S) address without credentials or query")
+        return value.rstrip("/")
+
+    @field_validator("oidc_ca_certs", mode="before")
+    @classmethod
+    def validate_oidc_ca(cls, value):
+        if value in (None, ""):
+            return None
+        path = Path(value)
+        if not path.is_file():
+            raise ValueError("OIDC_CA_CERTS must point to an existing trusted CA file")
+        return path
+
+    @model_validator(mode="after")
+    def validate_storage_credentials(self):
+        if self.object_store_backend != "s3":
+            return self
+        access = bool(self.object_store_access_key.get_secret_value())
+        secret = bool(self.object_store_secret_key.get_secret_value())
+        if access != secret:
+            raise ValueError("Object-store access and secret keys must be supplied together")
+        if self.object_store_session_token.get_secret_value() and not access:
+            raise ValueError("An explicit object-store session token requires access and secret keys")
+        if self.object_store_kms_key_id and self.object_store_sse != "aws:kms":
+            raise ValueError("OBJECT_STORE_KMS_KEY_ID requires OBJECT_STORE_SSE=aws:kms")
+        return self
+
     @property
     def operator_subjects(self) -> frozenset[str]:
         return frozenset(value.strip() for value in self.platform_operator_subjects.split(",") if value.strip())
@@ -154,7 +210,7 @@ class Settings(BaseSettings):
     def validate_extra(cls, value: str) -> str:
         value = value or '{}'
         body = json.loads(value)
-        if not isinstance(body, dict) or set(body) & {"model", "messages", "stream", "max_tokens"}:
+        if not isinstance(body, dict) or set(body) & {"model", "messages", "stream", "max_tokens", "max_completion_tokens", "max_output_tokens"}:
             raise ValueError("LLM_EXTRA_BODY must be an object without core request overrides")
         return value
 

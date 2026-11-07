@@ -12,6 +12,7 @@ def initialize_run_terminal_metrics() -> None:
 RUN_SECONDS = Histogram("deepresearch_run_duration_seconds", "Research task duration")
 NODE_SECONDS = Histogram("deepresearch_node_duration_seconds", "Graph node duration", ["node"])
 FAILURES = Counter("deepresearch_failures_total", "Stable task failure categories", ["category"])
+FAILURES.labels(category="budget_exhausted")
 SEARCHES = Counter("deepresearch_searches_total", "Web searches issued")
 LLM_CALLS = Counter("deepresearch_llm_calls_total", "LLM calls issued")
 TOKENS = Counter("deepresearch_tokens_total", "Model tokens", ["kind"])
@@ -48,3 +49,5 @@ for _outcome in ("success", "timeout", "error", "invalid", "policy_blocked"):
 RAG_VECTOR_CANDIDATES = Counter("deepresearch_rag_vector_candidates_total", "Vector candidates checked against effective SQL records", ["state"])
 RAG_VECTOR_REFILLS = Counter("deepresearch_rag_vector_refills_total", "Bounded vector candidate refill calls")
 CHANGE_EVENTS_PENDING = Gauge("deepresearch_document_change_events_pending", "Durable document change events awaiting impact processing")
+SCAN_FAILED_DOCUMENTS = Gauge("deepresearch_scan_failed_documents", "Persisted documents requiring failed-scan recovery")
+USAGE_BUDGET_REJECTIONS = Counter("deepresearch_usage_budget_rejections_total", "Paid attempts denied by durable period budgets")

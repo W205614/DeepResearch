@@ -46,26 +46,37 @@ class ObjectStore:
             for area in ("uploads", "quarantine"):
                 (self.settings.data_dir / area).mkdir(parents=True, exist_ok=True)
             return
-        if not self.settings.object_store_endpoint:
-            raise RuntimeError("OBJECT_STORE_ENDPOINT is required when OBJECT_STORE_BACKEND=s3")
         import boto3
         from botocore.config import Config
         from botocore.exceptions import ClientError
-        self._client = boto3.client(
-            "s3", endpoint_url=self.settings.object_store_endpoint,
-            aws_access_key_id=self.settings.object_store_access_key.get_secret_value(),
-            aws_secret_access_key=self.settings.object_store_secret_key.get_secret_value(),
-            region_name="us-east-1",
-            config=Config(connect_timeout=3, read_timeout=5, retries={"total_max_attempts": 1}),
-        )
         try:
+            credentials = {}
+            if self.settings.object_store_access_key.get_secret_value():
+                credentials = {
+                    "aws_access_key_id": self.settings.object_store_access_key.get_secret_value(),
+                    "aws_secret_access_key": self.settings.object_store_secret_key.get_secret_value(),
+                    "aws_session_token": self.settings.object_store_session_token.get_secret_value() or None,
+                }
+            # Empty explicit credentials must not disable the SDK's workload-identity chain.
+            self._client = boto3.client(
+                "s3", endpoint_url=self.settings.object_store_endpoint or None,
+                region_name=self.settings.object_store_region,
+                config=Config(connect_timeout=3, read_timeout=5, retries={"total_max_attempts": 1},
+                              s3={"addressing_style": self.settings.object_store_addressing_style}),
+                **credentials,
+            )
             try:
                 await asyncio.to_thread(self._client.head_bucket, Bucket=self.settings.object_store_bucket)
             except ClientError as exc:
                 if exc.response.get("Error", {}).get("Code") not in {"404", "NoSuchBucket", "NotFound"}:
                     raise
+                if not self.settings.object_store_auto_create_bucket:
+                    raise RuntimeError("Object-store bucket must be provisioned before deployment")
                 try:
-                    await asyncio.to_thread(self._client.create_bucket, Bucket=self.settings.object_store_bucket)
+                    location = {} if self.settings.object_store_region == "us-east-1" else {
+                        "CreateBucketConfiguration": {"LocationConstraint": self.settings.object_store_region}}
+                    await asyncio.to_thread(self._client.create_bucket,
+                                            Bucket=self.settings.object_store_bucket, **location)
                 except ClientError as creation_error:
                     if creation_error.response.get("Error", {}).get("Code") != "BucketAlreadyOwnedByYou":
                         raise
@@ -91,7 +102,15 @@ class ObjectStore:
             await asyncio.to_thread(self._path(area, document_id).write_bytes, content)
             return
         await asyncio.to_thread(self._client.put_object, Bucket=self.settings.object_store_bucket,
-                                Key=self._key(area, document_id), Body=content)
+                                Key=self._key(area, document_id), Body=content, **self._encryption())
+
+    def _encryption(self) -> dict:
+        if not self.settings.object_store_sse:
+            return {}
+        options = {"ServerSideEncryption": self.settings.object_store_sse}
+        if self.settings.object_store_kms_key_id:
+            options["SSEKMSKeyId"] = self.settings.object_store_kms_key_id
+        return options
 
     @storage_boundary()
     async def get(self, area: str, document_id: str) -> bytes:
@@ -103,7 +122,10 @@ class ObjectStore:
         try:
             response = await asyncio.to_thread(self._client.get_object, Bucket=self.settings.object_store_bucket,
                                                Key=self._key(area, document_id))
-            return await asyncio.to_thread(response["Body"].read)
+            try:
+                return await asyncio.to_thread(response["Body"].read)
+            finally:
+                response["Body"].close()
         except Exception as exc:
             if missing_object(exc):
                 raise ServiceError("原始上传文件不存在，请重新上传", code="storage_missing", retryable=False) from None
@@ -116,7 +138,7 @@ class ObjectStore:
             return
         await asyncio.to_thread(self._client.copy_object, Bucket=self.settings.object_store_bucket,
                                 CopySource={"Bucket": self.settings.object_store_bucket, "Key": self._key(source, document_id)},
-                                Key=self._key(target, document_id))
+                                Key=self._key(target, document_id), **self._encryption())
         await asyncio.to_thread(self._client.delete_object, Bucket=self.settings.object_store_bucket,
                                 Key=self._key(source, document_id))
 

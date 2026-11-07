@@ -1,0 +1,103 @@
+{
+  "apiVersion": "batch/v1",
+  "kind": "Job",
+  "metadata": {
+    "name": "deepresearch-migrate"
+  },
+  "spec": {
+    "backoffLimit": 0,
+    "activeDeadlineSeconds": 1200,
+    "template": {
+      "metadata": {
+        "labels": {
+          "app": "migrate"
+        }
+      },
+      "spec": {
+        "serviceAccountName": "deepresearch-migrator",
+        "automountServiceAccountToken": false,
+        "restartPolicy": "Never",
+        "securityContext": {
+          "runAsUser": 10001,
+          "runAsNonRoot": true,
+          "fsGroup": 10001,
+          "seccompProfile": {
+            "type": "RuntimeDefault"
+          }
+        },
+        "containers": [
+          {
+            "name": "migrate",
+            "image": "deepresearch-python:REPLACE_IMMUTABLE_TAG",
+            "command": [
+              "python",
+              "scripts/migrate_services.py"
+            ],
+            "envFrom": [
+              {
+                "secretRef": {
+                  "name": "deepresearch-migrator"
+                }
+              }
+            ],
+            "resources": {
+              "requests": {
+                "cpu": "250m",
+                "memory": "256Mi"
+              },
+              "limits": {
+                "cpu": "1",
+                "memory": "1Gi"
+              }
+            },
+            "securityContext": {
+              "allowPrivilegeEscalation": false,
+              "capabilities": {
+                "drop": [
+                  "ALL"
+                ]
+              },
+              "readOnlyRootFilesystem": true
+            },
+            "volumeMounts": [
+              {
+                "name": "tmp",
+                "mountPath": "/tmp"
+              },
+              {
+                "name": "data",
+                "mountPath": "/data"
+              },
+              {
+                "name": "certificates",
+                "mountPath": "/run/certs",
+                "readOnly": true
+              }
+            ]
+          }
+        ],
+        "volumes": [
+          {
+            "name": "tmp",
+            "emptyDir": {
+              "sizeLimit": "256Mi"
+            }
+          },
+          {
+            "name": "data",
+            "emptyDir": {
+              "sizeLimit": "32Mi"
+            }
+          },
+          {
+            "name": "certificates",
+            "secret": {
+              "secretName": "deepresearch-trust",
+              "defaultMode": 292
+            }
+          }
+        ]
+      }
+    }
+  }
+}

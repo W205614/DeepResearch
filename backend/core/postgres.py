@@ -193,7 +193,7 @@ class PostgresDatabase:
     async def create_workspace(self, subject, name, limits, workspace_id=None):
         workspace = {"id": workspace_id or uid(), "name": name.strip()[:100], "created_by": subject, "created_at": now()}
         async with self.connection() as conn:
-            await conn.execute("INSERT INTO workspaces(id,name,created_by,created_at) VALUES(?,?,?,?)", tuple(workspace.values()))
+            await conn.execute("INSERT INTO workspaces(id,name,created_by,created_at,owner_subject) VALUES(?,?,?,?,?)", (*workspace.values(), subject))
             await conn.execute("INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES(?,?,?,?)",
                                (workspace["id"], subject, "admin", workspace["created_at"]))
             await conn.execute("INSERT INTO workspace_limits(workspace_id,daily_search_limit,daily_token_limit,concurrent_run_limit) VALUES(?,?,0,?)",
@@ -204,8 +204,8 @@ class PostgresDatabase:
         """Idempotently bootstrap the subject's default workspace."""
         workspace = {"id": subject, "name": name.strip()[:100], "created_by": subject, "created_at": now()}
         async with self.connection() as conn:
-            await conn.execute("""INSERT INTO workspaces(id,name,created_by,created_at) VALUES(?,?,?,?)
-                               ON CONFLICT(id) DO NOTHING""", tuple(workspace.values()))
+            await conn.execute("""INSERT INTO workspaces(id,name,created_by,created_at,owner_subject) VALUES(?,?,?,?,?)
+                ON CONFLICT(id) DO NOTHING""", (*workspace.values(), subject))
             await conn.execute("""INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES(?,?,?,?)
                                ON CONFLICT(workspace_id,subject) DO NOTHING""",
                                (subject, subject, "admin", workspace["created_at"]))

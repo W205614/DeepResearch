@@ -1,0 +1,30 @@
+# Load only in an environment with an explicitly configured managed-backup monitor.
+# This does not enable the independently disabled workstation backup scheduler.
+groups:
+  - name: deepresearch-managed-backups
+    rules:
+      - alert: DeepResearchCloudBackupExporterDown
+        expr: up{job="deepresearch-cloud-backup"} == 0
+        for: 2m
+        labels: {severity: critical}
+        annotations: {summary: "Managed-backup metrics endpoint is unavailable"}
+      - alert: DeepResearchCloudBackupMetricsMissing
+        expr: (up{job="deepresearch-cloud-backup"} == 1) unless on (job, instance) deepresearch_cloud_backup_required
+        for: 2m
+        labels: {severity: critical}
+        annotations: {summary: "Configured managed-backup exporter exposes no required resource inventory"}
+      - alert: DeepResearchCloudBackupResourceMetricsMissing
+        expr: (deepresearch_cloud_backup_required == 1) unless on (deployment, job, instance, resource) (deepresearch_cloud_backup_last_success_timestamp_seconds and on (deployment, job, instance, resource) deepresearch_cloud_backup_rpo_target_seconds and on (deployment, job, instance, resource) deepresearch_cloud_backup_observed_timestamp_seconds)
+        for: 2m
+        labels: {severity: critical}
+        annotations: {summary: "A required managed-backup resource has incomplete success, policy or observation metrics"}
+      - alert: DeepResearchCloudBackupProbeStale
+        expr: time() - deepresearch_cloud_backup_observed_timestamp_seconds > 900
+        for: 2m
+        labels: {severity: warning}
+        annotations: {summary: "Managed-backup status has not been observed in fifteen minutes"}
+      - alert: DeepResearchCloudBackupStale
+        expr: (time() - deepresearch_cloud_backup_last_success_timestamp_seconds) > on (deployment, job, instance, resource) deepresearch_cloud_backup_rpo_target_seconds
+        for: 5m
+        labels: {severity: critical}
+        annotations: {summary: "A managed resource has no successful backup within its configured RPO; verify provider backup and recovery evidence"}

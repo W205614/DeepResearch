@@ -19,10 +19,12 @@ services:
     environment: &fixture-environment
       OIDC_ISSUER: http://localhost:18480/realms/deepresearch
       LLM_API_KEY: fixture-no-external-calls
+      LLM_PROVIDER: compatible
       LLM_BASE_URL: http://webhook-recorder:8090
       EMBEDDING_API_KEY: fixture-no-external-calls
       # Keep the original embedding identity for retained acceptance volumes.
       # component_fixture overrides Providers.embed; no external embedding call.
+      # Explicit legacy protocol fixture, not the product's OpenAI default.
       WEB_SEARCH_PROVIDER: deepseek
       BOCHA_API_KEY: ''
       EMBEDDING_DIMENSION: "64"

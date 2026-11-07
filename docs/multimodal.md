@@ -11,11 +11,14 @@
 看图回答会标注未经外部核实；研究中图片来源仅证明图中显示的内容，不证明图中说法真实。
 原图可通过任务缩略图、来源卡片打开；访问需要登录并具备任务所属工作空间的权限。
 
-`VISION_MODEL_ID` 默认 `deepseek-v4-flash-vision-exp`，复用 `LLM_BASE_URL` 和 `LLM_API_KEY`。
-Compose 将此变量同时传给 API 与 Worker。`LLM_EXTRA_BODY` 也适用于视觉请求。
-2026-09-13 的实际联调中，此名称返回的模型名为 `deepseek-flash`；接口别名不代表固定模型版本。
-可运行 `uv run python scripts/verify_vision.py` 复测。该命令会调用真实接口并消耗额度，
-仅发送生成的非敏感图片，结果保存在 `.cache/vision-smoke/result.json`。
+`VISION_MODEL_ID` 默认 `gpt-6.1-sol`，复用官方 `LLM_BASE_URL=https://api.openai.com/v1` 和 `LLM_API_KEY`。
+Compose 将此变量同时传给 API 与 Worker；OpenAI 模式使用 `max_completion_tokens`、
+`reasoning_effort=low`，不发送旧采样或 DeepSeek 专用参数，`LLM_EXTRA_BODY={}`。
+当前真实验证使用 `python scripts/openai_smoke.py` 的同一四次持久 ledger，图片类别只有一次请求；
+详见[额度与结果](production-readiness.md#openai-配置与四次真实验证)，不要用旧工具绕过额度。
+历史 `scripts/verify_vision.py` 会产生额外真实调用，仅可在另行授权的视觉专项验证中使用。
+2026-09-13 的旧联调请求 `deepseek-v4-flash-vision-exp`、返回 `deepseek-flash`，
+仅作为历史证据保留，不代表当前默认配置或 Sol 的质量结论。
 
 ## 接口与存储
 
@@ -44,7 +47,7 @@ Compose 将此变量同时传给 API 与 Worker。`LLM_EXTRA_BODY` 也适用于�
 | 正常检索无结果或证据未通过校验 | 本轮仍可检索且模式允许时补搜，最终 `insufficient` 并引导补充资料 |
 | 部分来源失败，但其他证据足够 | 保留有依据的回答，显示服务降级原因 |
 | 所有实际尝试的来源均故障，且无可读图片依据 | `failed`，可重试；重试重启检索图，复用已保存图片解析，保留本轮已执行的检索次数 |
-| 本轮检索达到上限 | 停止补搜，按现有证据输出结果；可继续发起研究，不限制每日查询或 Token 用量 |
+| 本轮检索达到上限 | 停止补搜，按现有证据输出结果；新研究仍受平台/账号/空间持久费用预算限制 |
 | 图片看不清 | 明确说明并请求清晰图片，不补造数字与文字 |
 | 视觉接口故障 | 任务失败，可恢复；不忽略图片继续回答 |
 
@@ -71,4 +74,5 @@ LangSmith 适合逐次模型输入输出、调用过程和质量反馈调试；�
 [LangSmith 调试概念](https://docs.langchain.com/langsmith/observability-concepts)、
 [Grafana Cloud Agent Observability](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/introduction/)。
 
-每日搜索配额已移除，API 余额不足与限流分别提示。后续文档解析与检索加固见 [边界处理说明](retrieval-document-hardening.md)。
+API 余额不足、限流和持久预算耗尽分别提示；配置与质量边界以[生产验收](production-readiness.md)为准。
+后续文档解析与检索加固见 [边界处理说明](retrieval-document-hardening.md)。

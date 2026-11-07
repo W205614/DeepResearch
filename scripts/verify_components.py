@@ -52,10 +52,13 @@ def main(args):
             result['worker_recovery_seconds'] = round(time.monotonic()-start, 2)
             run(COMPOSE + ['stop', 'redis'])
             created = probe('create', 'queue-delivery recovery')
-            assert created['http'] == 202
+            assert created['http'] == 503 and created['id'] is None
             run(COMPOSE + ['start', 'redis'])
+            until(lambda: probe('capabilities')['submit_research'] is True, 60)
+            created = probe('create', 'queue-delivery recovery')
+            assert created['http'] == 202
             until(lambda: probe('status', created['id'])['status'] == 'completed', 85)
-            result['redis_delivery_recovered'] = True
+            result['redis_readonly_recovered'] = True
             run(COMPOSE + ['stop', 'milvus'])
             assert probe('ready')['http'] == 200  # Core reads survive vector outage.
             assert probe('capabilities')['vector_search'] is False

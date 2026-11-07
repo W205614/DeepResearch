@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.deepresearch.business.security.WorkspaceAccess;
 import com.deepresearch.business.security.WorkspaceIdentity;
+import com.deepresearch.business.security.PlatformAccess;
 import com.deepresearch.business.service.AgentClient;
 import com.deepresearch.business.service.ResearchCommandService;
 import com.deepresearch.business.service.RunViewService;
@@ -41,15 +42,17 @@ public class ResearchController {
     private final RunViewService views;
     private final AgentClient agent;
     private final ObjectMapper mapper;
+    private final PlatformAccess platform;
 
     public ResearchController(JdbcTemplate jdbc, WorkspaceAccess access, ResearchCommandService commands,
-                              RunViewService views, AgentClient agent, ObjectMapper mapper) {
+                              RunViewService views, AgentClient agent, ObjectMapper mapper, PlatformAccess platform) {
         this.jdbc = jdbc;
         this.access = access;
         this.commands = commands;
         this.views = views;
         this.agent = agent;
         this.mapper = mapper;
+        this.platform = platform;
     }
 
     @PostMapping("/api/research/runs")
@@ -74,7 +77,7 @@ public class ResearchController {
         Map<String, Object> run = views.visibleRun(runId, identity);
         return ResponseEntity.ok().contentType(MediaType.parseMediaType("text/markdown;charset=UTF-8"))
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"research-" + runId + ".md\"")
-            .body(MarkdownDownload.stream(String.valueOf(run.get("report"))));
+            .body(MarkdownDownload.stream(String.valueOf(run.get("report")), () -> platform.requireCurrent(jwt.getSubject(), jwt.getIssuedAt())));
     }
 
     @PostMapping("/api/research/runs/{runId}/cancel")
@@ -110,14 +113,15 @@ public class ResearchController {
         catch (NumberFormatException error) { throw new IllegalArgumentException("事件序号无效"); }
         long[] cursor = {Math.max(0, Math.max(after, headerCursor))};
         SseEmitter emitter = new SseEmitter(0L);
-        Thread.startVirtualThread(() -> streamEvents(emitter, identity, runId, cursor));
+        Thread.startVirtualThread(() -> streamEvents(emitter, identity, jwt, runId, cursor));
         return emitter;
     }
 
-    private void streamEvents(SseEmitter emitter, WorkspaceIdentity identity, String runId, long[] cursor) {
+    private void streamEvents(SseEmitter emitter, WorkspaceIdentity identity, Jwt jwt, String runId, long[] cursor) {
         int ticks = 0;
         try {
             while (true) {
+                platform.requireCurrent(jwt.getSubject(), jwt.getIssuedAt());
                 // Re-read current membership and source permissions, including collection revocation.
                 views.visibleRun(runId, accessIdentity(identity));
                 if (jdbc.queryForObject("""
@@ -164,6 +168,6 @@ public class ResearchController {
         List<Map<String,Object>> rows=jdbc.queryForList("SELECT role FROM memberships WHERE workspace_id=? AND subject=?",
             previous.workspaceId(),previous.subject());
         if(rows.isEmpty()) throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.FORBIDDEN);
-        return new WorkspaceIdentity(previous.workspaceId(),previous.subject(),String.valueOf(rows.getFirst().get("role")),previous.displayName());
+        return new WorkspaceIdentity(previous.workspaceId(),previous.subject(),String.valueOf(rows.getFirst().get("role")),previous.displayName(),previous.issuedAt());
     }
 }

@@ -2,7 +2,7 @@ groups:
   - name: deepresearch-capacity-and-recovery
     rules:
       - alert: DeepResearchHostProbeStale
-        expr: time() - deepresearch_host_probe_timestamp_seconds > 3600
+        expr: time() - deepresearch_host_probe_timestamp_seconds{host_probes!="disabled"} > 3600
         for: 5m
         labels: {severity: warning}
         annotations: {summary: "Host capacity probe is missing or older than one hour"}
@@ -25,17 +25,17 @@ groups:
         labels: {severity: warning}
         annotations: {summary: "A configured host disk cannot be measured"}
       - alert: DeepResearchDatabaseConnections
-        expr: deepresearch_database_connections / deepresearch_database_max_connections > 0.80
+        expr: max by (deployment) (deepresearch_database_connections) / max by (deployment) (deepresearch_database_max_connections) > 0.80
         for: 5m
         labels: {severity: warning}
         annotations: {summary: "Database connection usage exceeds eighty percent"}
       - alert: DeepResearchDatabaseCapacity
-        expr: deepresearch_database_size_bytes > 10737418240
+        expr: max by (deployment) (deepresearch_database_size_bytes) > 10737418240
         for: 5m
         labels: {severity: warning}
         annotations: {summary: "Application database exceeds the initial 10 GiB review threshold"}
       - alert: DeepResearchDocumentBacklog
-        expr: deepresearch_pending_documents > 20
+        expr: max by (deployment) (deepresearch_pending_documents) > 20
         for: 5m
         labels: {severity: warning}
         annotations: {summary: "More than twenty documents are waiting for scanning or indexing"}
@@ -52,12 +52,12 @@ groups:
         labels: {severity: critical}
         annotations: {summary: "A DeepResearch service metrics endpoint is unavailable"}
       - alert: DeepResearchOldQueue
-        expr: deepresearch_oldest_queued_seconds > 120
+        expr: max by (deployment) (deepresearch_oldest_queued_seconds) > 120
         for: 1m
         labels: {severity: warning}
         annotations: {summary: "Research admission queue is not draining"}
       - alert: DeepResearchProviderBlocked
-        expr: deepresearch_blocked_providers > 0
+        expr: max by (deployment) (deepresearch_blocked_providers) > 0
         for: 1m
         labels: {severity: warning}
         annotations: {summary: "An upstream provider is blocked or cooling down"}
@@ -67,42 +67,104 @@ groups:
         labels: {severity: critical}
         annotations: {summary: "Runtime data filesystem has less than 1 GiB free"}
       - alert: DeepResearchHeartbeatStale
-        expr: deepresearch_heartbeat_lag_seconds > 45
+        expr: max by (deployment) (deepresearch_heartbeat_lag_seconds) > 45
         for: 30s
         labels: {severity: warning}
         annotations: {summary: "Research worker heartbeat is stale"}
       - alert: DeepResearchQueueBacklog
-        expr: deepresearch_queue_depth > 10
+        expr: max by (deployment) (deepresearch_queue_depth) > 10
         for: 5m
         labels: {severity: warning}
         annotations: {summary: "Research queue backlog exceeds 10 for five minutes"}
       - alert: DeepResearchDeadLetters
-        expr: deepresearch_dead_letter_depth > 0
+        expr: max by (deployment) (deepresearch_dead_letter_depth) > 0
         for: 1m
         labels: {severity: warning}
         annotations: {summary: "Dead-letter research runs require administrator recovery"}
       - alert: DeepResearchFailureRate
-        expr: increase(deepresearch_failures_total[10m]) > 5
+        expr: sum by (deployment, category) (increase(deepresearch_failures_total[10m])) > 5
         for: 2m
         labels: {severity: warning}
         annotations: {summary: "More than five categorized failures in ten minutes"}
       - alert: DeepResearchVisionErrors
-        expr: sum(increase(deepresearch_vision_calls_total{outcome="error"}[10m])) > 5
+        expr: sum by (deployment) (increase(deepresearch_vision_calls_total{outcome="error"}[10m])) > 5
         for: 2m
         labels: {severity: warning}
         annotations: {summary: "More than five vision errors in ten minutes"}
       - alert: DeepResearchBusinessAgentSaturation
-        expr: sum(increase(deepresearch_business_agent_rejected_total[5m])) > 10
+        expr: sum by (deployment) (increase(deepresearch_business_agent_rejected_total[5m])) > 10
         for: 1m
         labels: {severity: warning}
         annotations: {summary: "Java Agent proxy bulkhead or circuit is shedding traffic"}
       - alert: DeepResearchBusinessOverload
-        expr: increase(deepresearch_business_concurrency_rejected_total[5m]) > 50
+        expr: sum by (deployment) (increase(deepresearch_business_concurrency_rejected_total[5m])) > 50
         for: 1m
         labels: {severity: warning}
         annotations: {summary: "Java business API concurrency bulkhead is shedding traffic"}
       - alert: DeepResearchBusinessLatency
-        expr: histogram_quantile(0.95, sum by (le) (rate(http_server_requests_seconds_bucket{job="deepresearch-business"}[5m]))) > 2
+        expr: histogram_quantile(0.95, sum by (deployment, le) (rate(http_server_requests_seconds_bucket{job="deepresearch-business"}[5m]))) > 2
         for: 2m
         labels: {severity: warning}
         annotations: {summary: "Java business API P95 latency is above two seconds"}
+  - name: deepresearch-production-runtime
+    rules:
+      - alert: DeepResearchAdmissionFailure
+        expr: sum by (deployment) (increase(http_server_requests_seconds_count{job="deepresearch-business",method="POST",uri=~"/api/research/(runs|intakes/[^/]+/confirm|runs/[^/]+/resume)",status=~"5.."}[5m])) > 0
+        for: 1m
+        labels: {severity: warning}
+        annotations: {summary: "Research admission or resume returned a server error; inspect queue capacity and SQL before retrying"}
+      - alert: DeepResearchSharedRedisUnavailable
+        expr: min by (deployment) (deepresearch_business_redis_available) == 0
+        for: 1m
+        labels: {severity: critical}
+        annotations: {summary: "A business replica cannot reach shared Redis; business writes are paused and history stays read-only"}
+      - alert: DeepResearchOutboxBacklog
+        expr: max by (deployment) (deepresearch_business_outbox_oldest_age_seconds) > 120
+        for: 2m
+        labels: {severity: warning}
+        annotations: {summary: "A durable business command has waited over two minutes; inspect Agent delivery and leases"}
+      - alert: DeepResearchOutboxDeadLetters
+        expr: max by (deployment) (deepresearch_business_outbox_depth{status="dead"}) > 0
+        for: 1m
+        labels: {severity: warning}
+        annotations: {summary: "Business Outbox dead letters require reasoned administrator recovery"}
+      - alert: DeepResearchWorkerNotReady
+        expr: (deepresearch_worker_ready == 0) and on (job, instance) (deepresearch_worker_draining == 0)
+        for: 2m
+        labels: {severity: warning}
+        annotations: {summary: "A non-draining worker cannot reach SQL or Redis; check its readiness state"}
+      - alert: DeepResearchNoReadyWorker
+        expr: max by (deployment, job) (deepresearch_worker_ready) == 0
+        for: 1m
+        labels: {severity: critical}
+        annotations: {summary: "No worker in this role is ready; queued work cannot progress"}
+      - alert: DeepResearchWorkerDrainStuck
+        expr: deepresearch_worker_draining == 1
+        for: 10m
+        labels: {severity: warning}
+        annotations: {summary: "Worker drain exceeded ten minutes; inspect shutdown without deleting recovery state"}
+      - alert: DeepResearchResearchWorkerMetricsMissing
+        expr: absent(deepresearch_worker_ready{job="deepresearch-worker"})
+        for: 2m
+        labels: {severity: critical}
+        annotations: {summary: "No research-worker readiness metrics are discovered; check deployment replicas and private scrape targets"}
+      - alert: DeepResearchDocumentWorkerMetricsMissing
+        expr: absent(deepresearch_worker_ready{job="deepresearch-document-worker"})
+        for: 2m
+        labels: {severity: critical}
+        annotations: {summary: "No document-worker readiness metrics are discovered; check deployment replicas and private scrape targets"}
+      - alert: DeepResearchUsageBudgetExhausted
+        expr: sum by (deployment) (increase(deepresearch_usage_budget_rejections_total[10m])) > 0
+        for: 1m
+        labels: {severity: warning}
+        annotations: {summary: "A paid call was refused by the durable period budget; adjust scope or authorize a budget change"}
+      - alert: DeepResearchRunBudgetExhausted
+        expr: sum by (deployment) (increase(deepresearch_failures_total{category="budget_exhausted"}[10m])) > 0
+        for: 1m
+        labels: {severity: warning}
+        annotations: {summary: "A research task exhausted its time, call or reserved-token budget"}
+      - alert: DeepResearchDocumentScanFailed
+        expr: max by (deployment) (deepresearch_scan_failed_documents) > 0
+        for: 5m
+        labels: {severity: warning}
+        annotations: {summary: "Documents remain scan_failed; repair scanner or storage and use supported recovery"}

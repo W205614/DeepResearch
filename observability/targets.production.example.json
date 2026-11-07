@@ -1,0 +1,7 @@
+[
+  {"targets": ["REPLACE_PRIVATE_JAVA_REPLICA_1:8080", "REPLACE_PRIVATE_JAVA_REPLICA_2:8080"], "labels": {"job": "deepresearch-business", "deployment": "deepresearch-production"}},
+  {"targets": ["REPLACE_PRIVATE_AGENT_REPLICA_1:8000", "REPLACE_PRIVATE_AGENT_REPLICA_2:8000"], "labels": {"job": "deepresearch-api", "deployment": "deepresearch-production"}},
+  {"targets": ["REPLACE_PRIVATE_RESEARCH_WORKER_1:8001", "REPLACE_PRIVATE_RESEARCH_WORKER_2:8001"], "labels": {"job": "deepresearch-worker", "deployment": "deepresearch-production"}},
+  {"targets": ["REPLACE_PRIVATE_DOCUMENT_WORKER_1:8001", "REPLACE_PRIVATE_DOCUMENT_WORKER_2:8001"], "labels": {"job": "deepresearch-document-worker", "deployment": "deepresearch-production"}},
+  {"targets": ["REPLACE_PRIVATE_OPS_EXPORTER:8003"], "labels": {"job": "deepresearch-ops", "deployment": "deepresearch-production", "host_probes": "disabled"}}
+]

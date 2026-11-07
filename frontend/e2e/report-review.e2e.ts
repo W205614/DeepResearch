@@ -1,4 +1,5 @@
 import { expect, test, type BrowserContext, type Page } from '@playwright/test'
+import { simulateIdentity } from './fixtures/identity'
 
 test('two accounts submit, approve and withdraw a frozen report in the browser', async ({ browser }) => {
   const state = { status: '' as ''|'pending'|'published'|'withdrawn', reviewedBy: '', withdrawnAt: '' }
@@ -26,6 +27,7 @@ test('two accounts submit, approve and withdraw a frozen report in the browser',
     })).toString('base64url')}.signature`
     await context.addInitScript(value => sessionStorage.setItem('dr-token', value), token)
     const page = await context.newPage()
+    await simulateIdentity(page)
     await page.route('**/api/**', async route => {
       const request = route.request()
       const url = new URL(request.url())

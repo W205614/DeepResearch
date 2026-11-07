@@ -8,11 +8,13 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 final class MarkdownDownload {
     private MarkdownDownload() {}
 
-    static StreamingResponseBody stream(String markdown) {
+    static StreamingResponseBody stream(String markdown, Runnable requireCurrent) {
         return output -> {
             OutputStreamWriter writer = new OutputStreamWriter(output, StandardCharsets.UTF_8);
-            for (int offset = 0; offset < markdown.length(); offset += 4096)
+            for (int offset = 0; offset < markdown.length(); offset += 4096) {
+                requireCurrent.run();
                 writer.write(markdown, offset, Math.min(4096, markdown.length() - offset));
+            }
             writer.flush();
         };
     }

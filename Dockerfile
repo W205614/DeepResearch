@@ -61,6 +61,7 @@ COPY backend ./backend
 COPY scripts/migrate_legacy_sqlite.py ./scripts/migrate_legacy_sqlite.py
 COPY scripts/alert_relay_service.py ./scripts/alert_relay_service.py
 COPY scripts/bootstrap_services.py scripts/migrate_services.py scripts/ops_metrics.py scripts/rebuild_lexical_index.py ./scripts/
+COPY scripts/embedding_migration.py scripts/openai_smoke.py ./scripts/
 USER 0:0
 RUN ["python", "-c", "import pathlib,hashlib,json; root=pathlib.Path('/app'); manifest={str(p.relative_to(root)):hashlib.sha256(p.read_bytes()).hexdigest() for p in root.rglob('*') if p.is_file() and '__pycache__' not in p.parts}; (root/'source-fingerprint.json').write_text(json.dumps(manifest,sort_keys=True),encoding='utf-8')"]
 USER 10001:10001

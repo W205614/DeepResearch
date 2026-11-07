@@ -1,0 +1,39 @@
+# Overlay: compose.yaml + compose.core.yaml + this file. Always use a separate
+# project and env file for acceptance; never scale the daily stack in place.
+services:
+  web:
+    ports: !reset []
+    deploy: {replicas: 2}
+  backend:
+    deploy: {replicas: 2}
+    environment: {AGENT_BASE_URL: 'http://agent-gateway:8081'}
+    depends_on: {agent-gateway: {condition: service_healthy}}
+  agent:
+    deploy: {replicas: 2}
+  worker:
+    deploy: {replicas: 2}
+  document-worker:
+    deploy: {replicas: 2}
+  agent-gateway:
+    image: nginx:1.30.6-alpine@sha256:47928bf67eb62a1863cb08d9ecb52d3e704304ba614eaee17884204677702951
+    volumes: ['./deployment/nginx/agent-gateway.conf:/etc/nginx/conf.d/default.conf:ro']
+    depends_on: {agent: {condition: service_healthy}}
+    healthcheck: {test: [CMD, wget, -q, -O, /dev/null, 'http://127.0.0.1:8081/readyz'], interval: 10s, timeout: 5s, retries: 10}
+    networks: [application]
+    mem_limit: 128m
+    cpus: 0.5
+    pids_limit: 128
+    security_opt: [no-new-privileges:true]
+    restart: unless-stopped
+  edge:
+    image: nginx:1.30.6-alpine@sha256:47928bf67eb62a1863cb08d9ecb52d3e704304ba614eaee17884204677702951
+    ports: ['127.0.0.1:${REPLICA_APP_PORT:-28080}:8080']
+    volumes: ['./deployment/nginx/replica-edge.conf:/etc/nginx/conf.d/default.conf:ro']
+    depends_on: {web: {condition: service_healthy}}
+    healthcheck: {test: [CMD, wget, -q, -O, /dev/null, 'http://127.0.0.1:8080/readyz'], interval: 10s, timeout: 5s, retries: 10}
+    networks: [edge]
+    mem_limit: 128m
+    cpus: 0.5
+    pids_limit: 128
+    security_opt: [no-new-privileges:true]
+    restart: unless-stopped

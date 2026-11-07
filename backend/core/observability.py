@@ -57,6 +57,9 @@ def error_category(error: Exception) -> str:
 def configure_telemetry(app=None, endpoint: str = "", *, service_name: str = "deepresearch-api") -> None:
     """Export safe service spans and task logs without prompts, URLs, or user data."""
     global _otlp_log_handler
+    # Preserve the existing internal collector while allowing HTTPS cloud endpoints.
+    if endpoint and "://" not in endpoint:
+        endpoint = "http://" + endpoint
     from opentelemetry import trace
     from opentelemetry.trace import ProxyTracerProvider
     from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
@@ -69,7 +72,7 @@ def configure_telemetry(app=None, endpoint: str = "", *, service_name: str = "de
     if isinstance(trace.get_tracer_provider(), ProxyTracerProvider):
         provider = TracerProvider(resource=resource)
         if endpoint:
-            provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter(endpoint=endpoint, insecure=True)))
+            provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter(endpoint=endpoint)))
         trace.set_tracer_provider(provider)
 
     if endpoint and _otlp_log_handler is None:
@@ -79,7 +82,7 @@ def configure_telemetry(app=None, endpoint: str = "", *, service_name: str = "de
         from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
 
         log_provider = LoggerProvider(resource=resource)
-        log_provider.add_log_record_processor(BatchLogRecordProcessor(OTLPLogExporter(endpoint=endpoint, insecure=True)))
+        log_provider.add_log_record_processor(BatchLogRecordProcessor(OTLPLogExporter(endpoint=endpoint)))
         otel_logs.set_logger_provider(log_provider)
         _otlp_log_handler = LoggingHandler(level=logging.NOTSET, logger_provider=log_provider)
         _otlp_log_handler.setFormatter(JsonFormatter())

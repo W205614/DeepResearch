@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 import { mkdirSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { fixtureIssuer, fixtureAuthConfig, simulateIdentity } from './fixtures/identity'
 
 const sizes = [{ width: 1440, height: 1000 }, { width: 768, height: 1024 }, { width: 390, height: 844 }]
 
@@ -26,6 +27,8 @@ async function navigate(page: Page, name: string) {
 }
 
 test('sign-in stays readable, keyboard accessible and usable across viewport sizes', async ({ page }) => {
+  await simulateIdentity(page)
+  await page.route('**/api/auth/config', route => route.fulfill({ json: fixtureAuthConfig() }))
   for (const size of sizes) {
     await page.setViewportSize(size)
     await page.goto('/')
@@ -43,8 +46,9 @@ test('sign-in stays readable, keyboard accessible and usable across viewport siz
 })
 
 test('report reading, source drawer and follow-up controls fit narrow screens', async ({ page }) => {
+  await simulateIdentity(page)
   // This isolated fixture checks rendering of a partial result; the enterprise suite covers real authorization.
-  const token = `e30.${Buffer.from(JSON.stringify({ sub: 'visual-reader', exp: Math.floor(Date.now() / 1000) + 3600 })).toString('base64url')}.fixture`
+  const token = `e30.${Buffer.from(JSON.stringify({ sub: 'visual-reader', iss: fixtureIssuer, exp: Math.floor(Date.now() / 1000) + 3600 })).toString('base64url')}.fixture`
   await page.addInitScript(value => sessionStorage.setItem('dr-token', value), token)
   const source = { id: 'L-abc123', kind: 'local', title: '企业知识库选型记录', url: '',
     text: 'RAG 的结论取决于检索资料的覆盖范围，长上下文也需要核对来源。', access: 'fulltext',
@@ -56,7 +60,7 @@ test('report reading, source drawer and follow-up controls fit narrow screens', 
   await page.route('**/api/**', async route => {
     const path = new URL(route.request().url()).pathname
     const data: Record<string, unknown> = {
-      '/api/auth/config': { mode: 'oidc' }, '/api/workspaces': [{ id: 'visual-reader', name: '视觉验收', role: 'admin' }],
+      '/api/auth/config': fixtureAuthConfig(), '/api/workspaces': [{ id: 'visual-reader', name: '视觉验收', role: 'admin' }],
       '/api/threads': [{ id: 'visual-thread', thread_key: 'thread01', title: run.topic }],
       '/api/status': { mode: 'enterprise', missing: [] }, '/api/capabilities': { reasons: [], submit_research: true },
       '/api/threads/visual-thread/runs': [run], '/api/research/runs/visual-run': run,

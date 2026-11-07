@@ -70,6 +70,15 @@ it('does not retry or clear login on authorization denial', async () => {
   expect(fetcher).toHaveBeenCalledTimes(1)
   expect(window.dispatchEvent).not.toHaveBeenCalled()
 })
+it('expires a disabled account without refreshing or retrying', async () => {
+  sessionStorage.setItem('dr-token', jwt(300))
+  const fetcher = vi.fn().mockResolvedValue(new Response('{"code":"account_disabled"}', {status:403}))
+  vi.stubGlobal('fetch', fetcher)
+  await expect(authenticatedFetch('/api/threads')).rejects.toBeInstanceOf(AuthExpiredError)
+  expect(fetcher).toHaveBeenCalledTimes(1)
+  expect(sessionStorage.getItem('dr-token')).toBeNull()
+  expect(sessionStorage.getItem('dr-refresh-token')).toBeNull()
+})
 it('stops after one retry when a refreshed token is still rejected', async () => {
   sessionStorage.setItem('dr-token', jwt(100))
   const fetcher = vi.fn().mockResolvedValueOnce(new Response('', {status: 401}))

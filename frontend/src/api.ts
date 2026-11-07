@@ -34,6 +34,10 @@ export async function authenticatedFetch(path: string, init: RequestInit = {}): 
     }
     if (response.status === 401) expireSession()
   }
+  if (response.status === 403) {
+    const body = await response.clone().json().catch(() => ({}))
+    if (body.code === 'account_disabled') expireSession()
+  }
   return response
 }
 export async function api<T=any>(path: string, init: RequestInit = {}): Promise<T> {

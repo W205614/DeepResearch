@@ -88,6 +88,13 @@ class Database:
             from .usage_governance import USAGE_SCHEMA
             await conn.executescript(RECOVERY_SCHEMA)
             await conn.executescript(USAGE_SCHEMA)
+            from .platform_schema import PLATFORM_SCHEMA, EMBEDDING_SCHEMA
+            await conn.executescript(PLATFORM_SCHEMA)
+            await conn.executescript(EMBEDDING_SCHEMA)
+            workspace_columns = {row[1] for row in await (await conn.execute("PRAGMA table_info(workspaces)")).fetchall()}
+            if "owner_subject" not in workspace_columns:
+                await conn.execute("ALTER TABLE workspaces ADD COLUMN owner_subject TEXT NOT NULL DEFAULT ''")
+            await conn.execute("UPDATE workspaces SET owner_subject=created_by WHERE owner_subject=''")
             from .product_schema import SCHEMA as PRODUCT_SCHEMA
             await conn.executescript(PRODUCT_SCHEMA)
             await conn.executescript(ATTACHMENT_SCHEMA)
@@ -138,6 +145,10 @@ class Database:
             await conn.execute("""UPDATE runs SET created_by=COALESCE(
                 (SELECT created_by FROM workspaces WHERE id=runs.user_id),user_id)
                 WHERE created_by=''""")
+            await conn.execute("""INSERT OR IGNORE INTO platform_users(subject,display_name,created_at,updated_at)
+                SELECT subject,subject,?,? FROM (
+                    SELECT subject FROM memberships UNION SELECT created_by AS subject FROM workspaces
+                    UNION SELECT created_by AS subject FROM runs) WHERE subject<>''""", (now(), now()))
             await conn.execute("""UPDATE memories SET owner_subject=COALESCE(
                 (SELECT created_by FROM workspaces WHERE id=memories.user_id),user_id)
                 WHERE owner_subject='' AND kind IN ('profile','preference')""")
@@ -212,8 +223,8 @@ class Database:
     async def create_workspace(self, subject: str, name: str, limits: tuple[int, int], workspace_id: str | None = None) -> dict:
         workspace = {"id": workspace_id or uid(), "name": name.strip()[:100], "created_by": subject, "created_at": now()}
         async with self.connection() as conn:
-            await conn.execute("INSERT INTO workspaces(id,name,created_by,created_at) VALUES(?,?,?,?)",
-                               tuple(workspace.values()))
+            await conn.execute("INSERT INTO workspaces(id,name,created_by,created_at,owner_subject) VALUES(?,?,?,?,?)",
+                               (*workspace.values(), subject))
             await conn.execute("INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES(?,?,?,?)",
                                (workspace["id"], subject, "admin", workspace["created_at"]))
             await conn.execute("""INSERT INTO workspace_limits(workspace_id,daily_search_limit,daily_token_limit,concurrent_run_limit)
@@ -225,8 +236,8 @@ class Database:
         """Idempotently bootstrap the subject's default workspace."""
         workspace = {"id": subject, "name": name.strip()[:100], "created_by": subject, "created_at": now()}
         async with self.connection() as conn:
-            await conn.execute("INSERT OR IGNORE INTO workspaces(id,name,created_by,created_at) VALUES(?,?,?,?)",
-                               tuple(workspace.values()))
+            await conn.execute("INSERT OR IGNORE INTO workspaces(id,name,created_by,created_at,owner_subject) VALUES(?,?,?,?,?)",
+                               (*workspace.values(), subject))
             await conn.execute("INSERT OR IGNORE INTO memberships(workspace_id,subject,role,created_at) VALUES(?,?,?,?)",
                                (subject, subject, "admin", workspace["created_at"]))
             await conn.execute("""INSERT OR IGNORE INTO workspace_limits(

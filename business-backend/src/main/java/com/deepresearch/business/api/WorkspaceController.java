@@ -10,6 +10,7 @@ import java.util.Map;
 import com.deepresearch.business.config.DeepResearchProperties;
 import com.deepresearch.business.security.WorkspaceAccess;
 import com.deepresearch.business.security.WorkspaceIdentity;
+import com.deepresearch.business.security.PlatformAccess;
 import com.deepresearch.business.service.OutboxService;
 import com.deepresearch.business.service.ResearchCommandService;
 import com.deepresearch.business.service.RunViewService;
@@ -38,15 +39,17 @@ public class WorkspaceController {
     private final ResearchCommandService research;
     private final RunViewService views;
     private final OutboxService outbox;
+    private final PlatformAccess platform;
 
     public WorkspaceController(JdbcTemplate jdbc, WorkspaceAccess access, DeepResearchProperties properties,
-                               ResearchCommandService research, RunViewService views, OutboxService outbox) {
+                               ResearchCommandService research, RunViewService views, OutboxService outbox, PlatformAccess platform) {
         this.jdbc = jdbc;
         this.access = access;
         this.properties = properties;
         this.research = research;
         this.views = views;
         this.outbox = outbox;
+        this.platform = platform;
     }
 
     @GetMapping("/api/workspaces")
@@ -62,9 +65,10 @@ public class WorkspaceController {
     Map<String, Object> create(@AuthenticationPrincipal Jwt jwt,
                                @RequestHeader(value = "X-Workspace-ID", required = false) String requested,
                                @Valid @RequestBody Requests.Workspace body) {
+        platform.lockCurrent(jwt.getSubject(), jwt.getIssuedAt());
         access.resolve(jwt, requested);
         String id = uid(), stamp = now();
-        jdbc.update("INSERT INTO workspaces(id,name,created_by,created_at) VALUES(?,?,?,?)", id, body.name().strip(), jwt.getSubject(), stamp);
+        jdbc.update("INSERT INTO workspaces(id,name,created_by,owner_subject,created_at) VALUES(?,?,?,?,?)", id, body.name().strip(), jwt.getSubject(), jwt.getSubject(), stamp);
         jdbc.update("INSERT INTO memberships(workspace_id,subject,role,created_at) VALUES(?,?,?,?)", id, jwt.getSubject(), "admin", stamp);
         jdbc.update("""
             INSERT INTO workspace_limits(workspace_id,daily_search_limit,daily_token_limit,concurrent_run_limit)
@@ -80,7 +84,7 @@ public class WorkspaceController {
         WorkspaceIdentity identity = selected(workspaceId, jwt, requested);
         access.require(identity, "admin");
         return jdbc.queryForList("""
-            SELECT m.subject,m.role,m.created_at,(m.subject=w.created_by) AS creator
+            SELECT m.subject,m.role,m.created_at,(m.subject=COALESCE(NULLIF(w.owner_subject,''),w.created_by)) AS creator
             FROM memberships m JOIN workspaces w ON w.id=m.workspace_id
             WHERE m.workspace_id=? ORDER BY m.created_at,m.subject""", workspaceId);
     }
@@ -92,10 +96,17 @@ public class WorkspaceController {
                                       @Valid @RequestBody Requests.Membership body) {
         WorkspaceIdentity identity = selected(workspaceId, jwt, requested);
         access.require(identity, "admin");
+        platform.lockGovernance();
         jdbc.queryForObject("SELECT id FROM workspaces WHERE id=? FOR UPDATE", String.class, workspaceId);
-        requireCurrentAdmin(workspaceId, identity.subject());
+        requireCurrentAdmin(workspaceId, identity);
+        if (jdbc.queryForObject("SELECT COUNT(*) FROM platform_users WHERE subject=? AND status='disabled'", Integer.class, body.subject()) > 0)
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "不能授权已停用的账号");
         if (!"admin".equals(body.role())) {
-            int otherAdmins = jdbc.queryForObject("SELECT COUNT(*) FROM memberships WHERE workspace_id=? AND role='admin' AND subject<>?",
+            String owner = jdbc.queryForObject("SELECT COALESCE(NULLIF(owner_subject,''),created_by) FROM workspaces WHERE id=?", String.class, workspaceId);
+            if (owner.equals(body.subject())) throw new ResponseStatusException(HttpStatus.CONFLICT, "请先交接空间所有权再调整所有者角色");
+            int otherAdmins = jdbc.queryForObject("""
+                SELECT COUNT(*) FROM memberships m LEFT JOIN platform_users u ON u.subject=m.subject
+                WHERE m.workspace_id=? AND m.role='admin' AND m.subject<>? AND COALESCE(u.status,'active')='active'""",
                 Integer.class, workspaceId, body.subject());
             if (otherAdmins == 0) throw new ResponseStatusException(HttpStatus.CONFLICT, "工作空间必须保留至少一位管理员");
         }
@@ -115,18 +126,20 @@ public class WorkspaceController {
                       @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
         WorkspaceIdentity identity = selected(workspaceId, jwt, requested);
         access.require(identity, "admin");
-        String creator = jdbc.queryForObject("SELECT created_by FROM workspaces WHERE id=? FOR UPDATE", String.class, workspaceId);
-        requireCurrentAdmin(workspaceId, identity.subject());
+        platform.lockGovernance();
+        String creator = jdbc.queryForObject("SELECT COALESCE(NULLIF(owner_subject,''),created_by) FROM workspaces WHERE id=? FOR UPDATE", String.class, workspaceId);
+        requireCurrentAdmin(workspaceId, identity);
         if (subject.equals(identity.subject()))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "不能在成员管理中移除自己");
         if (subject.equals(creator))
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "工作空间创建者不能直接移除");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "工作空间所有者须先交接再移除");
         List<Map<String, Object>> target = jdbc.queryForList(
             "SELECT role FROM memberships WHERE workspace_id=? AND subject=?", workspaceId, subject);
         if (target.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "成员不存在");
         if ("admin".equals(target.getFirst().get("role"))) {
             int otherAdmins = jdbc.queryForObject("""
-                SELECT COUNT(*) FROM memberships WHERE workspace_id=? AND role='admin' AND subject<>?""",
+                SELECT COUNT(*) FROM memberships m LEFT JOIN platform_users u ON u.subject=m.subject
+                WHERE m.workspace_id=? AND m.role='admin' AND m.subject<>? AND COALESCE(u.status,'active')='active'""",
                 Integer.class, workspaceId, subject);
             if (otherAdmins == 0)
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "工作空间必须保留至少一位管理员");
@@ -135,9 +148,10 @@ public class WorkspaceController {
         access.audit(identity, "membership.remove", "member", subject);
     }
 
-    private void requireCurrentAdmin(String workspaceId, String subject) {
+    private void requireCurrentAdmin(String workspaceId, WorkspaceIdentity identity) {
+        platform.requireCurrent(identity.subject(), identity.issuedAt());
         List<Map<String, Object>> current = jdbc.queryForList(
-            "SELECT role FROM memberships WHERE workspace_id=? AND subject=?", workspaceId, subject);
+            "SELECT role FROM memberships WHERE workspace_id=? AND subject=?", workspaceId, identity.subject());
         if (current.isEmpty() || !"admin".equals(current.getFirst().get("role")))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "当前工作空间管理员权限已撤销");
     }

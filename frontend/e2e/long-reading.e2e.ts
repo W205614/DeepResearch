@@ -2,9 +2,11 @@ import { expect, test } from '@playwright/test'
 import { mkdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { readingReport } from './fixtures/reading-report'
+import { fixtureIssuer, fixtureAuthConfig, simulateIdentity } from './fixtures/identity'
 
 test('long reports keep navigation, wide content, citations and technical details usable', async ({ page }) => {
-  const token = `e30.${Buffer.from(JSON.stringify({ sub: 'reader', preferred_username: 'reading-check', exp: Math.floor(Date.now() / 1000) + 3600 })).toString('base64url')}.fixture`
+  await simulateIdentity(page)
+  const token = `e30.${Buffer.from(JSON.stringify({ sub: 'reader', iss: fixtureIssuer, preferred_username: 'reading-check', exp: Math.floor(Date.now() / 1000) + 3600 })).toString('base64url')}.fixture`
   await page.addInitScript(value => sessionStorage.setItem('dr-token', value), token)
   const sources = Array.from({ length: 8 }, (_, i) => ({ id: i ? `L-bcd12${i}` : 'L-abc123', kind: 'local',
     title: `阅读验收资料 ${i + 1}`, text: '此处为引用交互验收原文，不构成课程建议。',
@@ -19,7 +21,7 @@ test('long reports keep navigation, wide content, citations and technical detail
   await page.route('**/api/**', async route => {
     const path = new URL(route.request().url()).pathname
     const data: Record<string, unknown> = {
-      '/api/auth/config': { mode: 'oidc' }, '/api/workspaces': [{ id: 'reader', name: '阅读体验验收', role: 'viewer' }],
+      '/api/auth/config': fixtureAuthConfig(), '/api/workspaces': [{ id: 'reader', name: '阅读体验验收', role: 'viewer' }],
       '/api/threads': [{ id: 'long-thread', title: run.topic }], '/api/status': { mode: 'enterprise', missing: [] },
       '/api/capabilities': { reasons: [], submit_research: true }, '/api/threads/long-thread/runs': [run],
       '/api/research/runs/long-run': run, '/api/reports': [publication], '/api/reports/long-publication': publication,

@@ -56,11 +56,21 @@ public class OutboxService {
     }
 
     public void enqueue(String runId, String eventType, String payload) {
+        String conflict = "research.abort".equals(eventType) ? """
+            DO UPDATE SET payload=EXCLUDED.payload,status='pending',attempts=0,next_attempt_at=0,
+                lease_owner='',lease_until=0,last_error='',updated_at=EXCLUDED.updated_at
+            WHERE business_outbox.payload<>EXCLUDED.payload""" : "DO NOTHING";
         jdbc.update("""
             INSERT INTO business_outbox(id,aggregate_id,event_type,payload,status,attempts,next_attempt_at,created_at,updated_at)
             VALUES(?,?,?,?,'pending',0,0,?,?)
-            ON CONFLICT (aggregate_id,event_type) WHERE status IN ('pending','processing') DO NOTHING""",
+            ON CONFLICT (aggregate_id,event_type) WHERE status IN ('pending','processing') """ + conflict,
             uid(), runId, eventType, payload, now(), now());
+    }
+
+    public void enqueueAbort(String runId) {
+        int attempt = jdbc.queryForObject("SELECT attempt_count FROM runs WHERE id=?", Integer.class, runId);
+        // Delayed aborts must never cancel a resumed execution of the same run.
+        enqueue(runId, "research.abort", "{\"expected_attempt\":" + attempt + "}");
     }
 
     @Scheduled(
@@ -159,7 +169,7 @@ public class OutboxService {
             AgentClient.AgentResponse response = switch (type) {
                 case "research.schedule", "research.resume" ->
                     agent.internal("/internal/agent/runs/" + runId + "/schedule", payload);
-                case "research.abort" -> agent.internal("/internal/agent/runs/" + runId + "/abort", "{}");
+                case "research.abort" -> agent.internal("/internal/agent/runs/" + runId + "/abort", payload);
                 default -> throw new DeliveryException("unknown_event", false);
             };
             if (!response.successful()) {
@@ -170,7 +180,7 @@ public class OutboxService {
             int changed = jdbc.update("""
                 UPDATE business_outbox SET status='delivered',lease_owner='',lease_until=0,
                     delivered_at=?,last_error='',updated_at=?
-                WHERE id=? AND status='processing' AND lease_owner=?""", now(), now(), id, leaseOwner);
+                WHERE id=? AND status='processing' AND lease_owner=? AND payload=?""", now(), now(), id, leaseOwner, payload);
             if (changed == 1) {
                 delivered.increment();
                 try {
@@ -192,7 +202,7 @@ public class OutboxService {
         if (!retryable || exhausted) {
             int changed = jdbc.update("""
                 UPDATE business_outbox SET status='dead',lease_owner='',lease_until=0,last_error=?,updated_at=?
-                WHERE id=? AND status='processing' AND lease_owner=?""", code, now(), id, leaseOwner);
+                WHERE id=? AND status='processing' AND lease_owner=? AND payload=?""", code, now(), id, leaseOwner, row.get("payload"));
             if (changed == 1) dead.increment();
             return;
         }
@@ -202,8 +212,8 @@ public class OutboxService {
         int changed = jdbc.update("""
             UPDATE business_outbox SET status='pending',next_attempt_at=?,lease_owner='',lease_until=0,
                 last_error=?,updated_at=?
-            WHERE id=? AND status='processing' AND lease_owner=?""",
-            Instant.now().getEpochSecond() + delay, code, now(), id, leaseOwner);
+            WHERE id=? AND status='processing' AND lease_owner=? AND payload=?""",
+            Instant.now().getEpochSecond() + delay, code, now(), id, leaseOwner, row.get("payload"));
         if (changed == 1) retried.increment();
     }
 

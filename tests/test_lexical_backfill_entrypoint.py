@@ -25,7 +25,7 @@ async def maintenance(tmp_path, monkeypatch):
 
 async def seed(db, *, workspace=False, role=None, status='ready', private=False):
     if workspace:
-        await db.execute('INSERT INTO workspaces VALUES(?,?,?,?)',('legacy','Space','owner',now()))
+        await db.execute('INSERT INTO workspaces(id,name,created_by,created_at) VALUES(?,?,?,?)',('legacy','Space','owner',now()))
     if role:
         await db.execute('INSERT INTO memberships VALUES(?,?,?,?)',('legacy','owner',role,now()))
     await db.execute('''INSERT INTO documents(id,user_id,name,hash,status,created_at,updated_at,index_version)
@@ -68,7 +68,7 @@ async def test_orphan_is_deferred_without_marker_and_restored_workspace_blocks(m
     assert not await db.rows('SELECT * FROM lexical_chunks')
     assert await db.rows('SELECT * FROM documents')==original
     assert await db.rows('SELECT * FROM document_policies')==policy
-    await db.execute('INSERT INTO workspaces VALUES(?,?,?,?)',('legacy','Restored','owner',now()))
+    await db.execute('INSERT INTO workspaces(id,name,created_by,created_at) VALUES(?,?,?,?)',('legacy','Restored','owner',now()))
     assert not await rebuild_lexical_index.run(args)
     assert receipt(args)['blocked_workspaces']==['legacy']
     await db.execute('INSERT INTO memberships VALUES(?,?,?,?)',('legacy','owner','admin',now()))

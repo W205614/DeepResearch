@@ -28,8 +28,9 @@ async def wait_for_keycloak(client: httpx.AsyncClient) -> str:
     while time.monotonic() < deadline:
         try:
             response = await client.post(f"{KEYCLOAK}/realms/master/protocol/openid-connect/token", data={
-                "client_id": "admin-cli", "grant_type": "password", "username": "perf-admin",
-                "password": "performance-only"})
+                "client_id": "admin-cli", "grant_type": "password",
+                "username": os.getenv('PERFORMANCE_ADMIN_USERNAME', 'perf-admin'),
+                "password": os.getenv('PERFORMANCE_ADMIN_PASSWORD', 'performance-only')})
             if response.status_code == 200:
                 return response.json()["access_token"]
         except httpx.HTTPError:
@@ -46,9 +47,21 @@ async def provision_tokens(client: httpx.AsyncClient, count: int) -> list[str]:
         "clientId": "performance-load", "publicClient": True, "directAccessGrantsEnabled": True,
         "standardFlowEnabled": False, "protocolMappers": [{
             "name": "audience", "protocol": "openid-connect", "protocolMapper": "oidc-audience-mapper",
-            "config": {"included.client.audience": "deepresearch-api", "access.token.claim": "true"}}]})
+            "config": {"included.custom.audience": "deepresearch-api", "access.token.claim": "true"}}]})
     if response.status_code not in {201, 409}:
         response.raise_for_status()
+    if response.status_code == 409:
+        existing = await client.get(admin + '/clients', headers=headers, params={'clientId': 'performance-load'})
+        existing.raise_for_status()
+        client_id = existing.json()[0]['id']
+        mappers = await client.get(admin + f'/clients/{client_id}/protocol-mappers/models', headers=headers)
+        mappers.raise_for_status()
+        mapper = next(item for item in mappers.json() if item['name'] == 'audience')
+        mapper['config'].pop('included.client.audience', None)
+        mapper['config']['included.custom.audience'] = 'deepresearch-api'
+        updated = await client.put(admin + f'/clients/{client_id}/protocol-mappers/models/' + mapper['id'],
+                                   headers=headers, json=mapper)
+        updated.raise_for_status()
     tokens = []
     for index in range(count):
         username = f"perf-user-{index:03d}"

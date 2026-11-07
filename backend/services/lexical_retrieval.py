@@ -88,7 +88,9 @@ class LexicalRetrieval:
         stats = await self.stats(workspace)
         if not stats['total'] or not stats['average_length']:
             return {}
-        placeholders = ','.join('(?,?)' for _ in terms)
+        # PostgreSQL resolves untyped VALUES parameters to text before the
+        # surrounding multiplication can infer the query-frequency weight.
+        placeholders = ','.join('(CAST(? AS TEXT),CAST(? AS DOUBLE PRECISION))' for _ in terms)
         parameters = tuple(value for pair in terms for value in pair)
         # BM25Plus defaults k1=1.5,b=.75 and delta=0 match the existing ranking.
         # Global N/avgdl and term document-frequency are computed by SQL over
@@ -102,8 +104,8 @@ class LexicalRetrieval:
                 WHERE t.workspace_id=? AND l.workspace_id=? AND c.user_id=? AND d.user_id=?
                 AND d.status IN ('ready','rebuilding') AND l.length>0 AND {access_sql()}
             ), frequencies AS (SELECT term,COUNT(*) AS df FROM postings GROUP BY term), scored AS (
-            SELECT p.chunk_id AS id,p.document_id,p.content_hash,SUM(p.weight*LN((?+1.0)/f.df)*
-                (p.frequency*2.5/(p.frequency+1.5*(0.25+0.75*p.length/?)))) AS lexical_score
+            SELECT p.chunk_id AS id,p.document_id,p.content_hash,SUM(p.weight*LN((CAST(? AS DOUBLE PRECISION)+1.0)/f.df)*
+                (p.frequency*2.5/(p.frequency+1.5*(0.25+0.75*p.length/CAST(? AS DOUBLE PRECISION))))) AS lexical_score
             FROM postings p JOIN frequencies f ON f.term=p.term GROUP BY p.chunk_id,p.document_id,p.content_hash),
             deduplicated AS (SELECT scored.*,ROW_NUMBER() OVER(PARTITION BY document_id,content_hash
                 ORDER BY lexical_score DESC,id) AS duplicate_rank FROM scored)

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.deepresearch.business.security.WorkspaceAccess;
 import com.deepresearch.business.security.WorkspaceIdentity;
+import com.deepresearch.business.security.PlatformAccess;
 import com.deepresearch.business.service.ReportPublicationService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
@@ -27,10 +28,12 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 public class ReportPublicationController {
     private final WorkspaceAccess access;
     private final ReportPublicationService publications;
+    private final PlatformAccess platform;
 
-    public ReportPublicationController(WorkspaceAccess access, ReportPublicationService publications) {
+    public ReportPublicationController(WorkspaceAccess access, ReportPublicationService publications, PlatformAccess platform) {
         this.access = access;
         this.publications = publications;
+        this.platform = platform;
     }
 
     @PostMapping("/api/research/runs/{runId}/publication")
@@ -73,7 +76,7 @@ public class ReportPublicationController {
         Map<String, Object> report = publications.get(identity, reportId);
         return ResponseEntity.ok().contentType(MediaType.parseMediaType("text/markdown;charset=UTF-8"))
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"report-" + reportId + ".md\"")
-            .body(MarkdownDownload.stream(String.valueOf(report.get("report_markdown"))));
+            .body(MarkdownDownload.stream(String.valueOf(report.get("report_markdown")), () -> platform.requireCurrent(jwt.getSubject(), jwt.getIssuedAt())));
     }
 
     @GetMapping("/api/reports/{reportId}/impacts")

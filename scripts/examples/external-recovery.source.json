@@ -1,0 +1,23 @@
+{
+  "settings": {
+    "demo_mode": false,
+    "database_url": "postgresql://dr_python:REPLACE_RUNTIME_PASSWORD@source-postgres:5432/deepresearch?sslmode=verify-full&sslrootcert=%2Fcerts%2Fpostgres-ca.pem",
+    "object_store_backend": "s3",
+    "object_store_bucket": "deepresearch-source",
+    "object_store_endpoint": "https://source-s3.example.invalid",
+    "object_store_region": "us-east-1",
+    "object_store_access_key": "",
+    "object_store_secret_key": "",
+    "object_store_session_token": "",
+    "object_store_auto_create_bucket": false,
+    "milvus_uri": "https://source-milvus.example.invalid:19530",
+    "milvus_token": "REPLACE_MILVUS_TOKEN",
+    "vector_collection_prefix": "deepresearch",
+    "embedding_model": "text-embedding-3-large",
+    "embedding_base_url": "https://api.openai.com/v1",
+    "embedding_dimension": 3072,
+    "oidc_issuer": "https://source-identity.example.invalid/realms/deepresearch",
+    "oidc_audience": "deepresearch-api"
+  },
+  "pg_admin_url": "postgresql://dr_migrator:REPLACE_ADMIN_PASSWORD@source-postgres:5432/deepresearch?sslmode=verify-full&sslrootcert=%2Fcerts%2Fpostgres-ca.pem"
+}

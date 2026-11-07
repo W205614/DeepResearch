@@ -1,7 +1,9 @@
 import { expect, test } from '@playwright/test'
+import { simulateIdentity } from './fixtures/identity'
 
 test('data scope is explicit and failed partial results cannot masquerade as complete', async ({ page }) => {
   const issuer = 'http://localhost:8180/realms/deepresearch'
+  await simulateIdentity(page, issuer)
   await page.addInitScript(({ issuer }) => {
     const token = btoa('{}') + '.' + btoa(JSON.stringify({ sub: 'fixture', preferred_username: 'fixture', iss: issuer, exp: Math.floor(Date.now()/1000)+3600 })) + '.fixture'
     sessionStorage.setItem('dr-token', token)

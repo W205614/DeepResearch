@@ -20,6 +20,7 @@ import com.deepresearch.business.api.Requests;
 
 import com.deepresearch.business.security.WorkspaceAccess;
 import com.deepresearch.business.security.WorkspaceIdentity;
+import com.deepresearch.business.security.PlatformAccess;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
@@ -38,13 +39,15 @@ public class ReportPublicationService {
     private final ObjectMapper mapper;
     private final WorkspaceAccess access;
     private final ResearchCommandService commands;
+    private final PlatformAccess platform;
 
     public ReportPublicationService(JdbcTemplate jdbc, ObjectMapper mapper, WorkspaceAccess access,
-                                    ResearchCommandService commands) {
+                                    ResearchCommandService commands, PlatformAccess platform) {
         this.jdbc = jdbc;
         this.mapper = mapper;
         this.access = access;
         this.commands = commands;
+        this.platform = platform;
     }
 
     @Transactional
@@ -480,6 +483,7 @@ public class ReportPublicationService {
     }
 
     private void requireCurrentRole(WorkspaceIdentity identity, String... roles) {
+        platform.lockCurrent(identity.subject(), identity.issuedAt());
         List<Map<String, Object>> current = jdbc.queryForList(
             "SELECT role FROM memberships WHERE workspace_id=? AND subject=? FOR SHARE",
             identity.workspaceId(), identity.subject());

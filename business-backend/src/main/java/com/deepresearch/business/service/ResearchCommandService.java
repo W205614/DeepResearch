@@ -12,6 +12,7 @@ import com.deepresearch.business.api.Requests;
 import com.deepresearch.business.config.DeepResearchProperties;
 import com.deepresearch.business.security.WorkspaceAccess;
 import com.deepresearch.business.security.WorkspaceIdentity;
+import com.deepresearch.business.security.PlatformAccess;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
@@ -28,19 +29,22 @@ public class ResearchCommandService {
     private final WorkspaceAccess access;
     private final RunViewService views;
     private final OutboxService outbox;
+    private final PlatformAccess platform;
 
     public ResearchCommandService(JdbcTemplate jdbc, ObjectMapper mapper, DeepResearchProperties properties,
-                                  WorkspaceAccess access, RunViewService views, OutboxService outbox) {
+                                  WorkspaceAccess access, RunViewService views, OutboxService outbox, PlatformAccess platform) {
         this.jdbc = jdbc;
         this.mapper = mapper;
         this.properties = properties;
         this.access = access;
         this.views = views;
         this.outbox = outbox;
+        this.platform = platform;
     }
 
     @Transactional
     public Map<String, Object> create(WorkspaceIdentity identity, Requests.Run request) {
+        platform.lockCurrent(identity.subject(), identity.issuedAt());
         access.require(identity, "admin", "researcher");
         lockQueueAdmission(identity.workspaceId());
         List<Map<String, Object>> previous = jdbc.queryForList(
@@ -60,14 +64,6 @@ public class ResearchCommandService {
         int waiting = jdbc.queryForObject("SELECT COUNT(*) FROM runs WHERE status IN ('queued','interrupted')", Integer.class);
         if (waiting >= properties.getMaxQueuedRuns()) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "待处理任务已满，请稍后提交");
-        }
-        Map<String, Object> limits = jdbc.queryForMap(
-            "SELECT concurrent_run_limit FROM workspace_limits WHERE workspace_id=?", identity.workspaceId());
-        int active = jdbc.queryForObject("""
-            SELECT COUNT(*) FROM runs WHERE user_id=?
-            AND status IN ('queued','running')""", Integer.class, identity.workspaceId());
-        if (active >= ((Number) limits.get("concurrent_run_limit")).intValue()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "工作空间正在执行的研究已达到并发上限");
         }
         validateAttachments(identity, request.getAttachmentIds());
         String threadId = request.getThreadId() == null || request.getThreadId().isBlank()
@@ -95,6 +91,7 @@ public class ResearchCommandService {
 
     @Transactional
     public Map<String, Object> cancel(WorkspaceIdentity identity, String runId) {
+        platform.lockCurrent(identity.subject(), identity.issuedAt());
         access.require(identity, "admin", "researcher");
         lockWorkspaceAdmission(identity.workspaceId());
         views.visibleRun(runId, identity);
@@ -103,7 +100,7 @@ public class ResearchCommandService {
             AND status IN ('queued','running','interrupted')""", now(), runId, identity.workspaceId());
         if (changed > 0) {
             event(runId, "cancelled", Map.of("message", "任务已停止"));
-            outbox.enqueue(runId, "research.abort", "{}");
+            outbox.enqueueAbort(runId);
             access.audit(identity, "research.cancel", "run", runId);
         }
         return views.visibleRun(runId, identity);
@@ -111,6 +108,7 @@ public class ResearchCommandService {
 
     @Transactional
     public Map<String, Object> resume(WorkspaceIdentity identity, String runId) {
+        platform.lockCurrent(identity.subject(), identity.issuedAt());
         access.require(identity, "admin", "researcher");
         lockQueueAdmission(identity.workspaceId());
         Map<String, Object> run = views.visibleRun(runId, identity);
@@ -122,12 +120,6 @@ public class ResearchCommandService {
         if (waiting - alreadyWaiting >= properties.getMaxQueuedRuns()) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "待处理任务已满，请稍后继续");
         }
-        int active = jdbc.queryForObject("""
-            SELECT COUNT(*) FROM runs WHERE user_id=?
-            AND status IN ('queued','running')""", Integer.class, identity.workspaceId());
-        int limit = jdbc.queryForObject("SELECT concurrent_run_limit FROM workspace_limits WHERE workspace_id=?",
-            Integer.class, identity.workspaceId());
-        if (active >= limit) throw new ResponseStatusException(HttpStatus.CONFLICT, "工作空间正在执行的研究已达到并发上限");
         jdbc.update("UPDATE runs SET status='queued',updated_at=? WHERE id=? AND user_id=?", now(), runId, identity.workspaceId());
         event(runId, "queued", Map.of("message", "任务已提交恢复"));
         outbox.enqueue(runId, "research.resume", commandPayload(true, ((Number) run.get("attempt_count")).intValue()));
@@ -137,6 +129,7 @@ public class ResearchCommandService {
 
     @Transactional
     public Map<String, Object> createThread(WorkspaceIdentity identity, String title) {
+        platform.lockCurrent(identity.subject(), identity.issuedAt());
         access.require(identity, "admin", "researcher");
         jdbc.query("SELECT pg_advisory_xact_lock(hashtext(?))", result -> null, "thread:" + identity.workspaceId());
         int index = 1;
@@ -198,19 +191,20 @@ public class ResearchCommandService {
     }
 
     private void lockQueueAdmission(String workspaceId) {
-        jdbc.query("SELECT pg_advisory_xact_lock(hashtextextended(?,0))", result -> null,
-            "research-global-queue-admission");
+        jdbc.query("SELECT pg_advisory_xact_lock(?)", result -> null,
+            PlatformAccess.lockId("research-global-queue-admission"));
         lockWorkspaceAdmission(workspaceId);
     }
 
     public void lockIntakeAdmission(WorkspaceIdentity identity) {
         // The caller owns a transaction; lock in the same order as direct create before the intake row.
+        platform.lockCurrent(identity.subject(), identity.issuedAt());
         lockQueueAdmission(identity.workspaceId());
     }
 
     private void lockWorkspaceAdmission(String workspaceId) {
-        jdbc.query("SELECT pg_advisory_xact_lock(hashtextextended(?,0))", result -> null,
-            "research-admission:" + workspaceId);
+        jdbc.query("SELECT pg_advisory_xact_lock(?)", result -> null,
+            PlatformAccess.lockId("workspace:" + workspaceId));
     }
 
     private String commandPayload(boolean resume, int attempt) {

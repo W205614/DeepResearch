@@ -173,9 +173,9 @@ def assess(root=ROOT, *, policy_path=None, ledger_path=None, basis_path=None):
     protected = {item['path'] for item in basis['symbols']} | set(basis['case_fingerprints']) | {
         'backend/core/config.py', '.github/workflows/answer-quality.yml', 'scripts/bounded_evaluation.py',
         'scripts/reuse_quality_evidence.py', 'scripts/check_ci_evaluation_budget.py', 'eval/ci-budget-source-basis.json'}
-    model = os.environ.get('LLM_MODEL_ID', 'deepseek-v4-flash')
-    base = os.environ.get('LLM_BASE_URL', 'https://api.deepseek.com')
-    extra = os.environ.get('LLM_EXTRA_BODY', '{"thinking":{"type":"disabled"}}')
+    model = os.environ.get('LLM_MODEL_ID', 'gpt-6.1-sol')
+    base = os.environ.get('LLM_BASE_URL', 'https://api.openai.com/v1')
+    extra = os.environ.get('LLM_EXTRA_BODY', '{}')
     return {'schema': 'ci-budget-assessment-v1', 'generated_at': datetime.now(timezone.utc).isoformat(),
             'precheck_status': ('cumulative_reconciliation_required' if not reconciled else 'existing_provider_halt' if ledger['halt']
                                else 'insufficient_known_budget' if insufficient else 'bound_not_verified' if not known else 'necessary_bound_not_violated'),

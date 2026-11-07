@@ -15,12 +15,13 @@ import org.springframework.security.web.header.HeaderWriterFilter;
 import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 
 import com.deepresearch.business.security.ApiRateLimitFilter;
+import com.deepresearch.business.security.PlatformAccountFilter;
 
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
     @Bean
-    SecurityFilterChain apiSecurity(HttpSecurity http, ApiRateLimitFilter rateLimitFilter) throws Exception {
+    SecurityFilterChain apiSecurity(HttpSecurity http, ApiRateLimitFilter rateLimitFilter, PlatformAccountFilter accountFilter) throws Exception {
         return http
             // An async download can flush while the request thread is leaving the filter.
             .headers(headers -> headers.withObjectPostProcessor(new ObjectPostProcessor<HeaderWriterFilter>() {
@@ -49,7 +50,8 @@ public class SecurityConfig {
                 response.setContentType("application/json");
                 response.getWriter().write("{\"detail\":\"当前工作空间角色没有此权限\"}");
             }))
-            .addFilterAfter(rateLimitFilter, BearerTokenAuthenticationFilter.class)
+            .addFilterAfter(accountFilter, BearerTokenAuthenticationFilter.class)
+            .addFilterAfter(rateLimitFilter, PlatformAccountFilter.class)
             .build();
     }
 }

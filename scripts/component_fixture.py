@@ -33,8 +33,11 @@ def install():
             return schema.model_validate({'checks': checks})
         return schema.model_validate(generate(role, data))
 
-    async def embeddings(self, texts):
-        return [embed(text) for text in texts]
+    async def embeddings(self, texts, **kwargs):
+        # The real Milvus schema/transport keeps the production target dimension.
+        # Coordinates beyond the deterministic hash fixture carry zero weight.
+        dimension = self.settings.embedding_dimension
+        return [(embed(text) + [0.0] * dimension)[:dimension] for text in texts]
 
     async def web(self, query, run_id):
         return search(query)
@@ -47,6 +50,7 @@ def install():
     Providers.embed = embeddings
     Providers.deepseek_search = web
     Providers.bocha_search = web
+    Providers.openai_search = web
     ResearchGraph.read_web = read
 
 
@@ -61,3 +65,8 @@ def create_app():
 
 
 WorkerSettings = ProductionWorkerSettings
+
+
+if __name__ == '__main__':
+    from backend.worker import main
+    main()

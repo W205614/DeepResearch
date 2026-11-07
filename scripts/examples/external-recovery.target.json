@@ -1,0 +1,28 @@
+{
+  "settings": {
+    "demo_mode": false,
+    "database_url": "postgresql://dr_python:REPLACE_RUNTIME_PASSWORD@restore-postgres:5432/deepresearch_restore?sslmode=verify-full&sslrootcert=%2Fcerts%2Fpostgres-ca.pem",
+    "object_store_backend": "s3",
+    "object_store_bucket": "deepresearch-restored",
+    "object_store_endpoint": "https://restore-s3.example.invalid",
+    "object_store_region": "us-east-1",
+    "object_store_access_key": "",
+    "object_store_secret_key": "",
+    "object_store_session_token": "",
+    "object_store_auto_create_bucket": false,
+    "milvus_uri": "https://restore-milvus.example.invalid:19530",
+    "milvus_token": "REPLACE_MILVUS_TOKEN",
+    "vector_collection_prefix": "dr_restore_isolated",
+    "embedding_model": "text-embedding-3-large",
+    "embedding_base_url": "https://api.openai.com/v1",
+    "embedding_dimension": 3072,
+    "oidc_issuer": "https://restored-identity.example.invalid/realms/deepresearch",
+    "oidc_audience": "deepresearch-api",
+    "oidc_ca_certs": "/certs/identity-ca.pem"
+  },
+  "pg_admin_url": "postgresql://restore_admin:REPLACE_ADMIN_PASSWORD@restore-postgres:5432/deepresearch_restore?sslmode=verify-full&sslrootcert=%2Fcerts%2Fpostgres-ca.pem",
+  "pg_restore_role": "dr_migrator",
+  "app_base_url": "https://isolated-restored-app.example.invalid",
+  "tokens_file": "/private/restored-identity-tokens.json",
+  "api_ca_certs": "/certs/app-ca.pem"
+}

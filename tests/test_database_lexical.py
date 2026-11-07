@@ -8,9 +8,11 @@ import pytest
 from rank_bm25 import BM25Plus
 
 from backend.core.db import now
+from backend.core.reliability import ServiceError
 from backend.core.usage_governance import paid_scope
 from backend.services.document_parsing import tokens
 from backend.services.lexical_retrieval import ranking_text
+from backend.services.runtime import Runtime
 
 
 async def seed(runtime, rows):
@@ -127,3 +129,131 @@ async def test_same_hash_upload_does_not_disclose_restricted_document_metadata(r
             await runtime.documents.add('alice','guessed-name.txt',b'restricted bytes')
     assert denied.value.code=='source_permission_denied'
     assert (await runtime.db.one("SELECT name FROM documents WHERE id=?",(document['id'],)))['name']=='private-name.txt'
+
+
+async def test_indexed_warm_cache_on_another_replica_skips_full_recall(runtime, settings, monkeypatch):
+    runtime.settings.rag_small_corpus_chunks = 1
+    await seed(runtime, [{'id': 'first', 'title': 'First', 'text': 'ALPHA first evidence'},
+                         {'id': 'second', 'title': 'Second', 'text': 'ALPHA second evidence'}])
+    monkeypatch.setattr(runtime.providers, 'embed', AsyncMock(return_value=[[0.0, 0.0, 1.0]]))
+    monkeypatch.setattr(runtime.vectors, 'search', AsyncMock(return_value=[]))
+    cold = await runtime.documents.search('alice', ['ALPHA'])
+    replica = await Runtime(settings).start()
+    try:
+        for method in ('ensure', 'stats', 'scores'):
+            monkeypatch.setattr(replica.documents.lexical_index, method,
+                                AsyncMock(side_effect=AssertionError('warm cache performed full recall')))
+        monkeypatch.setattr(replica.providers, 'embed', AsyncMock(side_effect=AssertionError('warm cache called provider')))
+        monkeypatch.setattr(replica.vectors, 'search', AsyncMock(side_effect=AssertionError('warm cache called vector service')))
+        hydrate = AsyncMock(wraps=replica.documents.lexical_index.hydrate)
+        neighbors = AsyncMock(wraps=replica.documents.lexical_index.neighbors)
+        monkeypatch.setattr(replica.documents.lexical_index, 'hydrate', hydrate)
+        monkeypatch.setattr(replica.documents.lexical_index, 'neighbors', neighbors)
+        warm = await replica.documents.search('alice', ['ALPHA'])
+        assert warm == cold
+        assert hydrate.await_count == len(cold)
+        assert all(len(call.args[1]) == 1 for call in hydrate.await_args_list)
+        neighbors.assert_awaited_once()
+    finally:
+        await replica.close()
+
+
+async def test_indexed_cache_revocation_from_another_replica_excludes_restricted_source(runtime, settings, monkeypatch):
+    runtime.settings.rag_small_corpus_chunks = 1
+    await seed(runtime, [{'id': 'public', 'title': 'Public', 'text': 'ALPHA public'},
+                         {'id': 'private', 'title': 'Private', 'text': 'ALPHA private'},
+                         {'id': 'other', 'title': 'Other', 'text': 'OTHER evidence'}])
+    await runtime.db.execute("INSERT INTO collections VALUES('locked','alice','Locked','private','owner',0,?)", (now(),))
+    await runtime.db.execute("INSERT INTO document_policies VALUES('private','alice','locked','owner',0)")
+    await runtime.db.execute("INSERT INTO collection_grants VALUES('locked','reader','read')")
+    monkeypatch.setattr(runtime.providers, 'embed', AsyncMock(return_value=[[0.0, 0.0, 1.0]]))
+    monkeypatch.setattr(runtime.vectors, 'search', AsyncMock(return_value=[]))
+    with paid_scope('alice', 'reader', 'evaluation'):
+        cold = await runtime.documents.search('alice', ['ALPHA'])
+    assert any(row['document_id'] == 'private' for row in cold)
+    replica = await Runtime(settings).start()
+    try:
+        await replica.db.execute("DELETE FROM collection_grants WHERE collection_id='locked'")
+        monkeypatch.setattr(runtime.vectors, 'search', AsyncMock(return_value=[{'id': 'private', 'score': 1.0}]))
+        with paid_scope('alice', 'reader', 'evaluation'):
+            current = await runtime.documents.search('alice', ['ALPHA'])
+        assert current and all(row['document_id'] == 'public' for row in current)
+    finally:
+        await replica.close()
+
+
+async def test_indexed_cache_rechecks_corpus_when_acl_changes_during_hydration(runtime, settings, monkeypatch):
+    runtime.settings.rag_small_corpus_chunks = 1
+    await seed(runtime, [{'id': 'public', 'title': 'Public', 'text': 'ALPHA public'},
+                         {'id': 'private', 'title': 'Private', 'text': 'ALPHA private'},
+                         {'id': 'other', 'title': 'Other', 'text': 'OTHER evidence'}])
+    await runtime.db.execute("INSERT INTO collections VALUES('locked','alice','Locked','private','owner',0,?)", (now(),))
+    await runtime.db.execute("INSERT INTO document_policies VALUES('private','alice','locked','owner',0)")
+    await runtime.db.execute("INSERT INTO collection_grants VALUES('locked','reader','read')")
+    monkeypatch.setattr(runtime.providers, 'embed', AsyncMock(return_value=[[0.0, 0.0, 1.0]]))
+    monkeypatch.setattr(runtime.vectors, 'search', AsyncMock(return_value=[]))
+    with paid_scope('alice', 'reader', 'evaluation'):
+        await runtime.documents.search('alice', ['ALPHA'])
+    replica = await Runtime(settings).start()
+    original = runtime.documents.lexical_index.hydrate
+    revoked = False
+    async def revoke_then_hydrate(*args):
+        nonlocal revoked
+        if not revoked:
+            await replica.db.execute("DELETE FROM collection_grants WHERE collection_id='locked'")
+            revoked = True
+        return await original(*args)
+    try:
+        monkeypatch.setattr(runtime.documents.lexical_index, 'hydrate', revoke_then_hydrate)
+        with paid_scope('alice', 'reader', 'evaluation'):
+            with pytest.raises(ServiceError) as failure:
+                await runtime.documents.search('alice', ['ALPHA'])
+        assert failure.value.code == 'source_changed'
+    finally:
+        await replica.close()
+
+
+async def test_indexed_cache_replacement_from_another_replica_returns_new_version(runtime, settings, monkeypatch):
+    runtime.settings.rag_small_corpus_chunks = 1
+    first = await runtime.documents.add('alice', 'first.txt', b'ALPHA ORIGINAL evidence')
+    await runtime.documents.ingest(first['id'])
+    second = await runtime.documents.add('alice', 'second.txt', b'ALPHA other evidence')
+    await runtime.documents.ingest(second['id'])
+    monkeypatch.setattr(runtime.providers, 'embed', AsyncMock(return_value=[[0.0, 0.0, 1.0]]))
+    monkeypatch.setattr(runtime.vectors, 'search', AsyncMock(return_value=[]))
+    cold = await runtime.documents.search('alice', ['ALPHA'])
+    assert any('ORIGINAL' in row['text'] for row in cold)
+    replica = await Runtime(settings).start()
+    try:
+        await replica.documents.replace(first['id'], 'alice', 'updated.txt', b'ALPHA UPDATED evidence')
+        await replica.documents.ingest(first['id'])
+        scores = AsyncMock(wraps=runtime.documents.lexical_index.scores)
+        monkeypatch.setattr(runtime.documents.lexical_index, 'scores', scores)
+        current = await runtime.documents.search('alice', ['ALPHA'])
+        assert current and all('ORIGINAL' not in row['text'] for row in current)
+        updated = [row for row in current if row['document_id'] == first['id']]
+        assert updated and all(row['index_version'] == 2 and 'UPDATED' in row['text'] for row in updated)
+        scores.assert_awaited_once()
+    finally:
+        await replica.close()
+
+
+async def test_indexed_corrupt_cache_from_another_replica_is_discarded_and_recalled(runtime, settings, monkeypatch):
+    runtime.settings.rag_small_corpus_chunks = 1
+    await seed(runtime, [{'id': 'first', 'title': 'First', 'text': 'ALPHA first evidence'},
+                         {'id': 'second', 'title': 'Second', 'text': 'ALPHA second evidence'}])
+    monkeypatch.setattr(runtime.providers, 'embed', AsyncMock(return_value=[[0.0, 0.0, 1.0]]))
+    monkeypatch.setattr(runtime.vectors, 'search', AsyncMock(return_value=[]))
+    cold = await runtime.documents.search('alice', ['ALPHA'])
+    replica = await Runtime(settings).start()
+    try:
+        await replica.db.execute("UPDATE document_search_cache SET result='[null]' WHERE user_id='alice'")
+        scores = AsyncMock(wraps=runtime.documents.lexical_index.scores)
+        monkeypatch.setattr(runtime.documents.lexical_index, 'scores', scores)
+        current = await runtime.documents.search('alice', ['ALPHA'])
+        assert [row['id'] for row in current] == [row['id'] for row in cold]
+        assert current.reasons == ['invalid_records']
+        scores.assert_awaited_once()
+        assert not await runtime.db.one("SELECT result FROM document_search_cache WHERE user_id='alice'")
+    finally:
+        await replica.close()

@@ -1,4 +1,8 @@
 DROP TABLE IF EXISTS business_outbox CASCADE;
+DROP TABLE IF EXISTS platform_audit_logs CASCADE;
+DROP TABLE IF EXISTS platform_users CASCADE;
+DROP TABLE IF EXISTS metadata CASCADE;
+DROP TABLE IF EXISTS usage_periods CASCADE;
 DROP TABLE IF EXISTS collection_grants CASCADE;
 DROP TABLE IF EXISTS document_policies CASCADE;
 DROP TABLE IF EXISTS collections CASCADE;
@@ -27,7 +31,19 @@ DROP TABLE IF EXISTS memberships CASCADE;
 DROP TABLE IF EXISTS workspaces CASCADE;
 
 CREATE TABLE workspaces(
-    id TEXT PRIMARY KEY,name TEXT NOT NULL,created_by TEXT NOT NULL,created_at TEXT NOT NULL
+    id TEXT PRIMARY KEY,name TEXT NOT NULL,created_by TEXT NOT NULL,created_at TEXT NOT NULL,
+    owner_subject TEXT NOT NULL DEFAULT ''
+);
+CREATE TABLE platform_users(subject TEXT PRIMARY KEY,status TEXT NOT NULL DEFAULT 'active',revoked_before BIGINT NOT NULL DEFAULT 0,
+    display_name TEXT NOT NULL DEFAULT '',created_at TEXT NOT NULL,updated_at TEXT NOT NULL);
+CREATE TABLE platform_audit_logs(id TEXT PRIMARY KEY,actor_subject TEXT NOT NULL,action TEXT NOT NULL,target_type TEXT NOT NULL,
+    target_id TEXT NOT NULL,reason TEXT NOT NULL,result TEXT NOT NULL,created_at TEXT NOT NULL);
+CREATE TABLE metadata(key TEXT PRIMARY KEY,value TEXT NOT NULL);
+CREATE TABLE usage_periods(
+    scope_key TEXT NOT NULL,period_start BIGINT NOT NULL,calls BIGINT NOT NULL DEFAULT 0,
+    reserved_tokens BIGINT NOT NULL DEFAULT 0,pending_tokens BIGINT NOT NULL DEFAULT 0,
+    unknown_tokens BIGINT NOT NULL DEFAULT 0,actual_input BIGINT NOT NULL DEFAULT 0,
+    actual_output BIGINT NOT NULL DEFAULT 0,PRIMARY KEY(scope_key,period_start)
 );
 CREATE TABLE memberships(
     workspace_id TEXT NOT NULL,subject TEXT NOT NULL,role TEXT NOT NULL,created_at TEXT NOT NULL,

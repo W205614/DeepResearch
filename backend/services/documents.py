@@ -442,14 +442,9 @@ class Documents:
         cached_corpus = self._corpora.get(user) if not indexed else None
         corpus_cache_hit = bool(cached_corpus and cached_corpus[0] == corpus_hash)
         if indexed:
-            await self.lexical_index.ensure(user)
-            if (await self.lexical_index.stats(user))["total"] < corpus_count:
-                reasons.add("invalid_records")
-            candidate_limit = self.settings.rag_db_candidate_limit
-            sql_lexical = {query: await self.lexical_index.scores(user, query, candidate_limit) for query in queries}
-            ids = {key for values in sql_lexical.values() for key in values}
-            all_chunks = await self.lexical_index.hydrate(user, ids)
-            chunks_by_id = {row["id"]: row for row in all_chunks}
+            # Warm results need only their current authorized source rows. Full
+            # indexed recall runs below if this cache cannot be reused.
+            all_chunks, chunks_by_id = [], {}
             bm25 = None
         elif corpus_cache_hit:
             _, all_chunks, chunks_by_id, bm25 = cached_corpus
@@ -472,7 +467,8 @@ class Documents:
                     self._corpora.pop(next(iter(self._corpora)))
                 self._corpora[user] = (corpus_hash, all_chunks, chunks_by_id, bm25)
         corpus_ms = round((time.monotonic() - corpus_started) * 1000, 2)
-        RAG_RETRIEVAL_SECONDS.labels(stage="corpus_load").observe(corpus_ms / 1000)
+        if not indexed:
+            RAG_RETRIEVAL_SECONDS.labels(stage="corpus_load").observe(corpus_ms / 1000)
         if not all_chunks and not indexed:
             return RetrievalResults()
         cache_started = time.monotonic()
@@ -510,6 +506,8 @@ class Documents:
                             raise ValueError("cache rerank score")
                         rerank_value = float(rerank_value)
                     result.append({**source, **scores, "rerank_score": rerank_value, "ranking_stage": stage})
+                if indexed:
+                    RAG_RETRIEVAL_SECONDS.labels(stage="corpus_load").observe(corpus_ms / 1000)
                 await self.record_retrieval(run_id, {"cache_hit": True, "queries": len(queries),
                     "corpus_documents": len(documents), "corpus_chunks": corpus_count, "cache_ms": cache_ms,
                     "total_ms": round((time.monotonic() - started) * 1000, 2)})
@@ -520,6 +518,19 @@ class Documents:
             except (TypeError, ValueError, KeyError):
                 reasons.add("invalid_records")
                 await self.db.execute("DELETE FROM document_search_cache WHERE user_id=? AND corpus_hash=? AND query_hash=? AND limit_value=?", cache_key)
+
+        if indexed:
+            recall_started = time.monotonic()
+            await self.lexical_index.ensure(user)
+            if (await self.lexical_index.stats(user))["total"] < corpus_count:
+                reasons.add("invalid_records")
+            candidate_limit = self.settings.rag_db_candidate_limit
+            sql_lexical = {query: await self.lexical_index.scores(user, query, candidate_limit) for query in queries}
+            ids = {key for values in sql_lexical.values() for key in values}
+            all_chunks = await self.lexical_index.hydrate(user, ids)
+            chunks_by_id = {row["id"]: row for row in all_chunks}
+            corpus_ms += round((time.monotonic() - recall_started) * 1000, 2)
+            RAG_RETRIEVAL_SECONDS.labels(stage="corpus_load").observe(corpus_ms / 1000)
 
         fusion_candidate_limit = max(
             limit, self.settings.reranker_candidate_limit if self.reranker and self.reranker.enabled else limit)

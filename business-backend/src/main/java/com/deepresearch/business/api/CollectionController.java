@@ -28,7 +28,7 @@ public class CollectionController {
         jdbc.queryForObject("SELECT id FROM workspaces WHERE id=? FOR UPDATE",String.class,i.workspaceId());
         List<Map<String,Object>> members=jdbc.queryForList("SELECT role FROM memberships WHERE workspace_id=? AND subject=?",i.workspaceId(),i.subject());
         if(members.isEmpty())throw new ResponseStatusException(HttpStatus.FORBIDDEN,"当前工作空间成员权限已撤销");
-        WorkspaceIdentity current=new WorkspaceIdentity(i.workspaceId(),i.subject(),String.valueOf(members.getFirst().get("role")),i.displayName());
+        WorkspaceIdentity current=new WorkspaceIdentity(i.workspaceId(),i.subject(),String.valueOf(members.getFirst().get("role")),i.displayName(),i.issuedAt());
         access.require(current,"admin");
     }
     private void revision(WorkspaceIdentity i){

@@ -236,7 +236,7 @@ async def test_shape_retry_obeys_shared_execution_budget(tmp_path):
     provider = await make_provider(tmp_path, response)
     # The execution stub now supplies the same accounting identity contract as a
     # persisted execution. The test still permits exactly one model HTTP call.
-    await provider.db.execute("INSERT INTO workspaces VALUES('provider-fixture','Fixture','fixture-operator','today')")
+    await provider.db.execute("INSERT INTO workspaces(id,name,created_by,created_at) VALUES('provider-fixture','Fixture','fixture-operator','today')")
     await provider.db.execute("INSERT INTO memberships VALUES('provider-fixture','fixture-operator','admin','today')")
 
     class OneCallBudget:

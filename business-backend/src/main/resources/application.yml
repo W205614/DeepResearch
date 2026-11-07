@@ -56,12 +56,20 @@ management:
 deepresearch:
   auth-mode: ${AUTH_MODE:oidc}
   oidc-issuer: ${OIDC_ISSUER:http://localhost:8180/realms/deepresearch}
+  oidc-client-id: ${OIDC_CLIENT_ID:deepresearch-web}
+  oidc-scopes: ${OIDC_SCOPES:openid profile email}
+  oidc-registration-enabled: ${OIDC_REGISTRATION_ENABLED:true}
   agent-base-url: ${AGENT_BASE_URL:http://localhost:8000}
   internal-token: ${INTERNAL_SERVICE_TOKEN:}
   internal-token-file: ${INTERNAL_SERVICE_TOKEN_FILE:}
   allow-internal-model-processing: ${ALLOW_INTERNAL_MODEL_PROCESSING:false}
   workspace-concurrent-run-limit: ${WORKSPACE_CONCURRENT_RUN_LIMIT:2}
   max-queued-runs: ${MAX_QUEUED_RUNS:20}
+  platform-active-run-limit: ${PLATFORM_ACTIVE_RUN_LIMIT:5}
+  platform-operator-subjects: ${PLATFORM_OPERATOR_SUBJECTS:}
+  deployment-id: ${DEPLOYMENT_ID:deepresearch}
+  redis-url: ${REDIS_URL:redis://localhost:6379/0}
+  redis-ssl-ca-certs: ${REDIS_SSL_CA_CERTS:}
   max-run-total-seconds: ${MAX_RUN_TOTAL_SECONDS:1200}
   max-run-call-attempts: ${MAX_RUN_CALL_ATTEMPTS:80}
   max-run-reserved-tokens: ${MAX_RUN_RESERVED_TOKENS:2000000}

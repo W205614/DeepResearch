@@ -12,12 +12,20 @@ import org.springframework.stereotype.Component;
 public class DeepResearchProperties {
     private String authMode = "oidc";
     private String oidcIssuer = "";
+    private String oidcClientId = "deepresearch-web";
+    private String oidcScopes = "openid profile email";
+    private boolean oidcRegistrationEnabled = true;
     private String agentBaseUrl = "http://localhost:8000";
     private String internalToken = "";
     private String internalTokenFile = "";
     private boolean allowInternalModelProcessing;
     private int workspaceConcurrentRunLimit = 2;
     private int maxQueuedRuns = 20;
+    private int platformActiveRunLimit = 5;
+    private String platformOperatorSubjects = "";
+    private String deploymentId = "deepresearch";
+    private String redisUrl = "redis://localhost:6379/0";
+    private String redisSslCaCerts = "";
     private long maxRunTotalSeconds = 1200;
     private int maxRunCallAttempts = 80;
     private long maxRunReservedTokens = 2_000_000;
@@ -54,6 +62,12 @@ public class DeepResearchProperties {
     public void setAuthMode(String authMode) { this.authMode = authMode; }
     public String getOidcIssuer() { return oidcIssuer; }
     public void setOidcIssuer(String oidcIssuer) { this.oidcIssuer = oidcIssuer; }
+    public String getOidcClientId() { return oidcClientId; }
+    public void setOidcClientId(String value) { this.oidcClientId = value; }
+    public String getOidcScopes() { return oidcScopes; }
+    public void setOidcScopes(String value) { this.oidcScopes = value; }
+    public boolean isOidcRegistrationEnabled() { return oidcRegistrationEnabled; }
+    public void setOidcRegistrationEnabled(boolean value) { this.oidcRegistrationEnabled = value; }
     public String getAgentBaseUrl() { return agentBaseUrl; }
     public void setAgentBaseUrl(String agentBaseUrl) { this.agentBaseUrl = agentBaseUrl; }
     public String getInternalToken() { return internalToken; }
@@ -66,6 +80,20 @@ public class DeepResearchProperties {
     public void setWorkspaceConcurrentRunLimit(int value) { this.workspaceConcurrentRunLimit = value; }
     public int getMaxQueuedRuns() { return maxQueuedRuns; }
     public void setMaxQueuedRuns(int value) { this.maxQueuedRuns = value; }
+    public int getPlatformActiveRunLimit() { return platformActiveRunLimit; }
+    public void setPlatformActiveRunLimit(int value) { this.platformActiveRunLimit = value; }
+    public String getPlatformOperatorSubjects() { return platformOperatorSubjects; }
+    public void setPlatformOperatorSubjects(String value) { this.platformOperatorSubjects = value; }
+    public java.util.Set<String> operatorSubjects() {
+        return java.util.Arrays.stream(platformOperatorSubjects.split(",")).map(String::strip)
+            .filter(value -> !value.isEmpty()).collect(java.util.stream.Collectors.toUnmodifiableSet());
+    }
+    public String getDeploymentId() { return deploymentId; }
+    public void setDeploymentId(String value) { this.deploymentId = value; }
+    public String getRedisUrl() { return redisUrl; }
+    public void setRedisUrl(String value) { this.redisUrl = value; }
+    public String getRedisSslCaCerts() { return redisSslCaCerts; }
+    public void setRedisSslCaCerts(String value) { this.redisSslCaCerts = value; }
     public long getMaxRunTotalSeconds() { return maxRunTotalSeconds; }
     public void setMaxRunTotalSeconds(long value) { this.maxRunTotalSeconds = value; }
     public int getMaxRunCallAttempts() { return maxRunCallAttempts; }

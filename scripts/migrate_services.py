@@ -1,6 +1,8 @@
 """Run schema DDL with the migrator, then apply runtime least-privilege grants."""
 import asyncio
+import json
 import os
+from pathlib import Path
 import subprocess
 import sys
 
@@ -11,7 +13,7 @@ from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 JAVA_WRITE = {"workspaces", "memberships", "workspace_limits", "threads", "runs", "events",
               "audit_logs", "business_outbox", "report_publications", "report_series",
               "report_revision_jobs", "attachments", "memories", "workspace_corpus_revisions", "report_impacts",
-              "collections", "collection_grants", "document_policies", "research_intakes"}
+              "collections", "collection_grants", "document_policies", "research_intakes", "platform_users"}
 CONTROL_OWNED = {"workspaces", "memberships", "workspace_limits", "business_outbox", "report_series",
                  "collections", "collection_grants", "document_policies", "research_intakes"}
 PYTHON_WRITE = {
@@ -49,6 +51,11 @@ async def grant_runtime(conn):
     if "audit_logs" in tables:
         await conn.execute("GRANT INSERT ON audit_logs TO dr_java,dr_python")
         await conn.execute("REVOKE UPDATE,DELETE ON audit_logs FROM dr_java,dr_python")
+    if "platform_users" in tables:
+        await conn.execute("REVOKE DELETE ON platform_users FROM dr_java")
+        await conn.execute("GRANT INSERT,UPDATE(display_name,updated_at) ON platform_users TO dr_python")
+    if "platform_audit_logs" in tables:
+        await conn.execute("GRANT INSERT ON platform_audit_logs TO dr_java")
     if "document_policies" in tables:
         await conn.execute("GRANT INSERT ON document_policies TO dr_python")
     if "runs" in tables:
@@ -79,7 +86,7 @@ async def grant_runtime(conn):
 
 
 async def prepare(dsn):
-    dsn = dsn.replace("postgresql+asyncpg://", "postgresql://", 1)
+    dsn = runtime_dsn(dsn)
     async with AsyncPostgresSaver.from_conn_string(dsn) as saver:
         await saver.setup()
     conn = await asyncpg.connect(dsn)
@@ -88,6 +95,10 @@ async def prepare(dsn):
             await grant_runtime(conn)
     finally:
         await conn.close()
+
+
+def runtime_dsn(dsn):
+    return dsn.replace("postgresql+asyncpg://", "postgresql://", 1).replace("postgresql+psycopg://", "postgresql://", 1)
 
 
 def main():
@@ -99,9 +110,16 @@ def main():
     # Populate the bounded SQL-derived lexical index before accepting requests;
     # A partial servable backfill blocks readiness. Strictly unservable orphan
     # work is reported separately, never marked as indexed or changed in SQL.
-    backfill_env = {**os.environ, "DATABASE_URL": os.environ["DATABASE_URL"].replace("postgresql+asyncpg://", "postgresql://", 1)}
+    backfill_env = {**os.environ, "DATABASE_URL": runtime_dsn(os.environ["DATABASE_URL"])}
     backfill = subprocess.run([sys.executable, "scripts/rebuild_lexical_index.py", "--all-workspaces", "--max-batches", "10000",
                                "--output", "/data/lexical-backfill.json"], env=backfill_env, capture_output=True, timeout=900)
+    receipt_path = Path('/data/lexical-backfill.json')
+    if receipt_path.is_file():
+        receipt = json.loads(receipt_path.read_text(encoding='utf-8'))
+        print(json.dumps({'phase': 'lexical_backfill',
+            **{key: receipt[key] for key in ('supplier_calls', 'initial_missing_chunks', 'remaining_missing_chunks',
+                'deferred_unservable_chunks', 'all_eligible_indexed', 'ready_for_currently_servable_corpus')},
+            'blocked_workspace_count': len(receipt['blocked_workspaces'])}), flush=True)
     if backfill.returncode:
         raise SystemExit(f"Lexical backfill incomplete/failed (exit {backfill.returncode}); "
                          "inspect /data/lexical-backfill.json; resume retained progress before readiness "

@@ -94,12 +94,35 @@ class Providers:
                 return [scrub(item) for item in value]
             return value
         tokens = estimate_tokens(scrub(payload)) + images * self.settings.vision_image_token_reserve
-        reserve = int(payload.get("max_tokens", payload.get("max_output_tokens", 0)))
+        reserve = int(payload.get("max_completion_tokens", payload.get("max_tokens", payload.get("max_output_tokens", 0))))
         limit = self.settings.vision_context_tokens if images else self.settings.llm_context_tokens
         if tokens + reserve + self.settings.context_safety_tokens > limit:
             raise ServiceError("问题和引用资料超过模型上下文预算，请按研究问题拆分后重试",
                                code="context_too_large", retryable=False, action="缩小问题或拆分资料")
         return tokens + reserve
+
+    def chat_payload(self, model, messages, output_tokens, *, structured=False, temperature=None):
+        payload = {"model": model, "messages": messages, **json.loads(self.settings.llm_extra_body)}
+        if self.settings.llm_provider == "openai":
+            self.require_official_openai()
+            unsupported = {"temperature", "top_p", "top_logprobs", "logprobs", "thinking"}
+            if unsupported.intersection(payload):
+                raise ServiceError("OpenAI 推理模型配置含不支持的采样或供应商参数，请清空 LLM_EXTRA_BODY",
+                                   code="provider_configuration", retryable=False)
+            payload.update(max_completion_tokens=output_tokens,
+                           reasoning_effort=self.settings.llm_reasoning_effort, store=False)
+        else:
+            payload["max_tokens"] = output_tokens
+            if temperature is not None:
+                payload["temperature"] = temperature
+        if structured:
+            payload["response_format"] = {"type": "json_object"}
+        return payload
+
+    def require_official_openai(self):
+        if self.settings.llm_base_url != "https://api.openai.com/v1":
+            raise ServiceError("OpenAI 模式只允许官方 API 端点；兼容服务必须显式选择 compatible 并使用其独立凭据",
+                               code="provider_configuration", retryable=False)
 
     async def provider_available(self, key, *, probe=False):
         async with self.db.guard("provider:" + key):
@@ -233,11 +256,8 @@ class Providers:
             async with self.gate:
                 for attempt in range(2):
                     finish_reason = ""
-                    payload = {"model": self.settings.llm_model_id, "messages": messages,
-                               "max_tokens": 8000, "response_format": {"type": "json_object"},
-                               **json.loads(self.settings.llm_extra_body)}
-                    if temperature is not None:
-                        payload["temperature"] = temperature
+                    payload = self.chat_payload(self.settings.llm_model_id, messages, 8000,
+                                                structured=True, temperature=temperature)
                     result = await self.post(endpoint(self.settings.llm_base_url, "chat/completions"),
                                              self.settings.llm_api_key.get_secret_value(), payload, "对话模型")
                     usage = result.get("usage") or {}
@@ -340,9 +360,7 @@ class Providers:
             with tracer().start_as_current_span("vision.document"):
                 async with self.gate:
                     for attempt in range(2):
-                        payload = {"model": self.settings.vision_model_id, "messages": messages,
-                                   "max_tokens": 8000, "response_format": {"type": "json_object"},
-                                   **json.loads(self.settings.llm_extra_body)}
+                        payload = self.chat_payload(self.settings.vision_model_id, messages, 8000, structured=True)
                         result = await self.post(endpoint(self.settings.llm_base_url, "chat/completions"),
                                                  self.settings.llm_api_key.get_secret_value(), payload, "视觉模型")
                         for key, kind in (("prompt_tokens", "prompt"), ("completion_tokens", "completion")):
@@ -405,8 +423,8 @@ class Providers:
                                                  for i in range(1, len(images) + 1)]})}}]}
                         else:
                             result = await self.post(endpoint(self.settings.llm_base_url, "chat/completions"),
-                                self.settings.llm_api_key.get_secret_value(), {"model": self.settings.vision_model_id,
-                                "messages": messages, "max_tokens": 6000, **json.loads(self.settings.llm_extra_body)}, "视觉模型")
+                                self.settings.llm_api_key.get_secret_value(),
+                                self.chat_payload(self.settings.vision_model_id, messages, 6000), "视觉模型")
                         usage = result.get("usage") or {}
                         prompt, completion = int(usage.get("prompt_tokens", 0)), int(usage.get("completion_tokens", 0))
                         await self.db.usage(run_id, prompt, completion)
@@ -436,9 +454,11 @@ class Providers:
         finally:
             VISION_SECONDS.observe(time.monotonic() - started)
 
-    async def embed(self, texts: list[str]) -> list[list[float]]:
+    async def embed(self, texts: list[str], *, retries=2) -> list[list[float]]:
         if not texts:
             return []
+        from ..services.embedding_migration import check_embedding_barrier
+        await check_embedding_barrier(self.db)
         if self.settings.demo_mode:
             from .demo import embed
             return [embed(text) for text in texts]
@@ -450,7 +470,7 @@ class Providers:
                 payload["dimensions"] = self.settings.embedding_dimension
             async with self.gate:
                 result = await self.post(endpoint(self.settings.embedding_base_url, "embeddings"),
-                    self.settings.embedding_api_key.get_secret_value(), payload, "嵌入模型")
+                    self.settings.embedding_api_key.get_secret_value(), payload, "嵌入模型", retries=retries)
             try:
                 rows = sorted(result["data"], key=lambda row: row["index"])
                 if [row["index"] for row in rows] != list(range(len(batch))):
@@ -459,7 +479,7 @@ class Providers:
                 for vector in vectors:
                     if len(vector) != self.settings.embedding_dimension:
                         raise ServiceError(f"嵌入向量维度不匹配：配置 {self.settings.embedding_dimension}，实际 {len(vector)}")
-                    if not all(isinstance(v, (float, int)) and math.isfinite(v) for v in vector) or not any(vector):
+                    if not all(isinstance(v, (float, int)) and not isinstance(v, bool) and math.isfinite(v) for v in vector) or not any(vector):
                         raise ValueError("invalid vector")
                 output.extend(vectors)
             except (KeyError, TypeError, ValueError):
@@ -486,6 +506,8 @@ class Providers:
             if self.settings.demo_mode:
                 from .demo import search
                 rows = search(query)
+            elif self.settings.web_search_provider == "openai":
+                rows = await self.openai_search(query, run_id)
             elif self.settings.web_search_provider == "deepseek":
                 rows = await self.deepseek_search(query, run_id)
             elif self.settings.web_search_provider == "auto":
@@ -561,6 +583,14 @@ class Providers:
                         if key not in seen:
                             seen.add(key)
                             output.append({"url": action_url, "name": str(title), "summary": ""})
+                    for source in action.get("sources") or []:
+                        source_url = source.get("url") if isinstance(source, dict) else None
+                        if isinstance(source_url, str):
+                            title = source.get("title") or source_url
+                            key = (source_url, str(title))
+                            if key not in seen:
+                                seen.add(key)
+                                output.append({"url": source_url, "name": str(title), "summary": ""})
                 for child in item.values():
                     visit(child)
             elif isinstance(item, list):
@@ -570,6 +600,12 @@ class Providers:
         return output
 
     async def deepseek_search(self, query: str, run_id: str) -> list[dict]:
+        return await self.responses_search(query, run_id, openai=False)
+
+    async def openai_search(self, query: str, run_id: str) -> list[dict]:
+        return await self.responses_search(query, run_id, openai=True)
+
+    async def responses_search(self, query: str, run_id: str, *, openai: bool) -> list[dict]:
         payload = {
             "model": self.settings.llm_model_id,
             "instructions": (
@@ -581,12 +617,17 @@ class Providers:
             "tool_choice": {"type": "web_search"},
             "max_output_tokens": 1800,
         }
+        label = "OpenAI" if openai else "DeepSeek"
+        if openai:
+            self.require_official_openai()
+            payload.update(reasoning={"effort": self.settings.llm_reasoning_effort},
+                           include=["web_search_call.action.sources"], store=False)
         async with self.gate:
             result = await self.post(endpoint(self.settings.llm_base_url, "responses"),
-                self.settings.llm_api_key.get_secret_value(), payload, "DeepSeek 联网搜索", retries=0)
+                self.settings.llm_api_key.get_secret_value(), payload, label + " 联网搜索", retries=0)
         usage = result.get("usage") or {}
         await self.db.usage(run_id, int(usage.get("input_tokens", 0)), int(usage.get("output_tokens", 0)))
         citations = self._deepseek_citations(result)
         if not citations:
-            raise ServiceError("DeepSeek 联网搜索未返回可验证的来源 URL；为避免生成不可核查报告，本次未采用其摘要")
+            raise ServiceError(label + " 联网搜索未返回可验证的来源 URL；为避免生成不可核查报告，本次未采用其摘要")
         return citations[:self.settings.web_results_per_query]

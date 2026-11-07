@@ -39,7 +39,10 @@ public class HealthController {
     }
 
     @GetMapping("/api/auth/config")
-    Map<String, String> authConfig() {
-        return Map.of("mode", properties.getAuthMode(), "issuer", properties.getOidcIssuer());
+    Map<String, Object> authConfig() {
+        return Map.of("mode", properties.getAuthMode(), "issuer", properties.getOidcIssuer(),
+                "client_id", properties.getOidcClientId(),
+                "scopes", properties.getOidcScopes(),
+                "registration_enabled", properties.isOidcRegistrationEnabled());
     }
 }

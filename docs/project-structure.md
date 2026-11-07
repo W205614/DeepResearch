@@ -15,6 +15,7 @@
 | `eval/` | 固定评测集、来源、策略、评分与历史验证证据 |
 | `examples/` | 示例材料；核对文档和测试引用后再调整 |
 | `deployment/compose/` | 开发、资源受限、验收、组件验证、性能与告警测试编排 |
+| `deployment/cloud.env.example`、`deployment/postgres/`、`deployment/nginx/` | 外部服务配置模板、专用云数据库初始化与 TLS 入口示例；按[接入指南](production-readiness.md)使用 |
 | `deployment/docker/` | 未绑定固定审查路径的基础组件与验证镜像构建配方 |
 | `deployment/vendors/`、`deployment/security/` | 上游依赖、锁定来源、安全审查及绑定证据 |
 | `docs/` | 使用说明、职责边界、运维与历史交付证据 |
@@ -47,7 +48,7 @@
 - `pyproject.toml` 与 `uv.lock` 分别声明和锁定 Python 依赖，应配套保留。
 - `main.py` 是 Python 入口；`alembic.ini` 配合 `migrations/` 使用。
 - `compose.yaml` 是默认部署编排；`compose.production.yaml` 与当前本机覆盖文件的路径已记录在现有容器中，因此保留在根目录，保证停止环境仍可按原入口恢复。
-- `deployment/compose/` 按运行场景保存覆盖配置和独立验证编排。覆盖文件以根目录 `compose.yaml` 为第一份配置；单独使用组件验证编排时，显式指定 `--project-directory .`，保持构建上下文和挂载路径以仓库根目录为基准。
+- `deployment/compose/` 按运行场景保存覆盖配置和独立编排。覆盖文件以根目录 `compose.yaml` 为第一份配置；`compose.cloud.yaml` 是独立的外部服务应用编排，不叠加根目录配置。单独使用独立编排时，显式指定 `--project-directory .`，保持构建上下文和挂载路径以仓库根目录为基准。
 - `Dockerfile` 是应用构建入口；`Dockerfile.minio`、`Dockerfile.grafana` 和 `Dockerfile.milvus` 按原路径及文件哈希参与安全证据绑定，原位保留。`Dockerfile.postgres` 保留既有数据库构建入口。
 - 组件配方按服务命名，例如 `deployment/docker/Dockerfile.tempo`，可从相应 Compose 服务的 build 配置追到配方；构建上下文仍是仓库根目录。
 - `.env.example`、`.dockerignore`、`.gitattributes`、`.gitignore` 保留在根目录。
