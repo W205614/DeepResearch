@@ -1,6 +1,6 @@
 # 生产监控与告警接入
 
-本文对应企业内部、单区域多副本部署。代码与离线规则验证已实现；真实私网采集、通知送达和托管备份时效仍须在目标环境验收。本文不启用本机已停用的备份计划，也不把托管平台报告的备份成功等同于恢复演练通过。
+本文对应企业内部、单区域多副本部署。代码与离线规则验证已实现；真实私网采集、通知送达和托管备份时效仍须在目标环境验收。本机备份计划保持停用，托管备份使用独立状态采集和恢复演练。
 
 ## 文件与启用方式
 
@@ -26,13 +26,13 @@ Java 用 Spring 标准结构化配置启用请求直方图，使 `http_server_re
 SPRING_APPLICATION_JSON={"management":{"metrics":{"distribution":{"percentiles-histogram":{"http.server.requests":true}}}}}
 ```
 
-如果已有 `SPRING_APPLICATION_JSON`，合并上述对象；不要覆盖已有条目。不要改成相似的平铺环境变量：Boot4 的 relaxed binding 会把该名字歧义绑定到 `percentiles` 映射，实测可导致启动失败。目标环境需确认请求后实际出现 bucket。
+如果已有 `SPRING_APPLICATION_JSON`，合并上述对象；不要覆盖已有条目。Boot4对相似平铺变量的relaxed binding会歧义绑定到 `percentiles` 映射并导致启动失败，因此使用上述结构化配置。目标环境需确认请求后实际出现 bucket。
 
 使用已有 `scripts.ops_metrics:create_app` 作为只读容量 exporter 时，配置独立 `MONITOR_DATABASE_URL` 并使用 `dr_monitor` 最小权限角色；云环境的 target 设置 `host_probes="disabled"`，避免把未配置的工作站探测误报为云主机故障。该标签只关闭本机探测时效规则，不关闭数据库容量告警。
 
 ## 指标含义与告警处置
 
-数据库状态在多个 API／Worker 副本中重复采集，规则按 `max by (deployment)` 聚合，包括队列、扫描失败、死信、Outbox 和持久化心跳；不得求和。各进程实际发生的失败、预算拒绝和代理过载事件则对 `increase(counter[窗口])` 求和。实例就绪、排空和 Redis 可达性保留其进程语义。
+数据库状态在多个 API／Worker 副本中重复采集，规则按 `max by (deployment)` 聚合，包括队列、扫描失败、死信、Outbox 和持久化心跳，排除重复采样。各进程实际发生的失败、预算拒绝和代理过载事件则对 `increase(counter[窗口])` 求和。实例就绪、排空和 Redis 可达性保留其进程语义。
 
 | 情况 | 实际指标与门槛 | 首要处置 |
 |---|---|---|
@@ -50,16 +50,16 @@ SPRING_APPLICATION_JSON={"management":{"metrics":{"distribution":{"percentiles-h
 
 ## 托管备份状态桥接
 
-云平台可直接通过其 Prometheus exporter 和配置映射提供下列同义指标，也可由平台定时查询备份服务后生成 JSON，调用仓库转换工具；应用代码不需要修改。此接入仅支持下面的状态协议，不包含任意厂商 SDK 或隐含的跨资源一致恢复承诺。
+云平台可直接通过其 Prometheus exporter 和配置映射提供下列同义指标，也可由平台定时查询备份服务后生成 JSON，调用仓库转换工具；应用代码不需要修改。此接入使用下面的状态协议，云平台查询和跨资源恢复由部署方配置。
 
 每项必须监控的资源使用一个非秘密别名，至少覆盖实际恢复方案依赖的 PostgreSQL、证据对象、身份配置及必要索引。JSON 协议见 `observability/cloud-backup-status.example.json`：
 
-- `version` 为1，`observed_at` 是平台实际查询成功的 epoch 秒；不得用转换或抓取时间刷新旧观测。
+- `version` 为1，`observed_at` 是平台实际查询成功的 epoch 秒，使用原始观测时点。
 - `resource` 为唯一 `[a-z][a-z0-9_-]{0,63}` 别名，最多32项；禁止填 endpoint、bucket 路径或主体标识。
 - `last_success_at` 是平台确认备份任务成功的 epoch 秒；尚无成功记录用0。它不能晚于 `observed_at`。
 - `rpo_seconds` 是显式策略，整数范围60秒至1年；示例24小时需要按组织策略确认。
 
-示例全部时间为0，代表未验收，不能用作成功证据。由部署平台的备份查询作业写入真实状态文件，再运行：
+示例时间为0，运行时由真实平台观测值替换。由部署平台的备份查询作业写入真实状态文件，再运行：
 
 ```bash
 uv run python scripts/cloud_backup_metrics.py \
@@ -76,7 +76,7 @@ uv run python scripts/cloud_backup_metrics.py \
 | `deepresearch_cloud_backup_last_success_timestamp_seconds{resource}` | 最近成功备份时间 |
 | `deepresearch_cloud_backup_rpo_target_seconds{resource}` | 此资源RPO秒数 |
 
-规则分别检查 exporter 不可达、完整清单缺失、单项字段缺失、15分钟没有新观测、成功备份超出RPO。删除清单项目属于监控范围变更，须和恢复方案一起审核；不是清理告警的方法。仅在云监控配置加载这组规则，不修改本机 `DeepResearchBackupStale` 的禁用表达式。
+规则分别检查 exporter 不可达、完整清单缺失、单项字段缺失、15分钟没有新观测、成功备份超出RPO。删除清单项目属于监控范围变更，须和恢复方案一起审核。仅在云监控配置加载这组规则，不修改本机 `DeepResearchBackupStale` 的禁用表达式。
 
 ## 验证与验收
 
@@ -89,6 +89,6 @@ uv run pytest -q tests/test_cloud_backup_metrics.py
 
 第一条复用维护中的 Prometheus 镜像，仅运行网络隔离、只读根文件系统、临时目录有界的一次性 `promtool` 容器；检查37条规则、三份采集配置语法及真实 PromQL 用例，不启动或停止日常应用。CI 入口为 `.github/workflows/observability.yml`，使用版本与摘要固定的官方 promtool 镜像执行相同验证。`--syntax-only` 不验证示例证书、秘密或目标端点确实存在；目标环境替换配置后必须再运行完整 `promtool check config`。
 
-实际发布前逐项核对：所有预期副本 target 可见且 `up=1`；队列 gauge 跨副本相同且未相加；P95 bucket存在；受控就绪失败、排空、积压、预算拒绝、扫描失败和云备份过期可触发对应告警；最后通过现有 Alertmanager／告警中继流程验证真实通知送达与恢复通知。只运行离线用例不能把这些外部验收标记为通过。
+实际发布前逐项核对：所有预期副本 target 可见且 `up=1`；队列 gauge 跨副本相同且未相加；P95 bucket存在；受控就绪失败、排空、积压、预算拒绝、扫描失败和云备份过期可触发对应告警；最后通过现有 Alertmanager／告警中继流程验证真实通知送达与恢复通知。将离线用例与目标环境的实际采集、触发和送达结果分别留存。
 
 Prometheus 标准配置与规则测试语法参考：[配置文档](https://prometheus.io/docs/prometheus/latest/configuration/configuration/)、[规则单元测试](https://prometheus.io/docs/prometheus/latest/configuration/unit_testing_rules/)。

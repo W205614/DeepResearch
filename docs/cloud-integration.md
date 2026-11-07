@@ -1,6 +1,6 @@
 # 云平台接入手册
 
-本手册描述已实现客户端与部署契约，适用于 2026-11-07 的企业内部单区域多副本版本。支持协议内只需配置端点、凭据、证书和部署参数，不需另写应用代码；目标平台资源、权限、配额、MFA/SMTP、备份、通知及验收仍由部署方配置。占位域名、Secret 模板和离线配置通过都不是已接通真实云的证据。
+本手册描述已实现客户端与部署契约，适用于 2026-11-07 的企业内部单区域多副本版本。支持协议内只需配置端点、凭据、证书和部署参数，不需另写应用代码；目标平台资源、权限、配额、MFA/SMTP、备份、通知及验收仍由部署方配置。模板中的域名和Secret按目标环境替换，随后执行连接、权限与业务验收。
 
 ## 接入顺序和秘密注入
 
@@ -10,7 +10,7 @@
 4. 通过秘密平台、容器环境或 Kubernetes Secret 注入凭据。只给需要的服务，不把整个私密 env_file 注入所有服务；web 仅收公开身份来源与集群 DNS 配置。迁移账号不能传给日常服务。
 5. 运行离线预检，取得恢复点，单独完成迁移，再启动/滚动应用，最后做权限、故障、恢复和容量验收。
 
-静态环境变量不是热更新接口。轮换先创建新凭据并授权，更新对应 Secret/私密文件，排空与滚动重启使用方，验证读写/队列/下载后再撤销旧凭据；未知请求保留账本，不强行重发。Boto3 工作负载身份由 SDK 按标准身份链更新，平台负责文件/端点可达与角色轮换。不要输出原始 compose config、DSN、完整环境或供应商响应来留证据。
+静态环境变量通过滚动重启生效。轮换先创建新凭据并授权，更新对应 Secret/私密文件，排空与滚动重启使用方，验证读写/队列/下载后再撤销旧凭据；未知请求保留账本，不强行重发。Boto3 工作负载身份由 SDK 按标准身份链更新，平台负责文件/端点可达与角色轮换。不要输出原始 compose config、DSN、完整环境或供应商响应来留证据。
 
 ## PostgreSQL 分权、TLS 和迁移
 
@@ -23,7 +23,7 @@
 psql -X -f deployment/postgres/cloud-bootstrap.sql
 ```
 
-脚本在一个事务建立 dr_migrator/dr_java/dr_python/dr_monitor 和 schema 授权，不要求数据库 SUPERUSER。已有角色或应用表会失败回滚，它不是旧数据库导入/升级脚本。受限云账号由平台管理员按脚本等价授权，不给应用管理员权限。
+脚本在一个事务建立 dr_migrator/dr_java/dr_python/dr_monitor 和 schema 授权，不要求数据库 SUPERUSER。已有角色或应用表会失败回滚，旧数据库升级使用下述增量迁移入口。受限云账号由平台管理员按脚本等价授权，不给应用管理员权限。
 
 | 使用方 | 参数 |
 | --- | --- |
@@ -31,15 +31,15 @@ psql -X -f deployment/postgres/cloud-bootstrap.sql
 | Java运行 | JAVA_DATABASE_URL=jdbc:postgresql://主机:5432/库?sslmode=verify-full&sslrootcert=/run/certs/postgres-ca.pem；JAVA_DB_PASSWORD 独立 |
 | 迁移 | MIGRATOR_DATABASE_URL=postgresql+psycopg://dr_migrator:URL编码密码@主机:5432/库?sslmode=verify-full&sslrootcert=/run/certs/postgres-ca.pem |
 
-三个连接必须同一数据库且凭据不同。JDBC 不应只写 verify-full 却漏配信任根；证书 DNS 必须匹配主机名。Python/Java 日常角色分权由 scripts/migrate_services.py 授予，治理表状态由 Java 管理，Python 不得写 status/revoked_before，迁移表只读，审计只追加。监控只读必要状态列。
+三个连接必须同一数据库且凭据不同。JDBC同时配置verify-full与受信CA，证书DNS匹配主机名。Python/Java 日常角色分权由 scripts/migrate_services.py 授予，治理表状态由 Java 管理，Python 不得写 status/revoked_before，迁移表只读，审计只追加。监控只读必要状态列。
 
-应用之前执行 scripts/migrate_services.py：Alembic → 有界词法回填 → 检查点结构/权限。0018/0019 增量增加治理/当前所有者及嵌入迁移账本，不重置数据。已有库迁云另做一致性导出、对象/身份迁移和维护窗口；空云库不是原环境直接替代。检查点和正式报告必须与业务数据同一恢复点核对。迁移失败停止发布，不让应用先接单。
+应用之前执行 scripts/migrate_services.py：Alembic → 有界词法回填 → 检查点结构/权限。0018/0019 增量增加治理/当前所有者及嵌入迁移账本，不重置数据。已有库迁云另做一致性导出、对象/身份迁移和维护窗口；迁移时一起转移业务数据、对象与身份。检查点和正式报告必须与业务数据同一恢复点核对。迁移失败停止发布，不让应用先接单。
 
-验收：按角色尝试合法操作与越权写治理/迁移/审计，错误 CA/主机名应失败；真实事务与重连后查询一致，数据库不可用时不假成功。托管 PITR/备份和恢复时点在平台配置并实际隔离恢复。
+验收：按角色尝试合法操作与越权写治理/迁移/审计，错误 CA/主机名应失败；真实事务与重连后查询一致，数据库不可用时返回明确的不可用错误。托管 PITR/备份和恢复时点在平台配置并实际隔离恢复。
 
 ## OIDC 与账号治理
 
-创建公开 SPA 客户端，开启 Authorization Code + PKCE S256，精确配置 HTTPS 根路径登录/退出回调和 Web Origins。访问令牌须是 RS256 签名 JWT，含正确 iss/aud/sub/exp/iat；不支持不透明访问令牌。主体 sub 必须稳定且不超过128字符；成员管理输入沿用字母、数字及 . _ : @ - 的标识约束，接入前用组织实际账号验证映射，不能把可变邮箱展示名当作稳定主体。
+创建公开 SPA 客户端，开启 Authorization Code + PKCE S256，精确配置 HTTPS 根路径登录/退出回调和 Web Origins。访问令牌须是 RS256 签名 JWT，含正确 iss/aud/sub/exp/iat；不支持不透明访问令牌。主体 sub 必须稳定且不超过128字符；成员管理输入沿用字母、数字及 . _ : @ - 的标识约束，接入前用组织实际账号验证映射，email和display_name用于展示，主体使用稳定sub。
 
 配置 OIDC_ISSUER、OIDC_JWKS_URL、OIDC_AUDIENCE、OIDC_CLIENT_ID；OIDC_SCOPES 默认 openid profile email，按 IdP 增加 API scope/offline_access。Java 与 Python issuer/audience 一致。前端 `/api/auth/config` 获公开配置，Discovery 找授权/令牌/可选退出端点，发现 issuer 必须匹配。OIDC_CONNECT_ORIGINS 为空格分隔的准确 HTTPS Origin，覆盖 discovery/token 端点，不接受通配符或完整路径。部署根路径，不在子路径挂载。
 
@@ -51,11 +51,11 @@ psql -X -f deployment/postgres/cloud-bootstrap.sql
 
 ## Redis 单主与共享控制
 
-REDIS_URL=rediss://ACL用户:URL编码密码@主端点:端口/库号；Python ARQ 和 Java Lettuce 共用同一数据库，所有 Java 副本 DEPLOYMENT_ID 一致。TLS 验证证书/主机名；私有 CA 配 REDIS_SSL_CA_CERTS=/run/certs/redis-ca.pem。不要在 DSN 加被忽略的 TLS 查询参数。支持单主或托管主端点，不宣称 Redis Cluster/Sentinel 协议适配。
+REDIS_URL=rediss://ACL用户:URL编码密码@主端点:端口/库号；Python ARQ 和 Java Lettuce 共用同一数据库，所有 Java 副本 DEPLOYMENT_ID 一致。TLS 验证证书/主机名；私有 CA 配 REDIS_SSL_CA_CERTS=/run/certs/redis-ca.pem。不要在 DSN 加被忽略的 TLS 查询参数。支持单主或托管主端点，Cluster／Sentinel不在当前接入契约内。
 
-ACL 需要 ARQ 队列/任务/健康与共享限流所用操作，允许 Lua EVAL/EVALSHA 及其底层命令；为本部署使用专用 Redis 实例/托管数据库端点，限制 `arq:*` 和 `dr:<DEPLOYMENT_ID>:api-limit:*` 等实际键前缀，并在隔离环境验证最小命令集。不授予 FLUSHALL/CONFIG。DEPLOYMENT_ID只隔离限流键，不改变ARQ队列名；不同部署不能共享同一逻辑数据库的ARQ队列。Redis Open Source的逻辑DB号不是独立应用安全边界，见[官方SELECT说明](https://redis.io/docs/latest/commands/select/)。云平台禁脚本时共享限流无法工作，不应静默改为每实例限流。
+ACL 需要 ARQ 队列/任务/健康与共享限流所用操作，允许 Lua EVAL/EVALSHA 及其底层命令；为本部署使用专用 Redis 实例/托管数据库端点，限制 `arq:*` 和 `dr:<DEPLOYMENT_ID>:api-limit:*` 等实际键前缀，并在隔离环境验证最小命令集。不授予 FLUSHALL/CONFIG。DEPLOYMENT_ID只隔离限流键，不改变ARQ队列名；不同部署不能共享同一逻辑数据库的ARQ队列。Redis Open Source的逻辑DB号不是独立应用安全边界，见[官方SELECT说明](https://redis.io/docs/latest/commands/select/)。云端需要启用脚本能力以支持共享限流。
 
-Redis 故障保留已建立账号的授权历史读，所有业务修改/新模型外发暂不可用；首次空间引导也因写入而失败。数据库保留事实源和 Outbox，恢复队列不能以“新建空库并忽略未完成任务”代替。验收真实断连、双副本共享限流/队列限额、重启后唯一结果与任务收敛。
+Redis 故障保留已建立账号的授权历史读，所有业务修改/新模型外发暂不可用；首次空间引导也因写入而失败。数据库保留事实源和 Outbox，恢复队列后按数据库未完成任务与Outbox对账。验收真实断连、双副本共享限流/队列限额、重启后唯一结果与任务收敛。
 
 ## Milvus 索引
 
@@ -70,19 +70,19 @@ MILVUS_URI、MILVUS_TOKEN、MILVUS_DB_NAME、VECTOR_COLLECTION_PREFIX 在 API �
 认证择一：
 
 - 静态/STS：同时配置 OBJECT_STORE_ACCESS_KEY 与 OBJECT_STORE_SECRET_KEY；临时凭据再配 OBJECT_STORE_SESSION_TOKEN。轮换后重启使用方，平台负责有效期。
-- AWS 工作负载身份：三者均空，Boto3 标准身份链。IRSA 类由平台注入 AWS_ROLE_ARN、AWS_WEB_IDENTITY_TOKEN_FILE 并挂载投射身份文件；ECS 类使用标准凭据端点/授权文件变量。Compose 不自动签发或挂载云身份，Kubernetes 也需按平台为 service account 配角色和投射文件，不能只填写角色名。
+- AWS 工作负载身份：三者均空，Boto3 标准身份链。IRSA 类由平台注入 AWS_ROLE_ARN、AWS_WEB_IDENTITY_TOKEN_FILE 并挂载投射身份文件；ECS 类使用标准凭据端点/授权文件变量。Compose 不自动签发或挂载云身份，Kubernetes 也需按平台为 service account 配角色和投射文件，角色关联与身份文件投射一起完成。
 
 最小范围：Bucket ListBucket/HeadBucket，以及 uploads/*、quarantine/* 的 GetObject/PutObject/DeleteObject；CopyObject 需源读和目标写。应用无需 CreateBucket，默认继承 Bucket 加密；显式配置 OBJECT_STORE_SSE=AES256 或 aws:kms，后者可设 OBJECT_STORE_KMS_KEY_ID 并授予对应 Encrypt/Decrypt/GenerateDataKey 等平台要求。上传与隔离转正复制携带加密参数。
 
-SDK 失败返回 storage_unavailable，只有真实404/NoSuchKey等才视为缺失。版本控制/保留/生命周期由 Bucket 平台配置，删除当前对象不等于删除所有旧版本。验收真实上传→隔离扫描→转正复制→读取/下载→授权删除，以及无权限/到期凭据/网络故障明确失败；保留受控样本，禁止对日常证据做破坏性试验。
+SDK 失败返回 storage_unavailable，只有真实404/NoSuchKey等才视为缺失。版本控制/保留/生命周期由 Bucket 平台配置，历史对象版本按Bucket生命周期策略保留或清理。验收真实上传→隔离扫描→转正复制→读取/下载→授权删除，以及无权限/到期凭据/网络故障明确失败；删除与故障验证使用隔离Bucket和受控样本。
 
 ## 模型、扫描、观测与入口
 
-模型默认与四次探测见[生产文档](production-readiness.md#openai-配置与四次真实验证)。LLM_PROVIDER=openai 使用官方参数；compatible 仅供显式兼容协议，不能只凭“OpenAI兼容”推断视觉、JSON、usage、dimensions或Responses搜索可用。OpenAI 模式不自动换供应商。BGE/SiliconFlow 的 RERANKER_URL/MODEL/API_KEY/文档格式保持原契约，OpenAI 密钥不传给它。
+模型默认与四次探测见[生产文档](production-readiness.md#openai-配置与四次真实验证)。LLM_PROVIDER=openai 使用官方参数；compatible接口逐项验证视觉、JSON、usage、dimensions和Responses搜索能力，再按实际支持项配置。OpenAI 模式不自动换供应商。BGE/SiliconFlow 的 RERANKER_URL/MODEL/API_KEY/文档格式保持原契约，OpenAI 密钥不传给它。
 
 ClamAV 配 CLAMAV_HOST/PORT，INSTREAM 无认证，必须私网，不能公网暴露3310。扫描不可用资料继续隔离，不绕过上传扫描；验收允许样本、拒绝样本、超时与错误。
 
-Python span/任务日志用 OTLP/gRPC，配置 OTEL_EXPORTER_OTLP_ENDPOINT=https://端点、OTEL_EXPORTER_OTLP_HEADERS（SDK 格式，如 Authorization=Bearer%20TOKEN）、OTEL_EXPORTER_OTLP_CERTIFICATE=/run/certs/otlp-ca.pem。仅 HTTPS 端点不代表认证通过。Prometheus 私网抓取 API8000、Java8080、研究/资料Worker8001的 /metrics；跨副本数据库状态 gauges 取 max，事件 counters 才求和。完整私网采集、规则、托管备份和送达配置见[监控手册](production-observability.md)；告警模板 observability/alerts.yml，接单失败/积压/心跳/预算/扫描/备份新鲜度与送达须实际核验。默认用户停用的本机备份不能冒充托管恢复能力。
+Python span/任务日志用 OTLP/gRPC，配置 OTEL_EXPORTER_OTLP_ENDPOINT=https://端点、OTEL_EXPORTER_OTLP_HEADERS（SDK 格式，如 Authorization=Bearer%20TOKEN）、OTEL_EXPORTER_OTLP_CERTIFICATE=/run/certs/otlp-ca.pem。同时配置TLS信任与鉴权Header，并确认collector接收到span。Prometheus 私网抓取 API8000、Java8080、研究/资料Worker8001的 /metrics；跨副本数据库状态 gauges 取 max，事件 counters 才求和。完整私网采集、规则、托管备份和送达配置见[监控手册](production-observability.md)；告警模板 observability/alerts.yml，接单失败/积压/心跳/预算/扫描/备份新鲜度与送达须实际核验。默认用户停用的本机备份不能冒充托管恢复能力。
 
 同机 Nginx TLS 入口示例 deployment/nginx/tls-ingress.conf.example，替换域名、证书和上游端口，nginx -t 后加载；证书签发续期由平台负责。云 Compose edge 仅绑定127.0.0.1:APP_PORT，TLS入口/私网LB按部署调整；只暴露工作台入口，Agent/Worker/内部令牌/metrics/数据服务保持私网。覆盖不可信外部转发头，流式接口关闭代理缓冲。
 
@@ -115,17 +115,17 @@ python scripts/probe_external.py --base-url https://你的域名
 
 顺序：创建namespace/Secret/环境overlay → 取得恢复点 → 给独立迁移Job设置同版镜像并运行 → `kubectl wait --for=condition=complete job/deepresearch-migrate --timeout=600s` → 失败停止发布 → 成功再 `kubectl apply -k YOUR_OVERLAY` → 逐一 rollout status → 业务核验。每次发布用新Job名并保留旧证据，不能先一次apply含迁移和应用的资源。
 
-应用默认双副本、滚动maxUnavailable0、PDB保留1，Worker preStop排空、45秒终止宽限包含30秒等待。至少两个可调度节点才可验收节点故障；这些声明不等于生产SLA。集群上仍需登录/权限、停用/交接、Redis降级、滚动升级、真实云数据、负载、告警和隔离恢复验证。
+应用默认双副本、滚动maxUnavailable0、PDB保留1，Worker preStop排空、45秒终止宽限包含30秒等待。节点故障测试在至少两个可调度节点上进行。集群上仍需登录/权限、停用/交接、Redis降级、滚动升级、真实云数据、负载、告警和隔离恢复验证。
 
 ## 最终接入验收与恢复
 
-保存脱敏配置检查、角色/证书失败用例、真实CRUD、OIDC流程、单副本退出、Redis只读、Worker恢复、受限资料权限、异人审核与冻结报告下载结果。完整模型质量需另行费用授权，不能用四次探测替代。容量要求与RPO/RTO实际记录见[生产验收](production-readiness.md#部署与发布验收)。
+保存脱敏配置检查、角色/证书失败用例、真实CRUD、OIDC流程、单副本退出、Redis只读、Worker恢复、受限资料权限、异人审核与冻结报告下载结果。完整模型质量需另行费用授权，采用独立题集、调用预算与质量门槛。容量要求与RPO/RTO实际记录见[生产验收](production-readiness.md#部署与发布验收)。
 
-托管平台配置 PostgreSQL PITR/备份、S3版本/生命周期、IdP配置/数据库及索引快照。独立数据库/Bucket/索引前缀/身份与project恢复，禁模型外发和通知，按身份→数据库/检查点→对象→匹配索引→Redis/Outbox→只读核验→Worker/入口恢复，核对账号权限、引用、正式报告哈希与下载。scripts/recovery.py 只处理单机冷备，不自动恢复托管服务。本轮不重新启用用户停用的本机备份，不自动替换日常容器。
+托管平台配置 PostgreSQL PITR/备份、S3版本/生命周期、IdP配置/数据库及索引快照。独立数据库/Bucket/索引前缀/身份与project恢复，禁模型外发和通知，按身份→数据库/检查点→对象→匹配索引→Redis/Outbox→只读核验→Worker/入口恢复，核对账号权限、引用、正式报告哈希与下载。scripts/recovery.py 只处理单机冷备，不自动恢复托管服务。本机自动备份保持停用；日常升级单独安排恢复点与维护窗口。
 
 ## 外部逻辑恢复工具
 
-`scripts/external_recovery.py` 提供 snapshot/restore/verify，不调用模型、不删除源或恢复资源；当前属于代码交付，真实云/异机恢复仍待验收。运行终端或专用工具镜像必须安装与服务端版本匹配的 pg_dump/pg_restore；精简生产 Python 应用镜像未自带这些客户端，不能直接假定可在应用容器运行。 仓库提供 deployment/docker/Dockerfile.operator：用 --build-arg APP_IMAGE=<本次发布的不可变Python镜像> 构建，内置 PostgreSQL17 客户端并复用应用依赖及已修复SQLite/zlib；该镜像仅用于操作工具，不替代API/Worker镜像。其他PostgreSQL主版本需部署方提供匹配客户端运行环境。私密配置/CA以只读文件挂载，快照目录单独可写；不要将PG管理凭据注入应用容器。
+`scripts/external_recovery.py` 提供 snapshot/restore/verify，不调用模型、不删除源或恢复资源；当前属于代码交付，真实云/异机恢复仍待验收。运行终端或专用工具镜像必须安装与服务端版本匹配的 pg_dump/pg_restore；精简生产 Python 应用镜像未自带这些客户端，使用匹配的工具运行环境。 仓库提供 deployment/docker/Dockerfile.operator：用 --build-arg APP_IMAGE=<本次发布的不可变Python镜像> 构建，内置 PostgreSQL17 客户端并复用应用依赖及已修复SQLite/zlib；该镜像仅用于操作工具，不替代API/Worker镜像。其他PostgreSQL主版本需部署方提供匹配客户端运行环境。私密配置/CA以只读文件挂载，快照目录单独可写；不要将PG管理凭据注入应用容器。
 
 私密 JSON 配置放到 `.env.recovery-source.json` / `.env.recovery-target.json` 等已忽略路径，字段如下（全部占位，真实凭据只在私密文件）：
 
@@ -165,6 +165,6 @@ python scripts/external_recovery.py restore --config .env.recovery-target.json -
 python scripts/external_recovery.py verify --config .env.recovery-target.json --bundle .env.recovery-bundle --isolated --report .cache/recovery-verify.json
 ```
 
-snapshot 包含 PG custom dump、public表排序行数/SHA、S3原文SHA及Milvus实体，前后SQL摘要检测未排空写入。restore 恢复真实向量，不付费重嵌入，复用分权授权。verify 核对表/对象/向量、真实IdP主体/成员、viewer/停用权限、正式报告快照hash、引用和下载；缺少必要样本不能算通过。私密bundle含完整业务数据，需组织加密/访问控制/异机存放，不能提交Git或公开上传。逻辑工具通过也不替代托管PITR和实际区域级RPO/RTO演练。
+snapshot 包含 PG custom dump、public表排序行数/SHA、S3原文SHA及Milvus实体，前后SQL摘要检测未排空写入。restore 恢复真实向量，不付费重嵌入，复用分权授权。verify 核对表/对象/向量、真实IdP主体/成员、viewer/停用权限、正式报告快照hash、引用和下载；缺少必要样本不能算通过。私密bundle含完整业务数据，需组织加密/访问控制/异机存放，不能提交Git或公开上传。托管PITR和区域级RPO／RTO另在目标平台演练。
 
 协议参考：[OIDC Discovery](https://openid.net/specs/openid-connect-discovery-1_0.html)、[Boto3配置](https://docs.aws.amazon.com/boto3/latest/guide/configuration.html)、[凭据链](https://docs.aws.amazon.com/boto3/latest/guide/credentials.html)、[S3 CopyObject](https://docs.aws.amazon.com/AmazonS3/latest/API/API_CopyObject.html)、[MilvusClient](https://milvus.io/api-reference/pymilvus/v2.6.x/MilvusClient/Client/MilvusClient.md)、[PostgreSQL TLS](https://www.postgresql.org/docs/17/libpq-ssl.html)、[OTLP配置](https://opentelemetry.io/docs/languages/sdk-configuration/otlp-exporter/)。实际支持范围以项目实现和目标环境验证为准。

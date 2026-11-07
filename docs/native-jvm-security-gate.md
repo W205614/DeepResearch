@@ -1,21 +1,27 @@
-# Native JVM and complete image security gate
+# 原生JVM与完整镜像安全检查
 
-Trivy0.75.0 alone does not identify tarball JREs. `scripts/check_native_jvm.py` is an additional mandatory gate for the backend and Keycloak image matrices; it does not replace the normal full-image Trivy gate or lower any HIGH/CRITICAL threshold.
+Java后端和Keycloak镜像同时执行完整Trivy扫描与 `scripts/check_native_jvm.py`。后者补充识别tar包安装的JRE，检查真实运行库、JVM身份及完整Syft／Grype报告。
 
-`deployment/security/native-jvm-tools.json` fixes official Syft1.55.0 and Grype0.121.0 Linux archive URLs, sizes and SHA256, cross-checked against official GitHub asset digests and publisher checksums. Linux extracts only the verified regular executable and compares cached executables against the verified archive on reuse. Windows uses separately fixed official executable SHA256.
+## 工具与数据库
 
-The advisory database is obtained from the **static timestamped official Grype URL** in that manifest. `grype db import` verifies its checksum-qualified compressed blob, and the helper independently checks the extracted3.3GB SQLite database byte count and SHA256. `GRYPE_DB_AUTO_UPDATE=false` prevents drift. It never substitutes `latest` under the old hash. The database is downloaded to a runner cache rather than committed or uploaded as a giant CI artifact. Current snapshot expires after7days: CI fails until a reviewed manifest refresh records a new official static URL, compressed hash, extracted DB hash and observed date. Missing/offline/corrupt/expired database or tool downloads fail closed.
+[工具清单](../deployment/security/native-jvm-tools.json)固定官方Syft 1.55.0、Grype 0.121.0的URL、长度与SHA256。复用缓存时再次核对归档和可执行文件；Windows使用单独锁定的官方可执行文件摘要。
 
-The helper creates an explicitly owned audit container without starting it. It reads the actual JRE with `docker cp` and verifies every regular file and symlink against a manifest generated from the fixed official Temurin21.0.13+9 archive. Thus an old ELF plus forged `release` text cannot pass. The audit container is retained in created state and recorded in `summary.json`; CI runners are ephemeral, and local cleanup remains an explicit ownership-reviewed operation.
+Grype数据库使用清单中的官方静态时间戳URL。导入后核对展开数据库长度与SHA，`GRYPE_DB_AUTO_UPDATE=false` 保持本次输入稳定。数据库时效为7天；到期后更新官方URL、压缩及展开摘要、观测日期，再执行验证。缓存、下载、导入或时效异常会明确失败。
 
-It then saves native-only Syft and Grype reports, requiring exactly one actual JVM, correct version/source/ABI/path and a declared OpenJDK CPE. It additionally saves default **complete** Syft and Grype reports, blocks missing/unknown package versions, HIGH/CRITICAL/UNKNOWN findings, and ignored findings. Medium and low findings remain in the raw reports and summary. Tool/scan operational failures cannot be represented as empty successful reports.
+## 实际镜像检查
 
-CI uploads native/full SBOMs, scanner reports, configuration and summary separately from the Trivy raw scan. A passing local run is not a claim that GitHubCI has run or that production has been deployed. Current local receipts are under `docs/evidence/optimization-20261026/native-jvm-ci.json`.
+工具创建一个不启动的审计容器，以 `docker cp` 读取实际JRE，并逐文件及符号链接对照固定官方Temurin 21.0.13+9归档。JRE的release文本与实际ELF共同核验。
 
-Local Windows invocation using the verified existing scanner/cache:
+输出包括原生JVM和完整镜像两套SBOM／Grype报告。原生结果要求唯一JVM、正确版本、来源、ABI、路径和OpenJDK CPE；完整报告保留包清单和所有严重级别，HIGH／CRITICAL／UNKNOWN及忽略记录按门禁处理。
+
+CI分别上传Trivy、原生SBOM、完整SBOM、配置和摘要。当前 `b8153f5` 的[Security 22个作业](https://github.com/W205614/DeepResearch/actions/runs/42370035403)已成功；早期验证见[历史记录](evidence/optimization-20261026/native-jvm-ci.json)。
+
+## 本地运行
+
+在有Docker及仓库Python依赖的环境中指定待检查镜像和新输出目录：
 
 ```powershell
-.venv/Scripts/python.exe scripts/check_native_jvm.py --image IMAGE --profile business-java --output-dir .cache/eval/native-jvm-unique --tool-dir .cache/optimization-20261026/vendor-candidates/native-jdk-scanners --db-cache .cache/optimization-20261026/vendor-candidates/native-jdk-scanners/grype-db
+uv run python scripts/check_native_jvm.py --image IMAGE --profile business-java --output-dir .cache/eval/native-jvm-unique
 ```
 
-Use profile `keycloak` for the glibc Keycloak runtime. Output directories must be new; prior reports are preserved rather than silently reused or overwritten.
+Keycloak使用 `--profile keycloak`。工具缓存与数据库路径可通过 `--tool-dir`、`--db-cache` 指定。审计容器保留created状态并记入summary，本地清理时核对所属容器和证据；CI runner由平台回收。

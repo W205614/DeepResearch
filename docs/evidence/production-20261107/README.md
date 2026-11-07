@@ -1,6 +1,8 @@
 # 本地生产化验收证据（2026-11-07）
 
-这些是本次执行的脱敏结果，不是生产SLA或目标云平台批准。模型连通性使用真实OpenAI；负载、故障与恢复使用无付费模型替身和真实基础组件。API密钥、JWT、数据库凭据、供应商原始响应、业务原文和备份包不进入此目录。
+最新代码基线 `b8153f5` 的[CI四个作业](https://github.com/W205614/DeepResearch/actions/runs/42370035398)、[Security22个作业](https://github.com/W205614/DeepResearch/actions/runs/42370035403)与[告警规则检查](https://github.com/W205614/DeepResearch/actions/runs/42370035381)均成功。
+
+本目录保留各次验证的原始提交、执行阶段与结论，包括此前的失败和审批前记录。模型连通性使用真实OpenAI；负载、故障与恢复使用受控模型替身和真实组件。原始凭据、令牌、业务原文及恢复包保存在本机私密目录。
 
 | 记录 | 内容与边界 |
 | --- | --- |
@@ -15,6 +17,7 @@
 | [精确提交CI](github-c6acf98.json) | c6acf98完整CI四个Job成功、告警规则通过；Python1528/8跳过、Java61、前端33、真实组件5、企业浏览器22/14跳过；安全21成功/旧Grafana1阻断 |
 | [新候选审查](grafana-candidate-review.md)、[本地准备](candidate-preparation.json) | 固定新归档与d9请求；两独立18项技术审查、77目标源码取证、严格28本地未知版本及真实CLI准备。审批前状态保留；现已独立授权并发布，见发布后回执；不代表生产部署 |
 | [授权发布回执](grafana-publication.json) | 真实14分片发布、独立远端身份核对、验证选择器切换、本地归档加载及切换后177项测试；最终提交CI/安全结果单独核验，未部署日常容器 |
+| [日常升级](daily-upgrade.json) | Python 97、Java 34、前端 33 份文件指纹匹配；schema0019、14张业务表哈希一致、无新增供应商调用；升级前隔离恢复通过 |
 | [证据字节保留](source-byte-preservation.json) | 三个精确路径的原字节、真实Git index与LF检出/loader独立核验；128冻结材料不变 |
 | [首轮安全阻断](security-review.md) | 真实Security失败、精确补充审查边界与未授权候选流程；应用测试通过不代表安全放行 |
 | [精确技术补充](security-supplements.json) | SQLite确修、MinIO原OCI与源码快照的离线重算及独立复核；旧raw/verdict保留，Grafana新增16项仍阻断 |

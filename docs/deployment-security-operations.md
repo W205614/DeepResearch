@@ -1,54 +1,31 @@
-# 单机部署、最小权限与持续运行
+# 本地部署、最小权限与维护
 
-本页描述可执行机制及操作边界。`docs/evidence/optimization-20261026/` 中的记录区分离线检查、隔离组件、日常部署和外部设施，不把配置模板视为已完成生产放行。
+本页说明本地Compose部署、升级、分权、备份与恢复。外部服务和多副本接入见[云平台手册](cloud-integration.md)，历次执行结果见[证据索引](evidence/production-20261107/README.md)。
 
 ## 固定镜像与安全判定
 
-运行镜像的 OS、应用依赖和解释器/JVM 必须分别确认扫描覆盖。包扫描未发现 HIGH/CRITICAL，不代表未被识别的运行时已经修复。本轮 Python 使用签名的3.11.18源码构建；Java 使用签名的Temurin21.0.13+9运行时，另有实际版本、安全回归及 native JVM/CPE 检查。最终放行仍需对应源码的完整 CI 和 Security 成功。
+当前代码基线 `b8153f5` 的[CI](https://github.com/W205614/DeepResearch/actions/runs/42370035398)、[Security 22个作业](https://github.com/W205614/DeepResearch/actions/runs/42370035403)及[告警规则检查](https://github.com/W205614/DeepResearch/actions/runs/42370035381)均通过。运行镜像分别验证OS、应用依赖、解释器／JVM和原生组件。
 
-前端构建阶段固定使用官方 Node.js 22.23.4 Alpine 镜像及 OCI 摘要，包含 [2026-10-21 安全更新](https://nodejs.org/en/blog/vulnerability/october-2026-security-releases)中的 Brotli、TLS 等修复。Milvus 的 Ubuntu `libbrotli1` 运行时包更新及其扫描边界见[打包记录](milvus-image-packaging.md)。
+Python采用签名CPython 3.11.18源码构建与锁定的SQLite、zlib运行库；Java采用经签名与实际文件核对的Temurin 21.0.13+9；前端构建使用固定摘要的Node.js 22.23.4。运行时信任数据、JVM和Milvus的维护说明分别见[运行层打包](runtime-trust-packaging.md)、[JVM门禁](native-jvm-security-gate.md)与[Milvus打包](milvus-image-packaging.md)。
 
-2026-10-30 的完整运行镜像扫描还发现了有修复版本的 Python 中危依赖问题。本次更新锁文件中兼容的一组 LangGraph、SDK、Postgres/SQLite 检查点存储及 OpenTelemetry 依赖，分别对应[认证请求路径](https://github.com/langchain-ai/langgraph/security/advisories/GHSA-3fx2-cqw9-xr3c)、[跨命名空间访问](https://github.com/langchain-ai/langgraph/security/advisories/GHSA-6hmw-9432-67qq)和 [tracestate 解析耗时](https://github.com/open-telemetry/opentelemetry-python/security/advisories/GHSA-xcq7-p3pf-p88h)问题；同时更新 Mako，覆盖本地 Windows 开发环境的[模板路径问题](https://github.com/sqlalchemy/mako/security/advisories/GHSA-5639-2j2p-m4mx)。`uv` 构建阶段更新到固定摘要的 0.13.6，并在导出运行镜像前移除该构建工具。安全门槛及既有第三方风险记录不变；检查通过不代表所有无修复版本的系统库告警已消失。
-
-文件存储采用精确批准的 MinIO/Silo OCI 归档，Compose 不自动重建该镜像：
+新安装先加载精确批准的归档：
 
 ```powershell
 python scripts/fetch_approved_image.py
-# 离线传递时仍需校验同一个批准归档
-python scripts/fetch_approved_image.py --archive <归档路径>
+python scripts/fetch_grafana_fixed_20261107.py
 ```
 
-此工具只依赖本机 Python 标准库与 Docker。下载来源固定为本仓库 GitHub Release asset，归档内容按 [固定判定清单](../deployment/security/minio-fixed-disposition.json) 校验；私有仓库可从进程环境传入 `GITHUB_TOKEN`，不要写入配置或命令参数。下载失败、内容变化或审查证据缺失均阻断，不回退其他标签。加载成功仅证明内容一致，不能代替完整漏洞扫描。
+MinIO保留其独立请求与发布；Grafana当前标签为 `deepresearch-approved-grafana:20261107`，完整归档有14个分片，绑定14个ELF和13个重编插件。请求、授权、摘要、加载与更新步骤见[镜像归档手册](approved-image-artifacts.md)。core配置关闭可选观测栈，无需加载Grafana。
 
-完整观测栈的 Grafana 使用独立的[精确请求](../deployment/security/grafana-maintenance-request.json)、[明确授权](../deployment/security/grafana-maintenance-authorization.json)、归档和标签；core 模式不需要加载它：
-
-```powershell
-python scripts/fetch_grafana_candidate.py --profile maintenance
-```
-
-Grafana 13.2.5 的授权绑定实际源码、14 个 ELF 和完整镜像归档。独立复核覆盖 Trivy 的 28 条和 Grype 的 12 条阻断记录，按目标、包、版本、公告和严重级别共形成 33 个精确条目。5 条 Grype HTML 告警保留 HIGH。完整原始报告、独立审查和逐项结论见[维护证据](../deployment/security/grafana-maintenance-evidence/)。
-
-8个重建插件后端由维护者的精确编译哈希认可，界面标记为维护者私有信任；原始PGP签名继续保护官方其余资产，并不声称改过的二进制由上游签名。签名、前端、未知文件及未签名插件的实际拒绝测试分别保存。原始报告不会被过滤或改写。
-
-原始扫描保留1个HIGH、0个CRITICAL；仅 CVE-2026-39414 按这一个镜像的源码修复、二进制和兼容性证据判定为 `FIXED`。根据2026-10-29用户明确指令，[政策修订](../deployment/security/change-driven-review-policy.json)将固定日期到期改为变化触发复核；其他高危、未知结果、失败或缺失扫描均继续阻断。`Dockerfile.minio` 保留作为后续重建配方；重新构建得到的新镜像不能继承本次授权，必须重新审查。禁止用包级忽略、可变标签或改写原始扫描计数替代这个边界。
-
-2026-10-28 新增的 MinIO HTML 告警由[独立技术审查](../deployment/security/minio-html4-technical-review.json)单独处理：两个实际 ELF 的完整生产依赖图、native 模块与函数清单均不包含 `golang.org/x/net/html`。新消费者 `scripts/check_minio_html_exact4.py` 保留原 FIXED 检查及原 OpenPGP exact2 检查的失败报告，只在原始告警恰好对应既有两条 OpenPGP 与新四条 HTML 精确目标记录时应用已审技术事实。当前原始 1 HIGH、6 UNKNOWN 和秘密扫描结果均原样保留；新增、重复、缺失、版本或级别变化及任何 secret 继续阻断。原128个冻结文件、原始授权与镜像身份保持逐字节绑定，历史日期由新政策单独覆盖。
-
-Grafana 归档 SHA256 为 `408744f9d8d357a9b7dfd97ac802efbbdee662cb1177b80d8020bdc24c019e25`。Compose 与 CI 使用 `deepresearch-approved-grafana:20261105`。维护配方见 `deployment/docker/Dockerfile.grafana-maintenance`，重新构建或扫描条目变化会触发复核。
-
-新政策只覆盖列出的7份精确记录及其摘要，包括已有 MinIO/Grafana 授权、源码适用性和 Tempo 固定源码技术判定。历史审批中的 `expires` 保留为证据，不再按日历触发失败；报告使用 `validity_policy: change-driven` 和 `superseded_calendar_expiry` 明示这一点。政策缺失、被改写或记录变化都会拒绝，不能把政策复制给新镜像继承授权。
-
-镜像、绑定源码、配方或证据变化须重新复核；新发现不能继承既有精确漏洞判定，仍按原有严重级别门槛处理。MEDIUM/LOW 等原本不阻断的记录继续保留，不能将本次修改理解为忽略新漏洞，也不增加零漏洞门槛。提交及每周 Security 继续扫描；扫描报告时效、漏洞数据库新鲜度、完整覆盖、扫描错误及秘密泄露检查保持。取消的仅是授权记录固定日期到期。
-
-本次 [Grafana 依赖维护](../deployment/vendors/grafana-security/README.md)已完成新subject明确授权与固定发布，并更新当前配置选择；2026-10-29已完成本地日常服务切换及受影响功能验证。原有配方及旧批准记录保留为历史证据。完整扫描、独立技术审查、授权与运行验证各自记录，材料生成本身不授予批准。
+安全判定保留完整原始扫描、独立审查与逐项结论。现有精确授权按制品及绑定输入生效；镜像、源码、配方、扫描条目或严重级别变化后重新复核。历史日历修订和旧制品材料留在原路径，当前使用的标签由Compose及运行清单明确选择。
 
 ## 自动 CI 与付费质量评测
 
 普通 `CI` 和 `Security` 继续在提交时自动运行。普通 CI 包含免费离线回归、固定资料验证、Java/前端检查及隔离组件和企业栈验证；真实模型评测使用独立的 `Answer Quality (manual, paid)` 工作流，仅在 GitHub Actions 中手动选择该工作流和 `main` 后运行。
 
-手动入口保留原四项评测、评分门槛、运行时校验、同提交 CI/Security 前置条件和跨重跑累计账本。手动触发不会增加获批额度；余额不足时在构建镜像和调用模型前失败，未执行结果不会记为通过。自动检查全绿仅表示当前提交的自动 CI/Security 通过，不能代替真实模型质量验收；历史付费失败记录继续保留。
+手动入口保留原四项评测、评分门槛、运行时校验、同提交 CI/Security 前置条件和跨重跑累计账本。手动触发不会增加获批额度；余额不足时在构建镜像和调用模型前失败，未执行结果不会记为通过。自动检查与真实模型评测分别记录；历史付费结果保留原供应商、用例和调用账本。
 
-截至 2026-10-29，提交 `ae65c828c7dd54bb57b3e3c37d7593dd6d518523` 的[付费尝试](https://github.com/W205614/DeepResearch/actions/runs/40725847694)已使用全部获批的 296 次新增调用，生命周期累计 1565 次，余额为 0。答案评测 10/10 通过；研究评测 29/30 通过，最后一题因 `evaluation_budget` 未完成；稳定性和扩展评测未运行。这些结果不构成完整质量验收通过。
+截至 2026-10-29，提交 `ae65c828c7dd54bb57b3e3c37d7593dd6d518523` 的[付费尝试](https://github.com/W205614/DeepResearch/actions/runs/40725847694)已使用全部获批的 296 次新增调用，生命周期累计 1565 次，余额为 0。答案评测 10/10 通过；研究评测 29/30 通过，最后一题因 `evaluation_budget` 未完成；稳定性和扩展评测未运行。该次完整质量验收未完成。
 
 `RAG Quality (manual)` 也是独立手动入口，默认 `prepare_only=true`：先验证固定制品的祖先源码绑定，加载批准的 MinIO 归档，构建评测镜像，在禁网容器中检查两个评测命令及输出写入权限，再构建并启动隔离的 etcd/MinIO/Milvus，结束后清理该临时项目。此模式不读取供应商密钥，不调用模型、嵌入或重排服务；通过只证明准备流程可用。容器使用 runner 的 UID/GID 写入挂载的评测目录，避免运行镜像用户无权写入结果。
 
@@ -58,16 +35,17 @@ Grafana 归档 SHA256 为 `408744f9d8d357a9b7dfd97ac802efbbdee662cb1177b80d8020b
 
 ## 现有数据升级
 
-2026-10-29，用户明确停用本机自动备份并清理包括最新恢复集在内的完整备份、离线镜像包与可再生构建缓存。本机不再提供已验证的完整恢复点；历史恢复成功记录仅证明当时的验证结果。实际 Docker 镜像、容器、数据卷、业务文件、配置及必要来源记录保留。回收站容量不足的剩余文件只作待处理材料，不作为当前有效恢复集。
+2026-10-29，用户明确停用本机自动备份并清理包括最新恢复集在内的完整备份、离线镜像包与可再生构建缓存。当时的完整恢复集已退役，恢复报告保留原验证时点。实际 Docker 镜像、容器、数据卷、业务文件、配置及必要来源记录保留。回收站容量不足的剩余文件只作待处理材料，不作为当前有效恢复集。
 
-本机私密备份配置已禁用，`DeepResearch-Verified-Cold-Backup` 定时任务已关闭，当前有效备份时间清零。只采集容量的 `DeepResearch-Host-Probe` 保留；`DeepResearchBackupStale` 规则按这项停用策略设为返回空结果的 `vector(0) > 0`，其他监测规则不变。若以后重新启用备份，需显式启用私密配置和定时任务、先建立并验证新的恢复集，再恢复该规则注释中保留的原表达式。以下升级备份操作供重新启用后使用。
+本机私密备份配置已禁用，`DeepResearch-Verified-Cold-Backup` 定时任务已关闭，当前有效备份时间清零。只采集容量的 `DeepResearch-Host-Probe` 保留；`DeepResearchBackupStale` 规则按这项停用策略设为返回空结果的 `vector(0) > 0`，其他监测规则不变。若以后重新启用备份，需显式启用私密配置和定时任务、先建立并验证新的恢复集，再恢复该规则注释中保留的原表达式。以下手动升级备份按维护窗口执行；自动调度继续遵循该停用策略。
 
 先保存当前数据/配置/精确镜像及挂载的可恢复备份；日常容器替换必须在获分配的部署窗口内完成。不要删除卷或用全新数据库替换旧库。
 
 源码已改而日常容器还在旧版本时，先用旧提交及实际本机覆盖冻结原运行拓扑，不能拿新 `bootstrap-db/storage-init` 编排配旧镜像做回滚包：
 
 ```powershell
-.venv/Scripts/python.exe scripts/freeze_deployment.py --baseline 8768aa6c1e4f0d24a8c355ce769112e98b3b8c10 --output .cache/optimization-20261026/pre-upgrade-deployment
+$RunningCommit = 'REPLACE_WITH_RUNNING_COMMIT_SHA'
+.venv/Scripts/python.exe scripts/freeze_deployment.py --baseline $RunningCommit --output .cache/pre-upgrade-deployment
 ```
 
 该只读工具核对既有服务集合，用实际容器环境、命令、镜像ID替代猜测值，生成展开的私密 `rollback-frozen.private.compose.json`。在维护窗口执行完整冷备时，将这个文件显式传给 `recovery.py backup --path <新备份目录> --compose-file <冻结文件> --source-project deepresearch`，而不是使用已改写的新源码编排。备份工具继续捕获实际匿名卷及 ClamAV 数据，并复制只读 bind 内容。升级成功后再用新拓扑备份，旧、新两份恢复材料分别保留。此处维护工具需要本机 Python 及仓库依赖，或使用已验证的维护运行环境；全新 Docker 部署不应被文档误写成无需任何维护运行环境即可执行这些本机命令。
@@ -97,7 +75,7 @@ docker run --rm --network none -v "${PWD}:/workspace" -w /workspace python:3.13-
 | `dr_python` | 执行、资料、检索、预算和检查点写入；不能写成员、额度控制、Outbox 或报告发布状态；只能更新快照时效标记；文档策略只可插入继承默认值 |
 | `dr_monitor` | 只读容量查询及指定状态列，不能读取研究主题、正文或成员表 |
 
-`scripts/migrate_services.py` 是新表授权的共同入口；Java/Python 写入均用显式表白名单，新权限表不会自动变成执行数据。Python 对会话只可执行清理删除，对修订作业只可更新执行计划和时间，事件不可覆盖更新。运行账号均无 CREATE、CREATEROLE、CREATEDB、SUPERUSER 或 BYPASSRLS。本项目未宣称用 RLS 实现数据库级租户隔离，用户/空间/集合边界仍由业务访问层执行。
+`scripts/migrate_services.py` 是新表授权的共同入口；Java/Python 写入均用显式表白名单，新权限表不会自动变成执行数据。Python 对会话只可执行清理删除，对修订作业只可更新执行计划和时间，事件不可覆盖更新。运行账号均无 CREATE、CREATEROLE、CREATEDB、SUPERUSER 或 BYPASSRLS。用户、空间和集合边界由业务访问层执行，数据库角色限制各服务的数据写入范围。
 
 生产 Python 配置 `CHECKPOINT_SCHEMA_MANAGED=true`；运行时不执行检查点 DDL。离线 SQLite/开发夹具保留显式开发初始化。
 
@@ -110,7 +88,7 @@ docker run --rm --network none -v "${PWD}:/workspace" -w /workspace python:3.13-
 
 两者都不能访问对方的 bucket。MinIO 可能将 ListBuckets 返回为按权限过滤的清单，而不是直接拒绝；验证应检查清单不包含无关 bucket，并实际请求无关对象。
 
-告警令牌和内部业务调度令牌分别保存在两个卷；新版告警使用 `alert-relay-token-v2`，不会重新挂载含旧混合令牌的历史卷。旧混合卷仅为回滚保留，新业务令牌在独立卷生成。Alertmanager/告警转发组件不挂载业务令牌，两个 Worker 也不需要调度令牌。业务、数据库、索引存储、身份持久化、入口和遥测采用必要网络关系；没有挂 Docker socket。网络区分不等同流量加密，远程部署仍须由受控 TLS 入口、身份服务 hostname/redirect URI 和访问策略承接。
+告警令牌和内部业务调度令牌分别保存在两个卷；新版告警使用 `alert-relay-token-v2`，不会重新挂载含旧混合令牌的历史卷。旧混合卷仅为回滚保留，新业务令牌在独立卷生成。Alertmanager/告警转发组件不挂载业务令牌，两个 Worker 也不需要调度令牌。业务、数据库、索引存储、身份持久化、入口和遥测采用必要网络关系；没有挂 Docker socket。远程部署通过TLS入口、身份服务hostname／redirect URI和访问策略保护网络连接。
 
 ## 配置档与资源边界
 
@@ -125,13 +103,13 @@ docker compose -f compose.yaml -f deployment/compose/compose.core.yaml config --
 
 发布时选择相应配置并在授权维护窗口启动。`deployment/compose/compose.core.yaml` 是有意关闭外部遥测的资源受限模式，不应将该模式写成完整生产监控已启用。完整部署直接使用基本编排；生产覆盖为业务进程增加只读根文件系统、必要 tmpfs 和能力收敛。
 
-所有服务有 CPU/内存/PID 上限和 Docker 日志轮转。默认值是单机试用起点，不能当作容量测量结果。Prometheus 保留最长15天且最多2GB；日志保留7天、追踪保留3天；这些观测数据与业务正式证据的保留规则分开。历史匿名 Prometheus 卷仍需在重建前核对并按恢复清单保留，不因没有业务引用删除。
+所有服务有 CPU/内存/PID 上限和 Docker 日志轮转。默认资源值用于本地运行，容量实测见[本地验收](evidence/production-20261107/README.md)。Prometheus 保留最长15天且最多2GB；日志保留7天、追踪保留3天；这些观测数据与业务正式证据的保留规则分开。历史匿名 Prometheus 卷仍需在重建前核对并按恢复清单保留，不因没有业务引用删除。
 
 ## 备份、异机目标与恢复目标
 
 ### 维护者本机的备份记录
 
-截至 2026-10-31，本机自动备份继续停用，旧完整备份和离线恢复集已退役，目前没有有效完整恢复集。`DeepResearch-Verified-Cold-Backup` 计划任务及私密备份配置保持禁用；容量探测任务继续保留。备份脚本仍保留为按需工具，不代表备份调度正在运行。
+自动备份按本机策略保持停用，`DeepResearch-Verified-Cold-Backup` 计划任务及私密配置禁用；容量探测继续保留。手动备份与隔离恢复按需运行，恢复点以实际生成并验证的清单为准。
 
 2026-10-28 结构整理曾保留 `.cache/backup/scheduled/scheduled-20261027-042116/` 完整快照及数据库逻辑备份，并校验当时的清单和镜像内容。该记录已被 2026-10-29 的备份退役决定取代，不能继续将这些路径、旧恢复报告或回收站内容当作当前可用恢复点。历史整理记录见本机 `.cache/structure-cleanup-20261028/`，退役状态记录在 `.cache/backup/RECOVERY-DISABLED.json`。
 
@@ -167,7 +145,7 @@ Unregister-ScheduledTask -TaskName DeepResearch-Host-Probe -Confirm:$false
 
 证据必须分别记录安装前后任务定义、下次运行时间、`LastTaskResult`、最近成功备份清单和主机探针时点。工具存在不表示已安装、已成功执行或已送达异机；本轮安装和首次完整备份须由日常部署窗口阶段单独完成。
 
-默认 RPO 目标24小时、RTO目标15分钟，均可配置；目标不是承诺。备份耗时不能写成恢复耗时，同机隔离演练也不能写成异机恢复。应记录备份时点、完整恢复耗时、业务校验和实际数据缺口。自动化、机外路径、实际接收人、异机恢复以及 SMTP/MFA 配置须各自验收，缺失项不能用脚本存在代替。
+默认RPO目标24小时、RTO目标15分钟，可按部署调整。每次演练记录备份时点、完整恢复耗时、业务校验和实际数据缺口；机外路径、通知收件人、异机恢复及SMTP／MFA分别验证。
 
 ## 容量、备份新鲜度与受控告警
 

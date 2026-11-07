@@ -1,6 +1,6 @@
 # 项目结构与本地文件
 
-首次部署与使用见 [README](../README.md)。本文说明现行目录职责和整理边界。
+首次部署与使用见[README](../README.md)，开发环境和验证方式见[CONTRIBUTING](../CONTRIBUTING.md)。本文说明现行目录职责与请求路径。
 
 | 目录 | 职责 |
 | --- | --- |
@@ -41,7 +41,7 @@
 | 压测 | [load-health.js](../scripts/load-health.js) 是 k6 健康端点负载场景；通过 `BASE_URL` 选择目标，`VUS` 和 `DURATION` 控制负载。 |
 | 运维：本地备份轮换 | 从根目录手动运行 [install-backup-task.ps1](../scripts/install-backup-task.ps1)，无必填参数。它注册或覆盖 Windows 任务 `DeepResearchDailyBackup`，默认 02:00 调用 [backup-retention.ps1](../scripts/backup-retention.ps1)，保留最近七份并清理过期备份。 |
 | 运维：校验冷备与容量探测 | [运维手册](deployment-security-operations.md#配置调度) 使用 [install_backup_task.ps1](../scripts/install_backup_task.ps1)，必填 `-Configuration` 私密配置。它在宿主机注册 `DeepResearch-Verified-Cold-Backup` 与 `DeepResearch-Host-Probe` 两个任务，分别调用 [scheduled_backup.py](../scripts/scheduled_backup.py) 和 [ops_probe.py](../scripts/ops_probe.py)。安装这两类调度均应在明确选择备份策略后进行。 |
-| 安全审查 | [fetch_approved_image.py](../scripts/fetch_approved_image.py) 和 [fetch_grafana_candidate.py](../scripts/fetch_grafana_candidate.py) 按批准记录验证镜像，成功后载入本机 Docker；首次部署的参数见[快速部署](../README.md#快速部署)。 |
+| 安全审查 | [fetch_approved_image.py](../scripts/fetch_approved_image.py) 和 [fetch_grafana_fixed_20261107.py](../scripts/fetch_grafana_fixed_20261107.py) 按批准记录验证镜像，成功后载入本机 Docker；首次部署的参数见[快速部署](../README.md#本地快速部署)。 |
 
 ## 根目录入口
 

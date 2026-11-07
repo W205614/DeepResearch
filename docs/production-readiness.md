@@ -2,7 +2,7 @@
 
 适用日期：2026-11-07。面向企业内部团队，单区域、多副本应用层；沿用 Spring Boot、LangGraph、Vue、PostgreSQL、Redis、Milvus 和 S3。容量目标：50 个账号、10 个在线用户、全平台 5 个执行研究任务、20 个等待任务，单空间最多 2 个执行任务、500 份资料及 5 万片段。
 
-本文区分代码已实现、本地已验证、真实环境待验收。代码、配置检查和模型连通性不能代替生产放行。商业 SaaS、支付、任意厂商原生接口、跨地域多活及生产 SLA 不在范围内。
+当前代码基线 `b8153f5` 的[CI](https://github.com/W205614/DeepResearch/actions/runs/42370035398)、[Security 22个作业](https://github.com/W205614/DeepResearch/actions/runs/42370035403)和[告警规则](https://github.com/W205614/DeepResearch/actions/runs/42370035381)均通过。个人本地功能交付可进入按需维护阶段；目标云平台接入、完整新模型质量与异机恢复按本文分别验收。
 
 ## 交付入口与证据
 
@@ -15,7 +15,7 @@
 | 云接入 | [接入手册](cloud-integration.md)、[配置模板](../deployment/cloud.env.example)、[应用 Compose](../deployment/compose/compose.cloud.yaml)及 Kubernetes 应用资源 | 真实网络、权限、CA、工作负载身份、配额、备份待验收 |
 | 运维 | Worker 心跳/就绪/排空、指标告警、迁移、负载和故障工具 | 未取得恢复点、质量和异机恢复证据前不能放行日常上线 |
 
-脱敏结果见[本次证据索引](evidence/production-20261107/README.md)。原始本机报告位于 `.cache/openai-smoke/`、`.cache/production-integrations/` 和 `.cache/production-acceptance/`，其中凭据、令牌、业务备份与原文不提交仓库。历史评测账本保持原样，不改写为新模型结果。未运行、跳过、失败或中断的检查不计通过；未提交和核验的新代码不声称 GitHub CI 通过。
+脱敏结果见[本次证据索引](evidence/production-20261107/README.md)。原始本机报告位于 `.cache/openai-smoke/`、`.cache/production-integrations/` 和 `.cache/production-acceptance/`，其中凭据、令牌、业务备份与原文不提交仓库。历史评测保留原模型、提交和账本；当前结果记录在相应执行报告中。
 
 ## OpenAI 配置与四次真实验证
 
@@ -33,7 +33,7 @@ EMBEDDING_DIMENSION=3072
 SEND_EMBEDDING_DIMENSIONS=true
 ```
 
-新安装将同一 OpenAI 项目密钥分别注入 `LLM_API_KEY` 和 `EMBEDDING_API_KEY`；运维脚本读取 `OPENAI_API_KEY`。仅使用本地私密配置、Secret 或秘密管理平台，不能把密钥写进仓库、浏览器或报告。**有历史索引的旧部署保留原嵌入配置及其原密钥，完成迁移后再切换。** OpenAI 密钥不能填入原第三方嵌入端点。BGE/SiliconFlow 重排仍用原独立端点、模型与凭据。
+新安装将同一 OpenAI 项目密钥分别注入 `LLM_API_KEY` 和 `EMBEDDING_API_KEY`；运维脚本读取 `OPENAI_API_KEY`。仅使用本地私密配置、Secret 或秘密管理平台，密钥保存在本地私密配置、Secret或秘密管理平台。**有历史索引的旧部署保留原嵌入配置及其原密钥，完成迁移后再切换。** 旧第三方嵌入端点使用其原独立凭据。BGE/SiliconFlow 重排仍用原独立端点、模型与凭据。
 
 文字/视觉使用 `max_completion_tokens` 和 `reasoning_effort=low`，保留既有输出与上下文上限；不发送旧 temperature、top_p、logprobs 或 DeepSeek thinking 参数。输出用量包含推理 Token，预算预留覆盖输出上限。搜索解析官方原生引用和 `web_search_call.action.sources`，不采信正文任意 URL。OpenAI 模式失败明确报错，不自动回退 DeepSeek/Bocha。
 
@@ -43,7 +43,7 @@ python scripts/openai_smoke.py --env-file .env
 
 默认 ledger 为 `.cache/openai-smoke/requests.sqlite3`，报告为 `.cache/openai-smoke/report.json`。先持久化次数，再依次发出文字、合成红色图片、公开联网问题和单条 3072 维嵌入；每类最多一次 HTTP，禁重试/重定向，失败即停，未知结果/中断同样消耗次数。再次执行沿用 ledger，不补打失败类别；不要更换或删除 ledger 绕过额度。
 
-本轮这四类均 HTTP 200：文字总用量 30、图片 48、联网搜索 8734、嵌入 4 Token，单条嵌入确认 3072 维。数字来自该次供应商响应，不是未来费用/时延承诺。没有追加请求、全量评测或历史向量重建。
+本轮这四类均 HTTP 200：文字总用量 30、图片 48、联网搜索 8734、嵌入 4 Token，单条嵌入确认 3072 维。这些数字对应本次供应商响应。完整质量评测与历史向量重建使用独立预算。
 
 协议依据：[Sol 模型](https://developers.openai.com/api/docs/models/gpt-6.1-sol)、[请求参数](https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create)、[联网搜索](https://developers.openai.com/api/docs/guides/tools-web-search)、[嵌入](https://developers.openai.com/api/docs/guides/embeddings)。模型账号权限和配额以实际项目为准。
 
@@ -51,7 +51,7 @@ python scripts/openai_smoke.py --env-file .env
 
 指纹包含模型、端点、维度和演示模式，名称/维度相同也不能混用端点不同的向量。工具保留旧集合、资料、版本、作者、报告和引用，不覆盖旧指纹绕过检查。
 
-2026-11-07 已停止的日常 PostgreSQL 卷经只读挂载复制到独立卷，在无网络、默认只读的隔离 PostgreSQL 查询后停止。当前源 schema 为 `0017_product_governance`；4 份 ready 资料、118 个候选片段、0 条语义记忆，另有 8 份删除资料、1 份失败资料和 2 条非语义个人记忆。UTF-8 字节与框架开销保守估算输入 169746 Token，**并非供应商计费量或报价**；单条模式预计 118 次请求，实际预算还含请求 payload 预留和平台额度。旧 Milvus 集合本轮未核验。脱敏报告：`.cache/production-integrations/history-embedding-inspection.json`。
+2026-11-07 已停止的日常 PostgreSQL 卷经只读挂载复制到独立卷，在无网络、默认只读的隔离 PostgreSQL 查询后停止。该次检查的源schema为 `0017_product_governance`；4 份 ready 资料、118 个候选片段、0 条语义记忆，另有 8 份删除资料、1 份失败资料和 2 条非语义个人记忆。UTF-8 字节与框架开销保守估算输入 169746 Token，**并非供应商计费量或报价**；单条模式预计 118 次请求，实际预算还含请求 payload 预留和平台额度。旧 Milvus 集合本轮未核验。脱敏报告：`.cache/production-integrations/history-embedding-inspection.json`。
 
 在根目录使用项目 Python 依赖。私密注入 `MIGRATOR_DATABASE_URL`，运行重建还需 `OPENAI_API_KEY`；env 文件中的 EMBEDDING_* 准确描述旧索引，目标固定为官方 3072 维。迁移写入使用独立 dr_migrator，运行时 dr_python 只读迁移表。
 
@@ -75,7 +75,7 @@ prepare 要求无 queued/running/interrupted 研究和 scanning/indexing/rebuild
 
 切换前可执行 `abort <migration_id>` 解除本次屏障并保留旧指纹、全部影子集合。已激活不能用 abort 回滚：保持维护窗口，恢复预先保存的一致数据库/对象/索引恢复点及匹配的原配置，核验后恢复业务；不要手工只改指纹。新索引接收业务更新后旧集合已落后，单独切回会漏资料。任何旧/影子集合清理均须另行明确授权。
 
-新安装无历史向量可直接初始化官方索引；旧安装未批准重建时只切文字/视觉/搜索，日常嵌入维持原状。四次探测不等于批准 118 次历史重建。
+新安装无历史向量可直接初始化官方索引；旧安装未批准重建时只切文字/视觉/搜索，日常嵌入维持原状。历史重建需按118个片段另定累计调用与Token预算。
 
 ## 多副本、降级与 Worker
 
@@ -118,7 +118,7 @@ PLATFORM_OPERATOR_SUBJECTS 是 IdP sub 的逗号分隔受控白名单，空间�
 | 恢复 | 隔离恢复核对账号权限、资料、引用、正式报告哈希/下载，记录实测RPO/RTO |
 | 发布 | 最终源码相关本地检查通过，提交后核验对应GitHub CI/安全结果 |
 
-受控替身不能证明真实模型速度、费用或质量。上线需有效恢复点、必要索引迁移、真实质量、告警送达和异机恢复证据。本轮不自动替换日常容器、不重启用户停用的本机备份。
+本地负载使用受控模型替身；真实模型速度、费用与质量在供应商环境单独评测。部署前准备有效恢复点，完成必要索引迁移、质量、告警送达与异机恢复验证。日常容器升级和自动备份启用分别安排。
 
 ## 可复现验收入口
 
@@ -136,12 +136,12 @@ smoke 是短时、小资料功能检查；load 固定1800秒/50账号/10在线/5
 
 业务证据默认保留，缓存有界清理和归档不等于业务删除；清理对象、向量、检查点及关联引用须显式授权。Bucket 历史版本生命周期、数据库 PITR、身份/索引备份由平台配置，删除当前对象不代表抹除所有版本。
 
-复用 observability/alerts.yml，配置私网采集、送达渠道、负责人及接单失败、积压、心跳、预算、扫描和备份新鲜度告警。用户停用的本机备份及其静默告警不能当作恢复能力；目标平台接入真实备份指标并实测送达。
+复用 observability/alerts.yml，配置私网采集、送达渠道、负责人及接单失败、积压、心跳、预算、扫描和备份新鲜度告警。本机备份保持停用；目标平台接入真实备份指标并验证通知送达。
 
 恢复顺序：隔离写入并保留现场 → 恢复匹配身份/签名信任 → PostgreSQL/检查点/权限 → 对应 S3 对象/版本 → 匹配维度/活动指纹的索引 → Redis 与 Outbox/状态机恢复 → 只读核验 → Worker/入口。使用独立数据库、Bucket、Milvus 库/前缀、project 和隔离凭据，禁模型外发/通知，核对受限资料撤权、正式报告哈希、引用和下载后再开放修改。Redis 不能替代数据库事实源。
 
-scripts/recovery.py 面向单机卷冷备，不自动执行托管云恢复；PITR、S3版本、IdP及向量快照通过所选平台控制面操作。升级保留增量schema，不做自动破坏性降级，不将旧镜像混用新版权限/配置作为回滚。未演练不填写恢复通过或承诺RPO/RTO。
+scripts/recovery.py 面向单机卷冷备，不自动执行托管云恢复；PITR、S3版本、IdP及向量快照通过所选平台控制面操作。升级保留增量schema，不做自动破坏性降级，不将旧镜像混用新版权限/配置作为回滚。每次恢复演练记录实际RPO／RTO和业务核验结果。
 
-新增 `scripts/external_recovery.py` 可对支持协议做逻辑 snapshot/restore/verify；本轮真实隔离演练核对54张表、原文对象及向量、3个有效登录主体、停用拒绝、只读拒写、3次正式报告SHA/引用/下载。身份平台复用隔离Keycloak，不能据此声称IdP原生备份或异机恢复已通过。参数、私密配置、PG客户端前置条件及未验边界见[外部恢复工具](cloud-integration.md#外部逻辑恢复工具)。真实身份恢复仍由目标IdP平台完成，工具不替代任意云厂商控制面。
+新增 `scripts/external_recovery.py` 可对支持协议做逻辑 snapshot/restore/verify；本轮真实隔离演练核对54张表、原文对象及向量、3个有效登录主体、停用拒绝、只读拒写、3次正式报告SHA/引用/下载。该次使用同机隔离Keycloak；IdP原生备份与异机恢复留待目标环境验证。参数、私密配置、PG客户端前置条件及未验边界见[外部恢复工具](cloud-integration.md#外部逻辑恢复工具)。真实身份恢复仍由目标IdP平台完成，工具不替代任意云厂商控制面。
 
-私网采集、37条规则、托管备份指标与告警送达配置详见[生产监控与告警](production-observability.md)，避免将用户停用的本机备份告警当作托管恢复证据。
+私网采集、37条规则、托管备份指标与告警送达配置详见[生产监控与告警](production-observability.md)，本机与托管备份使用各自的状态指标和处置流程。

@@ -1,0 +1,55 @@
+{
+  "code_baseline": "b8153f5e50dadf14b0bb5bf6149acfe9534edec2",
+  "source_fingerprints": {
+    "python": {
+      "files": 97,
+      "mismatches": [],
+      "manifest_sha256": "54815320d5658a38753f383beeed63c2d81ff92d7dde5febde4fee77d111e31a",
+      "complete_canonical_COPY_file_set_verified": true
+    },
+    "java": {
+      "files": 34,
+      "mismatches": [],
+      "manifest_sha256": "b0a508351cf3cad635c5576084f35aab417c9f59b0910871f8e819c4bb795f88"
+    },
+    "frontend": {
+      "files": 33,
+      "mismatches": [],
+      "manifest_sha256": "a920f8704878363454b2cc45e3e375cab8fe1328d9a91d557ca15a51ec35261f"
+    }
+  },
+  "daily_application_images": {
+    "agent": "sha256:63df50dc6e967785f238b8c743546fe9b9dd88181381c169759ece617bd4c113",
+    "worker": "sha256:63df50dc6e967785f238b8c743546fe9b9dd88181381c169759ece617bd4c113",
+    "document-worker": "sha256:63df50dc6e967785f238b8c743546fe9b9dd88181381c169759ece617bd4c113",
+    "backend": "sha256:cd183eee0e7575b0b92e94f1a419424c0e1133ad0b1de3ddd2c20dce9b8e47a6",
+    "web": "sha256:efd92f9bcc9a4490d04c0a1810715b434a874eee2523bf85325a776c4f6c3b4c"
+  },
+  "local_health": {
+    "command": "scripts/verify_local_deployment.py",
+    "passed": true,
+    "core_ready": true,
+    "anonymous_capabilities_denied": true,
+    "loaded_alert_rules": 32,
+    "all_five_application_scrape_targets": "up",
+    "scope": "local real services; no model calls or external alert delivery"
+  },
+  "migration": "0019_embedding_migrations",
+  "business_tables_unchanged": 14,
+  "research_runs_retained": 46,
+  "document_chunks_retained": 118,
+  "new_provider_calls": 0,
+  "embedding_endpoint_switched": false,
+  "pre_upgrade_restore": {
+    "passed": true,
+    "rto_seconds": 358.55,
+    "upstream_calls_enabled": false
+  },
+  "builds": {
+    "java": "Current canonical source; fixed official JRE assets supplied through hash-verified equal-byte local transport.",
+    "frontend": "Current canonical Dockerfile and source.",
+    "python": "Existing immutable runtime reused after exact dependency-lock and runtime-recipe comparison; the complete current canonical final COPY file set matched.",
+    "canonical_complete_build_and_scan": "Independently verified by b8153f5 GitHub CI and Security."
+  },
+  "external_cloud_services_connected": false
+}

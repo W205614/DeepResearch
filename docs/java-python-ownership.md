@@ -1,6 +1,6 @@
 # Java / Python 职责与数据契约
 
-本项目的主体仍是 Python LangGraph 编排查询、检索、分析和报告生成。Java 的职责是把这条不确定的 Agent 执行链放进可鉴权、可并发控制、可取消恢复、可审计的业务任务中，而不是重写 Agent。
+Python负责LangGraph查询规划、检索、分析和报告生成；Java负责公开业务入口、身份权限、任务准入、治理、审核发布和Outbox。两侧通过内部API与共享PostgreSQL状态协作。
 
 ## 当前请求链
 
@@ -15,7 +15,9 @@ Browser
 
 | 数据/能力 | 当前写入方 | 契约 |
 | --- | --- | --- |
-| `workspaces`、`memberships`、`workspace_limits`、`audit_logs` | Java | Python Agent 不修改租户、角色、限额和业务审计 |
+| `workspaces`、`memberships`、`workspace_limits`、`audit_logs` | Java | 管理空间、角色、限额、当前所有者与业务审计，保留原始创建者 |
+| `platform_users`、`platform_audit_logs` | Java主导 | Java更新账号状态与撤销时间并追加治理审计；Python仅登记已验证主体及更新展示名、时间 |
+| `embedding_migrations`、`embedding_migration_items` | 迁移工具 | Python日常角色只读，维护迁移单独使用迁移身份 |
 | `threads` | Java | Java 创建、改名和校验归属；删除暂经鉴权代理调用 Python 清理关联的 Agent 数据 |
 | `business_outbox` | Java | 只有 Java 创建、抢占、重试、置死信和人工重投 |
 | `report_publications` | Java | Java 冻结报告和证据快照、执行双人审核、撤回与审计；Python 不修改发布状态 |
@@ -25,7 +27,7 @@ Browser
 | 用户偏好记忆 | Java | Java 校验用户所有权后执行 CRUD |
 | 语义记忆、文档、附件、切块、向量索引、搜索缓存、检查点 | Python | 属于 Agent/RAG 执行层；Java 只负责公开入口鉴权和工作空间边界 |
 
-`runs` 和 `events` 目前是共享表，这是渐进式拆分，不是数据库隔离的微服务。新增字段前必须说明唯一写入方；不得让 Java 与 Python 对同一状态做无条件覆盖。
+`runs`和`events`为共享表。新增字段明确写入方，状态更新使用条件谓词、执行代与同一事务锁，防止取消、恢复和迟到结果互相覆盖。
 
 ## 报告审核与发布
 
@@ -40,11 +42,8 @@ Browser
 - 调度器通过 `FOR UPDATE SKIP LOCKED` 原子认领命令，网络调用期间使用有期限的租约，不长期持有数据库事务。
 - 实例崩溃后，其他实例可以回收过期租约；暂时性错误按上限退避重试，永久错误或耗尽次数后进入死信。
 - 管理员只能查看脱敏错误码，并可通过受 RBAC 保护的接口重投死信。
-- Python 内部调度/中止入口必须保持幂等，因为“Agent 已执行但 Java 未收到响应”仍可能造成重复调用。因此这是 **At Least Once**，不是 Exactly Once。
+- Python 内部调度/中止入口必须保持幂等，因为“Agent 已执行但 Java 未收到响应”仍可能造成重复调用。交付语义为 **At Least Once**，由幂等键和执行代保护业务结果。
 
-## 不允许跨越的边界
+## 扩展约定
 
-- Java 不实现 LangGraph 节点、查询规划、模型调用、RAG 排序或报告写作。
-- Python 不决定工作空间权限、业务并发额度、最终取消状态或审计结果。
-- 不因技术展示增加与研究场景无关的工单、商城、支付等业务模块。
-- 在完成独立 schema、版本化 DTO 和跨服务容量验证前，不宣称为完全独立微服务或生产高可用架构。
+研究节点和RAG策略在Python维护；业务权限、角色、并发额度和正式发布状态在Java维护。新增跨服务状态时同步字段所有权、DTO、数据库授权及并发验证。当前部署及容量配置见[生产化验收](production-readiness.md)，新增业务围绕研究和证据生命周期展开。
