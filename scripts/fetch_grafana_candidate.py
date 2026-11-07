@@ -464,14 +464,14 @@ def output_paths(root, output, archive):
     return inspection
 
 
-def main(argv=None):
+def main(argv=None, *, profile_override=None, profile_name=None, cache_archive_name=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--archive', type=Path, help='Explicit local recovery OCI; never a default CI cache bypass')
     parser.add_argument('--profile', choices=['exact28', 'maintenance'], default='exact28')
     parser.add_argument('--tag')
     parser.add_argument('--output', type=Path)
     args = parser.parse_args(argv)
-    profile = maintenance_profile() if args.profile == 'maintenance' else None
+    profile = profile_override if profile_override is not None else (maintenance_profile() if args.profile == 'maintenance' else None)
     selected = selected_profile(profile)
     options = {} if profile is None else {'profile': profile}
     args.tag = args.tag or selected.approved_tag
@@ -484,7 +484,7 @@ def main(argv=None):
         binding = request['binding']
         transport = load_transport(ROOT, binding, **options)
         if args.archive is None:
-            archive, publication = download_parts(ROOT / '.cache/eval/approved-grafana.oci.tar',
+            archive, publication = download_parts(ROOT / '.cache/eval' / (cache_archive_name or 'approved-grafana.oci.tar'),
                                                   binding, transport, **options)
             source = 'fixed_published_candidate_release_parts'
         else:
@@ -505,7 +505,7 @@ def main(argv=None):
         inspection_path.write_text(json.dumps(inspection, indent=2) + '\n', encoding='utf-8')
         verified.pop('authorization_evaluated', None)
         result = {**verified, 'passed': True,
-                  'mode': f'new_{args.profile}_authorized_load_only_scan_gate_still_required',
+                  'mode': f'new_{profile_name or args.profile}_authorized_load_only_scan_gate_still_required',
                   'artifact': 'grafana', 'archive': str(archive), 'tag': args.tag,
                   'request_sha256': selected.consumer.REQUEST_SHA256,
                   'transport_sha256': selected.transport_sha256,

@@ -1,0 +1,326 @@
+{
+  "schema": "grafana-scanner-execution-lineage-v1",
+  "role": "independently timestamped replay; original raw evidence is retained unchanged",
+  "subject": "sha256:b774883fbc1f9878c8c4527d084821fd919408880613581ae5aa8a9aec63bfba",
+  "security_verdict": "NOT_AN_APPROVAL",
+  "original_timestamps_not_reconstructed": true,
+  "environment": {
+    "GRYPE_DB_CACHE_DIR": "E:\\project\\DeepResearch\\.cache\\native-jvm\\grype-db\\grafana-controlled-import-ioohf1kl",
+    "GRYPE_DB_AUTO_UPDATE": "false",
+    "GRYPE_DB_VALIDATE_BY_HASH_ON_START": "true",
+    "GRYPE_DB_VALIDATE_AGE": "true",
+    "GRYPE_CHECK_FOR_APP_UPDATE": "false",
+    "SYFT_CHECK_FOR_APP_UPDATE": "false"
+  },
+  "inherited_scanner_environment_removed": true,
+  "tool_pins": {
+    "trivy": {
+      "path": "E:\\project\\DeepResearch\\.cache\\security-fix-20261105\\trivy.exe",
+      "actual_sha256": "3b4fcf6fec53c4c73c325cfd518c7264100695b19e6c59c6a777e4a67dc9f0e6",
+      "expected_version": "0.75.0",
+      "source": "https://github.com/aquasecurity/trivy/releases/download/v0.75.0/trivy_0.75.0_checksums.txt",
+      "actual_version_stdout": "Version: 0.75.0\n"
+    },
+    "syft": {
+      "path": "E:\\project\\DeepResearch\\.cache\\native-jvm\\tools\\syft.exe",
+      "actual_sha256": "8f9da8a74ca785b3a2b660a0f2503c17ceaa5eebb880fd1cd4395376929bee64",
+      "expected_version": "v1.55.0",
+      "source": "deployment/security/native-jvm-tools.json",
+      "actual_version_stdout": "Application:   syft\nVersion:       1.55.0\nBuildDate:     2026-10-19T18:54:46Z\nGitCommit:     f15c3343e29dfb20cf6d82c820e7090b49808c96\nGitDescription: v1.55.0\nPlatform:      windows/amd64\nGoVersion:     go1.26.8\nCompiler:      gc\nSchemaVersion: 16.1.11\n"
+    },
+    "grype": {
+      "path": "E:\\project\\DeepResearch\\.cache\\native-jvm\\tools\\grype.exe",
+      "actual_sha256": "4f366a6f8ed46f97280e14ded6acb8711ac49744f99c09214f5e676f34a16ecb",
+      "expected_version": "v0.121.0",
+      "source": "deployment/security/native-jvm-tools.json",
+      "actual_version_stdout": "Application:         grype\nVersion:             0.121.0\nBuildDate:           2026-10-19T20:26:34Z\nGitCommit:           afe2742527d98d822da06c9f32eed86fe3d193e0\nGitDescription:      v0.121.0\nPlatform:            windows/amd64\nGoVersion:           go1.26.8\nCompiler:            gc\nSyft Version:        v1.55.0\nSupported DB Schema: 6\n"
+    }
+  },
+  "operations": [
+    {
+      "stage": "trivy-version",
+      "argv": [
+        "E:\\project\\DeepResearch\\.cache\\security-fix-20261105\\trivy.exe",
+        "--version"
+      ],
+      "start_utc": "2026-11-07T09:15:17.247867+00:00",
+      "end_utc": "2026-11-07T09:15:17.587973+00:00",
+      "elapsed_seconds": 0.3429999999971187,
+      "exit_code": 0,
+      "stdout_file": ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\trivy-version.stdout",
+      "stdout_sha256": "6c9647cac3587783e36b271c8529816f46c9c57691a7a279657e7f3965a00d89",
+      "stderr_file": ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\trivy-version.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "syft-version",
+      "argv": [
+        "E:\\project\\DeepResearch\\.cache\\native-jvm\\tools\\syft.exe",
+        "version"
+      ],
+      "start_utc": "2026-11-07T09:15:17.667162+00:00",
+      "end_utc": "2026-11-07T09:15:17.977905+00:00",
+      "elapsed_seconds": 0.3120000000017171,
+      "exit_code": 0,
+      "stdout_file": ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\syft-version.stdout",
+      "stdout_sha256": "ced4df2fdfd0d58fd88a2089bb40f7bb0b052b884fcb8dcc1c029eca188f4f04",
+      "stderr_file": ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\syft-version.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "grype-version",
+      "argv": [
+        "E:\\project\\DeepResearch\\.cache\\native-jvm\\tools\\grype.exe",
+        "version"
+      ],
+      "start_utc": "2026-11-07T09:15:18.052789+00:00",
+      "end_utc": "2026-11-07T09:15:18.305949+00:00",
+      "elapsed_seconds": 0.2649999999994179,
+      "exit_code": 0,
+      "stdout_file": ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\grype-version.stdout",
+      "stdout_sha256": "a3940db102643b5be3faa3311fbb692762e100cb6f61f7d8b9e602a9273242fa",
+      "stderr_file": ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\grype-version.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "grype-db-status",
+      "argv": [
+        "E:\\project\\DeepResearch\\.cache\\native-jvm\\tools\\grype.exe",
+        "--config",
+        "E:\\project\\DeepResearch\\.cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\database-config.json",
+        "db",
+        "status",
+        "-o",
+        "json"
+      ],
+      "start_utc": "2026-11-07T09:15:21.227768+00:00",
+      "end_utc": "2026-11-07T09:15:23.353703+00:00",
+      "elapsed_seconds": 2.125,
+      "exit_code": 0,
+      "stdout_file": ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\grype-db-status.stdout",
+      "stdout_sha256": "72bc0b5731e8e436e4de134e08ee6598996460a0819bcd51c4c5775eb2e29554",
+      "stderr_file": ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\grype-db-status.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "immutable-image-inspect",
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "sha256:b774883fbc1f9878c8c4527d084821fd919408880613581ae5aa8a9aec63bfba"
+      ],
+      "start_utc": "2026-11-07T09:15:23.358436+00:00",
+      "end_utc": "2026-11-07T09:15:23.513578+00:00",
+      "elapsed_seconds": 0.15599999999903957,
+      "exit_code": 0,
+      "stdout_file": ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\immutable-image-inspect.stdout",
+      "stdout_sha256": "2623c064eb43ac9cbcb5612f46d7121aa83e350fb7a9d5dd37ad224349f9edf4",
+      "stderr_file": ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\immutable-image-inspect.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "trivy-full-scan",
+      "argv": [
+        "E:\\project\\DeepResearch\\.cache\\security-fix-20261105\\trivy.exe",
+        "--config",
+        "E:\\project\\DeepResearch\\.cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\trivy-config.yaml",
+        "image",
+        "--image-src",
+        "docker",
+        "--scanners",
+        "vuln,secret",
+        "--list-all-pkgs",
+        "--severity",
+        "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL",
+        "--format",
+        "json",
+        "--output",
+        "E:\\project\\DeepResearch\\.cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\full-trivy.json",
+        "--ignorefile",
+        "E:\\project\\DeepResearch\\.cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\empty-ignore",
+        "--exit-code",
+        "0",
+        "--skip-db-update",
+        "--cache-dir",
+        "E:\\project\\DeepResearch\\.cache\\grafana-20261107\\trivy-cache",
+        "--quiet",
+        "sha256:b774883fbc1f9878c8c4527d084821fd919408880613581ae5aa8a9aec63bfba"
+      ],
+      "start_utc": "2026-11-07T09:15:23.520536+00:00",
+      "end_utc": "2026-11-07T09:15:24.056738+00:00",
+      "elapsed_seconds": 0.5469999999986612,
+      "exit_code": 0,
+      "stdout_file": ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\trivy-full-scan.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_file": ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\trivy-full-scan.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "syft-full-inventory",
+      "argv": [
+        "E:\\project\\DeepResearch\\.cache\\native-jvm\\tools\\syft.exe",
+        "--config",
+        "E:\\project\\DeepResearch\\.cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\syft-config.json",
+        "scan",
+        "docker:sha256:b774883fbc1f9878c8c4527d084821fd919408880613581ae5aa8a9aec63bfba",
+        "-o",
+        "syft-json=E:\\project\\DeepResearch\\.cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\full-syft.json",
+        "--quiet"
+      ],
+      "start_utc": "2026-11-07T09:15:24.061323+00:00",
+      "end_utc": "2026-11-07T09:17:00.931052+00:00",
+      "elapsed_seconds": 96.875,
+      "exit_code": 0,
+      "stdout_file": ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\syft-full-inventory.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_file": ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\syft-full-inventory.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "grype-full-scan",
+      "argv": [
+        "E:\\project\\DeepResearch\\.cache\\native-jvm\\tools\\grype.exe",
+        "--config",
+        "E:\\project\\DeepResearch\\.cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\grype-config.json",
+        "sbom:E:\\project\\DeepResearch\\.cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\full-syft.json",
+        "-o",
+        "json",
+        "--file",
+        "E:\\project\\DeepResearch\\.cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\full-grype.json",
+        "--quiet"
+      ],
+      "start_utc": "2026-11-07T09:17:00.936614+00:00",
+      "end_utc": "2026-11-07T09:17:10.737771+00:00",
+      "elapsed_seconds": 9.7970000000023,
+      "exit_code": 0,
+      "stdout_file": ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\grype-full-scan.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_file": ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\grype-full-scan.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "configurations": {
+    ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\trivy-config.yaml": {
+      "sha256": "e3566b3a06430868d71e9287dfd6c6c520a3da027aabea01951d407ee131dc2f",
+      "bytes": 4,
+      "content": "{}\n"
+    },
+    ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\empty-ignore": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "content": ""
+    },
+    ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\syft-config.json": {
+      "sha256": "dca37c5d3f0227037f2d25da430851b01b154725ac2440900a2f6eee546a1f5e",
+      "bytes": 57,
+      "content": "{\n  \"exclude\": [],\n  \"check-for-app-update\": false\n}\n"
+    },
+    ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\grype-config.json": {
+      "sha256": "fd566567fed9437d653d95d7d6bc3d8354a4bc6301ef9b5762ad01b2327ec67d",
+      "bytes": 107,
+      "content": "{\n  \"ignore\": [],\n  \"only-fixed\": false,\n  \"only-notfixed\": false,\n  \"check-for-app-update\": false\n}\n"
+    },
+    ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\database-config.json": {
+      "sha256": "c42027e8b9bfe8ed419bea20b04b31fc3b3f66caca48fa37792961211c5caeda",
+      "bytes": 262,
+      "content": "{\n  \"db\": {\n    \"cache-dir\": \"E:\\\\project\\\\DeepResearch\\\\.cache\\\\native-jvm\\\\grype-db\\\\grafana-controlled-import-ioohf1kl\",\n    \"auto-update\": false,\n    \"validate-by-hash-on-start\": true,\n    \"validate-age\": true\n  },\n  \"check-for-app-update\": false\n}\n"
+    }
+  },
+  "database_before": {
+    "path": "E:\\project\\DeepResearch\\.cache\\native-jvm\\grype-db\\grafana-controlled-import-ioohf1kl\\6\\vulnerability.db",
+    "bytes": 3398836224,
+    "sha256": "79e778b4b604bea1aa1687c007fe01e0cd9e3d51807552beb38ad623c170be6e",
+    "import_metadata_sha256": "b672cc7a2b454dc23f80d1aa728727c9eff22fb8df9eb0bbdf886a720a8720ef"
+  },
+  "validated_status": {
+    "schemaVersion": "v6.1.10",
+    "from": "manual import",
+    "built": "2026-11-07T06:18:48Z",
+    "path": "E:\\project\\DeepResearch\\.cache\\native-jvm\\grype-db\\grafana-controlled-import-ioohf1kl\\6\\vulnerability.db",
+    "valid": true
+  },
+  "trivy_database": {
+    "metadata_path": ".cache\\grafana-20261107\\trivy-cache\\db\\metadata.json",
+    "sha256": "8cf708a7fb4bdbf471b2f67913242227352775b0ad2e8db841523461de53a03f",
+    "contents": {
+      "Version": 2,
+      "NextUpdate": "2026-11-08T00:44:27.247418021Z",
+      "UpdatedAt": "2026-11-07T00:44:27.247418301Z",
+      "DownloadedAt": "2026-11-07T06:51:46.2195491Z"
+    }
+  },
+  "database_after": {
+    "path": "E:\\project\\DeepResearch\\.cache\\native-jvm\\grype-db\\grafana-controlled-import-ioohf1kl\\6\\vulnerability.db",
+    "bytes": 3398836224,
+    "sha256": "79e778b4b604bea1aa1687c007fe01e0cd9e3d51807552beb38ad623c170be6e",
+    "import_metadata_sha256": "b672cc7a2b454dc23f80d1aa728727c9eff22fb8df9eb0bbdf886a720a8720ef"
+  },
+  "comparisons": {
+    "trivy": {
+      "original_file": ".cache\\grafana-20261107\\final-c6acf98-a2\\scans\\full-trivy.json",
+      "original_sha256": "fa6f5843ac8a60259033a4d8d514d9e686d1e4074d9d6421cc980ee350c44e31",
+      "replay_file": ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\full-trivy.json",
+      "replay_sha256": "7e33eda497f2ec206d80d7d0b5ceed65b2712289caf0092557481f43d05c9601",
+      "all_full_fact_counters_equal": true,
+      "facts": {
+        "full_vulnerabilities": {
+          "original_count": 40,
+          "replay_count": 40,
+          "equal": true
+        },
+        "full_packages": {
+          "original_count": 1757,
+          "replay_count": 1757,
+          "equal": true
+        },
+        "full_secrets": {
+          "original_count": 0,
+          "replay_count": 0,
+          "equal": true
+        }
+      }
+    },
+    "syft": {
+      "original_file": ".cache\\grafana-20261107\\final-c6acf98-a2\\scans\\full-syft.json",
+      "original_sha256": "4a45133478850d236ae63d8fcaa4925c38d0897dcd67f8547cb6853aeeebd221",
+      "replay_file": ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\full-syft.json",
+      "replay_sha256": "4a45133478850d236ae63d8fcaa4925c38d0897dcd67f8547cb6853aeeebd221",
+      "all_full_fact_counters_equal": true,
+      "facts": {
+        "full_artifacts": {
+          "original_count": 1758,
+          "replay_count": 1758,
+          "equal": true
+        },
+        "full_relationships": {
+          "original_count": 6189,
+          "replay_count": 6189,
+          "equal": true
+        }
+      }
+    },
+    "grype": {
+      "original_file": ".cache\\grafana-20261107\\final-c6acf98-a2\\scans\\full-grype.json",
+      "original_sha256": "cbcdb5481c686665b03b154bccc1b854b71bf3400b704378d16886d9d4559b52",
+      "replay_file": ".cache\\grafana-20261107\\final-c6acf98-a2\\lineage-proof\\full-grype.json",
+      "replay_sha256": "5ade7270b3020e6b0d22112c1f0e9af1e2af52d5211992c46f2c18e02a33c1b3",
+      "all_full_fact_counters_equal": true,
+      "facts": {
+        "full_matches": {
+          "original_count": 10,
+          "replay_count": 10,
+          "equal": true
+        },
+        "full_ignored_matches": {
+          "original_count": 0,
+          "replay_count": 0,
+          "equal": true
+        }
+      }
+    }
+  },
+  "operational_success": true,
+  "every_full_raw_fact_counter_unchanged": true,
+  "no_report_filter_or_old_disposition_applied": true
+}

@@ -1,0 +1,120 @@
+{
+  "recorded_at": "2026-11-07T09:15:50.820873+00:00",
+  "rows": [
+    {
+      "file": "CVE-2018-15727.json",
+      "url": "https://cveawg.mitre.org/api/cve/CVE-2018-15727",
+      "sha256": "b8239f750a748d34078ff7a6fcc9347d049625766221f28811b70a90cac61320",
+      "bytes": 3445,
+      "description": [
+        {
+          "lang": "en",
+          "value": "Grafana 2.x, 3.x, and 4.x before 4.6.4 and 5.x before 5.2.3 allows authentication bypass because an attacker can generate a valid \"remember me\" cookie knowing only a username of an LDAP or OAuth user."
+        }
+      ],
+      "affected": [
+        {
+          "product": "n/a",
+          "vendor": "n/a",
+          "versions": [
+            {
+              "status": "affected",
+              "version": "n/a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CVE-2020-12458.json",
+      "url": "https://cveawg.mitre.org/api/cve/CVE-2020-12458",
+      "sha256": "3687e1b1cb06e9d5770bb7cad5c5ddaec47073620f5b8a0dc673d93a1fd1033b",
+      "bytes": 4636,
+      "description": [
+        {
+          "lang": "en",
+          "value": "An information-disclosure flaw was found in Grafana through 6.7.3. The database directory /var/lib/grafana and database file /var/lib/grafana/grafana.db are world readable. This can result in exposure of sensitive information (e.g., cleartext or encrypted datasource passwords)."
+        }
+      ],
+      "affected": [
+        {
+          "product": "n/a",
+          "vendor": "n/a",
+          "versions": [
+            {
+              "status": "affected",
+              "version": "n/a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "grafana-v13.2.5-ref.json",
+      "url": "https://api.github.com/repos/grafana/grafana/git/ref/tags/v13.2.5",
+      "sha256": "9c2e38b69045591641fca11044624e5d3a1f3496b9e71aba64b04c46dbc1d66b",
+      "bytes": 335,
+      "tag_object": {
+        "sha": "a5fa9723bfcd33e5c344053c348fd223157483f0",
+        "type": "tag",
+        "url": "https://api.github.com/repos/grafana/grafana/git/tags/a5fa9723bfcd33e5c344053c348fd223157483f0"
+      }
+    },
+    {
+      "file": "GO-2026-5932.json",
+      "url": "https://vuln.go.dev/ID/GO-2026-5932.json",
+      "sha256": "bde8769150ec1368d9a8dbd61fbbde52296de692c57147e02e3ae295e1981f11",
+      "bytes": 1827,
+      "affected_imports": [
+        {
+          "path": "golang.org/x/crypto/openpgp"
+        },
+        {
+          "path": "golang.org/x/crypto/openpgp/packet"
+        },
+        {
+          "path": "golang.org/x/crypto/openpgp/armor"
+        },
+        {
+          "path": "golang.org/x/crypto/openpgp/clearsign"
+        },
+        {
+          "path": "golang.org/x/crypto/openpgp/errors"
+        },
+        {
+          "path": "golang.org/x/crypto/openpgp/elgamal"
+        },
+        {
+          "path": "golang.org/x/crypto/openpgp/s2k"
+        },
+        {
+          "path": "golang.org/x/crypto/openpgp"
+        },
+        {
+          "path": "golang.org/x/crypto/openpgp/packet"
+        },
+        {
+          "path": "golang.org/x/crypto/openpgp/armor"
+        },
+        {
+          "path": "golang.org/x/crypto/openpgp/clearsign"
+        },
+        {
+          "path": "golang.org/x/crypto/openpgp/errors"
+        },
+        {
+          "path": "golang.org/x/crypto/openpgp/elgamal"
+        },
+        {
+          "path": "golang.org/x/crypto/openpgp/s2k"
+        }
+      ]
+    },
+    {
+      "file": "go1.27.3-load-pkg.go",
+      "url": "https://raw.githubusercontent.com/golang/go/go1.27.3/src/cmd/go/internal/load/pkg.go",
+      "sha256": "d6e1adb610ec55f2e8bc0afd361eedd6e38689684bca122b02873da1d0ed1584",
+      "bytes": 126937
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "grafana-unapproved-candidate-source-v1",
+  "application": "Grafana 13.2.5",
+  "upstream": {
+    "tag": "v13.2.5",
+    "commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+    "runtime_image": "grafana/grafana:13.2.5@sha256:ffeeebf613b00fede764821c5e5b1545fb376aba561ae91c488e91f219adb25a"
+  },
+  "complete_plugin_assets_source": "deepresearch-approved-grafana@sha256:5a14435f088e735cbaba6e6375c5ea03e34424ea3934b55e098a2fb660db452a",
+  "dependency_overrides": {
+    "github.com/andybalholm/brotli": "v1.2.7",
+    "github.com/klauspost/compress": "v1.20.3",
+    "golang.org/x/net": "v0.62.0"
+  },
+  "purpose": "Remediate GO-2026-6888 and GO-2026-6865 in all affected native executables; carry forward fixed HTML dependency to the five newly rebuilt backends.",
+  "artifact_approved": false,
+  "authorization_inherited": false
+}

@@ -1,0 +1,78 @@
+{
+  "schema": "github-production-check-receipt-v1",
+  "source_commit": "c6acf98ca5d753b6981153f49108f43c62dbef0d",
+  "pull_request": "https://github.com/W205614/DeepResearch/pull/13",
+  "ci": {
+    "url": "https://github.com/W205614/DeepResearch/actions/runs/42356591589",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "real-components",
+        "conclusion": "success",
+        "html_url": "https://github.com/W205614/DeepResearch/actions/runs/42356591589/job/128355906380"
+      },
+      {
+        "name": "enterprise-compose-smoke",
+        "conclusion": "success",
+        "html_url": "https://github.com/W205614/DeepResearch/actions/runs/42356591589/job/128355906511"
+      },
+      {
+        "name": "quality",
+        "conclusion": "success",
+        "html_url": "https://github.com/W205614/DeepResearch/actions/runs/42356591589/job/128355906545"
+      },
+      {
+        "name": "compose-smoke",
+        "conclusion": "success",
+        "html_url": "https://github.com/W205614/DeepResearch/actions/runs/42356591589/job/128361183289"
+      }
+    ],
+    "python": {
+      "passed": 1528,
+      "skipped": 8,
+      "seconds": 131.74
+    },
+    "java": {
+      "passed": 61,
+      "failed": 0,
+      "skipped": 0
+    },
+    "frontend_unit": {
+      "passed": 33,
+      "build": "passed"
+    },
+    "real_components": {
+      "passed": 5,
+      "seconds": 16.05,
+      "worker_recovery_seconds": 50.8,
+      "redis_readonly_recovered": true,
+      "milvus_readiness_recovered": true
+    },
+    "enterprise_browser": {
+      "passed": 22,
+      "skipped": 14,
+      "seconds": 37.9
+    }
+  },
+  "observability": {
+    "url": "https://github.com/W205614/DeepResearch/actions/runs/42356591611",
+    "conclusion": "success"
+  },
+  "security": {
+    "url": "https://github.com/W205614/DeepResearch/actions/runs/42356591631",
+    "conclusion": "failure",
+    "jobs_passed": 21,
+    "failed_jobs": [
+      {
+        "name": "runtime-image-scan (grafana, deepresearch-approved-grafana:20261105, grafana, true, grafana)",
+        "html_url": "https://github.com/W205614/DeepResearch/actions/runs/42356591631/job/128355945758",
+        "failed_steps": [
+          "Enforce exact independently authorized Grafana per-finding dispositions"
+        ]
+      }
+    ]
+  },
+  "global_security_approved": false,
+  "production_deployed": false,
+  "boundary": "Exact c6acf98 commit checks; skipped cases are not passed. New Grafana candidate is not selected, authorized or published."
+}

@@ -1,0 +1,39 @@
+{
+  "schema": "grafana-candidate-complete-production-graph-v1",
+  "target": "mysql",
+  "package": "./pkg",
+  "build_tags": "arrow_json_stdlib",
+  "command": [
+    "go",
+    "list",
+    "-deps",
+    "-json",
+    "-mod=readonly",
+    "-tags=arrow_json_stdlib",
+    "./pkg"
+  ],
+  "compiler": "go version go1.27.3 linux/amd64",
+  "go_environment": {
+    "CGO_ENABLED": "0",
+    "GOAMD64": "v1",
+    "GOARCH": "amd64",
+    "GOFLAGS": "-p=2",
+    "GOOS": "linux",
+    "GOWORK": "off"
+  },
+  "completed": true,
+  "exit_code": 0,
+  "raw_bytes": 2310977,
+  "raw_sha256": "40ff6c7f3f1da3958d910ada765dd09e3a6b1b78f68033a76f416a6a9d78f5e2",
+  "compressed_bytes": 145652,
+  "compressed_sha256": "7a205bd3133e5cea147b9cfa331ef489805bdf841778b8a877c60c6622cb93af",
+  "package_count": 594,
+  "module_count": 73,
+  "actual_lock_sha256": {
+    "go.mod": "a8a924d76a1ed86b01594f9fa290ae2d09aa1127f5c9b666d851f37c03c5b738",
+    "go.sum": "0223c10b70340140b6ea79ff3bc28c5a18a6a6787361a2c0787e7583309c75cf"
+  },
+  "nested_module_original_git_subtrees": {},
+  "raw_graph_modified_or_filtered": false,
+  "boundary": "Build evidence only; no vulnerability disposition, artifact approval or deployment."
+}

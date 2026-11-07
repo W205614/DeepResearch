@@ -1,3 +1,27 @@
 /grafana-source-candidate4-review-20261107.json -text whitespace=cr-at-eol
 /grafana-source-candidate4-evidence-20261107/actual-validation-image-elf-binding.json -text whitespace=cr-at-eol
 /grafana-source-candidate4-evidence-20261107/actual-validation-image-inspect.json -text whitespace=cr-at-eol
+
+/grafana-fixed-20261107-request.json -text whitespace=cr-at-eol
+/grafana-fixed-20261107-build-identity.json -text whitespace=cr-at-eol
+/grafana-fixed-20261107-source-scope.json -text whitespace=cr-at-eol
+/grafana-fixed-20261107-authorization.json -text whitespace=cr-at-eol
+/grafana-fixed-20261107-evidence/** -text whitespace=cr-at-eol
+
+# Preserve official HTML/HTTP and Go buildinfo whitespace as captured evidence.
+/grafana-fixed-20261107-evidence/database-transport/single-range-resume.headers -whitespace
+/grafana-fixed-20261107-evidence/independent-primary/CVE-2021-39226-official-advisory.html -whitespace
+/grafana-fixed-20261107-evidence/native/build-evidence/build-info/main.txt -whitespace
+/grafana-fixed-20261107-evidence/native/build-evidence/build-info/plugins/elasticsearch.txt -whitespace
+/grafana-fixed-20261107-evidence/native/build-evidence/build-info/plugins/grafana-postgresql-datasource.txt -whitespace
+/grafana-fixed-20261107-evidence/native/build-evidence/build-info/plugins/grafana-pyroscope-datasource.txt -whitespace
+/grafana-fixed-20261107-evidence/native/build-evidence/build-info/plugins/influxdb.txt -whitespace
+/grafana-fixed-20261107-evidence/native/build-evidence/build-info/plugins/jaeger.txt -whitespace
+/grafana-fixed-20261107-evidence/native/build-evidence/build-info/plugins/loki.txt -whitespace
+/grafana-fixed-20261107-evidence/native/build-evidence/build-info/plugins/mssql.txt -whitespace
+/grafana-fixed-20261107-evidence/native/build-evidence/build-info/plugins/mysql.txt -whitespace
+/grafana-fixed-20261107-evidence/native/build-evidence/build-info/plugins/opentsdb.txt -whitespace
+/grafana-fixed-20261107-evidence/native/build-evidence/build-info/plugins/prometheus.txt -whitespace
+/grafana-fixed-20261107-evidence/native/build-evidence/build-info/plugins/stackdriver.txt -whitespace
+/grafana-fixed-20261107-evidence/native/build-evidence/build-info/plugins/tempo.txt -whitespace
+/grafana-fixed-20261107-evidence/native/build-evidence/build-info/plugins/zipkin.txt -whitespace

@@ -1,0 +1,137 @@
+{
+  "operational_success": true,
+  "security_gate_claim": false,
+  "artifact_approved": false,
+  "actual_image_id": "sha256:b774883fbc1f9878c8c4527d084821fd919408880613581ae5aa8a9aec63bfba",
+  "raw_reports_filtered": false,
+  "database": {
+    "stage": "after-full-candidate-scan",
+    "identity": "immutable-archive-controlled-import",
+    "snapshot": {
+      "distribution_url": "https://grype.anchore.io/databases/v6/latest.json",
+      "url": "https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-11-07T00:20:09Z_1794032328.tar.zst?checksum=sha256%3Af90467f0e784f8f6dd04b9a53588851e4b6fb874a4171d9edc95e91502feda5a",
+      "archive_sha256": "f90467f0e784f8f6dd04b9a53588851e4b6fb874a4171d9edc95e91502feda5a",
+      "db_sha256": "1d0367b7e969624d3c6a66f9f39118a99b5dbd99622a85a97f3c928c31e588a4",
+      "db_bytes": 3344613376,
+      "schema": "v6.1.10",
+      "built": "2026-11-07T06:18:48Z",
+      "max_snapshot_age_days": 7,
+      "db_fingerprint_role": "db_sha256 and db_bytes are historical hydrated observations, not a cross-import byte gate; identity is the immutable archive plus a fresh pinned-tool controlled import",
+      "transport": "resolve the official schema-v6 publisher once per scan and preserve its response; require active status, exact schema, a timestamped basename, SHA256 and a build within seven days; pin that immutable archive for the complete run, verify its bytes before a fresh controlled import, force Grype checksum validation and exact schema/built/path/manual-import status, and reject subsequent change; the stored url/checksums remain historical observations, never a stale fallback"
+    },
+    "transport_evidence": {
+      "snapshot": {
+        "distribution_url": "https://grype.anchore.io/databases/v6/latest.json",
+        "url": "https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-11-07T00:20:09Z_1794032328.tar.zst?checksum=sha256%3Af90467f0e784f8f6dd04b9a53588851e4b6fb874a4171d9edc95e91502feda5a",
+        "archive_sha256": "f90467f0e784f8f6dd04b9a53588851e4b6fb874a4171d9edc95e91502feda5a",
+        "db_sha256": "1d0367b7e969624d3c6a66f9f39118a99b5dbd99622a85a97f3c928c31e588a4",
+        "db_bytes": 3344613376,
+        "schema": "v6.1.10",
+        "built": "2026-11-07T06:18:48Z",
+        "max_snapshot_age_days": 7,
+        "db_fingerprint_role": "db_sha256 and db_bytes are historical hydrated observations, not a cross-import byte gate; identity is the immutable archive plus a fresh pinned-tool controlled import",
+        "transport": "resolve the official schema-v6 publisher once per scan and preserve its response; require active status, exact schema, a timestamped basename, SHA256 and a build within seven days; pin that immutable archive for the complete run, verify its bytes before a fresh controlled import, force Grype checksum validation and exact schema/built/path/manual-import status, and reject subsequent change; the stored url/checksums remain historical observations, never a stale fallback"
+      },
+      "verified_archive": "E:\\project\\DeepResearch\\.cache\\grafana-20261107\\fresh-native-db-transport\\single-range-resume.tar.zst",
+      "verified_archive_sha256": "f90467f0e784f8f6dd04b9a53588851e4b6fb874a4171d9edc95e91502feda5a",
+      "verified_archive_bytes": 198964673,
+      "same_official_publisher_resume": {
+        "transport_url": "https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-11-07T00:20:09Z_1794032328.tar.zst",
+        "source_partial": ".cache\\grafana-20261107\\fresh-native-db-transport\\attempt-1.tar.zst",
+        "resume_offset": 101531648,
+        "curl_exit_code": 0,
+        "actual_bytes": 198964673,
+        "actual_sha256": "f90467f0e784f8f6dd04b9a53588851e4b6fb874a4171d9edc95e91502feda5a",
+        "declared_sha256": "f90467f0e784f8f6dd04b9a53588851e4b6fb874a4171d9edc95e91502feda5a",
+        "endpoint_or_checksum_changed": false,
+        "old_database_reused": false,
+        "one_bounded_resume_only": true
+      },
+      "old_database_reused": false,
+      "endpoint_or_declared_checksum_changed": false
+    },
+    "import_tool": {
+      "path": "E:\\project\\DeepResearch\\.cache\\native-jvm\\tools\\grype.exe",
+      "sha256": "4f366a6f8ed46f97280e14ded6acb8711ac49744f99c09214f5e676f34a16ecb"
+    },
+    "fresh_cache": "E:\\project\\DeepResearch\\.cache\\native-jvm\\grype-db\\grafana-controlled-import-ioohf1kl",
+    "preexisting_database_reused": false,
+    "operations": [
+      {
+        "stage": "local-import",
+        "argv": [
+          "E:\\project\\DeepResearch\\.cache\\native-jvm\\tools\\grype.exe",
+          "--config",
+          "E:\\project\\DeepResearch\\.cache\\grafana-20261107\\final-c6acf98-a2\\scans\\database-config.json",
+          "db",
+          "import",
+          "E:\\project\\DeepResearch\\.cache\\grafana-20261107\\fresh-native-db-transport\\single-range-resume.tar.zst"
+        ],
+        "exit_code": 0,
+        "stdout_tail": "",
+        "stderr_tail": ""
+      },
+      {
+        "stage": "validate-status",
+        "argv": [
+          "E:\\project\\DeepResearch\\.cache\\native-jvm\\tools\\grype.exe",
+          "--config",
+          "E:\\project\\DeepResearch\\.cache\\grafana-20261107\\final-c6acf98-a2\\scans\\database-config.json",
+          "db",
+          "status",
+          "-o",
+          "json"
+        ],
+        "exit_code": 0,
+        "stdout_tail": "{\n \"schemaVersion\": \"v6.1.10\",\n \"from\": \"manual import\",\n \"built\": \"2026-11-07T06:18:48Z\",\n \"path\": \"E:\\\\project\\\\DeepResearch\\\\.cache\\\\native-jvm\\\\grype-db\\\\grafana-controlled-import-ioohf1kl\\\\6\\\\vulnerability.db\",\n \"valid\": true\n}\n",
+        "stderr_tail": ""
+      }
+    ],
+    "import_metadata": {
+      "digest": "xxh64:3eec33e77fe227cd",
+      "source": "manual import",
+      "client_version": "v6.1.10"
+    },
+    "derived_database": {
+      "path": "E:\\project\\DeepResearch\\.cache\\native-jvm\\grype-db\\grafana-controlled-import-ioohf1kl\\6\\vulnerability.db",
+      "bytes": 3398836224,
+      "sha256": "79e778b4b604bea1aa1687c007fe01e0cd9e3d51807552beb38ad623c170be6e"
+    },
+    "import_metadata_sha256": "b672cc7a2b454dc23f80d1aa728727c9eff22fb8df9eb0bbdf886a720a8720ef",
+    "validated_status": {
+      "schemaVersion": "v6.1.10",
+      "from": "manual import",
+      "built": "2026-11-07T06:18:48Z",
+      "path": "E:\\project\\DeepResearch\\.cache\\native-jvm\\grype-db\\grafana-controlled-import-ioohf1kl\\6\\vulnerability.db",
+      "valid": true
+    },
+    "derived_integrity_checks": [
+      {
+        "stage": "after-status",
+        "bytes": 3398836224,
+        "sha256": "79e778b4b604bea1aa1687c007fe01e0cd9e3d51807552beb38ad623c170be6e"
+      },
+      {
+        "stage": "after-full-candidate-scan",
+        "bytes": 3398836224,
+        "sha256": "79e778b4b604bea1aa1687c007fe01e0cd9e3d51807552beb38ad623c170be6e"
+      }
+    ]
+  },
+  "raw_trivy_sha256": "fa6f5843ac8a60259033a4d8d514d9e686d1e4074d9d6421cc980ee350c44e31",
+  "raw_syft_sha256": "4a45133478850d236ae63d8fcaa4925c38d0897dcd67f8547cb6853aeeebd221",
+  "raw_grype_sha256": "cbcdb5481c686665b03b154bccc1b854b71bf3400b704378d16886d9d4559b52",
+  "trivy_counts": {
+    "CRITICAL": 2,
+    "HIGH": 11,
+    "MEDIUM": 20,
+    "LOW": 2,
+    "UNKNOWN": 5
+  },
+  "grype_counts": {
+    "High": 2,
+    "Medium": 3,
+    "Unknown": 5
+  },
+  "trivy_secret_findings": 0
+}

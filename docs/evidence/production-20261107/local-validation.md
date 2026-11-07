@@ -28,6 +28,8 @@
 
 提交 `d91f0ce` 的新鲜Security扫描中，JVM系统zlib修复通过；整体仍因源码证据字节和旧Grafana制品失败。质量Job为1495 passed、8 skipped、24 errors：三个新增JSON原证据为CRLF，Git入库转换成LF，严格SHA检查正确拒绝。修复仅对这三个精确路径声明保留字节，并显式重新入库原字节，不改review pin或门禁。真实Git入库/干净LF检出/完整loader回归通过，另一个代理独立验证实际暂存区全部29项、main4200包/Tempo605包及冻结128项；[字节保留回执](source-byte-preservation.json)不代表最终CI已通过。
 
+修复后的 `c6acf98ca5d753b6981153f49108f43c62dbef0d` 已完成[完整CI](https://github.com/W205614/DeepResearch/actions/runs/42356591589)：Python1528 passed / 8 skipped、Java61项、前端33项及构建；真实组件5项通过，Worker恢复50.8秒、Redis只读恢复与Milvus就绪恢复通过；企业整栈与浏览器22 passed / 14 skipped。四个CI Job与告警规则全部通过，跳过项不计通过。[精确提交回执](github-c6acf98.json)保留各Job链接。Security为21个成功Job、1个旧Grafana运行制品失败；新候选仍须完整技术复核与独立精确授权，不能把CI成功写成生产放行。
+
 ## 真实组件与模型
 
 - 四次真实OpenAI HTTP探测全部通过；之后没有追加真实模型请求。重排保持BGE/SiliconFlow。

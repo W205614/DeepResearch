@@ -1,0 +1,48 @@
+{
+  "schema": "independent-tamper-log-pointer-factual-addendum-review-v1",
+  "actor": "/root/python_runtime",
+  "recorded_at": "2026-11-07T09:34:57.894478+00:00",
+  "passed": true,
+  "source_candidate_image": "sha256:b774883fbc1f9878c8c4527d084821fd919408880613581ae5aa8a9aec63bfba",
+  "mutant_image": "sha256:57759a2e6fd16272e76a1a221fd203d2abcb9c7726103ed4ffee953e54faa29d",
+  "same_candidate_rootfs_prefix_verified": true,
+  "original_proof_sha256": "72b35228c29f8d18d8c3371282709d1d3d85aab86b10bbb3d5c5db4e6fce36a4",
+  "original_pointer_resolves_byte_exactly": "ed059ac35793530056710f6e10866658ddd5fea453cc59dde5a5814151a0b79b",
+  "recovered_bytes": 288457,
+  "recovered_lines": 1894,
+  "after_stop_raw_stdout_sha256": "da65348fe5ca0a72d113349d89de60ec9359f7535a718a80942c2bd4289731dd",
+  "after_stop_raw_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "next_line_is_real_shutdown": true,
+  "four_cases": [
+    {
+      "plugin": "loki",
+      "signature": "modified",
+      "actual_rejection_log_present": true,
+      "HTTP500_line_count": 1
+    },
+    {
+      "plugin": "mysql",
+      "signature": "modified",
+      "actual_rejection_log_present": true,
+      "HTTP500_line_count": 1
+    },
+    {
+      "plugin": "jaeger",
+      "signature": "modified",
+      "actual_rejection_log_present": true,
+      "HTTP500_line_count": 1
+    },
+    {
+      "plugin": "deepresearch-unsigned-fixture",
+      "signature": "unsigned",
+      "actual_rejection_log_present": true,
+      "HTTP500_line_count": 1
+    }
+  ],
+  "original_proof_and_post_stop_export_unchanged": true,
+  "addendum_sha256": "8fee30b0852ef04be4d0ef9b7612eb6a425865e88bc206a19f7f9e16fef96bf2",
+  "new_test_run_claimed": false,
+  "artifact_approved": false,
+  "human_risk_acceptance": false,
+  "scope": "Read-only exact pointer reconstruction and actual case-log binding; no new test, no raw log rewrite, no approval or publication."
+}

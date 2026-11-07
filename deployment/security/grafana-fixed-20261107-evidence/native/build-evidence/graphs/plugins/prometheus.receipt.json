@@ -1,0 +1,43 @@
+{
+  "schema": "grafana-candidate-complete-production-graph-v1",
+  "target": "prometheus",
+  "package": "./pkg",
+  "build_tags": "arrow_json_stdlib",
+  "command": [
+    "go",
+    "list",
+    "-deps",
+    "-json",
+    "-mod=readonly",
+    "-tags=arrow_json_stdlib",
+    "./pkg"
+  ],
+  "compiler": "go version go1.27.3 linux/amd64",
+  "go_environment": {
+    "CGO_ENABLED": "0",
+    "GOAMD64": "v1",
+    "GOARCH": "amd64",
+    "GOFLAGS": "-p=2",
+    "GOOS": "linux",
+    "GOWORK": "off"
+  },
+  "completed": true,
+  "exit_code": 0,
+  "raw_bytes": 3068170,
+  "raw_sha256": "36ca121ae63cdb25dc7219738733520b0d858b3fdf1ae63656ef6454029ba54e",
+  "compressed_bytes": 192757,
+  "compressed_sha256": "fcce356bc923f768eaea295b68f898c79d1ef79a25efc36ff25f1d8ca216d252",
+  "package_count": 723,
+  "module_count": 104,
+  "actual_lock_sha256": {
+    "go.mod": "6da55c5f45a0a1354e734be0c3da32765a17632584cb01f90ec8fe9b6e093258",
+    "go.sum": "70c7d3979513cf389d0f49c94d1c6aa191c5baf6dd3fb94fb6883b12c59a228c",
+    "pkg/promlib/go.mod": "5dbf5dfd95389517677695ae3fe5624f80597521a050a66daa62ef3b2d910947",
+    "pkg/promlib/go.sum": "d678659fe0b0375a619a424f884e83812817fd3294bb17f8239259b55e21e976"
+  },
+  "nested_module_original_git_subtrees": {
+    "pkg/promlib": "040000 tree 6dd189a97f1b9f388049740ccfc1fd9e0fce1eb8\tpkg/promlib"
+  },
+  "raw_graph_modified_or_filtered": false,
+  "boundary": "Build evidence only; no vulnerability disposition, artifact approval or deployment."
+}

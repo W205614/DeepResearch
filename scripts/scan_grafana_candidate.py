@@ -67,7 +67,7 @@ def collect(args, *, consumer=None):
             request_sha256=api.REQUEST_SHA256, new_subject_authorization_validated=True,
             old_authorization_inherited=False,
             required_next_step=('check_grafana_candidate_exact28.py' if consumer is None else
-                                'check_grafana_maintenance.py') + ' with full raw Trivy, '
+                                getattr(api, 'CONSUMER_SCRIPT', 'check_grafana_maintenance.py')) + ' with full raw Trivy, '
                                'native/full Grype, actual inspection and exact authorized OCI')
     except Exception as error:
         result.update(error_type=type(error).__name__)

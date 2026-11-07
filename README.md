@@ -28,12 +28,14 @@
 需要 Git、Docker、Docker Compose 和已安装安全补丁的 Python 3.11+。应用由 Docker 构建，不要求本机 Java/Node。固定镜像面向 Linux/amd64，Windows 使用 Docker Desktop Linux 容器。以下 PowerShell 命令在项目根目录运行。
 
 ```powershell
-git clone https://github.com/W205614/DeepResearch.git
+git clone --config core.autocrlf=false https://github.com/W205614/DeepResearch.git
 cd DeepResearch
 Copy-Item .env.example .env
 ```
 
 已有安装先保留原 `.env`、数据卷和有效恢复点，不覆盖原配置、不删卷重置；查看[升级与维护](docs/deployment-security-operations.md)。
+
+精确制品验证需要保留仓库输入字节。上述克隆命令在此仓库保存 LF 检出配置，适用于 Windows 和 Linux；带 `-text` 的原始证据仍保留自身字节。已有工作区若报告输入换行不匹配，另建按上述方式克隆的工作区验证，保留原工作区中的本地修改，不用强制检出覆盖。
 
 使用编辑器填写 `.env`，凭据不提交仓库：
 

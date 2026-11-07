@@ -1,0 +1,58 @@
+{
+  "schema": "grafana-tamper-log-binding-addendum-v1",
+  "observed_utc": "2026-11-07T09:30:44.613037+00:00",
+  "original_proof_file": "tamper-verification.json",
+  "original_proof_sha256": "72b35228c29f8d18d8c3371282709d1d3d85aab86b10bbb3d5c5db4e6fce36a4",
+  "original_proof_log_sha256": "ed059ac35793530056710f6e10866658ddd5fea453cc59dde5a5814151a0b79b",
+  "original_files_modified": false,
+  "new_test_run_claimed": false,
+  "container": "dr-grafana-candidate-tamper-c6acf98-a2",
+  "tamper_image": "sha256:57759a2e6fd16272e76a1a221fd203d2abcb9c7726103ed4ffee953e54faa29d",
+  "retained_stopped_container_source": "docker logs captured as subprocess stdout/stderr bytes, exit 0",
+  "after_stop_stdout_file": "tamper-stdout-after-stop.raw.log",
+  "after_stop_stdout_sha256": "da65348fe5ca0a72d113349d89de60ec9359f7535a718a80942c2bd4289731dd",
+  "after_stop_stderr_file": "tamper-stderr-after-stop.raw.log",
+  "after_stop_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "original_hash_semantics": "verify_final_tamper.py hashes docker(...).stdout.strip().encode() before docker stop; docker helper uses text=True UTF-8 errors=replace (universal newlines). The original text export after stop is a distinct file and is not the claimed bytes.",
+  "recovered_original_snapshot_file": "tamper-original-pre-stop-stdout-recovered.log",
+  "recovered_original_snapshot_sha256": "ed059ac35793530056710f6e10866658ddd5fea453cc59dde5a5814151a0b79b",
+  "recovered_prefix_utf8_bytes": 288457,
+  "recovered_prefix_lines": 1894,
+  "recovered_snapshot_end_line": "logger=context userId=1 orgId=1 uname=tamper-local-audit t=2026-11-07T08:59:53.091434956Z level=error msg=\"Request Completed\" method=GET path=/api/plugins/deepresearch-unsigned-fixture/settings status=500 remote_addr=127.0.0.1 time_ms=6 duration=6.009326ms size=41 referer= handler=/api/plugins/:pluginId/settings status_source=server error=\"plugin 'deepresearch-unsigned-fixture' has no signature\"",
+  "next_retained_line": "logger=server t=2026-11-07T08:59:54.021517118Z level=info msg=\"Shutdown started\" reason=\"System signal: terminated\"",
+  "byte_exact_sha256_match_to_original_proof": true,
+  "actual_four_rejection_lines_and_http500": [
+    {
+      "plugin": "loki",
+      "validation_log_exactly_present": true,
+      "http500_lines": [
+        "logger=context userId=1 orgId=1 uname=tamper-local-audit t=2026-11-07T08:59:51.393951211Z level=error msg=\"Request Completed\" method=GET path=/api/plugins/loki/settings status=500 remote_addr=127.0.0.1 time_ms=6 duration=6.211851ms size=45 referer= handler=/api/plugins/:pluginId/settings status_source=server error=\"plugin 'loki' has an modified signature\""
+      ]
+    },
+    {
+      "plugin": "mysql",
+      "validation_log_exactly_present": true,
+      "http500_lines": [
+        "logger=context userId=1 orgId=1 uname=tamper-local-audit t=2026-11-07T08:59:51.821843336Z level=error msg=\"Request Completed\" method=GET path=/api/plugins/mysql/settings status=500 remote_addr=127.0.0.1 time_ms=6 duration=6.662299ms size=45 referer= handler=/api/plugins/:pluginId/settings status_source=server error=\"plugin 'mysql' has an modified signature\""
+      ]
+    },
+    {
+      "plugin": "jaeger",
+      "validation_log_exactly_present": true,
+      "http500_lines": [
+        "logger=context userId=1 orgId=1 uname=tamper-local-audit t=2026-11-07T08:59:52.636823507Z level=error msg=\"Request Completed\" method=GET path=/api/plugins/jaeger/settings status=500 remote_addr=127.0.0.1 time_ms=6 duration=6.155882ms size=45 referer= handler=/api/plugins/:pluginId/settings status_source=server error=\"plugin 'jaeger' has an modified signature\""
+      ]
+    },
+    {
+      "plugin": "deepresearch-unsigned-fixture",
+      "validation_log_exactly_present": true,
+      "http500_lines": [
+        "logger=context userId=1 orgId=1 uname=tamper-local-audit t=2026-11-07T08:59:53.091434956Z level=error msg=\"Request Completed\" method=GET path=/api/plugins/deepresearch-unsigned-fixture/settings status=500 remote_addr=127.0.0.1 time_ms=6 duration=6.009326ms size=41 referer= handler=/api/plugins/:pluginId/settings status_source=server error=\"plugin 'deepresearch-unsigned-fixture' has no signature\""
+      ]
+    }
+  ],
+  "old_after_stop_text_export_file": "tamper-runtime.log",
+  "old_after_stop_text_export_sha256": "2c37ea6bbc30d6fd54bb8784ed7c48dbcaada9ea42a491d72e3b3c272568c847",
+  "artifact_approved": false,
+  "human_risk_acceptance": false
+}

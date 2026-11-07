@@ -1,0 +1,88 @@
+{
+  "buildx.build.provenance": {
+    "builder": {
+      "id": ""
+    },
+    "buildType": "https://mobyproject.org/buildkit@v1",
+    "materials": [
+      {
+        "uri": "pkg:docker/grafana/grafana@13.2.5?digest=sha256:ffeeebf613b00fede764821c5e5b1545fb376aba561ae91c488e91f219adb25a\u0026platform=linux%2Famd64",
+        "digest": {
+          "sha256": "ffeeebf613b00fede764821c5e5b1545fb376aba561ae91c488e91f219adb25a"
+        }
+      },
+      {
+        "uri": "pkg:docker/deepresearch-approved-grafana@20261105?platform=linux%2Famd64",
+        "digest": {
+          "sha256": "5a14435f088e735cbaba6e6375c5ea03e34424ea3934b55e098a2fb660db452a"
+        }
+      },
+      {
+        "uri": "pkg:docker/golang@1.27.3-alpine?digest=sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c\u0026platform=linux%2Famd64",
+        "digest": {
+          "sha256": "b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c"
+        }
+      }
+    ],
+    "invocation": {
+      "configSource": {
+        "entryPoint": "Dockerfile.grafana-20261107"
+      },
+      "parameters": {
+        "frontend": "dockerfile.v0",
+        "args": {
+          "build-arg:PROJECT_INPUTS_SHA256": "ef82bd49e4b501948107a6e18ed4f110fad3512b598de41cfc21d4161c73737e",
+          "build-arg:PROJECT_SOURCE_REVISION": "c6acf98ca5d753b6981153f49108f43c62dbef0d",
+          "build-arg:RETAINED_ASSET_IMAGE": "deepresearch-approved-grafana:20261105",
+          "context:moduletransport": "local:moduletransport",
+          "frontend.caps": "moby.buildkit.frontend.contexts+forward",
+          "sharedkey:localdir:moduletransport": "module-proxy:65c195008c2c708c"
+        },
+        "locals": [
+          {
+            "name": "context"
+          },
+          {
+            "name": "dockerfile"
+          },
+          {
+            "name": "moduletransport"
+          }
+        ],
+        "root": {
+          "configSource": {
+            "path": "Dockerfile.grafana-20261107"
+          },
+          "request": {
+            "args": {
+              "build-arg:PROJECT_INPUTS_SHA256": "ef82bd49e4b501948107a6e18ed4f110fad3512b598de41cfc21d4161c73737e",
+              "build-arg:PROJECT_SOURCE_REVISION": "c6acf98ca5d753b6981153f49108f43c62dbef0d",
+              "build-arg:RETAINED_ASSET_IMAGE": "deepresearch-approved-grafana:20261105",
+              "context:moduletransport": "local:moduletransport",
+              "frontend.caps": "moby.buildkit.frontend.contexts+forward",
+              "sharedkey:localdir:moduletransport": "module-proxy:65c195008c2c708c",
+              "vcs:localdir:context": ".",
+              "vcs:localdir:dockerfile": "deployment\\docker",
+              "vcs:localdir:moduletransport": ".cache\\grafana-20261107\\module-proxy",
+              "vcs:revision": "c6acf98ca5d753b6981153f49108f43c62dbef0d",
+              "vcs:source": "https://github.com/W205614/DeepResearch.git"
+            }
+          }
+        },
+        "compatibilityVersion": 30
+      },
+      "environment": {
+        "dockerfileVersion": "1.28.0",
+        "platform": "linux/amd64"
+      }
+    }
+  },
+  "buildx.build.ref": "desktop-linux/desktop-linux/zncd6fr45v85j71ea5h0rqto8",
+  "containerimage.descriptor": {
+    "mediaType": "application/vnd.oci.image.index.v1+json",
+    "digest": "sha256:b774883fbc1f9878c8c4527d084821fd919408880613581ae5aa8a9aec63bfba",
+    "size": 856
+  },
+  "containerimage.digest": "sha256:b774883fbc1f9878c8c4527d084821fd919408880613581ae5aa8a9aec63bfba",
+  "image.name": "docker.io/library/deepresearch-grafana-candidate:20261107"
+}
