@@ -1,0 +1,326 @@
+From d9de6eedbe918c074c7556400fa21df5960704d9 Mon Sep 17 00:00:00 2001
+From: dan <Dan Kennedy>
+Date: Tue, 11 Aug 2026 14:16:12 +0000
+Subject: [PATCH] Fix a problem in fts5 secure-delete code that could lead to a
+ buffer overrun when dealing with a strategically corrupted database. Problem
+ reported by YEONBA.
+
+FossilOrigin-Name: 9cd4f9e9205c5a5096388397a39349db9ff5377d19095c6b20388ff799969c31
+---
+ ext/fts5/fts5_index.c           |  18 +--
+ ext/fts5/test/fts5corruptB.test | 202 ++++++++++++++++++++++++++++++++
+ manifest                        |  14 +--
+ manifest.uuid                   |   2 +-
+ 4 files changed, 221 insertions(+), 15 deletions(-)
+
+diff --git a/ext/fts5/fts5_index.c b/ext/fts5/fts5_index.c
+index eb03e0daa6..b3824dffd9 100644
+--- a/ext/fts5/fts5_index.c
++++ b/ext/fts5/fts5_index.c
+@@ -5515,34 +5515,38 @@ static void fts5DoSecureDelete(
+   if( p->rc==SQLITE_OK ){
+     const int nMove = nPg - iNextOff;     /* Number of bytes to move */
+     int nShift = iNextOff - iOff;         /* Distance to move them */
+-
++    int nNewPg = 0;
+     int iPrevKeyOut = 0;
+-    int iKeyIn = 0;
++    i64 iKeyIn = 0;
+ 
+     if( nMove>0 ){
+       memmove(&aPg[iOff], &aPg[iNextOff], nMove);
+     }
+     iPgIdx -= nShift;
+-    nPg = iPgIdx;
++    nNewPg = iPgIdx;
+     fts5PutU16(&aPg[2], iPgIdx);
+ 
+     for(iIdx=0; iIdx<nIdx; /* no-op */){
+       u32 iVal = 0;
+       iIdx += fts5GetVarint32(&aIdx[iIdx], iVal);
+       iKeyIn += iVal;
++      if( iKeyIn>nPg ){
++        FTS5_CORRUPT_IDX(p);
++        break;
++      }
+       if( iKeyIn!=iDelKeyOff ){
+         int iKeyOut = (iKeyIn - (iKeyIn>iOff ? nShift : 0));
+-        nPg += sqlite3Fts5PutVarint(&aPg[nPg], iKeyOut - iPrevKeyOut);
++        nNewPg += sqlite3Fts5PutVarint(&aPg[nNewPg], iKeyOut - iPrevKeyOut);
+         iPrevKeyOut = iKeyOut;
+       }
+     }
+ 
+-    if( iPgIdx==nPg && nIdx>0 && pSeg->iLeafPgno!=1 ){
++    if( p->rc==SQLITE_OK && iPgIdx==nNewPg && nIdx>0 && pSeg->iLeafPgno!=1 ){
+       fts5SecureDeleteIdxEntry(p, iSegid, pSeg->iLeafPgno);
+     }
+ 
+-    assert_nc( nPg>4 || fts5GetU16(aPg)==0 );
+-    fts5DataWrite(p, FTS5_SEGMENT_ROWID(iSegid,pSeg->iLeafPgno), aPg, nPg);
++    assert_nc( nNewPg>4 || fts5GetU16(aPg)==0 );
++    fts5DataWrite(p, FTS5_SEGMENT_ROWID(iSegid,pSeg->iLeafPgno), aPg, nNewPg);
+   }
+   sqlite3_free(aIdx);
+ }
+diff --git a/ext/fts5/test/fts5corruptB.test b/ext/fts5/test/fts5corruptB.test
+index 5690585d11..0567b50e2b 100644
+--- a/ext/fts5/test/fts5corruptB.test
++++ b/ext/fts5/test/fts5corruptB.test
+@@ -2541,5 +2541,207 @@ do_catchsql_test 3.2 {
+   INSERT INTO t(t) VALUES('integrity-check');
+ } {1 {fts5: corruption found reading blob 137438953474 from table "t"}}
+ 
++do_test 4.0 {
++  sqlite3 db {}
++  db deserialize [decode_hexdb {
++.open --hexdb
++| size 5120 pagesize 512 filename poc.db
++| page 1 offset 0
++|      0: 53 51 4c 69 74 65 20 66 6f 72 6d 61 74 20 33 00   SQLite format 3.
++|     16: 02 00 01 01 00 40 20 20 00 00 00 04 00 00 00 0a   .....@  ........
++|     32: 00 00 00 00 00 00 00 00 00 00 00 06 00 00 00 04   ................
++|     48: 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00   ................
++|     80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 04   ................
++|     96: 00 2e 99 b0 05 00 00 00 01 01 fb 00 00 00 00 08   ................
++|    112: 01 fb 00 a0 00 98 00 00 00 00 00 00 00 00 00 00   ................
++|    144: 00 00 00 00 00 00 00 00 06 05 06 00 00 00 00 00   ................
++|    160: 52 04 06 17 1f 1f 01 75 74 61 62 6c 65 74 5f 63   R......utablet_c
++|    176: 6f 6e 74 65 6e 74 74 5f 63 6f 6e 74 65 6e 74 04   ontentt_content.
++|    192: 43 52 45 41 54 45 20 54 41 42 4c 45 20 27 74 5f   CREATE TABLE 't_
++|    208: 63 6f 6e 74 65 6e 74 27 28 69 64 20 49 4e 54 45   content'(id INTE
++|    224: 47 45 52 20 50 52 49 4d 41 52 59 20 4b 45 59 2c   GER PRIMARY KEY,
++|    240: 20 63 30 29 66 03 07 17 17 17 01 81 2b 74 61 62    c0)f.......+tab
++|    256: 6c 65 74 5f 69 64 78 74 5f 69 64 78 03 43 52 45   let_idxt_idx.CRE
++|    272: 41 54 45 20 54 41 42 4c 45 20 27 74 5f 69 64 78   ATE TABLE 't_idx
++|    288: 27 28 73 65 67 69 64 2c 20 74 65 72 6d 2c 20 70   '(segid, term, p
++|    304: 67 6e 6f 2c 20 50 52 49 4d 41 52 59 20 4b 45 59   gno, PRIMARY KEY
++|    320: 28 73 65 67 69 64 2c 20 74 65 72 6d 29 29 20 57   (segid, term)) W
++|    336: 49 54 48 4f 55 54 20 52 4f 57 49 44 51 02 06 17   ITHOUT ROWIDQ...
++|    352: 19 19 01 7f 74 61 62 6c 65 74 5f 64 61 74 61 74   ....tablet_datat
++|    368: 5f 64 61 74 61 02 43 52 45 41 54 45 20 54 41 42   _data.CREATE TAB
++|    384: 4c 45 20 27 74 5f 64 61 74 61 27 28 69 64 20 49   LE 't_data'(id I
++|    400: 4e 54 45 47 45 52 20 50 52 49 4d 41 52 59 20 4b   NTEGER PRIMARY K
++|    416: 45 59 2c 20 62 6c 6f 63 6b 20 42 4c 4f 42 29 4f   EY, block BLOB)O
++|    432: 01 07 17 0f 0f 08 81 0f 74 61 62 6c 65 74 74 43   ........tablettC
++|    448: 52 45 41 54 45 20 56 49 52 54 55 41 4c 20 54 41   REATE VIRTUAL TA
++|    464: 42 4c 45 20 74 20 55 53 49 4e 47 20 66 74 73 35   BLE t USING fts5
++|    480: 28 61 2c 64 65 74 61 69 6c 3d 63 6f 6c 75 6d 6e   (a,detail=column
++|    496: 2c 70 72 65 66 69 78 3d 27 32 20 00 00 00 06 03   ,prefix='2 .....
++| page 2 offset 512
++|      0: 0d 00 00 00 03 00 9e 00 01 e8 01 ef 00 9e 00 00   ................
++|    144: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 8a 36   ...............6
++|    160: 84 80 80 80 80 01 04 00 94 70 00 00 01 12 06 30   .........p.....0
++|    176: 61 6c 70 68 61 01 02 02 01 04 62 65 74 61 01 02   alpha.....beta..
++|    192: 02 01 05 64 65 6c 74 61 01 02 02 01 04 65 63 68   ...delta.....ech
++|    208: 6f 01 02 02 01 07 66 6f 78 74 72 6f 74 01 02 02   o.....foxtrot...
++|    224: 01 05 67 61 6d 6d 61 01 02 02 02 03 6f 6c 66 01   ..gamma.....olf.
++|    240: 02 02 01 05 68 6f 74 65 6c 01 02 02 00 03 31 61   ....hotel.....1a
++|    256: 6c 01 02 02 01 02 62 65 01 02 02 01 02 64 65 01   l.....be.....de.
++|    272: 02 02 01 02 65 63 01 02 02 01 02 66 6f 01 02 02   ....ec.....fo...
++|    288: 01 02 67 61 01 02 02 02 01 6f 01 02 02 01 02 68   ..ga.....o.....h
++|    304: 6f 01 02 02 00 04 32 61 6c 70 01 02 02 01 03 62   o.....2alp.....b
++|    320: 65 74 01 02 02 01 03 64 65 6c 01 02 02 01 03 65   et.....del.....e
++|    336: 63 68 01 02 02 01 03 66 6f 78 01 02 02 01 03 67   ch.....fox.....g
++|    352: 61 6d 01 02 02 02 02 6f 6c 01 02 02 01 03 68 6f   am.....ol.....ho
++|    368: 74 01 02 02 00 05 33 61 6c 70 68 01 02 02 01 04   t.....3alph.....
++|    384: 62 65 74 61 01 02 02 01 04 64 65 6c 74 01 02 02   beta.....delt...
++|    400: 01 04 65 63 68 6f 01 02 02 01 04 66 6f 78 74 01   ..echo.....foxt.
++|    416: 02 02 01 04 67 61 6d 6d 01 02 02 02 03 6f 6c 66   ....gamm.....olf
++|    432: 01 02 02 01 04 68 6f 74 65 01 02 02 04 0a 09 0a   .....hote.......
++|    448: 09 0c 0a 08 0a 08 07 07 07 07 07 06 07 09 08 08   ................
++|    464: 08 08 08 07 08 0a 09 09 09 09 09 08 ff ff ff ff   ................
++|    480: ff ff ff ff 00 00 00 09 05 01 03 00 10 01 08 0f   ................
++|    496: 0a 03 00 24 00 00 00 01 01 01 01 00 01 01 01 01   ...$............
++| page 3 offset 1024
++|      0: 0a 00 00 00 01 01 fa 00 01 fa 00 00 00 00 00 00   ................
++|    496: 00 00 00 00 00 00 00 00 00 00 05 04 09 0c 01 02   ................
++| page 4 offset 1536
++|      0: 0d 00 00 00 01 01 cd 00 01 cd 00 00 00 00 00 00   ................
++|    448: 00 00 00 00 00 00 00 00 00 00 00 00 00 31 01 03   .............1..
++|    464: 00 69 61 6c 70 68 61 20 62 65 74 61 20 67 61 6d   .ialpha beta gam
++|    480: 6d 61 20 64 65 6c 74 61 20 65 63 68 6f 20 66 6f   ma delta echo fo
++|    496: 78 74 72 6f 74 20 67 6f 6c 66 20 68 6f 74 65 6c   xtrot golf hotel
++| page 5 offset 2048
++|      0: 0d 00 00 00 01 01 fa 00 01 fa 00 00 00 00 00 00   ................
++|    496: 00 00 00 00 00 00 00 00 00 00 04 01 03 00 0e 08   ................
++| page 6 offset 2560
++|      0: 0d 00 00 00 03 00 f4 00 01 af 01 5c 00 f4 00 a0   ................
++|     16: 00 47 00 3f 00 00 00 00 00 00 00 00 00 00 00 00   .G.?............
++|     48: 00 00 00 00 06 05 06 00 00 00 00 00 52 04 06 06   ............R...
++|     64: 06 06 00 00 00 00 00 57 05 06 17 1f 1f 01 7f 74   .......W.......t
++|     80: 61 62 6c 65 74 5f 64 6f 63 73 69 7a 65 74 5f 64   ablet_docsizet_d
++|     96: 6f 63 73 69 7a 65 05 43 52 45 41 54 45 20 54 41   ocsize.CREATE TA
++|    112: 42 4c 45 20 27 74 5f 64 6f 63 73 69 7a 65 27 28   BLE 't_docsize'(
++|    128: 69 64 20 49 4e 54 45 47 45 52 20 50 52 49 4d 41   id INTEGER PRIMA
++|    144: 52 59 20 4b 45 59 2c 20 73 7a 20 42 4c 4f 42 29   RY KEY, sz BLOB)
++|    160: 52 04 06 17 1f 1f 01 75 74 61 62 6c 65 74 5f 63   R......utablet_c
++|    176: 6f 6e 74 65 6e 74 74 5f 63 6f 6e 74 65 6e 74 04   ontentt_content.
++|    192: 43 52 45 41 54 45 20 54 41 42 4c 45 20 27 74 5f   CREATE TABLE 't_
++|    208: 63 6f 6e 74 65 6e 74 27 28 69 64 20 49 4e 54 45   content'(id INTE
++|    224: 47 45 52 20 50 52 49 4d 41 52 59 20 4b 45 59 2c   GER PRIMARY KEY,
++|    240: 20 63 30 29 66 03 07 17 17 17 01 81 2b 74 61 62    c0)f.......+tab
++|    256: 6c 65 74 5f 69 64 78 74 5f 69 64 78 03 43 52 45   let_idxt_idx.CRE
++|    272: 41 54 45 20 54 41 42 4c 45 20 27 74 5f 69 64 78   ATE TABLE 't_idx
++|    288: 27 28 73 65 67 69 64 2c 20 74 65 72 6d 2c 20 70   '(segid, term, p
++|    304: 67 6e 6f 2c 20 50 52 49 4d 41 52 59 20 4b 45 59   gno, PRIMARY KEY
++|    320: 28 73 65 67 69 64 2c 20 74 65 72 6d 29 29 20 57   (segid, term)) W
++|    336: 49 54 48 4f 55 54 20 52 4f 57 49 44 51 02 06 17   ITHOUT ROWIDQ...
++|    352: 19 19 01 7f 74 61 62 6c 65 74 5f 64 61 74 61 74   ....tablet_datat
++|    368: 5f 64 61 74 61 02 43 52 45 41 54 45 20 54 41 42   _data.CREATE TAB
++|    384: 4c 45 20 27 74 5f 64 61 74 61 27 28 69 64 20 49   LE 't_data'(id I
++|    400: 4e 54 45 47 45 52 20 50 52 49 4d 41 52 59 20 4b   NTEGER PRIMARY K
++|    416: 45 59 2c 20 62 6c 6f 63 6b 20 42 4c 4f 42 29 4f   EY, block BLOB)O
++|    432: 01 07 17 0f 0f 08 81 0f 74 61 62 6c 65 74 74 43   ........tablettC
++|    448: 52 45 41 54 45 20 56 49 52 54 55 41 4c 20 54 41   REATE VIRTUAL TA
++|    464: 42 4c 45 20 74 20 55 53 49 4e 47 20 66 74 73 35   BLE t USING fts5
++|    480: 28 61 2c 64 65 74 61 69 6c 3d 63 6f 6c 75 6d 6e   (a,detail=column
++|    496: 2c 70 72 65 66 69 78 3d 27 32 20 33 20 34 27 29   ,prefix='2 3 4')
++| page 7 offset 3072
++|      0: 0a 00 00 00 02 01 e3 00 01 e3 01 f4 00 00 00 00   ................
++|    480: 00 00 00 10 03 27 09 73 65 63 75 72 65 2d 64 65   .....'.secure-de
++|    496: 6c 65 74 65 0b 03 1b 01 76 65 72 73 69 6f 6e 04   lete....version.
++| page 8 offset 3584
++|      0: 0d 00 00 00 03 00 fe 00 01 ac 01 53 00 fe 00 00   ...........S....
++|    240: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 53 06   ..............S.
++|    256: 06 17 1d 1d 01 7b 74 61 62 6c 65 74 5f 63 6f 6e   ......tablet_con
++|    272: 66 69 67 74 5f 63 6f 6e 66 69 67 07 43 52 45 41   figt_config.CREA
++|    288: 54 45 20 54 41 42 4c 45 20 27 74 5f 63 6f 6e 66   TE TABLE 't_conf
++|    304: 69 67 27 28 6b 20 50 52 49 4d 41 52 59 20 4b 45   ig'(k PRIMARY KE
++|    320: 59 2c 20 76 29 20 57 49 54 48 4f 55 54 20 52 4f   Y, v) WITHOUT RO
++|    336: 57 49 44 57 05 06 17 1f 1f 01 7f 74 61 62 6c 65   WIDW.......table
++|    352: 74 5f 64 6f 63 73 69 7a 65 74 5f 64 6f 63 73 69   t_docsizet_docsi
++|    368: 7a 65 05 43 52 45 41 54 45 20 54 41 42 4c 45 20   ze.CREATE TABLE 
++|    384: 27 74 5f 64 6f 63 73 69 7a 65 27 28 69 64 20 49   't_docsize'(id I
++|    400: 4e 54 45 47 45 52 20 50 52 49 4d 41 52 59 20 4b   NTEGER PRIMARY K
++|    416: 45 59 2c 20 73 7a 20 42 4c 4f 42 29 52 04 06 17   EY, sz BLOB)R...
++|    432: 1f 1f 01 75 74 61 62 6c 65 74 5f 63 6f 6e 74 65   ...utablet_conte
++|    448: 6e 74 74 5f 63 6f 6e 74 65 6e 74 04 43 52 45 41   ntt_content.CREA
++|    464: 54 45 20 54 41 42 4c 45 20 27 74 5f 63 6f 6e 74   TE TABLE 't_cont
++|    480: 65 6e 74 27 28 69 64 20 49 4e 54 45 47 45 52 20   ent'(id INTEGER 
++|    496: 50 52 49 4d 41 52 59 20 4b 45 59 2c 20 63 30 29   PRIMARY KEY, c0)
++| page 9 offset 4096
++|      0: 00 00 00 0a 00 ff ff ff ff ff ff ff ff 00 ff ff   ................
++|     16: ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff 00   ................
++|     32: ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff   ................
++|     48: ff 00 ff ff ff ff ff ff ff ff 00 ff ff ff ff ff   ................
++|     64: ff ff ff 00 ff ff ff ff ff ff ff ff 00 ff ff ff   ................
++|     80: ff ff ff ff ff 00 ff ff ff ff ff ff ff ff 00 ff   ................
++|     96: ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff   ................
++|    112: 00 ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff   ................
++|    128: ff ff 00 ff ff ff ff ff ff ff ff 00 ff ff ff ff   ................
++|    144: ff ff ff ff 00 ff ff ff ff ff ff ff ff 00 ff ff   ................
++|    160: ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff 00   ................
++|    176: ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff   ................
++|    192: ff 00 ff ff ff ff ff ff ff ff 00 ff ff ff ff ff   ................
++|    208: ff ff ff 00 ff ff ff ff ff ff ff ff 00 ff ff ff   ................
++|    224: ff ff ff ff ff 00 ff ff ff ff ff ff ff ff 00 ff   ................
++|    240: ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff   ................
++|    256: 00 ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff   ................
++|    272: ff ff 00 ff ff ff ff ff ff ff ff 00 ff ff ff ff   ................
++|    288: ff ff ff ff 00 ff ff ff ff ff ff ff ff 00 ff ff   ................
++|    304: ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff 00   ................
++|    320: ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff   ................
++|    336: ff 00 ff ff ff ff ff ff ff ff 00 ff ff ff ff ff   ................
++|    352: ff ff ff 00 ff ff ff ff ff ff ff ff 00 ff ff ff   ................
++|    368: ff ff ff ff ff 00 ff ff ff ff ff ff ff ff 00 ff   ................
++|    384: ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff   ................
++|    400: 00 ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff   ................
++|    416: ff ff 00 ff ff ff ff ff ff ff ff 00 ff ff ff ff   ................
++|    432: ff ff ff ff 00 ff ff ff ff ff ff ff ff 00 ff ff   ................
++|    448: ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff 00   ................
++|    464: ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff   ................
++|    480: ff 00 ff ff ff ff ff ff ff ff 00 ff ff ff ff ff   ................
++|    496: ff ff ff 00 ff ff ff ff ff ff ff ff 00 ff ff ff   ................
++| page 10 offset 4608
++|      0: 00 00 00 00 ff ff ff ff ff 00 ff ff ff ff ff ff   ................
++|     16: ff ff 00 ff ff ff ff ff ff ff ff 00 ff ff ff ff   ................
++|     32: ff ff ff ff 00 ff ff ff ff ff ff ff ff 00 ff ff   ................
++|     48: ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff 00   ................
++|     64: ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff   ................
++|     80: ff 00 ff ff ff ff ff ff ff ff 00 ff ff ff ff ff   ................
++|     96: ff ff ff 00 ff ff ff ff ff ff ff ff 00 ff ff ff   ................
++|    112: ff ff ff ff ff 00 ff ff ff ff ff ff ff ff 00 ff   ................
++|    128: ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff   ................
++|    144: 00 ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff   ................
++|    160: ff ff 00 ff ff ff ff ff ff ff ff 00 ff ff ff ff   ................
++|    176: ff ff ff ff 00 ff ff ff ff ff ff ff ff 00 ff ff   ................
++|    192: ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff 00   ................
++|    208: ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff   ................
++|    224: ff 00 ff ff ff ff ff ff ff ff 00 ff ff ff ff ff   ................
++|    240: ff ff ff 00 ff ff ff ff ff ff ff ff 00 ff ff ff   ................
++|    256: ff ff ff ff ff 00 ff ff ff ff ff ff ff ff 00 ff   ................
++|    272: ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff   ................
++|    288: 00 ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff   ................
++|    304: ff ff 00 ff ff ff ff ff ff ff ff 00 ff ff ff ff   ................
++|    320: ff ff ff ff 00 ff ff ff ff ff ff ff ff 00 ff ff   ................
++|    336: ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff 00   ................
++|    352: ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff   ................
++|    368: ff 00 ff ff ff ff ff ff ff ff 00 ff ff ff ff ff   ................
++|    384: ff ff ff 00 ff ff ff ff ff ff ff ff 00 ff ff ff   ................
++|    400: ff ff ff ff ff 00 ff ff ff ff ff ff ff ff 00 ff   ................
++|    416: ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff   ................
++|    432: 00 ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff   ................
++|    448: ff ff 00 ff ff ff ff ff ff ff ff 00 ff ff ff ff   ................
++|    464: ff ff ff ff 00 ff ff ff ff ff ff ff ff 00 ff ff   ................
++|    480: ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff 00   ................
++|    496: ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff   ................
++| end poc.db
++  }]
++} {}
++
++do_catchsql_test 4.1 {
++  DELETE FROM t WHERE rowid = 1;
++} {1 {fts5: corruption in table "t"}}
++
+ sqlite3_fts5_may_be_corrupt 0
+ finish_test
+diff --git a/manifest b/manifest
+index 1c5e87a091..754b652e6c 100644
+--- a/manifest
++++ b/manifest
+@@ -1,5 +1,5 @@
+-C Update\spreprocessor\slogic\sin\stest\sfile\sfts5_tcl.c\sto\suse\sintptr_t\swhen\savailable.
+-D 2026-08-11T10:46:12.896
++C Fix\sa\sproblem\sin\sfts5\ssecure-delete\scode\sthat\scould\slead\sto\sa\sbuffer\soverrun\swhen\sdealing\swith\sa\sstrategically\scorrupted\sdatabase.\sProblem\sreported\sby\sYEONBA.
++D 2026-08-11T14:16:12.940
+ F .fossil-settings/binary-glob 61195414528fb3ea9693577e1980230d78a1f8b0a54c78cf1b9b24d0a409ed6a x
+ F .fossil-settings/empty-dirs dbb81e8fc0401ac46a1491ab34a7f2c7c0452f2f06b54ebb845d024ca8283ef1
+ F .fossil-settings/ignore-glob 35175cdfcf539b2318cb04a9901442804be81cd677d8b889fcc9149c21f239ea
+@@ -114,7 +114,7 @@ F ext/fts5/fts5_buffer.c dcc3f0352339fe79c9d8abbc1c2009bc3469206467880bf43558447
+ F ext/fts5/fts5_config.c bfba970fe1e4eed18ee57c8d51458e226db9a960ddf775c5e50e3d76603a667e
+ F ext/fts5/fts5_expr.c b906c59e9e842805cc3eea4e131b822e586bb01260e542f67920c61798dcb53d
+ F ext/fts5/fts5_hash.c 341a08ad0153b397b819ef3d7a7959c1dc3c84a6988a431d93dece8bd62ae10e
+-F ext/fts5/fts5_index.c 0727c044579c4815a00c1c0bdb134c283a6f93abad3c41b32c3c1ba88db97243
++F ext/fts5/fts5_index.c 6176e5461b28e3f2ea3239b37e747a3148372f8b48d32c676301db04c35b503a
+ F ext/fts5/fts5_main.c 7819fc80808a135c3ad7bec65071a053827d1e8fe7b77ddfd734ed451c2db7a9
+ F ext/fts5/fts5_storage.c 46b0024fdd8002fbfba162230e5cc212c8f019ba4075396860354bfaf549a546
+ F ext/fts5/fts5_tcl.c aed8905b1a3c6ecc94da15e9cc54d889045b9eacecc7a17b6fcc1294225f7716
+@@ -172,7 +172,7 @@ F ext/fts5/test/fts5corrupt7.test 9664c15360e8b649ad76f457a0bbf5a7271b8eff1a8ee1
+ F ext/fts5/test/fts5corrupt8.test 0b10750caf8aa23fa1c379ca4caf6130d41454505e4d5315590f4061eedcbe44
+ F ext/fts5/test/fts5corrupt9.test 4253b9b59f33effac8b67da72ec34309c738aca2d5e8e2656bfbbd6a489a1dfe
+ F ext/fts5/test/fts5corruptA.test 50b48f15548a3466dbd17000956ee86c2eb7d18d5a649bc11126ec917113b807
+-F ext/fts5/test/fts5corruptB.test 8d4b2296e69ed803d5d4abc61688de12e114557922fd83e277f5fc8b46407e39
++F ext/fts5/test/fts5corruptB.test 3bd904aeeb7e69c290e1c0d045c7e97505d79b782f12578f2b351c021a31c55b
+ F ext/fts5/test/fts5corruptbig.test 9f95b40fa36e292feceab02b2ef06e21878bfa1ac7afefa138aae05518b51774
+ F ext/fts5/test/fts5delete.test 2a5008f8b1174ef41d1974e606928c20e4f9da77d9f8347aed818994d89cced4
+ F ext/fts5/test/fts5detail.test 54015e9c43ec4ba542cfb93268abdf280e0300f350efd08ee411284b03595cc4
+@@ -2218,8 +2218,8 @@ F tool/warnings-clang.sh bbf6a1e685e534c92ec2bfba5b1745f34fb6f0bc2a362850723a9ee
+ F tool/warnings.sh a554d13f6e5cf3760f041b87939e3d616ec6961859c3245e8ef701d1eafc2ca2
+ F tool/win/sqlite.vsix deb315d026cc8400325c5863eef847784a219a2f
+ F tool/winmain.c 00c8fb88e365c9017db14c73d3c78af62194d9644feaf60e220ab0f411f3604c
+-P 15f719dde4bd84d02c40301d6639bec9482f5475f3f5c2dee48910c710730363
+-R 96ebde996db707781b986d81da38d6b3
++P fee71cd6f7294ffd02784d26811a9d11d80e83d4075e1233b8ec0289519bb891
++R fe5b0d1837c0e6fd3c81fb867082e58f
+ U dan
+-Z fbb65458674209f527f01e801ba484f1
++Z 49eb055c28482fbfeedf08e8b54f22bf
+ # Remove this line to create a well-formed Fossil manifest.
+diff --git a/manifest.uuid b/manifest.uuid
+index 39334d5aa9..11a758ea85 100644
+--- a/manifest.uuid
++++ b/manifest.uuid
+@@ -1 +1 @@
+-fee71cd6f7294ffd02784d26811a9d11d80e83d4075e1233b8ec0289519bb891
++9cd4f9e9205c5a5096388397a39349db9ff5377d19095c6b20388ff799969c31

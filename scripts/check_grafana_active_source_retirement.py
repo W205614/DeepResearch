@@ -30,6 +30,12 @@ MAINTENANCE_REVIEW_SHA256 = 'da8142af63ff91a481782474841677b1e1b7298db44dc57ee9e
 OLD_SOURCE = 'deployment/vendors/grafana/main/go.mod'
 PACKAGE = 'github.com/go-jose/go-jose/v4'
 SCOPE = ('CVE-2026-116587', OLD_SOURCE, PACKAGE, 'v4.1.4', 'HIGH')
+HTML_REVIEW_PATH = 'deployment/security/grafana-source-html9-current-build-review-20261107.json'
+HTML_REVIEW_SHA256 = 'a0d78b19e3387de26d69cbee8435abbe02d653eaafdbacc60c3903da7a10386a'
+HTML_MODULE = 'golang.org/x/net'
+HTML_PLUGINS = ('grafana-postgresql-datasource', 'grafana-pyroscope-datasource', 'influxdb',
+                'jaeger', 'loki', 'mssql', 'mysql', 'opentsdb')
+HTML_SOURCES = (OLD_SOURCE, *('deployment/vendors/grafana/plugins/' + name + '/go.mod' for name in HTML_PLUGINS))
 SELECTOR_FILES = ('compose.yaml', '.github/workflows/ci.yml', '.github/workflows/security.yml')
 BASE = '.cache/eval/'
 require = approved.require
@@ -399,6 +405,127 @@ def apply_retirement(previous, scan, *, review_sha256=REVIEW_SHA256):
             'old_and_candidate_source_verdicts_preserved': True, 'conditional_review_sha256': review_sha256}
 
 
+def current_html_module_facts(root, rows, subject):
+    """Bind each frozen manifest to the actual selected ELF and its fixed native module."""
+    prefix = 'deployment/security/grafana-maintenance-evidence/'
+    core_path = prefix + 'core-actual-actual-native-buildinfo.json'
+    plugin_path = prefix + 'plugins-actual-native-buildinfo.json'
+    core = source.old.json_loads((root / core_path).read_bytes())
+    plugins = source.old.json_loads((root / plugin_path).read_bytes())
+    facts = []
+    for row in rows:
+        target = row['target']
+        old_path = root / target
+        require(approved.file_hash(old_path) == row['source_sha256']
+                and re.search(r'(?m)^\s*golang\.org/x/net\s+v0\.60\.0(?:\s|$)', old_path.read_text(encoding='utf-8')),
+                'Frozen HTML source snapshot bytes or declared module version changed')
+        if target == OLD_SOURCE:
+            native, actual_path = core, core_path
+            actual_target = 'usr/share/grafana/bin/grafana'
+            actual_mod = 'deployment/vendors/grafana-security/main/go.mod'
+        else:
+            name = Path(target).parent.name
+            selected = plugins[name]
+            native, actual_path, actual_target = selected['native'], plugin_path, selected['target']
+            require(selected['sha256'] == subject['binary_sha256'].get(actual_target),
+                    'Selected plugin ELF differs from actual native inventory')
+            actual_mod = 'deployment/vendors/grafana-security/plugins/' + name + '/go.mod'
+        expected = {'Path': HTML_MODULE, 'Version': 'v0.62.0', 'Sum': 'h1:18ELalfM5+XNRwzM2nYqXsZQ9ByS1uhj2O/U7+5jqRY='}
+        require([entry for entry in native['Deps'] if entry['Path'] == HTML_MODULE] == [expected],
+                'Actual selected ELF does not contain the exact fixed native x/net dependency')
+        production = root / actual_mod
+        require(re.search(r'(?m)^\s*golang\.org/x/net\s+v0\.62\.0(?:\s|$)', production.read_text(encoding='utf-8')),
+                'Actually compiled module overlay no longer selects fixed x/net')
+        facts.append({'source': target, 'source_sha256': row['source_sha256'], 'selected_target': actual_target,
+            'selected_elf_sha256': subject['binary_sha256'][actual_target], 'native_file': actual_path,
+            'native_file_sha256': approved.file_hash(root / actual_path), 'actual_native_dependency': expected,
+            'production_go_mod': actual_mod, 'production_go_mod_sha256': approved.file_hash(production)})
+    return facts
+
+
+def load_html_review(root, selection):
+    review = source.old.json_loads(approved.repository_file(root, HTML_REVIEW_PATH).read_bytes())
+    require(approved.file_hash(root / HTML_REVIEW_PATH) == HTML_REVIEW_SHA256,
+            'Independent source HTML9 review bytes changed')
+    require(review['schema'] == 'grafana-source-html9-current-build-review-v1'
+            and review['actor_kind'] == 'automated_independent_agent'
+            and review['facts_passed'] is True and review['human_risk_acceptance'] is False
+            and review['artifact_approved'] is False
+            and review['subject'] == selection['subject']
+            and review['request_sha256'] == selection['request_sha256']
+            and review['authorization_sha256'] == selection['authorization_sha256']
+            and review['selection_review_sha256'] == MAINTENANCE_REVIEW_SHA256,
+            'HTML snapshot review cannot transfer to another selected or unauthorized subject')
+    required = Counter(('CVE-2026-78661', target, HTML_MODULE, 'v0.60.0', 'HIGH') for target in HTML_SOURCES)
+    observed = Counter(tuple(row[key] for key in ('id', 'target', 'package', 'version', 'severity')) for row in review['rows'])
+    require(observed == required and len(review['rows']) == 9, 'Only nine exact HIGH source tuples are reviewed')
+    for name, sha in review['evidence_files'].items():
+        require(approved.file_hash(approved.repository_file(root, name)) == sha, 'HTML source/native/advisory evidence changed')
+    advisory = source.old.json_loads((root / review['official_advisory']).read_bytes())
+    require(advisory['id'] == 'GO-2026-6860' and 'CVE-2026-78661' in advisory['aliases']
+            and len(advisory['affected']) == 1 and advisory['affected'][0]['package']['name'] == HTML_MODULE
+            and advisory['affected'][0]['ranges'] == [{'type': 'SEMVER', 'events': [{'introduced': '0'}, {'fixed': '0.62.0'}]}]
+            and [item['path'] for item in advisory['affected'][0]['ecosystem_specific']['imports']] == ['golang.org/x/net/html'],
+            'Official source HTML affected-package or fixed-version scope changed')
+    require(review['native_source_facts'] == current_html_module_facts(root, review['rows'], selection['subject']),
+            'Native fixed-module and shadowed-source facts differ')
+    recipe = (root / 'deployment/docker/Dockerfile.grafana-security').read_text(encoding='utf-8')
+    require('COPY deployment/vendors/grafana/plugins/ /locks/\nCOPY deployment/vendors/grafana-security/plugins/ /locks/\n' in recipe,
+            'Frozen plugin manifests are no longer overlaid before the reviewed production build')
+    require('COPY deployment/vendors/grafana/main/ ./\nCOPY deployment/vendors/grafana-security/main/ ./\n' in recipe,
+            'Frozen main manifest is no longer overlaid before the reviewed production build')
+    return review
+
+
+def apply_html_retirement(previous, scan, review, prior_error):
+    """Evaluate fourteen full raw HIGH rows directly; never feed filtered input to the old five-row gate."""
+    require(previous.get('scan_completion_verified') is True and 'error' not in previous
+            and previous.get('technical_not_applicable_count') == 4
+            and previous.get('candidate_source2_technical_not_applicable_count') == 2,
+            'Both original exact source2 routes must remain valid')
+    findings, _, secrets = source.old.summarize(scan)
+    require(not any(secrets.values()), 'Every secret blocks the independent HTML source appendix')
+    legacy = Counter([SCOPE] + [(advisory, path, source.MODULE, source.VERSION, 'HIGH')
+        for path in (OLD_SOURCE, source.SOURCE) for advisory in sorted(source.IDS)])
+    html = Counter(tuple(row[key] for key in ('id', 'target', 'package', 'version', 'severity')) for row in review['rows'])
+    observed_html = Counter(tuple(row[key] for key in ('id', 'target', 'package', 'version', 'severity'))
+                            for row in findings if row['id'] == 'CVE-2026-78661')
+    blocking = Counter(tuple(row[key] for key in ('id', 'target', 'package', 'version', 'severity'))
+                       for row in findings if row['severity'] in source.old.BASELINE_GATE_SEVERITIES)
+    require(blocking == legacy + html and observed_html == html and sum(legacy.values()) == 5 and sum(html.values()) == 9,
+            'Full raw source findings must be exactly the original five plus the independently reviewed nine')
+    companion = Counter((row['id'], row['target'], row['package'], row['version'], row['severity'])
+                        for row in findings if row['id'] == 'CVE-2026-97045')
+    require(companion == Counter(('CVE-2026-97045', target, HTML_MODULE, 'v0.60.0', 'MEDIUM') for target in HTML_SOURCES),
+            'Companion HTML classification rows changed; their raw MEDIUM severity is preserved')
+    remaining = previous['unresolved']
+    require(len(remaining) == 10 and all(row['kind'] == 'vulnerability' for row in remaining)
+            and Counter(tuple(row[key] for key in ('id', 'target', 'package', 'version', 'severity'))
+                        for row in remaining) == Counter({SCOPE: 1}) + html,
+            'Only the exact legacy jose and nine shadowed HTML rows may receive additional dispositions')
+    retired = [{**row, 'technical_disposition': 'NOT_SELECTED_BY_CURRENT_AUTHORIZED_PRODUCTION_BUILD'}
+               for row in remaining if row['id'] == SCOPE[0]]
+    mapping = {item['source']: item for item in review['native_source_facts']}
+    fixed = [{**row, 'technical_disposition': 'NOT_SELECTED_BY_EXACT_AUTHORIZED_FIXED_MODULE_BUILD',
+              'selected_target': mapping[row['target']]['selected_target'],
+              'selected_elf_sha256': mapping[row['target']]['selected_elf_sha256'],
+              'actual_native_dependency': mapping[row['target']]['actual_native_dependency']}
+             for row in remaining if row['id'] == 'CVE-2026-78661']
+    return {'passed': True, 'mode': 'authorized_selection_exact_legacy5_plus_html9_source_appendix',
+            'preserved_candidate_gate': deepcopy(previous),
+            'legacy_five_row_gate': {'passed': False, 'error': prior_error, 'raw_blocking_count': sum(blocking.values())},
+            'raw_blocking_count': 14, 'legacy_blocking_count': 5, 'additional_html_blocking_count': 9,
+            'retired_old_constraint_count': 1, 'retired_old_constraint': retired,
+            'source_html_not_selected_count': 9, 'source_html_not_selected': fixed,
+            'technical_not_applicable_count': 14,
+            'technical_not_applicable': deepcopy(previous['technical_not_applicable']) + retired + fixed,
+            'unresolved': [], 'unresolved_count': 0, 'raw_report_modified': False,
+            'configured_selectors_verified': True, 'existing_human_authorization_verified': True,
+            'running_container_replacement_claimed': False, 'new_human_risk_acceptance': False,
+            'old_and_candidate_source_verdicts_preserved': True, 'global_security_approved': False,
+            'source_html_review_sha256': HTML_REVIEW_SHA256, 'conditional_review_sha256': MAINTENANCE_REVIEW_SHA256}
+
+
 def evaluate(scan, receipt, original, candidate, recorded_inventory, *, original_file_sha256,
              raw_sha256, source_commit, root=ROOT, now=None, tracked_clean=True, expected_targets=None,
              profile='exact28'):
@@ -413,8 +540,13 @@ def evaluate(scan, receipt, original, candidate, recorded_inventory, *, original
                 'Preserved candidate source2 verdict differs from independent recomputation')
         review = load_review(root, now, profile=profile)
         verify_selectors(root, recorded_inventory, review, source_commit, profile=profile)
-        result = apply_retirement(previous, scan, review_sha256=(MAINTENANCE_REVIEW_SHA256
-            if profile == 'maintenance' else REVIEW_SHA256))
+        try:
+            result = apply_retirement(previous, scan, review_sha256=(MAINTENANCE_REVIEW_SHA256
+                if profile == 'maintenance' else REVIEW_SHA256))
+        except ValueError as prior_error:
+            if profile != 'maintenance':
+                raise
+            result = apply_html_retirement(previous, scan, load_html_review(root, review), str(prior_error))
         result['original_verdict_file_sha256'] = original_file_sha256
         result['candidate_verdict_canonical_sha256'] = digest(source.old.canonical(candidate))
         result['runtime_inventory_canonical_sha256'] = digest(source.old.canonical(recorded_inventory))

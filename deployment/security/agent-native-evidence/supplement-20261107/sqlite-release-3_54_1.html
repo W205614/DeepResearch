@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link href="../sqlite.css" rel="stylesheet">
+<title>SQLite Release 3.54.1 On 2026-10-16</title>
+<!-- path=../ -->
+</head>
+<body>
+<div class=nosearch>
+<a href="../index.html">
+<img class="logo" src="../images/sqlite370_banner.svg" alt="SQLite" border="0">
+</a>
+<div><!-- IE hack to prevent disappearing logo --></div>
+<div class="tagline desktoponly">
+Small. Fast. Reliable.<br>Choose any three.
+</div>
+<div class="menu mainmenu">
+<ul>
+<li><a href="../index.html">Home</a>
+<li class='mobileonly'><a href="javascript:void(0)" onclick='toggle_div("submenu")'>Menu</a>
+<li class='wideonly'><a href='../about.html'>About</a>
+<li class='desktoponly'><a href="../docs.html">Documentation</a>
+<li class='desktoponly'><a href="../download.html">Download</a>
+<li class='wideonly'><a href='../copyright.html'>License</a>
+<li class='desktoponly'><a href="../support.html">Support</a>
+<li class='desktoponly'><a href="../prosupport.html">Purchase</a>
+<li class='search' id='search_menubutton'>
+<a href="javascript:void(0)" onclick='toggle_search()'>Search</a>
+</ul>
+</div>
+<div class="menu submenu" id="submenu">
+<ul>
+<li><a href='../about.html'>About</a>
+<li><a href='../docs.html'>Documentation</a>
+<li><a href='../download.html'>Download</a>
+<li><a href='../support.html'>Support</a>
+<li><a href='../prosupport.html'>Purchase</a>
+</ul>
+</div>
+<div class="searchmenu" id="searchmenu">
+<form method="GET" action="../search">
+<select name="s" id="searchtype">
+<option value="d">Search Documentation</option>
+<option value="c">Search Changelog</option>
+</select>
+<input type="text" name="q" id="searchbox" value="">
+<input type="submit" value="Go">
+</form>
+</div>
+</div>
+<script>
+function toggle_div(nm) {
+var w = document.getElementById(nm);
+if( w.style.display=="block" ){
+w.style.display = "none";
+}else{
+w.style.display = "block";
+}
+}
+function toggle_search() {
+var w = document.getElementById("searchmenu");
+if( w.style.display=="block" ){
+w.style.display = "none";
+} else {
+w.style.display = "block";
+setTimeout(function(){
+document.getElementById("searchbox").focus()
+}, 30);
+}
+}
+function div_off(nm){document.getElementById(nm).style.display="none";}
+window.onbeforeunload = function(e){div_off("submenu");}
+/* Disable the Search feature if we are not operating from CGI, since */
+/* Search is accomplished using CGI and will not work without it. */
+if( !location.origin || !location.origin.match || !location.origin.match(/http/) ){
+document.getElementById("search_menubutton").style.display = "none";
+}
+/* Used by the Hide/Show button beside syntax diagrams, to toggle the */
+function hideorshow(btn,obj){
+var x = document.getElementById(obj);
+var b = document.getElementById(btn);
+if( x.style.display!='none' ){
+x.style.display = 'none';
+b.innerHTML='show';
+}else{
+x.style.display = '';
+b.innerHTML='hide';
+}
+return false;
+}
+var antiRobot = 0;
+function antiRobotGo(){
+if( antiRobot!=3 ) return;
+antiRobot = 7;
+var j = document.getElementById("mtimelink");
+if(j && j.hasAttribute("data-href")) j.href=j.getAttribute("data-href");
+}
+function antiRobotDefense(){
+document.body.onmousedown=function(){
+antiRobot |= 2;
+antiRobotGo();
+document.body.onmousedown=null;
+}
+document.body.onmousemove=function(){
+antiRobot |= 2;
+antiRobotGo();
+document.body.onmousemove=null;
+}
+setTimeout(function(){
+antiRobot |= 1;
+antiRobotGo();
+}, 100)
+antiRobotGo();
+}
+antiRobotDefense();
+</script>
+<h2>SQLite Release 3.54.1 On 2026-10-16</h2><p><b>Prior changes from version 3.54.0 (2026-10-09):</b></p>
+<p><ol class='lessindent'>
+<li value='1'> <a href="../cli.html">CLI</a> enhancements:
+     <ol type="a">
+     <li> CLI prompt strings may contain <a href="../cliprompt.html#esccd">escape sequences</a> that
+          expand to show state information.  The initial CLI
+          prompt is now be initialized the values of the
+          SQLITE_PS1 and SQLITE_PS2 environment variables, if
+          those variables exist.
+     <li> The <a href="../cliprompt.html#dfltprompt">default CLI prompt</a> has been enhanced to take
+          advantage of the new escape sequences described in
+          the previous.
+     <li> For <a href="../climode.html#clmnr">columnar output modes</a>, the CLI now shows the column name header
+          by default even if the query returns no rows.
+     <li> Use the new diskused() extension to implement the
+          ".diskused" dot-command.  The replaces the separate <a href="../sqlanalyze.html">sqlite3_analyzer</a>
+          utility program, which is now deprecated.
+     <li> On unix, the <a href="../cli.html">CLI</a> preserves zero bytes when outputing
+          unformatted BLOB values.
+     <li> Enhance the <a href="../climode.html">.mode command</a> with new options
+          "<a href="../climode.html#opt-rowcount">--rowcount on</a>"
+          and "<a href="../climode.html#opt-title">--titles always</a>".
+          The "--titles always" is now the default behavior
+          (see item 3a above).  Legacy behavior can be restored
+          using "-titles on".
+     <li> Enhance the <a href="../climode.html">.mode command</a> with the new <a href="../climode.html#opt-ifmt">--ifmt option</a> and
+          <a href="../climode.html#opt-fpfmt">--fpfmt option</a> that allow the rendering of integer and floating-point
+          values to be more precisely controlled using a <a href="../printf.html#fmtdetail">printf-style format string</a>.
+     <li> The -csv command-line option automatically disables
+          display limits, for legacy compatibility.
+     <li> The default CLI prompt honors the NO_COLOR environment variable.
+     <li> The ability to end an SQL command using the line that contains just
+          "go" or "/" (for compatibility with SQL Server and Oracle, respectively)
+          is discontinued, unless the CLI is compiled with
+          option -DSQLITE_SHELL_LEGACY_COMMAND_TERMINATOR.
+     </ol>
+<li> Query planner improvements:
+     <ol type="a">
+     <li> When doing an UPDATE on a table that has <a href="../expridx.html">expression indexes</a>,
+          do not change the expression index if the value being indexed
+          is unchanged.
+     <li> Improved optimization of "<i>expr</i> OR TRUE" and
+          "<i>expr</i> OR FALSE".
+     <li> Ignore DISTINCT in the SELECT statement on the right-hand
+          side of an IN operator.
+     <li> UNION queries with a LIMIT of exactly 1 are now handled faster
+          and with less memory.
+     </ol>
+<li> The <a href="../lang_altertable.html">ALTER TABLE</a> command raises an error on any attempt to add, drop, or rename columns
+     with the special names "ROWID", "_ROWID_", or "OID".
+<li> Add the <a href="../diskusedfunc.html">diskused() SQL function</a> as an optional extension.
+<li> Added the <a href="../printf.html#pj">%J and %j conversions</a> used to render JSON string
+     literals to the <a href="../printf.html">built-in printf()</a> and the <a href="../lang_corefunc.html#format">format() SQL function</a>.
+<li> Add the <a href="../c3ref/result_str.html">sqlite3_result_str()</a> interface and use it internally to
+     simplify the code.
+<li> Add the <a href="../c3ref/complete.html">sqlite3_incomplete()</a> interface and use it as part of the newly
+     enhanced CLI prompt string management.
+<li> Enhancements to <a href="../lang_datefunc.html">date/time functions</a>:
+     <ol type="a">
+     <li> Added the "weekday -N" form of the <a href="../lang_datefunc.html#wdmod">weekday modifier</a>.
+     <li> Added the <a href="../lang_datefunc.html#eomod">end of modifier</a>.
+     </ol>
+<li> Use O_TMPFILE when generating temporary files, on systems that
+     support that feature.
+<li> Drop support for WindowsXP and earlier Windows versions,
+     including WindowsCE. SQLite for Windows now requires
+     Windows Vista (circa 2007) or later.
+     <ol type="a">
+     <li> Improve performance by using
+          <a href="https://learn.microsoft.com/en-us/windows/win32/sync/slim-reader-writer--srw--locks">Slim Reader/Writer Locks</a>
+          (SRWLs) to implement non-recursive mutexes, instead of
+          <a href="https://learn.microsoft.com/en-us/windows/win32/sync/critical-section-objects">CriticalSection</a>,
+          since all supported Windows platforms now provide SRWLs.
+     <li> Use the -DSQLITE_UWP=1 compile-time option for UWP and WebUI applications.
+     <li> To be clear: This changes above only affects SQLite on Windows.
+          Builds for Linux, Mac, BSD, and other unix variants are unaffected.
+     </ol>
+<li> The <a href="../c3ref/set_authorizer.html">authorizer callback</a> is now invoked for SQL functions found in
+     the DEFAULT clauses of CREATE TABLE statements.  This happens both when
+     the CREATE TABLE statement is first issued and when the DEFAULT value is
+     actually used, but not when reading the schema while opening a database.
+<li> Added <a href="../c3ref/c_limit_attached.html#sqlitelimitschema">SQLITE_LIMIT_SCHEMA</a> and <a href="../c3ref/c_limit_attached.html#sqlitelimittriggersteps">SQLITE_LIMIT_TRIGGER_STEPS</a> to the
+     <a href="../c3ref/limit.html">sqlite3_limit()</a> interface.
+<li> About 4% faster, as measured by counting CPU cycles in the
+     <a href="https://sqlite.org/src/doc/trunk/test/speedtest1.c">speedtest1</a>
+     preformance benchmark using valgrind on Linux x64.  About 7.5%
+     faster compared to one year ago (version 3.51.0).  Your mileage
+     may vary depending on workload, build options, CPU, compiler,
+     and operating system.
+</ol>
+<p><b>Changes in this specific patch release, version 3.54.1 (2026-10-16):</b></p>
+<p><ol class='lessindent'>
+<li value='14'> Fix a possible heap-buffer overflow on 32-bit builds.
+     (64-bit builds are not affected by this problem.)
+<li> Fixes other problems in 3.54.0 reported by users.  See the
+     <a href="https://sqlite.org/src/timeline?from=version-3.54.0&to=version-3.54.1&y=ci">check-in timeline</a>
+     for details.
+<p><b>Hashes:</b>
+<li>SQLITE_SOURCE_ID: 2026-10-16 14:45:20 555e07ef33f69a0957d24d8e555b702464a131d6f1607f4c3c1e4551e8e6ca76
+<li>SHA3-256 for sqlite3.c: e2b869d3003b33c942b7dd7063604fbc53553e1b66609570df39b9b7b558ee81
+
+</ol></p>
+
+      <p>A <a href="../changes.html">complete list of SQLite releases</a>
+      in a single page and a <a href="../chronology.html">chronology</a> are both also available.
+      A detailed history of every
+      check-in is available at
+      <a href="https://sqlite.org/src/timeline">
+      SQLite version control site</a>.</p>
+    
+

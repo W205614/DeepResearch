@@ -1,0 +1,40 @@
+{
+  "schema": "sqlite-fixed-source-review-v1",
+  "review_kind": "FIXED_CODE",
+  "risk_acceptance": false,
+  "reviewed_at": "2026-11-07",
+  "upstream_release": "3.54.1",
+  "source_url": "https://sqlite.org/2026/sqlite-autoconf-3540100.tar.gz",
+  "source_archive_sha256": "926ef8d3eab93fbf6e06011901273eec076b25594a4e1cdadd50c987f4f6d64e",
+  "sqlite3_c_sha3_256": "e2b869d3003b33c942b7dd7063604fbc53553e1b66609570df39b9b7b558ee81",
+  "official_release_sha3_match": true,
+  "sqlite_source_id": "2026-10-16 14:45:20 555e07ef33f69a0957d24d8e555b702464a131d6f1607f4c3c1e4551e8e6ca76",
+  "fixed_code_checks": {
+    "fts5_i64_key": true,
+    "fts5_footer_bounds": true,
+    "fts5_new_page": true,
+    "session_new_table": true,
+    "session_iterator_new": true,
+    "session_if_new": true
+  },
+  "fixed_functions": {
+    "fts5DoSecureDelete": {
+      "sha256": "ee169047fdb254f5f8c001b119e66626e1d41065fff0c467d093ab4ce1ddd9aa",
+      "source_lines": 309
+    },
+    "sessionChangesetApply": {
+      "sha256": "aa76c0c6b0dd136d20d60c1ec235dd55b5c06104944b0fa0eeabe3acfa6547c5",
+      "source_lines": 272
+    }
+  },
+  "debian_patch_archive_sha256": "ec8e9bb58db16bd661c6f44426855536831f3a004ac1aa8292d24db2ac504999",
+  "active_debian_patches": [
+    "20-hurd-locking-style.patch",
+    "31-increase_SQLITE_MAX_DEFAULT_PAGE_SIZE_to_32k.patch",
+    "02-use-packaged-lempar.c.patch",
+    "cross.patch",
+    "dynamic-tcl-library.patch"
+  ],
+  "active_patch_targets_reverting_reviewed_functions": [],
+  "verification_boundary": "Reviewed official source fixes plus exact official Debian archive/ELF and the CI actual loaded-library SHA; no claim based only on a version string or feature reachability."
+}

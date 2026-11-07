@@ -1,8 +1,11 @@
 """Privacy-safe task logging and OpenTelemetry setup."""
 import logging
 import json
+import time
 
 class JsonFormatter(logging.Formatter):
+    converter = time.gmtime
+
     def format(self, record):
         from opentelemetry import trace
         context = trace.get_current_span().get_span_context()

@@ -1,0 +1,330 @@
+{
+  "schema": "grafana-source-html9-current-build-review-v1",
+  "recorded_at": "2026-11-07T06:53:44.140452+00:00",
+  "actor": "/root/java_governance",
+  "actor_kind": "automated_independent_agent",
+  "review_kind": "exact_source_snapshot_and_fixed_native_module_appendix",
+  "facts_passed": true,
+  "human_risk_acceptance": false,
+  "artifact_approved": false,
+  "validity": "change-driven",
+  "subject": {
+    "artifact": "grafana",
+    "archive_bytes": 776297984,
+    "archive_sha256": "408744f9d8d357a9b7dfd97ac802efbbdee662cb1177b80d8020bdc24c019e25",
+    "index_digest": "sha256:5a14435f088e735cbaba6e6375c5ea03e34424ea3934b55e098a2fb660db452a",
+    "platform_manifest_digest": "sha256:0f354ce9c25e92e811c3f09382c0d317bc7193bee58b97e4b1170049f2b007aa",
+    "config_digest": "sha256:bde24c79bbb09619d33a912b8487e573e3ddbbdadf4f923afe3b4f0988a439fe",
+    "diff_ids": [
+      "sha256:75c137aedfb2760f88629236cb7b797630aed0c3d91d626d1d1bb694878fc2ba",
+      "sha256:3b65ad5d0600ae408b194a3e00c3ce5f18e2f3775b6efe2578fbded330a241a3",
+      "sha256:afbd9e1d092a95dec6977836724da893497654babce2e3f73ea99afd6476f2ed",
+      "sha256:f50fbeb907e1d2ba1a7a2260aa2cbe90973b8473e3ef78d60fbffdf109d14386",
+      "sha256:add892858f9122df35d1762b499f17c25f23f5875892df265a15d3858904ad74",
+      "sha256:20418aa06f25a38cebd5a9906c2db0f8d3e3e1c0924f1be4ee287ff75389522c",
+      "sha256:71c22afd8a267f1aa3262b8e5c821f3ca221071dade6b45dbb9cc2cb900156ee",
+      "sha256:840eb78f709d0ce8bc53370f86f5266aac9d721d49896a3809060ef779ff7eaf",
+      "sha256:f95a81142d494a928d5ccf90ef6c19c6c3f8da7dc246a53d368f1034c2fb6fb8",
+      "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+      "sha256:7e722b084590d46a61b9e42d1a0bce61657c39ab1e04a9f522e3e97fb15506f8",
+      "sha256:abb6d46b4018d7d5f49f19782b0faeda15317f2ed57355b6489c87d57b770e10",
+      "sha256:d732edb6be89e6df45f45cfc5549199b465e7d5d59eab7cd6958b6a3589c477c",
+      "sha256:cbd87404141e0e391d311d08e8c22aeb243fef50a2c4199911f987c278f39264",
+      "sha256:ab177e090e3b33c43006a0f29604fbfc2084e1bc3a66410ca10d9d161cf12383",
+      "sha256:c265a495c474abef280e32994f6af74be5625d4587587cf7627247c3b75dfab3",
+      "sha256:cce18224fcc067daf12978050c22b421210aae08860551ed032b59e4849eb8e2"
+    ],
+    "binary_sha256": {
+      "usr/share/grafana/bin/grafana": "71a29721333128bb3c4c0c32daf68fc95073235fe44a84d0b935c6196705948c",
+      "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64": "9506612c4e2b460e524ce10977214e197feba998fff597ff90f4ce1d9ca91c35",
+      "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64": "2f844f15400d3f96ec9a3351df3fc76f46ae9abe7a49797632bdb85666156fc7",
+      "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64": "e754b55d6bb4bdc60ba9feddfe675b4d6011fb6eb1427709838a542418445c4c",
+      "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64": "ca2705f001f1c13540aef61894759e9b837f3a4b66fc915a5098a406b1886e00",
+      "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64": "7a70b6271a922e7307034cf0046aa5b95799ee75052452c03e03b6f17557d23a",
+      "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64": "77d9bc857651d41028da2694a50dea3f41643d71466b1f9cf6753931c115bd36",
+      "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64": "280b114823ff994daf2e2714fade6703e14fc9860a050c998bbcc68403b5c0e3",
+      "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64": "afcc0824b8e3b3258edfa4c98951a2113fa896c777cd442df6550117d5f10d11",
+      "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64": "a7b652cd0fd297c37d2a2e306f7cbdf67688cb9a50b8a3fd7d90948d1c49b8a7",
+      "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64": "3fb8397ce2284b9e0851e19092ba5748ed92bfbc4caadeec66dab1d0692267a1",
+      "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64": "8e6c55fc90d0e94657e663b386cd6173c811133daef447d08b6bdddea3f6cc9d",
+      "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": "ee8eaf152c8ee65fba362a42643b79a80125297c4940f6382cd11d36b0035ebc",
+      "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": "18a962eaa7f4220b6a7c40cf282f267674dd64efe73dd4fe6b45cac62980abcd"
+    }
+  },
+  "request_sha256": "4e06f257a627bbbecaf3f2c3d867b8f0edbe5be7e32c317660b1296a1d8c7758",
+  "authorization_sha256": "d40537f1bc4f09207f3e774478c6173f2f45ce1efdfa5ab4dd3afa945195aa56",
+  "selection_review_sha256": "da8142af63ff91a481782474841677b1e1b7298db44dc57ee9edcb6a623c159d",
+  "rows": [
+    {
+      "id": "CVE-2026-78661",
+      "target": "deployment/vendors/grafana/main/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "HIGH",
+      "source_sha256": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda"
+    },
+    {
+      "id": "CVE-2026-78661",
+      "target": "deployment/vendors/grafana/plugins/grafana-postgresql-datasource/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "HIGH",
+      "source_sha256": "ccf0f10a88aa32ad8952bbf7d29fd2d15552e0dfdd59ee7f30e19397394ce1f6"
+    },
+    {
+      "id": "CVE-2026-78661",
+      "target": "deployment/vendors/grafana/plugins/grafana-pyroscope-datasource/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "HIGH",
+      "source_sha256": "25ff64e01fb9cbe08fff272c8f9129062acee4a84dcfa0ffaf4d9ec92fd2eb19"
+    },
+    {
+      "id": "CVE-2026-78661",
+      "target": "deployment/vendors/grafana/plugins/influxdb/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "HIGH",
+      "source_sha256": "9d41ec450db996c2b7738825975d219c72c295ced6e95b9822146601bb7bc340"
+    },
+    {
+      "id": "CVE-2026-78661",
+      "target": "deployment/vendors/grafana/plugins/jaeger/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "HIGH",
+      "source_sha256": "f279d14bccb27632e45c658eb8babc4572b18bcb39642c33b2f6480a84397762"
+    },
+    {
+      "id": "CVE-2026-78661",
+      "target": "deployment/vendors/grafana/plugins/loki/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "HIGH",
+      "source_sha256": "dc7988b9851cc1845c16c5b96824c011304a8b64d1c713e41498d6fd2d671304"
+    },
+    {
+      "id": "CVE-2026-78661",
+      "target": "deployment/vendors/grafana/plugins/mssql/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "HIGH",
+      "source_sha256": "e91bdfc8c9a0448e9489f7d96dec09fb900b8c27d925b574d27a16e77ee860ca"
+    },
+    {
+      "id": "CVE-2026-78661",
+      "target": "deployment/vendors/grafana/plugins/mysql/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "HIGH",
+      "source_sha256": "c5aeabc0578377bbf47b6f2500a954a60bec869c897662afce46d3d5ea27b7c9"
+    },
+    {
+      "id": "CVE-2026-78661",
+      "target": "deployment/vendors/grafana/plugins/opentsdb/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "HIGH",
+      "source_sha256": "4b0f34da1b83cb8c7f9bb2aea415ad9023db67b10e7c0ac0c7ea95d45f38303a"
+    }
+  ],
+  "native_source_facts": [
+    {
+      "source": "deployment/vendors/grafana/main/go.mod",
+      "source_sha256": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda",
+      "selected_target": "usr/share/grafana/bin/grafana",
+      "selected_elf_sha256": "71a29721333128bb3c4c0c32daf68fc95073235fe44a84d0b935c6196705948c",
+      "native_file": "deployment/security/grafana-maintenance-evidence/core-actual-actual-native-buildinfo.json",
+      "native_file_sha256": "cadba9d3f306b8fb36d7a9be1fdc3b236640f12ae66a3f5801ab9fe25fde5012",
+      "actual_native_dependency": {
+        "Path": "golang.org/x/net",
+        "Version": "v0.62.0",
+        "Sum": "h1:18ELalfM5+XNRwzM2nYqXsZQ9ByS1uhj2O/U7+5jqRY="
+      },
+      "production_go_mod": "deployment/vendors/grafana-security/main/go.mod",
+      "production_go_mod_sha256": "c6c4ca9cf7ce2e149fd57ff7bb3561c4b6032b981e704e25957609377601ffe2"
+    },
+    {
+      "source": "deployment/vendors/grafana/plugins/grafana-postgresql-datasource/go.mod",
+      "source_sha256": "ccf0f10a88aa32ad8952bbf7d29fd2d15552e0dfdd59ee7f30e19397394ce1f6",
+      "selected_target": "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64",
+      "selected_elf_sha256": "2f844f15400d3f96ec9a3351df3fc76f46ae9abe7a49797632bdb85666156fc7",
+      "native_file": "deployment/security/grafana-maintenance-evidence/plugins-actual-native-buildinfo.json",
+      "native_file_sha256": "11fd0ebf5ffa1e4b7c862f3fd08926a02c8b261688a2af930f97cdbff4108b98",
+      "actual_native_dependency": {
+        "Path": "golang.org/x/net",
+        "Version": "v0.62.0",
+        "Sum": "h1:18ELalfM5+XNRwzM2nYqXsZQ9ByS1uhj2O/U7+5jqRY="
+      },
+      "production_go_mod": "deployment/vendors/grafana-security/plugins/grafana-postgresql-datasource/go.mod",
+      "production_go_mod_sha256": "799c95f763e62feec7f4f612f05f8075181a50e5f0ecf4a47b8b70d5b76572cb"
+    },
+    {
+      "source": "deployment/vendors/grafana/plugins/grafana-pyroscope-datasource/go.mod",
+      "source_sha256": "25ff64e01fb9cbe08fff272c8f9129062acee4a84dcfa0ffaf4d9ec92fd2eb19",
+      "selected_target": "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64",
+      "selected_elf_sha256": "e754b55d6bb4bdc60ba9feddfe675b4d6011fb6eb1427709838a542418445c4c",
+      "native_file": "deployment/security/grafana-maintenance-evidence/plugins-actual-native-buildinfo.json",
+      "native_file_sha256": "11fd0ebf5ffa1e4b7c862f3fd08926a02c8b261688a2af930f97cdbff4108b98",
+      "actual_native_dependency": {
+        "Path": "golang.org/x/net",
+        "Version": "v0.62.0",
+        "Sum": "h1:18ELalfM5+XNRwzM2nYqXsZQ9ByS1uhj2O/U7+5jqRY="
+      },
+      "production_go_mod": "deployment/vendors/grafana-security/plugins/grafana-pyroscope-datasource/go.mod",
+      "production_go_mod_sha256": "496e8b3582442befdbe1ea20dde247643e7e3bcd86472e68952351cb8c7fde99"
+    },
+    {
+      "source": "deployment/vendors/grafana/plugins/influxdb/go.mod",
+      "source_sha256": "9d41ec450db996c2b7738825975d219c72c295ced6e95b9822146601bb7bc340",
+      "selected_target": "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64",
+      "selected_elf_sha256": "ca2705f001f1c13540aef61894759e9b837f3a4b66fc915a5098a406b1886e00",
+      "native_file": "deployment/security/grafana-maintenance-evidence/plugins-actual-native-buildinfo.json",
+      "native_file_sha256": "11fd0ebf5ffa1e4b7c862f3fd08926a02c8b261688a2af930f97cdbff4108b98",
+      "actual_native_dependency": {
+        "Path": "golang.org/x/net",
+        "Version": "v0.62.0",
+        "Sum": "h1:18ELalfM5+XNRwzM2nYqXsZQ9ByS1uhj2O/U7+5jqRY="
+      },
+      "production_go_mod": "deployment/vendors/grafana-security/plugins/influxdb/go.mod",
+      "production_go_mod_sha256": "027aef447a7dcc55405dc6a0b64b408136f90a75c8ef98915d64e10309a7b40e"
+    },
+    {
+      "source": "deployment/vendors/grafana/plugins/jaeger/go.mod",
+      "source_sha256": "f279d14bccb27632e45c658eb8babc4572b18bcb39642c33b2f6480a84397762",
+      "selected_target": "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64",
+      "selected_elf_sha256": "7a70b6271a922e7307034cf0046aa5b95799ee75052452c03e03b6f17557d23a",
+      "native_file": "deployment/security/grafana-maintenance-evidence/plugins-actual-native-buildinfo.json",
+      "native_file_sha256": "11fd0ebf5ffa1e4b7c862f3fd08926a02c8b261688a2af930f97cdbff4108b98",
+      "actual_native_dependency": {
+        "Path": "golang.org/x/net",
+        "Version": "v0.62.0",
+        "Sum": "h1:18ELalfM5+XNRwzM2nYqXsZQ9ByS1uhj2O/U7+5jqRY="
+      },
+      "production_go_mod": "deployment/vendors/grafana-security/plugins/jaeger/go.mod",
+      "production_go_mod_sha256": "89d9401a890fedabc448547be7bd3aecdba1d24636f0f2668b672db0fa16c91a"
+    },
+    {
+      "source": "deployment/vendors/grafana/plugins/loki/go.mod",
+      "source_sha256": "dc7988b9851cc1845c16c5b96824c011304a8b64d1c713e41498d6fd2d671304",
+      "selected_target": "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+      "selected_elf_sha256": "77d9bc857651d41028da2694a50dea3f41643d71466b1f9cf6753931c115bd36",
+      "native_file": "deployment/security/grafana-maintenance-evidence/plugins-actual-native-buildinfo.json",
+      "native_file_sha256": "11fd0ebf5ffa1e4b7c862f3fd08926a02c8b261688a2af930f97cdbff4108b98",
+      "actual_native_dependency": {
+        "Path": "golang.org/x/net",
+        "Version": "v0.62.0",
+        "Sum": "h1:18ELalfM5+XNRwzM2nYqXsZQ9ByS1uhj2O/U7+5jqRY="
+      },
+      "production_go_mod": "deployment/vendors/grafana-security/plugins/loki/go.mod",
+      "production_go_mod_sha256": "b6091ea96c703b9d274e3d848f26914a6f2024d97e834203784ee827d6dbc706"
+    },
+    {
+      "source": "deployment/vendors/grafana/plugins/mssql/go.mod",
+      "source_sha256": "e91bdfc8c9a0448e9489f7d96dec09fb900b8c27d925b574d27a16e77ee860ca",
+      "selected_target": "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+      "selected_elf_sha256": "280b114823ff994daf2e2714fade6703e14fc9860a050c998bbcc68403b5c0e3",
+      "native_file": "deployment/security/grafana-maintenance-evidence/plugins-actual-native-buildinfo.json",
+      "native_file_sha256": "11fd0ebf5ffa1e4b7c862f3fd08926a02c8b261688a2af930f97cdbff4108b98",
+      "actual_native_dependency": {
+        "Path": "golang.org/x/net",
+        "Version": "v0.62.0",
+        "Sum": "h1:18ELalfM5+XNRwzM2nYqXsZQ9ByS1uhj2O/U7+5jqRY="
+      },
+      "production_go_mod": "deployment/vendors/grafana-security/plugins/mssql/go.mod",
+      "production_go_mod_sha256": "1a7f7d2b5824e806416bf956cf1f73b28cd6bc7ceca1fad7bf5e3e423467c041"
+    },
+    {
+      "source": "deployment/vendors/grafana/plugins/mysql/go.mod",
+      "source_sha256": "c5aeabc0578377bbf47b6f2500a954a60bec869c897662afce46d3d5ea27b7c9",
+      "selected_target": "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64",
+      "selected_elf_sha256": "afcc0824b8e3b3258edfa4c98951a2113fa896c777cd442df6550117d5f10d11",
+      "native_file": "deployment/security/grafana-maintenance-evidence/plugins-actual-native-buildinfo.json",
+      "native_file_sha256": "11fd0ebf5ffa1e4b7c862f3fd08926a02c8b261688a2af930f97cdbff4108b98",
+      "actual_native_dependency": {
+        "Path": "golang.org/x/net",
+        "Version": "v0.62.0",
+        "Sum": "h1:18ELalfM5+XNRwzM2nYqXsZQ9ByS1uhj2O/U7+5jqRY="
+      },
+      "production_go_mod": "deployment/vendors/grafana-security/plugins/mysql/go.mod",
+      "production_go_mod_sha256": "fe51374281306f768183433aef883602391bda54d606fde0d0bea65a0d9c442c"
+    },
+    {
+      "source": "deployment/vendors/grafana/plugins/opentsdb/go.mod",
+      "source_sha256": "4b0f34da1b83cb8c7f9bb2aea415ad9023db67b10e7c0ac0c7ea95d45f38303a",
+      "selected_target": "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64",
+      "selected_elf_sha256": "a7b652cd0fd297c37d2a2e306f7cbdf67688cb9a50b8a3fd7d90948d1c49b8a7",
+      "native_file": "deployment/security/grafana-maintenance-evidence/plugins-actual-native-buildinfo.json",
+      "native_file_sha256": "11fd0ebf5ffa1e4b7c862f3fd08926a02c8b261688a2af930f97cdbff4108b98",
+      "actual_native_dependency": {
+        "Path": "golang.org/x/net",
+        "Version": "v0.62.0",
+        "Sum": "h1:18ELalfM5+XNRwzM2nYqXsZQ9ByS1uhj2O/U7+5jqRY="
+      },
+      "production_go_mod": "deployment/vendors/grafana-security/plugins/opentsdb/go.mod",
+      "production_go_mod_sha256": "4a173b81a8d6bd0895009dfbd8c5e8e3edf7d72234d3396d99c8a55a4c874757"
+    }
+  ],
+  "official_advisory": "deployment/security/minio-html4-classification-evidence-20261107/GO-2026-6860.json",
+  "evidence_files": {
+    "deployment/security/grafana-source-html9-evidence-20261107/ci-source-fs-20261107.raw.json.gz": "4f3021efcc1791be9781d0f68ce357bef6544477a2cf80b9b721189a85362f82",
+    "deployment/security/grafana-source-html9-evidence-20261107/ci-completion-20261107.json": "1091f0eca8b9056e9d994a1a1ba8bf40b87d38ce452c588a86a00acddf64d820",
+    "deployment/security/grafana-source-html9-evidence-20261107/ci-original-failed-verdict-20261107.json": "52c724834c7e517298c62523893785ed1773b8eed09ff6f3102c8368d662944f",
+    "deployment/security/grafana-source-html9-evidence-20261107/ci-candidate-failed-verdict-20261107.json": "d0f46d4a7990da99ba236cc81556e2399b24b87de92664f77e4a599e59ebeebe",
+    "deployment/security/grafana-source-html9-evidence-20261107/ci-retirement-failed-verdict-20261107.json": "a4a44fdb2d2229c25112a65a42602ee5eee7a49726df1ebc8031763f60f67da2",
+    "deployment/security/grafana-source-html9-evidence-20261107/ci-runtime-inventory-20261107.json": "17ab04ca3b11888ed338d45756b19aa9c10ef4d44df70fbc8a4fa408a02a4ecb",
+    "deployment/vendors/grafana/main/go.mod": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda",
+    "deployment/security/grafana-maintenance-evidence/core-actual-actual-native-buildinfo.json": "cadba9d3f306b8fb36d7a9be1fdc3b236640f12ae66a3f5801ab9fe25fde5012",
+    "deployment/vendors/grafana-security/main/go.mod": "c6c4ca9cf7ce2e149fd57ff7bb3561c4b6032b981e704e25957609377601ffe2",
+    "deployment/vendors/grafana/plugins/grafana-postgresql-datasource/go.mod": "ccf0f10a88aa32ad8952bbf7d29fd2d15552e0dfdd59ee7f30e19397394ce1f6",
+    "deployment/security/grafana-maintenance-evidence/plugins-actual-native-buildinfo.json": "11fd0ebf5ffa1e4b7c862f3fd08926a02c8b261688a2af930f97cdbff4108b98",
+    "deployment/vendors/grafana-security/plugins/grafana-postgresql-datasource/go.mod": "799c95f763e62feec7f4f612f05f8075181a50e5f0ecf4a47b8b70d5b76572cb",
+    "deployment/vendors/grafana/plugins/grafana-pyroscope-datasource/go.mod": "25ff64e01fb9cbe08fff272c8f9129062acee4a84dcfa0ffaf4d9ec92fd2eb19",
+    "deployment/vendors/grafana-security/plugins/grafana-pyroscope-datasource/go.mod": "496e8b3582442befdbe1ea20dde247643e7e3bcd86472e68952351cb8c7fde99",
+    "deployment/vendors/grafana/plugins/influxdb/go.mod": "9d41ec450db996c2b7738825975d219c72c295ced6e95b9822146601bb7bc340",
+    "deployment/vendors/grafana-security/plugins/influxdb/go.mod": "027aef447a7dcc55405dc6a0b64b408136f90a75c8ef98915d64e10309a7b40e",
+    "deployment/vendors/grafana/plugins/jaeger/go.mod": "f279d14bccb27632e45c658eb8babc4572b18bcb39642c33b2f6480a84397762",
+    "deployment/vendors/grafana-security/plugins/jaeger/go.mod": "89d9401a890fedabc448547be7bd3aecdba1d24636f0f2668b672db0fa16c91a",
+    "deployment/vendors/grafana/plugins/loki/go.mod": "dc7988b9851cc1845c16c5b96824c011304a8b64d1c713e41498d6fd2d671304",
+    "deployment/vendors/grafana-security/plugins/loki/go.mod": "b6091ea96c703b9d274e3d848f26914a6f2024d97e834203784ee827d6dbc706",
+    "deployment/vendors/grafana/plugins/mssql/go.mod": "e91bdfc8c9a0448e9489f7d96dec09fb900b8c27d925b574d27a16e77ee860ca",
+    "deployment/vendors/grafana-security/plugins/mssql/go.mod": "1a7f7d2b5824e806416bf956cf1f73b28cd6bc7ceca1fad7bf5e3e423467c041",
+    "deployment/vendors/grafana/plugins/mysql/go.mod": "c5aeabc0578377bbf47b6f2500a954a60bec869c897662afce46d3d5ea27b7c9",
+    "deployment/vendors/grafana-security/plugins/mysql/go.mod": "fe51374281306f768183433aef883602391bda54d606fde0d0bea65a0d9c442c",
+    "deployment/vendors/grafana/plugins/opentsdb/go.mod": "4b0f34da1b83cb8c7f9bb2aea415ad9023db67b10e7c0ac0c7ea95d45f38303a",
+    "deployment/vendors/grafana-security/plugins/opentsdb/go.mod": "4a173b81a8d6bd0895009dfbd8c5e8e3edf7d72234d3396d99c8a55a4c874757",
+    "deployment/security/grafana-maintenance-request.json": "4e06f257a627bbbecaf3f2c3d867b8f0edbe5be7e32c317660b1296a1d8c7758",
+    "deployment/security/grafana-maintenance-authorization.json": "d40537f1bc4f09207f3e774478c6173f2f45ce1efdfa5ab4dd3afa945195aa56",
+    "deployment/security/grafana-maintenance-source-retirement-review-20261107.json": "da8142af63ff91a481782474841677b1e1b7298db44dc57ee9edcb6a623c159d",
+    "deployment/security/grafana-maintenance-evidence/core-independent-review.json": "94b89f17b97873df65c4e73089e0cf60b04002dbb36d5f9a2862b22e1ccf8e39",
+    "deployment/security/grafana-maintenance-evidence/plugins-independent-review.json": "ae37efedacd32b4456f225ba046252acef6ac6d007371573a3afcceddcd11e30",
+    "deployment/docker/Dockerfile.grafana-security": "5e9190b4ed6cceeaa56d15dffb0caec2660cfd29b5d56a483bb1cc386e6ff383",
+    "deployment/docker/Dockerfile.grafana-maintenance": "f78cf6fc6b55c13cfa17f57b5fc7dc3b0e6ab2e129c0f208ea2a422b3d995cc5",
+    "deployment/security/minio-html4-classification-evidence-20261107/GO-2026-6860.json": "443304c129b9540dc46d28392b973a136db90644019dc20c3e25941833d49df3",
+    "deployment/security/minio-html4-classification-evidence-20261107/GO-2026-6866.json": "c0d687be9779f000941b6c847646075598b659cdd51476951559208956bd0f82",
+    "deployment/security/grafana-source-html9-evidence-20261107/ci-source-tree-20261107.json": "74ea729f41cf7e613ac9c82699d924d97423cf185e43f94475447110e32075b9"
+  },
+  "reviewed_ci": {
+    "run_id": 42346438135,
+    "job_id": 128325102184,
+    "created_at": "2026-11-07T06:19:26.694567687Z",
+    "raw_sha256": "20a81d621d3237444a3138b43afcf04a06227ce3fea1e2fe37fb274414e4ed7f",
+    "baseline_blocking_rows": 5,
+    "additional_exact_high_html_rows": 9,
+    "additional_companion_medium_rows": 9,
+    "all_prior_failed_verdicts_preserved": true,
+    "old_five_row_function_sha256": "a79d8141c76e473019c9832af6963782897e5d878d57e17d81529b83347548bf",
+    "commit_tree_sha": "31ca5d8b8284063c04fe0a5a1cdbe6d03622ff1b",
+    "historical_source_tree": "deployment/security/grafana-source-html9-evidence-20261107/ci-source-tree-20261107.json",
+    "historical_manifest_count": 47,
+    "original_failed_verdict_recomputed_equal": true,
+    "candidate_failed_verdict_recomputed_equal": true,
+    "historical_replay_is_not_a_fresh_security_scan": true
+  },
+  "limitations": [
+    "These are frozen v0.60.0 source snapshots, not the currently selected native modules. Every mapped exact selected ELF contains v0.62.0 without a replacement. The current human-authorized subject and selectors remain mandatory.",
+    "A new candidate subject, source, native identity, advisory scope or classification requires a new independent binding; this appendix cannot authorize or follow another artifact.",
+    "The baseline remains HIGH/CRITICAL. The nine companion MEDIUM rows are preserved and checked, not promoted or generically suppressed. Unknown or extra blocking rows and every secret remain blocked.",
+    "This is not global security approval. The newly reported sixteen Grafana Brotli/compress runtime findings are outside these two HTML technical paths and remain independently blocking."
+  ]
+}

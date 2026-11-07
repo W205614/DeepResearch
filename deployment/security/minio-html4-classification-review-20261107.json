@@ -1,0 +1,162 @@
+{
+  "schema": "minio-html4-classification-review-v1",
+  "recorded_at": "2026-11-07T06:48:46.593629+00:00",
+  "actor": "/root/java_governance",
+  "actor_kind": "automated_independent_agent",
+  "review_kind": "exact_classification_technical_appendix",
+  "facts_passed": true,
+  "human_risk_acceptance": false,
+  "artifact_approved": false,
+  "validity": "change-driven",
+  "original_binding_sha256": "2d8518f9ab275f97f0c98c68f3a94d42217b292a2fae50e0ce6461f46919d68e",
+  "legacy_html_review_sha256": "adab1800183614929156c4625e3787d1be62e95e0c39975ec3db4e06a131ef4f",
+  "openpgp_review_sha256": "39513648eacbdd29bebe30fbe70e6efae5a7c474bb255c13122b892c75e6d247",
+  "subject": {
+    "index_digest": "sha256:151cd83d5e6500f4d1b3d7f0a12756fe80e8ffcbf91150afd6b9b9605bc2369a",
+    "platform_manifest_digest": "sha256:1a7bd6d07a350cd83ef332d8d2148f123306c7a5706d4184f4d83e5dce42bc83",
+    "config_digest": "sha256:45b3d3e48a5b0a92e7ff52b046573268a241207fe6ddfafa504a48bc543cb1f3",
+    "archive_sha256": "4b337cbfbe438d9ca24c67cdbf284c523e2d06ea52e94e866ea09b945d0bb389",
+    "binary_sha256": {
+      "usr/bin/mcli": "66a22d1bada31f44635405a95fb8005e9d23e4c77a3b9d2a74cfb58735d4094a",
+      "usr/bin/silo": "865e488f9e455b6b7306482b2d4a147ea841f15f141c32678851d3168c624bc2"
+    }
+  },
+  "rows": [
+    {
+      "target": "usr/bin/mcli",
+      "advisory": "CVE-2026-78661",
+      "package": "golang.org/x/net",
+      "version": "v0.61.0",
+      "severity": "HIGH",
+      "elf_sha256": "66a22d1bada31f44635405a95fb8005e9d23e4c77a3b9d2a74cfb58735d4094a",
+      "fixed_version": "0.62.0"
+    },
+    {
+      "target": "usr/bin/mcli",
+      "advisory": "CVE-2026-97045",
+      "package": "golang.org/x/net",
+      "version": "v0.61.0",
+      "severity": "MEDIUM",
+      "elf_sha256": "66a22d1bada31f44635405a95fb8005e9d23e4c77a3b9d2a74cfb58735d4094a",
+      "fixed_version": "0.62.0"
+    },
+    {
+      "target": "usr/bin/silo",
+      "advisory": "CVE-2026-78661",
+      "package": "golang.org/x/net",
+      "version": "v0.61.0",
+      "severity": "HIGH",
+      "elf_sha256": "865e488f9e455b6b7306482b2d4a147ea841f15f141c32678851d3168c624bc2",
+      "fixed_version": "0.62.0"
+    },
+    {
+      "target": "usr/bin/silo",
+      "advisory": "CVE-2026-97045",
+      "package": "golang.org/x/net",
+      "version": "v0.61.0",
+      "severity": "MEDIUM",
+      "elf_sha256": "865e488f9e455b6b7306482b2d4a147ea841f15f141c32678851d3168c624bc2",
+      "fixed_version": "0.62.0"
+    }
+  ],
+  "build_facts": {
+    "usr/bin/mcli": {
+      "elf_sha256": "66a22d1bada31f44635405a95fb8005e9d23e4c77a3b9d2a74cfb58735d4094a",
+      "package_count": 616,
+      "module_count": 107,
+      "html_imports": [],
+      "imports_closure_complete": true,
+      "effective_native_dependencies_equal": true,
+      "function_count": 33790
+    },
+    "usr/bin/silo": {
+      "elf_sha256": "865e488f9e455b6b7306482b2d4a147ea841f15f141c32678851d3168c624bc2",
+      "package_count": 1410,
+      "module_count": 260,
+      "html_imports": [],
+      "imports_closure_complete": true,
+      "effective_native_dependencies_equal": true,
+      "function_count": 115493
+    }
+  },
+  "advisories": [
+    {
+      "advisory": "CVE-2026-78661",
+      "go_advisory": "GO-2026-6860",
+      "path": "deployment/security/minio-html4-classification-evidence-20261107/GO-2026-6860.json",
+      "affected_imports": [
+        {
+          "path": "golang.org/x/net/html",
+          "symbols": [
+            "Parse",
+            "ParseFragment",
+            "ParseFragmentWithOptions",
+            "ParseWithOptions",
+            "parser.addText",
+            "parser.fosterParent",
+            "parser.parse"
+          ]
+        }
+      ]
+    },
+    {
+      "advisory": "CVE-2026-97045",
+      "go_advisory": "GO-2026-6866",
+      "path": "deployment/security/minio-html4-classification-evidence-20261107/GO-2026-6866.json",
+      "affected_imports": [
+        {
+          "path": "golang.org/x/net/html",
+          "symbols": [
+            "Render",
+            "childTextNodesAreLiteral"
+          ]
+        }
+      ]
+    }
+  ],
+  "evidence_files": {
+    "deployment/security/minio-html4-evidence/actual-native-module-inventory-complete.json.gz": "085ae0f848571c0d459d40fe49ad56d619d48d987077fc68224678087c388510",
+    "deployment/security/minio-html4-evidence/CVE-2026-78661.json": "474bea6be369ac9ce7c74ee264df1c8dda3672cdb2a6b98b0cfa15af2a3634eb",
+    "deployment/security/minio-html4-evidence/CVE-2026-97045.json": "3d20b1afc798095320ff294782ad4743771d03594b4057c844fb22f8c4642892",
+    "deployment/security/minio-html4-evidence/GO-2026-6860.json": "3358f66a8ce854391765d1113e2f2720436779797ec86c099deb82e4f00ed8f6",
+    "deployment/security/minio-html4-evidence/GO-2026-6866.json": "e52568294169344cb65b73fa26f1b4239553edeec6db6998ce1cbd8000f916ab",
+    "deployment/security/minio-html4-evidence/mcli-actual-native-buildinfo.txt": "dfa0c53e13ca524136a3f8c587ecc1d2332cdf20bfcb458b24b15526836b49bc",
+    "deployment/security/minio-html4-evidence/mcli-functions-complete.json.gz": "aba506cf6a31bca61bb082e69408a38a832c0305c655fd49a101f06c1b824ada",
+    "deployment/security/minio-html4-evidence/mcli-production-graph-complete.json.gz": "3420ff491b27fe36423c835ebd543fca73912b60b629c93b7e000be0f5616f1f",
+    "deployment/security/minio-html4-evidence/runtime-image-complete-raw.json.gz": "a4e1be19377942cb208c701a9f85e4cf049284048a09ff4c5f1da1fdab4ae2f5",
+    "deployment/security/minio-html4-evidence/runtime-image-inspect.json": "69de776ef25bf8a75ab3401c3713734c473fde8c529efab4625a74aa5fbf79e8",
+    "deployment/security/minio-html4-evidence/silo-actual-native-buildinfo.txt": "dfadf9b3485a2a7cde5a9286de58689b1ebdc87ef8aacf552ae223d8cab4e81a",
+    "deployment/security/minio-html4-evidence/silo-functions-complete.json.gz": "fbd843d5393ac1d34996aee4c553619129f014bb376af2184dad2863b93016a0",
+    "deployment/security/minio-html4-evidence/silo-production-graph-complete.json.gz": "08d9048b758e9fa8541a6ca91a6b4857f73061228cfc37bfe575550dbcac1799",
+    "deployment/security/minio-html4-classification-evidence-20261107/GO-2026-6860.json": "443304c129b9540dc46d28392b973a136db90644019dc20c3e25941833d49df3",
+    "deployment/security/minio-html4-classification-evidence-20261107/GO-2026-6866.json": "c0d687be9779f000941b6c847646075598b659cdd51476951559208956bd0f82",
+    "deployment/security/minio-html4-classification-evidence-20261107/ci-runtime-image-20261107.json.gz": "e2478f9f8e0181cfeb338553c58d3fa2ff4b8f7b9f206e0ce4325780bf3d69b2",
+    "deployment/security/minio-html4-classification-evidence-20261107/ci-original-failed-verdict-20261107.json": "75c07754ab9194787dc4a2f0af31c5670aece8816ef154471c2afd4e2b24c897",
+    "deployment/security/minio-html4-classification-evidence-20261107/ci-openpgp-failed-verdict-20261107.json": "cfcec991a993a4097bdac52538c763057aceb0f17a96e7980dcc63c436a7e856",
+    "deployment/security/minio-html4-classification-evidence-20261107/ci-html-failed-verdict-20261107.json": "ca54541ea4144a3c51496af774ea458284c93f546c0c949e6abb82cf8e672ff5",
+    "deployment/security/minio-html4-classification-evidence-20261107/ci-loaded-image-inspect-20261107.json": "f85b89bf0c4ac75794768737c268a57700a4553d245044b69df7b7ac48f50334",
+    "deployment/security/minio-html4-classification-evidence-20261107/independent-oci-native-replay-20261107.json": "fdcc4b891e059d749248737f98b8fcb9d08d3fc4eb5c722e8988295547d51993",
+    "deployment/security/minio-html4-classification-evidence-20261107/mcli-actual-native-replay-20261107.txt": "35ebedd164ecdd1ab713a4abff0aca82e65fd726b7c3a6d0fed5d103bc8e2e6a",
+    "deployment/security/minio-html4-classification-evidence-20261107/silo-actual-native-replay-20261107.txt": "1ff35eb6acb7f3d2607e4b08a7a5f3c0fcdb9ac2e149ce73ea459b9207d7c632"
+  },
+  "reviewed_ci": {
+    "run_id": 42346438135,
+    "job_id": 128325131503,
+    "scanner": "Trivy 0.75.0",
+    "created_at": "2026-11-07T06:19:53.934526226Z",
+    "complete_raw_path": "deployment/security/minio-html4-classification-evidence-20261107/ci-runtime-image-20261107.json.gz",
+    "raw_sha256": "24042ba5c9ea4c66c4b5391a6655bf04a8a3d8b29259d18f9b5b6572617b07ef",
+    "original_failed_verdict_preserved": true,
+    "old_html_function_sha256": "733faea2fb2498337317004f6a794e3e113d0045cf918e1e7242e8d9e6719764"
+  },
+  "limitations": [
+    "The original published 102110720-byte OCI was downloaded without loading it, all20 blobs, DiffIDs and both ELF hashes were independently reverified, and go version -m reparsed both actual ELFs without executing them. Native records match the frozen records except filenames; full graph closure and supplemental linked functions were rechecked. No new artifact build or approval is claimed.",
+    "No human risk acceptance or new artifact authorization is granted. Changed advisory scope, tuples, source, ELF, evidence or incomplete scans require renewed review.",
+    "Only these four x/net HTML classifications are covered. New Grafana Brotli/compress findings remain independently blocking; this is not global security approval."
+  ],
+  "independent_oci_replay": "deployment/security/minio-html4-classification-evidence-20261107/independent-oci-native-replay-20261107.json",
+  "actual_native_files": {
+    "usr/bin/mcli": "deployment/security/minio-html4-classification-evidence-20261107/mcli-actual-native-replay-20261107.txt",
+    "usr/bin/silo": "deployment/security/minio-html4-classification-evidence-20261107/silo-actual-native-replay-20261107.txt"
+  }
+}

@@ -1,4 +1,4 @@
-"""Verify fixed Debian library bytes before adjudicating two distro-data findings.
+"""Verify exact fixed Debian library bytes before adjudicating reviewed findings.
 
 Full raw Trivy reports are preserved. This is a fixed-code check, not risk
 acceptance: every other HIGH/CRITICAL and every secret still blocks.
@@ -18,6 +18,12 @@ import uuid
 ROOT = Path(__file__).resolve().parents[1]
 LOCK = ROOT / 'deployment/security/agent-native-packages.json'
 LOCK_SHA256 = 'c8354130c02ef81c173bcc62cfb2af717ec7af8f5acf98b2fb3a2782d0260454'
+SUPPLEMENT_PATH = 'deployment/security/agent-native-fixed-code-supplement-20261107.json'
+SUPPLEMENT_SHA256 = 'f0960cbc117072656b5038706634e11f79281fe876f84642fa234953f25338df'
+SUPPLEMENT_FIXES = {
+    'CVE-2026-119374': 'd9de6eedbe918c074c7556400fa21df5960704d9',
+    'CVE-2026-119379': '64459c87cc702d600704fb77ee40ca1782398a52',
+}
 LEVELS = {'UNKNOWN', 'LOW', 'MEDIUM', 'HIGH', 'CRITICAL'}
 RUNTIME_PROBE = '''import ctypes,hashlib,json,pathlib,sqlite3,zlib
 db=sqlite3.connect(':memory:')
@@ -65,6 +71,39 @@ def load_lock():
     for relative, info in lock['evidence'].items():
         require(digest(ROOT / relative) == info['sha256'], 'Native fixed-source evidence changed')
     return lock
+
+
+def validate_supplement(review, lock):
+    require(review.get('schema') == 'agent-native-fixed-code-supplement-v1'
+            and review.get('review_kind') == 'FIXED_CODE' and review.get('risk_acceptance') is False
+            and review.get('base_native_lock_sha256') == LOCK_SHA256,
+            'Supplement must bind the unchanged native lock as fixed-code evidence')
+    packages = [p for p in lock['packages'] if p['name'] == 'libsqlite3-0']
+    require(len(packages) == 1, 'Exact original SQLite package proof required')
+    package = packages[0]
+    require(review.get('package') == {key: package[key] for key in (
+        'name', 'version', 'source', 'archive_sha256', 'library', 'soname', 'library_sha256')}
+        | {'architecture': 'amd64'}, 'Supplement cannot change the reviewed official package or ELF')
+    expected = [{'id': advisory, 'package': package['name'], 'version': package['version'],
+                 'severity': 'HIGH', 'class': 'os-pkgs', 'type': 'debian', 'data_source': 'debian',
+                 'upstream_fix': commit, 'fixed_from_upstream': '3.54.0', 'debian_fixed_source': '3.54.1-1'}
+                for advisory, commit in SUPPLEMENT_FIXES.items()]
+    require(review.get('findings') == expected, 'Supplement must cover only the two exact reviewed HIGH tuples')
+    return package
+
+
+def load_supplement(lock, *, root=ROOT):
+    path = root / SUPPLEMENT_PATH
+    require(digest(path) == SUPPLEMENT_SHA256, 'Reviewed native fixed-code supplement changed')
+    review = json.loads(path.read_bytes())
+    validate_supplement(review, lock)
+    require(isinstance(review.get('evidence'), dict) and len(review['evidence']) == 8,
+            'Complete supplemental primary-source evidence required')
+    for relative, info in review['evidence'].items():
+        evidence = (root / relative).resolve()
+        require(evidence.is_relative_to(root.resolve()) and digest(evidence) == info['sha256'],
+                'Supplemental fixed-source evidence changed')
+    return review
 
 
 def command(args):
@@ -117,7 +156,8 @@ def collect(image, output, lock):
     return facts
 
 
-def evaluate(report, facts, lock, *, now=None):
+def evaluate(report, facts, lock, *, now=None, supplement=None):
+    supplemental_package = validate_supplement(supplement, lock) if supplement is not None else None
     require(report.get('SchemaVersion') == 2 and report.get('Trivy') == {'Version': '0.75.0'}
             and report.get('ArtifactType') == 'container_image', 'Complete supported Trivy report required')
     metadata = report['Metadata']
@@ -162,20 +202,40 @@ def evaluate(report, facts, lock, *, now=None):
                           and finding['VulnerabilityID'] in p['fixed_advisories']
                           and finding['PkgName'] == p['name'] and finding['InstalledVersion'] == p['version']
                           and finding.get('DataSource', {}).get('ID') == 'debian' and severity == 'HIGH']
+            supplemental = False
+            if not candidates and supplemental_package is not None:
+                exact = (key[0], key[1], key[2], severity, record['Class'], record['Type'],
+                         finding.get('DataSource', {}).get('ID'))
+                supplemental = any(exact == (row['id'], row['package'], row['version'], row['severity'],
+                    row['class'], row['type'], row['data_source']) for row in supplement['findings'])
+                if supplemental:
+                    candidates = [supplemental_package]
             if len(candidates) == 1:
                 p = candidates[0]
                 actual = facts['packages'][p['name']]
                 require(actual['library_sha256'] == actual['loaded_library_sha256'] == p['library_sha256'],
                         'Unverified library cannot receive a fixed disposition')
-                fixed.append({'id': key[0], 'package': p['name'], 'version': p['version'],
+                if supplemental:
+                    probe = facts['runtime_probe']
+                    loaded = probe['loaded'][p['name']]
+                    require(probe['sqlite'] == p['upstream'] and len(loaded) == 1
+                            and loaded[0]['path'] in {p['library'], p['soname']}
+                            and loaded[0]['sha256'] == p['library_sha256'],
+                            'Supplement requires the actual uniquely loaded reviewed SQLite ELF')
+                disposition = {'id': key[0], 'package': p['name'], 'version': p['version'],
                               'disposition': 'FIXED_IN_VERIFIED_OFFICIAL_LIBRARY',
-                              'library_sha256': p['library_sha256']})
+                              'library_sha256': p['library_sha256']}
+                if supplemental:
+                    disposition.update(review_kind='FIXED_CODE', risk_acceptance=False,
+                                       supplement_sha256=SUPPLEMENT_SHA256)
+                fixed.append(disposition)
             else:
                 blocked.append({'id': key[0], 'package': finding['PkgName'], 'severity': severity})
     return {'passed': not blocked, 'raw_counts': dict(counts), 'verified_fixed': fixed,
             'unresolved': blocked, 'raw_reports_modified': False,
             'threshold': 'HIGH,CRITICAL; all secrets block; UNKNOWN/LOW/MEDIUM preserved',
-            'image_id': facts['image_id'], 'native_lock_sha256': LOCK_SHA256}
+            'image_id': facts['image_id'], 'native_lock_sha256': LOCK_SHA256,
+            **({'native_fixed_code_supplement_sha256': SUPPLEMENT_SHA256} if supplement is not None else {})}
 
 
 def main():
@@ -190,9 +250,10 @@ def main():
     try:
         require(args.scanner_exit_code == 0, 'Operational scanner failure blocks')
         lock = load_lock()
+        supplement = load_supplement(lock)
         facts = collect(args.image, args.output_dir, lock)
         (args.output_dir / 'native-facts.json').write_text(json.dumps(facts, indent=2), encoding='utf-8')
-        result = evaluate(json.loads(args.scan.read_bytes()), facts, lock)
+        result = evaluate(json.loads(args.scan.read_bytes()), facts, lock, supplement=supplement)
         result['raw_scan_sha256'] = digest(args.scan)
     except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as error:
         result = {'passed': False, 'error_type': type(error).__name__,

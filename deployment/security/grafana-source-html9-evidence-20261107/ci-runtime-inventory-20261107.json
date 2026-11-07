@@ -1,0 +1,204 @@
+{
+  "schema": "runtime-image-inventory-v2",
+  "source_commit": "62b6cdaeff27912b41fc53ef3305fe07f7a5a804",
+  "github_sha": "62b6cdaeff27912b41fc53ef3305fe07f7a5a804",
+  "compose_sha256": "9836bbd246e859ffb9fe06e54cbc6916fed30197c0f608ccb57c3616cbdc617c",
+  "workflow_sha256": {
+    ".github/workflows/answer-quality.yml": "915b0bccb756a5b2e75241e41c43a420fc629137d2310bb5118b79065e319d14",
+    ".github/workflows/ci.yml": "026eebf6220001121259ad0c2b7792a85b41ba3806bb0a6d463555437fbf40d1",
+    ".github/workflows/observability.yml": "5a11ab3d4910a21072be4652612e628c02a7813adaa310efcfd13f3a7495533f",
+    ".github/workflows/publish-grafana-candidate.yml": "8d0e5cf409f5001eadd1802c1dcadd0f38d41b82f09143ff1c3bacdbe1c041b6",
+    ".github/workflows/rag-quality.yml": "9ff180378df80b7541a645d47bf7f5900d0b72caa797571f413a8ea8b0a04816",
+    ".github/workflows/security.yml": "0b182b3c8b015d714908e4342d46ecb7b10d60f7bfd138c8e027df9241905b2b"
+  },
+  "resolved_configuration_sha256": "dc720e762ce735a232c0a8c3638700ca4a31d408b6ebd0e9c74d6dba935f7736",
+  "vendor_matrix": {
+    "include": [
+      {
+        "name": "alert-token-init",
+        "image": "alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a",
+        "services": "alert-token-init",
+        "approved_artifact": false,
+        "artifact": "",
+        "native_jvm_profile": ""
+      },
+      {
+        "name": "clamav",
+        "image": "clamav/clamav:1.4.6_base@sha256:e73991068f2037e10cf15669dd3b48c24345658f5488430746b414c0f761270f",
+        "services": "clamav",
+        "approved_artifact": false,
+        "artifact": "",
+        "native_jvm_profile": ""
+      },
+      {
+        "name": "grafana",
+        "image": "deepresearch-approved-grafana:20261105",
+        "services": "grafana",
+        "approved_artifact": true,
+        "artifact": "grafana",
+        "native_jvm_profile": ""
+      },
+      {
+        "name": "minio",
+        "image": "deepresearch-approved-minio:20261026",
+        "services": "minio",
+        "approved_artifact": true,
+        "artifact": "minio",
+        "native_jvm_profile": ""
+      },
+      {
+        "name": "redis",
+        "image": "redis:7.4.11-alpine@sha256:57e4255cc971b1c8d6f8a6ca283ac01bc3ecdd914273ef6bfaede87aaecd6541",
+        "services": "redis",
+        "approved_artifact": false,
+        "artifact": "",
+        "native_jvm_profile": ""
+      }
+    ]
+  },
+  "custom_matrix": {
+    "include": [
+      {
+        "name": "agent",
+        "context": ".",
+        "dockerfile": "Dockerfile",
+        "services": "agent,alert-relay,bootstrap-db,document-worker,migrate,ops-exporter,worker",
+        "native_jvm_profile": ""
+      },
+      {
+        "name": "milvus",
+        "context": ".",
+        "dockerfile": "Dockerfile.milvus",
+        "services": "milvus",
+        "native_jvm_profile": ""
+      },
+      {
+        "name": "keycloak-postgres",
+        "context": ".",
+        "dockerfile": "Dockerfile.postgres",
+        "services": "keycloak-postgres,postgres",
+        "native_jvm_profile": ""
+      },
+      {
+        "name": "alertmanager",
+        "context": ".",
+        "dockerfile": "deployment/docker/Dockerfile.alertmanager",
+        "services": "alertmanager",
+        "native_jvm_profile": ""
+      },
+      {
+        "name": "etcd",
+        "context": ".",
+        "dockerfile": "deployment/docker/Dockerfile.etcd",
+        "services": "etcd",
+        "native_jvm_profile": ""
+      },
+      {
+        "name": "keycloak",
+        "context": ".",
+        "dockerfile": "deployment/docker/Dockerfile.keycloak",
+        "services": "keycloak",
+        "native_jvm_profile": "keycloak"
+      },
+      {
+        "name": "loki",
+        "context": ".",
+        "dockerfile": "deployment/docker/Dockerfile.loki",
+        "services": "loki",
+        "native_jvm_profile": ""
+      },
+      {
+        "name": "otel-collector",
+        "context": ".",
+        "dockerfile": "deployment/docker/Dockerfile.otel-collector",
+        "services": "otel-collector",
+        "native_jvm_profile": ""
+      },
+      {
+        "name": "prometheus",
+        "context": ".",
+        "dockerfile": "deployment/docker/Dockerfile.prometheus",
+        "services": "prometheus",
+        "native_jvm_profile": ""
+      },
+      {
+        "name": "storage-init",
+        "context": ".",
+        "dockerfile": "deployment/docker/Dockerfile.storage-init",
+        "services": "storage-init",
+        "native_jvm_profile": ""
+      },
+      {
+        "name": "tempo",
+        "context": ".",
+        "dockerfile": "deployment/docker/Dockerfile.tempo",
+        "services": "tempo",
+        "native_jvm_profile": ""
+      },
+      {
+        "name": "backend",
+        "context": "business-backend",
+        "dockerfile": "Dockerfile",
+        "services": "backend",
+        "native_jvm_profile": "business-java"
+      },
+      {
+        "name": "web",
+        "context": "frontend",
+        "dockerfile": "Dockerfile",
+        "services": "web",
+        "native_jvm_profile": ""
+      }
+    ]
+  },
+  "grafana_selection": {
+    "image": "deepresearch-approved-grafana:20261105",
+    "profile": "maintenance",
+    "request_sha256": "4e06f257a627bbbecaf3f2c3d867b8f0edbe5be7e32c317660b1296a1d8c7758",
+    "authorization_sha256": "d40537f1bc4f09207f3e774478c6173f2f45ce1efdfa5ab4dd3afa945195aa56",
+    "authorization_verified": true,
+    "subject": {
+      "artifact": "grafana",
+      "archive_bytes": 776297984,
+      "archive_sha256": "408744f9d8d357a9b7dfd97ac802efbbdee662cb1177b80d8020bdc24c019e25",
+      "index_digest": "sha256:5a14435f088e735cbaba6e6375c5ea03e34424ea3934b55e098a2fb660db452a",
+      "platform_manifest_digest": "sha256:0f354ce9c25e92e811c3f09382c0d317bc7193bee58b97e4b1170049f2b007aa",
+      "config_digest": "sha256:bde24c79bbb09619d33a912b8487e573e3ddbbdadf4f923afe3b4f0988a439fe",
+      "diff_ids": [
+        "sha256:75c137aedfb2760f88629236cb7b797630aed0c3d91d626d1d1bb694878fc2ba",
+        "sha256:3b65ad5d0600ae408b194a3e00c3ce5f18e2f3775b6efe2578fbded330a241a3",
+        "sha256:afbd9e1d092a95dec6977836724da893497654babce2e3f73ea99afd6476f2ed",
+        "sha256:f50fbeb907e1d2ba1a7a2260aa2cbe90973b8473e3ef78d60fbffdf109d14386",
+        "sha256:add892858f9122df35d1762b499f17c25f23f5875892df265a15d3858904ad74",
+        "sha256:20418aa06f25a38cebd5a9906c2db0f8d3e3e1c0924f1be4ee287ff75389522c",
+        "sha256:71c22afd8a267f1aa3262b8e5c821f3ca221071dade6b45dbb9cc2cb900156ee",
+        "sha256:840eb78f709d0ce8bc53370f86f5266aac9d721d49896a3809060ef779ff7eaf",
+        "sha256:f95a81142d494a928d5ccf90ef6c19c6c3f8da7dc246a53d368f1034c2fb6fb8",
+        "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+        "sha256:7e722b084590d46a61b9e42d1a0bce61657c39ab1e04a9f522e3e97fb15506f8",
+        "sha256:abb6d46b4018d7d5f49f19782b0faeda15317f2ed57355b6489c87d57b770e10",
+        "sha256:d732edb6be89e6df45f45cfc5549199b465e7d5d59eab7cd6958b6a3589c477c",
+        "sha256:cbd87404141e0e391d311d08e8c22aeb243fef50a2c4199911f987c278f39264",
+        "sha256:ab177e090e3b33c43006a0f29604fbfc2084e1bc3a66410ca10d9d161cf12383",
+        "sha256:c265a495c474abef280e32994f6af74be5625d4587587cf7627247c3b75dfab3",
+        "sha256:cce18224fcc067daf12978050c22b421210aae08860551ed032b59e4849eb8e2"
+      ],
+      "binary_sha256": {
+        "usr/share/grafana/bin/grafana": "71a29721333128bb3c4c0c32daf68fc95073235fe44a84d0b935c6196705948c",
+        "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64": "9506612c4e2b460e524ce10977214e197feba998fff597ff90f4ce1d9ca91c35",
+        "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64": "2f844f15400d3f96ec9a3351df3fc76f46ae9abe7a49797632bdb85666156fc7",
+        "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64": "e754b55d6bb4bdc60ba9feddfe675b4d6011fb6eb1427709838a542418445c4c",
+        "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64": "ca2705f001f1c13540aef61894759e9b837f3a4b66fc915a5098a406b1886e00",
+        "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64": "7a70b6271a922e7307034cf0046aa5b95799ee75052452c03e03b6f17557d23a",
+        "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64": "77d9bc857651d41028da2694a50dea3f41643d71466b1f9cf6753931c115bd36",
+        "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64": "280b114823ff994daf2e2714fade6703e14fc9860a050c998bbcc68403b5c0e3",
+        "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64": "afcc0824b8e3b3258edfa4c98951a2113fa896c777cd442df6550117d5f10d11",
+        "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64": "a7b652cd0fd297c37d2a2e306f7cbdf67688cb9a50b8a3fd7d90948d1c49b8a7",
+        "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64": "3fb8397ce2284b9e0851e19092ba5748ed92bfbc4caadeec66dab1d0692267a1",
+        "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64": "8e6c55fc90d0e94657e663b386cd6173c811133daef447d08b6bdddea3f6cc9d",
+        "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": "ee8eaf152c8ee65fba362a42643b79a80125297c4940f6382cd11d36b0035ebc",
+        "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": "18a962eaa7f4220b6a7c40cf282f267674dd64efe73dd4fe6b45cac62980abcd"
+      }
+    }
+  }
+}

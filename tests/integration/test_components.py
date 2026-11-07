@@ -23,18 +23,25 @@ async def component():
 
 async def test_postgres_migration_idempotency_quota(component, monkeypatch):
     from backend.core.db import uid
+    from backend.core.reliability import ServiceError
     from backend.domain.models import RunRequest
-    from backend.services.runtime import ConflictError
     user = uid()
     async def hold(*a, **k):
         pass
     monkeypatch.setattr(component, 'schedule', hold)
+    monkeypatch.setattr(component.settings, 'max_queued_runs', 2)
     await component.db.ensure_personal_workspace(user, 'Integration', (3, 1))
     request = RunRequest(topic='Integration', client_request_id=uid())
     rows = await asyncio.gather(*(component.create(user, request) for _ in range(8)))
     assert len({r['id'] for r in rows}) == 1
-    with pytest.raises(ConflictError):
-        await component.create(user, request.model_copy(update={'client_request_id': uid()}))
+    # The workspace limit controls execution; waiting work uses the platform queue.
+    second = await component.create(user, request.model_copy(update={'client_request_id': uid()}))
+    assert second['id'] != rows[0]['id'] and second['status'] == 'queued'
+    other = uid()
+    await component.db.ensure_personal_workspace(other, 'Other integration', (3, 1))
+    with pytest.raises(ServiceError) as error:
+        await component.create(other, request.model_copy(update={'client_request_id': uid()}))
+    assert error.value.code == 'queue_full'
     assert sum(await asyncio.gather(*(component.db.reserve_search(rows[0]['id'], 2) for _ in range(8)))) == 2
     assert (await component.db.one('SELECT search_calls FROM workspace_daily_usage WHERE workspace_id=?', (user,)))['search_calls'] == 2
     await component.purge_user(user, 'reports')

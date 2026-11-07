@@ -12,6 +12,8 @@
 | [检索诊断](retrieval-profile.json)、[缓存修复短测](cache-retest.json)、[短测镜像](cache-retest-runtime.json) | 同一资料及向量ID集合；有效缓存前置，183.02秒3283请求0错误，210任务收敛，检索P95 300.92ms；不是修复后的30分钟容量验收或冷缓存保证 |
 | [账号治理](governance-live.json)、[管理概览](admin-overview-live.json) | 双Java/双Python实际停用、恢复、旧令牌失效、重新登录、交接保留作者、在途取消及迟到结果不发布；概览仅返回安全元数据 |
 | [本地验证汇总](local-validation.md) | 测试覆盖、执行版本和仍待外部验收项；跳过不计通过 |
+| [首轮安全阻断](security-review.md) | 真实Security失败、精确补充审查边界与未授权候选流程；应用测试通过不代表安全放行 |
+| [精确技术补充](security-supplements.json) | SQLite确修、MinIO原OCI与源码快照的离线重算及独立复核；旧raw/verdict保留，Grafana新增16项仍阻断 |
 
 恢复演练在同一台本机Docker环境执行，复用隔离Keycloak的稳定身份，不代表IdP原生备份、异机恢复、托管备份策略或云端RPO/RTO已验收。演练专用工具镜像包含匹配的PostgreSQL17.11客户端；日常应用不取得恢复管理凭据。
 

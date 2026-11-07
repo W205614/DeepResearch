@@ -1,0 +1,41 @@
+{
+  "scope": "Offline exact technical re-evaluations of preserved first-CI artifacts; not a replacement fresh Security workflow or image publication approval.",
+  "global_security_approved": false,
+  "human_risk_acceptance": false,
+  "grafana_new_runtime_findings_still_blocking": 16,
+  "sqlite": {
+    "passed": true,
+    "raw_counts": {
+      "MEDIUM": 44,
+      "LOW": 11,
+      "HIGH": 5
+    },
+    "supplement_sha256": "f0960cbc117072656b5038706634e11f79281fe876f84642fa234953f25338df",
+    "raw_scan_sha256": "705d7eb05ccbde2f39843aa98f816cc9fcc144ef7dd40eaf6520bef4e3d350dc",
+    "native_facts_sha256": "a54a32fe8cf8fc7f5a9381c88ab37ec6b5e114f8274c2497e3d485ef6aab71a5",
+    "raw_and_native_facts_preserved": true,
+    "direct_tests_passed": 56
+  },
+  "minio": {
+    "passed": true,
+    "mode": "original_FIXED_plus_exact_openpgp_and_classified_html4_technical_facts",
+    "raw_report_modified": false,
+    "global_security_approved": false,
+    "classification_review_sha256": "70a770580a65a7d5f5d64f7f77e75ad1fb661cf47d21abe5fcbc71d63954f858",
+    "raw_scan_sha256": "24042ba5c9ea4c66c4b5391a6655bf04a8a3d8b29259d18f9b5b6572617b07ef"
+  },
+  "source": {
+    "historical_replay_only": true,
+    "not_a_fresh_security_scan": true,
+    "source_commit": "62b6cdaeff27912b41fc53ef3305fe07f7a5a804",
+    "commit_tree_sha": "31ca5d8b8284063c04fe0a5a1cdbe6d03622ff1b",
+    "independently_verified_manifest_count": 47,
+    "source_review_sha256": "a0d78b19e3387de26d69cbee8435abbe02d653eaafdbacc60c3903da7a10386a",
+    "original_failed_verdict_recomputed_equal": true,
+    "candidate_failed_verdict_recomputed_equal": true,
+    "technical_appendix_passed": true
+  },
+  "html_direct_tests_passed": 108,
+  "read_only_independent_peer_review_sha256": "e4d43a6f264589a6538bd6c58537bf1af478efc25aae2a53075657cc29023ead",
+  "old_frozen_source_files_unchanged": 128
+}

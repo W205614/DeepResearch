@@ -1,0 +1,91 @@
+{
+  "schema": "agent-native-fixed-code-supplement-v1",
+  "review_kind": "FIXED_CODE",
+  "risk_acceptance": false,
+  "base_native_lock_sha256": "c8354130c02ef81c173bcc62cfb2af717ec7af8f5acf98b2fb3a2782d0260454",
+  "scope_boundary": "Only the two exact Debian HIGH tuples below, with the unchanged official package and actual loaded ELF checks. This is fixed-code evidence, not image approval, severity suppression, feature-unreachability acceptance, or a waiver. Every other HIGH/CRITICAL and every secret remains blocking.",
+  "package": {
+    "name": "libsqlite3-0",
+    "version": "3.54.1-2",
+    "source": "sqlite3",
+    "architecture": "amd64",
+    "archive_sha256": "7789bf0b2338b781de388d83d7c473f9386c9ef638af110b5c1b3d1debb36f00",
+    "library": "/usr/lib/x86_64-linux-gnu/libsqlite3.so.3.54.1",
+    "soname": "/usr/lib/x86_64-linux-gnu/libsqlite3.so.0",
+    "library_sha256": "225ceb839db2c1dd484cfcaa5ef9fbdd429eb1d5f1e0c39fbd50150bca5fc7bc"
+  },
+  "findings": [
+    {
+      "id": "CVE-2026-119374",
+      "package": "libsqlite3-0",
+      "version": "3.54.1-2",
+      "severity": "HIGH",
+      "class": "os-pkgs",
+      "type": "debian",
+      "data_source": "debian",
+      "upstream_fix": "d9de6eedbe918c074c7556400fa21df5960704d9",
+      "fixed_from_upstream": "3.54.0",
+      "debian_fixed_source": "3.54.1-1"
+    },
+    {
+      "id": "CVE-2026-119379",
+      "package": "libsqlite3-0",
+      "version": "3.54.1-2",
+      "severity": "HIGH",
+      "class": "os-pkgs",
+      "type": "debian",
+      "data_source": "debian",
+      "upstream_fix": "64459c87cc702d600704fb77ee40ca1782398a52",
+      "fixed_from_upstream": "3.54.0",
+      "debian_fixed_source": "3.54.1-1"
+    }
+  ],
+  "evidence": {
+    "deployment/security/agent-native-evidence/supplement-20261107/sqlite-CVE-2026-119374.json": {
+      "url": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2026/119xxx/CVE-2026-119374.json",
+      "sha256": "702f960387f20a9fe4a48d7b62c68128e711ceb98f3881872b6822c491e6c15d",
+      "bytes": 8572
+    },
+    "deployment/security/agent-native-evidence/supplement-20261107/sqlite-CVE-2026-119379.json": {
+      "url": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2026/119xxx/CVE-2026-119379.json",
+      "sha256": "e0da28cca8d13a40b54634b981df569a83c0b5934e81ba849e8698f08e040e99",
+      "bytes": 8865
+    },
+    "deployment/security/agent-native-evidence/supplement-20261107/sqlite-119374-fix.patch": {
+      "url": "https://github.com/sqlite/sqlite/commit/d9de6eedbe918c074c7556400fa21df5960704d9.patch",
+      "sha256": "abc7c5fe0d639fbaf3270b67297c653c726cf0efeb4fb6cee56fc44915965ae0",
+      "bytes": 20546
+    },
+    "deployment/security/agent-native-evidence/supplement-20261107/sqlite-119379-fix.patch": {
+      "url": "https://github.com/sqlite/sqlite/commit/64459c87cc702d600704fb77ee40ca1782398a52.patch",
+      "sha256": "d27f37e223efe4f066f0f7d66cf8dbc8bc4f2a995ca9adcb6cbe928bf8e52c42",
+      "bytes": 7822
+    },
+    "deployment/security/agent-native-evidence/supplement-20261107/debian-119374.html": {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-119374",
+      "sha256": "ff9a3366290eff2211cb3b51078c0d722e749e2032b69f22d4c34a494f738f05"
+    },
+    "deployment/security/agent-native-evidence/supplement-20261107/debian-119379.html": {
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-119379",
+      "sha256": "24b8b56e3008317e4a86968b9c2f8e7aad437d358af1bfcdb3da1090ec8f1b69"
+    },
+    "deployment/security/agent-native-evidence/supplement-20261107/sqlite-release-3_54_1.html": {
+      "url": "https://www.sqlite.org/releaselog/3_54_1.html",
+      "sha256": "69bf98f8cb8730c88b01414cdc4436fb3c65443dae405957b40efab9976f1e12"
+    },
+    "deployment/security/agent-native-evidence/supplement-20261107/sqlite-3.54.1-source-review.json": {
+      "sha256": "81e00457e3a15b4a5bff205f2b3e08fceb6d86a2f380c872d96bb67be8616e5b"
+    }
+  },
+  "observed_ci_provenance": {
+    "repository": "W205614/DeepResearch",
+    "run_id": 42346438135,
+    "job_id": 128325131515,
+    "artifact_id": 13564132695,
+    "artifact_sha256": "98b92bc398bae9ae660810b3b62550347ad7e287a13647345e70125c08045e77",
+    "raw_scan_sha256": "705d7eb05ccbde2f39843aa98f816cc9fcc144ef7dd40eaf6520bef4e3d350dc",
+    "native_facts_sha256": "a54a32fe8cf8fc7f5a9381c88ab37ec6b5e114f8274c2497e3d485ef6aab71a5",
+    "image_id": "sha256:de6f426bc74ac61a016fd192dfce95fe9adafba146aa14b1ea0fc218bf86ee2c",
+    "binding_boundary": "This historical receipt identifies the reviewed fresh raw findings. Future runs still require their own complete fresh raw scan and matching current image/diff IDs and actual loaded-library SHA; it is not a whole-image approval."
+  }
+}
