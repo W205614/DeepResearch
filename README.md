@@ -113,3 +113,7 @@ Redis 不可用时，已建立账号仍可读取有权限的历史，新研究�
 | 使用 | [登录](docs/local-keycloak-login.md) · [多模态](docs/multimodal.md) · [资料与报告生命周期](docs/evidence-lifecycle.md) |
 | 验收 | [生产验收](docs/production-readiness.md) · [本地证据索引](docs/evidence/production-20261107/README.md) |
 | 历史 | [交付记录](docs/delivery-history.md) · [检索评测](eval/benchmark_results.md) · [安全维护记录](docs/security-maintenance-20261105.md) |
+
+## 许可证
+
+独立原创代码和文档采用 [MIT License](LICENSE)，Copyright (c) 2026 W205614。第三方源码、字体、依赖和容器组件保留各自许可证，范围与来源见[第三方说明](THIRD_PARTY_NOTICES.md)。其中 Grafana、Loki、Tempo 和 MinIO／Silo 涉及 AGPL；其派生程序不改为 MIT。第三方二进制的完整对应源码与分发义务仍需按目标制品逐项验收，详见该说明中的发布前检查项。
