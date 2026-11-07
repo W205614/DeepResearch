@@ -1,0 +1,58 @@
+{
+  "passed": true,
+  "mode": "exact_current_source18_technical_appendix",
+  "raw_report_modified": false,
+  "artifact_approved": false,
+  "human_risk_acceptance": false,
+  "global_security_approved": false,
+  "raw_blocking_count": 18,
+  "legacy_blocking_count": 5,
+  "html_blocking_count": 9,
+  "candidate_blocking_count": 4,
+  "full_result_target_count": 62,
+  "raw_counts": {
+    "CRITICAL": 0,
+    "HIGH": 18,
+    "MEDIUM": 12,
+    "LOW": 0,
+    "UNKNOWN": 26
+  },
+  "visible_candidate_unknown_count": 5,
+  "candidate_unknown_dispositions_granted": 0,
+  "candidate_source_review_sha256": "48aa2f815ff1bf0213107fda270e7a72fe9ba826929eb25a0ce6f6b3f85c9ce1",
+  "candidate_runtime_authorized": false,
+  "original_and_appendix_failures_preserved": true,
+  "candidate_compiled_facts": {
+    "main": {
+      "source": "deployment/vendors/grafana-20261107/main/go.mod",
+      "source_sha256": "199183753d1ab3e924e97570739bc5e54ccaf3c209b4f882688953d0dc9bb45d",
+      "elf_sha256": "192063cd7684522d1b765a00711221682812238fe138292b2491ba864343ced1",
+      "packages": 4200,
+      "modules": 522,
+      "tempo_packages": [],
+      "affected_server_packages": [],
+      "complete_effective_native_dependencies_equal": true
+    },
+    "tempo": {
+      "source": "deployment/vendors/grafana-20261107/plugins/tempo/go.mod",
+      "source_sha256": "c8975a3adf225b55c1fd90df66f18cd6ee5519954512ac650b95e99875e2fa16",
+      "elf_sha256": "58a9b276af17f22a5c9729ff1da2bd248f9e69add6e25e8a495df00065837c1d",
+      "packages": 605,
+      "modules": 75,
+      "tempo_packages": [
+        "github.com/grafana/tempo/pkg/tempopb",
+        "github.com/grafana/tempo/pkg/tempopb/common/v1",
+        "github.com/grafana/tempo/pkg/tempopb/resource/v1",
+        "github.com/grafana/tempo/pkg/tempopb/trace/v1"
+      ],
+      "affected_server_packages": [],
+      "complete_effective_native_dependencies_equal": true
+    }
+  },
+  "scope": "Offline exact source applicability replay; not a fresh Security workflow or runtime artifact authorization.",
+  "raw_scan_sha256": "15585de04ca009079057d2e97bfb130d2d3ae6a82851e5ae474c0a65ada49386",
+  "direct_tests_passed": 31,
+  "old_chain_regressions_passed": 106,
+  "shallow_checkout_test_recheck_passed": 1,
+  "independent_peer_review_sha256": "740ca3172cc2ae617e6c677ad1e956e2bd1de2d89c1634f80d86da3f6fef1438"
+}

@@ -577,6 +577,13 @@ def main():
         result = evaluate(*values, original_file_sha256=approved.file_hash(args.original_verdict),
                           raw_sha256=approved.file_hash(args.scan), source_commit=head, tracked_clean=not dirty,
                           expected_targets=source.old.committed_manifest_targets(ROOT, head), profile=args.profile)
+        if args.profile == 'maintenance' and not result['passed']:
+            from scripts import grafana_source_candidate4
+            if result.get('error') == grafana_source_candidate4.OLD_ERROR:
+                result = grafana_source_candidate4.evaluate(sys.modules[__name__], *values,
+                    previous=result, root=ROOT, original_file_sha256=approved.file_hash(args.original_verdict),
+                    raw_sha256=approved.file_hash(args.scan), source_commit=head, tracked_clean=not dirty,
+                    expected_targets=source.old.committed_manifest_targets(ROOT, head))
         result['preserved_input_files_sha256'] = {p.resolve().relative_to(ROOT.resolve()).as_posix(): approved.file_hash(p) for p in paths}
     except (ValueError, OSError, subprocess.SubprocessError):
         result = {'passed': False, 'mode': 'failed_closed', 'error': 'Original source-selection inputs are unavailable'}

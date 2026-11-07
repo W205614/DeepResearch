@@ -1,0 +1,34 @@
+{
+  "mode": "isolated_component_runtime_verification",
+  "image": "deepresearch-acceptance-backend-zlib-component-20261107:1.4-r0",
+  "actual_image_id": "sha256:ba0addec7cf9716626bc122d1f16a97cf69f448700b0734a06c4b7cf203ef5e2",
+  "base_daily_image_id_read_only": "sha256:c8ea3cc4e703fa5bc0bf8fe50c04cbb356a24c8276788656b0b3e3afe84e411d",
+  "actual_JRE_bytes": {
+    "verified_entries": 255,
+    "verified_regular_bytes": 164682680
+  },
+  "audit_container_created_not_started_retained": "dr-zlib14-byte-audit-1da97482",
+  "daily_tag_or_container_replaced": false,
+  "product_Dockerfile_full_build_claimed": false,
+  "native_full_fresh_advisory_scan_claimed": false,
+  "resolved_package": "Alpine 3.24 zlib=1.4-r0",
+  "prior_finding": "CVE-2026-4738",
+  "actual_system_library": "/usr/lib/libz.so.1.4",
+  "actual_system_library_sha256": "9995c2fe07ba436423709dd8ce6a186c2c6b3db7ac7719496a55554c4a95274e",
+  "direct_system_libz_FFM_roundtrip_bytes": [
+    0,
+    65536,
+    1048576
+  ],
+  "Java_GZIP_Deflater_roundtrip_bytes": [
+    0,
+    65536,
+    1048576
+  ],
+  "actual_system_library_loading_verified": true,
+  "compression_behavior_passed": true,
+  "compression_log_sha256": "2f91a2d9c51a4341910cdb3244e0d73ccc5e1f8f4d23ded007587f48e9c1b954",
+  "security_waiver_added": false,
+  "full_product_build_status": "pending",
+  "fresh_full_advisory_scan_status": "pending_final_CI"
+}

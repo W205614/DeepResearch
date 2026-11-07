@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import shutil
 from pathlib import Path
 import subprocess
 import sys
@@ -143,8 +144,10 @@ def main():
     output.mkdir(parents=True)
     (output / "project-source-provenance.json").write_text(json.dumps(provenance, indent=2) + "\n")
     (output / "retained-source-image-inspect.json").write_text(json.dumps(before, indent=2) + "\n")
-    transport = output / "module-proxy"
+    transport = ROOT / ".cache/grafana-20261107/module-proxy"
     subprocess.run([sys.executable, str(SOURCE / "prefetch_modules.py"), "--output", str(transport)], check=True)
+    transport_receipt = output / "official-module-transport.json"
+    shutil.copyfile(transport.parent / "official-module-transport.json", transport_receipt)
     command = ["docker", "buildx", "build", "--progress", "plain", "--load", "--metadata-file", str(output / "build-metadata.json"),
                "--build-context", "moduletransport=" + str(transport),
                "--build-arg", "RETAINED_ASSET_IMAGE=" + retained,
@@ -171,7 +174,8 @@ def main():
                "input_worktree_bytes_equal_committed_blobs": provenance["input_worktree_bytes_equal_committed_blobs"],
                "committed_source_identity_verified": provenance["committed_source_identity_verified"],
                "git_normalized_text_inputs_equal_committed_blobs": provenance["git_normalized_text_inputs_equal_committed_blobs"],
-               "git_text_normalizations": provenance["git_text_normalizations"], "actual_image_id": image["Id"], "retained_source_image_id": expected,
+               "git_text_normalizations": provenance["git_text_normalizations"],
+               "public_transport_receipt_sha256": hashlib.sha256(transport_receipt.read_bytes()).hexdigest(), "actual_image_id": image["Id"], "retained_source_image_id": expected,
                "subject": subject, "archive_sha256": subject["archive_sha256"], "archive_bytes": subject["archive_bytes"],
                "artifact_approved": False, "authorization_inherited": False,
                "published": False, "daily_deployment_performed": False,

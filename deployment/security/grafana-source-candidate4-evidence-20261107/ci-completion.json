@@ -1,0 +1,92 @@
+{
+  "schema": "fs-scan-completion-v1",
+  "completed": true,
+  "operational_success": true,
+  "timed_out": false,
+  "security_verdict": "not_evaluated_completion_only",
+  "source_commit": "325a04355e650306614335d517da907c74e9ecdf",
+  "started_at": "2026-11-07T07:45:22.626704+00:00",
+  "command": [
+    "/home/runner/.local/bin/trivy-bin/trivy",
+    "fs",
+    "--config",
+    "/home/runner/work/DeepResearch/DeepResearch/.cache/eval/source-fs/empty-trivy.yaml",
+    "--ignorefile",
+    "/home/runner/work/DeepResearch/DeepResearch/.cache/eval/source-fs/empty.ignore",
+    "--scanners",
+    "vuln,secret",
+    "--severity",
+    "CRITICAL,HIGH,MEDIUM,LOW,UNKNOWN",
+    "--list-all-pkgs",
+    "--include-dev-deps",
+    "--ignore-unfixed=false",
+    "--format",
+    "json",
+    "--output",
+    "/home/runner/work/DeepResearch/DeepResearch/.cache/eval/source-fs/raw.json",
+    "--exit-code",
+    "0",
+    "--timeout",
+    "5m",
+    "/home/runner/work/DeepResearch/DeepResearch/.cache/eval/source-fs/source"
+  ],
+  "scanner_sha256": "93f9da8e4ba5e0c1c76d8234ed2494cf9afb0a96fd21953e424bb795f3299b8e",
+  "tracked_tree_sha256": "e685766d3452aa849174e81f018dec8a45476e4e6d63203381abe88e3f56674e",
+  "process_exit_code": 0,
+  "finished_at": "2026-11-07T07:45:29.996510+00:00",
+  "scanner_version": "0.75.0",
+  "raw_sha256": "15585de04ca009079057d2e97bfb130d2d3ae6a82851e5ae474c0a65ada49386",
+  "raw_report_id": "01a1b4f8-3d46-751f-9609-efa2b585c0ed",
+  "tracked_clean": true,
+  "scanners": [
+    "vuln",
+    "secret"
+  ],
+  "severities": [
+    "CRITICAL",
+    "HIGH",
+    "MEDIUM",
+    "LOW",
+    "UNKNOWN"
+  ],
+  "configured_finding_exit_code": 0,
+  "report_created_at": "2026-11-07T07:45:29.926337253Z",
+  "filters": {
+    "ignorefile_used": true,
+    "ignorefile_rules_empty": true,
+    "ignorefile_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ignorefile_mode": "verified_empty_neutral",
+    "include_dev_dependencies": true,
+    "skip_files": [],
+    "skip_dirs": [],
+    "ignore_unfixed": false,
+    "vex_documents": []
+  },
+  "result_targets_sha256": "8e10867be1da4f2d7ab01688c517f49500570d473044e9a8fb4b2a3f953374ff",
+  "language_target_count": 62,
+  "result_count": 62,
+  "raw_finding_count": 56,
+  "raw_vulnerability_counts": {
+    "UNKNOWN": 26,
+    "LOW": 0,
+    "MEDIUM": 12,
+    "HIGH": 18,
+    "CRITICAL": 0
+  },
+  "raw_secret_counts": {
+    "UNKNOWN": 0,
+    "LOW": 0,
+    "MEDIUM": 0,
+    "HIGH": 0,
+    "CRITICAL": 0
+  },
+  "scan_root": "fresh_full_tracked_checkout",
+  "scope_sha256": "12dd01ca6c46961ebc89adfb6a4b9c263047410ec9c51229de90a1239945e051",
+  "neutral_ignorefile": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "contains_ignore_rules": false
+  },
+  "github_run_id": "42352558962",
+  "github_run_attempt": "1"
+}

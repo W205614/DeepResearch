@@ -17,7 +17,7 @@
 
 入口默认拒绝未提交的候选输入，记录 DeepResearch 项目提交、输入文件实际字节 SHA256、工作区状态和独立的上游 Grafana 提交。最终包装逐文件核对捕获提交的 Git blob；只有 Git 判定为文本、clean 对象恰等于捕获 blob、且差异仅为 CRLF→LF 时才允许换行规范化，并记录原始/提交 SHA256 与 Git 属性，不声称原字节相同。`-text`、二进制、过滤器或其他内容差异均拒绝。`--allow-uncommitted-inputs` 只用于本地编译诊断，不能作为最终精确授权申请的源码身份。
 
-预取只改变下载传输：从 `proxy.golang.org` 获取相同官方版本，随后 Go 继续使用默认 `sum.golang.org` 校验，构建器继续核验 h1 与实际 Git revision。因本轮已经观察到网络 EOF，单个预取文件最多尝试三次，失败会中止。没有关闭校验或改用任意模块镜像。
+预取只改变下载传输：从 `proxy.golang.org` 获取相同官方版本，随后 Go 继续使用默认 `sum.golang.org` 校验，构建器继续核验 h1 与实际 Git revision。因本轮已经观察到网络 EOF，单个预取文件最多尝试三次，失败会中止。没有关闭校验或改用任意模块镜像。公共文件持久缓存在 `.cache/grafana-20261107/module-proxy`；新输出目录复用已完整下载的相同版本文件，避免因大 ZIP 传输失败反复下载。每次运行重新记录实际缓存文件 SHA256 与尝试次数，并将本轮传输 receipt 复制到独立输出目录；旧失败输出保留。复用后 Go 的默认 SumDB、源模块 h1、实际依赖和 readonly 校验仍照常执行。
 
 原有 PGP 验证继续覆盖原始官方资产。新 ELF 通过编译到 core 的精确原始 manifest/原始后端/新后端 SHA256 映射校验，身份明确为 `private` / `DeepResearch maintainer rebuild`，不是官方签名的新二进制。生产图使用与实际后端相同的 `arrow_json_stdlib` 标签；core 保持原构建标签。最终镜像还会校验 14 个实际 ELF 中的修复依赖版本。
 

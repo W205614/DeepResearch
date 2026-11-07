@@ -34,7 +34,7 @@ RUN set -eu; \
 
 FROM eclipse-temurin:21-jre-alpine@sha256:b48e02e0ea88d7bfb305335df94923bdef394905f4147dccd52e873cf17b1088
 # Refresh the affected OS library even when the upstream JRE image still ships it.
-RUN apk add --no-cache --upgrade 'libexpat>=2.10.0-r0' 'brotli-libs>=1.2.1-r0' \
+RUN apk add --no-cache --upgrade 'libexpat>=2.10.0-r0' 'brotli-libs>=1.2.1-r0' 'zlib=1.4-r0' \
     && apk del --no-network gnupg coreutils \
     && rm -rf /opt/java/openjdk \
     && addgroup -S app && adduser -S -G app app

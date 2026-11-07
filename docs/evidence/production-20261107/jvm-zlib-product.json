@@ -1,0 +1,35 @@
+{
+  "mode": "isolated_product_runtime_validation_with_equivalent_verified_local_JRE_transport",
+  "image": "deepresearch-acceptance-backend-zlib-20261107:1.4-r0",
+  "actual_image_id": "sha256:cf144157d9655d13c430ee683535577d58c562ec9d6144ced11281095e6acbf5",
+  "source_dockerfile_sha256": "bcb3dbe1548d1f630101026e437e828f1fc9c0efa345e3d57565c53d9da65437",
+  "local_transport_receipt": "local-build-transport.json",
+  "actual_JRE_bytes": {
+    "verified_entries": 255,
+    "verified_regular_bytes": 164682680
+  },
+  "probe_results": {
+    "product-version.log": {
+      "exit_code": 0,
+      "sha256": "a91855ce74e41c93c2f155afe60ea1c2b7426b95fc6d83297ae7bb4b84e13238"
+    },
+    "product-compression.log": {
+      "exit_code": 0,
+      "sha256": "27fcaac90fcf879665394877be164c52a6e0825624f504b0f1a469eea8b65aab"
+    }
+  },
+  "audit_container_created_not_started_retained": "dr-zlib14-product-byte-audit-469aedb4",
+  "daily_tag_or_container_replaced": false,
+  "native_full_fresh_advisory_scan_claimed": false,
+  "pending": "Original official remote URL transport and fresh complete native/full advisory scan remain final CI acceptance.",
+  "transport_receipt_sha256": "93ab10faec35ebde81cc2472619ef044e35c24091fac909e8ceeca8832d65ae5",
+  "actual_system_library": "/usr/lib/libz.so.1.4",
+  "actual_system_library_sha256": "9995c2fe07ba436423709dd8ce6a186c2c6b3db7ac7719496a55554c4a95274e",
+  "verified_roundtrip_bytes": [
+    0,
+    65536,
+    1048576
+  ],
+  "direct_system_libz_FFM_and_Java_GZIP_Deflater_passed": true,
+  "security_waiver_added": false
+}

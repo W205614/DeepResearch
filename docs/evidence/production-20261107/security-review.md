@@ -22,3 +22,7 @@ Grafana新增发现：`GO-2026-6888 / CVE-2026-111497`，Brotli实际1.2.2/1.2.6
 本机详细原始材料和精确SHA保存在忽略目录 `.cache/pr13-security/diagnosis.md`、`diagnosis.json` 及对应CI artifacts；不会用变更严重度阈值、泛化忽略或旧批准覆盖新增风险。
 
 后续SQLite补充56项、MinIO/源码补充108项正反例通过，并对保留的真实CI工件离线复核、保留原失败verdict。两处HTML追加由另一代理只读复核，旧函数和旧证据未改；[脱敏补充回执](security-supplements.json)明确 `global_security_approved=false`。这不能替代最终提交的新鲜CI扫描，也不能覆盖Grafana新增16条运行时发现。
+
+提交 `41aaaed` 的[第二轮扫描](https://github.com/W205614/DeepResearch/actions/runs/42352558962)中，这两处HTML和Agent原生库门禁已通过。新候选的15个Go清单使源码覆盖47→62，新增4条Tempo路径HIGH，完整18条HIGH和5条UNKNOWN均保留，须独立核验实际编译范围；旧路径结论不自动转授。Java镜像另因系统zlib1.3.2-r1被新数据库标记CVE-2026-4738 CRITICAL而阻断，实际255项JRE字节和单独JVM扫描仍通过。采用现有官方修复包 `zlib=1.4-r0`，不改风险门禁；[实际组件回归](jvm-zlib-upgrade.json)与完整产品/新鲜扫描分开记录。
+
+新增清单已独立核验14个实际ELF、完整编译图和全部有效native依赖：main的4200包完全无Tempo模块/导入；Tempo插件605包仅引入4个tempopb协议包，不含两公告涉及的查询前端和S3后端，所用固定提交另为官方两修复的后继。[Source18补证](source18-supplement.json)通过31项新反例/正例、106项旧链回归及另一代理只读复核；旧5/14失败链不改、5新增UNKNOWN获零处分、不以符号表缺失单独证明不可达，也不批准A11或最终候选。最终新鲜CI和运行制品门禁仍独立执行。

@@ -1,0 +1,92 @@
+{
+  "Id": "sha256:9b5fd91d67077670d6437beb73121280ed48e358d4850686587620dae27fa923",
+  "RepoTags": [
+    "deepresearch-grafana-candidate:20261107"
+  ],
+  "RepoDigests": [
+    "deepresearch-grafana-candidate@sha256:9b5fd91d67077670d6437beb73121280ed48e358d4850686587620dae27fa923"
+  ],
+  "Comment": "buildkit.dockerfile.v0",
+  "Created": "2026-11-07T07:46:30.280206599Z",
+  "Config": {
+    "User": "472",
+    "ExposedPorts": {
+      "3000/tcp": {}
+    },
+    "Env": [
+      "PATH=/usr/share/grafana/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "GF_PATHS_CONFIG=/etc/grafana/grafana.ini",
+      "GF_PATHS_DATA=/var/lib/grafana",
+      "GF_PATHS_HOME=/usr/share/grafana",
+      "GF_PATHS_LOGS=/var/log/grafana",
+      "GF_PATHS_PLUGINS=/var/lib/grafana/plugins",
+      "GF_PATHS_PROVISIONING=/etc/grafana/provisioning"
+    ],
+    "Entrypoint": [
+      "/run.sh"
+    ],
+    "WorkingDir": "/usr/share/grafana",
+    "Labels": {
+      "maintainer": "Grafana Labs <hello@grafana.com>",
+      "org.deepresearch.project.inputs_sha256": "unrecorded-validation-inputs",
+      "org.deepresearch.project.source_revision": "uncommitted-validation-inputs",
+      "org.deepresearch.upstream.grafana_revision": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+      "org.opencontainers.image.revision": "uncommitted-validation-inputs",
+      "org.opencontainers.image.source": "https://github.com/grafana/grafana",
+      "org.opencontainers.image.version": "13.2.5-unapproved-maintenance-20261107"
+    }
+  },
+  "Architecture": "amd64",
+  "Os": "linux",
+  "Size": 3655545551,
+  "RootFS": {
+    "Type": "layers",
+    "Layers": [
+      "sha256:75c137aedfb2760f88629236cb7b797630aed0c3d91d626d1d1bb694878fc2ba",
+      "sha256:3b65ad5d0600ae408b194a3e00c3ce5f18e2f3775b6efe2578fbded330a241a3",
+      "sha256:afbd9e1d092a95dec6977836724da893497654babce2e3f73ea99afd6476f2ed",
+      "sha256:f50fbeb907e1d2ba1a7a2260aa2cbe90973b8473e3ef78d60fbffdf109d14386",
+      "sha256:add892858f9122df35d1762b499f17c25f23f5875892df265a15d3858904ad74",
+      "sha256:20418aa06f25a38cebd5a9906c2db0f8d3e3e1c0924f1be4ee287ff75389522c",
+      "sha256:71c22afd8a267f1aa3262b8e5c821f3ca221071dade6b45dbb9cc2cb900156ee",
+      "sha256:840eb78f709d0ce8bc53370f86f5266aac9d721d49896a3809060ef779ff7eaf",
+      "sha256:f95a81142d494a928d5ccf90ef6c19c6c3f8da7dc246a53d368f1034c2fb6fb8",
+      "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+      "sha256:7e722b084590d46a61b9e42d1a0bce61657c39ab1e04a9f522e3e97fb15506f8",
+      "sha256:34e572c2f57cf6115e2199c2d0ff7a5bdf336281b790834793ac8d1161c834b8",
+      "sha256:5183caf1a6f6235a94a3f11aa90e4c7bd385e4e063bbc8dd28715f30bd59b3b6",
+      "sha256:53589324f46c5dd8197fc306e8b44de1a19bf699e944c433d37a0e2841918f1f",
+      "sha256:b3e13aebaf1eba2d35297a8e91c235bd06453bb42986281b55161b38c4f8dafd",
+      "sha256:6d192f7274c82e521829360b861fb59f34cb5ba5cec9576df9a68bea8dbf2da2",
+      "sha256:b72071706ea8ecadc4cfe05479f9c62ac9596545e855f39bb005de54d707c622",
+      "sha256:ca0b798e86a4b10b47ce2b7dfbd566cf02c5ae365ca6a134013ab2240a19ba07",
+      "sha256:557a54a77058eb08cc8c23524ae1f2b0ca8d62215ed5ba0c9b4c3bc91a8e33d8",
+      "sha256:cf25352abd0a65b7bf7f6ce10a509361c59ca98b875f2206b190c739c4e51cb2",
+      "sha256:100bb21a19730336a7a75137e49ff7d6d65f881f438029843a8ac5170071f0da",
+      "sha256:1b0c50c5ae79524a44f0590900d04bf4a97e92d97e2f9a4b11dca41553439320",
+      "sha256:ef4f58b7db8823c97d8f3a0e1511d40f6584a953403124dd7d53ec506a3ec2c5",
+      "sha256:ae59e4a2a6319617679e36dd50dd00f7c15ea48ad6da5cd6b342f68fbe3fe9fa",
+      "sha256:2ac7bff867c5b190f23c573a4eb972d55be7e5d2887d72e48314a751bd198eab",
+      "sha256:48efe3fa6ab64784e8d8a1e6780687d0d4a05f012a1a73cbbdc050b61d425385",
+      "sha256:d3264c7f72f17473de81a4a5ad54dca11bc754115fdb953bdc310b913a7d432b",
+      "sha256:1d322898024c1bfdee4fbd1d6791c2b711b00a4112269905544fa9de2c994c5f",
+      "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef"
+    ]
+  },
+  "Metadata": {
+    "LastTagTime": "2026-11-07T07:46:46.549026696Z"
+  },
+  "Descriptor": {
+    "mediaType": "application/vnd.oci.image.index.v1+json",
+    "digest": "sha256:9b5fd91d67077670d6437beb73121280ed48e358d4850686587620dae27fa923",
+    "size": 856
+  },
+  "Identity": {
+    "Build": [
+      {
+        "Ref": "9i4k4v7hb1qlmc0eeixgj8n15",
+        "CreatedAt": "2026-11-07T07:46:51.715150837Z"
+      }
+    ]
+  }
+}

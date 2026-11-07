@@ -14,6 +14,8 @@
 | [本地验证汇总](local-validation.md) | 测试覆盖、执行版本和仍待外部验收项；跳过不计通过 |
 | [首轮安全阻断](security-review.md) | 真实Security失败、精确补充审查边界与未授权候选流程；应用测试通过不代表安全放行 |
 | [精确技术补充](security-supplements.json) | SQLite确修、MinIO原OCI与源码快照的离线重算及独立复核；旧raw/verdict保留，Grafana新增16项仍阻断 |
+| [JVM系统zlib组件](jvm-zlib-upgrade.json)、[产品镜像](jvm-zlib-product.json) | 精确官方1.4-r0包、实际ELF和Java直接系统库/标准压缩回归；等字节官方JRE缓存运输产品构建通过，原URL运输与新鲜扫描另行核验 |
+| [新增Tempo清单路径](source18-supplement.json) | 完整62目标/18 HIGH重算；实际main无Tempo、插件仅tempopb协议包，31新测试及106旧链回归通过；保留UNKNOWN和失败链，不授权候选制品 |
 
 恢复演练在同一台本机Docker环境执行，复用隔离Keycloak的稳定身份，不代表IdP原生备份、异机恢复、托管备份策略或云端RPO/RTO已验收。演练专用工具镜像包含匹配的PostgreSQL17.11客户端；日常应用不取得恢复管理凭据。
 

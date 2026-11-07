@@ -19,8 +19,12 @@
 | SQLite固定代码补充 | 56项正反例通过，原始CI工件离线重算通过 | 仅119374/119379两个精确HIGH元组，实际已加载官方库哈希及源码补丁匹配；原始raw/旧锁不改，其他发现/secret仍阻断 |
 | MinIO/源码分类补充 | 108项直接回归通过，原授权OCI/ELF及完整raw离线复核通过 | 保留原失败verdict；仅当前精确tuple和原合法subject，不能授权新制品或排除Grafana新增16项 |
 | 日志时间 | UTC固定时间探测和现有观测测试通过 | 修正非UTC宿主机将本地时间误标Z的问题，运行容器默认UTC的业务行为不变 |
+| JVM系统zlib | 官方1.4-r0实际ELF匹配，Java21 FFM直接系统libz及GZIP/Deflater三组roundtrip通过 | 0/64KiB/1MiB；组件与等字节JRE缓存运输的产品镜像均通过，255项JRE字节匹配；原URL运输与新鲜扫描须看最终CI，未加安全例外 |
+| 新增Tempo清单路径 | 31项新直接测试、106项旧源码链回归和浅克隆修正单项通过，独立只读复核无阻断 | 完整62目标/18 HIGH和5新增UNKNOWN保留；14实际ELF/完整图/native对齐，main无Tempo、插件仅4个tempopb包；原失败链保留，不授权候选或风险接受 |
 
 原始日志、截图、私密令牌、测试配置和逻辑备份包保留在本机忽略目录。GitHub检查按最终提交查看，未结束/跳过不能计为通过，本文件不预写远端结果。首轮[安全失败及独立候选边界](security-review.md)明确保留，补充技术验证不等于整体安全放行。
+
+提交 `41aaaed` 的GitHub质量Job实际通过：Python1488 passed / 8 skipped、Java61项、前端33项及构建。真实组件Job的5项集成及57.96秒Worker恢复、Redis只读恢复和Milvus就绪恢复通过；同提交整栈Job当时仍运行。安全Job仍失败：新增清单路径的4条Tempo HIGH、未切换的旧Grafana运行制品、系统zlib的新CRITICAL分类。不能将质量/组件通过写成全部CI或安全通过，最终提交须重新核验。
 
 ## 真实组件与模型
 
