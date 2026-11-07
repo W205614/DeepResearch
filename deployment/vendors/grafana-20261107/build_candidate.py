@@ -91,6 +91,12 @@ def verify_exported_archive(archive, image, metadata):
     sys.path.insert(0, str(ROOT))
     from scripts.oci_artifact import verify_oci_archive
 
+    if image["Os"] != "linux" or image["Architecture"] != "amd64":
+        raise ValueError("Captured candidate must be the exact Linux amd64 runtime platform")
+    if (metadata["containerimage.digest"] != image["Id"]
+            or metadata["containerimage.descriptor"] != image["Descriptor"]
+            or image["Descriptor"]["digest"] != image["Id"]):
+        raise ValueError("Captured BuildKit index/descriptor and immutable image identity differ")
     with archive.open("rb") as stream:
         digest = hashlib.file_digest(stream, "sha256").hexdigest()
     with tarfile.open(archive, "r:") as tar:
@@ -107,7 +113,8 @@ def verify_exported_archive(archive, image, metadata):
         if len(platforms) != 1:
             raise ValueError("Candidate archive must contain one exact Linux amd64 runtime manifest")
         manifest = document(platforms[0])
-        if manifest["config"]["digest"] != metadata["containerimage.config.digest"]:
+        if ("containerimage.config.digest" in metadata
+                and manifest["config"]["digest"] != metadata["containerimage.config.digest"]):
             raise ValueError("Exported OCI config differs from the actual BuildKit result")
     subject = {"index_digest": image["Id"], "platform_manifest_digest": platforms[0]["digest"],
                "config_digest": manifest["config"]["digest"], "diff_ids": image["RootFS"]["Layers"],

@@ -6,6 +6,7 @@ import hashlib
 import inspect
 import json
 from pathlib import Path
+import subprocess
 
 import pytest
 
@@ -158,3 +159,53 @@ def test_changed_independent_review_and_old_function_rewrites_cannot_pass(tmp_pa
     }
     for function in (gate.apply_retirement, gate.apply_html_retirement, gate.evaluate):
         assert hashlib.sha256(inspect.getsource(function).encode()).hexdigest() == original_hashes[function.__name__]
+
+
+def test_exact_review_metadata_survive_actual_git_index_and_clean_lf_checkout(tmp_path):
+    review = json.loads((ROOT / addon.REVIEW_PATH).read_bytes())
+    exact_binary_text = [addon.REVIEW_PATH,
+        'deployment/security/grafana-source-candidate4-evidence-20261107/actual-validation-image-elf-binding.json',
+        'deployment/security/grafana-source-candidate4-evidence-20261107/actual-validation-image-inspect.json']
+    expected = {addon.REVIEW_PATH: addon.REVIEW_SHA256, **review['evidence_files'],
+                **{spec['source']: spec['source_sha256'] for spec in review['builds'].values()}}
+    names = sorted(expected)
+    repo = tmp_path / 'git-index'
+    repo.mkdir()
+
+    def git(*args):
+        return subprocess.check_output(['git', *args], cwd=repo, stderr=subprocess.PIPE)
+
+    git('init')
+    git('config', 'core.autocrlf', 'true')
+    (repo / '.gitattributes').write_bytes((ROOT / '.gitattributes').read_bytes())
+    attributes = repo / 'deployment/security/.gitattributes'
+    attributes.parent.mkdir(parents=True)
+    attributes.write_bytes((ROOT / 'deployment/security/.gitattributes').read_bytes())
+    for name in names:
+        path = repo / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes((ROOT / name).read_bytes())
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == expected[name]
+    control = repo / 'deployment/security/unrelated-proof.json'
+    control.write_bytes(b'control\r\n')
+    nested_control = 'deployment/security/unreviewed/grafana-source-candidate4-review-20261107.json'
+    (repo / nested_control).parent.mkdir(parents=True)
+    (repo / nested_control).write_bytes(b'control\r\n')
+    git('add', '.')
+    for name in names:
+        assert hashlib.sha256(git('cat-file', 'blob', ':' + name)).hexdigest() == expected[name]
+    for name in exact_binary_text:
+        assert git('check-attr', 'text', '--', name).decode().rstrip().endswith(': text: unset')
+    assert git('check-attr', 'text', '--', nested_control).decode().rstrip().endswith(': text: unspecified')
+    assert git('cat-file', 'blob', ':' + nested_control) == b'control\n'
+    assert git('cat-file', 'blob', ':deployment/security/unrelated-proof.json') == b'control\n'
+    checkout = tmp_path / 'lf-checkout'
+    checkout.mkdir()
+    git('-c', 'core.autocrlf=false', 'checkout-index', '--all', '--prefix=' + checkout.as_posix() + '/')
+    for name in names:
+        assert hashlib.sha256((checkout / name).read_bytes()).hexdigest() == expected[name]
+    assert (checkout / 'deployment/security/unrelated-proof.json').read_bytes() == b'control\n'
+    assert (checkout / nested_control).read_bytes() == b'control\n'
+    loaded, builds = addon.load_review(gate, checkout)
+    assert loaded == review and builds['main']['complete_effective_native_dependencies_equal']
+    assert builds['main']['tempo_packages'] == [] and len(builds['tempo']['tempo_packages']) == 4

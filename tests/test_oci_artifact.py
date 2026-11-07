@@ -1,8 +1,10 @@
 import gzip
 import hashlib
+import importlib.util
 import io
 import json
 import tarfile
+from pathlib import Path
 
 import pytest
 
@@ -224,3 +226,53 @@ def test_whiteout_must_name_a_real_child_not_empty_dot_or_parent(tmp_path, leaf)
     path, expected = fixture(tmp_path, [BASE, [("usr/bin/" + leaf, "file", b"")]])
     with pytest.raises(OCIArtifactError, match="whiteout child"):
         verify_oci_archive(path, expected, max_archive_bytes=512 * 1024**2)
+
+
+def grafana_candidate_packager():
+    path = Path(__file__).resolve().parents[1] / "deployment/vendors/grafana-20261107/build_candidate.py"
+    spec = importlib.util.spec_from_file_location("grafana_candidate_packager_regression", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def captured_candidate_metadata(path, expected):
+    with tarfile.open(path, "r:") as archive:
+        descriptor = json.load(archive.extractfile("index.json"))["manifests"][0]
+    image = {"Id": expected["index_digest"], "Os": "linux", "Architecture": "amd64",
+             "Descriptor": descriptor, "RootFS": {"Layers": expected["diff_ids"]}}
+    metadata = {"containerimage.digest": expected["index_digest"],
+                "containerimage.descriptor": dict(descriptor)}
+    return image, metadata
+
+
+@pytest.mark.parametrize("provided_config", [False, True])
+def test_grafana_packager_authenticates_actual_index_when_optional_config_digest_is_missing(tmp_path, provided_config):
+    path, expected = fixture(tmp_path, [BASE], compression="gzip")
+    image, metadata = captured_candidate_metadata(path, expected)
+    if provided_config:
+        metadata["containerimage.config.digest"] = expected["config_digest"]
+    subject, facts = grafana_candidate_packager().verify_exported_archive(path, image, metadata)
+    assert subject["index_digest"] == expected["index_digest"]
+    assert subject["config_digest"] == expected["config_digest"]
+    assert subject["archive_sha256"] == expected["archive_sha256"]
+    assert facts["recomputed_diff_ids"] == expected["diff_ids"]
+    assert facts["authorization_evaluated"] is False
+
+
+@pytest.mark.parametrize("case", ["root", "descriptor", "platform", "config", "null_config", "false_diffid"])
+def test_grafana_packager_missing_config_path_still_rejects_wrong_actual_subject(tmp_path, case):
+    path, expected = fixture(tmp_path, [BASE], declared_bad=case == "false_diffid")
+    image, metadata = captured_candidate_metadata(path, expected)
+    if case == "root":
+        metadata["containerimage.digest"] = "sha256:" + "f" * 64
+    elif case == "descriptor":
+        metadata["containerimage.descriptor"]["digest"] = "sha256:" + "f" * 64
+    elif case == "platform":
+        image["Architecture"] = "arm64"
+    elif case == "config":
+        metadata["containerimage.config.digest"] = "sha256:" + "f" * 64
+    elif case == "null_config":
+        metadata["containerimage.config.digest"] = None
+    with pytest.raises(ValueError):
+        grafana_candidate_packager().verify_exported_archive(path, image, metadata)

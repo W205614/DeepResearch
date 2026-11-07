@@ -54,6 +54,7 @@ COPY deployment/vendors/grafana-20261107/verify_native_versions.py /tools/
 RUN python3 /tools/verify_native_versions.py --root /rebuilt --inventory /tools/plugin-modules.json --main /out/grafana --output /out/native-version-verification.json
 FROM grafana/grafana:13.2.5@sha256:ffeeebf613b00fede764821c5e5b1545fb376aba561ae91c488e91f219adb25a
 USER 0
+RUN apk add --no-cache 'zlib=1.4-r0'
 RUN rm -rf /usr/share/grafana/data/plugins-bundled
 COPY --from=assets /reviewed-plugins/ /usr/share/grafana/data/plugins-bundled/
 COPY --from=plugins /out/plugins/ /usr/share/grafana/data/plugins-bundled/

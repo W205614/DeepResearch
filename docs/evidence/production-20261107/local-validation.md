@@ -26,6 +26,8 @@
 
 提交 `41aaaed` 的GitHub质量Job实际通过：Python1488 passed / 8 skipped、Java61项、前端33项及构建。真实组件Job的5项集成及57.96秒Worker恢复、Redis只读恢复和Milvus就绪恢复通过；同提交整栈Job当时仍运行。安全Job仍失败：新增清单路径的4条Tempo HIGH、未切换的旧Grafana运行制品、系统zlib的新CRITICAL分类。不能将质量/组件通过写成全部CI或安全通过，最终提交须重新核验。
 
+提交 `d91f0ce` 的新鲜Security扫描中，JVM系统zlib修复通过；整体仍因源码证据字节和旧Grafana制品失败。质量Job为1495 passed、8 skipped、24 errors：三个新增JSON原证据为CRLF，Git入库转换成LF，严格SHA检查正确拒绝。修复仅对这三个精确路径声明保留字节，并显式重新入库原字节，不改review pin或门禁。真实Git入库/干净LF检出/完整loader回归通过，另一个代理独立验证实际暂存区全部29项、main4200包/Tempo605包及冻结128项；[字节保留回执](source-byte-preservation.json)不代表最终CI已通过。
+
 ## 真实组件与模型
 
 - 四次真实OpenAI HTTP探测全部通过；之后没有追加真实模型请求。重排保持BGE/SiliconFlow。

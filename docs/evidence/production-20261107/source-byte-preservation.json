@@ -1,0 +1,35 @@
+{
+  "schema": "source-proof-byte-preservation-verification-v1",
+  "recorded_at": "2026-11-07T08:37:37.109775+00:00",
+  "failed_commit": "d91f0ce07638ce970b9610888fb1cdf76105eb5b",
+  "failure": "Git normalized three newly added reviewed JSON files from CRLF to LF; exact SHA verification rejected them.",
+  "fix": "Three anchored paths in deployment/security/.gitattributes; original reviewed bytes explicitly restaged.",
+  "exact_original_sha256": {
+    "deployment/security/grafana-source-candidate4-review-20261107.json": "48aa2f815ff1bf0213107fda270e7a72fe9ba826929eb25a0ce6f6b3f85c9ce1",
+    "deployment/security/grafana-source-candidate4-evidence-20261107/actual-validation-image-elf-binding.json": "43a0a655ac8e62cd39a219db87d3f62d7bab581ca2ff4fa977b8be98ec93bd2e",
+    "deployment/security/grafana-source-candidate4-evidence-20261107/actual-validation-image-inspect.json": "f31fb8e502f167cc17b4d613812345df66d5b313a03f8b21db32e5a3126a0891"
+  },
+  "actual_git_index_and_clean_checkout_test": {
+    "passed": true,
+    "tests": 1,
+    "seconds": 7.56,
+    "source_receipt_sha256": "a7af12f149f0edf393580d0379a9b5eba0d32a81fe612340aefc71455bc8b9cd"
+  },
+  "independent_actual_project_index_review": {
+    "passed": true,
+    "working_index_checkout_original_sha_equal": true,
+    "clean_lf_checkout_files_checked": 29,
+    "real_loader_passed": true,
+    "complete_graph_packages": {"main": 4200, "tempo": 605},
+    "changed_attribute_paths": 3,
+    "nested_same_basename_still_normal_text": true,
+    "frozen_files_unchanged": 128,
+    "root_attributes_unchanged": true,
+    "gate_source_and_review_pins_unchanged": true,
+    "peer_did_not_modify_index": true,
+    "source_receipt_sha256": "48c954d3fa700c7f9c240f94721c0aed02c9c0c6bee3517b853165e9388bd306"
+  },
+  "global_security_approved": false,
+  "artifact_authorized": false,
+  "boundary": "Local byte-preservation verification only; final CI and runtime artifact authorization remain separate."
+}
