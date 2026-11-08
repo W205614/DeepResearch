@@ -110,7 +110,7 @@ async def fetch_text(url: str, max_bytes: int = 1_500_000) -> str:
                                     "h1", "h2", "h3", "h4", "h5", "h6", "tr", "br"]):
             block.insert_before("\n")
             block.insert_after("\n")
-        text = "\n".join(" ".join(line.split()) for line in body.get_text(" ").splitlines() if line.strip())
+        text = body.get_text(" ").strip()
         if len(text) < 80:
             raise ServiceError("来源正文不足，可能需要登录或动态加载")
         return text

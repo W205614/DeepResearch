@@ -92,8 +92,10 @@ async def test_long_web_source_keeps_relevant_paragraphs_within_download_limit(m
 
     introduction = '<p>Background introduction with unrelated information.</p>' * 300
     definition = 'ID Token contains authentication claims. Access Token is used to access protected resources.'
+    code = 'def example():\n    return "a  b"'
     html = ('<main>' + introduction + '<h2>Token definitions</h2><p>ID Token contains\n'
-            '<em>authentication</em> claims.\nAccess Token is used to access protected resources.</p></main>')
+            '<em>authentication</em> claims.\nAccess Token is used to access protected resources.</p>'
+            '<pre>' + code + '</pre></main>')
     original_client = httpx.AsyncClient
     transport = httpx.MockTransport(lambda request: httpx.Response(
         200, headers={'content-type': 'text/html; charset=utf-8'}, content=html.encode()))
@@ -110,6 +112,7 @@ async def test_long_web_source_keeps_relevant_paragraphs_within_download_limit(m
         return
     text = await security.fetch_text('https://example.com/specification', max_bytes=max_bytes)
     assert definition in text
+    assert code in text
     assert '\n' in text
     context = evidence_context([{'id': 'spec', 'text': text}], text_limit=1500, total_limit=1500,
                                query='ID Token Access Token authentication')
