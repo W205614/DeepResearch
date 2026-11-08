@@ -1,4 +1,5 @@
 import asyncio
+from decimal import Decimal
 import json
 
 import httpx
@@ -77,6 +78,24 @@ async def test_inspect_has_no_paid_calls_or_database_writes(migration):
     assert not calls and not vectors._client.collections
     assert await db.rows('SELECT * FROM metadata ORDER BY key') == metadata
     assert '既有' not in json.dumps(report, ensure_ascii=False)
+
+
+async def test_progress_serializes_postgres_bigint_aggregate_values(migration, monkeypatch):
+    tool, db, source, target, calls, vectors = migration
+    ident = (await tool.prepare(maintenance_acknowledged=True))['migration_id']
+    original_one = db.one
+
+    async def postgres_aggregates(sql, args=()):
+        row = await original_one(sql, args)
+        if 'SUM(attempts)' in sql:
+            return {key: Decimal(value) for key, value in row.items()}
+        return row
+
+    monkeypatch.setattr(db, 'one', postgres_aggregates)
+    report = await tool.progress(ident)
+    assert json.loads(json.dumps(report))['budget'] == {'requests': 0, 'reserved_tokens': 0}
+    assert all(type(value) is int for value in report['budget'].values())
+    assert not calls
 
 
 async def test_resume_enforces_cumulative_budget_and_activation_preserves_sources(migration):

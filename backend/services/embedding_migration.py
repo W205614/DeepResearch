@@ -182,6 +182,7 @@ class EmbeddingMigration:
             raise ServiceError("迁移不存在", code="migration_not_found", retryable=False)
         statuses = await self.db.rows("SELECT status,COUNT(*) AS total FROM embedding_migration_items WHERE migration_id=? GROUP BY status", (migration_id,))
         budget = await self.db.one("SELECT COALESCE(SUM(attempts),0) AS requests,COALESCE(SUM(reserved_tokens),0) AS reserved_tokens FROM embedding_migration_items WHERE migration_id=?", (migration_id,))
+        budget = {key: int(value) for key, value in budget.items()}
         return {"migration_id": migration_id, "status": row["status"], "target_prefix": row["target_prefix"],
                 "target": json.loads(row["target_config_json"]), "counts": {value["status"]: value["total"] for value in statuses},
                 "budget": budget, "activated_at": row["activated_at"]}
