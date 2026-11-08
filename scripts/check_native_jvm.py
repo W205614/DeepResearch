@@ -17,7 +17,7 @@ import tarfile
 import tempfile
 import time
 import uuid
-from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
+from urllib.parse import parse_qsl, quote, unquote, urlencode, urlsplit, urlunsplit
 from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -44,6 +44,29 @@ def run(args, *, env=None, timeout=300):
     return result.stdout
 
 
+def scanner_archive_response(info):
+    match = re.fullmatch(r"https://github\.com/([^/?#]+)/([^/?#]+)/releases/download/([^/?#]+)/([^/?#]+)", info["url"])
+    if not match:
+        raise NativeGateError("Pinned scanner URL is not an official GitHub release asset")
+    owner, repository, tag, name = match.groups()
+    api = f"https://api.github.com/repos/{owner}/{repository}"
+    metadata = Request(api + "/releases/tags/" + quote(unquote(tag), safe=""),
+                       headers={"Accept": "application/vnd.github+json"})
+    with urlopen(metadata, timeout=60) as response:
+        raw = response.read(2 * 1024**2 + 1)
+    if len(raw) > 2 * 1024**2:
+        raise NativeGateError("Scanner release metadata exceeds its bound")
+    release = json.loads(raw)
+    assets = [asset for asset in release["assets"] if asset["name"] == unquote(name)]
+    if (release.get("tag_name") != unquote(tag) or release.get("draft") is not False
+            or len(assets) != 1 or assets[0].get("digest") != "sha256:" + info["archive_sha256"]
+            or assets[0].get("size") != info["archive_bytes"] or type(assets[0].get("id")) is not int):
+        raise NativeGateError("Official scanner asset differs from the pinned archive")
+    # No GitHub token is required or forwarded to the public storage redirect.
+    return urlopen(Request(api + "/releases/assets/" + str(assets[0]["id"]),
+                           headers={"Accept": "application/octet-stream"}), timeout=60)
+
+
 def executable(tool, lock, cache, tool_dir):
     spec = lock["tools"][tool]
     if platform.system() == "Windows":
@@ -57,7 +80,7 @@ def executable(tool, lock, cache, tool_dir):
     archive = cache / (tool + "-" + spec["version"] + ".tar.gz")
     cache.mkdir(parents=True, exist_ok=True)
     if not archive.exists():
-        with urlopen(info["url"], timeout=60) as response, archive.open("xb") as output:
+        with scanner_archive_response(info) as response, archive.open("xb") as output:
             received = 0
             while block := response.read(1024 * 1024):
                 received += len(block)

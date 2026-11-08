@@ -1,7 +1,8 @@
 # Same Keycloak26.8.1 rootfs; legally remove the old JDK RPM and install verified Temurin JRE.
 # JVM CPE inventory is verified separately; Trivy Java scanning alone cannot cover tarball JREs.
 FROM golang@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c AS extract
-ADD --checksum=sha256:a535a1df9c6284d9618872984e026ae0352d1f7e9e0605425c0e6114f47351dd https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.13%2B9/OpenJDK21U-jre_x64_linux_hotspot_21.0.13_9.tar.gz /tmp/jre.tar.gz
+# Exact Temurin21.0.13+9 Linux JRE asset; retain the independent SHA check below.
+RUN apk add --no-cache curl && curl --fail --location --connect-timeout 20 --max-time 180 --retry 2 --retry-max-time 180 --retry-all-errors --header 'Accept: application/octet-stream' https://api.github.com/repos/adoptium/temurin21-binaries/releases/assets/665758876 --output /tmp/jre.tar.gz
 RUN echo 'a535a1df9c6284d9618872984e026ae0352d1f7e9e0605425c0e6114f47351dd  /tmp/jre.tar.gz' | sha256sum -c - && mkdir /out && tar -xzf /tmp/jre.tar.gz --strip-components=1 -C /out
 # Official Guava bytes; keep the path recorded in Keycloak's Quarkus bootstrap.
 # The embedded Maven metadata, not that compatibility basename, identifies 33.7.2-jre.

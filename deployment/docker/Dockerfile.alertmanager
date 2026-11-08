@@ -2,7 +2,7 @@ FROM golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e8835
 ARG GOPROXY=https://proxy.golang.org
 ENV GOPROXY=${GOPROXY} GOTOOLCHAIN=local GOMAXPROCS=2 GOFLAGS=-p=2 GOMEMLIMIT=512MiB
 WORKDIR /src
-RUN apk add --no-cache git
+RUN apk add --no-cache git curl
 # Fetch the unmodified stable upstream source through the Go checksum database.
 RUN --mount=type=cache,target=/go/pkg/mod \
     go mod download -json github.com/prometheus/alertmanager@v0.34.1 > /tmp/source.json && \
@@ -14,7 +14,8 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     git reset --mixed 73c6bfe7393929211294c1954f30d8ed78e4d0ad
 FROM source AS build
 # The generated UI is an official stable-release asset, absent from the Go module.
-ADD --checksum=sha256:881fe0f7beb9573f35be47dd233af6220e72c8db72c03bcd1780402eb8dc1307 https://github.com/prometheus/alertmanager/releases/download/v0.34.1/alertmanager-web-ui-0.34.1.tar.gz /tmp/ui.tar.gz
+RUN curl --fail --location --connect-timeout 20 --max-time 180 --retry 2 --retry-max-time 180 --retry-all-errors --header 'Accept: application/octet-stream' https://api.github.com/repos/prometheus/alertmanager/releases/assets/569769814 --output /tmp/ui.tar.gz \
+    && echo '881fe0f7beb9573f35be47dd233af6220e72c8db72c03bcd1780402eb8dc1307  /tmp/ui.tar.gz' | sha256sum -c -
 RUN tar -xzf /tmp/ui.tar.gz -C /src/ui/app
 COPY deployment/vendors/alertmanager/go.mod deployment/vendors/alertmanager/go.sum ./
 RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
