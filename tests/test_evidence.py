@@ -83,3 +83,52 @@ def test_document_chunk_locations_and_limits():
         split_document("bad.exe", b"abc")
     with pytest.raises(ServiceError):
         split_document("empty.txt", b"   ")
+
+
+@pytest.mark.parametrize('max_bytes', [1_500_000, 128])
+async def test_long_web_source_keeps_relevant_paragraphs_within_download_limit(monkeypatch, max_bytes):
+    import httpx
+    from backend.research.graph import evidence_context
+
+    introduction = '<p>Background introduction with unrelated information.</p>' * 300
+    definition = 'ID Token contains authentication claims. Access Token is used to access protected resources.'
+    html = ('<main>' + introduction + '<h2>Token definitions</h2><p>ID Token contains\n'
+            '<em>authentication</em> claims.\nAccess Token is used to access protected resources.</p></main>')
+    original_client = httpx.AsyncClient
+    transport = httpx.MockTransport(lambda request: httpx.Response(
+        200, headers={'content-type': 'text/html; charset=utf-8'}, content=html.encode()))
+
+    async def addresses(*args):
+        return ['8.8.8.8']
+
+    monkeypatch.setattr(security, 'public_addresses', addresses)
+    monkeypatch.setattr(security.httpx, 'AsyncClient',
+                        lambda **kwargs: original_client(transport=transport, **kwargs))
+    if max_bytes == 128:
+        with pytest.raises(ServiceError, match='大小限制'):
+            await security.fetch_text('https://example.com/specification', max_bytes=max_bytes)
+        return
+    text = await security.fetch_text('https://example.com/specification', max_bytes=max_bytes)
+    assert definition in text
+    assert '\n' in text
+    context = evidence_context([{'id': 'spec', 'text': text}], text_limit=1500, total_limit=1500,
+                               query='ID Token Access Token authentication')
+    assert definition in context[0]['text']
+    assert len(context[0]['text'].encode()) <= 1500
+
+
+async def test_web_reader_refreshes_legacy_prefix_cache_once(runtime, monkeypatch):
+    from unittest.mock import AsyncMock
+    from backend.core.db import now
+    from backend.research import graph as graph_module
+
+    url = 'https://example.com/specification'
+    await runtime.db.execute('INSERT INTO web_cache VALUES(?,?,?,?,?)',
+                             (url, 'legacy first 10000 characters', now(), 'fulltext', ''))
+    fetch = AsyncMock(return_value='Complete source with relevant paragraphs.')
+    monkeypatch.setattr(graph_module, 'fetch_text', fetch)
+    graph = graph_module.ResearchGraph(runtime.settings, runtime.db, runtime.providers,
+                                       runtime.vectors, runtime.documents)
+    assert await graph.read_web(url) == 'Complete source with relevant paragraphs.'
+    assert await graph.read_web(url) == 'Complete source with relevant paragraphs.'
+    assert fetch.await_count == 1

@@ -20,7 +20,7 @@ from backend.core.db import uid
 from backend.core.reliability import ServiceError
 from backend.domain.models import Claim
 from backend.quality_gate import assess_support
-from backend.research.graph import ResearchGraph
+from backend.research.graph import ResearchGraph, evidence_context
 from backend.services.runtime import Runtime
 
 
@@ -37,8 +37,15 @@ async def assess_report_support(providers, sources, claims, run_id):
     from types import SimpleNamespace
 
     async def grade(group, start):
+        evidence = sources
+        if len(group) == 1:
+            cited = [source for source in sources if source['id'] in group[0].source_ids]
+            source_limit = providers.settings.llm_context_tokens // 3
+            if any(len(source['text'].encode('utf-8')) > source_limit for source in cited):
+                evidence = evidence_context(cited, text_limit=source_limit, total_limit=source_limit,
+                                            query=group[0].text)
         try:
-            local = await assess_support(providers, {'evidence': sources},
+            local = await assess_support(providers, {'evidence': evidence},
                                          SimpleNamespace(claims=group),
                                          run_id if start == 0 and len(group) == len(claims)
                                          else f'{run_id}-support-{start}')

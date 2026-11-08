@@ -32,6 +32,7 @@ from .verification_contract import (
     verification_targets as verification_targets, bind_target_verification as bind_target_verification,
     supported_indices as supported_indices, validate_program_claims, CURRENT_VERIFICATION)
 
+WEB_READER_CACHE_ACCESS = "fulltext-paragraphs-v2"
 
 
 def digest(value: str) -> str:
@@ -87,6 +88,7 @@ def evidence_context(items: list[dict], text_limit=4500, total_limit=48000, quer
     for item in items:
         text = item["text"]
         excerpt = utf8_prefix(text, share)
+        complete_paragraphs = False
         if query and len(text.encode("utf-8")) > share:
             # Extract complete paragraph windows, including the tail where qualifications
             # often live. Never synthesize a summary as a substitute for source text.
@@ -117,7 +119,8 @@ def evidence_context(items: list[dict], text_limit=4500, total_limit=48000, quer
                             size += extra
             if chosen:
                 excerpt = "\n[…]\n".join(paragraphs[i].group() for i in sorted(chosen))
-        if len(text.encode("utf-8")) > share:
+                complete_paragraphs = True
+        if len(text.encode("utf-8")) > share and not complete_paragraphs:
             # Prefer a complete line/sentence; do not pretend a cut cell/number is complete.
             boundaries = list(re.finditer(r"[。！？!?；;\n]", excerpt))
             if boundaries and boundaries[-1].end() >= len(excerpt) // 2:
@@ -214,7 +217,8 @@ class ResearchGraph:
 
     async def read_web(self, url: str) -> str:
         self.agents.require("web_fetch")
-        cached = await self.db.one("SELECT text,fetched_at FROM web_cache WHERE url=? AND access='fulltext'", (url,))
+        cached = await self.db.one("SELECT text,fetched_at FROM web_cache WHERE url=? AND access=?",
+                                   (url, WEB_READER_CACHE_ACCESS))
         if cached:
             try:
                 age = datetime.now(timezone.utc) - datetime.fromisoformat(cached["fetched_at"])
@@ -229,7 +233,7 @@ class ResearchGraph:
                     try:
                         text = await fetch_text(url)
                         await self.db.execute("INSERT OR REPLACE INTO web_cache(url,text,fetched_at,access,error) VALUES(?,?,?,?,?)",
-                                              (url, text, now(), "fulltext", ""))
+                                              (url, text, now(), WEB_READER_CACHE_ACCESS, ""))
                         return text
                     except ServiceError as exc:
                         last_error = exc
@@ -818,11 +822,12 @@ class ResearchGraph:
                 prechecks.append({"index": index, "supported": False, "reason": reason})
         if not eligible:
             return set(), prechecks
-        # Batch by complete cited sources, preserving every claim and its full evidence.
+        # Preserve complete short sources; one long source must fit alongside the verification targets.
+        source_limit = self.settings.llm_context_tokens // 3
         batches, batch, referenced = [], [], set()
         for item in eligible:
             proposed = referenced | set(item[1].source_ids)
-            size = (sum(len(sources[key]["text"].encode("utf-8")) for key in proposed)
+            size = (sum(min(len(sources[key]["text"].encode("utf-8")), source_limit) for key in proposed)
                     + sum(len(c.text.encode("utf-8")) for _, c in batch)
                     + len(item[1].text.encode("utf-8")))
             if batch and (len(batch) >= 12 or size > self.settings.llm_context_tokens // 2):
@@ -835,6 +840,11 @@ class ResearchGraph:
         approved, all_checks = set(), list(prechecks)
         for batch in batches:
             referenced = unique([key for _, claim in batch for key in claim.source_ids])
+            validation_sources = {key: sources[key] for key in referenced}
+            if any(len(source["text"].encode("utf-8")) > source_limit for source in validation_sources.values()):
+                validation_sources = {source['id']: source for source in evidence_context(
+                    list(validation_sources.values()), text_limit=source_limit, total_limit=source_limit,
+                    query='\n'.join(claim.text for _, claim in batch))}
             checks = await self.ask("validator",
                 "独立核查每个 index 的结论是否被其列出的原文片段支持。编号存在不代表内容支持。"
                 "sources 是按来源 ID 索引的原文表；每条结论只能使用自己 source_ids 列出的来源。"
@@ -860,6 +870,7 @@ class ResearchGraph:
                 "每个完整target内的所有子句都需获支持才能为true；来源里正确的内容不能代替结论实际写出的内容。"
                 "不能因大部分子句正确而整体通过；‘原文未提供/没有逐字说明/被截断’也是需要验证的命题，"
                 "不是免于核验的免责声明；不能把局部摘录未见某项说成完整来源没有该项。"
+                "excerpt_truncated=true 表示来源只提供了相关选段，不得把选段核验描述成全文核验。"
                 "unsupported_parts 列出任何未获支持的子句或元断言；omitted_conditions 列出同一规则被遗漏的必要条件。"
                 "例如原文要求 A 且 B 才能放行，仅写 A 就能放行或以‘以下条件全部满足’只列 A，必须指出遗漏 B，"
                 "不得以结论没有使用‘唯一’二字而放过条件缺失；纯粹说 A 是必要条件则不要改判成充分条件。"
@@ -870,7 +881,7 @@ class ResearchGraph:
                 "本阶段只检查引用支持，answered_questions 留空；问题覆盖稍后只用最终保留事实单独检查。",
                 {"claims": [{"index": i, "text": c.text, "source_ids": c.source_ids} for i, c in batch],
                  "questions": state.get("plan", {}).get("questions", []),
-                 "sources": {key: sources[key] for key in referenced}},
+                 "sources": validation_sources},
                 Verification, state["run_id"])
             claim_texts = {i: claim.text for i, claim in batch}
             checks = normalize_verification(checks, claim_texts)
@@ -897,6 +908,8 @@ class ResearchGraph:
                 "SELECT id FROM documents WHERE id=? AND user_id=? AND status IN ('ready','rebuilding')", (source["document_id"], state["user_id"])):
                 sources.pop(source_id)
         draft = ReportDraft.model_validate(state["draft"])
+        if any(len(source["text"].encode("utf-8")) > self.settings.llm_context_tokens // 3 for source in sources.values()):
+            await self.warning(state, "超长来源仅按结论选取相关完整段落核验；省略内容未作完整性证明。")
         approved, checks = await self.check_draft(state, draft, sources)
         total = sum(len(section.claims) for section in draft.sections)
         repaired = len(approved) < total

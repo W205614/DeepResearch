@@ -100,8 +100,18 @@ async def fetch_text(url: str, max_bytes: int = 1_500_000) -> str:
         soup = BeautifulSoup(raw, "html.parser")
         for element in soup(["script", "style", "nav", "footer", "header", "form", "noscript"]):
             element.decompose()
-        text = (soup.find("article") or soup.find("main") or soup).get_text(" ", strip=True)
+        body = soup.find("article") or soup.find("main") or soup
+        # HTML source wrapping is not a paragraph boundary; keep preformatted blocks intact.
+        for fragment in list(body.strings):
+            if fragment.find_parent("pre") is None:
+                fragment.replace_with(" ".join(fragment.split()))
+        # Preserve block boundaries so bounded evidence selection can find later sections.
+        for block in body.find_all(["p", "div", "section", "li", "dt", "dd", "pre", "blockquote",
+                                    "h1", "h2", "h3", "h4", "h5", "h6", "tr", "br"]):
+            block.insert_before("\n")
+            block.insert_after("\n")
+        text = "\n".join(" ".join(line.split()) for line in body.get_text(" ").splitlines() if line.strip())
         if len(text) < 80:
             raise ServiceError("来源正文不足，可能需要登录或动态加载")
-        return text[:10000]
+        return text
     raise ServiceError("来源重定向次数过多")

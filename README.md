@@ -4,9 +4,9 @@
 
 个人本地版本的主要功能与交付验证已完成，可以暂停功能扩建，按需启动和维护。企业内部单区域多副本部署也已提供客户端、配置和部署模板，接入步骤见[云平台手册](docs/cloud-integration.md)。
 
-截至 **2026-11-07**，代码基线 [`b8153f5`](https://github.com/W205614/DeepResearch/commit/b8153f5e50dadf14b0bb5bf6149acfe9534edec2) 的 [CI 四个作业](https://github.com/W205614/DeepResearch/actions/runs/42370035398)、[Security 22 个作业](https://github.com/W205614/DeepResearch/actions/runs/42370035403)和[告警规则检查](https://github.com/W205614/DeepResearch/actions/runs/42370035381)均通过。Python 1614 项通过、8 项条件跳过，Java 61 项、前端 33 项及构建通过；5 项真实组件检查覆盖 Worker、Redis 和 Milvus 故障恢复。
+**2026-11-08 日常维护验证**补充了真实 OpenAI 回答、联网研究、官方嵌入与 SiliconFlow 重排，并验证本地资料到引用回答的完整链路。修复包括迁移计数序列化、报告遗漏具体局限、任务收尾被心跳误取消，以及长网页正文截断。各阶段结果、评测用例修正和验证边界见[本轮记录](docs/evidence/daily-20261108/README.md)，不把请求次数换算为通用准确率。
 
-本地隔离验收使用真实 OIDC、数据库、队列、扫描和向量组件，配合受控模型替身，完成了 50 个账号、10 个在线用户、5 个执行任务、500 份资料和 5 万片段的 30 分钟混合负载，以及权限、故障和逻辑恢复验证。OpenAI 文字、图片、联网搜索、单条 3072 维嵌入各完成一次真实连接。完整记录见[证据索引](docs/evidence/production-20261107/README.md)。 本机日常镜像已更新并核对 Python、Java、前端源码指纹，数据库升级到 `0019`，14 张业务表内容保持一致；升级前恢复实测通过，见[日常升级记录](docs/evidence/production-20261107/daily-upgrade.json)。
+此前的隔离组件、权限、故障恢复和混合负载验证见[证据索引](docs/evidence/production-20261107/README.md)；其中负载测试使用受控模型替身，不代表真实供应商容量。本机已有 118 个历史分块完成官方嵌入的影子索引迁移，配置和原始业务数据保留。第三方制品的分发验收仍有待完成，应用候选保持 Release 草稿；不因此阻塞个人本机按需使用。
 
 - 运行：[本地快速部署](#本地快速部署)。
 - 接入：[云平台手册](docs/cloud-integration.md) · [生产验收](docs/production-readiness.md)。
@@ -99,7 +99,7 @@ Redis 不可用时，已建立账号仍可读取有权限的历史，新研究�
 - 验收：[隔离负载、故障与恢复入口](docs/production-readiness.md#可复现验收入口)。
 - 运维：[备份与升级](docs/deployment-security-operations.md) · [监控与告警](docs/production-observability.md)。
 
-停止并保留数据使用 `docker compose down`。`down -v` 会删除卷，不用于日常停止。自动备份按本机停用策略保留；升级时手动准备并验证恢复点。完整模型质量、目标云环境权限／TLS、告警送达和异机恢复按各自手册验收。
+日常暂停使用 `docker compose stop`，保留容器和数据；`docker compose down` 删除容器但保留命名卷。`down -v` 会删除卷，不用于日常停止。已有 Compose 覆盖文件和项目名应保持一致。自动备份按本机停用策略保留；升级时手动准备并验证恢复点。完整模型质量、目标云环境权限／TLS、告警送达和异机恢复按各自手册验收。
 
 ## 按需维护
 
@@ -111,7 +111,7 @@ Redis 不可用时，已建立账号仍可读取有权限的历史，新研究�
 | --- | --- |
 | 开发 | [贡献指南](CONTRIBUTING.md) · [目录与调用路径](docs/project-structure.md) · [Java／Python 职责](docs/java-python-ownership.md) |
 | 使用 | [登录](docs/local-keycloak-login.md) · [多模态](docs/multimodal.md) · [资料与报告生命周期](docs/evidence-lifecycle.md) |
-| 验收 | [生产验收](docs/production-readiness.md) · [本地证据索引](docs/evidence/production-20261107/README.md) |
+| 验收 | [生产验收](docs/production-readiness.md) · [真实 API 与日常验收](docs/evidence/daily-20261108/README.md) · [本地证据索引](docs/evidence/production-20261107/README.md) |
 | 历史 | [交付记录](docs/delivery-history.md) · [检索评测](eval/benchmark_results.md) · [安全维护记录](docs/security-maintenance-20261105.md) |
 
 ## 许可证

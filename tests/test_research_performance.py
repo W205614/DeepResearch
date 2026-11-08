@@ -15,6 +15,33 @@ def graph_for(runtime, **settings):
                          runtime.providers, runtime.vectors, runtime.documents)
 
 
+async def test_validator_bounds_a_single_long_source_without_losing_relevant_paragraph(runtime):
+    from backend.domain.models import Verification
+
+    graph = graph_for(runtime)
+    definition = 'ID Token contains authentication claims. It cannot replace authorization checks.'
+    text = ('Unrelated introduction.\n' * 12000 + definition + '\n' + 'Other material.\n' * 12000)
+    sources = {'spec': {'id': 'spec', 'kind': 'web', 'access': 'fulltext', 'text': text}}
+    draft = ReportDraft.model_validate({'title': 'Tokens', 'sections': [{'heading': 'Identity', 'claims': [
+        {'text': 'ID Token contains authentication claims.', 'source_ids': ['spec']}]}]})
+
+    async def verify(role, instruction, data, schema, run_id):
+        source = data['sources']['spec']
+        assert definition in source['text']
+        assert source['excerpt_truncated'] is True
+        payload = runtime.providers.chat_payload(runtime.settings.llm_model_id,
+            [{'role': 'system', 'content': instruction},
+             {'role': 'user', 'content': json.dumps(data, ensure_ascii=False)}], 8000, structured=True)
+        runtime.providers.context_cost(payload)
+        return Verification(checks=[{'index': 0, 'supported': True, 'reason': 'Provided paragraph supports the claim',
+                                     'atomic_checks': [{'text': data['claims'][0]['text'], 'supported': True}]}])
+
+    graph.ask = verify
+    approved, _ = await graph.check_draft({'run_id': 'long-validator'}, draft, sources)
+    assert approved == {0}
+    assert sources['spec']['text'] == text
+
+
 async def test_searches_overlap_with_bounded_concurrency_and_keep_query_order(runtime):
     graph = graph_for(runtime, web_search_concurrency=2)
     active = peak = 0

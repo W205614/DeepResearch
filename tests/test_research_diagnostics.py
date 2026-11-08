@@ -5,6 +5,28 @@ import pytest
 from scripts.evaluate_research import main, assess_report_support, summarize_repetitions
 
 
+async def test_report_support_bounds_one_oversized_source_without_dropping_qualifications(monkeypatch):
+    from types import SimpleNamespace
+    from scripts import evaluate_research
+
+    definition = 'Token contains authentication claims. Authorization checks remain required.'
+    text = 'Introduction.\n' * 12000 + definition + '\n' + 'Other content.\n' * 12000
+    source = {'id': 'W-1', 'text': text}
+    provider = SimpleNamespace(settings=SimpleNamespace(llm_context_tokens=128000))
+    claim = SimpleNamespace(text='Token contains authentication claims.', source_ids=['W-1'])
+
+    async def check(_provider, case, draft, run_id):
+        selected = case['evidence'][0]
+        assert definition in selected['text']
+        assert selected['excerpt_truncated'] is True
+        assert len(selected['text'].encode()) <= 128000 // 3
+        return [{'index': 0, 'supported': True}]
+
+    monkeypatch.setattr(evaluate_research, 'assess_support', check)
+    assert await assess_report_support(provider, [source], [claim], 'run') == [{'index': 0, 'supported': True}]
+    assert source['text'] == text
+
+
 @pytest.mark.parametrize('overrides', [
     {'live': True},
     {'external_results': 'private-reports'},
@@ -33,7 +55,8 @@ async def test_independent_report_support_preserves_whole_report_when_it_fits(mo
         return [{'index': index, 'supported': True} for index in range(len(draft.claims))]
 
     monkeypatch.setattr(evaluate_research, 'assess_support', check)
-    checks = await assess_report_support(None, sources, claims, 'run')
+    provider = SimpleNamespace(settings=SimpleNamespace(llm_context_tokens=128000))
+    checks = await assess_report_support(provider, sources, claims, 'run')
 
     assert [row['index'] for row in checks] == list(range(5))
     assert seen == [('run', [claim.text for claim in claims])]
@@ -54,7 +77,8 @@ async def test_independent_report_support_splits_only_on_context_limit(monkeypat
         return [{'index': index, 'supported': True} for index in range(len(draft.claims))]
 
     monkeypatch.setattr(evaluate_research, 'assess_support', check)
-    checks = await assess_report_support(None, [{'id': 'W-1', 'text': '完整原文'}], claims, 'run')
+    provider = SimpleNamespace(settings=SimpleNamespace(llm_context_tokens=128000))
+    checks = await assess_report_support(provider, [{'id': 'W-1', 'text': '完整原文'}], claims, 'run')
 
     assert [row['index'] for row in checks] == list(range(5))
     assert successful == [

@@ -1,3 +1,8 @@
+import json
+from pathlib import Path
+
+import pytest
+
 from backend.quality_gate import QualityDraft, evaluate_draft, summarize
 
 
@@ -34,3 +39,23 @@ def test_quality_gate_allows_safe_refusal_for_conflicting_evidence():
             "allow_refusal": True}
     result = evaluate_draft(case, draft([], ["60 与 75 的资料存在冲突，无法形成单一结论"] ))
     assert result["passed"] is True
+
+
+@pytest.mark.parametrize(('limitations', 'passed'), [
+    (['资料不足，无法确定。'], True),
+    (['没有证据，无法给出结论。'], True),
+    ([], False),
+    (['好的，已完成。'], False),
+])
+def test_versioned_refusal_case_accepts_evidence_synonyms_with_an_explanation(limitations, passed):
+    cases = json.loads((Path(__file__).resolve().parents[1] / 'eval/answer_quality_cases.json').read_text(encoding='utf-8'))
+    case = next(row for row in cases if row['id'] == 'no-evidence-refusal')
+    assert evaluate_draft(case, draft([], limitations))['passed'] is passed
+
+
+def test_refusal_synonyms_do_not_allow_fabricated_facts():
+    cases = json.loads((Path(__file__).resolve().parents[1] / 'eval/answer_quality_cases.json').read_text(encoding='utf-8'))
+    case = next(row for row in cases if row['id'] == 'no-evidence-refusal')
+    result = evaluate_draft(case, draft([{'text': '市场份额为 80%', 'source_ids': ['invented']}], ['没有证据']))
+    assert not result['passed']
+    assert 'unsafe_claim_when_refusal_required' in result['checks']
