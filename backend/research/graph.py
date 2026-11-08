@@ -178,7 +178,7 @@ def compact_limitations(gaps: list[str], conflicts: list[str], warnings: list[st
     clean_conflicts = unique([item.strip() for item in conflicts if item and item.strip()])
     clean_warnings = unique([item.strip() for item in warnings if item and item.strip()])
     if clean_gaps:
-        items.append(f"仍有 {len(clean_gaps)} 项研究缺口；当前证据未覆盖全部计划问题，请补充原始资料。")
+        items.append(f"仍有 {len(clean_gaps)} 项研究缺口；待确认事项：" + "；".join(clean_gaps))
     if clean_conflicts:
         items.append(f"存在 {len(clean_conflicts)} 项信息口径冲突；仅保留通过引用核查的差异，不据此选择单一真值。")
     if clean_warnings:

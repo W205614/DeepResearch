@@ -37,6 +37,15 @@ def test_limitations_are_grouped_and_capped():
     assert limitations[1].startswith("存在 2 项信息口径冲突")
 
 
+def test_limitations_preserve_specific_unresolved_information():
+    gaps = ["资料未提供核查用时，不能据此计算效率。", "核查完成不能据此视为结论正确。"]
+    limitations = compact_limitations(gaps + [gaps[0]], [], [], removed_claims=False, uses_summary=False)
+    assert len(limitations) == 1
+    assert limitations[0].startswith("仍有 2 项研究缺口")
+    for gap in gaps:
+        assert limitations[0].count(gap) == 1
+
+
 def test_docx_headings_and_semantic_chunks_are_preserved():
     document = Document()
     document.add_heading("市场概览", level=1)
