@@ -53,12 +53,12 @@
     {
       "path": "backend/research/graph.py",
       "symbol": "ResearchGraph.check_draft",
-      "ast_sha256": "0e60e05396f534c9a0086a15b13affa6a02633a59a148767fa5a2c8f3c2e4577"
+      "ast_sha256": "a5ecef40bb1d46a480ee622a1e15db6fe7b7cdfdf3d76a57ae6f20e003073000"
     },
     {
       "path": "backend/research/graph.py",
       "symbol": "ResearchGraph.validator",
-      "ast_sha256": "d078dba53a6cf080bdee7330078f576be5fda29372b16e7fcb6153fb6295c01a"
+      "ast_sha256": "dcdf0338bebd628ac36d797d2eb0de8bc0f263ca3049cf5e3be1b77bde6a895c"
     },
     {
       "path": "backend/research/graph.py",
@@ -128,7 +128,7 @@
     {
       "path": "scripts/evaluate_research.py",
       "symbol": "assess_report_support",
-      "ast_sha256": "5ab26ef110a7e7152d57f3f2f9a0c10576c4c5376ae252e1c135ad4598bdf70e"
+      "ast_sha256": "7c53d11985a00b65694e1f918f3413b192497f40f9d4e25aac64ffc3f762ea40"
     },
     {
       "path": "scripts/evaluate_research.py",
@@ -197,7 +197,7 @@
     }
   ],
   "case_fingerprints": {
-    "eval/answer_quality_cases.json": "dd8541e23260631539e0ca5afecdbb0e5520d6029796355a45cf850597484036",
+    "eval/answer_quality_cases.json": "e6772a2c2c201e04666efed0388c740b0eb5e7e61db9a51baa37f37aa3186b0e",
     "eval/research_quality_cases.json": "c23662922168f5ce04e3b2e0e9cf9b11fc1bee81a3bc8edc25b18e39b74f239f",
     "eval/research_quality_extensions.json": "8e81a432a18f5360e169266d9ff584b30d43b897e34bad5bffc023aab4f50f50",
     "pyproject.toml": "00ffcbae13033be9cd2a7a6010f43eef486433517b6fc2911ce8adea4c5dd213",
@@ -267,5 +267,24 @@
       "pass_rate_refinement_lower_bound": 296
     },
     "authorization_boundary": "Zero supplier HTTP. No quality evaluation, policy/authorization amendment, cumulative ledger mutation/reset, budget increase, success-threshold change, or claim that this necessary bound is sufficient. OpenAI quality still requires separate authorization."
+  },
+  "daily_reaudit_20261108": {
+    "previous_basis_sha256": "811e729f0c89ad393e5d12e72d6a662829ed73faf495a5ebcbdd912f2a04f71c",
+    "changed_symbols": [
+      "backend/research/graph.py:ResearchGraph.check_draft",
+      "backend/research/graph.py:ResearchGraph.validator",
+      "scripts/evaluate_research.py:assess_report_support"
+    ],
+    "changed_case": "no-evidence-refusal accepts both evidence and material terminology; must_refuse, explanation, source requirements and all thresholds remain unchanged",
+    "proof_review": [
+      "A positive result still requires planner, judge, analyst, writer, model validator and model question coverage plus separate model support and coverage grading. Context selection does not authorize claims or skip model verification.",
+      "Refusal still requires no visible factual claims and an explanation; answer case count, critical flags, source requirements and three adversarial grades are unchanged.",
+      "One oversized source uses bounded complete-paragraph excerpts. Independent support still calls the model for every nonempty leaf group; recursive group splitting remains inside the existing 2C-1 upper envelope."
+    ],
+    "critical_path_lower_bound_unchanged": 245,
+    "pass_rate_refinement_lower_bound_unchanged": 296,
+    "ci_provider_policy_sha256_unchanged": "f2b132056535401d3a9425b03a887722d234ce15e852744191681c66236021dd",
+    "paid_workflow_or_cumulative_ledger_changed": false,
+    "supplier_http_for_reaudit": 0
   }
 }
