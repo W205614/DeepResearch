@@ -5,7 +5,9 @@ import re
 import secrets
 
 
-KEYS = ("MIGRATOR_DB_PASSWORD", "JAVA_DB_PASSWORD", "PYTHON_DB_PASSWORD", "MONITOR_DB_PASSWORD",
+KEYS = ("POSTGRES_PASSWORD", "KEYCLOAK_DB_PASSWORD", "KEYCLOAK_ADMIN_PASSWORD",
+        "MINIO_ROOT_PASSWORD", "GRAFANA_ADMIN_PASSWORD", "MIGRATOR_DB_PASSWORD",
+        "JAVA_DB_PASSWORD", "PYTHON_DB_PASSWORD", "MONITOR_DB_PASSWORD",
         "OBJECT_STORE_SECRET_KEY", "MILVUS_STORAGE_PASSWORD")
 
 
@@ -17,7 +19,7 @@ def prepare(path):
     additions = []
     for key in KEYS:
         match = re.search(rf"(?m)^{key}=(.*)$", text)
-        if match and match[1].strip():
+        if match and match[1].strip().strip("\"").strip("'"):
             continue
         if match:
             text = text[:match.start()] + text[match.end():]

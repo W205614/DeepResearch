@@ -6,7 +6,7 @@
 
 **2026-11-08 日常维护验证**补充了真实 OpenAI 回答、联网研究、官方嵌入与 SiliconFlow 重排，并验证本地资料到引用回答的完整链路。修复包括迁移计数序列化、报告遗漏具体局限、任务收尾被心跳误取消，以及长网页正文截断。各阶段结果、评测用例修正和验证边界见[本轮记录](docs/evidence/daily-20261108/README.md)，不把请求次数换算为通用准确率。
 
-此前的隔离组件、权限、故障恢复和混合负载验证见[证据索引](docs/evidence/production-20261107/README.md)；其中负载测试使用受控模型替身，不代表真实供应商容量。本机已有 118 个历史分块完成官方嵌入的影子索引迁移，配置和原始业务数据保留。第三方制品的分发验收仍有待完成，应用候选保持 Release 草稿；不因此阻塞个人本机按需使用。
+此前的隔离组件、权限、故障恢复和混合负载验证见[证据索引](docs/evidence/production-20261107/README.md)；其中负载测试使用受控模型替身，不代表真实供应商容量。本机已有 118 个历史分块完成官方嵌入的影子索引迁移，配置和原始业务数据保留。应用源码版本与独立第三方镜像分别维护；源码发布不表示第三方制品的分发验收已经完成，范围见[源码发布与运行](docs/source-release.md)。
 
 - 运行：[本地快速部署](#本地快速部署)。
 - 接入：[云平台手册](docs/cloud-integration.md) · [生产验收](docs/production-readiness.md)。
@@ -35,12 +35,12 @@
 ```powershell
 git clone --config core.autocrlf=false https://github.com/W205614/DeepResearch.git
 cd DeepResearch
-Copy-Item .env.example .env
+python scripts/local.py init
 ```
 
 LF 检出配置用于保持精确构建输入字节；原始证据按各自 Git 属性保留。已有安装保留原 `.env` 和数据卷，升级前准备匹配的恢复点，步骤见[部署与维护](docs/deployment-security-operations.md#现有数据升级)。
 
-填写本地私密 `.env`：
+初始化只在 `.env` 不存在时创建配置，并生成独立的服务密码；已有配置原样保留。填写本地私密 `.env` 的供应商凭据：
 
 | 配置 | 说明 |
 | --- | --- |
@@ -52,29 +52,30 @@ LF 检出配置用于保持精确构建输入字节；原始证据按各自 Git 
 | `MIGRATOR_DB_PASSWORD`、`JAVA_DB_PASSWORD`、`PYTHON_DB_PASSWORD`、`MONITOR_DB_PASSWORD` | 迁移、Java、Python、监控分权账号 |
 | `OBJECT_STORE_ACCESS_KEY`、`OBJECT_STORE_SECRET_KEY`、`MILVUS_STORAGE_PASSWORD` | 资料与向量存储的独立服务身份 |
 
-`python scripts/prepare_service_credentials.py --env .env` 可补齐空的服务凭据，并备份原配置。`PLATFORM_OPERATOR_SUBJECTS` 填 IdP 账号的稳定 `sub`，多个值用逗号分隔。
+服务密码由初始化生成，不需要手工重复填写。已有安装可用 `python scripts/prepare_service_credentials.py --env .env` 补齐空的服务凭据；它先备份原配置，不轮换已填写值。`PLATFORM_OPERATOR_SUBJECTS` 填 IdP 账号的稳定 `sub`，多个值用逗号分隔。
 
 **已有历史索引时，先保留原 `EMBEDDING_*` 配置和凭据。** 向量指纹包含端点、模型和维度，切换官方嵌入前需要完成[影子索引迁移](docs/production-readiness.md#历史索引迁移与回退)。OpenAI 密钥只用于官方端点，旧第三方端点继续使用其原凭据。
 
-加载批准镜像并启动：
+核对配置并启动核心服务：
 
 ```powershell
-python scripts/fetch_approved_image.py
-python scripts/fetch_grafana_fixed_20261107.py
-docker compose up -d --build --wait --wait-timeout 300
+python scripts/local.py check
+python scripts/local.py start
 ```
 
-加载器核对归档、OCI 描述符、层、配置和二进制后载入 Docker。离线加载使用 `--archive <归档路径>`。资源有限时可关闭可选观测栈：
+启动器先加载固定 MinIO 镜像，再用 Docker 构建应用；加载器核对归档、OCI 描述符、层、配置和二进制。首次构建需要联网获取上游依赖，可能耗时较长；不包含 API 额度或真实业务数据。完整观测栈按需启用，才会额外加载固定 Grafana 镜像：
 
 ```powershell
-docker compose -f compose.yaml -f deployment/compose/compose.core.yaml up -d --build --wait --wait-timeout 300
+python scripts/local.py start --observability
+# 暂停时使用与启动相同的参数；不删除数据卷。
+python scripts/local.py stop --observability
 ```
 
 | 入口 | 默认地址 | 登录 |
 | --- | --- | --- |
 | 工作台 | http://localhost:8080 | 本地 IdP 账号 |
 | Keycloak 管理台 | http://localhost:8180/admin | `admin` / `KEYCLOAK_ADMIN_PASSWORD` |
-| Grafana | http://localhost:3000 | `admin` / `GRAFANA_ADMIN_PASSWORD` |
+| Grafana（可选观测栈） | http://localhost:3000 | `admin` / `GRAFANA_ADMIN_PASSWORD` |
 
 本地默认开放注册；云模板关闭注册入口，组织账号策略在 IdP 中配置。Keycloak 管理员、平台操作员与空间管理员分别管理不同权限。
 
@@ -99,7 +100,7 @@ Redis 不可用时，已建立账号仍可读取有权限的历史，新研究�
 - 验收：[隔离负载、故障与恢复入口](docs/production-readiness.md#可复现验收入口)。
 - 运维：[备份与升级](docs/deployment-security-operations.md) · [监控与告警](docs/production-observability.md)。
 
-日常暂停使用 `docker compose stop`，保留容器和数据；`docker compose down` 删除容器但保留命名卷。`down -v` 会删除卷，不用于日常停止。已有 Compose 覆盖文件和项目名应保持一致。自动备份按本机停用策略保留；升级时手动准备并验证恢复点。完整模型质量、目标云环境权限／TLS、告警送达和异机恢复按各自手册验收。
+新安装的核心服务日常暂停使用 `python scripts/local.py stop`，保留容器和数据；完整观测栈同样加 `--observability`。`docker compose down` 删除容器但保留命名卷，`down -v` 会删除卷，不用于日常停止。已有部署继续使用原 Compose 覆盖文件和项目名，不用首次安装参数替换现有配置。自动备份按本机停用策略保留；升级时手动准备并验证恢复点。完整模型质量、目标云环境权限／TLS、告警送达和异机恢复按各自手册验收。
 
 ## 按需维护
 

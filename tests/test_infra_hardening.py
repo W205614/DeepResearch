@@ -18,7 +18,7 @@ def test_private_credentials_are_distinct_preserved_and_not_overwritten(tmp_path
     env = tmp_path / ".env"
     original = "POSTGRES_PASSWORD=private-existing\nJAVA_DB_PASSWORD=existing-independent-password\n"
     env.write_text(original)
-    assert prepare(env) == len(KEYS) - 1
+    assert prepare(env) == len(KEYS) - 2
     content = env.read_text()
     assert "POSTGRES_PASSWORD=private-existing" in content
     assert "JAVA_DB_PASSWORD=existing-independent-password" in content
