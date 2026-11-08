@@ -117,3 +117,8 @@ def test_source_archive_rejects_symbolic_links(tmp_path):
                     "commit", "-qm", "Synthetic symbolic link"], cwd=root, check=True)
     with pytest.raises(ValueError, match="symbolic link"):
         verify_source_release.verify(root, "HEAD", tmp_path / "output")
+
+
+def test_current_repository_source_distribution(tmp_path):
+    report = verify_source_release.verify(local.ROOT, "HEAD", tmp_path / "source")
+    assert {"Dockerfile", "compose.yaml", "scripts/prepare_service_credentials.py"} <= report["file_sha256"].keys()

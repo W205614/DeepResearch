@@ -66,6 +66,78 @@ def test_redirect_drops_token_and_only_writes_complete_bound_bytes(tmp_path, mon
     assert "api.github.com/repos/" in calls[0].full_url
 
 
+def test_early_eof_resumes_exact_range_without_forwarding_token(tmp_path, monkeypatch):
+    data, binding, transport = download_fixture()
+    calls = []
+
+    class Partial(Response):
+        status = 200
+
+        def geturl(self):
+            return "https://release-assets.githubusercontent.com/fixed?signed=fixture"
+
+    class Opener:
+        def open(self, request, timeout):
+            calls.append(request)
+            if len(calls) == 1:
+                return Partial(data[:10], len(data))
+            assert request.get_header("Range") == f"bytes=10-{len(data)-1}"
+            result = Partial(data[10:], len(data)-10)
+            result.status = 206
+            result.headers["Content-Range"] = f"bytes 10-{len(data)-1}/{len(data)}"
+            return result
+
+    monkeypatch.setenv("GITHUB_TOKEN", "synthetic-secret-never-forward")
+    monkeypatch.setattr(fetch, "build_opener", lambda handler: Opener())
+    target = tmp_path / "approved.tar"
+    fetch.download_archive(target, binding, transport)
+    assert target.read_bytes() == data
+    assert len(calls) == 2
+    assert calls[0].get_header("Authorization") == "Bearer synthetic-secret-never-forward"
+    assert calls[1].get_header("Authorization") is None
+
+
+@pytest.mark.parametrize("mode", ["ignored-range", "wrong-range", "changed-body", "untrusted-url", "repeated-eof"])
+def test_resume_rejects_unproved_or_incomplete_bytes(tmp_path, monkeypatch, mode):
+    data, binding, transport = download_fixture()
+    calls = []
+    received = 0
+
+    class Partial(Response):
+        status = 200
+
+        def geturl(self):
+            return "https://attacker.invalid/archive" if mode == "untrusted-url" else "https://objects.githubusercontent.com/fixed"
+
+    class Opener:
+        def open(self, request, timeout):
+            nonlocal received
+            calls.append(request)
+            if len(calls) == 1:
+                received = 10
+                return Partial(data[:10], len(data))
+            start = received
+            payload = data[start:]
+            if mode == "changed-body":
+                payload = b"x" * len(payload)
+            elif mode == "repeated-eof":
+                payload = payload[:1]
+            result = Partial(payload, len(data)-start)
+            received += len(payload)
+            result.status = 200 if mode == "ignored-range" else 206
+            result.headers["Content-Range"] = "bytes 0-1/2" if mode == "wrong-range" else f"bytes {start}-{len(data)-1}/{len(data)}"
+            return result
+
+    monkeypatch.setattr(fetch, "build_opener", lambda handler: Opener())
+    target = tmp_path / "approved.tar"
+    with pytest.raises(fetch.DispositionError):
+        fetch.download_archive(target, binding, transport)
+    assert not target.exists()
+    assert len(calls) <= 3
+    if mode == "untrusted-url":
+        assert len(calls) == 1
+
+
 @pytest.mark.parametrize(
     "redirect",
     [

@@ -242,20 +242,38 @@ def download_archive(destination, binding, transport, *, artifact="minio", allow
             return destination
         raise DispositionError("Existing archive differs; preserve it and investigate")
     response = open_asset_response(transport["asset_id"], spec["storage_hosts"])
-    with response:
-        declared = response.headers.get("Content-Length")
-        if declared and int(declared) != binding["archive_bytes"]:
-            raise DispositionError("Downloaded artifact length differs")
-        with tempfile.NamedTemporaryFile(
-            prefix=artifact + "-approved-", suffix=".partial", dir=destination.parent, delete=False
-        ) as output:
-            temporary = Path(output.name)
-            received = 0
-            while block := response.read(1024 * 1024):
-                received += len(block)
-                if received > min(binding["archive_bytes"], spec["archive_cap"]):
-                    raise DispositionError("Downloaded artifact exceeds its bound")
-                output.write(block)
+    with tempfile.NamedTemporaryFile(
+        prefix=artifact + "-approved-", suffix=".partial", dir=destination.parent, delete=False
+    ) as output:
+        temporary = Path(output.name)
+        received = 0
+        for attempt in range(3):
+            with response:
+                declared = response.headers.get("Content-Length")
+                if declared and int(declared) != binding["archive_bytes"] - received:
+                    raise DispositionError("Downloaded artifact length differs")
+                while block := response.read(1024 * 1024):
+                    received += len(block)
+                    if received > min(binding["archive_bytes"], spec["archive_cap"]):
+                        raise DispositionError("Downloaded artifact exceeds its bound")
+                    output.write(block)
+                if received == binding["archive_bytes"] or not declared or attempt == 2:
+                    break
+                # Observed large downloads can end early without a read error.
+                # Resume only a declared-length response from the trusted storage URL.
+                storage_url = response.geturl()
+            parsed = urlsplit(storage_url)
+            if (parsed.scheme != "https" or parsed.username or parsed.password
+                    or parsed.port not in {None, 443} or parsed.hostname not in spec["storage_hosts"]):
+                raise DispositionError("Unrecognized archive resume address")
+            print(f"Artifact transfer ended early; resuming remaining bytes ({attempt + 1}/2)", file=sys.stderr)
+            response = build_opener(NoRedirect).open(Request(storage_url, headers={
+                "Range": f"bytes={received}-{binding['archive_bytes'] - 1}",
+            }), timeout=120)
+            if (response.status != 206 or response.headers.get("Content-Range")
+                    != f"bytes {received}-{binding['archive_bytes'] - 1}/{binding['archive_bytes']}"):
+                response.close()
+                raise DispositionError("Archive resume range differs")
     if received != binding["archive_bytes"] or file_hash(temporary) != binding["archive_sha256"]:
         raise DispositionError("Downloaded artifact is incomplete or changed; partial file retained")
     temporary.rename(destination)

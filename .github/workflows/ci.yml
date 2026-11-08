@@ -32,8 +32,6 @@ jobs:
       - run: uv sync --all-groups --frozen
       - run: uv run ruff check backend tests scripts main.py
       - run: uv run pytest -q
-      - name: Verify the exact source distribution without publishing images
-        run: uv run python scripts/verify_source_release.py --ref HEAD --output .cache/source-release
       - run: QUEUE_BACKEND=local DOCUMENT_SCAN_MODE=disabled OBJECT_STORE_BACKEND=filesystem uv run python scripts/evaluate.py --verify
       - uses: actions/setup-java@v5
         with: { distribution: temurin, java-version: "21", cache: maven }
