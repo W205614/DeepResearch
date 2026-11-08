@@ -97,6 +97,58 @@ async def test_heartbeat_database_failure_is_interrupted_not_user_cancelled(runt
     assert row["can_resume"]
 
 
+@pytest.mark.parametrize('status', ['completed', 'failed'])
+async def test_heartbeat_does_not_cancel_terminal_attempt_cleanup(runtime, monkeypatch, status):
+    import backend.services.runtime as module
+    monkeypatch.setattr(module, 'RUN_HEARTBEAT_SECONDS', 0)
+    run = await held_run(runtime, monkeypatch)
+    await runtime.db.execute('UPDATE runs SET status=?,attempt_count=1 WHERE id=?', (status, run['id']))
+    owner = asyncio.create_task(asyncio.Event().wait())
+    try:
+        await asyncio.wait_for(runtime.heartbeat(run['id'], 1, owner), 2)
+        assert not owner.cancelling()
+    finally:
+        owner.cancel()
+        await asyncio.gather(owner, return_exceptions=True)
+
+
+async def test_heartbeat_allows_completion_between_ownership_check_and_update(runtime, monkeypatch):
+    import backend.services.runtime as module
+    monkeypatch.setattr(module, 'RUN_HEARTBEAT_SECONDS', 0)
+    run = await held_run(runtime, monkeypatch)
+    await runtime.db.execute("UPDATE runs SET status='running',attempt_count=1 WHERE id=?", (run['id'],))
+    check = module.Execution.check
+
+    async def completed_after_check(execution):
+        row = await check(execution)
+        await runtime.db.execute("UPDATE runs SET status='completed' WHERE id=?", (run['id'],))
+        return row
+
+    monkeypatch.setattr(module.Execution, 'check', completed_after_check)
+    owner = asyncio.create_task(asyncio.Event().wait())
+    try:
+        await asyncio.wait_for(runtime.heartbeat(run['id'], 1, owner), 2)
+        assert not owner.cancelling()
+    finally:
+        owner.cancel()
+        await asyncio.gather(owner, return_exceptions=True)
+
+
+@pytest.mark.parametrize(('status', 'attempt'), [('cancelled', 1), ('running', 2)])
+async def test_heartbeat_still_cancels_revoked_attempt(runtime, monkeypatch, status, attempt):
+    import backend.services.runtime as module
+    monkeypatch.setattr(module, 'RUN_HEARTBEAT_SECONDS', 0)
+    run = await held_run(runtime, monkeypatch)
+    await runtime.db.execute('UPDATE runs SET status=?,attempt_count=? WHERE id=?', (status, attempt, run['id']))
+    owner = asyncio.create_task(asyncio.Event().wait())
+    try:
+        await asyncio.wait_for(runtime.heartbeat(run['id'], 1, owner), 2)
+        assert owner.cancelling()
+    finally:
+        owner.cancel()
+        await asyncio.gather(owner, return_exceptions=True)
+
+
 def test_python_and_java_share_command_wire_cases():
     from types import SimpleNamespace
     from backend.core.recovery_contract import parse_schedule, can_resume, VERSION

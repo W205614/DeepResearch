@@ -860,19 +860,31 @@ class Runtime:
                 await Execution(self.db, self.settings, run_id, attempt).check()
                 changed = await self.db.execute("UPDATE runs SET last_attempt_at=?,updated_at=? WHERE id=? AND status='running' AND attempt_count=?",
                                                 (now(), now(), run_id, attempt))
-                if not changed and owner:
-                    owner.cancel()
-                    return
+                if changed:
+                    continue
             except ReliabilityError as exc:
                 if exc.code != "execution_lost":
                     await self.fail(run_id, str(exc), attempt=attempt, detail=exc.detail())
-                if owner:
-                    owner.cancel()
-                return
+                    if owner:
+                        owner.cancel()
+                    return
             except Exception:
                 if owner:
                     owner.cancel("heartbeat_unavailable")
                 return
+            try:
+                current = await self.db.one("SELECT status,attempt_count FROM runs WHERE id=?", (run_id,))
+            except Exception:
+                if owner:
+                    owner.cancel("heartbeat_unavailable")
+                return
+            # The same owner can have committed its result while still finishing cleanup.
+            if (current and current["attempt_count"] == attempt
+                    and current["status"] in {"completed", "failed", "insufficient"}):
+                return
+            if owner:
+                owner.cancel()
+            return
 
     async def recover_stale_runs_loop(self) -> None:
         while not self.stopping:
