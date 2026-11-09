@@ -49,15 +49,21 @@ def historical_grafana_maintenance_root(tmp_path_factory):
     selectors = repository / 'tests/fixtures/grafana-fixed-20261107/selectors-before'
     selector_names = {'compose.yaml', 'scripts/runtime_ci_inventory.py',
                       '.github/workflows/ci.yml', '.github/workflows/security.yml'}
+    selection = json.loads((repository / gate.MAINTENANCE_REVIEW_PATH).read_bytes())
     root = tmp_path_factory.mktemp('source18-historical-files')
     # This is a historical replay, not the current repository's authorization.
     # Retain the exact reviewed files and helpers without new versioned go.mod
     # fixtures or access to an old Git object in a shallow CI checkout.
-    for directory in ['deployment/security', 'deployment/vendors', 'deployment/docker',
-                      'deployment/compose', '.github/workflows']:
+    for directory in ['deployment/security', 'deployment/vendors', 'deployment/docker']:
         shutil.copytree(repository / directory, root / directory,
                         ignore=shutil.ignore_patterns('grafana-fixed-20261107*'))
-    selection = json.loads((repository / gate.MAINTENANCE_REVIEW_PATH).read_bytes())
+    # Later workflows and Compose overlays were not part of this historical
+    # review. Current-production selector validation remains unchanged.
+    for name in selection['selector_files_sha256']:
+        if name.startswith(('.github/workflows/', 'deployment/compose/')):
+            path = root / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(repository / name, path)
     legacy = json.loads((repository / gate.source.old.gfx.POLICY).read_bytes())['binding']
     source2 = json.loads((repository / gate.source.REVIEW_PATH).read_bytes())
     maintenance = json.loads((repository / 'deployment/security/grafana-maintenance-request.json').read_bytes())
@@ -97,5 +103,6 @@ def historical_grafana_maintenance_root(tmp_path_factory):
                     'commit', '--no-gpg-sign', '-m', 'Retained historical manifest tree'],
                    cwd=root, check=True, capture_output=True)
     assert gate.source.old.committed_manifest_targets(root, 'HEAD') == review['fresh_scan_targets']
+    assert gate.selector_files(root) == sorted(selection['selector_files_sha256'])
     assert not subprocess.check_output(['git', 'status', '--porcelain', '--untracked-files=no'], cwd=root)
     return root

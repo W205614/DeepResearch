@@ -23,6 +23,16 @@ def test_accepts_exact_three_image_release_manifest():
     validate_manifest(manifest(), "c" * 40, "artifact-applications-v0.1.1-r1")
 
 
+def test_new_package_selectors_are_excluded_from_historical_grafana_replay(historical_grafana_maintenance_root):
+    from scripts.check_grafana_active_source_retirement import ROOT, selector_files
+
+    current = selector_files(ROOT)
+    historical = selector_files(historical_grafana_maintenance_root)
+    for path in ['.github/workflows/publish-application-packages.yml', 'deployment/compose/compose.packages.yaml']:
+        assert path in current
+        assert path not in historical
+
+
 @pytest.mark.parametrize("change", ["source", "namespace", "duplicate-image", "incomplete-evidence", "path", "duplicate-part", "oversize", "mutable-version"])
 def test_rejects_unbound_or_unsafe_publication_input(change):
     data = copy.deepcopy(manifest())
