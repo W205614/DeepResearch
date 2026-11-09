@@ -39,6 +39,47 @@ def test_prepare_retains_original_configuration_and_handles_quoted_empty_passwor
     assert path.read_bytes() == before
 
 
+def test_prepare_preserves_bom_credentials_and_exact_backup_bytes(tmp_path):
+    path = tmp_path / ".env"
+    original = b"\xef\xbb\xbfPOSTGRES_PASSWORD=synthetic-existing-password\r\nJAVA_DB_PASSWORD=\r\n"
+    path.write_bytes(original)
+    assert prepare_service_credentials.prepare(path) == 10
+    assert (tmp_path / ".env.before-service-roles").read_bytes() == original
+    assert path.read_bytes().startswith(b"\xef\xbb\xbf")
+    assert path.read_text(encoding="utf-8-sig").count("POSTGRES_PASSWORD=") == 1
+    assert "POSTGRES_PASSWORD=synthetic-existing-password\n" in path.read_text(encoding="utf-8-sig")
+    before = path.read_bytes()
+    assert prepare_service_credentials.prepare(path) == 0
+    assert path.read_bytes() == before
+
+
+@pytest.mark.parametrize("last_value", ["", '""', "''", "synthetic-effective-password"])
+def test_prepare_uses_last_duplicate_assignment(tmp_path, last_value):
+    path = tmp_path / ".env"
+    original = f"POSTGRES_PASSWORD=synthetic-earlier-password\nPOSTGRES_PASSWORD={last_value}\n"
+    path.write_text(original)
+    filled = last_value == "synthetic-effective-password"
+    assert prepare_service_credentials.prepare(path) == (10 if filled else 11)
+    values = dict(line.split("=", 1) for line in path.read_text().splitlines() if "=" in line and not line.startswith("#"))
+    if filled:
+        assert values["POSTGRES_PASSWORD"] == last_value
+    else:
+        assert len(values["POSTGRES_PASSWORD"]) == 48
+    assert "POSTGRES_PASSWORD=synthetic-earlier-password\n" in path.read_text()
+    assert (tmp_path / ".env.before-service-roles").read_text() == original
+    before = path.read_bytes()
+    assert prepare_service_credentials.prepare(path) == 0
+    assert path.read_bytes() == before
+
+
+def test_prepare_retains_last_filled_assignment_after_an_empty_one(tmp_path):
+    path = tmp_path / ".env"
+    path.write_text("POSTGRES_PASSWORD=\nPOSTGRES_PASSWORD=synthetic-effective-password\n")
+    assert prepare_service_credentials.prepare(path) == 10
+    assert path.read_text().count("POSTGRES_PASSWORD=") == 2
+    assert "POSTGRES_PASSWORD=synthetic-effective-password\n" in path.read_text()
+
+
 def test_configuration_requires_providers_and_allows_explicit_reranker_opt_out(tmp_path):
     path = initialize(tmp_path)
     with pytest.raises(ValueError, match="LLM_API_KEY, EMBEDDING_API_KEY, RERANKER_API_KEY"):

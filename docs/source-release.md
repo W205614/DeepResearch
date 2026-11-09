@@ -7,12 +7,14 @@
 需要 Git、Python 3.11+ 和 Linux/amd64 Docker Engine（含 Compose v2）。Windows 使用 Docker Desktop 的 Linux 容器。Java、Node.js 与应用依赖由 Docker 构建；首次构建仍需下载上游镜像、源码和依赖，不能视为离线安装。
 
 ```powershell
-git clone --config core.autocrlf=false --branch v0.1.0 https://github.com/W205614/DeepResearch.git
+git clone --config core.autocrlf=false --branch v0.1.1 https://github.com/W205614/DeepResearch.git
 cd DeepResearch
 python scripts/local.py init
 ```
 
 初始化只在 `.env` 不存在时创建配置，生成独立的数据库、存储和管理端密码，不输出其值。已有 `.env` 原样保留；生成器的原配置副本 `.env.before-service-roles` 也只留在本机。填写 `LLM_API_KEY`、`EMBEDDING_API_KEY`；使用重排时填写 `RERANKER_API_KEY`，否则明确设置 `RERANKER_ENABLED=false`。
+
+补齐服务凭据时支持 Windows UTF-8 BOM 配置；重复键按 Compose 的最后一次赋值判断，只补齐最终为空的值，不轮换最终已填写的密码。首次修改前的副本按原始字节保留，再次运行不会覆盖它。
 
 ```powershell
 python scripts/local.py check

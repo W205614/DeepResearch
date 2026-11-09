@@ -15,10 +15,13 @@ def prepare(path):
     path = Path(path).resolve()
     if not path.is_file() or path.name != ".env":
         raise ValueError("An existing private .env file is required")
-    text = path.read_text(encoding="utf-8")
+    original = path.read_bytes()
+    text = path.read_text(encoding="utf-8-sig")
     additions = []
     for key in KEYS:
-        match = re.search(rf"(?m)^{key}=(.*)$", text)
+        # Compose uses the last assignment when an env file repeats a key.
+        matches = list(re.finditer(rf"(?m)^{key}=(.*)$", text))
+        match = matches[-1] if matches else None
         if match and match[1].strip().strip("\"").strip("'"):
             continue
         if match:
@@ -28,9 +31,10 @@ def prepare(path):
         # Exclusive backup leaves the original recoverable; never overwrites it.
         backup = path.with_name(".env.before-service-roles")
         if not backup.exists():
-            with backup.open("x", encoding="utf-8", newline="\n") as stream:
-                stream.write(path.read_text(encoding="utf-8"))
-        path.write_text(text.rstrip() + "\n\n# Independent runtime service credentials\n" + "\n".join(additions) + "\n", encoding="utf-8")
+            with backup.open("xb") as stream:
+                stream.write(original)
+        encoding = "utf-8-sig" if original.startswith(b"\xef\xbb\xbf") else "utf-8"
+        path.write_text(text.rstrip() + "\n\n# Independent runtime service credentials\n" + "\n".join(additions) + "\n", encoding=encoding)
     return len(additions)
 
 

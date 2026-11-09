@@ -80,7 +80,7 @@ docker compose --project-directory . -f deployment/compose/compose.verify.yaml -
 
 ## 手写源码格式
 
-Vue 和 TypeScript 使用两空格缩进，Java 和 Python 使用四空格缩进；根目录的 [.editorconfig](../.editorconfig) 将设置限定在应用源码路径。Python 格式试点为 `backend/api/`，从仓库根目录运行 `uv run --frozen ruff format --check backend/api`，与 CI 的检查范围一致。固定语料、安全证据和上游快照按 [.gitattributes](../.gitattributes) 保留原始字节。
+Vue 和 TypeScript 使用两空格缩进，Java 和 Python 使用四空格缩进；根目录的 [.editorconfig](../.editorconfig) 将设置限定在应用源码路径。Python 格式试点为 `backend/api/`，从仓库根目录运行 `uv run --frozen ruff format --check backend/api`；这是本地格式检查，CI 当前执行 Ruff lint。固定语料、安全证据和上游快照按 [.gitattributes](../.gitattributes) 保留原始字节。
 
 ## 整理与验证
 
