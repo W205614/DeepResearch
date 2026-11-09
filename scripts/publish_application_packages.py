@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import tarfile
 from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -21,6 +22,19 @@ MANIFEST_ACCEPT = "application/vnd.docker.distribution.manifest.v2+json, applica
 def file_hash(path: Path) -> str:
     with path.open("rb") as stream:
         return hashlib.file_digest(stream, "sha256").hexdigest()
+
+
+def archive_image_id(path: Path, tag: str) -> str:
+    """Read the config identity shared by classic and containerd Docker stores."""
+    with tarfile.open(path) as archive:
+        entries = json.load(archive.extractfile("manifest.json"))
+        if len(entries) != 1 or tag not in entries[0].get("RepoTags", []):
+            raise ValueError("Archive must contain only the accepted application tag")
+        raw = archive.extractfile(entries[0]["Config"]).read()
+    config = json.loads(raw)
+    if config.get("os") != "linux" or config.get("architecture") != "amd64":
+        raise ValueError("Archive platform differs from the accepted platform")
+    return "sha256:" + hashlib.sha256(raw).hexdigest()
 
 
 def validate_manifest(data: dict, source_sha: str, release_tag: str) -> None:
@@ -155,9 +169,14 @@ def main() -> None:
     existing = {}
     for image in data["images"]:
         archive = assemble(image, assets, args.output, image["service"])
+        if archive_image_id(archive, image["archive_tag"]) != image["image_id"]:
+            raise ValueError("Archive config differs from the accepted artifact")
         subprocess.run(["docker", "load", "--input", str(archive)], check=True)
-        actual = json.loads(subprocess.check_output(["docker", "image", "inspect", image["archive_tag"]]))[0]
-        if actual["Id"] != image["image_id"] or actual["Os"] != "linux" or actual["Architecture"] != "amd64":
+        # Docker 29's containerd store may expose an index as inspect.Id. Verify
+        # the loaded bytes through Docker's portable archive config instead.
+        loaded = args.output / (image["service"] + "-loaded.tar")
+        subprocess.run(["docker", "image", "save", "--output", str(loaded), image["archive_tag"]], check=True)
+        if archive_image_id(loaded, image["archive_tag"]) != image["image_id"]:
             raise ValueError("Loaded image differs from the accepted artifact")
         current = registry_manifest(image["repository"], data["version"])
         if current and current["image_id"] != image["image_id"]:
@@ -169,7 +188,7 @@ def main() -> None:
     for image in data["images"]:
         target = image["repository"] + ":" + data["version"]
         if not existing[image["service"]]:
-            subprocess.run(["docker", "tag", image["image_id"], target], check=True)
+            subprocess.run(["docker", "tag", image["archive_tag"], target], check=True)
             subprocess.run(["docker", "push", target], check=True)
         actual = registry_manifest(image["repository"], data["version"])
         if not actual or actual["image_id"] != image["image_id"]:

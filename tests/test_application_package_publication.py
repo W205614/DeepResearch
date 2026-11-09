@@ -1,8 +1,29 @@
 import copy
+import hashlib
+import io
+import json
+import tarfile
 
 import pytest
 
-from scripts.publish_application_packages import validate_manifest
+from scripts.publish_application_packages import archive_image_id, validate_manifest
+
+
+def test_archive_identity_uses_actual_config_bytes_for_both_docker_stores(tmp_path):
+    raw = b'{"architecture":"amd64","os":"linux","config":{"Cmd":["true"]}}'
+    digest = hashlib.sha256(raw).hexdigest()
+    tag = "dr-package-candidate-web:v0.1.1"
+    for config_name in [digest + ".json", "blobs/sha256/" + digest]:
+        path = tmp_path / ("containerd.tar" if "/" in config_name else "classic.tar")
+        with tarfile.open(path, "w") as archive:
+            for name, content in [(config_name, raw), ("manifest.json", json.dumps([
+                    {"Config": config_name, "RepoTags": [tag], "Layers": []}]).encode())]:
+                item = tarfile.TarInfo(name)
+                item.size = len(content)
+                archive.addfile(item, io.BytesIO(content))
+        assert archive_image_id(path, tag) == "sha256:" + digest
+        with pytest.raises(ValueError, match="accepted application tag"):
+            archive_image_id(path, "another:tag")
 
 
 def manifest():
