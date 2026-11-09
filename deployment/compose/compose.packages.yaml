@@ -1,0 +1,21 @@
+# Use after the base Compose file. Start with --no-build; keep third-party
+# services and all existing environment, volumes and service commands intact.
+services:
+  agent:
+    image: ghcr.io/w205614/deepresearch-agent:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.1}
+  worker:
+    image: ghcr.io/w205614/deepresearch-agent:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.1}
+  document-worker:
+    image: ghcr.io/w205614/deepresearch-agent:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.1}
+  migrate:
+    image: ghcr.io/w205614/deepresearch-agent:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.1}
+  bootstrap-db:
+    image: ghcr.io/w205614/deepresearch-agent:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.1}
+  ops-exporter:
+    image: ghcr.io/w205614/deepresearch-agent:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.1}
+  alert-relay:
+    image: ghcr.io/w205614/deepresearch-agent:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.1}
+  backend:
+    image: ghcr.io/w205614/deepresearch-backend:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.1}
+  web:
+    image: ghcr.io/w205614/deepresearch-web:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.1}

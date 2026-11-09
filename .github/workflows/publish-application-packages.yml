@@ -1,0 +1,41 @@
+name: Publish verified application packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      artifact_release:
+        description: Published artifact release containing the exact accepted images and source materials
+        required: true
+        type: string
+      manifest_sha256:
+        description: SHA-256 of the locally accepted publication-manifest.json
+        required: true
+        type: string
+
+permissions: { contents: read }
+concurrency:
+  group: application-package-publication
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions: { contents: read, actions: read, packages: write }
+    steps:
+      - uses: actions/checkout@v7
+        with: { persist-credentials: false }
+      - name: Verify final CI and exact artifacts, then publish without rebuilding
+        run: python scripts/publish_application_packages.py --release-tag "$ARTIFACT_RELEASE" --manifest-sha256 "$MANIFEST_SHA256"
+        env:
+          ARTIFACT_RELEASE: ${{ inputs.artifact_release }}
+          MANIFEST_SHA256: ${{ inputs.manifest_sha256 }}
+          GITHUB_TOKEN: ${{ github.token }}
+      - uses: actions/upload-artifact@v6
+        if: always() && hashFiles('.cache/eval/application-publication/publication.json') != ''
+        with:
+          name: application-package-publication-${{ github.sha }}
+          path: |
+            .cache/eval/application-publication/publication.json
+            .cache/eval/application-publication/publication-manifest.json
+          if-no-files-found: error

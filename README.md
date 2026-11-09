@@ -8,7 +8,7 @@
 
 此前的隔离组件、权限、故障恢复和混合负载验证见[证据索引](docs/evidence/production-20261107/README.md)；其中负载测试使用受控模型替身，不代表真实供应商容量。本机已有 118 个历史分块完成官方嵌入的影子索引迁移，配置和原始业务数据保留。应用源码版本与独立第三方镜像分别维护；源码发布不表示第三方制品的分发验收已经完成，范围见[源码发布与运行](docs/source-release.md)。
 
-- 运行：[本地快速部署](#本地快速部署)。
+- 运行：[本地快速部署](#本地快速部署) · [应用容器 Packages](docs/container-packages.md)。
 - 接入：[云平台手册](docs/cloud-integration.md) · [生产验收](docs/production-readiness.md)。
 - 开发：[源码导航](docs/project-structure.md) · [参与开发](CONTRIBUTING.md) · [安全反馈](SECURITY.md)。
 
