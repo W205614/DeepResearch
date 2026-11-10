@@ -29,3 +29,9 @@
 # Preserve the exact observed publication data pins on every checkout.
 /grafana-fixed-20261107-transport.json -text whitespace=cr-at-eol
 /grafana-fixed-20261107-publication.json -text whitespace=cr-at-eol
+
+# New evidence only; existing reviewed build attributes remain unchanged.
+/code-scanning-alert-review-20261110.json -text whitespace=cr-at-eol
+/codeql-reviewed-findings-20261110.json -text whitespace=cr-at-eol
+/code-scanning-review-20261110-evidence/** -text whitespace=cr-at-eol
+/code-scanning-review-20261110-evidence/telemetry-example/telemetry-maintained.patch -whitespace
