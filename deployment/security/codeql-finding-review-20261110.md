@@ -11,9 +11,12 @@
 - `uri()` 将运维配置的 `agentBaseUrl` 放在 URI 的最前面，再追加 Servlet 的 request URI 与 query。外部请求控制路径和查询值，不能选择 Agent 的 scheme、host 或 port；未使用 `URI.resolve()` 将 `//other-host` 当成新 authority。
 - 代理 Controller 只映射已列明的 `/api/...` 路径；`get()` 的健康调用路径为常量 `/readyz`，Outbox 的 `internal()` 调用只构造内部任务路径。
 - `HttpClient` 未启用 `followRedirects()`。[JDK 21 官方约定](https://docs.oracle.com/en/java/javase/21/docs/api/java.net.http/java/net/http/HttpClient.Builder.html#followRedirects(java.net.http.HttpClient.Redirect))的默认重定向策略是 `NEVER`。
-- 新增的 `AgentClientOriginTest` 直接运行真实 `AgentClient` 和两个独立、临时的 loopback HTTP server，没有 mock URI 构造、HTTP 请求或网络结果。包含 URL/authority 语法的 path、以 `//` 开头的 path、编码斜杠和 query 都只访问配置的 Agent；两个 `forward()` 重载及 `get()` 遇到跨 origin 302 均返回 302，另一个 origin 的实际请求计数为 0，转发 Bearer header 未泄露。
+- 新增的 `AgentClientOriginTest` 直接运行真实 `AgentClient` 和独立、临时的 loopback HTTP 端点，没有 mock URI 构造、HTTP 请求或网络结果。包含 URL/authority 语法的 path、编码斜杠和 query 都只访问配置的 Agent；两个 `forward()` 重载及 `get()` 遇到跨 origin 302 均返回 302，另一个 origin 的实际请求计数为 0，转发 Bearer header 未泄露。
+- 以 `//` 开头的 path 单独使用 Agent 端口上的临时 socket 捕获真实 HTTP 请求。测试逐字验证 request-target、配置端口对应的 `Host`、Bearer header 和 body，要求该端口返回严格的 `200 agent-only`；其他 origin 的请求计数为 0。这保留了 authority-looking path 的完整攻击用例，不依赖测试服务器对这种路径的解析策略。
 
-证明测试：`business-backend/src/test/java/com/deepresearch/business/service/AgentClientOriginTest.java` 中的 `pathAndQueryCannotReplaceTheConfiguredOrigin`、`queryAuthoritySyntaxRemainsQueryDataForTheStreamingProxy`、`redirectsNeverForwardRequestsOrCredentialsToAnotherOrigin`，3/3 通过。
+证明测试：`business-backend/src/test/java/com/deepresearch/business/service/AgentClientOriginTest.java` 中的 `pathAndQueryCannotReplaceTheConfiguredOrigin`、`authorityLookingPathIsSentToTheConfiguredAgentSocket`、`queryAuthoritySyntaxRemainsQueryDataForTheStreamingProxy`、`redirectsNeverForwardRequestsOrCredentialsToAnotherOrigin`，4/4 通过。
+
+原先将全部四种路径都交给 `HttpServer` 并要求 200 的测试在 Windows JDK 21.0.1 通过，但在 CI Temurin 21.0.13 失败。定向隔离复现确认：仅前导 `//` 路径被新版本 `HttpServer` 在 handler 之前拒绝，返回 400 及 `Bad request URI`，其余三种路径均为 200。这是测试夹具的解析差异，不是代理选择了其他 origin。修正为上述逐字 socket 捕获后，Windows Maven 执行此类 4/4 通过；同一批实际编译的测试 class 在无外部网络的 Linux Temurin 21.0.13+9 容器内由 JUnit Platform 6.0.3 执行也为 4/4 通过。未放宽为任意响应状态，也未按平台版本分支或删除该输入。
 
 本判断不允许将任意用户 URL 设为 `agentBaseUrl`，也不覆盖未来启用跨 origin 重定向或更改 URI 构造方式的代码。
 
@@ -57,4 +60,4 @@
 git diff --check
 ```
 
-结果：Java 7 passed、0 skipped；Python 3 passed；Ruff 和差异空白检查通过。未启动日常栈、访问业务数据库、调用供应商 API 或更新公开镜像。本地结论不替代父任务提交后对实际 CI、SARIF 与逐项告警状态的核验。
+结果：Java 8 passed、0 skipped；Python 3 passed；Ruff 和差异空白检查通过。另将 Maven 实际编译的 Origin 测试 class 在 Linux Temurin 21.0.13+9 隔离容器中执行，4 passed、0 skipped。未启动日常栈、访问业务数据库、调用供应商 API 或更新公开镜像。本地结论不替代父任务提交后对实际 CI、SARIF 与逐项告警状态的核验。
