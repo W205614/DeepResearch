@@ -25,6 +25,8 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with: { persist-credentials: false }
+      - uses: aquasecurity/setup-trivy@3fb12ec12f41e471780db15c232d5dd185dcb514 # v0.2.6, same pinned installer as Security
+        with: { version: v0.75.0, cache: true }
       - name: Verify final CI and exact artifacts, then publish without rebuilding
         run: python scripts/publish_application_packages.py --release-tag "$ARTIFACT_RELEASE" --manifest-sha256 "$MANIFEST_SHA256"
         env:
@@ -32,10 +34,13 @@ jobs:
           MANIFEST_SHA256: ${{ inputs.manifest_sha256 }}
           GITHUB_TOKEN: ${{ github.token }}
       - uses: actions/upload-artifact@v6
-        if: always() && hashFiles('.cache/eval/application-publication/publication.json') != ''
+        if: always() && hashFiles('.cache/eval/application-publication/publication-manifest.json') != ''
         with:
           name: application-package-publication-${{ github.sha }}
           path: |
             .cache/eval/application-publication/publication.json
             .cache/eval/application-publication/publication-manifest.json
+            .cache/eval/application-publication/security/*/verdict.json
+            .cache/eval/application-publication/security/*/raw.json
+            .cache/eval/application-publication/security/*/scanner-version.log
           if-no-files-found: error

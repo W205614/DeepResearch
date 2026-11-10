@@ -1,0 +1,1421 @@
+{
+  "schema": "agent-image-all-severity-review-v1",
+  "reviewed_at_utc": "2026-11-10T08:06:08.988189+00:00",
+  "published_image": "ghcr.io/w205614/deepresearch-agent@sha256:732fad95a682c28eedf66977b4860dafe971516fa7881a2908e9dee551ae4529",
+  "current_raw_sha256": "46c7e54ff154ea5fa998bc5e59c8c6f370466d701e94bb597385505ce878f93c",
+  "raw_counts": {
+    "MEDIUM": 43,
+    "LOW": 15,
+    "HIGH": 3
+  },
+  "raw_findings": 61,
+  "unique_cves": 43,
+  "zero_unresolved_proven": false,
+  "review_is_publication_allowlist": false,
+  "scope": "Exact existing published v0.1.1 image. Findings remain open unless the stated proof is completed; candidate glibc changes do not alter this image.",
+  "findings": [
+    {
+      "VulnerabilityID": "CVE-2026-102010",
+      "PkgName": "gcc-14-base",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-102010",
+      "official_tracker_sha256": "5575314f9d4233e75b9efedc796777dbc63f9105a6634e0e56f263f40108250b",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "14.4.0-3",
+          "",
+          "",
+          "1150196"
+        ]
+      ],
+      "review_outcome": "SOURCE_PACKAGE_PROPAGATION_BINARY_SCOPE_PROOF_REQUIRED",
+      "basis": "All six GCC findings specifically concern libstdc++ C++ components. gcc-14-base provides base metadata; libgcc_s implements compiler C ABI/unwinding; libgomp implements OpenMP runtime. Source-package matching alone does not prove those exact binary packages contain affected std:: code.",
+      "next_step": "Use official per-binary file/source mapping and current ELF inventory to close only this exact tuple; do not transfer disposition to libstdc++6 or third-party compiled C++ code."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-114690",
+      "PkgName": "gcc-14-base",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-114690",
+      "official_tracker_sha256": "dc7fd199b7d7f78093bc8a082421676997b52b92573ec59df330d0687c8d821d",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "14.4.0-4",
+          "",
+          "",
+          "1152817"
+        ]
+      ],
+      "review_outcome": "SOURCE_PACKAGE_PROPAGATION_BINARY_SCOPE_PROOF_REQUIRED",
+      "basis": "All six GCC findings specifically concern libstdc++ C++ components. gcc-14-base provides base metadata; libgcc_s implements compiler C ABI/unwinding; libgomp implements OpenMP runtime. Source-package matching alone does not prove those exact binary packages contain affected std:: code.",
+      "next_step": "Use official per-binary file/source mapping and current ELF inventory to close only this exact tuple; do not transfer disposition to libstdc++6 or third-party compiled C++ code."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-114691",
+      "PkgName": "gcc-14-base",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-114691",
+      "official_tracker_sha256": "75e7fdc85a7535dec46fc88742864080b2fa588de18a6f970f6404ab9717027d",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "14.4.0-4",
+          "",
+          "",
+          "1152817"
+        ]
+      ],
+      "review_outcome": "SOURCE_PACKAGE_PROPAGATION_BINARY_SCOPE_PROOF_REQUIRED",
+      "basis": "All six GCC findings specifically concern libstdc++ C++ components. gcc-14-base provides base metadata; libgcc_s implements compiler C ABI/unwinding; libgomp implements OpenMP runtime. Source-package matching alone does not prove those exact binary packages contain affected std:: code.",
+      "next_step": "Use official per-binary file/source mapping and current ELF inventory to close only this exact tuple; do not transfer disposition to libstdc++6 or third-party compiled C++ code."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-115455",
+      "PkgName": "gcc-14-base",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-115455",
+      "official_tracker_sha256": "6aac895d9a6372444aa88e3e1e9a3d9d8207e41603cbe7833340ee56956dfc06",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "14.4.0-4",
+          "",
+          "",
+          "1152817"
+        ]
+      ],
+      "review_outcome": "SOURCE_PACKAGE_PROPAGATION_BINARY_SCOPE_PROOF_REQUIRED",
+      "basis": "All six GCC findings specifically concern libstdc++ C++ components. gcc-14-base provides base metadata; libgcc_s implements compiler C ABI/unwinding; libgomp implements OpenMP runtime. Source-package matching alone does not prove those exact binary packages contain affected std:: code.",
+      "next_step": "Use official per-binary file/source mapping and current ELF inventory to close only this exact tuple; do not transfer disposition to libstdc++6 or third-party compiled C++ code."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-95619",
+      "PkgName": "gcc-14-base",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-95619",
+      "official_tracker_sha256": "52df0ff43dc975102e618af335841b8939b67019a67c257dde05140b11eca57c",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "14.4.0-3",
+          "",
+          "",
+          ""
+        ]
+      ],
+      "review_outcome": "SOURCE_PACKAGE_PROPAGATION_BINARY_SCOPE_PROOF_REQUIRED",
+      "basis": "All six GCC findings specifically concern libstdc++ C++ components. gcc-14-base provides base metadata; libgcc_s implements compiler C ABI/unwinding; libgomp implements OpenMP runtime. Source-package matching alone does not prove those exact binary packages contain affected std:: code.",
+      "next_step": "Use official per-binary file/source mapping and current ELF inventory to close only this exact tuple; do not transfer disposition to libstdc++6 or third-party compiled C++ code."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-115456",
+      "PkgName": "gcc-14-base",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "LOW",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-115456",
+      "official_tracker_sha256": "fa84731d5d5f7e3971434f970299aa8ae28fa692f9b688ed41e4f99c3c331605",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "(unfixed)",
+          "",
+          "",
+          ""
+        ]
+      ],
+      "review_outcome": "SOURCE_PACKAGE_PROPAGATION_BINARY_SCOPE_PROOF_REQUIRED",
+      "basis": "All six GCC findings specifically concern libstdc++ C++ components. gcc-14-base provides base metadata; libgcc_s implements compiler C ABI/unwinding; libgomp implements OpenMP runtime. Source-package matching alone does not prove those exact binary packages contain affected std:: code.",
+      "next_step": "Use official per-binary file/source mapping and current ELF inventory to close only this exact tuple; do not transfer disposition to libstdc++6 or third-party compiled C++ code."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-42250",
+      "PkgName": "libbz2-1.0",
+      "InstalledVersion": "1.0.8-6",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-42250",
+      "official_tracker_sha256": "498b572f4d30aaefd631fc9d4e313b45e223149d1a21b5ff9056771bb7c96fdb",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "bzip2",
+          "source",
+          "(unstable)",
+          "(unfixed)",
+          "",
+          "",
+          "1138255"
+        ]
+      ],
+      "review_outcome": "AFFECTED_EXECUTABLE_ABSENT_FROM_RETAINED_ROOTFS",
+      "basis": "Official affected component is bzip2recover executable, not libbz2 decompression library. Complete retained rootfs tar and manifest contain no bzip2recover.",
+      "next_step": "Reverify complete current published filesystem identity and record this exact binary-component exclusion."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-18374",
+      "PkgName": "libc6",
+      "InstalledVersion": "2.41-12+deb13u4",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-18374",
+      "official_tracker_sha256": "a00ae4be86617e03a5eca95bd14869a2baf5ea5ae196356c682f1de2c7117c9f",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "glibc",
+          "source",
+          "(unstable)",
+          "2.43-5",
+          "",
+          "",
+          "1146721"
+        ]
+      ],
+      "review_outcome": "UNRESOLVED_CURRENT_LIBRARY_FIXED_PACKAGE_AVAILABLE",
+      "basis": "Exact installed libc2.41-12+deb13u4 is marked vulnerable in current official tracker; affected libc/gconv components are present. No actual exploit was executed, so reachability through application input remains unproven.",
+      "next_step": "Use official fixed glibc2.43-7 family or minimal verified backports, including loader/math/NSS/gconv compatibility and native Python/NumPy/DB/PDF regressions. Do not replace only libc.so.6 or silently mix different glibc versions."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-19499",
+      "PkgName": "libc6",
+      "InstalledVersion": "2.41-12+deb13u4",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-19499",
+      "official_tracker_sha256": "5ae203e2503db74b024563d3a6cbac974337438d5f3db69b93cbdd0ec38aecd7",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "glibc",
+          "source",
+          "(unstable)",
+          "2.43-5",
+          "",
+          "",
+          "1145891"
+        ]
+      ],
+      "review_outcome": "UNRESOLVED_CURRENT_LIBRARY_FIXED_PACKAGE_AVAILABLE",
+      "basis": "Exact installed libc2.41-12+deb13u4 is marked vulnerable in current official tracker; affected libc/gconv components are present. No actual exploit was executed, so reachability through application input remains unproven.",
+      "next_step": "Use official fixed glibc2.43-7 family or minimal verified backports, including loader/math/NSS/gconv compatibility and native Python/NumPy/DB/PDF regressions. Do not replace only libc.so.6 or silently mix different glibc versions."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-19542",
+      "PkgName": "libc6",
+      "InstalledVersion": "2.41-12+deb13u4",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-19542",
+      "official_tracker_sha256": "dbcdf805c206777ed25f95e2fea9952a174b245e5dd69d212393e2f8f8a5af87",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "glibc",
+          "source",
+          "(unstable)",
+          "2.43-4",
+          "",
+          "",
+          ""
+        ]
+      ],
+      "review_outcome": "UNRESOLVED_CURRENT_LIBRARY_FIXED_PACKAGE_AVAILABLE",
+      "basis": "Exact installed libc2.41-12+deb13u4 is marked vulnerable in current official tracker; affected libc/gconv components are present. No actual exploit was executed, so reachability through application input remains unproven.",
+      "next_step": "Use official fixed glibc2.43-7 family or minimal verified backports, including loader/math/NSS/gconv compatibility and native Python/NumPy/DB/PDF regressions. Do not replace only libc.so.6 or silently mix different glibc versions."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-5435",
+      "PkgName": "libc6",
+      "InstalledVersion": "2.41-12+deb13u4",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-5435",
+      "official_tracker_sha256": "2361f3d31bc16c0ed30e5f79e4398e73155b117f7c2097c4208f9d756cdd0959",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "glibc",
+          "source",
+          "(unstable)",
+          "2.43-3",
+          "",
+          "",
+          "1135230"
+        ]
+      ],
+      "review_outcome": "UNRESOLVED_CURRENT_LIBRARY_FIXED_PACKAGE_AVAILABLE",
+      "basis": "Exact installed libc2.41-12+deb13u4 is marked vulnerable in current official tracker; affected libc/gconv components are present. No actual exploit was executed, so reachability through application input remains unproven.",
+      "next_step": "Use official fixed glibc2.43-7 family or minimal verified backports, including loader/math/NSS/gconv compatibility and native Python/NumPy/DB/PDF regressions. Do not replace only libc.so.6 or silently mix different glibc versions."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-6238",
+      "PkgName": "libc6",
+      "InstalledVersion": "2.41-12+deb13u4",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-6238",
+      "official_tracker_sha256": "b2e9c31388df4262186d0645acff6fc7994b53511e4a04f4d4468e5bca7f6343",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "glibc",
+          "source",
+          "(unstable)",
+          "2.43-3",
+          "",
+          "",
+          "1135231"
+        ]
+      ],
+      "review_outcome": "UNRESOLVED_CURRENT_LIBRARY_FIXED_PACKAGE_AVAILABLE",
+      "basis": "Exact installed libc2.41-12+deb13u4 is marked vulnerable in current official tracker; affected libc/gconv components are present. No actual exploit was executed, so reachability through application input remains unproven.",
+      "next_step": "Use official fixed glibc2.43-7 family or minimal verified backports, including loader/math/NSS/gconv compatibility and native Python/NumPy/DB/PDF regressions. Do not replace only libc.so.6 or silently mix different glibc versions."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-6368",
+      "PkgName": "libc6",
+      "InstalledVersion": "2.41-12+deb13u4",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-6368",
+      "official_tracker_sha256": "a8c3722420dc1aefb9b9953e3be13e4784264c49b9bee8975739a0370c66b0dd",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "glibc",
+          "source",
+          "(unstable)",
+          "2.43-4",
+          "",
+          "",
+          "1144252"
+        ]
+      ],
+      "review_outcome": "UNRESOLVED_CURRENT_LIBRARY_FIXED_PACKAGE_AVAILABLE",
+      "basis": "Exact installed libc2.41-12+deb13u4 is marked vulnerable in current official tracker; affected libc/gconv components are present. No actual exploit was executed, so reachability through application input remains unproven.",
+      "next_step": "Use official fixed glibc2.43-7 family or minimal verified backports, including loader/math/NSS/gconv compatibility and native Python/NumPy/DB/PDF regressions. Do not replace only libc.so.6 or silently mix different glibc versions."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-6791",
+      "PkgName": "libc6",
+      "InstalledVersion": "2.41-12+deb13u4",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-6791",
+      "official_tracker_sha256": "b90c441e5a74f8025eb132fbc1156d06771123f95cbc48cc5aaa1174cd34a096",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "glibc",
+          "source",
+          "(unstable)",
+          "2.43-3",
+          "",
+          "",
+          ""
+        ]
+      ],
+      "review_outcome": "UNRESOLVED_CURRENT_LIBRARY_FIXED_PACKAGE_AVAILABLE",
+      "basis": "Exact installed libc2.41-12+deb13u4 is marked vulnerable in current official tracker; affected libc/gconv components are present. No actual exploit was executed, so reachability through application input remains unproven.",
+      "next_step": "Use official fixed glibc2.43-7 family or minimal verified backports, including loader/math/NSS/gconv compatibility and native Python/NumPy/DB/PDF regressions. Do not replace only libc.so.6 or silently mix different glibc versions."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-77117",
+      "PkgName": "libc6",
+      "InstalledVersion": "2.41-12+deb13u4",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-77117",
+      "official_tracker_sha256": "ed3ff25f7f5c15f2f957eb6beb981723cf305f53a86bdccff8a7d9cbe4a93004",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "glibc",
+          "source",
+          "(unstable)",
+          "2.43-5",
+          "",
+          "",
+          "1145880"
+        ]
+      ],
+      "review_outcome": "UNRESOLVED_CURRENT_LIBRARY_FIXED_PACKAGE_AVAILABLE",
+      "basis": "Exact installed libc2.41-12+deb13u4 is marked vulnerable in current official tracker; affected libc/gconv components are present. No actual exploit was executed, so reachability through application input remains unproven.",
+      "next_step": "Use official fixed glibc2.43-7 family or minimal verified backports, including loader/math/NSS/gconv compatibility and native Python/NumPy/DB/PDF regressions. Do not replace only libc.so.6 or silently mix different glibc versions."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-80489",
+      "PkgName": "libc6",
+      "InstalledVersion": "2.41-12+deb13u4",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-80489",
+      "official_tracker_sha256": "c639e01a744829ce5bdb9a22e2eeebdbc33626ea2cb93c454b310626c9362032",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "glibc",
+          "source",
+          "(unstable)",
+          "2.43-5",
+          "",
+          "",
+          "1145987"
+        ]
+      ],
+      "review_outcome": "UNRESOLVED_CURRENT_LIBRARY_FIXED_PACKAGE_AVAILABLE",
+      "basis": "Exact installed libc2.41-12+deb13u4 is marked vulnerable in current official tracker; affected libc/gconv components are present. No actual exploit was executed, so reachability through application input remains unproven.",
+      "next_step": "Use official fixed glibc2.43-7 family or minimal verified backports, including loader/math/NSS/gconv compatibility and native Python/NumPy/DB/PDF regressions. Do not replace only libc.so.6 or silently mix different glibc versions."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-84243",
+      "PkgName": "libc6",
+      "InstalledVersion": "2.41-12+deb13u4",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-84243",
+      "official_tracker_sha256": "98865d37ee29c5c0734e80b8389d5a071afe6b2edd358bb63d1ea47cf7ac7b47",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "glibc",
+          "source",
+          "(unstable)",
+          "(unfixed)",
+          "",
+          "",
+          "1152640"
+        ]
+      ],
+      "review_outcome": "REQUIRED_LOCALE_AND_ENV_BOUNDARY_NEED_CURRENT_RUNTIME_PROOF",
+      "basis": "Official exploit requires non-C/C.UTF8/POSIX locale plus untrusted LANGUAGE crossing a trust boundary and attacker-readable .mo catalog. Retained complete rootfs contains no usr/lib/locale, locale-archive or LC_MESSAGES tree; deployment uses C.UTF8. Official libc2.43-7 still lists vulnerable.",
+      "next_step": "Probe actual locale availability and effective environment/locale configuration on exact image; source-language/locale contract may prove not affected. Otherwise patch or retain unresolved. Upgrading libc alone does not resolve it."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-8674",
+      "PkgName": "libc6",
+      "InstalledVersion": "2.41-12+deb13u4",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-8674",
+      "official_tracker_sha256": "254763c444adc3aad987289503312aecd31d3e8ef8aa952e3f171a91cdac29d0",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "glibc",
+          "source",
+          "(unstable)",
+          "2.43-6",
+          "",
+          "",
+          "1148168"
+        ]
+      ],
+      "review_outcome": "UNRESOLVED_CURRENT_LIBRARY_FIXED_PACKAGE_AVAILABLE",
+      "basis": "Exact installed libc2.41-12+deb13u4 is marked vulnerable in current official tracker; affected libc/gconv components are present. No actual exploit was executed, so reachability through application input remains unproven.",
+      "next_step": "Use official fixed glibc2.43-7 family or minimal verified backports, including loader/math/NSS/gconv compatibility and native Python/NumPy/DB/PDF regressions. Do not replace only libc.so.6 or silently mix different glibc versions."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-86805",
+      "PkgName": "libc6",
+      "InstalledVersion": "2.41-12+deb13u4",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-86805",
+      "official_tracker_sha256": "dc3e479b2edf14d97823b10c1012e791e1473d61fb0be659e16e868c773a2127",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "glibc",
+          "source",
+          "(unstable)",
+          "2.43-7",
+          "",
+          "",
+          "1148727"
+        ]
+      ],
+      "review_outcome": "AT_SECURE_PRECONDITIONS_ABSENT_IN_RETAINED_IMAGE",
+      "basis": "Official exploit requires setuid/setgid/AT_SECURE executable with special ORIGIN path. Retained complete rootfs has zero SUID/SGID entries. This is a runtime-scope observation, not repaired libc code.",
+      "next_step": "Verify current image and actual runtime/foreign mounts cannot add the prerequisite; otherwise keep unresolved or use fixed libc."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-89092",
+      "PkgName": "libc6",
+      "InstalledVersion": "2.41-12+deb13u4",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-89092",
+      "official_tracker_sha256": "31eb3351ac16b6b226841b8faf481de52043d50e94d7d65db3aba87325d31099",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "glibc",
+          "source",
+          "(unstable)",
+          "2.43-7",
+          "",
+          "",
+          "1147395"
+        ]
+      ],
+      "review_outcome": "AFFECTED_SERVICE_ABSENT_FROM_RETAINED_ROOTFS",
+      "basis": "Official issue is the separate nscd daemon. Retained rootfs has no nscd executable; no claim about arbitrary future deployments.",
+      "next_step": "Verify exact current filesystem and role process inventory; record narrow nscd exclusion."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-95818",
+      "PkgName": "libc6",
+      "InstalledVersion": "2.41-12+deb13u4",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-95818",
+      "official_tracker_sha256": "88a593e9a655640e719f6f7bf985252e4569ec85acab41e5150498fb6c52f271",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "glibc",
+          "source",
+          "(unstable)",
+          "2.43-7",
+          "",
+          "",
+          "1148728"
+        ]
+      ],
+      "review_outcome": "AT_SECURE_PRECONDITIONS_ABSENT_IN_RETAINED_IMAGE",
+      "basis": "Official exploit requires setuid/setgid/AT_SECURE executable with special ORIGIN path. Retained complete rootfs has zero SUID/SGID entries. This is a runtime-scope observation, not repaired libc code.",
+      "next_step": "Verify current image and actual runtime/foreign mounts cannot add the prerequisite; otherwise keep unresolved or use fixed libc."
+    },
+    {
+      "VulnerabilityID": "CVE-2010-4756",
+      "PkgName": "libc6",
+      "InstalledVersion": "2.41-12+deb13u4",
+      "Severity": "LOW",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2010-4756",
+      "official_tracker_sha256": "1533aa64c5b15064840929759355263b7de877ee56a438ea7a38a115ecf9d9e3",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "glibc",
+          "source",
+          "(unstable)",
+          "(unfixed)",
+          "unimportant",
+          "",
+          ""
+        ]
+      ],
+      "review_outcome": "OFFICIAL_DISPUTED_OR_POSIX_CONTRACT_REVIEW_REQUIRED",
+      "basis": "Debian records this as unimportant/unfixed; upstream treats several as non-security issues or POSIX behavior. This does not equal code repaired.",
+      "next_step": "Record the specific upstream technical conclusion and application trust/usage boundary; no blanket LOW waiver. For ldd, actual image has no executable, independently narrow scope."
+    },
+    {
+      "VulnerabilityID": "CVE-2018-20796",
+      "PkgName": "libc6",
+      "InstalledVersion": "2.41-12+deb13u4",
+      "Severity": "LOW",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2018-20796",
+      "official_tracker_sha256": "e6432d5fc861355dacd40700ae7169b572f03a69c17791bf5bb70543511c76e9",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "glibc",
+          "source",
+          "(unstable)",
+          "(unfixed)",
+          "unimportant",
+          "",
+          ""
+        ]
+      ],
+      "review_outcome": "OFFICIAL_DISPUTED_OR_POSIX_CONTRACT_REVIEW_REQUIRED",
+      "basis": "Debian records this as unimportant/unfixed; upstream treats several as non-security issues or POSIX behavior. This does not equal code repaired.",
+      "next_step": "Record the specific upstream technical conclusion and application trust/usage boundary; no blanket LOW waiver. For ldd, actual image has no executable, independently narrow scope."
+    },
+    {
+      "VulnerabilityID": "CVE-2019-1010022",
+      "PkgName": "libc6",
+      "InstalledVersion": "2.41-12+deb13u4",
+      "Severity": "LOW",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2019-1010022",
+      "official_tracker_sha256": "cbef0ea746e9555c4d04761bf8ef09f236c787e9fc9033113695d351d480ab1d",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "glibc",
+          "source",
+          "(unstable)",
+          "(unfixed)",
+          "unimportant",
+          "",
+          ""
+        ]
+      ],
+      "review_outcome": "OFFICIAL_DISPUTED_OR_POSIX_CONTRACT_REVIEW_REQUIRED",
+      "basis": "Debian records this as unimportant/unfixed; upstream treats several as non-security issues or POSIX behavior. This does not equal code repaired.",
+      "next_step": "Record the specific upstream technical conclusion and application trust/usage boundary; no blanket LOW waiver. For ldd, actual image has no executable, independently narrow scope."
+    },
+    {
+      "VulnerabilityID": "CVE-2019-1010023",
+      "PkgName": "libc6",
+      "InstalledVersion": "2.41-12+deb13u4",
+      "Severity": "LOW",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2019-1010023",
+      "official_tracker_sha256": "316608e29cf6e9690c7cb3c8424fd54d9ac31173423d112c1bcbda4ca881faba",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "glibc",
+          "source",
+          "(unstable)",
+          "(unfixed)",
+          "unimportant",
+          "",
+          ""
+        ]
+      ],
+      "review_outcome": "OFFICIAL_DISPUTED_OR_POSIX_CONTRACT_REVIEW_REQUIRED",
+      "basis": "Debian records this as unimportant/unfixed; upstream treats several as non-security issues or POSIX behavior. This does not equal code repaired.",
+      "next_step": "Record the specific upstream technical conclusion and application trust/usage boundary; no blanket LOW waiver. For ldd, actual image has no executable, independently narrow scope."
+    },
+    {
+      "VulnerabilityID": "CVE-2019-1010024",
+      "PkgName": "libc6",
+      "InstalledVersion": "2.41-12+deb13u4",
+      "Severity": "LOW",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2019-1010024",
+      "official_tracker_sha256": "c59a28082119a9ded2f8562007694cd70e5357e727064de5eea447e49a75b4c0",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "glibc",
+          "source",
+          "(unstable)",
+          "(unfixed)",
+          "unimportant",
+          "",
+          ""
+        ]
+      ],
+      "review_outcome": "OFFICIAL_DISPUTED_OR_POSIX_CONTRACT_REVIEW_REQUIRED",
+      "basis": "Debian records this as unimportant/unfixed; upstream treats several as non-security issues or POSIX behavior. This does not equal code repaired.",
+      "next_step": "Record the specific upstream technical conclusion and application trust/usage boundary; no blanket LOW waiver. For ldd, actual image has no executable, independently narrow scope."
+    },
+    {
+      "VulnerabilityID": "CVE-2019-1010025",
+      "PkgName": "libc6",
+      "InstalledVersion": "2.41-12+deb13u4",
+      "Severity": "LOW",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2019-1010025",
+      "official_tracker_sha256": "48754f59ff21707ba10211ef7ade27c43c12dd422dbb1acab80155c321ae00a7",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "glibc",
+          "source",
+          "(unstable)",
+          "(unfixed)",
+          "unimportant",
+          "",
+          ""
+        ]
+      ],
+      "review_outcome": "OFFICIAL_DISPUTED_OR_POSIX_CONTRACT_REVIEW_REQUIRED",
+      "basis": "Debian records this as unimportant/unfixed; upstream treats several as non-security issues or POSIX behavior. This does not equal code repaired.",
+      "next_step": "Record the specific upstream technical conclusion and application trust/usage boundary; no blanket LOW waiver. For ldd, actual image has no executable, independently narrow scope."
+    },
+    {
+      "VulnerabilityID": "CVE-2019-9192",
+      "PkgName": "libc6",
+      "InstalledVersion": "2.41-12+deb13u4",
+      "Severity": "LOW",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2019-9192",
+      "official_tracker_sha256": "31d6c3fae656f6efab2173c5b95dfe8d843ebc6e37110cd9f5de3347fb957dc7",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "glibc",
+          "source",
+          "(unstable)",
+          "(unfixed)",
+          "unimportant",
+          "",
+          ""
+        ]
+      ],
+      "review_outcome": "OFFICIAL_DISPUTED_OR_POSIX_CONTRACT_REVIEW_REQUIRED",
+      "basis": "Debian records this as unimportant/unfixed; upstream treats several as non-security issues or POSIX behavior. This does not equal code repaired.",
+      "next_step": "Record the specific upstream technical conclusion and application trust/usage boundary; no blanket LOW waiver. For ldd, actual image has no executable, independently narrow scope."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-97399",
+      "PkgName": "libc6",
+      "InstalledVersion": "2.41-12+deb13u4",
+      "Severity": "LOW",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-97399",
+      "official_tracker_sha256": "3fc856316476a66d6279a005beb47d499a7b486b870a6c072424b4a32b20a5b6",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "glibc",
+          "source",
+          "(unstable)",
+          "2.43-7",
+          "",
+          "",
+          "1149647"
+        ]
+      ],
+      "review_outcome": "ARCHITECTURE_NOT_AFFECTED",
+      "basis": "Official flaw is the Power8-specific strncasecmp implementation; exact published artifact is linux/amd64.",
+      "next_step": "Bind current manifest/config architecture and actual libc ELF machine type; do not exclude libc generally."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-102010",
+      "PkgName": "libgcc-s1",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-102010",
+      "official_tracker_sha256": "5575314f9d4233e75b9efedc796777dbc63f9105a6634e0e56f263f40108250b",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "14.4.0-3",
+          "",
+          "",
+          "1150196"
+        ]
+      ],
+      "review_outcome": "SOURCE_PACKAGE_PROPAGATION_BINARY_SCOPE_PROOF_REQUIRED",
+      "basis": "All six GCC findings specifically concern libstdc++ C++ components. gcc-14-base provides base metadata; libgcc_s implements compiler C ABI/unwinding; libgomp implements OpenMP runtime. Source-package matching alone does not prove those exact binary packages contain affected std:: code.",
+      "next_step": "Use official per-binary file/source mapping and current ELF inventory to close only this exact tuple; do not transfer disposition to libstdc++6 or third-party compiled C++ code."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-114690",
+      "PkgName": "libgcc-s1",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-114690",
+      "official_tracker_sha256": "dc7fd199b7d7f78093bc8a082421676997b52b92573ec59df330d0687c8d821d",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "14.4.0-4",
+          "",
+          "",
+          "1152817"
+        ]
+      ],
+      "review_outcome": "SOURCE_PACKAGE_PROPAGATION_BINARY_SCOPE_PROOF_REQUIRED",
+      "basis": "All six GCC findings specifically concern libstdc++ C++ components. gcc-14-base provides base metadata; libgcc_s implements compiler C ABI/unwinding; libgomp implements OpenMP runtime. Source-package matching alone does not prove those exact binary packages contain affected std:: code.",
+      "next_step": "Use official per-binary file/source mapping and current ELF inventory to close only this exact tuple; do not transfer disposition to libstdc++6 or third-party compiled C++ code."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-114691",
+      "PkgName": "libgcc-s1",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-114691",
+      "official_tracker_sha256": "75e7fdc85a7535dec46fc88742864080b2fa588de18a6f970f6404ab9717027d",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "14.4.0-4",
+          "",
+          "",
+          "1152817"
+        ]
+      ],
+      "review_outcome": "SOURCE_PACKAGE_PROPAGATION_BINARY_SCOPE_PROOF_REQUIRED",
+      "basis": "All six GCC findings specifically concern libstdc++ C++ components. gcc-14-base provides base metadata; libgcc_s implements compiler C ABI/unwinding; libgomp implements OpenMP runtime. Source-package matching alone does not prove those exact binary packages contain affected std:: code.",
+      "next_step": "Use official per-binary file/source mapping and current ELF inventory to close only this exact tuple; do not transfer disposition to libstdc++6 or third-party compiled C++ code."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-115455",
+      "PkgName": "libgcc-s1",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-115455",
+      "official_tracker_sha256": "6aac895d9a6372444aa88e3e1e9a3d9d8207e41603cbe7833340ee56956dfc06",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "14.4.0-4",
+          "",
+          "",
+          "1152817"
+        ]
+      ],
+      "review_outcome": "SOURCE_PACKAGE_PROPAGATION_BINARY_SCOPE_PROOF_REQUIRED",
+      "basis": "All six GCC findings specifically concern libstdc++ C++ components. gcc-14-base provides base metadata; libgcc_s implements compiler C ABI/unwinding; libgomp implements OpenMP runtime. Source-package matching alone does not prove those exact binary packages contain affected std:: code.",
+      "next_step": "Use official per-binary file/source mapping and current ELF inventory to close only this exact tuple; do not transfer disposition to libstdc++6 or third-party compiled C++ code."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-95619",
+      "PkgName": "libgcc-s1",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-95619",
+      "official_tracker_sha256": "52df0ff43dc975102e618af335841b8939b67019a67c257dde05140b11eca57c",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "14.4.0-3",
+          "",
+          "",
+          ""
+        ]
+      ],
+      "review_outcome": "SOURCE_PACKAGE_PROPAGATION_BINARY_SCOPE_PROOF_REQUIRED",
+      "basis": "All six GCC findings specifically concern libstdc++ C++ components. gcc-14-base provides base metadata; libgcc_s implements compiler C ABI/unwinding; libgomp implements OpenMP runtime. Source-package matching alone does not prove those exact binary packages contain affected std:: code.",
+      "next_step": "Use official per-binary file/source mapping and current ELF inventory to close only this exact tuple; do not transfer disposition to libstdc++6 or third-party compiled C++ code."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-115456",
+      "PkgName": "libgcc-s1",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "LOW",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-115456",
+      "official_tracker_sha256": "fa84731d5d5f7e3971434f970299aa8ae28fa692f9b688ed41e4f99c3c331605",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "(unfixed)",
+          "",
+          "",
+          ""
+        ]
+      ],
+      "review_outcome": "SOURCE_PACKAGE_PROPAGATION_BINARY_SCOPE_PROOF_REQUIRED",
+      "basis": "All six GCC findings specifically concern libstdc++ C++ components. gcc-14-base provides base metadata; libgcc_s implements compiler C ABI/unwinding; libgomp implements OpenMP runtime. Source-package matching alone does not prove those exact binary packages contain affected std:: code.",
+      "next_step": "Use official per-binary file/source mapping and current ELF inventory to close only this exact tuple; do not transfer disposition to libstdc++6 or third-party compiled C++ code."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-102010",
+      "PkgName": "libgomp1",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-102010",
+      "official_tracker_sha256": "5575314f9d4233e75b9efedc796777dbc63f9105a6634e0e56f263f40108250b",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "14.4.0-3",
+          "",
+          "",
+          "1150196"
+        ]
+      ],
+      "review_outcome": "SOURCE_PACKAGE_PROPAGATION_BINARY_SCOPE_PROOF_REQUIRED",
+      "basis": "All six GCC findings specifically concern libstdc++ C++ components. gcc-14-base provides base metadata; libgcc_s implements compiler C ABI/unwinding; libgomp implements OpenMP runtime. Source-package matching alone does not prove those exact binary packages contain affected std:: code.",
+      "next_step": "Use official per-binary file/source mapping and current ELF inventory to close only this exact tuple; do not transfer disposition to libstdc++6 or third-party compiled C++ code."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-114690",
+      "PkgName": "libgomp1",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-114690",
+      "official_tracker_sha256": "dc7fd199b7d7f78093bc8a082421676997b52b92573ec59df330d0687c8d821d",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "14.4.0-4",
+          "",
+          "",
+          "1152817"
+        ]
+      ],
+      "review_outcome": "SOURCE_PACKAGE_PROPAGATION_BINARY_SCOPE_PROOF_REQUIRED",
+      "basis": "All six GCC findings specifically concern libstdc++ C++ components. gcc-14-base provides base metadata; libgcc_s implements compiler C ABI/unwinding; libgomp implements OpenMP runtime. Source-package matching alone does not prove those exact binary packages contain affected std:: code.",
+      "next_step": "Use official per-binary file/source mapping and current ELF inventory to close only this exact tuple; do not transfer disposition to libstdc++6 or third-party compiled C++ code."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-114691",
+      "PkgName": "libgomp1",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-114691",
+      "official_tracker_sha256": "75e7fdc85a7535dec46fc88742864080b2fa588de18a6f970f6404ab9717027d",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "14.4.0-4",
+          "",
+          "",
+          "1152817"
+        ]
+      ],
+      "review_outcome": "SOURCE_PACKAGE_PROPAGATION_BINARY_SCOPE_PROOF_REQUIRED",
+      "basis": "All six GCC findings specifically concern libstdc++ C++ components. gcc-14-base provides base metadata; libgcc_s implements compiler C ABI/unwinding; libgomp implements OpenMP runtime. Source-package matching alone does not prove those exact binary packages contain affected std:: code.",
+      "next_step": "Use official per-binary file/source mapping and current ELF inventory to close only this exact tuple; do not transfer disposition to libstdc++6 or third-party compiled C++ code."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-115455",
+      "PkgName": "libgomp1",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-115455",
+      "official_tracker_sha256": "6aac895d9a6372444aa88e3e1e9a3d9d8207e41603cbe7833340ee56956dfc06",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "14.4.0-4",
+          "",
+          "",
+          "1152817"
+        ]
+      ],
+      "review_outcome": "SOURCE_PACKAGE_PROPAGATION_BINARY_SCOPE_PROOF_REQUIRED",
+      "basis": "All six GCC findings specifically concern libstdc++ C++ components. gcc-14-base provides base metadata; libgcc_s implements compiler C ABI/unwinding; libgomp implements OpenMP runtime. Source-package matching alone does not prove those exact binary packages contain affected std:: code.",
+      "next_step": "Use official per-binary file/source mapping and current ELF inventory to close only this exact tuple; do not transfer disposition to libstdc++6 or third-party compiled C++ code."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-95619",
+      "PkgName": "libgomp1",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-95619",
+      "official_tracker_sha256": "52df0ff43dc975102e618af335841b8939b67019a67c257dde05140b11eca57c",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "14.4.0-3",
+          "",
+          "",
+          ""
+        ]
+      ],
+      "review_outcome": "SOURCE_PACKAGE_PROPAGATION_BINARY_SCOPE_PROOF_REQUIRED",
+      "basis": "All six GCC findings specifically concern libstdc++ C++ components. gcc-14-base provides base metadata; libgcc_s implements compiler C ABI/unwinding; libgomp implements OpenMP runtime. Source-package matching alone does not prove those exact binary packages contain affected std:: code.",
+      "next_step": "Use official per-binary file/source mapping and current ELF inventory to close only this exact tuple; do not transfer disposition to libstdc++6 or third-party compiled C++ code."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-115456",
+      "PkgName": "libgomp1",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "LOW",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-115456",
+      "official_tracker_sha256": "fa84731d5d5f7e3971434f970299aa8ae28fa692f9b688ed41e4f99c3c331605",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "(unfixed)",
+          "",
+          "",
+          ""
+        ]
+      ],
+      "review_outcome": "SOURCE_PACKAGE_PROPAGATION_BINARY_SCOPE_PROOF_REQUIRED",
+      "basis": "All six GCC findings specifically concern libstdc++ C++ components. gcc-14-base provides base metadata; libgcc_s implements compiler C ABI/unwinding; libgomp implements OpenMP runtime. Source-package matching alone does not prove those exact binary packages contain affected std:: code.",
+      "next_step": "Use official per-binary file/source mapping and current ELF inventory to close only this exact tuple; do not transfer disposition to libstdc++6 or third-party compiled C++ code."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-119373",
+      "PkgName": "libsqlite3-0",
+      "InstalledVersion": "3.54.1-2",
+      "Severity": "HIGH",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-119373",
+      "official_tracker_sha256": "43323c68311c6c3ede8e37dfc35111e9d8a59ca72ad8b8a7c7e1936552e9506d",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "sqlite3",
+          "source",
+          "(unstable)",
+          "3.54.1-1",
+          "",
+          "",
+          "1152790"
+        ]
+      ],
+      "review_outcome": "EXISTING_EXACT_FIXED_CODE_EVIDENCE",
+      "basis": "Existing gate binds exact official Debian SQLite 3.54.1-2, archive/ELF SHA, actual loaded library and original fixed-code evidence. No new exception added.",
+      "next_step": "Reverify against the current fresh scan and actual published digest; preserve raw findings."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-119374",
+      "PkgName": "libsqlite3-0",
+      "InstalledVersion": "3.54.1-2",
+      "Severity": "HIGH",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-119374",
+      "official_tracker_sha256": "ff9a3366290eff2211cb3b51078c0d722e749e2032b69f22d4c34a494f738f05",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "sqlite3",
+          "source",
+          "(unstable)",
+          "3.54.1-1",
+          "",
+          "",
+          "1152790"
+        ]
+      ],
+      "review_outcome": "EXISTING_EXACT_FIXED_CODE_EVIDENCE",
+      "basis": "Existing gate binds exact official Debian SQLite 3.54.1-2, archive/ELF SHA, actual loaded library and original fixed-code evidence. No new exception added.",
+      "next_step": "Reverify against the current fresh scan and actual published digest; preserve raw findings."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-119379",
+      "PkgName": "libsqlite3-0",
+      "InstalledVersion": "3.54.1-2",
+      "Severity": "HIGH",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-119379",
+      "official_tracker_sha256": "24b8b56e3008317e4a86968b9c2f8e7aad437d358af1bfcdb3da1090ec8f1b69",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "sqlite3",
+          "source",
+          "(unstable)",
+          "3.54.1-1",
+          "",
+          "",
+          "1152790"
+        ]
+      ],
+      "review_outcome": "EXISTING_EXACT_FIXED_CODE_EVIDENCE",
+      "basis": "Existing gate binds exact official Debian SQLite 3.54.1-2, archive/ELF SHA, actual loaded library and original fixed-code evidence. No new exception added.",
+      "next_step": "Reverify against the current fresh scan and actual published digest; preserve raw findings."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-119371",
+      "PkgName": "libsqlite3-0",
+      "InstalledVersion": "3.54.1-2",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-119371",
+      "official_tracker_sha256": "ef06530924dd494f2e8645fec9f0da12c2100cffc518bceceb42f0ab15098fdf",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "sqlite3",
+          "source",
+          "(unstable)",
+          "3.54.1-1",
+          "",
+          "",
+          "1152790"
+        ]
+      ],
+      "review_outcome": "ADDITIONAL_OFFICIAL_FIXED_LIBRARY_PROOF_AVAILABLE",
+      "basis": "Official tracker identifies installed sid SQLite 3.54.1-2 as fixed; same official library is already pinned and actual-loaded SHA verified by the prior native receipt. Existing gate does not adjudicate this LOW/MEDIUM tuple.",
+      "next_step": "Extend an exact separate evidence register/gate with this specific official fixed-version/source evidence and fresh actual library binding; do not edit old reports."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-119372",
+      "PkgName": "libsqlite3-0",
+      "InstalledVersion": "3.54.1-2",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-119372",
+      "official_tracker_sha256": "a011a59be6056260951a5742e0aef4834ea142c486d7ba72c18c7e81c45428e5",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "sqlite3",
+          "source",
+          "(unstable)",
+          "3.54.1-1",
+          "",
+          "",
+          "1152790"
+        ]
+      ],
+      "review_outcome": "ADDITIONAL_OFFICIAL_FIXED_LIBRARY_PROOF_AVAILABLE",
+      "basis": "Official tracker identifies installed sid SQLite 3.54.1-2 as fixed; same official library is already pinned and actual-loaded SHA verified by the prior native receipt. Existing gate does not adjudicate this LOW/MEDIUM tuple.",
+      "next_step": "Extend an exact separate evidence register/gate with this specific official fixed-version/source evidence and fresh actual library binding; do not edit old reports."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-119375",
+      "PkgName": "libsqlite3-0",
+      "InstalledVersion": "3.54.1-2",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-119375",
+      "official_tracker_sha256": "92fdc1f4d1dab9e1cd538f145231bcb867f5d0c813f6d864016c3c02768b5b04",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "sqlite3",
+          "source",
+          "(unstable)",
+          "3.54.1-1",
+          "",
+          "",
+          "1152790"
+        ]
+      ],
+      "review_outcome": "ADDITIONAL_OFFICIAL_FIXED_LIBRARY_PROOF_AVAILABLE",
+      "basis": "Official tracker identifies installed sid SQLite 3.54.1-2 as fixed; same official library is already pinned and actual-loaded SHA verified by the prior native receipt. Existing gate does not adjudicate this LOW/MEDIUM tuple.",
+      "next_step": "Extend an exact separate evidence register/gate with this specific official fixed-version/source evidence and fresh actual library binding; do not edit old reports."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-119376",
+      "PkgName": "libsqlite3-0",
+      "InstalledVersion": "3.54.1-2",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-119376",
+      "official_tracker_sha256": "c38fce92f84de6cdb5b43f65d24788ffacee92fd195ce3e694a28a4322bfe817",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "sqlite3",
+          "source",
+          "(unstable)",
+          "3.54.1-1",
+          "",
+          "",
+          "1152790"
+        ]
+      ],
+      "review_outcome": "ADDITIONAL_OFFICIAL_FIXED_LIBRARY_PROOF_AVAILABLE",
+      "basis": "Official tracker identifies installed sid SQLite 3.54.1-2 as fixed; same official library is already pinned and actual-loaded SHA verified by the prior native receipt. Existing gate does not adjudicate this LOW/MEDIUM tuple.",
+      "next_step": "Extend an exact separate evidence register/gate with this specific official fixed-version/source evidence and fresh actual library binding; do not edit old reports."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-119378",
+      "PkgName": "libsqlite3-0",
+      "InstalledVersion": "3.54.1-2",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-119378",
+      "official_tracker_sha256": "0fd3e70535c9a46dc96cc8e6e775ec464ac35b9b25f201d2aed64956a000a4eb",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "sqlite3",
+          "source",
+          "(unstable)",
+          "3.54.1-1",
+          "",
+          "",
+          "1152790"
+        ]
+      ],
+      "review_outcome": "ADDITIONAL_OFFICIAL_FIXED_LIBRARY_PROOF_AVAILABLE",
+      "basis": "Official tracker identifies installed sid SQLite 3.54.1-2 as fixed; same official library is already pinned and actual-loaded SHA verified by the prior native receipt. Existing gate does not adjudicate this LOW/MEDIUM tuple.",
+      "next_step": "Extend an exact separate evidence register/gate with this specific official fixed-version/source evidence and fresh actual library binding; do not edit old reports."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-119591",
+      "PkgName": "libsqlite3-0",
+      "InstalledVersion": "3.54.1-2",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-119591",
+      "official_tracker_sha256": "2a3251e3ab1028d35d992ec7278647ae35e155f030884c87d87511e9f6e166ac",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "sqlite3",
+          "source",
+          "(unstable)",
+          "3.54.1-1",
+          "",
+          "",
+          "1152790"
+        ]
+      ],
+      "review_outcome": "ADDITIONAL_OFFICIAL_FIXED_LIBRARY_PROOF_AVAILABLE",
+      "basis": "Official tracker identifies installed sid SQLite 3.54.1-2 as fixed; same official library is already pinned and actual-loaded SHA verified by the prior native receipt. Existing gate does not adjudicate this LOW/MEDIUM tuple.",
+      "next_step": "Extend an exact separate evidence register/gate with this specific official fixed-version/source evidence and fresh actual library binding; do not edit old reports."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-50812",
+      "PkgName": "libsqlite3-0",
+      "InstalledVersion": "3.54.1-2",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-50812",
+      "official_tracker_sha256": "0adc02bd6d3c9ebf8f553996c891d175925700dcd566ffa19f7a567dbfa6be12",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "sqlite3",
+          "source",
+          "(unstable)",
+          "3.53.2-1",
+          "",
+          "",
+          ""
+        ]
+      ],
+      "review_outcome": "ADDITIONAL_OFFICIAL_FIXED_LIBRARY_PROOF_AVAILABLE",
+      "basis": "Official tracker identifies installed sid SQLite 3.54.1-2 as fixed; same official library is already pinned and actual-loaded SHA verified by the prior native receipt. Existing gate does not adjudicate this LOW/MEDIUM tuple.",
+      "next_step": "Extend an exact separate evidence register/gate with this specific official fixed-version/source evidence and fresh actual library binding; do not edit old reports."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-50813",
+      "PkgName": "libsqlite3-0",
+      "InstalledVersion": "3.54.1-2",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-50813",
+      "official_tracker_sha256": "cd2f5485cc5dc8fdecb91bc3756c23b079c5aa145293d027cfdb757bf014e205",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "sqlite3",
+          "source",
+          "(unstable)",
+          "3.53.4-2",
+          "",
+          "",
+          ""
+        ]
+      ],
+      "review_outcome": "ADDITIONAL_OFFICIAL_FIXED_LIBRARY_PROOF_AVAILABLE",
+      "basis": "Official tracker identifies installed sid SQLite 3.54.1-2 as fixed; same official library is already pinned and actual-loaded SHA verified by the prior native receipt. Existing gate does not adjudicate this LOW/MEDIUM tuple.",
+      "next_step": "Extend an exact separate evidence register/gate with this specific official fixed-version/source evidence and fresh actual library binding; do not edit old reports."
+    },
+    {
+      "VulnerabilityID": "CVE-2021-45346",
+      "PkgName": "libsqlite3-0",
+      "InstalledVersion": "3.54.1-2",
+      "Severity": "LOW",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2021-45346",
+      "official_tracker_sha256": "b4e20e9c2f83ffb8252a58f552aa48e46724b0f2a3b76184e6dd27ea7977cbb9",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "sqlite3",
+          "source",
+          "(unstable)",
+          "(unfixed)",
+          "unimportant",
+          "",
+          "1005974"
+        ]
+      ],
+      "review_outcome": "DISPUTED_TRUSTED_DATABASE_CONTRACT_REVIEW_REQUIRED",
+      "basis": "Official descriptions dispute this as a vulnerability for an attacker-controlled database/query; Debian says negligible security impact, source row unfixed. Existing exact SQLite fixed-code gate does not cover it.",
+      "next_step": "Prove application never opens untrusted user-controlled SQLite database/SQL across trust boundary, including legacy migration/checkpoint paths, or keep unresolved; do not call fixed."
+    },
+    {
+      "VulnerabilityID": "CVE-2025-70873",
+      "PkgName": "libsqlite3-0",
+      "InstalledVersion": "3.54.1-2",
+      "Severity": "LOW",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2025-70873",
+      "official_tracker_sha256": "1d1626e3358838317551d22e990c850bce4e3022bf5cbe034829c17fccaf7418",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "sqlite3",
+          "source",
+          "(unstable)",
+          "(unfixed)",
+          "unimportant",
+          "",
+          ""
+        ]
+      ],
+      "review_outcome": "OFFICIAL_BINARY_COMPONENT_NOT_BUILT",
+      "basis": "Debian tracker explicitly says zipfile extension is not built for Debian binary packages. This is narrower than the source-package vulnerable row.",
+      "next_step": "Bind official source/package build recipe and actual SQLite ELF to absence of zipfile extension; do not rely only on version."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-119377",
+      "PkgName": "libsqlite3-0",
+      "InstalledVersion": "3.54.1-2",
+      "Severity": "LOW",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-119377",
+      "official_tracker_sha256": "9fb1e54d88ea086ff672413927738e294c0dcbceeeaada23dc57bce538dbe98d",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "sqlite3",
+          "source",
+          "(unstable)",
+          "3.54.1-1",
+          "",
+          "",
+          "1152790"
+        ]
+      ],
+      "review_outcome": "ADDITIONAL_OFFICIAL_FIXED_LIBRARY_PROOF_AVAILABLE",
+      "basis": "Official tracker identifies installed sid SQLite 3.54.1-2 as fixed; same official library is already pinned and actual-loaded SHA verified by the prior native receipt. Existing gate does not adjudicate this LOW/MEDIUM tuple.",
+      "next_step": "Extend an exact separate evidence register/gate with this specific official fixed-version/source evidence and fresh actual library binding; do not edit old reports."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-102010",
+      "PkgName": "libstdc++6",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-102010",
+      "official_tracker_sha256": "5575314f9d4233e75b9efedc796777dbc63f9105a6634e0e56f263f40108250b",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "14.4.0-3",
+          "",
+          "",
+          "1150196"
+        ]
+      ],
+      "review_outcome": "NOT_RESOLVED_BY_EXISTING_EVIDENCE",
+      "basis": "Installed official GCC14.2.0-19 source is marked vulnerable. Runtime includes libstdc++.so.6.0.33 and compiled third-party C++ components. No headers alone does not exclude inlined template code.",
+      "next_step": "Official GCC14.4.0-3/-4 repairs source for this CVE, but header-template fixes may require rebuilding affected native callers. Verify exact affected component/compiled path before selecting official fixed packages and regression."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-114690",
+      "PkgName": "libstdc++6",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-114690",
+      "official_tracker_sha256": "dc7fd199b7d7f78093bc8a082421676997b52b92573ec59df330d0687c8d821d",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "14.4.0-4",
+          "",
+          "",
+          "1152817"
+        ]
+      ],
+      "review_outcome": "NOT_RESOLVED_BY_EXISTING_EVIDENCE",
+      "basis": "Installed official GCC14.2.0-19 source is marked vulnerable. Runtime includes libstdc++.so.6.0.33 and compiled third-party C++ components. No headers alone does not exclude inlined template code.",
+      "next_step": "Official GCC14.4.0-3/-4 repairs source for this CVE, but header-template fixes may require rebuilding affected native callers. Verify exact affected component/compiled path before selecting official fixed packages and regression."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-114691",
+      "PkgName": "libstdc++6",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-114691",
+      "official_tracker_sha256": "75e7fdc85a7535dec46fc88742864080b2fa588de18a6f970f6404ab9717027d",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "14.4.0-4",
+          "",
+          "",
+          "1152817"
+        ]
+      ],
+      "review_outcome": "NOT_RESOLVED_BY_EXISTING_EVIDENCE",
+      "basis": "Installed official GCC14.2.0-19 source is marked vulnerable. Runtime includes libstdc++.so.6.0.33 and compiled third-party C++ components. No headers alone does not exclude inlined template code.",
+      "next_step": "Official GCC14.4.0-3/-4 repairs source for this CVE, but header-template fixes may require rebuilding affected native callers. Verify exact affected component/compiled path before selecting official fixed packages and regression."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-115455",
+      "PkgName": "libstdc++6",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-115455",
+      "official_tracker_sha256": "6aac895d9a6372444aa88e3e1e9a3d9d8207e41603cbe7833340ee56956dfc06",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "14.4.0-4",
+          "",
+          "",
+          "1152817"
+        ]
+      ],
+      "review_outcome": "NOT_RESOLVED_BY_EXISTING_EVIDENCE",
+      "basis": "Installed official GCC14.2.0-19 source is marked vulnerable. Runtime includes libstdc++.so.6.0.33 and compiled third-party C++ components. No headers alone does not exclude inlined template code.",
+      "next_step": "Official GCC14.4.0-3/-4 repairs source for this CVE, but header-template fixes may require rebuilding affected native callers. Verify exact affected component/compiled path before selecting official fixed packages and regression."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-95619",
+      "PkgName": "libstdc++6",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "MEDIUM",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-95619",
+      "official_tracker_sha256": "52df0ff43dc975102e618af335841b8939b67019a67c257dde05140b11eca57c",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "14.4.0-3",
+          "",
+          "",
+          ""
+        ]
+      ],
+      "review_outcome": "NOT_RESOLVED_BY_EXISTING_EVIDENCE",
+      "basis": "Installed official GCC14.2.0-19 source is marked vulnerable. Runtime includes libstdc++.so.6.0.33 and compiled third-party C++ components. No headers alone does not exclude inlined template code.",
+      "next_step": "Official GCC14.4.0-3/-4 repairs source for this CVE, but header-template fixes may require rebuilding affected native callers. Verify exact affected component/compiled path before selecting official fixed packages and regression."
+    },
+    {
+      "VulnerabilityID": "CVE-2026-115456",
+      "PkgName": "libstdc++6",
+      "InstalledVersion": "14.2.0-19",
+      "Severity": "LOW",
+      "official_tracker_url": "https://security-tracker.debian.org/tracker/CVE-2026-115456",
+      "official_tracker_sha256": "fa84731d5d5f7e3971434f970299aa8ae28fa692f9b688ed41e4f99c3c331605",
+      "current_scope_zero_proven": false,
+      "official_fixed_source_rows": [
+        [
+          "gcc-14",
+          "source",
+          "(unstable)",
+          "(unfixed)",
+          "",
+          "",
+          ""
+        ]
+      ],
+      "review_outcome": "NOT_RESOLVED_BY_EXISTING_EVIDENCE",
+      "basis": "Installed official GCC14.2.0-19 source is marked vulnerable. Runtime includes libstdc++.so.6.0.33 and compiled third-party C++ components. No headers alone does not exclude inlined template code.",
+      "next_step": "CVE-2026-115456 remains unfixed even GCC14.4.0-4 and GCC16.2.0-4. Actual library exports std:: floating from_chars; no imported symbol found in retained ELF names is insufficient for a full reachability proof. Investigate exact public defect/affected ABI and all compiled callers, or patch/rebuild minimal runtime with regression."
+    }
+  ]
+}

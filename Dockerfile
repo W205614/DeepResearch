@@ -40,6 +40,12 @@ RUN python /tmp/prepare_python_runtime.py && rm /usr/local/bin/uv
 
 FROM builder AS runtime-package
 COPY --from=runtime-base / /runtime-root/
+# The Debian 13 base still carries affected glibc 2.41. Keep the compiler and
+# build environment unchanged; stage the complete matched official runtime.
+ADD --checksum=sha256:5c71715c51103beb4fbba9fe9f8dff604af6610dfa71c70bff342f54a7860803 https://deb.debian.org/debian/pool/main/g/glibc/libc6_2.43-7_amd64.deb /tmp/glibc/libc6_2.43-7_amd64.deb
+ADD --checksum=sha256:8abae40b5e2bfca58fbc838329b48f525c98463e930b8d3ed075d0c9e960a57a https://deb.debian.org/debian/pool/main/g/glibc/libc-gconv-modules-extra_2.43-7_amd64.deb /tmp/glibc/libc-gconv-modules-extra_2.43-7_amd64.deb
+COPY scripts/stage_glibc_runtime.py /tmp/stage_glibc_runtime.py
+RUN python /tmp/stage_glibc_runtime.py --runtime-root /runtime-root --archives /tmp/glibc
 # Replace complete trust trees before flattening: an overlay on runtime-base
 # alone would retain obsolete named/hashed certificate files that were removed.
 RUN python /tmp/prepare_runtime_trust.py --runtime-root /runtime-root --kind ca
@@ -49,6 +55,7 @@ COPY --from=runtime-package /runtime-root/ /
 COPY --from=builder /usr/local /usr/local
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /runtime/ /
+COPY deployment/security/agent-glibc-runtime-20261110.json /usr/local/share/deepresearch-glibc-source.json
 COPY --from=builder --chown=10001:10001 /data /data
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 UV_PROJECT_ENVIRONMENT=/opt/venv \
     PATH="/opt/venv/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \

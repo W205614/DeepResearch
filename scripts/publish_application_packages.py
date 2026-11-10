@@ -3,20 +3,27 @@ from __future__ import annotations
 
 import argparse
 import base64
+from collections import Counter
+from datetime import datetime, timezone
 import hashlib
 import json
 import os
 from pathlib import Path
 import re
 import subprocess
+import sys
 import tarfile
 from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from scripts.check_image_secrets import assess  # noqa: E402
+
 REPOSITORY = "W205614/DeepResearch"
 SERVICES = {"agent", "backend", "web"}
 MANIFEST_ACCEPT = "application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json"
+SEVERITIES = ("UNKNOWN", "LOW", "MEDIUM", "HIGH", "CRITICAL")
 
 
 def file_hash(path: Path) -> str:
@@ -35,6 +42,110 @@ def archive_image_id(path: Path, tag: str) -> str:
     if config.get("os") != "linux" or config.get("architecture") != "amd64":
         raise ValueError("Archive platform differs from the accepted platform")
     return "sha256:" + hashlib.sha256(raw).hexdigest()
+
+
+def publication_scan_verdict(scan: dict, image: dict, diff_ids: list[str], started: datetime, finished: datetime) -> dict:
+    secrets = assess(scan)
+    metadata = scan["Metadata"]
+    created = datetime.fromisoformat(scan["CreatedAt"].replace("Z", "+00:00"))
+    if (not scan.get("ReportID") or created.tzinfo is None or not started <= created <= finished
+            or metadata.get("ImageID") != image["image_id"] or metadata.get("DiffIDs") != diff_ids
+            or metadata.get("ImageConfig", {}).get("os") != "linux"
+            or metadata.get("ImageConfig", {}).get("architecture") != "amd64"):
+        raise ValueError("Fresh image scan does not match the verified loaded archive")
+    required = {"agent": {("os-pkgs", "debian"), ("lang-pkgs", "python-pkg")},
+                "backend": {("os-pkgs", "alpine"), ("lang-pkgs", "jar")},
+                "web": {("os-pkgs", "alpine")}}[image["service"]]
+    covered = set()
+    unresolved, counts = [], Counter()
+    for result in scan["Results"]:
+        vulnerabilities = result.get("Vulnerabilities", [])
+        if not isinstance(vulnerabilities, list):
+            raise ValueError("Malformed image vulnerability inventory")
+        if result.get("Class") in {"os-pkgs", "lang-pkgs"}:
+            packages = result.get("Packages")
+            if not isinstance(packages, list) or not packages:
+                raise ValueError("Full image package inventory is required")
+            covered.add((result["Class"], result.get("Type")))
+        else:
+            packages = []
+        inventory = {(p["Name"], (str(p["Epoch"]) + ":" if p.get("Epoch") else "") + p["Version"]
+                      + ("-" + p["Release"] if p.get("Release") else "")) for p in packages}
+        for finding in vulnerabilities:
+            if (not isinstance(finding, dict) or finding.get("Severity") not in SEVERITIES
+                    or not finding.get("VulnerabilityID")
+                    or (finding.get("PkgName"), finding.get("InstalledVersion")) not in inventory):
+                raise ValueError("Image vulnerability has no complete severity and package identity")
+            counts[finding["Severity"]] += 1
+            unresolved.append({key: finding[key] for key in (
+                "VulnerabilityID", "PkgName", "InstalledVersion", "Severity")})
+    if not required <= covered:
+        raise ValueError("Required application OS or language-package scan is missing")
+    # This strict default intentionally does not adjudicate even known fixed-code
+    # false positives. A green legacy HIGH/CRITICAL gate cannot waive other rows.
+    return {"passed": not unresolved and secrets["passed"],
+            "policy": "Every raw vulnerability at every severity and every secret blocks publication",
+            "raw_vulnerability_counts": dict(counts), "unresolved_vulnerabilities": unresolved,
+            "unresolved_secret_count": secrets["secret_findings"],
+            "secret_severity_counts": secrets["secret_severity_counts"],
+            "applicability_exceptions_applied": [], "raw_report_modified": False}
+
+
+def scan_loaded_archive(archive: Path, image: dict, output: Path, *, scanner: str = "trivy") -> None:
+    output.mkdir(parents=True, exist_ok=False)
+    output = output.resolve()
+    receipt = {"passed": False, "service": image["service"], "image_id": image["image_id"],
+               "loaded_archive_sha256": file_hash(archive), "raw_report_modified": False}
+    raw = output / "raw.private.json"
+    environment = {key: value for key, value in os.environ.items() if not key.startswith("TRIVY_")}
+    config, ignore = output / "empty-trivy.yaml", output / "empty.ignore"
+    config.write_bytes(b"{}\n")
+    ignore.write_bytes(b"")
+    try:
+        with tarfile.open(archive) as saved:
+            entry, = json.load(saved.extractfile("manifest.json"))
+            diff_ids = json.load(saved.extractfile(entry["Config"]))["rootfs"]["diff_ids"]
+        version = subprocess.run([scanner, "--version"], capture_output=True, env=environment,
+                                 timeout=30, check=True)
+        (output / "scanner-version.log").write_bytes(version.stdout)
+        if not re.search(rb"^Version:\s*0\.75\.0\s*$", version.stdout, re.MULTILINE):
+            raise ValueError("Publication requires the fixed Trivy 0.75.0 scanner")
+        command = [scanner, "image", "--input", str(archive.resolve()), "--config", str(config),
+                   "--ignorefile", str(ignore), "--scanners", "vuln,secret", "--list-all-pkgs",
+                   "--severity", ",".join(SEVERITIES), "--ignore-unfixed=false", "--format", "json",
+                   "--output", str(raw), "--exit-code", "0", "--timeout", "10m"]
+        started = datetime.now(timezone.utc)
+        receipt.update(started_at=started.isoformat(), scanner_version="0.75.0", command=command)
+        try:
+            process = subprocess.run(command, cwd=output, capture_output=True, env=environment, timeout=630)
+        except subprocess.TimeoutExpired as error:
+            (output / "stdout.private.log").write_bytes(error.stdout or b"")
+            (output / "stderr.private.log").write_bytes(error.stderr or b"")
+            raise ValueError("Publication image scan timed out; partial reports cannot authorize a push") from None
+        finished = datetime.now(timezone.utc)
+        (output / "stdout.private.log").write_bytes(process.stdout)
+        (output / "stderr.private.log").write_bytes(process.stderr)
+        receipt.update(finished_at=finished.isoformat(), scanner_exit_code=process.returncode)
+        if process.returncode != 0:
+            raise ValueError("Publication image scanner failed; raw logs retained")
+        if (not raw.is_file() or raw.is_symlink() or not 0 < raw.stat().st_size <= 64 * 1024**2
+                or config.read_bytes() != b"{}\n" or ignore.read_bytes() != b""):
+            raise ValueError("Complete unfiltered publication image scan is required")
+        receipt["raw_sha256"] = file_hash(raw)
+        verdict = publication_scan_verdict(json.loads(raw.read_bytes()), image, diff_ids, started, finished)
+        receipt.update(verdict)
+        # A raw secret match can contain credential values. Keep it and scanner
+        # logs in the runner's private output, outside the uploaded artifact set.
+        if not verdict["unresolved_secret_count"]:
+            raw = raw.rename(output / "raw.json")
+        receipt["raw_file"] = raw.name
+        if not verdict["passed"]:
+            raise ValueError("Publication blocked by unresolved all-severity image findings; see verdict.json")
+    except (ValueError, KeyError, TypeError, OSError, subprocess.SubprocessError, tarfile.TarError) as error:
+        receipt.update(passed=False, error_type=type(error).__name__)
+        raise
+    finally:
+        (output / "verdict.json").write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
 
 
 def validate_manifest(data: dict, source_sha: str, release_tag: str) -> None:
@@ -178,6 +289,7 @@ def main() -> None:
         subprocess.run(["docker", "image", "save", "--output", str(loaded), image["archive_tag"]], check=True)
         if archive_image_id(loaded, image["archive_tag"]) != image["image_id"]:
             raise ValueError("Loaded image differs from the accepted artifact")
+        scan_loaded_archive(loaded, image, args.output / "security" / image["service"])
         current = registry_manifest(image["repository"], data["version"])
         if current and current["image_id"] != image["image_id"]:
             raise ValueError("An existing immutable package version has different bytes; do not overwrite")

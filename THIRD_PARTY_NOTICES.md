@@ -19,6 +19,7 @@
 | librdkafka `rdkafka_mock.h`，`deployment/vendors/milvus/` | BSD 两条款；版权、条件和免责全文保留在[文件头](deployment/vendors/milvus/rdkafka_mock.h) | Magnus Edenhill（2019–2022）及 Confluent Inc.（2023）；其他头文件按上述来源锁及各自文件声明。 |
 | Debian／IANA 时区数据，`deployment/vendors/etcd/runtime-data/` | 原包版权文件；IANA 数据为 public domain | [原版权文件](deployment/vendors/etcd/runtime-data/tzdata.copyright)、[legacy 版权文件](deployment/vendors/etcd/runtime-data/tzdata-legacy.copyright)、[来源记录](deployment/vendors/etcd/runtime-data/provenance.json)。Debian 包中的其他文件保留原许可。 |
 | 其他运行时 CA／时区包 | 按原软件包版权，不统一归为 MIT | [包来源与摘要](deployment/vendors/runtime-data/packages.lock.json)、[打包说明](deployment/vendors/runtime-data/README.md)。 |
+| Agent 源码配方的 glibc 2.43-7 运行库与 gconv | 保留官方 Debian 包内版权与许可，不改为 MIT | [两个匹配包、原始源码、Debian 补丁与 DSC 的精确来源](deployment/security/agent-glibc-runtime-20261110.json)。配方复制完整运行库、转换模块、版权和真实包记录；此变更不覆盖既有 `v0.1.1` 镜像。 |
 
 ## AGPL 组件与对应源码
 
