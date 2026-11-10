@@ -1,0 +1,162 @@
+{
+  "schema": "grafana-source-runtime-incremental-technical-review-v1",
+  "actor": "codex-glibc-candidate-reviewer-d",
+  "actor_type": "AI agent; not human or binary redistribution approval",
+  "reviewed_at_utc": "2026-11-10T13:37:09.981972+00:00",
+  "subject": {
+    "profile": "grafana-source-20261110",
+    "source_inputs_sha256": "91bc8284cbd791a17c9969908048406f073145f65706fc310358b58e2fb6b131",
+    "native_sha256": {
+      "usr/share/grafana/bin/grafana": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64": "599f81b6cb18227c719074099c3f5f3dd0928d8a5b3d2a55ac8a02a0210fa10c",
+      "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64": "c7798b1bbea42ddad8a7259fd1c3c5846cdd8d89f7f1f8034858871e392de9e3",
+      "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64": "73db79edd48a44159ee66583ae4a646a0e52aaf0cbfa252aece9753273961aa1",
+      "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64": "019b92b07c3bd36176e28e2ee1693d69b423a129b6e6a9945e98adffa53c3ee1",
+      "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64": "3343e2ff45c76058067bb945baf7c0fc341edf0b647b59d3c8e2a95211df73a4",
+      "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64": "d290d4840deb7e1edffaee453271ca87d02094f3f8ab0f3e27680605f1f5fd5a",
+      "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64": "50ba9d95a58a20a52a9131a44d04313c955a20ccc199b02e29f474b70af6fd3a",
+      "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64": "e4abc533b0ed7cddea5d1753a2556971dd50e5d3c7b1d8cac1ace9d4ae018a8c",
+      "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64": "4bd3b2b5d547a73c02a231eb5fa1231f167b1c1a7e46a61687916440c6c0771a",
+      "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64": "c4ab7df53197950cd6bcb36235d72c7b5c268f00ecda2ee13b6962d34181394c",
+      "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64": "5c3f2027bcb5d6b03e219230a9a90bf8e1511d46e7a1536b1efb991839da4157",
+      "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": "58a9b276af17f22a5c9729ff1da2bd248f9e69add6e25e8a495df00065837c1d",
+      "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": "1ef41b794a8c882213ab5826d82bbe9a1d5d05b3a9068e86065e12190aef9865"
+    },
+    "runtime_manifest_sha256": "d0707a9f15c66427df74f6c39daa3836dc47d294cc9fdf971e976b7a7c360010",
+    "complete_expected_sha256": "229ab0ff46358f7a5af78aa18e7d90c4e5fe6e55be117b6f0950453fd53cd625",
+    "technical_evidence_sha256": "aafac181c1585cada993c0615faae9fb85e8a746e28320298bf9448a96c536ed",
+    "reviewed_findings_sha256": "62a52125ed1438c5794734ef60746a4f01580b21c4479da770ca58244388152d"
+  },
+  "subject_sha256": "d645a9549e00d244d6c122b6bfdc1e5c326f09d48b868368debc4eedf1e3e3fe",
+  "facts_passed": true,
+  "risk_acceptance": false,
+  "binary_redistribution_approved": false,
+  "prior_contributions": {
+    "prior_full_review_b": true,
+    "main_thrift_dependency_build_and_compatibility": true,
+    "base_28_disposition_technical_material": true,
+    "busybox_original_source_read_and_high_level_boundary_suggestion": true,
+    "busybox_patch_or_original_50_53_test_author": false,
+    "source_bound_candidate_tag_implementation_and_tests_author": true,
+    "additional_archive_RepoTags_boundary_fix_and_test_author": true,
+    "canonical_permission_recipe_author": false,
+    "workflow_metadata_upload_author": false,
+    "independence_limit": "Separate agent review with disclosed implementation contributions, not an author-free external audit. Earlier full review and this incremental review do not constitute two independent people."
+  },
+  "full_review_reuse": {
+    "file": "deployment/security/grafana-source-20261110-evidence/review-runtime-b.json",
+    "sha256": "e40bb3c0075f29f0b30df3fb1273260be312c0f9cd67aae343ada30a5fe0fba7",
+    "basis": "Compared against committed aff45202 full profile: all fourteen native ELF hashes, full source-scan expected79targets/71tuples/proofs and all runtime40/10 exact dispositions remain equal. Only one of85 source inputs changed (top-level Dockerfile); only publisher and two workflow files changed among prior evidence. All unchanged bound evidence files were freshly hashed; no old approval inherited.",
+    "reused_actual_checks": [
+      "B actual4200-package main and all14 complete ELF-bound closures",
+      "B sourceA3 all71 technical proof calls and negative exact-tuple/inventory checks",
+      "B fresh BusyBox50+53 network-none real packet cross-reruns on exact68dba binary and unchanged target musl/ssl_client",
+      "B specific5Thrift official fixes and22 Grafana CNA/source implementation scope"
+    ],
+    "not_reexecuted_this_increment": [
+      "full Go graph generation or recompile",
+      "all71 source proof calls",
+      "BusyBox50+53 tests or Grafana service startup"
+    ],
+    "source_a3_remains_private_preflight_not_final_new_commit_CI": true
+  },
+  "actual_incremental_checks": {
+    "source_hashes": 85,
+    "evidence_hashes": 398,
+    "source_input_delta": [
+      "deployment/docker/Dockerfile.grafana-20261110"
+    ],
+    "new_runtime_manifest_sha256": "d0707a9f15c66427df74f6c39daa3836dc47d294cc9fdf971e976b7a7c360010",
+    "old_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+    "actual_rootfs_tar_members_rehashed": 15694,
+    "full_actual_rootfs_equals_canonical_manifest": true,
+    "changed_files": 66,
+    "only_mode_change": {
+      "from": "0755",
+      "to": "0644",
+      "type": "regular file"
+    },
+    "all_path_content_size_uid_gid_type_symlink_targets_other_modes_unchanged": true,
+    "scope_of_changes": [
+      "new BusyBox corresponding-source regular files",
+      "new BusyBox license regular files",
+      "single new source.lock.json"
+    ],
+    "actual_runtime_ELFs_remain_0755": true,
+    "inherited_plugin_modules_unchanged": true,
+    "native14_sha256_unchanged": true,
+    "busybox_sha256": "68dba7ae251db2ecca77e6ef405bf781111dc41f87c93c30205745fdbe2c697e",
+    "live_image_id": "sha256:72c00580a2beeffd2449d1c6a476f99c21fb589e2b422bcdf4b08ed08dca05bc",
+    "portable_config_digest": "sha256:9ebaf8de42dc88c8283314a61db80e034269603217c728443eeca4a8af9f0070",
+    "actual_live_inspect_and_verify_receipt_passed": true,
+    "two_clean_ci_failed_receipts_report_same_d070_native14_runtime_config": true,
+    "ci_receipt_limit": "The two original failed CI artifacts supplied receipts, not complete rootfs manifests. Their recorded full manifest digest matches the independently rehashed current body; no claim of independently exporting those original CI rootfs images.",
+    "preparing_normal_gate_rejected": true
+  },
+  "permission_recipe_review": "Explicit chmod0644 is confined to regular files of/out/licenses and/out/corresponding-source; directories0755; single source.lock copied0644. It runs after actual BusyBox build and before real regression, and never touches/out/busybox, the Grafana main or retained plugins. Complete file modes remain mandatory in the gate; no mode field omitted. Source build scripts remain usable through explicit sh/python/Docker build invocations; source/archive/license content hashes unchanged.",
+  "fresh_scans": {
+    "actual_verify_receipt_and_assess_scans_executed": true,
+    "all_severity_rows": {
+      "Trivy": 40,
+      "Grype": 10
+    },
+    "unresolved_applicable": 0,
+    "secrets": 0,
+    "raw_trivy_sha256": "4a680f7055e2234f2f44a6d4b3c9c54f613511bb61e4505649dc592369c71432",
+    "raw_grype_sha256": "88dcf3ce08f6a02f0e8bd115d6296995bbe5d3d401441116719a473da8844bab",
+    "full_syft_sha256": "316ecb3ebc11a639ef9cc83cdc5fab20808ed4566fbc8cc49fabe7f4bc623879",
+    "database_archive_sha256": "f536af5882d8e03ad3e3ea5b32b3fc1965d55321ddab67ad7a5d7aeec3725190",
+    "database_archive_actually_rehashed": true,
+    "controlled_import_status_and_post_scan_hashes_agree": true,
+    "database_transport_reuse_limit": "Exact current publisher-selected official archive bytes reused as transport into fresh controlled import; not reuse of an older hydrated DB. Original truncated a1 failure remains. Age/schema/scanner/source and image identity gates unchanged.",
+    "raw_reports_modified": false,
+    "normal_gate_claimed_before_reviews": false
+  },
+  "publisher_review": {
+    "normal_release_tag_rule": "archive_tag exactly dr-package-candidate-{service}:{version}-{source_sha[:12]}, with manifest full source_sha equal current Git source; no missing, alternate SHA or longer suffix accepted",
+    "historical_artifact_rule": "Existing artifact-applications version-rN releases retain only original unsuffixed archive-local tags",
+    "archive_single_tag_rule": "RepoTags must equal the singleton accepted tag, not merely contain it; otherwise docker load could overwrite another local historical tag",
+    "actual_failure_reproduced_before_fix": "New real TAR test with[new-sha12tag, old-unsuffixed-tag] initially failed DID NOT RAISE, then passed after exact singleton check",
+    "validation": [
+      "initial related full publication suite39passed",
+      "after singleton fix4 relevant archive/publication-blocking tests passed,36deselected",
+      "Ruff passed for publisher and tests",
+      "git diff --check passed"
+    ],
+    "source_sha256": "53322d73aa16528bda4d12fc94b10608f00e3aedca8dc11b86115252f3cf3161",
+    "public_registry_version_unchanged": true,
+    "no_actual_Docker_Registry_Tag_Release_mutation": true
+  },
+  "workflow_review": {
+    "only_new_upload_path": ".cache/eval/grafana-source-build/actual-payload/runtime-manifest.json.gz",
+    "enterprise_metadata_whitelist": [
+      "build-receipt.json",
+      "image-inspect.json",
+      "actual-payload/runtime-manifest.json.gz"
+    ],
+    "no_new_image_tar_or_rootfs_tar_upload": true,
+    "actual_related_yaml_compose_consumption_test_passed": true,
+    "normal_no_build_full_capture_gate_source_unchanged": true
+  },
+  "findings": [],
+  "resolved_findings": [
+    {
+      "issue": "Additional RepoTags could overwrite an old local tag through docker load",
+      "resolution": "Actual source now demands singleton RepoTags; real failing/passing TAR regression recorded above"
+    }
+  ],
+  "limitations": [
+    "This incremental AI technical review is not human risk acceptance, legal opinion or full third-party binary redistribution authorization.",
+    "Current recipe build is an openly labelled uncommitted-input preparation. Final pushed engineering CI and final application candidate/publication acceptance remain distinct obligations.",
+    "Raw findings are still40/10 and source71; exact applicability dispositions do not mean zero vulnerabilities.",
+    "No new paid provider calls, daily container operations, Registry mutation or service startup in this review.",
+    "One initial independent tar comparison used link instead of the target schema key for symlinks; corrected and rehashed full actual export successfully. This was a review-script representation error, not a payload discrepancy."
+  ],
+  "final_subject_delta_check": {
+    "previous_subject_sha256": "fe57fb38980b70c28c81722664010c0f3e68f46b2a1702010f0e24eb9bb86a69",
+    "only_changed_binding": "scripts/publish_application_packages.py",
+    "previous_publisher_sha256": "6179e91d46389c9fb94e23c380c0736d8a315f11e304be883e5215776f58950c",
+    "current_publisher_sha256": "53322d73aa16528bda4d12fc94b10608f00e3aedca8dc11b86115252f3cf3161",
+    "method": "Reconstructed prior publisher by reverting only exact singleton condition in memory; replacing only that evidence digest reconstructs the prior subject technical_evidence_sha256 exactly. All other subject fields equal."
+  }
+}

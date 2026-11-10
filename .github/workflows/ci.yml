@@ -95,6 +95,7 @@ jobs:
           path: |
             .cache/eval/grafana-source-build/build-receipt.json
             .cache/eval/grafana-source-build/image-inspect.json
+            .cache/eval/grafana-source-build/actual-payload/runtime-manifest.json.gz
           if-no-files-found: error
       - name: Validate the maintained collector with the current complete telemetry configuration
         run: |

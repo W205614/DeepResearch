@@ -32,6 +32,21 @@ def test_archive_identity_uses_actual_config_bytes_for_both_docker_stores(tmp_pa
             archive_image_id(path, "another:tag")
 
 
+def test_archive_identity_rejects_extra_tags_before_loading(tmp_path):
+    raw = b'{"architecture":"amd64","os":"linux"}'
+    tag = 'dr-package-candidate-web:v0.1.2-' + 'c' * 12
+    path = tmp_path / 'extra-tag.tar'
+    with tarfile.open(path, 'w') as archive:
+        for name, content in [('config.json', raw), ('manifest.json', json.dumps([
+                {'Config': 'config.json', 'RepoTags': [tag, 'dr-package-candidate-web:v0.1.2'],
+                 'Layers': []}]).encode())]:
+            item = tarfile.TarInfo(name)
+            item.size = len(content)
+            archive.addfile(item, io.BytesIO(content))
+    with pytest.raises(ValueError, match='only the accepted application tag'):
+        archive_image_id(path, tag)
+
+
 def manifest():
     def archive(name):
         return {"archive_sha256": "a" * 64,
@@ -53,10 +68,30 @@ def test_accepts_exact_three_image_release_manifest():
 def test_single_product_release_binds_the_same_application_version():
     data = manifest()
     data['artifact_release'] = 'v0.1.1'
+    for image in data['images']:
+        image['archive_tag'] += '-' + data['source_sha'][:12]
     validate_manifest(data, 'c' * 40, 'v0.1.1')
     data['artifact_release'] = 'v0.1.2'
     with pytest.raises(ValueError, match='Release tag and immutable application version differ'):
         validate_manifest(data, 'c' * 40, 'v0.1.2')
+
+
+@pytest.mark.parametrize('suffix', ['', '-' + 'e' * 12, '-' + 'c' * 13])
+def test_product_release_rejects_archive_tag_without_its_exact_source_suffix(suffix):
+    data = manifest()
+    data['artifact_release'] = data['version']
+    for image in data['images']:
+        image['archive_tag'] += '-' + data['source_sha'][:12]
+    data['images'][0]['archive_tag'] = 'dr-package-candidate-agent:' + data['version'] + suffix
+    with pytest.raises(ValueError, match='Invalid archive-local image tag'):
+        validate_manifest(data, data['source_sha'], data['artifact_release'])
+
+
+def test_historical_artifact_release_keeps_only_its_existing_unsuffixed_archive_tags():
+    data = manifest()
+    data['images'][0]['archive_tag'] += '-' + data['source_sha'][:12]
+    with pytest.raises(ValueError, match='Invalid archive-local image tag'):
+        validate_manifest(data, data['source_sha'], data['artifact_release'])
 
 
 def test_technical_review_is_bound_to_exact_agent_profile():

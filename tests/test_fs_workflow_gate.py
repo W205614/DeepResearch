@@ -260,7 +260,8 @@ def test_enterprise_and_compose_consume_source_image_without_a_second_uncontroll
     receipt_upload = next(step for step in steps if step.get('with', {}).get('name', '').startswith('enterprise-grafana-source-'))
     assert 'always()' in receipt_upload['if']
     assert set(receipt_upload['with']['path'].splitlines()) == {
-        BASE + 'grafana-source-build/build-receipt.json', BASE + 'grafana-source-build/image-inspect.json'}
+        BASE + 'grafana-source-build/build-receipt.json', BASE + 'grafana-source-build/image-inspect.json',
+        BASE + 'grafana-source-build/actual-payload/runtime-manifest.json.gz'}
     grafana = yaml.safe_load((ROOT / 'compose.yaml').read_text(encoding='utf-8'))['services']['grafana']
     assert grafana['image'] == 'deepresearch-grafana-source:20261110' and 'build' not in grafana
     assert grafana['x-deepresearch-source-build'] == 'grafana-source-20261110' and grafana['pull_policy'] == 'never'

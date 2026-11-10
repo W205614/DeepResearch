@@ -7,7 +7,7 @@
   "context": ".",
   "source_inputs": {
     "deployment/docker/.gitattributes": "b41ad0a2a8a49dcc136954df8957c479eaad056f623d255d0da2eae9a89d99d6",
-    "deployment/docker/Dockerfile.grafana-20261110": "9cd2cd091cbee66cde010eed7c965312153e4c00fa8d93b1992b42d7f7911996",
+    "deployment/docker/Dockerfile.grafana-20261110": "f0f2365aa5fd3624bc9ff5c53d6f448d3a4bc9c503d62b48116f5980a90c331e",
     "deployment/docker/Dockerfile.grafana-20261110.dockerignore": "c2da2af78d20ac5746524327f5f42b0eb6dd65b0cf3ca82c388cf812f19b7e23",
     "deployment/vendors/grafana-20261107/build_candidate_backends.py": "bb421ba30986038f1165d9ba03faf23707c513a8968c8c6405c1744e90d9f400",
     "deployment/vendors/grafana-20261107/capture_graphs.py": "23d65fdae263353b74b3ca608300695c6041abccdfb98e71bed74206edbd83e3",
@@ -478,15 +478,21 @@
     "scripts/scan_grafana_source_20261110.py": "b8dba2c4190ad1196d02e5e213ca63312ddaa3e0f0fa5772f3f64fcf1b59824b",
     "scripts/check_grafana_source_scan_20261110.py": "27bd5634a9e521c03c92fd357fc1b3a9bf47e93e43da5a5b357169a7c976be4d",
     "scripts/grafana_source_context_20261110.py": "04eb0e8985c5cb58edfd7267672f1ca38f371dfa32d7125d8fad93bd8fc7d3bd",
-    "scripts/publish_application_packages.py": "bf454b55fc9f28f3143a51b3367f90669c9e5ce5c04aa8fc50287009b14ec892",
+    "scripts/publish_application_packages.py": "53322d73aa16528bda4d12fc94b10608f00e3aedca8dc11b86115252f3cf3161",
     "scripts/grafana_source_build_facts_20261110.py": "8e3df74a0142de5b85e50f764a919725113525bd2c9dc1b5c11c57a1d697fa19",
     "scripts/runtime_ci_inventory.py": "0c12bebe53c8b8ed03c276d29136a15e0084f69213644d941108b9cb0a88a844",
     "compose.yaml": "c8b0e862f51e8df6ec8ddf8254656491a939cbb9bf9231d31b545d449df7dc0e",
-    ".github/workflows/ci.yml": "3db3d33ea65bdaa23c84e51964d57ace44e6ad3874be4c15f0a8cd2d89094a3d",
-    ".github/workflows/security.yml": "eecf7d9c9618d374c7e03bc1de3e97ce8f8907460b805c47b2a745ae5770a29b",
+    ".github/workflows/ci.yml": "2745d546dfd615002c7cc026693676c5b42edad59ecc062c01f0aed3843e7405",
+    ".github/workflows/security.yml": "a55d1156b255ab02145fe5427b4a6f0ab0221effd673ee2f89730cb71197ec5d",
     "deployment/security/grafana-source-20261110-evidence/source-a3-technical-facts.json": "52f139de5b4fa0869bfb7a08bc597c03c035d83b00431f8b08805f323d0b24dc",
     "deployment/security/grafana-source-20261110-evidence/review-runtime-a.json": "8b51f1e1e43fe1158518d86c42a02f0e13246932791ed6a6e90fe088d66ac7f4",
-    "deployment/security/grafana-source-20261110-evidence/review-runtime-b.json": "e40bb3c0075f29f0b30df3fb1273260be312c0f9cd67aae343ada30a5fe0fba7"
+    "deployment/security/grafana-source-20261110-evidence/review-runtime-b.json": "e40bb3c0075f29f0b30df3fb1273260be312c0f9cd67aae343ada30a5fe0fba7",
+    "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest-canonical.json.gz": "e7eac53d6007f52858ba1e8c8cdfa33bc4e387a8e2e500bfe8b4e394ff8d559a",
+    "deployment/security/grafana-source-20261110-evidence/runtime/permission-recipe-prepared-build-receipt.json": "62889c5fc955e902de8fd7e80d5d12d40285f596e58884452e9075664d6b3191",
+    "deployment/security/grafana-source-20261110-evidence/runtime/canonical-file-modes-20261110.json": "82096cbb5ad2dd03cbd688011c42c8ba9893c0a5d5b9075ffb2b4e856a29e20f",
+    "deployment/security/grafana-source-20261110-evidence/runtime/canonical-fresh-scan-facts-20261110.json": "eabd9755a597a74e3251428b0d9c5331b692b309f5223f433ddc893cae90ab9b",
+    "deployment/security/grafana-source-20261110-evidence/review-runtime-c.json": "b9c00e555c1b0c3cc358e6df3799ad923778c84a084af0fa75f7a3407f46bc83",
+    "deployment/security/grafana-source-20261110-evidence/review-runtime-d.json": "9a255c228ffd993f1c53a89ee4fce196469f1958f24d0167adcb3db2452a0497"
   },
   "expected": {
     "native_sha256": {
@@ -505,7 +511,7 @@
       "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": "58a9b276af17f22a5c9729ff1da2bd248f9e69add6e25e8a495df00065837c1d",
       "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": "1ef41b794a8c882213ab5826d82bbe9a1d5d05b3a9068e86065e12190aef9865"
     },
-    "runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+    "runtime_manifest_sha256": "d0707a9f15c66427df74f6c39daa3836dc47d294cc9fdf971e976b7a7c360010",
     "runtime_config": {
       "User": "472",
       "Env": [
@@ -6282,19 +6288,20 @@
     ]
   },
   "independent_reviews": [
-    "deployment/security/grafana-source-20261110-evidence/review-runtime-a.json",
-    "deployment/security/grafana-source-20261110-evidence/review-runtime-b.json"
+    "deployment/security/grafana-source-20261110-evidence/review-runtime-c.json",
+    "deployment/security/grafana-source-20261110-evidence/review-runtime-d.json"
   ],
   "facts_collected_at_utc": "2026-11-10T10:31:26.014140+00:00",
   "binary_redistribution_approved": false,
   "approval_or_risk_acceptance_inherited": false,
   "pending_facts": [
-    "Final committed-source CI and final application publication/daily acceptance are separately required"
+    "Final same-SHA CI, final application candidates, real core/API acceptance, Registry and daily acceptance are separately required"
   ],
   "pending_tool_bindings": [],
   "source_a2_fact_record": "deployment/security/grafana-source-20261110-evidence/source-a2-technical-facts.json",
-  "facts_updated_at_utc": "2026-11-10T12:17:38.058619+00:00",
-  "runtime_facts_status": "Complete source/runtime technical subject independently reviewed by two disclosed AI reviewers; not binary redistribution approval",
+  "facts_updated_at_utc": "2026-11-10T13:31:23.800962+00:00",
+  "runtime_facts_status": "Actual canonical-mode runtime and complete fresh scans independently reviewed; not binary redistribution approval",
   "source_a3_fact_record": "deployment/security/grafana-source-20261110-evidence/source-a3-technical-facts.json",
-  "technical_review_completed_at_utc": "2026-11-10T12:24:54.168837+00:00"
+  "technical_review_completed_at_utc": "2026-11-10T12:24:54.168837+00:00",
+  "permission_canonicalization": "Exactly66 new source/license regular files0755 to0644; all other15694-entry fields including inherited plugin-modules and runtime ELF modes retained; initial clean-CI equality reproduced by actual fixed recipe"
 }

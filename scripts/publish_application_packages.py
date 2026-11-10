@@ -35,7 +35,7 @@ def archive_image_id(path: Path, tag: str) -> str:
     """Read the config identity shared by classic and containerd Docker stores."""
     with tarfile.open(path) as archive:
         entries = json.load(archive.extractfile("manifest.json"))
-        if len(entries) != 1 or tag not in entries[0].get("RepoTags", []):
+        if len(entries) != 1 or entries[0].get("RepoTags") != [tag]:
             raise ValueError("Archive must contain only the accepted application tag")
         raw = archive.extractfile(entries[0]["Config"]).read()
     config = json.loads(raw)
@@ -195,7 +195,10 @@ def validate_manifest(data: dict, source_sha: str, release_tag: str) -> None:
             raise ValueError("Invalid accepted image identity")
         if image.get("platform") != "linux/amd64":
             raise ValueError("Only the verified Linux/amd64 platform is supported")
-        if image.get("archive_tag") != "dr-package-candidate-" + service + ":" + data["version"]:
+        archive_tag = "dr-package-candidate-" + service + ":" + data["version"]
+        if release_tag == data["version"]:
+            archive_tag += "-" + source_sha[:12]
+        if image.get("archive_tag") != archive_tag:
             raise ValueError("Invalid archive-local image tag")
     for archive in [*images, data.get("sources", {})]:
         if not re.fullmatch(r"[a-f0-9]{64}", archive.get("archive_sha256", "")) or not archive.get("parts"):

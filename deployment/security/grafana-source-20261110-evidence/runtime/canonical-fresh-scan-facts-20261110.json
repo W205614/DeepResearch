@@ -1,0 +1,43 @@
+{
+  "schema": "grafana-canonical-mode-fresh-scan-facts-20261110-v1",
+  "preparation_only": true,
+  "normal_gate_claimed": false,
+  "actual_image_id": "sha256:72c00580a2beeffd2449d1c6a476f99c21fb589e2b422bcdf4b08ed08dca05bc",
+  "portable_config_digest": "sha256:9ebaf8de42dc88c8283314a61db80e034269603217c728443eeca4a8af9f0070",
+  "runtime_manifest_sha256": "d0707a9f15c66427df74f6c39daa3836dc47d294cc9fdf971e976b7a7c360010",
+  "source_inputs_sha256": "91bc8284cbd791a17c9969908048406f073145f65706fc310358b58e2fb6b131",
+  "raw_trivy_sha256": "4a680f7055e2234f2f44a6d4b3c9c54f613511bb61e4505649dc592369c71432",
+  "raw_grype_sha256": "88dcf3ce08f6a02f0e8bd115d6296995bbe5d3d401441116719a473da8844bab",
+  "full_syft_sha256": "316ecb3ebc11a639ef9cc83cdc5fab20808ed4566fbc8cc49fabe7f4bc623879",
+  "assessment": {
+    "passed": true,
+    "profile": "grafana-source-20261110",
+    "unresolved_count": 0,
+    "verified_all_severity_findings": {
+      "Trivy": 40,
+      "Grype": 10
+    },
+    "raw_counts": {
+      "Trivy": {
+        "CRITICAL": 2,
+        "HIGH": 11,
+        "MEDIUM": 20,
+        "LOW": 2,
+        "UNKNOWN": 5
+      },
+      "Grype": {
+        "HIGH": 2,
+        "MEDIUM": 3,
+        "UNKNOWN": 5
+      }
+    },
+    "raw_reports_modified": false,
+    "binary_redistribution_approved": false,
+    "scope": "Exactly reviewed locally built runtime; original OCI approval and historical scans unchanged."
+  },
+  "database_archive_sha256": "f536af5882d8e03ad3e3ea5b32b3fc1965d55321ddab67ad7a5d7aeec3725190",
+  "database_built": "2026-11-10T06:21:20Z",
+  "publisher_selection_fresh_and_controlled_import_checks_unchanged": true,
+  "prior_truncated_download_preserved": true,
+  "scope": "Exact actual rebuilt canonical-mode image with complete unfiltered fresh scanners; final independent reviews and CI still required"
+}

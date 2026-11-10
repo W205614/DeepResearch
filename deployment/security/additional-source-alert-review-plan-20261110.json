@@ -2,7 +2,7 @@
   "schema": "deepresearch-additional-source-alert-review-plan-v1",
   "prepared_on": "2026-11-10",
   "scope": "Only the six exact findings at the two new manifest paths; not a blanket dependency dismissal",
-  "default_branch_status": "Pending final engineering CI and actual alert API reconciliation",
+  "default_branch_status": "Six exact newly created alerts153-158 verified dismissed with compiled-absence evidence; active default-branch Code scanning0 after closure. This is separate from the failed Grafana cross-platform permission build gate.",
   "raw_reports_modified": false,
   "risk_acceptance": false,
   "review_profile": "deployment/security/grafana-source-20261110-profile.json",
@@ -14,7 +14,7 @@
       "package": "github.com/grafana/tempo",
       "version": "v1.5.1-0.20260427112133-525d1bab07e0",
       "severity": "HIGH",
-      "status": "technical_facts_reverified_against_source_a2_full_subject_review_pending",
+      "status": "verified_dismissed_false_positive_on_default_branch",
       "disposition": "NOT_AFFECTED",
       "technical_basis": "This is the actual new-main go.mod copied from the successful build. Its original SHA and complete package inventory exactly match the selected 20261110 main input; the actual new main ELF/full 4200-package graph is independently rechecked below. The actual new main ELF eff6b2a8... has a complete 4200-package/522-module graph with none of the exact officially affected imports. Whole-module raw findings remain unchanged; this is package applicability of this exact new main, not an assertion that archived lock versions are globally safe.",
       "source_sha256": "120976b75ce3f338b41c0c25f83cc2e5e0b5bff889210c8eec9d6677c526687d",
@@ -54,8 +54,9 @@
         "Final combined-image runtime/native scanner subject",
         "Two real independent complete-subject technical reviews"
       ],
-      "historical_alert": null,
-      "runtime_profile": "main"
+      "historical_alert": 153,
+      "runtime_profile": "main",
+      "dismissed_comment": "Not affected: exact main ELF eff6b2a8, complete4200-package graph omits affected Tempo frontend/S3 packages. Evidence: https://github.com/W205614/DeepResearch/blob/aff45202fbcaeaf911f2f23f32d449efa8c4587c/deployment/security/grafana-source-20261110-profile.json"
     },
     {
       "id": "CVE-2026-28377",
@@ -63,7 +64,7 @@
       "package": "github.com/grafana/tempo",
       "version": "v1.5.1-0.20260427112133-525d1bab07e0",
       "severity": "HIGH",
-      "status": "technical_facts_reverified_against_source_a2_full_subject_review_pending",
+      "status": "verified_dismissed_false_positive_on_default_branch",
       "disposition": "NOT_AFFECTED",
       "technical_basis": "This is the actual new-main go.mod copied from the successful build. Its original SHA and complete package inventory exactly match the selected 20261110 main input; the actual new main ELF/full 4200-package graph is independently rechecked below. The actual new main ELF eff6b2a8... has a complete 4200-package/522-module graph with none of the exact officially affected imports. Whole-module raw findings remain unchanged; this is package applicability of this exact new main, not an assertion that archived lock versions are globally safe.",
       "source_sha256": "120976b75ce3f338b41c0c25f83cc2e5e0b5bff889210c8eec9d6677c526687d",
@@ -103,8 +104,9 @@
         "Final combined-image runtime/native scanner subject",
         "Two real independent complete-subject technical reviews"
       ],
-      "historical_alert": null,
-      "runtime_profile": "main"
+      "historical_alert": 154,
+      "runtime_profile": "main",
+      "dismissed_comment": "Not affected: exact main ELF eff6b2a8, complete4200-package graph omits affected Tempo frontend/S3 packages. Evidence: https://github.com/W205614/DeepResearch/blob/aff45202fbcaeaf911f2f23f32d449efa8c4587c/deployment/security/grafana-source-20261110-profile.json"
     },
     {
       "id": "GO-2026-5932",
@@ -112,7 +114,7 @@
       "package": "golang.org/x/crypto",
       "version": "v0.58.0",
       "severity": "UNKNOWN",
-      "status": "technical_facts_reverified_against_source_a2_full_subject_review_pending",
+      "status": "verified_dismissed_false_positive_on_default_branch",
       "disposition": "NOT_AFFECTED",
       "technical_basis": "This is the actual new-main go.mod copied from the successful build. Its original SHA and complete package inventory exactly match the selected 20261110 main input; the actual new main ELF/full 4200-package graph is independently rechecked below. The actual new main ELF eff6b2a8... has a complete 4200-package/522-module graph with none of the exact officially affected imports. Whole-module raw findings remain unchanged; this is package applicability of this exact new main, not an assertion that archived lock versions are globally safe.",
       "source_sha256": "120976b75ce3f338b41c0c25f83cc2e5e0b5bff889210c8eec9d6677c526687d",
@@ -157,8 +159,9 @@
         "Final combined-image runtime/native scanner subject",
         "Two real independent complete-subject technical reviews"
       ],
-      "historical_alert": null,
-      "runtime_profile": "main"
+      "historical_alert": 155,
+      "runtime_profile": "main",
+      "dismissed_comment": "Not affected: exact main ELF eff6b2a8, complete4200-package graph omits affected OpenPGP packages. Evidence: https://github.com/W205614/DeepResearch/blob/aff45202fbcaeaf911f2f23f32d449efa8c4587c/deployment/security/grafana-source-20261110-profile.json"
     },
     {
       "id": "CVE-2026-21728",
@@ -166,7 +169,7 @@
       "package": "github.com/grafana/tempo",
       "version": "v1.5.1-0.20260427112133-525d1bab07e0",
       "severity": "HIGH",
-      "status": "technical_facts_reverified_against_source_a2_full_subject_review_pending",
+      "status": "verified_dismissed_false_positive_on_default_branch",
       "disposition": "NOT_AFFECTED",
       "technical_basis": "The actual new main ELF eff6b2a8... has a complete 4200-package/522-module graph with none of the exact officially affected imports. Whole-module raw findings remain unchanged; this is package applicability of this exact new main, not an assertion that archived lock versions are globally safe.",
       "source_sha256": "120976b75ce3f338b41c0c25f83cc2e5e0b5bff889210c8eec9d6677c526687d",
@@ -206,8 +209,9 @@
         "Final combined-image runtime/native scanner subject",
         "Two real independent complete-subject technical reviews"
       ],
-      "historical_alert": null,
-      "runtime_profile": "main"
+      "historical_alert": 156,
+      "runtime_profile": "main",
+      "dismissed_comment": "Not affected: exact main ELF eff6b2a8, complete4200-package graph omits affected Tempo frontend/S3 packages. Evidence: https://github.com/W205614/DeepResearch/blob/aff45202fbcaeaf911f2f23f32d449efa8c4587c/deployment/security/grafana-source-20261110-profile.json"
     },
     {
       "id": "CVE-2026-28377",
@@ -215,7 +219,7 @@
       "package": "github.com/grafana/tempo",
       "version": "v1.5.1-0.20260427112133-525d1bab07e0",
       "severity": "HIGH",
-      "status": "technical_facts_reverified_against_source_a2_full_subject_review_pending",
+      "status": "verified_dismissed_false_positive_on_default_branch",
       "disposition": "NOT_AFFECTED",
       "technical_basis": "The actual new main ELF eff6b2a8... has a complete 4200-package/522-module graph with none of the exact officially affected imports. Whole-module raw findings remain unchanged; this is package applicability of this exact new main, not an assertion that archived lock versions are globally safe.",
       "source_sha256": "120976b75ce3f338b41c0c25f83cc2e5e0b5bff889210c8eec9d6677c526687d",
@@ -255,8 +259,9 @@
         "Final combined-image runtime/native scanner subject",
         "Two real independent complete-subject technical reviews"
       ],
-      "historical_alert": null,
-      "runtime_profile": "main"
+      "historical_alert": 157,
+      "runtime_profile": "main",
+      "dismissed_comment": "Not affected: exact main ELF eff6b2a8, complete4200-package graph omits affected Tempo frontend/S3 packages. Evidence: https://github.com/W205614/DeepResearch/blob/aff45202fbcaeaf911f2f23f32d449efa8c4587c/deployment/security/grafana-source-20261110-profile.json"
     },
     {
       "id": "GO-2026-5932",
@@ -264,7 +269,7 @@
       "package": "golang.org/x/crypto",
       "version": "v0.58.0",
       "severity": "UNKNOWN",
-      "status": "technical_facts_reverified_against_source_a2_full_subject_review_pending",
+      "status": "verified_dismissed_false_positive_on_default_branch",
       "disposition": "NOT_AFFECTED",
       "technical_basis": "The actual new main ELF eff6b2a8... has a complete 4200-package/522-module graph with none of the exact officially affected imports. Whole-module raw findings remain unchanged; this is package applicability of this exact new main, not an assertion that archived lock versions are globally safe.",
       "source_sha256": "120976b75ce3f338b41c0c25f83cc2e5e0b5bff889210c8eec9d6677c526687d",
@@ -309,10 +314,30 @@
         "Final combined-image runtime/native scanner subject",
         "Two real independent complete-subject technical reviews"
       ],
-      "historical_alert": null,
-      "runtime_profile": "main"
+      "historical_alert": 158,
+      "runtime_profile": "main",
+      "dismissed_comment": "Not affected: exact main ELF eff6b2a8, complete4200-package graph omits affected OpenPGP packages. Evidence: https://github.com/W205614/DeepResearch/blob/aff45202fbcaeaf911f2f23f32d449efa8c4587c/deployment/security/grafana-source-20261110-profile.json"
     }
   ],
-  "remote_alert_ids": [],
-  "remote_dispositions_executed": false
+  "remote_alert_ids": [
+    153,
+    154,
+    155,
+    156,
+    157,
+    158
+  ],
+  "remote_dispositions_executed": true,
+  "dispositions_executed": true,
+  "verified_source_commit": "aff45202fbcaeaf911f2f23f32d449efa8c4587c",
+  "final_source_artifact": {
+    "run_id": 42816540843,
+    "artifact_id": 13764431817,
+    "sha256": "a06eaea96e65e42698d770690e5d3f82950d9ef8779fff75d55a65268da70fec",
+    "raw_sha256": "062423eb9777069a44a426bde46bf8c3fe9c31995b7825cb77ccbede1bbe5662",
+    "raw_findings": 71,
+    "unresolved_applicable": 0
+  },
+  "closure_verified_at_utc": "2026-11-10T13:15:51.946980+00:00",
+  "evidence_of_remote_closure_sha256": "cf5cac947630b8c03aaa5d5453fa1082238c25ba3014b5514ece01824212cd1e"
 }
