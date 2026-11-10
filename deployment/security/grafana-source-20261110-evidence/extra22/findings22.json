@@ -1,0 +1,2081 @@
+{
+  "schema": "grafana-extra22-technical-facts-v1",
+  "status": "facts_only_not_final_subject_approval",
+  "collected_at_utc": "2026-11-10T11:27:09.738302+00:00",
+  "raw_scan": {
+    "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+    "raw_total": 40,
+    "reviewed_here": 22,
+    "secret_count": 0,
+    "report_kind": "original complete runtime Trivy JSON; identity retained by sha256"
+  },
+  "actual_artifact": {
+    "image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+    "config_digest": "sha256:f49f4048e182532b48e4087e1e07b81b6e85f29f74438853fcd5b64a41626d3c",
+    "native_main_sha256": {
+      "usr/share/grafana/bin/grafana": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64": "599f81b6cb18227c719074099c3f5f3dd0928d8a5b3d2a55ac8a02a0210fa10c",
+      "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64": "c7798b1bbea42ddad8a7259fd1c3c5846cdd8d89f7f1f8034858871e392de9e3",
+      "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64": "73db79edd48a44159ee66583ae4a646a0e52aaf0cbfa252aece9753273961aa1",
+      "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64": "019b92b07c3bd36176e28e2ee1693d69b423a129b6e6a9945e98adffa53c3ee1",
+      "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64": "3343e2ff45c76058067bb945baf7c0fc341edf0b647b59d3c8e2a95211df73a4",
+      "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64": "d290d4840deb7e1edffaee453271ca87d02094f3f8ab0f3e27680605f1f5fd5a",
+      "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64": "50ba9d95a58a20a52a9131a44d04313c955a20ccc199b02e29f474b70af6fd3a",
+      "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64": "e4abc533b0ed7cddea5d1753a2556971dd50e5d3c7b1d8cac1ace9d4ae018a8c",
+      "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64": "4bd3b2b5d547a73c02a231eb5fa1231f167b1c1a7e46a61687916440c6c0771a",
+      "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64": "c4ab7df53197950cd6bcb36235d72c7b5c268f00ecda2ee13b6962d34181394c",
+      "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64": "5c3f2027bcb5d6b03e219230a9a90bf8e1511d46e7a1536b1efb991839da4157",
+      "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": "58a9b276af17f22a5c9729ff1da2bd248f9e69add6e25e8a495df00065837c1d",
+      "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": "1ef41b794a8c882213ab5826d82bbe9a1d5d05b3a9068e86065e12190aef9865"
+    },
+    "runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+    "actual_busybox_entry": {
+      "bytes": 825088,
+      "gid": 0,
+      "mode": 493,
+      "path": "bin/busybox",
+      "sha256": "68dba7ae251db2ecca77e6ef405bf781111dc41f87c93c30205745fdbe2c697e",
+      "type": "file",
+      "uid": 0
+    },
+    "runtime_probe_path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+    "runtime_probe_sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+    "public_runtime_probe_sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b"
+  },
+  "product_identity": {
+    "official_tag": "v13.2.5",
+    "annotated_tag_object": "a5fa9723bfcd33e5c344053c348fd223157483f0",
+    "official_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+    "official_ref_snapshot_sha256": "9c2e38b69045591641fca11044624e5d3a1f3496b9e71aba64b04c46dbc1d66b",
+    "official_tag_snapshot_sha256": "fb2ca1ada07edaa183546f4d9d4b1cf2495e4a77f3780a439e8fcb51bee193b0",
+    "package_json": {
+      "path": "package.json",
+      "status": "captured",
+      "sha256": "4c1da4b1992361d8a5a785f3efd71d523c5d460f4109c228dc4c2cbfdab418bd",
+      "bytes": 21399,
+      "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/package.json"
+    },
+    "not_version_label_alone": true,
+    "retained_frontend_official_base": "grafana/grafana:13.2.5@sha256:ffeeebf613b00fede764821c5e5b1545fb376aba561ae91c488e91f219adb25a",
+    "upstream_source_modifications": "Exact fixed dependency locks and reproducible build compatibility patches; application API/frontend source remains the tagged source. No arbitrary ancestry assumed from shallow clone."
+  },
+  "findings": [
+    {
+      "scanner": "Trivy",
+      "target": "usr/share/grafana/bin/grafana",
+      "finding": {
+        "VulnerabilityID": "CVE-2018-1000816",
+        "PkgID": "github.com/grafana/grafana@v0.0.0-20261027113329-ce471d869a48+dirty",
+        "PkgName": "github.com/grafana/grafana",
+        "InstalledVersion": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "FixedVersion": "5.3.2",
+        "Severity": "MEDIUM",
+        "SeveritySource": "ghsa",
+        "Status": "fixed"
+      },
+      "technical_disposition": "FIXED",
+      "basis": "The reported Angular metric_segment/sql_part $sce.trustAsHtml injection is removed in this tagged source; official PR13670 escapes the values. The actual frontend is retained from the official 13.2.5 runtime; this does not assert arbitrary frontend XSS absence.",
+      "official_cna": {
+        "snapshot": "cna/CVE-2018-1000816.json",
+        "sha256": "48ebac08bd079d646b44daf4a343e2fa2d3d3aa30b03cf20e7a3c85c8cacb699",
+        "assigner": "mitre",
+        "affected": [
+          {
+            "product": "n/a",
+            "vendor": "n/a",
+            "versions": [
+              {
+                "status": "affected",
+                "version": "n/a"
+              }
+            ]
+          }
+        ],
+        "references": [
+          {
+            "tags": [
+              "x_refsource_MISC"
+            ],
+            "url": "https://github.com/grafana/grafana/issues/13667"
+          }
+        ]
+      },
+      "actual_source": [
+        {
+          "path": "packages/grafana-data/src/text/sanitize.ts",
+          "status": "captured",
+          "sha256": "2df5be742f7e2231806c1cd08cfc3c26a571ddeb7daa46ec14a80e0f145dbc50",
+          "bytes": 6315,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/packages/grafana-data/src/text/sanitize.ts"
+        }
+      ],
+      "removed_implementation": [
+        {
+          "path": "public/app/core/directives/metric_segment.ts",
+          "absent_at_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+          "tree_listing_sha256": "a7acabaab7c5eaba48386a536fa0fb45c49f681e8589611075544151282daf10"
+        },
+        {
+          "path": "public/app/core/components/sql_part/sql_part_editor.ts",
+          "absent_at_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+          "tree_listing_sha256": "a7acabaab7c5eaba48386a536fa0fb45c49f681e8589611075544151282daf10"
+        }
+      ],
+      "official_fix_patches": [
+        {
+          "path": "PR13670.patch",
+          "sha256": "d52942ed2d009b8cf0b5048601fc5f3edec3715b3d2bb42277806b7c845bc5a8"
+        }
+      ],
+      "risk_acceptance": false,
+      "regression_exploit_rerun": false
+    },
+    {
+      "scanner": "Trivy",
+      "target": "usr/share/grafana/bin/grafana",
+      "finding": {
+        "VulnerabilityID": "CVE-2018-12099",
+        "PkgID": "github.com/grafana/grafana@v0.0.0-20261027113329-ce471d869a48+dirty",
+        "PkgName": "github.com/grafana/grafana",
+        "InstalledVersion": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "FixedVersion": "5.2.0-beta1",
+        "Severity": "MEDIUM",
+        "SeveritySource": "ghsa",
+        "Status": "fixed"
+      },
+      "technical_disposition": "FIXED",
+      "basis": "Historical dashboard/panel link injection implementation was replaced; actual link service sanitizes href through textUtil.sanitizeUrl. An explicitly configured disableSanitizeHtml opt-out is not asserted safe.",
+      "official_cna": {
+        "snapshot": "cna/CVE-2018-12099.json",
+        "sha256": "b05309be3921f11ccd3e7dd11c60e6cd40d15d7658b57e522213f39824c98010",
+        "assigner": "mitre",
+        "affected": [
+          {
+            "product": "n/a",
+            "vendor": "n/a",
+            "versions": [
+              {
+                "status": "affected",
+                "version": "n/a"
+              }
+            ]
+          }
+        ],
+        "references": [
+          {
+            "tags": [
+              "x_refsource_CONFIRM"
+            ],
+            "url": "https://github.com/grafana/grafana/pull/11813"
+          },
+          {
+            "tags": [
+              "x_refsource_CONFIRM"
+            ],
+            "url": "https://github.com/grafana/grafana/releases/tag/v5.2.0-beta1"
+          },
+          {
+            "tags": [
+              "x_refsource_CONFIRM"
+            ],
+            "url": "https://security.netapp.com/advisory/ntap-20190416-0004/"
+          }
+        ]
+      },
+      "actual_source": [
+        {
+          "path": "public/app/features/panel/panellinks/link_srv.ts",
+          "status": "captured",
+          "sha256": "c4203063dea02712dca6dee4d2e6230a2415097b07e7e7c551210486b6879799",
+          "bytes": 10570,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/public/app/features/panel/panellinks/link_srv.ts"
+        },
+        {
+          "path": "packages/grafana-data/src/text/sanitize.ts",
+          "status": "captured",
+          "sha256": "2df5be742f7e2231806c1cd08cfc3c26a571ddeb7daa46ec14a80e0f145dbc50",
+          "bytes": 6315,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/packages/grafana-data/src/text/sanitize.ts"
+        }
+      ],
+      "removed_implementation": [
+        {
+          "path": "public/app/features/dashlinks/module.ts",
+          "absent_at_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+          "tree_listing_sha256": "a7acabaab7c5eaba48386a536fa0fb45c49f681e8589611075544151282daf10"
+        }
+      ],
+      "official_fix_patches": [
+        {
+          "path": "fix-patches/PR11813.patch",
+          "sha256": "a4bad876bd02d6ee935f13dc3e8fb653409493fe6029ae7e54969b294e69a4b2"
+        }
+      ],
+      "risk_acceptance": false,
+      "regression_exploit_rerun": false
+    },
+    {
+      "scanner": "Trivy",
+      "target": "usr/share/grafana/bin/grafana",
+      "finding": {
+        "VulnerabilityID": "CVE-2018-18623",
+        "PkgID": "github.com/grafana/grafana@v0.0.0-20261027113329-ce471d869a48+dirty",
+        "PkgName": "github.com/grafana/grafana",
+        "InstalledVersion": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "FixedVersion": "6.0.0-beta1",
+        "Severity": "MEDIUM",
+        "SeveritySource": "ghsa",
+        "Status": "fixed"
+      },
+      "technical_disposition": "FIXED",
+      "basis": "Text panel HTML is sanitized through sanitizeTextPanelContent in the modern React TextPanel unless the administrator explicitly enables disableSanitizeHtml; scope is the reported historical default-sanitization defect.",
+      "official_cna": {
+        "snapshot": "cna/CVE-2018-18623.json",
+        "sha256": "54dc890e01d4ffc09340b3f8960c98554e59a0f96a0eaa6dc24ed541c40ef370",
+        "assigner": "mitre",
+        "affected": [
+          {
+            "product": "n/a",
+            "vendor": "n/a",
+            "versions": [
+              {
+                "status": "affected",
+                "version": "n/a"
+              }
+            ]
+          }
+        ],
+        "references": [
+          {
+            "tags": [
+              "x_refsource_MISC"
+            ],
+            "url": "https://github.com/grafana/grafana/pull/11813"
+          },
+          {
+            "tags": [
+              "x_refsource_CONFIRM"
+            ],
+            "url": "https://security.netapp.com/advisory/ntap-20200608-0008/"
+          },
+          {
+            "tags": [
+              "x_refsource_MISC"
+            ],
+            "url": "https://github.com/grafana/grafana/issues/15293"
+          },
+          {
+            "tags": [
+              "x_refsource_MISC"
+            ],
+            "url": "https://github.com/grafana/grafana/releases/tag/v6.0.0"
+          }
+        ]
+      },
+      "actual_source": [
+        {
+          "path": "public/app/plugins/panel/text/v1/TextPanel.tsx",
+          "status": "captured",
+          "sha256": "f74b1492925e7556d1f5f4df1aa06a9a4ab9888ffc5f4fc537e7b35ffab233dd",
+          "bytes": 3303,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/public/app/plugins/panel/text/v1/TextPanel.tsx"
+        },
+        {
+          "path": "packages/grafana-data/src/text/sanitize.ts",
+          "status": "captured",
+          "sha256": "2df5be742f7e2231806c1cd08cfc3c26a571ddeb7daa46ec14a80e0f145dbc50",
+          "bytes": 6315,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/packages/grafana-data/src/text/sanitize.ts"
+        }
+      ],
+      "removed_implementation": [],
+      "official_fix_patches": [],
+      "risk_acceptance": false,
+      "regression_exploit_rerun": false
+    },
+    {
+      "scanner": "Trivy",
+      "target": "usr/share/grafana/bin/grafana",
+      "finding": {
+        "VulnerabilityID": "CVE-2018-18624",
+        "PkgID": "github.com/grafana/grafana@v0.0.0-20261027113329-ce471d869a48+dirty",
+        "PkgName": "github.com/grafana/grafana",
+        "InstalledVersion": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "FixedVersion": "7.0.0",
+        "Severity": "MEDIUM",
+        "SeveritySource": "ghsa",
+        "Status": "fixed"
+      },
+      "technical_disposition": "FIXED",
+      "basis": "Affected legacy Angular table column-style renderer is absent; current official product source and retained frontend are 13.2.5. This is component-specific, not a blanket claim about all table panels.",
+      "official_cna": {
+        "snapshot": "cna/CVE-2018-18624.json",
+        "sha256": "3f684f4ceec61a0bce05d4aa0459b4ceadf4f6c323d82a44231c7f7ca87f9117",
+        "assigner": "mitre",
+        "affected": [
+          {
+            "product": "n/a",
+            "vendor": "n/a",
+            "versions": [
+              {
+                "status": "affected",
+                "version": "n/a"
+              }
+            ]
+          }
+        ],
+        "references": [
+          {
+            "tags": [
+              "x_refsource_MISC"
+            ],
+            "url": "https://github.com/grafana/grafana/pull/11813"
+          },
+          {
+            "tags": [
+              "x_refsource_CONFIRM"
+            ],
+            "url": "https://security.netapp.com/advisory/ntap-20200608-0008/"
+          }
+        ]
+      },
+      "actual_source": [
+        {
+          "path": "packages/grafana-data/src/text/sanitize.ts",
+          "status": "captured",
+          "sha256": "2df5be742f7e2231806c1cd08cfc3c26a571ddeb7daa46ec14a80e0f145dbc50",
+          "bytes": 6315,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/packages/grafana-data/src/text/sanitize.ts"
+        }
+      ],
+      "removed_implementation": [
+        {
+          "path": "public/app/plugins/panel/table-old/renderer.ts",
+          "absent_at_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+          "tree_listing_sha256": "a7acabaab7c5eaba48386a536fa0fb45c49f681e8589611075544151282daf10"
+        }
+      ],
+      "official_fix_patches": [],
+      "risk_acceptance": false,
+      "regression_exploit_rerun": false
+    },
+    {
+      "scanner": "Trivy",
+      "target": "usr/share/grafana/bin/grafana",
+      "finding": {
+        "VulnerabilityID": "CVE-2018-18625",
+        "PkgID": "github.com/grafana/grafana@v0.0.0-20261027113329-ce471d869a48+dirty",
+        "PkgName": "github.com/grafana/grafana",
+        "InstalledVersion": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "FixedVersion": "6.0.0-beta1",
+        "Severity": "MEDIUM",
+        "SeveritySource": "ghsa",
+        "Status": "fixed"
+      },
+      "technical_disposition": "FIXED",
+      "basis": "Affected historical General panel links are replaced by the current link service, which sanitizes href through textUtil.sanitizeUrl; administrator opt-out is outside this conclusion.",
+      "official_cna": {
+        "snapshot": "cna/CVE-2018-18625.json",
+        "sha256": "a94bc994cd6faafb71d4871e0dd69f09b204758ac83ac12aeae180767b601cb7",
+        "assigner": "mitre",
+        "affected": [
+          {
+            "product": "n/a",
+            "vendor": "n/a",
+            "versions": [
+              {
+                "status": "affected",
+                "version": "n/a"
+              }
+            ]
+          }
+        ],
+        "references": [
+          {
+            "tags": [
+              "x_refsource_MISC"
+            ],
+            "url": "https://github.com/grafana/grafana/pull/11813"
+          },
+          {
+            "tags": [
+              "x_refsource_CONFIRM"
+            ],
+            "url": "https://security.netapp.com/advisory/ntap-20200608-0008/"
+          }
+        ]
+      },
+      "actual_source": [
+        {
+          "path": "public/app/features/panel/panellinks/link_srv.ts",
+          "status": "captured",
+          "sha256": "c4203063dea02712dca6dee4d2e6230a2415097b07e7e7c551210486b6879799",
+          "bytes": 10570,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/public/app/features/panel/panellinks/link_srv.ts"
+        },
+        {
+          "path": "packages/grafana-data/src/text/sanitize.ts",
+          "status": "captured",
+          "sha256": "2df5be742f7e2231806c1cd08cfc3c26a571ddeb7daa46ec14a80e0f145dbc50",
+          "bytes": 6315,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/packages/grafana-data/src/text/sanitize.ts"
+        }
+      ],
+      "removed_implementation": [
+        {
+          "path": "public/app/features/panel/panel_ctrl.ts",
+          "absent_at_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+          "tree_listing_sha256": "a7acabaab7c5eaba48386a536fa0fb45c49f681e8589611075544151282daf10"
+        }
+      ],
+      "official_fix_patches": [
+        {
+          "path": "fix-patches/PR11813.patch",
+          "sha256": "a4bad876bd02d6ee935f13dc3e8fb653409493fe6029ae7e54969b294e69a4b2"
+        }
+      ],
+      "risk_acceptance": false,
+      "regression_exploit_rerun": false
+    },
+    {
+      "scanner": "Trivy",
+      "target": "usr/share/grafana/bin/grafana",
+      "finding": {
+        "VulnerabilityID": "CVE-2019-13068",
+        "PkgID": "github.com/grafana/grafana@v0.0.0-20261027113329-ce471d869a48+dirty",
+        "PkgName": "github.com/grafana/grafana",
+        "InstalledVersion": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "FixedVersion": "6.2.5",
+        "Severity": "MEDIUM",
+        "SeveritySource": "ghsa",
+        "Status": "fixed"
+      },
+      "technical_disposition": "FIXED",
+      "basis": "CNA explicitly identifies panel_ctrl.ts before6.2.5; that implementation is absent. The current link service sanitizes URLs; title handling is the current typed frontend, not the old injected HTML.",
+      "official_cna": {
+        "snapshot": "cna/CVE-2019-13068.json",
+        "sha256": "8409316fcdf7643fd6b9c9a8da729dd3fc6bbb03aaefb88ef9f8af63070c05c5",
+        "assigner": "mitre",
+        "affected": [
+          {
+            "vendor": "n/a",
+            "product": "n/a",
+            "versions": [
+              {
+                "version": "n/a",
+                "status": "affected"
+              }
+            ]
+          }
+        ],
+        "references": [
+          {
+            "url": "https://github.com/grafana/grafana/issues/17718"
+          },
+          {
+            "url": "https://github.com/grafana/grafana/releases/tag/v6.2.5"
+          },
+          {
+            "url": "https://security.netapp.com/advisory/ntap-20190710-0001/"
+          },
+          {
+            "url": "http://packetstormsecurity.com/files/171500/Grafana-6.2.4-HTML-Injection.html"
+          }
+        ]
+      },
+      "actual_source": [
+        {
+          "path": "public/app/features/panel/panellinks/link_srv.ts",
+          "status": "captured",
+          "sha256": "c4203063dea02712dca6dee4d2e6230a2415097b07e7e7c551210486b6879799",
+          "bytes": 10570,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/public/app/features/panel/panellinks/link_srv.ts"
+        },
+        {
+          "path": "packages/grafana-data/src/text/sanitize.ts",
+          "status": "captured",
+          "sha256": "2df5be742f7e2231806c1cd08cfc3c26a571ddeb7daa46ec14a80e0f145dbc50",
+          "bytes": 6315,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/packages/grafana-data/src/text/sanitize.ts"
+        }
+      ],
+      "removed_implementation": [
+        {
+          "path": "public/app/features/panel/panel_ctrl.ts",
+          "absent_at_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+          "tree_listing_sha256": "a7acabaab7c5eaba48386a536fa0fb45c49f681e8589611075544151282daf10"
+        }
+      ],
+      "official_fix_patches": [],
+      "risk_acceptance": false,
+      "regression_exploit_rerun": false
+    },
+    {
+      "scanner": "Trivy",
+      "target": "usr/share/grafana/bin/grafana",
+      "finding": {
+        "VulnerabilityID": "CVE-2019-19499",
+        "PkgID": "github.com/grafana/grafana@v0.0.0-20261027113329-ce471d869a48+dirty",
+        "PkgName": "github.com/grafana/grafana",
+        "InstalledVersion": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "FixedVersion": "6.4.4",
+        "Severity": "MEDIUM",
+        "SeveritySource": "ghsa",
+        "Status": "fixed"
+      },
+      "technical_disposition": "FIXED",
+      "basis": "Actual retained MySQL plugin constructs its DSN from separate values and percent-escapes the username colon, address closing parenthesis and database question mark; it never enables allowAllFiles. Those are the DSN delimiters required by the reported datasource-config injection. Actual plugin source ZIP dirhash matches the locked native module identity.",
+      "official_cna": {
+        "snapshot": "cna/CVE-2019-19499.json",
+        "sha256": "daa6afac607c553dc1c0a09abf5f932c99969b7447b229d386677899dc881ad5",
+        "assigner": "mitre",
+        "affected": [
+          {
+            "product": "n/a",
+            "vendor": "n/a",
+            "versions": [
+              {
+                "status": "affected",
+                "version": "n/a"
+              }
+            ]
+          }
+        ],
+        "references": [
+          {
+            "tags": [
+              "x_refsource_MISC"
+            ],
+            "url": "https://swarm.ptsecurity.com/grafana-6-4-3-arbitrary-file-read/"
+          },
+          {
+            "tags": [
+              "x_refsource_CONFIRM"
+            ],
+            "url": "https://security.netapp.com/advisory/ntap-20200918-0003/"
+          }
+        ]
+      },
+      "actual_source": [],
+      "removed_implementation": [],
+      "official_fix_patches": [],
+      "risk_acceptance": false,
+      "regression_exploit_rerun": false,
+      "actual_retained_plugins": [
+        {
+          "plugin": "mysql",
+          "module": "github.com/grafana/grafana-mysql-datasource",
+          "version": "v0.0.0-20261008182016-453ec30a1245",
+          "commit": "453ec30a1245e539974d869a62f1c09bb5b9dfa9",
+          "official_source_sum": "h1:fmAr3Wp/SFDjI1/ZdzSJhnu5O2JhplvlcDQeGgWQwC8=",
+          "measured_go_dirhash_sum": "h1:fmAr3Wp/SFDjI1/ZdzSJhnu5O2JhplvlcDQeGgWQwC8=",
+          "module_zip_sha256": "dcbee21364caf4b5f8be3c0df9f8b84783736d8ab7159892f3ef5eb859f6606b",
+          "members": [
+            {
+              "path": "pkg/mysql/mysql.go",
+              "sha256": "9d1ae3795dd0a2160ab5d6241e78a51b02cf10c22fa9badbab99c66abd1785c6",
+              "bytes": 13085
+            }
+          ],
+          "go_files": [
+            "Magefile.go",
+            "pkg/main.go",
+            "pkg/mysql/instance_error.go",
+            "pkg/mysql/macros.go",
+            "pkg/mysql/macros_test.go",
+            "pkg/mysql/mysql.go",
+            "pkg/mysql/mysql_snapshot_test.go",
+            "pkg/mysql/mysql_test.go",
+            "pkg/mysql/proxy.go",
+            "pkg/mysql/proxy_test.go",
+            "pkg/mysql/sqleng/connection_error.go",
+            "pkg/mysql/sqleng/connection_error_test.go",
+            "pkg/mysql/sqleng/handler_checkhealth.go",
+            "pkg/mysql/sqleng/handler_checkhealth_test.go",
+            "pkg/mysql/sqleng/sql_engine.go",
+            "pkg/mysql/sqleng/sql_engine_test.go",
+            "pkg/mysql/sqleng/sqlmacro.go",
+            "pkg/mysql/sqleng/sqlmacro_test.go"
+          ]
+        }
+      ]
+    },
+    {
+      "scanner": "Trivy",
+      "target": "usr/share/grafana/bin/grafana",
+      "finding": {
+        "VulnerabilityID": "CVE-2020-11110",
+        "PkgID": "github.com/grafana/grafana@v0.0.0-20261027113329-ce471d869a48+dirty",
+        "PkgName": "github.com/grafana/grafana",
+        "InstalledVersion": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "FixedVersion": "6.7.2",
+        "Severity": "MEDIUM",
+        "SeveritySource": "ghsa",
+        "Status": "fixed"
+      },
+      "technical_disposition": "FIXED",
+      "basis": "Current local snapshot creation overwrites originalUrl with a generated /d/<validatedShortUID> path; the attacker-supplied originalUrl does not survive. Both service and API-group paths call the shared constructor.",
+      "official_cna": {
+        "snapshot": "cna/CVE-2020-11110.json",
+        "sha256": "dde17b55019f813526aae42cea82dc77d2bd37d0d31878fb53cd93a340df1140",
+        "assigner": "mitre",
+        "affected": [
+          {
+            "product": "n/a",
+            "vendor": "n/a",
+            "versions": [
+              {
+                "status": "affected",
+                "version": "n/a"
+              }
+            ]
+          }
+        ],
+        "references": [
+          {
+            "tags": [
+              "x_refsource_MISC"
+            ],
+            "url": "https://github.com/grafana/grafana/blob/master/CHANGELOG.md"
+          },
+          {
+            "tags": [
+              "x_refsource_CONFIRM"
+            ],
+            "url": "https://security.netapp.com/advisory/ntap-20200810-0002/"
+          }
+        ]
+      },
+      "actual_source": [
+        {
+          "path": "pkg/services/dashboardsnapshots/helper.go",
+          "status": "captured",
+          "sha256": "0f312a05928ab2b808284a428d05b9f416b6589333d084cf8a628ee69b08432e",
+          "bytes": 1081,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/pkg/services/dashboardsnapshots/helper.go"
+        },
+        {
+          "path": "pkg/services/dashboardsnapshots/service.go",
+          "status": "captured",
+          "sha256": "b7112421f3ab1b2423bd481d5e1f2d8f922287a0e3ab1b5696115f3e91ccc201",
+          "bytes": 9739,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/pkg/services/dashboardsnapshots/service.go"
+        },
+        {
+          "path": "pkg/registry/apis/dashboard/snapshot/routes.go",
+          "status": "captured",
+          "sha256": "c2da618c419c7045e2802ad0305a04c54ef9182834d9aa16b36b3d0017217edf",
+          "bytes": 23505,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/pkg/registry/apis/dashboard/snapshot/routes.go"
+        }
+      ],
+      "removed_implementation": [],
+      "official_fix_patches": [
+        {
+          "path": "fix-patches/239888f22983010576bb3a9135a7294e88c0c74a.patch",
+          "sha256": "2d5c91b92236a5b59687b364f0defef0a4fbdf8642200f45c6cbfea89fb8ed37"
+        }
+      ],
+      "risk_acceptance": false,
+      "regression_exploit_rerun": false
+    },
+    {
+      "scanner": "Trivy",
+      "target": "usr/share/grafana/bin/grafana",
+      "finding": {
+        "VulnerabilityID": "CVE-2020-12245",
+        "PkgID": "github.com/grafana/grafana@v0.0.0-20261027113329-ce471d869a48+dirty",
+        "PkgName": "github.com/grafana/grafana",
+        "InstalledVersion": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "FixedVersion": "6.7.3",
+        "Severity": "MEDIUM",
+        "SeveritySource": "ghsa",
+        "Status": "fixed"
+      },
+      "technical_disposition": "FIXED",
+      "basis": "The exact vulnerable legacy table-old renderer patched by PR23816 is absent from the actual tagged source; retained official frontend is 13.2.5.",
+      "official_cna": {
+        "snapshot": "cna/CVE-2020-12245.json",
+        "sha256": "6556f9601f571c11290ba794b5ce3c8ff1268c526387f5e95b7611db73031961",
+        "assigner": "mitre",
+        "affected": [
+          {
+            "product": "n/a",
+            "vendor": "n/a",
+            "versions": [
+              {
+                "status": "affected",
+                "version": "n/a"
+              }
+            ]
+          }
+        ],
+        "references": [
+          {
+            "tags": [
+              "x_refsource_MISC"
+            ],
+            "url": "https://github.com/grafana/grafana/blob/master/CHANGELOG.md#673-2020-04-23"
+          },
+          {
+            "tags": [
+              "x_refsource_MISC"
+            ],
+            "url": "https://community.grafana.com/t/release-notes-v6-7-x/27119"
+          },
+          {
+            "tags": [
+              "x_refsource_MISC"
+            ],
+            "url": "https://github.com/grafana/grafana/pull/23816"
+          },
+          {
+            "tags": [
+              "x_refsource_CONFIRM"
+            ],
+            "url": "https://security.netapp.com/advisory/ntap-20200511-0001/"
+          },
+          {
+            "name": "openSUSE-SU-2020:0892",
+            "tags": [
+              "vendor-advisory",
+              "x_refsource_SUSE"
+            ],
+            "url": "http://lists.opensuse.org/opensuse-security-announce/2020-06/msg00060.html"
+          },
+          {
+            "name": "openSUSE-SU-2020:1105",
+            "tags": [
+              "vendor-advisory",
+              "x_refsource_SUSE"
+            ],
+            "url": "http://lists.opensuse.org/opensuse-security-announce/2020-07/msg00083.html"
+          },
+          {
+            "name": "openSUSE-SU-2020:1611",
+            "tags": [
+              "vendor-advisory",
+              "x_refsource_SUSE"
+            ],
+            "url": "http://lists.opensuse.org/opensuse-security-announce/2020-10/msg00009.html"
+          },
+          {
+            "name": "openSUSE-SU-2020:1646",
+            "tags": [
+              "vendor-advisory",
+              "x_refsource_SUSE"
+            ],
+            "url": "http://lists.opensuse.org/opensuse-security-announce/2020-10/msg00017.html"
+          }
+        ]
+      },
+      "actual_source": [
+        {
+          "path": "packages/grafana-data/src/text/sanitize.ts",
+          "status": "captured",
+          "sha256": "2df5be742f7e2231806c1cd08cfc3c26a571ddeb7daa46ec14a80e0f145dbc50",
+          "bytes": 6315,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/packages/grafana-data/src/text/sanitize.ts"
+        }
+      ],
+      "removed_implementation": [
+        {
+          "path": "public/app/plugins/panel/table-old/renderer.ts",
+          "absent_at_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+          "tree_listing_sha256": "a7acabaab7c5eaba48386a536fa0fb45c49f681e8589611075544151282daf10"
+        }
+      ],
+      "official_fix_patches": [
+        {
+          "path": "fix-patches/PR23816.patch",
+          "sha256": "20466ff5f386e32a41b90827ddc0be3b90b54278b4b439087dcc5e6363ebef2e"
+        }
+      ],
+      "risk_acceptance": false,
+      "regression_exploit_rerun": false
+    },
+    {
+      "scanner": "Trivy",
+      "target": "usr/share/grafana/bin/grafana",
+      "finding": {
+        "VulnerabilityID": "CVE-2020-13430",
+        "PkgID": "github.com/grafana/grafana@v0.0.0-20261027113329-ce471d869a48+dirty",
+        "PkgName": "github.com/grafana/grafana",
+        "InstalledVersion": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "FixedVersion": "7.0.0",
+        "Severity": "MEDIUM",
+        "SeveritySource": "ghsa",
+        "Status": "fixed"
+      },
+      "technical_disposition": "FIXED",
+      "basis": "The OpenTSDB Angular query_ctrl/typeahead HTML implementation changed by PR24539 is absent in this tagged source; retained official 13.2.5 frontend uses the newer plugin architecture. Not a claim that all OpenTSDB server responses are safe.",
+      "official_cna": {
+        "snapshot": "cna/CVE-2020-13430.json",
+        "sha256": "abf0072431812a80dd19c246fa94e1dcf140a9e4464c3ed0eec5bd3a636842eb",
+        "assigner": "mitre",
+        "affected": [
+          {
+            "product": "n/a",
+            "vendor": "n/a",
+            "versions": [
+              {
+                "status": "affected",
+                "version": "n/a"
+              }
+            ]
+          }
+        ],
+        "references": [
+          {
+            "tags": [
+              "x_refsource_MISC"
+            ],
+            "url": "https://github.com/grafana/grafana/releases/tag/v7.0.0"
+          },
+          {
+            "tags": [
+              "x_refsource_MISC"
+            ],
+            "url": "https://github.com/grafana/grafana/pull/24539"
+          },
+          {
+            "tags": [
+              "x_refsource_CONFIRM"
+            ],
+            "url": "https://security.netapp.com/advisory/ntap-20200528-0003/"
+          }
+        ]
+      },
+      "actual_source": [
+        {
+          "path": "packages/grafana-data/src/text/sanitize.ts",
+          "status": "captured",
+          "sha256": "2df5be742f7e2231806c1cd08cfc3c26a571ddeb7daa46ec14a80e0f145dbc50",
+          "bytes": 6315,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/packages/grafana-data/src/text/sanitize.ts"
+        }
+      ],
+      "removed_implementation": [
+        {
+          "path": "public/app/plugins/datasource/opentsdb/query_ctrl.ts",
+          "absent_at_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+          "tree_listing_sha256": "a7acabaab7c5eaba48386a536fa0fb45c49f681e8589611075544151282daf10"
+        }
+      ],
+      "official_fix_patches": [
+        {
+          "path": "fix-patches/PR24539.patch",
+          "sha256": "9370dde830dce95ddfaca775effa56cdd377637f56fc424a4b4cb7c6eaf31540"
+        }
+      ],
+      "risk_acceptance": false,
+      "regression_exploit_rerun": false
+    },
+    {
+      "scanner": "Trivy",
+      "target": "usr/share/grafana/bin/grafana",
+      "finding": {
+        "VulnerabilityID": "CVE-2020-24303",
+        "PkgID": "github.com/grafana/grafana@v0.0.0-20261027113329-ce471d869a48+dirty",
+        "PkgName": "github.com/grafana/grafana",
+        "InstalledVersion": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "FixedVersion": "7.1.0-beta1",
+        "Severity": "MEDIUM",
+        "SeveritySource": "ghsa",
+        "Status": "fixed"
+      },
+      "technical_disposition": "FIXED",
+      "basis": "The Elasticsearch/testdata Angular editor templates and Graph series-overrides controller patched by PR25401 are absent from actual tagged source; retained frontend is official13.2.5.",
+      "official_cna": {
+        "snapshot": "cna/CVE-2020-24303.json",
+        "sha256": "f34387e83aeb779f83cc00738248e5969da5081d91076cf862ff4d97d441c341",
+        "assigner": "mitre",
+        "affected": [
+          {
+            "product": "n/a",
+            "vendor": "n/a",
+            "versions": [
+              {
+                "status": "affected",
+                "version": "n/a"
+              }
+            ]
+          }
+        ],
+        "references": [
+          {
+            "tags": [
+              "x_refsource_MISC"
+            ],
+            "url": "https://github.com/grafana/grafana/blob/master/CHANGELOG.md#710-beta-1-2020-07-01"
+          },
+          {
+            "tags": [
+              "x_refsource_MISC"
+            ],
+            "url": "https://github.com/grafana/grafana/pull/25401"
+          },
+          {
+            "tags": [
+              "x_refsource_CONFIRM"
+            ],
+            "url": "https://security.netapp.com/advisory/ntap-20201123-0002/"
+          }
+        ]
+      },
+      "actual_source": [
+        {
+          "path": "packages/grafana-data/src/text/sanitize.ts",
+          "status": "captured",
+          "sha256": "2df5be742f7e2231806c1cd08cfc3c26a571ddeb7daa46ec14a80e0f145dbc50",
+          "bytes": 6315,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/packages/grafana-data/src/text/sanitize.ts"
+        }
+      ],
+      "removed_implementation": [
+        {
+          "path": "public/app/plugins/datasource/elasticsearch/partials/query.editor.html",
+          "absent_at_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+          "tree_listing_sha256": "a7acabaab7c5eaba48386a536fa0fb45c49f681e8589611075544151282daf10"
+        },
+        {
+          "path": "public/app/plugins/datasource/testdata/partials/query.editor.html",
+          "absent_at_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+          "tree_listing_sha256": "a7acabaab7c5eaba48386a536fa0fb45c49f681e8589611075544151282daf10"
+        },
+        {
+          "path": "public/app/plugins/panel/graph/series_overrides_ctrl.ts",
+          "absent_at_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+          "tree_listing_sha256": "a7acabaab7c5eaba48386a536fa0fb45c49f681e8589611075544151282daf10"
+        }
+      ],
+      "official_fix_patches": [
+        {
+          "path": "fix-patches/PR25401.patch",
+          "sha256": "250b245567b4598e613417d1cf4631b8befd7496cf5af64d1eb257900f8a33cb"
+        }
+      ],
+      "risk_acceptance": false,
+      "regression_exploit_rerun": false
+    },
+    {
+      "scanner": "Trivy",
+      "target": "usr/share/grafana/bin/grafana",
+      "finding": {
+        "VulnerabilityID": "CVE-2022-39229",
+        "PkgID": "github.com/grafana/grafana@v0.0.0-20261027113329-ce471d869a48+dirty",
+        "PkgName": "github.com/grafana/grafana",
+        "InstalledVersion": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "FixedVersion": "8.5.14, 9.1.8",
+        "Severity": "MEDIUM",
+        "SeveritySource": "ghsa",
+        "Status": "fixed"
+      },
+      "technical_disposition": "FIXED",
+      "basis": "GetByLogin explicitly queries email first when @ occurs, and queries login only if no email user was found. That prevents an attacker username shadowing the victim email, exactly the official regression contract; no claim that LoginConflict itself cross-checks email against username.",
+      "official_cna": {
+        "snapshot": "cna/CVE-2022-39229.json",
+        "sha256": "09732a3766809790e4bd25c26fc976b8cc6c89a1cb1e617d903408b48c5ecdee",
+        "assigner": "GitHub_M",
+        "affected": [
+          {
+            "vendor": "grafana",
+            "product": "grafana",
+            "versions": [
+              {
+                "version": ">= 9.0.0, < 9.1.8",
+                "status": "affected"
+              },
+              {
+                "version": ">= 8.5.0, < 8.5.14",
+                "status": "affected"
+              }
+            ]
+          }
+        ],
+        "references": [
+          {
+            "url": "https://github.com/grafana/grafana/releases/tag/v9.1.8"
+          },
+          {
+            "url": "https://github.com/grafana/grafana/security/advisories/GHSA-gj7m-853r-289r"
+          },
+          {
+            "url": "https://github.com/grafana/grafana/commit/5644758f0c5ae9955a4e5480d71f9bef57fdce35"
+          }
+        ]
+      },
+      "actual_source": [
+        {
+          "path": "pkg/services/user/userimpl/store.go",
+          "status": "captured",
+          "sha256": "2972c05ddb1dcdf3162277803b76c5fd7778311a483a5335cd49c3bc8666b6e7",
+          "bytes": 16962,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/pkg/services/user/userimpl/store.go"
+        },
+        {
+          "path": "pkg/services/user/userimpl/legacy_user.go",
+          "status": "captured",
+          "sha256": "60eee240cdfec6f278c01cb10b65841c469db760a904acaff7db3dd5c6d85ec9",
+          "bytes": 15131,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/pkg/services/user/userimpl/legacy_user.go"
+        }
+      ],
+      "removed_implementation": [],
+      "official_fix_patches": [
+        {
+          "path": "fix-patches/5644758f0c5ae9955a4e5480d71f9bef57fdce35.patch",
+          "sha256": "48a64ac40657e8f1472ba76e882673384272de2df47b8a60737da588a7b9c9fc"
+        }
+      ],
+      "risk_acceptance": false,
+      "regression_exploit_rerun": false
+    },
+    {
+      "scanner": "Trivy",
+      "target": "usr/share/grafana/bin/grafana",
+      "finding": {
+        "VulnerabilityID": "CVE-2022-39324",
+        "PkgID": "github.com/grafana/grafana@v0.0.0-20261027113329-ce471d869a48+dirty",
+        "PkgName": "github.com/grafana/grafana",
+        "InstalledVersion": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "FixedVersion": "9.2.8, 8.5.16",
+        "Severity": "MEDIUM",
+        "SeveritySource": "ghsa",
+        "Status": "fixed"
+      },
+      "technical_disposition": "FIXED",
+      "basis": "Current shared snapshot preparation replaces originalUrl with a generated relative path derived from a validated dashboard UID; supplied external destination is not retained.",
+      "official_cna": {
+        "snapshot": "cna/CVE-2022-39324.json",
+        "sha256": "c1e03ebd07cc8e8363d4d3bc154b8cf91fd43f7a4193501fbe8c5ca4359bd06b",
+        "assigner": "GitHub_M",
+        "affected": [
+          {
+            "vendor": "grafana",
+            "product": "grafana",
+            "versions": [
+              {
+                "version": "< 8.5.16",
+                "status": "affected"
+              },
+              {
+                "version": ">= 9.0.0, < 9.2.8",
+                "status": "affected"
+              }
+            ]
+          }
+        ],
+        "references": [
+          {
+            "name": "https://github.com/grafana/grafana/security/advisories/GHSA-4724-7jwc-3fpw",
+            "tags": [
+              "x_refsource_CONFIRM"
+            ],
+            "url": "https://github.com/grafana/grafana/security/advisories/GHSA-4724-7jwc-3fpw"
+          },
+          {
+            "name": "https://github.com/grafana/grafana/pull/60232",
+            "tags": [
+              "x_refsource_MISC"
+            ],
+            "url": "https://github.com/grafana/grafana/pull/60232"
+          },
+          {
+            "name": "https://github.com/grafana/grafana/pull/60256",
+            "tags": [
+              "x_refsource_MISC"
+            ],
+            "url": "https://github.com/grafana/grafana/pull/60256"
+          },
+          {
+            "name": "https://github.com/grafana/grafana/commit/239888f22983010576bb3a9135a7294e88c0c74a",
+            "tags": [
+              "x_refsource_MISC"
+            ],
+            "url": "https://github.com/grafana/grafana/commit/239888f22983010576bb3a9135a7294e88c0c74a"
+          },
+          {
+            "name": "https://github.com/grafana/grafana/commit/d7dcea71ea763780dc286792a0afd560bff2985c",
+            "tags": [
+              "x_refsource_MISC"
+            ],
+            "url": "https://github.com/grafana/grafana/commit/d7dcea71ea763780dc286792a0afd560bff2985c"
+          }
+        ]
+      },
+      "actual_source": [
+        {
+          "path": "pkg/services/dashboardsnapshots/helper.go",
+          "status": "captured",
+          "sha256": "0f312a05928ab2b808284a428d05b9f416b6589333d084cf8a628ee69b08432e",
+          "bytes": 1081,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/pkg/services/dashboardsnapshots/helper.go"
+        },
+        {
+          "path": "pkg/services/dashboardsnapshots/service.go",
+          "status": "captured",
+          "sha256": "b7112421f3ab1b2423bd481d5e1f2d8f922287a0e3ab1b5696115f3e91ccc201",
+          "bytes": 9739,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/pkg/services/dashboardsnapshots/service.go"
+        },
+        {
+          "path": "pkg/registry/apis/dashboard/snapshot/routes.go",
+          "status": "captured",
+          "sha256": "c2da618c419c7045e2802ad0305a04c54ef9182834d9aa16b36b3d0017217edf",
+          "bytes": 23505,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/pkg/registry/apis/dashboard/snapshot/routes.go"
+        }
+      ],
+      "removed_implementation": [],
+      "official_fix_patches": [
+        {
+          "path": "fix-patches/239888f22983010576bb3a9135a7294e88c0c74a.patch",
+          "sha256": "2d5c91b92236a5b59687b364f0defef0a4fbdf8642200f45c6cbfea89fb8ed37"
+        },
+        {
+          "path": "fix-patches/d7dcea71ea763780dc286792a0afd560bff2985c.patch",
+          "sha256": "113e7c318d49d1163f2d52a6b0e7c472faea39cc6b314beae4425a2268dc6683"
+        }
+      ],
+      "risk_acceptance": false,
+      "regression_exploit_rerun": false
+    },
+    {
+      "scanner": "Trivy",
+      "target": "usr/share/grafana/bin/grafana",
+      "finding": {
+        "VulnerabilityID": "CVE-2023-2183",
+        "PkgID": "github.com/grafana/grafana@v0.0.0-20261027113329-ce471d869a48+dirty",
+        "PkgName": "github.com/grafana/grafana",
+        "InstalledVersion": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "FixedVersion": "8.5.26, 9.2.19, 9.3.15, 9.4.12, 9.5.3",
+        "Severity": "MEDIUM",
+        "SeveritySource": "ghsa",
+        "Status": "fixed"
+      },
+      "technical_disposition": "FIXED",
+      "basis": "Official Grafana CNA fixes affected8/9branches at8.5.26/9.2.19/9.3.15/9.4.12/9.5.3. Actual core is official tagged13.2.5 ce471, rebuilt only for pinned dependencies; the private pseudoversion is not the product version. This is fixed-product provenance, not a newly executed viewer authorization exploit test.",
+      "official_cna": {
+        "snapshot": "cna/CVE-2023-2183.json",
+        "sha256": "b9bb6c297e595fcf824bea484cb242ff201dd424a6d21f76e8fbdad9bba73be6",
+        "assigner": "GRAFANA",
+        "affected": [
+          {
+            "product": "Grafana",
+            "vendor": "Grafana",
+            "versions": [
+              {
+                "lessThan": "8.5.26",
+                "status": "affected",
+                "version": "8.0.0",
+                "versionType": "semver"
+              },
+              {
+                "lessThan": "9.2.19",
+                "status": "affected",
+                "version": "9.0.0",
+                "versionType": "semver"
+              },
+              {
+                "lessThan": "9.3.15",
+                "status": "affected",
+                "version": "9.3.0",
+                "versionType": "semver"
+              },
+              {
+                "lessThan": "9.4.12",
+                "status": "affected",
+                "version": "9.4.0",
+                "versionType": "semver"
+              },
+              {
+                "lessThan": "9.5.3",
+                "status": "affected",
+                "version": "9.5.0",
+                "versionType": "semver"
+              }
+            ]
+          },
+          {
+            "product": "Grafana Enterprise",
+            "vendor": "Grafana",
+            "versions": [
+              {
+                "lessThan": "8.5.26",
+                "status": "affected",
+                "version": "8.0.0",
+                "versionType": "semver"
+              },
+              {
+                "lessThan": "9.2.19",
+                "status": "affected",
+                "version": "9.0.0",
+                "versionType": "semver"
+              },
+              {
+                "lessThan": "9.3.15",
+                "status": "affected",
+                "version": "9.3.0",
+                "versionType": "semver"
+              },
+              {
+                "lessThan": "9.4.12",
+                "status": "affected",
+                "version": "9.4.0",
+                "versionType": "semver"
+              },
+              {
+                "lessThan": "9.5.3",
+                "status": "affected",
+                "version": "9.5.0",
+                "versionType": "semver"
+              }
+            ]
+          }
+        ],
+        "references": [
+          {
+            "url": "https://grafana.com/security/security-advisories/cve-2023-2183/"
+          },
+          {
+            "url": "https://github.com/grafana/bugbounty/security/advisories/GHSA-cvm3-pp2j-chr3"
+          },
+          {
+            "url": "https://security.netapp.com/advisory/ntap-20230706-0002/"
+          }
+        ]
+      },
+      "actual_source": [
+        {
+          "path": "package.json",
+          "status": "captured",
+          "sha256": "4c1da4b1992361d8a5a785f3efd71d523c5d460f4109c228dc4c2cbfdab418bd",
+          "bytes": 21399,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/package.json"
+        },
+        {
+          "path": "pkg/services/ngalert/ngalert.go",
+          "status": "captured",
+          "sha256": "61ed952e64f02d94fb978ada148c6b711f6a6039525f4e0d7e3e51027125af31",
+          "bytes": 38150,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/pkg/services/ngalert/ngalert.go"
+        }
+      ],
+      "removed_implementation": [],
+      "official_fix_patches": [],
+      "risk_acceptance": false,
+      "regression_exploit_rerun": false
+    },
+    {
+      "scanner": "Trivy",
+      "target": "usr/share/grafana/bin/grafana",
+      "finding": {
+        "VulnerabilityID": "CVE-2023-4822",
+        "PkgID": "github.com/grafana/grafana@v0.0.0-20261027113329-ce471d869a48+dirty",
+        "PkgName": "github.com/grafana/grafana",
+        "InstalledVersion": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "FixedVersion": null,
+        "Severity": "MEDIUM",
+        "SeveritySource": "ghsa",
+        "Status": "affected"
+      },
+      "technical_disposition": "NOT_AFFECTED",
+      "basis": "Grafana CNA product scope is Grafana Enterprise only, with defaultStatus unaffected and four affected ranges ending9.4.16/9.5.11/10.0.7/10.1.3. Actual build is public OSS ce471, default non-enterprise build tags, base grafana/grafana rather than grafana-enterprise; it does not contain the affected Enterprise RBAC implementation.",
+      "official_cna": {
+        "snapshot": "cna/CVE-2023-4822.json",
+        "sha256": "3060a92fa801a4f761caa48142ac2955b97f5e11b69b155fabd6032ddf0e97a7",
+        "assigner": "GRAFANA",
+        "affected": [
+          {
+            "defaultStatus": "unaffected",
+            "product": "Grafana Enterprise",
+            "vendor": "Grafana",
+            "versions": [
+              {
+                "lessThan": "9.4.16",
+                "status": "affected",
+                "version": "8.0.0",
+                "versionType": "semver"
+              },
+              {
+                "lessThan": "9.5.11",
+                "status": "affected",
+                "version": "9.5.0",
+                "versionType": "semver"
+              },
+              {
+                "lessThan": "10.0.7",
+                "status": "affected",
+                "version": "10.0.0",
+                "versionType": "semver"
+              },
+              {
+                "lessThan": "10.1.3",
+                "status": "affected",
+                "version": "10.1.0",
+                "versionType": "semver"
+              }
+            ]
+          }
+        ],
+        "references": [
+          {
+            "url": "https://grafana.com/security/security-advisories/cve-2023-4822"
+          },
+          {
+            "url": "https://security.netapp.com/advisory/ntap-20231103-0008/"
+          }
+        ]
+      },
+      "actual_source": [
+        {
+          "path": "package.json",
+          "status": "captured",
+          "sha256": "4c1da4b1992361d8a5a785f3efd71d523c5d460f4109c228dc4c2cbfdab418bd",
+          "bytes": 21399,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/package.json"
+        },
+        {
+          "path": "pkg/api/accesscontrol.go",
+          "status": "captured",
+          "sha256": "cf1423b16c575fe05c00809d285ed8934db1edfb098055a4f3769a91a334975e",
+          "bytes": 23936,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/pkg/api/accesscontrol.go"
+        }
+      ],
+      "removed_implementation": [],
+      "official_fix_patches": [],
+      "risk_acceptance": false,
+      "regression_exploit_rerun": false
+    },
+    {
+      "scanner": "Trivy",
+      "target": "usr/share/grafana/bin/grafana",
+      "finding": {
+        "VulnerabilityID": "CVE-2025-3415",
+        "PkgID": "github.com/grafana/grafana@v0.0.0-20261027113329-ce471d869a48+dirty",
+        "PkgName": "github.com/grafana/grafana",
+        "InstalledVersion": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "FixedVersion": "1.9.2-0.20250514160932-04111e9f2afd",
+        "Severity": "MEDIUM",
+        "SeveritySource": "ghsa",
+        "Status": "fixed"
+      },
+      "technical_disposition": "FIXED",
+      "basis": "Actual native alerting module DingDing schema marks url Secure:true and Protected:true; its reader decrypts the secure url. This is the precise secret-field fix, not a comparison of Grafana product13 with Go pseudo1.9.2.",
+      "official_cna": {
+        "snapshot": "cna/CVE-2025-3415.json",
+        "sha256": "8b9cea0f0818cf2650da9389948794d3a16700037c9d45b48d621f4521adb131",
+        "assigner": "GRAFANA",
+        "affected": [
+          {
+            "defaultStatus": "unaffected",
+            "product": "Grafana",
+            "vendor": "Grafana",
+            "versions": [
+              {
+                "lessThan": "10.4.19+security-01",
+                "status": "affected",
+                "version": "10.4.x",
+                "versionType": "semver"
+              },
+              {
+                "lessThan": "11.2.10+security-01",
+                "status": "affected",
+                "version": "11.2.x",
+                "versionType": "semver"
+              },
+              {
+                "lessThan": "11.3.7+security-01",
+                "status": "affected",
+                "version": "11.3.x",
+                "versionType": "semver"
+              },
+              {
+                "lessThan": "11.4.5+security-01",
+                "status": "affected",
+                "version": "11.4.x",
+                "versionType": "semver"
+              },
+              {
+                "lessThan": "11.5.5+security-01",
+                "status": "affected",
+                "version": "11.5.x",
+                "versionType": "semver"
+              },
+              {
+                "lessThan": "11.6.2+security-01",
+                "status": "affected",
+                "version": "11.6.x",
+                "versionType": "semver"
+              },
+              {
+                "lessThan": "12.0.1+security-01",
+                "status": "affected",
+                "version": "12.0.x",
+                "versionType": "semver"
+              }
+            ]
+          }
+        ],
+        "references": [
+          {
+            "tags": [
+              "vendor-advisory"
+            ],
+            "url": "https://grafana.com/security/security-advisories/cve-2025-3415"
+          }
+        ]
+      },
+      "actual_source": [
+        {
+          "path": "pkg/services/ngalert/notifier/receiver_svc.go",
+          "status": "captured",
+          "sha256": "541476102eef87af5e58020d3775ae826435171a4712d2e7b35f253806206605",
+          "bytes": 32203,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/pkg/services/ngalert/notifier/receiver_svc.go"
+        }
+      ],
+      "removed_implementation": [],
+      "official_fix_patches": [
+        {
+          "path": "fix-patches/04111e9f2afd.patch",
+          "sha256": "9d236493c4c12aada84b3b552f5397f71d5d70a1f8f43e50f73a1c25c9fd9a0e"
+        }
+      ],
+      "risk_acceptance": false,
+      "regression_exploit_rerun": false,
+      "actual_alerting_module": {
+        "module": "github.com/grafana/alerting",
+        "version": "v0.0.0-20261006175250-7f02604ca93b",
+        "native_buildinfo": "deployment\\security\\grafana-fixed-20261107-evidence\\native\\main-native-buildinfo.json",
+        "native_buildinfo_sha256": "b4a1e676bdd5816c7fc0f76a598e46dcb55a18358d85fda5a70648aedb6ac8f6",
+        "measured_dirhash": "h1:ajTbJ+MkvNnGOfgdygIhriz91fSUsBZArDos9c86UzY=",
+        "module_zip_sha256": "d348b3a894d5c8204038cdb04a537cec2856aa53eb5d9b8a939fd92baa157927",
+        "source_path": "github.com/grafana/alerting@v0.0.0-20261006175250-7f02604ca93b/receivers/dingding/v1/config.go",
+        "source_file_sha256": "2d82a59872ab24646ace178859aac80be6839c3aec103747d57f047a9011e601",
+        "source_url": "https://github.com/grafana/alerting/blob/7f02604ca93b/receivers/dingding/v1/config.go",
+        "verified_native_sum_equal": true
+      }
+    },
+    {
+      "scanner": "Trivy",
+      "target": "usr/share/grafana/bin/grafana",
+      "finding": {
+        "VulnerabilityID": "CVE-2026-10601",
+        "PkgID": "github.com/grafana/grafana@v0.0.0-20261027113329-ce471d869a48+dirty",
+        "PkgName": "github.com/grafana/grafana",
+        "InstalledVersion": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "FixedVersion": "1.9.2-0.20260616075434-82ef13993059",
+        "Severity": "MEDIUM",
+        "SeveritySource": "ghsa",
+        "Status": "fixed"
+      },
+      "technical_disposition": "FIXED",
+      "basis": "Both actual retained native plugin sources contain the official guards: Loki parses and path.Cleans constructed resource path and enforces /loki/api/v1 prefix; Tempo rejects . and .. tag path segments. Official source ZIP hashes match each compiled plugin module Sum. Core version alone was not used to clear this moved-plugin defect.",
+      "official_cna": {
+        "snapshot": "cna/CVE-2026-10601.json",
+        "sha256": "ff130ce6c0306362eef2a89a635579326860be6917534dd9a7e2b4fedeb7b2c5",
+        "assigner": "GRAFANA",
+        "affected": [
+          {
+            "vendor": "Grafana",
+            "product": "Grafana OSS",
+            "defaultStatus": "unaffected",
+            "versions": [
+              {
+                "version": "11.6.0",
+                "status": "affected",
+                "versionType": "semver",
+                "lessThanOrEqual": "11.6.14"
+              },
+              {
+                "version": "12.2.0",
+                "status": "affected",
+                "versionType": "semver",
+                "lessThanOrEqual": "12.2.8"
+              },
+              {
+                "version": "12.3.0",
+                "status": "affected",
+                "versionType": "semver",
+                "lessThanOrEqual": "12.3.6"
+              },
+              {
+                "version": "12.4.0",
+                "status": "affected",
+                "versionType": "semver",
+                "lessThanOrEqual": "12.4.3"
+              },
+              {
+                "version": "13.0.0",
+                "status": "affected",
+                "versionType": "semver",
+                "lessThanOrEqual": "13.0.1"
+              }
+            ]
+          }
+        ],
+        "references": [
+          {
+            "url": "https://grafana.com/security/security-advisories/cve-2026-10601",
+            "tags": [
+              "vendor-advisory"
+            ]
+          }
+        ]
+      },
+      "actual_source": [],
+      "removed_implementation": [],
+      "official_fix_patches": [
+        {
+          "path": "fix-patches/82ef13993059.patch",
+          "sha256": "38fbf3dfe1aad1709d22c791f2d50d76e9c79db63b2f2d9fa7f4a1821e4b02eb"
+        }
+      ],
+      "risk_acceptance": false,
+      "regression_exploit_rerun": false,
+      "actual_retained_plugins": [
+        {
+          "plugin": "loki",
+          "module": "github.com/grafana/grafana-loki-datasource",
+          "version": "v0.0.0-20261008182227-6d076df3d695",
+          "commit": "6d076df3d695f5fda342fbbad1f52547b55a96e2",
+          "official_source_sum": "h1:PFy7d0rbcD86U3x6Fwji+1HOtAlEIQ1DdiCN9jwlc6c=",
+          "measured_go_dirhash_sum": "h1:PFy7d0rbcD86U3x6Fwji+1HOtAlEIQ1DdiCN9jwlc6c=",
+          "module_zip_sha256": "90b3a6dc90484cd919fbcdee85f788fa6e147d907f0c53e72a8d90509b014821",
+          "members": [
+            {
+              "path": "pkg/loki/loki.go",
+              "sha256": "c37464d78af15b21adbf39cb7143e5cd80a576fa81aa3fb9011c3a509a713a2b",
+              "bytes": 10811
+            }
+          ],
+          "go_files": [
+            "Magefile.go",
+            "pkg/loki/api.go",
+            "pkg/loki/api_mock.go",
+            "pkg/loki/api_test.go",
+            "pkg/loki/frame.go",
+            "pkg/loki/frame_test.go",
+            "pkg/loki/framing_test.go",
+            "pkg/loki/healthcheck.go",
+            "pkg/loki/healthcheck_test.go",
+            "pkg/loki/instrumentation/instrumentation.go",
+            "pkg/loki/kinds/dataquery/types_dataquery.go",
+            "pkg/loki/loki.go",
+            "pkg/loki/loki_bench_test.go",
+            "pkg/loki/parse_query.go",
+            "pkg/loki/parse_query_test.go",
+            "pkg/loki/scopes.go",
+            "pkg/loki/scopes_test.go",
+            "pkg/loki/step.go",
+            "pkg/loki/step_test.go",
+            "pkg/loki/streaming.go",
+            "pkg/loki/streaming_test.go",
+            "pkg/loki/types.go",
+            "pkg/main.go"
+          ]
+        },
+        {
+          "plugin": "tempo",
+          "module": "github.com/grafana/grafana-tempo-datasource",
+          "version": "v0.0.0-20261021151041-7bbc067f7b95",
+          "commit": "7bbc067f7b950057beebcaeeb910f16e98f2dacb",
+          "official_source_sum": "h1:Gg9/7u2/RMQYydaMv/GhIlX7DCYAC7nVy0EFiZ0pfgg=",
+          "measured_go_dirhash_sum": "h1:Gg9/7u2/RMQYydaMv/GhIlX7DCYAC7nVy0EFiZ0pfgg=",
+          "module_zip_sha256": "520a19f9859da019f2930502612941dc5a5250cc13255f10e88ac20a6dc6fe4e",
+          "members": [
+            {
+              "path": "pkg/tempo/tempo.go",
+              "sha256": "2904e6f61889e6cf9a35810afc112ec56cb2206c583e43f9c760af6e2927cd48",
+              "bytes": 12198
+            }
+          ],
+          "go_files": [
+            "Magefile.go",
+            "pkg/main.go",
+            "pkg/tempo/grpc.go",
+            "pkg/tempo/grpc_orgid_test.go",
+            "pkg/tempo/kinds/dataquery/types_dataquery.go",
+            "pkg/tempo/metrics_stream.go",
+            "pkg/tempo/metrics_stream_test.go",
+            "pkg/tempo/protospan_translation.go",
+            "pkg/tempo/search.go",
+            "pkg/tempo/search_stream.go",
+            "pkg/tempo/search_stream_test.go",
+            "pkg/tempo/search_test.go",
+            "pkg/tempo/stream_handler.go",
+            "pkg/tempo/tempo.go",
+            "pkg/tempo/tempo_test.go",
+            "pkg/tempo/trace.go",
+            "pkg/tempo/trace_test.go",
+            "pkg/tempo/trace_transform.go",
+            "pkg/tempo/trace_transform_test.go",
+            "pkg/tempo/traceql/exemplars.go",
+            "pkg/tempo/traceql/exemplars_test.go",
+            "pkg/tempo/traceql/metrics.go",
+            "pkg/tempo/traceql/metrics_test.go",
+            "pkg/tempo/traceql_query.go",
+            "pkg/tempo/traceql_query_test.go",
+            "pkg/tempo/utils/stream_utils.go",
+            "pkg/tempo/utils/stream_utils_test.go"
+          ]
+        }
+      ]
+    },
+    {
+      "scanner": "Trivy",
+      "target": "usr/share/grafana/bin/grafana",
+      "finding": {
+        "VulnerabilityID": "CVE-2026-21724",
+        "PkgID": "github.com/grafana/grafana@v0.0.0-20261027113329-ce471d869a48+dirty",
+        "PkgName": "github.com/grafana/grafana",
+        "InstalledVersion": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "FixedVersion": "1.9.2-0.20260323180334-daffe750de85",
+        "Severity": "MEDIUM",
+        "SeveritySource": "ghsa",
+        "Status": "fixed"
+      },
+      "technical_disposition": "FIXED",
+      "basis": "Current contact-point update checks Protected fields before converting/persisting settings; HasUpdateProtected permits legitimate writers, otherwise changed protected fields require AuthorizeUpdateProtected. Actual source matches official daffe fix contract.",
+      "official_cna": {
+        "snapshot": "cna/CVE-2026-21724.json",
+        "sha256": "e4f0f020ca1fdff24512ca69eefeb4eb6b473be8820656a07ebe4e14661ddbf4",
+        "assigner": "GRAFANA",
+        "affected": [
+          {
+            "vendor": "Grafana",
+            "product": "Grafana OSS",
+            "defaultStatus": "unaffected",
+            "versions": [
+              {
+                "version": "12.3.1",
+                "status": "affected",
+                "versionType": "semver",
+                "lessThan": "12.3.6"
+              },
+              {
+                "version": "12.2.2",
+                "status": "affected",
+                "versionType": "semver",
+                "lessThan": "12.2.8"
+              },
+              {
+                "version": "12.1.5",
+                "status": "affected",
+                "versionType": "semver",
+                "lessThan": "12.1.10"
+              },
+              {
+                "version": "11.6.9",
+                "status": "affected",
+                "versionType": "semver",
+                "lessThan": "11.6.14"
+              }
+            ]
+          }
+        ],
+        "references": [
+          {
+            "url": "https://grafana.com/security/security-advisories/cve-2026-21724",
+            "tags": [
+              "vendor-advisory"
+            ]
+          }
+        ]
+      },
+      "actual_source": [
+        {
+          "path": "pkg/services/ngalert/provisioning/contactpoints.go",
+          "status": "captured",
+          "sha256": "e12ed0c250a8bb7a276fc7b94702781991a9a7be5b8f40e45fe10cc30a68be4c",
+          "bytes": 31205,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/pkg/services/ngalert/provisioning/contactpoints.go"
+        },
+        {
+          "path": "pkg/services/ngalert/notifier/receiver_svc.go",
+          "status": "captured",
+          "sha256": "541476102eef87af5e58020d3775ae826435171a4712d2e7b35f253806206605",
+          "bytes": 32203,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/pkg/services/ngalert/notifier/receiver_svc.go"
+        }
+      ],
+      "removed_implementation": [],
+      "official_fix_patches": [
+        {
+          "path": "fix-patches/daffe750de85.patch",
+          "sha256": "ad5b3a06ee88d781e46ebb273d96414507dfc88f015b085737232ae379a991fb"
+        }
+      ],
+      "risk_acceptance": false,
+      "regression_exploit_rerun": false
+    },
+    {
+      "scanner": "Trivy",
+      "target": "usr/share/grafana/bin/grafana",
+      "finding": {
+        "VulnerabilityID": "CVE-2026-33380",
+        "PkgID": "github.com/grafana/grafana@v0.0.0-20261027113329-ce471d869a48+dirty",
+        "PkgName": "github.com/grafana/grafana",
+        "InstalledVersion": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "FixedVersion": "1.9.2-0.20260513165311-fb7336fc36c1",
+        "Severity": "MEDIUM",
+        "SeveritySource": "ghsa",
+        "Status": "fixed"
+      },
+      "technical_disposition": "FIXED",
+      "basis": "Actual SQL allowlist walker recursively checks SetOp OrderBy/With/Limit and Select Window omitted by upstream walk, and rejects lock/INTO fields explicitly. This is the official fb733 fix; conclusion does not depend on assuming sqlExpressions disabled.",
+      "official_cna": {
+        "snapshot": "cna/CVE-2026-33380.json",
+        "sha256": "dcaeb0ce99ae2c8fb090c5dcd5eabb91cd1808713656f2e4e24cdacbada80eab",
+        "assigner": "GRAFANA",
+        "affected": [
+          {
+            "vendor": "Grafana",
+            "product": "Grafana OSS",
+            "defaultStatus": "unaffected",
+            "versions": [
+              {
+                "version": "11.6.0",
+                "status": "affected",
+                "versionType": "semver",
+                "lessThanOrEqual": "11.6.14"
+              },
+              {
+                "version": "11.6.14",
+                "status": "affected",
+                "versionType": "custom",
+                "lessThan": "11.6.14+security-04"
+              },
+              {
+                "version": "12.0.0",
+                "status": "affected",
+                "versionType": "semver",
+                "lessThanOrEqual": "12.2.8"
+              },
+              {
+                "version": "12.2.8",
+                "status": "affected",
+                "versionType": "custom",
+                "lessThan": "12.2.8+security-04"
+              },
+              {
+                "version": "12.3.0",
+                "status": "affected",
+                "versionType": "semver",
+                "lessThanOrEqual": "12.3.6"
+              },
+              {
+                "version": "12.3.6",
+                "status": "affected",
+                "versionType": "custom",
+                "lessThan": "12.3.6+security-04"
+              },
+              {
+                "version": "12.4.0",
+                "status": "affected",
+                "versionType": "semver",
+                "lessThanOrEqual": "12.4.3"
+              },
+              {
+                "version": "12.4.3",
+                "status": "affected",
+                "versionType": "custom",
+                "lessThan": "12.4.3+security-02"
+              },
+              {
+                "version": "13.0.0",
+                "status": "affected",
+                "versionType": "semver",
+                "lessThanOrEqual": "13.0.1"
+              },
+              {
+                "version": "13.0.1",
+                "status": "affected",
+                "versionType": "custom",
+                "lessThan": "13.0.1+security-01"
+              }
+            ]
+          }
+        ],
+        "references": [
+          {
+            "url": "https://grafana.com/security/security-advisories/cve-2026-33380",
+            "tags": [
+              "vendor-advisory"
+            ]
+          }
+        ]
+      },
+      "actual_source": [
+        {
+          "path": "pkg/expr/sql/parser_allow.go",
+          "status": "captured",
+          "sha256": "ced0993ffdfad901422e567b942ca01aa6a328cdad5b13933e704b1b7f99ba7c",
+          "bytes": 8090,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/pkg/expr/sql/parser_allow.go"
+        }
+      ],
+      "removed_implementation": [],
+      "official_fix_patches": [
+        {
+          "path": "fix-patches/fb7336fc36c1.patch",
+          "sha256": "2dcd54d18d68ccaf3bd3140b3133c08c2c317977e3a11ca81a51017734158170"
+        }
+      ],
+      "risk_acceptance": false,
+      "regression_exploit_rerun": false
+    },
+    {
+      "scanner": "Trivy",
+      "target": "usr/share/grafana/bin/grafana",
+      "finding": {
+        "VulnerabilityID": "CVE-2026-33381",
+        "PkgID": "github.com/grafana/grafana@v0.0.0-20261027113329-ce471d869a48+dirty",
+        "PkgName": "github.com/grafana/grafana",
+        "InstalledVersion": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "FixedVersion": "1.9.2-0.20260513165311-fb7336fc36c1",
+        "Severity": "MEDIUM",
+        "SeveritySource": "ghsa",
+        "Status": "fixed"
+      },
+      "technical_disposition": "FIXED",
+      "basis": "Permission updates now invalidate both regular-user and service-account permission-cache keys in clearUserPermissionCache, called after single and batch updates. Matches official fb733 fix for token-mint revocation.",
+      "official_cna": {
+        "snapshot": "cna/CVE-2026-33381.json",
+        "sha256": "ba485f92db4f0cf9df0696929b06dd561d01f3c17c16afd9b9e848ac229afac0",
+        "assigner": "GRAFANA",
+        "affected": [
+          {
+            "vendor": "Grafana",
+            "product": "Grafana OSS",
+            "defaultStatus": "unaffected",
+            "versions": [
+              {
+                "version": "9.2.0",
+                "status": "affected",
+                "versionType": "semver",
+                "lessThanOrEqual": "11.6.14"
+              },
+              {
+                "version": "11.6.14",
+                "status": "affected",
+                "versionType": "custom",
+                "lessThan": "11.6.14+security-04"
+              },
+              {
+                "version": "12.0.0",
+                "status": "affected",
+                "versionType": "semver",
+                "lessThanOrEqual": "12.2.8"
+              },
+              {
+                "version": "12.2.8",
+                "status": "affected",
+                "versionType": "custom",
+                "lessThan": "12.2.8+security-04"
+              },
+              {
+                "version": "12.3.0",
+                "status": "affected",
+                "versionType": "semver",
+                "lessThanOrEqual": "12.3.6"
+              },
+              {
+                "version": "12.3.6",
+                "status": "affected",
+                "versionType": "custom",
+                "lessThan": "12.3.6+security-04"
+              },
+              {
+                "version": "12.4.0",
+                "status": "affected",
+                "versionType": "semver",
+                "lessThanOrEqual": "12.4.3"
+              },
+              {
+                "version": "12.4.3",
+                "status": "affected",
+                "versionType": "custom",
+                "lessThan": "12.4.3+security-02"
+              },
+              {
+                "version": "13.0.0",
+                "status": "affected",
+                "versionType": "semver",
+                "lessThanOrEqual": "13.0.1"
+              },
+              {
+                "version": "13.0.1",
+                "status": "affected",
+                "versionType": "custom",
+                "lessThan": "13.0.1+security-01"
+              }
+            ]
+          }
+        ],
+        "references": [
+          {
+            "url": "https://grafana.com/security/security-advisories/cve-2026-33381",
+            "tags": [
+              "vendor-advisory"
+            ]
+          }
+        ]
+      },
+      "actual_source": [
+        {
+          "path": "pkg/services/accesscontrol/resourcepermissions/service.go",
+          "status": "captured",
+          "sha256": "c39d2fdea240c0e5b3a76349eeddf8f3aa16159c181512c8bf4ae008dc794f1a",
+          "bytes": 28160,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/pkg/services/accesscontrol/resourcepermissions/service.go"
+        },
+        {
+          "path": "pkg/services/serviceaccounts/api/token.go",
+          "status": "captured",
+          "sha256": "bd7529e749a71a246681a8d0d3edc389a49bf807a071a5d107ef35b691301a26",
+          "bytes": 8803,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/pkg/services/serviceaccounts/api/token.go"
+        }
+      ],
+      "removed_implementation": [],
+      "official_fix_patches": [
+        {
+          "path": "fix-patches/fb7336fc36c1.patch",
+          "sha256": "2dcd54d18d68ccaf3bd3140b3133c08c2c317977e3a11ca81a51017734158170"
+        }
+      ],
+      "risk_acceptance": false,
+      "regression_exploit_rerun": false
+    },
+    {
+      "scanner": "Trivy",
+      "target": "usr/share/grafana/bin/grafana",
+      "finding": {
+        "VulnerabilityID": "CVE-2024-10452",
+        "PkgID": "github.com/grafana/grafana@v0.0.0-20261027113329-ce471d869a48+dirty",
+        "PkgName": "github.com/grafana/grafana",
+        "InstalledVersion": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "FixedVersion": null,
+        "Severity": "LOW",
+        "SeveritySource": "ghsa",
+        "Status": "affected"
+      },
+      "technical_disposition": "FIXED",
+      "basis": "Actual RevokeInvite loads invite metadata and requires currentOrgID==invite.OrgID OR globalGrafanaAdmin before updateTempUserStatus; otherwise403. This directly repairs the CNA cross-org invite-revocation condition. No fabricated fixed-version claim is made from the noFixed scan record.",
+      "official_cna": {
+        "snapshot": "cna/CVE-2024-10452.json",
+        "sha256": "c18523e145216ebb1b77b00e144edacc7b5de6cf5d3ea913aad45372d3011ba6",
+        "assigner": "GRAFANA",
+        "affected": [
+          {
+            "defaultStatus": "unaffected",
+            "product": "Grafana",
+            "vendor": "Grafana",
+            "versions": [
+              {
+                "status": "affected",
+                "version": "10.4.0"
+              }
+            ]
+          }
+        ],
+        "references": [
+          {
+            "url": "https://grafana.com/security/security-advisories/cve-2024-10452"
+          }
+        ]
+      },
+      "actual_source": [
+        {
+          "path": "pkg/api/org_invite.go",
+          "status": "captured",
+          "sha256": "3db2a5c1a568fbcbccc19b5b1e0cc50e6447ebe4427688172bd4964ec1a2a733",
+          "bytes": 14165,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/pkg/api/org_invite.go"
+        }
+      ],
+      "removed_implementation": [],
+      "official_fix_patches": [],
+      "risk_acceptance": false,
+      "regression_exploit_rerun": false
+    },
+    {
+      "scanner": "Trivy",
+      "target": "usr/share/grafana/bin/grafana",
+      "finding": {
+        "VulnerabilityID": "CVE-2026-21727",
+        "PkgID": "github.com/grafana/grafana@v0.0.0-20261027113329-ce471d869a48+dirty",
+        "PkgName": "github.com/grafana/grafana",
+        "InstalledVersion": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "FixedVersion": "1.9.2-0.20260127141016-e702db6096e0",
+        "Severity": "LOW",
+        "SeveritySource": "ghsa",
+        "Status": "fixed"
+      },
+      "technical_disposition": "FIXED",
+      "basis": "Current correlations SQL restricts correlation.org_id to the authenticated org and datasource joins use that same org; the legacy OR org_id=0 fallback removed by e702 is absent.",
+      "official_cna": {
+        "snapshot": "cna/CVE-2026-21727.json",
+        "sha256": "cb0fd59f87a49f17ada4f18020cc99082500d291ea94dbda0e387d6cbb0d011c",
+        "assigner": "GRAFANA",
+        "affected": [
+          {
+            "vendor": "Grafana",
+            "product": "Grafana Correlations",
+            "defaultStatus": "unaffected",
+            "versions": [
+              {
+                "version": "10.2.0",
+                "status": "affected",
+                "versionType": "semver",
+                "lessThan": "12.4.0"
+              }
+            ]
+          }
+        ],
+        "references": [
+          {
+            "url": "https://grafana.com/security/security-advisories/cve-2026-21727",
+            "tags": [
+              "vendor-advisory"
+            ]
+          }
+        ]
+      },
+      "actual_source": [
+        {
+          "path": "pkg/services/correlations/database.go",
+          "status": "captured",
+          "sha256": "b95725fcc8bca920b28ccc2bf1414b4dd0fc193f55ef8c364a732552f254f456",
+          "bytes": 11765,
+          "url": "https://github.com/grafana/grafana/blob/ce471d869a4810cd83c987dd3521c4b67689dbb6/pkg/services/correlations/database.go"
+        }
+      ],
+      "removed_implementation": [],
+      "official_fix_patches": [
+        {
+          "path": "fix-patches/e702db6096e0.patch",
+          "sha256": "b2fc7a8fc7048f404c0d6651d4133672e0cb34c3d0e90bd3923feee5be7ed8c4"
+        }
+      ],
+      "risk_acceptance": false,
+      "regression_exploit_rerun": false
+    }
+  ],
+  "summary": {
+    "FIXED": 21,
+    "NOT_AFFECTED": 1,
+    "unresolved_in_this22": 0,
+    "not_zero_raw_findings": true
+  },
+  "limitations": [
+    "This facts table is not a signed verified profile or final whole-subject review. Final frozen profile and full all-severity scan/inventory/independent review binding remain necessary.",
+    "Historical frontend CVEs use exact official retained frontend/source provenance plus removed vulnerable implementations and current sanitization; historical browser exploit reproducers were not re-executed. Explicit disableSanitizeHtml administrator opt-out is not claimed safe.",
+    "The native runtime uses merged-rootfs security scope. It is not a legal/binary redistribution approval and does not assert inaccessible inherited-layer bytes are removed.",
+    "Remaining original18 and Grype10 require their separate complete exact compiled-scope/fixed-code mappings; this file alone does not grant an exception for them."
+  ]
+}

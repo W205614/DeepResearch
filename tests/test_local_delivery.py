@@ -104,6 +104,50 @@ def test_stop_preserves_selected_project_and_overrides_without_requiring_provide
     assert "down" not in command
 
 
+@pytest.mark.parametrize('no_build', [False, True])
+def test_observability_prepares_source_profile_before_start_and_never_reuses_old_tag(tmp_path, monkeypatch, no_build):
+    calls = []
+    monkeypatch.setattr(local, 'preflight', lambda *_args: None)
+    monkeypatch.setattr(local.subprocess, 'run', lambda command, **kwargs: calls.append(command))
+    arguments = ['start', '--observability', '--project-name', 'isolated-fixture',
+                 '--env-file', str(tmp_path / '.env')]
+    if no_build:
+        arguments.append('--no-build')
+    assert local.main(arguments) == 0
+    assert len(calls) == 3
+    assert calls[0][1] == str(local.ROOT / 'scripts/fetch_approved_image.py')
+    assert calls[1][:4] == [local.sys.executable, str(local.ROOT / 'scripts/build_grafana_source_20261110.py'),
+                            '--output-dir', str(local.ROOT / '.cache/grafana-source-20261110')]
+    assert ('--no-build' in calls[1]) is no_build
+    assert calls[2][:2] == ['docker', 'compose'] and 'up' in calls[2]
+    assert calls[2][calls[2].index('-p') + 1] == 'isolated-fixture'
+    assert ('--no-build' in calls[2]) is no_build
+    assert not any('fetch_grafana_fixed_20261107.py' in argument for call in calls for argument in call)
+
+
+def test_observability_check_stays_read_only_without_preparing_source_image(tmp_path, monkeypatch):
+    calls = []
+    monkeypatch.setattr(local, 'preflight', lambda *_args: None)
+    monkeypatch.setattr(local.subprocess, 'run', lambda command, **kwargs: calls.append(command))
+    assert local.main(['check', '--observability', '--env-file', str(tmp_path / '.env')]) == 0
+    assert not calls
+
+
+def test_missing_or_changed_source_image_blocks_local_start_without_old_artifact_fallback(tmp_path, monkeypatch):
+    calls = []
+    monkeypatch.setattr(local, 'preflight', lambda *_args: None)
+
+    def run(command, **kwargs):
+        calls.append(command)
+        if str(local.ROOT / 'scripts/build_grafana_source_20261110.py') in command:
+            raise subprocess.CalledProcessError(1, command)
+
+    monkeypatch.setattr(local.subprocess, 'run', run)
+    with pytest.raises(subprocess.CalledProcessError):
+        local.main(['start', '--observability', '--no-build', '--env-file', str(tmp_path / '.env')])
+    assert len(calls) == 2 and all('up' not in call for call in calls)
+
+
 def source_repository(tmp_path):
     root = tmp_path / "repository"
     root.mkdir()

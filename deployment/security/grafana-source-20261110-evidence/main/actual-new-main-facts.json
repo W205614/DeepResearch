@@ -1,0 +1,67 @@
+{
+  "schema": "grafana-source-main-facts-20261110-v1",
+  "actual_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+  "actual_elf_bytes": 369352864,
+  "stage_image_id": "sha256:1f204c1d63bf37163231f510dced1ec6bad3385f85001401ebbc899710a1d031",
+  "source_revision_label": "e86d3cb397eb540bf67faeafc5d0b80941eb9d88+uncommitted-inputs",
+  "source_inputs_committed": false,
+  "upstream_revision": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+  "modified_upstream_source": true,
+  "complete_packages": 4200,
+  "complete_modules": 522,
+  "native_changed_modules": [
+    "github.com/apache/thrift"
+  ],
+  "thrift_actual_identity": {
+    "Path": "github.com/apache/thrift",
+    "Version": "v0.25.0",
+    "Sum": "h1:6LLlvoPjy8Cc/0b5TYRcTR3RZa2W0at3WQRcOkDwVGs="
+  },
+  "old_main_elf_sha256": "192063cd7684522d1b765a00711221682812238fe138292b2491ba864343ced1",
+  "retained_plugin_elf_sha256": {
+    "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64": "599f81b6cb18227c719074099c3f5f3dd0928d8a5b3d2a55ac8a02a0210fa10c",
+    "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64": "c7798b1bbea42ddad8a7259fd1c3c5846cdd8d89f7f1f8034858871e392de9e3",
+    "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64": "73db79edd48a44159ee66583ae4a646a0e52aaf0cbfa252aece9753273961aa1",
+    "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64": "019b92b07c3bd36176e28e2ee1693d69b423a129b6e6a9945e98adffa53c3ee1",
+    "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64": "3343e2ff45c76058067bb945baf7c0fc341edf0b647b59d3c8e2a95211df73a4",
+    "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64": "d290d4840deb7e1edffaee453271ca87d02094f3f8ab0f3e27680605f1f5fd5a",
+    "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64": "50ba9d95a58a20a52a9131a44d04313c955a20ccc199b02e29f474b70af6fd3a",
+    "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64": "e4abc533b0ed7cddea5d1753a2556971dd50e5d3c7b1d8cac1ace9d4ae018a8c",
+    "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64": "4bd3b2b5d547a73c02a231eb5fa1231f167b1c1a7e46a61687916440c6c0771a",
+    "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64": "c4ab7df53197950cd6bcb36235d72c7b5c268f00ecda2ee13b6962d34181394c",
+    "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64": "5c3f2027bcb5d6b03e219230a9a90bf8e1511d46e7a1536b1efb991839da4157",
+    "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": "58a9b276af17f22a5c9729ff1da2bd248f9e69add6e25e8a495df00065837c1d",
+    "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": "1ef41b794a8c882213ab5826d82bbe9a1d5d05b3a9068e86065e12190aef9865"
+  },
+  "go_mod_go_sum_unchanged_during_checksum_preparation": {
+    "schema": "grafana-candidate-checksum-preparation-v1",
+    "command": [
+      "go",
+      "mod",
+      "download",
+      "github.com/andybalholm/brotli@v1.2.7",
+      "github.com/klauspost/compress@v1.20.3",
+      "golang.org/x/net@v0.62.0",
+      "golang.org/x/crypto@v0.58.0",
+      "golang.org/x/sys@v0.49.0",
+      "golang.org/x/term@v0.47.0",
+      "golang.org/x/text@v0.43.0"
+    ],
+    "sumdb": "sum.golang.org",
+    "exit_code": 0,
+    "declared_go_mod_sha256": "120976b75ce3f338b41c0c25f83cc2e5e0b5bff889210c8eec9d6677c526687d",
+    "actual_go_mod_sha256": "120976b75ce3f338b41c0c25f83cc2e5e0b5bff889210c8eec9d6677c526687d",
+    "go_mod_unchanged": true,
+    "declared_go_sum_sha256": "5312fa2921123fdb8521abab2d384d63faa134789b9078dead39ce58f9aaea01",
+    "actual_go_sum_sha256": "5312fa2921123fdb8521abab2d384d63faa134789b9078dead39ce58f9aaea01",
+    "boundary": "Checksum preparation only; no dependency version update or vulnerability disposition."
+  },
+  "original_controller_guard_failure_preserved": {
+    "docker_build_exit_code": 0,
+    "python_controller_postbuild_assertion_failed": true,
+    "reason": "Parent-authorized runtime-only Dockerfile change after BuildKit context capture",
+    "raw_result_preserved": true,
+    "separate_export_validated_original_prefix_and_other_21_inputs": true
+  },
+  "boundary": "Actual isolated main build facts, not final combined-image runtime/security/redistribution approval."
+}

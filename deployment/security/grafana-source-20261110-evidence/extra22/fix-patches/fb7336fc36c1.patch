@@ -1,0 +1,751 @@
+From fb7336fc36c14e1ff869482c5085ddb9f39e1b86 Mon Sep 17 00:00:00 2001
+From: Mariell Hoversholm <mariell.hoversholm@grafana.com>
+Date: Wed, 13 May 2026 18:53:11 +0200
+Subject: [PATCH] patch(security): apply May 2026 patches (#124824)
+
+* patch(security): Access Control: Fix Editor can remove any annotation
+
+GL-Vuln: VUL-2026-0018
+GL-Public-After: 2026-05-12
+GL-Partner-Rel: 2026-04-27
+GL-Partner-Ack: 2026-02-17
+
+* patch(security): fix(live): limit input body to 500k
+
+GL-Vuln: VUL-2026-0031 https://ops.grafana-ops.net/a/grafana-vulnerabilityobs-app/first-party/63
+GL-Partner-Rel: 2026-04-09
+GL-Public-After: 2026-05-12
+GL-Partner-Ack: 2026-02-25T14:02:00Z
+
+* patch(security): fix(plugins): limit input resource sizes
+
+GL-Vuln: VUL-2026-0032 https://ops.grafana-ops.net/a/grafana-vulnerabilityobs-app/first-party/64
+GL-Partner-Rel: 2026-04-09
+GL-Public-After: 2026-05-12
+GL-Partner-Ack: 2026-02-25T14:02:00Z
+
+* patch(security): patch(security): fix broken access control in snapshot delete handler
+
+GL-Vuln: VUL-2026-0044 https://ops.grafana-ops.net/a/grafana-vulnerabilityobs-app/first-party/76
+GL-Partner-Rel: 2026-04-09
+GL-Public-After: 2026-05-12
+GL-Partner-Ack: 2026-03-31
+
+* patch(security): patch(security): fix auth proxy IPv6 bare whitelist parsing (main)
+
+GL-Vuln: VUL-2026-0045 https://ops.grafana-ops.net/a/grafana-vulnerabilityobs-app/first-party/77
+GL-Partner-Rel: 2026-04-09
+GL-Public-After: 2026-05-12
+GL-Partner-Ack: 2026-03-30
+
+* patch(security): Live: Avoid concurrent map read and map write
+
+GL-Vuln: VUL-2026-0049 https://ops.grafana-ops.net/a/grafana-vulnerabilityobs-app/first-party/81
+GL-Partner-Rel: 2026-04-09
+GL-Public-After: 2026-05-12
+GL-Partner-Ack: 2026-03-18
+
+* patch(security): Dashboards: Fix /import permission setting
+
+GL-Vuln: VUL-2026-0058 https://ops.grafana-ops.net/a/grafana-vulnerabilityobs-app/first-party/90
+GL-Partner-Rel: 2026-04-09
+GL-Public-After: 2026-05-12
+GL-Partner-Ack: 2026-03-24
+
+* patch(security): MSSQL, MySQL, postgres infinite loop exploit
+
+GL-Vuln: VUL-2026-0057 https://ops.grafana-ops.net/a/grafana-vulnerabilityobs-app/first-party/89
+GL-Partner-Rel: 2026-04-09
+GL-Public-After: 2026-05-12
+GL-Partner-Ack: 2026-03-20
+
+* patch(security): patch(security): ServiceAccounts RBAC cache invalidation on permission change
+
+GL-Vuln: VUL-2026-0061
+GL-Public-After: 2026-05-12
+GL-Partner-Rel: 2026-04-15
+GL-Partner-Ack: 2026-04-06
+
+* patch(security): SQL Expressions: Fix Security Bugs
+
+GL-Vuln: VUL-2026-0064
+GL-Public-After: 2026-05-12
+GL-Partner-Rel: 2026-04-27
+GL-Partner-Ack: 2026-04-11
+
+* fix: nolint gocyclo
+
+---------
+
+Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+---
+ pkg/api/accesscontrol.go                      |  8 +-
+ pkg/api/annotations.go                        | 16 +---
+ pkg/api/dashboard_snapshot.go                 | 12 ++-
+ pkg/api/plugin_resource.go                    | 10 ++-
+ pkg/api/plugin_resource_test.go               | 33 +++++++++
+ pkg/expr/sql/parser_allow.go                  | 73 +++++++++++++++----
+ .../resourcepermissions/service.go            | 40 +++++++++-
+ pkg/services/authn/clients/proxy.go           | 13 +++-
+ .../dashboards/service/dashboard_service.go   |  5 +-
+ pkg/services/live/managedstream/runner.go     |  2 +
+ pkg/services/live/pushhttp/push.go            |  1 +
+ .../accesscontrol/scope_migrator.go           | 51 ++++++++++++-
+ .../sqlstore/migrations/migrations.go         |  1 +
+ .../grafana-postgresql-datasource/macros.go   |  6 ++
+ .../sqleng/sql_engine.go                      |  2 +-
+ pkg/tsdb/mssql/sqleng/macros.go               |  7 ++
+ pkg/tsdb/mssql/sqleng/sql_engine.go           |  2 +-
+ pkg/tsdb/mysql/macros.go                      |  6 ++
+ pkg/tsdb/mysql/sqleng/sql_engine.go           |  2 +-
+ 19 files changed, 245 insertions(+), 45 deletions(-)
+
+diff --git a/pkg/api/accesscontrol.go b/pkg/api/accesscontrol.go
+index 4742d640a1868..2b10380cb7956 100644
+--- a/pkg/api/accesscontrol.go
++++ b/pkg/api/accesscontrol.go
+@@ -292,7 +292,7 @@ func FixedRoleRegistrations(viewersCanEdit, dsPermissionsEnforced bool) []ac.Rol
+ 				// Need to leave the permissions as they are, so that the seeder doesn't replace permissions when they have been removed from the basic role by the user
+ 				// Otherwise we could split this into ac.ScopeAnnotationsTypeOrganization and ac.ScopeAnnotationsTypeDashboard scopes and eventually remove the dashboard scope.
+ 				// https://github.com/grafana/identity-access-team/issues/524
+-				{Action: ac.ActionAnnotationsRead, Scope: ac.ScopeAnnotationsAll},
++				{Action: ac.ActionAnnotationsRead, Scope: ac.ScopeAnnotationsTypeOrganization},
+ 			},
+ 		},
+ 		Grants: []string{string(org.RoleViewer)},
+@@ -309,9 +309,9 @@ func FixedRoleRegistrations(viewersCanEdit, dsPermissionsEnforced bool) []ac.Rol
+ 				// Need to leave the permissions as they are, so that the seeder doesn't replace permissions when they have been removed from the basic role by the user
+ 				// Otherwise we could split this into ac.ScopeAnnotationsTypeOrganization and ac.ScopeAnnotationsTypeDashboard scopes and eventually remove the dashboard scope.
+ 				// https://github.com/grafana/identity-access-team/issues/524
+-				{Action: ac.ActionAnnotationsCreate, Scope: ac.ScopeAnnotationsAll},
+-				{Action: ac.ActionAnnotationsDelete, Scope: ac.ScopeAnnotationsAll},
+-				{Action: ac.ActionAnnotationsWrite, Scope: ac.ScopeAnnotationsAll},
++				{Action: ac.ActionAnnotationsCreate, Scope: ac.ScopeAnnotationsTypeOrganization},
++				{Action: ac.ActionAnnotationsDelete, Scope: ac.ScopeAnnotationsTypeOrganization},
++				{Action: ac.ActionAnnotationsWrite, Scope: ac.ScopeAnnotationsTypeOrganization},
+ 			},
+ 		},
+ 		Grants: []string{string(org.RoleEditor)},
+diff --git a/pkg/api/annotations.go b/pkg/api/annotations.go
+index 37ede180a1a9e..6c066ea7115ca 100644
+--- a/pkg/api/annotations.go
++++ b/pkg/api/annotations.go
+@@ -16,7 +16,6 @@ import (
+ 	"github.com/grafana/grafana/pkg/services/dashboards"
+ 	"github.com/grafana/grafana/pkg/services/featuremgmt"
+ 	"github.com/grafana/grafana/pkg/services/folder"
+-	"github.com/grafana/grafana/pkg/services/user"
+ 	"github.com/grafana/grafana/pkg/util"
+ 	"github.com/grafana/grafana/pkg/web"
+ )
+@@ -495,10 +494,10 @@ func (hs *HTTPServer) DeleteAnnotationByID(c *contextmodel.ReqContext) response.
+ 	return response.Success("Annotation deleted")
+ }
+ 
+-func findAnnotationByID(ctx context.Context, repo annotations.Repository, annotationID int64, user *user.SignedInUser) (*annotations.ItemDTO, response.Response) {
++func findAnnotationByID(ctx context.Context, repo annotations.Repository, annotationID int64, user identity.Requester) (*annotations.ItemDTO, response.Response) {
+ 	query := &annotations.ItemQuery{
+ 		AnnotationID: annotationID,
+-		OrgID:        user.OrgID,
++		OrgID:        user.GetOrgID(),
+ 		SignedInUser: user,
+ 	}
+ 	items, err := repo.Find(ctx, query)
+@@ -560,16 +559,9 @@ func AnnotationTypeScopeResolver(annotationsRepo annotations.Repository, feature
+ 
+ 		// tempUser is used to resolve annotation type.
+ 		// The annotation doesn't get returned to the real user, so real user's permissions don't matter here.
+-		tempUser := &user.SignedInUser{
+-			OrgID: orgID,
+-			Permissions: map[int64]map[string][]string{
+-				orgID: {
+-					accesscontrol.ActionAnnotationsRead: {accesscontrol.ScopeAnnotationsTypeOrganization, dashboards.ScopeDashboardsAll},
+-				},
+-			},
+-		}
++		tmpCtx, tempUser := identity.WithServiceIdentity(ctx, orgID)
+ 
+-		annotation, resp := findAnnotationByID(ctx, annotationsRepo, int64(annotationId), tempUser)
++		annotation, resp := findAnnotationByID(tmpCtx, annotationsRepo, int64(annotationId), tempUser)
+ 		if resp != nil {
+ 			return nil, errors.New("could not resolve annotation type")
+ 		}
+diff --git a/pkg/api/dashboard_snapshot.go b/pkg/api/dashboard_snapshot.go
+index 392e98cd921cb..4ef5f7fb8cc2a 100644
+--- a/pkg/api/dashboard_snapshot.go
++++ b/pkg/api/dashboard_snapshot.go
+@@ -224,9 +224,15 @@ func (hs *HTTPServer) DeleteDashboardSnapshot(c *contextmodel.ReqContext) respon
+ 	// to the user’s org role, which for editors and admins would essentially always be allowed here. With RBAC,
+ 	// all permissions must be explicit, so the lack of a rule for dashboard 0 means the guardian will reject.
+ 	dashboardID := queryResult.Dashboard.Get("id").MustInt64()
+-
+-	if dashboardID != 0 {
+-		evaluator := ac.EvalPermission(dashboards.ActionDashboardsWrite, dashboards.ScopeDashboardsProvider.GetResourceScope(strconv.FormatInt(dashboardID, 10)))
++	dashboardUID := queryResult.Dashboard.Get("uid").MustString()
++
++	if dashboardID != 0 || dashboardUID != "" {
++		var evaluator ac.Evaluator
++		if dashboardID != 0 {
++			evaluator = ac.EvalPermission(dashboards.ActionDashboardsWrite, dashboards.ScopeDashboardsProvider.GetResourceScope(strconv.FormatInt(dashboardID, 10)))
++		} else {
++			evaluator = ac.EvalPermission(dashboards.ActionDashboardsWrite, dashboards.ScopeDashboardsProvider.GetResourceScopeUID(dashboardUID))
++		}
+ 		canEdit, err := hs.AccessControl.Evaluate(c.Req.Context(), c.SignedInUser, evaluator)
+ 		// check for permissions only if the dashboard is found
+ 		if err != nil && !errors.Is(err, dashboards.ErrDashboardNotFound) {
+diff --git a/pkg/api/plugin_resource.go b/pkg/api/plugin_resource.go
+index e216e79667548..f74b73038ea3f 100644
+--- a/pkg/api/plugin_resource.go
++++ b/pkg/api/plugin_resource.go
+@@ -19,6 +19,8 @@ import (
+ 	"github.com/grafana/grafana/pkg/web"
+ )
+ 
++const maxResourceBodySize = 128 * 1024 * 1024 // 128 MiB
++
+ // CallResource passes a resource call from a plugin to the backend plugin.
+ //
+ // /api/plugins/:pluginId/resources/*
+@@ -97,7 +99,7 @@ func (hs *HTTPServer) pluginResourceRequest(c *contextmodel.ReqContext) (*http.R
+ func (hs *HTTPServer) makePluginResourceRequest(w http.ResponseWriter, req *http.Request, pCtx backend.PluginContext) error {
+ 	proxyutil.PrepareProxyRequest(req)
+ 
+-	body, err := io.ReadAll(req.Body)
++	body, err := io.ReadAll(http.MaxBytesReader(w, req.Body, maxResourceBodySize))
+ 	if err != nil {
+ 		return fmt.Errorf("failed to read request body: %w", err)
+ 	}
+@@ -116,6 +118,12 @@ func (hs *HTTPServer) makePluginResourceRequest(w http.ResponseWriter, req *http
+ }
+ 
+ func handleCallResourceError(err error, reqCtx *contextmodel.ReqContext) {
++	var maxBytesErr *http.MaxBytesError
++	if errors.As(err, &maxBytesErr) {
++		resp := response.Error(http.StatusRequestEntityTooLarge, "Request body too large", err)
++		resp.WriteTo(reqCtx)
++		return
++	}
+ 	resp := response.ErrOrFallback(http.StatusInternalServerError, "Failed to call resource", err)
+ 	resp.WriteTo(reqCtx)
+ }
+diff --git a/pkg/api/plugin_resource_test.go b/pkg/api/plugin_resource_test.go
+index aa808cd418d6e..0be22fab99e1b 100644
+--- a/pkg/api/plugin_resource_test.go
++++ b/pkg/api/plugin_resource_test.go
+@@ -213,4 +213,37 @@ func TestIntegrationCallResource(t *testing.T) {
+ 		require.NoError(t, resp.Body.Close())
+ 		require.Equal(t, 500, resp.StatusCode)
+ 	})
++
++	t.Run("Test oversized request body returns 413", func(t *testing.T) {
++		// Send a body that exceeds the limit by 1 byte.
++		oversizedBody := io.LimitReader(zeroReader{}, maxResourceBodySize+1)
++		req := srv.NewPostRequest("/api/plugins/grafana-testdata-datasource/resources/test", oversizedBody)
++		webtest.RequestWithSignedInUser(req, &user.SignedInUser{UserID: 1, OrgID: 1, Permissions: map[int64]map[string][]string{
++			1: accesscontrol.GroupScopesByActionContext(context.Background(), []accesscontrol.Permission{
++				{Action: pluginaccesscontrol.ActionAppAccess, Scope: pluginaccesscontrol.ScopeProvider.GetResourceAllScope()},
++			}),
++		}})
++		resp, err := srv.SendJSON(req)
++		require.NoError(t, err)
++
++		bodyBytes, err := io.ReadAll(resp.Body)
++		require.NoError(t, err)
++
++		var responseBody struct {
++			Message string `json:"message"`
++		}
++		err = json.Unmarshal(bodyBytes, &responseBody)
++		require.NoError(t, err)
++		require.Equal(t, "Request body too large", responseBody.Message)
++		require.NoError(t, resp.Body.Close())
++		require.Equal(t, 413, resp.StatusCode)
++	})
++}
++
++// zeroReader is an io.Reader that returns an endless stream of zero bytes.
++type zeroReader struct{}
++
++func (zeroReader) Read(p []byte) (int, error) {
++	clear(p)
++	return len(p), nil
+ }
+diff --git a/pkg/expr/sql/parser_allow.go b/pkg/expr/sql/parser_allow.go
+index 14984ed00dcc4..93f5e57285653 100644
+--- a/pkg/expr/sql/parser_allow.go
++++ b/pkg/expr/sql/parser_allow.go
+@@ -16,29 +16,48 @@ func AllowQuery(refID, rawSQL string) (bool, error) {
+ 		return false, fmt.Errorf("error parsing sql: %s", err.Error())
+ 	}
+ 
+-	walkSubtree := func(node sqlparser.SQLNode) error {
+-		err := sqlparser.Walk(func(node sqlparser.SQLNode) (bool, error) {
++	// walkNodes validates all nodes in the AST against the allowlist.
++	// It supplements sqlparser.Walk to cover fields that upstream walkSubtree
++	// implementations skip. SetOp skips OrderBy/With/Limit, and Select skips
++	// Window, so those subtrees are walked explicitly here. Lock and Into are
++	// handled by rejecting them at the parent Select/SetOp node in allowedNode.
++	var walkNodes func(nodes ...sqlparser.SQLNode) error
++	walkNodes = func(nodes ...sqlparser.SQLNode) error {
++		return sqlparser.Walk(func(node sqlparser.SQLNode) (bool, error) {
+ 			if !allowedNode(node) {
+ 				if fT, ok := node.(*sqlparser.FuncExpr); ok {
+ 					return false, MakeBlockedNodeOrFuncError(refID, fT.Name.String(), true)
+ 				}
+ 				return false, MakeBlockedNodeOrFuncError(refID, fmt.Sprintf("%T", node), false)
+ 			}
+-			return true, nil
+-		}, node)
+ 
+-		if err != nil {
+-			var bn *ErrorWithCategory
+-			if !errors.As(err, &bn) {
+-				return fmt.Errorf("failed to parse SQL expression: %w", err)
++			// Explicitly walk fields that upstream walkSubtree implementations
++			// skip. Without this, functions placed in these fields bypass the
++			// allowlist entirely.
++			switch v := node.(type) {
++			case *sqlparser.SetOp:
++				// SetOp.walkSubtree only visits Left and Right, skipping
++				// OrderBy, With, Limit
++				if err := walkNodes(v.OrderBy, v.With, v.Limit); err != nil {
++					return false, err
++				}
++			case *sqlparser.Select:
++				// Select.walkSubtree skips Window and Lock.
++				if len(v.Window) > 0 {
++					if err := walkNodes(v.Window); err != nil {
++						return false, err
++					}
++				}
+ 			}
+-			return err
+-		}
+-
+-		return nil
++			return true, nil
++		}, nodes...)
+ 	}
+ 
+-	if err := walkSubtree(s); err != nil {
++	if err := walkNodes(s); err != nil {
++		var bn *ErrorWithCategory
++		if !errors.As(err, &bn) {
++			return false, fmt.Errorf("failed to parse SQL expression: %w", err)
++		}
+ 		return false, err
+ 	}
+ 
+@@ -74,7 +93,20 @@ func allowedNode(node sqlparser.SQLNode) (b bool) {
+ 	case *sqlparser.CharExpr:
+ 		return
+ 
+-	case sqlparser.ColIdent, *sqlparser.ColName, sqlparser.Columns, sqlparser.ColumnType:
++	case *sqlparser.ColName:
++		// Reject @@system variables (e.g. @@hostname, @@version, @@secure_file_priv).
++		// These are parsed as ColName with the @@ prefix in Name.val.
++		// Also reject @@global.hostname where @@ is in the Qualifier.
++		name := v.Name.String()
++		if strings.HasPrefix(name, "@@") || strings.HasPrefix(name, "@") {
++			return false
++		}
++		if qual := v.Qualifier.Name.String(); strings.HasPrefix(qual, "@@") {
++			return false
++		}
++		return
++
++	case sqlparser.ColIdent, sqlparser.Columns, sqlparser.ColumnType:
+ 		return
+ 
+ 	case sqlparser.Comments: // TODO: understand why some are pointer vs not
+@@ -104,6 +136,9 @@ func allowedNode(node sqlparser.SQLNode) (b bool) {
+ 	case sqlparser.GroupBy:
+ 		return
+ 
++	case *sqlparser.Frame, *sqlparser.FrameExtent, *sqlparser.FrameBound:
++		return
++
+ 	case *sqlparser.IndexHints:
+ 		return
+ 
+@@ -124,12 +159,15 @@ func allowedNode(node sqlparser.SQLNode) (b bool) {
+ 	case *sqlparser.JSONTableExpr, *sqlparser.JSONTableSpec, *sqlparser.JSONTableColDef:
+ 		return
+ 
+-	case *sqlparser.Select, sqlparser.SelectExprs, *sqlparser.ParenSelect:
++	case *sqlparser.Select:
++		return v.Lock == nil || v.Lock.Type == ""
++
++	case sqlparser.SelectExprs, *sqlparser.ParenSelect:
+ 		return
+ 
+ 	case *sqlparser.SetOp:
+ 		// SetOp.walkSubtree() does not traverse Into, so reject explicitly.
+-		return v.GetInto() == nil
++		return v.GetInto() == nil && (v.Lock == nil || v.Lock.Type == "")
+ 
+ 	case *sqlparser.StarExpr:
+ 		return
+@@ -146,6 +184,9 @@ func allowedNode(node sqlparser.SQLNode) (b bool) {
+ 	case *sqlparser.Over:
+ 		return
+ 
++	case sqlparser.Window, *sqlparser.WindowDef:
++		return
++
+ 	case *sqlparser.ParenExpr:
+ 		return
+ 
+diff --git a/pkg/services/accesscontrol/resourcepermissions/service.go b/pkg/services/accesscontrol/resourcepermissions/service.go
+index f6db803d1d93c..cafdb811acdcf 100644
+--- a/pkg/services/accesscontrol/resourcepermissions/service.go
++++ b/pkg/services/accesscontrol/resourcepermissions/service.go
+@@ -236,7 +236,7 @@ func (s *Service) SetUserPermission(ctx context.Context, orgID int64, user acces
+ 		}
+ 	}
+ 
+-	return s.store.SetUserResourcePermission(ctx, orgID, user, SetResourcePermissionCommand{
++	result, err := s.store.SetUserResourcePermission(ctx, orgID, user, SetResourcePermissionCommand{
+ 		Actions:           actions,
+ 		Permission:        permission,
+ 		Resource:          s.scopeResource(),
+@@ -244,6 +244,14 @@ func (s *Service) SetUserPermission(ctx context.Context, orgID int64, user acces
+ 		ResourceAttribute: s.options.ResourceAttribute,
+ 		DatasourceType:    datasourceType,
+ 	}, s.options.OnSetUser)
++
++	if err != nil {
++		return nil, err
++	}
++
++	s.clearUserPermissionCache(orgID, user.ID)
++
++	return result, nil
+ }
+ 
+ func (s *Service) SetTeamPermission(ctx context.Context, orgID, teamID int64, resourceID, permission string) (*accesscontrol.ResourcePermission, error) {
+@@ -368,11 +376,24 @@ func (s *Service) SetPermissions(
+ 		})
+ 	}
+ 
+-	return s.store.SetResourcePermissions(ctx, orgID, dbCommands, ResourceHooks{
++	result, err := s.store.SetResourcePermissions(ctx, orgID, dbCommands, ResourceHooks{
+ 		User:        s.options.OnSetUser,
+ 		Team:        s.options.OnSetTeam,
+ 		BuiltInRole: s.options.OnSetBuiltInRole,
+ 	})
++	if err != nil {
++		return nil, err
++	}
++
++	clearedUsers := make(map[int64]bool)
++	for _, cmd := range commands {
++		if cmd.UserID != 0 && !clearedUsers[cmd.UserID] {
++			s.clearUserPermissionCache(orgID, cmd.UserID)
++			clearedUsers[cmd.UserID] = true
++		}
++	}
++
++	return result, nil
+ }
+ 
+ func (s *Service) MapActions(permission accesscontrol.ResourcePermission) string {
+@@ -392,6 +413,21 @@ func (s *Service) DeleteResourcePermissions(ctx context.Context, orgID int64, re
+ 	})
+ }
+ 
++// clearUserPermissionCache invalidates the RBAC permission cache for a user.
++// It clears both regular user and service account cache keys since we don't
++// know the identity type from just the user ID.
++func (s *Service) clearUserPermissionCache(orgID int64, userID int64) {
++	s.service.ClearUserPermissionCache(&user.SignedInUser{
++		OrgID:  orgID,
++		UserID: userID,
++	})
++	s.service.ClearUserPermissionCache(&user.SignedInUser{
++		OrgID:            orgID,
++		UserID:           userID,
++		IsServiceAccount: true,
++	})
++}
++
+ func (s *Service) mapPermission(permission string) ([]string, error) {
+ 	if permission == "" {
+ 		return []string{}, nil
+diff --git a/pkg/services/authn/clients/proxy.go b/pkg/services/authn/clients/proxy.go
+index f20b1534a02d6..a2552725ce46d 100644
+--- a/pkg/services/authn/clients/proxy.go
++++ b/pkg/services/authn/clients/proxy.go
+@@ -7,7 +7,6 @@ import (
+ 	"fmt"
+ 	"hash/fnv"
+ 	"net"
+-	"path"
+ 	"strconv"
+ 	"strings"
+ 	"time"
+@@ -237,7 +236,17 @@ func parseAcceptList(s string) ([]*net.IPNet, error) {
+ func coerceProxyAddress(proxyAddr string) (*net.IPNet, error) {
+ 	proxyAddr = strings.TrimSpace(proxyAddr)
+ 	if !strings.Contains(proxyAddr, "/") {
+-		proxyAddr = path.Join(proxyAddr, "32")
++		ip := net.ParseIP(proxyAddr)
++		if ip == nil {
++			return nil, fmt.Errorf("could not parse the network: invalid IP address")
++		}
++
++		mask := 32
++		if ip.To4() == nil {
++			mask = 128
++		}
++
++		proxyAddr = fmt.Sprintf("%s/%d", proxyAddr, mask)
+ 	}
+ 
+ 	_, network, err := net.ParseCIDR(proxyAddr)
+diff --git a/pkg/services/dashboards/service/dashboard_service.go b/pkg/services/dashboards/service/dashboard_service.go
+index ed7f60bae6097..d0859cdaa2330 100644
+--- a/pkg/services/dashboards/service/dashboard_service.go
++++ b/pkg/services/dashboards/service/dashboard_service.go
+@@ -1144,7 +1144,10 @@ func (dr *DashboardServiceImpl) ImportDashboard(ctx context.Context, dto *dashbo
+ 		return nil, err
+ 	}
+ 
+-	dr.SetDefaultPermissions(ctx, dto, dash, false)
++	// new dashboard created
++	if dto.Dashboard.ID == 0 {
++		dr.SetDefaultPermissions(ctx, dto, dash, false)
++	}
+ 
+ 	return dash, nil
+ }
+diff --git a/pkg/services/live/managedstream/runner.go b/pkg/services/live/managedstream/runner.go
+index 1d6e137c403df..f54b9aff04556 100644
+--- a/pkg/services/live/managedstream/runner.go
++++ b/pkg/services/live/managedstream/runner.go
+@@ -72,7 +72,9 @@ func (r *Runner) GetManagedChannels(ns string) ([]*ManagedChannel, error) {
+ 		// Enrich with minute rate.
+ 		channel, _ := live.ParseChannel(managedChannel.Channel)
+ 		prefix := channel.Scope + "/" + channel.Namespace
++		r.mu.RLock()
+ 		namespaceStream, ok := r.streams[ns][prefix]
++		r.mu.RUnlock()
+ 		if ok {
+ 			managedChannel.MinuteRate = namespaceStream.minuteRate(channel.Path)
+ 		}
+diff --git a/pkg/services/live/pushhttp/push.go b/pkg/services/live/pushhttp/push.go
+index eee5d5e9fcbbc..7c7440b9790a2 100644
+--- a/pkg/services/live/pushhttp/push.go
++++ b/pkg/services/live/pushhttp/push.go
+@@ -59,6 +59,7 @@ func (g *Gateway) Handle(ctx *contextmodel.ReqContext) {
+ 	urlValues := ctx.Req.URL.Query()
+ 	frameFormat := pushurl.FrameFormatFromValues(urlValues)
+ 
++	ctx.Req.Body = http.MaxBytesReader(ctx.Resp, ctx.Req.Body, 500*1024) // 500k for each message
+ 	body, err := io.ReadAll(ctx.Req.Body)
+ 	if err != nil {
+ 		logger.Error("Error reading body", "error", err)
+diff --git a/pkg/services/sqlstore/migrations/accesscontrol/scope_migrator.go b/pkg/services/sqlstore/migrations/accesscontrol/scope_migrator.go
+index 10cc84a19d814..1b2b6d3183561 100644
+--- a/pkg/services/sqlstore/migrations/accesscontrol/scope_migrator.go
++++ b/pkg/services/sqlstore/migrations/accesscontrol/scope_migrator.go
+@@ -1,6 +1,8 @@
+ package accesscontrol
+ 
+ import (
++	"fmt"
++
+ 	"github.com/grafana/grafana/pkg/util/xorm"
+ 
+ 	"github.com/grafana/grafana/pkg/services/accesscontrol"
+@@ -8,7 +10,8 @@ import (
+ )
+ 
+ const (
+-	AlertingScopeRemovalMigrationID = "removing scope from alert.instances:read action migration"
++	AlertingScopeRemovalMigrationID           = "removing scope from alert.instances:read action migration"
++	AnnotationsAllScopeReplacementMigrationID = "replacing annotations:* scope with annotations:type:organization scope"
+ )
+ 
+ func AddAlertingScopeRemovalMigration(mg *migrator.Migrator) {
+@@ -31,3 +34,49 @@ func (p *alertingScopeRemovalMigrator) Exec(sess *xorm.Session, migrator *migrat
+ 	_, err := p.sess.Exec("UPDATE permission SET `scope` = '', `kind` = '', `attribute` = '', `identifier` = '' WHERE action = ?", accesscontrol.ActionAlertingInstanceRead)
+ 	return err
+ }
++
++func AddAnnotationsAllScopeReplacementMigration(mg *migrator.Migrator) {
++	mg.AddMigration(AnnotationsAllScopeReplacementMigrationID, &annotationsAllScopeReplacementMigrator{})
++}
++
++var _ migrator.CodeMigration = new(annotationsAllScopeReplacementMigrator)
++
++type annotationsAllScopeReplacementMigrator struct {
++	permissionMigrator
++}
++
++func (p *annotationsAllScopeReplacementMigrator) SQL(dialect migrator.Dialect) string {
++	return CodeMigrationSQL
++}
++
++func (p *annotationsAllScopeReplacementMigrator) Exec(sess *xorm.Session, migrator *migrator.Migrator) error {
++	p.sess = sess
++	p.dialect = migrator.Dialect
++
++	// Remove annotations:* rows where annotations:type:organization already exists
++	// for the same (action, role_id), to prevent a UNIQUE constraint violation on the UPDATE below.
++	// The derived table wrapper avoids MySQL error 1093 ("can't specify target table in FROM clause").
++	if _, err := p.sess.Exec(`DELETE FROM permission WHERE scope = 'annotations:*' AND action IN (?, ?, ?, ?) AND EXISTS (
++		SELECT 1 FROM (SELECT action, role_id FROM permission WHERE scope = 'annotations:type:organization') AS p2
++		WHERE p2.action = permission.action AND p2.role_id = permission.role_id
++	)`,
++		accesscontrol.ActionAnnotationsRead,
++		accesscontrol.ActionAnnotationsWrite,
++		accesscontrol.ActionAnnotationsCreate,
++		accesscontrol.ActionAnnotationsDelete,
++	); err != nil {
++		return fmt.Errorf("delete annotations:* permissions: %w", err)
++	}
++
++	_, err := p.sess.Exec("UPDATE permission SET `scope` = 'annotations:type:organization' WHERE action IN (?, ?, ?, ?) AND scope = 'annotations:*'",
++		accesscontrol.ActionAnnotationsRead,
++		accesscontrol.ActionAnnotationsWrite,
++		accesscontrol.ActionAnnotationsCreate,
++		accesscontrol.ActionAnnotationsDelete,
++	)
++	if err != nil {
++		return fmt.Errorf("update annotations:* permissions: %w", err)
++	}
++
++	return err
++}
+diff --git a/pkg/services/sqlstore/migrations/migrations.go b/pkg/services/sqlstore/migrations/migrations.go
+index 79fcf207194ec..788239544c66f 100644
+--- a/pkg/services/sqlstore/migrations/migrations.go
++++ b/pkg/services/sqlstore/migrations/migrations.go
+@@ -113,6 +113,7 @@ func (oss *OSSMigrations) AddMigration(mg *Migrator) {
+ 	ualert.AddRuleNotificationSettingsColumns(mg)
+ 
+ 	accesscontrol.AddAlertingScopeRemovalMigration(mg)
++	accesscontrol.AddAnnotationsAllScopeReplacementMigration(mg)
+ 
+ 	accesscontrol.AddManagedFolderAlertingSilencesActionsMigrator(mg)
+ 
+diff --git a/pkg/tsdb/grafana-postgresql-datasource/macros.go b/pkg/tsdb/grafana-postgresql-datasource/macros.go
+index e55d1f6d0e822..64f60d1530001 100644
+--- a/pkg/tsdb/grafana-postgresql-datasource/macros.go
++++ b/pkg/tsdb/grafana-postgresql-datasource/macros.go
+@@ -213,6 +213,9 @@ func (m *postgresMacroEngine) evaluateMacro(timeRange backend.TimeRange, query *
+ 		if err != nil {
+ 			return "", fmt.Errorf("error parsing interval %v", args[1])
+ 		}
++		if interval <= 0 {
++			return "", fmt.Errorf("interval must be positive, got %v", args[1])
++		}
+ 		if len(args) == 3 {
+ 			err := sqleng.SetupFillmode(query, interval, args[2])
+ 			if err != nil {
+@@ -257,6 +260,9 @@ func (m *postgresMacroEngine) evaluateMacro(timeRange backend.TimeRange, query *
+ 		if err != nil {
+ 			return "", fmt.Errorf("error parsing interval %v", args[1])
+ 		}
++		if interval <= 0 {
++			return "", fmt.Errorf("interval must be positive, got %v", args[1])
++		}
+ 		if len(args) == 3 {
+ 			err := sqleng.SetupFillmode(query, interval, args[2])
+ 			if err != nil {
+diff --git a/pkg/tsdb/grafana-postgresql-datasource/sqleng/sql_engine.go b/pkg/tsdb/grafana-postgresql-datasource/sqleng/sql_engine.go
+index cb1f7d2b07c75..239c2bff6ff4f 100644
+--- a/pkg/tsdb/grafana-postgresql-datasource/sqleng/sql_engine.go
++++ b/pkg/tsdb/grafana-postgresql-datasource/sqleng/sql_engine.go
+@@ -359,7 +359,7 @@ func (e *DataSourceHandler) processFrame(frame *data.Frame, qm *dataQueryModel,
+ 				}
+ 			}
+ 		}
+-		if qm.FillMissing != nil {
++		if qm.FillMissing != nil && qm.Interval > 0 {
+ 			frame = e.applyFill(frame, qm)
+ 		}
+ 	}
+diff --git a/pkg/tsdb/mssql/sqleng/macros.go b/pkg/tsdb/mssql/sqleng/macros.go
+index 61a81a69440ad..599ad1229bfdd 100644
+--- a/pkg/tsdb/mssql/sqleng/macros.go
++++ b/pkg/tsdb/mssql/sqleng/macros.go
+@@ -144,6 +144,7 @@ func (m *msSQLMacroEngine) Interpolate(query *backend.DataQuery, timeRange backe
+ 	return sql, nil
+ }
+ 
++//nolint:gocyclo // The complexity was added in a patch. We do not want to modify the patch right now.
+ func (m *msSQLMacroEngine) evaluateMacro(timeRange backend.TimeRange, query *backend.DataQuery, name string, args []string) (string, error) {
+ 	switch name {
+ 	case "__time":
+@@ -174,6 +175,9 @@ func (m *msSQLMacroEngine) evaluateMacro(timeRange backend.TimeRange, query *bac
+ 		if err != nil {
+ 			return "", fmt.Errorf("error parsing interval %v", args[1])
+ 		}
++		if interval <= 0 {
++			return "", fmt.Errorf("interval must be positive, got %v", args[1])
++		}
+ 		if len(args) == 3 {
+ 			err := SetupFillmode(query, interval, args[2])
+ 			if err != nil {
+@@ -209,6 +213,9 @@ func (m *msSQLMacroEngine) evaluateMacro(timeRange backend.TimeRange, query *bac
+ 		if err != nil {
+ 			return "", fmt.Errorf("error parsing interval %v", args[1])
+ 		}
++		if interval <= 0 {
++			return "", fmt.Errorf("interval must be positive, got %v", args[1])
++		}
+ 		if len(args) == 3 {
+ 			err := SetupFillmode(query, interval, args[2])
+ 			if err != nil {
+diff --git a/pkg/tsdb/mssql/sqleng/sql_engine.go b/pkg/tsdb/mssql/sqleng/sql_engine.go
+index e6b9784c7868a..1e3f506e8e3d6 100644
+--- a/pkg/tsdb/mssql/sqleng/sql_engine.go
++++ b/pkg/tsdb/mssql/sqleng/sql_engine.go
+@@ -460,7 +460,7 @@ func (e *DataSourceHandler) processResponse(qm *dataQueryModel, rows *sql.Rows,
+ 				}
+ 			}
+ 		}
+-		if qm.FillMissing != nil {
++		if qm.FillMissing != nil && qm.Interval > 0 {
+ 			frame = e.applyFill(frame, qm, logger)
+ 		}
+ 	}
+diff --git a/pkg/tsdb/mysql/macros.go b/pkg/tsdb/mysql/macros.go
+index 1f75d81a7c7bb..a2c6e29c483c4 100644
+--- a/pkg/tsdb/mysql/macros.go
++++ b/pkg/tsdb/mysql/macros.go
+@@ -174,6 +174,9 @@ func (m *mySQLMacroEngine) evaluateMacro(timeRange backend.TimeRange, query *bac
+ 		if err != nil {
+ 			return "", fmt.Errorf("error parsing interval %v", args[1])
+ 		}
++		if interval <= 0 {
++			return "", fmt.Errorf("interval must be positive, got %v", args[1])
++		}
+ 		if len(args) == 3 {
+ 			err := sqleng.SetupFillmode(query, interval, args[2])
+ 			if err != nil {
+@@ -209,6 +212,9 @@ func (m *mySQLMacroEngine) evaluateMacro(timeRange backend.TimeRange, query *bac
+ 		if err != nil {
+ 			return "", fmt.Errorf("error parsing interval %v", args[1])
+ 		}
++		if interval <= 0 {
++			return "", fmt.Errorf("interval must be positive, got %v", args[1])
++		}
+ 		if len(args) == 3 {
+ 			err := sqleng.SetupFillmode(query, interval, args[2])
+ 			if err != nil {
+diff --git a/pkg/tsdb/mysql/sqleng/sql_engine.go b/pkg/tsdb/mysql/sqleng/sql_engine.go
+index 2eb3ddede7a86..2080de4f6f141 100644
+--- a/pkg/tsdb/mysql/sqleng/sql_engine.go
++++ b/pkg/tsdb/mysql/sqleng/sql_engine.go
+@@ -348,7 +348,7 @@ func (e *DataSourceHandler) executeQuery(query backend.DataQuery, wg *sync.WaitG
+ 				}
+ 			}
+ 		}
+-		if qm.FillMissing != nil {
++		if qm.FillMissing != nil && qm.Interval > 0 {
+ 			frame = e.applyFill(frame, qm)
+ 		}
+ 	}

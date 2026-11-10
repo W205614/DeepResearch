@@ -1,0 +1,90 @@
+From 0626158536f9f7985e875c86609c9e0649a560d4 Mon Sep 17 00:00:00 2001
+From: Dominik Prokop <dominik.prokop@grafana.com>
+Date: Fri, 5 Jun 2020 15:53:50 +0200
+Subject: [PATCH 1/2] Fix XSS vulnerability with Graph series overrides
+
+---
+ .../datasource/elasticsearch/partials/query.editor.html       | 2 +-
+ .../plugins/datasource/testdata/partials/query.editor.html    | 4 ++--
+ public/app/plugins/panel/graph/series_overrides_ctrl.ts       | 3 ++-
+ 3 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/public/app/plugins/datasource/elasticsearch/partials/query.editor.html b/public/app/plugins/datasource/elasticsearch/partials/query.editor.html
+index 48fea594ad696..1100bc44df40f 100644
+--- a/public/app/plugins/datasource/elasticsearch/partials/query.editor.html
++++ b/public/app/plugins/datasource/elasticsearch/partials/query.editor.html
+@@ -7,7 +7,7 @@
+ 		</div>
+ 		<div class="gf-form max-width-15">
+ 			<label class="gf-form-label query-keyword">Alias</label>
+-			<input type="text" class="gf-form-input" ng-model="ctrl.target.alias" spellcheck='false' placeholder="alias patterns" ng-blur="ctrl.refresh()">
++			<input type="text" class="gf-form-input" ng-model="ctrl.target.alias" spellcheck='false' placeholder="alias patterns" ng-blur="ctrl.refresh()" pattern='[^<>&\\"]+'>
+ 		</div>
+ 	</div>
+ 
+diff --git a/public/app/plugins/datasource/testdata/partials/query.editor.html b/public/app/plugins/datasource/testdata/partials/query.editor.html
+index e7014def49fa7..e1a4ad671cb15 100644
+--- a/public/app/plugins/datasource/testdata/partials/query.editor.html
++++ b/public/app/plugins/datasource/testdata/partials/query.editor.html
+@@ -12,7 +12,7 @@
+ 		</div>
+ 		<div class="gf-form">
+ 			<label class="gf-form-label query-keyword width-7">Alias</label>
+-			<input type="text" class="gf-form-input width-14" placeholder="optional" ng-model="ctrl.target.alias" ng-change="ctrl.refresh()" ng-model-onblur>
++			<input type="text" class="gf-form-input width-14" placeholder="optional" ng-model="ctrl.target.alias" ng-model-onblur pattern='[^<>&\\"]+'>
+ 		</div>
+ 		<div ng-if="ctrl.showLabels" class="gf-form gf-form--grow">
+ 			<label class="gf-form-label query-keyword width-7">
+@@ -215,7 +215,7 @@
+ 		</div>
+ 	</div>
+ 
+-	
++
+ 	<div class="gf-form-inline" ng-if="ctrl.scenario.id === 'arrow'">
+ 		<div class="gf-form" style="width: 100%;">
+ 			<textarea type="string"
+diff --git a/public/app/plugins/panel/graph/series_overrides_ctrl.ts b/public/app/plugins/panel/graph/series_overrides_ctrl.ts
+index 3b5c18eebb1c2..f7db7e045a845 100644
+--- a/public/app/plugins/panel/graph/series_overrides_ctrl.ts
++++ b/public/app/plugins/panel/graph/series_overrides_ctrl.ts
+@@ -1,5 +1,6 @@
+ import _ from 'lodash';
+ import coreModule from 'app/core/core_module';
++import { textUtil } from '@grafana/data';
+ 
+ /** @ngInject */
+ export function SeriesOverridesCtrl($scope: any, $element: JQuery, popoverSrv: any) {
+@@ -79,7 +80,7 @@ export function SeriesOverridesCtrl($scope: any, $element: JQuery, popoverSrv: a
+ 
+   $scope.getSeriesNames = () => {
+     return _.map($scope.ctrl.seriesList, series => {
+-      return series.alias;
++      return textUtil.escapeHtml(series.alias);
+     });
+   };
+ 
+
+From 71943a333e6d7d118da708e6efd27744cb87246b Mon Sep 17 00:00:00 2001
+From: Dominik Prokop <dominik.prokop@grafana.com>
+Date: Fri, 5 Jun 2020 16:03:59 +0200
+Subject: [PATCH 2/2] Update
+ public/app/plugins/datasource/testdata/partials/query.editor.html
+
+---
+ .../app/plugins/datasource/testdata/partials/query.editor.html  | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/public/app/plugins/datasource/testdata/partials/query.editor.html b/public/app/plugins/datasource/testdata/partials/query.editor.html
+index e1a4ad671cb15..ff628350c7b1a 100644
+--- a/public/app/plugins/datasource/testdata/partials/query.editor.html
++++ b/public/app/plugins/datasource/testdata/partials/query.editor.html
+@@ -12,7 +12,7 @@
+ 		</div>
+ 		<div class="gf-form">
+ 			<label class="gf-form-label query-keyword width-7">Alias</label>
+-			<input type="text" class="gf-form-input width-14" placeholder="optional" ng-model="ctrl.target.alias" ng-model-onblur pattern='[^<>&\\"]+'>
++			<input type="text" class="gf-form-input width-14" placeholder="optional" ng-model="ctrl.target.alias" ng-model-onblur ng-change="ctrl.refresh()" pattern='[^<>&\\"]+'>
+ 		</div>
+ 		<div ng-if="ctrl.showLabels" class="gf-form gf-form--grow">
+ 			<label class="gf-form-label query-keyword width-7">

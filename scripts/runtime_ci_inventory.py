@@ -14,6 +14,10 @@ from scripts import check_grafana_release_20261107 as candidate  # noqa: E402
 
 APPROVED_MINIO = "deepresearch-approved-minio:20261026"
 APPROVED_GRAFANA = candidate.APPROVED_TAG
+SOURCE_GRAFANA = 'deepresearch-grafana-source:20261110'
+SOURCE_PROFILE = 'grafana-source-20261110'
+SOURCE_DOCKERFILE = 'deployment/docker/Dockerfile.grafana-20261110'
+SOURCE_PROFILE_PATH = Path('deployment/security/grafana-source-20261110-profile.json')
 
 
 def load_grafana_binding(root):
@@ -26,11 +30,23 @@ def load_grafana_binding(root):
     return request['binding']
 
 
+def load_grafana_source_profile(root):
+    from scripts import check_grafana_source_build_20261110 as source_candidate
+
+    profile = source_candidate.load_profile(root)
+    if (profile['profile'] != SOURCE_PROFILE or profile['image'] != SOURCE_GRAFANA
+            or profile['context'] != '.' or profile['dockerfile'] != SOURCE_DOCKERFILE
+            or profile['source_inputs'].get(SOURCE_DOCKERFILE) != candidate.file_hash(root / SOURCE_DOCKERFILE)):
+        raise ValueError('Grafana source profile does not bind the exact current build entry')
+    return profile
+
+
 def grafana_selection(root):
-    binding = load_grafana_binding(root)
-    return {'image': APPROVED_GRAFANA, 'profile': 'fixed20261107', 'request_sha256': candidate.REQUEST_SHA256,
-            'authorization_sha256': candidate.file_hash(root / candidate.AUTH_PATH),
-            'authorization_verified': True, 'subject': candidate.subject_for(binding)}
+    load_grafana_source_profile(root)
+    digest = candidate.file_hash(root / SOURCE_PROFILE_PATH)
+    return {'image': SOURCE_GRAFANA, 'profile': 'grafana-source-20261110',
+            'profile_sha256': digest, 'mode': 'source_build', 'published': False,
+            'subject': {'build_profile': SOURCE_PROFILE, 'profile_sha256': digest}}
 
 
 def matrices(configuration, root):
@@ -41,14 +57,22 @@ def matrices(configuration, root):
     load_binding(root)
     if "grafana" in configuration.get("services", {}):
         grafana = configuration["services"]["grafana"]
-        if grafana.get("build") or grafana.get("image") != APPROVED_GRAFANA:
-            raise ValueError("Grafana must load its independently approved artifact; rebuild requires renewed review")
-        load_grafana_binding(root)
+        if grafana.get("build"):
+            raise ValueError('Grafana source builds must use the profile-bound build entry')
+        if grafana.get('image') == SOURCE_GRAFANA:
+            load_grafana_source_profile(root)
+        elif grafana.get('image') == APPROVED_GRAFANA:
+            load_grafana_binding(root)
+        else:
+            raise ValueError('Grafana must select an exact approved artifact or the reviewed source profile')
     by_reference, custom = {}, {}
     for name, definition in configuration["services"].items():
         reference = definition.get("image")
         if reference and "@" in reference and not re.fullmatch(r"[^@\s]+@sha256:[0-9a-f]{64}", reference):
             raise ValueError("Runtime image digest must be a complete SHA256 descriptor")
+        if ((reference == APPROVED_MINIO and name != "minio")
+                or (reference in {APPROVED_GRAFANA, SOURCE_GRAFANA} and name != "grafana")):
+            raise ValueError("Approved or source-profile namespaces cannot spread to another service")
         if definition.get("build"):
             build = definition["build"]
             context = Path(build["context"]).resolve()
@@ -61,12 +85,11 @@ def matrices(configuration, root):
         reference = definition.get("image")
         if not reference:
             raise ValueError("Runtime service has no inspectable image")
-        if (reference == APPROVED_MINIO and name != "minio") or (reference == APPROVED_GRAFANA and name != "grafana"):
-            raise ValueError("Approved artifact namespaces cannot spread to another service")
         by_reference.setdefault(reference, []).append(name)
     matrix = {"include": [{"name": "-".join(services), "image": image, "services": ",".join(services),
                             "approved_artifact": image in {APPROVED_MINIO, APPROVED_GRAFANA},
-                            "artifact": "minio" if image == APPROVED_MINIO else "grafana" if image == APPROVED_GRAFANA else "",
+                            "artifact": "minio" if image == APPROVED_MINIO else "grafana" if image in {APPROVED_GRAFANA, SOURCE_GRAFANA} else "",
+                            "source_build_profile": SOURCE_PROFILE if image == SOURCE_GRAFANA else "",
                             "native_jvm_profile": "keycloak" if "keycloak" in services else ""}
                            for image, services in sorted(by_reference.items())]}
     custom_matrix = {"include": [{"name": services[0], "context": key[0], "dockerfile": key[1], "services": ",".join(services),

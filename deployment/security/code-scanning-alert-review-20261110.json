@@ -39,8 +39,8 @@
         "business-backend/src/main/java/com/deepresearch/business/config/DeepResearchProperties.java": "94211bb68e6735e0200f9c660814a64bd87ac205b944f060eb5a6920ded15ad3",
         "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java": "9729af95b2760eb00fdc36f8e86f8abaa7f0f4deb999f976a9342d7a93365aea",
         "business-backend/src/test/java/com/deepresearch/business/service/AgentClientOriginTest.java": "2d837c336c37be593a4240b3490b8503382ddbe7831f01fbf8a9ee5de71493d1",
-        "deployment/security/codeql-finding-review-20261110.md": "3ea15557a5d185df627faaca1238ee6df4d8cbb53dad6cd1bab6506af22d77f8",
-        "deployment/security/codeql-reviewed-findings-20261110.json": "6be6fa60b6dc29d5a3f4b9ce313d83416dce85e20c1d3e87a997286f98ca2417"
+        "deployment/security/codeql-finding-review-20261110.md": "7585522420e6a8cb160ef2b173460762833e8128790a259ed0a4b779d8824948",
+        "deployment/security/codeql-reviewed-findings-20261110.json": "3dc95f54209edf29f269ef5070abacbcef300a52b1b60fe466442a2c5c750107"
       }
     },
     {
@@ -67,8 +67,8 @@
         "business-backend/src/main/java/com/deepresearch/business/config/DeepResearchProperties.java": "94211bb68e6735e0200f9c660814a64bd87ac205b944f060eb5a6920ded15ad3",
         "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java": "9729af95b2760eb00fdc36f8e86f8abaa7f0f4deb999f976a9342d7a93365aea",
         "business-backend/src/test/java/com/deepresearch/business/service/AgentClientOriginTest.java": "2d837c336c37be593a4240b3490b8503382ddbe7831f01fbf8a9ee5de71493d1",
-        "deployment/security/codeql-finding-review-20261110.md": "3ea15557a5d185df627faaca1238ee6df4d8cbb53dad6cd1bab6506af22d77f8",
-        "deployment/security/codeql-reviewed-findings-20261110.json": "6be6fa60b6dc29d5a3f4b9ce313d83416dce85e20c1d3e87a997286f98ca2417"
+        "deployment/security/codeql-finding-review-20261110.md": "7585522420e6a8cb160ef2b173460762833e8128790a259ed0a4b779d8824948",
+        "deployment/security/codeql-reviewed-findings-20261110.json": "3dc95f54209edf29f269ef5070abacbcef300a52b1b60fe466442a2c5c750107"
       }
     },
     {
@@ -96,8 +96,8 @@
         "business-backend/src/main/java/com/deepresearch/business/security/ApiRateLimitFilter.java": "67ee1e48aa7749d8e0873977d2be30db1e40e08257d63a5f25765e7a984a3533",
         "business-backend/src/main/java/com/deepresearch/business/security/PlatformAccountFilter.java": "6907c46c7e1e452794a5a0fd37d1cfedd8923dc918f4bbe8c0d48530edbc312c",
         "business-backend/src/test/java/com/deepresearch/business/config/SecurityConfigBearerTest.java": "21e2841835abc51f50e5ba06a6cc67f091cc5f900a2330605259972ac2fbf603",
-        "deployment/security/codeql-finding-review-20261110.md": "3ea15557a5d185df627faaca1238ee6df4d8cbb53dad6cd1bab6506af22d77f8",
-        "deployment/security/codeql-reviewed-findings-20261110.json": "6be6fa60b6dc29d5a3f4b9ce313d83416dce85e20c1d3e87a997286f98ca2417",
+        "deployment/security/codeql-finding-review-20261110.md": "7585522420e6a8cb160ef2b173460762833e8128790a259ed0a4b779d8824948",
+        "deployment/security/codeql-reviewed-findings-20261110.json": "3dc95f54209edf29f269ef5070abacbcef300a52b1b60fe466442a2c5c750107",
         "frontend/src/api.ts": "b2fa83c547576f376a59d572cb689a882a3d52d0d509dfa5ae78e88a462f0e52"
       }
     },
@@ -1553,7 +1553,7 @@
       "intended_action": "verify_automatically_fixed",
       "justification": "The isolated HTTPS fixture explicitly sets minimum_version=TLSv1_2. Real local CA/HTTPS tests still pass. No dismissal or rule exception is granted; the new scan must confirm the result disappeared.",
       "evidence_sha256": {
-        "deployment/security/codeql-finding-review-20261110.md": "3ea15557a5d185df627faaca1238ee6df4d8cbb53dad6cd1bab6506af22d77f8",
+        "deployment/security/codeql-finding-review-20261110.md": "7585522420e6a8cb160ef2b173460762833e8128790a259ed0a4b779d8824948",
         "tests/test_oidc_tls.py": "92958dd4fddadaa170c89a501d0bf962c5258612e0d78358c17eb723dfa74afc"
       }
     },
@@ -1857,11 +1857,11 @@
       "justification": "This byte-pinned upstream SQLite release note is offline hash-checked audit evidence outside the frontend build context/webroot. The exact document also contains no mtimelink node, so the flagged conditional href assignment does not execute. The original upstream evidence and raw scan remain unchanged.",
       "evidence_sha256": {
         "Dockerfile": "66d6ffccb8f8f7416f98c62081562f81f9cc76c95747ec176125b28964eea508",
-        "compose.yaml": "39255c0c18bc0b13e05ea7fe1f8090da2f9c4b09b4ebc24ba9b28f3e2930b5df",
+        "compose.yaml": "c8b0e862f51e8df6ec8ddf8254656491a939cbb9bf9231d31b545d449df7dc0e",
         "deployment/security/agent-native-evidence/supplement-20261107/sqlite-release-3_54_1.html": "69bf98f8cb8730c88b01414cdc4436fb3c65443dae405957b40efab9976f1e12",
         "deployment/security/agent-native-fixed-code-supplement-20261107.json": "f0960cbc117072656b5038706634e11f79281fe876f84642fa234953f25338df",
-        "deployment/security/codeql-finding-review-20261110.md": "3ea15557a5d185df627faaca1238ee6df4d8cbb53dad6cd1bab6506af22d77f8",
-        "deployment/security/codeql-reviewed-findings-20261110.json": "6be6fa60b6dc29d5a3f4b9ce313d83416dce85e20c1d3e87a997286f98ca2417",
+        "deployment/security/codeql-finding-review-20261110.md": "7585522420e6a8cb160ef2b173460762833e8128790a259ed0a4b779d8824948",
+        "deployment/security/codeql-reviewed-findings-20261110.json": "3dc95f54209edf29f269ef5070abacbcef300a52b1b60fe466442a2c5c750107",
         "frontend/Dockerfile": "d4a1203b866ad35a2a0dfd7e5972beab8e08e4e021f3f50075075862942dc8a7",
         "frontend/nginx.conf": "9dfa67b7fe4d3159b2dabf772c51a82e625b3757de35ca37bd36db297c15ccb2",
         "scripts/check_agent_native_packages.py": "a61f5a7ad61481aa3a88f8432db57dffd545027248cf861fcd766a01c99374d3"

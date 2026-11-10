@@ -1,0 +1,157 @@
+{
+  "schema": "grafana-source-runtime-technical-review-v1",
+  "actor": "codex-glibc-candidate-reviewer-b",
+  "actor_type": "AI agent; not independent human approval",
+  "reviewed_at_utc": "2026-11-10T12:21:32.479611+00:00",
+  "subject": {
+    "profile": "grafana-source-20261110",
+    "source_inputs_sha256": "36176fb556f1133208524d14741acc5f72446267b20844f1436b0c6c88d8644e",
+    "native_sha256": {
+      "usr/share/grafana/bin/grafana": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64": "599f81b6cb18227c719074099c3f5f3dd0928d8a5b3d2a55ac8a02a0210fa10c",
+      "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64": "c7798b1bbea42ddad8a7259fd1c3c5846cdd8d89f7f1f8034858871e392de9e3",
+      "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64": "73db79edd48a44159ee66583ae4a646a0e52aaf0cbfa252aece9753273961aa1",
+      "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64": "019b92b07c3bd36176e28e2ee1693d69b423a129b6e6a9945e98adffa53c3ee1",
+      "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64": "3343e2ff45c76058067bb945baf7c0fc341edf0b647b59d3c8e2a95211df73a4",
+      "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64": "d290d4840deb7e1edffaee453271ca87d02094f3f8ab0f3e27680605f1f5fd5a",
+      "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64": "50ba9d95a58a20a52a9131a44d04313c955a20ccc199b02e29f474b70af6fd3a",
+      "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64": "e4abc533b0ed7cddea5d1753a2556971dd50e5d3c7b1d8cac1ace9d4ae018a8c",
+      "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64": "4bd3b2b5d547a73c02a231eb5fa1231f167b1c1a7e46a61687916440c6c0771a",
+      "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64": "c4ab7df53197950cd6bcb36235d72c7b5c268f00ecda2ee13b6962d34181394c",
+      "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64": "5c3f2027bcb5d6b03e219230a9a90bf8e1511d46e7a1536b1efb991839da4157",
+      "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": "58a9b276af17f22a5c9729ff1da2bd248f9e69add6e25e8a495df00065837c1d",
+      "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": "1ef41b794a8c882213ab5826d82bbe9a1d5d05b3a9068e86065e12190aef9865"
+    },
+    "runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+    "complete_expected_sha256": "e242aadc3fe037ea3ea7607deaf67f2f546518f8461569d26e9b19283e901598",
+    "technical_evidence_sha256": "099af4019a3e3b5a3f37cce5c224ddf271b203b84baa0d4bd03415c88dc7c47f",
+    "reviewed_findings_sha256": "62a52125ed1438c5794734ef60746a4f01580b21c4479da770ca58244388152d"
+  },
+  "subject_sha256": "e2d465e28c2cf2b9c7bc8094e3e2814509a2121de56920280c2e56020f0ac1c5",
+  "facts_passed": true,
+  "risk_acceptance": false,
+  "binary_redistribution_approved": false,
+  "prior_contributions": {
+    "main_thrift_dependency_build_and_compatibility": true,
+    "base_28_disposition_technical_material": true,
+    "busybox_original_source_read_and_high_level_boundary_suggestion": true,
+    "busybox_patch_author": false,
+    "busybox_build_script_author": false,
+    "busybox_regression_script_author": false,
+    "original_50_or_53_test_preparer_or_executor": false,
+    "independence_limit": "Separate agent cross-review with disclosed prior main-build and technical-disposition contributions; neither external auditor nor human authorization."
+  },
+  "actual_checks": {
+    "source_input_hashes": 85,
+    "evidence_hashes": 392,
+    "runtime_rootfs_members_rehashed": 15694,
+    "runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+    "runtime_main_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+    "fourteen_elf_closures_reexecuted": true,
+    "main_graph_packages": 4200,
+    "unchanged_plugin_elf_count": 13,
+    "runtime_raw_scan_rows": {
+      "Trivy": 40,
+      "Grype": 10
+    },
+    "runtime_raw_counts": {
+      "Trivy": {
+        "CRITICAL": 2,
+        "HIGH": 11,
+        "MEDIUM": 20,
+        "LOW": 2,
+        "UNKNOWN": 5
+      },
+      "Grype": {
+        "HIGH": 2,
+        "MEDIUM": 3,
+        "UNKNOWN": 5
+      }
+    },
+    "source_a3": {
+      "raw_sha256": "26dbfa246a8d25521f12a0108e98263e2b6d89a2ce3be60e5a7f9679e125b3a2",
+      "completion_sha256": "8ccb90bbf4454c61975e701c6c90535be68ec145cfe7d61ca168220d8c612605",
+      "source_commit": "1618abef8476f8f7f72ae2bde49fc800db6bca84",
+      "mode": "private_wip_preflight_only",
+      "remote_final_sha_claim": false,
+      "targets": 79,
+      "raw_rows": 71,
+      "all71_technical_proof_calls_reexecuted": true,
+      "raw_counts": {
+        "CRITICAL": 0,
+        "HIGH": 26,
+        "MEDIUM": 12,
+        "LOW": 0,
+        "UNKNOWN": 33
+      }
+    },
+    "negative_scanner_cases_rejected": [
+      "new LOW",
+      "missing row",
+      "duplicate row",
+      "severity change",
+      "Grype ignoredMatches",
+      "scanner errors",
+      "wrong Engine ID",
+      "wrong diff_ids",
+      "wrong portable config ID",
+      "missing package inventory",
+      "duplicate target",
+      "missing native row"
+    ],
+    "negative_source_cases_rejected": [
+      "extra LOW exact tuple",
+      "missing exact tuple",
+      "changed package inventory"
+    ],
+    "normal_preparing_gate_rejected": true,
+    "normal_no_build_rejected": true,
+    "prepare_plus_no_build_rejected": true,
+    "negative_no_build_output_directory_created": false,
+    "extra22_actual_source_files_byte_equal_official_ce471_git": 18
+  },
+  "busybox_cross_review": {
+    "actual_runtime_binary_sha256": "68dba7ae251db2ecca77e6ef405bf781111dc41f87c93c30205745fdbe2c697e",
+    "actual_ssl_client_sha256": "8b23a9dbfea3da8c6da65b93c0fc6d979a82245c17c40d8fbf94d531263b98b4",
+    "binsh_is_symlink_to_same_multicall_payload": true,
+    "patch_review": "Actual target.host and target.path checked for raw bytes 1..32 or127 before open_socket/HTTP writer; every establish_session redirect reentry and proxy absolute target covered. DNS resolution can precede this guard. Percent encodings remain literal. FTP and caller-specified extra headers are outside this HTTP request-target CVE scope.",
+    "ssl_client_review": "Official Alpine SHA512-bound C source is a preconnected-fd TLS byte relay, not an HTTP URL/request-line builder; this specific writer CVE does not apply to its distinct unchanged ELF.",
+    "fresh_reruns": [
+      {
+        "case_count": 50,
+        "passed": true,
+        "script_sha256": "829dd3f55d353af3e4ba55f46cc840fd77276c90419110bdb4b46821ff820591",
+        "stdout_sha256": "55ee778598618930e2210e66fe50ec9f099af5bddf1ea28da248bd562c7e75d4",
+        "stderr_sha256": "7cce53944087368c643bdff9cb7be4bef37adeb979794eca0683e142ec1fccc9",
+        "helper_image_id": "sha256:1f204c1d63bf37163231f510dced1ec6bad3385f85001401ebbc899710a1d031",
+        "container_name": "dr-security-review-busybox-cd5ee87c5837",
+        "own_container_removed": true
+      },
+      {
+        "case_count": 53,
+        "passed": true,
+        "script_sha256": "8889b2b2fd9796d908003f26a18f5c6f0aec21931f82f9805d78aefeca304964",
+        "stdout_sha256": "10d9c7ab0183db186097a710db66be639c1285b55aede6e14553ae11cfda462d",
+        "stderr_sha256": "502e8122d166638004228bd587c88a0c93c0ef2a96b02d6eda43ba1e7612772d",
+        "helper_image_id": "sha256:56e9cd5cafaa41a3474202cbcae2af2e9efe432df83068b11e33b5c3f12ccca2",
+        "container_name": "dr-security-review-busybox-6c48c58babf0",
+        "own_container_removed": true,
+        "target_musl_and_ssl_client_bound_to_current_full_manifest": true,
+        "original_binary_direct_crlf_relative_redirect_and_proxy_host_injection_reproduced": true
+      }
+    ],
+    "rerun_boundary": "network none; read-only rootfs; own tmpfs only; no business binds or volumes; cap-drop ALL (53 adds only SYS_CHROOT); --pull never; --rm; exact name absence checked. Fresh full raw stdout was hashed in memory; tool display truncated bulk cases; original bound 50+53 raw transcripts remain public evidence."
+  },
+  "thrift_cross_review": "All five Apache CNA snapshots explicitly affect Go before0.25.0 and recommend0.25.0. Actual main module/buildinfo/4200 graph selects0.25.0; inspected official0.24-to0.25 Go changes include bounded container/minimum remaining-byte checks, incremental string reads, iterative empty frame handling and limited decompression. Actual Arrow Parquet callers are in the compiled closure. No server-absence exemption was used.",
+  "extra22_cross_review": "Checked all22 CNA/disposition records, official fixes and18 actual source snapshots against ce471 Git bytes. Independently read URL sanitization and opt-out, snapshot constructor/callers, email-priority login, protected contact update authorization, SQL AST recursive traversal, both permission-cache identities, invite org authorization and correlations org predicates. Retained moved-plugin sources and native module/ELF scopes were checked; historic frontend exploit reproducers were not rerun.",
+  "findings": [],
+  "limitations": [
+    "This is technical fact review of the exact subject, not human approval, legal opinion or authorization to redistribute the full third-party image.",
+    "Source A3 is an explicitly recorded private WIP preflight, not final pushed-source CI.",
+    "Raw scanner findings remain40/10 and source71; zero unresolved means only exact technical dispositions, not zero vulnerabilities.",
+    "All fourteen full closures are evidenced; unchanged13 plugins are not claimed rebuilt with Thrift0.25.",
+    "No new full Grafana service startup was performed by reviewer B; exact startup receipt/payload and actual rootfs were independently verified.",
+    "Maintained-patch proof helper used its own transient TemporaryDirectory/gitapply scratch; no tracked source was modified.",
+    "Fresh BusyBox test container stdout hashes are retained here; bulk tool transcript truncation is not represented as a separately preserved complete new raw attachment."
+  ]
+}

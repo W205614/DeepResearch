@@ -48,10 +48,10 @@ jobs:
       - name: Derive the actual current Compose and CI runtime selection
         if: always() && steps.source_scan.outcome == 'success'
         run: python scripts/runtime_ci_inventory.py
-      - name: Enforce exact source findings against the approved current runtime selection
+      - name: Enforce exact source findings against the current reviewed source profile
         if: always() && steps.source_scan.outcome == 'success'
         run: >-
-          python scripts/check_grafana_source_fixed_20261107.py
+          python scripts/check_grafana_source_scan_20261110.py
           --scan .cache/eval/source-fs/raw.json
           --scan-receipt .cache/eval/source-fs/completion.json
           --original-verdict .cache/eval/source-fs-original-verdict.json
@@ -105,7 +105,7 @@ jobs:
       - uses: actions/checkout@v7
         with: { fetch-depth: 0, fetch-tags: true }
       - name: Verify immutable ancestor artifact source reuse
-        if: matrix.approved_artifact == true
+        if: matrix.approved_artifact == true || matrix.source_build_profile == 'grafana-source-20261110'
         run: python scripts/check_artifact_source_reuse.py --output .cache/eval/artifact-source-reuse.json
       - name: Load each independently approved OCI artifact without rebuilding
         if: matrix.artifact == 'minio'
@@ -115,12 +115,17 @@ jobs:
           SCAN_TAG: deepresearch-scan-${{ matrix.artifact }}:ci
           GITHUB_TOKEN: ${{ github.token }}
       - name: Load only the independently reviewed maintenance Grafana artifact without rebuilding
-        if: matrix.artifact == 'grafana'
+        if: matrix.artifact == 'grafana' && matrix.source_build_profile == ''
         run: python scripts/fetch_grafana_fixed_20261107.py --tag deepresearch-scan-grafana:20261107 --output .cache/eval/approved-grafana-load.json
         env:
           GITHUB_TOKEN: ${{ github.token }}
+      - name: Build the reviewed Grafana main and BusyBox without publishing a third-party image
+        if: matrix.source_build_profile == 'grafana-source-20261110'
+        run: python scripts/build_grafana_source_20261110.py --output-dir .cache/eval/grafana-source-build
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - name: Scan ordinary runtime image with unchanged HIGH gate
-        if: matrix.approved_artifact != true
+        if: matrix.approved_artifact != true && matrix.source_build_profile == ''
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ matrix.image }}
@@ -130,12 +135,12 @@ jobs:
           timeout: 5m
           format: json
           output: runtime-image.json
-      - name: Keep complete raw approved-image scan for exact disposition
+      - name: Keep complete raw approved or source-built image scan for exact disposition
         id: approved_scan
-        if: matrix.approved_artifact == true
+        if: matrix.approved_artifact == true || matrix.source_build_profile == 'grafana-source-20261110'
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: ${{ matrix.artifact == 'grafana' && 'deepresearch-scan-grafana:20261107' || 'deepresearch-scan-minio:ci' }}
+          image-ref: ${{ matrix.source_build_profile == 'grafana-source-20261110' && matrix.image || matrix.artifact == 'grafana' && 'deepresearch-scan-grafana:20261107' || 'deepresearch-scan-minio:ci' }}
           severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
           scanners: vuln,secret
           list-all-pkgs: 'true'
@@ -145,7 +150,7 @@ jobs:
           format: json
           output: runtime-image.json
       - name: Reject every secret finding independently of vulnerability dispositions
-        if: matrix.approved_artifact == true && steps.approved_scan.outcome == 'success'
+        if: (matrix.approved_artifact == true || matrix.source_build_profile == 'grafana-source-20261110') && steps.approved_scan.outcome == 'success'
         run: >-
           python scripts/check_image_secrets.py
           --scan runtime-image.json --scanner-exit-code 0
@@ -162,10 +167,10 @@ jobs:
           --exact2-output .cache/eval/minio-openpgp2-disposition.json
           --output .cache/eval/minio-ci-disposition.json
       - name: Collect complete native and full Grafana reports
-        if: matrix.artifact == 'grafana' && steps.approved_scan.outcome == 'success'
+        if: matrix.artifact == 'grafana' && matrix.source_build_profile == '' && steps.approved_scan.outcome == 'success'
         run: python scripts/scan_grafana_fixed_20261107.py --image deepresearch-scan-grafana:20261107 --output-dir .cache/eval/grafana-native
       - name: Enforce exact independently authorized Grafana per-finding dispositions
-        if: matrix.artifact == 'grafana' && steps.approved_scan.outcome == 'success'
+        if: matrix.artifact == 'grafana' && matrix.source_build_profile == '' && steps.approved_scan.outcome == 'success'
         run: >-
           python scripts/check_grafana_release_20261107.py
           --archive .cache/eval/approved-grafana-fixed-20261107.oci.tar
@@ -173,6 +178,24 @@ jobs:
           --grype-scan .cache/eval/grafana-native/full-grype.json
           --sbom .cache/eval/grafana-native/full-syft.json
           --inspect .cache/eval/approved-grafana-load-inspect.json
+          --scanner-exit-code 0 --grype-exit-code 0
+          --output .cache/eval/grafana-ci-disposition.json
+      - name: Collect complete native and full source-built Grafana reports
+        if: matrix.source_build_profile == 'grafana-source-20261110' && steps.approved_scan.outcome == 'success'
+        run: >-
+          python scripts/scan_grafana_source_20261110.py
+          --image deepresearch-grafana-source:20261110
+          --build-receipt .cache/eval/grafana-source-build/build-receipt.json
+          --output-dir .cache/eval/grafana-native
+      - name: Enforce all-severity findings against the actual source-built Grafana subject
+        if: matrix.source_build_profile == 'grafana-source-20261110' && steps.approved_scan.outcome == 'success'
+        run: >-
+          python scripts/check_grafana_source_build_20261110.py
+          --build-receipt .cache/eval/grafana-source-build/build-receipt.json
+          --scan runtime-image.json
+          --grype-scan .cache/eval/grafana-native/full-grype.json
+          --sbom .cache/eval/grafana-native/full-syft.json
+          --inspect .cache/eval/grafana-source-build/image-inspect.json
           --scanner-exit-code 0 --grype-exit-code 0
           --output .cache/eval/grafana-ci-disposition.json
       - name: Verify actual native JVM bytes and native/full advisory coverage
@@ -195,6 +218,8 @@ jobs:
             .cache/eval/approved-image-secret-gate.json
             .cache/eval/artifact-source-reuse.json
             .cache/eval/grafana-native/*.json
+            .cache/eval/grafana-source-build/build-receipt.json
+            .cache/eval/grafana-source-build/image-inspect.json
             .cache/eval/native-jvm/*.json
   application-image-scan:
     needs: inventory-runtime

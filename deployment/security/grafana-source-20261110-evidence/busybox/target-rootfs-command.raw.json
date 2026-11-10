@@ -1,0 +1,21 @@
+[
+  "docker",
+  "run",
+  "--name",
+  "dr-busybox-wget-regression-20261110chroot",
+  "--network",
+  "none",
+  "--read-only",
+  "--tmpfs",
+  "/tmp:rw,noexec,nosuid,size=64m",
+  "--cap-drop",
+  "ALL",
+  "--cap-add",
+  "SYS_CHROOT",
+  "--rm",
+  "-i",
+  "--entrypoint",
+  "python3",
+  "dr-busybox-grafana-probe:20261110",
+  "-"
+]

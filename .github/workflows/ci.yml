@@ -84,10 +84,18 @@ jobs:
         run: python scripts/fetch_approved_image.py
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      - name: Load the exact approved Grafana artifact before Compose startup
-        run: python scripts/fetch_grafana_fixed_20261107.py
+      - name: Build the exact reviewed Grafana source profile before Compose startup
+        run: python scripts/build_grafana_source_20261110.py --output-dir .cache/eval/grafana-source-build
         env:
           GITHUB_TOKEN: ${{ github.token }}
+      - uses: actions/upload-artifact@v6
+        if: always() && hashFiles('.cache/eval/grafana-source-build/build-receipt.json') != ''
+        with:
+          name: enterprise-grafana-source-${{ github.sha }}
+          path: |
+            .cache/eval/grafana-source-build/build-receipt.json
+            .cache/eval/grafana-source-build/image-inspect.json
+          if-no-files-found: error
       - name: Validate the maintained collector with the current complete telemetry configuration
         run: |
           docker compose build otel-collector

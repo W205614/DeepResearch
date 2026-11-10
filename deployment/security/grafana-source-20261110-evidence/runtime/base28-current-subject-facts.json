@@ -1,0 +1,2651 @@
+{
+  "schema": "grafana-current-subject-base-dispositions-20261110-v1",
+  "status": "TECHNICAL_FACTS_ONLY_PENDING_PARENT_AND_INDEPENDENT_REVIEW",
+  "generated_at_utc": "2026-11-10T11:17:26.812781+00:00",
+  "subject": {
+    "image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+    "runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+    "portable_config_digest": "sha256:f49f4048e182532b48e4087e1e07b81b6e85f29f74438853fcd5b64a41626d3c",
+    "actual_main_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+    "actual_product_version": "13.2.5",
+    "actual_upstream_commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+    "fourteen_native_sha256": {
+      "usr/share/grafana/bin/grafana": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64": "599f81b6cb18227c719074099c3f5f3dd0928d8a5b3d2a55ac8a02a0210fa10c",
+      "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64": "c7798b1bbea42ddad8a7259fd1c3c5846cdd8d89f7f1f8034858871e392de9e3",
+      "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64": "73db79edd48a44159ee66583ae4a646a0e52aaf0cbfa252aece9753273961aa1",
+      "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64": "019b92b07c3bd36176e28e2ee1693d69b423a129b6e6a9945e98adffa53c3ee1",
+      "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64": "3343e2ff45c76058067bb945baf7c0fc341edf0b647b59d3c8e2a95211df73a4",
+      "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64": "d290d4840deb7e1edffaee453271ca87d02094f3f8ab0f3e27680605f1f5fd5a",
+      "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64": "50ba9d95a58a20a52a9131a44d04313c955a20ccc199b02e29f474b70af6fd3a",
+      "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64": "e4abc533b0ed7cddea5d1753a2556971dd50e5d3c7b1d8cac1ace9d4ae018a8c",
+      "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64": "4bd3b2b5d547a73c02a231eb5fa1231f167b1c1a7e46a61687916440c6c0771a",
+      "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64": "c4ab7df53197950cd6bcb36235d72c7b5c268f00ecda2ee13b6962d34181394c",
+      "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64": "5c3f2027bcb5d6b03e219230a9a90bf8e1511d46e7a1536b1efb991839da4157",
+      "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": "58a9b276af17f22a5c9729ff1da2bd248f9e69add6e25e8a495df00065837c1d",
+      "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": "1ef41b794a8c882213ab5826d82bbe9a1d5d05b3a9068e86065e12190aef9865"
+    },
+    "main_complete_package_count": 4200,
+    "actual_main_native_changed_modules": [
+      "github.com/apache/thrift"
+    ],
+    "retained_plugin_count": 13
+  },
+  "raw_report_counts": {
+    "Trivy": 40,
+    "Grype": 10
+  },
+  "reviewed_counts": {
+    "Trivy": 18,
+    "Grype": 10
+  },
+  "reviewed_total": 28,
+  "pending_total": 22,
+  "disposition_counts": {
+    "FIXED": 2,
+    "NOT_AFFECTED": 26
+  },
+  "reviewed_findings": [
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2018-15727",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "CRITICAL",
+      "raw_severity": "CRITICAL",
+      "canonical_id": "CVE-2018-15727",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "ACTUAL_FIXED_PRODUCT_SOURCE_REBOUND_TO_CURRENT_MAIN_NOT_SYNTHETIC_GO_SEMVER",
+      "why": "For this exact current main ELF eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433, actual startup reports Grafana 13.2.5 at ce471d869a4810cd83c987dd3521c4b67689dbb6. The scanner's synthetic v0.0.0 pseudo-version is retained, but the primary advisory for CVE-2018-15727 limits affected/fixed real product branches as: 4.6.4 and5.2.3; CNA limits the affected old branches. The current upstream product/source identity is outside those affected branches; main native tuples changed only Thrift 0.24.0 to 0.25.0, not Grafana core source. This row is re-bound to the new runtime manifest, without inheriting the old main ELF or artifact authorization.",
+      "primary_fixed_or_affected_scope": "4.6.4 and5.2.3; CNA limits the affected old branches",
+      "primary_url": "https://cveawg.mitre.org/api/cve/CVE-2018-15727",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/CVE-2018-15727.json",
+          "sha256": "b8239f750a748d34078ff7a6fcc9347d049625766221f28811b70a90cac61320",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/grafana-v13.2.5-ref.json",
+          "sha256": "9c2e38b69045591641fca11044624e5d3a1f3496b9e71aba64b04c46dbc1d66b",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/grafana-v13.2.5-annotated-tag.json",
+          "sha256": "fb2ca1ada07edaa183546f4d9d4b1cf2495e4a77f3780a439e8fcb51bee193b0",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/native-buildinfo.json",
+          "sha256": "ada217f20ccad22243cbb6ca9eddb97e5974ebcbe8196fdc0f7223b111a323af",
+          "role": "current_main_native_module_identity"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.json.gz",
+          "sha256": "6946d310e1b5d4a80abe0e143ad04a42b23040887744713fde9588e6aa2191ba",
+          "role": "current_complete_main_production_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.receipt.json",
+          "sha256": "0c687e50b142801905b286b1bedfa2a9c05dc7437e0c51066d10c3febcfba453",
+          "role": "current_main_complete_graph_receipt"
+        }
+      ],
+      "technical_facts": {},
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2023-3128",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "CRITICAL",
+      "raw_severity": "CRITICAL",
+      "canonical_id": "CVE-2023-3128",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "ACTUAL_FIXED_PRODUCT_SOURCE_REBOUND_TO_CURRENT_MAIN_NOT_SYNTHETIC_GO_SEMVER",
+      "why": "For this exact current main ELF eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433, actual startup reports Grafana 13.2.5 at ce471d869a4810cd83c987dd3521c4b67689dbb6. The scanner's synthetic v0.0.0 pseudo-version is retained, but the primary advisory for CVE-2023-3128 limits affected/fixed real product branches as: 10.0.1 plus backports9.5.5/9.4.13/9.3.16/9.2.20/8.5.27. The current upstream product/source identity is outside those affected branches; main native tuples changed only Thrift 0.24.0 to 0.25.0, not Grafana core source. This row is re-bound to the new runtime manifest, without inheriting the old main ELF or artifact authorization.",
+      "primary_fixed_or_affected_scope": "10.0.1 plus backports9.5.5/9.4.13/9.3.16/9.2.20/8.5.27",
+      "primary_url": "https://grafana.com/blog/grafana-security-release-for-cve-2023-3128/",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/CVE-2023-3128-official-blog.html",
+          "sha256": "dc756229af4a5eb8ea5db53667b2c801794fbd208bf661e2ba9dceb37e8f3c64",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/grafana-v13.2.5-ref.json",
+          "sha256": "9c2e38b69045591641fca11044624e5d3a1f3496b9e71aba64b04c46dbc1d66b",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/grafana-v13.2.5-annotated-tag.json",
+          "sha256": "fb2ca1ada07edaa183546f4d9d4b1cf2495e4a77f3780a439e8fcb51bee193b0",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/native-buildinfo.json",
+          "sha256": "ada217f20ccad22243cbb6ca9eddb97e5974ebcbe8196fdc0f7223b111a323af",
+          "role": "current_main_native_module_identity"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.json.gz",
+          "sha256": "6946d310e1b5d4a80abe0e143ad04a42b23040887744713fde9588e6aa2191ba",
+          "role": "current_complete_main_production_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.receipt.json",
+          "sha256": "0c687e50b142801905b286b1bedfa2a9c05dc7437e0c51066d10c3febcfba453",
+          "role": "current_main_complete_graph_receipt"
+        }
+      ],
+      "technical_facts": {},
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2020-12458",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "HIGH",
+      "raw_severity": "HIGH",
+      "canonical_id": "CVE-2020-12458",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "ACTUAL_FIXED_PRODUCT_SOURCE_REBOUND_TO_CURRENT_MAIN_NOT_SYNTHETIC_GO_SEMVER",
+      "why": "For this exact current main ELF eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433, actual startup reports Grafana 13.2.5 at ce471d869a4810cd83c987dd3521c4b67689dbb6. The scanner's synthetic v0.0.0 pseudo-version is retained, but the primary advisory for CVE-2020-12458 limits affected/fixed real product branches as: Current exact source uses SQLite file permissions0640. The current upstream product/source identity is outside those affected branches; main native tuples changed only Thrift 0.24.0 to 0.25.0, not Grafana core source. This row is re-bound to the new runtime manifest, without inheriting the old main ELF or artifact authorization. The exact current upstream sqlstore source proof explicitly uses SQLite file mode 0640; no assumption based only on absence of a server or configuration is used.",
+      "primary_fixed_or_affected_scope": "Current exact source uses SQLite file permissions0640",
+      "primary_url": "https://github.com/grafana/grafana/commit/102448040d5132460e3b0013e03ebedec0677e00",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/CVE-2020-12458.json",
+          "sha256": "3687e1b1cb06e9d5770bb7cad5c5ddaec47073620f5b8a0dc673d93a1fd1033b",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/grafana-v13.2.5-ref.json",
+          "sha256": "9c2e38b69045591641fca11044624e5d3a1f3496b9e71aba64b04c46dbc1d66b",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/grafana-v13.2.5-annotated-tag.json",
+          "sha256": "fb2ca1ada07edaa183546f4d9d4b1cf2495e4a77f3780a439e8fcb51bee193b0",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/grafana13.2.5-sqlstore.go",
+          "sha256": "cf383f3dd65e04c80a3972ea3c9d54d75aa5061ca4474ea0ace89365140445c7",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/native-buildinfo.json",
+          "sha256": "ada217f20ccad22243cbb6ca9eddb97e5974ebcbe8196fdc0f7223b111a323af",
+          "role": "current_main_native_module_identity"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.json.gz",
+          "sha256": "6946d310e1b5d4a80abe0e143ad04a42b23040887744713fde9588e6aa2191ba",
+          "role": "current_complete_main_production_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.receipt.json",
+          "sha256": "0c687e50b142801905b286b1bedfa2a9c05dc7437e0c51066d10c3febcfba453",
+          "role": "current_main_complete_graph_receipt"
+        }
+      ],
+      "technical_facts": {},
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2021-39226",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "HIGH",
+      "raw_severity": "HIGH",
+      "canonical_id": "CVE-2021-39226",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "ACTUAL_FIXED_PRODUCT_SOURCE_REBOUND_TO_CURRENT_MAIN_NOT_SYNTHETIC_GO_SEMVER",
+      "why": "For this exact current main ELF eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433, actual startup reports Grafana 13.2.5 at ce471d869a4810cd83c987dd3521c4b67689dbb6. The scanner's synthetic v0.0.0 pseudo-version is retained, but the primary advisory for CVE-2021-39226 limits affected/fixed real product branches as: 7.5.11 and8.1.6; affected<=8.1.5. The current upstream product/source identity is outside those affected branches; main native tuples changed only Thrift 0.24.0 to 0.25.0, not Grafana core source. This row is re-bound to the new runtime manifest, without inheriting the old main ELF or artifact authorization.",
+      "primary_fixed_or_affected_scope": "7.5.11 and8.1.6; affected<=8.1.5",
+      "primary_url": "https://github.com/grafana/grafana/security/advisories/GHSA-69j6-29vr-p3j9",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/CVE-2021-39226-official-advisory.html",
+          "sha256": "b4742359d97d14217db14c29d329d8696dbadaaff22d4e6e73a4d76bbeb508f4",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/grafana-v13.2.5-ref.json",
+          "sha256": "9c2e38b69045591641fca11044624e5d3a1f3496b9e71aba64b04c46dbc1d66b",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/grafana-v13.2.5-annotated-tag.json",
+          "sha256": "fb2ca1ada07edaa183546f4d9d4b1cf2495e4a77f3780a439e8fcb51bee193b0",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/native-buildinfo.json",
+          "sha256": "ada217f20ccad22243cbb6ca9eddb97e5974ebcbe8196fdc0f7223b111a323af",
+          "role": "current_main_native_module_identity"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.json.gz",
+          "sha256": "6946d310e1b5d4a80abe0e143ad04a42b23040887744713fde9588e6aa2191ba",
+          "role": "current_complete_main_production_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.receipt.json",
+          "sha256": "0c687e50b142801905b286b1bedfa2a9c05dc7437e0c51066d10c3febcfba453",
+          "role": "current_main_complete_graph_receipt"
+        }
+      ],
+      "technical_facts": {},
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2022-35957",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "HIGH",
+      "raw_severity": "HIGH",
+      "canonical_id": "CVE-2022-35957",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "ACTUAL_FIXED_PRODUCT_SOURCE_REBOUND_TO_CURRENT_MAIN_NOT_SYNTHETIC_GO_SEMVER",
+      "why": "For this exact current main ELF eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433, actual startup reports Grafana 13.2.5 at ce471d869a4810cd83c987dd3521c4b67689dbb6. The scanner's synthetic v0.0.0 pseudo-version is retained, but the primary advisory for CVE-2022-35957 limits affected/fixed real product branches as: >=9.1.6 or>=8.5.13. The current upstream product/source identity is outside those affected branches; main native tuples changed only Thrift 0.24.0 to 0.25.0, not Grafana core source. This row is re-bound to the new runtime manifest, without inheriting the old main ELF or artifact authorization.",
+      "primary_fixed_or_affected_scope": ">=9.1.6 or>=8.5.13",
+      "primary_url": "https://grafana.com/security/security-advisories/cve-2022-35957/",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/CVE-2022-35957-official.html",
+          "sha256": "89af249778a9ed85f992c4bd49a8b2b94f0c12b192228ffa9a54df532f24a54b",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/grafana-v13.2.5-ref.json",
+          "sha256": "9c2e38b69045591641fca11044624e5d3a1f3496b9e71aba64b04c46dbc1d66b",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/grafana-v13.2.5-annotated-tag.json",
+          "sha256": "fb2ca1ada07edaa183546f4d9d4b1cf2495e4a77f3780a439e8fcb51bee193b0",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/native-buildinfo.json",
+          "sha256": "ada217f20ccad22243cbb6ca9eddb97e5974ebcbe8196fdc0f7223b111a323af",
+          "role": "current_main_native_module_identity"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.json.gz",
+          "sha256": "6946d310e1b5d4a80abe0e143ad04a42b23040887744713fde9588e6aa2191ba",
+          "role": "current_complete_main_production_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.receipt.json",
+          "sha256": "0c687e50b142801905b286b1bedfa2a9c05dc7437e0c51066d10c3febcfba453",
+          "role": "current_main_complete_graph_receipt"
+        }
+      ],
+      "technical_facts": {},
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2022-39307",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "HIGH",
+      "raw_severity": "HIGH",
+      "canonical_id": "CVE-2022-39307",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "ACTUAL_FIXED_PRODUCT_SOURCE_REBOUND_TO_CURRENT_MAIN_NOT_SYNTHETIC_GO_SEMVER",
+      "why": "For this exact current main ELF eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433, actual startup reports Grafana 13.2.5 at ce471d869a4810cd83c987dd3521c4b67689dbb6. The scanner's synthetic v0.0.0 pseudo-version is retained, but the primary advisory for CVE-2022-39307 limits affected/fixed real product branches as: >=9.2.4 or>=8.5.15. The current upstream product/source identity is outside those affected branches; main native tuples changed only Thrift 0.24.0 to 0.25.0, not Grafana core source. This row is re-bound to the new runtime manifest, without inheriting the old main ELF or artifact authorization.",
+      "primary_fixed_or_affected_scope": ">=9.2.4 or>=8.5.15",
+      "primary_url": "https://grafana.com/security/security-advisories/cve-2022-39307/",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/CVE-2022-39307-official.html",
+          "sha256": "13beee174d0ae861d0454ac58aeab07ff4b5a81840261f7e33f1e62725a9c24e",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/grafana-v13.2.5-ref.json",
+          "sha256": "9c2e38b69045591641fca11044624e5d3a1f3496b9e71aba64b04c46dbc1d66b",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/grafana-v13.2.5-annotated-tag.json",
+          "sha256": "fb2ca1ada07edaa183546f4d9d4b1cf2495e4a77f3780a439e8fcb51bee193b0",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/native-buildinfo.json",
+          "sha256": "ada217f20ccad22243cbb6ca9eddb97e5974ebcbe8196fdc0f7223b111a323af",
+          "role": "current_main_native_module_identity"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.json.gz",
+          "sha256": "6946d310e1b5d4a80abe0e143ad04a42b23040887744713fde9588e6aa2191ba",
+          "role": "current_complete_main_production_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.receipt.json",
+          "sha256": "0c687e50b142801905b286b1bedfa2a9c05dc7437e0c51066d10c3febcfba453",
+          "role": "current_main_complete_graph_receipt"
+        }
+      ],
+      "technical_facts": {},
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2023-2801",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "HIGH",
+      "raw_severity": "HIGH",
+      "canonical_id": "CVE-2023-2801",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "ACTUAL_FIXED_PRODUCT_SOURCE_REBOUND_TO_CURRENT_MAIN_NOT_SYNTHETIC_GO_SEMVER",
+      "why": "For this exact current main ELF eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433, actual startup reports Grafana 13.2.5 at ce471d869a4810cd83c987dd3521c4b67689dbb6. The scanner's synthetic v0.0.0 pseudo-version is retained, but the primary advisory for CVE-2023-2801 limits affected/fixed real product branches as: >=9.4.12 or>=9.5.3. The current upstream product/source identity is outside those affected branches; main native tuples changed only Thrift 0.24.0 to 0.25.0, not Grafana core source. This row is re-bound to the new runtime manifest, without inheriting the old main ELF or artifact authorization.",
+      "primary_fixed_or_affected_scope": ">=9.4.12 or>=9.5.3",
+      "primary_url": "https://grafana.com/security/security-advisories/cve-2023-2801/",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/CVE-2023-2801-official.html",
+          "sha256": "1a5a20e81b6232645fae6924655c2b0cf44284d1cb1bf2d00f7b253cbf240b45",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/grafana-v13.2.5-ref.json",
+          "sha256": "9c2e38b69045591641fca11044624e5d3a1f3496b9e71aba64b04c46dbc1d66b",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/grafana-v13.2.5-annotated-tag.json",
+          "sha256": "fb2ca1ada07edaa183546f4d9d4b1cf2495e4a77f3780a439e8fcb51bee193b0",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/native-buildinfo.json",
+          "sha256": "ada217f20ccad22243cbb6ca9eddb97e5974ebcbe8196fdc0f7223b111a323af",
+          "role": "current_main_native_module_identity"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.json.gz",
+          "sha256": "6946d310e1b5d4a80abe0e143ad04a42b23040887744713fde9588e6aa2191ba",
+          "role": "current_complete_main_production_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.receipt.json",
+          "sha256": "0c687e50b142801905b286b1bedfa2a9c05dc7437e0c51066d10c3febcfba453",
+          "role": "current_main_complete_graph_receipt"
+        }
+      ],
+      "technical_facts": {},
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2025-6023",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "HIGH",
+      "raw_severity": "HIGH",
+      "canonical_id": "CVE-2025-6023",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "ACTUAL_FIXED_PRODUCT_SOURCE_REBOUND_TO_CURRENT_MAIN_NOT_SYNTHETIC_GO_SEMVER",
+      "why": "For this exact current main ELF eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433, actual startup reports Grafana 13.2.5 at ce471d869a4810cd83c987dd3521c4b67689dbb6. The scanner's synthetic v0.0.0 pseudo-version is retained, but the primary advisory for CVE-2025-6023 limits affected/fixed real product branches as: 12.0.2+security-01 and backports; bypass also fixed in12.1.2. The current upstream product/source identity is outside those affected branches; main native tuples changed only Thrift 0.24.0 to 0.25.0, not Grafana core source. This row is re-bound to the new runtime manifest, without inheriting the old main ELF or artifact authorization.",
+      "primary_fixed_or_affected_scope": "12.0.2+security-01 and backports; bypass also fixed in12.1.2",
+      "primary_url": "https://grafana.com/security/security-advisories/cve-2025-6023/",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/CVE-2025-6023-official.html",
+          "sha256": "5dcbce23d31f149393436c828b5f9d621f1953c8ea1e42d724a14747229ca0d3",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/grafana-v13.2.5-ref.json",
+          "sha256": "9c2e38b69045591641fca11044624e5d3a1f3496b9e71aba64b04c46dbc1d66b",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/grafana-v13.2.5-annotated-tag.json",
+          "sha256": "fb2ca1ada07edaa183546f4d9d4b1cf2495e4a77f3780a439e8fcb51bee193b0",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/native-buildinfo.json",
+          "sha256": "ada217f20ccad22243cbb6ca9eddb97e5974ebcbe8196fdc0f7223b111a323af",
+          "role": "current_main_native_module_identity"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.json.gz",
+          "sha256": "6946d310e1b5d4a80abe0e143ad04a42b23040887744713fde9588e6aa2191ba",
+          "role": "current_complete_main_production_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.receipt.json",
+          "sha256": "0c687e50b142801905b286b1bedfa2a9c05dc7437e0c51066d10c3febcfba453",
+          "role": "current_main_complete_graph_receipt"
+        }
+      ],
+      "technical_facts": {},
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-42127",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "HIGH",
+      "raw_severity": "HIGH",
+      "canonical_id": "CVE-2026-42127",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "ACTUAL_FIXED_PRODUCT_SOURCE_REBOUND_TO_CURRENT_MAIN_NOT_SYNTHETIC_GO_SEMVER",
+      "why": "For this exact current main ELF eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433, actual startup reports Grafana 13.2.5 at ce471d869a4810cd83c987dd3521c4b67689dbb6. The scanner's synthetic v0.0.0 pseudo-version is retained, but the primary advisory for CVE-2026-42127 limits affected/fixed real product branches as: >=13.0.2; previous branch backports listed separately. The current upstream product/source identity is outside those affected branches; main native tuples changed only Thrift 0.24.0 to 0.25.0, not Grafana core source. This row is re-bound to the new runtime manifest, without inheriting the old main ELF or artifact authorization.",
+      "primary_fixed_or_affected_scope": ">=13.0.2; previous branch backports listed separately",
+      "primary_url": "https://grafana.com/security/security-advisories/cve-2026-42127/",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/CVE-2026-42127-official.html",
+          "sha256": "aa48038d40f37462595d6bf0759349499c3db939f77fc5b43a3e9ec06406e74e",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/grafana-v13.2.5-ref.json",
+          "sha256": "9c2e38b69045591641fca11044624e5d3a1f3496b9e71aba64b04c46dbc1d66b",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/grafana-v13.2.5-annotated-tag.json",
+          "sha256": "fb2ca1ada07edaa183546f4d9d4b1cf2495e4a77f3780a439e8fcb51bee193b0",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/native-buildinfo.json",
+          "sha256": "ada217f20ccad22243cbb6ca9eddb97e5974ebcbe8196fdc0f7223b111a323af",
+          "role": "current_main_native_module_identity"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.json.gz",
+          "sha256": "6946d310e1b5d4a80abe0e143ad04a42b23040887744713fde9588e6aa2191ba",
+          "role": "current_complete_main_production_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.receipt.json",
+          "sha256": "0c687e50b142801905b286b1bedfa2a9c05dc7437e0c51066d10c3febcfba453",
+          "role": "current_main_complete_graph_receipt"
+        }
+      ],
+      "technical_facts": {},
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-42129",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "HIGH",
+      "raw_severity": "HIGH",
+      "canonical_id": "CVE-2026-42129",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "ACTUAL_FIXED_PRODUCT_SOURCE_REBOUND_TO_CURRENT_MAIN_NOT_SYNTHETIC_GO_SEMVER",
+      "why": "For this exact current main ELF eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433, actual startup reports Grafana 13.2.5 at ce471d869a4810cd83c987dd3521c4b67689dbb6. The scanner's synthetic v0.0.0 pseudo-version is retained, but the primary advisory for CVE-2026-42129 limits affected/fixed real product branches as: >=13.0.2; previous branch backports listed separately. The current upstream product/source identity is outside those affected branches; main native tuples changed only Thrift 0.24.0 to 0.25.0, not Grafana core source. This row is re-bound to the new runtime manifest, without inheriting the old main ELF or artifact authorization.",
+      "primary_fixed_or_affected_scope": ">=13.0.2; previous branch backports listed separately",
+      "primary_url": "https://grafana.com/security/security-advisories/cve-2026-42129/",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/CVE-2026-42129-official.html",
+          "sha256": "38df650c8f95e927295f4a8aaec88ff8e09b4775369782c74a3b8eed43466054",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/grafana-v13.2.5-ref.json",
+          "sha256": "9c2e38b69045591641fca11044624e5d3a1f3496b9e71aba64b04c46dbc1d66b",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/grafana-v13.2.5-annotated-tag.json",
+          "sha256": "fb2ca1ada07edaa183546f4d9d4b1cf2495e4a77f3780a439e8fcb51bee193b0",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/native-buildinfo.json",
+          "sha256": "ada217f20ccad22243cbb6ca9eddb97e5974ebcbe8196fdc0f7223b111a323af",
+          "role": "current_main_native_module_identity"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.json.gz",
+          "sha256": "6946d310e1b5d4a80abe0e143ad04a42b23040887744713fde9588e6aa2191ba",
+          "role": "current_complete_main_production_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.receipt.json",
+          "sha256": "0c687e50b142801905b286b1bedfa2a9c05dc7437e0c51066d10c3febcfba453",
+          "role": "current_main_complete_graph_receipt"
+        }
+      ],
+      "technical_facts": {},
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-9029",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "HIGH",
+      "raw_severity": "HIGH",
+      "canonical_id": "CVE-2026-9029",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "ACTUAL_FIXED_PRODUCT_SOURCE_REBOUND_TO_CURRENT_MAIN_NOT_SYNTHETIC_GO_SEMVER",
+      "why": "For this exact current main ELF eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433, actual startup reports Grafana 13.2.5 at ce471d869a4810cd83c987dd3521c4b67689dbb6. The scanner's synthetic v0.0.0 pseudo-version is retained, but the primary advisory for CVE-2026-9029 limits affected/fixed real product branches as: >=13.0.2 or>=12.4.4. The current upstream product/source identity is outside those affected branches; main native tuples changed only Thrift 0.24.0 to 0.25.0, not Grafana core source. This row is re-bound to the new runtime manifest, without inheriting the old main ELF or artifact authorization.",
+      "primary_fixed_or_affected_scope": ">=13.0.2 or>=12.4.4",
+      "primary_url": "https://grafana.com/security/security-advisories/cve-2026-9029/",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/CVE-2026-9029-official.html",
+          "sha256": "bb8ab97f29ccb02fe8b59be2b5eca918c44ced6cd9c6cc465b121bf6b39e5da5",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/grafana-v13.2.5-ref.json",
+          "sha256": "9c2e38b69045591641fca11044624e5d3a1f3496b9e71aba64b04c46dbc1d66b",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/grafana-v13.2.5-annotated-tag.json",
+          "sha256": "fb2ca1ada07edaa183546f4d9d4b1cf2495e4a77f3780a439e8fcb51bee193b0",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/native-buildinfo.json",
+          "sha256": "ada217f20ccad22243cbb6ca9eddb97e5974ebcbe8196fdc0f7223b111a323af",
+          "role": "current_main_native_module_identity"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.json.gz",
+          "sha256": "6946d310e1b5d4a80abe0e143ad04a42b23040887744713fde9588e6aa2191ba",
+          "role": "current_complete_main_production_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.receipt.json",
+          "sha256": "0c687e50b142801905b286b1bedfa2a9c05dc7437e0c51066d10c3febcfba453",
+          "role": "current_main_complete_graph_receipt"
+        }
+      ],
+      "technical_facts": {},
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false
+    },
+    {
+      "scanner": "Trivy",
+      "id": "GO-2026-5932",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN",
+      "raw_severity": "UNKNOWN",
+      "canonical_id": "GO-2026-5932",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "SEVEN_SPECIFIC_OLD_OPENPGP_PACKAGES_ABSENT_FROM_CURRENT_EXACT_ELF_MATCHED_COMPLETE_CLOSURE",
+      "why": "Reparsed the complete production closure for this exact current subject ELF eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433 (4200 packages): all seven specifically affected old x/crypto/openpgp package paths are absent. The scanner's module v0.58.0 remains unchanged and below the listed fixed module version; NOT_AFFECTED is based on package-level compiled absence, not a module-wide ignore. Current main closure is newly captured with Thrift0.25.",
+      "primary_fixed_or_affected_scope": "OSV marks the seven old golang.org/x/crypto/openpgp packages unsafe/unmaintained; main-module range is introduced 0, fixed 0.58.1-0.20261009181718-2f1f834330b2; standalone openpgp is separately unmaintained. No blanket claim that x/crypto v0.58.0 is fixed.",
+      "primary_url": "https://pkg.go.dev/vuln/GO-2026-5932",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/GO-2026-5932.json",
+          "sha256": "bde8769150ec1368d9a8dbd61fbbde52296de692c57147e02e3ae295e1981f11",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/native-buildinfo.json",
+          "sha256": "ada217f20ccad22243cbb6ca9eddb97e5974ebcbe8196fdc0f7223b111a323af",
+          "role": "current_main_native_module_identity"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.json.gz",
+          "sha256": "6946d310e1b5d4a80abe0e143ad04a42b23040887744713fde9588e6aa2191ba",
+          "role": "current_complete_main_production_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.receipt.json",
+          "sha256": "0c687e50b142801905b286b1bedfa2a9c05dc7437e0c51066d10c3febcfba453",
+          "role": "current_main_complete_graph_receipt"
+        }
+      ],
+      "technical_facts": {
+        "affected_packages": [
+          "golang.org/x/crypto/openpgp",
+          "golang.org/x/crypto/openpgp/armor",
+          "golang.org/x/crypto/openpgp/clearsign",
+          "golang.org/x/crypto/openpgp/elgamal",
+          "golang.org/x/crypto/openpgp/errors",
+          "golang.org/x/crypto/openpgp/packet",
+          "golang.org/x/crypto/openpgp/s2k"
+        ],
+        "actual_compiled_affected_packages": [],
+        "verified_complete_package_count": 4200
+      },
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false
+    },
+    {
+      "scanner": "Trivy",
+      "id": "GO-2026-5932",
+      "target": "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN",
+      "raw_severity": "UNKNOWN",
+      "canonical_id": "GO-2026-5932",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "4bd3b2b5d547a73c02a231eb5fa1231f167b1c1a7e46a61687916440c6c0771a",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "SEVEN_SPECIFIC_OLD_OPENPGP_PACKAGES_ABSENT_FROM_CURRENT_EXACT_ELF_MATCHED_COMPLETE_CLOSURE",
+      "why": "Reparsed the complete production closure for this exact current subject ELF 4bd3b2b5d547a73c02a231eb5fa1231f167b1c1a7e46a61687916440c6c0771a (743 packages): all seven specifically affected old x/crypto/openpgp package paths are absent. The scanner's module v0.58.0 remains unchanged and below the listed fixed module version; NOT_AFFECTED is based on package-level compiled absence, not a module-wide ignore. This plugin actual ELF hash is identical in the current full runtime, so its complete old native-matched closure remains the same immutable technical fact; no old approval is inherited.",
+      "primary_fixed_or_affected_scope": "OSV marks the seven old golang.org/x/crypto/openpgp packages unsafe/unmaintained; main-module range is introduced 0, fixed 0.58.1-0.20261009181718-2f1f834330b2; standalone openpgp is separately unmaintained. No blanket claim that x/crypto v0.58.0 is fixed.",
+      "primary_url": "https://pkg.go.dev/vuln/GO-2026-5932",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/elasticsearch-native-buildinfo.json",
+          "sha256": "b4b6e1ee5ed5fb0bf04b385f115add65e6ed4b91ba91bb6eb84a10a2ac334c08",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/elasticsearch.json.gz",
+          "sha256": "99a5a52c8e913e733482d6e09ec42df739f480234f71847e6190c2926cd44228",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/elasticsearch.receipt.json",
+          "sha256": "ae1fbf83718e88cd98389b230342358c889eaa7c2cb60660cfde98bac35cf1e5",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/GO-2026-5932.json",
+          "sha256": "bde8769150ec1368d9a8dbd61fbbde52296de692c57147e02e3ae295e1981f11",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        }
+      ],
+      "technical_facts": {
+        "affected_packages": [
+          "golang.org/x/crypto/openpgp",
+          "golang.org/x/crypto/openpgp/armor",
+          "golang.org/x/crypto/openpgp/clearsign",
+          "golang.org/x/crypto/openpgp/elgamal",
+          "golang.org/x/crypto/openpgp/errors",
+          "golang.org/x/crypto/openpgp/packet",
+          "golang.org/x/crypto/openpgp/s2k"
+        ],
+        "actual_compiled_affected_packages": [],
+        "verified_complete_package_count": 743
+      },
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false
+    },
+    {
+      "scanner": "Trivy",
+      "id": "GO-2026-5932",
+      "target": "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN",
+      "raw_severity": "UNKNOWN",
+      "canonical_id": "GO-2026-5932",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "599f81b6cb18227c719074099c3f5f3dd0928d8a5b3d2a55ac8a02a0210fa10c",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "SEVEN_SPECIFIC_OLD_OPENPGP_PACKAGES_ABSENT_FROM_CURRENT_EXACT_ELF_MATCHED_COMPLETE_CLOSURE",
+      "why": "Reparsed the complete production closure for this exact current subject ELF 599f81b6cb18227c719074099c3f5f3dd0928d8a5b3d2a55ac8a02a0210fa10c (1078 packages): all seven specifically affected old x/crypto/openpgp package paths are absent. The scanner's module v0.58.0 remains unchanged and below the listed fixed module version; NOT_AFFECTED is based on package-level compiled absence, not a module-wide ignore. This plugin actual ELF hash is identical in the current full runtime, so its complete old native-matched closure remains the same immutable technical fact; no old approval is inherited.",
+      "primary_fixed_or_affected_scope": "OSV marks the seven old golang.org/x/crypto/openpgp packages unsafe/unmaintained; main-module range is introduced 0, fixed 0.58.1-0.20261009181718-2f1f834330b2; standalone openpgp is separately unmaintained. No blanket claim that x/crypto v0.58.0 is fixed.",
+      "primary_url": "https://pkg.go.dev/vuln/GO-2026-5932",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/loki-native-buildinfo.json",
+          "sha256": "7164f48fc3d47a00dab8f6488bd91e2d2a2a7e2b2464ea777547edd1dd801779",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/loki.json.gz",
+          "sha256": "cdeba754b89a64bebbf5894bd65f3652799e9cb5abe7ee83791ff73628420de7",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/loki.receipt.json",
+          "sha256": "8accd55e614a4ed7ebc1bf8d6003bc9324d33a376d12032d16440dbd2f03297b",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/GO-2026-5932.json",
+          "sha256": "bde8769150ec1368d9a8dbd61fbbde52296de692c57147e02e3ae295e1981f11",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        }
+      ],
+      "technical_facts": {
+        "affected_packages": [
+          "golang.org/x/crypto/openpgp",
+          "golang.org/x/crypto/openpgp/armor",
+          "golang.org/x/crypto/openpgp/clearsign",
+          "golang.org/x/crypto/openpgp/elgamal",
+          "golang.org/x/crypto/openpgp/errors",
+          "golang.org/x/crypto/openpgp/packet",
+          "golang.org/x/crypto/openpgp/s2k"
+        ],
+        "actual_compiled_affected_packages": [],
+        "verified_complete_package_count": 1078
+      },
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false
+    },
+    {
+      "scanner": "Trivy",
+      "id": "GO-2026-5932",
+      "target": "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN",
+      "raw_severity": "UNKNOWN",
+      "canonical_id": "GO-2026-5932",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "3343e2ff45c76058067bb945baf7c0fc341edf0b647b59d3c8e2a95211df73a4",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "SEVEN_SPECIFIC_OLD_OPENPGP_PACKAGES_ABSENT_FROM_CURRENT_EXACT_ELF_MATCHED_COMPLETE_CLOSURE",
+      "why": "Reparsed the complete production closure for this exact current subject ELF 3343e2ff45c76058067bb945baf7c0fc341edf0b647b59d3c8e2a95211df73a4 (726 packages): all seven specifically affected old x/crypto/openpgp package paths are absent. The scanner's module v0.58.0 remains unchanged and below the listed fixed module version; NOT_AFFECTED is based on package-level compiled absence, not a module-wide ignore. This plugin actual ELF hash is identical in the current full runtime, so its complete old native-matched closure remains the same immutable technical fact; no old approval is inherited.",
+      "primary_fixed_or_affected_scope": "OSV marks the seven old golang.org/x/crypto/openpgp packages unsafe/unmaintained; main-module range is introduced 0, fixed 0.58.1-0.20261009181718-2f1f834330b2; standalone openpgp is separately unmaintained. No blanket claim that x/crypto v0.58.0 is fixed.",
+      "primary_url": "https://pkg.go.dev/vuln/GO-2026-5932",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/mssql-native-buildinfo.json",
+          "sha256": "cecc7606d25f86ea014d79d047727be9d997bf94d5c6db7032245d6a86aa293d",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mssql.json.gz",
+          "sha256": "ab617082ae1e59578560215bbec8056fc1066a23e8b97c0322114dc5a4ab8d8f",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mssql.receipt.json",
+          "sha256": "e0fa7ba08ea46d26e85b2d930668a451f93a1ff76083d1204da1a03fda2157c6",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/GO-2026-5932.json",
+          "sha256": "bde8769150ec1368d9a8dbd61fbbde52296de692c57147e02e3ae295e1981f11",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        }
+      ],
+      "technical_facts": {
+        "affected_packages": [
+          "golang.org/x/crypto/openpgp",
+          "golang.org/x/crypto/openpgp/armor",
+          "golang.org/x/crypto/openpgp/clearsign",
+          "golang.org/x/crypto/openpgp/elgamal",
+          "golang.org/x/crypto/openpgp/errors",
+          "golang.org/x/crypto/openpgp/packet",
+          "golang.org/x/crypto/openpgp/s2k"
+        ],
+        "actual_compiled_affected_packages": [],
+        "verified_complete_package_count": 726
+      },
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false
+    },
+    {
+      "scanner": "Trivy",
+      "id": "GO-2026-5932",
+      "target": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN",
+      "raw_severity": "UNKNOWN",
+      "canonical_id": "GO-2026-5932",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "c4ab7df53197950cd6bcb36235d72c7b5c268f00ecda2ee13b6962d34181394c",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "SEVEN_SPECIFIC_OLD_OPENPGP_PACKAGES_ABSENT_FROM_CURRENT_EXACT_ELF_MATCHED_COMPLETE_CLOSURE",
+      "why": "Reparsed the complete production closure for this exact current subject ELF c4ab7df53197950cd6bcb36235d72c7b5c268f00ecda2ee13b6962d34181394c (676 packages): all seven specifically affected old x/crypto/openpgp package paths are absent. The scanner's module v0.58.0 remains unchanged and below the listed fixed module version; NOT_AFFECTED is based on package-level compiled absence, not a module-wide ignore. This plugin actual ELF hash is identical in the current full runtime, so its complete old native-matched closure remains the same immutable technical fact; no old approval is inherited.",
+      "primary_fixed_or_affected_scope": "OSV marks the seven old golang.org/x/crypto/openpgp packages unsafe/unmaintained; main-module range is introduced 0, fixed 0.58.1-0.20261009181718-2f1f834330b2; standalone openpgp is separately unmaintained. No blanket claim that x/crypto v0.58.0 is fixed.",
+      "primary_url": "https://pkg.go.dev/vuln/GO-2026-5932",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/stackdriver-native-buildinfo.json",
+          "sha256": "efd70267c0cb186bcde1675cb4e392097ae37ff36a394bc4508c2499876bf6c0",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/stackdriver.json.gz",
+          "sha256": "60c846e2a94affa81aeada0176ff09392c59aa307661f6df760be78a798e4023",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/stackdriver.receipt.json",
+          "sha256": "2835bd4b3c0cc5fc80833b18d4d59f08e96dae7be975a9a18ef3e7441907f0dc",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/GO-2026-5932.json",
+          "sha256": "bde8769150ec1368d9a8dbd61fbbde52296de692c57147e02e3ae295e1981f11",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        }
+      ],
+      "technical_facts": {
+        "affected_packages": [
+          "golang.org/x/crypto/openpgp",
+          "golang.org/x/crypto/openpgp/armor",
+          "golang.org/x/crypto/openpgp/clearsign",
+          "golang.org/x/crypto/openpgp/elgamal",
+          "golang.org/x/crypto/openpgp/errors",
+          "golang.org/x/crypto/openpgp/packet",
+          "golang.org/x/crypto/openpgp/s2k"
+        ],
+        "actual_compiled_affected_packages": [],
+        "verified_complete_package_count": 676
+      },
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-21728",
+      "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+      "severity": "HIGH",
+      "raw_severity": "HIGH",
+      "canonical_id": "CVE-2026-21728",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "58a9b276af17f22a5c9729ff1da2bd248f9e69add6e25e8a495df00065837c1d",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "SPECIFIC_AFFECTED_TEMPO_SERVER_IMPLEMENTATION_ABSENT_FROM_REBOUND_EXACT_PLUGIN_CLOSURE",
+      "why": "The current Tempo datasource ELF 58a9b276af17f22a5c9729ff1da2bd248f9e69add6e25e8a495df00065837c1d is byte-identical to the native-matched retained plugin. Its complete 605-package closure contains only the four enumerated Tempo protobuf/common/resource/trace packages, and does not compile the advisory's affected server package github.com/grafana/tempo/modules/frontend. This establishes the concrete missing implementation, rather than merely claiming that Grafana is not a Tempo server. The supplemental upstream fix/ancestry snapshots are supporting scope evidence, not a replacement for this compiled-closure check.",
+      "primary_fixed_or_affected_scope": "Tempo server frontend module github.com/grafana/tempo/modules/frontend; supplemental upstream fix 650eb1985a0776789c8564122990f588a742356f",
+      "primary_url": "https://grafana.com/security/security-advisories/cve-2026-21728/",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/tempo-native-buildinfo.json",
+          "sha256": "7602492711fd87c6d276b5bca07e1c3ff9938a96e7511933e16c6fef7b5ae699",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/tempo.json.gz",
+          "sha256": "cd96fc281a436593d1c9f430f600cbdcf145f67717c54b0964609af48d0a4933",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/tempo.receipt.json",
+          "sha256": "0e9568bec397b32fedbda7d826d34cb6322d088687bce4fc2e07b471287f7aaf",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/CVE-2026-21728-official.html",
+          "sha256": "17693c2146aa53aac13e426d0fabf61915ef935503aed168fed52fabdf2bcb34",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/fix-21728.json",
+          "sha256": "6ee08d4b9ddb1c183c78ead571257566a9070b53e19584a141247072691d533c",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/ancestry-21728-bcfe9f230c1d-page2.json",
+          "sha256": "2caeb7d7c39cfc12826818ef5df1f857c795ac55d7de6ecb7712bf98d146c441",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        }
+      ],
+      "technical_facts": {
+        "affected_packages": [
+          "github.com/grafana/tempo/modules/frontend"
+        ],
+        "actual_tempo_packages": [
+          "github.com/grafana/tempo/pkg/tempopb",
+          "github.com/grafana/tempo/pkg/tempopb/common/v1",
+          "github.com/grafana/tempo/pkg/tempopb/resource/v1",
+          "github.com/grafana/tempo/pkg/tempopb/trace/v1"
+        ],
+        "actual_tempo_dependency": {
+          "Path": "github.com/grafana/tempo",
+          "Version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+          "Sum": "h1:BphMCaYqWY+j1fdRPNFPkYE4A4QIev1KlHjRkSVJ8O4="
+        }
+      },
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-28377",
+      "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+      "severity": "HIGH",
+      "raw_severity": "HIGH",
+      "canonical_id": "CVE-2026-28377",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "58a9b276af17f22a5c9729ff1da2bd248f9e69add6e25e8a495df00065837c1d",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "SPECIFIC_AFFECTED_TEMPO_SERVER_IMPLEMENTATION_ABSENT_FROM_REBOUND_EXACT_PLUGIN_CLOSURE",
+      "why": "The current Tempo datasource ELF 58a9b276af17f22a5c9729ff1da2bd248f9e69add6e25e8a495df00065837c1d is byte-identical to the native-matched retained plugin. Its complete 605-package closure contains only the four enumerated Tempo protobuf/common/resource/trace packages, and does not compile the advisory's affected server package github.com/grafana/tempo/tempodb/backend/s3. This establishes the concrete missing implementation, rather than merely claiming that Grafana is not a Tempo server. The supplemental upstream fix/ancestry snapshots are supporting scope evidence, not a replacement for this compiled-closure check.",
+      "primary_fixed_or_affected_scope": "Tempo server object-store module github.com/grafana/tempo/tempodb/backend/s3; supplemental upstream fix bb8ca663db34a0980c9758b40d918fda3b4dbec3",
+      "primary_url": "https://grafana.com/security/security-advisories/cve-2026-28377/",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/tempo-native-buildinfo.json",
+          "sha256": "7602492711fd87c6d276b5bca07e1c3ff9938a96e7511933e16c6fef7b5ae699",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/tempo.json.gz",
+          "sha256": "cd96fc281a436593d1c9f430f600cbdcf145f67717c54b0964609af48d0a4933",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/tempo.receipt.json",
+          "sha256": "0e9568bec397b32fedbda7d826d34cb6322d088687bce4fc2e07b471287f7aaf",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/CVE-2026-28377-official.html",
+          "sha256": "afe05edc880899d869bc1eb7ad5e57236bb7936ef3d8ff04e9ca2d9b62287e48",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/fix-28377.json",
+          "sha256": "e1472ca1b83ae0e8e801fa03379a35b8114cac3ba598eb67af8b0aaa7c0de400",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/ancestry-28377-bcfe9f230c1d-page2.json",
+          "sha256": "5750fe1131743a5cb311c419372de4879d86ef6805dfd2ad268711d25594629c",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        }
+      ],
+      "technical_facts": {
+        "affected_packages": [
+          "github.com/grafana/tempo/tempodb/backend/s3"
+        ],
+        "actual_tempo_packages": [
+          "github.com/grafana/tempo/pkg/tempopb",
+          "github.com/grafana/tempo/pkg/tempopb/common/v1",
+          "github.com/grafana/tempo/pkg/tempopb/resource/v1",
+          "github.com/grafana/tempo/pkg/tempopb/trace/v1"
+        ],
+        "actual_tempo_dependency": {
+          "Path": "github.com/grafana/tempo",
+          "Version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+          "Sum": "h1:BphMCaYqWY+j1fdRPNFPkYE4A4QIev1KlHjRkSVJ8O4="
+        }
+      },
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false
+    },
+    {
+      "scanner": "Grype",
+      "id": "GHSA-p4r4-xvrq-gvmc",
+      "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "raw_target": "/usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+      "severity": "HIGH",
+      "raw_severity": "High",
+      "canonical_id": "CVE-2026-21728",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "58a9b276af17f22a5c9729ff1da2bd248f9e69add6e25e8a495df00065837c1d",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "SPECIFIC_AFFECTED_TEMPO_SERVER_IMPLEMENTATION_ABSENT_FROM_REBOUND_EXACT_PLUGIN_CLOSURE",
+      "why": "The current Tempo datasource ELF 58a9b276af17f22a5c9729ff1da2bd248f9e69add6e25e8a495df00065837c1d is byte-identical to the native-matched retained plugin. Its complete 605-package closure contains only the four enumerated Tempo protobuf/common/resource/trace packages, and does not compile the advisory's affected server package github.com/grafana/tempo/modules/frontend. This establishes the concrete missing implementation, rather than merely claiming that Grafana is not a Tempo server. The supplemental upstream fix/ancestry snapshots are supporting scope evidence, not a replacement for this compiled-closure check.",
+      "primary_fixed_or_affected_scope": "Tempo server frontend module github.com/grafana/tempo/modules/frontend; supplemental upstream fix 650eb1985a0776789c8564122990f588a742356f",
+      "primary_url": "https://grafana.com/security/security-advisories/cve-2026-21728/",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/tempo-native-buildinfo.json",
+          "sha256": "7602492711fd87c6d276b5bca07e1c3ff9938a96e7511933e16c6fef7b5ae699",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/tempo.json.gz",
+          "sha256": "cd96fc281a436593d1c9f430f600cbdcf145f67717c54b0964609af48d0a4933",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/tempo.receipt.json",
+          "sha256": "0e9568bec397b32fedbda7d826d34cb6322d088687bce4fc2e07b471287f7aaf",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/CVE-2026-21728-official.html",
+          "sha256": "17693c2146aa53aac13e426d0fabf61915ef935503aed168fed52fabdf2bcb34",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/fix-21728.json",
+          "sha256": "6ee08d4b9ddb1c183c78ead571257566a9070b53e19584a141247072691d533c",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/ancestry-21728-bcfe9f230c1d-page2.json",
+          "sha256": "2caeb7d7c39cfc12826818ef5df1f857c795ac55d7de6ecb7712bf98d146c441",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        }
+      ],
+      "technical_facts": {
+        "affected_packages": [
+          "github.com/grafana/tempo/modules/frontend"
+        ],
+        "actual_tempo_packages": [
+          "github.com/grafana/tempo/pkg/tempopb",
+          "github.com/grafana/tempo/pkg/tempopb/common/v1",
+          "github.com/grafana/tempo/pkg/tempopb/resource/v1",
+          "github.com/grafana/tempo/pkg/tempopb/trace/v1"
+        ],
+        "actual_tempo_dependency": {
+          "Path": "github.com/grafana/tempo",
+          "Version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+          "Sum": "h1:BphMCaYqWY+j1fdRPNFPkYE4A4QIev1KlHjRkSVJ8O4="
+        }
+      },
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false,
+      "exact_alias_mapping": {
+        "scanner": "Grype",
+        "raw_id": "GHSA-p4r4-xvrq-gvmc",
+        "canonical_id": "CVE-2026-21728",
+        "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+        "package": "github.com/grafana/tempo",
+        "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+        "severity": "HIGH"
+      }
+    },
+    {
+      "scanner": "Grype",
+      "id": "GHSA-ffqx-q65f-36jf",
+      "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "raw_target": "/usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+      "severity": "HIGH",
+      "raw_severity": "High",
+      "canonical_id": "CVE-2026-28377",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "58a9b276af17f22a5c9729ff1da2bd248f9e69add6e25e8a495df00065837c1d",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "SPECIFIC_AFFECTED_TEMPO_SERVER_IMPLEMENTATION_ABSENT_FROM_REBOUND_EXACT_PLUGIN_CLOSURE",
+      "why": "The current Tempo datasource ELF 58a9b276af17f22a5c9729ff1da2bd248f9e69add6e25e8a495df00065837c1d is byte-identical to the native-matched retained plugin. Its complete 605-package closure contains only the four enumerated Tempo protobuf/common/resource/trace packages, and does not compile the advisory's affected server package github.com/grafana/tempo/tempodb/backend/s3. This establishes the concrete missing implementation, rather than merely claiming that Grafana is not a Tempo server. The supplemental upstream fix/ancestry snapshots are supporting scope evidence, not a replacement for this compiled-closure check.",
+      "primary_fixed_or_affected_scope": "Tempo server object-store module github.com/grafana/tempo/tempodb/backend/s3; supplemental upstream fix bb8ca663db34a0980c9758b40d918fda3b4dbec3",
+      "primary_url": "https://grafana.com/security/security-advisories/cve-2026-28377/",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/tempo-native-buildinfo.json",
+          "sha256": "7602492711fd87c6d276b5bca07e1c3ff9938a96e7511933e16c6fef7b5ae699",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/tempo.json.gz",
+          "sha256": "cd96fc281a436593d1c9f430f600cbdcf145f67717c54b0964609af48d0a4933",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/tempo.receipt.json",
+          "sha256": "0e9568bec397b32fedbda7d826d34cb6322d088687bce4fc2e07b471287f7aaf",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/CVE-2026-28377-official.html",
+          "sha256": "afe05edc880899d869bc1eb7ad5e57236bb7936ef3d8ff04e9ca2d9b62287e48",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/fix-28377.json",
+          "sha256": "e1472ca1b83ae0e8e801fa03379a35b8114cac3ba598eb67af8b0aaa7c0de400",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/ancestry-28377-bcfe9f230c1d-page2.json",
+          "sha256": "5750fe1131743a5cb311c419372de4879d86ef6805dfd2ad268711d25594629c",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        }
+      ],
+      "technical_facts": {
+        "affected_packages": [
+          "github.com/grafana/tempo/tempodb/backend/s3"
+        ],
+        "actual_tempo_packages": [
+          "github.com/grafana/tempo/pkg/tempopb",
+          "github.com/grafana/tempo/pkg/tempopb/common/v1",
+          "github.com/grafana/tempo/pkg/tempopb/resource/v1",
+          "github.com/grafana/tempo/pkg/tempopb/trace/v1"
+        ],
+        "actual_tempo_dependency": {
+          "Path": "github.com/grafana/tempo",
+          "Version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+          "Sum": "h1:BphMCaYqWY+j1fdRPNFPkYE4A4QIev1KlHjRkSVJ8O4="
+        }
+      },
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false,
+      "exact_alias_mapping": {
+        "scanner": "Grype",
+        "raw_id": "GHSA-ffqx-q65f-36jf",
+        "canonical_id": "CVE-2026-28377",
+        "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+        "package": "github.com/grafana/tempo",
+        "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+        "severity": "HIGH"
+      }
+    },
+    {
+      "scanner": "Grype",
+      "id": "GO-2026-5932",
+      "target": "usr/share/grafana/bin/grafana",
+      "raw_target": "/usr/share/grafana/bin/grafana",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN",
+      "raw_severity": "Unknown",
+      "canonical_id": "GO-2026-5932",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "SEVEN_SPECIFIC_OLD_OPENPGP_PACKAGES_ABSENT_FROM_CURRENT_EXACT_ELF_MATCHED_COMPLETE_CLOSURE",
+      "why": "Reparsed the complete production closure for this exact current subject ELF eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433 (4200 packages): all seven specifically affected old x/crypto/openpgp package paths are absent. The scanner's module v0.58.0 remains unchanged and below the listed fixed module version; NOT_AFFECTED is based on package-level compiled absence, not a module-wide ignore. Current main closure is newly captured with Thrift0.25.",
+      "primary_fixed_or_affected_scope": "OSV marks the seven old golang.org/x/crypto/openpgp packages unsafe/unmaintained; main-module range is introduced 0, fixed 0.58.1-0.20261009181718-2f1f834330b2; standalone openpgp is separately unmaintained. No blanket claim that x/crypto v0.58.0 is fixed.",
+      "primary_url": "https://pkg.go.dev/vuln/GO-2026-5932",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/GO-2026-5932.json",
+          "sha256": "bde8769150ec1368d9a8dbd61fbbde52296de692c57147e02e3ae295e1981f11",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/native-buildinfo.json",
+          "sha256": "ada217f20ccad22243cbb6ca9eddb97e5974ebcbe8196fdc0f7223b111a323af",
+          "role": "current_main_native_module_identity"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.json.gz",
+          "sha256": "6946d310e1b5d4a80abe0e143ad04a42b23040887744713fde9588e6aa2191ba",
+          "role": "current_complete_main_production_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/main/main.receipt.json",
+          "sha256": "0c687e50b142801905b286b1bedfa2a9c05dc7437e0c51066d10c3febcfba453",
+          "role": "current_main_complete_graph_receipt"
+        }
+      ],
+      "technical_facts": {
+        "affected_packages": [
+          "golang.org/x/crypto/openpgp",
+          "golang.org/x/crypto/openpgp/armor",
+          "golang.org/x/crypto/openpgp/clearsign",
+          "golang.org/x/crypto/openpgp/elgamal",
+          "golang.org/x/crypto/openpgp/errors",
+          "golang.org/x/crypto/openpgp/packet",
+          "golang.org/x/crypto/openpgp/s2k"
+        ],
+        "actual_compiled_affected_packages": [],
+        "verified_complete_package_count": 4200
+      },
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false
+    },
+    {
+      "scanner": "Grype",
+      "id": "GO-2026-5932",
+      "target": "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+      "raw_target": "/usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN",
+      "raw_severity": "Unknown",
+      "canonical_id": "GO-2026-5932",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "4bd3b2b5d547a73c02a231eb5fa1231f167b1c1a7e46a61687916440c6c0771a",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "SEVEN_SPECIFIC_OLD_OPENPGP_PACKAGES_ABSENT_FROM_CURRENT_EXACT_ELF_MATCHED_COMPLETE_CLOSURE",
+      "why": "Reparsed the complete production closure for this exact current subject ELF 4bd3b2b5d547a73c02a231eb5fa1231f167b1c1a7e46a61687916440c6c0771a (743 packages): all seven specifically affected old x/crypto/openpgp package paths are absent. The scanner's module v0.58.0 remains unchanged and below the listed fixed module version; NOT_AFFECTED is based on package-level compiled absence, not a module-wide ignore. This plugin actual ELF hash is identical in the current full runtime, so its complete old native-matched closure remains the same immutable technical fact; no old approval is inherited.",
+      "primary_fixed_or_affected_scope": "OSV marks the seven old golang.org/x/crypto/openpgp packages unsafe/unmaintained; main-module range is introduced 0, fixed 0.58.1-0.20261009181718-2f1f834330b2; standalone openpgp is separately unmaintained. No blanket claim that x/crypto v0.58.0 is fixed.",
+      "primary_url": "https://pkg.go.dev/vuln/GO-2026-5932",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/elasticsearch-native-buildinfo.json",
+          "sha256": "b4b6e1ee5ed5fb0bf04b385f115add65e6ed4b91ba91bb6eb84a10a2ac334c08",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/elasticsearch.json.gz",
+          "sha256": "99a5a52c8e913e733482d6e09ec42df739f480234f71847e6190c2926cd44228",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/elasticsearch.receipt.json",
+          "sha256": "ae1fbf83718e88cd98389b230342358c889eaa7c2cb60660cfde98bac35cf1e5",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/GO-2026-5932.json",
+          "sha256": "bde8769150ec1368d9a8dbd61fbbde52296de692c57147e02e3ae295e1981f11",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        }
+      ],
+      "technical_facts": {
+        "affected_packages": [
+          "golang.org/x/crypto/openpgp",
+          "golang.org/x/crypto/openpgp/armor",
+          "golang.org/x/crypto/openpgp/clearsign",
+          "golang.org/x/crypto/openpgp/elgamal",
+          "golang.org/x/crypto/openpgp/errors",
+          "golang.org/x/crypto/openpgp/packet",
+          "golang.org/x/crypto/openpgp/s2k"
+        ],
+        "actual_compiled_affected_packages": [],
+        "verified_complete_package_count": 743
+      },
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false
+    },
+    {
+      "scanner": "Grype",
+      "id": "GO-2026-5932",
+      "target": "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+      "raw_target": "/usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN",
+      "raw_severity": "Unknown",
+      "canonical_id": "GO-2026-5932",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "599f81b6cb18227c719074099c3f5f3dd0928d8a5b3d2a55ac8a02a0210fa10c",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "SEVEN_SPECIFIC_OLD_OPENPGP_PACKAGES_ABSENT_FROM_CURRENT_EXACT_ELF_MATCHED_COMPLETE_CLOSURE",
+      "why": "Reparsed the complete production closure for this exact current subject ELF 599f81b6cb18227c719074099c3f5f3dd0928d8a5b3d2a55ac8a02a0210fa10c (1078 packages): all seven specifically affected old x/crypto/openpgp package paths are absent. The scanner's module v0.58.0 remains unchanged and below the listed fixed module version; NOT_AFFECTED is based on package-level compiled absence, not a module-wide ignore. This plugin actual ELF hash is identical in the current full runtime, so its complete old native-matched closure remains the same immutable technical fact; no old approval is inherited.",
+      "primary_fixed_or_affected_scope": "OSV marks the seven old golang.org/x/crypto/openpgp packages unsafe/unmaintained; main-module range is introduced 0, fixed 0.58.1-0.20261009181718-2f1f834330b2; standalone openpgp is separately unmaintained. No blanket claim that x/crypto v0.58.0 is fixed.",
+      "primary_url": "https://pkg.go.dev/vuln/GO-2026-5932",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/loki-native-buildinfo.json",
+          "sha256": "7164f48fc3d47a00dab8f6488bd91e2d2a2a7e2b2464ea777547edd1dd801779",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/loki.json.gz",
+          "sha256": "cdeba754b89a64bebbf5894bd65f3652799e9cb5abe7ee83791ff73628420de7",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/loki.receipt.json",
+          "sha256": "8accd55e614a4ed7ebc1bf8d6003bc9324d33a376d12032d16440dbd2f03297b",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/GO-2026-5932.json",
+          "sha256": "bde8769150ec1368d9a8dbd61fbbde52296de692c57147e02e3ae295e1981f11",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        }
+      ],
+      "technical_facts": {
+        "affected_packages": [
+          "golang.org/x/crypto/openpgp",
+          "golang.org/x/crypto/openpgp/armor",
+          "golang.org/x/crypto/openpgp/clearsign",
+          "golang.org/x/crypto/openpgp/elgamal",
+          "golang.org/x/crypto/openpgp/errors",
+          "golang.org/x/crypto/openpgp/packet",
+          "golang.org/x/crypto/openpgp/s2k"
+        ],
+        "actual_compiled_affected_packages": [],
+        "verified_complete_package_count": 1078
+      },
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false
+    },
+    {
+      "scanner": "Grype",
+      "id": "GO-2026-5932",
+      "target": "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+      "raw_target": "/usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN",
+      "raw_severity": "Unknown",
+      "canonical_id": "GO-2026-5932",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "3343e2ff45c76058067bb945baf7c0fc341edf0b647b59d3c8e2a95211df73a4",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "SEVEN_SPECIFIC_OLD_OPENPGP_PACKAGES_ABSENT_FROM_CURRENT_EXACT_ELF_MATCHED_COMPLETE_CLOSURE",
+      "why": "Reparsed the complete production closure for this exact current subject ELF 3343e2ff45c76058067bb945baf7c0fc341edf0b647b59d3c8e2a95211df73a4 (726 packages): all seven specifically affected old x/crypto/openpgp package paths are absent. The scanner's module v0.58.0 remains unchanged and below the listed fixed module version; NOT_AFFECTED is based on package-level compiled absence, not a module-wide ignore. This plugin actual ELF hash is identical in the current full runtime, so its complete old native-matched closure remains the same immutable technical fact; no old approval is inherited.",
+      "primary_fixed_or_affected_scope": "OSV marks the seven old golang.org/x/crypto/openpgp packages unsafe/unmaintained; main-module range is introduced 0, fixed 0.58.1-0.20261009181718-2f1f834330b2; standalone openpgp is separately unmaintained. No blanket claim that x/crypto v0.58.0 is fixed.",
+      "primary_url": "https://pkg.go.dev/vuln/GO-2026-5932",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/mssql-native-buildinfo.json",
+          "sha256": "cecc7606d25f86ea014d79d047727be9d997bf94d5c6db7032245d6a86aa293d",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mssql.json.gz",
+          "sha256": "ab617082ae1e59578560215bbec8056fc1066a23e8b97c0322114dc5a4ab8d8f",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mssql.receipt.json",
+          "sha256": "e0fa7ba08ea46d26e85b2d930668a451f93a1ff76083d1204da1a03fda2157c6",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/GO-2026-5932.json",
+          "sha256": "bde8769150ec1368d9a8dbd61fbbde52296de692c57147e02e3ae295e1981f11",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        }
+      ],
+      "technical_facts": {
+        "affected_packages": [
+          "golang.org/x/crypto/openpgp",
+          "golang.org/x/crypto/openpgp/armor",
+          "golang.org/x/crypto/openpgp/clearsign",
+          "golang.org/x/crypto/openpgp/elgamal",
+          "golang.org/x/crypto/openpgp/errors",
+          "golang.org/x/crypto/openpgp/packet",
+          "golang.org/x/crypto/openpgp/s2k"
+        ],
+        "actual_compiled_affected_packages": [],
+        "verified_complete_package_count": 726
+      },
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false
+    },
+    {
+      "scanner": "Grype",
+      "id": "GO-2026-5932",
+      "target": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+      "raw_target": "/usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN",
+      "raw_severity": "Unknown",
+      "canonical_id": "GO-2026-5932",
+      "disposition": "NOT_AFFECTED",
+      "subject_elf_sha256": "c4ab7df53197950cd6bcb36235d72c7b5c268f00ecda2ee13b6962d34181394c",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "technical_basis": "SEVEN_SPECIFIC_OLD_OPENPGP_PACKAGES_ABSENT_FROM_CURRENT_EXACT_ELF_MATCHED_COMPLETE_CLOSURE",
+      "why": "Reparsed the complete production closure for this exact current subject ELF c4ab7df53197950cd6bcb36235d72c7b5c268f00ecda2ee13b6962d34181394c (676 packages): all seven specifically affected old x/crypto/openpgp package paths are absent. The scanner's module v0.58.0 remains unchanged and below the listed fixed module version; NOT_AFFECTED is based on package-level compiled absence, not a module-wide ignore. This plugin actual ELF hash is identical in the current full runtime, so its complete old native-matched closure remains the same immutable technical fact; no old approval is inherited.",
+      "primary_fixed_or_affected_scope": "OSV marks the seven old golang.org/x/crypto/openpgp packages unsafe/unmaintained; main-module range is introduced 0, fixed 0.58.1-0.20261009181718-2f1f834330b2; standalone openpgp is separately unmaintained. No blanket claim that x/crypto v0.58.0 is fixed.",
+      "primary_url": "https://pkg.go.dev/vuln/GO-2026-5932",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/stackdriver-native-buildinfo.json",
+          "sha256": "efd70267c0cb186bcde1675cb4e392097ae37ff36a394bc4508c2499876bf6c0",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/stackdriver.json.gz",
+          "sha256": "60c846e2a94affa81aeada0176ff09392c59aa307661f6df760be78a798e4023",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/stackdriver.receipt.json",
+          "sha256": "2835bd4b3c0cc5fc80833b18d4d59f08e96dae7be975a9a18ef3e7441907f0dc",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-fixed-20261107-evidence/independent-primary/GO-2026-5932.json",
+          "sha256": "bde8769150ec1368d9a8dbd61fbbde52296de692c57147e02e3ae295e1981f11",
+          "role": "unchanged_technical_primary_or_exact_retained_plugin_closure"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        }
+      ],
+      "technical_facts": {
+        "affected_packages": [
+          "golang.org/x/crypto/openpgp",
+          "golang.org/x/crypto/openpgp/armor",
+          "golang.org/x/crypto/openpgp/clearsign",
+          "golang.org/x/crypto/openpgp/elgamal",
+          "golang.org/x/crypto/openpgp/errors",
+          "golang.org/x/crypto/openpgp/packet",
+          "golang.org/x/crypto/openpgp/s2k"
+        ],
+        "actual_compiled_affected_packages": [],
+        "verified_complete_package_count": 676
+      },
+      "old_authorization_inherited": false,
+      "old_main_elf_inherited": false
+    },
+    {
+      "scanner": "Grype",
+      "id": "CVE-2025-60876",
+      "target": "lib/apk/db/installed",
+      "raw_target": "/lib/apk/db/installed",
+      "package": "busybox",
+      "version": "1.37.0-r31",
+      "severity": "MEDIUM",
+      "raw_severity": "Medium",
+      "canonical_id": "CVE-2025-60876",
+      "disposition": "FIXED",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_payload_sha256": "68dba7ae251db2ecca77e6ef405bf781111dc41f87c93c30205745fdbe2c697e",
+      "technical_basis": "EXACT_CUSTOM_BUSYBOX_HTTP_BOUNDARY_FIX_AND_DIRECT_COUNTEREXAMPLES_VERIFIED",
+      "why": "Actual /bin/busybox is the locally rebuilt fixed payload 68dba7ae251db2ecca77e6ef405bf781111dc41f87c93c30205745fdbe2c697e. The HTTP send path now checks the actual target.path and target.host for raw non-NUL C0, SP and DEL immediately before opening the socket, including relative/absolute redirect reuse and proxy absolute-form. Exact bytes/config/source/patch are bound to the combined runtime. Real regressions retain normal/percent-encoded requests, reject raw controls/spaces before injection traffic, and reproduce the original defects in the target rootfs. Original APK version is preserved; this is a custom verified code backport, not an official Alpine revision bump. A raw NUL cannot be embedded in an OS argv/C-string component; the regression preserves percent-encoded %00 as literal encoded bytes rather than claiming an executable raw-NUL test.",
+      "primary_fixed_or_affected_scope": "CNA concerns wget raw C0/CR/LF/SP in HTTP request-target; no mature official fixed-version entry is assumed. Exact local boundary backport fixes wget only; ssl_client is independently scoped as TLS transport.",
+      "primary_url": "https://cveawg.mitre.org/api/cve/CVE-2025-60876",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/busybox/build.raw.json",
+          "sha256": "a6654d6f8bdf3bab91537e0db0d8c201a78fd527025be476b1965ec9e3d8245d",
+          "role": "actual_fixed_busybox_build_and_payload_identity"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/busybox/regression-50.raw.json",
+          "sha256": "f98273d0b021fec276997a5455a71703500f24e67e8eb6ac3191cbf178e72fe9",
+          "role": "fifty_real_fixed_payload_http_boundary_regressions"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/busybox/target-rootfs-53.raw.json",
+          "sha256": "b18b6507d105bcd9f1e2f8e8ba802b19915ce86caa5e4384d228c9bcc75874b7",
+          "role": "actual_original_and_fixed_target_rootfs_counterexamples_and_regressions"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/busybox/regression-envelope.json",
+          "sha256": "7265b4e73ff58e7d12b2a2594249dd3e53694a643be66a57f69626a6c1922144",
+          "role": "actual_build_patch_source_and_regression_binding"
+        },
+        {
+          "path": "deployment/vendors/grafana-20261110/busybox/wget-http-request-boundary.patch",
+          "sha256": "2c0e1249492901997598679ad17f381b7ca8fb1c13c0ae3872abb9da6b6c2602",
+          "role": "real_minimal_outgoing_http_path_and_host_check"
+        },
+        {
+          "path": "deployment/vendors/grafana-20261110/busybox/source.lock.json",
+          "sha256": "87cd1e1c527dc417b7c19fd4c687957218f4e4998a3e69ca0ae6c3d47cfb8814",
+          "role": "exact_source_build_inputs_and_original_revision_preserved"
+        },
+        {
+          "path": "deployment/vendors/grafana-20261110/busybox/upstream-APKBUILD",
+          "sha256": "98f019f62291aff63cb798f046fb59dfd43340885de63ca2f127651fc21d0450",
+          "role": "official_separate_ssl_client_build_and_source_digest"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/CVE-2025-60876.json",
+          "sha256": "368b64a363b6457bee681ee8bcc1693995d477f62b23f70f937f85c14a9df139",
+          "role": "public_exact_component_scope_or_primary_advisory"
+        }
+      ],
+      "original_apk_version_preserved": true,
+      "new_official_alpine_revision_claim": false,
+      "independent_wget_implementation_count": 1,
+      "old_authorization_inherited": false
+    },
+    {
+      "scanner": "Grype",
+      "id": "CVE-2025-60876",
+      "target": "lib/apk/db/installed",
+      "raw_target": "/lib/apk/db/installed",
+      "package": "busybox-binsh",
+      "version": "1.37.0-r31",
+      "severity": "MEDIUM",
+      "raw_severity": "Medium",
+      "canonical_id": "CVE-2025-60876",
+      "disposition": "FIXED",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_payload_sha256": "68dba7ae251db2ecca77e6ef405bf781111dc41f87c93c30205745fdbe2c697e",
+      "technical_basis": "BINSH_PACKAGE_RESOLVES_TO_THE_SAME_SINGLE_FIXED_MULTICALL_PAYLOAD",
+      "why": "Current runtime /bin/sh is a symlink to /bin/busybox, whose actual payload hash is 68dba7ae251db2ecca77e6ef405bf781111dc41f87c93c30205745fdbe2c697e. busybox-binsh owns this symlink and depends on busybox=1.37.0-r31; there is no second independent wget ELF under this package. The sole shared wget implementation is the exact fixed binary covered by the source patch and 50/53 real regressions. This preserves the scanner package match without pretending that three independent vulnerability implementations were repaired.",
+      "primary_fixed_or_affected_scope": "CNA concerns wget raw C0/CR/LF/SP in HTTP request-target; no mature official fixed-version entry is assumed. Exact local boundary backport fixes wget only; ssl_client is independently scoped as TLS transport.",
+      "primary_url": "https://cveawg.mitre.org/api/cve/CVE-2025-60876",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/busybox/build.raw.json",
+          "sha256": "a6654d6f8bdf3bab91537e0db0d8c201a78fd527025be476b1965ec9e3d8245d",
+          "role": "actual_fixed_busybox_build_and_payload_identity"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/busybox/regression-50.raw.json",
+          "sha256": "f98273d0b021fec276997a5455a71703500f24e67e8eb6ac3191cbf178e72fe9",
+          "role": "fifty_real_fixed_payload_http_boundary_regressions"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/busybox/target-rootfs-53.raw.json",
+          "sha256": "b18b6507d105bcd9f1e2f8e8ba802b19915ce86caa5e4384d228c9bcc75874b7",
+          "role": "actual_original_and_fixed_target_rootfs_counterexamples_and_regressions"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/busybox/regression-envelope.json",
+          "sha256": "7265b4e73ff58e7d12b2a2594249dd3e53694a643be66a57f69626a6c1922144",
+          "role": "actual_build_patch_source_and_regression_binding"
+        },
+        {
+          "path": "deployment/vendors/grafana-20261110/busybox/wget-http-request-boundary.patch",
+          "sha256": "2c0e1249492901997598679ad17f381b7ca8fb1c13c0ae3872abb9da6b6c2602",
+          "role": "real_minimal_outgoing_http_path_and_host_check"
+        },
+        {
+          "path": "deployment/vendors/grafana-20261110/busybox/source.lock.json",
+          "sha256": "87cd1e1c527dc417b7c19fd4c687957218f4e4998a3e69ca0ae6c3d47cfb8814",
+          "role": "exact_source_build_inputs_and_original_revision_preserved"
+        },
+        {
+          "path": "deployment/vendors/grafana-20261110/busybox/upstream-APKBUILD",
+          "sha256": "98f019f62291aff63cb798f046fb59dfd43340885de63ca2f127651fc21d0450",
+          "role": "official_separate_ssl_client_build_and_source_digest"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/CVE-2025-60876.json",
+          "sha256": "368b64a363b6457bee681ee8bcc1693995d477f62b23f70f937f85c14a9df139",
+          "role": "public_exact_component_scope_or_primary_advisory"
+        }
+      ],
+      "original_apk_version_preserved": true,
+      "new_official_alpine_revision_claim": false,
+      "independent_wget_implementation_count": 1,
+      "old_authorization_inherited": false
+    },
+    {
+      "scanner": "Grype",
+      "id": "CVE-2025-60876",
+      "target": "lib/apk/db/installed",
+      "raw_target": "/lib/apk/db/installed",
+      "package": "ssl_client",
+      "version": "1.37.0-r31",
+      "severity": "MEDIUM",
+      "raw_severity": "Medium",
+      "canonical_id": "CVE-2025-60876",
+      "disposition": "NOT_AFFECTED",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_payload_sha256": "8b23a9dbfea3da8c6da65b93c0fc6d979a82245c17c40d8fbf94d531263b98b4",
+      "technical_basis": "SEPARATE_EXACT_TLS_STREAM_HELPER_HAS_NO_AFFECTED_HTTP_REQUEST_CONSTRUCTION",
+      "why": "Current /usr/bin/ssl_client is the separate unchanged TLS helper ELF 8b23a9dbfea3da8c6da65b93c0fc6d979a82245c17c40d8fbf94d531263b98b4. The exact official Alpine source, verified against the APKBUILD SHA512, accepts an existing fd/SNI, negotiates TLS and copies stdin/TLS/stdout using SSL_read/SSL_write. It does not parse URLs or construct HTTP request-target/request-line/header bytes; the affected implementation is BusyBox networking/wget.c. Its broad APK source-origin match therefore does not establish the affected HTTP-construction code in this helper. For its actual wget caller the HTTP fields are validated by the sole fixed BusyBox payload before connection. This is not a claim that arbitrary caller-provided plaintext is sanitized by a protocol-agnostic TLS transport.",
+      "primary_fixed_or_affected_scope": "CNA concerns wget raw C0/CR/LF/SP in HTTP request-target; no mature official fixed-version entry is assumed. Exact local boundary backport fixes wget only; ssl_client is independently scoped as TLS transport.",
+      "primary_url": "https://cveawg.mitre.org/api/cve/CVE-2025-60876",
+      "evidence": [
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/prepared-build-receipt.json",
+          "sha256": "e5ce3769ff6e216b737b6a782296435d263f62cb279bd99617e2fea57fcbf949",
+          "role": "actual_combined_subject_and_fourteen_native_hashes"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest.json.gz",
+          "sha256": "32f0ae28af40fc0343f92d7b6e0bef06877c6462f0d96b7810b92da5d4359eaf",
+          "role": "complete_current_runtime_payload"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/isolated-startup-result.json",
+          "sha256": "c7a8319be1a650914ffd450fd1613909ffab5e517dc2a18dbfd95d5d67dd205b",
+          "role": "actual_isolated_startup_product_version_and_revision"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/busybox/build.raw.json",
+          "sha256": "a6654d6f8bdf3bab91537e0db0d8c201a78fd527025be476b1965ec9e3d8245d",
+          "role": "actual_fixed_busybox_build_and_payload_identity"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/busybox/regression-50.raw.json",
+          "sha256": "f98273d0b021fec276997a5455a71703500f24e67e8eb6ac3191cbf178e72fe9",
+          "role": "fifty_real_fixed_payload_http_boundary_regressions"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/busybox/target-rootfs-53.raw.json",
+          "sha256": "b18b6507d105bcd9f1e2f8e8ba802b19915ce86caa5e4384d228c9bcc75874b7",
+          "role": "actual_original_and_fixed_target_rootfs_counterexamples_and_regressions"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/busybox/regression-envelope.json",
+          "sha256": "7265b4e73ff58e7d12b2a2594249dd3e53694a643be66a57f69626a6c1922144",
+          "role": "actual_build_patch_source_and_regression_binding"
+        },
+        {
+          "path": "deployment/vendors/grafana-20261110/busybox/wget-http-request-boundary.patch",
+          "sha256": "2c0e1249492901997598679ad17f381b7ca8fb1c13c0ae3872abb9da6b6c2602",
+          "role": "real_minimal_outgoing_http_path_and_host_check"
+        },
+        {
+          "path": "deployment/vendors/grafana-20261110/busybox/source.lock.json",
+          "sha256": "87cd1e1c527dc417b7c19fd4c687957218f4e4998a3e69ca0ae6c3d47cfb8814",
+          "role": "exact_source_build_inputs_and_original_revision_preserved"
+        },
+        {
+          "path": "deployment/vendors/grafana-20261110/busybox/upstream-APKBUILD",
+          "sha256": "98f019f62291aff63cb798f046fb59dfd43340885de63ca2f127651fc21d0450",
+          "role": "official_separate_ssl_client_build_and_source_digest"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/runtime/CVE-2025-60876.json",
+          "sha256": "368b64a363b6457bee681ee8bcc1693995d477f62b23f70f937f85c14a9df139",
+          "role": "public_exact_component_scope_or_primary_advisory"
+        },
+        {
+          "path": "deployment/security/grafana-source-20261110-evidence/busybox/ssl-client-scope.json",
+          "sha256": "748a36d3cc30d9ebf835d327b9f28a1ca2d7b00ee5006196a52548d0bff7c429",
+          "role": "public_exact_component_scope_or_primary_advisory"
+        }
+      ],
+      "original_apk_version_preserved": true,
+      "new_official_alpine_revision_claim": false,
+      "independent_wget_implementation_count": 1,
+      "old_authorization_inherited": false,
+      "source_identity": {
+        "upstream_url": "https://raw.githubusercontent.com/alpinelinux/aports/c3ef5d10e6ef6528852c51f0564963e2f8c1be19/main/busybox/ssl_client.c",
+        "official_apkbuild_sha512": "1c7c78afb274d1316725b22585452efd7de9a80ad326f099f25e34d0877c5d81ced579e2dc795314221e316f58071374f61ee22c6ffd34072266525f65d3614c",
+        "actual_source_sha256": "f36fb83637a12fe0706f828a3e9a4181ac6ed452b59d5d30fcf4dbe1884b8aed",
+        "snapshot_is_currently_private": true,
+        "public_evidence_delivery_pending": "Parent will preserve original license/provenance and promote this exact source snapshot with final evidence; this task does not claim the C file is already public."
+      }
+    }
+  ],
+  "pending_findings": [
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2018-1000816",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "MEDIUM",
+      "raw_severity": "MEDIUM",
+      "disposition": "PENDING",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "technical_basis": "NOT_REVIEWED_BY_THIS_SUBTASK",
+      "why": "Reserved for the separate 22-CNA investigation; no applicability or fixed conclusion is inherited from another row.",
+      "evidence": [
+        {
+          "path": ".cache/release-readme-cleanup-20261110/grafana-combined-trivy-a1/raw.private.json",
+          "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+          "role": "unchanged_complete_current_trivy_raw_report"
+        }
+      ]
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2018-12099",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "MEDIUM",
+      "raw_severity": "MEDIUM",
+      "disposition": "PENDING",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "technical_basis": "NOT_REVIEWED_BY_THIS_SUBTASK",
+      "why": "Reserved for the separate 22-CNA investigation; no applicability or fixed conclusion is inherited from another row.",
+      "evidence": [
+        {
+          "path": ".cache/release-readme-cleanup-20261110/grafana-combined-trivy-a1/raw.private.json",
+          "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+          "role": "unchanged_complete_current_trivy_raw_report"
+        }
+      ]
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2018-18623",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "MEDIUM",
+      "raw_severity": "MEDIUM",
+      "disposition": "PENDING",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "technical_basis": "NOT_REVIEWED_BY_THIS_SUBTASK",
+      "why": "Reserved for the separate 22-CNA investigation; no applicability or fixed conclusion is inherited from another row.",
+      "evidence": [
+        {
+          "path": ".cache/release-readme-cleanup-20261110/grafana-combined-trivy-a1/raw.private.json",
+          "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+          "role": "unchanged_complete_current_trivy_raw_report"
+        }
+      ]
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2018-18624",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "MEDIUM",
+      "raw_severity": "MEDIUM",
+      "disposition": "PENDING",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "technical_basis": "NOT_REVIEWED_BY_THIS_SUBTASK",
+      "why": "Reserved for the separate 22-CNA investigation; no applicability or fixed conclusion is inherited from another row.",
+      "evidence": [
+        {
+          "path": ".cache/release-readme-cleanup-20261110/grafana-combined-trivy-a1/raw.private.json",
+          "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+          "role": "unchanged_complete_current_trivy_raw_report"
+        }
+      ]
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2018-18625",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "MEDIUM",
+      "raw_severity": "MEDIUM",
+      "disposition": "PENDING",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "technical_basis": "NOT_REVIEWED_BY_THIS_SUBTASK",
+      "why": "Reserved for the separate 22-CNA investigation; no applicability or fixed conclusion is inherited from another row.",
+      "evidence": [
+        {
+          "path": ".cache/release-readme-cleanup-20261110/grafana-combined-trivy-a1/raw.private.json",
+          "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+          "role": "unchanged_complete_current_trivy_raw_report"
+        }
+      ]
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2019-13068",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "MEDIUM",
+      "raw_severity": "MEDIUM",
+      "disposition": "PENDING",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "technical_basis": "NOT_REVIEWED_BY_THIS_SUBTASK",
+      "why": "Reserved for the separate 22-CNA investigation; no applicability or fixed conclusion is inherited from another row.",
+      "evidence": [
+        {
+          "path": ".cache/release-readme-cleanup-20261110/grafana-combined-trivy-a1/raw.private.json",
+          "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+          "role": "unchanged_complete_current_trivy_raw_report"
+        }
+      ]
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2019-19499",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "MEDIUM",
+      "raw_severity": "MEDIUM",
+      "disposition": "PENDING",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "technical_basis": "NOT_REVIEWED_BY_THIS_SUBTASK",
+      "why": "Reserved for the separate 22-CNA investigation; no applicability or fixed conclusion is inherited from another row.",
+      "evidence": [
+        {
+          "path": ".cache/release-readme-cleanup-20261110/grafana-combined-trivy-a1/raw.private.json",
+          "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+          "role": "unchanged_complete_current_trivy_raw_report"
+        }
+      ]
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2020-11110",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "MEDIUM",
+      "raw_severity": "MEDIUM",
+      "disposition": "PENDING",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "technical_basis": "NOT_REVIEWED_BY_THIS_SUBTASK",
+      "why": "Reserved for the separate 22-CNA investigation; no applicability or fixed conclusion is inherited from another row.",
+      "evidence": [
+        {
+          "path": ".cache/release-readme-cleanup-20261110/grafana-combined-trivy-a1/raw.private.json",
+          "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+          "role": "unchanged_complete_current_trivy_raw_report"
+        }
+      ]
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2020-12245",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "MEDIUM",
+      "raw_severity": "MEDIUM",
+      "disposition": "PENDING",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "technical_basis": "NOT_REVIEWED_BY_THIS_SUBTASK",
+      "why": "Reserved for the separate 22-CNA investigation; no applicability or fixed conclusion is inherited from another row.",
+      "evidence": [
+        {
+          "path": ".cache/release-readme-cleanup-20261110/grafana-combined-trivy-a1/raw.private.json",
+          "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+          "role": "unchanged_complete_current_trivy_raw_report"
+        }
+      ]
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2020-13430",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "MEDIUM",
+      "raw_severity": "MEDIUM",
+      "disposition": "PENDING",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "technical_basis": "NOT_REVIEWED_BY_THIS_SUBTASK",
+      "why": "Reserved for the separate 22-CNA investigation; no applicability or fixed conclusion is inherited from another row.",
+      "evidence": [
+        {
+          "path": ".cache/release-readme-cleanup-20261110/grafana-combined-trivy-a1/raw.private.json",
+          "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+          "role": "unchanged_complete_current_trivy_raw_report"
+        }
+      ]
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2020-24303",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "MEDIUM",
+      "raw_severity": "MEDIUM",
+      "disposition": "PENDING",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "technical_basis": "NOT_REVIEWED_BY_THIS_SUBTASK",
+      "why": "Reserved for the separate 22-CNA investigation; no applicability or fixed conclusion is inherited from another row.",
+      "evidence": [
+        {
+          "path": ".cache/release-readme-cleanup-20261110/grafana-combined-trivy-a1/raw.private.json",
+          "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+          "role": "unchanged_complete_current_trivy_raw_report"
+        }
+      ]
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2022-39229",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "MEDIUM",
+      "raw_severity": "MEDIUM",
+      "disposition": "PENDING",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "technical_basis": "NOT_REVIEWED_BY_THIS_SUBTASK",
+      "why": "Reserved for the separate 22-CNA investigation; no applicability or fixed conclusion is inherited from another row.",
+      "evidence": [
+        {
+          "path": ".cache/release-readme-cleanup-20261110/grafana-combined-trivy-a1/raw.private.json",
+          "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+          "role": "unchanged_complete_current_trivy_raw_report"
+        }
+      ]
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2022-39324",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "MEDIUM",
+      "raw_severity": "MEDIUM",
+      "disposition": "PENDING",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "technical_basis": "NOT_REVIEWED_BY_THIS_SUBTASK",
+      "why": "Reserved for the separate 22-CNA investigation; no applicability or fixed conclusion is inherited from another row.",
+      "evidence": [
+        {
+          "path": ".cache/release-readme-cleanup-20261110/grafana-combined-trivy-a1/raw.private.json",
+          "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+          "role": "unchanged_complete_current_trivy_raw_report"
+        }
+      ]
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2023-2183",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "MEDIUM",
+      "raw_severity": "MEDIUM",
+      "disposition": "PENDING",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "technical_basis": "NOT_REVIEWED_BY_THIS_SUBTASK",
+      "why": "Reserved for the separate 22-CNA investigation; no applicability or fixed conclusion is inherited from another row.",
+      "evidence": [
+        {
+          "path": ".cache/release-readme-cleanup-20261110/grafana-combined-trivy-a1/raw.private.json",
+          "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+          "role": "unchanged_complete_current_trivy_raw_report"
+        }
+      ]
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2023-4822",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "MEDIUM",
+      "raw_severity": "MEDIUM",
+      "disposition": "PENDING",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "technical_basis": "NOT_REVIEWED_BY_THIS_SUBTASK",
+      "why": "Reserved for the separate 22-CNA investigation; no applicability or fixed conclusion is inherited from another row.",
+      "evidence": [
+        {
+          "path": ".cache/release-readme-cleanup-20261110/grafana-combined-trivy-a1/raw.private.json",
+          "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+          "role": "unchanged_complete_current_trivy_raw_report"
+        }
+      ]
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2025-3415",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "MEDIUM",
+      "raw_severity": "MEDIUM",
+      "disposition": "PENDING",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "technical_basis": "NOT_REVIEWED_BY_THIS_SUBTASK",
+      "why": "Reserved for the separate 22-CNA investigation; no applicability or fixed conclusion is inherited from another row.",
+      "evidence": [
+        {
+          "path": ".cache/release-readme-cleanup-20261110/grafana-combined-trivy-a1/raw.private.json",
+          "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+          "role": "unchanged_complete_current_trivy_raw_report"
+        }
+      ]
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-10601",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "MEDIUM",
+      "raw_severity": "MEDIUM",
+      "disposition": "PENDING",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "technical_basis": "NOT_REVIEWED_BY_THIS_SUBTASK",
+      "why": "Reserved for the separate 22-CNA investigation; no applicability or fixed conclusion is inherited from another row.",
+      "evidence": [
+        {
+          "path": ".cache/release-readme-cleanup-20261110/grafana-combined-trivy-a1/raw.private.json",
+          "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+          "role": "unchanged_complete_current_trivy_raw_report"
+        }
+      ]
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-21724",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "MEDIUM",
+      "raw_severity": "MEDIUM",
+      "disposition": "PENDING",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "technical_basis": "NOT_REVIEWED_BY_THIS_SUBTASK",
+      "why": "Reserved for the separate 22-CNA investigation; no applicability or fixed conclusion is inherited from another row.",
+      "evidence": [
+        {
+          "path": ".cache/release-readme-cleanup-20261110/grafana-combined-trivy-a1/raw.private.json",
+          "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+          "role": "unchanged_complete_current_trivy_raw_report"
+        }
+      ]
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-33380",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "MEDIUM",
+      "raw_severity": "MEDIUM",
+      "disposition": "PENDING",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "technical_basis": "NOT_REVIEWED_BY_THIS_SUBTASK",
+      "why": "Reserved for the separate 22-CNA investigation; no applicability or fixed conclusion is inherited from another row.",
+      "evidence": [
+        {
+          "path": ".cache/release-readme-cleanup-20261110/grafana-combined-trivy-a1/raw.private.json",
+          "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+          "role": "unchanged_complete_current_trivy_raw_report"
+        }
+      ]
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-33381",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "MEDIUM",
+      "raw_severity": "MEDIUM",
+      "disposition": "PENDING",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "technical_basis": "NOT_REVIEWED_BY_THIS_SUBTASK",
+      "why": "Reserved for the separate 22-CNA investigation; no applicability or fixed conclusion is inherited from another row.",
+      "evidence": [
+        {
+          "path": ".cache/release-readme-cleanup-20261110/grafana-combined-trivy-a1/raw.private.json",
+          "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+          "role": "unchanged_complete_current_trivy_raw_report"
+        }
+      ]
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2024-10452",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "LOW",
+      "raw_severity": "LOW",
+      "disposition": "PENDING",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "technical_basis": "NOT_REVIEWED_BY_THIS_SUBTASK",
+      "why": "Reserved for the separate 22-CNA investigation; no applicability or fixed conclusion is inherited from another row.",
+      "evidence": [
+        {
+          "path": ".cache/release-readme-cleanup-20261110/grafana-combined-trivy-a1/raw.private.json",
+          "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+          "role": "unchanged_complete_current_trivy_raw_report"
+        }
+      ]
+    },
+    {
+      "scanner": "Trivy",
+      "id": "CVE-2026-21727",
+      "target": "usr/share/grafana/bin/grafana",
+      "package": "github.com/grafana/grafana",
+      "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+      "severity": "LOW",
+      "raw_severity": "LOW",
+      "disposition": "PENDING",
+      "subject_image_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+      "subject_runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+      "subject_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "technical_basis": "NOT_REVIEWED_BY_THIS_SUBTASK",
+      "why": "Reserved for the separate 22-CNA investigation; no applicability or fixed conclusion is inherited from another row.",
+      "evidence": [
+        {
+          "path": ".cache/release-readme-cleanup-20261110/grafana-combined-trivy-a1/raw.private.json",
+          "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+          "role": "unchanged_complete_current_trivy_raw_report"
+        }
+      ]
+    }
+  ],
+  "raw_report_evidence": [
+    {
+      "path": ".cache/release-readme-cleanup-20261110/grafana-combined-trivy-a1/raw.private.json",
+      "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+      "role": "actual_complete_trivy_40_raw"
+    },
+    {
+      "path": ".cache/release-readme-cleanup-20261110/grafana-combined-native-a1/full-grype.json",
+      "sha256": "e4e134c2a8a956a30b8993c01e154d94c893650c92ba4162ce3477ee9d797270",
+      "role": "actual_complete_grype_10_raw"
+    }
+  ],
+  "historical_request_usage": {
+    "path": "deployment/security/grafana-fixed-20261107-request.json",
+    "sha256": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+    "role": "Exact tuple and primary technical evidence lookup only; not current subject authorization"
+  },
+  "exact_alias_scope": [
+    {
+      "scanner": "Grype",
+      "raw_id": "GHSA-p4r4-xvrq-gvmc",
+      "canonical_id": "CVE-2026-21728",
+      "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+      "severity": "HIGH"
+    },
+    {
+      "scanner": "Grype",
+      "raw_id": "GHSA-ffqx-q65f-36jf",
+      "canonical_id": "CVE-2026-28377",
+      "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+      "severity": "HIGH"
+    }
+  ],
+  "old_authorization_inherited": false,
+  "old_main_elf_inherited": false,
+  "security_gate_passed": false,
+  "new_profile_created": false,
+  "independent_review_completed": false,
+  "binary_redistribution_approved": false,
+  "publication_completed": false,
+  "remaining_work": [
+    "Merge independently researched 22 new Trivy tuples",
+    "Promote exact ssl_client source snapshot with its real license/provenance as needed",
+    "Parent freezes complete new subject/profile and obtains independent technical review",
+    "Re-run real combined gate/CI and applicable final publication/acceptance"
+  ],
+  "boundary": "All original raw reports, package versions and severities are retained. 25 old exact scanner rows rechecked against the new subject plus three separately scoped BusyBox-origin package matches; no directory ignore, old artifact approval inheritance, blanket version waiver or zero-vulnerability claim.",
+  "original_private_review_sha256": "b666c26de8ff77aa5c3eee346502b793507a4b6ec60b0972173111a032a91c8f",
+  "public_projection": "Technical rows unchanged; the ssl_client source reference uses its verified public scope/hash/API-flow facts, and the exact CNA snapshot is copied verbatim. Original private source and review remain preserved."
+}

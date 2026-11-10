@@ -1,0 +1,28 @@
+{
+  "schema": "grafana-source-scan-technical-facts-20261110-v1",
+  "source_scan_preflight_commit": "9e68d1028ecd3e336e333d1737ec6974c5d35480",
+  "actual_raw_scan_sha256": "690755238c45210fdcd2d5367c585a660ebae4abecfecfd9773c0f480f33abbf",
+  "raw_counts": {
+    "CRITICAL": 0,
+    "HIGH": 24,
+    "MEDIUM": 12,
+    "LOW": 0,
+    "UNKNOWN": 32
+  },
+  "observed_exact_tuple_count": 68,
+  "reverified_technical_tuple_count": 68,
+  "proof_counts": {
+    "compiled_absence": 31,
+    "external_graph": 11,
+    "standalone_context": 4,
+    "compiled_dependency": 21,
+    "maintained_patch": 1
+  },
+  "raw_reports_modified": false,
+  "old_original_failed_unresolved": 22,
+  "old_candidate_failed_unresolved": 20,
+  "final_source_scan_pending": true,
+  "new_manifest_copy": "deployment/security/grafana-source-20261110-evidence/main/locks/go.mod",
+  "new_manifest_copy_sha256": "120976b75ce3f338b41c0c25f83cc2e5e0b5bff889210c8eec9d6677c526687d",
+  "boundary": "68 preflight raw tuples rechecked individually. Adding this tracked actual lock creates another scan target; final full coverage/findings must be collected and reviewed again."
+}

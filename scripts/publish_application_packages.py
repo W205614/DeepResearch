@@ -1,4 +1,4 @@
-"""Publish the exact verified application archives from an immutable artifact release."""
+"""Publish exact verified application archives from the corresponding version Release."""
 from __future__ import annotations
 
 import argparse
@@ -91,7 +91,7 @@ def publication_scan_verdict(scan: dict, image: dict, diff_ids: list[str], start
             "applicability_exceptions_applied": [], "raw_report_modified": False}
 
 
-def scan_loaded_archive(archive: Path, image: dict, output: Path, *, scanner: str = "trivy") -> None:
+def scan_loaded_archive(archive: Path, image: dict, output: Path, *, scanner: str = "trivy", cache_dir: Path | None = None) -> None:
     output.mkdir(parents=True, exist_ok=False)
     output = output.resolve()
     receipt = {"passed": False, "service": image["service"], "image_id": image["image_id"],
@@ -114,6 +114,8 @@ def scan_loaded_archive(archive: Path, image: dict, output: Path, *, scanner: st
                    "--ignorefile", str(ignore), "--scanners", "vuln,secret", "--list-all-pkgs",
                    "--severity", ",".join(SEVERITIES), "--ignore-unfixed=false", "--format", "json",
                    "--output", str(raw), "--exit-code", "0", "--timeout", "10m"]
+        if cache_dir is not None:
+            command += ['--cache-dir', str(cache_dir.resolve())]
         started = datetime.now(timezone.utc)
         receipt.update(started_at=started.isoformat(), scanner_version="0.75.0", command=command)
         try:
@@ -133,6 +135,24 @@ def scan_loaded_archive(archive: Path, image: dict, output: Path, *, scanner: st
             raise ValueError("Complete unfiltered publication image scan is required")
         receipt["raw_sha256"] = file_hash(raw)
         verdict = publication_scan_verdict(json.loads(raw.read_bytes()), image, diff_ids, started, finished)
+        if image.get('security_review_profile'):
+            if image['service'] != 'agent' or image['security_review_profile'] != 'agent-full-scope-20261110':
+                raise ValueError('Unknown application-specific technical review')
+            from scripts import check_agent_full_scope
+
+            profile = check_agent_full_scope.load_profile(image['security_review_profile'])
+            inspection, = json.loads(subprocess.check_output(['docker', 'image', 'inspect', image['archive_tag']]))
+            actual_config_raw = check_agent_full_scope.capture_actual_config(inspection)
+            if 'sha256:' + hashlib.sha256(actual_config_raw).hexdigest() != image['image_id']:
+                raise ValueError('Actual reviewed runtime portable config differs from the accepted archive')
+            runtime = check_agent_full_scope.probe_image(inspection['Id'], profile)
+            technical = check_agent_full_scope.adjudicate(json.loads(raw.read_bytes()), inspection, runtime,
+                profile, actual_config_raw=actual_config_raw, scan_source='archive')
+            verdict = {**verdict, 'strict_default_verdict': verdict,
+                'passed': technical['passed'], 'unresolved_vulnerabilities': [],
+                'applicability_exceptions_applied': technical['technical_dispositions'],
+                'technical_review': technical,
+                'policy': 'Exact all-severity fixed-code and application-path review; every new finding or changed runtime blocks'}
         receipt.update(verdict)
         # A raw secret match can contain credential values. Keep it and scanner
         # logs in the runner's private output, outside the uploaded artifact set.
@@ -155,6 +175,9 @@ def validate_manifest(data: dict, source_sha: str, release_tag: str) -> None:
         raise ValueError("Publication manifest belongs to a different release or repository")
     if not re.fullmatch(r"v\d+\.\d+\.\d+", data.get("version", "")):
         raise ValueError("An immutable application version is required")
+    if (release_tag != data['version']
+            and not re.fullmatch('artifact-applications-' + re.escape(data['version']) + r'-r\d+', release_tag)):
+        raise ValueError("Release tag and immutable application version differ")
     images = data.get("images", [])
     if len(images) != 3 or {item.get("service") for item in images} != SERVICES:
         raise ValueError("Exactly the three application images are required")
@@ -163,6 +186,9 @@ def validate_manifest(data: dict, source_sha: str, release_tag: str) -> None:
     names = []
     for image in images:
         service = image["service"]
+        if ('security_review_profile' in image and (service != 'agent'
+                or image['security_review_profile'] != 'agent-full-scope-20261110')):
+            raise ValueError('Only the exact Agent technical review can replace the raw-zero default')
         if image.get("repository") != "ghcr.io/w205614/deepresearch-" + service:
             raise ValueError("Unexpected package namespace")
         if not re.fullmatch(r"sha256:[a-f0-9]{64}", image.get("image_id", "")):
@@ -253,8 +279,8 @@ def main() -> None:
     parser.add_argument("--manifest-sha256", required=True)
     parser.add_argument("--output", type=Path, default=Path(".cache/eval/application-publication"))
     args = parser.parse_args()
-    if not re.fullmatch(r"artifact-applications-v\d+\.\d+\.\d+-r\d+", args.release_tag):
-        parser.error("An explicit application artifact release is required")
+    if not re.fullmatch(r"(?:v\d+\.\d+\.\d+|artifact-applications-v\d+\.\d+\.\d+-r\d+)", args.release_tag):
+        parser.error("An explicit version Release or retained historical application artifact release is required")
     if not re.fullmatch(r"[a-f0-9]{64}", args.manifest_sha256):
         parser.error("An exact accepted manifest SHA-256 is required")
     sha = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
@@ -266,6 +292,8 @@ def main() -> None:
     release = github("/releases/tags/" + args.release_tag)
     if release["draft"] or not release["published_at"] or release["target_commitish"] != sha:
         raise ValueError("Artifact release is not published for the exact final source")
+    if github('/commits/' + args.release_tag)['sha'] != sha:
+        raise ValueError("The actual published tag resolves to another source commit")
     assets = {asset["name"]: asset for asset in release["assets"]}
     if assets["publication-manifest.json"]["size"] > 1024 * 1024:
         raise ValueError("Publication manifest exceeds its size bound")

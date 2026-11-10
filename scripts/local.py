@@ -93,7 +93,11 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     subprocess.run([sys.executable, str(ROOT / "scripts/fetch_approved_image.py")], check=True)
     if args.observability:
-        subprocess.run([sys.executable, str(ROOT / "scripts/fetch_grafana_fixed_20261107.py")], check=True)
+        grafana = [sys.executable, str(ROOT / "scripts/build_grafana_source_20261110.py"),
+                   "--output-dir", str(ROOT / ".cache/grafana-source-20261110")]
+        if args.no_build:
+            grafana.append("--no-build")
+        subprocess.run(grafana, check=True)
     build = ["--no-build", "--pull", "never"] if args.no_build else ["--build"]
     subprocess.run([*command, "up", "-d", *build, "--wait", "--wait-timeout", str(args.wait_timeout)], check=True)
     print("Local stack started. Run the same command with action 'stop' to pause it.")

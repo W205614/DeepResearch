@@ -632,8 +632,10 @@ services:
     networks: [database, telemetry]
   grafana:
     <<: *service-defaults
-    # Exact reviewed artifact; dated, content-bound dispositions are verified by the security gate.
-    image: deepresearch-approved-grafana:20261107
+    # Prepared by the profile-bound build entry before startup; not a published image.
+    image: deepresearch-grafana-source:20261110
+    x-deepresearch-source-build: grafana-source-20261110
+    pull_policy: never
     environment:
       GF_SECURITY_ADMIN_PASSWORD: "${GRAFANA_ADMIN_PASSWORD:?Set GRAFANA_ADMIN_PASSWORD in .env}"
       GF_PLUGINS_PREINSTALL_DISABLED: "true"

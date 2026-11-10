@@ -1,0 +1,643 @@
+{
+  "schema_version": 1,
+  "component": "BusyBox 1.37.0 + Alpine c3ef5d10e6ef 44 patches + local CVE-2025-60876 HTTP-boundary patch",
+  "source_date_epoch": 1768059508,
+  "source_date_epoch_origin": "Build date of original Alpine BusyBox 1.37.0-r31 APK in approved Grafana",
+  "architecture": "linux/amd64",
+  "builder": "alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a",
+  "alpine_aports_commit": "c3ef5d10e6ef6528852c51f0564963e2f8c1be19",
+  "alpine_aports_url": "https://github.com/alpinelinux/aports/tree/c3ef5d10e6ef6528852c51f0564963e2f8c1be19/main/busybox",
+  "original_package_version": "1.37.0-r31",
+  "custom_package_scope": "Locally rebuilt BusyBox; not an official Alpine package revision. Preserve original APK metadata and bind the new payload by SHA and fixed-code evidence.",
+  "static_libraries": [
+    {
+      "name": "utmps",
+      "version": "0.1.3.3-r0",
+      "aports_commit": "900a4ecef77ae677eab8243b99f2c40cbf8ea35b",
+      "license": "ISC"
+    },
+    {
+      "name": "skalibs",
+      "version": "2.15.0.0-r0",
+      "aports_commit": "f148233038fa9b35932a7996df29f110b32c2160",
+      "license": "ISC"
+    }
+  ],
+  "archives": [
+    {
+      "filename": "libgcc-15.2.0-r5.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/libgcc-15.2.0-r5.apk",
+      "sha256": "393dcd32629f06d7d85409c272d142d0c082772d10b87ef55ee82f47de3be637",
+      "kind": "build-apk",
+      "name": "libgcc",
+      "version": "15.2.0-r5"
+    },
+    {
+      "filename": "jansson-2.15.0-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/jansson-2.15.0-r0.apk",
+      "sha256": "7681b41486e1f2b2efce11875c839533464ae8857d30fc49130f0039c6585fdb",
+      "kind": "build-apk",
+      "name": "jansson",
+      "version": "2.15.0-r0"
+    },
+    {
+      "filename": "libstdc++-15.2.0-r5.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/libstdc%2B%2B-15.2.0-r5.apk",
+      "sha256": "14c987b556f5385a5db18376e788c75f37d85321b8dc1920d926ea7daac1d6f6",
+      "kind": "build-apk",
+      "name": "libstdc++",
+      "version": "15.2.0-r5"
+    },
+    {
+      "filename": "zstd-libs-1.5.7-r2.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/zstd-libs-1.5.7-r2.apk",
+      "sha256": "23c6065b0049b2406441564bcf0032515a43f78e80d76fcb85535a3803ef5d4e",
+      "kind": "build-apk",
+      "name": "zstd-libs",
+      "version": "1.5.7-r2"
+    },
+    {
+      "filename": "binutils-2.45.1-r1.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/binutils-2.45.1-r1.apk",
+      "sha256": "15682887459d216585feb438bbfb7ec63e1f33e77c453f44637d2d9d8c35977d",
+      "kind": "build-apk",
+      "name": "binutils",
+      "version": "2.45.1-r1"
+    },
+    {
+      "filename": "libmagic-5.47-r2.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/libmagic-5.47-r2.apk",
+      "sha256": "1820acd299025619a848b19ac98c7996fd92c06965255898800b6a790a8b03a2",
+      "kind": "build-apk",
+      "name": "libmagic",
+      "version": "5.47-r2"
+    },
+    {
+      "filename": "file-5.47-r2.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/file-5.47-r2.apk",
+      "sha256": "4681c153c509aec126e2b9ea2c959730309b24a792d49fc8cc26fa5fa87e8fdd",
+      "kind": "build-apk",
+      "name": "file",
+      "version": "5.47-r2"
+    },
+    {
+      "filename": "libgcc-static-15.2.0-r5.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/libgcc-static-15.2.0-r5.apk",
+      "sha256": "563244a562f5c48b921f7f0b4a571e373cfcba65175fe2d4f752c5f975738bcd",
+      "kind": "build-apk",
+      "name": "libgcc-static",
+      "version": "15.2.0-r5"
+    },
+    {
+      "filename": "libgomp-15.2.0-r5.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/libgomp-15.2.0-r5.apk",
+      "sha256": "e7204aad00e31d544e0a34eac5a7eb7d3586d2b7b22afd6e5907189c4e0337cc",
+      "kind": "build-apk",
+      "name": "libgomp",
+      "version": "15.2.0-r5"
+    },
+    {
+      "filename": "libatomic-15.2.0-r5.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/libatomic-15.2.0-r5.apk",
+      "sha256": "c5ec550c73dd7b4e81e206fdff3cf4c46b0ae1b29fec1db5cd4e12d88416abbf",
+      "kind": "build-apk",
+      "name": "libatomic",
+      "version": "15.2.0-r5"
+    },
+    {
+      "filename": "gmp-6.3.0-r4.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/gmp-6.3.0-r4.apk",
+      "sha256": "85323ef5bce8ff234736dc2d6592ea37aebdc6348a531e27430bdfe38364d256",
+      "kind": "build-apk",
+      "name": "gmp",
+      "version": "6.3.0-r4"
+    },
+    {
+      "filename": "isl26-0.26-r2.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/isl26-0.26-r2.apk",
+      "sha256": "30999fb66e296c8ea7aa102cad0d3095519b3022abb622d2951dd29367310ea9",
+      "kind": "build-apk",
+      "name": "isl26",
+      "version": "0.26-r2"
+    },
+    {
+      "filename": "mpfr4-4.2.2-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/mpfr4-4.2.2-r0.apk",
+      "sha256": "93620a803d416e8c05150fb14413796df14ea370322dff6bd106455deab15646",
+      "kind": "build-apk",
+      "name": "mpfr4",
+      "version": "4.2.2-r0"
+    },
+    {
+      "filename": "mpc1-1.3.1-r1.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/mpc1-1.3.1-r1.apk",
+      "sha256": "c2247438e163f1c11646428f07576ceb3cf3167f9a9a5c6526021f778d77adb6",
+      "kind": "build-apk",
+      "name": "mpc1",
+      "version": "1.3.1-r1"
+    },
+    {
+      "filename": "gcc-15.2.0-r5.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/gcc-15.2.0-r5.apk",
+      "sha256": "d1d482472ed91240731c60dbae8176bc1e32e1dfb694856da6759f6d32716325",
+      "kind": "build-apk",
+      "name": "gcc",
+      "version": "15.2.0-r5"
+    },
+    {
+      "filename": "libstdc++-dev-15.2.0-r5.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/libstdc%2B%2B-dev-15.2.0-r5.apk",
+      "sha256": "62ce308cdbf127dcac6eee1520a4ffec8dc98b30974653908842fe4cc7d90b43",
+      "kind": "build-apk",
+      "name": "libstdc++-dev",
+      "version": "15.2.0-r5"
+    },
+    {
+      "filename": "musl-dev-1.2.6-r3.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/musl-dev-1.2.6-r3.apk",
+      "sha256": "310b51cff12e1d5ce5f135c558a82e2550427da5465bbd16c9ff9b05e63ee3d9",
+      "kind": "build-apk",
+      "name": "musl-dev",
+      "version": "1.2.6-r3"
+    },
+    {
+      "filename": "g++-15.2.0-r5.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/g%2B%2B-15.2.0-r5.apk",
+      "sha256": "35c39e8d3667d8603fe209dbafe67681c64b1cda66bf9c836bfb4d05b19a71fd",
+      "kind": "build-apk",
+      "name": "g++",
+      "version": "15.2.0-r5"
+    },
+    {
+      "filename": "make-4.4.1-r4.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/make-4.4.1-r4.apk",
+      "sha256": "a916626a876f64c6b6fb32a6bf0fa93351d09fae0aa7684135642390da647e60",
+      "kind": "build-apk",
+      "name": "make",
+      "version": "4.4.1-r4"
+    },
+    {
+      "filename": "fortify-headers-3.0.1-r2.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/fortify-headers-3.0.1-r2.apk",
+      "sha256": "5ffaebd9f141ac3e3fa0cc99f798f64b4c0aa16fb06a7a77e68f63f350fe23aa",
+      "kind": "build-apk",
+      "name": "fortify-headers",
+      "version": "3.0.1-r2"
+    },
+    {
+      "filename": "patch-2.8.1-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/patch-2.8.1-r0.apk",
+      "sha256": "9ea3be7dca8efce2031dbf3f885a54ad75515f2afe9a19e238d79e2ffbbe4240",
+      "kind": "build-apk",
+      "name": "patch",
+      "version": "2.8.1-r0"
+    },
+    {
+      "filename": "build-base-0.5-r4.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/build-base-0.5-r4.apk",
+      "sha256": "3ac72e74e96150995e8d797b6c33fc3b46d69e3667c47bd0ff25ce89f9fc4eaf",
+      "kind": "build-apk",
+      "name": "build-base",
+      "version": "0.5-r4"
+    },
+    {
+      "filename": "linux-headers-7.0.0-r1.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/linux-headers-7.0.0-r1.apk",
+      "sha256": "c4535f3f0dc6fd4d80efa7ff2a7a72a2d3f8dae31e2587c0785cc3243889cdf2",
+      "kind": "build-apk",
+      "name": "linux-headers",
+      "version": "7.0.0-r1"
+    },
+    {
+      "filename": "pkgconf-2.5.1-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/pkgconf-2.5.1-r0.apk",
+      "sha256": "20cc47b76b82e9424a35ecc4fdd7bd904ef49ada1684214910fae31bc0cab737",
+      "kind": "build-apk",
+      "name": "pkgconf",
+      "version": "2.5.1-r0"
+    },
+    {
+      "filename": "openssl-dev-3.5.9-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/openssl-dev-3.5.9-r0.apk",
+      "sha256": "2479885dfc1414b44cf0f2578b014b70a3ce671d7607db62c8366e46f5b77ca6",
+      "kind": "build-apk",
+      "name": "openssl-dev",
+      "version": "3.5.9-r0"
+    },
+    {
+      "filename": "libbz2-1.0.8-r6.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/libbz2-1.0.8-r6.apk",
+      "sha256": "2737e2b23ed08d4911ee62cd0163b5f4bf0379cacf4dc35b23a00209584c98fd",
+      "kind": "build-apk",
+      "name": "libbz2",
+      "version": "1.0.8-r6"
+    },
+    {
+      "filename": "perl-5.42.3-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/perl-5.42.3-r0.apk",
+      "sha256": "6bb4d744425b1689d54feece20bdd51f71508c4d23d1af5f66298f03f8310df7",
+      "kind": "build-apk",
+      "name": "perl",
+      "version": "5.42.3-r0"
+    },
+    {
+      "filename": "libexpat-2.10.0-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/libexpat-2.10.0-r0.apk",
+      "sha256": "e7e7408ea787ed06d00159b0ff1f9b65a63cf634f36d9e0fa7512ce2c489a503",
+      "kind": "build-apk",
+      "name": "libexpat",
+      "version": "2.10.0-r0"
+    },
+    {
+      "filename": "libffi-3.5.2-r1.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/libffi-3.5.2-r1.apk",
+      "sha256": "6da1a19313a40c56cac756fb11e2c4d5267831e1c22fc8323f24c943c94da6e0",
+      "kind": "build-apk",
+      "name": "libffi",
+      "version": "3.5.2-r1"
+    },
+    {
+      "filename": "gdbm-1.26-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/gdbm-1.26-r0.apk",
+      "sha256": "3278ccba30b241168ca4ab93c919be805411b918fdc062f06d3684d12dc33ae3",
+      "kind": "build-apk",
+      "name": "gdbm",
+      "version": "1.26-r0"
+    },
+    {
+      "filename": "xz-libs-5.8.4-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/xz-libs-5.8.4-r0.apk",
+      "sha256": "ab362dd515ead04c31a6c302163248da7aa4813e283c971e6dd3f789b453a1d9",
+      "kind": "build-apk",
+      "name": "xz-libs",
+      "version": "5.8.4-r0"
+    },
+    {
+      "filename": "mpdecimal-4.0.1-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/mpdecimal-4.0.1-r0.apk",
+      "sha256": "1278f374bbc8b4aad674244458cca5fc63e0780a921138eef400d5db64381a31",
+      "kind": "build-apk",
+      "name": "mpdecimal",
+      "version": "4.0.1-r0"
+    },
+    {
+      "filename": "ncurses-terminfo-base-6.6_p20260516-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/ncurses-terminfo-base-6.6_p20260516-r0.apk",
+      "sha256": "ce83be6d0bd10584a53c3a5868cc1595ce5f0f8e0b621f8f7f70b6144e521fc9",
+      "kind": "build-apk",
+      "name": "ncurses-terminfo-base",
+      "version": "6.6_p20260516-r0"
+    },
+    {
+      "filename": "libncursesw-6.6_p20260516-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/libncursesw-6.6_p20260516-r0.apk",
+      "sha256": "cf8caa8a88bc4ce9d9e395567fefaf9ef7fbd55c50ae6155b35c1b58f3755023",
+      "kind": "build-apk",
+      "name": "libncursesw",
+      "version": "6.6_p20260516-r0"
+    },
+    {
+      "filename": "libpanelw-6.6_p20260516-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/libpanelw-6.6_p20260516-r0.apk",
+      "sha256": "057be8b1b788580f4cb72c382a6dcc03467d15bd69700f32192bd709e7a57a12",
+      "kind": "build-apk",
+      "name": "libpanelw",
+      "version": "6.6_p20260516-r0"
+    },
+    {
+      "filename": "readline-8.3.3-r1.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/readline-8.3.3-r1.apk",
+      "sha256": "766911ecb986a6c5cf0841a6b556cd1e9dbbf22b3559726de32416486cd15c81",
+      "kind": "build-apk",
+      "name": "readline",
+      "version": "8.3.3-r1"
+    },
+    {
+      "filename": "sqlite-libs-3.53.4-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/sqlite-libs-3.53.4-r0.apk",
+      "sha256": "a8a216e53d22faa3f04d2e3650c1991af66f8d0b42fadff5afcdb9afb60b19e5",
+      "kind": "build-apk",
+      "name": "sqlite-libs",
+      "version": "3.53.4-r0"
+    },
+    {
+      "filename": "python3-3.14.10-r1.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/python3-3.14.10-r1.apk",
+      "sha256": "32ae9c446a79f965f942ae704c5121fa4744c5fee76ec86955fe0fc9a6e6c412",
+      "kind": "build-apk",
+      "name": "python3",
+      "version": "3.14.10-r1"
+    },
+    {
+      "filename": "python3-pycache-pyc0-3.14.10-r1.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/python3-pycache-pyc0-3.14.10-r1.apk",
+      "sha256": "19a814d76898adbf90ec0f33ff1fd85fb8454be8615f4993fba0b69b7b978926",
+      "kind": "build-apk",
+      "name": "python3-pycache-pyc0",
+      "version": "3.14.10-r1"
+    },
+    {
+      "filename": "pyc-3.14.10-r1.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/pyc-3.14.10-r1.apk",
+      "sha256": "8b1678559e6c29db978a923b611cd21a8bfda26d4814edefbb2d62a903bf7df8",
+      "kind": "build-apk",
+      "name": "pyc",
+      "version": "3.14.10-r1"
+    },
+    {
+      "filename": "python3-pyc-3.14.10-r1.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/python3-pyc-3.14.10-r1.apk",
+      "sha256": "bc63349707d5658ee2d852e415846246b8d71ece5007120b1d2aee85b4a2ad0a",
+      "kind": "build-apk",
+      "name": "python3-pyc",
+      "version": "3.14.10-r1"
+    },
+    {
+      "filename": "skalibs-libs-2.15.0.0-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/skalibs-libs-2.15.0.0-r0.apk",
+      "sha256": "3301f6ccbeaea49cdd966c7e636898a8612fb8fe964a15f24f6d204b3944c3f3",
+      "kind": "build-apk",
+      "name": "skalibs-libs",
+      "version": "2.15.0.0-r0"
+    },
+    {
+      "filename": "utmps-libs-0.1.3.3-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/utmps-libs-0.1.3.3-r0.apk",
+      "sha256": "497f0f1cb51f0e6c1acc338fded0dc7722b1d43ea17bdb749f0d556794f8b2d8",
+      "kind": "build-apk",
+      "name": "utmps-libs",
+      "version": "0.1.3.3-r0"
+    },
+    {
+      "filename": "skalibs-dev-2.15.0.0-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/skalibs-dev-2.15.0.0-r0.apk",
+      "sha256": "6923ac4dafbf0678b2d473e2d969afe1044a5164ef87416ea9fa83988d99b109",
+      "kind": "build-apk",
+      "name": "skalibs-dev",
+      "version": "2.15.0.0-r0"
+    },
+    {
+      "filename": "utmps-dev-0.1.3.3-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/utmps-dev-0.1.3.3-r0.apk",
+      "sha256": "002b767fd49e0ee01b51e26e1e9d2e46aed3972e9e5ece7a8ef5cc513f20c2c2",
+      "kind": "build-apk",
+      "name": "utmps-dev",
+      "version": "0.1.3.3-r0"
+    },
+    {
+      "filename": "skalibs-static-2.15.0.0-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/skalibs-static-2.15.0.0-r0.apk",
+      "sha256": "946fa230323c1819bb2f5c603427ac7ca94d6be3fb60f5d3aab72d12eb4ee084",
+      "kind": "build-apk",
+      "name": "skalibs-static",
+      "version": "2.15.0.0-r0"
+    },
+    {
+      "filename": "utmps-static-0.1.3.3-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/utmps-static-0.1.3.3-r0.apk",
+      "sha256": "0443037abdbddbd55430394cb899066c614d401cc49ec9c24ea438c8e5f52a25",
+      "kind": "build-apk",
+      "name": "utmps-static",
+      "version": "0.1.3.3-r0"
+    },
+    {
+      "filename": "busybox-1.37.0.tar.bz2",
+      "url": "https://busybox.net/downloads/busybox-1.37.0.tar.bz2",
+      "sha256": "3311dff32e746499f4df0d5df04d7eb396382d7e108bb9250e7b519b837043a4",
+      "sha512": "ad8fd06f082699774f990a53d7a73b189ed404fe0a2166aff13eae4d9d8ee5c9239493befe949c98801fe7897520dbff3ed0224faa7205854ce4fa975e18467e",
+      "kind": "busybox-source"
+    },
+    {
+      "filename": "utmps-0.1.3.3.tar.gz",
+      "url": "https://skarnet.org/software/utmps/utmps-0.1.3.3.tar.gz",
+      "sha256": "e2212bd02fe17730424f7f5e30a4dde71d0862a52b23d8b729eed74420a349a2",
+      "sha512": "950ccd0588ff066fbf9f862835ec03468da45a2e99a12b45ea6b5d222b19e1ead47d540ba7193f6b8a5bf69749e1351c4bbf09e22f19c3fb35fcb5bf9b8bec54",
+      "kind": "static-library-source"
+    },
+    {
+      "filename": "skalibs-2.15.0.0.tar.gz",
+      "url": "https://skarnet.org/software/skalibs/skalibs-2.15.0.0.tar.gz",
+      "sha256": "7fde96e8afb4191593a15328883e9c7726c96891cf071222146821e8c87f8007",
+      "sha512": "3fefca199a17a236a7d160bccd35b0a1ff55fa50433da613d19d919665468dbe3da09402423d61794b44cb083835bab74bee437e96d6b9ae386d41d9a8ebb8d9",
+      "kind": "static-library-source"
+    }
+  ],
+  "files": [
+    {
+      "path": "busybox.config",
+      "sha256": "65b29f6085cd79ab5f032d7e4299534a86c3efad240e78c16186a19bf847fcca"
+    },
+    {
+      "path": "upstream-APKBUILD",
+      "sha256": "98f019f62291aff63cb798f046fb59dfd43340885de63ca2f127651fc21d0450"
+    },
+    {
+      "path": "wget-http-request-boundary.patch",
+      "sha256": "2c0e1249492901997598679ad17f381b7ca8fb1c13c0ae3872abb9da6b6c2602"
+    },
+    {
+      "path": "patch-order.txt",
+      "sha256": "83af8ef4debe60baaad8d5fb34396b7e95aa8be7858089bd141d4355408c4b21"
+    },
+    {
+      "path": "utmps-APKBUILD",
+      "sha256": "40e59c8bf91709421c237776b427d95aed192ee8d7453ba31bde751230f06fa4"
+    },
+    {
+      "path": "skalibs-APKBUILD",
+      "sha256": "7878dd8832e4248e5ad535f7b8beabc9c962cdfc059b1c732d30742d57adc027"
+    },
+    {
+      "path": "alpine-patches/0001-awk-fix-handling-of-literal-backslashes-in-replaceme.patch",
+      "sha256": "522e48b25b320b854885419f3ee3a092bd58ad2ed111da87a57cafbc8420feae"
+    },
+    {
+      "path": "alpine-patches/0001-blkdiscard-ship-link-to-sbin-instead-of-usr-bin.patch",
+      "sha256": "f490ce643412a33dfd3c92aaaeff501a10c0f78662172d1cf55e5d632b7f8033"
+    },
+    {
+      "path": "alpine-patches/0001-hexdump-fix-regression-with-n4-e-u.patch",
+      "sha256": "c289b3ed7096557846069f6814e063226b2552e6d26a959c9e35116469dddf35"
+    },
+    {
+      "path": "alpine-patches/0001-init-add-support-for-separate-reboot-action.patch",
+      "sha256": "df5b272582ebf19de062341469ade926b1c747278871190855ac0d16c079f519"
+    },
+    {
+      "path": "alpine-patches/0001-mount-fix-parsing-proc-mounts-with-long-lines.patch",
+      "sha256": "5971026ad9e4b252370bf4be615f7da6ab146cccc58a7e5cb3f21b92c32ae50d"
+    },
+    {
+      "path": "alpine-patches/0001-netstat-sanitize-process-names.patch",
+      "sha256": "daf4282120acbc4eb1d90721565d2e01c9ddc3eeeabed4c5f5faa04fe3d33dd3"
+    },
+    {
+      "path": "alpine-patches/0001-tar-fix-16018-masking-of-potentially-malicious-tar-cpio-content.patch",
+      "sha256": "8b4262ffbaaa721d3c1d6a2b1deb84a794a99252b1b15e974ec76ccb9eb3c517"
+    },
+    {
+      "path": "alpine-patches/0001-tar-fix-TOCTOU-symlink-race-condition.patch",
+      "sha256": "1a65d0870075fc83d58d75e91a2e518d1bee1898083086fb950281eb79b7d3a8"
+    },
+    {
+      "path": "alpine-patches/0001-tunctl-fix-segfault-on-ioctl-failure.patch",
+      "sha256": "d8488651d7af4450310dce234bc62cf5737a473478f67e298a1ad50c6205a78c"
+    },
+    {
+      "path": "alpine-patches/0001-wget-add-header-Accept.patch",
+      "sha256": "0edc53c34e0b7f82efb4010ac417c42c182890088f83944f1fb557ba5826968b"
+    },
+    {
+      "path": "alpine-patches/0002-adduser-default-to-sbin-nologin-as-shell-for-system-.patch",
+      "sha256": "1f7d95849b0cda0a75d608afca994d782f0a67fe0f1cb47578424ebadeb266c7"
+    },
+    {
+      "path": "alpine-patches/0003-ash-add-built-in-BB_ASH_VERSION-variable.patch",
+      "sha256": "9059fe07e7a872ed16e66f9cb711dbfcf4d5d28308f20dd9a6c36956326911c9"
+    },
+    {
+      "path": "alpine-patches/0004-Avoid-redefined-warnings-when-buiding-with-utmps.patch",
+      "sha256": "8ac54787fe6bfeb42a6c13e49b39ac7c61e839c4cea243d273c71ba10f1b4a2c"
+    },
+    {
+      "path": "alpine-patches/0005-libbb-sockaddr2str-ensure-only-printable-characters-.patch",
+      "sha256": "3d16e43c11fa3afeb441c64129071168ce9a7a9e584fc78ccc18bbae99feda87"
+    },
+    {
+      "path": "alpine-patches/0006-modinfo-add-k-option-for-kernel-version.patch",
+      "sha256": "6832669fa413d9a236a22bb4d0519e6cc89771a0ef24abd723afd99ce52e900f"
+    },
+    {
+      "path": "alpine-patches/0007-nologin-Install-applet-to-sbin-instead-of-usr-sbin.patch",
+      "sha256": "3bf06e5cdd1a0d4a0ad541c8a838004fd0c4e46e44ad3af6d146ad2f69967d3b"
+    },
+    {
+      "path": "alpine-patches/0008-pgrep-add-support-for-matching-against-UID-and-RUID.patch",
+      "sha256": "c43b6ede059656adb473481aff2aa29239d232b998f735302e97a324650e77a3"
+    },
+    {
+      "path": "alpine-patches/0009-properly-fix-wget-https-support.patch",
+      "sha256": "4be0a9d28acaa4c117c694a4816fad4a2d3f78e224676dfc2d1407d3ad0dc17a"
+    },
+    {
+      "path": "alpine-patches/0010-fsck-resolve-LABEL-.-UUID-.-spec-to-device.patch",
+      "sha256": "f45615c7a985b30465da5d93a3535404636f45a83cbeefafbd0bcb6b0c86371f"
+    },
+    {
+      "path": "alpine-patches/0011-nslookup-sanitize-all-printed-strings-with-printable.patch",
+      "sha256": "a1f28268047e9e268f9760f3f3c9bf53f41eb5a712e0922f105dd23b96c00dc7"
+    },
+    {
+      "path": "alpine-patches/0012-ash-exec-busybox.static.patch",
+      "sha256": "813555bb69bc9b97ff3d7ec14569eb2763ec16bfd9650bba5f1f08ba5cd4226c"
+    },
+    {
+      "path": "alpine-patches/0013-app-location-for-cpio-vi-and-lspci.patch",
+      "sha256": "7f083b5705dac1cfa80953e32e83aaa65e4234c41a59f1578bfc403a1abf4eed"
+    },
+    {
+      "path": "alpine-patches/0014-udhcpc-set-default-discover-retries-to-5.patch",
+      "sha256": "3e306b052a2df4134de61012de907893aebeb9cd107e9410e81770d60608c41d"
+    },
+    {
+      "path": "alpine-patches/0015-ping-make-ping-work-without-root-privileges.patch",
+      "sha256": "802827589eb1c04f634ba8f69158cf0ba87e41061935ba5047ccc8322bf20f41"
+    },
+    {
+      "path": "alpine-patches/0016-fbsplash-support-console-switching.patch",
+      "sha256": "4db1b0fe9178c1a04f8ea63a9915db86159120398e8bd619c0231afa303472d4"
+    },
+    {
+      "path": "alpine-patches/0017-fbsplash-support-image-and-bar-alignment-and-positio.patch",
+      "sha256": "d128fa633cfad0845d6bd5f0aee634ab9971b2edd6001ad91d99b3c1be8aee91"
+    },
+    {
+      "path": "alpine-patches/0018-depmod-support-generating-kmod-binary-index-files.patch",
+      "sha256": "6817e14f68dae612a91aa7d75e76b1212a5bba8e9cfdff11336e606bdeed98eb"
+    },
+    {
+      "path": "alpine-patches/0019-Add-flag-for-not-following-symlinks-when-recursing.patch",
+      "sha256": "a4f0e598874e0229071c6fe59380cd6c739d68ecbc74e1eef2de76e60ea49030"
+    },
+    {
+      "path": "alpine-patches/0020-udhcpc-Don-t-background-if-n-is-given.patch",
+      "sha256": "3cc2b21429514b57d75e66a48b6e4c2068c931f91e993e8625a8f22d04daad4b"
+    },
+    {
+      "path": "alpine-patches/0021-tests-fix-tarball-creation.patch",
+      "sha256": "dd4c10e0d2a1479d2367cf116e05bda09f0f2921636f65af99428d0cff542412"
+    },
+    {
+      "path": "alpine-patches/0022-tests-musl-doesn-t-seem-to-recognize-UTC0-as-a-timez.patch",
+      "sha256": "ab1f225416915acf048a2cce3571dbbe942ecd7b114492401b9e0634567e633a"
+    },
+    {
+      "path": "alpine-patches/0023-Hackfix-to-disable-HW-acceleration-for-MD5-SHA1-on-x.patch",
+      "sha256": "bb9858725f62c1aec9baeeace4a217a4a216ae8488a4a04e92fc225ef4f063c5"
+    },
+    {
+      "path": "alpine-patches/0024-umount-Implement-O-option-to-unmount-by-mount-option.patch",
+      "sha256": "fe1b1ed4983c26960bf9d88062e52f6f1f2735a54d15234361d2b2c53eef14ce"
+    },
+    {
+      "path": "alpine-patches/0025-find-fix-xdev-depth-and-delete.patch",
+      "sha256": "d88146dbec6996345b825805408a8c855e616decb4ad25555012b37d605c6b62"
+    },
+    {
+      "path": "alpine-patches/0026-awk.c-fix-CVE-2023-42366-bug-15874.patch",
+      "sha256": "34a52455ba3866c43d53558047fa40edba5118218930a3f860d1d343dc7d09a8"
+    },
+    {
+      "path": "alpine-patches/0027-awk-Mark-test-for-handling-of-start-of-word-pattern-.patch",
+      "sha256": "f478b2c38a12fad318b43839f4aa97c6116087d4c986ed6ce11320e19b8409c1"
+    },
+    {
+      "path": "alpine-patches/0028-od-Skip-od-B-on-big-endian.patch",
+      "sha256": "83483a14589224a6f7e7c03883abd8b54d68dc46f00628be59a61ecc68d79067"
+    },
+    {
+      "path": "alpine-patches/0029-ash-reject-unknown-long-options.patch",
+      "sha256": "4ed1b9592b75abb740878804dc8cc48cffc5e6da6cd6d4319a8c35082b6b1a77"
+    },
+    {
+      "path": "alpine-patches/0030-hexdump-Skip-a-single-test-on-big-endian-systems.patch",
+      "sha256": "a03e66c5768d4fa5acb2778943019c1ccc96c9f7f5b8b56206df917c9d28967c"
+    },
+    {
+      "path": "alpine-patches/0031-syslogd-fix-wrong-OPT_locallog-flag-detection.patch",
+      "sha256": "a4b8e95aefd53ac360bfc898f0f08ca7d86ef5178058a3499783a99e37247412"
+    },
+    {
+      "path": "alpine-patches/0032-lineedit-fix-some-tab-completions-written-to-stdout.patch",
+      "sha256": "032a2e416980a21a6dca1b702543b29b675a8ef843998d9c24d31eacb7fc27cb"
+    },
+    {
+      "path": "alpine-patches/0033-lineedit-use-stdout-for-shell-history-builtin.patch",
+      "sha256": "61265873d32d0d0b12c429a736de6c949f0dbcd434e1ead1765bf3fd19cfc084"
+    },
+    {
+      "path": "alpine-patches/0034-adduser-remove-preconfigured-GECOS-full-name-field.patch",
+      "sha256": "b1b62318d5b4550c2a4ae6cad74330bbb9159dacdd8f0617759311d9d977dbbf"
+    },
+    {
+      "path": "alpine-patches/0035-cpio-map-F-to-file-long-option.patch",
+      "sha256": "6a65af49b8497220eb8ef502167d76bf12a30f7cf1a12eb620041e1efd0747b5"
+    },
+    {
+      "path": "licenses/busybox-AUTHORS",
+      "sha256": "384fc3a9cfc7c435bdd9d169e5ec60a7d898d9ef9557ec859394d7f97b4b6f07"
+    },
+    {
+      "path": "licenses/busybox-LICENSE",
+      "sha256": "bbfc9843646d483c334664f651c208b9839626891d8f17604db2146962f43548"
+    },
+    {
+      "path": "licenses/skalibs-COPYING",
+      "sha256": "26bee3a3c78ae6a29c81c18832cadb1a4433cf8a786624312f11667d93fcce41"
+    },
+    {
+      "path": "licenses/utmps-COPYING",
+      "sha256": "babe23e98a17858e1a8163a1f223848842f1cc2939ef69c91dbdec294f77ea6e"
+    }
+  ]
+}

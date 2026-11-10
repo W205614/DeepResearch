@@ -1,0 +1,308 @@
+{
+  "schema": "grafana-source-20261110-independent-runtime-review-v1",
+  "actor": "/root/agent_image_findings",
+  "actor_kind": "automated_technical_reviewer_with_disclosed_prior_contributions",
+  "review_kind": "actual_runtime_and_all_severity_technical_applicability",
+  "recorded_at_utc": "2026-11-10T12:23:55.629780+00:00",
+  "facts_passed": true,
+  "risk_acceptance": false,
+  "human_review": false,
+  "binary_redistribution_approved": false,
+  "old_authorization_inherited": false,
+  "subject": {
+    "profile": "grafana-source-20261110",
+    "source_inputs_sha256": "36176fb556f1133208524d14741acc5f72446267b20844f1436b0c6c88d8644e",
+    "native_sha256": {
+      "usr/share/grafana/bin/grafana": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64": "599f81b6cb18227c719074099c3f5f3dd0928d8a5b3d2a55ac8a02a0210fa10c",
+      "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64": "c7798b1bbea42ddad8a7259fd1c3c5846cdd8d89f7f1f8034858871e392de9e3",
+      "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64": "73db79edd48a44159ee66583ae4a646a0e52aaf0cbfa252aece9753273961aa1",
+      "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64": "019b92b07c3bd36176e28e2ee1693d69b423a129b6e6a9945e98adffa53c3ee1",
+      "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64": "3343e2ff45c76058067bb945baf7c0fc341edf0b647b59d3c8e2a95211df73a4",
+      "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64": "d290d4840deb7e1edffaee453271ca87d02094f3f8ab0f3e27680605f1f5fd5a",
+      "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64": "50ba9d95a58a20a52a9131a44d04313c955a20ccc199b02e29f474b70af6fd3a",
+      "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64": "e4abc533b0ed7cddea5d1753a2556971dd50e5d3c7b1d8cac1ace9d4ae018a8c",
+      "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64": "4bd3b2b5d547a73c02a231eb5fa1231f167b1c1a7e46a61687916440c6c0771a",
+      "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64": "c4ab7df53197950cd6bcb36235d72c7b5c268f00ecda2ee13b6962d34181394c",
+      "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64": "5c3f2027bcb5d6b03e219230a9a90bf8e1511d46e7a1536b1efb991839da4157",
+      "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": "58a9b276af17f22a5c9729ff1da2bd248f9e69add6e25e8a495df00065837c1d",
+      "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": "1ef41b794a8c882213ab5826d82bbe9a1d5d05b3a9068e86065e12190aef9865"
+    },
+    "runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+    "complete_expected_sha256": "e242aadc3fe037ea3ea7607deaf67f2f546518f8461569d26e9b19283e901598",
+    "technical_evidence_sha256": "099af4019a3e3b5a3f37cce5c224ddf271b203b84baa0d4bd03415c88dc7c47f",
+    "reviewed_findings_sha256": "62a52125ed1438c5794734ef60746a4f01580b21c4479da770ca58244388152d"
+  },
+  "canonical_subject_sha256": "e2d465e28c2cf2b9c7bc8094e3e2814509a2121de56920280c2e56020f0ac1c5",
+  "profile_sha256_at_review": "b9673b1e4499a08ee28df49ea88e3ab4e40d14d49a31abcae6227d8c0e898584",
+  "prior_contribution_disclosure": [
+    "Previously implemented Agent publication/full-scope security gate work; that implementation is outside this Grafana subject.",
+    "Previously prepared the BusyBox HTTP-boundary source patch/build recipe and50/53 regression evidence. I am not an author-independent reviewer of that patch design; a separate reviewer must independently examine that component.",
+    "Previously assembled extra22 primary source/CNA/license evidence and the technical fact table. I rechecked original identities/source bytes here rather than treating my earlier table as authority."
+  ],
+  "independence_boundary": "This reviewer did not implement the Grafana source-build scanner gates or the new Thrift rebuild/profile assembly. The reviewer independently measured the actual immutable Engine runtime and replayed the current gates and raw counterexamples. Prior authorship of BusyBox remediation and extra22 evidence is disclosed; this is not a claim of author-independent review of every component or a human audit. The separate reviewer must independently examine BusyBox.",
+  "actual_subject": {
+    "engine_id": "sha256:d9c3201e4ae69a52e1266a1cf240d9333d703587137cbf23be7a54cc29bef8a8",
+    "portable_config_digest": "sha256:f49f4048e182532b48e4087e1e07b81b6e85f29f74438853fcd5b64a41626d3c",
+    "ordered_diff_ids": [
+      "sha256:75c137aedfb2760f88629236cb7b797630aed0c3d91d626d1d1bb694878fc2ba",
+      "sha256:3b65ad5d0600ae408b194a3e00c3ce5f18e2f3775b6efe2578fbded330a241a3",
+      "sha256:afbd9e1d092a95dec6977836724da893497654babce2e3f73ea99afd6476f2ed",
+      "sha256:f50fbeb907e1d2ba1a7a2260aa2cbe90973b8473e3ef78d60fbffdf109d14386",
+      "sha256:add892858f9122df35d1762b499f17c25f23f5875892df265a15d3858904ad74",
+      "sha256:20418aa06f25a38cebd5a9906c2db0f8d3e3e1c0924f1be4ee287ff75389522c",
+      "sha256:71c22afd8a267f1aa3262b8e5c821f3ca221071dade6b45dbb9cc2cb900156ee",
+      "sha256:840eb78f709d0ce8bc53370f86f5266aac9d721d49896a3809060ef779ff7eaf",
+      "sha256:f95a81142d494a928d5ccf90ef6c19c6c3f8da7dc246a53d368f1034c2fb6fb8",
+      "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+      "sha256:7e722b084590d46a61b9e42d1a0bce61657c39ab1e04a9f522e3e97fb15506f8",
+      "sha256:d4a2694d2ab28fde4dfe6ff0fcf68af8cad06e72444b2416397abd64a7d017fa",
+      "sha256:50f9829ee468ebb994b5d1e3bd87fd034ff49623257e097b3f0fd69ddc9ed04d",
+      "sha256:f560710cf019d2bf27257779bf004d23e8ac3861dc28a921e429494707f32630",
+      "sha256:a5db5e5abeb89f6372339e71fd30a7cf736352e7f620800146d201384b1115a8",
+      "sha256:f86809b904a4b73cb5b422fa60ca656a83ee181dcea892a63c6d76522e1e0ce7",
+      "sha256:a1f6857e32a951d2db958aa4e8d282413ea60fca6274d92efc22bf45a2e05ebc",
+      "sha256:05eb8f86397d9a767ac84f94f1d576ec4433243c364fc38871019bce0f46c838",
+      "sha256:ac5d75eaae06474bb40cb27e951da4f5282fc93f49228a381f9fdf1d073cc8bc",
+      "sha256:27fcfd98887573e7a4b81ca3d9c999f78fd83599c00b528d05fc1cd4c0c3e801",
+      "sha256:2aba620d97729dbcecf95009d41cae441499f8b3384e742487f3a3c8fa164de6",
+      "sha256:c41fa8072ece320482e487c89b6e111ac6cab07c8c83b48e9b6c53612e6ff0d5",
+      "sha256:f4064de32072824836f9859ba656424283d5f6d0cff33ccd573ca915374ca1b1",
+      "sha256:6873a8c4dfc014b38bf52f577ff16820c8c7c6e01237838411b27573cc218067",
+      "sha256:75bfefaa247f30f25f55cf0d98b5d6368e62d415283bd1b24cef6b05312f853d",
+      "sha256:af10859010abdccedc5952126925ee8c7e7b7b8b15a3d11914add33a60bc05e8",
+      "sha256:1e2878b99a1374d64b64809b0a61cfc5ba78c2d46bc00a4b7a7b087c1b149b95",
+      "sha256:862821cd5d4be7ffff060bed0c96a43d9ed73327695c5e7c40809606afcbb5bd",
+      "sha256:c389527f1e2c7ea96139c5b3f9d683555658872a0bd9747cfb4377848647244b",
+      "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+      "sha256:220dc45c01ed0ee9017429880ae192954e19f14a634bc87a10788fe2b624dbf9",
+      "sha256:f795c4c62d00ca4e45e2ee8541e2c07923ccd4aadd1eb0fd060f04dc857045d3",
+      "sha256:9439fc631b5adc200c8c7672b2f12cb734fc5b7eeaa2a5d98ff0a4f8c31d168a",
+      "sha256:3884f4ef1841175dea68d2b36dafe930defbeb635486e2a6eb60825d4a81cd8a",
+      "sha256:f4d058e5a6f6ee8d695efec5c3e694293787d8e3472236b108d0e069203ad5e2",
+      "sha256:e9016560923177b21f3b98a3697ea205b7b1dad4b67411679d15572f76ac3141",
+      "sha256:d577b9c3f67c44823c044b0fc507451a511f5deba91be43fa8d058af3bee0c2d",
+      "sha256:9e0f8d91ec6176e671722e2d096a8a3dd4c0d4ac59438f85a72bc342c37ca726",
+      "sha256:0a32b72c5042cb2edff421cc33cc7fedcbb58c05fb043862fb90115fd4e0466c",
+      "sha256:3fb98d78294168da4607ba649879e1f613fd0034027da4d6cdd4125f8a4ff3dc",
+      "sha256:adb5293473b5f9c215da8753d182f993317238e8f9dd2181755766b03ad08a6a",
+      "sha256:5827644ca156d20fcf128bfd9d1b074add93bbbadd6d14082802e92cafac14c6"
+    ],
+    "runtime_manifest_sha256": "42b383a27281fa510215f955cec69515e37becd54bf544f3efe5cfbb85df3d94",
+    "runtime_records": 15694,
+    "native_elf_sha256": {
+      "usr/share/grafana/bin/grafana": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64": "599f81b6cb18227c719074099c3f5f3dd0928d8a5b3d2a55ac8a02a0210fa10c",
+      "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64": "c7798b1bbea42ddad8a7259fd1c3c5846cdd8d89f7f1f8034858871e392de9e3",
+      "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64": "73db79edd48a44159ee66583ae4a646a0e52aaf0cbfa252aece9753273961aa1",
+      "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64": "019b92b07c3bd36176e28e2ee1693d69b423a129b6e6a9945e98adffa53c3ee1",
+      "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64": "3343e2ff45c76058067bb945baf7c0fc341edf0b647b59d3c8e2a95211df73a4",
+      "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64": "d290d4840deb7e1edffaee453271ca87d02094f3f8ab0f3e27680605f1f5fd5a",
+      "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64": "50ba9d95a58a20a52a9131a44d04313c955a20ccc199b02e29f474b70af6fd3a",
+      "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64": "e4abc533b0ed7cddea5d1753a2556971dd50e5d3c7b1d8cac1ace9d4ae018a8c",
+      "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64": "4bd3b2b5d547a73c02a231eb5fa1231f167b1c1a7e46a61687916440c6c0771a",
+      "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64": "c4ab7df53197950cd6bcb36235d72c7b5c268f00ecda2ee13b6962d34181394c",
+      "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64": "5c3f2027bcb5d6b03e219230a9a90bf8e1511d46e7a1536b1efb991839da4157",
+      "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": "58a9b276af17f22a5c9729ff1da2bd248f9e69add6e25e8a495df00065837c1d",
+      "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": "1ef41b794a8c882213ab5826d82bbe9a1d5d05b3a9068e86065e12190aef9865"
+    },
+    "busybox_sha256": "68dba7ae251db2ecca77e6ef405bf781111dc41f87c93c30205745fdbe2c697e",
+    "retained_layer_prefix_count": 30,
+    "new_layer_count": 12,
+    "added_layer_files": 79,
+    "inherited_frontend_unchanged": true
+  },
+  "scanner_inputs": {
+    "full_runtime_trivy": {
+      "sha256": "11f33a76a42d41c5c7582f64c45d162373d533c38e7685ac4463016e41d2b722",
+      "findings": 40,
+      "secret_findings": 0,
+      "severity_counts": {
+        "CRITICAL": 2,
+        "HIGH": 11,
+        "MEDIUM": 20,
+        "LOW": 2,
+        "UNKNOWN": 5
+      }
+    },
+    "full_native_grype": {
+      "sha256": "e4e134c2a8a956a30b8993c01e154d94c893650c92ba4162ce3477ee9d797270",
+      "findings": 10,
+      "severity_counts": {
+        "HIGH": 2,
+        "MEDIUM": 3,
+        "UNKNOWN": 5
+      }
+    },
+    "full_native_syft": {
+      "sha256": "530e339bc8570fd38585cc45bf31065337c4264044aec8dfe79382830a689b98"
+    },
+    "private_source_A3": {
+      "sha256": "26dbfa246a8d25521f12a0108e98263e2b6d89a2ce3be60e5a7f9679e125b3a2",
+      "completion_sha256": "8ccb90bbf4454c61975e701c6c90535be68ec145cfe7d61ca168220d8c612605",
+      "source_commit": "1618abef8476f8f7f72ae2bde49fc800db6bca84",
+      "targets": 79,
+      "findings": 71,
+      "severity_counts": {
+        "CRITICAL": 0,
+        "HIGH": 26,
+        "MEDIUM": 12,
+        "LOW": 0,
+        "UNKNOWN": 33
+      },
+      "mode": "private_wip_preflight_only",
+      "final_remote_sha_claim": false
+    }
+  },
+  "independent_checks": {
+    "own_actual_engine_full_export_and_hash_recomputed": true,
+    "own_export_container_never_started_network_none_no_business_binds": true,
+    "own_export_container_removal_verified": true,
+    "live_immutable_image_config_and_diff_ids_unchanged_after_review": true,
+    "full15694_runtime_records_match": true,
+    "all14_current_runtime_elfs_match_native_bound_complete_graphs": true,
+    "new_main_packages": 4200,
+    "new_main_modules": 522,
+    "actual_fixed_thrift": "v0.25.0",
+    "original30_layers_unchanged": true,
+    "all12_new_layers_only_main_busybox_and_candidate_source_legal_evidence": true,
+    "all40_trivy_and10_grype_exact_tuples_match_current_profile": true,
+    "all_low_medium_unknown_rows_reviewed_without_severity_downgrade": true,
+    "seven_old_openpgp_affected_imports_absent_from_five_actual_compile_closures": true,
+    "tempo_plugin_has_only_four_tempopb_protocol_packages_not_affected_frontend_or_s3": true,
+    "actual_fixed_busybox_matches50_and_target53_case_regressions": true,
+    "standalone_ssl_client_uses_separate_hash_bound_public_component_scope": true,
+    "all22_primary_cna_and_exact_source_fix_or_product_scope_evidence_rechecked": true,
+    "all109_extra22_public_material_files_match_whitelist": true,
+    "all35_software_source_patch_license_mappings_and36_original_license_receipts_rechecked": true,
+    "actual_ce471_root_agpl_and_nearest_grafana_data_apache_exception_preserved": true,
+    "actual_module_zip_licenses_original_agpl": true,
+    "all85_recipe_inputs_and392_technical_evidence_files_hash_verified": true,
+    "final_a3_delta_only_source_fact_scan_and_one_added_public_fact": true,
+    "old391_evidence_and_previous_runtime_subject_fields_exactly_preserved": true,
+    "source_A3_complete_completion_recomputed_from_original_report": true,
+    "all79_target_inventories_and71_exact_source_tuples_and_proofs_recomputed": true,
+    "original_and_candidate_source_failed_gates_preserved": true,
+    "preparing_profile_normal_gate_rejects": true,
+    "fresh_raw_15_wrong_tuple_low_medium_secret_filter_config_counterexamples_rejected": true,
+    "original_reports_and_profile_not_modified_by_review": true
+  },
+  "runtime_technical_disposition_counts": {
+    "Trivy": {
+      "NOT_AFFECTED": 19,
+      "FIXED": 21
+    },
+    "Grype": {
+      "NOT_AFFECTED": 8,
+      "FIXED": 2
+    }
+  },
+  "negative_replay": [
+    {
+      "case": "new-low",
+      "rejected": true,
+      "error": "All-severity findings are missing, extra, duplicate or changed: Trivy"
+    },
+    {
+      "case": "new-medium",
+      "rejected": true,
+      "error": "All-severity findings are missing, extra, duplicate or changed: Trivy"
+    },
+    {
+      "case": "severity-change",
+      "rejected": true,
+      "error": "All-severity findings are missing, extra, duplicate or changed: Trivy"
+    },
+    {
+      "case": "tuple-package-change",
+      "rejected": true,
+      "error": "All-severity findings are missing, extra, duplicate or changed: Trivy"
+    },
+    {
+      "case": "missing-medium",
+      "rejected": true,
+      "error": "All-severity findings are missing, extra, duplicate or changed: Trivy"
+    },
+    {
+      "case": "duplicate-medium",
+      "rejected": true,
+      "error": "All-severity findings are missing, extra, duplicate or changed: Trivy"
+    },
+    {
+      "case": "secret",
+      "rejected": true,
+      "error": "Secret findings block the source build; values remain private"
+    },
+    {
+      "case": "top-filter",
+      "rejected": true,
+      "error": "Incomplete or filtered image scan evidence"
+    },
+    {
+      "case": "result-error",
+      "rejected": true,
+      "error": "Incomplete or filtered image scan target"
+    },
+    {
+      "case": "native-ignore",
+      "rejected": true,
+      "error": "Filtered native matches cannot authorize the source build"
+    },
+    {
+      "case": "native-new-medium",
+      "rejected": true,
+      "error": "All-severity findings are missing, extra, duplicate or changed: Grype"
+    },
+    {
+      "case": "inventory-removed",
+      "rejected": true,
+      "error": "Complete OS, JavaScript or fourteen-binary package inventory differs"
+    },
+    {
+      "case": "wrong-native-config",
+      "rejected": true,
+      "error": "Full native SBOM/config/report identity chain differs"
+    },
+    {
+      "case": "runtime-config-drift",
+      "rejected": true,
+      "error": "Actual runtime entrypoint/environment differs from the verified build"
+    },
+    {
+      "case": "source-receipt-drift",
+      "rejected": true,
+      "error": "Actual build, full runtime files, native bytes or configuration differ from the review"
+    }
+  ],
+  "regression_checks": {
+    "first_run": "Four relevant Grafana test files:95 passed,1 failed due reviewer choosing basetemp under project .cache, which invalidated the outside-cache fixture premise.",
+    "targeted_correct_boundary_rerun": "That single test passed with a new unique owned OS-temp basetemp outside the project cache.",
+    "initial_failed_attempt_preserved": true,
+    "source_or_test_files_changed": false,
+    "boundary_result": {
+      "initial_result": "95 passed;1 failed because reviewer --basetemp was placed under repository .cache, invalidating the fixture premise that tmp_path is outside the project cache",
+      "initial_actual_failure": "test_build_evidence_cannot_escape_project_cache",
+      "real_source_issue": false,
+      "targeted_rerun_exit": 0,
+      "rerun_basetemp_location": "new unique owned OS temp directory outside checkout .cache",
+      "rerun_target": "tests/test_build_grafana_source_20261110.py::test_build_evidence_cannot_escape_project_cache"
+    }
+  },
+  "blocking_technical_findings": [],
+  "technical_conclusion": "The exact subject current runtime40/10 findings and complete private source A3 79-target/71-row observations have fixed-code, exact official source/product range, or concrete compiled-component-absence technical dispositions. No unresolved applicable finding was identified in this reviewed scope. Raw counts, severities, errors, previous failed verdicts and unknown findings remain preserved; this does not assert universal zero vulnerabilities.",
+  "boundaries": [
+    "A3 is an actual complete private WIP source scan, not final public-branch CI; completion/target and technical proofs were independently replayed without promoting prepare mode to a normal security pass.",
+    "Final engineering commit/default-branch CI, ordinary non-prepare gates, final three application artifacts, anonymous pull, API/core workflow and daily environment acceptance are separate delivery checks and are not claimed here.",
+    "The reviewed security subject is the actual merged runtime; inaccessible inherited-layer byte removal and third-party binary redistribution rights are not granted by this record.",
+    "Historical frontend XSS cases use exact official retained frontend/source identity and component-specific fixes/removals; historical browser exploit cases were not rerun. Administrative disableSanitizeHtml opt-out is outside the default-sanitization conclusions.",
+    "No registry write, paid provider request, business database access or daily stack startup occurred in this review."
+  ],
+  "reviewer_measurement_receipt_sha256": {
+    "actual-payload-result": "514d413f515c8e5950bcfc5fc1ea64d22e74f98cd74db08dfa5828d599f7d6a2",
+    "actual-scan-and-negative-results": "3f469172adea5d5cfb57b33b8958b41c0d92c28b2351fa5acc4b4bb9e010b23a",
+    "compiled-license-row-evidence-replay": "f7a1da015fe843a8aa374a562fb011b64353350ed464b2ea9cf5898957e8f8bd",
+    "inherited-and-added-layers": "49f52b402255f9ca80e54f5ac9313cec580fc9a896e4c7252d291e76021f8f5d",
+    "final-a3-delta-replay": "5ff467a9e272d9a289c9efb70b4778a11dbe2dd997499cd49706540b8f26004d",
+    "test-invocation-boundary": "3065764f1b6646a562997dc907aeae4e79c49bfb2e5e16a5ff265083fbde8e7f"
+  }
+}

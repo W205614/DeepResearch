@@ -1,0 +1,537 @@
+From 82ef13993059351bf21de35b8488bbd9b42df4f4 Mon Sep 17 00:00:00 2001
+From: Mariell Hoversholm <mariell.hoversholm@grafana.com>
+Date: Tue, 16 Jun 2026 09:54:34 +0200
+Subject: [PATCH] patch: apply patches for June 2nd release (#125789)
+
+* patch(security): Geomap: Sanitize url and attribution after variable interpolation
+
+GL-Vuln: VUL-2026-0072
+GL-Partner-Ack: 2026-04-23
+
+* patch(security): fix(web/bind): cap the request body size
+
+GL-Vuln: VUL-2026-0074
+GL-Partner-Ack: 2026-04-24
+
+* patch(security): patch(security): [main] Path traversal in Loki Data Source
+
+GL-Vuln: VUL-2026-0073
+GL-Partner-Ack: 2026-04-23
+
+* patch(security): [main] VUL-2026-0077
+
+GL-Vuln: VUL-2026-0077
+GL-Partner-Ack: 2026-04-24
+
+* patch(security): [main] Path traversal in Tempo Data Source
+
+GL-Vuln: VUL-2026-0062
+GL-Partner-Ack: 2026-05-07
+
+* patch(security): AuthN: use "unknown" as failed login metric client label value for unrecognized client types
+
+GL-Vuln: VUL-2026-0082 https://ops.grafana-ops.net/a/grafana-vulnerabilityobs-app/first-party/114
+GL-Partner-Ack: 2026-05-15
+
+* patch(security): VUL-2026-0083: Table - Sanitize field name in compileFrameToRecords function constructor
+
+GL-Vuln: VUL-2026-0083
+GL-Partner-Ack: 2026-05-14
+
+* Fix test failures, also run frontend lint on push to main for data
+
+* add test
+
+---------
+
+Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+Co-authored-by: Matt Vella <matt.vella@grafana.com>
+Co-authored-by: Kevin Minehart <5140827+kminehart@users.noreply.github.com>
+---
+ .github/workflows/frontend-lint.yml           |  2 +-
+ .../src/components/Table/TableNG/utils.ts     |  3 +-
+ pkg/api/login.go                              |  3 +
+ pkg/api/org_invite.go                         |  2 +
+ pkg/api/password.go                           |  4 ++
+ pkg/api/signup.go                             |  7 +++
+ pkg/services/authn/authnimpl/service.go       |  2 +-
+ .../publicdashboards/internal/api/api.go      | 10 ++++
+ .../publicdashboards/internal/api/query.go    |  7 +++
+ .../internal/api/query_test.go                |  2 +
+ pkg/tsdb/loki/loki.go                         | 12 ++++
+ pkg/tsdb/tempo/tempo.go                       |  8 +++
+ pkg/tsdb/tempo/trace.go                       |  7 +++
+ pkg/tsdb/tempo/trace_test.go                  | 16 ++---
+ pkg/web/binding.go                            |  6 +-
+ pkg/web/binding_test.go                       | 58 +++++++++++++++++++
+ .../geomap/layers/basemaps/generic.test.ts    |  2 +
+ .../panel/geomap/layers/basemaps/generic.ts   | 12 +++-
+ 18 files changed, 148 insertions(+), 15 deletions(-)
+
+diff --git a/.github/workflows/frontend-lint.yml b/.github/workflows/frontend-lint.yml
+index b71665c0a0020..a73a8cb7eb3b6 100644
+--- a/.github/workflows/frontend-lint.yml
++++ b/.github/workflows/frontend-lint.yml
+@@ -270,7 +270,7 @@ jobs:
+     permissions:
+       contents: read
+       id-token: write
+-    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.changed-frontend-packages == 'true'
++    if: github.event_name != 'pull_request' || needs.detect-changes.outputs.changed-frontend-packages == 'true'
+     name: Verify packed frontend packages
+     runs-on: ubuntu-x64
+     steps:
+diff --git a/packages/grafana-ui/src/components/Table/TableNG/utils.ts b/packages/grafana-ui/src/components/Table/TableNG/utils.ts
+index ecdf54c148d47..9063ee92d244f 100644
+--- a/packages/grafana-ui/src/components/Table/TableNG/utils.ts
++++ b/packages/grafana-ui/src/components/Table/TableNG/utils.ts
+@@ -780,9 +780,10 @@ export function applyFilter(
+  * @internal
+  */
+ export function compileFrameToRecords(frame: DataFrame, nestedFramesFieldName?: string): FrameToRowsConverter {
++  const hasNestedFrames = (nestedFramesFieldName ?? '').length > 0;
+   const fnBody = `
+     const values = frame.fields.map(f => f.values);
+-    const hasNestedFrames = '${nestedFramesFieldName ?? ''}'.length > 0;
++    const hasNestedFrames = ${hasNestedFrames};
+     const frameLength = frame.length ?? values[0]?.length ?? 0;
+     const rows = Array(frameLength);
+ 
+diff --git a/pkg/api/login.go b/pkg/api/login.go
+index 580753053458d..9da10772ff079 100644
+--- a/pkg/api/login.go
++++ b/pkg/api/login.go
+@@ -246,6 +246,9 @@ func (hs *HTTPServer) LoginAPIPing(c *contextmodel.ReqContext) response.Response
+ }
+ 
+ func (hs *HTTPServer) LoginPost(c *contextmodel.ReqContext) response.Response {
++	// Cap the request body up-front so any downstream consumer inherits the limit.
++	c.Req.Body = http.MaxBytesReader(c.Resp, c.Req.Body, maxPreAuthFormBodySize)
++
+ 	identity, err := hs.authnService.Login(c.Req.Context(), authn.ClientForm, &authn.Request{HTTPRequest: c.Req})
+ 	if err != nil {
+ 		tokenErr := &auth.CreateTokenErr{}
+diff --git a/pkg/api/org_invite.go b/pkg/api/org_invite.go
+index de05066a30765..9fbdcb21f42a7 100644
+--- a/pkg/api/org_invite.go
++++ b/pkg/api/org_invite.go
+@@ -254,6 +254,8 @@ func (hs *HTTPServer) GetInviteInfoByCode(c *contextmodel.ReqContext) response.R
+ }
+ 
+ func (hs *HTTPServer) CompleteInvite(c *contextmodel.ReqContext) response.Response {
++	c.Req.Body = http.MaxBytesReader(c.Resp, c.Req.Body, maxPreAuthFormBodySize)
++
+ 	completeInvite := dtos.CompleteInviteForm{}
+ 	var err error
+ 	if err = web.Bind(c.Req, &completeInvite); err != nil {
+diff --git a/pkg/api/password.go b/pkg/api/password.go
+index 4589f36fdd54f..8ab560db24b0f 100644
+--- a/pkg/api/password.go
++++ b/pkg/api/password.go
+@@ -19,6 +19,8 @@ func (hs *HTTPServer) SendResetPasswordEmail(c *contextmodel.ReqContext) respons
+ 		return response.Error(http.StatusUnauthorized, "Not allowed to reset password when login form is disabled", nil)
+ 	}
+ 
++	c.Req.Body = http.MaxBytesReader(c.Resp, c.Req.Body, maxPreAuthFormBodySize)
++
+ 	form := dtos.SendResetPasswordEmailForm{}
+ 	if err := web.Bind(c.Req, &form); err != nil {
+ 		return response.Error(http.StatusBadRequest, "bad request data", err)
+@@ -59,6 +61,8 @@ func (hs *HTTPServer) ResetPassword(c *contextmodel.ReqContext) response.Respons
+ 			"Not allowed to reset password when grafana authentication is disabled", nil)
+ 	}
+ 
++	c.Req.Body = http.MaxBytesReader(c.Resp, c.Req.Body, maxPreAuthFormBodySize)
++
+ 	form := dtos.ResetUserPasswordForm{}
+ 	if err := web.Bind(c.Req, &form); err != nil {
+ 		return response.Error(http.StatusBadRequest, "bad request data", err)
+diff --git a/pkg/api/signup.go b/pkg/api/signup.go
+index 9e714ea462d3d..e880858ad81c3 100644
+--- a/pkg/api/signup.go
++++ b/pkg/api/signup.go
+@@ -17,6 +17,9 @@ import (
+ 	"github.com/grafana/grafana/pkg/web"
+ )
+ 
++// maxPreAuthFormBodySize caps pre-auth form-shaped request bodies (signup, password reset, invite completion, login).
++const maxPreAuthFormBodySize = 100 * 1024 // 100 KiB
++
+ // GET /api/user/signup/options
+ func (hs *HTTPServer) GetSignUpOptions(c *contextmodel.ReqContext) response.Response {
+ 	return response.JSON(http.StatusOK, util.DynMap{
+@@ -27,6 +30,8 @@ func (hs *HTTPServer) GetSignUpOptions(c *contextmodel.ReqContext) response.Resp
+ 
+ // POST /api/user/signup
+ func (hs *HTTPServer) SignUp(c *contextmodel.ReqContext) response.Response {
++	c.Req.Body = http.MaxBytesReader(c.Resp, c.Req.Body, maxPreAuthFormBodySize)
++
+ 	form := dtos.SignUpForm{}
+ 	var err error
+ 	if err = web.Bind(c.Req, &form); err != nil {
+@@ -80,6 +85,8 @@ func (hs *HTTPServer) SignUp(c *contextmodel.ReqContext) response.Response {
+ }
+ 
+ func (hs *HTTPServer) SignUpStep2(c *contextmodel.ReqContext) response.Response {
++	c.Req.Body = http.MaxBytesReader(c.Resp, c.Req.Body, maxPreAuthFormBodySize)
++
+ 	form := dtos.SignUpStep2Form{}
+ 	if err := web.Bind(c.Req, &form); err != nil {
+ 		return response.Error(http.StatusBadRequest, "bad request data", err)
+diff --git a/pkg/services/authn/authnimpl/service.go b/pkg/services/authn/authnimpl/service.go
+index 096d17c39e35e..43770c1b1ed67 100644
+--- a/pkg/services/authn/authnimpl/service.go
++++ b/pkg/services/authn/authnimpl/service.go
+@@ -237,7 +237,7 @@ func (s *Service) Login(ctx context.Context, client string, r *authn.Request) (i
+ 
+ 	c, ok := s.clients[client]
+ 	if !ok {
+-		s.metrics.failedLogin.WithLabelValues(client).Inc()
++		s.metrics.failedLogin.WithLabelValues("unknown").Inc()
+ 		return nil, authn.ErrClientNotConfigured.Errorf("client not configured: %s", client)
+ 	}
+ 
+diff --git a/pkg/services/publicdashboards/internal/api/api.go b/pkg/services/publicdashboards/internal/api/api.go
+index eaf631d9edeaf..11db89843830f 100644
+--- a/pkg/services/publicdashboards/internal/api/api.go
++++ b/pkg/services/publicdashboards/internal/api/api.go
+@@ -22,6 +22,12 @@ import (
+ 	"github.com/grafana/grafana/pkg/web"
+ )
+ 
++// The struct size the request body unmarshals to is a few bytes and much deviation from that would mean a malformed body.
++const (
++	maxQueryBodySize  = 10 * 1024 // 10 KiB
++	maxMutateBodySize = 10 * 1024 // 10 KiB
++)
++
+ type Api struct {
+ 	PublicDashboardService publicdashboards.Service
+ 	Middleware             publicdashboards.Middleware
+@@ -185,6 +191,8 @@ func (api *Api) CreatePublicDashboard(c *contextmodel.ReqContext) response.Respo
+ 		return response.Err(models.ErrInvalidUid.Errorf("CreatePublicDashboard: invalid Uid %s", dashboardUid))
+ 	}
+ 
++	c.Req.Body = http.MaxBytesReader(c.Resp, c.Req.Body, maxMutateBodySize)
++
+ 	pdDTO := &models.PublicDashboardDTO{}
+ 	if err := web.Bind(c.Req, pdDTO); err != nil {
+ 		return response.Err(models.ErrBadRequest.Errorf("CreatePublicDashboard: bad request data %v", err))
+@@ -244,6 +252,8 @@ func (api *Api) UpdatePublicDashboard(c *contextmodel.ReqContext) response.Respo
+ 		return response.Err(models.ErrInvalidUid.Errorf("UpdatePublicDashboard: invalid Uid %s", uid))
+ 	}
+ 
++	c.Req.Body = http.MaxBytesReader(c.Resp, c.Req.Body, maxMutateBodySize)
++
+ 	pdDTO := &models.PublicDashboardDTO{}
+ 	if err := web.Bind(c.Req, pdDTO); err != nil {
+ 		return response.Err(models.ErrBadRequest.Errorf("UpdatePublicDashboard: bad request data %v", err))
+diff --git a/pkg/services/publicdashboards/internal/api/query.go b/pkg/services/publicdashboards/internal/api/query.go
+index 26efeb802d93e..9b4aaa9350e92 100644
+--- a/pkg/services/publicdashboards/internal/api/query.go
++++ b/pkg/services/publicdashboards/internal/api/query.go
+@@ -57,6 +57,13 @@ func (api *Api) QueryPublicDashboard(c *contextmodel.ReqContext) response.Respon
+ 		return response.Err(models.ErrInvalidAccessToken.Errorf("QueryPublicDashboard: invalid access token"))
+ 	}
+ 
++	_, err := api.PublicDashboardService.FindByAccessToken(c.Req.Context(), accessToken)
++	if err != nil {
++		return response.Err(err)
++	}
++
++	c.Req.Body = http.MaxBytesReader(c.Resp, c.Req.Body, maxQueryBodySize)
++
+ 	panelId, err := strconv.ParseInt(web.Params(c.Req)[":panelId"], 10, 64)
+ 	if err != nil {
+ 		return response.Err(models.ErrInvalidPanelId.Errorf("QueryPublicDashboard: error parsing panelId %v", err))
+diff --git a/pkg/services/publicdashboards/internal/api/query_test.go b/pkg/services/publicdashboards/internal/api/query_test.go
+index fbb8602fd5ab6..697a67dc4c309 100644
+--- a/pkg/services/publicdashboards/internal/api/query_test.go
++++ b/pkg/services/publicdashboards/internal/api/query_test.go
+@@ -78,6 +78,7 @@ func TestAPIViewPublicDashboard(t *testing.T) {
+ 	for _, test := range testCases {
+ 		t.Run(test.Name, func(t *testing.T) {
+ 			service := publicdashboards.NewFakePublicDashboardService(t)
++			service.On("FindByAccessToken", mock.Anything, validAccessToken).Return(nil, nil).Maybe()
+ 			service.On("GetPublicDashboardForView", mock.Anything, mock.AnythingOfType("string")).
+ 				Return(test.DashboardResult, test.Err).Maybe()
+ 
+@@ -170,6 +171,7 @@ func TestAPIQueryPublicDashboard(t *testing.T) {
+ 
+ 	setup := func(_ bool) (*web.Mux, *publicdashboards.FakePublicDashboardService) {
+ 		service := publicdashboards.NewFakePublicDashboardService(t)
++		service.On("FindByAccessToken", mock.Anything, validAccessToken).Return(nil, nil).Maybe()
+ 		testServer := setupTestServer(t, nil, service, anonymousUser)
+ 
+ 		return testServer, service
+diff --git a/pkg/tsdb/loki/loki.go b/pkg/tsdb/loki/loki.go
+index d6fd1f3e7b4aa..3f53d6f89dda8 100644
+--- a/pkg/tsdb/loki/loki.go
++++ b/pkg/tsdb/loki/loki.go
+@@ -5,6 +5,8 @@ import (
+ 	"encoding/json"
+ 	"fmt"
+ 	"net/http"
++	neturl "net/url"
++	"path"
+ 	"regexp"
+ 	"strings"
+ 	"sync"
+@@ -155,6 +157,16 @@ func callResource(ctx context.Context, req *backend.CallResourceRequest, sender
+ 
+ 	lokiURL := fmt.Sprintf("/loki/api/v1/%s", url)
+ 
++	// Reject resource paths that escape the /loki/api/v1/ prefix. neturl.Parse
++	// decodes percent-encoded segments so this catches both raw and encoded "../".
++	parsed, perr := neturl.Parse(lokiURL)
++	if perr != nil {
++		return sender.Send(&backend.CallResourceResponse{Status: http.StatusBadRequest})
++	}
++	if cleaned := path.Clean(parsed.Path); cleaned != "/loki/api/v1" && !strings.HasPrefix(cleaned, "/loki/api/v1/") {
++		return sender.Send(&backend.CallResourceResponse{Status: http.StatusBadRequest})
++	}
++
+ 	ctx, span := tracer.Start(ctx, "datasource.loki.CallResource", trace.WithAttributes(
+ 		attribute.String("url", lokiURL),
+ 	))
+diff --git a/pkg/tsdb/tempo/tempo.go b/pkg/tsdb/tempo/tempo.go
+index 94822bcae8bf0..f054f158df634 100644
+--- a/pkg/tsdb/tempo/tempo.go
++++ b/pkg/tsdb/tempo/tempo.go
+@@ -288,6 +288,14 @@ func (s *Service) handleTagValues(rw http.ResponseWriter, req *http.Request) {
+ 		return
+ 	}
+ 
++	for _, segment := range strings.Split(tag, "/") {
++		if segment == "." || segment == ".." {
++			s.logger.Error("Invalid tag parameter", "tag", tag)
++			http.Error(rw, "Invalid 'tag' parameter", http.StatusBadRequest)
++			return
++		}
++	}
++
+ 	tempoPath := fmt.Sprintf("api/v2/search/tag/%s/values", tag)
+ 	s.proxyToTempo(rw, req, tempoPath)
+ }
+diff --git a/pkg/tsdb/tempo/trace.go b/pkg/tsdb/tempo/trace.go
+index 3a8d0a8e57e81..01caab1c091b3 100644
+--- a/pkg/tsdb/tempo/trace.go
++++ b/pkg/tsdb/tempo/trace.go
+@@ -6,6 +6,7 @@ import (
+ 	"fmt"
+ 	"io"
+ 	"net/http"
++	"regexp"
+ 
+ 	"github.com/gogo/protobuf/proto"
+ 	"github.com/grafana/grafana-plugin-sdk-go/backend"
+@@ -19,6 +20,8 @@ import (
+ 	"go.opentelemetry.io/otel/trace"
+ )
+ 
++var traceIDPattern = regexp.MustCompile(`^[0-9A-Fa-f]+$`)
++
+ func (s *Service) getTrace(ctx context.Context, pCtx backend.PluginContext, query backend.DataQuery) (*backend.DataResponse, error) {
+ 	ctxLogger := s.logger.FromContext(ctx)
+ 	ctxLogger.Debug("Getting trace", "function", logEntrypoint())
+@@ -199,6 +202,10 @@ func (s *Service) createRequest(ctx context.Context, dsInfo *DatasourceInfo, api
+ 	var baseUrl string
+ 	var tempoQuery string
+ 
++	if !traceIDPattern.MatchString(traceID) {
++		return nil, backend.DownstreamErrorf("invalid trace id")
++	}
++
+ 	if apiVersion == TraceRequestApiVersionV1 {
+ 		baseUrl = fmt.Sprintf("%s/api/traces/%s", dsInfo.URL, traceID)
+ 	} else {
+diff --git a/pkg/tsdb/tempo/trace_test.go b/pkg/tsdb/tempo/trace_test.go
+index c4fbf30006b5a..b61fb8248e787 100644
+--- a/pkg/tsdb/tempo/trace_test.go
++++ b/pkg/tsdb/tempo/trace_test.go
+@@ -17,34 +17,34 @@ import (
+ func TestTempo(t *testing.T) {
+ 	t.Run("createRequest v1 without time range - success", func(t *testing.T) {
+ 		service := &Service{logger: backend.NewLoggerWith("logger", "tempo-test")}
+-		req, err := service.createRequest(context.Background(), &DatasourceInfo{}, TraceRequestApiVersionV1, "traceID", 0, 0)
++		req, err := service.createRequest(context.Background(), &DatasourceInfo{}, TraceRequestApiVersionV1, "abc123", 0, 0)
+ 		require.NoError(t, err)
+ 		assert.Equal(t, 1, len(req.Header))
+-		assert.Equal(t, "/api/traces/traceID", req.URL.String())
++		assert.Equal(t, "/api/traces/abc123", req.URL.String())
+ 	})
+ 
+ 	t.Run("createRequest v1 with time range - success", func(t *testing.T) {
+ 		service := &Service{logger: backend.NewLoggerWith("logger", "tempo-test")}
+-		req, err := service.createRequest(context.Background(), &DatasourceInfo{}, TraceRequestApiVersionV1, "traceID", 1, 2)
++		req, err := service.createRequest(context.Background(), &DatasourceInfo{}, TraceRequestApiVersionV1, "abc123", 1, 2)
+ 		require.NoError(t, err)
+ 		assert.Equal(t, 1, len(req.Header))
+-		assert.Equal(t, "/api/traces/traceID?start=1&end=2", req.URL.String())
++		assert.Equal(t, "/api/traces/abc123?start=1&end=2", req.URL.String())
+ 	})
+ 
+ 	t.Run("createRequest v2 without time range - success", func(t *testing.T) {
+ 		service := &Service{logger: backend.NewLoggerWith("logger", "tempo-test")}
+-		req, err := service.createRequest(context.Background(), &DatasourceInfo{}, TraceRequestApiVersionV2, "traceID", 0, 0)
++		req, err := service.createRequest(context.Background(), &DatasourceInfo{}, TraceRequestApiVersionV2, "abc123", 0, 0)
+ 		require.NoError(t, err)
+ 		assert.Equal(t, 1, len(req.Header))
+-		assert.Equal(t, "/api/v2/traces/traceID", req.URL.String())
++		assert.Equal(t, "/api/v2/traces/abc123", req.URL.String())
+ 	})
+ 
+ 	t.Run("createRequest v2 with time range - success", func(t *testing.T) {
+ 		service := &Service{logger: backend.NewLoggerWith("logger", "tempo-test")}
+-		req, err := service.createRequest(context.Background(), &DatasourceInfo{}, TraceRequestApiVersionV2, "traceID", 1, 2)
++		req, err := service.createRequest(context.Background(), &DatasourceInfo{}, TraceRequestApiVersionV2, "abc123", 1, 2)
+ 		require.NoError(t, err)
+ 		assert.Equal(t, 1, len(req.Header))
+-		assert.Equal(t, "/api/v2/traces/traceID?start=1&end=2", req.URL.String())
++		assert.Equal(t, "/api/v2/traces/abc123?start=1&end=2", req.URL.String())
+ 	})
+ 
+ 	t.Run("getTrace v1 empty ResourceSpans returns downstream error", func(t *testing.T) {
+diff --git a/pkg/web/binding.go b/pkg/web/binding.go
+index 91ee35d6868a0..df5730c436b00 100644
+--- a/pkg/web/binding.go
++++ b/pkg/web/binding.go
+@@ -10,6 +10,9 @@ import (
+ 	"reflect"
+ )
+ 
++// MaxBindBodyBytes caps the size of a JSON request body that Bind will read
++const MaxBindBodyBytes = 100 << 20
++
+ // Bind deserializes JSON payload from the request
+ func Bind(req *http.Request, v any) error {
+ 	if req.Body != nil {
+@@ -21,7 +24,8 @@ func Bind(req *http.Request, v any) error {
+ 			return errors.New("bad content type")
+ 		}
+ 		defer func() { _ = req.Body.Close() }()
+-		err = json.NewDecoder(req.Body).Decode(v)
++		body := http.MaxBytesReader(nil, req.Body, MaxBindBodyBytes)
++		err = json.NewDecoder(body).Decode(v)
+ 		if err != nil && !errors.Is(err, io.EOF) {
+ 			return err
+ 		}
+diff --git a/pkg/web/binding_test.go b/pkg/web/binding_test.go
+index 4c5d9550f4a5d..f269b93cbfd30 100644
+--- a/pkg/web/binding_test.go
++++ b/pkg/web/binding_test.go
+@@ -2,6 +2,10 @@ package web
+ 
+ import (
+ 	"errors"
++	"io"
++	"net/http"
++	"net/http/httptest"
++	"strings"
+ 	"testing"
+ )
+ 
+@@ -61,6 +65,60 @@ func (sv *StructWithPointerValidation) Validate() error {
+ 	return nil
+ }
+ 
++type BindTarget struct {
++	Message string `json:"message"`
++}
++
++// Used to verify that Bind does not try to allocate the whole body on the heap
++type endlessReader struct {
++	prefix []byte
++	read   int64
++}
++
++func (r *endlessReader) Read(p []byte) (int, error) {
++	if len(r.prefix) > 0 {
++		n := copy(p, r.prefix)
++		r.prefix = r.prefix[n:]
++		r.read += int64(n)
++		return n, nil
++	}
++	for i := range p {
++		p[i] = 'A'
++	}
++	r.read += int64(len(p))
++	return len(p), nil
++}
++
++func TestBindRejectsOversizedBody(t *testing.T) {
++	body := &endlessReader{prefix: []byte(`{"message":"`)}
++	req := httptest.NewRequest(http.MethodPost, "/", body)
++	req.Header.Set("Content-Type", "application/json")
++
++	var target BindTarget
++	err := Bind(req, &target)
++	if err == nil {
++		t.Fatal("expected Bind to reject oversized body, got nil error")
++	}
++
++	if body.read > MaxBindBodyBytes+(1<<20) {
++		t.Fatalf("Bind read %d bytes, want at most ~%d", body.read, MaxBindBodyBytes)
++	}
++}
++
++func TestBindAcceptsBodyWithinLimit(t *testing.T) {
++	payload := `{"message":"` + strings.Repeat("A", 1024) + `"}`
++	req := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(payload))
++	req.Header.Set("Content-Type", "application/json")
++
++	var target BindTarget
++	if err := Bind(req, &target); err != nil && !errors.Is(err, io.EOF) {
++		t.Fatalf("Bind failed on small body: %v", err)
++	}
++	if len(target.Message) != 1024 {
++		t.Fatalf("unexpected message length: got %d, want 1024", len(target.Message))
++	}
++}
++
+ func TestValidationSuccess(t *testing.T) {
+ 	var nilInterface *StructWithPointerValidation
+ 
+diff --git a/public/app/plugins/panel/geomap/layers/basemaps/generic.test.ts b/public/app/plugins/panel/geomap/layers/basemaps/generic.test.ts
+index e8300a73903d9..b34d38b543f74 100644
+--- a/public/app/plugins/panel/geomap/layers/basemaps/generic.test.ts
++++ b/public/app/plugins/panel/geomap/layers/basemaps/generic.test.ts
+@@ -58,6 +58,8 @@ describe('XYZ tile layer', () => {
+     expect(replaceMock).toHaveBeenCalledWith(rawUrl);
+     expect(replaceMock).toHaveBeenCalledWith(rawAttr);
+     expect(source.getUrls()).toContain(interpolatedUrl);
++    // attribution and url are normalized before use
++    expect(source.getAttributions()).toBeDefined();
+   });
+ 
+   describe('noRepeat functionality', () => {
+diff --git a/public/app/plugins/panel/geomap/layers/basemaps/generic.ts b/public/app/plugins/panel/geomap/layers/basemaps/generic.ts
+index 9e95b42ea3729..023c11475226e 100644
+--- a/public/app/plugins/panel/geomap/layers/basemaps/generic.ts
++++ b/public/app/plugins/panel/geomap/layers/basemaps/generic.ts
+@@ -2,7 +2,13 @@ import type OpenLayersMap from 'ol/Map';
+ import TileLayer from 'ol/layer/Tile';
+ import XYZ from 'ol/source/XYZ';
+ 
+-import { type MapLayerRegistryItem, type MapLayerOptions, type GrafanaTheme2, type EventBus } from '@grafana/data';
++import {
++  type MapLayerRegistryItem,
++  type MapLayerOptions,
++  type GrafanaTheme2,
++  type EventBus,
++  textUtil,
++} from '@grafana/data';
+ import { getTemplateSrv } from '@grafana/runtime';
+ 
+ export interface XYZConfig {
+@@ -37,8 +43,8 @@ export const xyzTiles: MapLayerRegistryItem<XYZConfig> = {
+         cfg.attribution = cfg.attribution ?? defaultXYZConfig.attribution;
+       }
+       const noRepeat = options.noRepeat ?? false;
+-      const interpolatedUrl = getTemplateSrv().replace(cfg.url);
+-      const interpolatedAttribution = getTemplateSrv().replace(cfg.attribution);
++      const interpolatedUrl = textUtil.sanitizeUrl(getTemplateSrv().replace(cfg.url));
++      const interpolatedAttribution = textUtil.sanitizeTextPanelContent(getTemplateSrv().replace(cfg.attribution));
+ 
+       return new TileLayer({
+         source: new XYZ({

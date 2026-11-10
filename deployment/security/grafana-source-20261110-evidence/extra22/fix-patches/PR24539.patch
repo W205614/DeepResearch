@@ -1,0 +1,30 @@
+From fd05a04a5e8b92a1d33c979ed2b58d801d248055 Mon Sep 17 00:00:00 2001
+From: Rotem Reiss <reiss.r@gmail.com>
+Date: Mon, 11 May 2020 19:39:33 +0300
+Subject: [PATCH] OpenTSDB typeahead sanitization fix
+
+---
+ public/app/plugins/datasource/opentsdb/query_ctrl.ts | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/public/app/plugins/datasource/opentsdb/query_ctrl.ts b/public/app/plugins/datasource/opentsdb/query_ctrl.ts
+index 8569de2eb0754..2365f026baacc 100644
+--- a/public/app/plugins/datasource/opentsdb/query_ctrl.ts
++++ b/public/app/plugins/datasource/opentsdb/query_ctrl.ts
+@@ -2,6 +2,7 @@ import _ from 'lodash';
+ import kbn from 'app/core/utils/kbn';
+ import { QueryCtrl } from 'app/plugins/sdk';
+ import { auto } from 'angular';
++import { textUtil } from '@grafana/data';
+ 
+ export class OpenTsQueryCtrl extends QueryCtrl {
+   static templateUrl = 'partials/query.editor.html';
+@@ -90,7 +91,7 @@ export class OpenTsQueryCtrl extends QueryCtrl {
+ 
+   getTextValues(metricFindResult: any) {
+     return _.map(metricFindResult, value => {
+-      return value.text;
++      return textUtil.escapeHtml(value.text);
+     });
+   }
+ 

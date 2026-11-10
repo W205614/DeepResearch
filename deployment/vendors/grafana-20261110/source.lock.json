@@ -1,0 +1,36 @@
+{
+  "schema": "grafana-local-source-repair-inputs-v1",
+  "scope": "Local source build only; no inherited or new third-party binary redistribution approval",
+  "upstream": {
+    "repository": "https://github.com/grafana/grafana.git",
+    "tag": "v13.2.5",
+    "commit": "ce471d869a4810cd83c987dd3521c4b67689dbb6",
+    "tree_listing_sha256": "1829f0ac8d263e1c9fb5eabf1a2b1a89b35be9bf752ee82796c9fd146e0bfac2",
+    "transport": "Real Git objects, complete fixed tree coverage and git fsck; no generated replacement source"
+  },
+  "main_dependency_repair": {
+    "module": "github.com/apache/thrift",
+    "previous_version": "v0.24.0",
+    "version": "v0.25.0",
+    "sum": "h1:6LLlvoPjy8Cc/0b5TYRcTR3RZa2W0at3WQRcOkDwVGs=",
+    "upstream_commit": "27e8a425ffb498e190df3a12e239326bf5ba9ed6",
+    "verification": "Default Go SumDB and readonly exact module locks"
+  },
+  "retained_input": {
+    "loader": "scripts/fetch_grafana_fixed_20261107.py",
+    "image": "deepresearch-approved-grafana:20261107",
+    "profile": "fixed20261107",
+    "purpose": "Thirteen exact plugin backends, signed frontend/plugin assets and unchanged base payload; old approval is not a security verdict for the new runtime"
+  },
+  "busybox_repair": {
+    "source_lock": "deployment/vendors/grafana-20261110/busybox/source.lock.json",
+    "patch": "deployment/vendors/grafana-20261110/busybox/wget-http-request-boundary.patch",
+    "finding": "CVE-2025-60876",
+    "original_package": "1.37.0-r31",
+    "custom_revision_is_official_alpine": false,
+    "basis": "Validate actual HTTP request target and proxy Host before connection, including relative redirect target; retain percent-encoded paths",
+    "runtime_dependency": "Only the retained target musl; utmps and skalibs are statically linked with their ISC notices"
+  },
+  "historical_inputs_modified": false,
+  "public_version_created_for_validation": false
+}

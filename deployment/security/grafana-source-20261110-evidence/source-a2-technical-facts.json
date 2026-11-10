@@ -1,0 +1,69 @@
+{
+  "schema": "grafana-source-a2-technical-facts-20261110-v1",
+  "status": "facts_only_profile_preparing",
+  "source_commit": "15ebe6f71a1b1dc391664aaee9a89e209016b473",
+  "source_kind": "private WIP commit, never pushed or tagged",
+  "raw_sha256": "ca12c566974a36252e036daabeb1e09a1e3b4f55279198aad163c8ada35e5007",
+  "completion_sha256": "015fc4470da39a27629b944a4a245c0ff71663e870647785fdcbf43ab3113c9e",
+  "complete_scan_targets": 79,
+  "raw_counts": {
+    "CRITICAL": 0,
+    "HIGH": 26,
+    "MEDIUM": 12,
+    "LOW": 0,
+    "UNKNOWN": 33
+  },
+  "raw_secret_counts": {
+    "UNKNOWN": 0,
+    "LOW": 0,
+    "MEDIUM": 0,
+    "HIGH": 0,
+    "CRITICAL": 0
+  },
+  "observed_exact_tuples": 71,
+  "new_exact_tuples": [
+    {
+      "id": "CVE-2026-21728",
+      "target": "deployment/security/grafana-source-20261110-evidence/main/locks/go.mod",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260427112133-525d1bab07e0",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-28377",
+      "target": "deployment/security/grafana-source-20261110-evidence/main/locks/go.mod",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260427112133-525d1bab07e0",
+      "severity": "HIGH"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/security/grafana-source-20261110-evidence/main/locks/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    }
+  ],
+  "missing_prior_exact_tuples": [],
+  "technical_facts_verified": 71,
+  "unresolved_source_fact_count": 0,
+  "technical_disposition_counts": {
+    "NOT_AFFECTED": 49,
+    "FIXED": 21,
+    "MAINTAINED_REPLACEMENT_VERIFIED": 1
+  },
+  "old_original_gate_passed": false,
+  "old_original_unresolved": 24,
+  "old_candidate_gate_passed": false,
+  "old_candidate_unresolved": 22,
+  "actual_new_main_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+  "actual_new_main_packages": 4200,
+  "actual_new_main_modules": 522,
+  "busybox_fixed_regression_reverified": true,
+  "raw_reports_modified": false,
+  "runtime_security_gate_claim": false,
+  "runtime_acceptance_claim": false,
+  "independent_reviews": 0,
+  "errors": [],
+  "boundary": "All actual source-a2 raw tuples are retained and individually checked. Final remote source/combined runtime and independent subject review remain pending."
+}

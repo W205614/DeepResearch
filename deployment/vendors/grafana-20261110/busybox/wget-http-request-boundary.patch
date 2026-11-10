@@ -1,0 +1,40 @@
+Subject: [PATCH] wget: reject raw control and space at the HTTP send boundary
+
+Reuse the raw-C0/space rejection in the BusyBox mailing-list fix proposed by
+Radoslav Kolev (2025-11-21), adapted to the outgoing HTTP components so relative
+Location redirects are covered too. Host is part of proxy absolute-form targets
+and of the Host header; percent-encoded bytes and authentication data are kept.
+https://lists.busybox.net/pipermail/busybox/2025-November/091840.html
+
+--- a/networking/wget.c
++++ b/networking/wget.c
+@@ -1094,6 +1094,18 @@
+ 	}
+ }
+ 
++/* DeepResearch modification, 2026-11-10: validate actual outgoing HTTP fields. */
++static void check_http_request_component(const char *value)
++{
++	const unsigned char *p = (const unsigned char *)value;
++
++	while (*p) {
++		if (*p <= ' ' || *p == 0x7f)
++			bb_simple_error_msg_and_die("unencoded control character or space in HTTP request target");
++		p++;
++	}
++}
++
+ static void download_one_url(const char *url)
+ {
+ 	bool use_proxy;                 /* Use proxies if env vars are set  */
+@@ -1186,6 +1198,10 @@
+ 		 */
+ 		char *str;
+ 		int status;
++
++		/* Relative redirects bypass parse_url; check the actual outgoing fields. */
++		check_http_request_component(target.path);
++		check_http_request_component(target.host);
+ 
+ 		/* Open socket to http(s) server */
+ #if ENABLE_FEATURE_WGET_OPENSSL

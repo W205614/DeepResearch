@@ -1,0 +1,23 @@
+{
+  "schema": "ssl-client-cve-2025-60876-component-scope-v1",
+  "cve": "CVE-2025-60876",
+  "scope": "The exact retained standalone TLS relay only; no general claim that the component has no other defects",
+  "official_source_url": "https://raw.githubusercontent.com/alpinelinux/aports/c3ef5d10e6ef6528852c51f0564963e2f8c1be19/main/busybox/ssl_client.c",
+  "official_recipe": "deployment/vendors/grafana-20261110/busybox/upstream-APKBUILD",
+  "source_sha256": "f36fb83637a12fe0706f828a3e9a4181ac6ed452b59d5d30fcf4dbe1884b8aed",
+  "source_sha512": "1c7c78afb274d1316725b22585452efd7de9a80ad326f099f25e34d0877c5d81ced579e2dc795314221e316f58071374f61ee22c6ffd34072266525f65d3614c",
+  "actual_binary": {
+    "bytes": 14384,
+    "gid": 0,
+    "mode": 493,
+    "path": "usr/bin/ssl_client",
+    "sha256": "8b23a9dbfea3da8c6da65b93c0fc6d979a82245c17c40d8fbf94d531263b98b4",
+    "type": "file",
+    "uid": 0
+  },
+  "source_role": "Reads stdin and writes the bytes through SSL_write; reads SSL_read and copies bytes to stdout. Arguments select a socket FD, SNI, and verification mode; it does not parse a URL or serialize an HTTP request-target/Host.",
+  "affected_writer": "The BusyBox wget HTTP target/Host writer is in the separately measured patched /bin/busybox; binsh shares that exact common dispatcher payload.",
+  "retained_binary_unchanged": true,
+  "risk_acceptance": false,
+  "source_file_redistributed_here": false
+}

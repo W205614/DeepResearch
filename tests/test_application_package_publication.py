@@ -50,6 +50,28 @@ def test_accepts_exact_three_image_release_manifest():
     validate_manifest(manifest(), "c" * 40, "artifact-applications-v0.1.1-r1")
 
 
+def test_single_product_release_binds_the_same_application_version():
+    data = manifest()
+    data['artifact_release'] = 'v0.1.1'
+    validate_manifest(data, 'c' * 40, 'v0.1.1')
+    data['artifact_release'] = 'v0.1.2'
+    with pytest.raises(ValueError, match='Release tag and immutable application version differ'):
+        validate_manifest(data, 'c' * 40, 'v0.1.2')
+
+
+def test_technical_review_is_bound_to_exact_agent_profile():
+    data = manifest()
+    data['images'][0]['security_review_profile'] = 'agent-full-scope-20261110'
+    validate_manifest(data, 'c' * 40, data['artifact_release'])
+    data['images'][1]['security_review_profile'] = 'agent-full-scope-20261110'
+    with pytest.raises(ValueError, match='Only the exact Agent technical review'):
+        validate_manifest(data, 'c' * 40, data['artifact_release'])
+    data['images'][1].pop('security_review_profile')
+    data['images'][0]['security_review_profile'] = 'ignore-all'
+    with pytest.raises(ValueError, match='Only the exact Agent technical review'):
+        validate_manifest(data, 'c' * 40, data['artifact_release'])
+
+
 def test_new_package_selectors_are_excluded_from_historical_grafana_replay(historical_grafana_maintenance_root):
     from scripts.check_grafana_active_source_retirement import ROOT, selector_files
 
@@ -185,7 +207,7 @@ def test_loaded_vulnerable_archive_is_scanned_and_blocked_before_any_registry_wr
     calls, original_report = [], []
     monkeypatch.setattr(publication, "github", lambda path: {"workflow_runs": [
         {"name": name, "event": "push", "status": "completed", "conclusion": "success"}
-        for name in ["CI", "Security"]]} if path.startswith("/actions/") else {
+        for name in ["CI", "Security"]]} if path.startswith("/actions/") else {"sha": "c" * 40} if path.startswith('/commits/') else {
             "draft": False, "published_at": "2026-11-10", "target_commitish": "c" * 40,
             "assets": [{"name": "publication-manifest.json", "size": len(raw_manifest)}]})
     monkeypatch.setattr(publication, "download", lambda asset, destination: destination.write_bytes(raw_manifest))

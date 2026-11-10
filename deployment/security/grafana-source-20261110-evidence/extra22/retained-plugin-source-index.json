@@ -1,0 +1,124 @@
+[
+  {
+    "plugin": "loki",
+    "module": "github.com/grafana/grafana-loki-datasource",
+    "version": "v0.0.0-20261008182227-6d076df3d695",
+    "commit": "6d076df3d695f5fda342fbbad1f52547b55a96e2",
+    "official_source_sum": "h1:PFy7d0rbcD86U3x6Fwji+1HOtAlEIQ1DdiCN9jwlc6c=",
+    "measured_go_dirhash_sum": "h1:PFy7d0rbcD86U3x6Fwji+1HOtAlEIQ1DdiCN9jwlc6c=",
+    "module_zip_sha256": "90b3a6dc90484cd919fbcdee85f788fa6e147d907f0c53e72a8d90509b014821",
+    "members": [
+      {
+        "path": "pkg/loki/loki.go",
+        "sha256": "c37464d78af15b21adbf39cb7143e5cd80a576fa81aa3fb9011c3a509a713a2b",
+        "bytes": 10811
+      }
+    ],
+    "go_files": [
+      "Magefile.go",
+      "pkg/loki/api.go",
+      "pkg/loki/api_mock.go",
+      "pkg/loki/api_test.go",
+      "pkg/loki/frame.go",
+      "pkg/loki/frame_test.go",
+      "pkg/loki/framing_test.go",
+      "pkg/loki/healthcheck.go",
+      "pkg/loki/healthcheck_test.go",
+      "pkg/loki/instrumentation/instrumentation.go",
+      "pkg/loki/kinds/dataquery/types_dataquery.go",
+      "pkg/loki/loki.go",
+      "pkg/loki/loki_bench_test.go",
+      "pkg/loki/parse_query.go",
+      "pkg/loki/parse_query_test.go",
+      "pkg/loki/scopes.go",
+      "pkg/loki/scopes_test.go",
+      "pkg/loki/step.go",
+      "pkg/loki/step_test.go",
+      "pkg/loki/streaming.go",
+      "pkg/loki/streaming_test.go",
+      "pkg/loki/types.go",
+      "pkg/main.go"
+    ]
+  },
+  {
+    "plugin": "mysql",
+    "module": "github.com/grafana/grafana-mysql-datasource",
+    "version": "v0.0.0-20261008182016-453ec30a1245",
+    "commit": "453ec30a1245e539974d869a62f1c09bb5b9dfa9",
+    "official_source_sum": "h1:fmAr3Wp/SFDjI1/ZdzSJhnu5O2JhplvlcDQeGgWQwC8=",
+    "measured_go_dirhash_sum": "h1:fmAr3Wp/SFDjI1/ZdzSJhnu5O2JhplvlcDQeGgWQwC8=",
+    "module_zip_sha256": "dcbee21364caf4b5f8be3c0df9f8b84783736d8ab7159892f3ef5eb859f6606b",
+    "members": [
+      {
+        "path": "pkg/mysql/mysql.go",
+        "sha256": "9d1ae3795dd0a2160ab5d6241e78a51b02cf10c22fa9badbab99c66abd1785c6",
+        "bytes": 13085
+      }
+    ],
+    "go_files": [
+      "Magefile.go",
+      "pkg/main.go",
+      "pkg/mysql/instance_error.go",
+      "pkg/mysql/macros.go",
+      "pkg/mysql/macros_test.go",
+      "pkg/mysql/mysql.go",
+      "pkg/mysql/mysql_snapshot_test.go",
+      "pkg/mysql/mysql_test.go",
+      "pkg/mysql/proxy.go",
+      "pkg/mysql/proxy_test.go",
+      "pkg/mysql/sqleng/connection_error.go",
+      "pkg/mysql/sqleng/connection_error_test.go",
+      "pkg/mysql/sqleng/handler_checkhealth.go",
+      "pkg/mysql/sqleng/handler_checkhealth_test.go",
+      "pkg/mysql/sqleng/sql_engine.go",
+      "pkg/mysql/sqleng/sql_engine_test.go",
+      "pkg/mysql/sqleng/sqlmacro.go",
+      "pkg/mysql/sqleng/sqlmacro_test.go"
+    ]
+  },
+  {
+    "plugin": "tempo",
+    "module": "github.com/grafana/grafana-tempo-datasource",
+    "version": "v0.0.0-20261021151041-7bbc067f7b95",
+    "commit": "7bbc067f7b950057beebcaeeb910f16e98f2dacb",
+    "official_source_sum": "h1:Gg9/7u2/RMQYydaMv/GhIlX7DCYAC7nVy0EFiZ0pfgg=",
+    "measured_go_dirhash_sum": "h1:Gg9/7u2/RMQYydaMv/GhIlX7DCYAC7nVy0EFiZ0pfgg=",
+    "module_zip_sha256": "520a19f9859da019f2930502612941dc5a5250cc13255f10e88ac20a6dc6fe4e",
+    "members": [
+      {
+        "path": "pkg/tempo/tempo.go",
+        "sha256": "2904e6f61889e6cf9a35810afc112ec56cb2206c583e43f9c760af6e2927cd48",
+        "bytes": 12198
+      }
+    ],
+    "go_files": [
+      "Magefile.go",
+      "pkg/main.go",
+      "pkg/tempo/grpc.go",
+      "pkg/tempo/grpc_orgid_test.go",
+      "pkg/tempo/kinds/dataquery/types_dataquery.go",
+      "pkg/tempo/metrics_stream.go",
+      "pkg/tempo/metrics_stream_test.go",
+      "pkg/tempo/protospan_translation.go",
+      "pkg/tempo/search.go",
+      "pkg/tempo/search_stream.go",
+      "pkg/tempo/search_stream_test.go",
+      "pkg/tempo/search_test.go",
+      "pkg/tempo/stream_handler.go",
+      "pkg/tempo/tempo.go",
+      "pkg/tempo/tempo_test.go",
+      "pkg/tempo/trace.go",
+      "pkg/tempo/trace_test.go",
+      "pkg/tempo/trace_transform.go",
+      "pkg/tempo/trace_transform_test.go",
+      "pkg/tempo/traceql/exemplars.go",
+      "pkg/tempo/traceql/exemplars_test.go",
+      "pkg/tempo/traceql/metrics.go",
+      "pkg/tempo/traceql/metrics_test.go",
+      "pkg/tempo/traceql_query.go",
+      "pkg/tempo/traceql_query_test.go",
+      "pkg/tempo/utils/stream_utils.go",
+      "pkg/tempo/utils/stream_utils_test.go"
+    ]
+  }
+]

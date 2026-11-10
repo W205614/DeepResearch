@@ -17,7 +17,7 @@
       "reason": "false positive",
       "justification": "The complete request URI is prefixed with the operator-configured Agent origin. Real two-origin HTTP regressions prove hostile paths/queries retain that origin and both proxy overloads do not follow cross-origin redirects or disclose the Bearer token. Applies only to these exact source and test bytes.",
       "evidence_sha256": {
-        "deployment/security/codeql-finding-review-20261110.md": "3ea15557a5d185df627faaca1238ee6df4d8cbb53dad6cd1bab6506af22d77f8",
+        "deployment/security/codeql-finding-review-20261110.md": "7585522420e6a8cb160ef2b173460762833e8128790a259ed0a4b779d8824948",
         "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java": "9729af95b2760eb00fdc36f8e86f8abaa7f0f4deb999f976a9342d7a93365aea",
         "business-backend/src/main/java/com/deepresearch/business/config/DeepResearchProperties.java": "94211bb68e6735e0200f9c660814a64bd87ac205b944f060eb5a6920ded15ad3",
         "business-backend/src/main/java/com/deepresearch/business/api/AgentProxyController.java": "f81f0ecfbf502797025bc8a0f0365b207f67c88474659dde8c9a18844c58564b",
@@ -37,7 +37,7 @@
       "reason": "false positive",
       "justification": "The complete request URI is prefixed with the operator-configured Agent origin. Real two-origin HTTP regressions prove hostile paths/queries retain that origin and both proxy overloads do not follow cross-origin redirects or disclose the Bearer token. Applies only to these exact source and test bytes.",
       "evidence_sha256": {
-        "deployment/security/codeql-finding-review-20261110.md": "3ea15557a5d185df627faaca1238ee6df4d8cbb53dad6cd1bab6506af22d77f8",
+        "deployment/security/codeql-finding-review-20261110.md": "7585522420e6a8cb160ef2b173460762833e8128790a259ed0a4b779d8824948",
         "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java": "9729af95b2760eb00fdc36f8e86f8abaa7f0f4deb999f976a9342d7a93365aea",
         "business-backend/src/main/java/com/deepresearch/business/config/DeepResearchProperties.java": "94211bb68e6735e0200f9c660814a64bd87ac205b944f060eb5a6920ded15ad3",
         "business-backend/src/main/java/com/deepresearch/business/api/AgentProxyController.java": "f81f0ecfbf502797025bc8a0f0365b207f67c88474659dde8c9a18844c58564b",
@@ -57,7 +57,7 @@
       "reason": "false positive",
       "justification": "The actual SecurityConfig accepts JWT credentials only from an explicit Authorization header. RSA/Nimbus verified regressions show cookies, authenticated sessions, query and form credentials cannot authorize a mutation; a header-authorized request creates no authentication session. Applies only to this exact authentication configuration.",
       "evidence_sha256": {
-        "deployment/security/codeql-finding-review-20261110.md": "3ea15557a5d185df627faaca1238ee6df4d8cbb53dad6cd1bab6506af22d77f8",
+        "deployment/security/codeql-finding-review-20261110.md": "7585522420e6a8cb160ef2b173460762833e8128790a259ed0a4b779d8824948",
         "business-backend/src/main/java/com/deepresearch/business/config/SecurityConfig.java": "4dbaf829a97464e83d29329f41aa33888a0d26d4e28362c88b82f14e9d01afc7",
         "business-backend/src/main/java/com/deepresearch/business/security/PlatformAccountFilter.java": "6907c46c7e1e452794a5a0fd37d1cfedd8923dc918f4bbe8c0d48530edbc312c",
         "business-backend/src/main/java/com/deepresearch/business/security/ApiRateLimitFilter.java": "67ee1e48aa7749d8e0873977d2be30db1e40e08257d63a5f25765e7a984a3533",
@@ -79,11 +79,11 @@
       "reason": "false positive",
       "justification": "This byte-pinned upstream SQLite release note is offline hash-checked audit evidence outside the frontend build context/webroot. The exact document also contains no mtimelink node, so the flagged conditional href assignment does not execute. The original upstream evidence and raw scan remain unchanged.",
       "evidence_sha256": {
-        "deployment/security/codeql-finding-review-20261110.md": "3ea15557a5d185df627faaca1238ee6df4d8cbb53dad6cd1bab6506af22d77f8",
+        "deployment/security/codeql-finding-review-20261110.md": "7585522420e6a8cb160ef2b173460762833e8128790a259ed0a4b779d8824948",
         "deployment/security/agent-native-evidence/supplement-20261107/sqlite-release-3_54_1.html": "69bf98f8cb8730c88b01414cdc4436fb3c65443dae405957b40efab9976f1e12",
         "deployment/security/agent-native-fixed-code-supplement-20261107.json": "f0960cbc117072656b5038706634e11f79281fe876f84642fa234953f25338df",
         "scripts/check_agent_native_packages.py": "a61f5a7ad61481aa3a88f8432db57dffd545027248cf861fcd766a01c99374d3",
-        "compose.yaml": "39255c0c18bc0b13e05ea7fe1f8090da2f9c4b09b4ebc24ba9b28f3e2930b5df",
+        "compose.yaml": "c8b0e862f51e8df6ec8ddf8254656491a939cbb9bf9231d31b545d449df7dc0e",
         "frontend/Dockerfile": "d4a1203b866ad35a2a0dfd7e5972beab8e08e4e021f3f50075075862942dc8a7",
         "frontend/nginx.conf": "9dfa67b7fe4d3159b2dabf772c51a82e625b3757de35ca37bd36db297c15ccb2",
         "Dockerfile": "66d6ffccb8f8f7416f98c62081562f81f9cc76c95747ec176125b28964eea508"

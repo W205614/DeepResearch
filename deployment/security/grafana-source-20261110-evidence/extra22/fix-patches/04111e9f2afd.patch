@@ -1,0 +1,116 @@
+From 04111e9f2afd95ea3e5b01865cc29d3fc1198e71 Mon Sep 17 00:00:00 2001
+From: Yuri Tseretyan <yuriy.tseretyan@grafana.com>
+Date: Wed, 14 May 2025 12:09:32 -0400
+Subject: [PATCH] declare dingding url as secret
+
+patch raw settings before parsing because DingDing's config parser does not know about secrets
+---
+ pkg/services/ngalert/notifier/alertmanager.go | 50 +++++++++++++++++++
+ .../channels_config/available_channels.go     |  1 +
+ .../ngalert/notifier/testreceivers.go         |  9 +++-
+ 3 files changed, 58 insertions(+), 2 deletions(-)
+
+diff --git a/pkg/services/ngalert/notifier/alertmanager.go b/pkg/services/ngalert/notifier/alertmanager.go
+index 3f0dffb038fca..81d03d372aefc 100644
+--- a/pkg/services/ngalert/notifier/alertmanager.go
++++ b/pkg/services/ngalert/notifier/alertmanager.go
+@@ -388,6 +388,10 @@ func (am *alertmanager) AppURL() string {
+ 
+ // buildReceiverIntegrations builds a list of integration notifiers off of a receiver config.
+ func (am *alertmanager) buildReceiverIntegrations(receiver *alertingNotify.APIReceiver, tmpl *alertingTemplates.Template) ([]*alertingNotify.Integration, error) {
++	err := patchNewSecureFields(context.Background(), receiver, am.decryptFn)
++	if err != nil {
++		return nil, err
++	}
+ 	receiverCfg, err := alertingNotify.BuildReceiverConfiguration(context.Background(), receiver, am.decryptFn)
+ 	if err != nil {
+ 		return nil, err
+@@ -414,6 +418,52 @@ func (am *alertmanager) buildReceiverIntegrations(receiver *alertingNotify.APIRe
+ 	return integrations, nil
+ }
+ 
++func patchNewSecureFields(ctx context.Context, api *alertingNotify.APIReceiver, decrypt alertingNotify.GetDecryptedValueFn) error {
++	for _, integration := range api.Integrations {
++		switch integration.Type {
++		case "dingding":
++			err := patchSettingsFromSecureSettings(ctx, integration, "url", decrypt)
++			if err != nil {
++				return err
++			}
++		}
++	}
++	return nil
++}
++
++func patchSettingsFromSecureSettings(ctx context.Context, integration *alertingNotify.GrafanaIntegrationConfig, key string, decrypt alertingNotify.GetDecryptedValueFn) error {
++	var encrypted string
++	var ok bool
++	if encrypted, ok = integration.SecureSettings[key]; !ok {
++		return nil
++	}
++	decoded, err := decode(encrypted)
++	if err != nil {
++		return err
++	}
++	settings := map[string]any{}
++	err = json.Unmarshal(integration.Settings, &settings)
++	if err != nil {
++		return err
++	}
++	currentValue, ok := settings[key]
++	currentString := ""
++	if ok {
++		currentString, _ = currentValue.(string)
++	}
++	secretValue := decrypt(ctx, map[string][]byte{key: decoded}, key, currentString)
++	if secretValue == currentString {
++		return nil
++	}
++	settings[key] = secretValue
++	data, err := json.Marshal(settings)
++	if err != nil {
++		return err
++	}
++	integration.Settings = data
++	return nil
++}
++
+ // PutAlerts receives the alerts and then sends them through the corresponding route based on whenever the alert has a receiver embedded or not
+ func (am *alertmanager) PutAlerts(_ context.Context, postableAlerts apimodels.PostableAlerts) error {
+ 	alerts := make(alertingNotify.PostableAlerts, 0, len(postableAlerts.PostableAlerts))
+diff --git a/pkg/services/ngalert/notifier/channels_config/available_channels.go b/pkg/services/ngalert/notifier/channels_config/available_channels.go
+index fcb0353730a6d..fa367331f830c 100644
+--- a/pkg/services/ngalert/notifier/channels_config/available_channels.go
++++ b/pkg/services/ngalert/notifier/channels_config/available_channels.go
+@@ -124,6 +124,7 @@ func GetAvailableNotifiers() []*NotifierPlugin {
+ 					Placeholder:  "https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxx",
+ 					PropertyName: "url",
+ 					Required:     true,
++					Secure:       true,
+ 				},
+ 				{
+ 					Label:        "Message Type",
+diff --git a/pkg/services/ngalert/notifier/testreceivers.go b/pkg/services/ngalert/notifier/testreceivers.go
+index eae0d4bc4e01e..8d1fae2115cc3 100644
+--- a/pkg/services/ngalert/notifier/testreceivers.go
++++ b/pkg/services/ngalert/notifier/testreceivers.go
+@@ -46,12 +46,17 @@ func (am *alertmanager) TestReceivers(ctx context.Context, c apimodels.TestRecei
+ 				SecureSettings:        gr.SecureSettings,
+ 			})
+ 		}
+-		receivers = append(receivers, &alertingNotify.APIReceiver{
++		recv := &alertingNotify.APIReceiver{
+ 			ConfigReceiver: r.Receiver,
+ 			GrafanaIntegrations: alertingNotify.GrafanaIntegrations{
+ 				Integrations: integrations,
+ 			},
+-		})
++		}
++		err := patchNewSecureFields(ctx, recv, am.decryptFn)
++		if err != nil {
++			return nil, err
++		}
++		receivers = append(receivers, recv)
+ 	}
+ 	var alert *alertingNotify.TestReceiversConfigAlertParams
+ 	if c.Alert != nil {

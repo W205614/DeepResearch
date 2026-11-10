@@ -1,0 +1,4478 @@
+{
+  "schema": "agent-exact-full-scope-profile-v1",
+  "name": "agent-full-scope-20261110",
+  "risk_acceptance": false,
+  "architecture": "amd64",
+  "os": "linux",
+  "scanner": "0.75.0",
+  "source_review_evidence": {
+    "path": "deployment/security/agent-full-scope-evidence-20261110.json",
+    "sha256": "c70424a3935f75dc2d5404544e9aed192e6731b864793207820d3dfe681adce8"
+  },
+  "native_elf_closure": {
+    "files": 515,
+    "sha256": "7bde6d27b4fd6015f058da3f28d8c1e5dfb0155aadca77a61919225674d4f348"
+  },
+  "python_source_closure": {
+    "files": 5972,
+    "sha256": "5cabbf1da9d5ef348e88a51d68109855fad3f6c58a2d918f174a5f5805606921"
+  },
+  "official_glibc_payload": [
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ARMSCII-8.so",
+      "sha256": "92caa4ce3931453dd427deb77ab7bfb49cf5371103f81b61cb539940ab84575e",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ASMO_449.so",
+      "sha256": "bc30e7b77b0887e92c3b671a8859c53b766ee32fb0c3ada918b44b96890c40fa",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/BIG5.so",
+      "sha256": "2f87f15048fde0522a0017ab4efd763173c55f7c940728fab8416ee9dd72fc14",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/BIG5HKSCS.so",
+      "sha256": "fee8d914320d881ae1efd9d66fa76da6231686a812a39e7dd9a53477b7de6598",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/BRF.so",
+      "sha256": "05db067dab6678d247947b59440bdf529a5731ee04241dbb7161bcbfd02c8345",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP10007.so",
+      "sha256": "61c65d3cf460d8ea3eadf8f86fc689f058abbd85ea1faf9e2afa5b87d6ba94f9",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP1125.so",
+      "sha256": "2489e6b1b2b240ccfdbcde5d65b1ce38bce4c6428cbbb2c6b9dc2a1c0744608e",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP1250.so",
+      "sha256": "1b89c0cadb5ce61982c49eb4a66e5c2913cc4c95261a3c5b4d2ddea450487005",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP1251.so",
+      "sha256": "50167eaf5967a1b37dd9bc33ea4b22f2642acfce6351e05c065cfa944be325a9",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP1253.so",
+      "sha256": "51a4374828bb44061aa465d1436a889d5e40060b51a4f35b7ccb87f8b4504945",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP1254.so",
+      "sha256": "7b37b15ba3e31a71c7812b751c3aa4a99fa166f47cc98c93824aebcd9c58f3dc",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP1255.so",
+      "sha256": "bb5a6918d316fb864f009144253b81f113393eb7a16732d34c9d61bbb649ce7b",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP1256.so",
+      "sha256": "e180b640752067fe99667cfacb633c7f7444a80aad3e69566b57736829ff44bb",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP1257.so",
+      "sha256": "8131fc1bc309ec97117d12f4196eef4099d323eb50b9b6f877de93b2d4a1c69b",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP1258.so",
+      "sha256": "18b071a829cf454c45b6e562354262e186f25e94472dda876db451d096322039",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP737.so",
+      "sha256": "758ba51c1659fb5c748927de2560969b0870228b87650f7a076f0a281b76e716",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP770.so",
+      "sha256": "da7798dce4493b3a4fc0e5458ed3dbb3a1a1b16efda6cd931e08093d1856af0f",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP771.so",
+      "sha256": "4a383e408f7a3f8fbdbc1f2fd7ad61dd1829cb402a338406453be17dfdcea47f",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP772.so",
+      "sha256": "3e90e9c4e9826688b85fb854c3ace870b04f25a5c546a1319b7196eef6948ce8",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP773.so",
+      "sha256": "669dac931dc3db207450636a50e334ebe070409a66bbbfa0dac9dc205b9357a8",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP774.so",
+      "sha256": "064028149d90e4d8617eff6e2faf04e93b14a8ee1a5c66e20053fb3a4467917c",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP775.so",
+      "sha256": "a836cdec294759613cf368faff086cb85cdc8db0e26ea28cd2262e833a0cb9e4",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP932.so",
+      "sha256": "f9d0bd8bef84f03279f11ff5db4ec192540da6658070074a1bd1849ce6b9ad20",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CSN_369103.so",
+      "sha256": "8bad08f5578c0a1931f3029b185d6c53bd5f5b0567efb8356991a6dd09bad0c3",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CWI.so",
+      "sha256": "35e7813a21d9eef17bf1b9e2aa4926acec4119ba16ba44308a02f236c7f58af8",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/DEC-MCS.so",
+      "sha256": "2942a516a5d6d39a03a1056df3d33e749fa0f34019d923f6220294a606be6886",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-AT-DE-A.so",
+      "sha256": "2be6e74f4cba461ea61b4f7c2fec2d75d34a6f54b76e4aebc7e1d507590587ec",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-AT-DE.so",
+      "sha256": "97f10e2ffa2a06baa7cfbb0f74dd79ed82fb7f8c5919cde324841856b49bca15",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-CA-FR.so",
+      "sha256": "a704603190f7107fb829763dff41755156825291782cc46c1e67d70bb60a1d9e",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-DK-NO-A.so",
+      "sha256": "bf8be10290ff8d841874dc5536c1fe5273c07db783210f49384bf1ede81c26e1",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-DK-NO.so",
+      "sha256": "222bb626e9e8bdca46ca7a5d65293b55b11b74a06401c93cb28232fa1c944464",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-ES-A.so",
+      "sha256": "80d8b740dd8bca4125abe0ac8d1d2844abd20ad6f570989fd4fe66793504b655",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-ES-S.so",
+      "sha256": "a1e76df49b07586381ad164819e308496704ebf5bcd9655ba364838070c53baf",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-ES.so",
+      "sha256": "3f72c6a62895e0f91d9549ce69f1fd22daeb07914ac763cd385d3ce3a4291ebc",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-FI-SE-A.so",
+      "sha256": "572a6cae0f1802fff44d4a66433b0e22df749ba297635b403811d201524816d7",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-FI-SE.so",
+      "sha256": "3f059cab7c900bbff6a776531ec69e6ac975d3adaf945a4832d1c277b6d0b1ec",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-FR.so",
+      "sha256": "a4a39d9b6f8cf0b9c895870937002620694212d4ac959bd2c1d9ee04c81278a7",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-IS-FRISS.so",
+      "sha256": "0b7625b7ce5b6ac9e67ec7768ffe395d4f1976c4f42557ba22f51f4d887897cf",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-IT.so",
+      "sha256": "71dd52859a3ad5e85d2479386007342f92cb53f1aa8cd5d883e24a0a7f7291a0",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-PT.so",
+      "sha256": "0377432839979e85b63dcd6e059459b556bb9f1c81314b5d5c2fe479d3266a7c",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-UK.so",
+      "sha256": "dfe53961cb437d9a0ca5700b5414353b3ddc1b68635ae7020e844008f6b9ab69",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-US.so",
+      "sha256": "803e2d57f4c72585e5128af06e4809ba8ff10185ea6b0b3dbe73d67f900f23da",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ECMA-CYRILLIC.so",
+      "sha256": "7153c702fe34a1ae5c315b67b7630e51d0c9be425e59969d8be79e4fa60bf251",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EUC-CN.so",
+      "sha256": "ed439ea411947b922fe553a684d31e424dac781afe9a5ea427f9ed0cd5bcbd83",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EUC-JISX0213.so",
+      "sha256": "577683b6cb376e96fcd126658a76c2bb13f2da2aad3e85c0752e94e148d85191",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EUC-JP-MS.so",
+      "sha256": "29f1b9c223f1a47b61d8e4d85a4238c60ac73c7e293f37142b4c45f6961aaff4",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EUC-JP.so",
+      "sha256": "fb1db5bcdf49b2ecb6e44c5092e0e8bec75cd07d84cbd64e0fb21ce4561a975a",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EUC-KR.so",
+      "sha256": "29adb3c2e738722211482bce0280e22478cd74a3b05f877dea9ac9b9fa47470c",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EUC-TW.so",
+      "sha256": "1896c70d3d979b3a55c580ce318a90e75dbcfb95c64344b2743b470642f1cd2b",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/GB18030.so",
+      "sha256": "f28604c13642a472c657f8b26f104f0ea5cd18ef381533c9fb1ec9545ce341c4",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/GBBIG5.so",
+      "sha256": "6cf5b1c19b292a0ed3cccc8fa6c7c016fd1debd02b3fd3747bbeb8e7d290462f",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/GBGBK.so",
+      "sha256": "f11dc62060c1260a3261df71ee3ec9764033e44887150c8756c07387148bfd6a",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/GBK.so",
+      "sha256": "f083854229791325d6f264296d317c28179ed7bf1962dc93a966edc796afc84e",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/GEORGIAN-ACADEMY.so",
+      "sha256": "0a4856205db8ce0131b102619ad1f6d3f8f0018f94f67e516508abbb8744e399",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/GEORGIAN-PS.so",
+      "sha256": "f484b4b72f3265f62c883545669483aa8bf33049f8a9ac88fc2ab547fc3515be",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/GOST_19768-74.so",
+      "sha256": "722dfbb07770cc671470430e664e4fde5ad582638a8987d829647c3da4cb7f54",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/GREEK-CCITT.so",
+      "sha256": "3fff9525cc1e529f6a2fa744235ea2d51ec3529a280e1424ab84bfe7bcb4a3bc",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/GREEK7-OLD.so",
+      "sha256": "f455f9f6b4878d682952bba34f72067151e339b0e5145eb22bf5e73b3d4f4c87",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/GREEK7.so",
+      "sha256": "8bfab58f515b3888ef0615cf80eb4505e6483b521c9af05345e9fe12a0f1ec32",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/HP-GREEK8.so",
+      "sha256": "9649d4fbdf3a354367fd170a0dcce370522586aade4d905b3379cc973d3745ad",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/HP-ROMAN8.so",
+      "sha256": "09f5dc2d5198f4b487f6e691e9c630ae4bd03505981b4f93bdb05b32d47bf62d",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/HP-ROMAN9.so",
+      "sha256": "7a43b791249cadbe3b949eebcc5d51488348dcff11c0dbcd822ef6834a3b1c68",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/HP-THAI8.so",
+      "sha256": "dfe4089d478563142113b152a43dc888e1cc4a215dbeed20446935b68f514795",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/HP-TURKISH8.so",
+      "sha256": "2c9b3c23f722cdf38c3ca898315d12b2fa254460779ee8c3064a790241e10913",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM037.so",
+      "sha256": "b405bf4209f29d993c6dabc57cf7659ed5ef242b6772d2f4aa6589cfd1854f26",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM038.so",
+      "sha256": "325fdb8c23a60e02e3f0c8b6117c2197f365c09ef062ce61d400d6a72ef69520",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1004.so",
+      "sha256": "b3df9a528e1dce10ebdcce92605e1619de00851af6f537960b693ff9c700a069",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1008.so",
+      "sha256": "59326c4d03627950447711688f6e3d2f4279fd8d160050c46c5d5bcd160a6116",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1008_420.so",
+      "sha256": "b73348aaaaa4bf50bb0768df491d72c2964643b49ee414c5202bdcb5a2586aaf",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1025.so",
+      "sha256": "9b84c7eddfb673a9563a7364d488a381da8e4c731465361a6f2372a50af90dd6",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1026.so",
+      "sha256": "6d3d64a330b655131df2192bfd81aadcbb46e37675c3132e8524c816ffa5e40e",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1046.so",
+      "sha256": "3278dd221fda26e9269a35191932d7335ac247432a1f9b3d50387b0aca604de8",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1047.so",
+      "sha256": "e79f0e9fe66078fed3877aaced0182aba8be7ebe5067f079d1f236bc16ffc37b",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1097.so",
+      "sha256": "7901098eabf91a3c5280c6eabd3dbad16ac6694828aa96b0410f660d7d3c5c1e",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1112.so",
+      "sha256": "de23afe9eb89f1ea30c645b017a8fc0ecc36f2c8efc78b0475ea0e762de8ef2f",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1122.so",
+      "sha256": "f0fd4aabccd92aa639ca51d225b0904c264da33e3c359349b0e3f14f9e91e751",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1123.so",
+      "sha256": "281571029d7658768fbbc2748f298fe9207c90c929fc59071081e21e058af860",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1124.so",
+      "sha256": "efec948eeacaf2afd1f688e6e03c90092eb9638bd60144a5f11d1a4fba69425e",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1129.so",
+      "sha256": "a26544c58d39142249071682a86a61b8197ee791c81cd82f01d0df416959b2be",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1130.so",
+      "sha256": "2b80983c990fe69d68c5d40df9f3afeda2797753b56526228907a5cefab08b73",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1132.so",
+      "sha256": "6e29eac3fe45dabe143a06019e9e4fb6d1bb6ac1323812a4033dc570436b65b7",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1133.so",
+      "sha256": "a3fbd0729e3906c2845f687c0d7a3f5c1d0291fc6b25d35522b542a7f697329b",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1137.so",
+      "sha256": "b4f313329ea550b51af1a96682b0398a636536045e7b9714c64b22d90bbb9291",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1140.so",
+      "sha256": "e40d86fe111ace314b730c8b88e8ccc4cb0dedb51b181d9b33eba20f63fab0e7",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1141.so",
+      "sha256": "64f35b1344d035afd77f6056e08802b2114004c3abda5c72f7f883559cc8c5c9",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1142.so",
+      "sha256": "1313e511026780e09bd0b7ed103066e1a15a1ddb65046e9159157510f0336ca4",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1143.so",
+      "sha256": "23c349fe997a1e7c5bba05ad040211e1a0f1cdd1013e1996b5e808841e935510",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1144.so",
+      "sha256": "b445ae2ca5e24ae6a8d08048df1a309a8a8c53c7b08454dd60cb1aaa1e3b669d",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1145.so",
+      "sha256": "3922bcfc5cbad7c4399d14709442ddc7cc3216975ae85571a1e4e781c1a03322",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1146.so",
+      "sha256": "078768c8d79c038bd9c716ae0e2a3dc2efb6313fceb00791b680a53669f6d5fc",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1147.so",
+      "sha256": "cd8dc041479be6bd962a5149f2a821d2cf07030fda87f2859bd675646ea3b8c5",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1148.so",
+      "sha256": "43a238343aabed040c934d8372867645eb684a7fc9bc27c4b302296ab18540b7",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1149.so",
+      "sha256": "348b9e09294d9e5da12e15d6371405130e32418ad4c3e9396d29d80deacaba91",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1153.so",
+      "sha256": "7c804f5e55624efdb9893ce981a42d5cb8e10678de3aa86d7bc343f73637f21b",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1154.so",
+      "sha256": "cb684098a4ad515ad23709f5603063ed85759107744bb14d0ca0ba21cfde4f53",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1155.so",
+      "sha256": "85306e38159ac0884e2a3298be5726720527ee8d956102918ca0ea2aba1aa38c",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1156.so",
+      "sha256": "a2e5861238b76f919c34c1e29686688008b4890e9fd5e4617ea0bc2ae1f60733",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1157.so",
+      "sha256": "009d5fab8b906590387870044cc4c250b74c8373c0413d6030477a1c70d47a89",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1158.so",
+      "sha256": "ac7d6c4f30965ca2ea11fed9cd82fc1835ff15cc0c5f842f4f9d528d631a1be7",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1160.so",
+      "sha256": "d446bcdca81e4f5fc6113c1d32d641fbdcecdfa17504c616a57cfd13d41c021f",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1161.so",
+      "sha256": "50dbe243878c001d117763b6999c8ba269785615b45d1db7681f648eb3f24019",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1162.so",
+      "sha256": "26984c7d9218720ba16fa6ad60a50ce80a29f2fb30a1b9faa83c87a24f6273c0",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1163.so",
+      "sha256": "5e867ab3cecc7f8b05f07d0842ee3a83b8b3e128a7da67cea502c3cb03fbcd50",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1164.so",
+      "sha256": "53412bf0e64267e17f157877cfd8a0b31f5b0931aaf8f75128cee5c7c3b89b0e",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1166.so",
+      "sha256": "8756ba68d6bc059e0d1af6fc48eaf675c60667039d61a34843f2dbe27f084297",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1167.so",
+      "sha256": "ac6f47754748fb9c27efb367e495283b4cb891d7695583ebbe8143e74844435c",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM12712.so",
+      "sha256": "a22ac2f03364549de99d0d43c0ef8d70b08be2a9db2a079790a126fec7f3bb60",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1364.so",
+      "sha256": "d5b3c2edb25ce4cce9b1bbaf2e141cd56140d2db1c73f07867ec5db9caf6d9a2",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1371.so",
+      "sha256": "5962cd4c61023959bf04e518b46e7cbcce9a2cc296f81a4a9911f33b5fa3728b",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1388.so",
+      "sha256": "598ec195240a1ea787bfeff7646ede651cbe781defa079ad6105ff95998d37e2",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1390.so",
+      "sha256": "76cf40fac042dfd0e62c90b21bb257c29c61924ddb2bd55b94728daadaa7175a",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1399.so",
+      "sha256": "bda95c908e1689418f247976a56ac9ea28d325b3224d01b73093d18f798c03cb",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM16804.so",
+      "sha256": "fabcbf74779c6e72bc872c382203f98984a8f4332d7351de1db399f91822d17c",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM256.so",
+      "sha256": "de0fdc8cb5c38a493e3896d0120f795e8f093878c9b0045179354b027b4921a7",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM273.so",
+      "sha256": "08ec7e275387e92cc23d828bdaef36bbdea099d26b0cd0832985454f9ce25e24",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM274.so",
+      "sha256": "f0332aa693d046ac9391c1330e8be5cad004a12b6714dfa2eac8b9b9e433d6be",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM275.so",
+      "sha256": "1d66cd8351240fa1657dca6f2ae16aaedacf3b6796688895668bba1d13fa4f1c",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM277.so",
+      "sha256": "304e3fff40b07e2352dc35749deebff6a5368a44a6381e35a39cd948f45ae8e3",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM278.so",
+      "sha256": "a05917b1364d806e40d240773cabad5aca071521088c2013af9c8701afe7b411",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM280.so",
+      "sha256": "2292a409a872659b7a294f6d24828c4a83fbc3b40ad883cb77c6a981d9492802",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM281.so",
+      "sha256": "528212fa3d6f4b4d8f1d8fc17e60936e8a3fb956bb26ec43dbec6394f4a40ead",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM284.so",
+      "sha256": "d9786434ed4083ff8ea8ecb5e02b58965fd19da473ca966aaa34f9db5681a0be",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM285.so",
+      "sha256": "a2e6879ecf6966329d81467b50a77f45183a4b052bf17763258687690fcf2e34",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM290.so",
+      "sha256": "99cc6aab5c6b5f1e169535a093f638b9fd360ac5fdf389ff77e0dc80a4d72384",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM297.so",
+      "sha256": "0b1c8303569113c53aaf1f5a2c040a17df7bb9488f7adaa27c5b4ecb69e9ee9c",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM420.so",
+      "sha256": "93922eea0f2dbee1233a4cff63c3d23b1421b53eb8a4c5d1319157c7dde416a2",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM423.so",
+      "sha256": "c870570cdfaede1c2e44e7cb9c1389e04b71cebfe868d84f1724196b1c1ad6fd",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM424.so",
+      "sha256": "519b51f6364804ca453f31ece70bad1c2410d4d6e50cb4d89ab8e6c9d9e08fa9",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM437.so",
+      "sha256": "3343bbcb9462ef65e5d1e3a4da2e974ac739ec0c18586ad6ae682352156ac5ab",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM4517.so",
+      "sha256": "de2eca5a630a567f1bc3dbf0bb2b1ce03d9f6bebc44ae92c6a86f3738b21b728",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM4899.so",
+      "sha256": "3411903fce57797cb9d944f2f9e63d6da77f5bdbec899a5f1f71c1ae2262ed78",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM4909.so",
+      "sha256": "5cb0f4bef6ec5ec4ce23358e6004731061b43bda28924b986365079bac34289d",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM4971.so",
+      "sha256": "7a9aa9cefd3e39f1203b93a37a4144ce443a4b8a077a39cbb70b96fd9c67729a",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM500.so",
+      "sha256": "d89f5b685c66b8f306638afbd2a760a387cd7a72a074f2d95808c66e6a3a6a0b",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM5347.so",
+      "sha256": "ce2d483a991c0faaa578cd7f84c310e53c6563af75d04e821aeb52bafd6e8c77",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM803.so",
+      "sha256": "ecfc7e895aa27123621b0f6971993e13598ed74c5d4f99020458549132c9f786",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM850.so",
+      "sha256": "847e4a7c504d00956b81aa738e9026e467d6ba7494cade4ead482b0022770cb9",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM851.so",
+      "sha256": "a6837e2be4f78b0f98f55e2f1a53f6adbbd901de1c12f38bbeb94517bccc0b18",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM852.so",
+      "sha256": "8ad03f7db0bf348e05fd2524293353905759b776d05e430cac8682e52fbba39f",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM855.so",
+      "sha256": "eb881b9019b52c2c96f042c8630fd147b657bf148e6b0c59efbfe9fcad2f607e",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM856.so",
+      "sha256": "7cb7e04eac6a1f75fe6cae554bd1c217df4bfff50ee98f90e5b6eb8780f661f4",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM857.so",
+      "sha256": "2da94cb758f7eb7f019cba1cbd855fb214c12ca9042b057da698358a8f57216b",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM858.so",
+      "sha256": "ffb069611f750eaeccbbb431707a67824542200993c3029b67bc202662f72d4f",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM860.so",
+      "sha256": "75e84ac7fd761524620b6efc0d946bb155052f921037144dc91c3e6a6796b48a",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM861.so",
+      "sha256": "acac0d2e3c1bf995c43bdd1658bff6c9b30495d206212119328baa2927e7eb0a",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM862.so",
+      "sha256": "dece3765264306abf1a3542a61d60a6df0f18b4363c59632029247bfb36636f3",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM863.so",
+      "sha256": "7e9c9d2d2f9d89cb334c79d7771075989bbd263bd418b2fb3d308a9cb43c3e1d",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM864.so",
+      "sha256": "2bbeac689a4f1d166a387870ec6415141d0992c0dd647b539d3feb7565056e16",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM865.so",
+      "sha256": "1c2f349f9b1d23d755f55c701884205c4b92026d61a2a093ddd2a75d77f92128",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM866.so",
+      "sha256": "f3243ac65b585348f0aa258df21f31e926309fe28f13a322ae71dee0aad705e9",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM866NAV.so",
+      "sha256": "a5fdb3b5a37162755c5ef3a2078268eafc4a983aca86fe843a322bfb92295d70",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM868.so",
+      "sha256": "67e708068c3a541661f3889bd8b4e4668902e1c5d6bd6ad6d77627ba99ed3bd3",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM869.so",
+      "sha256": "ce5ab810dcd042534e2ebafd82b89bd95864dc41998055c4b6db354f4316543b",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM870.so",
+      "sha256": "f407c3062bbfc349b2842510c7acfcc6246f75bbb2483bd67afb757560a50933",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM871.so",
+      "sha256": "8ec80069db16b77ecf08085a39e07a40b3d1524f1a8dce0007d25ef95dea86a8",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM874.so",
+      "sha256": "dc246d962be4304d234627b70115c506c5696a6f6458dde1db6d936b84d391eb",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM875.so",
+      "sha256": "03085c054daf1fc90ef22914efbb3a424ef9f7542f00a79816498428a7bd4d86",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM880.so",
+      "sha256": "2e959269a013a2e4f99143a4c3021445b9521bd76b72fa959a14bd86ce2ab178",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM891.so",
+      "sha256": "5d5049e3ee1abd80432894983d5214cc96967b0d03154253b981b8fb5c0f185e",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM901.so",
+      "sha256": "a6c464bf3fd7d40e2506234fdd76e0175c3414d72008acc82bc2c0e5ef4478ca",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM902.so",
+      "sha256": "590613769fd4d602a09ed755e7214d567f7167577f1e986296f67aee5cd7bd67",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM903.so",
+      "sha256": "c824f2eba5376e670cf9741d1ec606086ce2c3b20313e253ebaae74980dfccb7",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM9030.so",
+      "sha256": "7211145835fd5c17f4da6181b5c3aa81f7424b213bbdf785f4ea2f03dda03676",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM904.so",
+      "sha256": "285031a097bb7ec9081cedcbfce5bb4c492df3c9a23541cf735f86829774ee73",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM905.so",
+      "sha256": "c44f6552a5cc5d0b7caa641d848b36d62ab145f81e2b6a43610125430af43cb0",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM9066.so",
+      "sha256": "b0bddf6cb6cb5bc36f41b0c1751e4d299acf5e52b3f4cb9b1cd5435b7ae0d21e",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM918.so",
+      "sha256": "d36525606915a9dc7aa79ecfb817528173f86bb1ae2f9f7f340c39412dd7d0f3",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM921.so",
+      "sha256": "b61b6581bcb31240ca4adf530c7979d5b3268d8d59df7cf4271d0d41ba2a1e4b",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM922.so",
+      "sha256": "1c12c8b56eab4dd9e9863820cb24d1edf5ddae85cfab6dc0fe7ab4a328b4c723",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM930.so",
+      "sha256": "cfd65585f4a327f2f59b1c63fb23927f0fa153520a7356a8f16d88027373ab97",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM932.so",
+      "sha256": "3846caaae49a8188c5f99ed1f73b39fdd86c84aff4e622f86e3adf8b6f593abd",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM933.so",
+      "sha256": "7244f38f6846090b3ab82406e841263e7786dd6d4397657b4e7b53d4d4861e8c",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM935.so",
+      "sha256": "0ce7b2232c892a74ab6893ddda24316c0cf6e0475fac32df2a78b8d87013fdb4",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM937.so",
+      "sha256": "1a38c1e927a3aa229bfba0e0316487ab64a3dcbe5cb515b2d6f4a3f24d49808b",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM939.so",
+      "sha256": "5babc20f35380da671b25ad051bc624e3f5dd5ebbed0669fcce2079cea91b834",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM943.so",
+      "sha256": "63540eed27ca42d7865e0f29faa466780ced2877d1376f8dbe9e35240b17f8a6",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM9448.so",
+      "sha256": "afc4a783371061ca0450135c0d500175a1156a17b32a36bf79ca5f2b20a641a8",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IEC_P27-1.so",
+      "sha256": "9b775932075ca71e553e55ad192f0cebc3d9a42574b7961bad4df6987f1d6d71",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/INIS-8.so",
+      "sha256": "132c6b93df6935c4544a06d75ea69441afc7394361cc0f76ea035ba3ead2c71f",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/INIS-CYRILLIC.so",
+      "sha256": "17ee24072a96aa3240a161e695738ebbf0a8b1953231ee387d19a00424808f81",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/INIS.so",
+      "sha256": "f88ec215f1b6d59a79b211ffa2c653aaa8c9fccfa9028a4eea145655b6c66bc5",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISIRI-3342.so",
+      "sha256": "699df95bf757114ccea307cffd78e45911d9060e8c1cc067be2b7255766c8f0a",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO-2022-CN-EXT.so",
+      "sha256": "c834b8d98062a4c6c58b707f5e07e9b4e8363afc8ec5fc46cb9be950c2b7db02",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO-2022-CN.so",
+      "sha256": "db09cb1b761255cfabb3b426ca64e25e9a44a012f19c9279f06488d83a66a8fd",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO-2022-JP-3.so",
+      "sha256": "f54ca7f7275d5094cc24282c10f8a377ffa10e7e884ffea7ba9508e22a3e91ba",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO-2022-JP.so",
+      "sha256": "abcdad66ebc9e3b56a53b275f041fc85868472b19828e84db1588d4aba74ac9f",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO-2022-KR.so",
+      "sha256": "23b0180ae50fdc356531f628ba4a33d04a600a4a3bc06099ad7e881211731829",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO-IR-197.so",
+      "sha256": "c2ae0b9415a66d3437b423d9f8716a9e79f53f7d74f4f94d93ae9c5dcfc577c0",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO-IR-209.so",
+      "sha256": "d8cdfcbff8d49875a259e2f06ef76943f6d865817c5b90854d3cb06d7783cabd",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO646.so",
+      "sha256": "ef3fcac7f49eff9a1d47992207e4b09bbab03337e1985aea40d527e4ee980230",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-10.so",
+      "sha256": "74fca00b42c44d9cfdd09b2972d6f41442db51c33d2c72b666c795221e673960",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-11.so",
+      "sha256": "4cad555b68d4e17b04294f0559ba675765a8f4f5a1e55b50f9a9af41bbd2011d",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-13.so",
+      "sha256": "6916426ac0570d76e7fa188ab6eecc0b23851ec67e00c0effc9603f5b0797f72",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-14.so",
+      "sha256": "64c501533f2cb156aa49be65989ed163d03a2f6eae35e991cd4bdbd680fdc033",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-16.so",
+      "sha256": "1fe630bbabd40109ab614f0f0ec0fda8f06961f8e428a0ea8f131aa3a20aaf48",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-2.so",
+      "sha256": "c676f666497d519967cb32ef9e7488c42221fac9283e197bb91f895abd036b06",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-3.so",
+      "sha256": "c22190f8a62324b42238a4c7f80a62538648e5f1e4fd991a697225967aa6c737",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-4.so",
+      "sha256": "4c1bad4e39e11435c57d1391df55ac29790dfd32e7fffe33ce0cfe4b313b9ec1",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-5.so",
+      "sha256": "6f1ba734c72f9e0dc45161719f694929662a7dd1ce9e4b5cceecd9d8131ae5cd",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-6.so",
+      "sha256": "f26eebf695f655c9046812b183efc94c840b0abc2f1ad221bde9dbaa361b6fe7",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-7.so",
+      "sha256": "a2574be006122e043e880465c755bb65ba4e66600f8e51196ec73c7031e80a5d",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-8.so",
+      "sha256": "ba01455186903735bb4aac9bdfa06dae4743729d2c17266faf0ee51d0a559c2e",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-9.so",
+      "sha256": "cf53bd0467c29413508f93d279236ee971c56af0a03d6e53b8c77d4076163830",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-9E.so",
+      "sha256": "ba0b7f08fd9e9ebc2e0bde215b3042f1576ed1cb0475a38774b21fbc3201df0c",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO_10367-BOX.so",
+      "sha256": "bf38ef94a321fca24ce65bcb49690e2a1e6f5d9e62af164386587e5cd3c69daa",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO_11548-1.so",
+      "sha256": "097dd050dcc1eec32a37bdba7943cdd7bf165e8a2ae375d95f46f430fbb1f4bd",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO_2033.so",
+      "sha256": "22302cabb00d20efaf963182a2f4fd5b7a2452a9b59bc03c766ebc546a69302d",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO_5427-EXT.so",
+      "sha256": "ca2e5e1c2f89c599357bc50568297c619f11b9ed29f9745c4064045adda133bf",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO_5427.so",
+      "sha256": "55abc61d276b54fea74e1fae2c909e24425c3a705df5a9c92c22d1539795d597",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO_5428.so",
+      "sha256": "8d60252589ff3dee28c7b9ec6918b4eb89687f9d75f6bb6e06f0b81d37a60e87",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO_6937-2.so",
+      "sha256": "d74c0ae4531b7ebd9bdfa5d69fc7f71d769006396c8432292348d3ec781456f1",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO_6937.so",
+      "sha256": "2c542e7453faf9eb4c9cd551d504d30f0f829cd5ab61b0e4f3f62fa410237bf6",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/JOHAB.so",
+      "sha256": "c9fae6d3d70f97c64af40ffb60d7fb8f73b7a40c36baf1bbacd2ec019b363f2a",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/KOI-8.so",
+      "sha256": "a5057393ff59de6bf4ca7b3afa4b3a87bfb0c83ad723d4acef52724b27ad1394",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/KOI8-R.so",
+      "sha256": "4e92bc4929b821c199450f57dc329d1984ca2a10eca592fb919c58470d37385a",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/KOI8-RU.so",
+      "sha256": "41b914e37656637b855dfd0c0fd20efbfeed5d24eb4e1acf8cd35ead2fc1886a",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/KOI8-T.so",
+      "sha256": "242cc213df1951a7a14b872a9c2f070d7719ace1599bfb8771149c46bd55f23e",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/KOI8-U.so",
+      "sha256": "87875c537374009dba10251f95881e9b3776ca874b8588d88563e96e1c9f563c",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/LATIN-GREEK-1.so",
+      "sha256": "5d61388f747e0e24f63b3d062ec760c73c85b0ec9f9bace5140e7b57c948ed8d",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/LATIN-GREEK.so",
+      "sha256": "8dcc40120306e60a5193e270bd0d1c88b84733feb55e4dfdf2a827991d10f6fd",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/MAC-CENTRALEUROPE.so",
+      "sha256": "66fbfef63d8b487ec3e3c90e639d1e6c9d99d4528847c713544e905f4e4ff913",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/MAC-IS.so",
+      "sha256": "fe41b6d70b646e33cca9130f4f4c55f92d92ef53dc562eb49c0372f210fe1a26",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/MAC-SAMI.so",
+      "sha256": "18eea6a6c67a2751b5f756766887ffe64566aa129b21f5a0f4072529d181b913",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/MAC-UK.so",
+      "sha256": "adc8ce7c0c408ca70836dfe4e967383e3fc3d90b3d6901220d36ffab01ce05fe",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/MACINTOSH.so",
+      "sha256": "92ab171fab1becf26266e02218067abd60892f5e16d99e36b32e0ac2f71765ce",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/MIK.so",
+      "sha256": "5d42b175e67e63d54b7dc58db8f460986bb59d067f748966203953778f12439a",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/NATS-DANO.so",
+      "sha256": "6b87839dc7008d064026434e987fa50c5c499fa44b1e38c9ba1b9b326f809013",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/NATS-SEFI.so",
+      "sha256": "e6e58ac0844cbf6b2485b9e3c75bbe806b2c63305f4ff0a9f7b684114a66dedb",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/PT154.so",
+      "sha256": "180ef9f810a693de05993b5338d206860ffc6de943a3aa4e9ef0cea0c961d0e2",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/RK1048.so",
+      "sha256": "62098d286c6414c9eee22e8fe736289b5ad160194afdf1f599566326f7ce20cf",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/SAMI-WS2.so",
+      "sha256": "624e175df7b98f097b2980d81f6f512e138d754821ddc00ec15f2a0343620c6c",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/SHIFT_JISX0213.so",
+      "sha256": "e5a5f9305896cc576fe1c377b315edae79234bc5fb70fa04b6179fb8e7abed78",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/SJIS.so",
+      "sha256": "19f8b57fc7515cd1e2b909b7d65caa0ecaa9866ea14def1363c8070985909822",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/T.61.so",
+      "sha256": "9693e31391282b946c2c89decc01d5e2de7ecc58dc843811ad75c2712a88860c",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/TCVN5712-1.so",
+      "sha256": "9d9d98d66721f4b4a8290a6fab008f22b3e7d0bd2c595e157473e7babdce60a4",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/TIS-620.so",
+      "sha256": "c554d611503ea9d47411f1104eb64baf8993df11f93b58d501f8d5c0743cb1d4",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/TSCII.so",
+      "sha256": "d200d683acde07039020afbacca8c2b6d41e2c7a872892cb49b9005cc497e642",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/UHC.so",
+      "sha256": "f18450c97789f41a643b2b175a139446c616c1174ef650167133e7d6d56a27b0",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/VISCII.so",
+      "sha256": "ae054574fc3b387db099dbfb2632bbe46906bbda711f9644d0695cf9f6974aef",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/gconv-modules.d/gconv-modules-extra.conf",
+      "sha256": "22562b116ef77872fed7b72f10d35de855b53d0b315180e20162e81cd05f1f4c",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/libCNS.so",
+      "sha256": "ac00b770b39fb6044773061860aa65dbedd33d5f7a03365e95c34a670f72b610",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/libGB.so",
+      "sha256": "d2c65e260779ff4075f4ea00f6fda0d22db23819376755518dcbf390e18a2f5b",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/libISOIR165.so",
+      "sha256": "39821b7e12c3149cdd5d7c1e8536351aba1c022204dbd7cdce0df151b5e62289",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/libJIS.so",
+      "sha256": "5ca52522542a42343ab139db4a87f7a7b42ceab5a50a67ed88fefcd24897e120",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/libJISX0213.so",
+      "sha256": "3731b04f52eec1f5e9935709e62ec5a22225f0bb3d9be996b284b1f90cfe841d",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/libKSC.so",
+      "sha256": "f6d90dea76abf2b7e03034e12ac3b1128e3e986e754b5d6ed8e07be7a128a74f",
+      "mode": 420
+    },
+    {
+      "path": "/usr/share/doc/libc-gconv-modules-extra/changelog.Debian.gz",
+      "sha256": "5388998fa0118d97f748e4356e97af98b7af35fcc5548e9c9e2177650c5b5522",
+      "mode": 420
+    },
+    {
+      "path": "/usr/share/doc/libc-gconv-modules-extra/changelog.gz",
+      "sha256": "b66db2deaee0257c5a456c17ee3058e014b51d596466b8454da17936a38d7e88",
+      "mode": 420
+    },
+    {
+      "path": "/usr/share/doc/libc-gconv-modules-extra/copyright",
+      "sha256": "5127174f575f9a82d6cd25a203f9fe1b3574fa157fb4f93e83880552ea54e4a4",
+      "mode": 420
+    },
+    {
+      "path": "/usr/share/lintian/overrides/libc-gconv-modules-extra",
+      "sha256": "e9cdf54d069638063919c3f657ca3f85b2bb8744dfbd1e5f653048021847767c",
+      "mode": 420
+    },
+    {
+      "path": "/etc/ld.so.conf.d/x86_64-linux-gnu.conf",
+      "sha256": "a1e651b43981e758869c3efef5822b60df6afc198a4c14b2552e3fb436819bfa",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ANSI_X3.110.so",
+      "sha256": "70dd90365d612419da6545ad974ab90570aeae838ca6db4e1bfcbf65aa56598a",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP1252.so",
+      "sha256": "0c7e2793a7060ed617e689d132f7d3c13b1e6c056f7df28002a5429980c8db1d",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-1.so",
+      "sha256": "d99bb8443965312e0669e9aea6505dc33a1054f4aa4b1a4850c552551d418c71",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-15.so",
+      "sha256": "2774536feea9edf4bdcc51ebcd3ef0542895c5e5365950d1423dc9c103b8a228",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/UNICODE.so",
+      "sha256": "bbc9efb2a9dff2b44fbdc9aacbe261827542d202f39b1276a4a844f6aca36bcc",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/UTF-16.so",
+      "sha256": "8b1a13ccc7e8836ad25dc343d451842607c0191d878442bd79690841baeffae1",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/UTF-32.so",
+      "sha256": "00639edf0721633259612b15e54c786716a0921563804daa76a8aeacae4e646e",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/UTF-7.so",
+      "sha256": "b0fdd8b19d4509d9d931f97da06ec9b15e8b13fd7019b3a6fb2203fc80fcb66f",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/gconv-modules",
+      "sha256": "c5b3ea3d8138394c288f05074ebb4b09ca14c34583ac40349599c3bfa6f9afab",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache",
+      "sha256": "52c227df9d53248238602c1ddaccd2c8ddc4cc6a61aa45d7c425af590b8806a5",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+      "sha256": "ecf6714e474183ea3ab6789ff1dfbe7edccc03bdb1f5eeb188bc1d6f74aec6c7",
+      "mode": 493
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libBrokenLocale.so.1",
+      "sha256": "dd538de22940ef27c4f2fd8ae7f5e4ef218d0cedec2045d57091ac6a83a9d244",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libanl.so.1",
+      "sha256": "137bb13b4c29f3a544b5481d9507e47037876b9899d6ece7624f75478f572a6d",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "sha256": "47178713f5bda59f2ea8240a56971de4dc0b3a6cb71e996e2782d9a59746bfef",
+      "mode": 493
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libc_malloc_debug.so.0",
+      "sha256": "2eb91fbaf99980e51e6018bd0705bd9a7e22c1faa096e63b00de6bf26b0148a5",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libdl.so.2",
+      "sha256": "32c2c2b7723a23cfe1837017925425e1148a5de0fbbb29cfe84a9f24502a41f4",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+      "sha256": "d765d99423b9aba7fc34b7af48d91aeecc70bdc0ae6233a9a7ba60d4c6d3c13d",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libmemusage.so",
+      "sha256": "8b60ca3e0878c482e88efea3caaa4d5ee18aeaf688a0a95ac81bde12b384f781",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libmvec.so.1",
+      "sha256": "ac0d088e50296bb14d432cd88897d658b0a1bed4af6195e15e199db1376441dc",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libnsl.so.1",
+      "sha256": "211dd1a4f2ca55810eef8be1764b2f475e0ff610b0eb3ca5fc29b04d9508ad88",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libnss_compat.so.2",
+      "sha256": "360a36e14ca3cf390fc296194d9569f173a282c586f22f705ac914ac146d26ad",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libnss_dns.so.2",
+      "sha256": "48d0844adc9e3f9ff21d6772f06b310fd110ca991e87632908bf87f7389c7242",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libnss_files.so.2",
+      "sha256": "55968ccc6da8f3e6874dae4840c12ed70bd63751483ab0f926959aae2e7fcf59",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libnss_hesiod.so.2",
+      "sha256": "93edacdd92bf0d69834be108fd5e1da4d57079a934e6209ce55fdbbb32e4cd66",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libpcprofile.so",
+      "sha256": "8967331a0a233223d65457cd8375f4dfd2e2f95fef2055128b1833916165b671",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+      "sha256": "8b36a37e74791184ed90f1eb968fad1910c96793d5b3e7e8219ee3ee382ee336",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libresolv.so.2",
+      "sha256": "f9f4b71e4abc8987d2683898aabfbf48a67ba391910f9765d171172ded09e998",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/librt.so.1",
+      "sha256": "b0ece07429f6c08b987df4f3d19d060e6e05061798951d92e47208702a73caf6",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libthread_db.so.1",
+      "sha256": "bdbfb0b23fbcc843c13b90ee43f40014ec38711b7d5adae76bf4e728e8a54311",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libutil.so.1",
+      "sha256": "60efa91f6d9e230688422cd3d3960b14feda84cd8601b53a460c1a4e8d22cbb4",
+      "mode": 420
+    },
+    {
+      "path": "/usr/share/doc/libc6/NEWS.Debian.gz",
+      "sha256": "4a5bffe47fb24164404601852d1aea6e71fa765aff7779507e672fa291ad2c36",
+      "mode": 420
+    },
+    {
+      "path": "/usr/share/doc/libc6/NEWS.gz",
+      "sha256": "47cab94c7ec98909d1ab8148ace30fa9ffba5c77bca1359e31771ad4d19503f3",
+      "mode": 420
+    },
+    {
+      "path": "/usr/share/doc/libc6/README.Debian.gz",
+      "sha256": "103388d45c31c59534c3c71378dd532a69d90b6fa0618cf41cdc123613d463ac",
+      "mode": 420
+    },
+    {
+      "path": "/usr/share/doc/libc6/README.hesiod.gz",
+      "sha256": "13e364163184406285935cea0fd0555aba252dc92e85ef72988c4c7e7617a0cb",
+      "mode": 420
+    },
+    {
+      "path": "/usr/share/doc/libc6/changelog.Debian.gz",
+      "sha256": "5671b0fcbab32f370d8d863b2ccb05afe86233e124e956f8ac8254ab90850e94",
+      "mode": 420
+    },
+    {
+      "path": "/usr/share/doc/libc6/changelog.gz",
+      "sha256": "b66db2deaee0257c5a456c17ee3058e014b51d596466b8454da17936a38d7e88",
+      "mode": 420
+    },
+    {
+      "path": "/usr/share/doc/libc6/copyright",
+      "sha256": "5127174f575f9a82d6cd25a203f9fe1b3574fa157fb4f93e83880552ea54e4a4",
+      "mode": 420
+    },
+    {
+      "path": "/usr/share/lintian/overrides/libc6",
+      "sha256": "0897b1b340b6588f122f63908fb930a292c0b533de1ccaa588ae4b9aa0927b2b",
+      "mode": 420
+    },
+    {
+      "path": "/usr/lib64/ld-linux-x86-64.so.2",
+      "target": "../lib/x86_64-linux-gnu/ld-linux-x86-64.so.2"
+    }
+  ],
+  "sqlite": {
+    "version": "3.54.1",
+    "library": "/usr/lib/x86_64-linux-gnu/libsqlite3.so.3.54.1",
+    "sha256": "225ceb839db2c1dd484cfcaa5ef9fbdd429eb1d5f1e0c39fbd50150bca5fc7bc"
+  },
+  "runtime_config": {
+    "User": "10001:10001",
+    "ExposedPorts": {
+      "8000/tcp": {}
+    },
+    "Env": [
+      "PATH=/opt/venv/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "PYTHONUNBUFFERED=1",
+      "UV_PROJECT_ENVIRONMENT=/opt/venv",
+      "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt",
+      "LD_LIBRARY_PATH=/usr/local/lib",
+      "DATA_DIR=/data"
+    ],
+    "Cmd": [
+      "uvicorn",
+      "backend.api.app:create_app",
+      "--factory",
+      "--host",
+      "0.0.0.0",
+      "--port",
+      "8000",
+      "--workers",
+      "1",
+      "--no-access-log"
+    ],
+    "WorkingDir": "/app",
+    "ArgsEscaped": true,
+    "Healthcheck": {
+      "Test": [
+        "CMD",
+        "python",
+        "-c",
+        "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=3)"
+      ],
+      "Interval": 15000000000,
+      "Timeout": 5000000000,
+      "StartPeriod": 20000000000,
+      "Retries": 5
+    }
+  },
+  "findings": [
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-102010",
+        "package": "gcc-14-base",
+        "version": "14.2.0-19",
+        "package_id": "gcc-14-base@14.2.0-19",
+        "purl": "pkg:deb/debian/gcc-14-base@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-114690",
+        "package": "gcc-14-base",
+        "version": "14.2.0-19",
+        "package_id": "gcc-14-base@14.2.0-19",
+        "purl": "pkg:deb/debian/gcc-14-base@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-114691",
+        "package": "gcc-14-base",
+        "version": "14.2.0-19",
+        "package_id": "gcc-14-base@14.2.0-19",
+        "purl": "pkg:deb/debian/gcc-14-base@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-115455",
+        "package": "gcc-14-base",
+        "version": "14.2.0-19",
+        "package_id": "gcc-14-base@14.2.0-19",
+        "purl": "pkg:deb/debian/gcc-14-base@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-95619",
+        "package": "gcc-14-base",
+        "version": "14.2.0-19",
+        "package_id": "gcc-14-base@14.2.0-19",
+        "purl": "pkg:deb/debian/gcc-14-base@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-115456",
+        "package": "gcc-14-base",
+        "version": "14.2.0-19",
+        "package_id": "gcc-14-base@14.2.0-19",
+        "purl": "pkg:deb/debian/gcc-14-base@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-42250",
+        "package": "libbz2-1.0",
+        "version": "1.0.8-6",
+        "package_id": "libbz2-1.0@1.0.8-6",
+        "purl": "pkg:deb/debian/libbz2-1.0@1.0.8-6?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_EXECUTABLE_COMPONENT_ABSENT"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-18374",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-19499",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-19542",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-5435",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-6238",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-6368",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-6791",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-77117",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-80489",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-84243",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_MISSING_REQUIRED_LOCALE"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-8674",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-86805",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-89092",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-95818",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2010-4756",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2018-20796",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2019-1010022",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2019-1010023",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2019-1010024",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2019-1010025",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2019-9192",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-97399",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-18374",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-19499",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-19542",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-5435",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-6238",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-6368",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-6791",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-77117",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-80489",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-84243",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_MISSING_REQUIRED_LOCALE"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-8674",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-86805",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-89092",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-95818",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2010-4756",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2018-20796",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2019-1010022",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2019-1010023",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2019-1010024",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2019-1010025",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2019-9192",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-97399",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-102010",
+        "package": "libgcc-s1",
+        "version": "14.2.0-19",
+        "package_id": "libgcc-s1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgcc-s1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-114690",
+        "package": "libgcc-s1",
+        "version": "14.2.0-19",
+        "package_id": "libgcc-s1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgcc-s1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-114691",
+        "package": "libgcc-s1",
+        "version": "14.2.0-19",
+        "package_id": "libgcc-s1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgcc-s1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-115455",
+        "package": "libgcc-s1",
+        "version": "14.2.0-19",
+        "package_id": "libgcc-s1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgcc-s1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-95619",
+        "package": "libgcc-s1",
+        "version": "14.2.0-19",
+        "package_id": "libgcc-s1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgcc-s1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-115456",
+        "package": "libgcc-s1",
+        "version": "14.2.0-19",
+        "package_id": "libgcc-s1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgcc-s1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-102010",
+        "package": "libgomp1",
+        "version": "14.2.0-19",
+        "package_id": "libgomp1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgomp1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-114690",
+        "package": "libgomp1",
+        "version": "14.2.0-19",
+        "package_id": "libgomp1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgomp1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-114691",
+        "package": "libgomp1",
+        "version": "14.2.0-19",
+        "package_id": "libgomp1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgomp1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-115455",
+        "package": "libgomp1",
+        "version": "14.2.0-19",
+        "package_id": "libgomp1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgomp1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-95619",
+        "package": "libgomp1",
+        "version": "14.2.0-19",
+        "package_id": "libgomp1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgomp1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-115456",
+        "package": "libgomp1",
+        "version": "14.2.0-19",
+        "package_id": "libgomp1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgomp1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-119373",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "HIGH",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-119374",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "HIGH",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-119379",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "HIGH",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-119371",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-119372",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-119375",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-119376",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-119378",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-119591",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-50812",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-50813",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2021-45346",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_DISPUTED_DATABASE_TRUST_CONTRACT"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2025-70873",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_ZIPFILE_COMPONENT_NOT_BUILT"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-119377",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-102010",
+        "package": "libstdc++6",
+        "version": "14.2.0-19",
+        "package_id": "libstdc++6@14.2.0-19",
+        "purl": "pkg:deb/debian/libstdc%2B%2B6@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_HEADER_COMPONENT_NOT_IN_RUNTIME_BINARY"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-114690",
+        "package": "libstdc++6",
+        "version": "14.2.0-19",
+        "package_id": "libstdc++6@14.2.0-19",
+        "purl": "pkg:deb/debian/libstdc%2B%2B6@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_HEADER_COMPONENT_NOT_IN_RUNTIME_BINARY"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-114691",
+        "package": "libstdc++6",
+        "version": "14.2.0-19",
+        "package_id": "libstdc++6@14.2.0-19",
+        "purl": "pkg:deb/debian/libstdc%2B%2B6@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_HEADER_COMPONENT_NOT_IN_RUNTIME_BINARY"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-115455",
+        "package": "libstdc++6",
+        "version": "14.2.0-19",
+        "package_id": "libstdc++6@14.2.0-19",
+        "purl": "pkg:deb/debian/libstdc%2B%2B6@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_HEADER_COMPONENT_NOT_IN_RUNTIME_BINARY"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-95619",
+        "package": "libstdc++6",
+        "version": "14.2.0-19",
+        "package_id": "libstdc++6@14.2.0-19",
+        "purl": "pkg:deb/debian/libstdc%2B%2B6@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_COMPILED_POSIX_MEMALIGN_ROUTE"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-115456",
+        "package": "libstdc++6",
+        "version": "14.2.0-19",
+        "package_id": "libstdc++6@14.2.0-19",
+        "purl": "pkg:deb/debian/libstdc%2B%2B6@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_FUNCTION_NOT_IN_CURRENT_APPLICATION_PATH"
+    }
+  ],
+  "review_scope": "Exact runtime-native and Python source closures plus actual configuration; final artifact gets its own actual image/config/diffID binding. No baseline image ID is a grant to future images.",
+  "baseline_evidence_only": {
+    "image_id": "sha256:ff622a8482e449518eff830f324aae2e6f10b1b3f4889a0c788de6b94805fecb",
+    "raw_sha256": "bcaf3f8a99284a4e05c646f62cef98a867d13c4a71376a6d13ec0432819eb0fe"
+  },
+  "packages": [
+    {
+      "class": "os-pkgs",
+      "type": "debian",
+      "name": "base-files",
+      "version": "13.8+deb13u7",
+      "purl": "pkg:deb/debian/base-files@13.8%2Bdeb13u7?arch=amd64&distro=debian-13.7",
+      "architecture": "amd64",
+      "source": "base-files",
+      "source_version": "13.8+deb13u7",
+      "file_path": null
+    },
+    {
+      "class": "os-pkgs",
+      "type": "debian",
+      "name": "ca-certificates",
+      "version": "20250419+deb13u1",
+      "purl": "pkg:deb/debian/ca-certificates@20250419%2Bdeb13u1?arch=all&distro=debian-13.7",
+      "architecture": "all",
+      "source": "ca-certificates",
+      "source_version": "20250419+deb13u1",
+      "file_path": null
+    },
+    {
+      "class": "os-pkgs",
+      "type": "debian",
+      "name": "gcc-14-base",
+      "version": "14.2.0",
+      "purl": "pkg:deb/debian/gcc-14-base@14.2.0-19?arch=amd64&distro=debian-13.7",
+      "architecture": "amd64",
+      "source": "gcc-14",
+      "source_version": "14.2.0",
+      "file_path": null
+    },
+    {
+      "class": "os-pkgs",
+      "type": "debian",
+      "name": "libbz2-1.0",
+      "version": "1.0.8",
+      "purl": "pkg:deb/debian/libbz2-1.0@1.0.8-6?arch=amd64&distro=debian-13.7",
+      "architecture": "amd64",
+      "source": "bzip2",
+      "source_version": "1.0.8",
+      "file_path": null
+    },
+    {
+      "class": "os-pkgs",
+      "type": "debian",
+      "name": "libc-gconv-modules-extra",
+      "version": "2.43",
+      "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+      "architecture": "amd64",
+      "source": "glibc",
+      "source_version": "2.43",
+      "file_path": null
+    },
+    {
+      "class": "os-pkgs",
+      "type": "debian",
+      "name": "libc6",
+      "version": "2.43",
+      "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+      "architecture": "amd64",
+      "source": "glibc",
+      "source_version": "2.43",
+      "file_path": null
+    },
+    {
+      "class": "os-pkgs",
+      "type": "debian",
+      "name": "libcrypt1",
+      "version": "4.4.38",
+      "purl": "pkg:deb/debian/libcrypt1@4.4.38-1?arch=amd64&distro=debian-13.7&epoch=1",
+      "architecture": "amd64",
+      "source": "libxcrypt",
+      "source_version": "4.4.38",
+      "file_path": null
+    },
+    {
+      "class": "os-pkgs",
+      "type": "debian",
+      "name": "libdb5.3t64",
+      "version": "5.3.28+dfsg2",
+      "purl": "pkg:deb/debian/libdb5.3t64@5.3.28%2Bdfsg2-9?arch=amd64&distro=debian-13.7",
+      "architecture": "amd64",
+      "source": "db5.3",
+      "source_version": "5.3.28+dfsg2",
+      "file_path": null
+    },
+    {
+      "class": "os-pkgs",
+      "type": "debian",
+      "name": "libffi8",
+      "version": "3.4.8",
+      "purl": "pkg:deb/debian/libffi8@3.4.8-2?arch=amd64&distro=debian-13.7",
+      "architecture": "amd64",
+      "source": "libffi",
+      "source_version": "3.4.8",
+      "file_path": null
+    },
+    {
+      "class": "os-pkgs",
+      "type": "debian",
+      "name": "libgcc-s1",
+      "version": "14.2.0",
+      "purl": "pkg:deb/debian/libgcc-s1@14.2.0-19?arch=amd64&distro=debian-13.7",
+      "architecture": "amd64",
+      "source": "gcc-14",
+      "source_version": "14.2.0",
+      "file_path": null
+    },
+    {
+      "class": "os-pkgs",
+      "type": "debian",
+      "name": "libgdbm6t64",
+      "version": "1.24",
+      "purl": "pkg:deb/debian/libgdbm6t64@1.24-2?arch=amd64&distro=debian-13.7",
+      "architecture": "amd64",
+      "source": "gdbm",
+      "source_version": "1.24",
+      "file_path": null
+    },
+    {
+      "class": "os-pkgs",
+      "type": "debian",
+      "name": "libgomp1",
+      "version": "14.2.0",
+      "purl": "pkg:deb/debian/libgomp1@14.2.0-19?arch=amd64&distro=debian-13.7",
+      "architecture": "amd64",
+      "source": "gcc-14",
+      "source_version": "14.2.0",
+      "file_path": null
+    },
+    {
+      "class": "os-pkgs",
+      "type": "debian",
+      "name": "liblzma5",
+      "version": "5.8.1",
+      "purl": "pkg:deb/debian/liblzma5@5.8.1-1%2Bdeb13u2?arch=amd64&distro=debian-13.7",
+      "architecture": "amd64",
+      "source": "xz-utils",
+      "source_version": "5.8.1",
+      "file_path": null
+    },
+    {
+      "class": "os-pkgs",
+      "type": "debian",
+      "name": "libsqlite3-0",
+      "version": "3.54.1",
+      "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+      "architecture": "amd64",
+      "source": "sqlite3",
+      "source_version": "3.54.1",
+      "file_path": null
+    },
+    {
+      "class": "os-pkgs",
+      "type": "debian",
+      "name": "libssl3t64",
+      "version": "3.5.7",
+      "purl": "pkg:deb/debian/libssl3t64@3.5.7-1~deb13u3?arch=amd64&distro=debian-13.7",
+      "architecture": "amd64",
+      "source": "openssl",
+      "source_version": "3.5.7",
+      "file_path": null
+    },
+    {
+      "class": "os-pkgs",
+      "type": "debian",
+      "name": "libstdc++6",
+      "version": "14.2.0",
+      "purl": "pkg:deb/debian/libstdc%2B%2B6@14.2.0-19?arch=amd64&distro=debian-13.7",
+      "architecture": "amd64",
+      "source": "gcc-14",
+      "source_version": "14.2.0",
+      "file_path": null
+    },
+    {
+      "class": "os-pkgs",
+      "type": "debian",
+      "name": "libzstd1",
+      "version": "1.5.7+dfsg",
+      "purl": "pkg:deb/debian/libzstd1@1.5.7%2Bdfsg-1?arch=amd64&distro=debian-13.7",
+      "architecture": "amd64",
+      "source": "libzstd",
+      "source_version": "1.5.7+dfsg",
+      "file_path": null
+    },
+    {
+      "class": "os-pkgs",
+      "type": "debian",
+      "name": "media-types",
+      "version": "13.0.0",
+      "purl": "pkg:deb/debian/media-types@13.0.0?arch=all&distro=debian-13.7",
+      "architecture": "all",
+      "source": "media-types",
+      "source_version": "13.0.0",
+      "file_path": null
+    },
+    {
+      "class": "os-pkgs",
+      "type": "debian",
+      "name": "netbase",
+      "version": "6.5",
+      "purl": "pkg:deb/debian/netbase@6.5?arch=all&distro=debian-13.7",
+      "architecture": "all",
+      "source": "netbase",
+      "source_version": "6.5",
+      "file_path": null
+    },
+    {
+      "class": "os-pkgs",
+      "type": "debian",
+      "name": "tzdata",
+      "version": "2026c",
+      "purl": "pkg:deb/debian/tzdata@2026c-0%2Bdeb13u1?arch=all&distro=debian-13.7",
+      "architecture": "all",
+      "source": "tzdata",
+      "source_version": "2026c",
+      "file_path": null
+    },
+    {
+      "class": "os-pkgs",
+      "type": "debian",
+      "name": "tzdata-legacy",
+      "version": "2026c",
+      "purl": "pkg:deb/debian/tzdata-legacy@2026c-0%2Bdeb13u1?arch=all&distro=debian-13.7",
+      "architecture": "all",
+      "source": "tzdata",
+      "source_version": "2026c",
+      "file_path": null
+    },
+    {
+      "class": "os-pkgs",
+      "type": "debian",
+      "name": "zlib1g",
+      "version": "1.3.dfsg+really1.3.2",
+      "purl": "pkg:deb/debian/zlib1g@1.3.dfsg%2Breally1.3.2-4?arch=amd64&distro=debian-13.7&epoch=1",
+      "architecture": "amd64",
+      "source": "zlib",
+      "source_version": "1.3.dfsg+really1.3.2",
+      "file_path": null
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "Mako",
+      "version": "1.4.3",
+      "purl": "pkg:pypi/mako@1.4.3",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/mako-1.4.3.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "MarkupSafe",
+      "version": "3.0.3",
+      "purl": "pkg:pypi/markupsafe@3.0.3",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/markupsafe-3.0.3.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "PyJWT",
+      "version": "2.15.1",
+      "purl": "pkg:pypi/pyjwt@2.15.1",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/pyjwt-2.15.1.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "PyYAML",
+      "version": "6.0.3",
+      "purl": "pkg:pypi/pyyaml@6.0.3",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/pyyaml-6.0.3.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "SQLAlchemy",
+      "version": "2.0.52",
+      "purl": "pkg:pypi/sqlalchemy@2.0.52",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/sqlalchemy-2.0.52.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "aiosqlite",
+      "version": "0.22.1",
+      "purl": "pkg:pypi/aiosqlite@0.22.1",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/aiosqlite-0.22.1.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "alembic",
+      "version": "1.19.2",
+      "purl": "pkg:pypi/alembic@1.19.2",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/alembic-1.19.2.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "annotated-doc",
+      "version": "0.0.5",
+      "purl": "pkg:pypi/annotated-doc@0.0.5",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/annotated_doc-0.0.5.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "annotated-types",
+      "version": "0.8.0",
+      "purl": "pkg:pypi/annotated-types@0.8.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/annotated_types-0.8.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "anyio",
+      "version": "4.15.0",
+      "purl": "pkg:pypi/anyio@4.15.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/anyio-4.15.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "arq",
+      "version": "0.28.0",
+      "purl": "pkg:pypi/arq@0.28.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/arq-0.28.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "asgiref",
+      "version": "3.12.1",
+      "purl": "pkg:pypi/asgiref@3.12.1",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/asgiref-3.12.1.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "asyncpg",
+      "version": "0.31.0",
+      "purl": "pkg:pypi/asyncpg@0.31.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/asyncpg-0.31.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "beautifulsoup4",
+      "version": "4.15.0",
+      "purl": "pkg:pypi/beautifulsoup4@4.15.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/beautifulsoup4-4.15.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "boto3",
+      "version": "1.43.89",
+      "purl": "pkg:pypi/boto3@1.43.89",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/boto3-1.43.89.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "botocore",
+      "version": "1.43.89",
+      "purl": "pkg:pypi/botocore@1.43.89",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/botocore-1.43.89.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "cachetools",
+      "version": "7.1.8",
+      "purl": "pkg:pypi/cachetools@7.1.8",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/cachetools-7.1.8.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "certifi",
+      "version": "2026.10.23",
+      "purl": "pkg:pypi/certifi@2026.10.23",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/certifi-2026.10.23.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "cffi",
+      "version": "2.1.1",
+      "purl": "pkg:pypi/cffi@2.1.1",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/cffi-2.1.1.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "charset-normalizer",
+      "version": "3.5.1",
+      "purl": "pkg:pypi/charset-normalizer@3.5.1",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/charset_normalizer-3.5.1.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "click",
+      "version": "8.5.0",
+      "purl": "pkg:pypi/click@8.5.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/click-8.5.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "cryptography",
+      "version": "50.0.1",
+      "purl": "pkg:pypi/cryptography@50.0.1",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/cryptography-50.0.1.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "distro",
+      "version": "1.9.0",
+      "purl": "pkg:pypi/distro@1.9.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/distro-1.9.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "fastapi",
+      "version": "0.141.1",
+      "purl": "pkg:pypi/fastapi@0.141.1",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/fastapi-0.141.1.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "googleapis-common-protos",
+      "version": "1.75.3",
+      "purl": "pkg:pypi/googleapis-common-protos@1.75.3",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/googleapis_common_protos-1.75.3.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "greenlet",
+      "version": "3.5.5",
+      "purl": "pkg:pypi/greenlet@3.5.5",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/greenlet-3.5.5.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "grpcio",
+      "version": "1.83.1",
+      "purl": "pkg:pypi/grpcio@1.83.1",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/grpcio-1.83.1.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "h11",
+      "version": "0.16.0",
+      "purl": "pkg:pypi/h11@0.16.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/h11-0.16.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "hiredis",
+      "version": "3.4.1",
+      "purl": "pkg:pypi/hiredis@3.4.1",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/hiredis-3.4.1.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "httpcore",
+      "version": "1.0.9",
+      "purl": "pkg:pypi/httpcore@1.0.9",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/httpcore-1.0.9.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "httpcore2",
+      "version": "2.12.0",
+      "purl": "pkg:pypi/httpcore2@2.12.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/httpcore2-2.12.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "httpx",
+      "version": "0.28.1",
+      "purl": "pkg:pypi/httpx@0.28.1",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/httpx-0.28.1.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "httpx2",
+      "version": "2.12.0",
+      "purl": "pkg:pypi/httpx2@2.12.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/httpx2-2.12.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "idna",
+      "version": "3.19",
+      "purl": "pkg:pypi/idna@3.19",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/idna-3.19.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "jmespath",
+      "version": "1.1.0",
+      "purl": "pkg:pypi/jmespath@1.1.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/jmespath-1.1.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "jsonpatch",
+      "version": "1.33",
+      "purl": "pkg:pypi/jsonpatch@1.33",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/jsonpatch-1.33.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "jsonpointer",
+      "version": "3.1.1",
+      "purl": "pkg:pypi/jsonpointer@3.1.1",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/jsonpointer-3.1.1.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "langchain-core",
+      "version": "1.6.2",
+      "purl": "pkg:pypi/langchain-core@1.6.2",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/langchain_core-1.6.2.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "langchain-protocol",
+      "version": "0.0.19",
+      "purl": "pkg:pypi/langchain-protocol@0.0.19",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/langchain_protocol-0.0.19.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "langgraph",
+      "version": "1.2.18",
+      "purl": "pkg:pypi/langgraph@1.2.18",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/langgraph-1.2.18.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "langgraph-checkpoint",
+      "version": "4.3.1",
+      "purl": "pkg:pypi/langgraph-checkpoint@4.3.1",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/langgraph_checkpoint-4.3.1.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "langgraph-checkpoint-postgres",
+      "version": "3.2.0",
+      "purl": "pkg:pypi/langgraph-checkpoint-postgres@3.2.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/langgraph_checkpoint_postgres-3.2.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "langgraph-checkpoint-sqlite",
+      "version": "3.1.2",
+      "purl": "pkg:pypi/langgraph-checkpoint-sqlite@3.1.2",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/langgraph_checkpoint_sqlite-3.1.2.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "langgraph-prebuilt",
+      "version": "1.1.0",
+      "purl": "pkg:pypi/langgraph-prebuilt@1.1.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/langgraph_prebuilt-1.1.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "langgraph-sdk",
+      "version": "0.4.10",
+      "purl": "pkg:pypi/langgraph-sdk@0.4.10",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/langgraph_sdk-0.4.10.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "langsmith",
+      "version": "0.12.1",
+      "purl": "pkg:pypi/langsmith@0.12.1",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/langsmith-0.12.1.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "lxml",
+      "version": "6.1.3",
+      "purl": "pkg:pypi/lxml@6.1.3",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/lxml-6.1.3.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "numpy",
+      "version": "2.4.6",
+      "purl": "pkg:pypi/numpy@2.4.6",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/numpy-2.4.6.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "opentelemetry-api",
+      "version": "1.45.2",
+      "purl": "pkg:pypi/opentelemetry-api@1.45.2",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/opentelemetry_api-1.45.2.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "opentelemetry-exporter-otlp-common",
+      "version": "0.66b2",
+      "purl": "pkg:pypi/opentelemetry-exporter-otlp-common@0.66b2",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/opentelemetry_exporter_otlp_common-0.66b2.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "opentelemetry-exporter-otlp-proto-common",
+      "version": "1.45.2",
+      "purl": "pkg:pypi/opentelemetry-exporter-otlp-proto-common@1.45.2",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/opentelemetry_exporter_otlp_proto_common-1.45.2.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "opentelemetry-exporter-otlp-proto-grpc",
+      "version": "1.45.2",
+      "purl": "pkg:pypi/opentelemetry-exporter-otlp-proto-grpc@1.45.2",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/opentelemetry_exporter_otlp_proto_grpc-1.45.2.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "opentelemetry-instrumentation",
+      "version": "0.66b2",
+      "purl": "pkg:pypi/opentelemetry-instrumentation@0.66b2",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/opentelemetry_instrumentation-0.66b2.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "opentelemetry-instrumentation-asgi",
+      "version": "0.66b2",
+      "purl": "pkg:pypi/opentelemetry-instrumentation-asgi@0.66b2",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/opentelemetry_instrumentation_asgi-0.66b2.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "opentelemetry-instrumentation-fastapi",
+      "version": "0.66b2",
+      "purl": "pkg:pypi/opentelemetry-instrumentation-fastapi@0.66b2",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/opentelemetry_instrumentation_fastapi-0.66b2.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "opentelemetry-instrumentation-httpx",
+      "version": "0.66b2",
+      "purl": "pkg:pypi/opentelemetry-instrumentation-httpx@0.66b2",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/opentelemetry_instrumentation_httpx-0.66b2.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "opentelemetry-proto",
+      "version": "1.45.2",
+      "purl": "pkg:pypi/opentelemetry-proto@1.45.2",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/opentelemetry_proto-1.45.2.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "opentelemetry-sdk",
+      "version": "1.45.2",
+      "purl": "pkg:pypi/opentelemetry-sdk@1.45.2",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/opentelemetry_sdk-1.45.2.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "opentelemetry-semantic-conventions",
+      "version": "0.66b2",
+      "purl": "pkg:pypi/opentelemetry-semantic-conventions@0.66b2",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/opentelemetry_semantic_conventions-0.66b2.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "opentelemetry-util-http",
+      "version": "0.66b2",
+      "purl": "pkg:pypi/opentelemetry-util-http@0.66b2",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/opentelemetry_util_http-0.66b2.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "orjson",
+      "version": "3.12.0",
+      "purl": "pkg:pypi/orjson@3.12.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/orjson-3.12.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "ormsgpack",
+      "version": "1.12.2",
+      "purl": "pkg:pypi/ormsgpack@1.12.2",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/ormsgpack-1.12.2.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "packaging",
+      "version": "26.3",
+      "purl": "pkg:pypi/packaging@26.3",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/packaging-26.3.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "packaging",
+      "version": "26.3",
+      "purl": "pkg:pypi/packaging@26.3",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "usr/local/lib/python3.11/site-packages/packaging-26.3.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "pandas",
+      "version": "3.0.5",
+      "purl": "pkg:pypi/pandas@3.0.5",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/pandas-3.0.5.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "pillow",
+      "version": "13.0.0",
+      "purl": "pkg:pypi/pillow@13.0.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/pillow-13.0.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "prometheus_client",
+      "version": "0.26.0",
+      "purl": "pkg:pypi/prometheus-client@0.26.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/prometheus_client-0.26.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "protobuf",
+      "version": "7.36.1",
+      "purl": "pkg:pypi/protobuf@7.36.1",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/protobuf-7.36.1.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "psycopg",
+      "version": "3.3.5",
+      "purl": "pkg:pypi/psycopg@3.3.5",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/psycopg-3.3.5.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "psycopg-binary",
+      "version": "3.3.5",
+      "purl": "pkg:pypi/psycopg-binary@3.3.5",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/psycopg_binary-3.3.5.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "psycopg-pool",
+      "version": "3.3.1",
+      "purl": "pkg:pypi/psycopg-pool@3.3.1",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/psycopg_pool-3.3.1.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "pycparser",
+      "version": "3.0",
+      "purl": "pkg:pypi/pycparser@3.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/pycparser-3.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "pydantic",
+      "version": "2.13.5",
+      "purl": "pkg:pypi/pydantic@2.13.5",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/pydantic-2.13.5.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "pydantic-settings",
+      "version": "2.15.0",
+      "purl": "pkg:pypi/pydantic-settings@2.15.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/pydantic_settings-2.15.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "pydantic_core",
+      "version": "2.46.5",
+      "purl": "pkg:pypi/pydantic-core@2.46.5",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/pydantic_core-2.46.5.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "pymilvus",
+      "version": "3.0.1",
+      "purl": "pkg:pypi/pymilvus@3.0.1",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/pymilvus-3.0.1.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "pypdf",
+      "version": "6.21.4",
+      "purl": "pkg:pypi/pypdf@6.21.4",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/pypdf-6.21.4.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "pypdfium2",
+      "version": "4.30.0",
+      "purl": "pkg:pypi/pypdfium2@4.30.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/pypdfium2-4.30.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "python-dateutil",
+      "version": "2.9.0.post0",
+      "purl": "pkg:pypi/python-dateutil@2.9.0.post0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/python_dateutil-2.9.0.post0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "python-docx",
+      "version": "1.2.0",
+      "purl": "pkg:pypi/python-docx@1.2.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/python_docx-1.2.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "python-dotenv",
+      "version": "1.2.3",
+      "purl": "pkg:pypi/python-dotenv@1.2.3",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/python_dotenv-1.2.3.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "python-multipart",
+      "version": "0.0.32",
+      "purl": "pkg:pypi/python-multipart@0.0.32",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/python_multipart-0.0.32.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "rank-bm25",
+      "version": "0.2.2",
+      "purl": "pkg:pypi/rank-bm25@0.2.2",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/rank_bm25-0.2.2.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "redis",
+      "version": "5.3.1",
+      "purl": "pkg:pypi/redis@5.3.1",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/redis-5.3.1.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "requests",
+      "version": "2.34.2",
+      "purl": "pkg:pypi/requests@2.34.2",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/requests-2.34.2.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "requests-toolbelt",
+      "version": "1.0.0",
+      "purl": "pkg:pypi/requests-toolbelt@1.0.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/requests_toolbelt-1.0.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "s3transfer",
+      "version": "0.19.2",
+      "purl": "pkg:pypi/s3transfer@0.19.2",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/s3transfer-0.19.2.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "six",
+      "version": "1.17.0",
+      "purl": "pkg:pypi/six@1.17.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/six-1.17.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "sniffio",
+      "version": "1.3.1",
+      "purl": "pkg:pypi/sniffio@1.3.1",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/sniffio-1.3.1.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "soupsieve",
+      "version": "2.9.2",
+      "purl": "pkg:pypi/soupsieve@2.9.2",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/soupsieve-2.9.2.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "sqlite-vec",
+      "version": "0.1.9",
+      "purl": "pkg:pypi/sqlite-vec@0.1.9",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/sqlite_vec-0.1.9.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "starlette",
+      "version": "1.6.0",
+      "purl": "pkg:pypi/starlette@1.6.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/starlette-1.6.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "tenacity",
+      "version": "9.1.4",
+      "purl": "pkg:pypi/tenacity@9.1.4",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/tenacity-9.1.4.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "truststore",
+      "version": "0.10.4",
+      "purl": "pkg:pypi/truststore@0.10.4",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/truststore-0.10.4.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "typing-inspection",
+      "version": "0.4.4",
+      "purl": "pkg:pypi/typing-inspection@0.4.4",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/typing_inspection-0.4.4.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "typing_extensions",
+      "version": "4.16.0",
+      "purl": "pkg:pypi/typing-extensions@4.16.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/typing_extensions-4.16.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "urllib3",
+      "version": "2.8.0",
+      "purl": "pkg:pypi/urllib3@2.8.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/urllib3-2.8.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "uuid_utils",
+      "version": "0.17.0",
+      "purl": "pkg:pypi/uuid-utils@0.17.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/uuid_utils-0.17.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "uvicorn",
+      "version": "0.52.4",
+      "purl": "pkg:pypi/uvicorn@0.52.4",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/uvicorn-0.52.4.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "websockets",
+      "version": "16.1.1",
+      "purl": "pkg:pypi/websockets@16.1.1",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/websockets-16.1.1.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "wrapt",
+      "version": "2.4.0",
+      "purl": "pkg:pypi/wrapt@2.4.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/wrapt-2.4.0.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "xxhash",
+      "version": "4.0.1",
+      "purl": "pkg:pypi/xxhash@4.0.1",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/xxhash-4.0.1.dist-info/METADATA"
+    },
+    {
+      "class": "lang-pkgs",
+      "type": "python-pkg",
+      "name": "zstandard",
+      "version": "0.25.0",
+      "purl": "pkg:pypi/zstandard@0.25.0",
+      "architecture": null,
+      "source": null,
+      "source_version": null,
+      "file_path": "opt/venv/lib/python3.11/site-packages/zstandard-0.25.0.dist-info/METADATA"
+    }
+  ]
+}

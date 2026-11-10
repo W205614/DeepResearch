@@ -328,3 +328,53 @@ def test_grafana_matrix_has_independent_artifact_namespace_and_no_rebuild(tmp_pa
     changed["services"]["other"]["image"] = inventory.APPROVED_GRAFANA
     with pytest.raises(ValueError, match="namespaces"):
         inventory.matrices(changed, tmp_path)
+
+
+def test_source_grafana_stays_in_vendor_full_scan_matrix_and_out_of_generic_builds(tmp_path, monkeypatch):
+    calls = []
+    monkeypatch.setattr(inventory, 'load_binding', lambda root: {})
+    monkeypatch.setattr(inventory, 'load_grafana_source_profile', lambda root: calls.append(root))
+    config = {'services': {'minio': {'image': inventory.APPROVED_MINIO},
+                           'grafana': {'image': inventory.SOURCE_GRAFANA},
+                           'agent': {'build': {'context': str(tmp_path)}}}}
+    vendor, custom = inventory.matrices(config, tmp_path)
+    rows = [row for row in vendor['include'] if row['artifact'] == 'grafana']
+    assert len(rows) == 1 and rows[0]['source_build_profile'] == inventory.SOURCE_PROFILE
+    assert rows[0]['image'] == inventory.SOURCE_GRAFANA and rows[0]['services'] == 'grafana'
+    assert rows[0]['approved_artifact'] is False
+    assert [row['name'] for row in custom['include']] == ['agent']
+    assert calls == [tmp_path]
+    for extra in ({'image': inventory.SOURCE_GRAFANA},
+                  {'image': inventory.SOURCE_GRAFANA, 'build': {'context': str(tmp_path)}}):
+        altered = deepcopy(config)
+        altered['services']['other'] = extra
+        with pytest.raises(ValueError, match='namespaces'):
+            inventory.matrices(altered, tmp_path)
+    config['services']['grafana']['build'] = {'context': str(tmp_path)}
+    with pytest.raises(ValueError, match='profile-bound build entry'):
+        inventory.matrices(config, tmp_path)
+
+
+def test_source_grafana_inventory_binds_selected_recipe_and_does_not_claim_old_approval(tmp_path, monkeypatch):
+    import scripts
+    from types import SimpleNamespace
+
+    dockerfile = tmp_path / inventory.SOURCE_DOCKERFILE
+    dockerfile.parent.mkdir(parents=True)
+    dockerfile.write_text('FROM scratch\n')
+    profile_path = tmp_path / inventory.SOURCE_PROFILE_PATH
+    profile_path.parent.mkdir(parents=True)
+    profile_path.write_text('synthetic exact profile\n')
+    profile = {'profile': inventory.SOURCE_PROFILE, 'image': inventory.SOURCE_GRAFANA,
+               'context': '.', 'dockerfile': inventory.SOURCE_DOCKERFILE,
+               'source_inputs': {inventory.SOURCE_DOCKERFILE: inventory.candidate.file_hash(dockerfile)}}
+    monkeypatch.setattr(scripts, 'check_grafana_source_build_20261110',
+                        SimpleNamespace(load_profile=lambda root: profile), raising=False)
+    selection = inventory.grafana_selection(tmp_path)
+    assert selection['profile'] == inventory.SOURCE_PROFILE and selection['mode'] == 'source_build'
+    assert selection['published'] is False and 'authorization_verified' not in selection
+    assert selection['subject'] == {'build_profile': inventory.SOURCE_PROFILE,
+                                     'profile_sha256': inventory.candidate.file_hash(profile_path)}
+    dockerfile.write_text('FROM changed-recipe\n')
+    with pytest.raises(ValueError, match='exact current build entry'):
+        inventory.load_grafana_source_profile(tmp_path)

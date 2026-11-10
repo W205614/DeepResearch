@@ -1,0 +1,589 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "label": "normal-/ok",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6f6b",
+      "exit_code": 0,
+      "stdout_hex": "6f6b",
+      "stderr": "",
+      "connections": 1,
+      "requests_hex": [
+        "474554202f6f6b20485454502f312e310d0a486f73743a203132372e302e302e313a33383330330d0a557365722d4167656e743a20576765740d0a4163636570743a202a2f2a0d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a"
+      ]
+    },
+    {
+      "label": "normal-/encoded%20path?q=%0d%0a%20",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f656e636f646564253230706174683f713d253064253061253230",
+      "exit_code": 0,
+      "stdout_hex": "6f6b",
+      "stderr": "",
+      "connections": 1,
+      "requests_hex": [
+        "474554202f656e636f646564253230706174683f713d25306425306125323020485454502f312e310d0a486f73743a203132372e302e302e313a33383330330d0a557365722d4167656e743a20576765740d0a4163636570743a202a2f2a0d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a"
+      ]
+    },
+    {
+      "label": "normal-/encoded%00zero?q=%0D%0A",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f656e636f6465642530307a65726f3f713d253044253041",
+      "exit_code": 0,
+      "stdout_hex": "6f6b",
+      "stderr": "",
+      "connections": 1,
+      "requests_hex": [
+        "474554202f656e636f6465642530307a65726f3f713d25304425304120485454502f312e310d0a486f73743a203132372e302e302e313a33383330330d0a557365722d4167656e743a20576765740d0a4163636570743a202a2f2a0d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a"
+      ]
+    },
+    {
+      "label": "normal-/plus+query?x=a+b",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f706c75732b71756572793f783d612b62",
+      "exit_code": 0,
+      "stdout_hex": "6f6b",
+      "stderr": "",
+      "connections": 1,
+      "requests_hex": [
+        "474554202f706c75732b71756572793f783d612b6220485454502f312e310d0a486f73743a203132372e302e302e313a33383330330d0a557365722d4167656e743a20576765740d0a4163636570743a202a2f2a0d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a"
+      ]
+    },
+    {
+      "label": "normal-authentication-space",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f757365723a7061737320776f7264403132372e302e302e313a33383330332f6f6b",
+      "exit_code": 0,
+      "stdout_hex": "6f6b",
+      "stderr": "",
+      "connections": 1,
+      "requests_hex": [
+        "474554202f6f6b20485454502f312e310d0a486f73743a203132372e302e302e313a33383330330d0a557365722d4167656e743a20576765740d0a4163636570743a202a2f2a0d0a436f6e6e656374696f6e3a20636c6f73650d0a417574686f72697a6174696f6e3a2042617369632064584e6c636a707759584e7a49486476636d513d0d0a0d0a"
+      ]
+    },
+    {
+      "label": "normal-post-encoded",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f706f737425323070617468",
+      "exit_code": 0,
+      "stdout_hex": "6f6b",
+      "stderr": "",
+      "connections": 1,
+      "requests_hex": [
+        "504f5354202f706f73742532307061746820485454502f312e310d0a486f73743a203132372e302e302e313a33383330330d0a557365722d4167656e743a20576765740d0a4163636570743a202a2f2a0d0a436f6e6e656374696f6e3a20636c6f73650d0a436f6e74656e742d547970653a206170706c69636174696f6e2f782d7777772d666f726d2d75726c656e636f6465640d0a436f6e74656e742d4c656e6774683a2031310d0a0d0a6669656c643d76616c7565"
+      ]
+    },
+    {
+      "label": "reject-raw-target-0x1",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261640176616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x2",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261640276616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x3",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261640376616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x4",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261640476616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x5",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261640576616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x6",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261640676616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x7",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261640776616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x8",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261640876616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x9",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261640976616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0xa",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261640a76616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0xb",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261640b76616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0xc",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261640c76616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0xd",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261640d76616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0xe",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261640e76616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0xf",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261640f76616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x10",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261641076616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x11",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261641176616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x12",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261641276616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x13",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261641376616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x14",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261641476616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x15",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261641576616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x16",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261641676616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x17",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261641776616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x18",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261641876616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x19",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261641976616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x1a",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261641a76616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x1b",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261641b76616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x1c",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261641c76616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x1d",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261641d76616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x1e",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261641e76616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x1f",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261641f76616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x20",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261642076616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-raw-target-0x7f",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f6261647f76616c7565",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-direct-crlf-injection",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f70726f62650d0a582d496e6a65637465643a2070726573656e740d0a582d5061643a20",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "normal/redirect-clean",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f72656469726563742d636c65616e",
+      "exit_code": 0,
+      "stdout_hex": "6f6b",
+      "stderr": "",
+      "connections": 2,
+      "requests_hex": [
+        "474554202f72656469726563742d636c65616e20485454502f312e310d0a486f73743a203132372e302e302e313a33383330330d0a557365722d4167656e743a20576765740d0a4163636570743a202a2f2a0d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a",
+        "474554202f61667465723f783d3120485454502f312e310d0a486f73743a203132372e302e302e313a33383330330d0a557365722d4167656e743a20576765740d0a4163636570743a202a2f2a0d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a"
+      ]
+    },
+    {
+      "label": "normal/redirect-encoded",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f72656469726563742d656e636f646564",
+      "exit_code": 0,
+      "stdout_hex": "6f6b",
+      "stderr": "",
+      "connections": 2,
+      "requests_hex": [
+        "474554202f72656469726563742d656e636f64656420485454502f312e310d0a486f73743a203132372e302e302e313a33383330330d0a557365722d4167656e743a20576765740d0a4163636570743a202a2f2a0d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a",
+        "474554202f6166746572253230706174683f783d25306425306120485454502f312e310d0a486f73743a203132372e302e302e313a33383330330d0a557365722d4167656e743a20576765740d0a4163636570743a202a2f2a0d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a"
+      ]
+    },
+    {
+      "label": "reject/redirect-space",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f72656469726563742d7370616365",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 1,
+      "requests_hex": [
+        "474554202f72656469726563742d737061636520485454502f312e310d0a486f73743a203132372e302e302e313a33383330330d0a557365722d4167656e743a20576765740d0a4163636570743a202a2f2a0d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a"
+      ]
+    },
+    {
+      "label": "reject/redirect-absolute-space",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f72656469726563742d6162736f6c7574652d7370616365",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 1,
+      "requests_hex": [
+        "474554202f72656469726563742d6162736f6c7574652d737061636520485454502f312e310d0a486f73743a203132372e302e302e313a33383330330d0a557365722d4167656e743a20576765740d0a4163636570743a202a2f2a0d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a"
+      ]
+    },
+    {
+      "label": "reject/redirect-c0",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f72656469726563742d6330",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 1,
+      "requests_hex": [
+        "474554202f72656469726563742d633020485454502f312e310d0a486f73743a203132372e302e302e313a33383330330d0a557365722d4167656e743a20576765740d0a4163636570743a202a2f2a0d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a"
+      ]
+    },
+    {
+      "label": "existing-header-sanitizer/redirect-crlf",
+      "variant": "fixed",
+      "proxy": false,
+      "url_hex": "687474703a2f2f3132372e302e302e313a33383330332f72656469726563742d63726c66",
+      "exit_code": 0,
+      "stdout_hex": "6f6b",
+      "stderr": "",
+      "connections": 2,
+      "requests_hex": [
+        "474554202f72656469726563742d63726c6620485454502f312e310d0a486f73743a203132372e302e302e313a33383330330d0a557365722d4167656e743a20576765740d0a4163636570743a202a2f2a0d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a",
+        "474554202f616674657220485454502f312e310d0a486f73743a203132372e302e302e313a33383330330d0a557365722d4167656e743a20576765740d0a4163636570743a202a2f2a0d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a"
+      ]
+    },
+    {
+      "label": "normal-proxy-encoded",
+      "variant": "fixed",
+      "proxy": true,
+      "url_hex": "687474703a2f2f6578616d706c652e696e76616c69642f656e636f646564253230706174683f713d253064253061",
+      "exit_code": 0,
+      "stdout_hex": "6f6b",
+      "stderr": "",
+      "connections": 1,
+      "requests_hex": [
+        "47455420687474703a2f2f6578616d706c652e696e76616c69642f656e636f646564253230706174683f713d25306425306120485454502f312e310d0a486f73743a206578616d706c652e696e76616c69640d0a557365722d4167656e743a20576765740d0a4163636570743a202a2f2a0d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a"
+      ]
+    },
+    {
+      "label": "reject-proxy-target/raw space",
+      "variant": "fixed",
+      "proxy": true,
+      "url_hex": "687474703a2f2f6578616d706c652e696e76616c69642f726177207370616365",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-proxy-target/probe\r\nX-Injected: present\r\nX-Pad: ",
+      "variant": "fixed",
+      "proxy": true,
+      "url_hex": "687474703a2f2f6578616d706c652e696e76616c69642f70726f62650d0a582d496e6a65637465643a2070726573656e740d0a582d5061643a20",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    },
+    {
+      "label": "reject-proxy-host-injection",
+      "variant": "fixed",
+      "proxy": true,
+      "url_hex": "687474703a2f2f6578616d706c650d0a582d486f73742d43616e6172793a2070726573656e740d0a3a38302f73616665",
+      "exit_code": 1,
+      "stdout_hex": "",
+      "stderr": "wget: unencoded control character or space in HTTP request target\n",
+      "connections": 0,
+      "requests_hex": []
+    }
+  ],
+  "case_count": 50,
+  "all_injection_traffic": "Only an in-container127.0.0.1 raw listener; Docker --network none, no host/business mounts.",
+  "nul_boundary": "A raw NUL cannot be supplied in an OS argv element; percent-encoded%00 is tested and remains encoded.",
+  "redirect_boundary": "Raw TAB and SP in Location survive existing parsing and are rejected before a second connection; relative and absolute redirects are tested. Response CRLF is a header delimiter, not part of Location; the next request is clean without forwarding the injected response header.",
+  "binary_sha256": "68dba7ae251db2ecca77e6ef405bf781111dc41f87c93c30205745fdbe2c697e"
+}

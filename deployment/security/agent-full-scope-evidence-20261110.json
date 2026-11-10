@@ -1,0 +1,4513 @@
+{
+  "schema": "agent-full-scope-evidence-v1",
+  "risk_acceptance": false,
+  "artifact_review_scope": "Actual private source stager dr-security-glibc-stager:20261110; NOT final application publication artifact. Final artifact must bind its own real config/diffIDs, runtime code and these exact critical native/source payloads.",
+  "source_package_binary_mapping": {
+    "affected_files": {
+      "CVE-2026-102010": "include/ext/pb_ds/detail/binary_heap_/erase_fn_imps.hpp",
+      "CVE-2026-114690": "include/parallel/search.h",
+      "CVE-2026-114691": "include/bits/stl_bvector.h",
+      "CVE-2026-115455": "include/std/bitset"
+    },
+    "runtime_binary_mapping": "gcc-14-base is metadata/docs; libgcc_s is C ABI/unwinding; libgomp is OpenMP runtime. These do not compile libstdc++ header-template bodies. libstdc++ shared-library source contains no affected PBDS/parallel-search/vector<bool>/wide-bitset instantiations; full shared-source222-file review plus exact DSO dynamic symbol inventory supports binary-package mapping.",
+    "actual_libstdcxx_exports": "No PBDS, vector<bool> or bitset exports. GNU parallel exports only _Settings get/set, not the parallel search algorithm.",
+    "not_claimed": "No assertion that all third-party separately compiled template bodies are vulnerability-free; disposition is to these exact GCC runtime binary-package tuples.",
+    "file_list_limitation": "Distroless image has no dpkg info file lists; component-runtime-facts-v2 lists are empty because the database file lists were removed. This is NOT proof of package emptiness. Mapping instead uses the official affected libstdc++ source components and actual reviewed libgcc_s/libgomp/metadata runtime payloads.",
+    "official_cve_component_references": [
+      {
+        "id": "CVE-2026-102010",
+        "component": "include/ext/pb_ds/detail/binary_heap_/erase_fn_imps.hpp",
+        "kind": "consumer-instantiated GNU pb_ds header template",
+        "official": "https://bugzilla.redhat.com/show_bug.cgi?id=2478395",
+        "scope": "Header implementation is not itself the installed libstdc++6 runtime component. Exact OS-package tuple may be a source-to-binary propagation false positive; this does not prove every independently compiled wheel is free of an instantiated vulnerable pb_ds path."
+      },
+      {
+        "id": "CVE-2026-114690",
+        "component": "include/parallel/search.h",
+        "kind": "consumer-instantiated _GLIBCXX_PARALLEL/OpenMP algorithm header",
+        "official": "https://bugzilla.redhat.com/show_bug.cgi?id=2478652",
+        "scope": "libgomp presence does not itself instantiate parallel std::search. Shared library source only has parallel settings; a compiled consumer needs algorithm/header/flags proof."
+      },
+      {
+        "id": "CVE-2026-114691",
+        "component": "include/bits/stl_bvector.h",
+        "kind": "std::vector<bool> constructor/template header",
+        "official": "https://bugzilla.redhat.com/show_bug.cgi?id=2478508",
+        "scope": "Specific source-package-to-shared-binary mapping should be reviewed; no blanket assertion about third-party already-compiled template bodies."
+      },
+      {
+        "id": "CVE-2026-115455",
+        "component": "include/std/bitset",
+        "kind": "templated wide-character stream extraction",
+        "official_fix": "https://github.com/gcc-mirror/gcc/commit/5d419c69ce2e6b86d7da75f18736904885674219",
+        "scope": "Official patch changes include/std/bitset only for executable code, not a DSO .cc implementation. Header source from exact original Debian GCC14.2 snapshot retained."
+      },
+      {
+        "id": "CVE-2026-95619",
+        "component": "libsupc++/new_opa.cc",
+        "kind": "real out-of-line shared-library aligned operator new, not header-only",
+        "official": "https://bugzilla.redhat.com/show_bug.cgi?id=2537811",
+        "important_correction": "Official report specifically says GCC12.4 onward normally uses posix_memalign instead of vulnerable aligned_alloc rounding. GCC14.2 source prioritizes HAVE_POSIX_MEMALIGN. Current exact libstdc++ ELF imports posix_memalign and has no aligned_alloc import. This strongly supports an unaffected build route, not a universal fix based merely on version.",
+        "limits": "No successful x86-64 disassembly or compiled throwing-new regression was executed in this read-only audit; local MinGW objdump does not support the Linux ELF. Preserve this tool limitation instead of pretending disassembly passed."
+      }
+    ],
+    "exact_affected_header_hashes": {
+      "include/std/bitset": {
+        "sha256": "9da7437129bcb46fea06184a92488e9c1893ab5e1e1996243e61bb755e2204f8",
+        "local": "gcc14.2-include-std-bitset"
+      },
+      "include/parallel/search.h": {
+        "sha256": "9b679f1400a7051a34f94c2a5f909e15bff09a78565a4ef579a10f1a6716387b",
+        "local": "gcc14.2-include-parallel-search.h"
+      },
+      "include/ext/pb_ds/detail/binary_heap_/erase_fn_imps.hpp": {
+        "sha256": "eba1a715a0b15b2df92a9a8c8e65ae6c584c0ad6f1f74526f0c38c0927b9a0e0",
+        "local": "gcc14.2-include-ext-pb_ds-detail-binary_heap_-erase_fn_imps.hpp"
+      },
+      "include/bits/stl_bvector.h": {
+        "sha256": "a5e4a8743d833591f6809d5d2bdb9998f7f681c1248a5e2c49623676d29ab4ea",
+        "local": "gcc14.2-include-bits-stl_bvector.h"
+      },
+      "libsupc++/new_opa.cc": {
+        "sha256": "d1dd10cc18ef66d0496c67f9bc80c5b0b307251551c243e1c29b96c3a3aad6d7",
+        "local": "gcc14.2-libsupc++-new_opa.cc"
+      }
+    },
+    "actual_c_abi_and_openmp_elfs": [
+      {
+        "path": "usr/lib/x86_64-linux-gnu/libgomp.so.1.0.0",
+        "sha256": "6456b504ac347bd50c419667440b691f6966ad8aff5309d2f06c977fe2f9debe",
+        "kind": "UNCHANGED_REVIEWED_ELF"
+      },
+      {
+        "path": "usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+        "sha256": "30c61ab012a4241bed033725a09b61f5fdd3bb7df95ee852d0b096520524c7af",
+        "kind": "UNCHANGED_REVIEWED_ELF"
+      }
+    ]
+  },
+  "function_route_proof": {
+    "ordinary_gnu_float": {
+      "status": "CURRENT_APPLICATION_FUNCTION_NOT_IN_EXECUTION_PATH",
+      "affected_functions": "GCC std::from_chars(float&,double&,long double&) out-of-line implementations in floating_from_chars.cc; not the integer templates or LLVM libc++ implementation.",
+      "ordinary_dynamic_imports": 0,
+      "reviewed_elf_count": 515,
+      "new_stager_elf_partition": {
+        "VERIFIED_OFFICIAL_GLIBC_OVERLAY": 273,
+        "UNCHANGED_REVIEWED_ELF": 242
+      },
+      "all_non_glibc_elfs_identical_to_complete_original_dynsym_review": true,
+      "direct_libstdcxx_callers": [
+        {
+          "paths": [
+            "opt/venv/lib/python3.11/site-packages/numpy/_core/_multiarray_umath.cpython-311-x86_64-linux-gnu.so"
+          ],
+          "sha256": "1535fbed1e9ac6b717e72ad9bd5c20b9f0536a21084fcadc40c00255a8f35d1d",
+          "needed": [
+            "libscipy_openblas64_-32a4b2a6.so",
+            "libstdc++.so.6",
+            "libm.so.6",
+            "libgcc_s.so.1",
+            "libc.so.6",
+            "ld-linux-x86-64.so.2"
+          ],
+          "compiler_comments": [
+            "[     0]  GCC: (GNU) 14.2.1 20250110 (Red Hat 14.2.1-7)"
+          ],
+          "from_chars_imports": [],
+          "dynamic_lookup_imports": [],
+          "dynamic_lookup_disposition": "No dynamic symbol-lookup/load import in this ELF."
+        },
+        {
+          "paths": [
+            "opt/venv/lib/python3.11/site-packages/numpy/fft/_pocketfft_umath.cpython-311-x86_64-linux-gnu.so"
+          ],
+          "sha256": "2e78619c9326b3a2e1a61369371ebf257c3c644d209c50f4b641fe055f37167e",
+          "needed": [
+            "libstdc++.so.6",
+            "libm.so.6",
+            "libgcc_s.so.1",
+            "libc.so.6"
+          ],
+          "compiler_comments": [
+            "[     0]  GCC: (GNU) 14.2.1 20250110 (Red Hat 14.2.1-7)"
+          ],
+          "from_chars_imports": [],
+          "dynamic_lookup_imports": [],
+          "dynamic_lookup_disposition": "No dynamic symbol-lookup/load import in this ELF."
+        },
+        {
+          "paths": [
+            "opt/venv/lib/python3.11/site-packages/google/_upb/_message.abi3.so"
+          ],
+          "sha256": "4ac1622d643ff188f4f355cc89a439f6881c397d766911e1246f9f4a215d051d",
+          "needed": [
+            "libstdc++.so.6",
+            "libm.so.6",
+            "libc.so.6"
+          ],
+          "compiler_comments": [
+            "[     0]  GCC: (GNU) 10.2.1 20210130 (Red Hat 10.2.1-11)",
+            "[    2f]  clang version 18.0.0git (https://github.com/llvm/llvm-project 337597e3783fdf51a66b35b5902ff5d8c9edb9d0)"
+          ],
+          "from_chars_imports": [],
+          "dynamic_lookup_imports": [],
+          "dynamic_lookup_disposition": "No dynamic symbol-lookup/load import in this ELF."
+        },
+        {
+          "paths": [
+            "opt/venv/lib/python3.11/site-packages/greenlet/tests/_test_extension_cpp.cpython-311-x86_64-linux-gnu.so"
+          ],
+          "sha256": "8ae79a58d6f7e26c524801e5cc8cb4379cedc2d176b4841b822eff8ff6dc5882",
+          "needed": [
+            "libstdc++.so.6",
+            "libm.so.6",
+            "libgcc_s.so.1",
+            "libpthread.so.0",
+            "libc.so.6"
+          ],
+          "compiler_comments": [
+            "[     0]  GCC: (GNU) 14.2.1 20250110 (Red Hat 14.2.1-11)"
+          ],
+          "from_chars_imports": [],
+          "dynamic_lookup_imports": [],
+          "dynamic_lookup_disposition": "No dynamic symbol-lookup/load import in this ELF."
+        },
+        {
+          "paths": [
+            "opt/venv/lib/python3.11/site-packages/pandas/_libs/window/aggregations.cpython-311-x86_64-linux-gnu.so"
+          ],
+          "sha256": "a231f30376beb90cee5d484ffadacc57b37531acf0de1158a89c6fa4df43e942",
+          "needed": [
+            "libstdc++.so.6",
+            "libm.so.6",
+            "libgcc_s.so.1",
+            "libc.so.6"
+          ],
+          "compiler_comments": [
+            "[     0]  GCC: (GNU) 14.2.1 20250110 (Red Hat 14.2.1-11)"
+          ],
+          "from_chars_imports": [],
+          "dynamic_lookup_imports": [],
+          "dynamic_lookup_disposition": "No dynamic symbol-lookup/load import in this ELF."
+        },
+        {
+          "paths": [
+            "opt/venv/lib/python3.11/site-packages/greenlet/_greenlet.cpython-311-x86_64-linux-gnu.so"
+          ],
+          "sha256": "a933f358cda2bf507536c9d8f85b43002d33d313db47735c722783db43bc457c",
+          "needed": [
+            "libstdc++.so.6",
+            "libm.so.6",
+            "libgcc_s.so.1",
+            "libpthread.so.0",
+            "libc.so.6",
+            "ld-linux-x86-64.so.2"
+          ],
+          "compiler_comments": [
+            "[     0]  GCC: (GNU) 14.2.1 20250110 (Red Hat 14.2.1-11)"
+          ],
+          "from_chars_imports": [],
+          "dynamic_lookup_imports": [],
+          "dynamic_lookup_disposition": "No dynamic symbol-lookup/load import in this ELF."
+        },
+        {
+          "paths": [
+            "opt/venv/lib/python3.11/site-packages/pillow.libs/libavif-c6062d5f.so.16.4.2"
+          ],
+          "sha256": "d12ec0b696860b292114b130ecac6082fc75c198c1b4fa57b26089e9b0a7eb6a",
+          "needed": [
+            "libdl.so.2",
+            "libstdc++.so.6",
+            "libm.so.6",
+            "libgcc_s.so.1",
+            "libpthread.so.0",
+            "libc.so.6"
+          ],
+          "compiler_comments": [
+            "[     0]  GCC: (GNU) 14.2.1 20250110 (Red Hat 14.2.1-11)"
+          ],
+          "from_chars_imports": [],
+          "dynamic_lookup_imports": [
+            "89: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND dlsym@GLIBC_2.2.5 (13)"
+          ],
+          "dynamic_lookup_disposition": "Unique actual dlsym call in embedded dav1d1.5.3: constant __pthread_get_minstack, confirmed by Linux ELF disassembly and official src/lib.c. No input-derived name."
+        },
+        {
+          "paths": [
+            "opt/venv/lib/python3.11/site-packages/grpc/_cython/cygrpc.cpython-311-x86_64-linux-gnu.so"
+          ],
+          "sha256": "f57c5434718153548ec72dbfaa056f923d103b4f347699025fda5b3f87620f65",
+          "needed": [
+            "librt.so.1",
+            "libpthread.so.0",
+            "libstdc++.so.6",
+            "libm.so.6",
+            "libc.so.6",
+            "ld-linux-x86-64.so.2"
+          ],
+          "compiler_comments": [
+            "[     0]  GCC: (GNU) 10.2.1 20210130 (Red Hat 10.2.1-11)",
+            "[    2f]  GCC: (GNU) 4.8.5 20150623 (Red Hat 4.8.5-44)"
+          ],
+          "from_chars_imports": [],
+          "dynamic_lookup_imports": [],
+          "dynamic_lookup_disposition": "No dynamic symbol-lookup/load import in this ELF."
+        }
+      ],
+      "only_lookup": {
+        "containing_binary": "opt/venv/lib/python3.11/site-packages/pillow.libs/libavif-c6062d5f.so.16.4.2",
+        "actual_embedded_version": "dav1d1.5.3-0-gb546257",
+        "call_address": "0x24273",
+        "literal_address": "0x4254a9",
+        "literal": "__pthread_get_minstack",
+        "source": "https://raw.githubusercontent.com/videolan/dav1d/1.5.3/src/lib.c",
+        "source_lines": [
+          92,
+          103
+        ],
+        "source_sha256": "1dd0a2c1fffe0865f355bd822b8969010df0aac72cebc50464d0cb7a55896073"
+      },
+      "pdfium": "Exact6462 released ELF bytes and Chromium build config prove statically linked LLVM libc++, not a hidden GCC implementation. See prior pdfium identity/config source proof.",
+      "python_ffi": "Current exact stager5972 Python runtime source files were read: no from_chars word, GNU floating mangled prefix or libstdc++ library reference. Generic arbitrary new FFI/native-code execution is outside the fixed application call graph.",
+      "limits": "This conclusion is only for this CVE and exact current application native/Python closure; it does not certify all C++ templates or all numerical/decoder code. Adding a native extension/plugin, user-supplied FFI symbol or changing reviewed code requires a new review."
+    },
+    "actual_lookup_disassembly_excerpt": {
+      "complete_private_log_sha256": "c74bf1a6985f30e3fa5fb29914afba8c44349b40cf2b9630746a56490d64ee11",
+      "original_private_file": "from-chars-elf-audit/libavif-objdump.txt",
+      "lines_one_based": [
+        1373,
+        1386
+      ],
+      "actual_lines": [
+        "   24255:\t48 8d 6c 24 28       \tlea    0x28(%rsp),%rbp",
+        "   2425a:\t48 89 ef             \tmov    %rbp,%rdi",
+        "   2425d:\te8 1e f5 ff ff       \tcall   23780 <pthread_attr_init@plt>",
+        "   24262:\t85 c0                \ttest   %eax,%eax",
+        "   24264:\t0f 85 00 05 00 00    \tjne    2476a <dav1d_open@@Base+0x5a0>",
+        "   2426a:\t48 8d 35 38 12 40 00 \tlea    0x401238(%rip),%rsi        # 4254a9 <aom_sub_pixel_avg_variance16xh_ssse3@@Base+0x90399>",
+        "   24271:\t31 ff                \txor    %edi,%edi",
+        "   24273:\te8 48 f9 ff ff       \tcall   23bc0 <dlsym@plt>",
+        "   24278:\t31 f6                \txor    %esi,%esi",
+        "   2427a:\t48 85 c0             \ttest   %rax,%rax",
+        "   2427d:\t74 0c                \tje     2428b <dav1d_open@@Base+0xc1>",
+        "   2427f:\t48 89 ef             \tmov    %rbp,%rdi",
+        "   24282:\tff d0                \tcall   *%rax",
+        "   24284:\t48 8d b0 00 c0 ff ff \tlea    -0x4000(%rax),%rsi"
+      ]
+    },
+    "aligned_new": {
+      "status": "VULNERABLE_COMPILED_ROUTE_ABSENT",
+      "source": "libsupc++/new_opa.cc prioritizes HAVE_POSIX_MEMALIGN, as official report2537811 distinguishes GCC>=12.4 builds.",
+      "actual_disassembly": "Exact libstdc++ _ZnwmSt11align_val_t at0xb3c20 calls posix_memalign@plt at0xb3c81 with original nonzero requested size; no aligned_alloc rounding route.",
+      "library_sha256": "972bb2a18b71140dab0240f8a1f68ab3fb1d56bcd4c4f824a91b70888faf5a00"
+    },
+    "actual_aligned_new_disassembly": "\n/tmp/libstdc.so:     file format elf64-x86-64\n\n\nDisassembly of section .init:\n\nDisassembly of section .plt:\n\nDisassembly of section .plt.got:\n\nDisassembly of section .text:\n\n00000000000b3c20 <_ZnwmSt11align_val_t@@CXXABI_1.3.11>:\n   b3c20:\tf3 0f 1e fa          \tendbr64\n   b3c24:\t41 54                \tpush   %r12\n   b3c26:\t48 8d 46 ff          \tlea    -0x1(%rsi),%rax\n   b3c2a:\t48 89 f2             \tmov    %rsi,%rdx\n   b3c2d:\t55                   \tpush   %rbp\n   b3c2e:\t48 31 c2             \txor    %rax,%rdx\n   b3c31:\t53                   \tpush   %rbx\n   b3c32:\t48 83 ec 10          \tsub    $0x10,%rsp\n   b3c36:\t48 39 d0             \tcmp    %rdx,%rax\n   b3c39:\t0f 83 3c da fe ff    \tjae    a167b <_ZSt10unexpectedv@@GLIBCXX_3.4+0x92>\n   b3c3f:\t48 85 ff             \ttest   %rdi,%rdi\n   b3c42:\tb8 01 00 00 00       \tmov    $0x1,%eax\n   b3c47:\t4c 8d 64 24 08       \tlea    0x8(%rsp),%r12\n   b3c4c:\t48 0f 45 c7          \tcmovne %rdi,%rax\n   b3c50:\t48 89 c5             \tmov    %rax,%rbp\n   b3c53:\tb8 08 00 00 00       \tmov    $0x8,%eax\n   b3c58:\t48 39 c6             \tcmp    %rax,%rsi\n   b3c5b:\t48 0f 43 c6          \tcmovae %rsi,%rax\n   b3c5f:\t48 89 c3             \tmov    %rax,%rbx\n   b3c62:\teb 14                \tjmp    b3c78 <_ZnwmSt11align_val_t@@CXXABI_1.3.11+0x58>\n   b3c64:\t0f 1f 40 00          \tnopl   0x0(%rax)\n   b3c68:\te8 43 a2 fe ff       \tcall   9deb0 <_ZSt15get_new_handlerv@plt>\n   b3c6d:\t48 85 c0             \ttest   %rax,%rax\n   b3c70:\t0f 84 33 da fe ff    \tje     a16a9 <_ZSt10unexpectedv@@GLIBCXX_3.4+0xc0>\n   b3c76:\tff d0                \tcall   *%rax\n   b3c78:\t48 89 ea             \tmov    %rbp,%rdx\n   b3c7b:\t48 89 de             \tmov    %rbx,%rsi\n   b3c7e:\t4c 89 e7             \tmov    %r12,%rdi\n   b3c81:\te8 ca 99 fe ff       \tcall   9d650 <posix_memalign@plt>\n   b3c86:\t85 c0                \ttest   %eax,%eax\n   b3c88:\t75 de                \tjne    b3c68 <_ZnwmSt11align_val_t@@CXXABI_1.3.11+0x48>\n   b3c8a:\t48 8b 44 24 08       \tmov    0x8(%rsp),%rax\n   b3c8f:\t48 85 c0             \ttest   %rax,%rax\n   b3c92:\t74 d4                \tje     b3c68 <_ZnwmSt11align_val_t@@CXXABI_1.3.11+0x48>\n   b3c94:\t48 83 c4 10          \tadd    $0x10,%rsp\n   b3c98:\t5b                   \tpop    %rbx\n   b3c99:\t5d                   \tpop    %rbp\n   b3c9a:\t41 5c                \tpop    %r12\n   b3c9c:\tc3                   \tret\n\nDisassembly of section .fini:\n",
+    "actual_aligned_new_log_sha256": "d706998359b10161222afdbf9e22c82a5971b8ff0de739331ec5ce4776443772",
+    "out_of_line_definitions": {
+      "header_url": "https://raw.githubusercontent.com/gcc-mirror/gcc/releases/gcc-14.2.0/libstdc%2B%2B-v3/include/std/charconv",
+      "declaration_lines": [
+        659,
+        663,
+        667
+      ],
+      "definition_url": "https://raw.githubusercontent.com/gcc-mirror/gcc/releases/gcc-14.2.0/libstdc%2B%2B-v3/src/c%2B%2B17/floating_from_chars.cc",
+      "definition_lines": [
+        1229,
+        1243,
+        1257
+      ],
+      "detail": "float/double/long double are noninline declarations with bodies in compiled floating_from_chars.cc. Integer from_chars and some extended-type wrappers are different templates/wrappers; do not conflate them."
+    },
+    "pdfium_exact_static_llvm_provenance": {
+      "exact_upstream_binary_match": {
+        "url": "https://github.com/bblanchon/pdfium-binaries/releases/download/chromium%2F6462/pdfium-linux-x64.tgz",
+        "archive_bytes": 2793009,
+        "archive_sha256": "914d1586b28c282e13f8a4aa3586798bdf34af07e8559ef39170a49a3483fcf0",
+        "actual_library_sha256": "605cb60ab95eca334563f64e47117d10d2d1223a91e6045b62b455a30e8f2add",
+        "upstream_library_sha256": "605cb60ab95eca334563f64e47117d10d2d1223a91e6045b62b455a30e8f2add",
+        "exact_library_bytes_match": true
+      },
+      "builder_tag_commit": "8905f251148f371b1fd319aaada777f52f9ddd1a",
+      "builder_config_url": "https://github.com/bblanchon/pdfium-binaries/blob/8905f251148f371b1fd319aaada777f52f9ddd1a/steps/05-configure.sh",
+      "pdfium_source_branch_commit_observed": "7b7c83fba6d0af8d8847ee606569c35880512995",
+      "chromium_build_revision": "5eb3babb0267d283af22d249efcc98472efa7357",
+      "libcxx_revision": "e3b94d0e5b86883fd77696bf10dc33ba250ba99b",
+      "libcxxabi_revision": "51fe3584464d29067c8f0663f6e6dec84cc86868",
+      "configuration": "Builder Linux branch leaves use_custom_libcxx at Chromium default true and sets is_component_build=false. Pinned Chromium c++.gni makes libcxx_is_shared false for this combination. Actual libpdfium has no DT_NEEDED libstdc++ and byte-matches the upstream artifact, consistent with statically bundled LLVM libc++.",
+      "limits": "This supplies exact binary provenance plus the corresponding published build recipe/defaults, not a new reproducible rebuild or a claim LLVM libc++ is vulnerability-free. A GCC10 .comment may arise from CRT/other linked objects and does not describe every PDFium translation unit."
+    },
+    "other_from_chars_implementations": "Actual ffc_from_chars names are a separate fast_float C API. Hiredis DT_NEEDED is only libpthread and libc, not GNU libstdc++; do not label this as a GNU ABI call."
+  },
+  "sqlite": {
+    "runtime_version": "3.54.1",
+    "actual_loaded": [
+      {
+        "path": "/usr/lib/x86_64-linux-gnu/libsqlite3.so.3.54.1",
+        "sha256": "225ceb839db2c1dd484cfcaa5ef9fbdd429eb1d5f1e0c39fbd50150bca5fc7bc"
+      }
+    ],
+    "zipfile_unbuilt_probe": {
+      "SELECT * FROM zipfile('/tmp/no-file.zip')": {
+        "error": "no such table: zipfile"
+      },
+      "SELECT zipfile('x')": {
+        "error": "no such function: zipfile"
+      },
+      "SELECT load_extension('/tmp/untrusted.so')": {
+        "error": "not authorized"
+      }
+    },
+    "database_boundary": "backend/core/db.py connects configured state/llm-ledger path; backend/services/runtime.py creates configured DATA_DIR/checkpoints.sqlite3. Queries/schema are application controlled. scripts/migrate_legacy_sqlite.py --source is an explicit trusted operator legacy-migration input, not an HTTP uploaded SQLite database/SQL execution endpoint.",
+    "disputed_record_case": "CVE-2021-45346 concerns a corrupt caller-supplied DB record reading unintended bytes from that same DB, per upstream dispute; not evidence of a repaired code path or a cross-user secret read in this application contract."
+  },
+  "locale_contract": {
+    "verified_official_items": 290,
+    "elf_partition": {
+      "VERIFIED_OFFICIAL_GLIBC_OVERLAY": 273,
+      "UNCHANGED_REVIEWED_ELF": 242
+    },
+    "locale_availability": {
+      "C": {
+        "available": true,
+        "selected": "C"
+      },
+      "POSIX": {
+        "available": true,
+        "selected": "C"
+      },
+      "C.UTF-8": {
+        "available": false
+      },
+      "en_US.UTF-8": {
+        "available": false
+      },
+      "de_DE.UTF-8": {
+        "available": false
+      }
+    },
+    "locale_trees": [],
+    "locale_environment": {}
+  },
+  "current_python_source_lookup": {
+    "python_files_read": 5972,
+    "matches": [],
+    "scope": "Current exact runtime Python source closure; generic native/FFI/arbitrary new code capabilities are not application-exposed GNU symbol call paths."
+  },
+  "technical_records": [
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-102010",
+        "package": "gcc-14-base",
+        "version": "14.2.0-19",
+        "package_id": "gcc-14-base@14.2.0-19",
+        "purl": "pkg:deb/debian/gcc-14-base@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION",
+      "basis": "Official affected component is a libstdc++ source/header implementation; the actual libgcc_s C-ABI/unwinding and libgomp OpenMP ELF payloads are separate components, while gcc-14-base is package metadata. Whole current native ELF closure is bound. Distroless dpkg file lists are unavailable and are not used as evidence of package emptiness.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-102010",
+        "sha256": "5575314f9d4233e75b9efedc796777dbc63f9105a6634e0e56f263f40108250b",
+        "source_status_rows": [
+          [
+            "gcc-11",
+            "source",
+            "(unstable)",
+            "11.5.0-13",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "12.5.0-11",
+            "",
+            "",
+            "1150198"
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "13.5.0-2",
+            "",
+            "",
+            "1150197"
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "14.4.0-3",
+            "",
+            "",
+            "1150196"
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "15.3.0-5",
+            "",
+            "",
+            "1150195"
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "16.2.0-4",
+            "",
+            "",
+            "1150194"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-114690",
+        "package": "gcc-14-base",
+        "version": "14.2.0-19",
+        "package_id": "gcc-14-base@14.2.0-19",
+        "purl": "pkg:deb/debian/gcc-14-base@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION",
+      "basis": "Official affected component is a libstdc++ source/header implementation; the actual libgcc_s C-ABI/unwinding and libgomp OpenMP ELF payloads are separate components, while gcc-14-base is package metadata. Whole current native ELF closure is bound. Distroless dpkg file lists are unavailable and are not used as evidence of package emptiness.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-114690",
+        "sha256": "dc7fd199b7d7f78093bc8a082421676997b52b92573ec59df330d0687c8d821d",
+        "source_status_rows": [
+          [
+            "gcc-11",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152814"
+          ],
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152815"
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "13.5.0-4",
+            "",
+            "",
+            "1152816"
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "14.4.0-4",
+            "",
+            "",
+            "1152817"
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152818"
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152819"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-114691",
+        "package": "gcc-14-base",
+        "version": "14.2.0-19",
+        "package_id": "gcc-14-base@14.2.0-19",
+        "purl": "pkg:deb/debian/gcc-14-base@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION",
+      "basis": "Official affected component is a libstdc++ source/header implementation; the actual libgcc_s C-ABI/unwinding and libgomp OpenMP ELF payloads are separate components, while gcc-14-base is package metadata. Whole current native ELF closure is bound. Distroless dpkg file lists are unavailable and are not used as evidence of package emptiness.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-114691",
+        "sha256": "75e7fdc85a7535dec46fc88742864080b2fa588de18a6f970f6404ab9717027d",
+        "source_status_rows": [
+          [
+            "gcc-11",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152814"
+          ],
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152815"
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "13.5.0-4",
+            "",
+            "",
+            "1152816"
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "14.4.0-4",
+            "",
+            "",
+            "1152817"
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152818"
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152819"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-115455",
+        "package": "gcc-14-base",
+        "version": "14.2.0-19",
+        "package_id": "gcc-14-base@14.2.0-19",
+        "purl": "pkg:deb/debian/gcc-14-base@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION",
+      "basis": "Official affected component is a libstdc++ source/header implementation; the actual libgcc_s C-ABI/unwinding and libgomp OpenMP ELF payloads are separate components, while gcc-14-base is package metadata. Whole current native ELF closure is bound. Distroless dpkg file lists are unavailable and are not used as evidence of package emptiness.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-115455",
+        "sha256": "6aac895d9a6372444aa88e3e1e9a3d9d8207e41603cbe7833340ee56956dfc06",
+        "source_status_rows": [
+          [
+            "gcc-11",
+            "source",
+            "(unstable)",
+            "(not affected)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "(not affected)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "13.5.0-4",
+            "",
+            "",
+            "1152816"
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "14.4.0-4",
+            "",
+            "",
+            "1152817"
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152818"
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152819"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-95619",
+        "package": "gcc-14-base",
+        "version": "14.2.0-19",
+        "package_id": "gcc-14-base@14.2.0-19",
+        "purl": "pkg:deb/debian/gcc-14-base@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION",
+      "basis": "Official affected component is a libstdc++ source/header implementation; the actual libgcc_s C-ABI/unwinding and libgomp OpenMP ELF payloads are separate components, while gcc-14-base is package metadata. Whole current native ELF closure is bound. Distroless dpkg file lists are unavailable and are not used as evidence of package emptiness.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-95619",
+        "sha256": "52df0ff43dc975102e618af335841b8939b67019a67c257dde05140b11eca57c",
+        "source_status_rows": [
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "13.5.0-3",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "14.4.0-3",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "15.3.0-5",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "16.2.0-4",
+            "",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-115456",
+        "package": "gcc-14-base",
+        "version": "14.2.0-19",
+        "package_id": "gcc-14-base@14.2.0-19",
+        "purl": "pkg:deb/debian/gcc-14-base@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION",
+      "basis": "Official affected component is a libstdc++ source/header implementation; the actual libgcc_s C-ABI/unwinding and libgomp OpenMP ELF payloads are separate components, while gcc-14-base is package metadata. Whole current native ELF closure is bound. Distroless dpkg file lists are unavailable and are not used as evidence of package emptiness.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-115456",
+        "sha256": "fa84731d5d5f7e3971434f970299aa8ae28fa692f9b688ed41e4f99c3c331605",
+        "source_status_rows": [
+          [
+            "gcc-11",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-42250",
+        "package": "libbz2-1.0",
+        "version": "1.0.8-6",
+        "package_id": "libbz2-1.0@1.0.8-6",
+        "purl": "pkg:deb/debian/libbz2-1.0@1.0.8-6?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_EXECUTABLE_COMPONENT_ABSENT",
+      "basis": "Official affected component is standalone bzip2recover, not libbz2 decompression. Exact full rootfs ELF review and fresh current stager path walk contain no recover executable; current package file list bound.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-42250",
+        "sha256": "498b572f4d30aaefd631fc9d4e313b45e223149d1a21b5ff9056771bb7c96fdb",
+        "source_status_rows": [
+          [
+            "bzip2",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1138255"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-18374",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-18374",
+        "sha256": "a00ae4be86617e03a5eca95bd14869a2baf5ea5ae196356c682f1de2c7117c9f",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-5",
+            "",
+            "",
+            "1146721"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-19499",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-19499",
+        "sha256": "5ae203e2503db74b024563d3a6cbac974337438d5f3db69b93cbdd0ec38aecd7",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-5",
+            "",
+            "",
+            "1145891"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-19542",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-19542",
+        "sha256": "dbcdf805c206777ed25f95e2fea9952a174b245e5dd69d212393e2f8f8a5af87",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-4",
+            "",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-5435",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-5435",
+        "sha256": "2361f3d31bc16c0ed30e5f79e4398e73155b117f7c2097c4208f9d756cdd0959",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-3",
+            "",
+            "",
+            "1135230"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-6238",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-6238",
+        "sha256": "b2e9c31388df4262186d0645acff6fc7994b53511e4a04f4d4468e5bca7f6343",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-3",
+            "",
+            "",
+            "1135231"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-6368",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-6368",
+        "sha256": "a8c3722420dc1aefb9b9953e3be13e4784264c49b9bee8975739a0370c66b0dd",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-4",
+            "",
+            "",
+            "1144252"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-6791",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-6791",
+        "sha256": "b90c441e5a74f8025eb132fbc1156d06771123f95cbc48cc5aaa1174cd34a096",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-3",
+            "",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-77117",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-77117",
+        "sha256": "ed3ff25f7f5c15f2f957eb6beb981723cf305f53a86bdccff8a7d9cbe4a93004",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-5",
+            "",
+            "",
+            "1145880"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-80489",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-80489",
+        "sha256": "c639e01a744829ce5bdb9a22e2eeebdbc33626ea2cb93c454b310626c9362032",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-5",
+            "",
+            "",
+            "1145987"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-84243",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_MISSING_REQUIRED_LOCALE",
+      "basis": "Exact current image has no locale archive or locale/message tree and cannot select en_US.UTF-8/de_DE.UTF-8/C.UTF-8 for LC_MESSAGES; onlyC/POSIX succeeded. No LANGUAGE/LOCPATH/LC_MESSAGES environment override. Official exploit requires a non-C/non-POSIX installed locale, untrusted LANGUAGE crossing a boundary and attacker-readable catalog; those necessary locale conditions are absent. libc2.43-7 is still unfixed for this issue; no fixed claim.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-84243",
+        "sha256": "98865d37ee29c5c0734e80b8389d5a071afe6b2edd358bb63d1ea47cf7ac7b47",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152640"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-8674",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-8674",
+        "sha256": "254763c444adc3aad987289503312aecd31d3e8ef8aa952e3f171a91cdac29d0",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-6",
+            "",
+            "",
+            "1148168"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-86805",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-86805",
+        "sha256": "dc3e479b2edf14d97823b10c1012e791e1473d61fb0be659e16e868c773a2127",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-7",
+            "",
+            "",
+            "1148727"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-89092",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-89092",
+        "sha256": "31eb3351ac16b6b226841b8faf481de52043d50e94d7d65db3aba87325d31099",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-7",
+            "",
+            "",
+            "1147395"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-95818",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-95818",
+        "sha256": "88a593e9a655640e719f6f7bf985252e4569ec85acab41e5150498fb6c52f271",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-7",
+            "",
+            "",
+            "1148728"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2010-4756",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT",
+      "basis": "POSIX glob may expand resource-intensive patterns; upstream says callers must impose limits. This is an API resource contract, not a repaired libc flaw. The application uses Python glob/fnmatch rather than accepting FTP STAT patterns for libc glob.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2010-4756",
+        "sha256": "1533aa64c5b15064840929759355263b7de877ee56a438ea7a38a115ecf9d9e3",
+        "source_status_rows": [
+          [
+            "eglibc",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "unimportant",
+            "",
+            ""
+          ],
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "unimportant",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2018-20796",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT",
+      "basis": "Unbounded recursion for specially crafted POSIX regex/backreferences; official Debian notes upstream does not classify this behavior as a vulnerability and links glibc Security Exceptions. No claim that the algorithm was changed.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2018-20796",
+        "sha256": "e6432d5fc861355dacd40700ae7169b572f03a69c17791bf5bb70543511c76e9",
+        "source_status_rows": [
+          [
+            "eglibc",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "unimportant",
+            "",
+            ""
+          ],
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "unimportant",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2019-1010022",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT",
+      "basis": "Upstream classifies report22850 as a non-security bug. Its described bypass depends on a separate existing stack overflow; this is not proof that arbitrary stack corruption is safe.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2019-1010022",
+        "sha256": "cbef0ea746e9555c4d04761bf8ef09f236c787e9fc9033113695d351d480ab1d",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "unimportant",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2019-1010023",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT",
+      "basis": "Upstream classifies report22851 as non-security: running ldd on attacker-supplied ELF may execute code. Current rootfs has no ldd executable and no application ldd-on-upload route.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2019-1010023",
+        "sha256": "316608e29cf6e9690c7cb3c8424fd54d9ac31173423d112c1bcbda4ca881faba",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "unimportant",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2019-1010024",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT",
+      "basis": "Upstream classifies report22852 concerning thread-stack/heap caching as non-security; it is not a standalone memory-access primitive or a claim that ASLR guarantees unpredictability.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2019-1010024",
+        "sha256": "c59a28082119a9ded2f8562007694cd70e5357e727064de5eea447e49a75b4c0",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "unimportant",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2019-1010025",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT",
+      "basis": "Upstream report22853 treats address guessing/ASLR bypass alone as not a vulnerability. No source fix is claimed.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2019-1010025",
+        "sha256": "48754f59ff21707ba10211ef7ade27c43c12dd422dbb1acab80155c321ae00a7",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "unimportant",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2019-9192",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT",
+      "basis": "Maintainer disputes crafted-pattern recursion as a security vulnerability; official tracker links report24269. The raw package remains marked unfixed; this disposition follows the specific upstream algorithm/input contract, not a blanket LOW waiver.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2019-9192",
+        "sha256": "31d6c3fae656f6efab2173c5b95dfe8d843ebc6e37110cd9f5de3347fb957dc7",
+        "source_status_rows": [
+          [
+            "eglibc",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "unimportant",
+            "",
+            ""
+          ],
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "unimportant",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-97399",
+        "package": "libc-gconv-modules-extra",
+        "version": "2.43-7",
+        "package_id": "libc-gconv-modules-extra@2.43-7",
+        "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-97399",
+        "sha256": "3fc856316476a66d6279a005beb47d499a7b486b870a6c072424b4a32b20a5b6",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-7",
+            "",
+            "",
+            "1149647"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-18374",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-18374",
+        "sha256": "a00ae4be86617e03a5eca95bd14869a2baf5ea5ae196356c682f1de2c7117c9f",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-5",
+            "",
+            "",
+            "1146721"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-19499",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-19499",
+        "sha256": "5ae203e2503db74b024563d3a6cbac974337438d5f3db69b93cbdd0ec38aecd7",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-5",
+            "",
+            "",
+            "1145891"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-19542",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-19542",
+        "sha256": "dbcdf805c206777ed25f95e2fea9952a174b245e5dd69d212393e2f8f8a5af87",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-4",
+            "",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-5435",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-5435",
+        "sha256": "2361f3d31bc16c0ed30e5f79e4398e73155b117f7c2097c4208f9d756cdd0959",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-3",
+            "",
+            "",
+            "1135230"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-6238",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-6238",
+        "sha256": "b2e9c31388df4262186d0645acff6fc7994b53511e4a04f4d4468e5bca7f6343",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-3",
+            "",
+            "",
+            "1135231"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-6368",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-6368",
+        "sha256": "a8c3722420dc1aefb9b9953e3be13e4784264c49b9bee8975739a0370c66b0dd",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-4",
+            "",
+            "",
+            "1144252"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-6791",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-6791",
+        "sha256": "b90c441e5a74f8025eb132fbc1156d06771123f95cbc48cc5aaa1174cd34a096",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-3",
+            "",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-77117",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-77117",
+        "sha256": "ed3ff25f7f5c15f2f957eb6beb981723cf305f53a86bdccff8a7d9cbe4a93004",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-5",
+            "",
+            "",
+            "1145880"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-80489",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-80489",
+        "sha256": "c639e01a744829ce5bdb9a22e2eeebdbc33626ea2cb93c454b310626c9362032",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-5",
+            "",
+            "",
+            "1145987"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-84243",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_MISSING_REQUIRED_LOCALE",
+      "basis": "Exact current image has no locale archive or locale/message tree and cannot select en_US.UTF-8/de_DE.UTF-8/C.UTF-8 for LC_MESSAGES; onlyC/POSIX succeeded. No LANGUAGE/LOCPATH/LC_MESSAGES environment override. Official exploit requires a non-C/non-POSIX installed locale, untrusted LANGUAGE crossing a boundary and attacker-readable catalog; those necessary locale conditions are absent. libc2.43-7 is still unfixed for this issue; no fixed claim.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-84243",
+        "sha256": "98865d37ee29c5c0734e80b8389d5a071afe6b2edd358bb63d1ea47cf7ac7b47",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152640"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-8674",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-8674",
+        "sha256": "254763c444adc3aad987289503312aecd31d3e8ef8aa952e3f171a91cdac29d0",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-6",
+            "",
+            "",
+            "1148168"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-86805",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-86805",
+        "sha256": "dc3e479b2edf14d97823b10c1012e791e1473d61fb0be659e16e868c773a2127",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-7",
+            "",
+            "",
+            "1148727"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-89092",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-89092",
+        "sha256": "31eb3351ac16b6b226841b8faf481de52043d50e94d7d65db3aba87325d31099",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-7",
+            "",
+            "",
+            "1147395"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-95818",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-95818",
+        "sha256": "88a593e9a655640e719f6f7bf985252e4569ec85acab41e5150498fb6c52f271",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-7",
+            "",
+            "",
+            "1148728"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2010-4756",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT",
+      "basis": "POSIX glob may expand resource-intensive patterns; upstream says callers must impose limits. This is an API resource contract, not a repaired libc flaw. The application uses Python glob/fnmatch rather than accepting FTP STAT patterns for libc glob.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2010-4756",
+        "sha256": "1533aa64c5b15064840929759355263b7de877ee56a438ea7a38a115ecf9d9e3",
+        "source_status_rows": [
+          [
+            "eglibc",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "unimportant",
+            "",
+            ""
+          ],
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "unimportant",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2018-20796",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT",
+      "basis": "Unbounded recursion for specially crafted POSIX regex/backreferences; official Debian notes upstream does not classify this behavior as a vulnerability and links glibc Security Exceptions. No claim that the algorithm was changed.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2018-20796",
+        "sha256": "e6432d5fc861355dacd40700ae7169b572f03a69c17791bf5bb70543511c76e9",
+        "source_status_rows": [
+          [
+            "eglibc",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "unimportant",
+            "",
+            ""
+          ],
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "unimportant",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2019-1010022",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT",
+      "basis": "Upstream classifies report22850 as a non-security bug. Its described bypass depends on a separate existing stack overflow; this is not proof that arbitrary stack corruption is safe.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2019-1010022",
+        "sha256": "cbef0ea746e9555c4d04761bf8ef09f236c787e9fc9033113695d351d480ab1d",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "unimportant",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2019-1010023",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT",
+      "basis": "Upstream classifies report22851 as non-security: running ldd on attacker-supplied ELF may execute code. Current rootfs has no ldd executable and no application ldd-on-upload route.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2019-1010023",
+        "sha256": "316608e29cf6e9690c7cb3c8424fd54d9ac31173423d112c1bcbda4ca881faba",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "unimportant",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2019-1010024",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT",
+      "basis": "Upstream classifies report22852 concerning thread-stack/heap caching as non-security; it is not a standalone memory-access primitive or a claim that ASLR guarantees unpredictability.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2019-1010024",
+        "sha256": "c59a28082119a9ded2f8562007694cd70e5357e727064de5eea447e49a75b4c0",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "unimportant",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2019-1010025",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT",
+      "basis": "Upstream report22853 treats address guessing/ASLR bypass alone as not a vulnerability. No source fix is claimed.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2019-1010025",
+        "sha256": "48754f59ff21707ba10211ef7ade27c43c12dd422dbb1acab80155c321ae00a7",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "unimportant",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2019-9192",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_NON_SECURITY_OR_DISPUTED_CONTRACT",
+      "basis": "Maintainer disputes crafted-pattern recursion as a security vulnerability; official tracker links report24269. The raw package remains marked unfixed; this disposition follows the specific upstream algorithm/input contract, not a blanket LOW waiver.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2019-9192",
+        "sha256": "31d6c3fae656f6efab2173c5b95dfe8d843ebc6e37110cd9f5de3347fb957dc7",
+        "source_status_rows": [
+          [
+            "eglibc",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "unimportant",
+            "",
+            ""
+          ],
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "unimportant",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-97399",
+        "package": "libc6",
+        "version": "2.43-7",
+        "package_id": "libc6@2.43-7",
+        "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_GLIBC_PAYLOAD",
+      "basis": "Official Debian tracker identifies glibc2.43-7 as fixed; exact newly loaded libc/loader and all290 official libc+gconv payload files/links match signed package bytes. The Debian13 scanner source database still reports nofixed, which is preserved.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-97399",
+        "sha256": "3fc856316476a66d6279a005beb47d499a7b486b870a6c072424b4a32b20a5b6",
+        "source_status_rows": [
+          [
+            "glibc",
+            "source",
+            "(unstable)",
+            "2.43-7",
+            "",
+            "",
+            "1149647"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-102010",
+        "package": "libgcc-s1",
+        "version": "14.2.0-19",
+        "package_id": "libgcc-s1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgcc-s1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION",
+      "basis": "Official affected component is a libstdc++ source/header implementation; the actual libgcc_s C-ABI/unwinding and libgomp OpenMP ELF payloads are separate components, while gcc-14-base is package metadata. Whole current native ELF closure is bound. Distroless dpkg file lists are unavailable and are not used as evidence of package emptiness.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-102010",
+        "sha256": "5575314f9d4233e75b9efedc796777dbc63f9105a6634e0e56f263f40108250b",
+        "source_status_rows": [
+          [
+            "gcc-11",
+            "source",
+            "(unstable)",
+            "11.5.0-13",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "12.5.0-11",
+            "",
+            "",
+            "1150198"
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "13.5.0-2",
+            "",
+            "",
+            "1150197"
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "14.4.0-3",
+            "",
+            "",
+            "1150196"
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "15.3.0-5",
+            "",
+            "",
+            "1150195"
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "16.2.0-4",
+            "",
+            "",
+            "1150194"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-114690",
+        "package": "libgcc-s1",
+        "version": "14.2.0-19",
+        "package_id": "libgcc-s1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgcc-s1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION",
+      "basis": "Official affected component is a libstdc++ source/header implementation; the actual libgcc_s C-ABI/unwinding and libgomp OpenMP ELF payloads are separate components, while gcc-14-base is package metadata. Whole current native ELF closure is bound. Distroless dpkg file lists are unavailable and are not used as evidence of package emptiness.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-114690",
+        "sha256": "dc7fd199b7d7f78093bc8a082421676997b52b92573ec59df330d0687c8d821d",
+        "source_status_rows": [
+          [
+            "gcc-11",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152814"
+          ],
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152815"
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "13.5.0-4",
+            "",
+            "",
+            "1152816"
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "14.4.0-4",
+            "",
+            "",
+            "1152817"
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152818"
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152819"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-114691",
+        "package": "libgcc-s1",
+        "version": "14.2.0-19",
+        "package_id": "libgcc-s1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgcc-s1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION",
+      "basis": "Official affected component is a libstdc++ source/header implementation; the actual libgcc_s C-ABI/unwinding and libgomp OpenMP ELF payloads are separate components, while gcc-14-base is package metadata. Whole current native ELF closure is bound. Distroless dpkg file lists are unavailable and are not used as evidence of package emptiness.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-114691",
+        "sha256": "75e7fdc85a7535dec46fc88742864080b2fa588de18a6f970f6404ab9717027d",
+        "source_status_rows": [
+          [
+            "gcc-11",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152814"
+          ],
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152815"
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "13.5.0-4",
+            "",
+            "",
+            "1152816"
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "14.4.0-4",
+            "",
+            "",
+            "1152817"
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152818"
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152819"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-115455",
+        "package": "libgcc-s1",
+        "version": "14.2.0-19",
+        "package_id": "libgcc-s1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgcc-s1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION",
+      "basis": "Official affected component is a libstdc++ source/header implementation; the actual libgcc_s C-ABI/unwinding and libgomp OpenMP ELF payloads are separate components, while gcc-14-base is package metadata. Whole current native ELF closure is bound. Distroless dpkg file lists are unavailable and are not used as evidence of package emptiness.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-115455",
+        "sha256": "6aac895d9a6372444aa88e3e1e9a3d9d8207e41603cbe7833340ee56956dfc06",
+        "source_status_rows": [
+          [
+            "gcc-11",
+            "source",
+            "(unstable)",
+            "(not affected)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "(not affected)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "13.5.0-4",
+            "",
+            "",
+            "1152816"
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "14.4.0-4",
+            "",
+            "",
+            "1152817"
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152818"
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152819"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-95619",
+        "package": "libgcc-s1",
+        "version": "14.2.0-19",
+        "package_id": "libgcc-s1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgcc-s1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION",
+      "basis": "Official affected component is a libstdc++ source/header implementation; the actual libgcc_s C-ABI/unwinding and libgomp OpenMP ELF payloads are separate components, while gcc-14-base is package metadata. Whole current native ELF closure is bound. Distroless dpkg file lists are unavailable and are not used as evidence of package emptiness.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-95619",
+        "sha256": "52df0ff43dc975102e618af335841b8939b67019a67c257dde05140b11eca57c",
+        "source_status_rows": [
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "13.5.0-3",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "14.4.0-3",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "15.3.0-5",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "16.2.0-4",
+            "",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-115456",
+        "package": "libgcc-s1",
+        "version": "14.2.0-19",
+        "package_id": "libgcc-s1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgcc-s1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION",
+      "basis": "Official affected component is a libstdc++ source/header implementation; the actual libgcc_s C-ABI/unwinding and libgomp OpenMP ELF payloads are separate components, while gcc-14-base is package metadata. Whole current native ELF closure is bound. Distroless dpkg file lists are unavailable and are not used as evidence of package emptiness.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-115456",
+        "sha256": "fa84731d5d5f7e3971434f970299aa8ae28fa692f9b688ed41e4f99c3c331605",
+        "source_status_rows": [
+          [
+            "gcc-11",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-102010",
+        "package": "libgomp1",
+        "version": "14.2.0-19",
+        "package_id": "libgomp1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgomp1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION",
+      "basis": "Official affected component is a libstdc++ source/header implementation; the actual libgcc_s C-ABI/unwinding and libgomp OpenMP ELF payloads are separate components, while gcc-14-base is package metadata. Whole current native ELF closure is bound. Distroless dpkg file lists are unavailable and are not used as evidence of package emptiness.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-102010",
+        "sha256": "5575314f9d4233e75b9efedc796777dbc63f9105a6634e0e56f263f40108250b",
+        "source_status_rows": [
+          [
+            "gcc-11",
+            "source",
+            "(unstable)",
+            "11.5.0-13",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "12.5.0-11",
+            "",
+            "",
+            "1150198"
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "13.5.0-2",
+            "",
+            "",
+            "1150197"
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "14.4.0-3",
+            "",
+            "",
+            "1150196"
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "15.3.0-5",
+            "",
+            "",
+            "1150195"
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "16.2.0-4",
+            "",
+            "",
+            "1150194"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-114690",
+        "package": "libgomp1",
+        "version": "14.2.0-19",
+        "package_id": "libgomp1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgomp1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION",
+      "basis": "Official affected component is a libstdc++ source/header implementation; the actual libgcc_s C-ABI/unwinding and libgomp OpenMP ELF payloads are separate components, while gcc-14-base is package metadata. Whole current native ELF closure is bound. Distroless dpkg file lists are unavailable and are not used as evidence of package emptiness.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-114690",
+        "sha256": "dc7fd199b7d7f78093bc8a082421676997b52b92573ec59df330d0687c8d821d",
+        "source_status_rows": [
+          [
+            "gcc-11",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152814"
+          ],
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152815"
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "13.5.0-4",
+            "",
+            "",
+            "1152816"
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "14.4.0-4",
+            "",
+            "",
+            "1152817"
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152818"
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152819"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-114691",
+        "package": "libgomp1",
+        "version": "14.2.0-19",
+        "package_id": "libgomp1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgomp1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION",
+      "basis": "Official affected component is a libstdc++ source/header implementation; the actual libgcc_s C-ABI/unwinding and libgomp OpenMP ELF payloads are separate components, while gcc-14-base is package metadata. Whole current native ELF closure is bound. Distroless dpkg file lists are unavailable and are not used as evidence of package emptiness.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-114691",
+        "sha256": "75e7fdc85a7535dec46fc88742864080b2fa588de18a6f970f6404ab9717027d",
+        "source_status_rows": [
+          [
+            "gcc-11",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152814"
+          ],
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152815"
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "13.5.0-4",
+            "",
+            "",
+            "1152816"
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "14.4.0-4",
+            "",
+            "",
+            "1152817"
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152818"
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152819"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-115455",
+        "package": "libgomp1",
+        "version": "14.2.0-19",
+        "package_id": "libgomp1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgomp1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION",
+      "basis": "Official affected component is a libstdc++ source/header implementation; the actual libgcc_s C-ABI/unwinding and libgomp OpenMP ELF payloads are separate components, while gcc-14-base is package metadata. Whole current native ELF closure is bound. Distroless dpkg file lists are unavailable and are not used as evidence of package emptiness.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-115455",
+        "sha256": "6aac895d9a6372444aa88e3e1e9a3d9d8207e41603cbe7833340ee56956dfc06",
+        "source_status_rows": [
+          [
+            "gcc-11",
+            "source",
+            "(unstable)",
+            "(not affected)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "(not affected)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "13.5.0-4",
+            "",
+            "",
+            "1152816"
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "14.4.0-4",
+            "",
+            "",
+            "1152817"
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152818"
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152819"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-95619",
+        "package": "libgomp1",
+        "version": "14.2.0-19",
+        "package_id": "libgomp1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgomp1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION",
+      "basis": "Official affected component is a libstdc++ source/header implementation; the actual libgcc_s C-ABI/unwinding and libgomp OpenMP ELF payloads are separate components, while gcc-14-base is package metadata. Whole current native ELF closure is bound. Distroless dpkg file lists are unavailable and are not used as evidence of package emptiness.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-95619",
+        "sha256": "52df0ff43dc975102e618af335841b8939b67019a67c257dde05140b11eca57c",
+        "source_status_rows": [
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "13.5.0-3",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "14.4.0-3",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "15.3.0-5",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "16.2.0-4",
+            "",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-115456",
+        "package": "libgomp1",
+        "version": "14.2.0-19",
+        "package_id": "libgomp1@14.2.0-19",
+        "purl": "pkg:deb/debian/libgomp1@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_SOURCE_PACKAGE_TO_BINARY_PROPAGATION",
+      "basis": "Official affected component is a libstdc++ source/header implementation; the actual libgcc_s C-ABI/unwinding and libgomp OpenMP ELF payloads are separate components, while gcc-14-base is package metadata. Whole current native ELF closure is bound. Distroless dpkg file lists are unavailable and are not used as evidence of package emptiness.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-115456",
+        "sha256": "fa84731d5d5f7e3971434f970299aa8ae28fa692f9b688ed41e4f99c3c331605",
+        "source_status_rows": [
+          [
+            "gcc-11",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-119373",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "HIGH",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD",
+      "basis": "Official Debian tracker identifies sqlite3 3.54.1-2 as fixed. Exact actual-loaded libsqlite3.so.3.54.1 SHA225ceb… matches original signed Debian package and existing fixed-source/native receipts; original3HIGH and all additional severity rows remain in rawreport.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-119373",
+        "sha256": "43323c68311c6c3ede8e37dfc35111e9d8a59ca72ad8b8a7c7e1936552e9506d",
+        "source_status_rows": [
+          [
+            "sqlite3",
+            "source",
+            "(unstable)",
+            "3.54.1-1",
+            "",
+            "",
+            "1152790"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-119374",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "HIGH",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD",
+      "basis": "Official Debian tracker identifies sqlite3 3.54.1-2 as fixed. Exact actual-loaded libsqlite3.so.3.54.1 SHA225ceb… matches original signed Debian package and existing fixed-source/native receipts; original3HIGH and all additional severity rows remain in rawreport.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-119374",
+        "sha256": "ff9a3366290eff2211cb3b51078c0d722e749e2032b69f22d4c34a494f738f05",
+        "source_status_rows": [
+          [
+            "sqlite3",
+            "source",
+            "(unstable)",
+            "3.54.1-1",
+            "",
+            "",
+            "1152790"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-119379",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "HIGH",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD",
+      "basis": "Official Debian tracker identifies sqlite3 3.54.1-2 as fixed. Exact actual-loaded libsqlite3.so.3.54.1 SHA225ceb… matches original signed Debian package and existing fixed-source/native receipts; original3HIGH and all additional severity rows remain in rawreport.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-119379",
+        "sha256": "24b8b56e3008317e4a86968b9c2f8e7aad437d358af1bfcdb3da1090ec8f1b69",
+        "source_status_rows": [
+          [
+            "sqlite3",
+            "source",
+            "(unstable)",
+            "3.54.1-1",
+            "",
+            "",
+            "1152790"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-119371",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD",
+      "basis": "Official Debian tracker identifies sqlite3 3.54.1-2 as fixed. Exact actual-loaded libsqlite3.so.3.54.1 SHA225ceb… matches original signed Debian package and existing fixed-source/native receipts; original3HIGH and all additional severity rows remain in rawreport.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-119371",
+        "sha256": "ef06530924dd494f2e8645fec9f0da12c2100cffc518bceceb42f0ab15098fdf",
+        "source_status_rows": [
+          [
+            "sqlite3",
+            "source",
+            "(unstable)",
+            "3.54.1-1",
+            "",
+            "",
+            "1152790"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-119372",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD",
+      "basis": "Official Debian tracker identifies sqlite3 3.54.1-2 as fixed. Exact actual-loaded libsqlite3.so.3.54.1 SHA225ceb… matches original signed Debian package and existing fixed-source/native receipts; original3HIGH and all additional severity rows remain in rawreport.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-119372",
+        "sha256": "a011a59be6056260951a5742e0aef4834ea142c486d7ba72c18c7e81c45428e5",
+        "source_status_rows": [
+          [
+            "sqlite3",
+            "source",
+            "(unstable)",
+            "3.54.1-1",
+            "",
+            "",
+            "1152790"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-119375",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD",
+      "basis": "Official Debian tracker identifies sqlite3 3.54.1-2 as fixed. Exact actual-loaded libsqlite3.so.3.54.1 SHA225ceb… matches original signed Debian package and existing fixed-source/native receipts; original3HIGH and all additional severity rows remain in rawreport.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-119375",
+        "sha256": "92fdc1f4d1dab9e1cd538f145231bcb867f5d0c813f6d864016c3c02768b5b04",
+        "source_status_rows": [
+          [
+            "sqlite3",
+            "source",
+            "(unstable)",
+            "3.54.1-1",
+            "",
+            "",
+            "1152790"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-119376",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD",
+      "basis": "Official Debian tracker identifies sqlite3 3.54.1-2 as fixed. Exact actual-loaded libsqlite3.so.3.54.1 SHA225ceb… matches original signed Debian package and existing fixed-source/native receipts; original3HIGH and all additional severity rows remain in rawreport.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-119376",
+        "sha256": "c38fce92f84de6cdb5b43f65d24788ffacee92fd195ce3e694a28a4322bfe817",
+        "source_status_rows": [
+          [
+            "sqlite3",
+            "source",
+            "(unstable)",
+            "3.54.1-1",
+            "",
+            "",
+            "1152790"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-119378",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD",
+      "basis": "Official Debian tracker identifies sqlite3 3.54.1-2 as fixed. Exact actual-loaded libsqlite3.so.3.54.1 SHA225ceb… matches original signed Debian package and existing fixed-source/native receipts; original3HIGH and all additional severity rows remain in rawreport.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-119378",
+        "sha256": "0fd3e70535c9a46dc96cc8e6e775ec464ac35b9b25f201d2aed64956a000a4eb",
+        "source_status_rows": [
+          [
+            "sqlite3",
+            "source",
+            "(unstable)",
+            "3.54.1-1",
+            "",
+            "",
+            "1152790"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-119591",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD",
+      "basis": "Official Debian tracker identifies sqlite3 3.54.1-2 as fixed. Exact actual-loaded libsqlite3.so.3.54.1 SHA225ceb… matches original signed Debian package and existing fixed-source/native receipts; original3HIGH and all additional severity rows remain in rawreport.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-119591",
+        "sha256": "2a3251e3ab1028d35d992ec7278647ae35e155f030884c87d87511e9f6e166ac",
+        "source_status_rows": [
+          [
+            "sqlite3",
+            "source",
+            "(unstable)",
+            "3.54.1-1",
+            "",
+            "",
+            "1152790"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-50812",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD",
+      "basis": "Official Debian tracker identifies sqlite3 3.54.1-2 as fixed. Exact actual-loaded libsqlite3.so.3.54.1 SHA225ceb… matches original signed Debian package and existing fixed-source/native receipts; original3HIGH and all additional severity rows remain in rawreport.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-50812",
+        "sha256": "0adc02bd6d3c9ebf8f553996c891d175925700dcd566ffa19f7a567dbfa6be12",
+        "source_status_rows": [
+          [
+            "sqlite3",
+            "source",
+            "(unstable)",
+            "3.53.2-1",
+            "",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-50813",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD",
+      "basis": "Official Debian tracker identifies sqlite3 3.54.1-2 as fixed. Exact actual-loaded libsqlite3.so.3.54.1 SHA225ceb… matches original signed Debian package and existing fixed-source/native receipts; original3HIGH and all additional severity rows remain in rawreport.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-50813",
+        "sha256": "cd2f5485cc5dc8fdecb91bc3756c23b079c5aa145293d027cfdb757bf014e205",
+        "source_status_rows": [
+          [
+            "sqlite3",
+            "source",
+            "(unstable)",
+            "3.53.4-2",
+            "",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2021-45346",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "UPSTREAM_DISPUTED_DATABASE_TRUST_CONTRACT",
+      "basis": "CVE-2021-45346 concerns a corrupt caller-supplied DB record reading unintended bytes from that same DB, per upstream dispute; not evidence of a repaired code path or a cross-user secret read in this application contract. backend/core/db.py connects configured state/llm-ledger path; backend/services/runtime.py creates configured DATA_DIR/checkpoints.sqlite3. Queries/schema are application controlled. scripts/migrate_legacy_sqlite.py --source is an explicit trusted operator legacy-migration input, not an HTTP uploaded SQLite database/SQL execution endpoint.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2021-45346",
+        "sha256": "b4e20e9c2f83ffb8252a58f552aa48e46724b0f2a3b76184e6dd27ea7977cbb9",
+        "source_status_rows": [
+          [
+            "sqlite",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "unimportant",
+            "",
+            ""
+          ],
+          [
+            "sqlite3",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "unimportant",
+            "",
+            "1005974"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2025-70873",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_ZIPFILE_COMPONENT_NOT_BUILT",
+      "basis": "Debian explicitly does not build zipfile extension for this binary; actual verified SQLite library gives no such table/function for zipfile, and SQL extension loading is not authorized by default. Exact loaded library SHA225ceb… matches official3.54.1-2 bytes.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2025-70873",
+        "sha256": "1d1626e3358838317551d22e990c850bce4e3022bf5cbe034829c17fccaf7418",
+        "source_status_rows": [
+          [
+            "sqlite3",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "unimportant",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-119377",
+        "package": "libsqlite3-0",
+        "version": "3.54.1-2",
+        "package_id": "libsqlite3-0@3.54.1-2",
+        "purl": "pkg:deb/debian/libsqlite3-0@3.54.1-2?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_OFFICIAL_SQLITE_PAYLOAD",
+      "basis": "Official Debian tracker identifies sqlite3 3.54.1-2 as fixed. Exact actual-loaded libsqlite3.so.3.54.1 SHA225ceb… matches original signed Debian package and existing fixed-source/native receipts; original3HIGH and all additional severity rows remain in rawreport.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-119377",
+        "sha256": "9fb1e54d88ea086ff672413927738e294c0dcbceeeaada23dc57bce538dbe98d",
+        "source_status_rows": [
+          [
+            "sqlite3",
+            "source",
+            "(unstable)",
+            "3.54.1-1",
+            "",
+            "",
+            "1152790"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-102010",
+        "package": "libstdc++6",
+        "version": "14.2.0-19",
+        "package_id": "libstdc++6@14.2.0-19",
+        "purl": "pkg:deb/debian/libstdc%2B%2B6@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_HEADER_COMPONENT_NOT_IN_RUNTIME_BINARY",
+      "basis": "Affected implementation is include/ext/pb_ds/detail/binary_heap_/erase_fn_imps.hpp, a consumer-instantiated template/header rather than code distributed by this shared runtime package. Exact source and DSO inventory reviewed. This is not a blanket disposition for independently compiled third-party template bodies.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-102010",
+        "sha256": "5575314f9d4233e75b9efedc796777dbc63f9105a6634e0e56f263f40108250b",
+        "source_status_rows": [
+          [
+            "gcc-11",
+            "source",
+            "(unstable)",
+            "11.5.0-13",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "12.5.0-11",
+            "",
+            "",
+            "1150198"
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "13.5.0-2",
+            "",
+            "",
+            "1150197"
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "14.4.0-3",
+            "",
+            "",
+            "1150196"
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "15.3.0-5",
+            "",
+            "",
+            "1150195"
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "16.2.0-4",
+            "",
+            "",
+            "1150194"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-114690",
+        "package": "libstdc++6",
+        "version": "14.2.0-19",
+        "package_id": "libstdc++6@14.2.0-19",
+        "purl": "pkg:deb/debian/libstdc%2B%2B6@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_HEADER_COMPONENT_NOT_IN_RUNTIME_BINARY",
+      "basis": "Affected implementation is include/parallel/search.h, a consumer-instantiated template/header rather than code distributed by this shared runtime package. Exact source and DSO inventory reviewed. This is not a blanket disposition for independently compiled third-party template bodies.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-114690",
+        "sha256": "dc7fd199b7d7f78093bc8a082421676997b52b92573ec59df330d0687c8d821d",
+        "source_status_rows": [
+          [
+            "gcc-11",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152814"
+          ],
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152815"
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "13.5.0-4",
+            "",
+            "",
+            "1152816"
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "14.4.0-4",
+            "",
+            "",
+            "1152817"
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152818"
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152819"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-114691",
+        "package": "libstdc++6",
+        "version": "14.2.0-19",
+        "package_id": "libstdc++6@14.2.0-19",
+        "purl": "pkg:deb/debian/libstdc%2B%2B6@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_HEADER_COMPONENT_NOT_IN_RUNTIME_BINARY",
+      "basis": "Affected implementation is include/bits/stl_bvector.h, a consumer-instantiated template/header rather than code distributed by this shared runtime package. Exact source and DSO inventory reviewed. This is not a blanket disposition for independently compiled third-party template bodies.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-114691",
+        "sha256": "75e7fdc85a7535dec46fc88742864080b2fa588de18a6f970f6404ab9717027d",
+        "source_status_rows": [
+          [
+            "gcc-11",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152814"
+          ],
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152815"
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "13.5.0-4",
+            "",
+            "",
+            "1152816"
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "14.4.0-4",
+            "",
+            "",
+            "1152817"
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152818"
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152819"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-115455",
+        "package": "libstdc++6",
+        "version": "14.2.0-19",
+        "package_id": "libstdc++6@14.2.0-19",
+        "purl": "pkg:deb/debian/libstdc%2B%2B6@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_HEADER_COMPONENT_NOT_IN_RUNTIME_BINARY",
+      "basis": "Affected implementation is include/std/bitset, a consumer-instantiated template/header rather than code distributed by this shared runtime package. Exact source and DSO inventory reviewed. This is not a blanket disposition for independently compiled third-party template bodies.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-115455",
+        "sha256": "6aac895d9a6372444aa88e3e1e9a3d9d8207e41603cbe7833340ee56956dfc06",
+        "source_status_rows": [
+          [
+            "gcc-11",
+            "source",
+            "(unstable)",
+            "(not affected)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "(not affected)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "13.5.0-4",
+            "",
+            "",
+            "1152816"
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "14.4.0-4",
+            "",
+            "",
+            "1152817"
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152818"
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            "1152819"
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-95619",
+        "package": "libstdc++6",
+        "version": "14.2.0-19",
+        "package_id": "libstdc++6@14.2.0-19",
+        "purl": "pkg:deb/debian/libstdc%2B%2B6@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_COMPILED_POSIX_MEMALIGN_ROUTE",
+      "basis": "Actual aligned operator new disassembly calls posix_memalign with original size; the vulnerable aligned_alloc size-rounding route is not compiled into this build. Official source/report distinguishes this build route.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-95619",
+        "sha256": "52df0ff43dc975102e618af335841b8939b67019a67c257dde05140b11eca57c",
+        "source_status_rows": [
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "13.5.0-3",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "14.4.0-3",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "15.3.0-5",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "16.2.0-4",
+            "",
+            "",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-115456",
+        "package": "libstdc++6",
+        "version": "14.2.0-19",
+        "package_id": "libstdc++6@14.2.0-19",
+        "purl": "pkg:deb/debian/libstdc%2B%2B6@14.2.0-19?arch=amd64&distro=debian-13.7",
+        "severity": "LOW",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "NOT_AFFECTED_FUNCTION_NOT_IN_CURRENT_APPLICATION_PATH",
+      "basis": "Ordinary GNU floating overloads are out-of-line. Entire current ELF partition is exact reviewed closure or official C glibc overlay, with no ordinary GNU floating from_chars dynamic import. Seven libstdc++ consumers have no loader lookup import; the eighth has one actual dlsym call fixed to __pthread_get_minstack. PDFium static code is confirmed LLVM libc++. Python application has no GNU floating symbol loader route; disposition is bounded to current application code/bytes, not future plugins or arbitrary FFI.",
+      "official_tracker": {
+        "url": "https://security-tracker.debian.org/tracker/CVE-2026-115456",
+        "sha256": "fa84731d5d5f7e3971434f970299aa8ae28fa692f9b688ed41e4f99c3c331605",
+        "source_status_rows": [
+          [
+            "gcc-11",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-12",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-13",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-14",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-15",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ],
+          [
+            "gcc-16",
+            "source",
+            "(unstable)",
+            "(unfixed)",
+            "",
+            "",
+            ""
+          ]
+        ]
+      }
+    }
+  ],
+  "private_complete_evidence_hashes": [
+    {
+      "file": "agent-full-scope/stager-runtime-facts.json",
+      "sha256": "1fad4e77030ad87dcf02942306e0d556d2d61cf65784ee7ac2f4f8dce3c6ea5e",
+      "bytes": 113151
+    },
+    {
+      "file": "agent-full-scope/component-runtime-facts-v2.json",
+      "sha256": "cebda0429734332df2148b3b807eebd1449d13bd02f6571eb69d6dfa8db5bba7",
+      "bytes": 660
+    },
+    {
+      "file": "agent-full-scope/python-source-index.json",
+      "sha256": "353e4d2c7134c8cb646b2d3dcb2986988ab7a14730dd80642512a11e1b3ffcd1",
+      "bytes": 1091723
+    },
+    {
+      "file": "agent-full-scope/aligned-new-objdump.txt",
+      "sha256": "d706998359b10161222afdbf9e22c82a5971b8ff0de739331ec5ce4776443772",
+      "bytes": 2362
+    },
+    {
+      "file": "from-chars-elf-audit/libavif-objdump.txt",
+      "sha256": "c74bf1a6985f30e3fa5fb29914afba8c44349b40cf2b9630746a56490d64ee11",
+      "bytes": 46736290
+    },
+    {
+      "file": "agent-advisories/dav1d-1.5.3-lib.c",
+      "sha256": "1dd0a2c1fffe0865f355bd822b8969010df0aac72cebc50464d0cb7a55896073",
+      "bytes": 27368
+    },
+    {
+      "file": "from-chars-followup.json",
+      "sha256": "3a2f5a99b9e31b08b24449ed4c1db16114e048daa65ee2ec05ada4c1df014014",
+      "bytes": 33257
+    },
+    {
+      "file": "from-chars-elf-audit/elf-inventory.json",
+      "sha256": "1eb5fc080e88df2b11fc6ec00090ddb0225515bf550d40ff40a336f770c3463e",
+      "bytes": 403800
+    },
+    {
+      "file": "from-chars-elf-audit/source-observations.json",
+      "sha256": "bba3f74e36394f6beebd092c6079d96581ce400e6c34084357ae331898723d65",
+      "bytes": 37843
+    },
+    {
+      "file": "agent-advisories/tracker-extracts.json",
+      "sha256": "f27573479dd3a78c2c6bb030c288de6dc0f127bdd2ca099b3a6ec1fcc5276ff7",
+      "bytes": 171189
+    },
+    {
+      "file": "glibc-candidate/handoff.json",
+      "sha256": "0f4cfacfb5953148b8cb2c689c78254023d3c08ad574b587afcbb01f34949cab",
+      "bytes": 1559
+    },
+    {
+      "file": "stager-full-scan/raw.private.json",
+      "sha256": "bcaf3f8a99284a4e05c646f62cef98a867d13c4a71376a6d13ec0432819eb0fe",
+      "bytes": 446243
+    },
+    {
+      "file": "stager-validation/native-verification.json",
+      "sha256": "9c343b154a5c9fd8c1ec5972eaebd8c9dadf2d12e13d2e0083bd36f79e5e5f03",
+      "bytes": 32102
+    },
+    {
+      "file": "agent-full-scope/python-source-lookup-paths.json",
+      "sha256": "64b437fffe9f966f062c6dc6d03948b0b1f3fb125eba1d5e0dcb4fd3eb8b5e6f",
+      "bytes": 210
+    }
+  ],
+  "limitations": [
+    "Rawzero",
+    "Finalpublicationartifact approval",
+    "Arbitrary future FFI/plugin/native wheels/template-body security",
+    "Existing GPL/third-party stack overall delivery completeness"
+  ],
+  "portable_config_identity_representation": {
+    "tag": "v0.75.0",
+    "commit": "591e9799316a602e703f0b484f6c6d7b234ec8f3",
+    "source_url": "https://github.com/aquasecurity/trivy/blob/591e9799316a602e703f0b484f6c6d7b234ec8f3/pkg/fanal/image/daemon/image.go#L236",
+    "source_sha256": "07efb04335da9424e2ba44cb189be6819d7a0fbe0ddd29f7059f6b136c001c69",
+    "lines_one_based": [
+      230,
+      240
+    ],
+    "source_excerpt": [
+      "\t// Fill only required metadata",
+      "\tvar history []v1.History",
+      "",
+      "\tfor _, h := range slices.Backward(dhistory) {",
+      "\t\thistory = append(history, v1.History{",
+      "\t\t\tCreated: v1.Time{",
+      "\t\t\t\tTime: time.Unix(h.Created, 0).UTC(),",
+      "\t\t\t},",
+      "\t\t\tCreatedBy:  h.CreatedBy,",
+      "\t\t\tComment:    h.Comment,",
+      "\t\t\tEmptyLayer: emptyLayer(h),"
+    ],
+    "contract": "Docker daemon history timestamps are integer Unix seconds; only history[].created is projected to exact UTC seconds. Actual saved config bytes/digest and all runtime/other metadata fields stay fully bound; archive datasource requires exact decoded config."
+  }
+}

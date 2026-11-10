@@ -1,0 +1,352 @@
+From 76f92accdfd5a8e94e8cbac7e221b13a293a0ae0 Mon Sep 17 00:00:00 2001
+From: Alexander Zobnin <alexanderzobnin@gmail.com>
+Date: Thu, 3 May 2018 15:56:51 +0300
+Subject: [PATCH 1/4] fix XSS vulnerabilities in dashboard links
+
+---
+ public/app/features/dashlinks/module.ts               | 8 ++++++--
+ public/app/features/panellinks/link_srv.ts            | 5 ++++-
+ public/app/features/panellinks/specs/link_srv.jest.ts | 3 ++-
+ 3 files changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/public/app/features/dashlinks/module.ts b/public/app/features/dashlinks/module.ts
+index 8fa110fe6b4a7..448338d666c13 100644
+--- a/public/app/features/dashlinks/module.ts
++++ b/public/app/features/dashlinks/module.ts
+@@ -15,7 +15,7 @@ function dashLinksContainer() {
+ }
+ 
+ /** @ngInject */
+-function dashLink($compile, linkSrv) {
++function dashLink($compile, linkSrv, $sanitize) {
+   return {
+     restrict: 'E',
+     link: function(scope, elem) {
+@@ -52,7 +52,11 @@ function dashLink($compile, linkSrv) {
+       }
+ 
+       // tooltip
+-      elem.find('a').tooltip({ title: scope.link.tooltip, html: true, container: 'body' });
++      elem.find('a').tooltip({
++        title: $sanitize(scope.link.tooltip),
++        html: true,
++        container: 'body',
++      });
+       icon.attr('class', 'fa fa-fw ' + scope.link.icon);
+       anchor.attr('target', scope.link.target);
+ 
+diff --git a/public/app/features/panellinks/link_srv.ts b/public/app/features/panellinks/link_srv.ts
+index b20294485a558..f0c4eebdd62f5 100644
+--- a/public/app/features/panellinks/link_srv.ts
++++ b/public/app/features/panellinks/link_srv.ts
+@@ -4,7 +4,7 @@ import kbn from 'app/core/utils/kbn';
+ 
+ export class LinkSrv {
+   /** @ngInject */
+-  constructor(private templateSrv, private timeSrv) {}
++  constructor(private templateSrv, private timeSrv, private $sanitize) {}
+ 
+   getLinkUrl(link) {
+     var url = this.templateSrv.replace(link.url || '');
+@@ -68,6 +68,7 @@ export class LinkSrv {
+     var info: any = {};
+     info.href = this.getLinkUrl(link);
+     info.title = this.templateSrv.replace(link.title || '');
++    info.title = this.$sanitize(info.title);
+     return info;
+   }
+ 
+@@ -105,6 +106,8 @@ export class LinkSrv {
+       info.href = this.appendToQueryString(info.href, this.templateSrv.replace(link.params, scopedVars));
+     }
+ 
++    info.title = this.$sanitize(info.title);
++
+     return info;
+   }
+ }
+diff --git a/public/app/features/panellinks/specs/link_srv.jest.ts b/public/app/features/panellinks/specs/link_srv.jest.ts
+index 2ec38961e29ce..37816f3bbcea8 100644
+--- a/public/app/features/panellinks/specs/link_srv.jest.ts
++++ b/public/app/features/panellinks/specs/link_srv.jest.ts
+@@ -10,9 +10,10 @@ describe('linkSrv', function() {
+   var linkSrv;
+   var templateSrvMock = {};
+   var timeSrvMock = {};
++  var sanitizeMock = {};
+ 
+   beforeEach(() => {
+-    linkSrv = new LinkSrv(templateSrvMock, timeSrvMock);
++    linkSrv = new LinkSrv(templateSrvMock, timeSrvMock, sanitizeMock);
+   });
+ 
+   describe('when appending query strings', function() {
+
+From 5d3999cb44a3661d4ba8dca91c8021a9afbcf104 Mon Sep 17 00:00:00 2001
+From: Alexander Zobnin <alexanderzobnin@gmail.com>
+Date: Thu, 3 May 2018 19:39:02 +0300
+Subject: [PATCH 2/4] fix tests error (unknow $sanitize provider)
+
+---
+ public/test/specs/helpers.ts | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
+
+diff --git a/public/test/specs/helpers.ts b/public/test/specs/helpers.ts
+index 8e83915362f4f..ab7fbb5698bb9 100644
+--- a/public/test/specs/helpers.ts
++++ b/public/test/specs/helpers.ts
+@@ -1,14 +1,15 @@
+ import _ from 'lodash';
+ import config from 'app/core/config';
+ import * as dateMath from 'app/core/utils/datemath';
+-import {angularMocks, sinon} from '../lib/common';
+-import {PanelModel} from 'app/features/dashboard/panel_model';
++import { angularMocks, sinon } from '../lib/common';
++import { PanelModel } from 'app/features/dashboard/panel_model';
+ 
+ export function ControllerTestContext() {
+   var self = this;
+ 
+   this.datasource = {};
+   this.$element = {};
++  this.$sanitize = {};
+   this.annotationsSrv = {};
+   this.timeSrv = new TimeSrvStub();
+   this.templateSrv = new TemplateSrvStub();
+@@ -30,6 +31,7 @@ export function ControllerTestContext() {
+       $provide.value('timeSrv', self.timeSrv);
+       $provide.value('templateSrv', self.templateSrv);
+       $provide.value('$element', self.$element);
++      $provide.value('$sanitize', self.$sanitize);
+       _.each(mocks, function(value, key) {
+         $provide.value(key, value);
+       });
+@@ -42,8 +44,8 @@ export function ControllerTestContext() {
+       self.$location = $location;
+       self.$browser = $browser;
+       self.$q = $q;
+-      self.panel = new PanelModel({type: 'test'});
+-      self.dashboard = {meta: {}};
++      self.panel = new PanelModel({ type: 'test' });
++      self.dashboard = { meta: {} };
+ 
+       $rootScope.appEvent = sinon.spy();
+       $rootScope.onAppEvent = sinon.spy();
+@@ -53,14 +55,14 @@ export function ControllerTestContext() {
+         $rootScope.colors.push('#' + i);
+       }
+ 
+-      config.panels['test'] = {info: {}};
++      config.panels['test'] = { info: {} };
+       self.ctrl = $controller(
+         Ctrl,
+-        {$scope: self.scope},
++        { $scope: self.scope },
+         {
+           panel: self.panel,
+           dashboard: self.dashboard,
+-        },
++        }
+       );
+     });
+   };
+@@ -72,7 +74,7 @@ export function ControllerTestContext() {
+       self.$browser = $browser;
+       self.scope.contextSrv = {};
+       self.scope.panel = {};
+-      self.scope.dashboard = {meta: {}};
++      self.scope.dashboard = { meta: {} };
+       self.scope.dashboardMeta = {};
+       self.scope.dashboardViewState = new DashboardViewStateStub();
+       self.scope.appEvent = sinon.spy();
+@@ -131,7 +133,7 @@ export function DashboardViewStateStub() {
+ 
+ export function TimeSrvStub() {
+   this.init = sinon.spy();
+-  this.time = {from: 'now-1h', to: 'now'};
++  this.time = { from: 'now-1h', to: 'now' };
+   this.timeRange = function(parse) {
+     if (parse === false) {
+       return this.time;
+@@ -159,7 +161,7 @@ export function ContextSrvStub() {
+ 
+ export function TemplateSrvStub() {
+   this.variables = [];
+-  this.templateSettings = {interpolate: /\[\[([\s\S]+?)\]\]/g};
++  this.templateSettings = { interpolate: /\[\[([\s\S]+?)\]\]/g };
+   this.data = {};
+   this.replace = function(text) {
+     return _.template(text, this.templateSettings)(this.data);
+@@ -188,7 +190,7 @@ var allDeps = {
+   TimeSrvStub: TimeSrvStub,
+   ControllerTestContext: ControllerTestContext,
+   ServiceTestContext: ServiceTestContext,
+-  DashboardViewStateStub: DashboardViewStateStub
++  DashboardViewStateStub: DashboardViewStateStub,
+ };
+ 
+ // for legacy
+
+From e6972036b07b88922c38b54588fe9d4a866a67ab Mon Sep 17 00:00:00 2001
+From: Alexander Zobnin <alexanderzobnin@gmail.com>
+Date: Thu, 3 May 2018 19:55:35 +0300
+Subject: [PATCH 3/4] fix XSS: minor refactor
+
+---
+ public/app/features/dashlinks/module.ts               | 2 +-
+ public/app/features/panellinks/link_srv.ts            | 2 +-
+ public/app/features/panellinks/specs/link_srv.jest.ts | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/public/app/features/dashlinks/module.ts b/public/app/features/dashlinks/module.ts
+index 448338d666c13..f1ca064dbce32 100644
+--- a/public/app/features/dashlinks/module.ts
++++ b/public/app/features/dashlinks/module.ts
+@@ -15,7 +15,7 @@ function dashLinksContainer() {
+ }
+ 
+ /** @ngInject */
+-function dashLink($compile, linkSrv, $sanitize) {
++function dashLink($compile, $sanitize, linkSrv) {
+   return {
+     restrict: 'E',
+     link: function(scope, elem) {
+diff --git a/public/app/features/panellinks/link_srv.ts b/public/app/features/panellinks/link_srv.ts
+index f0c4eebdd62f5..70a487b032617 100644
+--- a/public/app/features/panellinks/link_srv.ts
++++ b/public/app/features/panellinks/link_srv.ts
+@@ -4,7 +4,7 @@ import kbn from 'app/core/utils/kbn';
+ 
+ export class LinkSrv {
+   /** @ngInject */
+-  constructor(private templateSrv, private timeSrv, private $sanitize) {}
++  constructor(private $sanitize, private templateSrv, private timeSrv) {}
+ 
+   getLinkUrl(link) {
+     var url = this.templateSrv.replace(link.url || '');
+diff --git a/public/app/features/panellinks/specs/link_srv.jest.ts b/public/app/features/panellinks/specs/link_srv.jest.ts
+index 37816f3bbcea8..534f6a5cda19e 100644
+--- a/public/app/features/panellinks/specs/link_srv.jest.ts
++++ b/public/app/features/panellinks/specs/link_srv.jest.ts
+@@ -13,7 +13,7 @@ describe('linkSrv', function() {
+   var sanitizeMock = {};
+ 
+   beforeEach(() => {
+-    linkSrv = new LinkSrv(templateSrvMock, timeSrvMock, sanitizeMock);
++    linkSrv = new LinkSrv(sanitizeMock, templateSrvMock, timeSrvMock);
+   });
+ 
+   describe('when appending query strings', function() {
+
+From bfeebe2c2d9497f16af3b90d8e3e4c60c53400d1 Mon Sep 17 00:00:00 2001
+From: Alexander Zobnin <alexanderzobnin@gmail.com>
+Date: Mon, 7 May 2018 20:04:31 +0300
+Subject: [PATCH 4/4] fix XSS in dashlinks (absolute url) and refactor
+
+---
+ public/app/features/dashlinks/module.ts       | 19 +++++++++++++------
+ public/app/features/panel/panel_ctrl.ts       |  4 +++-
+ public/app/features/panellinks/link_srv.ts    |  5 +----
+ .../panellinks/specs/link_srv.jest.ts         |  3 +--
+ 4 files changed, 18 insertions(+), 13 deletions(-)
+
+diff --git a/public/app/features/dashlinks/module.ts b/public/app/features/dashlinks/module.ts
+index f1ca064dbce32..148d32f439936 100644
+--- a/public/app/features/dashlinks/module.ts
++++ b/public/app/features/dashlinks/module.ts
+@@ -49,14 +49,21 @@ function dashLink($compile, $sanitize, linkSrv) {
+         var linkInfo = linkSrv.getAnchorInfo(link);
+         span.text(linkInfo.title);
+         anchor.attr('href', linkInfo.href);
++        sanitizeAnchor();
++
++        // tooltip
++        elem.find('a').tooltip({
++          title: $sanitize(scope.link.tooltip),
++          html: true,
++          container: 'body',
++        });
++      }
++
++      function sanitizeAnchor() {
++        const anchorSanitized = $sanitize(anchor.parent().html());
++        anchor.parent().html(anchorSanitized);
+       }
+ 
+-      // tooltip
+-      elem.find('a').tooltip({
+-        title: $sanitize(scope.link.tooltip),
+-        html: true,
+-        container: 'body',
+-      });
+       icon.attr('class', 'fa fa-fw ' + scope.link.icon);
+       anchor.attr('target', scope.link.target);
+ 
+diff --git a/public/app/features/panel/panel_ctrl.ts b/public/app/features/panel/panel_ctrl.ts
+index da8adc4f908f8..e289079553006 100644
+--- a/public/app/features/panel/panel_ctrl.ts
++++ b/public/app/features/panel/panel_ctrl.ts
+@@ -314,6 +314,7 @@ export class PanelCtrl {
+     }
+ 
+     var linkSrv = this.$injector.get('linkSrv');
++    var sanitize = this.$injector.get('$sanitize');
+     var templateSrv = this.$injector.get('templateSrv');
+     var interpolatedMarkdown = templateSrv.replace(markdown, this.panel.scopedVars);
+     var html = '<div class="markdown-html">';
+@@ -336,7 +337,8 @@ export class PanelCtrl {
+       html += '</ul>';
+     }
+ 
+-    return html + '</div>';
++    html += '</div>';
++    return sanitize(html);
+   }
+ 
+   openInspector() {
+diff --git a/public/app/features/panellinks/link_srv.ts b/public/app/features/panellinks/link_srv.ts
+index 70a487b032617..b20294485a558 100644
+--- a/public/app/features/panellinks/link_srv.ts
++++ b/public/app/features/panellinks/link_srv.ts
+@@ -4,7 +4,7 @@ import kbn from 'app/core/utils/kbn';
+ 
+ export class LinkSrv {
+   /** @ngInject */
+-  constructor(private $sanitize, private templateSrv, private timeSrv) {}
++  constructor(private templateSrv, private timeSrv) {}
+ 
+   getLinkUrl(link) {
+     var url = this.templateSrv.replace(link.url || '');
+@@ -68,7 +68,6 @@ export class LinkSrv {
+     var info: any = {};
+     info.href = this.getLinkUrl(link);
+     info.title = this.templateSrv.replace(link.title || '');
+-    info.title = this.$sanitize(info.title);
+     return info;
+   }
+ 
+@@ -106,8 +105,6 @@ export class LinkSrv {
+       info.href = this.appendToQueryString(info.href, this.templateSrv.replace(link.params, scopedVars));
+     }
+ 
+-    info.title = this.$sanitize(info.title);
+-
+     return info;
+   }
+ }
+diff --git a/public/app/features/panellinks/specs/link_srv.jest.ts b/public/app/features/panellinks/specs/link_srv.jest.ts
+index 534f6a5cda19e..2ec38961e29ce 100644
+--- a/public/app/features/panellinks/specs/link_srv.jest.ts
++++ b/public/app/features/panellinks/specs/link_srv.jest.ts
+@@ -10,10 +10,9 @@ describe('linkSrv', function() {
+   var linkSrv;
+   var templateSrvMock = {};
+   var timeSrvMock = {};
+-  var sanitizeMock = {};
+ 
+   beforeEach(() => {
+-    linkSrv = new LinkSrv(sanitizeMock, templateSrvMock, timeSrvMock);
++    linkSrv = new LinkSrv(templateSrvMock, timeSrvMock);
+   });
+ 
+   describe('when appending query strings', function() {

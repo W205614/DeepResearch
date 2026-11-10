@@ -12,6 +12,7 @@ SELECTOR_FIXTURES = ROOT / 'tests/fixtures/grafana-fixed-20261107'
 PROFILE_CONTRACTS = {
     'maintenance': ('check_grafana_active_source_retirement.py', {'--profile': 'maintenance'}, 'check_grafana_maintenance'),
     'fixed20261107': ('check_grafana_source_fixed_20261107.py', {}, 'check_grafana_release_20261107'),
+    'grafana-source-20261110': ('check_grafana_source_scan_20261110.py', {}, 'check_grafana_source_build_20261110'),
 }
 BASE = '.cache/eval/'
 SOURCE_READY = "always() && steps.source_scan.outcome == 'success'"
@@ -37,13 +38,14 @@ def selected_profile(root):
                 for key, value in zip(node.keys, node.values) if isinstance(key, ast.Constant) and key.value == 'profile']
     assert len(profiles) == 1 and profiles[0] in PROFILE_CONTRACTS
     profile = profiles[0]
-    consumers = [alias.name for node in tree.body if isinstance(node, ast.ImportFrom) and node.module == 'scripts'
-                 for alias in node.names if alias.asname == 'candidate']
+    consumer_alias = 'source_candidate' if profile == 'grafana-source-20261110' else 'candidate'
+    consumers = [alias.name for node in ast.walk(tree) if isinstance(node, ast.ImportFrom) and node.module == 'scripts'
+                 for alias in node.names if alias.asname == consumer_alias]
     assert consumers == [PROFILE_CONTRACTS[profile][2]], 'Inventory profile and its exact consumer must agree'
     return profile
 
 
-@pytest.fixture(scope='module', params=sorted(PROFILE_CONTRACTS))
+@pytest.fixture(scope='module', params=['maintenance', 'fixed20261107'])
 def selected_workflow_root(request, tmp_path_factory):
     root = tmp_path_factory.mktemp('workflow-' + request.param)
     for name in ['compose.yaml', 'scripts/runtime_ci_inventory.py', '.github/workflows/ci.yml', '.github/workflows/security.yml']:
@@ -72,7 +74,7 @@ def command(steps, script):
 
 
 def assert_source_gate_contract(steps, profile):
-    assert profile in PROFILE_CONTRACTS, 'Only the two exact declared inventory profiles are supported'
+    assert profile in PROFILE_CONTRACTS, 'Only the exact declared inventory profiles are supported'
     final_script, profile_args, _ = PROFILE_CONTRACTS[profile]
     producers = [i for i, step in enumerate(steps) if 'scripts/run_fs_source_scan.py' in step.get('run', '')]
     assert len(producers) == 1
@@ -206,3 +208,59 @@ def test_inventory_cannot_label_a_different_consumer_as_the_selected_profile(sel
     path.write_text(source.replace("'profile': '" + profile + "'", "'profile': '" + other + "'"), encoding='utf8')
     with pytest.raises(AssertionError, match='Inventory profile and its exact consumer'):
         selected_profile(tmp_path)
+
+
+def test_source_built_grafana_keeps_full_native_all_severity_gate_before_acceptance():
+    document = yaml.safe_load((ROOT / '.github/workflows/security.yml').read_text(encoding='utf-8'))
+    job = document['jobs']['runtime-image-scan']
+    assert job['strategy']['matrix'] == '${{ fromJSON(needs.inventory-runtime.outputs.matrix) }}'
+    steps = job['steps']
+    build_index, build, build_args = command(steps, 'build_grafana_source_20261110.py')
+    native_index, native, native_args = command(steps, 'scan_grafana_source_20261110.py')
+    gate_index, gate, gate_args = command(steps, 'check_grafana_source_build_20261110.py')
+    scan_index = next(i for i, step in enumerate(steps) if step.get('id') == 'approved_scan')
+    secret_index, secret, _ = command(steps, 'check_image_secrets.py')
+    scan = steps[scan_index]
+    condition = "matrix.source_build_profile == 'grafana-source-20261110'"
+    assert build_index < scan_index < secret_index < native_index < gate_index
+    assert build['if'] == condition and native['if'] == gate['if'] == condition + " && steps.approved_scan.outcome == 'success'"
+    assert condition in scan['if'] and condition in secret['if'] and 'matrix.image' in scan['with']['image-ref']
+    assert not any(step.get('continue-on-error') for step in (build, scan, secret, native, gate))
+    assert set(scan['with']['severity'].split(',')) == {'UNKNOWN', 'LOW', 'MEDIUM', 'HIGH', 'CRITICAL'}
+    assert scan['with']['scanners'] == 'vuln,secret' and scan['with']['list-all-pkgs'] == 'true'
+    assert scan['with']['exit-code'] == '0'
+    receipt = BASE + 'grafana-source-build/build-receipt.json'
+    assert build_args == {'--output-dir': BASE + 'grafana-source-build'}
+    assert native_args == {'--image': 'deepresearch-grafana-source:20261110',
+                           '--build-receipt': receipt, '--output-dir': BASE + 'grafana-native'}
+    assert gate_args == {'--build-receipt': receipt, '--scan': 'runtime-image.json',
+                         '--grype-scan': BASE + 'grafana-native/full-grype.json',
+                         '--sbom': BASE + 'grafana-native/full-syft.json',
+                         '--inspect': BASE + 'grafana-source-build/image-inspect.json',
+                         '--scanner-exit-code': '0', '--grype-exit-code': '0',
+                         '--output': BASE + 'grafana-ci-disposition.json'}
+    ordinary = next(step for step in steps if step.get('uses', '').startswith('aquasecurity/trivy-action@')
+                    and step.get('id') != 'approved_scan')
+    assert "matrix.source_build_profile == ''" in ordinary['if']
+    artifacts = next(step for step in steps if step.get('uses', '').startswith('actions/upload-artifact@'))
+    assert artifacts['if'] == 'always()'
+    assert {receipt, BASE + 'grafana-source-build/image-inspect.json',
+            BASE + 'grafana-ci-disposition.json', BASE + 'grafana-native/*.json'}.issubset(
+                artifacts['with']['path'].splitlines())
+
+
+def test_enterprise_and_compose_consume_source_image_without_a_second_uncontrolled_build():
+    ci = yaml.safe_load((ROOT / '.github/workflows/ci.yml').read_text(encoding='utf-8'))
+    steps = ci['jobs']['enterprise-compose-smoke']['steps']
+    build_index, build, args = command(steps, 'build_grafana_source_20261110.py')
+    smoke_index = next(i for i, step in enumerate(steps) if 'scripts/smoke-enterprise.py --start' in step.get('run', ''))
+    assert build_index < smoke_index and not build.get('continue-on-error') and build.get('if') is None
+    assert args == {'--output-dir': BASE + 'grafana-source-build'}
+    assert not any('scripts/fetch_grafana_fixed_20261107.py' in step.get('run', '') for step in steps)
+    receipt_upload = next(step for step in steps if step.get('with', {}).get('name', '').startswith('enterprise-grafana-source-'))
+    assert 'always()' in receipt_upload['if']
+    assert set(receipt_upload['with']['path'].splitlines()) == {
+        BASE + 'grafana-source-build/build-receipt.json', BASE + 'grafana-source-build/image-inspect.json'}
+    grafana = yaml.safe_load((ROOT / 'compose.yaml').read_text(encoding='utf-8'))['services']['grafana']
+    assert grafana['image'] == 'deepresearch-grafana-source:20261110' and 'build' not in grafana
+    assert grafana['x-deepresearch-source-build'] == 'grafana-source-20261110' and grafana['pull_policy'] == 'never'

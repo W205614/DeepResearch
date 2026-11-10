@@ -55,6 +55,8 @@
 
 本日后续 glibc 配方变更另行复核了上述 HTML 范围：根 Dockerfile 只新增两个官方包的下载、独立 staging 脚本及一个准确命名的 glibc 来源 JSON；没有复制此 HTML 或整个 `deployment/security/`。Web 的构建上下文、Dockerfile、Nginx 与原 HTML 字节保持不变，文档仍没有 `mtimelink` 节点。因此本项原技术结论继续适用；仅在明确复核这项构建差异后更新精确配方／证明摘要，不放宽匹配范围。旧提交与原始扫描保留。
 
+同日将 Grafana 切换到独立源码构建入口时，Compose 差异仅为该服务的镜像名、源码构建扩展与禁止隐式拉取设置；Web 的 `./frontend` 上下文没有改变。新的 Grafana 配方只复制列明的上游构建工具、固定 vendor 输入、BusyBox 源码材料和一个来源锁，没有复制此 SQLite HTML 或整个安全证据目录。重新解析该 HTML 仍无 `mtimelink`。本次只据此更新 Compose 与本证明的精确摘要，告警位置、列、消息和原始证据保持。
+
 ```powershell
 & 'E:/download/apache-maven-3.9.4/bin/mvn.cmd' -B -f business-backend/pom.xml '-Dtest=AgentClientOriginTest,SecurityConfigBearerTest' test
 & .venv/Scripts/python.exe -B -m pytest -q tests/test_oidc_tls.py
