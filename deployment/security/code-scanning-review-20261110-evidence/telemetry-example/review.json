@@ -1,0 +1,375 @@
+{
+  "schema": "maintained-upstream-example-v1",
+  "status": "passed",
+  "alert": 35,
+  "scope": "Explicit maintained non-production Milvus telemetry example. Original snapshot, failures, production recipe/source.lock and original .go files remain unchanged. Maintained .go changes are only nine import namespace replacements to actual fixed client/v3. Linux/amd64 cross-compilation and package applicability checked; no application/API execution or model call claimed.",
+  "source_archive_sha256": "1dd3a0ff960af532f04172b2aebdb9716b1244cad2fb81781b27641f67216cf9",
+  "source_commit": "328df0cd2f323c2d3c50cef91bfc9f2c412bcb09",
+  "source_files_sha256": {
+    "main.go": "3e27f310f3b6671146013f6d972870af164100745f4c78b4e138d02f7cc78df1",
+    "multi_database_demo.go": "976343bf9cf4e83b14a65be9eb2daf103715e530ea3df3fbeda167c086b3de6c",
+    "webui_demo.go": "e6057592d415e0e5bda76f2b618a89afbc2d5a0f145aa3a00a1cb0670d75f7af"
+  },
+  "original_files": {
+    "go.mod": "9666f472fecd7eaacfa32fa5df9b0994726011146809ee397e3330b4211d09bc",
+    "go.sum": "10c1f1347016579574fba28f39702c935b6fb54739740bfaf97f6a6add20826f",
+    "main.go": "3e27f310f3b6671146013f6d972870af164100745f4c78b4e138d02f7cc78df1",
+    "multi_database_demo.go": "976343bf9cf4e83b14a65be9eb2daf103715e530ea3df3fbeda167c086b3de6c",
+    "webui_demo.go": "e6057592d415e0e5bda76f2b618a89afbc2d5a0f145aa3a00a1cb0670d75f7af"
+  },
+  "maintained_files": {
+    "go.mod": "f41a356d1978089b648b9894847b8280eb8a7b842f7bced4cff0bbe5b3562fda",
+    "go.sum": "3c0a880a613afb9c6d8f94980ba64c7fae41aee12d10650f8ba046d4c50ee1d7",
+    "main.go": "233c11c75b0aebba23072c687af53c8a6f35ff484dcec63c13984ea81babcae1",
+    "multi_database_demo.go": "9f9e48392cd7e92db9c0b8b7ff0ee6e076c14ded4a73f8f09ce0eb3bcefb6886",
+    "webui_demo.go": "9ad1f57e63d0614035604d400300525df5016587cc603187be12445d8e6dc418"
+  },
+  "patch": {
+    "file": "telemetry-maintained.patch",
+    "sha256": "baf52637959b5d14ea110a0d63df38e8b1e75ce0ff5ca94eb08f9f7682a31620",
+    "bytes": 70159,
+    "generator": [
+      "git",
+      "diff",
+      "--no-index",
+      "--no-prefix",
+      "--",
+      "a",
+      "b"
+    ],
+    "git_apply_exact_original_successful": true
+  },
+  "official_modules": [
+    {
+      "path": "golang.org/x/crypto",
+      "version": "v0.58.1-0.20261009181718-2f1f834330b2",
+      "sum": "h1:zGDaB+/Mus2mScKvZ23k+W9NAUbP56sNM9SptgvWI5A=",
+      "go_mod_sum": "h1:Xh+kl5A+M0gMiWDytH2Hhr5Z7WbNCpv/eB/EFgfSk+w=",
+      "origin": {
+        "VCS": "git",
+        "URL": "https://go.googlesource.com/crypto",
+        "Hash": "2f1f834330b2d36ab3db8bfb33aaa1ac16794588"
+      }
+    },
+    {
+      "path": "github.com/milvus-io/milvus-proto/go-api/v3",
+      "version": "v3.0.3",
+      "sum": "h1:l+WseppsJKRPt6kcy0xBH5au+pMRQ2Pz4whs8ldendU=",
+      "go_mod_sum": "h1:rbKpv5JToISTKTTLl0duL5r6wbYnjJ9SsD0QgXMzKy0=",
+      "origin": null
+    }
+  ],
+  "local_client_pkg_source": {
+    "fixed_source_commit": "328df0cd2f323c2d3c50cef91bfc9f2c412bcb09",
+    "locks_sha256": {
+      "deployment/vendors/milvus/modules/client/go.mod": "3747aed71c48e5b7fcbdd69ff3e78b981c2149fd7588a04686897bc644ff2491",
+      "deployment/vendors/milvus/modules/client/go.sum": "249eea0730bf64761eb1a10ecd737cda0ca0a1f1b2ab8d3e4e1c8ff48c7e82d8",
+      "deployment/vendors/milvus/modules/pkg/go.mod": "37f00a2ab8e365c4eed70b492c05173ddb47c4a08ddd9833e92b10e60babfb89",
+      "deployment/vendors/milvus/modules/pkg/go.sum": "ae7f76cf5c330e81ec1790d1e8ff5b3dadbb49cce794e1b5de032eaa22b16d99",
+      "deployment/vendors/milvus/source.lock.json": "63a94454cf99f39aaae524525bac222db020f099fd1b9f4f80ee777e68befc3e"
+    },
+    "client_replace": "../../client",
+    "pkg_replace": "../../pkg",
+    "production_source_or_locks_changed": false
+  },
+  "repairs": [
+    "Remove absent upstream author /Users/... replacement and obsolete v2 dependencies",
+    "Repair nine import strings to actual current client/v3; all business statements and function signatures untouched",
+    "Use original fixed current source client/v3 and pkg/v3 local replacements plus their declared official proto/v3 v3.0.3",
+    "Upgrade x/crypto to official fixed v0.58.1-0.20261009181718-2f1f834330b2 with Go-generated locks"
+  ],
+  "package_graph": {
+    "exit_code": 0,
+    "packages": 430,
+    "errors": 0,
+    "affected_openpgp_packages": [],
+    "file": "packages.derived.json.gz",
+    "raw_sha256": "925bc671e42e17658a2dcee98e4292a303dc453f2682ae608ae276524343ca46",
+    "raw_bytes": 1425511,
+    "gzip_sha256": "dd3c9bd60e4838919eb6887e08d6c4130b3772567284483765745e92112a7e00",
+    "gzip_bytes": 90259,
+    "public_derived_sha256": "18aa92604f045c625549ff9be1ec1bff480a849540f98e483d7ba2b30ea09c0f",
+    "public_derived_bytes": 38354
+  },
+  "binaries": {
+    "main.go": {
+      "file": "main.go.linux-amd64",
+      "sha256": "1f19a111127fb3c0c265f56cc4be95246e3272662e6d393cea3d4e0457ad89aa",
+      "bytes": 27961244,
+      "platform": "linux/amd64 ELF"
+    },
+    "multi_database_demo.go": {
+      "file": "multi_database_demo.go.linux-amd64",
+      "sha256": "a079e38a6ca2754a7983626be3e4c53ab785cc665757063ec0fc42acc0d5f4b9",
+      "bytes": 27005693,
+      "platform": "linux/amd64 ELF"
+    },
+    "webui_demo.go": {
+      "file": "webui_demo.go.linux-amd64",
+      "sha256": "8c6f65cc83dc09e1eb53cbf579302244b4387cd00ec66e6c5f44126b3211cf8f",
+      "bytes": 27024308,
+      "platform": "linux/amd64 ELF"
+    }
+  },
+  "checks": [
+    {
+      "step": "drop-v2-go-api",
+      "command": [
+        "go",
+        "mod",
+        "edit",
+        "-dropreplace=github.com/milvus-io/milvus-proto/go-api/v2",
+        "-droprequire=github.com/milvus-io/milvus-proto/go-api/v2"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "drop-v2-client",
+      "command": [
+        "go",
+        "mod",
+        "edit",
+        "-dropreplace=github.com/milvus-io/milvus/client/v2",
+        "-droprequire=github.com/milvus-io/milvus/client/v2"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "drop-v2-pkg",
+      "command": [
+        "go",
+        "mod",
+        "edit",
+        "-dropreplace=github.com/milvus-io/milvus/pkg/v2",
+        "-droprequire=github.com/milvus-io/milvus/pkg/v2"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "maintained-v3-identities",
+      "command": [
+        "go",
+        "mod",
+        "edit",
+        "-require=github.com/milvus-io/milvus/client/v3@v3.0.0",
+        "-replace=github.com/milvus-io/milvus/client/v3=../../client",
+        "-require=github.com/milvus-io/milvus/pkg/v3@v3.0.0-beta",
+        "-replace=github.com/milvus-io/milvus/pkg/v3=../../pkg",
+        "-require=github.com/milvus-io/milvus-proto/go-api/v3@v3.0.3",
+        "-require=golang.org/x/crypto@v0.58.1-0.20261009181718-2f1f834330b2"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "official-module-download",
+      "command": [
+        "go",
+        "mod",
+        "download",
+        "-json",
+        "golang.org/x/crypto@v0.58.1-0.20261009181718-2f1f834330b2",
+        "github.com/milvus-io/milvus-proto/go-api/v3@v3.0.3"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "e29406299c3aa8a253bd6e202923031f6ea46a2b2351456e0cedeb631643701e",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "generated-locks",
+      "command": [
+        "go",
+        "mod",
+        "tidy"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "preserve-fixed-requirement",
+      "command": [
+        "go",
+        "mod",
+        "edit",
+        "-require=golang.org/x/crypto@v0.58.1-0.20261009181718-2f1f834330b2"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "persist-official-fixed-sums",
+      "command": [
+        "go",
+        "mod",
+        "download",
+        "-json",
+        "golang.org/x/crypto@v0.58.1-0.20261009181718-2f1f834330b2"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "98de1a5079da6b080ee5e9a3ecd360949a6a44e452a175964ff7d7d3c3259089",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "readonly-package-graph",
+      "command": [
+        "go",
+        "list",
+        "-deps",
+        "-test",
+        "-json",
+        "-mod=readonly",
+        "./..."
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "925bc671e42e17658a2dcee98e4292a303dc453f2682ae608ae276524343ca46",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "build-main",
+      "command": [
+        "go",
+        "build",
+        "-mod=readonly",
+        "-o",
+        "main.go.linux-amd64",
+        "main.go"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "test-compile-main",
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-run",
+        "^$",
+        "main.go"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "a9d70c449818998ca3d1d5418c2091a6fe5a40ab701d1ba55e260ff1ba375713",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "build-multi_database_demo",
+      "command": [
+        "go",
+        "build",
+        "-mod=readonly",
+        "-o",
+        "multi_database_demo.go.linux-amd64",
+        "multi_database_demo.go"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "test-compile-multi_database_demo",
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-run",
+        "^$",
+        "multi_database_demo.go"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "a9d70c449818998ca3d1d5418c2091a6fe5a40ab701d1ba55e260ff1ba375713",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "build-webui_demo",
+      "command": [
+        "go",
+        "build",
+        "-mod=readonly",
+        "-o",
+        "webui_demo.go.linux-amd64",
+        "webui_demo.go"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": "test-compile-webui_demo",
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-run",
+        "^$",
+        "webui_demo.go"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "a9d70c449818998ca3d1d5418c2091a6fe5a40ab701d1ba55e260ff1ba375713",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "full_module_graph": {
+    "status": "passed",
+    "selected_modules": 224,
+    "selected_xcrypto": "v0.58.1-0.20261009181718-2f1f834330b2",
+    "checks": [
+      {
+        "step": "module-graph",
+        "command": [
+          "go",
+          "list",
+          "-m",
+          "-json",
+          "-mod=readonly",
+          "all"
+        ],
+        "exit_code": 0,
+        "stdout_sha256": "b77f8b4bd504821cce718e9738852fc3f66278b7d3f005992743d1144d2ba024",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "step": "module-requirements",
+        "command": [
+          "go",
+          "mod",
+          "graph"
+        ],
+        "exit_code": 0,
+        "stdout_sha256": "a658da777f6c9dbdc9e5825725111a1f84f05c85e29e05a5730361ad5d15510f",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "scope": "Full actual MVS selected module list; lower versions may remain in raw go mod graph dependency edges but are not selected versions.",
+    "public_projection": {
+      "file": "selected-modules.derived.json",
+      "sha256": "f7c3653c22b5f5dcf76a84fe0d75e138722eb1803b4734cd8d47f29dc496be55"
+    }
+  },
+  "fixed_constraint_basis": "Tidy-only candidate full MVS list still selected transitive x/crypto v0.58.0. Explicit fixed requirement upgrades that actual selected node; 430 compiled packages import neither x/crypto nor its deprecated OpenPGP package. Raw lower-version dependency edges are preserved.",
+  "original_inputs_directory": "original-inputs",
+  "original_package_graph_retained_locally": {
+    "exit_code": 0,
+    "packages": 430,
+    "errors": 0,
+    "affected_openpgp_packages": [],
+    "file": "packages.json.gz",
+    "raw_sha256": "925bc671e42e17658a2dcee98e4292a303dc453f2682ae608ae276524343ca46",
+    "raw_bytes": 1425511,
+    "gzip_sha256": "dd3c9bd60e4838919eb6887e08d6c4130b3772567284483765745e92112a7e00",
+    "gzip_bytes": 90259
+  },
+  "derived_public_receipt_not_original": true,
+  "original_local_handoff_sha256": "689a6eabf148037b97bd12e62ae1b9e2bd7db8d747d0693d17f7eb4fa5dbc08a",
+  "binary_payloads_published": false,
+  "binary_boundary": "Three cross-compiled ELF identities and successful compile receipts only. No telemetry application, Milvus API or test case execution is claimed."
+}

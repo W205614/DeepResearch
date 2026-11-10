@@ -137,3 +137,10 @@ deployment/security/agent-native-evidence/** -text -whitespace
 deployment/security/grafana-maintenance-* -text whitespace=cr-at-eol
 deployment/security/grafana-maintenance-evidence/** -text -whitespace
 deployment/docker/Dockerfile.grafana-maintenance text eol=lf
+
+# Keep new per-alert source/proof bindings and original metadata byte-exact.
+deployment/security/code-scanning-alert-review-20261110.json -text whitespace=cr-at-eol
+deployment/security/codeql-reviewed-findings-20261110.json -text whitespace=cr-at-eol
+deployment/security/code-scanning-review-20261110-evidence/** -text whitespace=cr-at-eol
+deployment/security/code-scanning-review-20261110-evidence/telemetry-example/telemetry-maintained.patch -whitespace
+tests/fixtures/milvus-telemetry-example-20261110/*.go.txt -text

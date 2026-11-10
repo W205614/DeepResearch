@@ -1,0 +1,68 @@
+{
+  "schema": "public-go-graph-identity-receipt-projection-v1",
+  "derived_not_original_raw": true,
+  "profile": "loki",
+  "original_receipt": {
+    "original_cache": ".cache/third-party-20261030/advisory-review/new-production-graph-bundle/loki-graph-receipt.json",
+    "sha256": "b22c52fc6671fe67d33c5709683c9630eeffa3facad77a180efbd8bd561b5f57",
+    "bytes": 1537
+  },
+  "original_graph": {
+    "original_cache": ".cache/third-party-20261030/advisory-review/new-production-graph-bundle/loki-deps.json.gz",
+    "sha256": "a89ad970aadb3cdfc5dfd0f05f50873042383b49269da1af89030f4acbea5655",
+    "bytes": 2019134,
+    "raw_sha256": "171df281cc415437d2734f45565819a51b5d7310dea034ca2f30e038fa72b3f9",
+    "raw_bytes": 21263768
+  },
+  "public_graph": "deployment/security/code-scanning-review-20261110-evidence/graphs/loki.packages.derived.json.gz",
+  "public_graph_sha256": "2670f6b475a1069ef60dca50c824b0710a0c64c2138c476031204c25c705dad4",
+  "public_projection_raw_sha256": "655c2a8cca54eb61885e3a4bfbefc10a4e2fb54b55b5276e1e264a3e088854e7",
+  "public_projection_raw_bytes": 22387281,
+  "package_count": 2179,
+  "module_count": 366,
+  "source_inputs": {
+    "deployment/vendors/loki/go.mod": "8941b81787970cbd4c3344ecdae625a240487a495ccac2e421658e3fdf828944",
+    "deployment/vendors/loki/go.sum": "abad3fdbeec10d717e9c72c93d6feee205a44939eaf694c208444c6238438b1f",
+    "deployment/vendors/loki/push/go.mod": "596e84e0e0bef987e22f3a1060c731b0f67c7b7952f54ed11a77d6b2903a46bc",
+    "deployment/vendors/loki/push/go.sum": "925acb4f95642975e8a2ccef3d2554ed147e05d4673525fbd9ad08ea8f71e820"
+  },
+  "source_inputs_rechecked_unchanged": true,
+  "compiler": "go1.27.3",
+  "compiler_settings": {
+    "-buildmode": "exe",
+    "-compiler": "gc",
+    "-tags": "netgo",
+    "-trimpath": "true",
+    "DefaultGODEBUG": "tracebacklabels=0,x509sslcertoverrideplatform=0",
+    "CGO_ENABLED": "0",
+    "GOARCH": "amd64",
+    "GOOS": "linux",
+    "GOAMD64": "v1",
+    "vcs": "git",
+    "vcs.revision": "d3b4a2f76bfc5625abee7ceb00b8896fa3c31549",
+    "vcs.time": "2026-10-20T21:21:35Z",
+    "vcs.modified": "true"
+  },
+  "original_completed_command_without_host_tool_path": [
+    "go",
+    "list",
+    "-deps",
+    "-json",
+    "-mod=readonly",
+    "-tags=netgo",
+    "./cmd/loki"
+  ],
+  "original_completion": {
+    "exit_code": 0,
+    "source": "original_machine_command_receipt",
+    "machine_command_receipt": true
+  },
+  "native": "deployment/security/code-scanning-review-20261110-evidence/native/loki.buildinfo.json",
+  "native_sha256": "21a6a16ee91d46c4d7dfa61e52ca77279bd4b00c083b288a08d3e6e5a5d572a0",
+  "original_bound_elf_sha256": "cf51ec4b0f2f91a711a1c109d9065ee2cea9b2bc365f3cb5f68758fce839c398",
+  "graph_and_native_module_path_version_checksum_sets_equal": true,
+  "new_compilation_performed": false,
+  "new_elf_extraction_performed": false,
+  "human_review_or_risk_acceptance_claimed": false,
+  "scope": "Reparsed complete original graph and native metadata; every current lock byte matched the source receipt. Original actual ELF identity is retained; no fresh ELF extraction/compilation is claimed."
+}

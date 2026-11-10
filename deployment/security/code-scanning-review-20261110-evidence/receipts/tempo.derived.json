@@ -1,0 +1,64 @@
+{
+  "schema": "public-go-graph-identity-receipt-projection-v1",
+  "derived_not_original_raw": true,
+  "profile": "tempo",
+  "original_receipt": {
+    "original_cache": ".cache/openpgp-followup-20261030/independent/evidence/tempo/graph-command-receipt.json",
+    "sha256": "1f52015a17b9fd7ca8e51c5a3bff5387fe7c64c3df208155e65c4d5d21b30023",
+    "bytes": 1972
+  },
+  "original_graph": {
+    "original_cache": ".cache/openpgp-followup-20261030/independent/evidence/tempo-production-packages.json.gz",
+    "sha256": "2ff114046145e5338aada41a7ff90d1c2e5c43b658e1c9bdd0ff5dadf8fec285",
+    "bytes": 1114447,
+    "raw_sha256": "2b9dc918cd510ffc3319bbf1cbb6cafa9535a036bdcaa12dac14fde6eba15b63",
+    "raw_bytes": 15347403
+  },
+  "public_graph": "deployment/security/code-scanning-review-20261110-evidence/graphs/tempo.packages.derived.json.gz",
+  "public_graph_sha256": "0df6a268b1c3b5ed8531c33b927fda84df7a4aa520634aa8eeef601dc80f7d98",
+  "public_projection_raw_sha256": "5004360d83d8a6cdac4b028a85fd35c346832c7a769083fe03c125306ad020c5",
+  "public_projection_raw_bytes": 15767118,
+  "package_count": 2076,
+  "module_count": 391,
+  "source_inputs": {
+    "deployment/vendors/tempo/go.mod": "b7780da539145adabcc30d5f0368bc25593467a30f0ffca8f51d4835aa5329e0",
+    "deployment/vendors/tempo/go.sum": "7d22fba88476234196910d713e2d1d079fcf14f12b1249f73e6a68febff1c55d"
+  },
+  "source_inputs_rechecked_unchanged": true,
+  "compiler": "go1.27.3",
+  "compiler_settings": {
+    "-buildmode": "exe",
+    "-compiler": "gc",
+    "-trimpath": "true",
+    "DefaultGODEBUG": "tracebacklabels=0,x509sslcertoverrideplatform=0",
+    "CGO_ENABLED": "0",
+    "GOARCH": "amd64",
+    "GOOS": "linux",
+    "GOAMD64": "v1",
+    "vcs": "git",
+    "vcs.revision": "f317720e7e5191a7f282e8f7d6fe5387ae6015b4",
+    "vcs.time": "2026-10-21T13:59:48Z",
+    "vcs.modified": "true"
+  },
+  "original_completed_command_without_host_tool_path": [
+    "go",
+    "list",
+    "-mod=readonly",
+    "-deps",
+    "-json",
+    "./cmd/tempo"
+  ],
+  "original_completion": {
+    "exit_code": 0,
+    "source": "original_machine_command_receipt",
+    "machine_command_receipt": true
+  },
+  "native": "deployment/security/code-scanning-review-20261110-evidence/native/tempo.native.json",
+  "native_sha256": "0ec66ca1793d765011cf81ee100bb68fe7aabe08f0e1a7585ecdf7f2fcd82c4c",
+  "original_bound_elf_sha256": "869e5e9ec8c846fe52394aa3bfd1ab61ba230458cb0d60fe1075e52b1eaaffd6",
+  "graph_and_native_module_path_version_checksum_sets_equal": true,
+  "new_compilation_performed": false,
+  "new_elf_extraction_performed": false,
+  "human_review_or_risk_acceptance_claimed": false,
+  "scope": "Complete graph and native metadata reparsed; current source input hashes matched. Prior actual ELF identity retained; no fresh ELF extraction claimed."
+}

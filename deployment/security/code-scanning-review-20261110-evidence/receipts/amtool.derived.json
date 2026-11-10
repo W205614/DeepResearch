@@ -1,0 +1,63 @@
+{
+  "schema": "public-go-graph-identity-receipt-projection-v1",
+  "derived_not_original_raw": true,
+  "profile": "amtool",
+  "original_receipt": {
+    "original_cache": ".cache/third-party-20261030/advisory-review/new-production-graph-bundle/amtool-graph-receipt.json",
+    "sha256": "7ad20f8a04b55621f66fd0ba1d8eb4d77db20eeedfa0b8f66b5321cef3a58f8f",
+    "bytes": 1259
+  },
+  "original_graph": {
+    "original_cache": ".cache/third-party-20261030/advisory-review/new-production-graph-bundle/amtool-deps.json.gz",
+    "sha256": "e8417d2366c465cdbc7ec2bab10b13055442ddde4fd3752e751fe0cebb8ceee4",
+    "bytes": 182510,
+    "raw_sha256": "0893eae4686705321c9cfefeaac6eb887b5f76fbe300ab19de83779fbf5a2840",
+    "raw_bytes": 3165132
+  },
+  "public_graph": "deployment/security/code-scanning-review-20261110-evidence/graphs/amtool.packages.derived.json.gz",
+  "public_graph_sha256": "484a892b6d45ab9fa6780ae860deecb48a3ee36aab821b94af3974f792b4d2fd",
+  "public_projection_raw_sha256": "c97c4998a7ebf9ea425928fecaabdc7bf57254efcc40ff3548d34f05fae8714c",
+  "public_projection_raw_bytes": 3036987,
+  "package_count": 705,
+  "module_count": 110,
+  "source_inputs": {
+    "deployment/vendors/alertmanager/go.mod": "5adcd8759cc127c8bf658cd5955dcfeb11a10724ca63894380fb68fc8f08402e",
+    "deployment/vendors/alertmanager/go.sum": "699d9318426a7634a593e460c6c8f3de00b9f2fff8fd2ffdc6baa0b6ac55d3dc"
+  },
+  "source_inputs_rechecked_unchanged": true,
+  "compiler": "go1.27.3",
+  "compiler_settings": {
+    "-buildmode": "exe",
+    "-compiler": "gc",
+    "-trimpath": "true",
+    "CGO_ENABLED": "0",
+    "GOARCH": "amd64",
+    "GOOS": "linux",
+    "GOAMD64": "v1",
+    "vcs": "git",
+    "vcs.revision": "73c6bfe7393929211294c1954f30d8ed78e4d0ad",
+    "vcs.time": "2026-09-17T07:16:22Z",
+    "vcs.modified": "true"
+  },
+  "original_completed_command_without_host_tool_path": [
+    "go",
+    "list",
+    "-deps",
+    "-json",
+    "-mod=readonly",
+    "./cmd/amtool"
+  ],
+  "original_completion": {
+    "exit_code": 0,
+    "source": "original_machine_command_receipt",
+    "machine_command_receipt": true
+  },
+  "native": "deployment/security/code-scanning-review-20261110-evidence/native/amtool.buildinfo.json",
+  "native_sha256": "4a6a9effa02c6d38a63d3a99d787703c05ec14a19ec7360713df41baf8082fa5",
+  "original_bound_elf_sha256": "26453ba08283da8cf59c6461519e1642d6de78d159656bbfb875cdc845659ada",
+  "graph_and_native_module_path_version_checksum_sets_equal": true,
+  "new_compilation_performed": false,
+  "new_elf_extraction_performed": false,
+  "human_review_or_risk_acceptance_claimed": false,
+  "scope": "Reparsed complete original graph and native metadata; every current lock byte matched the source receipt. Original actual ELF identity is retained; no fresh ELF extraction/compilation is claimed."
+}

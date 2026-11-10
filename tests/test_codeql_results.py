@@ -1,0 +1,149 @@
+from copy import deepcopy
+import json
+import hashlib
+from pathlib import Path
+import subprocess
+import sys
+
+import pytest
+
+from scripts.check_codeql_results import blocking_findings, finding_identity, reviewed_findings
+
+RULE = {'id': 'java/ssrf', 'properties': {'security-severity': '9.1', 'tags': ['security']}}
+
+
+def sarif(extension=True, severity='9.1'):
+    rule = deepcopy(RULE)
+    rule['properties']['security-severity'] = severity
+    result = {'ruleId': rule['id']}
+    tool = {'driver': {'name': 'CodeQL', 'rules': [rule]}}
+    if extension:
+        tool = {'driver': {'name': 'CodeQL'}, 'extensions': [{'name': 'codeql/java-queries', 'rules': [rule]}]}
+        result['rule'] = {'id': rule['id'], 'index': 0, 'toolComponent': {'index': 0}}
+    return {'version': '2.1.0', 'runs': [{'tool': tool, 'results': [result]}]}
+
+
+def save(tmp_path, document):
+    (tmp_path / 'results.sarif').write_text(json.dumps(document), encoding='utf-8')
+    return tmp_path
+
+
+@pytest.mark.parametrize('extension', [False, True])
+@pytest.mark.parametrize('severity,expected', [('6.9', 0), ('7.0', 1), ('9.1', 1), ('10', 1)])
+def test_gate_reads_actual_rule_component_and_keeps_original_threshold(tmp_path, extension, severity, expected):
+    findings = blocking_findings(save(tmp_path, sarif(extension, severity)))
+    assert len(findings) == expected
+    if findings:
+        assert findings[0]['rule_id'] == 'java/ssrf'
+
+
+def test_extension_index_does_not_resolve_against_driver_or_other_query_pack(tmp_path):
+    document = sarif()
+    run = document['runs'][0]
+    run['tool']['driver']['rules'] = [{'id': 'java/ssrf', 'properties': {'security-severity': '1', 'tags': ['security']}}]
+    run['tool']['extensions'].insert(0, {'name': 'other-pack', 'rules': deepcopy(run['tool']['driver']['rules'])})
+    run['results'][0]['rule']['toolComponent']['index'] = 1
+    assert len(blocking_findings(save(tmp_path, document))) == 1
+
+
+@pytest.mark.parametrize('change', ['component', 'index', 'id', 'missing-rule', 'missing-score', 'nan-score',
+                                  'missing-properties', 'missing-tags', 'bad-tags',
+                                  'failed-invocation', 'missing-runs', 'missing-results'])
+def test_incomplete_or_inconsistent_scan_fails_instead_of_counting_zero(tmp_path, change):
+    document = sarif()
+    run = document['runs'][0]
+    if change == 'component':
+        run['results'][0]['rule']['toolComponent']['index'] = 9
+    elif change == 'index':
+        run['results'][0]['rule']['index'] = -1
+    elif change == 'id':
+        run['results'][0]['rule']['id'] = 'other-rule'
+    elif change == 'missing-rule':
+        run['tool']['extensions'][0]['rules'] = []
+    elif change == 'missing-score':
+        del run['tool']['extensions'][0]['rules'][0]['properties']['security-severity']
+    elif change == 'nan-score':
+        run['tool']['extensions'][0]['rules'][0]['properties']['security-severity'] = 'NaN'
+    elif change == 'missing-properties':
+        del run['tool']['extensions'][0]['rules'][0]['properties']
+    elif change == 'missing-tags':
+        del run['tool']['extensions'][0]['rules'][0]['properties']['tags']
+    elif change == 'bad-tags':
+        run['tool']['extensions'][0]['rules'][0]['properties']['tags'] = 'security'
+    elif change == 'failed-invocation':
+        run['invocations'] = [{'executionSuccessful': False}]
+    elif change == 'missing-runs':
+        document['runs'] = []
+    else:
+        del run['results']
+    with pytest.raises((ValueError, KeyError)):
+        blocking_findings(save(tmp_path, document))
+
+
+def test_empty_directory_is_not_a_pass(tmp_path):
+    with pytest.raises(ValueError, match='SARIF missing'):
+        blocking_findings(tmp_path)
+
+
+def test_cli_fails_on_extension_security_finding_and_accepts_clean_scan(tmp_path):
+    review = tmp_path / 'empty-review.json'
+    review.write_text(json.dumps({'schema': 'codeql-exact-reviewed-findings-v1', 'findings': []}), encoding='utf-8')
+    command = [sys.executable, str(Path(__file__).resolve().parents[1] / 'scripts/check_codeql_results.py'), str(tmp_path),
+               '--reviewed-findings', str(review)]
+    document = sarif()
+    document['runs'][0]['results'][0].update(message={'text': 'Potential SSRF'}, locations=[{'physicalLocation': {
+        'artifactLocation': {'uri': 'source.java'},
+        'region': {'startLine': 3, 'startColumn': 4, 'endColumn': 9}}}])
+    save(tmp_path, document)
+    blocked = subprocess.run(command, capture_output=True, text=True)
+    assert blocked.returncode == 1 and 'security findings: 1' in blocked.stdout
+    clean = sarif()
+    clean['runs'][0]['results'] = []
+    save(tmp_path, clean)
+    passed = subprocess.run(command, capture_output=True, text=True)
+    assert passed.returncode == 0 and 'security findings: 0' in passed.stdout
+
+
+def reviewed_example(tmp_path):
+    document = sarif()
+    result = document['runs'][0]['results'][0]
+    result.update(message={'text': 'Potential SSRF'}, locations=[{'physicalLocation': {
+        'artifactLocation': {'uri': 'source.java'},
+        'region': {'startLine': 3, 'startColumn': 4, 'endColumn': 9}}}])
+    findings = blocking_findings(save(tmp_path, document))
+    (tmp_path / 'source.java').write_text('exact reviewed source', encoding='utf-8')
+    (tmp_path / 'proof.java').write_text('exact regression test', encoding='utf-8')
+    record = {'schema': 'codeql-exact-reviewed-findings-v1', 'findings': [{
+        'reason': 'false positive', 'justification': 'Fixed origin verified against a second real HTTP server',
+        'identity': finding_identity(findings[0]),
+        'evidence_sha256': {name: hashlib.sha256((tmp_path / name).read_bytes()).hexdigest()
+                            for name in ['source.java', 'proof.java']}}]}
+    path = tmp_path / 'review.json'
+    path.write_text(json.dumps(record), encoding='utf-8')
+    return findings, path, record
+
+
+def test_review_accounts_only_for_exact_result_and_preserves_raw_scan(tmp_path):
+    findings, path, _ = reviewed_example(tmp_path)
+    raw_before = (tmp_path / 'results.sarif').read_bytes()
+    additional = deepcopy(findings[0])
+    additional['result']['locations'][0]['physicalLocation']['region']['startLine'] = 4
+    reviewed, unresolved = reviewed_findings([*findings, additional], path, tmp_path)
+    assert reviewed == findings and unresolved == [additional]
+    assert (tmp_path / 'results.sarif').read_bytes() == raw_before
+
+
+@pytest.mark.parametrize('change', ['source', 'proof', 'risk-acceptance', 'no-proof', 'duplicate'])
+def test_review_rejects_changed_source_proof_or_unjustified_exception(tmp_path, change):
+    findings, path, record = reviewed_example(tmp_path)
+    if change in {'source', 'proof'}:
+        (tmp_path / (change + '.java')).write_text('changed bytes', encoding='utf-8')
+    elif change == 'risk-acceptance':
+        record['findings'][0]['reason'] = "won't fix"
+    elif change == 'no-proof':
+        del record['findings'][0]['evidence_sha256']['proof.java']
+    else:
+        record['findings'].append(deepcopy(record['findings'][0]))
+    path.write_text(json.dumps(record), encoding='utf-8')
+    with pytest.raises(ValueError):
+        reviewed_findings(findings, path, tmp_path)

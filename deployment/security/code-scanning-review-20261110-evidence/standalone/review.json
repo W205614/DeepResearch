@@ -1,0 +1,228 @@
+{
+  "schema": "independent-go-package-applicability-review-v1",
+  "reviewed_date": "2026-11-10",
+  "scope": "Four exact non-production source contexts; original failures preserved and isolated checksum completion is explicit",
+  "rows": [
+    {
+      "alert": 14,
+      "target": "deployment/vendors/etcd/modules/go.mod",
+      "target_sha256": "7736cde984ac615e0801dee4baae1e0adc63605cbfbb6543d3c3618a4ce13195",
+      "original_go_sum_sha256": "06c60a25d82d31e4fe8e1dfd043352490a78bebb285685f2e2f9f0c578491bba",
+      "source_archive_sha256": "6d575a3fbeece5230290314d74f5c93dbb53ee3bcb564465b63cbea673740805",
+      "source_lock_sha256": "9fe1486b5a4c154861dc8e5234dc60c16538ee6ce73e9a5f9bb85ead907a7b98",
+      "command": [
+        "go",
+        "list",
+        "-deps",
+        "-test",
+        "-json",
+        "-mod=readonly",
+        "./..."
+      ],
+      "toolchain": "go1.27.3 windows/amd64 cross-target linux/amd64",
+      "environment": {
+        "GOOS": "linux",
+        "GOARCH": "amd64",
+        "CGO_ENABLED": "0",
+        "GOTOOLCHAIN": "local",
+        "GOWORK": "off",
+        "GOPROXY": "https://proxy.golang.org",
+        "GOSUMDB": "sum.golang.org"
+      },
+      "exit_code": 0,
+      "graph_packages": 602,
+      "graph_error_count": 0,
+      "affected_openpgp_packages": [],
+      "mongo_packages": [],
+      "source_versions_and_replacements_unchanged": true,
+      "scope": "Package applicability only. All repository inputs unchanged. Isolated go.sum was supplemented only with the official Sum/GoModSum of exactly already-selected versions; original readonly failures and per-step diffs are preserved. This does not claim the original snapshot can build without checksum completion or that every optional build tag is covered.",
+      "technical_conclusion": "The seven officially affected deprecated golang.org/x/crypto/openpgp packages are all absent from this complete package/test closure. Whole x/crypto remains selected and scanned.",
+      "original_raw_retained_locally_not_published": {
+        "file": "etcd-14-packages.json.gz",
+        "raw_sha256": "8b99085aa80065224fc9df6173cd331dccb372899057526d7abac09bf8f9786b",
+        "raw_bytes": 2836167,
+        "gzip_sha256": "f0c192c0bc436f713e4af1bcedf94125015da92d50a69bbb2e57f8fe56eabe93",
+        "gzip_bytes": 161914
+      },
+      "complete_public_projection": {
+        "file": "14-packages.derived.json.gz",
+        "sha256": "a768e711f77ad3f230077b52163b674d13bda5cbccdc6b76c39e5f0035c1c792",
+        "bytes": 88345,
+        "raw_sha256": "24d40d35b63ce12bb3a4ad6310607454361eb3824fdb6097c9cff9d9ac4f70b1",
+        "raw_bytes": 2705804
+      }
+    },
+    {
+      "alert": 22,
+      "target": "deployment/vendors/etcd/modules/tests/go.mod",
+      "target_sha256": "89fed8c63d48c6333ec8083874fb4ff2c6f33d243d09fd88a114a5b845dc32ef",
+      "original_go_sum_sha256": "ed07090873f34285be974427248e0ecbcdb56d8e98cbef4a9f7b08ce86887704",
+      "source_archive_sha256": "6d575a3fbeece5230290314d74f5c93dbb53ee3bcb564465b63cbea673740805",
+      "source_lock_sha256": "9fe1486b5a4c154861dc8e5234dc60c16538ee6ce73e9a5f9bb85ead907a7b98",
+      "command": [
+        "go",
+        "list",
+        "-deps",
+        "-test",
+        "-json",
+        "-mod=readonly",
+        "./..."
+      ],
+      "toolchain": "go1.27.3 windows/amd64 cross-target linux/amd64",
+      "environment": {
+        "GOOS": "linux",
+        "GOARCH": "amd64",
+        "CGO_ENABLED": "0",
+        "GOTOOLCHAIN": "local",
+        "GOWORK": "off",
+        "GOPROXY": "https://proxy.golang.org",
+        "GOSUMDB": "sum.golang.org"
+      },
+      "exit_code": 0,
+      "graph_packages": 668,
+      "graph_error_count": 0,
+      "affected_openpgp_packages": [],
+      "mongo_packages": [],
+      "source_versions_and_replacements_unchanged": true,
+      "scope": "Package applicability only. All repository inputs unchanged. Isolated go.sum was supplemented only with the official Sum/GoModSum of exactly already-selected versions; original readonly failures and per-step diffs are preserved. This does not claim the original snapshot can build without checksum completion or that every optional build tag is covered.",
+      "technical_conclusion": "The seven officially affected deprecated golang.org/x/crypto/openpgp packages are all absent from this complete package/test closure. Whole x/crypto remains selected and scanned.",
+      "original_raw_retained_locally_not_published": {
+        "file": "etcd-22-packages.json.gz",
+        "raw_sha256": "1025c5e596a26247373189e730609fa7273f7c4469ff92ebe6b150daed891d2e",
+        "raw_bytes": 3875996,
+        "gzip_sha256": "2626c073fb013a643dd4d3c787ef790f57b4fa6ce61b4193941cc15758462f54",
+        "gzip_bytes": 194378
+      },
+      "complete_public_projection": {
+        "file": "22-packages.derived.json.gz",
+        "sha256": "871876b8e12f02257ddffe66638b0c32c3adbdeb76ceedf7044fe8538704ab0a",
+        "bytes": 113561,
+        "raw_sha256": "fc2dd5a3c9dc2a6d81be952671185ca0ea60008d9af218a2f05e4254147b02c9",
+        "raw_bytes": 3828373
+      }
+    },
+    {
+      "alert": 23,
+      "target": "deployment/vendors/etcd/modules/tools/mod/go.mod",
+      "target_sha256": "666d2260d5a8a8c50cfdcb877f7e69d7fa1a759b89404abebe81f1f377a41d3b",
+      "original_go_sum_sha256": "221cfe6df7fd0b429cb04d337609e20bd298d3934e3a437ecdcc5d7d354f4652",
+      "source_archive_sha256": "6d575a3fbeece5230290314d74f5c93dbb53ee3bcb564465b63cbea673740805",
+      "source_lock_sha256": "9fe1486b5a4c154861dc8e5234dc60c16538ee6ce73e9a5f9bb85ead907a7b98",
+      "command": [
+        "go",
+        "list",
+        "-deps",
+        "-test",
+        "-json",
+        "-mod=readonly",
+        "github.com/alexkohler/nakedret",
+        "github.com/chzchzchz/goword",
+        "github.com/coreos/license-bill-of-materials",
+        "github.com/gordonklaus/ineffassign",
+        "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway",
+        "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger",
+        "github.com/gyuho/gocovmerge",
+        "github.com/hexfusion/schwag",
+        "github.com/mdempsky/unconvert",
+        "github.com/mgechev/revive",
+        "github.com/mikefarah/yq/v3",
+        "go.etcd.io/gofail",
+        "go.etcd.io/protodoc",
+        "honnef.co/go/tools/cmd/staticcheck",
+        "mvdan.cc/unparam"
+      ],
+      "toolchain": "go1.27.3 windows/amd64 cross-target linux/amd64",
+      "environment": {
+        "GOOS": "linux",
+        "GOARCH": "amd64",
+        "CGO_ENABLED": "0",
+        "GOTOOLCHAIN": "local",
+        "GOWORK": "off",
+        "GOPROXY": "https://proxy.golang.org",
+        "GOSUMDB": "sum.golang.org"
+      },
+      "exit_code": 0,
+      "graph_packages": 466,
+      "graph_error_count": 0,
+      "affected_openpgp_packages": [],
+      "mongo_packages": [
+        "go.mongodb.org/mongo-driver/bson",
+        "go.mongodb.org/mongo-driver/bson/bsoncodec",
+        "go.mongodb.org/mongo-driver/bson/bsonoptions",
+        "go.mongodb.org/mongo-driver/bson/bsonrw",
+        "go.mongodb.org/mongo-driver/bson/bsontype",
+        "go.mongodb.org/mongo-driver/bson/primitive",
+        "go.mongodb.org/mongo-driver/x/bsonx/bsoncore"
+      ],
+      "source_versions_and_replacements_unchanged": true,
+      "scope": "Package applicability only. All repository inputs unchanged. Isolated go.sum was supplemented only with the official Sum/GoModSum of exactly already-selected versions; original readonly failures and per-step diffs are preserved. This does not claim the original snapshot can build without checksum completion or that every optional build tag is covered.",
+      "technical_conclusion": "Only seven MongoDB BSON packages occur; the affected x/mongo/driver/auth/internal/gssapi CGo wrapper is absent from the complete dependency closure of all 15 commands declared by upstream tools.go. Not a claim that mongo-driver v1.5.4 is globally fixed.",
+      "original_raw_retained_locally_not_published": {
+        "file": "etcd-23-packages.json.gz",
+        "raw_sha256": "0a508f263a010e0aa1ba2030e01bf1a15a7cdccb7b28652b4bf8e1c7dd03b77a",
+        "raw_bytes": 1415051,
+        "gzip_sha256": "729bc379d8e1d2aae654af187c3118c87092e7efa6bb8c669290316ba0178383",
+        "gzip_bytes": 98903
+      },
+      "complete_public_projection": {
+        "file": "23-packages.derived.json.gz",
+        "sha256": "6ccbe29e0fd7c92e1e81b26ea67ac5c4bfa2910209ebacf7ccf9a932f8b9aa5b",
+        "bytes": 41694,
+        "raw_sha256": "3826086b4112dc52bbc73231038417f1b50e8d7571c803e7d7db92f1d9c186c2",
+        "raw_bytes": 1247822
+      }
+    },
+    {
+      "alert": 48,
+      "target": "deployment/vendors/milvus/modules/tests/go_client/go.mod",
+      "target_sha256": "62df09c4e62e8230e901d34df5bc91cfdb3180651472d313591ce6f7e71e74d0",
+      "original_go_sum_sha256": "8e3ef5277421e126e832cd49fde01c81ec34e1267c968222a4507d1f642fbe7a",
+      "source_archive_sha256": "1dd3a0ff960af532f04172b2aebdb9716b1244cad2fb81781b27641f67216cf9",
+      "source_lock_sha256": "63a94454cf99f39aaae524525bac222db020f099fd1b9f4f80ee777e68befc3e",
+      "command": [
+        "go",
+        "list",
+        "-deps",
+        "-test",
+        "-json",
+        "-mod=readonly",
+        "./..."
+      ],
+      "toolchain": "go1.27.3 windows/amd64 cross-target linux/amd64",
+      "environment": {
+        "GOOS": "linux",
+        "GOARCH": "amd64",
+        "CGO_ENABLED": "0",
+        "GOTOOLCHAIN": "local",
+        "GOWORK": "off",
+        "GOPROXY": "https://proxy.golang.org",
+        "GOSUMDB": "sum.golang.org"
+      },
+      "exit_code": 0,
+      "graph_packages": 626,
+      "graph_error_count": 0,
+      "affected_openpgp_packages": [],
+      "mongo_packages": [],
+      "source_versions_and_replacements_unchanged": true,
+      "scope": "Package applicability only. All repository inputs unchanged. Isolated go.sum was supplemented only with the official Sum/GoModSum of exactly already-selected versions; original readonly failures and per-step diffs are preserved. This does not claim the original snapshot can build without checksum completion or that every optional build tag is covered.",
+      "technical_conclusion": "The seven officially affected deprecated golang.org/x/crypto/openpgp packages are all absent from this complete package/test closure. Whole x/crypto remains selected and scanned.",
+      "original_raw_retained_locally_not_published": {
+        "file": "milvus-48-packages.json.gz",
+        "raw_sha256": "28546813a0575b0a2b33b1d502afedd575a505edaba3a7652eaed839f51dee94",
+        "raw_bytes": 2473079,
+        "gzip_sha256": "6994d49b49fc550af86250141d84f3f8784a194f01d9d4a6c2d3f2c9d21b4076",
+        "gzip_bytes": 156813
+      },
+      "complete_public_projection": {
+        "file": "48-packages.derived.json.gz",
+        "sha256": "bbd546a05d63557c978c812751b4c24761d1d6e2848e32da52f59daee8210f12",
+        "bytes": 74717,
+        "raw_sha256": "7868ef12c4773422bef6bf0765000827b6b2865d1fa00d180b3ba78c0f0dba77",
+        "raw_bytes": 2273281
+      }
+    }
+  ],
+  "derived_not_original_raw": true,
+  "original_local_review_sha256": "6f11ca45305cfb23ed3cf41e49c01adbf2b1bc58c51101f9983b025cbecf195f",
+  "privacy_boundary": "Every package, import/dependency/import-map and module identity remains. Host directories/file lists are omitted. Original unfiltered graphs and first failed probes remain local."
+}

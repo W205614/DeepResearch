@@ -1,0 +1,2150 @@
+{
+  "schema": "code-scanning-per-alert-technical-review-v1",
+  "review_date": "2026-11-10",
+  "initial_scan_source_sha": "0005df53b742cdc2b79ef9196208cf0d00f8a0b8",
+  "initial_open_alerts": 70,
+  "planned_dispositions": {
+    "false positive": 68,
+    "mitigated": 1,
+    "verify_automatically_fixed": 1
+  },
+  "scope": "Per-alert evidence and intended actions, not a claim that GitHub state or final CI already passed. Verify the resulting source commit and live fixed/dismissed states after submission. No blanket rule/path exclusions, no deletion or rewriting of original scans, no human independent-review claim and no general risk acceptance.",
+  "source_of_initial_65_row_review": "deployment/security/code-scanning-review-20261110-evidence/review.json",
+  "initial_review_pending_five_resolved_by": [
+    "deployment/security/code-scanning-review-20261110-evidence/standalone/review.json",
+    "deployment/security/code-scanning-review-20261110-evidence/telemetry-example/review.json"
+  ],
+  "alerts": [
+    {
+      "number": 1,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/1",
+      "tool": "CodeQL",
+      "rule_id": "java/ssrf",
+      "initial_security_severity": "critical",
+      "path": "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java",
+      "initial_location": {
+        "path": "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java",
+        "start_line": 95,
+        "end_line": 95,
+        "start_column": 62,
+        "end_column": 114
+      },
+      "reviewed_source_sha256": "9729af95b2760eb00fdc36f8e86f8abaa7f0f4deb999f976a9342d7a93365aea",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "The complete request URI is prefixed with the operator-configured Agent origin. Real two-origin HTTP regressions prove hostile paths/queries retain that origin and both proxy overloads do not follow cross-origin redirects or disclose the Bearer token. Applies only to these exact source and test bytes.",
+      "evidence_sha256": {
+        "business-backend/src/main/java/com/deepresearch/business/api/AgentProxyController.java": "f81f0ecfbf502797025bc8a0f0365b207f67c88474659dde8c9a18844c58564b",
+        "business-backend/src/main/java/com/deepresearch/business/config/DeepResearchProperties.java": "94211bb68e6735e0200f9c660814a64bd87ac205b944f060eb5a6920ded15ad3",
+        "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java": "9729af95b2760eb00fdc36f8e86f8abaa7f0f4deb999f976a9342d7a93365aea",
+        "business-backend/src/test/java/com/deepresearch/business/service/AgentClientOriginTest.java": "01cc465fd8c2fbbe5fddf85833bbd87f95f04a1abde9f2a8c6020a027a1633b4",
+        "deployment/security/codeql-finding-review-20261110.md": "177346987d46a97d93856d04d7df15f0ca9c40fff9ce2deb8dfda607c68bc770",
+        "deployment/security/codeql-reviewed-findings-20261110.json": "41314f0311399f779ebfc395d2f84448a017f75f513923ef5f59b1c0a90c6762"
+      }
+    },
+    {
+      "number": 2,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/2",
+      "tool": "CodeQL",
+      "rule_id": "java/ssrf",
+      "initial_security_severity": "critical",
+      "path": "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java",
+      "initial_location": {
+        "path": "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java",
+        "start_line": 144,
+        "end_line": 144,
+        "start_column": 57,
+        "end_column": 64
+      },
+      "reviewed_source_sha256": "9729af95b2760eb00fdc36f8e86f8abaa7f0f4deb999f976a9342d7a93365aea",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "The complete request URI is prefixed with the operator-configured Agent origin. Real two-origin HTTP regressions prove hostile paths/queries retain that origin and both proxy overloads do not follow cross-origin redirects or disclose the Bearer token. Applies only to these exact source and test bytes.",
+      "evidence_sha256": {
+        "business-backend/src/main/java/com/deepresearch/business/api/AgentProxyController.java": "f81f0ecfbf502797025bc8a0f0365b207f67c88474659dde8c9a18844c58564b",
+        "business-backend/src/main/java/com/deepresearch/business/config/DeepResearchProperties.java": "94211bb68e6735e0200f9c660814a64bd87ac205b944f060eb5a6920ded15ad3",
+        "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java": "9729af95b2760eb00fdc36f8e86f8abaa7f0f4deb999f976a9342d7a93365aea",
+        "business-backend/src/test/java/com/deepresearch/business/service/AgentClientOriginTest.java": "01cc465fd8c2fbbe5fddf85833bbd87f95f04a1abde9f2a8c6020a027a1633b4",
+        "deployment/security/codeql-finding-review-20261110.md": "177346987d46a97d93856d04d7df15f0ca9c40fff9ce2deb8dfda607c68bc770",
+        "deployment/security/codeql-reviewed-findings-20261110.json": "41314f0311399f779ebfc395d2f84448a017f75f513923ef5f59b1c0a90c6762"
+      }
+    },
+    {
+      "number": 3,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/3",
+      "tool": "CodeQL",
+      "rule_id": "java/spring-disabled-csrf-protection",
+      "initial_security_severity": "high",
+      "path": "business-backend/src/main/java/com/deepresearch/business/config/SecurityConfig.java",
+      "initial_location": {
+        "path": "business-backend/src/main/java/com/deepresearch/business/config/SecurityConfig.java",
+        "start_line": 34,
+        "end_line": 34,
+        "start_column": 27,
+        "end_column": 41
+      },
+      "reviewed_source_sha256": "4dbaf829a97464e83d29329f41aa33888a0d26d4e28362c88b82f14e9d01afc7",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "The actual SecurityConfig accepts JWT credentials only from an explicit Authorization header. RSA/Nimbus verified regressions show cookies, authenticated sessions, query and form credentials cannot authorize a mutation; a header-authorized request creates no authentication session. Applies only to this exact authentication configuration.",
+      "evidence_sha256": {
+        "business-backend/pom.xml": "8a859c557e726d5f8ff818494c7eb5cf008c3cbbb5f130ca9fa8d0b765330301",
+        "business-backend/src/main/java/com/deepresearch/business/config/SecurityConfig.java": "4dbaf829a97464e83d29329f41aa33888a0d26d4e28362c88b82f14e9d01afc7",
+        "business-backend/src/main/java/com/deepresearch/business/security/ApiRateLimitFilter.java": "67ee1e48aa7749d8e0873977d2be30db1e40e08257d63a5f25765e7a984a3533",
+        "business-backend/src/main/java/com/deepresearch/business/security/PlatformAccountFilter.java": "6907c46c7e1e452794a5a0fd37d1cfedd8923dc918f4bbe8c0d48530edbc312c",
+        "business-backend/src/test/java/com/deepresearch/business/config/SecurityConfigBearerTest.java": "21e2841835abc51f50e5ba06a6cc67f091cc5f900a2330605259972ac2fbf603",
+        "deployment/security/codeql-finding-review-20261110.md": "177346987d46a97d93856d04d7df15f0ca9c40fff9ce2deb8dfda607c68bc770",
+        "deployment/security/codeql-reviewed-findings-20261110.json": "41314f0311399f779ebfc395d2f84448a017f75f513923ef5f59b1c0a90c6762",
+        "frontend/src/api.ts": "b2fa83c547576f376a59d572cb689a882a3d52d0d509dfa5ae78e88a462f0e52"
+      }
+    },
+    {
+      "number": 8,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/8",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/alertmanager/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/alertmanager/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "5adcd8759cc127c8bf658cd5955dcfeb11a10724ca63894380fb68fc8f08402e",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Exact official affected seven imports absent from each full graph; graph/native module path, version and checksum sets independently match and current source locks are byte-identical to the graph receipts. This is package-scope non-applicability, not an UNKNOWN severity waiver. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/graphs/alertmanager.packages.derived.json.gz": "d95e3eecd55d947be9817d5dca91e4d306c203a01bcd5b290dda7f18253d5408",
+        "deployment/security/code-scanning-review-20261110-evidence/graphs/amtool.packages.derived.json.gz": "484a892b6d45ab9fa6780ae860deecb48a3ee36aab821b94af3974f792b4d2fd",
+        "deployment/security/code-scanning-review-20261110-evidence/native/alertmanager.buildinfo.json": "143074b27d50d53adc3898a77e837d5dbfb1c577202199dc4e242a3dd5587173",
+        "deployment/security/code-scanning-review-20261110-evidence/native/amtool.buildinfo.json": "4a6a9effa02c6d38a63d3a99d787703c05ec14a19ec7360713df41baf8082fa5",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/vendors/alertmanager/go.mod": "5adcd8759cc127c8bf658cd5955dcfeb11a10724ca63894380fb68fc8f08402e"
+      }
+    },
+    {
+      "number": 9,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/9",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/etcd/modules/etcdctl/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/etcd/modules/etcdctl/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "e14d6c8643096f49ce579321bf0a99b7009b4e0e7388fdd2a9326e665402b823",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Exact official affected seven imports absent from each full graph; graph/native module path, version and checksum sets independently match and current source locks are byte-identical to the graph receipts. This is package-scope non-applicability, not an UNKNOWN severity waiver. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/graphs/etcdctl.packages.derived.json.gz": "3e6c8663a8a6dd7e72d9d10b84265e6d3b3e6aef70f84c349f080a8eb5bf2460",
+        "deployment/security/code-scanning-review-20261110-evidence/native/etcdctl.buildinfo.json": "653c24c8e200f7b803f88b9a2d3dc6d5658223ec49709d2a11cfcf9b6ba47413",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/vendors/etcd/modules/etcdctl/go.mod": "e14d6c8643096f49ce579321bf0a99b7009b4e0e7388fdd2a9326e665402b823"
+      }
+    },
+    {
+      "number": 10,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/10",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/etcd/modules/etcdutl/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/etcd/modules/etcdutl/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "8b58c91f8aa167f3580f3cf17b7f1695c37ebcf9a2e9e9e0864005e36cc3df83",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Exact official affected seven imports absent from each full graph; graph/native module path, version and checksum sets independently match and current source locks are byte-identical to the graph receipts. This is package-scope non-applicability, not an UNKNOWN severity waiver. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/graphs/etcdutl.packages.derived.json.gz": "eec4ae634b75cdded06e3760a138aa7e2fbd3f8a62fdeddf55756c234a2a977f",
+        "deployment/security/code-scanning-review-20261110-evidence/native/etcdutl.buildinfo.json": "8a8963ec1d727cd07ec3792a680e180d29e02a8da551a73fc866a712578d7ec0",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/vendors/etcd/modules/etcdutl/go.mod": "8b58c91f8aa167f3580f3cf17b7f1695c37ebcf9a2e9e9e0864005e36cc3df83"
+      }
+    },
+    {
+      "number": 14,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/14",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/etcd/modules/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/etcd/modules/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "7736cde984ac615e0801dee4baae1e0adc63605cbfbb6543d3c3618a4ce13195",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "The seven officially affected deprecated golang.org/x/crypto/openpgp packages are all absent from this complete package/test closure. Whole x/crypto remains selected and scanned. Package applicability only. All repository inputs unchanged. Isolated go.sum was supplemented only with the official Sum/GoModSum of exactly already-selected versions; original readonly failures and per-step diffs are preserved. This does not claim the original snapshot can build without checksum completion or that every optional build tag is covered.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/14-packages.derived.json.gz": "a768e711f77ad3f230077b52163b674d13bda5cbccdc6b76c39e5f0035c1c792",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/README.md": "fe9eee490d0c7982525f60ad5be00ebc9045c56131cf0fd019c377582727395a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/review.json": "37fd1d5994f82bc36a820e59826d9e2018d87e62166464d5d97e9d55853c092d",
+        "deployment/vendors/etcd/modules/go.mod": "7736cde984ac615e0801dee4baae1e0adc63605cbfbb6543d3c3618a4ce13195",
+        "deployment/vendors/etcd/modules/go.sum": "06c60a25d82d31e4fe8e1dfd043352490a78bebb285685f2e2f9f0c578491bba"
+      }
+    },
+    {
+      "number": 18,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/18",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/etcd/modules/server/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/etcd/modules/server/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "3498592e659669027ac7d9142d1a3b370b2babdb80f2f6dc3680f7b917ef1d36",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Exact official affected seven imports absent from each full graph; graph/native module path, version and checksum sets independently match and current source locks are byte-identical to the graph receipts. This is package-scope non-applicability, not an UNKNOWN severity waiver. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/graphs/etcd.packages.derived.json.gz": "8dc76215b9e69a29eeaff213073b0c30b249a45406eb0cf0c3016b2756036229",
+        "deployment/security/code-scanning-review-20261110-evidence/native/etcd.buildinfo.json": "0a477bd336a6fcf98ef64e07d51d31515f3c19b5189f2b72523aacaaa2aeb5fd",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/vendors/etcd/modules/server/go.mod": "3498592e659669027ac7d9142d1a3b370b2babdb80f2f6dc3680f7b917ef1d36"
+      }
+    },
+    {
+      "number": 22,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/22",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/etcd/modules/tests/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/etcd/modules/tests/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "89fed8c63d48c6333ec8083874fb4ff2c6f33d243d09fd88a114a5b845dc32ef",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "The seven officially affected deprecated golang.org/x/crypto/openpgp packages are all absent from this complete package/test closure. Whole x/crypto remains selected and scanned. Package applicability only. All repository inputs unchanged. Isolated go.sum was supplemented only with the official Sum/GoModSum of exactly already-selected versions; original readonly failures and per-step diffs are preserved. This does not claim the original snapshot can build without checksum completion or that every optional build tag is covered.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/22-packages.derived.json.gz": "871876b8e12f02257ddffe66638b0c32c3adbdeb76ceedf7044fe8538704ab0a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/README.md": "fe9eee490d0c7982525f60ad5be00ebc9045c56131cf0fd019c377582727395a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/review.json": "37fd1d5994f82bc36a820e59826d9e2018d87e62166464d5d97e9d55853c092d",
+        "deployment/vendors/etcd/modules/tests/go.mod": "89fed8c63d48c6333ec8083874fb4ff2c6f33d243d09fd88a114a5b845dc32ef",
+        "deployment/vendors/etcd/modules/tests/go.sum": "ed07090873f34285be974427248e0ecbcdb56d8e98cbef4a9f7b08ce86887704"
+      }
+    },
+    {
+      "number": 23,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/23",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-2303",
+      "initial_security_severity": "medium",
+      "path": "deployment/vendors/etcd/modules/tools/mod/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/etcd/modules/tools/mod/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "666d2260d5a8a8c50cfdcb877f7e69d7fa1a759b89404abebe81f1f377a41d3b",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Only seven MongoDB BSON packages occur; the affected x/mongo/driver/auth/internal/gssapi CGo wrapper is absent from the complete dependency closure of all 15 commands declared by upstream tools.go. Not a claim that mongo-driver v1.5.4 is globally fixed. Package applicability only. All repository inputs unchanged. Isolated go.sum was supplemented only with the official Sum/GoModSum of exactly already-selected versions; original readonly failures and per-step diffs are preserved. This does not claim the original snapshot can build without checksum completion or that every optional build tag is covered.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/23-packages.derived.json.gz": "6ccbe29e0fd7c92e1e81b26ea67ac5c4bfa2910209ebacf7ccf9a932f8b9aa5b",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/README.md": "fe9eee490d0c7982525f60ad5be00ebc9045c56131cf0fd019c377582727395a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/review.json": "37fd1d5994f82bc36a820e59826d9e2018d87e62166464d5d97e9d55853c092d",
+        "deployment/vendors/etcd/modules/tools/mod/go.mod": "666d2260d5a8a8c50cfdcb877f7e69d7fa1a759b89404abebe81f1f377a41d3b",
+        "deployment/vendors/etcd/modules/tools/mod/go.sum": "221cfe6df7fd0b429cb04d337609e20bd298d3934e3a437ecdcc5d7d354f4652"
+      }
+    },
+    {
+      "number": 25,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/25",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-21728",
+      "initial_security_severity": "high",
+      "path": "deployment/vendors/grafana/main/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/main/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Exact current main production graph excludes the Tempo server packages containing both vulnerable handlers. Main has no Tempo dependency; plugin is a client-only compiled profile. Current source22 gate verifies these exact tuples and all current 14 ELF-bound graph/native identities. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.json.gz": "3bfe4efd0420717bccc06677f0c710e5cfcd332412283d88eec44aa0a49ad5bb",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.receipt.json": "d70941564a436b3185d5dc8cbd397b3ea68edf5187b166f3380670529b8c4669",
+        "deployment/security/grafana-fixed-20261107-evidence/native/main-native-buildinfo.json": "b4a1e676bdd5816c7fc0f76a598e46dcb55a18358d85fda5a70648aedb6ac8f6",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/main/go.mod": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda"
+      }
+    },
+    {
+      "number": 26,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/26",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-28377",
+      "initial_security_severity": "high",
+      "path": "deployment/vendors/grafana/main/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/main/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Exact current main production graph excludes the Tempo server packages containing both vulnerable handlers. Main has no Tempo dependency; plugin is a client-only compiled profile. Current source22 gate verifies these exact tuples and all current 14 ELF-bound graph/native identities. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.json.gz": "3bfe4efd0420717bccc06677f0c710e5cfcd332412283d88eec44aa0a49ad5bb",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.receipt.json": "d70941564a436b3185d5dc8cbd397b3ea68edf5187b166f3380670529b8c4669",
+        "deployment/security/grafana-fixed-20261107-evidence/native/main-native-buildinfo.json": "b4a1e676bdd5816c7fc0f76a598e46dcb55a18358d85fda5a70648aedb6ac8f6",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/main/go.mod": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda"
+      }
+    },
+    {
+      "number": 27,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/27",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/grafana/main/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/main/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Official advisory names exactly seven deprecated OpenPGP imports; none occur in the full current main production package closure. Whole x/crypto is still present/scanned where used; this is not a version-wide fixed claim. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.json.gz": "3bfe4efd0420717bccc06677f0c710e5cfcd332412283d88eec44aa0a49ad5bb",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.receipt.json": "d70941564a436b3185d5dc8cbd397b3ea68edf5187b166f3380670529b8c4669",
+        "deployment/security/grafana-fixed-20261107-evidence/native/main-native-buildinfo.json": "b4a1e676bdd5816c7fc0f76a598e46dcb55a18358d85fda5a70648aedb6ac8f6",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/main/go.mod": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda"
+      }
+    },
+    {
+      "number": 28,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/28",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/grafana/plugins/loki/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/plugins/loki/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "dc7988b9851cc1845c16c5b96824c011304a8b64d1c713e41498d6fd2d671304",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Official advisory names exactly seven deprecated OpenPGP imports; none occur in the full current loki production package closure. Whole x/crypto is still present/scanned where used; this is not a version-wide fixed claim. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/loki.json.gz": "cdeba754b89a64bebbf5894bd65f3652799e9cb5abe7ee83791ff73628420de7",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/loki.receipt.json": "8accd55e614a4ed7ebc1bf8d6003bc9324d33a376d12032d16440dbd2f03297b",
+        "deployment/security/grafana-fixed-20261107-evidence/native/loki-native-buildinfo.json": "7164f48fc3d47a00dab8f6488bd91e2d2a2a7e2b2464ea777547edd1dd801779",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/plugins/loki/go.mod": "dc7988b9851cc1845c16c5b96824c011304a8b64d1c713e41498d6fd2d671304"
+      }
+    },
+    {
+      "number": 29,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/29",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/grafana/plugins/mssql/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/plugins/mssql/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "e91bdfc8c9a0448e9489f7d96dec09fb900b8c27d925b574d27a16e77ee860ca",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Official advisory names exactly seven deprecated OpenPGP imports; none occur in the full current mssql production package closure. Whole x/crypto is still present/scanned where used; this is not a version-wide fixed claim. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mssql.json.gz": "ab617082ae1e59578560215bbec8056fc1066a23e8b97c0322114dc5a4ab8d8f",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mssql.receipt.json": "e0fa7ba08ea46d26e85b2d930668a451f93a1ff76083d1204da1a03fda2157c6",
+        "deployment/security/grafana-fixed-20261107-evidence/native/mssql-native-buildinfo.json": "cecc7606d25f86ea014d79d047727be9d997bf94d5c6db7032245d6a86aa293d",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/plugins/mssql/go.mod": "e91bdfc8c9a0448e9489f7d96dec09fb900b8c27d925b574d27a16e77ee860ca"
+      }
+    },
+    {
+      "number": 35,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/35",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/milvus/modules/examples/telemetry_demo/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/milvus/modules/examples/telemetry_demo/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "9666f472fecd7eaacfa32fa5df9b0994726011146809ee397e3330b4211d09bc",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "mitigated",
+      "justification": "The immutable upstream snapshot remains unchanged and is not claimed safe or standalone-buildable. The maintained example patch repairs the real v2/v3 source-identity mismatch and selects the official fixed x/crypto MVS version. Its full module/package graphs and all three independent builds pass. Apply that exact patch for this non-production example; current production builds do not execute this nested example module.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/telemetry-example/README.md": "f1c9ed447ffb26b95b8ecd6b96f8c9a13106dfc5fde775ab8514245bee071a62",
+        "deployment/security/code-scanning-review-20261110-evidence/telemetry-example/packages.derived.json.gz": "18aa92604f045c625549ff9be1ec1bff480a849540f98e483d7ba2b30ea09c0f",
+        "deployment/security/code-scanning-review-20261110-evidence/telemetry-example/review.json": "56ea20315dec1e4b95ce96cbfd453022df87e4579ab5e605e46a330c6d77828c",
+        "deployment/security/code-scanning-review-20261110-evidence/telemetry-example/selected-modules.derived.json": "f7c3653c22b5f5dcf76a84fe0d75e138722eb1803b4734cd8d47f29dc496be55",
+        "deployment/security/code-scanning-review-20261110-evidence/telemetry-example/telemetry-maintained.patch": "baf52637959b5d14ea110a0d63df38e8b1e75ce0ff5ca94eb08f9f7682a31620",
+        "deployment/vendors/milvus/modules/examples/telemetry_demo/go.mod": "9666f472fecd7eaacfa32fa5df9b0994726011146809ee397e3330b4211d09bc",
+        "tests/test_milvus_telemetry_maintenance.py": "08f5babf8e6c716c614b0c81fdee58bf4ade1aea080f642634091ab931d69ee6"
+      }
+    },
+    {
+      "number": 41,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/41",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/milvus/modules/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/milvus/modules/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "10008b93ef0b11c547689b9bdf2c8f7cbf5d0744cd1436f9318a57bc3551d9e7",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Exact official affected seven imports absent from each full graph; graph/native module path, version and checksum sets independently match and current source locks are byte-identical to the graph receipts. This is package-scope non-applicability, not an UNKNOWN severity waiver. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/graphs/milvus_main.packages.derived.json.gz": "89896782f89d7d652c314aad41d51caa72e83c7a1a2fc19363f97245fc1667cb",
+        "deployment/security/code-scanning-review-20261110-evidence/graphs/milvus_parser.packages.derived.json.gz": "86dbcdb619c2545f1e75252e2e28f78fddc85fad6a020da2e0dd0e7c73e07ed2",
+        "deployment/security/code-scanning-review-20261110-evidence/native/milvus-actual-native.json": "f214520644176ee782e977d52a4e3b762f6631d91e9d43d0c255432bbd0dcfbc",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/vendors/milvus/modules/go.mod": "10008b93ef0b11c547689b9bdf2c8f7cbf5d0744cd1436f9318a57bc3551d9e7"
+      }
+    },
+    {
+      "number": 47,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/47",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/milvus/modules/pkg/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/milvus/modules/pkg/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "37f00a2ab8e365c4eed70b492c05173ddb47c4a08ddd9833e92b10e60babfb89",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Exact official affected seven imports absent from each full graph; graph/native module path, version and checksum sets independently match and current source locks are byte-identical to the graph receipts. This is package-scope non-applicability, not an UNKNOWN severity waiver. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/graphs/milvus_main.packages.derived.json.gz": "89896782f89d7d652c314aad41d51caa72e83c7a1a2fc19363f97245fc1667cb",
+        "deployment/security/code-scanning-review-20261110-evidence/graphs/milvus_parser.packages.derived.json.gz": "86dbcdb619c2545f1e75252e2e28f78fddc85fad6a020da2e0dd0e7c73e07ed2",
+        "deployment/security/code-scanning-review-20261110-evidence/native/milvus-actual-native.json": "f214520644176ee782e977d52a4e3b762f6631d91e9d43d0c255432bbd0dcfbc",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/vendors/milvus/modules/pkg/go.mod": "37f00a2ab8e365c4eed70b492c05173ddb47c4a08ddd9833e92b10e60babfb89"
+      }
+    },
+    {
+      "number": 48,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/48",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/milvus/modules/tests/go_client/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/milvus/modules/tests/go_client/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "62df09c4e62e8230e901d34df5bc91cfdb3180651472d313591ce6f7e71e74d0",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "The seven officially affected deprecated golang.org/x/crypto/openpgp packages are all absent from this complete package/test closure. Whole x/crypto remains selected and scanned. Package applicability only. All repository inputs unchanged. Isolated go.sum was supplemented only with the official Sum/GoModSum of exactly already-selected versions; original readonly failures and per-step diffs are preserved. This does not claim the original snapshot can build without checksum completion or that every optional build tag is covered.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/48-packages.derived.json.gz": "bbd546a05d63557c978c812751b4c24761d1d6e2848e32da52f59daee8210f12",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/README.md": "fe9eee490d0c7982525f60ad5be00ebc9045c56131cf0fd019c377582727395a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/review.json": "37fd1d5994f82bc36a820e59826d9e2018d87e62166464d5d97e9d55853c092d",
+        "deployment/vendors/milvus/modules/tests/go_client/go.mod": "62df09c4e62e8230e901d34df5bc91cfdb3180651472d313591ce6f7e71e74d0",
+        "deployment/vendors/milvus/modules/tests/go_client/go.sum": "8e3ef5277421e126e832cd49fde01c81ec34e1267c968222a4507d1f642fbe7a"
+      }
+    },
+    {
+      "number": 51,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/51",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "scripts/storage-bootstrap/go.mod",
+      "initial_location": {
+        "path": "scripts/storage-bootstrap/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "81a233f51d93d186b77fc6bbf965416723c019e2bbd9a8c31621bd41cf973e52",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Exact official affected seven imports absent from each full graph; graph/native module path, version and checksum sets independently match and current source locks are byte-identical to the graph receipts. This is package-scope non-applicability, not an UNKNOWN severity waiver. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/graphs/storage-bootstrap.packages.derived.json.gz": "34221e83776dd274e4a09d0d05bd5b50fe3a6a7c40cfdaebe4846b818de10d94",
+        "deployment/security/code-scanning-review-20261110-evidence/native/storage-bootstrap.buildinfo.json": "54ed6f3c99375852e8a4efa8e714c70e02a869e309540f6fbaf45cf4f936fa69",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "scripts/storage-bootstrap/go.mod": "81a233f51d93d186b77fc6bbf965416723c019e2bbd9a8c31621bd41cf973e52"
+      }
+    },
+    {
+      "number": 76,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/76",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-116587",
+      "initial_security_severity": "high",
+      "path": "deployment/vendors/grafana/main/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/main/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Reported old manifest is overridden in current selected Grafana build; exact native+graph selects fixed go-jose v4.1.6 without replacement. This does not bless rebuilding the archived recipe. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/advisories/CVE-2026-116587-current-cna.json": "abe41a2caff202c0fbbf19f0c5d80ca5ea7e54905a3dccfe62a8180c6f3b5eea",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.json.gz": "3bfe4efd0420717bccc06677f0c710e5cfcd332412283d88eec44aa0a49ad5bb",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.receipt.json": "d70941564a436b3185d5dc8cbd397b3ea68edf5187b166f3380670529b8c4669",
+        "deployment/security/grafana-fixed-20261107-evidence/native/main-native-buildinfo.json": "b4a1e676bdd5816c7fc0f76a598e46dcb55a18358d85fda5a70648aedb6ac8f6",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/main/go.mod": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda"
+      }
+    },
+    {
+      "number": 77,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/77",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-78661",
+      "initial_security_severity": "high",
+      "path": "deployment/vendors/grafana/main/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/main/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Reported old manifest is not the effective current production dependency: exact current native+graph selects fixed x/net v0.62.0 without replacement. Original raw old-lock evidence must remain. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/advisories/CVE-2026-78661-current-cna.json": "59e924f3f0dc13125835d9f1338b18aabbef7a0d087dda81e2b4c3669241df0e",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.json.gz": "3bfe4efd0420717bccc06677f0c710e5cfcd332412283d88eec44aa0a49ad5bb",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.receipt.json": "d70941564a436b3185d5dc8cbd397b3ea68edf5187b166f3380670529b8c4669",
+        "deployment/security/grafana-fixed-20261107-evidence/native/main-native-buildinfo.json": "b4a1e676bdd5816c7fc0f76a598e46dcb55a18358d85fda5a70648aedb6ac8f6",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/main/go.mod": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda"
+      }
+    },
+    {
+      "number": 78,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/78",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-97045",
+      "initial_security_severity": "medium",
+      "path": "deployment/vendors/grafana/main/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/main/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Reported old manifest is not the effective current production dependency: exact current native+graph selects fixed x/net v0.62.0 without replacement. Original raw old-lock evidence must remain. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/advisories/CVE-2026-97045-current-cna.json": "6f52708919758aae98e1b1e48ee693a6feab20ac2859c1b5b5aef1b6a9e3aff1",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.json.gz": "3bfe4efd0420717bccc06677f0c710e5cfcd332412283d88eec44aa0a49ad5bb",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.receipt.json": "d70941564a436b3185d5dc8cbd397b3ea68edf5187b166f3380670529b8c4669",
+        "deployment/security/grafana-fixed-20261107-evidence/native/main-native-buildinfo.json": "b4a1e676bdd5816c7fc0f76a598e46dcb55a18358d85fda5a70648aedb6ac8f6",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/main/go.mod": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda"
+      }
+    },
+    {
+      "number": 79,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/79",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-78661",
+      "initial_security_severity": "high",
+      "path": "deployment/vendors/grafana/plugins/grafana-postgresql-datasource/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/plugins/grafana-postgresql-datasource/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "ccf0f10a88aa32ad8952bbf7d29fd2d15552e0dfdd59ee7f30e19397394ce1f6",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Reported old manifest is not the effective current production dependency: exact current native+graph selects fixed x/net v0.62.0 without replacement. Original raw old-lock evidence must remain. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/advisories/CVE-2026-78661-current-cna.json": "59e924f3f0dc13125835d9f1338b18aabbef7a0d087dda81e2b4c3669241df0e",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/grafana-postgresql-datasource.json.gz": "3e313173ce0d51dbc6aae7a2aab3c0ac3ce3ad3b2dc0cca87131eb899755d1dc",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/grafana-postgresql-datasource.receipt.json": "c3ce92f5b1723bba6ad41af4fd70d53f47f3b51af288239ac891c5d41e26c4f9",
+        "deployment/security/grafana-fixed-20261107-evidence/native/grafana-postgresql-datasource-native-buildinfo.json": "162618bb20dba03b0a754837a2dd533622dc1277b2ed10f0c8e9f62b3b371085",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/plugins/grafana-postgresql-datasource/go.mod": "ccf0f10a88aa32ad8952bbf7d29fd2d15552e0dfdd59ee7f30e19397394ce1f6"
+      }
+    },
+    {
+      "number": 80,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/80",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-97045",
+      "initial_security_severity": "medium",
+      "path": "deployment/vendors/grafana/plugins/grafana-postgresql-datasource/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/plugins/grafana-postgresql-datasource/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "ccf0f10a88aa32ad8952bbf7d29fd2d15552e0dfdd59ee7f30e19397394ce1f6",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Reported old manifest is not the effective current production dependency: exact current native+graph selects fixed x/net v0.62.0 without replacement. Original raw old-lock evidence must remain. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/advisories/CVE-2026-97045-current-cna.json": "6f52708919758aae98e1b1e48ee693a6feab20ac2859c1b5b5aef1b6a9e3aff1",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/grafana-postgresql-datasource.json.gz": "3e313173ce0d51dbc6aae7a2aab3c0ac3ce3ad3b2dc0cca87131eb899755d1dc",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/grafana-postgresql-datasource.receipt.json": "c3ce92f5b1723bba6ad41af4fd70d53f47f3b51af288239ac891c5d41e26c4f9",
+        "deployment/security/grafana-fixed-20261107-evidence/native/grafana-postgresql-datasource-native-buildinfo.json": "162618bb20dba03b0a754837a2dd533622dc1277b2ed10f0c8e9f62b3b371085",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/plugins/grafana-postgresql-datasource/go.mod": "ccf0f10a88aa32ad8952bbf7d29fd2d15552e0dfdd59ee7f30e19397394ce1f6"
+      }
+    },
+    {
+      "number": 81,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/81",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-78661",
+      "initial_security_severity": "high",
+      "path": "deployment/vendors/grafana/plugins/grafana-pyroscope-datasource/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/plugins/grafana-pyroscope-datasource/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "25ff64e01fb9cbe08fff272c8f9129062acee4a84dcfa0ffaf4d9ec92fd2eb19",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Reported old manifest is not the effective current production dependency: exact current native+graph selects fixed x/net v0.62.0 without replacement. Original raw old-lock evidence must remain. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/advisories/CVE-2026-78661-current-cna.json": "59e924f3f0dc13125835d9f1338b18aabbef7a0d087dda81e2b4c3669241df0e",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/grafana-pyroscope-datasource.json.gz": "0e2a1d122a2c0ab7cfe03ab21d1184b3de0f0f45e378ada114bb09934f6b3329",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/grafana-pyroscope-datasource.receipt.json": "bd08643e91a8cf9d55a7eeb5558c39e2785dd8211dcb50962becfceecd0d8187",
+        "deployment/security/grafana-fixed-20261107-evidence/native/grafana-pyroscope-datasource-native-buildinfo.json": "90ef0762426771bf0f9da60ebbd95a6acd251670a58b87a11dae5bb100f568a6",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/plugins/grafana-pyroscope-datasource/go.mod": "25ff64e01fb9cbe08fff272c8f9129062acee4a84dcfa0ffaf4d9ec92fd2eb19"
+      }
+    },
+    {
+      "number": 82,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/82",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-97045",
+      "initial_security_severity": "medium",
+      "path": "deployment/vendors/grafana/plugins/grafana-pyroscope-datasource/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/plugins/grafana-pyroscope-datasource/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "25ff64e01fb9cbe08fff272c8f9129062acee4a84dcfa0ffaf4d9ec92fd2eb19",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Reported old manifest is not the effective current production dependency: exact current native+graph selects fixed x/net v0.62.0 without replacement. Original raw old-lock evidence must remain. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/advisories/CVE-2026-97045-current-cna.json": "6f52708919758aae98e1b1e48ee693a6feab20ac2859c1b5b5aef1b6a9e3aff1",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/grafana-pyroscope-datasource.json.gz": "0e2a1d122a2c0ab7cfe03ab21d1184b3de0f0f45e378ada114bb09934f6b3329",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/grafana-pyroscope-datasource.receipt.json": "bd08643e91a8cf9d55a7eeb5558c39e2785dd8211dcb50962becfceecd0d8187",
+        "deployment/security/grafana-fixed-20261107-evidence/native/grafana-pyroscope-datasource-native-buildinfo.json": "90ef0762426771bf0f9da60ebbd95a6acd251670a58b87a11dae5bb100f568a6",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/plugins/grafana-pyroscope-datasource/go.mod": "25ff64e01fb9cbe08fff272c8f9129062acee4a84dcfa0ffaf4d9ec92fd2eb19"
+      }
+    },
+    {
+      "number": 83,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/83",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-78661",
+      "initial_security_severity": "high",
+      "path": "deployment/vendors/grafana/plugins/influxdb/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/plugins/influxdb/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "9d41ec450db996c2b7738825975d219c72c295ced6e95b9822146601bb7bc340",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Reported old manifest is not the effective current production dependency: exact current native+graph selects fixed x/net v0.62.0 without replacement. Original raw old-lock evidence must remain. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/advisories/CVE-2026-78661-current-cna.json": "59e924f3f0dc13125835d9f1338b18aabbef7a0d087dda81e2b4c3669241df0e",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/influxdb.json.gz": "82781378193b7a689e566f9e6b72c75e915d57f8b12954aa9744e3665dbba9f0",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/influxdb.receipt.json": "be95e26cf724f70f44ebbd6d92f024b9fe717bc18c9f1039376a15aa00155515",
+        "deployment/security/grafana-fixed-20261107-evidence/native/influxdb-native-buildinfo.json": "043b617615054c9f6d3403a8571c98b1b940d2cd7eae284504bdccaaab030001",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/plugins/influxdb/go.mod": "9d41ec450db996c2b7738825975d219c72c295ced6e95b9822146601bb7bc340"
+      }
+    },
+    {
+      "number": 84,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/84",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-97045",
+      "initial_security_severity": "medium",
+      "path": "deployment/vendors/grafana/plugins/influxdb/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/plugins/influxdb/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "9d41ec450db996c2b7738825975d219c72c295ced6e95b9822146601bb7bc340",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Reported old manifest is not the effective current production dependency: exact current native+graph selects fixed x/net v0.62.0 without replacement. Original raw old-lock evidence must remain. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/advisories/CVE-2026-97045-current-cna.json": "6f52708919758aae98e1b1e48ee693a6feab20ac2859c1b5b5aef1b6a9e3aff1",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/influxdb.json.gz": "82781378193b7a689e566f9e6b72c75e915d57f8b12954aa9744e3665dbba9f0",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/influxdb.receipt.json": "be95e26cf724f70f44ebbd6d92f024b9fe717bc18c9f1039376a15aa00155515",
+        "deployment/security/grafana-fixed-20261107-evidence/native/influxdb-native-buildinfo.json": "043b617615054c9f6d3403a8571c98b1b940d2cd7eae284504bdccaaab030001",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/plugins/influxdb/go.mod": "9d41ec450db996c2b7738825975d219c72c295ced6e95b9822146601bb7bc340"
+      }
+    },
+    {
+      "number": 85,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/85",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-78661",
+      "initial_security_severity": "high",
+      "path": "deployment/vendors/grafana/plugins/jaeger/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/plugins/jaeger/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "f279d14bccb27632e45c658eb8babc4572b18bcb39642c33b2f6480a84397762",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Reported old manifest is not the effective current production dependency: exact current native+graph selects fixed x/net v0.62.0 without replacement. Original raw old-lock evidence must remain. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/advisories/CVE-2026-78661-current-cna.json": "59e924f3f0dc13125835d9f1338b18aabbef7a0d087dda81e2b4c3669241df0e",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/jaeger.json.gz": "dc917e219614f8a6d39870d45de1950097999b0b24ab6651f88d904e4b13b325",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/jaeger.receipt.json": "65b2c245266305215a822de16cb7aab57b2b81f7902aabaaf190bce628396033",
+        "deployment/security/grafana-fixed-20261107-evidence/native/jaeger-native-buildinfo.json": "6c78fda387df4a15c79cbc7b971dee18b577e7ef1fdc4e20cf92092961861d4e",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/plugins/jaeger/go.mod": "f279d14bccb27632e45c658eb8babc4572b18bcb39642c33b2f6480a84397762"
+      }
+    },
+    {
+      "number": 86,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/86",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-97045",
+      "initial_security_severity": "medium",
+      "path": "deployment/vendors/grafana/plugins/jaeger/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/plugins/jaeger/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "f279d14bccb27632e45c658eb8babc4572b18bcb39642c33b2f6480a84397762",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Reported old manifest is not the effective current production dependency: exact current native+graph selects fixed x/net v0.62.0 without replacement. Original raw old-lock evidence must remain. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/advisories/CVE-2026-97045-current-cna.json": "6f52708919758aae98e1b1e48ee693a6feab20ac2859c1b5b5aef1b6a9e3aff1",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/jaeger.json.gz": "dc917e219614f8a6d39870d45de1950097999b0b24ab6651f88d904e4b13b325",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/jaeger.receipt.json": "65b2c245266305215a822de16cb7aab57b2b81f7902aabaaf190bce628396033",
+        "deployment/security/grafana-fixed-20261107-evidence/native/jaeger-native-buildinfo.json": "6c78fda387df4a15c79cbc7b971dee18b577e7ef1fdc4e20cf92092961861d4e",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/plugins/jaeger/go.mod": "f279d14bccb27632e45c658eb8babc4572b18bcb39642c33b2f6480a84397762"
+      }
+    },
+    {
+      "number": 87,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/87",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-78661",
+      "initial_security_severity": "high",
+      "path": "deployment/vendors/grafana/plugins/loki/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/plugins/loki/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "dc7988b9851cc1845c16c5b96824c011304a8b64d1c713e41498d6fd2d671304",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Reported old manifest is not the effective current production dependency: exact current native+graph selects fixed x/net v0.62.0 without replacement. Original raw old-lock evidence must remain. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/advisories/CVE-2026-78661-current-cna.json": "59e924f3f0dc13125835d9f1338b18aabbef7a0d087dda81e2b4c3669241df0e",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/loki.json.gz": "cdeba754b89a64bebbf5894bd65f3652799e9cb5abe7ee83791ff73628420de7",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/loki.receipt.json": "8accd55e614a4ed7ebc1bf8d6003bc9324d33a376d12032d16440dbd2f03297b",
+        "deployment/security/grafana-fixed-20261107-evidence/native/loki-native-buildinfo.json": "7164f48fc3d47a00dab8f6488bd91e2d2a2a7e2b2464ea777547edd1dd801779",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/plugins/loki/go.mod": "dc7988b9851cc1845c16c5b96824c011304a8b64d1c713e41498d6fd2d671304"
+      }
+    },
+    {
+      "number": 88,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/88",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-97045",
+      "initial_security_severity": "medium",
+      "path": "deployment/vendors/grafana/plugins/loki/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/plugins/loki/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "dc7988b9851cc1845c16c5b96824c011304a8b64d1c713e41498d6fd2d671304",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Reported old manifest is not the effective current production dependency: exact current native+graph selects fixed x/net v0.62.0 without replacement. Original raw old-lock evidence must remain. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/advisories/CVE-2026-97045-current-cna.json": "6f52708919758aae98e1b1e48ee693a6feab20ac2859c1b5b5aef1b6a9e3aff1",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/loki.json.gz": "cdeba754b89a64bebbf5894bd65f3652799e9cb5abe7ee83791ff73628420de7",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/loki.receipt.json": "8accd55e614a4ed7ebc1bf8d6003bc9324d33a376d12032d16440dbd2f03297b",
+        "deployment/security/grafana-fixed-20261107-evidence/native/loki-native-buildinfo.json": "7164f48fc3d47a00dab8f6488bd91e2d2a2a7e2b2464ea777547edd1dd801779",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/plugins/loki/go.mod": "dc7988b9851cc1845c16c5b96824c011304a8b64d1c713e41498d6fd2d671304"
+      }
+    },
+    {
+      "number": 89,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/89",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-78661",
+      "initial_security_severity": "high",
+      "path": "deployment/vendors/grafana/plugins/mssql/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/plugins/mssql/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "e91bdfc8c9a0448e9489f7d96dec09fb900b8c27d925b574d27a16e77ee860ca",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Reported old manifest is not the effective current production dependency: exact current native+graph selects fixed x/net v0.62.0 without replacement. Original raw old-lock evidence must remain. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/advisories/CVE-2026-78661-current-cna.json": "59e924f3f0dc13125835d9f1338b18aabbef7a0d087dda81e2b4c3669241df0e",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mssql.json.gz": "ab617082ae1e59578560215bbec8056fc1066a23e8b97c0322114dc5a4ab8d8f",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mssql.receipt.json": "e0fa7ba08ea46d26e85b2d930668a451f93a1ff76083d1204da1a03fda2157c6",
+        "deployment/security/grafana-fixed-20261107-evidence/native/mssql-native-buildinfo.json": "cecc7606d25f86ea014d79d047727be9d997bf94d5c6db7032245d6a86aa293d",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/plugins/mssql/go.mod": "e91bdfc8c9a0448e9489f7d96dec09fb900b8c27d925b574d27a16e77ee860ca"
+      }
+    },
+    {
+      "number": 90,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/90",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-97045",
+      "initial_security_severity": "medium",
+      "path": "deployment/vendors/grafana/plugins/mssql/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/plugins/mssql/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "e91bdfc8c9a0448e9489f7d96dec09fb900b8c27d925b574d27a16e77ee860ca",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Reported old manifest is not the effective current production dependency: exact current native+graph selects fixed x/net v0.62.0 without replacement. Original raw old-lock evidence must remain. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/advisories/CVE-2026-97045-current-cna.json": "6f52708919758aae98e1b1e48ee693a6feab20ac2859c1b5b5aef1b6a9e3aff1",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mssql.json.gz": "ab617082ae1e59578560215bbec8056fc1066a23e8b97c0322114dc5a4ab8d8f",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mssql.receipt.json": "e0fa7ba08ea46d26e85b2d930668a451f93a1ff76083d1204da1a03fda2157c6",
+        "deployment/security/grafana-fixed-20261107-evidence/native/mssql-native-buildinfo.json": "cecc7606d25f86ea014d79d047727be9d997bf94d5c6db7032245d6a86aa293d",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/plugins/mssql/go.mod": "e91bdfc8c9a0448e9489f7d96dec09fb900b8c27d925b574d27a16e77ee860ca"
+      }
+    },
+    {
+      "number": 91,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/91",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-78661",
+      "initial_security_severity": "high",
+      "path": "deployment/vendors/grafana/plugins/mysql/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/plugins/mysql/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "c5aeabc0578377bbf47b6f2500a954a60bec869c897662afce46d3d5ea27b7c9",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Reported old manifest is not the effective current production dependency: exact current native+graph selects fixed x/net v0.62.0 without replacement. Original raw old-lock evidence must remain. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/advisories/CVE-2026-78661-current-cna.json": "59e924f3f0dc13125835d9f1338b18aabbef7a0d087dda81e2b4c3669241df0e",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mysql.json.gz": "7a205bd3133e5cea147b9cfa331ef489805bdf841778b8a877c60c6622cb93af",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mysql.receipt.json": "4ebeb86457090fdb3294192b09168ecdceef12128a0e469ce5bb4c1df02e71e2",
+        "deployment/security/grafana-fixed-20261107-evidence/native/mysql-native-buildinfo.json": "85d267be40e060f41304a335a452c2a698a83da03e523cbde32514b467d1dd73",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/plugins/mysql/go.mod": "c5aeabc0578377bbf47b6f2500a954a60bec869c897662afce46d3d5ea27b7c9"
+      }
+    },
+    {
+      "number": 92,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/92",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-97045",
+      "initial_security_severity": "medium",
+      "path": "deployment/vendors/grafana/plugins/mysql/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/plugins/mysql/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "c5aeabc0578377bbf47b6f2500a954a60bec869c897662afce46d3d5ea27b7c9",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Reported old manifest is not the effective current production dependency: exact current native+graph selects fixed x/net v0.62.0 without replacement. Original raw old-lock evidence must remain. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/advisories/CVE-2026-97045-current-cna.json": "6f52708919758aae98e1b1e48ee693a6feab20ac2859c1b5b5aef1b6a9e3aff1",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mysql.json.gz": "7a205bd3133e5cea147b9cfa331ef489805bdf841778b8a877c60c6622cb93af",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mysql.receipt.json": "4ebeb86457090fdb3294192b09168ecdceef12128a0e469ce5bb4c1df02e71e2",
+        "deployment/security/grafana-fixed-20261107-evidence/native/mysql-native-buildinfo.json": "85d267be40e060f41304a335a452c2a698a83da03e523cbde32514b467d1dd73",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/plugins/mysql/go.mod": "c5aeabc0578377bbf47b6f2500a954a60bec869c897662afce46d3d5ea27b7c9"
+      }
+    },
+    {
+      "number": 93,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/93",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-78661",
+      "initial_security_severity": "high",
+      "path": "deployment/vendors/grafana/plugins/opentsdb/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/plugins/opentsdb/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "4b0f34da1b83cb8c7f9bb2aea415ad9023db67b10e7c0ac0c7ea95d45f38303a",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Reported old manifest is not the effective current production dependency: exact current native+graph selects fixed x/net v0.62.0 without replacement. Original raw old-lock evidence must remain. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/advisories/CVE-2026-78661-current-cna.json": "59e924f3f0dc13125835d9f1338b18aabbef7a0d087dda81e2b4c3669241df0e",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/opentsdb.json.gz": "86a9631f851f6ce2c1b0c710f9856a7947387afd5f7f7be2b99db256ec75392c",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/opentsdb.receipt.json": "cdc4e7b4318917f0706ca72d52d4e23eac65720427e8cba36bcef60cce20915a",
+        "deployment/security/grafana-fixed-20261107-evidence/native/opentsdb-native-buildinfo.json": "9651ce62fb641644b4bfbecb8ec5410f6bf9a3596d7408f4a0a50df6ce14e014",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/plugins/opentsdb/go.mod": "4b0f34da1b83cb8c7f9bb2aea415ad9023db67b10e7c0ac0c7ea95d45f38303a"
+      }
+    },
+    {
+      "number": 94,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/94",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-97045",
+      "initial_security_severity": "medium",
+      "path": "deployment/vendors/grafana/plugins/opentsdb/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/plugins/opentsdb/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "4b0f34da1b83cb8c7f9bb2aea415ad9023db67b10e7c0ac0c7ea95d45f38303a",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Reported old manifest is not the effective current production dependency: exact current native+graph selects fixed x/net v0.62.0 without replacement. Original raw old-lock evidence must remain. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/advisories/CVE-2026-97045-current-cna.json": "6f52708919758aae98e1b1e48ee693a6feab20ac2859c1b5b5aef1b6a9e3aff1",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/opentsdb.json.gz": "86a9631f851f6ce2c1b0c710f9856a7947387afd5f7f7be2b99db256ec75392c",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/opentsdb.receipt.json": "cdc4e7b4318917f0706ca72d52d4e23eac65720427e8cba36bcef60cce20915a",
+        "deployment/security/grafana-fixed-20261107-evidence/native/opentsdb-native-buildinfo.json": "9651ce62fb641644b4bfbecb8ec5410f6bf9a3596d7408f4a0a50df6ce14e014",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/plugins/opentsdb/go.mod": "4b0f34da1b83cb8c7f9bb2aea415ad9023db67b10e7c0ac0c7ea95d45f38303a"
+      }
+    },
+    {
+      "number": 109,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/109",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-21728",
+      "initial_security_severity": "high",
+      "path": "deployment/vendors/grafana-security/main/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana-security/main/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "c6c4ca9cf7ce2e149fd57ff7bb3561c4b6032b981e704e25957609377601ffe2",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Exact current main production graph excludes the Tempo server packages containing both vulnerable handlers. Main has no Tempo dependency; plugin is a client-only compiled profile. Current source22 gate verifies these exact tuples and all current 14 ELF-bound graph/native identities. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.json.gz": "3bfe4efd0420717bccc06677f0c710e5cfcd332412283d88eec44aa0a49ad5bb",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.receipt.json": "d70941564a436b3185d5dc8cbd397b3ea68edf5187b166f3380670529b8c4669",
+        "deployment/security/grafana-fixed-20261107-evidence/native/main-native-buildinfo.json": "b4a1e676bdd5816c7fc0f76a598e46dcb55a18358d85fda5a70648aedb6ac8f6",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana-security/main/go.mod": "c6c4ca9cf7ce2e149fd57ff7bb3561c4b6032b981e704e25957609377601ffe2"
+      }
+    },
+    {
+      "number": 110,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/110",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-28377",
+      "initial_security_severity": "high",
+      "path": "deployment/vendors/grafana-security/main/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana-security/main/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "c6c4ca9cf7ce2e149fd57ff7bb3561c4b6032b981e704e25957609377601ffe2",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Exact current main production graph excludes the Tempo server packages containing both vulnerable handlers. Main has no Tempo dependency; plugin is a client-only compiled profile. Current source22 gate verifies these exact tuples and all current 14 ELF-bound graph/native identities. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.json.gz": "3bfe4efd0420717bccc06677f0c710e5cfcd332412283d88eec44aa0a49ad5bb",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.receipt.json": "d70941564a436b3185d5dc8cbd397b3ea68edf5187b166f3380670529b8c4669",
+        "deployment/security/grafana-fixed-20261107-evidence/native/main-native-buildinfo.json": "b4a1e676bdd5816c7fc0f76a598e46dcb55a18358d85fda5a70648aedb6ac8f6",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana-security/main/go.mod": "c6c4ca9cf7ce2e149fd57ff7bb3561c4b6032b981e704e25957609377601ffe2"
+      }
+    },
+    {
+      "number": 111,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/111",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/grafana-security/main/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana-security/main/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "c6c4ca9cf7ce2e149fd57ff7bb3561c4b6032b981e704e25957609377601ffe2",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Official advisory names exactly seven deprecated OpenPGP imports; none occur in the full current main production package closure. Whole x/crypto is still present/scanned where used; this is not a version-wide fixed claim. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.json.gz": "3bfe4efd0420717bccc06677f0c710e5cfcd332412283d88eec44aa0a49ad5bb",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.receipt.json": "d70941564a436b3185d5dc8cbd397b3ea68edf5187b166f3380670529b8c4669",
+        "deployment/security/grafana-fixed-20261107-evidence/native/main-native-buildinfo.json": "b4a1e676bdd5816c7fc0f76a598e46dcb55a18358d85fda5a70648aedb6ac8f6",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana-security/main/go.mod": "c6c4ca9cf7ce2e149fd57ff7bb3561c4b6032b981e704e25957609377601ffe2"
+      }
+    },
+    {
+      "number": 112,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/112",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/grafana-security/plugins/loki/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana-security/plugins/loki/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "b6091ea96c703b9d274e3d848f26914a6f2024d97e834203784ee827d6dbc706",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Official advisory names exactly seven deprecated OpenPGP imports; none occur in the full current loki production package closure. Whole x/crypto is still present/scanned where used; this is not a version-wide fixed claim. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/loki.json.gz": "cdeba754b89a64bebbf5894bd65f3652799e9cb5abe7ee83791ff73628420de7",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/loki.receipt.json": "8accd55e614a4ed7ebc1bf8d6003bc9324d33a376d12032d16440dbd2f03297b",
+        "deployment/security/grafana-fixed-20261107-evidence/native/loki-native-buildinfo.json": "7164f48fc3d47a00dab8f6488bd91e2d2a2a7e2b2464ea777547edd1dd801779",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana-security/plugins/loki/go.mod": "b6091ea96c703b9d274e3d848f26914a6f2024d97e834203784ee827d6dbc706"
+      }
+    },
+    {
+      "number": 113,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/113",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/grafana-security/plugins/mssql/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana-security/plugins/mssql/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "1a7f7d2b5824e806416bf956cf1f73b28cd6bc7ceca1fad7bf5e3e423467c041",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Official advisory names exactly seven deprecated OpenPGP imports; none occur in the full current mssql production package closure. Whole x/crypto is still present/scanned where used; this is not a version-wide fixed claim. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mssql.json.gz": "ab617082ae1e59578560215bbec8056fc1066a23e8b97c0322114dc5a4ab8d8f",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mssql.receipt.json": "e0fa7ba08ea46d26e85b2d930668a451f93a1ff76083d1204da1a03fda2157c6",
+        "deployment/security/grafana-fixed-20261107-evidence/native/mssql-native-buildinfo.json": "cecc7606d25f86ea014d79d047727be9d997bf94d5c6db7032245d6a86aa293d",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana-security/plugins/mssql/go.mod": "1a7f7d2b5824e806416bf956cf1f73b28cd6bc7ceca1fad7bf5e3e423467c041"
+      }
+    },
+    {
+      "number": 114,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/114",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/otel-collector/source/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/otel-collector/source/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "86eb72e23a69b1a95ed7db10e89b487391ca9815a5e12ff1afecc785a8a2aaa4",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Exact official affected seven imports absent from each full graph; graph/native module path, version and checksum sets independently match and current source locks are byte-identical to the graph receipts. This is package-scope non-applicability, not an UNKNOWN severity waiver. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/graphs/otel.packages.derived.json.gz": "c9d01543690391ac0e7ed465d4e9fdaaeae91812e3255e453567cf2af2ace39a",
+        "deployment/security/code-scanning-review-20261110-evidence/native/otel-collector.native.json": "2af593e46dde0f6a046806e00d2a2ad1eabea78dc5847388d664058ab9cb6ea8",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/vendors/otel-collector/source/go.mod": "86eb72e23a69b1a95ed7db10e89b487391ca9815a5e12ff1afecc785a8a2aaa4"
+      }
+    },
+    {
+      "number": 115,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/115",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/tempo/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/tempo/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "b7780da539145adabcc30d5f0368bc25593467a30f0ffca8f51d4835aa5329e0",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Exact official affected seven imports absent from each full graph; graph/native module path, version and checksum sets independently match and current source locks are byte-identical to the graph receipts. This is package-scope non-applicability, not an UNKNOWN severity waiver. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/graphs/tempo.packages.derived.json.gz": "0df6a268b1c3b5ed8531c33b927fda84df7a4aa520634aa8eeef601dc80f7d98",
+        "deployment/security/code-scanning-review-20261110-evidence/native/tempo.native.json": "0ec66ca1793d765011cf81ee100bb68fe7aabe08f0e1a7585ecdf7f2fcd82c4c",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/vendors/tempo/go.mod": "b7780da539145adabcc30d5f0368bc25593467a30f0ffca8f51d4835aa5329e0"
+      }
+    },
+    {
+      "number": 120,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/120",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-116585",
+      "initial_security_severity": "medium",
+      "path": "deployment/vendors/grafana/main/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/main/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Reported old manifest is overridden in current selected Grafana build; exact native+graph selects fixed go-jose v4.1.6 without replacement. This does not bless rebuilding the archived recipe. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/advisories/CVE-2026-116585-current-cna.json": "9f54c4bf9f7ca4681d379b7a6c0d46f07348858aa5282262f999ca2e11d34cd7",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.json.gz": "3bfe4efd0420717bccc06677f0c710e5cfcd332412283d88eec44aa0a49ad5bb",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.receipt.json": "d70941564a436b3185d5dc8cbd397b3ea68edf5187b166f3380670529b8c4669",
+        "deployment/security/grafana-fixed-20261107-evidence/native/main-native-buildinfo.json": "b4a1e676bdd5816c7fc0f76a598e46dcb55a18358d85fda5a70648aedb6ac8f6",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/main/go.mod": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda"
+      }
+    },
+    {
+      "number": 121,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/121",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-116586",
+      "initial_security_severity": "medium",
+      "path": "deployment/vendors/grafana/main/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana/main/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Reported old manifest is overridden in current selected Grafana build; exact native+graph selects fixed go-jose v4.1.6 without replacement. This does not bless rebuilding the archived recipe. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/advisories/CVE-2026-116586-current-cna.json": "a7440df201c76c04353de7c481905f168923ae0f5b052b7dc2098cd10b7093b5",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.json.gz": "3bfe4efd0420717bccc06677f0c710e5cfcd332412283d88eec44aa0a49ad5bb",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.receipt.json": "d70941564a436b3185d5dc8cbd397b3ea68edf5187b166f3380670529b8c4669",
+        "deployment/security/grafana-fixed-20261107-evidence/native/main-native-buildinfo.json": "b4a1e676bdd5816c7fc0f76a598e46dcb55a18358d85fda5a70648aedb6ac8f6",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana/main/go.mod": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda"
+      }
+    },
+    {
+      "number": 124,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/124",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/loki/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/loki/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "8941b81787970cbd4c3344ecdae625a240487a495ccac2e421658e3fdf828944",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Exact official affected seven imports absent from each full graph; graph/native module path, version and checksum sets independently match and current source locks are byte-identical to the graph receipts. This is package-scope non-applicability, not an UNKNOWN severity waiver. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/graphs/loki.packages.derived.json.gz": "2670f6b475a1069ef60dca50c824b0710a0c64c2138c476031204c25c705dad4",
+        "deployment/security/code-scanning-review-20261110-evidence/native/loki.buildinfo.json": "21a6a16ee91d46c4d7dfa61e52ca77279bd4b00c083b288a08d3e6e5a5d572a0",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/vendors/loki/go.mod": "8941b81787970cbd4c3344ecdae625a240487a495ccac2e421658e3fdf828944"
+      }
+    },
+    {
+      "number": 125,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/125",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/prometheus/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/prometheus/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "6e2dfa8d25b5cd3da5513334134e63549aff7e70915958f98893893c825d609e",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Exact official affected seven imports absent from each full graph; graph/native module path, version and checksum sets independently match and current source locks are byte-identical to the graph receipts. This is package-scope non-applicability, not an UNKNOWN severity waiver. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/graphs/prometheus.packages.derived.json.gz": "9b704936c5c7540053793e8fb2a67aaa2e652bf81df5ff665173bcf3d04e10b5",
+        "deployment/security/code-scanning-review-20261110-evidence/graphs/promtool.packages.derived.json.gz": "33d3289a5f10c9c436a978ea5a37adc5609dc257b88bb71b7f534419350e9002",
+        "deployment/security/code-scanning-review-20261110-evidence/native/prometheus.buildinfo.json": "8bb16945c22109804ec67965e7f3ddaba42e24647aff48b016ef8690d9914444",
+        "deployment/security/code-scanning-review-20261110-evidence/native/promtool.buildinfo.json": "677b3c86cb7b5bc20213bd00c9082ce40fc85689655203418d6d746c92f0fbd8",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/vendors/prometheus/go.mod": "6e2dfa8d25b5cd3da5513334134e63549aff7e70915958f98893893c825d609e"
+      }
+    },
+    {
+      "number": 133,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/133",
+      "tool": "CodeQL",
+      "rule_id": "py/insecure-protocol",
+      "initial_security_severity": "high",
+      "path": "tests/test_oidc_tls.py",
+      "initial_location": {
+        "path": "tests/test_oidc_tls.py",
+        "start_line": 52,
+        "end_line": 52,
+        "start_column": 21,
+        "end_column": 28
+      },
+      "reviewed_source_sha256": "92958dd4fddadaa170c89a501d0bf962c5258612e0d78358c17eb723dfa74afc",
+      "raw_reports_retained": true,
+      "intended_action": "verify_automatically_fixed",
+      "justification": "The isolated HTTPS fixture explicitly sets minimum_version=TLSv1_2. Real local CA/HTTPS tests still pass. No dismissal or rule exception is granted; the new scan must confirm the result disappeared.",
+      "evidence_sha256": {
+        "deployment/security/codeql-finding-review-20261110.md": "177346987d46a97d93856d04d7df15f0ca9c40fff9ce2deb8dfda607c68bc770",
+        "tests/test_oidc_tls.py": "92958dd4fddadaa170c89a501d0bf962c5258612e0d78358c17eb723dfa74afc"
+      }
+    },
+    {
+      "number": 134,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/134",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-21728",
+      "initial_security_severity": "high",
+      "path": "deployment/vendors/grafana-20261107/main/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana-20261107/main/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "199183753d1ab3e924e97570739bc5e54ccaf3c209b4f882688953d0dc9bb45d",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Exact current main production graph excludes the Tempo server packages containing both vulnerable handlers. Main has no Tempo dependency; plugin is a client-only compiled profile. Current source22 gate verifies these exact tuples and all current 14 ELF-bound graph/native identities. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.json.gz": "3bfe4efd0420717bccc06677f0c710e5cfcd332412283d88eec44aa0a49ad5bb",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.receipt.json": "d70941564a436b3185d5dc8cbd397b3ea68edf5187b166f3380670529b8c4669",
+        "deployment/security/grafana-fixed-20261107-evidence/native/main-native-buildinfo.json": "b4a1e676bdd5816c7fc0f76a598e46dcb55a18358d85fda5a70648aedb6ac8f6",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana-20261107/main/go.mod": "199183753d1ab3e924e97570739bc5e54ccaf3c209b4f882688953d0dc9bb45d"
+      }
+    },
+    {
+      "number": 135,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/135",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-28377",
+      "initial_security_severity": "high",
+      "path": "deployment/vendors/grafana-20261107/main/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana-20261107/main/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "199183753d1ab3e924e97570739bc5e54ccaf3c209b4f882688953d0dc9bb45d",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Exact current main production graph excludes the Tempo server packages containing both vulnerable handlers. Main has no Tempo dependency; plugin is a client-only compiled profile. Current source22 gate verifies these exact tuples and all current 14 ELF-bound graph/native identities. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.json.gz": "3bfe4efd0420717bccc06677f0c710e5cfcd332412283d88eec44aa0a49ad5bb",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.receipt.json": "d70941564a436b3185d5dc8cbd397b3ea68edf5187b166f3380670529b8c4669",
+        "deployment/security/grafana-fixed-20261107-evidence/native/main-native-buildinfo.json": "b4a1e676bdd5816c7fc0f76a598e46dcb55a18358d85fda5a70648aedb6ac8f6",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana-20261107/main/go.mod": "199183753d1ab3e924e97570739bc5e54ccaf3c209b4f882688953d0dc9bb45d"
+      }
+    },
+    {
+      "number": 136,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/136",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/grafana-20261107/main/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana-20261107/main/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "199183753d1ab3e924e97570739bc5e54ccaf3c209b4f882688953d0dc9bb45d",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Official advisory names exactly seven deprecated OpenPGP imports; none occur in the full current main production package closure. Whole x/crypto is still present/scanned where used; this is not a version-wide fixed claim. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.json.gz": "3bfe4efd0420717bccc06677f0c710e5cfcd332412283d88eec44aa0a49ad5bb",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.receipt.json": "d70941564a436b3185d5dc8cbd397b3ea68edf5187b166f3380670529b8c4669",
+        "deployment/security/grafana-fixed-20261107-evidence/native/main-native-buildinfo.json": "b4a1e676bdd5816c7fc0f76a598e46dcb55a18358d85fda5a70648aedb6ac8f6",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana-20261107/main/go.mod": "199183753d1ab3e924e97570739bc5e54ccaf3c209b4f882688953d0dc9bb45d"
+      }
+    },
+    {
+      "number": 137,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/137",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/grafana-20261107/plugins/elasticsearch/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana-20261107/plugins/elasticsearch/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "79aa9de34ff82449ee12d5eb922bf8f4917093c2e2939bf02e51863c392b003f",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Official advisory names exactly seven deprecated OpenPGP imports; none occur in the full current elasticsearch production package closure. Whole x/crypto is still present/scanned where used; this is not a version-wide fixed claim. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/elasticsearch.json.gz": "99a5a52c8e913e733482d6e09ec42df739f480234f71847e6190c2926cd44228",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/elasticsearch.receipt.json": "ae1fbf83718e88cd98389b230342358c889eaa7c2cb60660cfde98bac35cf1e5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/elasticsearch-native-buildinfo.json": "b4b6e1ee5ed5fb0bf04b385f115add65e6ed4b91ba91bb6eb84a10a2ac334c08",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana-20261107/plugins/elasticsearch/go.mod": "79aa9de34ff82449ee12d5eb922bf8f4917093c2e2939bf02e51863c392b003f"
+      }
+    },
+    {
+      "number": 138,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/138",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/grafana-20261107/plugins/loki/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana-20261107/plugins/loki/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "c3bfc0763317e864a4a66006d8fbbca4054fe35c0cb1d25fb9eb83aafeadd355",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Official advisory names exactly seven deprecated OpenPGP imports; none occur in the full current loki production package closure. Whole x/crypto is still present/scanned where used; this is not a version-wide fixed claim. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/loki.json.gz": "cdeba754b89a64bebbf5894bd65f3652799e9cb5abe7ee83791ff73628420de7",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/loki.receipt.json": "8accd55e614a4ed7ebc1bf8d6003bc9324d33a376d12032d16440dbd2f03297b",
+        "deployment/security/grafana-fixed-20261107-evidence/native/loki-native-buildinfo.json": "7164f48fc3d47a00dab8f6488bd91e2d2a2a7e2b2464ea777547edd1dd801779",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana-20261107/plugins/loki/go.mod": "c3bfc0763317e864a4a66006d8fbbca4054fe35c0cb1d25fb9eb83aafeadd355"
+      }
+    },
+    {
+      "number": 139,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/139",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/grafana-20261107/plugins/mssql/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana-20261107/plugins/mssql/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "bb0c2a9643039d5235db05043c6fe7c30ac070584a69a9c943c7862601d09a3a",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Official advisory names exactly seven deprecated OpenPGP imports; none occur in the full current mssql production package closure. Whole x/crypto is still present/scanned where used; this is not a version-wide fixed claim. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mssql.json.gz": "ab617082ae1e59578560215bbec8056fc1066a23e8b97c0322114dc5a4ab8d8f",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mssql.receipt.json": "e0fa7ba08ea46d26e85b2d930668a451f93a1ff76083d1204da1a03fda2157c6",
+        "deployment/security/grafana-fixed-20261107-evidence/native/mssql-native-buildinfo.json": "cecc7606d25f86ea014d79d047727be9d997bf94d5c6db7032245d6a86aa293d",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana-20261107/plugins/mssql/go.mod": "bb0c2a9643039d5235db05043c6fe7c30ac070584a69a9c943c7862601d09a3a"
+      }
+    },
+    {
+      "number": 140,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/140",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/vendors/grafana-20261107/plugins/stackdriver/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana-20261107/plugins/stackdriver/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "561d6608a55d7819738edd44037824baf65b96c40d605d42d1a72033920763b3",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Official advisory names exactly seven deprecated OpenPGP imports; none occur in the full current stackdriver production package closure. Whole x/crypto is still present/scanned where used; this is not a version-wide fixed claim. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/stackdriver.json.gz": "60c846e2a94affa81aeada0176ff09392c59aa307661f6df760be78a798e4023",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/stackdriver.receipt.json": "2835bd4b3c0cc5fc80833b18d4d59f08e96dae7be975a9a18ef3e7441907f0dc",
+        "deployment/security/grafana-fixed-20261107-evidence/native/stackdriver-native-buildinfo.json": "efd70267c0cb186bcde1675cb4e392097ae37ff36a394bc4508c2499876bf6c0",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana-20261107/plugins/stackdriver/go.mod": "561d6608a55d7819738edd44037824baf65b96c40d605d42d1a72033920763b3"
+      }
+    },
+    {
+      "number": 141,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/141",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-21728",
+      "initial_security_severity": "high",
+      "path": "deployment/vendors/grafana-20261107/plugins/tempo/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana-20261107/plugins/tempo/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "c8975a3adf225b55c1fd90df66f18cd6ee5519954512ac650b95e99875e2fa16",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Exact current tempo production graph excludes the Tempo server packages containing both vulnerable handlers. Main has no Tempo dependency; plugin is a client-only compiled profile. Current source22 gate verifies these exact tuples and all current 14 ELF-bound graph/native identities. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/tempo.json.gz": "cd96fc281a436593d1c9f430f600cbdcf145f67717c54b0964609af48d0a4933",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/tempo.receipt.json": "0e9568bec397b32fedbda7d826d34cb6322d088687bce4fc2e07b471287f7aaf",
+        "deployment/security/grafana-fixed-20261107-evidence/native/tempo-native-buildinfo.json": "7602492711fd87c6d276b5bca07e1c3ff9938a96e7511933e16c6fef7b5ae699",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana-20261107/plugins/tempo/go.mod": "c8975a3adf225b55c1fd90df66f18cd6ee5519954512ac650b95e99875e2fa16"
+      }
+    },
+    {
+      "number": 142,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/142",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-28377",
+      "initial_security_severity": "high",
+      "path": "deployment/vendors/grafana-20261107/plugins/tempo/go.mod",
+      "initial_location": {
+        "path": "deployment/vendors/grafana-20261107/plugins/tempo/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "c8975a3adf225b55c1fd90df66f18cd6ee5519954512ac650b95e99875e2fa16",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Exact current tempo production graph excludes the Tempo server packages containing both vulnerable handlers. Main has no Tempo dependency; plugin is a client-only compiled profile. Current source22 gate verifies these exact tuples and all current 14 ELF-bound graph/native identities. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/tempo.json.gz": "cd96fc281a436593d1c9f430f600cbdcf145f67717c54b0964609af48d0a4933",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/tempo.receipt.json": "0e9568bec397b32fedbda7d826d34cb6322d088687bce4fc2e07b471287f7aaf",
+        "deployment/security/grafana-fixed-20261107-evidence/native/tempo-native-buildinfo.json": "7602492711fd87c6d276b5bca07e1c3ff9938a96e7511933e16c6fef7b5ae699",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101",
+        "deployment/vendors/grafana-20261107/plugins/tempo/go.mod": "c8975a3adf225b55c1fd90df66f18cd6ee5519954512ac650b95e99875e2fa16"
+      }
+    },
+    {
+      "number": 143,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/143",
+      "tool": "CodeQL",
+      "rule_id": "js/xss-through-dom",
+      "initial_security_severity": "high",
+      "path": "deployment/security/agent-native-evidence/supplement-20261107/sqlite-release-3_54_1.html",
+      "initial_location": {
+        "path": "deployment/security/agent-native-evidence/supplement-20261107/sqlite-release-3_54_1.html",
+        "start_line": 97,
+        "end_line": 97,
+        "start_column": 45,
+        "end_column": 72
+      },
+      "reviewed_source_sha256": "69bf98f8cb8730c88b01414cdc4436fb3c65443dae405957b40efab9976f1e12",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "This byte-pinned upstream SQLite release note is offline hash-checked audit evidence outside the frontend build context/webroot. The exact document also contains no mtimelink node, so the flagged conditional href assignment does not execute. The original upstream evidence and raw scan remain unchanged.",
+      "evidence_sha256": {
+        "Dockerfile": "c5f2a6e05dad52da667ab83f649f58609de5032f117e3f9fd64c22b0679f6dce",
+        "compose.yaml": "39255c0c18bc0b13e05ea7fe1f8090da2f9c4b09b4ebc24ba9b28f3e2930b5df",
+        "deployment/security/agent-native-evidence/supplement-20261107/sqlite-release-3_54_1.html": "69bf98f8cb8730c88b01414cdc4436fb3c65443dae405957b40efab9976f1e12",
+        "deployment/security/agent-native-fixed-code-supplement-20261107.json": "f0960cbc117072656b5038706634e11f79281fe876f84642fa234953f25338df",
+        "deployment/security/codeql-finding-review-20261110.md": "177346987d46a97d93856d04d7df15f0ca9c40fff9ce2deb8dfda607c68bc770",
+        "deployment/security/codeql-reviewed-findings-20261110.json": "41314f0311399f779ebfc395d2f84448a017f75f513923ef5f59b1c0a90c6762",
+        "frontend/Dockerfile": "d4a1203b866ad35a2a0dfd7e5972beab8e08e4e021f3f50075075862942dc8a7",
+        "frontend/nginx.conf": "9dfa67b7fe4d3159b2dabf772c51a82e625b3757de35ca37bd36db297c15ccb2",
+        "scripts/check_agent_native_packages.py": "a61f5a7ad61481aa3a88f8432db57dffd545027248cf861fcd766a01c99374d3"
+      }
+    },
+    {
+      "number": 144,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/144",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-21728",
+      "initial_security_severity": "high",
+      "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/main/main/go.mod",
+      "initial_location": {
+        "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/main/main/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "199183753d1ab3e924e97570739bc5e54ccaf3c209b4f882688953d0dc9bb45d",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Exact current main production graph excludes the Tempo server packages containing both vulnerable handlers. Main has no Tempo dependency; plugin is a client-only compiled profile. Current source22 gate verifies these exact tuples and all current 14 ELF-bound graph/native identities. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/main/main/go.mod": "199183753d1ab3e924e97570739bc5e54ccaf3c209b4f882688953d0dc9bb45d",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.json.gz": "3bfe4efd0420717bccc06677f0c710e5cfcd332412283d88eec44aa0a49ad5bb",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.receipt.json": "d70941564a436b3185d5dc8cbd397b3ea68edf5187b166f3380670529b8c4669",
+        "deployment/security/grafana-fixed-20261107-evidence/native/main-native-buildinfo.json": "b4a1e676bdd5816c7fc0f76a598e46dcb55a18358d85fda5a70648aedb6ac8f6",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101"
+      }
+    },
+    {
+      "number": 145,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/145",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-28377",
+      "initial_security_severity": "high",
+      "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/main/main/go.mod",
+      "initial_location": {
+        "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/main/main/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "199183753d1ab3e924e97570739bc5e54ccaf3c209b4f882688953d0dc9bb45d",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Exact current main production graph excludes the Tempo server packages containing both vulnerable handlers. Main has no Tempo dependency; plugin is a client-only compiled profile. Current source22 gate verifies these exact tuples and all current 14 ELF-bound graph/native identities. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/main/main/go.mod": "199183753d1ab3e924e97570739bc5e54ccaf3c209b4f882688953d0dc9bb45d",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.json.gz": "3bfe4efd0420717bccc06677f0c710e5cfcd332412283d88eec44aa0a49ad5bb",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.receipt.json": "d70941564a436b3185d5dc8cbd397b3ea68edf5187b166f3380670529b8c4669",
+        "deployment/security/grafana-fixed-20261107-evidence/native/main-native-buildinfo.json": "b4a1e676bdd5816c7fc0f76a598e46dcb55a18358d85fda5a70648aedb6ac8f6",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101"
+      }
+    },
+    {
+      "number": 146,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/146",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/main/main/go.mod",
+      "initial_location": {
+        "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/main/main/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "199183753d1ab3e924e97570739bc5e54ccaf3c209b4f882688953d0dc9bb45d",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Official advisory names exactly seven deprecated OpenPGP imports; none occur in the full current main production package closure. Whole x/crypto is still present/scanned where used; this is not a version-wide fixed claim. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/main/main/go.mod": "199183753d1ab3e924e97570739bc5e54ccaf3c209b4f882688953d0dc9bb45d",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.json.gz": "3bfe4efd0420717bccc06677f0c710e5cfcd332412283d88eec44aa0a49ad5bb",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/main/main.receipt.json": "d70941564a436b3185d5dc8cbd397b3ea68edf5187b166f3380670529b8c4669",
+        "deployment/security/grafana-fixed-20261107-evidence/native/main-native-buildinfo.json": "b4a1e676bdd5816c7fc0f76a598e46dcb55a18358d85fda5a70648aedb6ac8f6",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101"
+      }
+    },
+    {
+      "number": 147,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/147",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/elasticsearch/go.mod",
+      "initial_location": {
+        "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/elasticsearch/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "79aa9de34ff82449ee12d5eb922bf8f4917093c2e2939bf02e51863c392b003f",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Official advisory names exactly seven deprecated OpenPGP imports; none occur in the full current elasticsearch production package closure. Whole x/crypto is still present/scanned where used; this is not a version-wide fixed claim. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/elasticsearch/go.mod": "79aa9de34ff82449ee12d5eb922bf8f4917093c2e2939bf02e51863c392b003f",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/elasticsearch.json.gz": "99a5a52c8e913e733482d6e09ec42df739f480234f71847e6190c2926cd44228",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/elasticsearch.receipt.json": "ae1fbf83718e88cd98389b230342358c889eaa7c2cb60660cfde98bac35cf1e5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/elasticsearch-native-buildinfo.json": "b4b6e1ee5ed5fb0bf04b385f115add65e6ed4b91ba91bb6eb84a10a2ac334c08",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101"
+      }
+    },
+    {
+      "number": 148,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/148",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/loki/go.mod",
+      "initial_location": {
+        "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/loki/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "c3bfc0763317e864a4a66006d8fbbca4054fe35c0cb1d25fb9eb83aafeadd355",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Official advisory names exactly seven deprecated OpenPGP imports; none occur in the full current loki production package closure. Whole x/crypto is still present/scanned where used; this is not a version-wide fixed claim. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/loki/go.mod": "c3bfc0763317e864a4a66006d8fbbca4054fe35c0cb1d25fb9eb83aafeadd355",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/loki.json.gz": "cdeba754b89a64bebbf5894bd65f3652799e9cb5abe7ee83791ff73628420de7",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/loki.receipt.json": "8accd55e614a4ed7ebc1bf8d6003bc9324d33a376d12032d16440dbd2f03297b",
+        "deployment/security/grafana-fixed-20261107-evidence/native/loki-native-buildinfo.json": "7164f48fc3d47a00dab8f6488bd91e2d2a2a7e2b2464ea777547edd1dd801779",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101"
+      }
+    },
+    {
+      "number": 149,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/149",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/mssql/go.mod",
+      "initial_location": {
+        "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/mssql/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "bb0c2a9643039d5235db05043c6fe7c30ac070584a69a9c943c7862601d09a3a",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Official advisory names exactly seven deprecated OpenPGP imports; none occur in the full current mssql production package closure. Whole x/crypto is still present/scanned where used; this is not a version-wide fixed claim. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/mssql/go.mod": "bb0c2a9643039d5235db05043c6fe7c30ac070584a69a9c943c7862601d09a3a",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mssql.json.gz": "ab617082ae1e59578560215bbec8056fc1066a23e8b97c0322114dc5a4ab8d8f",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mssql.receipt.json": "e0fa7ba08ea46d26e85b2d930668a451f93a1ff76083d1204da1a03fda2157c6",
+        "deployment/security/grafana-fixed-20261107-evidence/native/mssql-native-buildinfo.json": "cecc7606d25f86ea014d79d047727be9d997bf94d5c6db7032245d6a86aa293d",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101"
+      }
+    },
+    {
+      "number": 150,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/150",
+      "tool": "Trivy",
+      "rule_id": "GO-2026-5932",
+      "initial_security_severity": null,
+      "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/stackdriver/go.mod",
+      "initial_location": {
+        "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/stackdriver/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "561d6608a55d7819738edd44037824baf65b96c40d605d42d1a72033920763b3",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Official advisory names exactly seven deprecated OpenPGP imports; none occur in the full current stackdriver production package closure. Whole x/crypto is still present/scanned where used; this is not a version-wide fixed claim. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/stackdriver/go.mod": "561d6608a55d7819738edd44037824baf65b96c40d605d42d1a72033920763b3",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/stackdriver.json.gz": "60c846e2a94affa81aeada0176ff09392c59aa307661f6df760be78a798e4023",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/stackdriver.receipt.json": "2835bd4b3c0cc5fc80833b18d4d59f08e96dae7be975a9a18ef3e7441907f0dc",
+        "deployment/security/grafana-fixed-20261107-evidence/native/stackdriver-native-buildinfo.json": "efd70267c0cb186bcde1675cb4e392097ae37ff36a394bc4508c2499876bf6c0",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101"
+      }
+    },
+    {
+      "number": 151,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/151",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-21728",
+      "initial_security_severity": "high",
+      "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/tempo/go.mod",
+      "initial_location": {
+        "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/tempo/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "c8975a3adf225b55c1fd90df66f18cd6ee5519954512ac650b95e99875e2fa16",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Exact current tempo production graph excludes the Tempo server packages containing both vulnerable handlers. Main has no Tempo dependency; plugin is a client-only compiled profile. Current source22 gate verifies these exact tuples and all current 14 ELF-bound graph/native identities. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/tempo/go.mod": "c8975a3adf225b55c1fd90df66f18cd6ee5519954512ac650b95e99875e2fa16",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/tempo.json.gz": "cd96fc281a436593d1c9f430f600cbdcf145f67717c54b0964609af48d0a4933",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/tempo.receipt.json": "0e9568bec397b32fedbda7d826d34cb6322d088687bce4fc2e07b471287f7aaf",
+        "deployment/security/grafana-fixed-20261107-evidence/native/tempo-native-buildinfo.json": "7602492711fd87c6d276b5bca07e1c3ff9938a96e7511933e16c6fef7b5ae699",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101"
+      }
+    },
+    {
+      "number": 152,
+      "url": "https://github.com/W205614/DeepResearch/security/code-scanning/152",
+      "tool": "Trivy",
+      "rule_id": "CVE-2026-28377",
+      "initial_security_severity": "high",
+      "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/tempo/go.mod",
+      "initial_location": {
+        "path": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/tempo/go.mod",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 1,
+        "end_column": 1
+      },
+      "reviewed_source_sha256": "c8975a3adf225b55c1fd90df66f18cd6ee5519954512ac650b95e99875e2fa16",
+      "raw_reports_retained": true,
+      "intended_action": "dismiss",
+      "dismissed_reason": "false positive",
+      "justification": "Exact current tempo production graph excludes the Tempo server packages containing both vulnerable handlers. Main has no Tempo dependency; plugin is a client-only compiled profile. Current source22 gate verifies these exact tuples and all current 14 ELF-bound graph/native identities. Limited to the exact current selected build; archived manifests, other profiles and future source/dependency changes are not declared safe.",
+      "evidence_sha256": {
+        "deployment/security/code-scanning-review-20261110-evidence/README.md": "fa3e703fc14cc04f296dbcfead69fae7a5ed00505551a3ad0a0a26de7f1fa0cb",
+        "deployment/security/code-scanning-review-20261110-evidence/review.json": "4699ab8d506752b88d4760cc025e7b5bc0f55aa004b59c16e4249aad82d6fc9a",
+        "deployment/security/code-scanning-review-20261110-evidence/standalone/source-continuity.json": "26e19013a1f26f5599483cbf2464f873caa604e75375bbb333bbfaf87b1f13c5",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/tempo/go.mod": "c8975a3adf225b55c1fd90df66f18cd6ee5519954512ac650b95e99875e2fa16",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/tempo.json.gz": "cd96fc281a436593d1c9f430f600cbdcf145f67717c54b0964609af48d0a4933",
+        "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/tempo.receipt.json": "0e9568bec397b32fedbda7d826d34cb6322d088687bce4fc2e07b471287f7aaf",
+        "deployment/security/grafana-fixed-20261107-evidence/native/tempo-native-buildinfo.json": "7602492711fd87c6d276b5bca07e1c3ff9938a96e7511933e16c6fef7b5ae699",
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-source-scope.json": "526af903250300fef3aa478c224b85cf1c430aedd0d9c62467b427c967158101"
+      }
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "schema": "public-go-graph-identity-receipt-projection-v1",
+  "derived_not_original_raw": true,
+  "profile": "otel",
+  "original_receipt": {
+    "original_cache": ".cache/openpgp-followup-20261030/independent/evidence/otel/production-graph-receipt.json",
+    "sha256": "03c02fd943a3e734e93ce836f6b56fe6baeedfd0f3a5b45dddd3cd5092f1525e",
+    "bytes": 2796
+  },
+  "original_graph": {
+    "original_cache": ".cache/openpgp-followup-20261030/independent/evidence/otel-production-packages.json.gz",
+    "sha256": "d06afe92acbc0876023dbfb58b5889b2a5cf58883386927bfaaec29d4371cbf7",
+    "bytes": 243390,
+    "raw_sha256": "e93365dac356ca78888821eba2b08c3cf15c6b806c4a4bceea09935d9270c0c5",
+    "raw_bytes": 4244130
+  },
+  "public_graph": "deployment/security/code-scanning-review-20261110-evidence/graphs/otel.packages.derived.json.gz",
+  "public_graph_sha256": "c9d01543690391ac0e7ed465d4e9fdaaeae91812e3255e453567cf2af2ace39a",
+  "public_projection_raw_sha256": "17f73f45aedbf4c2c3f983c6e41972375646ad3e4573b39c799ea3a0226bcf16",
+  "public_projection_raw_bytes": 4096511,
+  "package_count": 871,
+  "module_count": 172,
+  "source_inputs": {
+    "deployment/vendors/otel-collector/source/components.go": "a566bb1ec54a371deada7ee420423709396b94fe612f22fcba6c63869c4c7139",
+    "deployment/vendors/otel-collector/source/go.mod": "86eb72e23a69b1a95ed7db10e89b487391ca9815a5e12ff1afecc785a8a2aaa4",
+    "deployment/vendors/otel-collector/source/go.sum": "8bd4a6f6cc6d103d92af46f033a61eef19e6a0a4859fef3db47e1630f8a9aaa6",
+    "deployment/vendors/otel-collector/source/main.go": "e6f7833ff71b03da33efd2e5493ea4d17ab25792edff466f0566e1a6b1dfcdf6",
+    "deployment/vendors/otel-collector/source/main_others.go": "0cd81e903710b93f8d16d205678aaeed914f334aaf63a2fda77eae845c7e5bd7",
+    "deployment/vendors/otel-collector/source/main_windows.go": "1e941b0fb681f58969660b0fc85d905f3c15a735e1212a25c76c336b604ade2c"
+  },
+  "source_inputs_rechecked_unchanged": true,
+  "compiler": "go1.27.3",
+  "compiler_settings": {
+    "-buildmode": "exe",
+    "-compiler": "gc",
+    "-tags": "grpcnotrace",
+    "-trimpath": "true",
+    "DefaultGODEBUG": "tracebacklabels=0,x509sslcertoverrideplatform=0",
+    "CGO_ENABLED": "0",
+    "GOARCH": "amd64",
+    "GOOS": "linux",
+    "GOAMD64": "v1"
+  },
+  "original_completed_command_without_host_tool_path": [
+    "go",
+    "list",
+    "-deps",
+    "-json",
+    "-mod=readonly",
+    "-buildvcs=false",
+    "-trimpath",
+    "-tags=grpcnotrace",
+    "."
+  ],
+  "original_completion": {
+    "exit_code": 0,
+    "source": "original_machine_command_receipt",
+    "machine_command_receipt": true
+  },
+  "native": "deployment/security/code-scanning-review-20261110-evidence/native/otel-collector.native.json",
+  "native_sha256": "2af593e46dde0f6a046806e00d2a2ad1eabea78dc5847388d664058ab9cb6ea8",
+  "original_bound_elf_sha256": "67b314bd8f69b717ab4530204280bd5c73b221d175859bd02acede7750bbd77a",
+  "graph_and_native_module_path_version_checksum_sets_equal": true,
+  "new_compilation_performed": false,
+  "new_elf_extraction_performed": false,
+  "human_review_or_risk_acceptance_claimed": false,
+  "scope": "Complete graph and native metadata reparsed; current source input hashes matched. Prior actual ELF identity retained; no fresh ELF extraction claimed."
+}

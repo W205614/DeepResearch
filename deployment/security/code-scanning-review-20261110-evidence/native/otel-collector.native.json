@@ -1,0 +1,908 @@
+{
+	"GoVersion": "go1.27.3",
+	"Path": "deepresearch/otelcol",
+	"Main": {
+		"Path": "deepresearch/otelcol",
+		"Version": "(devel)"
+	},
+	"Deps": [
+		{
+			"Path": "cloud.google.com/go/compute/metadata",
+			"Version": "v0.9.0",
+			"Sum": "h1:pDUj4QMoPejqq20dK0Pg2N4yG9zIkYGdBtwLoEkH9Zs="
+		},
+		{
+			"Path": "github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp",
+			"Version": "v1.35.0",
+			"Sum": "h1:bN1gA3of5bXtbnLsRPrwfmbbe7A5UWFlcTHseujLnpc="
+		},
+		{
+			"Path": "github.com/beorn7/perks",
+			"Version": "v1.0.1",
+			"Sum": "h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM="
+		},
+		{
+			"Path": "github.com/brunoscheufler/aws-ecs-metadata-go",
+			"Version": "v0.0.0-20221221133751-67e37ae746cd",
+			"Sum": "h1:C0dfBzAdNMqxokqWUysk2KTJSMmqvh9cNW1opdy5+0Q="
+		},
+		{
+			"Path": "github.com/cenkalti/backoff/v5",
+			"Version": "v5.0.3",
+			"Sum": "h1:ZN+IMa753KfX5hd8vVaMixjnqRZ3y8CuJKRKj1xcsSM="
+		},
+		{
+			"Path": "github.com/cenkalti/backoff/v7",
+			"Version": "v7.0.1",
+			"Sum": "h1:+ulHti5s1d9QnfyOnLWVmQ/SaZ+TJQF9OdOI0i9BGZI="
+		},
+		{
+			"Path": "github.com/cespare/xxhash/v2",
+			"Version": "v2.3.0",
+			"Sum": "h1:UL815xU9SqsFlibzuggzjXhog7bL6oX9BbNZnL2UFvs="
+		},
+		{
+			"Path": "github.com/davecgh/go-spew",
+			"Version": "v1.1.2-0.20180830191138-d8f796af33cc",
+			"Sum": "h1:U9qPSI2PIWSS1VwoXQT9A3Wy9MM3WgvqSxFWenqJduM="
+		},
+		{
+			"Path": "github.com/felixge/httpsnoop",
+			"Version": "v1.1.0",
+			"Sum": "h1:3YtUj32ZZkqZtt3sZZsClsymw/QDuVfpNhoA31zeORc="
+		},
+		{
+			"Path": "github.com/foxboron/go-tpm-keyfiles",
+			"Version": "v0.0.0-20251226215517-609e4778396f",
+			"Sum": "h1:RJ+BDPLSHQO7cSjKBqjPJSbi1qfk9WcsjQDtZiw3dZw="
+		},
+		{
+			"Path": "github.com/fxamacker/cbor/v2",
+			"Version": "v2.9.2",
+			"Sum": "h1:X4Ksno9+x3cz0TZv69ec1hxP/+tymuR8PXQJyDwfh78="
+		},
+		{
+			"Path": "github.com/go-logr/logr",
+			"Version": "v1.4.4",
+			"Sum": "h1:tG4xh9yMsRCAiodLVTxyrkzSZ9+o0L1Kg/+cPVcbP/8="
+		},
+		{
+			"Path": "github.com/go-logr/stdr",
+			"Version": "v1.2.2",
+			"Sum": "h1:hSWxHoqTgW2S2qGc0LTAI563KZ5YKYRhT3MFKZMbjag="
+		},
+		{
+			"Path": "github.com/go-viper/mapstructure/v2",
+			"Version": "v2.5.0",
+			"Sum": "h1:vM5IJoUAy3d7zRSVtIwQgBj7BiWtMPfmPEgAXnvj1Ro="
+		},
+		{
+			"Path": "github.com/gobwas/glob",
+			"Version": "v0.2.3",
+			"Sum": "h1:A4xDbljILXROh+kObIiy5kIaPYD8e96x1tgBhUI5J+Y="
+		},
+		{
+			"Path": "github.com/golang/snappy",
+			"Version": "v1.0.0",
+			"Sum": "h1:Oy607GVXHs7RtbggtPBnr2RmDArIsAefDwvrdWvRhGs="
+		},
+		{
+			"Path": "github.com/google/go-tpm",
+			"Version": "v0.9.8",
+			"Sum": "h1:slArAR9Ft+1ybZu0lBwpSmpwhRXaa85hWtMinMyRAWo="
+		},
+		{
+			"Path": "github.com/google/uuid",
+			"Version": "v1.6.0",
+			"Sum": "h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0="
+		},
+		{
+			"Path": "github.com/grpc-ecosystem/grpc-gateway/v2",
+			"Version": "v2.29.0",
+			"Sum": "h1:5VipnvEpbqr2gA2VbM+nYVbkIF28c5ZQfqCBQ5g2xfk="
+		},
+		{
+			"Path": "github.com/hashicorp/go-version",
+			"Version": "v1.9.0",
+			"Sum": "h1:CeOIz6k+LoN3qX9Z0tyQrPtiB1DFYRPfCIBtaXPSCnA="
+		},
+		{
+			"Path": "github.com/hashicorp/golang-lru/v2",
+			"Version": "v2.0.7",
+			"Sum": "h1:a+bsQ5rvGLjzHuww6tVxozPZFVghXaHOwFs4luLUK2k="
+		},
+		{
+			"Path": "github.com/json-iterator/go",
+			"Version": "v1.1.12",
+			"Sum": "h1:PV8peI4a0ysnczrg+LtxykD8LfKY9ML6u2jnxaEnrnM="
+		},
+		{
+			"Path": "github.com/klauspost/compress",
+			"Version": "v1.20.3",
+			"Sum": "h1:zWNoFqq/lSuYQRim3dUXlXeA0IqwuZGicdG5ZTfY5j4="
+		},
+		{
+			"Path": "github.com/knadh/koanf/maps",
+			"Version": "v0.1.3",
+			"Sum": "h1:P1z7EvTqdFBrPYbzSvorvrpib+sjkUMxf0FVvA5NKK4="
+		},
+		{
+			"Path": "github.com/knadh/koanf/providers/confmap",
+			"Version": "v1.0.1",
+			"Sum": "h1:L15hbvMqlvhwUuCtL9BkL+rqiMAjk6cZc8O9XoDtE3A="
+		},
+		{
+			"Path": "github.com/knadh/koanf/v2",
+			"Version": "v2.3.8",
+			"Sum": "h1:NftEOf0Y456FqpLJj31RYYZQnfBQ+DDhsNQPqJ6nuk4="
+		},
+		{
+			"Path": "github.com/mitchellh/copystructure",
+			"Version": "v1.2.0",
+			"Sum": "h1:vpKXTN4ewci03Vljg/q9QvCGUDttBOGBIa15WveJJGw="
+		},
+		{
+			"Path": "github.com/mitchellh/reflectwalk",
+			"Version": "v1.0.2",
+			"Sum": "h1:G2LzWKi524PWgd3mLHV8Y5k7s6XUvT0Gef6zxSIeXaQ="
+		},
+		{
+			"Path": "github.com/modern-go/concurrent",
+			"Version": "v0.0.0-20180306012644-bacd9c7ef1dd",
+			"Sum": "h1:TRLaZ9cD/w8PVh93nsPXa1VrQ6jlwL5oN8l14QlcNfg="
+		},
+		{
+			"Path": "github.com/modern-go/reflect2",
+			"Version": "v1.0.3-0.20250322232337-35a7c28c31ee",
+			"Sum": "h1:W5t00kpgFdJifH4BDsTlE89Zl93FEloxaWZfGcifgq8="
+		},
+		{
+			"Path": "github.com/munnerz/goautoneg",
+			"Version": "v0.0.0-20191010083416-a7dc8b61c822",
+			"Sum": "h1:C3w9PqII01/Oq1c1nUAm88MOHcQC9l5mIlSMApZMrHA="
+		},
+		{
+			"Path": "github.com/pierrec/lz4/v4",
+			"Version": "v4.1.33",
+			"Sum": "h1:GjG1TJ1V4IzKP8L96muuuDNpTwd7D+l2ccXrjAbe014="
+		},
+		{
+			"Path": "github.com/prometheus/client_golang",
+			"Version": "v1.24.1",
+			"Sum": "h1:JnJkREXzWxUdCuPFpIWZiPispT9xVV59uiuyR2bPlnU="
+		},
+		{
+			"Path": "github.com/prometheus/client_model",
+			"Version": "v0.6.3",
+			"Sum": "h1:O0jaTVAYNxTHYInEPFJt5I3+sN8zqBtVMPTB1qyxiEo="
+		},
+		{
+			"Path": "github.com/prometheus/common",
+			"Version": "v0.72.1",
+			"Sum": "h1:ZAiQed/nk8IIcsdzb2TlJu23NEUDyDLQ9TXTN2WRK6Y="
+		},
+		{
+			"Path": "github.com/prometheus/otlptranslator",
+			"Version": "v1.0.0",
+			"Sum": "h1:s0LJW/iN9dkIH+EnhiD3BlkkP5QVIUVEoIwkU+A6qos="
+		},
+		{
+			"Path": "github.com/prometheus/procfs",
+			"Version": "v0.21.1",
+			"Sum": "h1:GljZCt+zSTS+NZq88cyQ1LjZ+RCHp3uVuabBWA5+OJI="
+		},
+		{
+			"Path": "github.com/rs/cors",
+			"Version": "v1.11.1",
+			"Sum": "h1:eU3gRzXLRK57F5rKMGMZURNdIG4EoAmX8k94r9wXWHA="
+		},
+		{
+			"Path": "github.com/shirou/gopsutil/v4",
+			"Version": "v4.26.9",
+			"Sum": "h1:CaBo/hBFqvlJoLvAQEKdHdf5GD97/MN2ACfyv63+2Ig="
+		},
+		{
+			"Path": "github.com/spf13/cobra",
+			"Version": "v1.10.2",
+			"Sum": "h1:DMTTonx5m65Ic0GOoRY2c16WCbHxOOw6xxezuLaBpcU="
+		},
+		{
+			"Path": "github.com/spf13/pflag",
+			"Version": "v1.0.10",
+			"Sum": "h1:4EBh2KAYBwaONj6b2Ye1GiHfwjqyROoF4RwYO+vPwFk="
+		},
+		{
+			"Path": "github.com/stretchr/testify",
+			"Version": "v1.12.1",
+			"Sum": "h1:EuwCh5fleGS7H32xRwO3wRGT7DxrDhLAT6FF8MpWDWE="
+		},
+		{
+			"Path": "github.com/tklauser/go-sysconf",
+			"Version": "v0.4.0",
+			"Sum": "h1:7H0uAN+7RkwWRaxhYXDLqa5V3LPrJeV8wmD9dRUgPQU="
+		},
+		{
+			"Path": "github.com/tklauser/numcpus",
+			"Version": "v0.12.0",
+			"Sum": "h1:NR85qdvHA9pFse3x3weVZ0r0ST8R6l5RHbZrlRaqob4="
+		},
+		{
+			"Path": "github.com/x448/float16",
+			"Version": "v0.8.4",
+			"Sum": "h1:qLwI1I70+NjRFUR3zs1JPUCgaCXSh3SW62uAKT1mSBM="
+		},
+		{
+			"Path": "go.opentelemetry.io/auto/sdk",
+			"Version": "v1.2.1",
+			"Sum": "h1:jXsnJ4Lmnqd11kwkBV2LgLoFMZKizbCi5fNZ/ipaZ64="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/client",
+			"Version": "v1.69.0",
+			"Sum": "h1:JaWIacYOkEq2aajAuNltTy7elsIpSPdNMe/I3+b28bY="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/component",
+			"Version": "v1.69.0",
+			"Sum": "h1:ZbVd2N+sCv39wUWQ4qtFG7wuTaok1EHaThbtdE/6Rn4="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/component/componentstatus",
+			"Version": "v0.163.0",
+			"Sum": "h1:DxS+q1BA7uZ7Le6NEAl3gbazIEPV2RX5YVO2dtXnxak="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/component/componenttest",
+			"Version": "v0.163.0",
+			"Sum": "h1:2KE+VpMlgKskjeM6Slrl5qAIju8UbjECYAwOmmj1dZo="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/config/configauth",
+			"Version": "v1.69.0",
+			"Sum": "h1:Atid/XFWwn+89YZUBl/AeJlhxtHWV1+t2V5xwtwRunk="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/config/configcompression",
+			"Version": "v1.69.0",
+			"Sum": "h1:v0cn/6Pmlxe/vlyGQioxA1uZUNFebU4WYmw8VTdy3sE="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/config/configgrpc",
+			"Version": "v1.69.0",
+			"Sum": "h1:DtlrUWhO10161NH5FtQyV1fVcMl7lK0PxnzUHgPCQgA="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/config/confighttp",
+			"Version": "v0.163.0",
+			"Sum": "h1:NZWIXcxNgc8NQNJ1mB4jwXzs1VV1RRmKYtZ3k9jZ2i4="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/config/configmiddleware",
+			"Version": "v1.69.0",
+			"Sum": "h1:mgulrjsj+H9U+qPXNNbomyTdRBuJgsZhz0ev4ThrZeA="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/config/confignet",
+			"Version": "v1.69.0",
+			"Sum": "h1:9CWjjmank0fU94zDiJ2rhQlKgp9WVGv+RRJCFxxEpQU="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/config/configopaque",
+			"Version": "v1.69.0",
+			"Sum": "h1:4hIwoeIpV5uAPvpqXF4gXNJ/NprklevSBeTvStkya2o="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/config/configoptional",
+			"Version": "v1.69.0",
+			"Sum": "h1:40LnYFA3CF7XkMztI6ldmDwWu9tIJOQKszTvMxfqR8o="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/config/configretry",
+			"Version": "v1.69.0",
+			"Sum": "h1:MT0NCJnLy/66mvpGTNyjjxj5X0M9Yeb3qM0EsZ+R1TA="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/config/configtelemetry",
+			"Version": "v0.163.0",
+			"Sum": "h1:TraU6YRKvYImijL8n9T3eRow0NsVlbYOPPdE9iyTmzk="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/config/configtls",
+			"Version": "v1.69.0",
+			"Sum": "h1:pygxB6oHg0yWRG6xsw8NnbflLV/4nMGJCP894ABwpIY="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/confmap",
+			"Version": "v1.69.0",
+			"Sum": "h1:PfCZR4752WXa0cDKEOphnboLNLTJhrvjvnM8OUD847w="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/confmap/provider/envprovider",
+			"Version": "v1.69.0",
+			"Sum": "h1:OA08ftB0HbqbMputrQpon8EU2YktcjlGV/lcq2c2c/8="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/confmap/provider/fileprovider",
+			"Version": "v1.69.0",
+			"Sum": "h1:LOhRnVcW8Ol2LYfddCcxX/7QrORDDjSaE+HA3tSguF4="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/confmap/provider/httpprovider",
+			"Version": "v1.69.0",
+			"Sum": "h1:uT/IddYJVBqIhBsRqWT29XZPDRcx8zivDFznArJFH0g="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/confmap/provider/httpsprovider",
+			"Version": "v1.69.0",
+			"Sum": "h1:ODypzoQmlloxYcqq0ErFHdOU9vb5rS5uK0NY9U6/flY="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/confmap/provider/yamlprovider",
+			"Version": "v1.69.0",
+			"Sum": "h1:pnDhdn9tiA6AQqh4VJ/hRHReQvAvad0rAljrZqetTco="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/confmap/xconfmap",
+			"Version": "v0.163.0",
+			"Sum": "h1:X0H/jwTOTOz+y4IrsnpibyNGMICgrd2oN8mYsXUFueY="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/connector",
+			"Version": "v0.163.0",
+			"Sum": "h1:FiDkHhSasSz8FnEJI5cD1g1G+nacqUmU+D+R7Me38Eo="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/connector/connectortest",
+			"Version": "v0.163.0",
+			"Sum": "h1:2UHgN1xePIrdU5h4YoVI7kOs+SwKExcGyuK57hp/Uws="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/connector/xconnector",
+			"Version": "v0.163.0",
+			"Sum": "h1:RUFRLFpvTZ0lttlrLKPpjEabjrsSaHh6jzwVQIXCDRc="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/consumer",
+			"Version": "v1.69.0",
+			"Sum": "h1:bgPqG4fRn9o70MSOB7rQPvlHRBQ1XmMtxqI9Wjk/PFI="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/consumer/consumererror",
+			"Version": "v0.163.0",
+			"Sum": "h1:U110UnktprP2CqpOsOLeefMXdzawF8D2HXsZxaiGFsM="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/consumer/consumererror/xconsumererror",
+			"Version": "v0.163.0",
+			"Sum": "h1:LTcoc1NeNadGPJJee2d9tvxEW6m1oevrtBwfm5pNcdg="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/consumer/consumertest",
+			"Version": "v0.163.0",
+			"Sum": "h1:skpDDMuulMi/RcDkv/jAbjt+BetkaMA8V2oOoK5uLMA="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/consumer/xconsumer",
+			"Version": "v0.163.0",
+			"Sum": "h1:M9RkuJyJePExQDsyTORVJ/tzDNBDFEvcpD3495Nytxw="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/exporter",
+			"Version": "v1.69.0",
+			"Sum": "h1:vGVgTXVeh4Z0Y+zLqfJEwQpPSDRA92inIcVQ0i+oTi0="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/exporter/exporterhelper",
+			"Version": "v0.163.0",
+			"Sum": "h1:RN+eR4Oen/6gKafQ2g4BbwBLYhWtJGpY3cQi0vCeamQ="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/exporter/exporterhelper/xexporterhelper",
+			"Version": "v0.163.0",
+			"Sum": "h1:NtcDcP6HhAEEO5S5JcI4HM1wrhZDaFrpSpEY75B8K1k="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/exporter/exportertest",
+			"Version": "v0.163.0",
+			"Sum": "h1:5hBAUbW3V3KBQj/85L7CixmH9TLbdCRkPHl9yN2euEM="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/exporter/otlpexporter",
+			"Version": "v0.163.0",
+			"Sum": "h1:BMB2qzPUEqd70muQnOoh0rgzJLVK/RHE7g30B4auVFI="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/exporter/otlphttpexporter",
+			"Version": "v0.163.0",
+			"Sum": "h1:zQbItJTYUadUHQpoifByiTMKspGFLJTvTMKURZRPOkg="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/exporter/xexporter",
+			"Version": "v0.163.0",
+			"Sum": "h1:bifyKPc9BssXAz6uw63dQ8fph0IE0UsmZCyXij5p+s8="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/extension",
+			"Version": "v1.69.0",
+			"Sum": "h1:Xp91fIIXeFCjY/2/8oX3EHcBj0laCr9EvQv/Pf67O0U="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/extension/extensionauth",
+			"Version": "v1.69.0",
+			"Sum": "h1:QLivn2zII3pi8eYCz5m+bvgMd9vulngYS0VoS3VqL7Q="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/extension/extensioncapabilities",
+			"Version": "v0.163.0",
+			"Sum": "h1:XQQE5s8HF9ywEqS26R+59WMl8e7YG0aLckO5j6S2fQM="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/extension/extensionmiddleware",
+			"Version": "v0.163.0",
+			"Sum": "h1:YCOPfJKxhr9V6nsqzHpHwixF1nGAs3BPh3BCUHNZSO0="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/extension/extensiontest",
+			"Version": "v0.163.0",
+			"Sum": "h1:rWPNjJSLkTeNVkNjp8oUGPmA1LHjHA24zutsUtTsebE="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/extension/xextension",
+			"Version": "v0.163.0",
+			"Sum": "h1:aMq+0hQ7BvAiv5HqPAkIdnWa0KFwuptAMfmgZ2KKCKk="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/featuregate",
+			"Version": "v1.69.0",
+			"Sum": "h1:RapEMYjBfvt9IUP3ypQ9Y7/g21nwRzvtKO3dSOCCL6E="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/internal/componentalias",
+			"Version": "v0.163.0",
+			"Sum": "h1:VkZUBC9KtnInkP9cs3RjOVQWEe6ThbX1u92FItOc8/U="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/internal/fanoutconsumer",
+			"Version": "v0.163.0",
+			"Sum": "h1:4f9lOm/cwUSqdR9wcCawpR4dLwVkbNYcpw7JSema+Y0="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/internal/sharedcomponent",
+			"Version": "v0.163.0",
+			"Sum": "h1:/+mURJyT01hBkveLdwGw5Tfp4jvwK9bmG0GdZR1e7GA="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/internal/statusutil",
+			"Version": "v0.163.0",
+			"Sum": "h1:IV1fo04jU5zWiFxPoSVEvEyjyRO8rrsUoY1ED1iQgto="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/internal/telemetry",
+			"Version": "v0.163.0",
+			"Sum": "h1:d94W1rXLPJ7gtbL/bSPnuPyr1IEK/C6yVjF1k3EPc2k="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/otelcol",
+			"Version": "v0.163.0",
+			"Sum": "h1:zQOAD+A492akg6NeZVDbZU6TtJU3gK39K9jxdE+Ly7k="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/pdata",
+			"Version": "v1.69.0",
+			"Sum": "h1:u0a2n1kOS/OGwIEQMOKCnl+bbmFG5wGO/OfFXajICpA="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/pdata/pprofile",
+			"Version": "v0.163.0",
+			"Sum": "h1:+JzjYkCizAR00yyCV6HFPm7SREi9R/TOnaeWQyExmt0="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/pdata/testdata",
+			"Version": "v0.163.0",
+			"Sum": "h1:Rv/uY6N2cNhLSnldAFGsSpAyf+xvQGx27x837q6+kwk="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/pdata/xpdata",
+			"Version": "v0.163.0",
+			"Sum": "h1:4CvvCCNkGSbhrmwUtpn1JcFsaOFDQn8BearBpD8skbc="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/pipeline",
+			"Version": "v1.69.0",
+			"Sum": "h1:zUimUSVCh+ects/w9gOdUZaIHTKd4dFvmSbzzuVTpA4="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/pipeline/xpipeline",
+			"Version": "v0.163.0",
+			"Sum": "h1:j1M4z68B5PtxgvV9+AhbUG+CJAMBROntSDkaCLbzsV4="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/processor",
+			"Version": "v1.69.0",
+			"Sum": "h1:eYsi/RL67cfThLgjq8Tc4veEPMAcVUxSa+8ddo1Df5A="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/processor/batchprocessor",
+			"Version": "v0.163.0",
+			"Sum": "h1:Wfd3UiHsCyQsKER0etlHc1Gyljfr52mNTz13jgAXXbY="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/processor/processortest",
+			"Version": "v0.163.0",
+			"Sum": "h1:s38LOcjq3uN5211mL3bLwatJwilGeNpiTHNBsyYcbaY="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/processor/xprocessor",
+			"Version": "v0.163.0",
+			"Sum": "h1:DfZn9qdIyWJUEaWJbJijmEkQVDtrq9W2yW1HzdF0ZJ8="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/receiver",
+			"Version": "v1.69.0",
+			"Sum": "h1:XRK6OXrvlmNZXJu5Nvs+ihFlzglKEuI8eUCyXoBnHF4="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/receiver/otlpreceiver",
+			"Version": "v0.163.0",
+			"Sum": "h1:12mAw4p5gvGCCmh38BgnT66MdYHjFuiMxfN1jp9nPSk="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/receiver/receiverhelper",
+			"Version": "v0.163.0",
+			"Sum": "h1:uni+wobCouwb1I6YKZdKlUSubN9X2kiFOpCM/3R7XxU="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/receiver/receivertest",
+			"Version": "v0.163.0",
+			"Sum": "h1:KhM4t571zn+9O6puAjboCknKyXu/FFdlsaWWXiPwybc="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/receiver/xreceiver",
+			"Version": "v0.163.0",
+			"Sum": "h1:CRqBGzszjz9yrU5NbF4Ea6rll9gekaKuwccktv7jXjA="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/service",
+			"Version": "v0.163.0",
+			"Sum": "h1:FDssBanrrOV3FUVVXpvwseTTm4Y5HNyfUC0fPmBMhvY="
+		},
+		{
+			"Path": "go.opentelemetry.io/collector/service/hostcapabilities",
+			"Version": "v0.163.0",
+			"Sum": "h1:lnQqPB9BI1hP9+aITlNRk66N04ybMWKSafVn9lfT+Mg="
+		},
+		{
+			"Path": "go.opentelemetry.io/contrib/bridges/otelzap",
+			"Version": "v0.20.0",
+			"Sum": "h1:wgsHT2HLf1KEZtCkd6ZGynPdeIyFsCSKsHyDBW9vEJk="
+		},
+		{
+			"Path": "go.opentelemetry.io/contrib/detectors/aws/ecs",
+			"Version": "v1.45.0",
+			"Sum": "h1:SIHXqRfox1Uz20yN0mtAidKU7SpMY1F08Kne52W5lIs="
+		},
+		{
+			"Path": "go.opentelemetry.io/contrib/detectors/aws/eks",
+			"Version": "v1.45.0",
+			"Sum": "h1:nsQvMufr0boocNMXihxeeTCVvztsfO7web525q6jITQ="
+		},
+		{
+			"Path": "go.opentelemetry.io/contrib/detectors/azure/azurevm",
+			"Version": "v0.17.0",
+			"Sum": "h1:ySRed/MgKSYjGWkrlR1KiSRUBpe3RovCbhk+w/RM8as="
+		},
+		{
+			"Path": "go.opentelemetry.io/contrib/detectors/gcp",
+			"Version": "v1.45.0",
+			"Sum": "h1:9jR0ZPRok9ryaOQ2Wx8rg5F7Aon59mxrqbVI60/vlBk="
+		},
+		{
+			"Path": "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc",
+			"Version": "v0.70.0",
+			"Sum": "h1:oECp5f+hN7nkwjU/8BxQ/q23bGPb8FIrD839owX222E="
+		},
+		{
+			"Path": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",
+			"Version": "v0.70.0",
+			"Sum": "h1:LMuyCAyfalSjDyjdC65nK6N0zoTT63+E/u95X0JovZI="
+		},
+		{
+			"Path": "go.opentelemetry.io/contrib/otelconf",
+			"Version": "v0.25.0",
+			"Sum": "h1:rbVGzm5OsVQhdnjqv2hvKuJhVTVHux9Ltra+N4FKy7M="
+		},
+		{
+			"Path": "go.opentelemetry.io/contrib/propagators/autoprop",
+			"Version": "v0.70.0",
+			"Sum": "h1:yNNN177cOlxAJ5F8l1YKiD6rJk9GOUi/HnRQbI83DeQ="
+		},
+		{
+			"Path": "go.opentelemetry.io/contrib/propagators/aws",
+			"Version": "v1.45.0",
+			"Sum": "h1:XIsTznOtglVtajrcqKOfKJzMJtC6GsNYw7kWsnPPB8g="
+		},
+		{
+			"Path": "go.opentelemetry.io/contrib/propagators/b3",
+			"Version": "v1.45.0",
+			"Sum": "h1:audI5r8RmWVSORhzA5Y57yGvEA1358PvGk0u0sMOTDA="
+		},
+		{
+			"Path": "go.opentelemetry.io/contrib/propagators/jaeger",
+			"Version": "v1.45.0",
+			"Sum": "h1:e8U4utKt9oV2TfLKZFqUzz5shYKnUf3DISalTpLs4lA="
+		},
+		{
+			"Path": "go.opentelemetry.io/contrib/propagators/ot",
+			"Version": "v1.45.0",
+			"Sum": "h1:BLFjHG1OjCEDaBk4os2+X1D6/uEhZxSY9jVUxmG7S+U="
+		},
+		{
+			"Path": "go.opentelemetry.io/otel",
+			"Version": "v1.47.0",
+			"Sum": "h1:j7ALJ/zgkS7Z6aeJW09p8VC9804bC+PpeTfCD4XPnOM="
+		},
+		{
+			"Path": "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc",
+			"Version": "v0.21.0",
+			"Sum": "h1:WseeVYf5dJZTsyPiyW5L14k5qsSibqXAMTSiFEDiWr0="
+		},
+		{
+			"Path": "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp",
+			"Version": "v0.21.0",
+			"Sum": "h1:fvNHGyo3CdRv/DQveXqhqBxnKTDyRaC5sMSQxilX/A0="
+		},
+		{
+			"Path": "go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc",
+			"Version": "v1.45.0",
+			"Sum": "h1:klTViGcsvLCd1xN3rZzfZ12NslC/OimbmR+k+A006RI="
+		},
+		{
+			"Path": "go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp",
+			"Version": "v1.45.0",
+			"Sum": "h1:pnxy6c/kvNBWdNNFzqpjuJLm9Hjhgk/Q0nY221rwuk0="
+		},
+		{
+			"Path": "go.opentelemetry.io/otel/exporters/otlp/otlptrace",
+			"Version": "v1.45.0",
+			"Sum": "h1:QRefszxJmfPdjXUUm3j6iDzY03mTPXMjqErFqQ67vUg="
+		},
+		{
+			"Path": "go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc",
+			"Version": "v1.45.0",
+			"Sum": "h1:fG5MCxGz8+2VtrN/WgqSpJFctVz24gpxj8CxkKmc8Ww="
+		},
+		{
+			"Path": "go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp",
+			"Version": "v1.45.0",
+			"Sum": "h1:QBajQ2SrwQijzHyZbQlPsuIzpl/ll8DY6wPWsajeGcI="
+		},
+		{
+			"Path": "go.opentelemetry.io/otel/exporters/prometheus",
+			"Version": "v0.67.0",
+			"Sum": "h1:7IefDa35e6V3NoiqIeLDMDxMFyZDk5qcoC0Ax4cC16E="
+		},
+		{
+			"Path": "go.opentelemetry.io/otel/exporters/stdout/stdoutlog",
+			"Version": "v0.21.0",
+			"Sum": "h1:2lpf4hnrasYIsUyEXwnTZq5lsxrMm4T2Bwb06IctAZQ="
+		},
+		{
+			"Path": "go.opentelemetry.io/otel/exporters/stdout/stdoutmetric",
+			"Version": "v1.45.0",
+			"Sum": "h1:dm9iyzn6tioYZtwqaiBSU0TSI8Yu/8dTIbfG0+B49DY="
+		},
+		{
+			"Path": "go.opentelemetry.io/otel/exporters/stdout/stdouttrace",
+			"Version": "v1.45.0",
+			"Sum": "h1:lsA/S1bxgdbyFGkTj+3meEdJ6ADVU7QoFstV6MXgE68="
+		},
+		{
+			"Path": "go.opentelemetry.io/otel/log",
+			"Version": "v1.47.0",
+			"Sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+		},
+		{
+			"Path": "go.opentelemetry.io/otel/metric",
+			"Version": "v1.47.0",
+			"Sum": "h1:4PptaldXx3Eat1XjMZ68pPJEs5wrhlemctZE9a3UdWY="
+		},
+		{
+			"Path": "go.opentelemetry.io/otel/sdk",
+			"Version": "v1.47.0",
+			"Sum": "h1:zWXEr4j2lFefG87TU6Yg8a7ngfohIKFZHKp0Hf5hC6I="
+		},
+		{
+			"Path": "go.opentelemetry.io/otel/sdk/log",
+			"Version": "v0.21.0",
+			"Sum": "h1:QsE7XSR0ktQdKmRKGnR+f1ObGF32WG+7MER/P9KgmYc="
+		},
+		{
+			"Path": "go.opentelemetry.io/otel/sdk/metric",
+			"Version": "v1.47.0",
+			"Sum": "h1:lfISg2j93VT6yqdk9OfUaZmw/GfcZqCCV3jdXtsPnKw="
+		},
+		{
+			"Path": "go.opentelemetry.io/otel/trace",
+			"Version": "v1.47.0",
+			"Sum": "h1:JOjX/Oci8K94QHddo+bbfya/Ai/nf6/dt9ZfrFNWSrM="
+		},
+		{
+			"Path": "go.opentelemetry.io/proto/otlp",
+			"Version": "v1.11.0",
+			"Sum": "h1:5rrYs0Ykyj50sdU/JU0x8etU+LubXWb+gED6TbEdMIk="
+		},
+		{
+			"Path": "go.uber.org/multierr",
+			"Version": "v1.11.0",
+			"Sum": "h1:blXXJkSxSSfBVBlC76pxqeO+LN3aDfLQo+309xJstO0="
+		},
+		{
+			"Path": "go.uber.org/zap",
+			"Version": "v1.28.0",
+			"Sum": "h1:IZzaP1Fv73/T/pBMLk4VutPl36uNC+OSUh3JLG3FIjo="
+		},
+		{
+			"Path": "go.yaml.in/yaml/v2",
+			"Version": "v2.4.4",
+			"Sum": "h1:tuyd0P+2Ont/d6e2rl3be67goVK4R6deVxCUX5vyPaQ="
+		},
+		{
+			"Path": "go.yaml.in/yaml/v3",
+			"Version": "v3.0.5",
+			"Sum": "h1:N6y/pJk8buWs9NY5ERU2HSMfm+IuD/OtfdAnq6kESPw="
+		},
+		{
+			"Path": "golang.org/x/crypto",
+			"Version": "v0.58.0",
+			"Sum": "h1:COkYLr4k7nDI4r6QtMML2AfzeIswWHAJthLS6K/M/54="
+		},
+		{
+			"Path": "golang.org/x/exp",
+			"Version": "v0.0.0-20260727155853-b88d891fe743",
+			"Sum": "h1:ex206bKw+v3K0dm3andkrIF+ijyQKJG1pLgwQ2PYdQM="
+		},
+		{
+			"Path": "golang.org/x/net",
+			"Version": "v0.62.0",
+			"Sum": "h1:18ELalfM5+XNRwzM2nYqXsZQ9ByS1uhj2O/U7+5jqRY="
+		},
+		{
+			"Path": "golang.org/x/oauth2",
+			"Version": "v0.37.0",
+			"Sum": "h1:JUlcxA8oAtauLfiH8FX2/FkAWHAdi0QtGCGc+hofE98="
+		},
+		{
+			"Path": "golang.org/x/sys",
+			"Version": "v0.49.0",
+			"Sum": "h1:XbzkgYJHdqh/8m2Uu0W/dQv8nktxx4BFHp1M0gROTXA="
+		},
+		{
+			"Path": "golang.org/x/term",
+			"Version": "v0.47.0",
+			"Sum": "h1:cpyOwQkr2Nzxe2p6KnrTG7Ei2wtzjsuSjhpXXepZ/BM="
+		},
+		{
+			"Path": "golang.org/x/text",
+			"Version": "v0.43.0",
+			"Sum": "h1:1QivrlhwAsnMOcqgOdl9my7s9OyZl8O5/UGUTJVXoWc="
+		},
+		{
+			"Path": "golang.org/x/time",
+			"Version": "v0.15.0",
+			"Sum": "h1:bbrp8t3bGUeFOx08pvsMYRTCVSMk89u4tKbNOZbp88U="
+		},
+		{
+			"Path": "gonum.org/v1/gonum",
+			"Version": "v0.17.0",
+			"Sum": "h1:VbpOemQlsSMrYmn7T2OUvQ4dqxQXU+ouZFQsZOx50z4="
+		},
+		{
+			"Path": "google.golang.org/genproto/googleapis/api",
+			"Version": "v0.0.0-20260803160001-6ac0973c030d",
+			"Sum": "h1:FarXi840EJWSHYTN3ERkADbPWjl307+FGrA22KAVjjc="
+		},
+		{
+			"Path": "google.golang.org/genproto/googleapis/rpc",
+			"Version": "v0.0.0-20260803160001-6ac0973c030d",
+			"Sum": "h1:IL4hdHzcUv2l/gcg98/Rj3FbtE6axwqslOW8SW0C+S0="
+		},
+		{
+			"Path": "google.golang.org/grpc",
+			"Version": "v1.84.0",
+			"Sum": "h1:soMyaPJ8pAak5PIQ0DGBUir0XRo2fRoMqhNWMLlLxO0="
+		},
+		{
+			"Path": "google.golang.org/protobuf",
+			"Version": "v1.36.12",
+			"Sum": "h1:pJOKDDOyeXErUroCihFAd5LQuwXBSpVnKGrj5o/fwxc="
+		},
+		{
+			"Path": "gopkg.in/inf.v0",
+			"Version": "v0.9.1",
+			"Sum": "h1:73M5CoZyi3ZLMOyDlQh031Cx6N9NDJ2Vvfl76EDAgDc="
+		},
+		{
+			"Path": "k8s.io/apimachinery",
+			"Version": "v0.35.4",
+			"Sum": "h1:xtdom9RG7e+yDp71uoXoJDWEE2eOiHgeO4GdBzwWpds="
+		},
+		{
+			"Path": "k8s.io/client-go",
+			"Version": "v0.35.4",
+			"Sum": "h1:DN6fyaGuzK64UvnKO5fOA6ymSjvfGAnCAHAR0C66kD8="
+		},
+		{
+			"Path": "k8s.io/klog/v2",
+			"Version": "v2.140.0",
+			"Sum": "h1:Tf+J3AH7xnUzZyVVXhTgGhEKnFqye14aadWv7bzXdzc="
+		},
+		{
+			"Path": "k8s.io/kube-openapi",
+			"Version": "v0.0.0-20260721132016-d427ff9ee9ad",
+			"Sum": "h1:oXImqH8mQNk7PmvzKhmN3ddJoY6OnyM225MXwGHPm0A="
+		},
+		{
+			"Path": "k8s.io/utils",
+			"Version": "v0.0.0-20260707023825-cf1189d6abe3",
+			"Sum": "h1:jVkFFVfXdXP74B/zbO3hM3hpSFD0xvhQ5U686DPurkE="
+		},
+		{
+			"Path": "sigs.k8s.io/json",
+			"Version": "v0.0.0-20250730193827-2d320260d730",
+			"Sum": "h1:IpInykpT6ceI+QxKBbEflcR5EXP7sU1kvOlxwZh5txg="
+		},
+		{
+			"Path": "sigs.k8s.io/randfill",
+			"Version": "v1.0.0",
+			"Sum": "h1:JfjMILfT8A6RbawdsK2JXGBR5AQVfd+9TbzrlneTyrU="
+		},
+		{
+			"Path": "sigs.k8s.io/structured-merge-diff/v6",
+			"Version": "v6.4.2",
+			"Sum": "h1:qdOxHwrl2Kaag1aQEarlYcOA9vSyGCp3CIki3aW8c4Q="
+		},
+		{
+			"Path": "sigs.k8s.io/yaml",
+			"Version": "v1.6.0",
+			"Sum": "h1:G8fkbMSAFqgEFgh4b1wmtzDnioxFCUgTZhlbj5P9QYs="
+		}
+	],
+	"Settings": [
+		{
+			"Key": "-buildmode",
+			"Value": "exe"
+		},
+		{
+			"Key": "-compiler",
+			"Value": "gc"
+		},
+		{
+			"Key": "-tags",
+			"Value": "grpcnotrace"
+		},
+		{
+			"Key": "-trimpath",
+			"Value": "true"
+		},
+		{
+			"Key": "DefaultGODEBUG",
+			"Value": "tracebacklabels=0,x509sslcertoverrideplatform=0"
+		},
+		{
+			"Key": "CGO_ENABLED",
+			"Value": "0"
+		},
+		{
+			"Key": "GOARCH",
+			"Value": "amd64"
+		},
+		{
+			"Key": "GOOS",
+			"Value": "linux"
+		},
+		{
+			"Key": "GOAMD64",
+			"Value": "v1"
+		}
+	]
+}

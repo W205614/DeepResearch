@@ -1,0 +1,441 @@
+{
+  "baseline_source_sha": "c4588889f9822762b262fbc2a3ab9d5eed016fc5",
+  "current_source_sha": "0005df53b742cdc2b79ef9196208cf0d00f8a0b8",
+  "scope": "Source/import continuity only. No claim that current rebuilt ELF bytes equal historical ELF bytes or that every profile was freshly recompiled.",
+  "source_trees": [
+    {
+      "path": "scripts/storage-bootstrap",
+      "baseline_git_object": "0fe2af02c0831e7000fd2d4c5d15c3f8e4ed6bd6",
+      "current_git_object": "0fe2af02c0831e7000fd2d4c5d15c3f8e4ed6bd6",
+      "same_git_object": true,
+      "tracked_file_count": 4,
+      "current_checkout_matches_git_blob_sha256": true,
+      "files_sha256": {
+        "scripts/storage-bootstrap/README.md": "7411bbcb37c3640c5b125dee639b0ccc77ebf7be6156a93f31f28256c52ca9ec",
+        "scripts/storage-bootstrap/go.mod": "81a233f51d93d186b77fc6bbf965416723c019e2bbd9a8c31621bd41cf973e52",
+        "scripts/storage-bootstrap/go.sum": "279bd2d20999c7ccdd77a63e49eea138c9d1a7b7d9a09a9f3b9fe82ef48499c7",
+        "scripts/storage-bootstrap/main.go": "7bc60cbdbd4f9e63fb9b57223d1b0e83349a2db3a0d44558580e2c5bc41e7d6f"
+      }
+    },
+    {
+      "path": "deployment/vendors/otel-collector/source",
+      "baseline_git_object": "e2564ea6fceedbf9a229da5ae5c10f8a5356287d",
+      "current_git_object": "e2564ea6fceedbf9a229da5ae5c10f8a5356287d",
+      "same_git_object": true,
+      "tracked_file_count": 6,
+      "current_checkout_matches_git_blob_sha256": true,
+      "files_sha256": {
+        "deployment/vendors/otel-collector/source/components.go": "a566bb1ec54a371deada7ee420423709396b94fe612f22fcba6c63869c4c7139",
+        "deployment/vendors/otel-collector/source/go.mod": "86eb72e23a69b1a95ed7db10e89b487391ca9815a5e12ff1afecc785a8a2aaa4",
+        "deployment/vendors/otel-collector/source/go.sum": "8bd4a6f6cc6d103d92af46f033a61eef19e6a0a4859fef3db47e1630f8a9aaa6",
+        "deployment/vendors/otel-collector/source/main.go": "e6f7833ff71b03da33efd2e5493ea4d17ab25792edff466f0566e1a6b1dfcdf6",
+        "deployment/vendors/otel-collector/source/main_others.go": "0cd81e903710b93f8d16d205678aaeed914f334aaf63a2fda77eae845c7e5bd7",
+        "deployment/vendors/otel-collector/source/main_windows.go": "1e941b0fb681f58969660b0fc85d905f3c15a735e1212a25c76c336b604ade2c"
+      }
+    },
+    {
+      "path": "deployment/vendors/etcd/modules",
+      "baseline_git_object": "7824ae1aecb5cb8b433218da6f0e6de35e2a78ba",
+      "current_git_object": "7824ae1aecb5cb8b433218da6f0e6de35e2a78ba",
+      "same_git_object": true,
+      "tracked_file_count": 24,
+      "current_checkout_matches_git_blob_sha256": true,
+      "files_sha256": {
+        "deployment/vendors/etcd/modules/api/go.mod": "f1ae87158486bceb31739eaae6845adc2a882068d0ad5356772e9e81d17935d1",
+        "deployment/vendors/etcd/modules/api/go.sum": "a83b4c5c0aa44198f98a162b1d2321e90e146425430c2d726056fe2e3f354919",
+        "deployment/vendors/etcd/modules/client/pkg/go.mod": "fd971a142620db6515d05f72b9412f189e76eba58db1c6d4b5abef3eca796fb9",
+        "deployment/vendors/etcd/modules/client/pkg/go.sum": "d10cf8b0c605f5d007b0f11dd84b402f1bb319a6fb6487a5bd64d40af02a4bc5",
+        "deployment/vendors/etcd/modules/client/v2/go.mod": "c36da6df7e88e01542f8fbb6a78c857dcd9e2d2158cab9140175f6a125aefbb2",
+        "deployment/vendors/etcd/modules/client/v2/go.sum": "01dc4c3d74d032ea6d87c5a9fc85ffbad4252f7f2d5dd75c0689a7110a71da35",
+        "deployment/vendors/etcd/modules/client/v3/go.mod": "b2950fc5adc6c8fd281c21ab47b8328057a184128b9548393f09f5151d2ce9f2",
+        "deployment/vendors/etcd/modules/client/v3/go.sum": "5755292d69d779ce82d7b36e3990eacfbcddf161d65f34fa014d21714e8739be",
+        "deployment/vendors/etcd/modules/etcdctl/go.mod": "e14d6c8643096f49ce579321bf0a99b7009b4e0e7388fdd2a9326e665402b823",
+        "deployment/vendors/etcd/modules/etcdctl/go.sum": "b0f42a3ef8c9ac0898ae026ea4f573d05b3f5553c0b7cd64f5fde17fbf8212b6",
+        "deployment/vendors/etcd/modules/etcdutl/go.mod": "8b58c91f8aa167f3580f3cf17b7f1695c37ebcf9a2e9e9e0864005e36cc3df83",
+        "deployment/vendors/etcd/modules/etcdutl/go.sum": "3607f2b54e212637c63a59acc82d92ca4438e29e4660bf7c636d29006d6c49f0",
+        "deployment/vendors/etcd/modules/go.mod": "7736cde984ac615e0801dee4baae1e0adc63605cbfbb6543d3c3618a4ce13195",
+        "deployment/vendors/etcd/modules/go.sum": "06c60a25d82d31e4fe8e1dfd043352490a78bebb285685f2e2f9f0c578491bba",
+        "deployment/vendors/etcd/modules/pkg/go.mod": "0f0d1c90e1660c282c47e03d43892e9b49961f2b3d2d6c0a4d02febe53c20320",
+        "deployment/vendors/etcd/modules/pkg/go.sum": "f8b3a2f9642b8ff56eea5733ad935b8bfa14d850bff40aa6700ed9b3810827bc",
+        "deployment/vendors/etcd/modules/raft/go.mod": "089247a6557eeb928b41f4cf526b7d376ef5b478b61cf106057ea9e30e60cd38",
+        "deployment/vendors/etcd/modules/raft/go.sum": "38f9d084c00dc4e7dfd2d42fa6be0a332c33c6de6a1a75fea1260e84f58f6807",
+        "deployment/vendors/etcd/modules/server/go.mod": "3498592e659669027ac7d9142d1a3b370b2babdb80f2f6dc3680f7b917ef1d36",
+        "deployment/vendors/etcd/modules/server/go.sum": "9e9c2d1c0c12fe1a6c7374c2f7d8b74844454d824d4f1e7a87536cd2d0377204",
+        "deployment/vendors/etcd/modules/tests/go.mod": "89fed8c63d48c6333ec8083874fb4ff2c6f33d243d09fd88a114a5b845dc32ef",
+        "deployment/vendors/etcd/modules/tests/go.sum": "ed07090873f34285be974427248e0ecbcdb56d8e98cbef4a9f7b08ce86887704",
+        "deployment/vendors/etcd/modules/tools/mod/go.mod": "666d2260d5a8a8c50cfdcb877f7e69d7fa1a759b89404abebe81f1f377a41d3b",
+        "deployment/vendors/etcd/modules/tools/mod/go.sum": "221cfe6df7fd0b429cb04d337609e20bd298d3934e3a437ecdcc5d7d354f4652"
+      }
+    },
+    {
+      "path": "deployment/vendors/milvus/modules",
+      "baseline_git_object": "e2c5195586fb4754f6bcaace4bde17db956fa375",
+      "current_git_object": "e2c5195586fb4754f6bcaace4bde17db956fa375",
+      "same_git_object": true,
+      "tracked_file_count": 12,
+      "current_checkout_matches_git_blob_sha256": true,
+      "files_sha256": {
+        "deployment/vendors/milvus/modules/client/go.mod": "3747aed71c48e5b7fcbdd69ff3e78b981c2149fd7588a04686897bc644ff2491",
+        "deployment/vendors/milvus/modules/client/go.sum": "249eea0730bf64761eb1a10ecd737cda0ca0a1f1b2ab8d3e4e1c8ff48c7e82d8",
+        "deployment/vendors/milvus/modules/examples/telemetry_demo/go.mod": "9666f472fecd7eaacfa32fa5df9b0994726011146809ee397e3330b4211d09bc",
+        "deployment/vendors/milvus/modules/examples/telemetry_demo/go.sum": "10c1f1347016579574fba28f39702c935b6fb54739740bfaf97f6a6add20826f",
+        "deployment/vendors/milvus/modules/examples/telemetry_e2e_test/go.mod": "922a7953b933e97b4410e1e198751c912b6b11241627a8a39c3d28baac2fda0d",
+        "deployment/vendors/milvus/modules/examples/telemetry_e2e_test/go.sum": "d1beb166990ff0f8e4ab9b5b9d4ea8cffe1c4a322d6beee6d4435d639821751c",
+        "deployment/vendors/milvus/modules/go.mod": "10008b93ef0b11c547689b9bdf2c8f7cbf5d0744cd1436f9318a57bc3551d9e7",
+        "deployment/vendors/milvus/modules/go.sum": "028ee266d44fe9685b39af757ae606826e42b730a4370c9bcf8014819be86348",
+        "deployment/vendors/milvus/modules/pkg/go.mod": "37f00a2ab8e365c4eed70b492c05173ddb47c4a08ddd9833e92b10e60babfb89",
+        "deployment/vendors/milvus/modules/pkg/go.sum": "ae7f76cf5c330e81ec1790d1e8ff5b3dadbb49cce794e1b5de032eaa22b16d99",
+        "deployment/vendors/milvus/modules/tests/go_client/go.mod": "62df09c4e62e8230e901d34df5bc91cfdb3180651472d313591ce6f7e71e74d0",
+        "deployment/vendors/milvus/modules/tests/go_client/go.sum": "8e3ef5277421e126e832cd49fde01c81ec34e1267c968222a4507d1f642fbe7a"
+      }
+    },
+    {
+      "path": "deployment/vendors/milvus/patches",
+      "baseline_git_object": "ae5e5fdc778697bc6833e3e03654cf5314d1642b",
+      "current_git_object": "ae5e5fdc778697bc6833e3e03654cf5314d1642b",
+      "same_git_object": true,
+      "tracked_file_count": 1,
+      "current_checkout_matches_git_blob_sha256": true,
+      "files_sha256": {
+        "deployment/vendors/milvus/patches/internal-tls-fail-closed.patch": "a9c29644f45aee2afdaf475269c275f75eefdd17fd6e6e09221d43dc59d5644e"
+      }
+    },
+    {
+      "path": "deployment/vendors/milvus/tests",
+      "baseline_git_object": "76d1be76de97402891b6418969da563c5b48d554",
+      "current_git_object": "76d1be76de97402891b6418969da563c5b48d554",
+      "same_git_object": true,
+      "tracked_file_count": 1,
+      "current_checkout_matches_git_blob_sha256": true,
+      "files_sha256": {
+        "deployment/vendors/milvus/tests/internal_tls_fail_closed_test.go": "b1d20d11c07364980f2b825cc2a3083cad19bb8a6a456fce5947f7303a6f0542"
+      }
+    },
+    {
+      "path": "deployment/vendors/loki",
+      "baseline_git_object": "3fb3cb9040e8dd870a6028555dccbc6f911586ec",
+      "current_git_object": "3fb3cb9040e8dd870a6028555dccbc6f911586ec",
+      "same_git_object": true,
+      "tracked_file_count": 13,
+      "current_checkout_matches_git_blob_sha256": true,
+      "files_sha256": {
+        "deployment/vendors/loki/go.mod": "8941b81787970cbd4c3344ecdae625a240487a495ccac2e421658e3fdf828944",
+        "deployment/vendors/loki/go.sum": "abad3fdbeec10d717e9c72c93d6feee205a44939eaf694c208444c6238438b1f",
+        "deployment/vendors/loki/push/LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "deployment/vendors/loki/push/go.mod": "596e84e0e0bef987e22f3a1060c731b0f67c7b7952f54ed11a77d6b2903a46bc",
+        "deployment/vendors/loki/push/go.sum": "925acb4f95642975e8a2ccef3d2554ed147e05d4673525fbd9ad08ea8f71e820",
+        "deployment/vendors/loki/push/push-rf1.pb.go": "ba136cb569f99c5cd69541e4633722f2ee6f863d19d29a3d12b47dc540a05ba3",
+        "deployment/vendors/loki/push/push-rf1.proto": "94d3844b64d621455955bc2226fb8465be94c3451294243b9e786cef3c7bcc99",
+        "deployment/vendors/loki/push/push.pb.go": "5f76c7efa437059c558e2f5cf949b39bb0bfe2b7e3e7be08c3ba548b3490bf33",
+        "deployment/vendors/loki/push/push.proto": "0ca32209c1b4a7cdca8d70716729cfb487791cc6f39b685df5aaa6aff1a7886b",
+        "deployment/vendors/loki/push/timestamp.go": "3a67cd936f2a0f04e99af003c3c44339e4ee59e16428fce79d554756e62f0b00",
+        "deployment/vendors/loki/push/types.go": "5ef465cd18ee0b660e4079a2974fcfb27e0610c17a539065ce431abb138dd0bd",
+        "deployment/vendors/loki/push/types_test.go": "f15acd27c1518c9bfd8f9051bab2b291444222996c77c8d3e9791ea41eb188b6",
+        "deployment/vendors/loki/source.lock.json": "39d1f698ef2edc6fd90d46f9a1813debcdcf330ee2ae010a7a74b7d90b53b15d"
+      }
+    },
+    {
+      "path": "deployment/vendors/tempo",
+      "baseline_git_object": "451818ca595201721865900fe286bafdf23e3fd5",
+      "current_git_object": "451818ca595201721865900fe286bafdf23e3fd5",
+      "same_git_object": true,
+      "tracked_file_count": 5,
+      "current_checkout_matches_git_blob_sha256": true,
+      "files_sha256": {
+        "deployment/vendors/tempo/LICENSE": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+        "deployment/vendors/tempo/README.md": "73a6400e513a54169c677c3a6f7370e2d3098679a427892dbe980bc0eb9bd9bb",
+        "deployment/vendors/tempo/go.mod": "b7780da539145adabcc30d5f0368bc25593467a30f0ffca8f51d4835aa5329e0",
+        "deployment/vendors/tempo/go.sum": "7d22fba88476234196910d713e2d1d079fcf14f12b1249f73e6a68febff1c55d",
+        "deployment/vendors/tempo/source.lock.json": "5bdb0f7039b5f0a7819f699c67ec593b419ed3aea5a38a61c389d1b7370c2d28"
+      }
+    },
+    {
+      "path": "deployment/vendors/prometheus",
+      "baseline_git_object": "a76c105396d289dbcb6dc590a5888487f62c39d2",
+      "current_git_object": "a76c105396d289dbcb6dc590a5888487f62c39d2",
+      "same_git_object": true,
+      "tracked_file_count": 3,
+      "current_checkout_matches_git_blob_sha256": true,
+      "files_sha256": {
+        "deployment/vendors/prometheus/go.mod": "6e2dfa8d25b5cd3da5513334134e63549aff7e70915958f98893893c825d609e",
+        "deployment/vendors/prometheus/go.sum": "cc38ed0a8b5d051d3fd1af7c1c1ed6b4615fb6d3532cd11615f86cd34546dd13",
+        "deployment/vendors/prometheus/source.lock.json": "793af8369577de9ddba4d53930c421a5b25bcb56df33119b29a1073bbfb9697e"
+      }
+    },
+    {
+      "path": "deployment/vendors/alertmanager",
+      "baseline_git_object": "cedc09e6f261a2aaa2239ad01f397b986de50fb7",
+      "current_git_object": "cedc09e6f261a2aaa2239ad01f397b986de50fb7",
+      "same_git_object": true,
+      "tracked_file_count": 3,
+      "current_checkout_matches_git_blob_sha256": true,
+      "files_sha256": {
+        "deployment/vendors/alertmanager/go.mod": "5adcd8759cc127c8bf658cd5955dcfeb11a10724ca63894380fb68fc8f08402e",
+        "deployment/vendors/alertmanager/go.sum": "699d9318426a7634a593e460c6c8f3de00b9f2fff8fd2ffdc6baa0b6ac55d3dc",
+        "deployment/vendors/alertmanager/source.lock.json": "27020b1f6d4dad93d39a106a86430774fa4601b90a7bbaf36b822bd4ac789cd5"
+      }
+    }
+  ],
+  "historical_native_identities": [
+    {
+      "profile": "alertmanager",
+      "go_version": "go1.27.3",
+      "native_entry": "github.com/prometheus/alertmanager/cmd/alertmanager",
+      "native_main": {
+        "Path": "github.com/prometheus/alertmanager",
+        "Version": "v0.34.1+dirty"
+      },
+      "vcs_revision": "73c6bfe7393929211294c1954f30d8ed78e4d0ad",
+      "goos": "linux",
+      "goarch": "amd64",
+      "cgo": "0",
+      "tags": "",
+      "native_sha256": "143074b27d50d53adc3898a77e837d5dbfb1c577202199dc4e242a3dd5587173"
+    },
+    {
+      "profile": "amtool",
+      "go_version": "go1.27.3",
+      "native_entry": "github.com/prometheus/alertmanager/cmd/amtool",
+      "native_main": {
+        "Path": "github.com/prometheus/alertmanager",
+        "Version": "v0.34.1+dirty"
+      },
+      "vcs_revision": "73c6bfe7393929211294c1954f30d8ed78e4d0ad",
+      "goos": "linux",
+      "goarch": "amd64",
+      "cgo": "0",
+      "tags": "",
+      "native_sha256": "4a6a9effa02c6d38a63d3a99d787703c05ec14a19ec7360713df41baf8082fa5"
+    },
+    {
+      "profile": "storage-bootstrap",
+      "go_version": "go1.27.3",
+      "native_entry": "deepresearch.local/storage-bootstrap",
+      "native_main": {
+        "Path": "deepresearch.local/storage-bootstrap",
+        "Version": "(devel)"
+      },
+      "vcs_revision": null,
+      "goos": "linux",
+      "goarch": "amd64",
+      "cgo": "0",
+      "tags": "",
+      "native_sha256": "54ed6f3c99375852e8a4efa8e714c70e02a869e309540f6fbaf45cf4f936fa69"
+    },
+    {
+      "profile": "etcd",
+      "go_version": "go1.27.3",
+      "native_entry": "go.etcd.io/etcd/server/v3",
+      "native_main": {
+        "Path": "go.etcd.io/etcd/server/v3",
+        "Version": "v3.5.34+dirty"
+      },
+      "vcs_revision": "38e57443c51fc9a3cc6a943fa8ed10381f66ce5c",
+      "goos": "linux",
+      "goarch": "amd64",
+      "cgo": "0",
+      "tags": "",
+      "native_sha256": "0a477bd336a6fcf98ef64e07d51d31515f3c19b5189f2b72523aacaaa2aeb5fd"
+    },
+    {
+      "profile": "etcdctl",
+      "go_version": "go1.27.3",
+      "native_entry": "go.etcd.io/etcd/etcdctl/v3",
+      "native_main": {
+        "Path": "go.etcd.io/etcd/etcdctl/v3",
+        "Version": "v3.5.34+dirty"
+      },
+      "vcs_revision": "38e57443c51fc9a3cc6a943fa8ed10381f66ce5c",
+      "goos": "linux",
+      "goarch": "amd64",
+      "cgo": "0",
+      "tags": "",
+      "native_sha256": "653c24c8e200f7b803f88b9a2d3dc6d5658223ec49709d2a11cfcf9b6ba47413"
+    },
+    {
+      "profile": "etcdutl",
+      "go_version": "go1.27.3",
+      "native_entry": "go.etcd.io/etcd/etcdutl/v3",
+      "native_main": {
+        "Path": "go.etcd.io/etcd/etcdutl/v3",
+        "Version": "v3.5.34+dirty"
+      },
+      "vcs_revision": "38e57443c51fc9a3cc6a943fa8ed10381f66ce5c",
+      "goos": "linux",
+      "goarch": "amd64",
+      "cgo": "0",
+      "tags": "",
+      "native_sha256": "8a8963ec1d727cd07ec3792a680e180d29e02a8da551a73fc866a712578d7ec0"
+    },
+    {
+      "profile": "loki",
+      "go_version": "go1.27.3",
+      "native_entry": "github.com/grafana/loki/v3/cmd/loki",
+      "native_main": {
+        "Path": "github.com/grafana/loki/v3",
+        "Version": "v3.7.9+dirty"
+      },
+      "vcs_revision": "d3b4a2f76bfc5625abee7ceb00b8896fa3c31549",
+      "goos": "linux",
+      "goarch": "amd64",
+      "cgo": "0",
+      "tags": "netgo",
+      "native_sha256": "21a6a16ee91d46c4d7dfa61e52ca77279bd4b00c083b288a08d3e6e5a5d572a0"
+    },
+    {
+      "profile": "prometheus",
+      "go_version": "go1.27.3",
+      "native_entry": "github.com/prometheus/prometheus/cmd/prometheus",
+      "native_main": {
+        "Path": "github.com/prometheus/prometheus",
+        "Version": "v0.315.1+dirty"
+      },
+      "vcs_revision": "bae3eced0a5369e050e83ea73bc381d7c4b1a719",
+      "goos": "linux",
+      "goarch": "amd64",
+      "cgo": "0",
+      "tags": "netgo,builtinassets",
+      "native_sha256": "8bb16945c22109804ec67965e7f3ddaba42e24647aff48b016ef8690d9914444"
+    },
+    {
+      "profile": "promtool",
+      "go_version": "go1.27.3",
+      "native_entry": "github.com/prometheus/prometheus/cmd/promtool",
+      "native_main": {
+        "Path": "github.com/prometheus/prometheus",
+        "Version": "v0.315.1+dirty"
+      },
+      "vcs_revision": "bae3eced0a5369e050e83ea73bc381d7c4b1a719",
+      "goos": "linux",
+      "goarch": "amd64",
+      "cgo": "0",
+      "tags": "netgo,builtinassets",
+      "native_sha256": "677b3c86cb7b5bc20213bd00c9082ce40fc85689655203418d6d746c92f0fbd8"
+    },
+    {
+      "profile": "tempo",
+      "go_version": "go1.27.3",
+      "native_entry": "github.com/grafana/tempo/cmd/tempo",
+      "native_main": {
+        "Path": "github.com/grafana/tempo",
+        "Version": "v0.0.0-20261021135948-f317720e7e51+dirty"
+      },
+      "vcs_revision": "f317720e7e5191a7f282e8f7d6fe5387ae6015b4",
+      "goos": "linux",
+      "goarch": "amd64",
+      "cgo": "0",
+      "tags": "",
+      "native_sha256": "0ec66ca1793d765011cf81ee100bb68fe7aabe08f0e1a7585ecdf7f2fcd82c4c"
+    },
+    {
+      "profile": "otel",
+      "go_version": "go1.27.3",
+      "native_entry": "deepresearch/otelcol",
+      "native_main": {
+        "Path": "deepresearch/otelcol",
+        "Version": "(devel)"
+      },
+      "vcs_revision": null,
+      "goos": "linux",
+      "goarch": "amd64",
+      "cgo": "0",
+      "tags": "grpcnotrace",
+      "native_sha256": "2af593e46dde0f6a046806e00d2a2ad1eabea78dc5847388d664058ab9cb6ea8"
+    },
+    {
+      "profile": "milvus_main",
+      "go_version": "go1.26.10",
+      "native_entry": "command-line-arguments",
+      "native_main": {},
+      "vcs_revision": null,
+      "goos": "linux",
+      "goarch": "amd64",
+      "cgo": "1",
+      "tags": "dynamic,sonic,with_jemalloc,bytedance_tango",
+      "native_sha256": "f214520644176ee782e977d52a4e3b762f6631d91e9d43d0c255432bbd0dcfbc"
+    },
+    {
+      "profile": "milvus_parser",
+      "go_version": "go1.26.10",
+      "native_entry": "github.com/milvus-io/milvus/internal/parser/planparserv2/cwrapper",
+      "native_main": {
+        "Path": "github.com/milvus-io/milvus",
+        "Version": "(devel)"
+      },
+      "vcs_revision": null,
+      "goos": "linux",
+      "goarch": "amd64",
+      "cgo": "1",
+      "tags": "",
+      "native_sha256": "f214520644176ee782e977d52a4e3b762f6631d91e9d43d0c255432bbd0dcfbc"
+    }
+  ],
+  "recipe_diffs": [
+    {
+      "path": "deployment/docker/Dockerfile.storage-init",
+      "baseline_sha256": "3172e55e886b9509e0596c8209a401ad56fc3cb753ab028a3c4e68478ab09a6e",
+      "current_sha256": "3172e55e886b9509e0596c8209a401ad56fc3cb753ab028a3c4e68478ab09a6e",
+      "same_bytes": true,
+      "diff": ""
+    },
+    {
+      "path": "deployment/docker/Dockerfile.etcd",
+      "baseline_sha256": "db3409797e51fd0a4be3610a2210186ccd664fd75262138dc1d624c90d865d30",
+      "current_sha256": "ca869c8a37f3ba4248c1404c594715992aa8011654798fbfb0e172b04db3ff6c",
+      "same_bytes": false,
+      "diff": "diff --git a/deployment/docker/Dockerfile.etcd b/deployment/docker/Dockerfile.etcd\nindex 2441ac9..d2cff32 100644\n--- a/deployment/docker/Dockerfile.etcd\n+++ b/deployment/docker/Dockerfile.etcd\n@@ -35,9 +35,13 @@ FROM debian:trixie-slim@sha256:38a76d01668772e381ad2826d876627c89e7133e2f8a0f5d5\n # stage; its Python/APT tooling never enters the runtime.\n RUN apt-get update && apt-get install -y --no-install-recommends python3\n ADD --checksum=sha256:c10585ac22c7f617a73d394eea29ba71d0356f350ae973b19043d1b017f80f54 https://security.debian.org/debian-security/pool/updates/main/c/ca-certificates/ca-certificates_20250419+deb13u1_all.deb /tmp/ca-certificates.deb\n-ADD --checksum=sha256:165fbf909c02150f62091c64f751ae84c66ff86da124a46a58614d8e174a6acd https://deb.debian.org/debian/pool/main/t/tzdata/tzdata_2026e-0+deb13u1_all.deb /tmp/tzdata.deb\n-ADD --checksum=sha256:bc1912d3e805b6071bcc3fbe55c171e0d9c8cf44eeebafcaa825a724577cf8de https://deb.debian.org/debian/pool/main/t/tzdata/tzdata-legacy_2026e-0+deb13u1_all.deb /tmp/tzdata-legacy.deb\n-RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y --no-install-recommends /tmp/ca-certificates.deb /tmp/tzdata.deb /tmp/tzdata-legacy.deb \\\n+COPY deployment/vendors/etcd/runtime-data/tzdata_2026e-0+deb13u1_all.deb /tmp/tzdata.deb\n+COPY deployment/vendors/etcd/runtime-data/tzdata-legacy_2026e-0+deb13u1_all.deb /tmp/tzdata-legacy.deb\n+RUN printf '%s\\n' \\\n+      '165fbf909c02150f62091c64f751ae84c66ff86da124a46a58614d8e174a6acd  /tmp/tzdata.deb' \\\n+      'bc1912d3e805b6071bcc3fbe55c171e0d9c8cf44eeebafcaa825a724577cf8de  /tmp/tzdata-legacy.deb' \\\n+      | sha256sum -c - \\\n+    && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y --no-install-recommends /tmp/ca-certificates.deb /tmp/tzdata.deb /tmp/tzdata-legacy.deb \\\n     && update-ca-certificates --fresh \\\n     && mkdir -p /tmp/authenticated-package-inputs \\\n     && cp /var/lib/apt/lists/*InRelease /tmp/authenticated-package-inputs/ \\\n"
+    },
+    {
+      "path": "deployment/docker/Dockerfile.loki",
+      "baseline_sha256": "cdfa3bd5e99ba3ff22e01ba2e51be341f821e7e9c5d2c8eedc86a7715469fae1",
+      "current_sha256": "cdfa3bd5e99ba3ff22e01ba2e51be341f821e7e9c5d2c8eedc86a7715469fae1",
+      "same_bytes": true,
+      "diff": ""
+    },
+    {
+      "path": "deployment/docker/Dockerfile.prometheus",
+      "baseline_sha256": "06951ccf30554855f951515f0053428c4a539bf7b2f0c230f89355ccf589a437",
+      "current_sha256": "6687a186d100d6015ffc7a0c99baeb42ef4bd4f8cdcff06a589f535e1118da66",
+      "same_bytes": false,
+      "diff": "diff --git a/deployment/docker/Dockerfile.prometheus b/deployment/docker/Dockerfile.prometheus\nindex ba995a1..f10f9a3 100644\n--- a/deployment/docker/Dockerfile.prometheus\n+++ b/deployment/docker/Dockerfile.prometheus\n@@ -1,7 +1,7 @@\n FROM golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c AS build\n ARG GOPROXY=https://proxy.golang.org\n ENV GOPROXY=${GOPROXY} GOTOOLCHAIN=local GOWORK=off CGO_ENABLED=0 GOMAXPROCS=2 GOMEMLIMIT=1024MiB\n-RUN apk add --no-cache git bash gzip\n+RUN apk add --no-cache git bash gzip curl\n WORKDIR /source\n RUN --mount=type=cache,target=/go/pkg/mod \\\n     go mod download -json github.com/prometheus/prometheus@v0.315.1 > /tmp/source.json \\\n@@ -11,7 +11,8 @@ RUN --mount=type=cache,target=/go/pkg/mod \\\n     && git -c http.version=HTTP/1.1 fetch --depth=1 origin refs/tags/v3.15.1:refs/tags/v3.15.1 \\\n     && test \"$(git rev-parse 'refs/tags/v3.15.1^{commit}')\" = bae3eced0a5369e050e83ea73bc381d7c4b1a719 \\\n     && git reset --mixed bae3eced0a5369e050e83ea73bc381d7c4b1a719\n-ADD --checksum=sha256:adf30f35abf0d23ffd25616afe75d1966a7ceb18ddad4161fe8ad76e28f2b48f https://github.com/prometheus/prometheus/releases/download/v3.15.1/prometheus-web-ui-3.15.1.tar.gz /tmp/ui.tar.gz\n+RUN curl --fail --location --connect-timeout 20 --max-time 180 --retry 2 --retry-max-time 180 --retry-all-errors --header 'Accept: application/octet-stream' https://api.github.com/repos/prometheus/prometheus/releases/assets/662704548 --output /tmp/ui.tar.gz \\\n+    && echo 'adf30f35abf0d23ffd25616afe75d1966a7ceb18ddad4161fe8ad76e28f2b48f  /tmp/ui.tar.gz' | sha256sum -c -\n RUN tar -xzf /tmp/ui.tar.gz -C /source/web/ui \\\n     && bash scripts/compress_assets.sh\n COPY deployment/vendors/prometheus/go.mod deployment/vendors/prometheus/go.sum ./\n"
+    },
+    {
+      "path": "deployment/docker/Dockerfile.tempo",
+      "baseline_sha256": "455e0c79a19cdc9b6852580f67dee8e578a5c429f8d3f3ae5810c287c5b807ef",
+      "current_sha256": "455e0c79a19cdc9b6852580f67dee8e578a5c429f8d3f3ae5810c287c5b807ef",
+      "same_bytes": true,
+      "diff": ""
+    },
+    {
+      "path": "deployment/docker/Dockerfile.alertmanager",
+      "baseline_sha256": "894385550ff2027713e42ecae0e613b402c54896fd3fedf18476734621343144",
+      "current_sha256": "b83873aca3debfbd3f9fc05f423330e2a945070d23534c65a9368b1e307881e6",
+      "same_bytes": false,
+      "diff": "diff --git a/deployment/docker/Dockerfile.alertmanager b/deployment/docker/Dockerfile.alertmanager\nindex 049ca41..0da7a61 100644\n--- a/deployment/docker/Dockerfile.alertmanager\n+++ b/deployment/docker/Dockerfile.alertmanager\n@@ -2,7 +2,7 @@ FROM golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e8835\n ARG GOPROXY=https://proxy.golang.org\n ENV GOPROXY=${GOPROXY} GOTOOLCHAIN=local GOMAXPROCS=2 GOFLAGS=-p=2 GOMEMLIMIT=512MiB\n WORKDIR /src\n-RUN apk add --no-cache git\n+RUN apk add --no-cache git curl\n # Fetch the unmodified stable upstream source through the Go checksum database.\n RUN --mount=type=cache,target=/go/pkg/mod \\\n     go mod download -json github.com/prometheus/alertmanager@v0.34.1 > /tmp/source.json && \\\n@@ -14,7 +14,8 @@ RUN --mount=type=cache,target=/go/pkg/mod \\\n     git reset --mixed 73c6bfe7393929211294c1954f30d8ed78e4d0ad\n FROM source AS build\n # The generated UI is an official stable-release asset, absent from the Go module.\n-ADD --checksum=sha256:881fe0f7beb9573f35be47dd233af6220e72c8db72c03bcd1780402eb8dc1307 https://github.com/prometheus/alertmanager/releases/download/v0.34.1/alertmanager-web-ui-0.34.1.tar.gz /tmp/ui.tar.gz\n+RUN curl --fail --location --connect-timeout 20 --max-time 180 --retry 2 --retry-max-time 180 --retry-all-errors --header 'Accept: application/octet-stream' https://api.github.com/repos/prometheus/alertmanager/releases/assets/569769814 --output /tmp/ui.tar.gz \\\n+    && echo '881fe0f7beb9573f35be47dd233af6220e72c8db72c03bcd1780402eb8dc1307  /tmp/ui.tar.gz' | sha256sum -c -\n RUN tar -xzf /tmp/ui.tar.gz -C /src/ui/app\n COPY deployment/vendors/alertmanager/go.mod deployment/vendors/alertmanager/go.sum ./\n RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \\\n"
+    },
+    {
+      "path": "deployment/docker/Dockerfile.otel-collector",
+      "baseline_sha256": "66b5d109ab3a1c125c19fecae3420934ac66b26c44a641c2a6c15e140823b81e",
+      "current_sha256": "66b5d109ab3a1c125c19fecae3420934ac66b26c44a641c2a6c15e140823b81e",
+      "same_bytes": true,
+      "diff": ""
+    },
+    {
+      "path": "Dockerfile.milvus",
+      "baseline_sha256": "e26b2b570e4a9a7c591fcb7bab682496591704123a594123bd81663ec749962a",
+      "current_sha256": "d18c5cefbc658eb590a88281fa36123e0b0b64a4f240978aa349195e979e0efc",
+      "same_bytes": false,
+      "diff": "diff --git a/Dockerfile.milvus b/Dockerfile.milvus\nindex b65284e..3c91877 100644\n--- a/Dockerfile.milvus\n+++ b/Dockerfile.milvus\n@@ -2,7 +2,11 @@ FROM golang@sha256:d1f3216ef30257c850cc136ba42a359ccd9d3e75f19b2c276e520c0b4ef32\n FROM milvusdb/milvus@sha256:812cb91ad04e847e5ebb4d19593c69f2e207593073063ede0fd604bbba5fddf1 AS runtime-base\n FROM runtime-base AS build\n USER root\n-RUN apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=30 update && apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=30 install -y --no-install-recommends gcc g++ pkg-config libssl-dev patch\n+# Disable retries only while bootstrapping the inherited APT client: non-zero\n+# retries are a prerequisite for CVE-2026-109518 in the original2.4.14 client.\n+RUN apt-get -o Acquire::Retries=0 -o Acquire::http::Timeout=30 update \\\n+ && apt-get -o Acquire::Retries=0 -o Acquire::http::Timeout=30 install -y --no-install-recommends --only-upgrade apt=2.4.15ubuntu0.1 libapt-pkg6.0=2.4.15ubuntu0.1 \\\n+ && apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=30 install -y --no-install-recommends gcc g++ pkg-config libssl-dev patch\n COPY --from=go /usr/local/go /usr/local/go\n ENV PATH=/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin GOPATH=/go GOTOOLCHAIN=local GOMAXPROCS=2 GOMEMLIMIT=1024MiB CGO_ENABLED=1 GOPROXY=\"https://proxy.golang.org|https://goproxy.cn|direct\" GOSUMDB=sum.golang.org\n WORKDIR /source\n@@ -30,8 +34,8 @@ RUN --mount=type=cache,target=/go/pkg/mod,id=dr-vendor-go-mod-20261026 --mount=t\n RUN --mount=type=cache,target=/go/pkg/mod,id=dr-vendor-go-mod-20261026 --mount=type=cache,target=/root/.cache/go-build,id=dr-vendor-go-build-20261026 go build -p=2 -mod=readonly -buildvcs=false -pgo=/source/configs/pgo/default.pgo -tags=dynamic,sonic,with_jemalloc,bytedance_tango -ldflags='-checklinkname=0 -r /milvus/lib -X github.com/milvus-io/milvus/cmd/milvus.GitCommit=328df0cd2f323c2d3c50cef91bfc9f2c412bcb09-security-rebuild -X github.com/milvus-io/milvus/cmd/milvus.GoVersion=go1.26.10 -X github.com/milvus-io/milvus/cmd/milvus.MilvusVersion=3.0.3' -o /out/milvus ./cmd/main.go\n FROM runtime-base AS runtime-security\n USER root\n-RUN apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=30 update \\\n- && apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=30 install -y --no-install-recommends --only-upgrade libbrotli1=1.0.9-2ubuntu0.1 curl=7.81.0-1ubuntu1.30 libcurl4=7.81.0-1ubuntu1.30 \\\n+RUN apt-get -o Acquire::Retries=0 -o Acquire::http::Timeout=30 update \\\n+ && apt-get -o Acquire::Retries=0 -o Acquire::http::Timeout=30 install -y --no-install-recommends --only-upgrade apt=2.4.15ubuntu0.1 libapt-pkg6.0=2.4.15ubuntu0.1 libbrotli1=1.0.9-2ubuntu0.1 curl=7.81.0-1ubuntu1.30 libcurl4=7.81.0-1ubuntu1.30 \\\n  && rm -rf /var/lib/apt/lists/*\n FROM runtime-security AS runtime-package\n USER root\n"
+    }
+  ],
+  "conclusion": "All tracked source.go/patch/lock/overlay directory bytes for these 13 profiles match the baseline Git trees. Recipe deltas preserve official Go source commit/archive hash, Go compiler, compile targets and tags; only UI download transport or runtime/build APT trust-package changes occur.",
+  "fresh_bootstrap_closure": {
+    "receipt": ".cache/security-alert-review-20261110/bootstrap-current/receipt.json",
+    "receipt_sha256": "75f4631c44741085adbaebba6e8af6d884abcd8312aa99cb7471fea250df3f4d",
+    "raw_graph_sha256": "b0e17f83b86d2033abf838aa224c17c190e679e7aa59bb089e469e8f29cb2735",
+    "packages": 337,
+    "entire_package_import_deps_importmap_module_identity_equal_to_old_graph": true,
+    "new_execution_or_compilation": false,
+    "affected_openpgp_packages": []
+  }
+}

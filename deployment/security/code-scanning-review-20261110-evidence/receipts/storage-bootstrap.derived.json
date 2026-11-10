@@ -1,0 +1,59 @@
+{
+  "schema": "public-go-graph-identity-receipt-projection-v1",
+  "derived_not_original_raw": true,
+  "profile": "storage-bootstrap",
+  "original_receipt": {
+    "original_cache": ".cache/third-party-20261030/advisory-review/new-production-graph-bundle/storage-bootstrap-graph-receipt.json",
+    "sha256": "13f6d4c966083a7436e4526a82df6b7a16a38d72d818f67aef7c0b1d7d590ea8",
+    "bytes": 1158
+  },
+  "original_graph": {
+    "original_cache": ".cache/third-party-20261030/advisory-review/new-production-graph-bundle/storage-bootstrap-deps.json.gz",
+    "sha256": "31a471ba632d2177514ed90492be03a2853c8914ce61ee3ac6bc205a5fa493e6",
+    "bytes": 76527,
+    "raw_sha256": "01cb212c628dfe63d7b2c56634aaeabcd81ae430d754ae63ed6cd42ee4b9de6c",
+    "raw_bytes": 962997
+  },
+  "public_graph": "deployment/security/code-scanning-review-20261110-evidence/graphs/storage-bootstrap.packages.derived.json.gz",
+  "public_graph_sha256": "34221e83776dd274e4a09d0d05bd5b50fe3a6a7c40cfdaebe4846b818de10d94",
+  "public_projection_raw_sha256": "924971dab64b1f8219eee93120de2a552f72244401595b5e4aa4efeb2c995690",
+  "public_projection_raw_bytes": 789480,
+  "package_count": 337,
+  "module_count": 38,
+  "source_inputs": {
+    "scripts/storage-bootstrap/go.mod": "81a233f51d93d186b77fc6bbf965416723c019e2bbd9a8c31621bd41cf973e52",
+    "scripts/storage-bootstrap/go.sum": "279bd2d20999c7ccdd77a63e49eea138c9d1a7b7d9a09a9f3b9fe82ef48499c7"
+  },
+  "source_inputs_rechecked_unchanged": true,
+  "compiler": "go1.27.3",
+  "compiler_settings": {
+    "-buildmode": "exe",
+    "-compiler": "gc",
+    "-trimpath": "true",
+    "CGO_ENABLED": "0",
+    "GOARCH": "amd64",
+    "GOOS": "linux",
+    "GOAMD64": "v1"
+  },
+  "original_completed_command_without_host_tool_path": [
+    "go",
+    "list",
+    "-deps",
+    "-json",
+    "-mod=readonly",
+    "."
+  ],
+  "original_completion": {
+    "exit_code": 0,
+    "source": "original_machine_command_receipt",
+    "machine_command_receipt": true
+  },
+  "native": "deployment/security/code-scanning-review-20261110-evidence/native/storage-bootstrap.buildinfo.json",
+  "native_sha256": "54ed6f3c99375852e8a4efa8e714c70e02a869e309540f6fbaf45cf4f936fa69",
+  "original_bound_elf_sha256": "14433f64f2504597e653ce69bcd9c12da059f1884039054bc113152bba701fa1",
+  "graph_and_native_module_path_version_checksum_sets_equal": true,
+  "new_compilation_performed": false,
+  "new_elf_extraction_performed": false,
+  "human_review_or_risk_acceptance_claimed": false,
+  "scope": "Reparsed complete original graph and native metadata; every current lock byte matched the source receipt. Original actual ELF identity is retained; no fresh ELF extraction/compilation is claimed."
+}

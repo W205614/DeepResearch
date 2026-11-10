@@ -1,0 +1,66 @@
+{
+  "schema": "public-go-graph-identity-receipt-projection-v1",
+  "derived_not_original_raw": true,
+  "profile": "prometheus",
+  "original_receipt": {
+    "original_cache": ".cache/third-party-20261030/advisory-review/new-production-graph-bundle/prometheus-graph-receipt.json",
+    "sha256": "769549cb473cea3df6784040a481e6f08c99f7291e4f2c650751f257b445209f",
+    "bytes": 1295
+  },
+  "original_graph": {
+    "original_cache": ".cache/third-party-20261030/advisory-review/new-production-graph-bundle/prometheus-deps.json.gz",
+    "sha256": "4b024c9177bb5643e36b2ea64637d6e13b25a000b4502d3423439d41caf7055e",
+    "bytes": 482918,
+    "raw_sha256": "952e84c33f9140b49ba347c22ce4b11a8a9b9241440824c782c164f08ab94a76",
+    "raw_bytes": 9482814
+  },
+  "public_graph": "deployment/security/code-scanning-review-20261110-evidence/graphs/prometheus.packages.derived.json.gz",
+  "public_graph_sha256": "9b704936c5c7540053793e8fb2a67aaa2e652bf81df5ff665173bcf3d04e10b5",
+  "public_projection_raw_sha256": "020d587fa103f49e202799d6f736c956122d1c97b4309108fb5d829738ebace5",
+  "public_projection_raw_bytes": 9545046,
+  "package_count": 1518,
+  "module_count": 239,
+  "source_inputs": {
+    "deployment/vendors/prometheus/go.mod": "6e2dfa8d25b5cd3da5513334134e63549aff7e70915958f98893893c825d609e",
+    "deployment/vendors/prometheus/go.sum": "cc38ed0a8b5d051d3fd1af7c1c1ed6b4615fb6d3532cd11615f86cd34546dd13"
+  },
+  "source_inputs_rechecked_unchanged": true,
+  "compiler": "go1.27.3",
+  "compiler_settings": {
+    "-buildmode": "exe",
+    "-compiler": "gc",
+    "-tags": "netgo,builtinassets",
+    "-trimpath": "true",
+    "DefaultGODEBUG": "tracebacklabels=0,x509sslcertoverrideplatform=0",
+    "CGO_ENABLED": "0",
+    "GOARCH": "amd64",
+    "GOOS": "linux",
+    "GOAMD64": "v1",
+    "vcs": "git",
+    "vcs.revision": "bae3eced0a5369e050e83ea73bc381d7c4b1a719",
+    "vcs.time": "2026-10-21T13:24:03Z",
+    "vcs.modified": "true"
+  },
+  "original_completed_command_without_host_tool_path": [
+    "go",
+    "list",
+    "-deps",
+    "-json",
+    "-mod=readonly",
+    "-tags=netgo,builtinassets",
+    "./cmd/prometheus"
+  ],
+  "original_completion": {
+    "exit_code": 0,
+    "source": "original_machine_command_receipt",
+    "machine_command_receipt": true
+  },
+  "native": "deployment/security/code-scanning-review-20261110-evidence/native/prometheus.buildinfo.json",
+  "native_sha256": "8bb16945c22109804ec67965e7f3ddaba42e24647aff48b016ef8690d9914444",
+  "original_bound_elf_sha256": "b607f50b16faeb337f8fb5f474ce3f8675973c00e55ce1b3d0fa147ede711ba1",
+  "graph_and_native_module_path_version_checksum_sets_equal": true,
+  "new_compilation_performed": false,
+  "new_elf_extraction_performed": false,
+  "human_review_or_risk_acceptance_claimed": false,
+  "scope": "Reparsed complete original graph and native metadata; every current lock byte matched the source receipt. Original actual ELF identity is retained; no fresh ELF extraction/compilation is claimed."
+}

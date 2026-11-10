@@ -1,0 +1,66 @@
+{
+  "schema": "public-go-graph-identity-receipt-projection-v1",
+  "derived_not_original_raw": true,
+  "profile": "promtool",
+  "original_receipt": {
+    "original_cache": ".cache/third-party-20261030/advisory-review/new-production-graph-bundle/promtool-graph-receipt.json",
+    "sha256": "acf0904c18591999c579f9e1503f058ca66cb740f08ff13cd742bbc2dfdacead",
+    "bytes": 1291
+  },
+  "original_graph": {
+    "original_cache": ".cache/third-party-20261030/advisory-review/new-production-graph-bundle/promtool-deps.json.gz",
+    "sha256": "f8b4a5b665ee8a66a06238abfc5f764ec2946777ca2a62fb91f9b163824e318a",
+    "bytes": 418636,
+    "raw_sha256": "e6894eeb3b6380e6f5a43b0a9b9b562b818b0c4e92c53d9dd9fc6def2852dbf6",
+    "raw_bytes": 8534467
+  },
+  "public_graph": "deployment/security/code-scanning-review-20261110-evidence/graphs/promtool.packages.derived.json.gz",
+  "public_graph_sha256": "33d3289a5f10c9c436a978ea5a37adc5609dc257b88bb71b7f534419350e9002",
+  "public_projection_raw_sha256": "676105a71481f29b1efc21239ffd4e9eddacf345435583027996aa3a6827c86f",
+  "public_projection_raw_bytes": 8605158,
+  "package_count": 1368,
+  "module_count": 196,
+  "source_inputs": {
+    "deployment/vendors/prometheus/go.mod": "6e2dfa8d25b5cd3da5513334134e63549aff7e70915958f98893893c825d609e",
+    "deployment/vendors/prometheus/go.sum": "cc38ed0a8b5d051d3fd1af7c1c1ed6b4615fb6d3532cd11615f86cd34546dd13"
+  },
+  "source_inputs_rechecked_unchanged": true,
+  "compiler": "go1.27.3",
+  "compiler_settings": {
+    "-buildmode": "exe",
+    "-compiler": "gc",
+    "-tags": "netgo,builtinassets",
+    "-trimpath": "true",
+    "DefaultGODEBUG": "tracebacklabels=0,x509sslcertoverrideplatform=0",
+    "CGO_ENABLED": "0",
+    "GOARCH": "amd64",
+    "GOOS": "linux",
+    "GOAMD64": "v1",
+    "vcs": "git",
+    "vcs.revision": "bae3eced0a5369e050e83ea73bc381d7c4b1a719",
+    "vcs.time": "2026-10-21T13:24:03Z",
+    "vcs.modified": "true"
+  },
+  "original_completed_command_without_host_tool_path": [
+    "go",
+    "list",
+    "-deps",
+    "-json",
+    "-mod=readonly",
+    "-tags=netgo,builtinassets",
+    "./cmd/promtool"
+  ],
+  "original_completion": {
+    "exit_code": 0,
+    "source": "original_machine_command_receipt",
+    "machine_command_receipt": true
+  },
+  "native": "deployment/security/code-scanning-review-20261110-evidence/native/promtool.buildinfo.json",
+  "native_sha256": "677b3c86cb7b5bc20213bd00c9082ce40fc85689655203418d6d746c92f0fbd8",
+  "original_bound_elf_sha256": "5d37ebe343b926c507ed597f05bbda2c3d24112acfd9e270861eb543a2c51508",
+  "graph_and_native_module_path_version_checksum_sets_equal": true,
+  "new_compilation_performed": false,
+  "new_elf_extraction_performed": false,
+  "human_review_or_risk_acceptance_claimed": false,
+  "scope": "Reparsed complete original graph and native metadata; every current lock byte matched the source receipt. Original actual ELF identity is retained; no fresh ELF extraction/compilation is claimed."
+}
