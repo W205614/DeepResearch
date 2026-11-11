@@ -1,0 +1,93 @@
+{
+  "schema": "postgres-native-complete-current-openssl-route-facts-20261111-v1",
+  "image_id": "sha256:3018790ed892ee8595961a044fbf2565826a4f8602335c44866b2eb00879d769",
+  "complete_native_elf_count": 237,
+  "all_native_SHA256_bound_to_actual_complete_manifest": true,
+  "external_CMS_encrypt_or_QUIC_constructors_importers": [],
+  "GCM_SIV_CMS_QUIC_literals_confined_to_implementation_libraries": [
+    "usr/lib/libssl.so.3",
+    "usr/lib/libcrypto.so.3"
+  ],
+  "actual_TLS_methods": [
+    {
+      "path": "usr/bin/ssl_client",
+      "methods": [
+        "TLS_client_method"
+      ]
+    },
+    {
+      "path": "usr/lib/krb5/plugins/tls/k5tls.so",
+      "methods": [
+        "TLS_client_method"
+      ]
+    },
+    {
+      "path": "usr/lib/libapk.so.3.0.0",
+      "methods": [
+        "TLS_client_method"
+      ]
+    },
+    {
+      "path": "usr/lib/libldap.so.2.0.200",
+      "methods": [
+        "TLS_method"
+      ]
+    },
+    {
+      "path": "usr/local/bin/postgres",
+      "methods": [
+        "TLS_method"
+      ]
+    },
+    {
+      "path": "usr/local/lib/libpq.so.5.17",
+      "methods": [
+        "TLS_method"
+      ]
+    }
+  ],
+  "openssl_cli_present": false,
+  "pgcrypto_actual_elf_sha256": "f5d5537a1f017e24f133ca67a8b0e303a190e700c967fc4aaa4452a9d9ada6fb",
+  "pgcrypto_positive_EVP_AES_encryption_imports": [
+    "EVP_aes_128_cbc",
+    "EVP_aes_128_ecb",
+    "EVP_aes_192_cbc",
+    "EVP_aes_192_ecb",
+    "EVP_aes_256_cbc",
+    "EVP_aes_256_ecb"
+  ],
+  "pgcrypto_exact_source_sha256": "d5a4be18bd37a39628aacccf10d19ac485aead741bc55cf6c4d50dc14e8209b0",
+  "pgcrypto_allowed_cipher_names": [
+    "bf-cbc",
+    "bf-ecb",
+    "bf-cfb",
+    "des-ecb",
+    "des-cbc",
+    "des3-ecb",
+    "des3-cbc",
+    "cast5-ecb",
+    "cast5-cbc",
+    "aes-ecb",
+    "aes-cbc"
+  ],
+  "pgcrypto_arbitrary_unknown_cipher_name_returns_PXE_NO_CIPHER": true,
+  "exact_pg_be_tls_source_sha256": "f4cc17235758b4a81811c34b916858c0e69344992f308e285573fa4e912bfe7c",
+  "exact_pg_fe_tls_source_sha256": "9ec618903b3abc4f0021c1e2bfdf7b63f940bc0b779b6f37e8621f8add350122",
+  "pg_ordinary_tls_source": "Both contexts use SSLv23_method macro (actual ELF imports TLS_method), server SSL_accept and libpq SSL_connect; no QUIC constructor. These are TLS roles, not a generic client-only exemption.",
+  "source_archive": {
+    "url": "https://ftp.postgresql.org/pub/source/v17.11/postgresql-17.11.tar.bz2",
+    "sha256": "dd27f2b3c59e73ed14aa3324901242bf69a032a6347805f274e6260322d42979",
+    "bytes": 21787224,
+    "identity_matches_exact_original_image_PG_SHA256": true
+  },
+  "PG_crypto_source_not_CMS": "Complete exact PostgreSQL17.11 C/H search contains no CMS_encrypt, QUIC constructor or GCM-SIV selection. pgcrypto also supports PGP through its own path; absence of all crypto is not claimed.",
+  "generic_crypto_implementations_retained": [
+    "OpenSSL default implementation in libcrypto/libssl",
+    "engines-3/afalg.so",
+    "engines-3/padlock.so",
+    "engines-3/loader_attic.so",
+    "ossl-modules/legacy.so"
+  ],
+  "dynamic_loading_limit": "PostgreSQL/LLVM/ICU/SASL/Kerberos and shell loader capabilities are present. Current configuration has no engine/provider/preload or LDAP/GSS authentication activation. Arbitrary superuser LOAD/extension/native SQL/admin commands or future plugins/config changes are outside this finding and require renewed review.",
+  "library_affected_not_fixed": true
+}

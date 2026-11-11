@@ -1,0 +1,175 @@
+{
+  "schema": "postgres-three-native-fix-official-source-license-facts-20261111-v1",
+  "actor": "/root/web_libxslt_patch_20261111",
+  "facts_passed": true,
+  "human_review": false,
+  "risk_acceptance": false,
+  "binary_redistribution_approved": false,
+  "recorded_at_utc": "2026-11-11T05:45:12.294988+00:00",
+  "original_ci_artifact_sha256": "90031c27ae122b291b8537089b7dbb8fd0fbbd835acff4430b739bab526c6557",
+  "source_apk_origins": {
+    "krb5-libs": {
+      "C": "Q1kqfuB5KpKKWpSt4nAqLnEJuTRhQ=",
+      "P": "krb5-libs",
+      "V": "1.22.3-r0",
+      "A": "x86_64",
+      "S": "767104",
+      "I": "1793864",
+      "T": "The shared libraries used by Kerberos 5",
+      "U": "https://web.mit.edu/kerberos/www/",
+      "L": "MIT",
+      "o": "krb5",
+      "m": "Natanael Copa <ncopa@alpinelinux.org>",
+      "t": "1794296032",
+      "c": "95ecd1043f781a308ae20a7aa08b86070806946f",
+      "D": "krb5-conf so:libc.musl-x86_64.so.1 so:libcom_err.so.2 so:libcrypto.so.3 so:libkeyutils.so.1 so:libssl.so.3 so:libverto.so.1",
+      "p": "so:libgssapi_krb5.so.2=2.2 so:libgssrpc.so.4=4.2 so:libk5crypto.so.3=3.1 so:libkadm5clnt_mit.so.12=12.0 so:libkadm5srv_mit.so.12=12.0 so:libkdb5.so.10=10.0 so:libkrad.so.0=0.0 so:libkrb5.so.3=3.3 so:libkrb5support.so.0=0.1"
+    },
+    "libxslt": {
+      "C": "Q1cyIvzxFSSOgmbmCMwIZKhazZCRw=",
+      "P": "libxslt",
+      "V": "1.1.43-r4",
+      "A": "x86_64",
+      "S": "129876",
+      "I": "313144",
+      "T": "XML stylesheet transformation library",
+      "U": "http://xmlsoft.org/XSLT/",
+      "L": "X11",
+      "o": "libxslt",
+      "m": "Natanael Copa <ncopa@alpinelinux.org>",
+      "t": "1794275103",
+      "c": "e85ecba78539486bd0a685963ca5da3e1652fbd0",
+      "D": "so:libc.musl-x86_64.so.1 so:libxml2.so.2",
+      "p": "cmd:xsltproc=1.1.43-r4 so:libexslt.so.0=0.8.24 so:libxslt.so.1=1.1.43"
+    },
+    "zlib": {
+      "C": "Q14j+c5OMsvdJ78cidhOg7phxCkLw=",
+      "P": "zlib",
+      "V": "1.4-r0",
+      "A": "x86_64",
+      "S": "56761",
+      "I": "108376",
+      "T": "A compression/decompression Library",
+      "U": "https://zlib.net/",
+      "L": "Zlib",
+      "o": "zlib",
+      "m": "Natanael Copa <ncopa@alpinelinux.org>",
+      "t": "1793989322",
+      "c": "bdf501c870a92a05c097857401f69c48c4810384",
+      "D": "so:libc.musl-x86_64.so.1",
+      "p": "so:libz.so.1=1.4"
+    }
+  },
+  "apks": [
+    {
+      "sha256": "fad5b46a953e6a37a1bb61a84538fa08ecb6a07816f439eb06f2735aebfcbfbf",
+      "RSA_PKCS1v15_SHA1_signature_verified": true,
+      "key_name": "alpine-devel@lists.alpinelinux.org-6165ee59.rsa.pub",
+      "key_sha256": "207e4696d3c05f7cb05966aee557307151f1f00217af4143c1bcaf33b8df733f",
+      "same_as_original_actual_image_trust_key_and_official_key": true,
+      "signed_compressed_control_sha1": "Q1kqfuB5KpKKWpSt4nAqLnEJuTRhQ=",
+      "actual_control_matches_signed_APKINDEX_Q1": true
+    },
+    {
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/zlib-1.4-r0.apk",
+      "sha256": "7b05bc778b8b25cd880835b40114182bd4d1581717504d0129c810c0a14291cb",
+      "bytes": 56761,
+      "version": "1.4-r0",
+      "aports_commit": "bdf501c870a92a05c097857401f69c48c4810384",
+      "index_record": {
+        "C": "Q14j+c5OMsvdJ78cidhOg7phxCkLw=",
+        "P": "zlib",
+        "V": "1.4-r0",
+        "A": "x86_64",
+        "S": "56761",
+        "I": "108376",
+        "T": "A compression/decompression Library",
+        "U": "https://zlib.net/",
+        "L": "Zlib",
+        "o": "zlib",
+        "m": "Natanael Copa <ncopa@alpinelinux.org>",
+        "t": "1793989322",
+        "c": "bdf501c870a92a05c097857401f69c48c4810384",
+        "D": "so:libc.musl-x86_64.so.1",
+        "p": "so:libz.so.1=1.4"
+      },
+      "signature_RSA_PKCS1v15_SHA1_verified": true,
+      "key": "alpine-devel@lists.alpinelinux.org-6165ee59.rsa.pub",
+      "key_sha256": "207e4696d3c05f7cb05966aee557307151f1f00217af4143c1bcaf33b8df733f",
+      "same_verified_official_index_Q1_and_size": true,
+      "payload_compressed_datahash_matches_signed_control": true
+    }
+  ],
+  "libxslt_apk_sha256": "40e6cc7d09ce1e69421c2b37e1da4e9afef486843f21c3a79339cd6d93c1c617",
+  "libxslt_previously_verified_signature_receipt_sha256": "f9fca5a9e751571d2e329959f5ee521194e3010b9d208223fabfd91300df9ead",
+  "upstream_complete_sources": {
+    "postgresql": {
+      "url": "https://ftp.postgresql.org/pub/source/v17.11/postgresql-17.11.tar.bz2",
+      "sha256": "dd27f2b3c59e73ed14aa3324901242bf69a032a6347805f274e6260322d42979",
+      "bytes": 21787224,
+      "identity_matches_exact_original_image_PG_SHA256": true,
+      "license": "PostgreSQL",
+      "COPYRIGHT_sha256": "3d6af92ff8a4c2cdf69afb1cf44edea727922f5cd0cf8b5f72b11cdecac8fdfd",
+      "installed_pg_bytes_unchanged": true
+    },
+    "krb5": {
+      "version": "1.22.3",
+      "source_url": "https://web.mit.edu/kerberos/dist/krb5/1.22/krb5-1.22.3.tar.gz",
+      "source_sha256": "fe90af8441ad9fa9b064b8e53077cefb782a96f8a68276b031dc54af1789ff0b",
+      "source_bytes": 8758584,
+      "aports_commit": "95ecd1043f781a308ae20a7aa08b86070806946f",
+      "recipe_source_SHA512_all_verified": [
+        "krb5-1.22.3.tar.gz",
+        "krb5kadmind.initd",
+        "krb5kdc.initd",
+        "krb5kpropd.initd",
+        "autoconf-2.73.patch"
+      ],
+      "pinned_recipe_sha256": "17b23785f7a2f545419b6ff0898090b3559c5742f1a5463f09dc4673dfeb7d96",
+      "full_upstream_NOTICE_sha256": "a11085f3471c71bead67a61038d45cb60b306434ccaaaeef2f59ffb4b474077e",
+      "license": "MIT with retained complete upstream component attribution/terms"
+    },
+    "zlib": {
+      "version": "1.4",
+      "source_url": "https://zlib.net/fossils/zlib-1.4.tar.gz",
+      "source_sha256": "02dd159783677a749c04adbdd02b55b8a2bcc7e054f51b76b549199a916ad584",
+      "source_bytes": 1507140,
+      "actual_official_source_retrieval_matches_retained_full_source": true,
+      "recipe_url": "https://raw.githubusercontent.com/alpinelinux/aports/bdf501c870a92a05c097857401f69c48c4810384/main/zlib/APKBUILD",
+      "recipe_sha256": "f03e134596ecd53717a25715fd7b7616a0ad42a151246ee9c2a06242370ec51b",
+      "aports_commit": "bdf501c870a92a05c097857401f69c48c4810384",
+      "source_SHA512_matches_recipe": true,
+      "full_LICENSE_sha256": "e32ff4e00d9d94930537635291da39e7e612703334bf6fde8c7f1686fe8a45a2",
+      "license": "Zlib"
+    },
+    "libxslt": {
+      "version": "1.1.43-r4",
+      "complete_original_source_and_four_downstream_patches_APKBUILD_and_full_Copyright": "Exact previously verified official source index retained",
+      "source_supplement_sha256": "f994a328c853b027737a4cd2846ac12647973244821ade00480d612942be4af8",
+      "source_index_sha256": "3a6ec76dbede555b24a521ae67d077e5fe5ff2e07bc7646d062e2e95b889df8a",
+      "license": "Full Copyright retained; original X11 and component terms apply"
+    }
+  },
+  "fixed_security_scope": {
+    "original_ci_18HIGH": [
+      "krb5-libs1.22.2-r1 ->1.22.3-r0:16HIGH",
+      "libxslt1.1.43-r3 ->1.1.43-r4:2HIGH"
+    ],
+    "additional_real_full_scan_medium": {
+      "id": "CVE-2026-4738",
+      "package": "zlib",
+      "installed": "1.3.2-r1",
+      "fixed": "1.4-r0"
+    },
+    "official_secdb_snapshot_sha256": "f103aada2acb1f59ebcc09ab9d81c9da76d42b14f262a23779e2202867afa4c6",
+    "official_secdb_url": "https://secdb.alpinelinux.org/v3.24/main.json",
+    "all_fixed_by_real_official_native_packages": true,
+    "no_new_package_version_strings_or_ignores": true
+  },
+  "license_material_preservation": "Full source archives, exact downstream recipes/patches and complete Copyright/NOTICE/LICENSE are retained locally. PG/gosu/source/config remain original. This is a local/CI dependency repair and does not publish the PostgreSQL image or grant redistribution approval.",
+  "limits": [
+    "Five known OpenSSL20261110 implementation defects remain affected/nonfixed; exact current caller/configured-path evidence is separate.",
+    "Earlier f0 image and zlibMEDIUM failure remain historical evidence.",
+    "Original raw findings, severities, signed APKs and source snapshots remain retained."
+  ]
+}

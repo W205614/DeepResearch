@@ -77,17 +77,24 @@
         "message": "[DOM text](1) is reinterpreted as HTML without escaping meta-characters."
       },
       "reason": "false positive",
-      "justification": "This byte-pinned upstream SQLite release note is offline hash-checked audit evidence outside the frontend build context/webroot. The exact document also contains no mtimelink node, so the flagged conditional href assignment does not execute. The original upstream evidence and raw scan remain unchanged.",
+      "justification": "This byte-pinned upstream SQLite release note is offline hash-checked audit evidence outside the frontend build context/webroot. The exact document also contains no mtimelink node, so the flagged conditional href assignment does not execute. The original upstream evidence and raw scan remain unchanged. The 2026-11-11 continuation separately verifies that the only Web recipe delta adds the fixed libxslt-r4 package constraint; all COPY instructions, context and static routing remain unchanged, and reparsing the exact upstream document still finds no mtimelink node.",
       "evidence_sha256": {
         "deployment/security/codeql-finding-review-20261110.md": "7585522420e6a8cb160ef2b173460762833e8128790a259ed0a4b779d8824948",
         "deployment/security/agent-native-evidence/supplement-20261107/sqlite-release-3_54_1.html": "69bf98f8cb8730c88b01414cdc4436fb3c65443dae405957b40efab9976f1e12",
         "deployment/security/agent-native-fixed-code-supplement-20261107.json": "f0960cbc117072656b5038706634e11f79281fe876f84642fa234953f25338df",
         "scripts/check_agent_native_packages.py": "a61f5a7ad61481aa3a88f8432db57dffd545027248cf861fcd766a01c99374d3",
         "compose.yaml": "c8b0e862f51e8df6ec8ddf8254656491a939cbb9bf9231d31b545d449df7dc0e",
-        "frontend/Dockerfile": "d4a1203b866ad35a2a0dfd7e5972beab8e08e4e021f3f50075075862942dc8a7",
+        "frontend/Dockerfile": "9b100c4df9ef23ed29b73e5f944772dd5b4d96986a797f46611dbf872c2f01c1",
         "frontend/nginx.conf": "9dfa67b7fe4d3159b2dabf772c51a82e625b3757de35ca37bd36db297c15ccb2",
-        "Dockerfile": "66d6ffccb8f8f7416f98c62081562f81f9cc76c95747ec176125b28964eea508"
+        "Dockerfile": "66d6ffccb8f8f7416f98c62081562f81f9cc76c95747ec176125b28964eea508",
+        "deployment/security/codeql-continuation-review-20261111.json": "ab47a6c04b523a9f45396a04cc0199ddb83f21b07ad5677030ce1e4441488e4f"
       }
     }
-  ]
+  ],
+  "continuation_review": {
+    "reviewed_at": "2026-11-11",
+    "source_sha": "d0c275e02e51739a2bd1ddc17b4ba6e3a4d05210",
+    "evidence": "deployment/security/codeql-continuation-review-20261111.json",
+    "scope": "Original four exact identities only; additional raw static-IV probe findings are not exempted."
+  }
 }

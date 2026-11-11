@@ -1,6 +1,6 @@
 {
   "schema": "backend-openssl-exact-current-path-review-v1",
-  "reviewed_at_utc": "2026-11-11T04:26:01.421383+00:00",
+  "reviewed_at_utc": "2026-11-11T05:35:09.926678+00:00",
   "reviewer": "AI technical review; not human security certification",
   "source_sha": "488550ecb61e7f369dd4967c7fa35e4c64369e75",
   "image_id": "sha256:bef9e516a8daeaba7515ea24d4e6468d71ad3557694cbc91fe46349ecd1d5e89",
@@ -157,7 +157,14 @@
     "http_status": 200,
     "native_openssl_loaded_after_TLS": false,
     "owned_probes_removed": true,
-    "image_unchanged": true
+    "image_unchanged": true,
+    "aes_gcm_roundtrip": {
+      "passed": true,
+      "iv_generation": "SecureRandom",
+      "iv_bytes": 12,
+      "key_generation": "SecureRandom",
+      "key_bytes": 16
+    }
   },
   "primary_source": {
     "url": "https://openssl-library.org/news/secadv/20261110.txt",
@@ -174,8 +181,8 @@
     },
     {
       "path": "BackendCryptoProbe2.java",
-      "sha256": "b60814aab9e3f521d12022d2846806b3353fa7525454ddcdbab51a6d5091e295",
-      "bytes": 9134
+      "sha256": "75fd63ac7cba8abb9caf6475c687d57e37f93699681938653f0ec19d71d55e5b",
+      "bytes": 9429
     },
     {
       "path": "critical-bytecode/io_lettuce_core_SslOptions$Builder.class.javap.txt",
@@ -224,8 +231,8 @@
     },
     {
       "path": "runtime-result.json",
-      "sha256": "d76feeb811242dfc188f5c1b6ab2e3bc9dc35b21d92f6871a88775da8365a9bf",
-      "bytes": 4428
+      "sha256": "4f22564c0cb015bda9d91804aaa1b5dafb5f665dda5cfe3673b8e9fd2ed41c33",
+      "bytes": 4600
     },
     {
       "path": "source-fingerprint-review.json",
@@ -266,6 +273,25 @@
     "provenance_file": "critical-bytecode/io_netty_handler_ssl_OpenSsl.selected-excerpt.json",
     "generator_sha256": "eba0d209f51cc49d641d53dcfbd0b700172c5d6071fcd1743585f5b4e35bd1fe",
     "irrelevant_upstream_fixture_key_not_republished": true,
-    "all_actual_runtime_and_failed_probe_results_unchanged": true
+    "selected_bytecode_and_all_original_failed_probe_results_unchanged": true,
+    "runtime_result_is_new_execution_described_in_probe_refresh": true
+  },
+  "probe_refresh": {
+    "kind": "New real execution after replacing the synthetic fixed AES-GCM IV and key with SecureRandom",
+    "started_at_utc": "2026-11-11T05:35:04.737188+00:00",
+    "completed_at_utc": "2026-11-11T05:35:09.034359+00:00",
+    "java_source_sha256": "75fd63ac7cba8abb9caf6475c687d57e37f93699681938653f0ec19d71d55e5b",
+    "compiled_class_sha256": "cdb4bd778b1aa77fc9f255ab21f13d88fa0bdcdec2a1bbedddc7d2c840aacf4e",
+    "private_run_receipt_sha256": "2b1a05c7abc9845d46e7ea6069224d5c1470ea0da0966d6f378e08417f4af579",
+    "private_generation_receipt_sha256": "195dd7a062767d3f9e4d6f6e1dd9e32ba24f95598a6606364b995ce907c70284",
+    "probe_generator_sha256": "2056ce9a619727660c472c5ada3e882a010bb9a168824763ab75b563626f824d",
+    "public_evidence_generator_sha256": "6abf8efbee026995cf1e691a368b3818ce5615a772fac65b08a0f7e772e13aa0",
+    "previous_public_probe_source_sha256": "b60814aab9e3f521d12022d2846806b3353fa7525454ddcdbab51a6d5091e295",
+    "previous_public_runtime_result_sha256": "d76feeb811242dfc188f5c1b6ab2e3bc9dc35b21d92f6871a88775da8365a9bf",
+    "previous_successful_execution_preserved_privately": true,
+    "initial_failed_execution_preserved_privately": true,
+    "intermediate_mount_failure_preserved_privately": true,
+    "image_config_and_all_ordered_layers_unchanged": true,
+    "new_external_or_paid_requests": 0
   }
 }

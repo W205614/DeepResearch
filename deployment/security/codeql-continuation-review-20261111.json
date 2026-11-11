@@ -1,0 +1,209 @@
+{
+  "schema": "codeql-exact-continuation-review-20261111-v1",
+  "reviewed_source_sha": "d0c275e02e51739a2bd1ddc17b4ba6e3a4d05210",
+  "security_run": "https://github.com/W205614/DeepResearch/actions/runs/42965222878",
+  "actor": "AI technical reviewer /root/openssl_new_findings_20261111",
+  "review_scope": "Renew the exact four existing findings after the single required Web libxslt-r4 recipe change. No new identity, severity threshold or general exception is introduced.",
+  "prior_profile_sha256": "3dc95f54209edf29f269ef5070abacbcef300a52b1b60fe466442a2c5c750107",
+  "historical_proof_unchanged": {
+    "path": "deployment/security/codeql-finding-review-20261110.md",
+    "sha256": "7585522420e6a8cb160ef2b173460762833e8128790a259ed0a4b779d8824948"
+  },
+  "fresh_raw_sarif": [
+    {
+      "kind": "bootstrap",
+      "artifact_id": 13830796896,
+      "job_id": 130340761418,
+      "zip_sha256": "63c85c3d1a3418e959277d422288f09f13d2b7635a705bf2c7f7a3ed40d257b9",
+      "sarif_sha256": {
+        "go.sarif": "73372d42f926a5a3ee5c63bea2d65d113dd4ba910151c82ee97333d474d2be3d"
+      },
+      "blocking_findings": [],
+      "original_gate_failure": "CodeQL reviewed source or proof changed; renewed review required: frontend/Dockerfile"
+    },
+    {
+      "kind": "main",
+      "artifact_id": 13830728678,
+      "job_id": 130340761731,
+      "zip_sha256": "7693581dfa0f1054286219f00ab86435dea5cdffb16a918ed65cfa06a9db9275",
+      "sarif_sha256": {
+        "java.sarif": "2aeedf95b62826e067801b87fa8f6439eb8cea7b73e91badc26d5b3ea9c0b15b",
+        "javascript.sarif": "8a7e6b2a7179d2d79534dd66ce1e9bb7a6e2180d470e6a796c0477733e29529f",
+        "python.sarif": "3082a5b532fc6c650bda548bfadd46301d29464b57d3341f693bd3c136568a89"
+      },
+      "blocking_findings": [
+        {
+          "rule_id": "java/ssrf",
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java",
+          "start_line": 95,
+          "end_line": 95,
+          "start_column": 62,
+          "end_column": 114,
+          "message": "Potential server-side request forgery due to a [user-provided value](1)."
+        },
+        {
+          "rule_id": "java/ssrf",
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java",
+          "start_line": 144,
+          "end_line": 144,
+          "start_column": 57,
+          "end_column": 64,
+          "message": "Potential server-side request forgery due to a [user-provided value](1)."
+        },
+        {
+          "rule_id": "java/spring-disabled-csrf-protection",
+          "path": "business-backend/src/main/java/com/deepresearch/business/config/SecurityConfig.java",
+          "start_line": 34,
+          "end_line": 34,
+          "start_column": 27,
+          "end_column": 41,
+          "message": "CSRF vulnerability due to protection being disabled."
+        },
+        {
+          "rule_id": "java/static-initialization-vector",
+          "path": "deployment/security/backend-openssl-20261111-evidence/BackendCryptoProbe2.java",
+          "start_line": 41,
+          "end_line": 41,
+          "start_column": 73,
+          "end_column": 102,
+          "message": "A [static initialization vector](1) should not be used for encryption."
+        },
+        {
+          "rule_id": "java/static-initialization-vector",
+          "path": "deployment/security/backend-openssl-20261111-evidence/BackendCryptoProbe2.java",
+          "start_line": 43,
+          "end_line": 43,
+          "start_column": 73,
+          "end_column": 102,
+          "message": "A [static initialization vector](1) should not be used for encryption."
+        },
+        {
+          "rule_id": "js/xss-through-dom",
+          "path": "deployment/security/agent-native-evidence/supplement-20261107/sqlite-release-3_54_1.html",
+          "start_line": 97,
+          "end_line": 97,
+          "start_column": 45,
+          "end_column": 72,
+          "message": "[DOM text](1) is reinterpreted as HTML without escaping meta-characters."
+        }
+      ],
+      "original_gate_failure": "CodeQL reviewed source or proof changed; renewed review required: frontend/Dockerfile"
+    }
+  ],
+  "raw_results_preserved": true,
+  "actual_main_high_critical_count": 6,
+  "original_four_exact_identities_still_present": [
+    {
+      "rule_id": "java/ssrf",
+      "path": "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java",
+      "start_line": 95,
+      "end_line": 95,
+      "start_column": 62,
+      "end_column": 114,
+      "message": "Potential server-side request forgery due to a [user-provided value](1)."
+    },
+    {
+      "rule_id": "java/ssrf",
+      "path": "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java",
+      "start_line": 144,
+      "end_line": 144,
+      "start_column": 57,
+      "end_column": 64,
+      "message": "Potential server-side request forgery due to a [user-provided value](1)."
+    },
+    {
+      "rule_id": "java/spring-disabled-csrf-protection",
+      "path": "business-backend/src/main/java/com/deepresearch/business/config/SecurityConfig.java",
+      "start_line": 34,
+      "end_line": 34,
+      "start_column": 27,
+      "end_column": 41,
+      "message": "CSRF vulnerability due to protection being disabled."
+    },
+    {
+      "rule_id": "js/xss-through-dom",
+      "path": "deployment/security/agent-native-evidence/supplement-20261107/sqlite-release-3_54_1.html",
+      "start_line": 97,
+      "end_line": 97,
+      "start_column": 45,
+      "end_column": 72,
+      "message": "[DOM text](1) is reinterpreted as HTML without escaping meta-characters."
+    }
+  ],
+  "additional_two_not_reviewed_or_exempted": [
+    {
+      "rule_id": "java/static-initialization-vector",
+      "path": "deployment/security/backend-openssl-20261111-evidence/BackendCryptoProbe2.java",
+      "start_line": 41,
+      "end_line": 41,
+      "start_column": 73,
+      "end_column": 102,
+      "message": "A [static initialization vector](1) should not be used for encryption."
+    },
+    {
+      "rule_id": "java/static-initialization-vector",
+      "path": "deployment/security/backend-openssl-20261111-evidence/BackendCryptoProbe2.java",
+      "start_line": 43,
+      "end_line": 43,
+      "start_column": 73,
+      "end_column": 102,
+      "message": "A [static initialization vector](1) should not be used for encryption."
+    }
+  ],
+  "additional_two_status": "Real static-IV findings in the synthetic Backend provider probe; parent delegated a generator-based SecureRandom key/nonce correction and a real isolated probe rerun. This continuation does not assert those changes or future CI have passed. The original six-result SARIF remains evidence.",
+  "only_changed_preexisting_proof_binding": {
+    "path": "frontend/Dockerfile",
+    "old_sha256": "d4a1203b866ad35a2a0dfd7e5972beab8e08e4e021f3f50075075862942dc8a7",
+    "new_sha256": "9b100c4df9ef23ed29b73e5f944772dd5b4d96986a797f46611dbf872c2f01c1",
+    "removed_line": "RUN apk add --no-cache --upgrade 'brotli-libs>=1.2.1-r0' 'curl>=8.23.0-r0' 'libcurl>=8.23.0-r0' 'libexpat>=2.10.0-r0'",
+    "added_line": "RUN apk add --no-cache --upgrade 'brotli-libs>=1.2.1-r0' 'curl>=8.23.0-r0' 'libcurl>=8.23.0-r0' 'libexpat>=2.10.0-r0' 'libxslt>=1.1.43-r4'"
+  },
+  "technical_delta_review": {
+    "dependency_repair_only": "The sole changed line adds the fixed libxslt minimum package revision to the existing apk upgrade step.",
+    "copy_instructions_and_build_context_unchanged": true,
+    "build_context": "compose.yaml Web build context remains ./frontend, excluding this deployment/security HTML.",
+    "build_stage": "COPY . . in frontend context builds Vite dist; final image only copies that dist, Nginx template and fingerprint files. No new source COPY, root context, volume, static route or template was introduced.",
+    "served_document_root": "frontend/nginx.conf root remains /usr/share/nginx/html.",
+    "other_image_paths": "The root Python Dockerfile copies listed runtime modules/scripts, not this SQLite HTML or the whole security evidence tree. Java builds from business-backend context.",
+    "sqlite_html_sha256": "69bf98f8cb8730c88b01414cdc4436fb3c65443dae405957b40efab9976f1e12",
+    "html_ids_observed": [
+      "search_menubutton",
+      "submenu",
+      "searchmenu",
+      "searchtype",
+      "searchbox"
+    ],
+    "mtimelink_nodes": 0,
+    "conclusion": "The same exact upstream HTML remains offline hash-checked evidence, outside frontend context and served dist, and its conditional mtimelink assignment has no target node. The r4 package repair does not change either technical exclusion.",
+    "remaining_three_conclusions": "AgentClient, authentication configuration, test proof and client API bytes are unchanged by hash; their original HTTP-origin and Bearer-only technical bases remain the same. No new runtime retest of those unaffected Java paths is claimed."
+  },
+  "preexisting_bound_source_and_proof_sha256": {
+    "deployment/security/codeql-finding-review-20261110.md": "7585522420e6a8cb160ef2b173460762833e8128790a259ed0a4b779d8824948",
+    "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java": "9729af95b2760eb00fdc36f8e86f8abaa7f0f4deb999f976a9342d7a93365aea",
+    "business-backend/src/main/java/com/deepresearch/business/config/DeepResearchProperties.java": "94211bb68e6735e0200f9c660814a64bd87ac205b944f060eb5a6920ded15ad3",
+    "business-backend/src/main/java/com/deepresearch/business/api/AgentProxyController.java": "f81f0ecfbf502797025bc8a0f0365b207f67c88474659dde8c9a18844c58564b",
+    "business-backend/src/test/java/com/deepresearch/business/service/AgentClientOriginTest.java": "2d837c336c37be593a4240b3490b8503382ddbe7831f01fbf8a9ee5de71493d1",
+    "business-backend/src/main/java/com/deepresearch/business/config/SecurityConfig.java": "4dbaf829a97464e83d29329f41aa33888a0d26d4e28362c88b82f14e9d01afc7",
+    "business-backend/src/main/java/com/deepresearch/business/security/PlatformAccountFilter.java": "6907c46c7e1e452794a5a0fd37d1cfedd8923dc918f4bbe8c0d48530edbc312c",
+    "business-backend/src/main/java/com/deepresearch/business/security/ApiRateLimitFilter.java": "67ee1e48aa7749d8e0873977d2be30db1e40e08257d63a5f25765e7a984a3533",
+    "business-backend/src/test/java/com/deepresearch/business/config/SecurityConfigBearerTest.java": "21e2841835abc51f50e5ba06a6cc67f091cc5f900a2330605259972ac2fbf603",
+    "frontend/src/api.ts": "b2fa83c547576f376a59d572cb689a882a3d52d0d509dfa5ae78e88a462f0e52",
+    "business-backend/pom.xml": "8a859c557e726d5f8ff818494c7eb5cf008c3cbbb5f130ca9fa8d0b765330301",
+    "deployment/security/agent-native-evidence/supplement-20261107/sqlite-release-3_54_1.html": "69bf98f8cb8730c88b01414cdc4436fb3c65443dae405957b40efab9976f1e12",
+    "deployment/security/agent-native-fixed-code-supplement-20261107.json": "f0960cbc117072656b5038706634e11f79281fe876f84642fa234953f25338df",
+    "scripts/check_agent_native_packages.py": "a61f5a7ad61481aa3a88f8432db57dffd545027248cf861fcd766a01c99374d3",
+    "compose.yaml": "c8b0e862f51e8df6ec8ddf8254656491a939cbb9bf9231d31b545d449df7dc0e",
+    "frontend/Dockerfile": "9b100c4df9ef23ed29b73e5f944772dd5b4d96986a797f46611dbf872c2f01c1",
+    "frontend/nginx.conf": "9dfa67b7fe4d3159b2dabf772c51a82e625b3757de35ca37bd36db297c15ccb2",
+    "Dockerfile": "66d6ffccb8f8f7416f98c62081562f81f9cc76c95747ec176125b28964eea508"
+  },
+  "no_gate_or_threshold_change": true,
+  "new_static_iv_exceptions_added": false,
+  "human_review": false,
+  "risk_acceptance": false,
+  "boundaries": [
+    "Applies only to the original four exact rules, paths, lines, columns and messages and the complete hash-pinned evidence.",
+    "The unchanged gate must continue to reject new findings and modified support bytes. The two new raw Java probe findings remain blockers until actual source correction and a new successful CI result.",
+    "No raw SARIF, old scan, historical proof document, application source, or scan configuration is edited."
+  ]
+}

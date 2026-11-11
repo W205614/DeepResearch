@@ -1,0 +1,220 @@
+{
+  "schema": "postgres-exact-current-configuration-facts-20261111-v1",
+  "image_id": "sha256:3018790ed892ee8595961a044fbf2565826a4f8602335c44866b2eb00879d769",
+  "portable_config_digest": "sha256:ac7420f5d88ab47df6f3e3dae40fd0807d1dee72e140f52f452302a8b589c440",
+  "complete_image_Config_equals_original": true,
+  "complete_image_Config_canonical_sha256": "9b59002bd508a45b8fd24bd7445d06e192535eb48542832ad2991342a5bd370a",
+  "current_daily_roles": [
+    {
+      "service": "postgres",
+      "state": "exited",
+      "original_image_retained": true,
+      "entrypoint": [
+        "docker-entrypoint.sh"
+      ],
+      "cmd": [
+        "postgres"
+      ],
+      "openssl_loader_kerberos_sasl_and_pgssl_override_names": [],
+      "mounts": [
+        {
+          "type": "volume",
+          "destination": "/var/lib/postgresql/data",
+          "rw": true
+        }
+      ]
+    },
+    {
+      "service": "keycloak-postgres",
+      "state": "exited",
+      "original_image_retained": true,
+      "entrypoint": [
+        "docker-entrypoint.sh"
+      ],
+      "cmd": [
+        "postgres"
+      ],
+      "openssl_loader_kerberos_sasl_and_pgssl_override_names": [],
+      "mounts": [
+        {
+          "type": "volume",
+          "destination": "/var/lib/postgresql/data",
+          "rw": true
+        }
+      ]
+    }
+  ],
+  "daily_project_containers": 25,
+  "all_daily_containers_remain_stopped": true,
+  "current_data_volume_text_config_files": [
+    {
+      "service": "postgres",
+      "files": [
+        {
+          "file": "postgresql.conf",
+          "sha256": "40456457acb32aae3b78632bd9f88aa6681c89edf3ce470f57c9f1e0f6ba6466",
+          "bytes": 30656
+        },
+        {
+          "file": "postgresql.auto.conf",
+          "sha256": "0874e665ecf5c0a6135a73158ea1b71a959dafb809574810da5c9cc28c0c63ed",
+          "bytes": 88
+        },
+        {
+          "file": "pg_hba.conf",
+          "sha256": "af0fdb739b67d1a552cd82c19311b813e753d4f651a61e6b563f48b55dca5e74",
+          "bytes": 5743
+        },
+        {
+          "file": "pg_ident.conf",
+          "sha256": "b4dfef08731a7d20a3bb724ad4cf3e1cd91ec01fbe51349c6a3acc5704072965",
+          "bytes": 2640
+        }
+      ]
+    },
+    {
+      "service": "keycloak-postgres",
+      "files": [
+        {
+          "file": "postgresql.conf",
+          "sha256": "40456457acb32aae3b78632bd9f88aa6681c89edf3ce470f57c9f1e0f6ba6466",
+          "bytes": 30656
+        },
+        {
+          "file": "postgresql.auto.conf",
+          "sha256": "0874e665ecf5c0a6135a73158ea1b71a959dafb809574810da5c9cc28c0c63ed",
+          "bytes": 88
+        },
+        {
+          "file": "pg_hba.conf",
+          "sha256": "af0fdb739b67d1a552cd82c19311b813e753d4f651a61e6b563f48b55dca5e74",
+          "bytes": 5743
+        },
+        {
+          "file": "pg_ident.conf",
+          "sha256": "b4dfef08731a7d20a3bb724ad4cf3e1cd91ec01fbe51349c6a3acc5704072965",
+          "bytes": 2640
+        }
+      ]
+    }
+  ],
+  "only4_named_text_config_files_read_per_role": true,
+  "no_active_pg_include_or_preload_or_ssl_override": true,
+  "compiled_ssl_default_false_source": [
+    {
+      "path": "src/backend/postmaster/postmaster.c",
+      "sha256": "fe8b439d3e3b9756f3db6da304f001aeccd234565e607236a21bcdff18912d00",
+      "default_EnableSSL_false": true
+    }
+  ],
+  "current_auth_methods_without_role_or_address_details": [
+    {
+      "service": "postgres",
+      "active_parameter_names": [
+        "datestyle",
+        "default_text_search_config",
+        "dynamic_shared_memory_type",
+        "lc_messages",
+        "lc_monetary",
+        "lc_numeric",
+        "lc_time",
+        "listen_addresses",
+        "log_timezone",
+        "max_connections",
+        "max_wal_size",
+        "min_wal_size",
+        "shared_buffers",
+        "timezone"
+      ],
+      "relevant_parameters": {},
+      "includes": [],
+      "auth_methods": [
+        {
+          "record_type": "local",
+          "method": "trust"
+        },
+        {
+          "record_type": "host",
+          "method": "trust"
+        },
+        {
+          "record_type": "host",
+          "method": "trust"
+        },
+        {
+          "record_type": "local",
+          "method": "trust"
+        },
+        {
+          "record_type": "host",
+          "method": "trust"
+        },
+        {
+          "record_type": "host",
+          "method": "trust"
+        },
+        {
+          "record_type": "host",
+          "method": "scram-sha-256"
+        }
+      ]
+    },
+    {
+      "service": "keycloak-postgres",
+      "active_parameter_names": [
+        "datestyle",
+        "default_text_search_config",
+        "dynamic_shared_memory_type",
+        "lc_messages",
+        "lc_monetary",
+        "lc_numeric",
+        "lc_time",
+        "listen_addresses",
+        "log_timezone",
+        "max_connections",
+        "max_wal_size",
+        "min_wal_size",
+        "shared_buffers",
+        "timezone"
+      ],
+      "relevant_parameters": {},
+      "includes": [],
+      "auth_methods": [
+        {
+          "record_type": "local",
+          "method": "trust"
+        },
+        {
+          "record_type": "host",
+          "method": "trust"
+        },
+        {
+          "record_type": "host",
+          "method": "trust"
+        },
+        {
+          "record_type": "local",
+          "method": "trust"
+        },
+        {
+          "record_type": "host",
+          "method": "trust"
+        },
+        {
+          "record_type": "host",
+          "method": "trust"
+        },
+        {
+          "record_type": "host",
+          "method": "scram-sha-256"
+        }
+      ]
+    }
+  ],
+  "openssl_cnf_sha256": "a65a2cb9f4ee8ffdc7ef4f0ac600c0bdafb95b7b1ab457188ac610a62f5ad6b3",
+  "openssl_config_only_default_provider_no_include_or_engine_module": true,
+  "current_daily_image_is_original_not_candidate": true,
+  "no_business_database_or_base_global_pg_wal_files_opened": true,
+  "owned_config_readers_removed": true,
+  "scope": "Exact current stopped configuration and four plaintext config files per role. No database startup, SQL session, durable write or fresh candidate daily acceptance."
+}

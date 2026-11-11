@@ -38,11 +38,15 @@ public class BackendCryptoProbe2 {
 
         Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
         byte[] key = new byte[16], iv = new byte[12], text = "backend-probe".getBytes(StandardCharsets.UTF_8);
+        SecureRandom random = new SecureRandom();
+        random.nextBytes(key);
+        random.nextBytes(iv);
         cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"), new GCMParameterSpec(128, iv));
         byte[] encrypted = cipher.doFinal(text);
         cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"), new GCMParameterSpec(128, iv));
         if (!Arrays.equals(cipher.doFinal(encrypted), text)) throw new AssertionError("JCE AES-GCM roundtrip failed");
         result.put("aes_gcm_provider", cipher.getProvider().getName());
+        result.put("aes_gcm_roundtrip", Map.of("passed", true, "key_generation", "SecureRandom", "iv_generation", "SecureRandom", "key_bytes", key.length, "iv_bytes", iv.length));
         try {
             Cipher siv = Cipher.getInstance("AES/GCM-SIV/NoPadding");
             result.put("aes_gcm_siv", Map.of("available", true, "provider", siv.getProvider().getName()));

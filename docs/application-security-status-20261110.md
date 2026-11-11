@@ -18,6 +18,12 @@ Web 发生真实二进制修复，因此使用新修复版本 `v0.1.3`，不移�
 
 Grafana 对同一已验收镜像另核对上述五项 OpenSSL 公告：[当前路径证据](../deployment/security/grafana-source-20261110-evidence/openssl-known-paths-review.json)覆盖完整 97 ELF、14 个 Go 制品及其编译图、实际 curl 能力、入口和配置，以及只读挂载得到的当前两项浏览器插件清单。库仍受影响，没有称作二进制修复。两个 AI 代理分别交叉核对实际字节、完整清单和调用路径，再对新增证据及发布器修复后的精确 subject 作增量复核；这不等于独立人工审查或第三方二进制重分发批准。原审查、失败与原始扫描保留，不把旧 subject 的结论直接套到新源码上。
 
+工程提交 `d0c275e02e51739a2bd1ddc17b4ba6e3a4d05210` 的完整质量作业成功，但 Security 整体未通过。CodeQL 因 Web 构建文件散列变化正确拒绝旧绑定；[精确续审](../deployment/security/codeql-continuation-review-20261111.json)确认原四条技术结论及告警身份保持，未新增豁免。该次原始分析另报告两条合成验收探针的固定 IV 告警。探针现使用 `SecureRandom` 生成 AES 密钥和 12 字节 nonce，重新编译、真实隔离执行通过；旧扫描和旧执行均保留，新 CI 仍须实际确认这两条修复，不能把旧 SARIF 重判为没有告警。
+
+同次 PostgreSQL 镜像检查报告 Kerberos 和 libxslt 合计 18 条 HIGH。只更新这两个库后的全级别本机扫描还报告 zlib 一条 MEDIUM，未以 HIGH 门槛通过代替全级别归零。[PostgreSQL 配方](../Dockerfile.postgres)现要求官方 `krb5-libs>=1.22.3-r0`、`libxslt>=1.1.43-r4`、`zlib>=1.4-r0`；本机使用核验签名的三个准确 APK 离线应用同样更新，保留 PostgreSQL 17.11、gosu 和完整运行配置。最终本机候选 `3018790e…` 的新库全级别原始发现及 secret 均为 0，失败中间镜像和报告保留。这是对已有制品的原生库修复，不能称为完整源码冷构建；完整配方的干净 CI、两个数据库角色的日常升级和数据验收另行核对。
+
+[PostgreSQL 最终运行与路径证据](../deployment/security/postgres-native-20261111-evidence/configured-path-review.json)核对完整 3892 项文件、237 ELF，以及两个现有数据库实例的只读配置。三个签名包的实际 payload、APK 数据库和版本命令均与候选一致，PostgreSQL／gosu 及全部 `/usr/local` 文件字节保持。OpenSSL 库仍受上述五项公告影响；本次结论仅覆盖核实过的普通 TLS、GSS 配置、pgcrypto 固定算法白名单和当前入口，不称作 OpenSSL 固定版或任意管理员命令安全。
+
 下文保留 2026-11-10 各阶段基线、原始扫描及失败范围；最终交付版本和镜像对应关系以[版本说明](container-packages.md)为准。
 
 ## 2026-11-10 的公开制品基线

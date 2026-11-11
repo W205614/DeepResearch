@@ -22,4 +22,5 @@ RUN --mount=type=cache,target=/go/pkg/mod,id=dr-vendor-go-mod-20261026 \
     && ! grep -F '(devel)' /tmp/build-info \
     && /out/gosu --version
 FROM postgres:17.11-alpine@sha256:266d3c257594e195b309ae9d1805e54c788f1d7b375f56bf6c367aac6c917e7b
+RUN apk add --no-cache 'krb5-libs>=1.22.3-r0' 'libxslt>=1.1.43-r4' 'zlib>=1.4-r0'
 COPY --from=build /out/gosu /usr/local/bin/gosu

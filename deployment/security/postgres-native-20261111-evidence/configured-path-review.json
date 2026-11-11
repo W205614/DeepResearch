@@ -1,0 +1,102 @@
+{
+  "schema": "postgres-native-configured-path-review-20261111-v1",
+  "actor": "/root/web_libxslt_patch_20261111",
+  "actor_kind": "AI technical contributor; authored package/source and native path evidence, not human or legal reviewer",
+  "reviewed_at_utc": "2026-11-11T05:48:40.494117+00:00",
+  "passed": true,
+  "facts_passed": true,
+  "human_review": false,
+  "risk_acceptance": false,
+  "binary_redistribution_approved": false,
+  "image_id": "sha256:3018790ed892ee8595961a044fbf2565826a4f8602335c44866b2eb00879d769",
+  "portable_config_digest": "sha256:ac7420f5d88ab47df6f3e3dae40fd0807d1dee72e140f52f452302a8b589c440",
+  "diff_ids": [
+    "sha256:75c137aedfb2760f88629236cb7b797630aed0c3d91d626d1d1bb694878fc2ba",
+    "sha256:a46a3bafcb603dc97670597201246506f98e5a6372d6dd6bff95fbe82c2daaaf",
+    "sha256:957d26e53b1ed5152079038cf0de8c6d0bd52a816ad3e20cc4cdbd7cd55bf9d8",
+    "sha256:b9f6ca12141f3136dbd518d2a9ed11e7129b12951b8984be8a9477e064048831",
+    "sha256:fa51465d1f6a9413b09529e99f73b7154a15db7457fcc0fe0a11f875d919212f",
+    "sha256:b2711a83336c81a02ba25e3c640502b1a00e597add8ac44ef3231ca00cf46f48",
+    "sha256:9087553371de5b60cd2b27440cc4d6ee9da8bb1db1e9cf4cd684f8c91ffa5ef5",
+    "sha256:65a170ef4c1b8d8abe86b5f7b0ccc2f643f2d4f347545125b4d3632c409e136b",
+    "sha256:1da1a2dfe2071240acddfd3e74e462ce03490d59416a4cb3eef8e48a8b3ca37b",
+    "sha256:3936a53132a14ee4a433e0b6c5185bc6df36fb0b2b61196cf97890bdd7fa85de",
+    "sha256:0d1b494a903f7a9d20d89f223c25bc534be1627872abb7c5e90e0fb2da957321",
+    "sha256:c9b02816422dbdd647b9d853581b12f0649716baa52f2310822ffc356812c112",
+    "sha256:1ffc3cd456f1f03b40252e5e890f093ce1d26e9a9947b0de7c44d5264dc63b5b"
+  ],
+  "tracked_recipe_sha256": "6cc01b74c660c73b5fbe04f88cc0003f19cb63a8c27a999c62173acdd47413c5",
+  "postgres_version": "17.11",
+  "postgres_sha256": "b65c19ceb9ae7e18f6e271e08dda64557a92d5a7bf46b76257d58d8c95678555",
+  "gosu_sha256": "3080bc00f070b45daeb467efad94d11f5affd72d257bdbadba3dcffacf4e9de4",
+  "runtime_config_unchanged": true,
+  "postgres_and_gosu_unchanged": true,
+  "complete_native_elf_count": 237,
+  "complete_runtime_records": 3892,
+  "complete_runtime_manifest_sha256": "dd5dccb5dee973ebec5589d4433ef2323c27f94f4da0d01f6ce8133326df8b98",
+  "library_affected": true,
+  "library_fixed": false,
+  "known_openssl_findings": [
+    {
+      "id": "CVE-2026-88822",
+      "disposition": "NOT_AFFECTED_FUNCTION_NOT_IN_CURRENT_APPLICATION_PATH",
+      "library_affected": true,
+      "library_fixed": false,
+      "technical_basis": "No native external QUIC/automatic peer-address API caller; actual PostgreSQL/libpq/libldap/krb5 TLS consumers use ordinary TLS methods."
+    },
+    {
+      "id": "CVE-2026-95691",
+      "disposition": "NOT_AFFECTED_FUNCTION_NOT_IN_CURRENT_APPLICATION_PATH",
+      "library_affected": true,
+      "library_fixed": false,
+      "technical_basis": "Same exact native QUIC constructor exclusion; no generic TLS-client exemption used."
+    },
+    {
+      "id": "CVE-2026-88823",
+      "disposition": "NOT_AFFECTED_FUNCTION_NOT_IN_CURRENT_APPLICATION_PATH",
+      "library_affected": true,
+      "library_fixed": false,
+      "technical_basis": "Actual pgcrypto uses native EVP encryption but exact PostgreSQL17.11 source accepts only11 static BF/DES/CAST5/AES CBC/ECB/CFB cipher names. TLS does not negotiate GCM-SIV and current providers/entrypoint supply no alternate caller."
+    },
+    {
+      "id": "CVE-2026-95692",
+      "disposition": "NOT_AFFECTED_FUNCTION_NOT_IN_CURRENT_APPLICATION_PATH",
+      "library_affected": true,
+      "library_fixed": false,
+      "technical_basis": "Same actual GCM-SIV cipher-selection exclusion; current SQL cipher parser cannot route an arbitrary algorithm name or nonce to this provider path."
+    },
+    {
+      "id": "CVE-2026-107496",
+      "disposition": "NOT_AFFECTED_FUNCTION_NOT_IN_CURRENT_APPLICATION_PATH",
+      "library_affected": true,
+      "library_fixed": false,
+      "technical_basis": "All237ELFs have no external CMS_encrypt/_ex import or CMS caller literal, no openssl CLI exists; native pgcrypto/PGP is retained explicitly and is not OpenSSL CMS encryption."
+    }
+  ],
+  "supporting_evidence_sha256": {
+    "filesystem-difference-contract.json": "85942463e959b1a36ba7aaa57f9da2a086106e0ca933522a360e4828152a04bf",
+    "actual-runtime-manifest.json.gz": "799cf12377e1665a1087ab9950474eee646167bc1307ddb30e77b96b05272e0f",
+    "actual-native-inventory.json": "98e6209cdbe96b491e9d31eb4f08e00f426c15612ece2b5946c700a6aca435f3",
+    "observed-runtime.json": "445590e5a58cc102fa3c808b5c9aa29c2e3c8e0d99a36b5f0ad24f3a2d293a41",
+    "official-source-and-license-facts.json": "fa557c115ec62cc08083e6009aa93a86bb493a1dcaf50ebcf49ebe308c74ae6f",
+    "current-configuration-facts.json": "0fd87ba83505de45f17c9bf49849ea29a20f03e54355b7a0236707224d590081",
+    "openssl-route-facts.json": "4bb8b58a5a79135fe7f3b3a056b74bd79271a1bf981e1cb6e1821a55a89b4768",
+    "fresh-security-binding.json": "600105c0403e794c6689173e226bc957060ab7ea26fdade9f3ec985e7399f1c4"
+  },
+  "scope": "Exact repaired local/CI PostgreSQL17.11 image and current stopped daily configuration. No claim that repaired image has already replaced or started either daily PostgreSQL role.",
+  "limitations": [
+    "OpenSSL3.5.9 affected implementation is retained, not fixed. All-severity raw0 does not substitute for the separately checked known current-path findings.",
+    "PostgreSQL server and libpq ordinary TLS are explicitly checked; pgcrypto does expose native cipher APIs but exact11-name whitelist excludes GCM-SIV, and no CMS API consumer is present.",
+    "Any changed native ELF/loaded extension, shell/SQL/admin command, preload/provider/engine environment, PG/auth configuration, QUIC/GCM-SIV/CMS caller or extra mount invalidates this current-path conclusion.",
+    "No database server startup, business-data read/query, config/volume write, build, paid API or remote mutation performed in this review.",
+    "Only actual named configuration files were read; no general volume/backup scan and no base/global/pg_wal access.",
+    "An initial root/no-capabilities config reader failed to read mode0600 files; a matching uid70 read-only reader succeeded. An early apk-info probe attempted index lookup blocked by networknone; raw warning receipt retained privately. Final version-only probe succeeded without warnings; package facts come from independently compared actual rootfs/APK metadata.",
+    "This is technical applicability verification, not human risk acceptance or binary redistribution approval."
+  ],
+  "upstream_advisory": {
+    "url": "https://openssl-library.org/news/secadv/20261110.txt",
+    "retained_primary_snapshot_sha256": "31f4c88950cd9cd310794a218361b787d293a940d2568f9f82334915ac54a402",
+    "primary_trigger_audit_reused_from": "/root/openssl_new_findings_20261111",
+    "binary_fixed_claim": false
+  }
+}

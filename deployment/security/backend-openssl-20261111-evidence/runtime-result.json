@@ -12,76 +12,76 @@
   ],
   "providers": [
     {
-      "services": 69,
       "name": "SUN",
       "class": "sun.security.provider.Sun",
-      "info": "SUN (DSA key/parameter generation; DSA signing; SHA-1, MD5 digests; SecureRandom; X.509 certificates; PKCS12, JKS & DKS keystores; PKIX CertPathValidator; PKIX CertPathBuilder; LDAP, Collection CertStores, JavaPolicy Policy; JavaLoginConfig Configuration)"
+      "info": "SUN (DSA key/parameter generation; DSA signing; SHA-1, MD5 digests; SecureRandom; X.509 certificates; PKCS12, JKS & DKS keystores; PKIX CertPathValidator; PKIX CertPathBuilder; LDAP, Collection CertStores, JavaPolicy Policy; JavaLoginConfig Configuration)",
+      "services": 69
     },
     {
-      "services": 19,
       "name": "SunRsaSign",
       "class": "sun.security.rsa.SunRsaSign",
-      "info": "Sun RSA signature provider"
+      "info": "Sun RSA signature provider",
+      "services": 19
     },
     {
-      "services": 42,
       "name": "SunEC",
       "class": "sun.security.ec.SunEC",
-      "info": "Sun Elliptic Curve provider"
+      "info": "Sun Elliptic Curve provider",
+      "services": 42
     },
     {
-      "services": 15,
       "name": "SunJSSE",
       "class": "sun.security.ssl.SunJSSE",
-      "info": "Sun JSSE provider(PKCS12, SunX509/PKIX key/trust factories, SSLv3/TLSv1/TLSv1.1/TLSv1.2/TLSv1.3/DTLSv1.0/DTLSv1.2)"
+      "info": "Sun JSSE provider(PKCS12, SunX509/PKIX key/trust factories, SSLv3/TLSv1/TLSv1.1/TLSv1.2/TLSv1.3/DTLSv1.0/DTLSv1.2)",
+      "services": 15
     },
     {
-      "services": 191,
       "name": "SunJCE",
       "class": "com.sun.crypto.provider.SunJCE",
-      "info": "SunJCE Provider (implements RSA, DES, Triple DES, AES, Blowfish, ARCFOUR, RC2, PBE, Diffie-Hellman, HMAC, ChaCha20, DHKEM, and ML-KEM)"
+      "info": "SunJCE Provider (implements RSA, DES, Triple DES, AES, Blowfish, ARCFOUR, RC2, PBE, Diffie-Hellman, HMAC, ChaCha20, DHKEM, and ML-KEM)",
+      "services": 191
     },
     {
-      "services": 2,
       "name": "SunJGSS",
       "class": "sun.security.jgss.SunProvider",
-      "info": "Sun (Kerberos v5, SPNEGO)"
+      "info": "Sun (Kerberos v5, SPNEGO)",
+      "services": 2
     },
     {
-      "services": 8,
       "name": "SunSASL",
       "class": "com.sun.security.sasl.Provider",
-      "info": "Sun SASL provider(implements client mechanisms for: DIGEST-MD5, EXTERNAL, PLAIN, CRAM-MD5, NTLM; server mechanisms for: DIGEST-MD5, CRAM-MD5, NTLM)"
+      "info": "Sun SASL provider(implements client mechanisms for: DIGEST-MD5, EXTERNAL, PLAIN, CRAM-MD5, NTLM; server mechanisms for: DIGEST-MD5, CRAM-MD5, NTLM)",
+      "services": 8
     },
     {
-      "services": 13,
       "name": "XMLDSig",
       "class": "org.jcp.xml.dsig.internal.dom.XMLDSigRI",
-      "info": "XMLDSig (DOM XMLSignatureFactory; DOM KeyInfoFactory; C14N 1.0, C14N 1.1, Exclusive C14N, Base64, Enveloped, XPath, XPath2, XSLT TransformServices)"
+      "info": "XMLDSig (DOM XMLSignatureFactory; DOM KeyInfoFactory; C14N 1.0, C14N 1.1, Exclusive C14N, Base64, Enveloped, XPath, XPath2, XSLT TransformServices)",
+      "services": 13
     },
     {
-      "services": 1,
       "name": "SunPCSC",
       "class": "sun.security.smartcardio.SunPCSC",
-      "info": "Sun PC/SC provider"
+      "info": "Sun PC/SC provider",
+      "services": 1
     },
     {
-      "services": 1,
       "name": "JdkLDAP",
       "class": "sun.security.provider.certpath.ldap.JdkLDAP",
-      "info": "JdkLDAP Provider (implements LDAP CertStore)"
+      "info": "JdkLDAP Provider (implements LDAP CertStore)",
+      "services": 1
     },
     {
-      "services": 2,
       "name": "JdkSASL",
       "class": "com.sun.security.sasl.gsskerb.JdkSASL",
-      "info": "JDK SASL provider(implements client and server mechanisms for GSSAPI)"
+      "info": "JDK SASL provider(implements client and server mechanisms for GSSAPI)",
+      "services": 2
     },
     {
-      "services": 0,
       "name": "SunPKCS11",
       "class": "sun.security.pkcs11.SunPKCS11",
-      "info": "Unconfigured and unusable PKCS11 provider"
+      "info": "Unconfigured and unusable PKCS11 provider",
+      "services": 0
     }
   ],
   "security_overrides": {
@@ -91,6 +91,13 @@
     "jdk.tls.client.protocols": null
   },
   "aes_gcm_provider": "SunJCE",
+  "aes_gcm_roundtrip": {
+    "passed": true,
+    "iv_generation": "SecureRandom",
+    "iv_bytes": 12,
+    "key_generation": "SecureRandom",
+    "key_bytes": 16
+  },
   "aes_gcm_siv": {
     "available": false,
     "message": "Cannot find any provider supporting AES/GCM-SIV/NoPadding",
