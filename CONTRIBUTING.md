@@ -11,6 +11,25 @@ uv sync --all-groups --frozen
 npm ci --prefix frontend
 ```
 
+完整应用开发可先在独立克隆和私密配置中沿用 Docker 编排。`main` 是开发分支，已发布源码 Tag 和镜像分发 Tag 的来源见[版本表](README.md#版本镜像与安全状态)。Python 容器热更新使用已有覆盖：
+
+```powershell
+git clone --config core.autocrlf=false --branch main https://github.com/W205614/DeepResearch.git DeepResearch-dev
+cd DeepResearch-dev
+python scripts/local.py init
+# 填写该独立目录的私密 .env，再按机器实际选择端口覆盖。
+python scripts/local.py check --project-name deepresearch-dev --compose-file deployment/compose/compose.development.yaml
+python scripts/local.py start --project-name deepresearch-dev --compose-file deployment/compose/compose.development.yaml
+# 暂停时保留相同参数与数据。
+python scripts/local.py stop --project-name deepresearch-dev --compose-file deployment/compose/compose.development.yaml
+```
+
+覆盖文件只把 Python `backend/` 只读挂入 Agent／Worker，并让 Agent 使用 `--reload`；Java 和 Web 仍按正常 Docker 配方构建。新项目名不能避免宿主端口冲突，端口覆盖需显式追加，启动与停止保持同一顺序。
+
+需要观测组件时，启动和停止都追加 `--observability`。当前工程入口会先调用固定 Grafana 源码 builder，得到本地 `deepresearch-grafana-source:20261110`；`--no-build` 仍要校验已有镜像和构建收据，不能用下载旧输入代替更新成功。新 Grafana 没有作为公开第三方 Packages 分发，具体依赖与命令见[源码启动](docs/source-release.md#运行依赖如何获取)。
+
+宿主 Python、Maven 和 npm 可独立运行下节检查。完整服务的宿主混合启动没有一键编排入口：迁移、OIDC、角色账号、Redis、Milvus、对象存储、ClamAV 及网络端点都需按源码契约准备。当前 Vite `/api` 代理直接指向 Python `127.0.0.1:8000`，不能把 `npm run dev` 当作完整 Java 业务入口的已验收替代；需要完整权限与审核流程时使用上述编排。不要让开发进程指向日常数据库。
+
 本地凭据使用 Git 忽略的私密配置。提交日志、截图或复现材料前移除访问令牌、密钥、真实资料与账号信息。新增依赖应说明官方来源、许可、维护情况和集成成本；第三方源码与资产保留原版权及许可证。
 
 ## 修改与验证
@@ -31,6 +50,8 @@ npm run build --prefix frontend
 
 完整自动检查由 [CI](.github/workflows/ci.yml)、[Security](.github/workflows/security.yml) 和[告警规则工作流](.github/workflows/observability.yml)执行。提交后检查对应提交的结果，记录条件跳过和仍需目标环境验证的项目。
 
+正式 `v0.1.3` 工程提交 `78a19df9dfa6f072af6ebe40ff99cf164d0c4ff8` 的 [CI](https://github.com/W205614/DeepResearch/actions/runs/42968387539)4 项与 [Security](https://github.com/W205614/DeepResearch/actions/runs/42968387608)22 项成功，[三个 Packages](https://github.com/W205614/DeepResearch/actions/runs/42977626649)发布、实际匿名拉取和日常验收均完成。四个隔离浏览器用例及资料研究引用检查通过，模型使用固定夹具；其 Windows TCP relay 与日常普通端口验收分别记录。另复用 2026-11-10 从同一未变化 Agent 制品执行的两次官方 API 契约探针（JSON、3072 维嵌入，0 重试、原预算上限 1 USD）；本次没有追加调用，不为文档或重测重置账本。版本与组件来源见[镜像说明](docs/container-packages.md)。
+
 真实模型、嵌入、搜索和重排评测有单独的付费入口与累计账本。执行前确定调用类别、次数和预算；已有账本及失败记录随结果保留。常规回归使用受控替身，详见[模型验证](docs/production-readiness.md#openai-配置与四次真实验证)。
 
 修改评测用例时说明原判定为何不符合预期，并补充正反回归；同义表达修正不放宽无依据事实、引用或拒答约束。保留修改前的原始结果，区分历史输出重新判分与新的真实调用。
@@ -49,6 +70,6 @@ npm run build --prefix frontend
 
 ## 发布前核对
 
-应用版本使用语义化标签，先建立绑定最终提交的 Release 草稿。默认仅发布源码，按[源码发布流程](docs/source-release.md)核对干净副本启动、Git 归档、本地检查、该提交的 CI、安全结果及随源码提供的版权与许可证。第三方镜像按[实际分发要求](THIRD_PARTY_NOTICES.md)单独验收，源码 Release 不代表它们已经全部合规。未完成的检查、条件跳过和许可缺口分别记录。仓库中的 `artifact-*` 标签绑定独立镜像制品，不应移动到应用版本提交；应用发版不自动上传镜像、Packages 或部署生产。
+应用交付采用 Docker/OCI 镜像；Maven 保留源码编译、测试和镜像内 JAR，不执行 `mvn deploy`。源码版本按[源码流程](docs/source-release.md)核对归档、检查和 CI，应用镜像按[Packages 流程](docs/container-packages.md)完成实际候选、许可材料、匿名拉取、运行与适用日常验收。产品版本集中说明源码与镜像对应关系；测试轮次不新建版本，不覆盖公开 Tag／附件／镜像。现有应用制品和独立第三方 `artifact-*` 保留其实际来源与材料职责，不能只因名称删去获取入口。常规应用发版不自动上传 Packages 或部署生产；显式手动工作流的输入和权限须先核对。未完成检查、条件跳过和许可缺口分别记录。
 
 Docker 构建使用独立、LF 检出的干净副本和独立测试配置。Git 忽略规则不控制 Docker 构建上下文；根 `.dockerignore` 是精确镜像审查的绑定输入，修改它需要走对应的重新构建与审查流程，不能直接改写历史授权或哈希。私密日志、恢复包和验收输出放在已排除的 `.cache/`，个人资料放在 `.local/personal/`；不要把其他私密文件放进构建目录。验证发布前，同时检查已跟踪文件、未跟踪文件和 Docker 实际 COPY 范围。

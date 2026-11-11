@@ -2,7 +2,13 @@
 
 核对日期：2026-11-11。当前默认分支的 70 条 Code scanning 告警已逐项处置，见[原登记与证据](security-alert-review-20261110.md)。它们与下面的镜像扫描属于不同范围。Secret scanning 当前活动项为 0；Dependabot 页面显示未启用，不能写作扫描后为 0。
 
-## 2026-11-11 增量复核与真实修复
+正式交付现为 [`v0.1.3`](https://github.com/W205614/DeepResearch/releases/tag/v0.1.3)，源码与分发提交 `78a19df9dfa6f072af6ebe40ff99cf164d0c4ff8`。[CI](https://github.com/W205614/DeepResearch/actions/runs/42968387539) 四项及 [Security](https://github.com/W205614/DeepResearch/actions/runs/42968387608) 二十二项全部成功，[Packages](https://github.com/W205614/DeepResearch/actions/runs/42977626649) 已实际发布。三个公开镜像完成匿名拉取、完整 config／层、NOTICE 与全级别扫描核验：Agent 原始 88 条、精确适用未解决 0，Backend／Web 原始 0，三个制品 secret 均为 0。最终 Web 已扁平化并更新法律与源码索引，没有发布下文的中间修复镜像。
+
+新源码分析实际报告四条高危／严重结果，四条精确技术复核通过；两条探针固定 IV 告警因真实代码修复自动标记为 fixed，没有 dismiss。默认分支 Code scanning 活动项为 0；历史告警、原始 SARIF 和失败尝试保留。隔离核心四个浏览器用例全部通过，使用受控模型夹具。日常验收实际更新九个应用角色、Grafana 和两个 PostgreSQL 角色，其余十三个容器身份保持，十四张业务表逐行摘要、十六个卷、九个网络及配置保护项保持，最后恢复二十五个容器全部停止。未追加付费 API 调用：两次官方探针沿用同一未变化 Agent 制品的 2026-11-10 实际结果。
+
+本页下面按阶段保留当时的阻断、待验和失败；这些历史文字不表示上述最终交付仍未完成。镜像 digest、组件来源和新旧对应源码获取方式见[容器 Packages](container-packages.md)。Grafana 与 PostgreSQL 的本机验收不等于公开分发完整第三方基础栈；本轮没有新增其公开二进制镜像。
+
+## 2026-11-11 增量复核与真实修复过程
 
 [`v0.1.2`](https://github.com/W205614/DeepResearch/releases/tag/v0.1.2) 已公开，源码 Tag 为 `488550ecb61e7f369dd4967c7fa35e4c64369e75`；该提交的 [CI](https://github.com/W205614/DeepResearch/actions/runs/42827369515) 全部 4 项及 [Security](https://github.com/W205614/DeepResearch/actions/runs/42827369414) 全部 22 项成功。其 1,227,806,395 字节对应源码已实际匿名完整取回，全部 74 分片、整包 SHA-256、索引成员与嵌套归档通过，原始断流及分段恢复记录保留。
 

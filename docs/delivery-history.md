@@ -2,6 +2,43 @@
 
 这些记录描述对应日期的验收，不代表当前版本的自动验证结果。当前使用方法见 [README](../README.md)。
 
+## 2026-11-11 v0.1.3 正式交付
+
+正式 [v0.1.3](https://github.com/W205614/DeepResearch/releases/tag/v0.1.3) 固定 `78a19df9dfa6f072af6ebe40ff99cf164d0c4ff8`，[CI](https://github.com/W205614/DeepResearch/actions/runs/42968387539)4 项、[Security](https://github.com/W205614/DeepResearch/actions/runs/42968387608)22 项全部成功；[Packages](https://github.com/W205614/DeepResearch/actions/runs/42977626649)实际发布成功。三个原有公开 Linux/amd64 GHCR 应用包完成匿名拉取，manifest、portable config、全部层、NOTICE 和全级别安全门槛通过。精确 digest 见[镜像表](container-packages.md#正式-v013)。Agent 原始 88 条逐项复核，适用未解决 0；Backend／Web 原始 0，secret 均为 0，原始扫描和失败保留。
+
+Agent／Backend 保持 `v0.1.2` 完整 config、实际层和内置标签，Web 实际修复 libxslt r4 并扁平化、更新法律与对应源码；没有把保留组件写成重新编译。新 reference-v3 源码五分片已实际匿名完整获取，但仍依赖正常历史 `v0.1.2` 的 74 源码分片。该旧 Release 已正式公开，其 93 附件继续保留；当时 Packages 作业被新漏洞库阻断于 Registry 推送前，失败不改写为成功。
+
+最终组合隔离核心浏览器 4 通过、0 跳过，完成资料研究与引用检查，使用受控模型夹具和 Windows 专用 TCP relay。随后实际拉取制品完成日常普通端口、接口和源码指纹验收：九个应用角色、Grafana、两个 PostgreSQL 角色更新，其余十三个角色身份保持；十四张业务表逐行摘要、十六卷、九网络、挂载及原配置保护项保持。最终恢复全部二十五容器停止。PostgreSQL 真实更新官方 Kerberos／libxslt／zlib，本机增量更新与源码干净 CI 分别记录；Grafana／PostgreSQL 没有新增公开第三方 Packages。
+
+本阶段未追加付费调用，诚实复用下节 2026-11-10 从同一未变化 Agent 制品执行的两次官方 API 契约探针；它们不是本次新研究或全面模型质量评估。原 70 条源码告警及随后六条有依据处置；新探针固定 IV 告警通过随机密钥／nonce 真实修复，新分析自动 fixed。当前活动 Code scanning／Secret 为 0，不等于零漏洞。
+
+以下保留各历史阶段的原状态、失败与待验描述，不能将其当成当前版本未发布的结论。
+
+## 2026-11-10 工程候选阶段（当时发布及日常验收待完成）
+
+工程来源 `488550ecb61e7f369dd4967c7fa35e4c64369e75`，同提交 [CI](https://github.com/W205614/DeepResearch/actions/runs/42827369515)4 项和 [Security](https://github.com/W205614/DeepResearch/actions/runs/42827369414)22 项均成功。单一 `v0.1.2` Release 仍是上传中的未公开草稿；Registry 发布、匿名拉取及本机日常升级尚未完成，不以本地候选替代这些阶段。
+
+法律材料重封装后的三个实际候选完成全部级别安全复核：Agent 原始 83 条（3 HIGH、57 MEDIUM、23 LOW）按固定技术门槛处理，Backend／Web 原始为 0，适用未解决及 secret 均为 0；原始失败和全部 raw 保留。当时的候选 portable config 身份与 Registry manifest digest 分开记录，后续最终交付见[当前版本表](container-packages.md#正式-v013)。
+
+同一候选的隔离核心浏览器 4 个用例通过、0 跳过，资料研究与引用检查通过。研究模型是固定夹具，应用禁止外发；Windows 宿主专用 TCP relay 仅是该隔离环境的入口，不冒充正常 Docker 端口映射或原日常环境验收。该阶段没有修改日常环境。
+
+另在最终候选 Agent 运行时完成 2 次 `https://api.openai.com/v1` 官方 API 请求：合成文本 JSON、3072 维 Embedding，均 HTTP 200、契约通过、0 重试；预算上限 1 USD。宿主账本、原始响应契约结果和失败／未知记录保留，没有真实业务数据、历史向量重建或新的全面质量评测。这两次新调用不冒充下方 2026-11-08 历史研究结果，也不为补验证再次调用。
+
+Grafana 仅作为本地 `grafana-source-20261110` 源码依赖构建，实际完整 15694 项文件清单（含权限）SHA `d0707a9f15c66427df74f6c39daa3836dc47d294cc9fdf971e976b7a7c360010` 与干净 CI 一致；没有新公开第三方镜像。工程、隔离候选、Registry 获取、日常升级和第三方二进制分发边界分别验收。
+
+## 版本入口与候选归档（2026-11-10）
+
+已经公开的历史源码版本为 `v0.1.0`、`v0.1.1`；三个旧公开应用镜像 `v0.1.1` 来自独立打包提交 `0005df53`，对应关系见[容器说明](container-packages.md#历史-v011-公开制品)。本轮安全修复没有回写旧公开镜像；新 `v0.1.2` 仍待公开交付，见上节及[全级别复核](application-security-status-20261110.md)。
+
+下面四个候选的代码均已包含在正式 `v0.1.0`；不再以候选草稿或标签作为运行入口，保留准确提交用于追溯。正式历史 Tag 不移动，必要第三方制品、应用镜像分片和对应源码入口继续保留。
+
+| 旧候选 | 固定源码 |
+| --- | --- |
+| `v0.1.0-rc.1` | [`a629899`](https://github.com/W205614/DeepResearch/commit/a62989980d039cdb0028b1d821d921f117a3003a) |
+| `v0.1.0-rc.2` | [`abe35c5`](https://github.com/W205614/DeepResearch/commit/abe35c5c8eed68d0f80300f9b0bf7f9a1b0fbf4e) |
+| `v0.1.0-rc.3` | [`e013031`](https://github.com/W205614/DeepResearch/commit/e013031afb5d93a5355d14de3d2bd574eb74ed00) |
+| `v0.1.0-rc.4` | [`05a5e73`](https://github.com/W205614/DeepResearch/commit/05a5e730a6e6d73f6c34c031f4c4aea8c6abfca8) |
+
 ## 后端镜像安全补丁与键盘体验修复（2026-10-19）
 
 前一提交 `d730c1b` 的 Security 在 Java 运行镜像中检出 `libexpat` 的 CVE-2026-77214。运行层通过 `apk add --no-cache --upgrade 'libexpat>=2.9.0-r0'` 更新这一系统库，保留 Java 21、应用启动参数、非 root 用户及业务代码；不忽略漏洞或降低扫描门槛。修复版本见 [Alpine 官方包记录](https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/libexpat)。
