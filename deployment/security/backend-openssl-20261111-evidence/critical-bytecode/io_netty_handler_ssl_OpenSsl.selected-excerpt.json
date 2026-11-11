@@ -1,0 +1,60 @@
+{
+  "schema": "explicit-selected-bytecode-excerpt-v1",
+  "complete_dump": false,
+  "selection_basis": "Support the actual tcnative-unavailable/provider-path observation only",
+  "source_class": "io/netty/handler/ssl/OpenSsl.class",
+  "source_class_sha256": "ba993d60099c96e3cc110cfb64002417a13661ffb7dc72bc6a78a64ea5499624",
+  "source_jar": "netty-handler-4.2.17.Final.jar",
+  "source_jar_sha256": "4df11c7520b556c5e2c84b939182699d48fcbb09e97a6bb5e1c0b6835227d126",
+  "source_full_private_javap_sha256": "b797fafd0c94f08dd0d49a6d093be274ce018c7661c91061a7792917dcbbdfc9",
+  "generator_sha256": "eba0d209f51cc49d641d53dcfbd0b700172c5d6071fcd1743585f5b4e35bd1fe",
+  "sections": [
+    {
+      "selection": "complete named method",
+      "signature": "public static boolean isAvailable();",
+      "source_lines_start": 317,
+      "source_lines_end": 325
+    },
+    {
+      "selection": "complete named method",
+      "signature": "public static void ensureAvailability();",
+      "source_lines_start": 372,
+      "source_lines_end": 385
+    },
+    {
+      "selection": "complete named method",
+      "signature": "public static java.lang.Throwable unavailabilityCause();",
+      "source_lines_start": 386,
+      "source_lines_end": 390
+    },
+    {
+      "selection": "complete named method",
+      "signature": "private static void loadTcNative() throws java.lang.Exception;",
+      "source_lines_start": 473,
+      "source_lines_end": 603
+    },
+    {
+      "selection": "complete named method",
+      "signature": "private static boolean initializeTcNative(java.lang.String) throws java.lang.Exception;",
+      "source_lines_start": 604,
+      "source_lines_end": 610
+    },
+    {
+      "selection": "initializer prefix only, ending at UNAVAILABILITY_CAUSE assignment",
+      "signature": "static {};",
+      "source_lines_start": 1007,
+      "source_lines_end": 1148
+    }
+  ],
+  "excluded_upstream_data": {
+    "kind": "Class-initializer native capability/key-manager self-test fixture",
+    "evidence": [
+      "Original line1448 loads a class-constant PEM key, then PemPrivateKey.valueOf",
+      "It is paired with selfSignedCertificate and SSL.setKeyMaterial in the dependency class initializer"
+    ],
+    "user_credential": false,
+    "full_private_source_preserved": true
+  },
+  "excerpt_sha256": "0df3dc5fda67a79f0891e5c9c5faaaf30b23e5d545bbd67050a2ef7c524b3217",
+  "runtime_or_failed_probe_results_modified": false
+}

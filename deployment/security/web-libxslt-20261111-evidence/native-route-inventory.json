@@ -1,0 +1,1478 @@
+{
+  "schema": "web-exact-elf-route-inventory-v1",
+  "files": [
+    {
+      "path": "bin/busybox",
+      "sha256": "01a989eb4d1d04b0d146c790ac536abd88f374ec74a2e110c58910b840d42045",
+      "bytes": 804616,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "lib/ld-musl-x86_64.so.1",
+      "sha256": "095b047c631447e4fa50401fa7ffce01f678587040d65ba18c574981dc630de5",
+      "bytes": 670312,
+      "needed": [],
+      "soname": "libc.musl-x86_64.so.1",
+      "target_literal_strings": []
+    },
+    {
+      "path": "sbin/apk",
+      "sha256": "80ac076736f35434f0df4a041578ec8f760eb545a71424fd6b6e1403a8a65312",
+      "bytes": 115096,
+      "needed": [
+        "libapk.so.3.0.0",
+        "libc.musl-x86_64.so.1",
+        "libz.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/c_rehash",
+      "sha256": "f082c7171e61a8a29addf72b0f0b112be5e5e5ec24320cec9df677557987964d",
+      "bytes": 14392,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libcrypto.so.3"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/curl",
+      "sha256": "9eb8284fd54bcecc516acf5102c4ddd80732fae8fb563c93a5737a5ee1c0b47d",
+      "bytes": 272432,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libcurl.so.4",
+        "libz.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/cxpm",
+      "sha256": "e07bb0d8cdd52bd35f2f92ca40d10b835df90e181ea78fb6df4dc3ecf321bf08",
+      "bytes": 22760,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/envsubst",
+      "sha256": "84d164ba0ffa89584713be374fcb73095dca8b809163b24781a387f074779d12",
+      "bytes": 47008,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libintl.so.8"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/fc-cache",
+      "sha256": "09462002d1e091497fddfcc3f8e5bc595bf1fed768d00be1071918dd55163dac",
+      "bytes": 18320,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libfontconfig.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/fc-cat",
+      "sha256": "fb7d11e7fbbfb2dae8ebd190c7eec2c796f8da193883bca3d79ae0362c130daa",
+      "bytes": 14224,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libfontconfig.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/fc-conflist",
+      "sha256": "fe2ec44991be159406502dc3e89b6a1ce883b5f0afd03b70db5439e804189e66",
+      "bytes": 14224,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libfontconfig.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/fc-list",
+      "sha256": "7a9fd388971a0c4e6243ce9f48d61a0582d49a1db255914df695b677e4640854",
+      "bytes": 14224,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libfontconfig.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/fc-match",
+      "sha256": "32dd874f9e4d703ab0666f16d43d158300e73af0534e14611eb863de6500e631",
+      "bytes": 14224,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libfontconfig.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/fc-pattern",
+      "sha256": "ca2193fe959ade416951d427d96cfc3a73632ea4dc9c7e659a9eb513a71ff811",
+      "bytes": 14224,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libfontconfig.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/fc-query",
+      "sha256": "1e7b783f88f8d3754b1109d1e4f4fdcb20e790e0531cbce1e6058ed97b5ef996",
+      "bytes": 14224,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libfontconfig.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/fc-scan",
+      "sha256": "89cf8de9b8b82d5a7ffb14915c8c7bd7d47cab021adad23d34cdc790f61c1118",
+      "bytes": 14224,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libfontconfig.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/fc-validate",
+      "sha256": "21a143534d6645f5d8db48c3b904cfed77dbe78aa975f735221aa53bb4ac0f7d",
+      "bytes": 14224,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libfontconfig.so.1",
+        "libfreetype.so.6"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/geoiplookup",
+      "sha256": "736c232d6f5a7557fd3da6fad11823b6dde5c40bebdb7d75db47eaaf21011479",
+      "bytes": 14224,
+      "needed": [
+        "libGeoIP.so.1",
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/geoiplookup6",
+      "sha256": "b7646647161846c367097bc12549985609d1b5914f9d0dace88a613480ce0a3d",
+      "bytes": 14224,
+      "needed": [
+        "libGeoIP.so.1",
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/getconf",
+      "sha256": "791a3ce37940d766b4242a006a2978210decc40e035bb385c643553fc278ead0",
+      "bytes": 22344,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/getent",
+      "sha256": "f225def553bce0cb435ff78686b9272c2f4dd0e34ebe3d79855e775a66d9c6ef",
+      "bytes": 18480,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/iconv",
+      "sha256": "7a7306c6836018449ed373f110b25dd2eb7cc263e5fe9259f9964a280630c567",
+      "bytes": 14152,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/njs",
+      "sha256": "77de60d8c6f5d2b7d36eb42d4588a020d507fbd56254e43da2d4f8a398c4d0a4",
+      "bytes": 1780368,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libcrypto.so.3",
+        "libedit.so.0",
+        "libpcre2-8.so.0",
+        "libxml2.so.2",
+        "libz.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/scanelf",
+      "sha256": "beebb8f7be5cdcf5a2d12a5eb78736ff65b361396da4a47fd4d2b7d76ca40251",
+      "bytes": 67504,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/ssl_client",
+      "sha256": "8b23a9dbfea3da8c6da65b93c0fc6d979a82245c17c40d8fbf94d531263b98b4",
+      "bytes": 14384,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libcrypto.so.3",
+        "libssl.so.3"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/sxpm",
+      "sha256": "f5275d490c5d3e1bb78037e33cdce972e7347d5845b6092626f0962618404a0b",
+      "bytes": 26904,
+      "needed": [
+        "libX11.so.6",
+        "libXext.so.6",
+        "libXpm.so.4",
+        "libXt.so.6",
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/xsltproc",
+      "sha256": "8319809c31d6e7e9bb3b1637098808e3fab6e6d9e85eadb8a47c4876e3365cc1",
+      "bytes": 26672,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libexslt.so.0",
+        "libxml2.so.2",
+        "libxslt.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/bin/yuvconvert",
+      "sha256": "084e95fbe907faa162a95fc528b6774dd50cfe9e9a89e93fe8d715354be55f8c",
+      "bytes": 927640,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libstdc++.so.6"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/engines-3/afalg.so",
+      "sha256": "b565e6935269d679a5b8d45bb1ae60559f9621d2c7fe47b8a70cbc90334259e1",
+      "bytes": 18504,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libcrypto.so.3"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/engines-3/capi.so",
+      "sha256": "9e4328d873b167552bf4c807dab303a5a7a0c36e9a9f3bb1f1d84d864776bd2e",
+      "bytes": 13864,
+      "needed": [],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/engines-3/loader_attic.so",
+      "sha256": "9b9c26db1b0f4a99c106a99ed01cc7c84a3c2bbc14df362517b24b4f18b900d7",
+      "bytes": 47608,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libcrypto.so.3"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/engines-3/padlock.so",
+      "sha256": "3327f942be17b9f856cc7f56db23d2f3cff14e90688a00af2aeb970655843e8c",
+      "bytes": 22360,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libcrypto.so.3"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libGeoIP.so.1.6.12",
+      "sha256": "2872829a81464c1972cb2ec9ff6ac9a92f6fe3cc68c6888cbb118f8c67d019ed",
+      "bytes": 202696,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libGeoIP.so.1",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libICE.so.6.3.0",
+      "sha256": "07d3be6e4b18fb20d86fe1b5b6494ec6fbbcedffd95e0aafd668242d65e1e8a2",
+      "bytes": 88608,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libICE.so.6",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libSM.so.6.0.1",
+      "sha256": "906834d613d149db5b5a118da66fcf42bb669ec0c4942ed754e5a45191f7bc1d",
+      "bytes": 34592,
+      "needed": [
+        "libICE.so.6",
+        "libc.musl-x86_64.so.1",
+        "libuuid.so.1"
+      ],
+      "soname": "libSM.so.6",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libX11-xcb.so.1.0.0",
+      "sha256": "f7a9e0281693f41309192880f242249e29afab9329eac458eed3f79dfb8f00c2",
+      "bytes": 13880,
+      "needed": [],
+      "soname": "libX11-xcb.so.1",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libX11.so.6.4.0",
+      "sha256": "5a7c2df00148b914e9d66b7455680bd2a1b29a0eaef68b115a0133ce441d2a76",
+      "bytes": 1161312,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libX11.so.6",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libXau.so.6.0.0",
+      "sha256": "0fd15be141dc06c149f2f2b92408dc91f4429d1f872a3fb9a655490e8c994578",
+      "bytes": 13936,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libXau.so.6",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libXdmcp.so.6.0.0",
+      "sha256": "cb4e243ca95695d59f1de5abc8cb0092d5ac1066811302c0f874a9341778b7eb",
+      "bytes": 26384,
+      "needed": [
+        "libbsd.so.0",
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libXdmcp.so.6",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libXext.so.6.4.0",
+      "sha256": "a25b874bdaeed2ebea69eedd5be32f91bc868d714a584eed357ced0399694f54",
+      "bytes": 68496,
+      "needed": [
+        "libX11.so.6",
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libXext.so.6",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libXpm.so.4.11.0",
+      "sha256": "db2db2c1061c33a104fefeb272e0904058e9edfb60fdd411d85fdff5884363a9",
+      "bytes": 59312,
+      "needed": [
+        "libX11.so.6",
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libXpm.so.4",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libXt.so.6.0.0",
+      "sha256": "8fbe437a8282161ac7fe3d6fdcf18c08c8aaa2656f88337156714611dc409d6d",
+      "bytes": 355824,
+      "needed": [
+        "libICE.so.6",
+        "libSM.so.6",
+        "libX11.so.6",
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libXt.so.6",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libaom.so.3.14.1",
+      "sha256": "86bae2d5ab2a7781d2971bd6f7f5da255689ebe79e15586faa94be40db9da24d",
+      "bytes": 8376736,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libaom.so.3",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libapk.so.3.0.0",
+      "sha256": "12a612195b5c7918ff48fa2aa84753025be7167f57d055353a81d338d3f1ae13",
+      "bytes": 277184,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libcrypto.so.3",
+        "libssl.so.3",
+        "libz.so.1"
+      ],
+      "soname": "libapk.so.3.0.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libavif.so.16.4.1",
+      "sha256": "df9ed90e480572d2f597871df16f62aca7b25dc584aa88235dc49dabfe896458",
+      "bytes": 251824,
+      "needed": [
+        "libaom.so.3",
+        "libc.musl-x86_64.so.1",
+        "libdav1d.so.7",
+        "libyuv.so"
+      ],
+      "soname": "libavif.so.16",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libbrotlicommon.so.1.2.1",
+      "sha256": "570b996f56d64d9136900203e3d919d2386280365d3ec3c86906ff38ffed78e8",
+      "bytes": 140992,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libbrotlicommon.so.1",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libbrotlidec.so.1.2.1",
+      "sha256": "79077f16b521a3f2b945a7eec5a2d16caacbc66fe0f60be4ecaa4a93135aca0c",
+      "bytes": 54896,
+      "needed": [
+        "libbrotlicommon.so.1",
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libbrotlidec.so.1",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libbrotlienc.so.1.2.1",
+      "sha256": "452902a60ed97316fc63b4d29b8aae41c7ab0ce37861c07324190baff21147a2",
+      "bytes": 784600,
+      "needed": [
+        "libbrotlicommon.so.1",
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libbrotlienc.so.1",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libbsd.so.0.12.2",
+      "sha256": "a5b321623fe7274c695805b7f46bb2ed8ac4e970413a4930f09701a17c44ed21",
+      "bytes": 64272,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libmd.so.0"
+      ],
+      "soname": "libbsd.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libbz2.so.1.0.8",
+      "sha256": "790364d377669c0f29b6a39776d0bc1c65a3618eaba151cb7ca1d01f4514cdc8",
+      "bytes": 78480,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libbz2.so.1",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libcares.so.2.19.8",
+      "sha256": "ea80a8184082a25891b95a4c5c48d08de90eb7a133f9d6484de8c94874168f46",
+      "bytes": 247512,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libcares.so.2",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libcrypto.so.3",
+      "sha256": "bb2d86be6845456696f90f0948b6de6369f66612b7cf3ffa755e664436fdbc88",
+      "bytes": 4993808,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libcrypto.so.3",
+      "target_literal_strings": [
+        "CMS_encrypt",
+        "CMS_encrypt_ex",
+        "AES-128-GCM-SIV",
+        "AES-256-GCM-SIV"
+      ]
+    },
+    {
+      "path": "usr/lib/libcurl.so.4.8.0",
+      "sha256": "1ee394034d4872936a253abf0f3c22f88677f450fe56b810efab2e3820184c04",
+      "bytes": 750432,
+      "needed": [
+        "libbrotlidec.so.1",
+        "libc.musl-x86_64.so.1",
+        "libcares.so.2",
+        "libcrypto.so.3",
+        "libidn2.so.0",
+        "libnghttp2.so.14",
+        "libpsl.so.5",
+        "libssl.so.3",
+        "libz.so.1",
+        "libzstd.so.1"
+      ],
+      "soname": "libcurl.so.4",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libdav1d.so.7.0.0",
+      "sha256": "32193c624d7ef2e64238a3a876fc8c8273d6f9a4776383fe83f7da95ae3f8be7",
+      "bytes": 1750640,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libdav1d.so.7",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libedit.so.0.0.77",
+      "sha256": "323a62d1a20610343b39368fe4f47b1b47c660338c26da2c4a8c4b060a137c40",
+      "bytes": 178016,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libncursesw.so.6"
+      ],
+      "soname": "libedit.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libexpat.so.1.13.1",
+      "sha256": "81b28279f2bb5cd61af664e75a18cbf3c016c2643c71691c1485d244bf272222",
+      "bytes": 145088,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libexpat.so.1",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libexslt.so.0.8.24",
+      "sha256": "7702152ccd02b3d4b5ae44b709fdb63a96e52131212467fe037ef97a5ac8ee30",
+      "bytes": 75544,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxml2.so.2",
+        "libxslt.so.1"
+      ],
+      "soname": "libexslt.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libfontconfig.so.1.16.1",
+      "sha256": "c9a5f56d4c90979310723735297a9b0b972d60fa731d1ae43529827bcaf58b83",
+      "bytes": 255688,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libexpat.so.1",
+        "libfreetype.so.6"
+      ],
+      "soname": "libfontconfig.so.1",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libfreetype.so.6.20.6",
+      "sha256": "f1cce198cf29160495728b27a69ecaf6d8c3f10c1881775e66529995a4f2d086",
+      "bytes": 673920,
+      "needed": [
+        "libbrotlidec.so.1",
+        "libbz2.so.1",
+        "libc.musl-x86_64.so.1",
+        "libpng16.so.16",
+        "libz.so.1"
+      ],
+      "soname": "libfreetype.so.6",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libgcc_s.so.1",
+      "sha256": "5ea51dd885b6fc691eccc569d0bda739204204f6161e97075b26dc9c050d1ca1",
+      "bytes": 173920,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libgcc_s.so.1",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libgd.so.3.0.11",
+      "sha256": "0228bd0df3578beeff384130e7c6413bab92bd56f92e19f0b9bca1bd975faf25",
+      "bytes": 352376,
+      "needed": [
+        "libXpm.so.4",
+        "libavif.so.16",
+        "libc.musl-x86_64.so.1",
+        "libfontconfig.so.1",
+        "libfreetype.so.6",
+        "libjpeg.so.8",
+        "libpng16.so.16",
+        "libtiff.so.6",
+        "libwebp.so.7",
+        "libz.so.1"
+      ],
+      "soname": "libgd.so.3",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libidn2.so.0.4.0",
+      "sha256": "9e6121c48274280c4258f1b3da895c5e63266639cd7ff611e9a562311e210263",
+      "bytes": 198632,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libunistring.so.5"
+      ],
+      "soname": "libidn2.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libintl.so.8.4.6",
+      "sha256": "c43f799d118a30b411000220133bf8d297ef5b4684dbca30b45b605e484815a0",
+      "bytes": 136912,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libintl.so.8",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libjpeg.so.8.3.2",
+      "sha256": "9309c5a71b9ec1a2f60ff90687839ba24dff1c58dbbbaa440305d7e068cdec6a",
+      "bytes": 657232,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libjpeg.so.8",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/liblzma.so.5.8.4",
+      "sha256": "6106974ac44f821cf97633527c65e7413be657a95e55aafb0885bf84743bb8a4",
+      "bytes": 227192,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "liblzma.so.5",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libmd.so.0.2.0",
+      "sha256": "4fd22b05b1297facf99c57988915345ff0ba033fbb2c6f07e4e3bb41fdedfeea",
+      "bytes": 63408,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libmd.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libncursesw.so.6.6",
+      "sha256": "26a4bac0561d3073c4b7bca34013c14b10d6b59e9c41d86f9a424b1ac1a9a3c4",
+      "bytes": 342888,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libncursesw.so.6",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libnghttp2.so.14.29.5",
+      "sha256": "efaa3700ec84c79857c4a5aad9d6f0c858d83bba3506350c5e80c684cc7d5a5a",
+      "bytes": 132896,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libnghttp2.so.14",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libpcre2-8.so.0.16.1",
+      "sha256": "496ce2b43e3910e8c232105fa04cf1b47df8860f9ec90e75dde05303c2fc69be",
+      "bytes": 784352,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libpcre2-8.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libpcre2-posix.so.3.0.9",
+      "sha256": "9ff886fbcb29fefc3ad8cab803b2821c4195d3ba6781a618aeb40e5e5fa31457",
+      "bytes": 14016,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libpcre2-8.so.0"
+      ],
+      "soname": "libpcre2-posix.so.3",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libpng16.so.16.59.0",
+      "sha256": "4651d9bebd2001344b47eda8fc2ab517232a71eb8bfc98a090d89db5e575bf84",
+      "bytes": 186280,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libz.so.1"
+      ],
+      "soname": "libpng16.so.16",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libpsl.so.5.3.5",
+      "sha256": "7072595d6c575fd8576208944b1428d97c88998ba21b9f649c9b7aace3559d5d",
+      "bytes": 75536,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libidn2.so.0",
+        "libunistring.so.5"
+      ],
+      "soname": "libpsl.so.5",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libsharpyuv.so.0.1.2",
+      "sha256": "40030402847612f26a9d60bd7d70ddb91416c48b5ed30378cff0926410c94f0e",
+      "bytes": 26240,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libsharpyuv.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libssl.so.3",
+      "sha256": "ed8d30405217b3904a8df9ac311002d0ae43df516e60c5b3a8a998eda68ee340",
+      "bytes": 843640,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libcrypto.so.3"
+      ],
+      "soname": "libssl.so.3",
+      "target_literal_strings": [
+        "OSSL_QUIC_client_method",
+        "OSSL_QUIC_client_thread_method",
+        "SSL_set1_initial_peer_addr"
+      ]
+    },
+    {
+      "path": "usr/lib/libstdc++.so.6.0.34",
+      "sha256": "67a940194aec6c44c3eb47a98e44c53d248e4dac5f4eb57c0971c0d6286eafe5",
+      "bytes": 2804104,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libgcc_s.so.1"
+      ],
+      "soname": "libstdc++.so.6",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libtiff.so.6.3.0",
+      "sha256": "74a429d55ecb49a7c1c35133c888f4e1022122fc119e9e2fdbcb818ec2f50985",
+      "bytes": 473016,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libjpeg.so.8",
+        "libwebp.so.7",
+        "libz.so.1",
+        "libzstd.so.1"
+      ],
+      "soname": "libtiff.so.6",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libunistring.so.5.2.1",
+      "sha256": "62fe5110253cb5ba3a1673e33097b0bca9903b5e016ed50aca4977bd9b905009",
+      "bytes": 1922880,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libunistring.so.5",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libuuid.so.1.3.0",
+      "sha256": "69f5feff165ce0adf2f9db2d9e745338bdcbf43e1c965a49b01e8f485328dea4",
+      "bytes": 30624,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libuuid.so.1",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libwebp.so.7.2.0",
+      "sha256": "3963f600473b6f481536c1e94f554ba1b96533aa8ee64e369f9425a9fcaa6f1f",
+      "bytes": 558984,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libsharpyuv.so.0"
+      ],
+      "soname": "libwebp.so.7",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-composite.so.0.0.0",
+      "sha256": "7c437cc3e7419c6b916e2951405d8b9c22796310b8f646665791d46fbd9c279a",
+      "bytes": 14056,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-composite.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-damage.so.0.0.0",
+      "sha256": "d920e5600492125b4051bd17e617a29b362697548d8fd437ad18f21788c89967",
+      "bytes": 14056,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-damage.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-dbe.so.0.0.0",
+      "sha256": "97588896050495dfd53a6390fafe61f1bc9d6d658d1ddd72bc33f50bd8ed9f11",
+      "bytes": 18144,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-dbe.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-dpms.so.0.0.0",
+      "sha256": "28f21ace9363bbc51a71e074c18ac0f6cfca0d4f710a7b588a961178c4df65f3",
+      "bytes": 14048,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-dpms.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-dri2.so.0.0.0",
+      "sha256": "415033df6a88889520a0fafc7048c3a14a6e5095fb8e2eab98aace60550060c8",
+      "bytes": 18144,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-dri2.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-dri3.so.0.1.0",
+      "sha256": "f584b2eca04a2c089ecf9127252855ffa1684450376fda1d74f3368088d9f875",
+      "bytes": 18144,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-dri3.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-glx.so.0.0.0",
+      "sha256": "5aef087024f4f443fc8f0d42cf7b986ed182f4febb5fd2aff1578ac179be0add",
+      "bytes": 104160,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-glx.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-present.so.0.0.0",
+      "sha256": "83e090bf1e523f120694c7676e168ed3068b8ae0164c86d7f02d8b09df3342f4",
+      "bytes": 14056,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-present.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-randr.so.0.1.0",
+      "sha256": "022e82d784c62f1dd3ba58cf1db5176d1855905ad6181b62c031f5d143661f1d",
+      "bytes": 63200,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-randr.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-record.so.0.0.0",
+      "sha256": "e47fa363d55a3510d48f24e3fb1f9f4e0723915b19be4d1bd706f0c713a576d5",
+      "bytes": 18152,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-record.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-render.so.0.0.0",
+      "sha256": "d55c9f3d55af3f73e78ed38752b2986308e90b0e73934c367effed1947c40bdc",
+      "bytes": 55016,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-render.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-res.so.0.0.0",
+      "sha256": "da43d7817ec259e17e0e5ceafe0b2e9c27686c543cd87bfb1d7627195f138e63",
+      "bytes": 18144,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-res.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-screensaver.so.0.0.0",
+      "sha256": "33ba8ff137ce34fcc02ca963b07e121604a59dcadea45857991ff0d524dc39c7",
+      "bytes": 14056,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-screensaver.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-shape.so.0.0.0",
+      "sha256": "b9e68e31c4aca22a8d64638572fa1fde0c964311837b7ad4ff8e96257c6c6c5f",
+      "bytes": 18144,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-shape.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-shm.so.0.0.0",
+      "sha256": "bbc01db63523f38d313f8c4a9557e56df5970cc565a6b8bcb809d4448598c403",
+      "bytes": 14048,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-shm.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-sync.so.1.0.0",
+      "sha256": "0b05db7410598c0f79f80a535d0250b93cee7f23852fe802bfe69ce22408ec7e",
+      "bytes": 30432,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-sync.so.1",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-xf86dri.so.0.0.0",
+      "sha256": "ac1340f67d9fe2903f93526f872d772bd86e7e8593037a44357d70945f7aae1b",
+      "bytes": 18152,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-xf86dri.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-xfixes.so.0.0.0",
+      "sha256": "2e98e1a986a53e0651da324cbe79dbfb75857a6c24728282931498c3f150eeb5",
+      "bytes": 34536,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-xfixes.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-xinerama.so.0.0.0",
+      "sha256": "08bc7558034487df93bccdd5aebcaffc32a9456e62c7a0694d946e5a919534dc",
+      "bytes": 14056,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-xinerama.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-xinput.so.0.1.0",
+      "sha256": "3569a0d23e8ebfa4afe6afa615892bef613bb0126daa46b03de178bbe88dd87f",
+      "bytes": 128744,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-xinput.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-xkb.so.1.0.0",
+      "sha256": "e66343f75ded225102e53a61c7b6fdbc201eb95277960179e368e79af06ef8bd",
+      "bytes": 108256,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-xkb.so.1",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-xtest.so.0.0.0",
+      "sha256": "b3111baad6a4d80ab44a00eb57ddf353c43f7df214316d9ca536f203dd1655da",
+      "bytes": 14048,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-xtest.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-xv.so.0.0.0",
+      "sha256": "1b73b2ddb2435b76359a037b46715155dc5f4a4f8a87ead709596debdd89c56a",
+      "bytes": 30432,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-xv.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb-xvmc.so.0.0.0",
+      "sha256": "2074bf757313472942b9a9c03fcdb396fd51b3da606e20c96b420bc36555191e",
+      "bytes": 18144,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxcb.so.1"
+      ],
+      "soname": "libxcb-xvmc.so.0",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxcb.so.1.1.0",
+      "sha256": "fd7bc55e8680c183fe038b22d5cc7407c323e3b1e1bd6ee488b57137124b0292",
+      "bytes": 153344,
+      "needed": [
+        "libXau.so.6",
+        "libXdmcp.so.6",
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libxcb.so.1",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxml2.so.2.13.9",
+      "sha256": "c7742d413585cee3e2750472e04da810a7a9883a1c10a8270c2f6e8c56231ad7",
+      "bytes": 1072096,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "liblzma.so.5",
+        "libz.so.1"
+      ],
+      "soname": "libxml2.so.2",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libxslt.so.1.1.43",
+      "sha256": "9b9876a165f3207fc40c4a663b94123a1100ef473b37bf3e93f974348a4b666e",
+      "bytes": 210928,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxml2.so.2"
+      ],
+      "soname": "libxslt.so.1",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libyuv.so",
+      "sha256": "cf85c07bfc6844ca0748b882c84812381e8b21f25008360bff2ef8d4ed2e57b8",
+      "bytes": 1099624,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libgcc_s.so.1",
+        "libjpeg.so.8",
+        "libstdc++.so.6"
+      ],
+      "soname": "libyuv.so",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libz.so.1.4",
+      "sha256": "9995c2fe07ba436423709dd8ce6a186c2c6b3db7ac7719496a55554c4a95274e",
+      "bytes": 108376,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libz.so.1",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/libzstd.so.1.5.7",
+      "sha256": "a0a285da817a61e65d9e89bbfd38243cf8a4798cc429adc2772b5931f1d4fbb6",
+      "bytes": 714432,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": "libzstd.so.1",
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/nginx/modules/ngx_http_acme_module-debug.so",
+      "sha256": "288fd670e349cfb78b376760b3c876d428b750ee83ddd724fe5664b1d432d29d",
+      "bytes": 7367224,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libgcc_s.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": [
+        "CMS_encrypt"
+      ]
+    },
+    {
+      "path": "usr/lib/nginx/modules/ngx_http_acme_module.so",
+      "sha256": "f4158dce5fed24737bc7bdcb7d64579fb546bdd05bd1b75c2a3edf161b2bdc4b",
+      "bytes": 857880,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libgcc_s.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/nginx/modules/ngx_http_geoip_module-debug.so",
+      "sha256": "ee6ab6413391fb3a86240241a4c68a1c62274e2c04924f92a9bf88ff1b0a4152",
+      "bytes": 15920,
+      "needed": [
+        "libGeoIP.so.1",
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/nginx/modules/ngx_http_geoip_module.so",
+      "sha256": "475f00d997414a23274843e55fae81fef1facb09889a8462aa7b9af8204fdad7",
+      "bytes": 15912,
+      "needed": [
+        "libGeoIP.so.1",
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/nginx/modules/ngx_http_image_filter_module-debug.so",
+      "sha256": "8cf86fbc0a982b0c71bbaaff80bd41c0f4f7414d07794d4ca47b1c35d2bacf31",
+      "bytes": 23264,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libgd.so.3"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/nginx/modules/ngx_http_image_filter_module.so",
+      "sha256": "7303ae2370ea45cd0c37a5af03da15b4609eec357825f91a9d9f47c3aa299e97",
+      "bytes": 23264,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libgd.so.3"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/nginx/modules/ngx_http_js_module-debug.so",
+      "sha256": "51276057e76eee0f795169dfb5cec6b42d8b80a43054e42283821d979db206b0",
+      "bytes": 1984200,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxml2.so.2"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/nginx/modules/ngx_http_js_module.so",
+      "sha256": "07e9494a5cb14e2648ca1c0ae75fce490bd344297a203ef499f26620c25ad633",
+      "bytes": 1975904,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxml2.so.2"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/nginx/modules/ngx_http_xslt_filter_module-debug.so",
+      "sha256": "42c5c37afdc9b67af99088d3410e9198569ff9a2b96ff055578f52f4d1edf7d6",
+      "bytes": 23344,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libexslt.so.0",
+        "libxml2.so.2",
+        "libxslt.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/nginx/modules/ngx_http_xslt_filter_module.so",
+      "sha256": "f1a5824a624753014d8916c35e97fd997d0f61cc060c85cc80d60282d431a098",
+      "bytes": 23344,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libexslt.so.0",
+        "libxml2.so.2",
+        "libxslt.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/nginx/modules/ngx_stream_geoip_module-debug.so",
+      "sha256": "7e3bbaf8a37648525012eb030e0cd560b0ed69bf7ea6fe016242fc9726b728a9",
+      "bytes": 15552,
+      "needed": [
+        "libGeoIP.so.1",
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/nginx/modules/ngx_stream_geoip_module.so",
+      "sha256": "d21a73908d588d84cdc41e11378eb9b82ec094599c7af4ead0a1f72c17fa2676",
+      "bytes": 15552,
+      "needed": [
+        "libGeoIP.so.1",
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/nginx/modules/ngx_stream_js_module-debug.so",
+      "sha256": "d589794497ce758a18fcbfbefeb2a18619cb1a8144f45f0d9c871eea7b3c5cee",
+      "bytes": 1939528,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxml2.so.2"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/nginx/modules/ngx_stream_js_module.so",
+      "sha256": "2e765aaaf1f1f523aa7b8e6be515deca5ec6ee5af1b3ec71167900045de308f2",
+      "bytes": 1935328,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libxml2.so.2"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/lib/ossl-modules/legacy.so",
+      "sha256": "d28ac2184b2b39177578b4cabccee6d178c2b0e6f2ae0ccc8f354267d808ed83",
+      "bytes": 100184,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libcrypto.so.3"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/sbin/nginx",
+      "sha256": "97f9898b94114a136bd87e1eb7759aa2a15d5007154b670c447ee710e629f54b",
+      "bytes": 1328864,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libcrypto.so.3",
+        "libpcre2-8.so.0",
+        "libssl.so.3",
+        "libz.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/sbin/nginx-debug",
+      "sha256": "62333ca1b366d6016bda13a0ec3877e424a451c1465bb4d9feee285875113bee",
+      "bytes": 1463112,
+      "needed": [
+        "libc.musl-x86_64.so.1",
+        "libcrypto.so.3",
+        "libpcre2-8.so.0",
+        "libssl.so.3",
+        "libz.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    },
+    {
+      "path": "usr/sbin/update-ca-certificates",
+      "sha256": "3d3cc3278ce442623c2689ca577afda14f284d43a1a43a88c33fb41cd5cf8849",
+      "bytes": 14224,
+      "needed": [
+        "libc.musl-x86_64.so.1"
+      ],
+      "soname": null,
+      "target_literal_strings": []
+    }
+  ],
+  "elf_files": 126,
+  "all_machine_ids": {
+    "62": 126
+  },
+  "complete_native_inventory_sha256": "04c780c20082bf08d5c7ce5fbf3da8e02626711562a649e6e0deff72215bf2b5",
+  "all_nonimplementation_trigger_imports": [
+    {
+      "path": "usr/lib/nginx/modules/ngx_http_acme_module-debug.so",
+      "imports": [
+        "CMS_encrypt",
+        "CMS_verify"
+      ]
+    }
+  ],
+  "tls_constructor_imports": [
+    {
+      "path": "usr/bin/ssl_client",
+      "constructors": [
+        "TLS_client_method"
+      ]
+    },
+    {
+      "path": "usr/lib/libapk.so.3.0.0",
+      "constructors": [
+        "TLS_client_method"
+      ]
+    },
+    {
+      "path": "usr/lib/libcurl.so.4.8.0",
+      "constructors": [
+        "TLS_client_method",
+        "TLS_method"
+      ]
+    },
+    {
+      "path": "usr/lib/nginx/modules/ngx_http_acme_module-debug.so",
+      "constructors": [
+        "SSL_set_ssl_method",
+        "TLS_client_method",
+        "TLS_method",
+        "TLS_server_method"
+      ]
+    },
+    {
+      "path": "usr/sbin/nginx",
+      "constructors": [
+        "TLS_method"
+      ]
+    },
+    {
+      "path": "usr/sbin/nginx-debug",
+      "constructors": [
+        "TLS_method"
+      ]
+    }
+  ]
+}

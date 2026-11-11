@@ -1,0 +1,271 @@
+{
+  "schema": "backend-openssl-exact-current-path-review-v1",
+  "reviewed_at_utc": "2026-11-11T04:26:01.421383+00:00",
+  "reviewer": "AI technical review; not human security certification",
+  "source_sha": "488550ecb61e7f369dd4967c7fa35e4c64369e75",
+  "image_id": "sha256:bef9e516a8daeaba7515ea24d4e6468d71ad3557694cbc91fe46349ecd1d5e89",
+  "local_engine_id": "sha256:c63727c9a3ecbce4b5d4964e6a483a4535798bfa190e0b0b72b932c451459149",
+  "diff_ids": [
+    "sha256:73b6052d29d5a9367fe16b31ae313c9eb8eb0debc247db557d34215aa1690680",
+    "sha256:b6cce574d403182a6b43bde5cc5968106198f201f093fa5cc09b323a72360cc0",
+    "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef"
+  ],
+  "runtime_config_sha256": "7abca3b18e75c4aa212f06bf114f1feb59c14393fbf1a4ec1805ea21eccd6bc7",
+  "rootfs_archive_sha256": "871da472f5c5f8b49250b14f0d51d9d1b3f120cf9c3067e8abf6041bfbe30637",
+  "app_jar_sha256": "626e3d21a2da152f7f04ddc4b3c38d886bf9af6604f52e073263fe62195009c5",
+  "openssl_apk_version": "3.5.9-r0",
+  "affected_component_payload": {
+    "/usr/bin/openssl": {
+      "sha256": "28def3c5ebd2a6e3a6e5e7d11ec629ae92769b518feb18193b0745620bbda7ab",
+      "bytes": 820288
+    },
+    "/usr/lib/libcrypto.so.3": {
+      "sha256": "bb2d86be6845456696f90f0948b6de6369f66612b7cf3ffa755e664436fdbc88",
+      "bytes": 4993808
+    },
+    "/usr/lib/libssl.so.3": {
+      "sha256": "ed8d30405217b3904a8df9ac311002d0ae43df516e60c5b3a8a998eda68ee340",
+      "bytes": 843640
+    }
+  },
+  "component_fix_claimed": false,
+  "risk_acceptance": false,
+  "findings": [
+    {
+      "id": "CVE-2026-88822",
+      "upstream_severity": "LOW",
+      "component_version_affected": true,
+      "component_fixed_in_this_review": false,
+      "disposition": "NOT_IN_CURRENT_JAVA_SERVICE_PATH",
+      "risk_acceptance": false,
+      "trigger": "OpenSSL QUIC automatic connected-UDP peer address detection",
+      "evidence": [
+        "Actual JDK21 HttpClient supports HTTP_1_1/HTTP_2, not HTTP/3/QUIC",
+        "Default SunJSSE, JDK Lettuce TLS and PG driver factory observed; no native OpenSSL JNI bridge among full 97 JARs/all 26717 entry headers",
+        "Native OpenSSL QUIC entrypoint exists in dormant general-purpose openssl CLI, but Java entrypoint and 61 business classes do not spawn it"
+      ]
+    },
+    {
+      "id": "CVE-2026-95691",
+      "upstream_severity": "LOW",
+      "component_version_affected": true,
+      "component_fixed_in_this_review": false,
+      "disposition": "NOT_IN_CURRENT_JAVA_SERVICE_PATH",
+      "risk_acceptance": false,
+      "trigger": "OpenSSL QUIC client processing retransmitted CRYPTO frames",
+      "evidence": [
+        "Affected implementation is specifically OpenSSL QUIC, not generic TLS client operation",
+        "The exact configured service uses JDK TLS providers; real Java HTTPS over loopback negotiated TLSv1.3 without loading libssl/libcrypto",
+        "No business process execution or native library loading method reference; generic CLI override is outside this disposition"
+      ]
+    },
+    {
+      "id": "CVE-2026-88823",
+      "upstream_severity": "LOW",
+      "component_version_affected": true,
+      "component_fixed_in_this_review": false,
+      "disposition": "NOT_IN_CURRENT_JAVA_SERVICE_PATH",
+      "risk_acceptance": false,
+      "trigger": "OpenSSL AES-GCM-SIV incremental AAD sequence containing zero-length update",
+      "evidence": [
+        "Actual provider for tested AES/GCM/NoPadding is SunJCE and its real roundtrip passed",
+        "AES/GCM-SIV/NoPadding has no available provider in this exact runtime",
+        "No OpenSSL libcrypto loaded by actual Java TLS/Redis/PG initialization, so this OpenSSL SIV AAD-update implementation is not reached"
+      ]
+    },
+    {
+      "id": "CVE-2026-95692",
+      "upstream_severity": "LOW",
+      "component_version_affected": true,
+      "component_fixed_in_this_review": false,
+      "disposition": "NOT_IN_CURRENT_JAVA_SERVICE_PATH",
+      "risk_acceptance": false,
+      "trigger": "OpenSSL AES-GCM-SIV initialized through EVP_CipherInit_ex with non-12-byte IV",
+      "evidence": [
+        "Exact Java runtime does not offer AES/GCM-SIV and does not load the affected OpenSSL implementation",
+        "The real JDK TLS handshake used TLS_AES_256_GCM_SHA384, not GCM-SIV",
+        "This is an implementation/path distinction, not an assertion that arbitrary supplied IVs would be safe in system openssl"
+      ]
+    },
+    {
+      "id": "CVE-2026-107496",
+      "upstream_severity": "LOW",
+      "component_version_affected": true,
+      "component_fixed_in_this_review": false,
+      "disposition": "NOT_IN_CURRENT_JAVA_SERVICE_PATH",
+      "risk_acceptance": false,
+      "trigger": "OpenSSL CMS_encrypt/_ex with attacker-controlled EC group-order1 recipient certificate",
+      "evidence": [
+        "Actual business classes have no openssl subprocess, Runtime.exec or System.load references, and no CMS encryption entrypoint",
+        "Actual PG and Lettuce factories and Java TLS use JDK providers; OpenSSL advisory explicitly separates the CMS-encrypt condition from TLS/QUIC",
+        "System openssl CLI imports CMS_encrypt_ex and remains vulnerable for manual CMS use; its presence is recorded, not erased",
+        "Inherited CA helper only invokes openssl x509 for certificate metadata/fingerprint and is not the final Java entrypoint"
+      ]
+    }
+  ],
+  "exact_closures": {
+    "rootfs_ELF_paths": 91,
+    "JRE_ELF_paths": 43,
+    "JRE_direct_openssl_links": 0,
+    "native_elf_closure_sha256": "a9d51e597e9302e180025dd252581c4137cccd3dbc7e23300fa43e9b3701c1ba",
+    "actual_dependency_JARs": 97,
+    "all_JAR_entry_headers_checked": 26717,
+    "embedded_ELF_JAR_entries": 0,
+    "java_security_provider_SPI_entries": 0,
+    "application_classes": 61,
+    "application_process_or_native_load_method_refs": 0,
+    "application_source_fingerprint_inputs": 34,
+    "actual_JRE_version": "21.0.13+9-LTS"
+  },
+  "configured_paths": {
+    "entrypoint": [
+      "java",
+      "-XX:MaxRAMPercentage=75",
+      "-jar",
+      "/app/app.jar"
+    ],
+    "image_user": "app",
+    "tomcat_default_ssl_implementation": "JSSEImplementation (actual bytecode); public application config serves HTTP on8080",
+    "lettuce_default_ssl_provider": "JDK hardcoded in actual SslOptions static initializer; business configuration changes trustManager only",
+    "postgres_ssl_delegate": "sun.security.ssl.SSLSocketFactoryImpl",
+    "default_security_providers": [
+      "SUN",
+      "SunRsaSign",
+      "SunEC",
+      "SunJSSE",
+      "SunJCE",
+      "SunJGSS",
+      "SunSASL",
+      "XMLDSig",
+      "SunPCSC",
+      "JdkLDAP",
+      "JdkSASL",
+      "SunPKCS11"
+    ],
+    "SunPKCS11": "present but unconfigured with zero services in actual runtime",
+    "healthcheck": "Actual Compose Backend wget HTTP127.0.0.1:8080/readyz; not an OpenSSL QUIC or CMS command",
+    "public_compose_overrides": "Explicit environment mapping, no generic JAVA_TOOL_OPTIONS/JDK_JAVA_OPTIONS/LD_PRELOAD or custom sslProvider"
+  },
+  "real_probe": {
+    "passed": true,
+    "network": "none with localhost-only synthetic TLS",
+    "read_only_rootfs": true,
+    "business_mounts": 0,
+    "external_or_paid_requests": 0,
+    "TLS_protocol": "TLSv1.3",
+    "TLS_cipher": "TLS_AES_256_GCM_SHA384",
+    "http_status": 200,
+    "native_openssl_loaded_after_TLS": false,
+    "owned_probes_removed": true,
+    "image_unchanged": true
+  },
+  "primary_source": {
+    "url": "https://openssl-library.org/news/secadv/20261110.txt",
+    "sha256": "31f4c88950cd9cd310794a218361b787d293a940d2568f9f82334915ac54a402",
+    "upstream_fixed_release_available_claimed": false,
+    "source_receipts_sha256": "9d1c98f9a21f97ec79bd68f733f391373451146eaeb0423fad7767fdff805cd8",
+    "source_receipts_file": "primary-source-receipts.json"
+  },
+  "evidence_files": [
+    {
+      "path": "all-jar-entry-magic.json",
+      "sha256": "286e65e2a9904c14e3332e9684901c441063d4e456124a9cbd73ef4b070fbf49",
+      "bytes": 23854
+    },
+    {
+      "path": "BackendCryptoProbe2.java",
+      "sha256": "b60814aab9e3f521d12022d2846806b3353fa7525454ddcdbab51a6d5091e295",
+      "bytes": 9134
+    },
+    {
+      "path": "critical-bytecode/io_lettuce_core_SslOptions$Builder.class.javap.txt",
+      "sha256": "08030f233bc471e14f663a6dfefd89cb4a7e1ca05393f6758948f1274af4df64",
+      "bytes": 48838
+    },
+    {
+      "path": "critical-bytecode/io_lettuce_core_SslOptions.class.javap.txt",
+      "sha256": "860efad489248dedd719625d1f91b959ede9814d2c2ba043ea449ff19f2dcf48",
+      "bytes": 25961
+    },
+    {
+      "path": "critical-bytecode/io_netty_handler_ssl_JdkSslClientContext.class.javap.txt",
+      "sha256": "a07fa889a31632d4d508870efa2733b7414dba706933611ab46a922f5662ac69",
+      "bytes": 17691
+    },
+    {
+      "path": "critical-bytecode/io_netty_handler_ssl_SslContext.class.javap.txt",
+      "sha256": "b124774d588d389bf4c5c4a2b43c4102fb77bad88c3c1988260f91fe0224ee07",
+      "bytes": 81383
+    },
+    {
+      "path": "critical-bytecode/org_apache_tomcat_util_net_jsse_JSSEImplementation.class.javap.txt",
+      "sha256": "920503e04ff7ef96f34c5e11da80cd6080b46e66e9515e010f674106d8f70e20",
+      "bytes": 1422
+    },
+    {
+      "path": "critical-bytecode/org_apache_tomcat_util_net_SSLImplementation.class.javap.txt",
+      "sha256": "7a251e554fb8fb00af0b25f6f718511154c8c46567f1b7a908a65ca2183dc432",
+      "bytes": 4126
+    },
+    {
+      "path": "critical-bytecode/org_postgresql_ssl_LibPQFactory.class.javap.txt",
+      "sha256": "6c4cf6fe89292495364230f70302e61ebb5cb55dcc90f28e92dd290d3955623f",
+      "bytes": 33050
+    },
+    {
+      "path": "critical-bytecode/org_postgresql_ssl_WrappedFactory.class.javap.txt",
+      "sha256": "855fdf9f8316744bbf47e1a3048e63faa5a9a5361adf84f15d72ddfd62bc5169",
+      "bytes": 3413
+    },
+    {
+      "path": "native-and-jar-inventory.json.gz",
+      "sha256": "491c73a89c0ee8ca9fe17e002be3c620a36ac72b8141a8fdb3431a2aaad03fe6",
+      "bytes": 134612
+    },
+    {
+      "path": "runtime-result.json",
+      "sha256": "d76feeb811242dfc188f5c1b6ab2e3bc9dc35b21d92f6871a88775da8365a9bf",
+      "bytes": 4428
+    },
+    {
+      "path": "source-fingerprint-review.json",
+      "sha256": "a4e0d01c2ffb70d4250cc4251dd33efbd10dfcbf965deb0278c9c7b67ea3667f",
+      "bytes": 7366
+    },
+    {
+      "path": "primary-source-receipts.json",
+      "sha256": "9d1c98f9a21f97ec79bd68f733f391373451146eaeb0423fad7767fdff805cd8",
+      "bytes": 3472
+    },
+    {
+      "path": "critical-bytecode/io_netty_handler_ssl_OpenSsl.selected-excerpt.txt",
+      "sha256": "0df3dc5fda67a79f0891e5c9c5faaaf30b23e5d545bbd67050a2ef7c524b3217",
+      "bytes": 21300
+    },
+    {
+      "path": "critical-bytecode/io_netty_handler_ssl_OpenSsl.selected-excerpt.json",
+      "sha256": "49e62bb700a330aa063c59a18672a2541b21f1db1976e713200f6d2fcc1467ff",
+      "bytes": 2426
+    }
+  ],
+  "initial_probe_failure_preserved": {
+    "type": "Probe technique error: PG WrappedFactory does not implement zero-argument createSocket",
+    "subsequent_probe": "Read actual PG delegate field, then execute real JDK localhost TLS handshake; original first source/classes/logs retained",
+    "business_runtime_failure_claimed": false
+  },
+  "invalidated_by": [
+    "Different image config, ordered layers, JAR/native ELF closure or application source inputs",
+    "Custom JNI/tcnative/Conscrypt/provider modules or configured SunPKCS11",
+    "Different Java security properties, generic process execution features, or custom entrypoint",
+    "Manual use of openssl CMS/QUIC/GCM-SIV commands or other workflows outside the current Java service"
+  ],
+  "boundary": "Affected OpenSSL utilities/libraries remain installed and unpatched. These five technical dispositions cover only this exact configured Java workload. They do not certify all utilities, arbitrary future configuration, production security or model behavior.",
+  "public_evidence_selection": {
+    "full_private_source_sha256": "b797fafd0c94f08dd0d49a6d093be274ce018c7661c91061a7792917dcbbdfc9",
+    "public_kind": "Explicit selected excerpt, not complete dump",
+    "provenance_file": "critical-bytecode/io_netty_handler_ssl_OpenSsl.selected-excerpt.json",
+    "generator_sha256": "eba0d209f51cc49d641d53dcfbd0b700172c5d6071fcd1743585f5b4e35bd1fe",
+    "irrelevant_upstream_fixture_key_not_republished": true,
+    "all_actual_runtime_and_failed_probe_results_unchanged": true
+  }
+}

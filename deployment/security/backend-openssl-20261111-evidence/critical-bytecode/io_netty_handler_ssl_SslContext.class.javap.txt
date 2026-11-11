@@ -1,0 +1,1450 @@
+Compiled from "SslContext.java"
+public abstract class io.netty.handler.ssl.SslContext {
+  private static final io.netty.util.internal.logging.InternalLogger logger;
+
+  private static final java.lang.String DEFAULT_ENDPOINT_VERIFICATION_ALGORITHM_PROPERTY;
+
+  protected static final java.lang.String defaultEndpointVerificationAlgorithm;
+
+  static final java.lang.String ALIAS;
+
+  static final java.security.cert.CertificateFactory X509_CERT_FACTORY;
+
+  private final boolean startTls;
+
+  private final io.netty.util.AttributeMap attributes;
+
+  final io.netty.handler.ssl.ResumptionController resumptionController;
+
+  private static final java.lang.String OID_PKCS5_PBES2;
+
+  private static final java.lang.String PBES2;
+
+  public static io.netty.handler.ssl.SslProvider defaultServerProvider();
+    Code:
+       0: invokestatic  #1                  // Method defaultProvider:()Lio/netty/handler/ssl/SslProvider;
+       3: areturn
+
+  public static io.netty.handler.ssl.SslProvider defaultClientProvider();
+    Code:
+       0: invokestatic  #1                  // Method defaultProvider:()Lio/netty/handler/ssl/SslProvider;
+       3: areturn
+
+  private static io.netty.handler.ssl.SslProvider defaultProvider();
+    Code:
+       0: invokestatic  #2                  // Method io/netty/handler/ssl/OpenSsl.isAvailable:()Z
+       3: ifeq          10
+       6: getstatic     #3                  // Field io/netty/handler/ssl/SslProvider.OPENSSL:Lio/netty/handler/ssl/SslProvider;
+       9: areturn
+      10: getstatic     #4                  // Field io/netty/handler/ssl/SslProvider.JDK:Lio/netty/handler/ssl/SslProvider;
+      13: areturn
+
+  public static io.netty.handler.ssl.SslContext newServerContext(java.io.File, java.io.File) throws javax.net.ssl.SSLException;
+    Code:
+       0: aload_0
+       1: aload_1
+       2: aconst_null
+       3: invokestatic  #5                  // Method newServerContext:(Ljava/io/File;Ljava/io/File;Ljava/lang/String;)Lio/netty/handler/ssl/SslContext;
+       6: areturn
+
+  public static io.netty.handler.ssl.SslContext newServerContext(java.io.File, java.io.File, java.lang.String) throws javax.net.ssl.SSLException;
+    Code:
+       0: aconst_null
+       1: aload_0
+       2: aload_1
+       3: aload_2
+       4: invokestatic  #6                  // Method newServerContext:(Lio/netty/handler/ssl/SslProvider;Ljava/io/File;Ljava/io/File;Ljava/lang/String;)Lio/netty/handler/ssl/SslContext;
+       7: areturn
+
+  public static io.netty.handler.ssl.SslContext newServerContext(java.io.File, java.io.File, java.lang.String, java.lang.Iterable<java.lang.String>, java.lang.Iterable<java.lang.String>, long, long) throws javax.net.ssl.SSLException;
+    Code:
+       0: aconst_null
+       1: aload_0
+       2: aload_1
+       3: aload_2
+       4: aload_3
+       5: aload         4
+       7: lload         5
+       9: lload         7
+      11: invokestatic  #7                  // Method newServerContext:(Lio/netty/handler/ssl/SslProvider;Ljava/io/File;Ljava/io/File;Ljava/lang/String;Ljava/lang/Iterable;Ljava/lang/Iterable;JJ)Lio/netty/handler/ssl/SslContext;
+      14: areturn
+
+  public static io.netty.handler.ssl.SslContext newServerContext(java.io.File, java.io.File, java.lang.String, java.lang.Iterable<java.lang.String>, io.netty.handler.ssl.CipherSuiteFilter, io.netty.handler.ssl.ApplicationProtocolConfig, long, long) throws javax.net.ssl.SSLException;
+    Code:
+       0: aconst_null
+       1: aload_0
+       2: aload_1
+       3: aload_2
+       4: aload_3
+       5: aload         4
+       7: aload         5
+       9: lload         6
+      11: lload         8
+      13: invokestatic  #8                  // Method newServerContext:(Lio/netty/handler/ssl/SslProvider;Ljava/io/File;Ljava/io/File;Ljava/lang/String;Ljava/lang/Iterable;Lio/netty/handler/ssl/CipherSuiteFilter;Lio/netty/handler/ssl/ApplicationProtocolConfig;JJ)Lio/netty/handler/ssl/SslContext;
+      16: areturn
+
+  public static io.netty.handler.ssl.SslContext newServerContext(io.netty.handler.ssl.SslProvider, java.io.File, java.io.File) throws javax.net.ssl.SSLException;
+    Code:
+       0: aload_0
+       1: aload_1
+       2: aload_2
+       3: aconst_null
+       4: invokestatic  #6                  // Method newServerContext:(Lio/netty/handler/ssl/SslProvider;Ljava/io/File;Ljava/io/File;Ljava/lang/String;)Lio/netty/handler/ssl/SslContext;
+       7: areturn
+
+  public static io.netty.handler.ssl.SslContext newServerContext(io.netty.handler.ssl.SslProvider, java.io.File, java.io.File, java.lang.String) throws javax.net.ssl.SSLException;
+    Code:
+       0: aload_0
+       1: aload_1
+       2: aload_2
+       3: aload_3
+       4: aconst_null
+       5: getstatic     #9                  // Field io/netty/handler/ssl/IdentityCipherSuiteFilter.INSTANCE:Lio/netty/handler/ssl/IdentityCipherSuiteFilter;
+       8: aconst_null
+       9: lconst_0
+      10: lconst_0
+      11: invokestatic  #8                  // Method newServerContext:(Lio/netty/handler/ssl/SslProvider;Ljava/io/File;Ljava/io/File;Ljava/lang/String;Ljava/lang/Iterable;Lio/netty/handler/ssl/CipherSuiteFilter;Lio/netty/handler/ssl/ApplicationProtocolConfig;JJ)Lio/netty/handler/ssl/SslContext;
+      14: areturn
+
+  public static io.netty.handler.ssl.SslContext newServerContext(io.netty.handler.ssl.SslProvider, java.io.File, java.io.File, java.lang.String, java.lang.Iterable<java.lang.String>, java.lang.Iterable<java.lang.String>, long, long) throws javax.net.ssl.SSLException;
+    Code:
+       0: aload_0
+       1: aload_1
+       2: aload_2
+       3: aload_3
+       4: aload         4
+       6: getstatic     #9                  // Field io/netty/handler/ssl/IdentityCipherSuiteFilter.INSTANCE:Lio/netty/handler/ssl/IdentityCipherSuiteFilter;
+       9: aload         5
+      11: invokestatic  #10                 // Method toApplicationProtocolConfig:(Ljava/lang/Iterable;)Lio/netty/handler/ssl/ApplicationProtocolConfig;
+      14: lload         6
+      16: lload         8
+      18: invokestatic  #8                  // Method newServerContext:(Lio/netty/handler/ssl/SslProvider;Ljava/io/File;Ljava/io/File;Ljava/lang/String;Ljava/lang/Iterable;Lio/netty/handler/ssl/CipherSuiteFilter;Lio/netty/handler/ssl/ApplicationProtocolConfig;JJ)Lio/netty/handler/ssl/SslContext;
+      21: areturn
+
+  public static io.netty.handler.ssl.SslContext newServerContext(io.netty.handler.ssl.SslProvider, java.io.File, java.io.File, java.lang.String, javax.net.ssl.TrustManagerFactory, java.lang.Iterable<java.lang.String>, java.lang.Iterable<java.lang.String>, long, long) throws javax.net.ssl.SSLException;
+    Code:
+       0: aload_0
+       1: aconst_null
+       2: aload         4
+       4: aload_1
+       5: aload_2
+       6: aload_3
+       7: aconst_null
+       8: aload         5
+      10: getstatic     #9                  // Field io/netty/handler/ssl/IdentityCipherSuiteFilter.INSTANCE:Lio/netty/handler/ssl/IdentityCipherSuiteFilter;
+      13: aload         6
+      15: invokestatic  #10                 // Method toApplicationProtocolConfig:(Ljava/lang/Iterable;)Lio/netty/handler/ssl/ApplicationProtocolConfig;
+      18: lload         7
+      20: lload         9
+      22: invokestatic  #11                 // Method newServerContext:(Lio/netty/handler/ssl/SslProvider;Ljava/io/File;Ljavax/net/ssl/TrustManagerFactory;Ljava/io/File;Ljava/io/File;Ljava/lang/String;Ljavax/net/ssl/KeyManagerFactory;Ljava/lang/Iterable;Lio/netty/handler/ssl/CipherSuiteFilter;Lio/netty/handler/ssl/ApplicationProtocolConfig;JJ)Lio/netty/handler/ssl/SslContext;
+      25: areturn
+
+  public static io.netty.handler.ssl.SslContext newServerContext(io.netty.handler.ssl.SslProvider, java.io.File, java.io.File, java.lang.String, java.lang.Iterable<java.lang.String>, io.netty.handler.ssl.CipherSuiteFilter, io.netty.handler.ssl.ApplicationProtocolConfig, long, long) throws javax.net.ssl.SSLException;
+    Code:
+       0: aload_0
+       1: aconst_null
+       2: aconst_null
+       3: aload_1
+       4: aload_2
+       5: aload_3
+       6: aconst_null
+       7: aload         4
+       9: aload         5
+      11: aload         6
+      13: lload         7
+      15: lload         9
+      17: invokestatic  #12                 // Method java/security/KeyStore.getDefaultType:()Ljava/lang/String;
+      20: invokestatic  #13                 // Method newServerContext:(Lio/netty/handler/ssl/SslProvider;Ljava/io/File;Ljavax/net/ssl/TrustManagerFactory;Ljava/io/File;Ljava/io/File;Ljava/lang/String;Ljavax/net/ssl/KeyManagerFactory;Ljava/lang/Iterable;Lio/netty/handler/ssl/CipherSuiteFilter;Lio/netty/handler/ssl/ApplicationProtocolConfig;JJLjava/lang/String;)Lio/netty/handler/ssl/SslContext;
+      23: areturn
+
+  public static io.netty.handler.ssl.SslContext newServerContext(io.netty.handler.ssl.SslProvider, java.io.File, javax.net.ssl.TrustManagerFactory, java.io.File, java.io.File, java.lang.String, javax.net.ssl.KeyManagerFactory, java.lang.Iterable<java.lang.String>, io.netty.handler.ssl.CipherSuiteFilter, io.netty.handler.ssl.ApplicationProtocolConfig, long, long) throws javax.net.ssl.SSLException;
+    Code:
+       0: aload_0
+       1: aload_1
+       2: aload_2
+       3: aload_3
+       4: aload         4
+       6: aload         5
+       8: aload         6
+      10: aload         7
+      12: aload         8
+      14: aload         9
+      16: lload         10
+      18: lload         12
+      20: invokestatic  #12                 // Method java/security/KeyStore.getDefaultType:()Ljava/lang/String;
+      23: invokestatic  #13                 // Method newServerContext:(Lio/netty/handler/ssl/SslProvider;Ljava/io/File;Ljavax/net/ssl/TrustManagerFactory;Ljava/io/File;Ljava/io/File;Ljava/lang/String;Ljavax/net/ssl/KeyManagerFactory;Ljava/lang/Iterable;Lio/netty/handler/ssl/CipherSuiteFilter;Lio/netty/handler/ssl/ApplicationProtocolConfig;JJLjava/lang/String;)Lio/netty/handler/ssl/SslContext;
+      26: areturn
+
+  static io.netty.handler.ssl.SslContext newServerContext(io.netty.handler.ssl.SslProvider, java.io.File, javax.net.ssl.TrustManagerFactory, java.io.File, java.io.File, java.lang.String, javax.net.ssl.KeyManagerFactory, java.lang.Iterable<java.lang.String>, io.netty.handler.ssl.CipherSuiteFilter, io.netty.handler.ssl.ApplicationProtocolConfig, long, long, java.lang.String) throws javax.net.ssl.SSLException;
+    Code:
+       0: aload_0
+       1: aconst_null
+       2: aload_1
+       3: invokestatic  #14                 // Method toX509Certificates:(Ljava/io/File;)[Ljava/security/cert/X509Certificate;
+       6: aload_2
+       7: aload_3
+       8: invokestatic  #14                 // Method toX509Certificates:(Ljava/io/File;)[Ljava/security/cert/X509Certificate;
+      11: aload         4
+      13: aload         5
+      15: invokestatic  #15                 // Method toPrivateKey:(Ljava/io/File;Ljava/lang/String;)Ljava/security/PrivateKey;
+      18: aload         5
+      20: aload         6
+      22: aload         7
+      24: aload         8
+      26: aload         9
+      28: lload         10
+      30: lload         12
+      32: getstatic     #16                 // Field io/netty/handler/ssl/ClientAuth.NONE:Lio/netty/handler/ssl/ClientAuth;
+      35: aconst_null
+      36: iconst_0
+      37: iconst_0
+      38: aconst_null
+      39: aload         14
+      41: aconst_null
+      42: aconst_null
+      43: invokestatic  #17                 // Method newServerContextInternal:(Lio/netty/handler/ssl/SslProvider;Ljava/security/Provider;[Ljava/security/cert/X509Certificate;Ljavax/net/ssl/TrustManagerFactory;[Ljava/security/cert/X509Certificate;Ljava/security/PrivateKey;Ljava/lang/String;Ljavax/net/ssl/KeyManagerFactory;Ljava/lang/Iterable;Lio/netty/handler/ssl/CipherSuiteFilter;Lio/netty/handler/ssl/ApplicationProtocolConfig;JJLio/netty/handler/ssl/ClientAuth;[Ljava/lang/String;ZZLjava/security/SecureRandom;Ljava/lang/String;[Ljava/util/Map$Entry;Ljava/util/List;)Lio/netty/handler/ssl/SslContext;
+      46: areturn
+      47: astore        15
+      49: aload         15
+      51: instanceof    #19                 // class javax/net/ssl/SSLException
+      54: ifeq          63
+      57: aload         15
+      59: checkcast     #19                 // class javax/net/ssl/SSLException
+      62: athrow
+      63: new           #19                 // class javax/net/ssl/SSLException
+      66: dup
+      67: ldc           #20                 // String failed to initialize the server-side SSL context
+      69: aload         15
+      71: invokespecial #21                 // Method javax/net/ssl/SSLException."<init>":(Ljava/lang/String;Ljava/lang/Throwable;)V
+      74: athrow
+    Exception table:
+       from    to  target type
+           0    46    47   Class java/lang/Exception
+
+  static io.netty.handler.ssl.SslContext newServerContextInternal(io.netty.handler.ssl.SslProvider, java.security.Provider, java.security.cert.X509Certificate[], javax.net.ssl.TrustManagerFactory, java.security.cert.X509Certificate[], java.security.PrivateKey, java.lang.String, javax.net.ssl.KeyManagerFactory, java.lang.Iterable<java.lang.String>, io.netty.handler.ssl.CipherSuiteFilter, io.netty.handler.ssl.ApplicationProtocolConfig, long, long, io.netty.handler.ssl.ClientAuth, java.lang.String[], boolean, boolean, java.security.SecureRandom, java.lang.String, java.util.Map$Entry<io.netty.handler.ssl.SslContextOption<?>, java.lang.Object>[], java.util.List<io.netty.handler.ssl.OpenSslCredential>) throws javax.net.ssl.SSLException;
+    Code:
+       0: aload_0
+       1: ifnonnull     8
+       4: invokestatic  #22                 // Method defaultServerProvider:()Lio/netty/handler/ssl/SslProvider;
+       7: astore_0
+       8: new           #23                 // class io/netty/handler/ssl/ResumptionController
+      11: dup
+      12: invokespecial #24                 // Method io/netty/handler/ssl/ResumptionController."<init>":()V
+      15: astore        23
+      17: getstatic     #25                 // Field io/netty/handler/ssl/SslContext$1.$SwitchMap$io$netty$handler$ssl$SslProvider:[I
+      20: aload_0
+      21: invokevirtual #26                 // Method io/netty/handler/ssl/SslProvider.ordinal:()I
+      24: iaload
+      25: tableswitch   { // 1 to 3
+                     1: 52
+                     2: 150
+                     3: 199
+               default: 248
+          }
+      52: iload         18
+      54: ifeq          84
+      57: new           #27                 // class java/lang/IllegalArgumentException
+      60: dup
+      61: new           #28                 // class java/lang/StringBuilder
+      64: dup
+      65: invokespecial #29                 // Method java/lang/StringBuilder."<init>":()V
+      68: ldc           #30                 // String OCSP is not supported with this SslProvider:
+      70: invokevirtual #31                 // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      73: aload_0
+      74: invokevirtual #32                 // Method java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+      77: invokevirtual #33                 // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+      80: invokespecial #34                 // Method java/lang/IllegalArgumentException."<init>":(Ljava/lang/String;)V
+      83: athrow
+      84: aload         22
+      86: ifnull        109
+      89: aload         22
+      91: invokeinterface #35,  1           // InterfaceMethod java/util/List.isEmpty:()Z
+      96: ifne          109
+      99: new           #27                 // class java/lang/IllegalArgumentException
+     102: dup
+     103: ldc           #36                 // String OpenSslCredential is not supported with SslProvider.JDK. Use SslProvider.OPENSSL or SslProvider.OPENSSL_REFCNT instead.
+     105: invokespecial #34                 // Method java/lang/IllegalArgumentException."<init>":(Ljava/lang/String;)V
+     108: athrow
+     109: new           #37                 // class io/netty/handler/ssl/JdkSslServerContext
+     112: dup
+     113: aload_1
+     114: aload_2
+     115: aload_3
+     116: aload         4
+     118: aload         5
+     120: aload         6
+     122: aload         7
+     124: aload         8
+     126: aload         9
+     128: aload         10
+     130: lload         11
+     132: lload         13
+     134: aload         15
+     136: aload         16
+     138: iload         17
+     140: aload         19
+     142: aload         20
+     144: aload         23
+     146: invokespecial #38                 // Method io/netty/handler/ssl/JdkSslServerContext."<init>":(Ljava/security/Provider;[Ljava/security/cert/X509Certificate;Ljavax/net/ssl/TrustManagerFactory;[Ljava/security/cert/X509Certificate;Ljava/security/PrivateKey;Ljava/lang/String;Ljavax/net/ssl/KeyManagerFactory;Ljava/lang/Iterable;Lio/netty/handler/ssl/CipherSuiteFilter;Lio/netty/handler/ssl/ApplicationProtocolConfig;JJLio/netty/handler/ssl/ClientAuth;[Ljava/lang/String;ZLjava/security/SecureRandom;Ljava/lang/String;Lio/netty/handler/ssl/ResumptionController;)V
+     149: areturn
+     150: aload_0
+     151: aload_1
+     152: invokestatic  #39                 // Method verifyNullSslContextProvider:(Lio/netty/handler/ssl/SslProvider;Ljava/security/Provider;)V
+     155: new           #40                 // class io/netty/handler/ssl/OpenSslServerContext
+     158: dup
+     159: aload_2
+     160: aload_3
+     161: aload         4
+     163: aload         5
+     165: aload         6
+     167: aload         7
+     169: aload         8
+     171: aload         9
+     173: aload         10
+     175: lload         11
+     177: lload         13
+     179: aload         15
+     181: aload         16
+     183: iload         17
+     185: iload         18
+     187: aload         20
+     189: aload         23
+     191: aload         21
+     193: aload         22
+     195: invokespecial #41                 // Method io/netty/handler/ssl/OpenSslServerContext."<init>":([Ljava/security/cert/X509Certificate;Ljavax/net/ssl/TrustManagerFactory;[Ljava/security/cert/X509Certificate;Ljava/security/PrivateKey;Ljava/lang/String;Ljavax/net/ssl/KeyManagerFactory;Ljava/lang/Iterable;Lio/netty/handler/ssl/CipherSuiteFilter;Lio/netty/handler/ssl/ApplicationProtocolConfig;JJLio/netty/handler/ssl/ClientAuth;[Ljava/lang/String;ZZLjava/lang/String;Lio/netty/handler/ssl/ResumptionController;[Ljava/util/Map$Entry;Ljava/util/List;)V
+     198: areturn
+     199: aload_0
+     200: aload_1
+     201: invokestatic  #39                 // Method verifyNullSslContextProvider:(Lio/netty/handler/ssl/SslProvider;Ljava/security/Provider;)V
+     204: new           #42                 // class io/netty/handler/ssl/ReferenceCountedOpenSslServerContext
+     207: dup
+     208: aload_2
+     209: aload_3
+     210: aload         4
+     212: aload         5
+     214: aload         6
+     216: aload         7
+     218: aload         8
+     220: aload         9
+     222: aload         10
+     224: lload         11
+     226: lload         13
+     228: aload         15
+     230: aload         16
+     232: iload         17
+     234: iload         18
+     236: aload         20
+     238: aload         23
+     240: aload         21
+     242: aload         22
+     244: invokespecial #43                 // Method io/netty/handler/ssl/ReferenceCountedOpenSslServerContext."<init>":([Ljava/security/cert/X509Certificate;Ljavax/net/ssl/TrustManagerFactory;[Ljava/security/cert/X509Certificate;Ljava/security/PrivateKey;Ljava/lang/String;Ljavax/net/ssl/KeyManagerFactory;Ljava/lang/Iterable;Lio/netty/handler/ssl/CipherSuiteFilter;Lio/netty/handler/ssl/ApplicationProtocolConfig;JJLio/netty/handler/ssl/ClientAuth;[Ljava/lang/String;ZZLjava/lang/String;Lio/netty/handler/ssl/ResumptionController;[Ljava/util/Map$Entry;Ljava/util/List;)V
+     247: areturn
+     248: new           #44                 // class java/lang/Error
+     251: dup
+     252: new           #28                 // class java/lang/StringBuilder
+     255: dup
+     256: invokespecial #29                 // Method java/lang/StringBuilder."<init>":()V
+     259: ldc           #45                 // String Unexpected provider:
+     261: invokevirtual #31                 // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+     264: aload_0
+     265: invokevirtual #32                 // Method java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+     268: invokevirtual #33                 // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+     271: invokespecial #46                 // Method java/lang/Error."<init>":(Ljava/lang/String;)V
+     274: athrow
+
+  private static void verifyNullSslContextProvider(io.netty.handler.ssl.SslProvider, java.security.Provider);
+    Code:
+       0: aload_1
+       1: ifnull        31
+       4: new           #27                 // class java/lang/IllegalArgumentException
+       7: dup
+       8: new           #28                 // class java/lang/StringBuilder
+      11: dup
+      12: invokespecial #29                 // Method java/lang/StringBuilder."<init>":()V
+      15: ldc           #47                 // String Java Security Provider unsupported for SslProvider:
+      17: invokevirtual #31                 // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      20: aload_0
+      21: invokevirtual #32                 // Method java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+      24: invokevirtual #33                 // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+      27: invokespecial #34                 // Method java/lang/IllegalArgumentException."<init>":(Ljava/lang/String;)V
+      30: athrow
+      31: return
+
+  public static io.netty.handler.ssl.SslContext newClientContext() throws javax.net.ssl.SSLException;
+    Code:
+       0: aconst_null
+       1: aconst_null
+       2: aconst_null
+       3: invokestatic  #48                 // Method newClientContext:(Lio/netty/handler/ssl/SslProvider;Ljava/io/File;Ljavax/net/ssl/TrustManagerFactory;)Lio/netty/handler/ssl/SslContext;
+       6: areturn
+
+  public static io.netty.handler.ssl.SslContext newClientContext(java.io.File) throws javax.net.ssl.SSLException;
+    Code:
+       0: aconst_null
+       1: aload_0
+       2: invokestatic  #49                 // Method newClientContext:(Lio/netty/handler/ssl/SslProvider;Ljava/io/File;)Lio/netty/handler/ssl/SslContext;
+       5: areturn
+
+  public static io.netty.handler.ssl.SslContext newClientContext(javax.net.ssl.TrustManagerFactory) throws javax.net.ssl.SSLException;
+    Code:
+       0: aconst_null
+       1: aconst_null
+       2: aload_0
+       3: invokestatic  #48                 // Method newClientContext:(Lio/netty/handler/ssl/SslProvider;Ljava/io/File;Ljavax/net/ssl/TrustManagerFactory;)Lio/netty/handler/ssl/SslContext;
+       6: areturn
+
+  public static io.netty.handler.ssl.SslContext newClientContext(java.io.File, javax.net.ssl.TrustManagerFactory) throws javax.net.ssl.SSLException;
+    Code:
+       0: aconst_null
+       1: aload_0
+       2: aload_1
+       3: invokestatic  #48                 // Method newClientContext:(Lio/netty/handler/ssl/SslProvider;Ljava/io/File;Ljavax/net/ssl/TrustManagerFactory;)Lio/netty/handler/ssl/SslContext;
+       6: areturn
+
+  public static io.netty.handler.ssl.SslContext newClientContext(java.io.File, javax.net.ssl.TrustManagerFactory, java.lang.Iterable<java.lang.String>, java.lang.Iterable<java.lang.String>, long, long) throws javax.net.ssl.SSLException;
+    Code:
+       0: aconst_null
+       1: aload_0
+       2: aload_1
+       3: aload_2
+       4: aload_3
+       5: lload         4
+       7: lload         6
+       9: invokestatic  #50                 // Method newClientContext:(Lio/netty/handler/ssl/SslProvider;Ljava/io/File;Ljavax/net/ssl/TrustManagerFactory;Ljava/lang/Iterable;Ljava/lang/Iterable;JJ)Lio/netty/handler/ssl/SslContext;
+      12: areturn
+
+  public static io.netty.handler.ssl.SslContext newClientContext(java.io.File, javax.net.ssl.TrustManagerFactory, java.lang.Iterable<java.lang.String>, io.netty.handler.ssl.CipherSuiteFilter, io.netty.handler.ssl.ApplicationProtocolConfig, long, long) throws javax.net.ssl.SSLException;
+    Code:
+       0: aconst_null
+       1: aload_0
+       2: aload_1
+       3: aload_2
+       4: aload_3
+       5: aload         4
+       7: lload         5
+       9: lload         7
+      11: invokestatic  #51                 // Method newClientContext:(Lio/netty/handler/ssl/SslProvider;Ljava/io/File;Ljavax/net/ssl/TrustManagerFactory;Ljava/lang/Iterable;Lio/netty/handler/ssl/CipherSuiteFilter;Lio/netty/handler/ssl/ApplicationProtocolConfig;JJ)Lio/netty/handler/ssl/SslContext;
+      14: areturn
+
+  public static io.netty.handler.ssl.SslContext newClientContext(io.netty.handler.ssl.SslProvider) throws javax.net.ssl.SSLException;
+    Code:
+       0: aload_0
+       1: aconst_null
+       2: aconst_null
+       3: invokestatic  #48                 // Method newClientContext:(Lio/netty/handler/ssl/SslProvider;Ljava/io/File;Ljavax/net/ssl/TrustManagerFactory;)Lio/netty/handler/ssl/SslContext;
+       6: areturn
+
+  public static io.netty.handler.ssl.SslContext newClientContext(io.netty.handler.ssl.SslProvider, java.io.File) throws javax.net.ssl.SSLException;
+    Code:
+       0: aload_0
+       1: aload_1
+       2: aconst_null
+       3: invokestatic  #48                 // Method newClientContext:(Lio/netty/handler/ssl/SslProvider;Ljava/io/File;Ljavax/net/ssl/TrustManagerFactory;)Lio/netty/handler/ssl/SslContext;
+       6: areturn
+
+  public static io.netty.handler.ssl.SslContext newClientContext(io.netty.handler.ssl.SslProvider, javax.net.ssl.TrustManagerFactory) throws javax.net.ssl.SSLException;
+    Code:
+       0: aload_0
+       1: aconst_null
+       2: aload_1
+       3: invokestatic  #48                 // Method newClientContext:(Lio/netty/handler/ssl/SslProvider;Ljava/io/File;Ljavax/net/ssl/TrustManagerFactory;)Lio/netty/handler/ssl/SslContext;
+       6: areturn
+
+  public static io.netty.handler.ssl.SslContext newClientContext(io.netty.handler.ssl.SslProvider, java.io.File, javax.net.ssl.TrustManagerFactory) throws javax.net.ssl.SSLException;
+    Code:
+       0: aload_0
+       1: aload_1
+       2: aload_2
+       3: aconst_null
+       4: getstatic     #9                  // Field io/netty/handler/ssl/IdentityCipherSuiteFilter.INSTANCE:Lio/netty/handler/ssl/IdentityCipherSuiteFilter;
+       7: aconst_null
+       8: lconst_0
+       9: lconst_0
+      10: invokestatic  #51                 // Method newClientContext:(Lio/netty/handler/ssl/SslProvider;Ljava/io/File;Ljavax/net/ssl/TrustManagerFactory;Ljava/lang/Iterable;Lio/netty/handler/ssl/CipherSuiteFilter;Lio/netty/handler/ssl/ApplicationProtocolConfig;JJ)Lio/netty/handler/ssl/SslContext;
+      13: areturn
+
+  public static io.netty.handler.ssl.SslContext newClientContext(io.netty.handler.ssl.SslProvider, java.io.File, javax.net.ssl.TrustManagerFactory, java.lang.Iterable<java.lang.String>, java.lang.Iterable<java.lang.String>, long, long) throws javax.net.ssl.SSLException;
+    Code:
+       0: aload_0
+       1: aload_1
+       2: aload_2
+       3: aconst_null
+       4: aconst_null
+       5: aconst_null
+       6: aconst_null
+       7: aload_3
+       8: getstatic     #9                  // Field io/netty/handler/ssl/IdentityCipherSuiteFilter.INSTANCE:Lio/netty/handler/ssl/IdentityCipherSuiteFilter;
+      11: aload         4
+      13: invokestatic  #10                 // Method toApplicationProtocolConfig:(Ljava/lang/Iterable;)Lio/netty/handler/ssl/ApplicationProtocolConfig;
+      16: lload         5
+      18: lload         7
+      20: invokestatic  #52                 // Method newClientContext:(Lio/netty/handler/ssl/SslProvider;Ljava/io/File;Ljavax/net/ssl/TrustManagerFactory;Ljava/io/File;Ljava/io/File;Ljava/lang/String;Ljavax/net/ssl/KeyManagerFactory;Ljava/lang/Iterable;Lio/netty/handler/ssl/CipherSuiteFilter;Lio/netty/handler/ssl/ApplicationProtocolConfig;JJ)Lio/netty/handler/ssl/SslContext;
+      23: areturn
+
+  public static io.netty.handler.ssl.SslContext newClientContext(io.netty.handler.ssl.SslProvider, java.io.File, javax.net.ssl.TrustManagerFactory, java.lang.Iterable<java.lang.String>, io.netty.handler.ssl.CipherSuiteFilter, io.netty.handler.ssl.ApplicationProtocolConfig, long, long) throws javax.net.ssl.SSLException;
+    Code:
+       0: aload_0
+       1: aload_1
+       2: aload_2
+       3: aconst_null
+       4: aconst_null
+       5: aconst_null
+       6: aconst_null
+       7: aload_3
+       8: aload         4
+      10: aload         5
+      12: lload         6
+      14: lload         8
+      16: invokestatic  #52                 // Method newClientContext:(Lio/netty/handler/ssl/SslProvider;Ljava/io/File;Ljavax/net/ssl/TrustManagerFactory;Ljava/io/File;Ljava/io/File;Ljava/lang/String;Ljavax/net/ssl/KeyManagerFactory;Ljava/lang/Iterable;Lio/netty/handler/ssl/CipherSuiteFilter;Lio/netty/handler/ssl/ApplicationProtocolConfig;JJ)Lio/netty/handler/ssl/SslContext;
+      19: areturn
+
+  public static io.netty.handler.ssl.SslContext newClientContext(io.netty.handler.ssl.SslProvider, java.io.File, javax.net.ssl.TrustManagerFactory, java.io.File, java.io.File, java.lang.String, javax.net.ssl.KeyManagerFactory, java.lang.Iterable<java.lang.String>, io.netty.handler.ssl.CipherSuiteFilter, io.netty.handler.ssl.ApplicationProtocolConfig, long, long) throws javax.net.ssl.SSLException;
+    Code:
+       0: aload_0
+       1: aconst_null
+       2: aload_1
+       3: invokestatic  #14                 // Method toX509Certificates:(Ljava/io/File;)[Ljava/security/cert/X509Certificate;
+       6: aload_2
+       7: aload_3
+       8: invokestatic  #14                 // Method toX509Certificates:(Ljava/io/File;)[Ljava/security/cert/X509Certificate;
+      11: aload         4
+      13: aload         5
+      15: invokestatic  #15                 // Method toPrivateKey:(Ljava/io/File;Ljava/lang/String;)Ljava/security/PrivateKey;
+      18: aload         5
+      20: aload         6
+      22: aload         7
+      24: aload         8
+      26: aload         9
+      28: aconst_null
+      29: lload         10
+      31: lload         12
+      33: iconst_0
+      34: aconst_null
+      35: invokestatic  #12                 // Method java/security/KeyStore.getDefaultType:()Ljava/lang/String;
+      38: getstatic     #53                 // Field defaultEndpointVerificationAlgorithm:Ljava/lang/String;
+      41: invokestatic  #54                 // Method java/util/Collections.emptyList:()Ljava/util/List;
+      44: aconst_null
+      45: aconst_null
+      46: invokestatic  #55                 // Method newClientContextInternal:(Lio/netty/handler/ssl/SslProvider;Ljava/security/Provider;[Ljava/security/cert/X509Certificate;Ljavax/net/ssl/TrustManagerFactory;[Ljava/security/cert/X509Certificate;Ljava/security/PrivateKey;Ljava/lang/String;Ljavax/net/ssl/KeyManagerFactory;Ljava/lang/Iterable;Lio/netty/handler/ssl/CipherSuiteFilter;Lio/netty/handler/ssl/ApplicationProtocolConfig;[Ljava/lang/String;JJZLjava/security/SecureRandom;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;[Ljava/util/Map$Entry;Ljava/util/List;)Lio/netty/handler/ssl/SslContext;
+      49: areturn
+      50: astore        14
+      52: aload         14
+      54: instanceof    #19                 // class javax/net/ssl/SSLException
+      57: ifeq          66
+      60: aload         14
+      62: checkcast     #19                 // class javax/net/ssl/SSLException
+      65: athrow
+      66: new           #19                 // class javax/net/ssl/SSLException
+      69: dup
+      70: ldc           #56                 // String failed to initialize the client-side SSL context
+      72: aload         14
+      74: invokespecial #21                 // Method javax/net/ssl/SSLException."<init>":(Ljava/lang/String;Ljava/lang/Throwable;)V
+      77: athrow
+    Exception table:
+       from    to  target type
+           0    49    50   Class java/lang/Exception
+
+  static io.netty.handler.ssl.SslContext newClientContextInternal(io.netty.handler.ssl.SslProvider, java.security.Provider, java.security.cert.X509Certificate[], javax.net.ssl.TrustManagerFactory, java.security.cert.X509Certificate[], java.security.PrivateKey, java.lang.String, javax.net.ssl.KeyManagerFactory, java.lang.Iterable<java.lang.String>, io.netty.handler.ssl.CipherSuiteFilter, io.netty.handler.ssl.ApplicationProtocolConfig, java.lang.String[], long, long, boolean, java.security.SecureRandom, java.lang.String, java.lang.String, java.util.List<javax.net.ssl.SNIServerName>, java.util.Map$Entry<io.netty.handler.ssl.SslContextOption<?>, java.lang.Object>[], java.util.List<io.netty.handler.ssl.OpenSslCredential>) throws javax.net.ssl.SSLException;
+    Code:
+       0: aload_0
+       1: aload_1
+       2: aload_2
+       3: aload_3
+       4: aload         4
+       6: aload         5
+       8: aload         6
+      10: aload         7
+      12: aload         8
+      14: aload         9
+      16: aload         10
+      18: aload         11
+      20: lload         12
+      22: lload         14
+      24: iconst_0
+      25: iload         16
+      27: aload         17
+      29: aload         18
+      31: aload         19
+      33: aload         20
+      35: aload         21
+      37: aload         22
+      39: invokestatic  #57                 // Method newClientContextInternal:(Lio/netty/handler/ssl/SslProvider;Ljava/security/Provider;[Ljava/security/cert/X509Certificate;Ljavax/net/ssl/TrustManagerFactory;[Ljava/security/cert/X509Certificate;Ljava/security/PrivateKey;Ljava/lang/String;Ljavax/net/ssl/KeyManagerFactory;Ljava/lang/Iterable;Lio/netty/handler/ssl/CipherSuiteFilter;Lio/netty/handler/ssl/ApplicationProtocolConfig;[Ljava/lang/String;JJZZLjava/security/SecureRandom;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;[Ljava/util/Map$Entry;Ljava/util/List;)Lio/netty/handler/ssl/SslContext;
+      42: areturn
+
+  static io.netty.handler.ssl.SslContext newClientContextInternal(io.netty.handler.ssl.SslProvider, java.security.Provider, java.security.cert.X509Certificate[], javax.net.ssl.TrustManagerFactory, java.security.cert.X509Certificate[], java.security.PrivateKey, java.lang.String, javax.net.ssl.KeyManagerFactory, java.lang.Iterable<java.lang.String>, io.netty.handler.ssl.CipherSuiteFilter, io.netty.handler.ssl.ApplicationProtocolConfig, java.lang.String[], long, long, boolean, boolean, java.security.SecureRandom, java.lang.String, java.lang.String, java.util.List<javax.net.ssl.SNIServerName>, java.util.Map$Entry<io.netty.handler.ssl.SslContextOption<?>, java.lang.Object>[], java.util.List<io.netty.handler.ssl.OpenSslCredential>) throws javax.net.ssl.SSLException;
+    Code:
+       0: aload_0
+       1: ifnonnull     8
+       4: invokestatic  #58                 // Method defaultClientProvider:()Lio/netty/handler/ssl/SslProvider;
+       7: astore_0
+       8: new           #23                 // class io/netty/handler/ssl/ResumptionController
+      11: dup
+      12: invokespecial #24                 // Method io/netty/handler/ssl/ResumptionController."<init>":()V
+      15: astore        24
+      17: getstatic     #25                 // Field io/netty/handler/ssl/SslContext$1.$SwitchMap$io$netty$handler$ssl$SslProvider:[I
+      20: aload_0
+      21: invokevirtual #26                 // Method io/netty/handler/ssl/SslProvider.ordinal:()I
+      24: iaload
+      25: tableswitch   { // 1 to 3
+                     1: 52
+                     2: 150
+                     3: 204
+               default: 258
+          }
+      52: iload         17
+      54: ifeq          84
+      57: new           #27                 // class java/lang/IllegalArgumentException
+      60: dup
+      61: new           #28                 // class java/lang/StringBuilder
+      64: dup
+      65: invokespecial #29                 // Method java/lang/StringBuilder."<init>":()V
+      68: ldc           #30                 // String OCSP is not supported with this SslProvider:
+      70: invokevirtual #31                 // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      73: aload_0
+      74: invokevirtual #32                 // Method java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+      77: invokevirtual #33                 // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+      80: invokespecial #34                 // Method java/lang/IllegalArgumentException."<init>":(Ljava/lang/String;)V
+      83: athrow
+      84: aload         23
+      86: ifnull        109
+      89: aload         23
+      91: invokeinterface #35,  1           // InterfaceMethod java/util/List.isEmpty:()Z
+      96: ifne          109
+      99: new           #27                 // class java/lang/IllegalArgumentException
+     102: dup
+     103: ldc           #36                 // String OpenSslCredential is not supported with SslProvider.JDK. Use SslProvider.OPENSSL or SslProvider.OPENSSL_REFCNT instead.
+     105: invokespecial #34                 // Method java/lang/IllegalArgumentException."<init>":(Ljava/lang/String;)V
+     108: athrow
+     109: new           #59                 // class io/netty/handler/ssl/JdkSslClientContext
+     112: dup
+     113: aload_1
+     114: aload_2
+     115: aload_3
+     116: aload         4
+     118: aload         5
+     120: aload         6
+     122: aload         7
+     124: aload         8
+     126: aload         9
+     128: aload         10
+     130: aload         11
+     132: lload         12
+     134: lload         14
+     136: aload         18
+     138: aload         19
+     140: aload         20
+     142: aload         21
+     144: aload         24
+     146: invokespecial #60                 // Method io/netty/handler/ssl/JdkSslClientContext."<init>":(Ljava/security/Provider;[Ljava/security/cert/X509Certificate;Ljavax/net/ssl/TrustManagerFactory;[Ljava/security/cert/X509Certificate;Ljava/security/PrivateKey;Ljava/lang/String;Ljavax/net/ssl/KeyManagerFactory;Ljava/lang/Iterable;Lio/netty/handler/ssl/CipherSuiteFilter;Lio/netty/handler/ssl/ApplicationProtocolConfig;[Ljava/lang/String;JJLjava/security/SecureRandom;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lio/netty/handler/ssl/ResumptionController;)V
+     149: areturn
+     150: aload_0
+     151: aload_1
+     152: invokestatic  #39                 // Method verifyNullSslContextProvider:(Lio/netty/handler/ssl/SslProvider;Ljava/security/Provider;)V
+     155: invokestatic  #61                 // Method io/netty/handler/ssl/OpenSsl.ensureAvailability:()V
+     158: new           #62                 // class io/netty/handler/ssl/OpenSslClientContext
+     161: dup
+     162: aload_2
+     163: aload_3
+     164: aload         4
+     166: aload         5
+     168: aload         6
+     170: aload         7
+     172: aload         8
+     174: aload         9
+     176: aload         10
+     178: aload         11
+     180: lload         12
+     182: lload         14
+     184: iload         16
+     186: iload         17
+     188: aload         19
+     190: aload         20
+     192: aload         21
+     194: aload         24
+     196: aload         22
+     198: aload         23
+     200: invokespecial #63                 // Method io/netty/handler/ssl/OpenSslClientContext."<init>":([Ljava/security/cert/X509Certificate;Ljavax/net/ssl/TrustManagerFactory;[Ljava/security/cert/X509Certificate;Ljava/security/PrivateKey;Ljava/lang/String;Ljavax/net/ssl/KeyManagerFactory;Ljava/lang/Iterable;Lio/netty/handler/ssl/CipherSuiteFilter;Lio/netty/handler/ssl/ApplicationProtocolConfig;[Ljava/lang/String;JJZZLjava/lang/String;Ljava/lang/String;Ljava/util/List;Lio/netty/handler/ssl/ResumptionController;[Ljava/util/Map$Entry;Ljava/util/List;)V
+     203: areturn
+     204: aload_0
+     205: aload_1
+     206: invokestatic  #39                 // Method verifyNullSslContextProvider:(Lio/netty/handler/ssl/SslProvider;Ljava/security/Provider;)V
+     209: invokestatic  #61                 // Method io/netty/handler/ssl/OpenSsl.ensureAvailability:()V
+     212: new           #64                 // class io/netty/handler/ssl/ReferenceCountedOpenSslClientContext
+     215: dup
+     216: aload_2
+     217: aload_3
+     218: aload         4
+     220: aload         5
+     222: aload         6
+     224: aload         7
+     226: aload         8
+     228: aload         9
+     230: aload         10
+     232: aload         11
+     234: lload         12
+     236: lload         14
+     238: iload         16
+     240: iload         17
+     242: aload         19
+     244: aload         20
+     246: aload         21
+     248: aload         24
+     250: aload         22
+     252: aload         23
+     254: invokespecial #65                 // Method io/netty/handler/ssl/ReferenceCountedOpenSslClientContext."<init>":([Ljava/security/cert/X509Certificate;Ljavax/net/ssl/TrustManagerFactory;[Ljava/security/cert/X509Certificate;Ljava/security/PrivateKey;Ljava/lang/String;Ljavax/net/ssl/KeyManagerFactory;Ljava/lang/Iterable;Lio/netty/handler/ssl/CipherSuiteFilter;Lio/netty/handler/ssl/ApplicationProtocolConfig;[Ljava/lang/String;JJZZLjava/lang/String;Ljava/lang/String;Ljava/util/List;Lio/netty/handler/ssl/ResumptionController;[Ljava/util/Map$Entry;Ljava/util/List;)V
+     257: areturn
+     258: new           #44                 // class java/lang/Error
+     261: dup
+     262: new           #28                 // class java/lang/StringBuilder
+     265: dup
+     266: invokespecial #29                 // Method java/lang/StringBuilder."<init>":()V
+     269: ldc           #45                 // String Unexpected provider:
+     271: invokevirtual #31                 // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+     274: aload_0
+     275: invokevirtual #32                 // Method java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+     278: invokevirtual #33                 // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+     281: invokespecial #46                 // Method java/lang/Error."<init>":(Ljava/lang/String;)V
+     284: athrow
+
+  static io.netty.handler.ssl.ApplicationProtocolConfig toApplicationProtocolConfig(java.lang.Iterable<java.lang.String>);
+    Code:
+       0: aload_0
+       1: ifnonnull     11
+       4: getstatic     #66                 // Field io/netty/handler/ssl/ApplicationProtocolConfig.DISABLED:Lio/netty/handler/ssl/ApplicationProtocolConfig;
+       7: astore_1
+       8: goto          29
+      11: new           #67                 // class io/netty/handler/ssl/ApplicationProtocolConfig
+      14: dup
+      15: getstatic     #68                 // Field io/netty/handler/ssl/ApplicationProtocolConfig$Protocol.NPN_AND_ALPN:Lio/netty/handler/ssl/ApplicationProtocolConfig$Protocol;
+      18: getstatic     #69                 // Field io/netty/handler/ssl/ApplicationProtocolConfig$SelectorFailureBehavior.CHOOSE_MY_LAST_PROTOCOL:Lio/netty/handler/ssl/ApplicationProtocolConfig$SelectorFailureBehavior;
+      21: getstatic     #70                 // Field io/netty/handler/ssl/ApplicationProtocolConfig$SelectedListenerFailureBehavior.ACCEPT:Lio/netty/handler/ssl/ApplicationProtocolConfig$SelectedListenerFailureBehavior;
+      24: aload_0
+      25: invokespecial #71                 // Method io/netty/handler/ssl/ApplicationProtocolConfig."<init>":(Lio/netty/handler/ssl/ApplicationProtocolConfig$Protocol;Lio/netty/handler/ssl/ApplicationProtocolConfig$SelectorFailureBehavior;Lio/netty/handler/ssl/ApplicationProtocolConfig$SelectedListenerFailureBehavior;Ljava/lang/Iterable;)V
+      28: astore_1
+      29: aload_1
+      30: areturn
+
+  protected io.netty.handler.ssl.SslContext();
+    Code:
+       0: aload_0
+       1: iconst_0
+       2: invokespecial #72                 // Method "<init>":(Z)V
+       5: return
+
+  protected io.netty.handler.ssl.SslContext(boolean);
+    Code:
+       0: aload_0
+       1: iload_1
+       2: aconst_null
+       3: invokespecial #73                 // Method "<init>":(ZLio/netty/handler/ssl/ResumptionController;)V
+       6: return
+
+  io.netty.handler.ssl.SslContext(boolean, io.netty.handler.ssl.ResumptionController);
+    Code:
+       0: aload_0
+       1: invokespecial #74                 // Method java/lang/Object."<init>":()V
+       4: aload_0
+       5: new           #75                 // class io/netty/util/DefaultAttributeMap
+       8: dup
+       9: invokespecial #76                 // Method io/netty/util/DefaultAttributeMap."<init>":()V
+      12: putfield      #77                 // Field attributes:Lio/netty/util/AttributeMap;
+      15: aload_0
+      16: iload_1
+      17: putfield      #78                 // Field startTls:Z
+      20: aload_0
+      21: aload_2
+      22: putfield      #79                 // Field resumptionController:Lio/netty/handler/ssl/ResumptionController;
+      25: return
+
+  public final io.netty.util.AttributeMap attributes();
+    Code:
+       0: aload_0
+       1: getfield      #77                 // Field attributes:Lio/netty/util/AttributeMap;
+       4: areturn
+
+  public final boolean isServer();
+    Code:
+       0: aload_0
+       1: invokevirtual #80                 // Method isClient:()Z
+       4: ifne          11
+       7: iconst_1
+       8: goto          12
+      11: iconst_0
+      12: ireturn
+
+  public abstract boolean isClient();
+
+  public abstract java.util.List<java.lang.String> cipherSuites();
+
+  public long sessionCacheSize();
+    Code:
+       0: aload_0
+       1: invokevirtual #81                 // Method sessionContext:()Ljavax/net/ssl/SSLSessionContext;
+       4: invokeinterface #82,  1           // InterfaceMethod javax/net/ssl/SSLSessionContext.getSessionCacheSize:()I
+       9: i2l
+      10: lreturn
+
+  public long sessionTimeout();
+    Code:
+       0: aload_0
+       1: invokevirtual #81                 // Method sessionContext:()Ljavax/net/ssl/SSLSessionContext;
+       4: invokeinterface #83,  1           // InterfaceMethod javax/net/ssl/SSLSessionContext.getSessionTimeout:()I
+       9: i2l
+      10: lreturn
+
+  public final java.util.List<java.lang.String> nextProtocols();
+    Code:
+       0: aload_0
+       1: invokevirtual #84                 // Method applicationProtocolNegotiator:()Lio/netty/handler/ssl/ApplicationProtocolNegotiator;
+       4: invokeinterface #85,  1           // InterfaceMethod io/netty/handler/ssl/ApplicationProtocolNegotiator.protocols:()Ljava/util/List;
+       9: areturn
+
+  public abstract io.netty.handler.ssl.ApplicationProtocolNegotiator applicationProtocolNegotiator();
+
+  public abstract javax.net.ssl.SSLEngine newEngine(io.netty.buffer.ByteBufAllocator);
+
+  public abstract javax.net.ssl.SSLEngine newEngine(io.netty.buffer.ByteBufAllocator, java.lang.String, int);
+
+  public abstract javax.net.ssl.SSLSessionContext sessionContext();
+
+  public final io.netty.handler.ssl.SslHandler newHandler(io.netty.buffer.ByteBufAllocator);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: aload_0
+       3: getfield      #78                 // Field startTls:Z
+       6: invokevirtual #86                 // Method newHandler:(Lio/netty/buffer/ByteBufAllocator;Z)Lio/netty/handler/ssl/SslHandler;
+       9: areturn
+
+  protected io.netty.handler.ssl.SslHandler newHandler(io.netty.buffer.ByteBufAllocator, boolean);
+    Code:
+       0: new           #87                 // class io/netty/handler/ssl/SslHandler
+       3: dup
+       4: aload_0
+       5: aload_1
+       6: invokevirtual #88                 // Method newEngine:(Lio/netty/buffer/ByteBufAllocator;)Ljavax/net/ssl/SSLEngine;
+       9: iload_2
+      10: getstatic     #89                 // Field io/netty/util/concurrent/ImmediateExecutor.INSTANCE:Lio/netty/util/concurrent/ImmediateExecutor;
+      13: aload_0
+      14: getfield      #79                 // Field resumptionController:Lio/netty/handler/ssl/ResumptionController;
+      17: invokespecial #90                 // Method io/netty/handler/ssl/SslHandler."<init>":(Ljavax/net/ssl/SSLEngine;ZLjava/util/concurrent/Executor;Lio/netty/handler/ssl/ResumptionController;)V
+      20: areturn
+
+  public io.netty.handler.ssl.SslHandler newHandler(io.netty.buffer.ByteBufAllocator, java.util.concurrent.Executor);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: aload_0
+       3: getfield      #78                 // Field startTls:Z
+       6: aload_2
+       7: invokevirtual #91                 // Method newHandler:(Lio/netty/buffer/ByteBufAllocator;ZLjava/util/concurrent/Executor;)Lio/netty/handler/ssl/SslHandler;
+      10: areturn
+
+  protected io.netty.handler.ssl.SslHandler newHandler(io.netty.buffer.ByteBufAllocator, boolean, java.util.concurrent.Executor);
+    Code:
+       0: new           #87                 // class io/netty/handler/ssl/SslHandler
+       3: dup
+       4: aload_0
+       5: aload_1
+       6: invokevirtual #88                 // Method newEngine:(Lio/netty/buffer/ByteBufAllocator;)Ljavax/net/ssl/SSLEngine;
+       9: iload_2
+      10: aload_3
+      11: aload_0
+      12: getfield      #79                 // Field resumptionController:Lio/netty/handler/ssl/ResumptionController;
+      15: invokespecial #90                 // Method io/netty/handler/ssl/SslHandler."<init>":(Ljavax/net/ssl/SSLEngine;ZLjava/util/concurrent/Executor;Lio/netty/handler/ssl/ResumptionController;)V
+      18: areturn
+
+  public final io.netty.handler.ssl.SslHandler newHandler(io.netty.buffer.ByteBufAllocator, java.lang.String, int);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: aload_2
+       3: iload_3
+       4: aload_0
+       5: getfield      #78                 // Field startTls:Z
+       8: invokevirtual #92                 // Method newHandler:(Lio/netty/buffer/ByteBufAllocator;Ljava/lang/String;IZ)Lio/netty/handler/ssl/SslHandler;
+      11: areturn
+
+  protected io.netty.handler.ssl.SslHandler newHandler(io.netty.buffer.ByteBufAllocator, java.lang.String, int, boolean);
+    Code:
+       0: new           #87                 // class io/netty/handler/ssl/SslHandler
+       3: dup
+       4: aload_0
+       5: aload_1
+       6: aload_2
+       7: iload_3
+       8: invokevirtual #93                 // Method newEngine:(Lio/netty/buffer/ByteBufAllocator;Ljava/lang/String;I)Ljavax/net/ssl/SSLEngine;
+      11: iload         4
+      13: getstatic     #89                 // Field io/netty/util/concurrent/ImmediateExecutor.INSTANCE:Lio/netty/util/concurrent/ImmediateExecutor;
+      16: aload_0
+      17: getfield      #79                 // Field resumptionController:Lio/netty/handler/ssl/ResumptionController;
+      20: invokespecial #90                 // Method io/netty/handler/ssl/SslHandler."<init>":(Ljavax/net/ssl/SSLEngine;ZLjava/util/concurrent/Executor;Lio/netty/handler/ssl/ResumptionController;)V
+      23: areturn
+
+  public io.netty.handler.ssl.SslHandler newHandler(io.netty.buffer.ByteBufAllocator, java.lang.String, int, java.util.concurrent.Executor);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: aload_2
+       3: iload_3
+       4: aload_0
+       5: getfield      #78                 // Field startTls:Z
+       8: aload         4
+      10: invokevirtual #94                 // Method newHandler:(Lio/netty/buffer/ByteBufAllocator;Ljava/lang/String;IZLjava/util/concurrent/Executor;)Lio/netty/handler/ssl/SslHandler;
+      13: areturn
+
+  protected io.netty.handler.ssl.SslHandler newHandler(io.netty.buffer.ByteBufAllocator, java.lang.String, int, boolean, java.util.concurrent.Executor);
+    Code:
+       0: new           #87                 // class io/netty/handler/ssl/SslHandler
+       3: dup
+       4: aload_0
+       5: aload_1
+       6: aload_2
+       7: iload_3
+       8: invokevirtual #93                 // Method newEngine:(Lio/netty/buffer/ByteBufAllocator;Ljava/lang/String;I)Ljavax/net/ssl/SSLEngine;
+      11: iload         4
+      13: aload         5
+      15: aload_0
+      16: getfield      #79                 // Field resumptionController:Lio/netty/handler/ssl/ResumptionController;
+      19: invokespecial #90                 // Method io/netty/handler/ssl/SslHandler."<init>":(Ljavax/net/ssl/SSLEngine;ZLjava/util/concurrent/Executor;Lio/netty/handler/ssl/ResumptionController;)V
+      22: areturn
+
+  protected static java.security.spec.PKCS8EncodedKeySpec generateKeySpec(char[], byte[]) throws java.io.IOException, java.security.NoSuchAlgorithmException, javax.crypto.NoSuchPaddingException, java.security.spec.InvalidKeySpecException, java.security.InvalidKeyException, java.security.InvalidAlgorithmParameterException;
+    Code:
+       0: aload_0
+       1: ifnonnull     13
+       4: new           #95                 // class java/security/spec/PKCS8EncodedKeySpec
+       7: dup
+       8: aload_1
+       9: invokespecial #96                 // Method java/security/spec/PKCS8EncodedKeySpec."<init>":([B)V
+      12: areturn
+      13: new           #97                 // class javax/crypto/EncryptedPrivateKeyInfo
+      16: dup
+      17: aload_1
+      18: invokespecial #98                 // Method javax/crypto/EncryptedPrivateKeyInfo."<init>":([B)V
+      21: astore_2
+      22: aload_2
+      23: invokestatic  #99                 // Method getPBEAlgorithm:(Ljavax/crypto/EncryptedPrivateKeyInfo;)Ljava/lang/String;
+      26: astore_3
+      27: aload_3
+      28: invokestatic  #100                // Method javax/crypto/SecretKeyFactory.getInstance:(Ljava/lang/String;)Ljavax/crypto/SecretKeyFactory;
+      31: astore        4
+      33: new           #101                // class javax/crypto/spec/PBEKeySpec
+      36: dup
+      37: aload_0
+      38: invokespecial #102                // Method javax/crypto/spec/PBEKeySpec."<init>":([C)V
+      41: astore        5
+      43: aload         4
+      45: aload         5
+      47: invokevirtual #103                // Method javax/crypto/SecretKeyFactory.generateSecret:(Ljava/security/spec/KeySpec;)Ljavax/crypto/SecretKey;
+      50: astore        6
+      52: aload_3
+      53: invokestatic  #104                // Method javax/crypto/Cipher.getInstance:(Ljava/lang/String;)Ljavax/crypto/Cipher;
+      56: astore        7
+      58: aload         7
+      60: iconst_2
+      61: aload         6
+      63: aload_2
+      64: invokevirtual #106                // Method javax/crypto/EncryptedPrivateKeyInfo.getAlgParameters:()Ljava/security/AlgorithmParameters;
+      67: invokevirtual #107                // Method javax/crypto/Cipher.init:(ILjava/security/Key;Ljava/security/AlgorithmParameters;)V
+      70: aload_2
+      71: aload         7
+      73: invokevirtual #108                // Method javax/crypto/EncryptedPrivateKeyInfo.getKeySpec:(Ljavax/crypto/Cipher;)Ljava/security/spec/PKCS8EncodedKeySpec;
+      76: areturn
+
+  private static java.lang.String getPBEAlgorithm(javax.crypto.EncryptedPrivateKeyInfo);
+    Code:
+       0: aload_0
+       1: invokevirtual #106                // Method javax/crypto/EncryptedPrivateKeyInfo.getAlgParameters:()Ljava/security/AlgorithmParameters;
+       4: astore_1
+       5: aload_0
+       6: invokevirtual #109                // Method javax/crypto/EncryptedPrivateKeyInfo.getAlgName:()Ljava/lang/String;
+       9: astore_2
+      10: aload_1
+      11: ifnull        37
+      14: ldc           #111                // String 1.2.840.113549.1.5.13
+      16: aload_2
+      17: invokevirtual #112                // Method java/lang/String.equals:(Ljava/lang/Object;)Z
+      20: ifne          32
+      23: ldc           #113                // String PBES2
+      25: aload_2
+      26: invokevirtual #112                // Method java/lang/String.equals:(Ljava/lang/Object;)Z
+      29: ifeq          37
+      32: aload_1
+      33: invokevirtual #114                // Method java/security/AlgorithmParameters.toString:()Ljava/lang/String;
+      36: areturn
+      37: aload_0
+      38: invokevirtual #109                // Method javax/crypto/EncryptedPrivateKeyInfo.getAlgName:()Ljava/lang/String;
+      41: areturn
+
+  protected static java.security.KeyStore buildKeyStore(java.security.cert.X509Certificate[], java.security.PrivateKey, char[], java.lang.String) throws java.security.KeyStoreException, java.security.NoSuchAlgorithmException, java.security.cert.CertificateException, java.io.IOException;
+    Code:
+       0: aload_3
+       1: ifnonnull     8
+       4: invokestatic  #12                 // Method java/security/KeyStore.getDefaultType:()Ljava/lang/String;
+       7: astore_3
+       8: aload_3
+       9: invokestatic  #115                // Method java/security/KeyStore.getInstance:(Ljava/lang/String;)Ljava/security/KeyStore;
+      12: astore        4
+      14: aload         4
+      16: aconst_null
+      17: aconst_null
+      18: invokevirtual #116                // Method java/security/KeyStore.load:(Ljava/io/InputStream;[C)V
+      21: aload         4
+      23: ldc           #117                // String key
+      25: aload_1
+      26: aload_2
+      27: aload_0
+      28: invokevirtual #118                // Method java/security/KeyStore.setKeyEntry:(Ljava/lang/String;Ljava/security/Key;[C[Ljava/security/cert/Certificate;)V
+      31: aload         4
+      33: areturn
+
+  protected static java.security.PrivateKey toPrivateKey(java.io.File, java.lang.String) throws java.security.NoSuchAlgorithmException, javax.crypto.NoSuchPaddingException, java.security.spec.InvalidKeySpecException, java.security.InvalidAlgorithmParameterException, java.security.KeyException, java.io.IOException;
+    Code:
+       0: aload_0
+       1: aload_1
+       2: iconst_1
+       3: invokestatic  #119                // Method toPrivateKey:(Ljava/io/File;Ljava/lang/String;Z)Ljava/security/PrivateKey;
+       6: areturn
+
+  static java.security.PrivateKey toPrivateKey(java.io.File, java.lang.String, boolean) throws java.security.NoSuchAlgorithmException, javax.crypto.NoSuchPaddingException, java.security.spec.InvalidKeySpecException, java.security.InvalidAlgorithmParameterException, java.security.KeyException, java.io.IOException;
+    Code:
+       0: aload_0
+       1: ifnonnull     6
+       4: aconst_null
+       5: areturn
+       6: iload_2
+       7: ifeq          28
+      10: invokestatic  #120                // Method io/netty/handler/ssl/util/BouncyCastleUtil.isBcPkixAvailable:()Z
+      13: ifeq          28
+      16: aload_0
+      17: aload_1
+      18: invokestatic  #121                // Method io/netty/handler/ssl/BouncyCastlePemReader.getPrivateKey:(Ljava/io/File;Ljava/lang/String;)Ljava/security/PrivateKey;
+      21: astore_3
+      22: aload_3
+      23: ifnull        28
+      26: aload_3
+      27: areturn
+      28: aload_0
+      29: invokestatic  #122                // Method io/netty/handler/ssl/PemReader.readPrivateKey:(Ljava/io/File;)Lio/netty/buffer/ByteBuf;
+      32: aload_1
+      33: invokestatic  #123                // Method getPrivateKeyFromByteBuffer:(Lio/netty/buffer/ByteBuf;Ljava/lang/String;)Ljava/security/PrivateKey;
+      36: areturn
+
+  protected static java.security.PrivateKey toPrivateKey(java.io.InputStream, java.lang.String) throws java.security.NoSuchAlgorithmException, javax.crypto.NoSuchPaddingException, java.security.spec.InvalidKeySpecException, java.security.InvalidAlgorithmParameterException, java.security.KeyException, java.io.IOException;
+    Code:
+       0: aload_0
+       1: ifnonnull     6
+       4: aconst_null
+       5: areturn
+       6: invokestatic  #120                // Method io/netty/handler/ssl/util/BouncyCastleUtil.isBcPkixAvailable:()Z
+       9: ifeq          50
+      12: aload_0
+      13: invokevirtual #124                // Method java/io/InputStream.markSupported:()Z
+      16: ifne          28
+      19: new           #125                // class java/io/BufferedInputStream
+      22: dup
+      23: aload_0
+      24: invokespecial #126                // Method java/io/BufferedInputStream."<init>":(Ljava/io/InputStream;)V
+      27: astore_0
+      28: aload_0
+      29: ldc           #127                // int 1048576
+      31: invokevirtual #128                // Method java/io/InputStream.mark:(I)V
+      34: aload_0
+      35: aload_1
+      36: invokestatic  #129                // Method io/netty/handler/ssl/BouncyCastlePemReader.getPrivateKey:(Ljava/io/InputStream;Ljava/lang/String;)Ljava/security/PrivateKey;
+      39: astore_2
+      40: aload_2
+      41: ifnull        46
+      44: aload_2
+      45: areturn
+      46: aload_0
+      47: invokevirtual #130                // Method java/io/InputStream.reset:()V
+      50: aload_0
+      51: invokestatic  #131                // Method io/netty/handler/ssl/PemReader.readPrivateKey:(Ljava/io/InputStream;)Lio/netty/buffer/ByteBuf;
+      54: aload_1
+      55: invokestatic  #123                // Method getPrivateKeyFromByteBuffer:(Lio/netty/buffer/ByteBuf;Ljava/lang/String;)Ljava/security/PrivateKey;
+      58: areturn
+
+  private static java.security.PrivateKey getPrivateKeyFromByteBuffer(io.netty.buffer.ByteBuf, java.lang.String) throws java.security.NoSuchAlgorithmException, javax.crypto.NoSuchPaddingException, java.security.spec.InvalidKeySpecException, java.security.InvalidAlgorithmParameterException, java.security.KeyException, java.io.IOException;
+    Code:
+       0: aload_0
+       1: invokevirtual #132                // Method io/netty/buffer/ByteBuf.readableBytes:()I
+       4: newarray       byte
+       6: astore_2
+       7: aload_0
+       8: aload_2
+       9: invokevirtual #133                // Method io/netty/buffer/ByteBuf.readBytes:([B)Lio/netty/buffer/ByteBuf;
+      12: invokevirtual #134                // Method io/netty/buffer/ByteBuf.release:()Z
+      15: pop
+      16: aload_1
+      17: ifnonnull     24
+      20: aconst_null
+      21: goto          28
+      24: aload_1
+      25: invokevirtual #135                // Method java/lang/String.toCharArray:()[C
+      28: aload_2
+      29: invokestatic  #136                // Method generateKeySpec:([C[B)Ljava/security/spec/PKCS8EncodedKeySpec;
+      32: astore_3
+      33: ldc           #137                // String RSA
+      35: invokestatic  #138                // Method java/security/KeyFactory.getInstance:(Ljava/lang/String;)Ljava/security/KeyFactory;
+      38: aload_3
+      39: invokevirtual #139                // Method java/security/KeyFactory.generatePrivate:(Ljava/security/spec/KeySpec;)Ljava/security/PrivateKey;
+      42: areturn
+      43: astore        4
+      45: ldc           #141                // String DSA
+      47: invokestatic  #138                // Method java/security/KeyFactory.getInstance:(Ljava/lang/String;)Ljava/security/KeyFactory;
+      50: aload_3
+      51: invokevirtual #139                // Method java/security/KeyFactory.generatePrivate:(Ljava/security/spec/KeySpec;)Ljava/security/PrivateKey;
+      54: areturn
+      55: astore        5
+      57: ldc           #142                // String EC
+      59: invokestatic  #138                // Method java/security/KeyFactory.getInstance:(Ljava/lang/String;)Ljava/security/KeyFactory;
+      62: aload_3
+      63: invokevirtual #139                // Method java/security/KeyFactory.generatePrivate:(Ljava/security/spec/KeySpec;)Ljava/security/PrivateKey;
+      66: areturn
+      67: astore        6
+      69: new           #140                // class java/security/spec/InvalidKeySpecException
+      72: dup
+      73: ldc           #143                // String Neither RSA, DSA nor EC worked
+      75: aload         6
+      77: invokespecial #144                // Method java/security/spec/InvalidKeySpecException."<init>":(Ljava/lang/String;Ljava/lang/Throwable;)V
+      80: athrow
+    Exception table:
+       from    to  target type
+          33    42    43   Class java/security/spec/InvalidKeySpecException
+          45    54    55   Class java/security/spec/InvalidKeySpecException
+          57    66    67   Class java/security/spec/InvalidKeySpecException
+
+  protected static javax.net.ssl.TrustManagerFactory buildTrustManagerFactory(java.io.File, javax.net.ssl.TrustManagerFactory) throws java.security.NoSuchAlgorithmException, java.security.cert.CertificateException, java.security.KeyStoreException, java.io.IOException;
+    Code:
+       0: aload_0
+       1: aload_1
+       2: aconst_null
+       3: invokestatic  #145                // Method buildTrustManagerFactory:(Ljava/io/File;Ljavax/net/ssl/TrustManagerFactory;Ljava/lang/String;)Ljavax/net/ssl/TrustManagerFactory;
+       6: areturn
+
+  protected static javax.net.ssl.TrustManagerFactory buildTrustManagerFactory(java.io.File, javax.net.ssl.TrustManagerFactory, java.lang.String) throws java.security.NoSuchAlgorithmException, java.security.cert.CertificateException, java.security.KeyStoreException, java.io.IOException;
+    Code:
+       0: aload_0
+       1: invokestatic  #14                 // Method toX509Certificates:(Ljava/io/File;)[Ljava/security/cert/X509Certificate;
+       4: astore_3
+       5: aload_3
+       6: aload_1
+       7: aload_2
+       8: invokestatic  #146                // Method buildTrustManagerFactory:([Ljava/security/cert/X509Certificate;Ljavax/net/ssl/TrustManagerFactory;Ljava/lang/String;)Ljavax/net/ssl/TrustManagerFactory;
+      11: areturn
+
+  protected static java.security.cert.X509Certificate[] toX509Certificates(java.io.File) throws java.security.cert.CertificateException;
+    Code:
+       0: aload_0
+       1: ifnonnull     6
+       4: aconst_null
+       5: areturn
+       6: aload_0
+       7: invokestatic  #147                // Method io/netty/handler/ssl/PemReader.readCertificates:(Ljava/io/File;)[Lio/netty/buffer/ByteBuf;
+      10: invokestatic  #148                // Method getCertificatesFromBuffers:([Lio/netty/buffer/ByteBuf;)[Ljava/security/cert/X509Certificate;
+      13: areturn
+
+  protected static java.security.cert.X509Certificate[] toX509Certificates(java.io.InputStream) throws java.security.cert.CertificateException;
+    Code:
+       0: aload_0
+       1: ifnonnull     6
+       4: aconst_null
+       5: areturn
+       6: aload_0
+       7: invokestatic  #149                // Method io/netty/handler/ssl/PemReader.readCertificates:(Ljava/io/InputStream;)[Lio/netty/buffer/ByteBuf;
+      10: invokestatic  #148                // Method getCertificatesFromBuffers:([Lio/netty/buffer/ByteBuf;)[Ljava/security/cert/X509Certificate;
+      13: areturn
+
+  private static java.security.cert.X509Certificate[] getCertificatesFromBuffers(io.netty.buffer.ByteBuf[]) throws java.security.cert.CertificateException;
+    Code:
+       0: ldc           #150                // String X.509
+       2: invokestatic  #151                // Method java/security/cert/CertificateFactory.getInstance:(Ljava/lang/String;)Ljava/security/cert/CertificateFactory;
+       5: astore_1
+       6: aload_0
+       7: arraylength
+       8: anewarray     #152                // class java/security/cert/X509Certificate
+      11: astore_2
+      12: iconst_0
+      13: istore_3
+      14: iload_3
+      15: aload_0
+      16: arraylength
+      17: if_icmpge     96
+      20: new           #153                // class io/netty/buffer/ByteBufInputStream
+      23: dup
+      24: aload_0
+      25: iload_3
+      26: aaload
+      27: iconst_0
+      28: invokespecial #154                // Method io/netty/buffer/ByteBufInputStream."<init>":(Lio/netty/buffer/ByteBuf;Z)V
+      31: astore        4
+      33: aload_2
+      34: iload_3
+      35: aload_1
+      36: aload         4
+      38: invokevirtual #155                // Method java/security/cert/CertificateFactory.generateCertificate:(Ljava/io/InputStream;)Ljava/security/cert/Certificate;
+      41: checkcast     #152                // class java/security/cert/X509Certificate
+      44: aastore
+      45: aload         4
+      47: invokevirtual #156                // Method java/io/InputStream.close:()V
+      50: goto          75
+      53: astore        5
+      55: aload         4
+      57: invokevirtual #156                // Method java/io/InputStream.close:()V
+      60: goto          72
+      63: astore        6
+      65: aload         5
+      67: aload         6
+      69: invokevirtual #158                // Method java/lang/Throwable.addSuppressed:(Ljava/lang/Throwable;)V
+      72: aload         5
+      74: athrow
+      75: goto          90
+      78: astore        4
+      80: new           #160                // class java/lang/RuntimeException
+      83: dup
+      84: aload         4
+      86: invokespecial #161                // Method java/lang/RuntimeException."<init>":(Ljava/lang/Throwable;)V
+      89: athrow
+      90: iinc          3, 1
+      93: goto          14
+      96: aload_0
+      97: astore_3
+      98: aload_3
+      99: arraylength
+     100: istore        4
+     102: iconst_0
+     103: istore        5
+     105: iload         5
+     107: iload         4
+     109: if_icmpge     130
+     112: aload_3
+     113: iload         5
+     115: aaload
+     116: astore        6
+     118: aload         6
+     120: invokevirtual #134                // Method io/netty/buffer/ByteBuf.release:()Z
+     123: pop
+     124: iinc          5, 1
+     127: goto          105
+     130: goto          175
+     133: astore        7
+     135: aload_0
+     136: astore        8
+     138: aload         8
+     140: arraylength
+     141: istore        9
+     143: iconst_0
+     144: istore        10
+     146: iload         10
+     148: iload         9
+     150: if_icmpge     172
+     153: aload         8
+     155: iload         10
+     157: aaload
+     158: astore        11
+     160: aload         11
+     162: invokevirtual #134                // Method io/netty/buffer/ByteBuf.release:()Z
+     165: pop
+     166: iinc          10, 1
+     169: goto          146
+     172: aload         7
+     174: athrow
+     175: aload_2
+     176: areturn
+    Exception table:
+       from    to  target type
+          33    45    53   Class java/lang/Throwable
+          55    60    63   Class java/lang/Throwable
+          20    75    78   Class java/io/IOException
+          12    96   133   any
+         133   135   133   any
+
+  protected static javax.net.ssl.TrustManagerFactory buildTrustManagerFactory(java.security.cert.X509Certificate[], javax.net.ssl.TrustManagerFactory, java.lang.String) throws java.security.NoSuchAlgorithmException, java.security.cert.CertificateException, java.security.KeyStoreException, java.io.IOException;
+    Code:
+       0: aload_2
+       1: ifnonnull     8
+       4: invokestatic  #12                 // Method java/security/KeyStore.getDefaultType:()Ljava/lang/String;
+       7: astore_2
+       8: aload_2
+       9: invokestatic  #115                // Method java/security/KeyStore.getInstance:(Ljava/lang/String;)Ljava/security/KeyStore;
+      12: astore_3
+      13: aload_3
+      14: aconst_null
+      15: aconst_null
+      16: invokevirtual #116                // Method java/security/KeyStore.load:(Ljava/io/InputStream;[C)V
+      19: iconst_1
+      20: istore        4
+      22: aload_0
+      23: astore        5
+      25: aload         5
+      27: arraylength
+      28: istore        6
+      30: iconst_0
+      31: istore        7
+      33: iload         7
+      35: iload         6
+      37: if_icmpge     71
+      40: aload         5
+      42: iload         7
+      44: aaload
+      45: astore        8
+      47: iload         4
+      49: invokestatic  #162                // Method java/lang/Integer.toString:(I)Ljava/lang/String;
+      52: astore        9
+      54: aload_3
+      55: aload         9
+      57: aload         8
+      59: invokevirtual #163                // Method java/security/KeyStore.setCertificateEntry:(Ljava/lang/String;Ljava/security/cert/Certificate;)V
+      62: iinc          4, 1
+      65: iinc          7, 1
+      68: goto          33
+      71: aload_1
+      72: ifnonnull     82
+      75: invokestatic  #164                // Method javax/net/ssl/TrustManagerFactory.getDefaultAlgorithm:()Ljava/lang/String;
+      78: invokestatic  #165                // Method javax/net/ssl/TrustManagerFactory.getInstance:(Ljava/lang/String;)Ljavax/net/ssl/TrustManagerFactory;
+      81: astore_1
+      82: aload_1
+      83: aload_3
+      84: invokevirtual #166                // Method javax/net/ssl/TrustManagerFactory.init:(Ljava/security/KeyStore;)V
+      87: aload_1
+      88: areturn
+
+  static java.security.PrivateKey toPrivateKeyInternal(java.io.File, java.lang.String) throws javax.net.ssl.SSLException;
+    Code:
+       0: aload_0
+       1: aload_1
+       2: invokestatic  #15                 // Method toPrivateKey:(Ljava/io/File;Ljava/lang/String;)Ljava/security/PrivateKey;
+       5: areturn
+       6: astore_2
+       7: new           #19                 // class javax/net/ssl/SSLException
+      10: dup
+      11: aload_2
+      12: invokespecial #167                // Method javax/net/ssl/SSLException."<init>":(Ljava/lang/Throwable;)V
+      15: athrow
+    Exception table:
+       from    to  target type
+           0     5     6   Class java/lang/Exception
+
+  static java.security.cert.X509Certificate[] toX509CertificatesInternal(java.io.File) throws javax.net.ssl.SSLException;
+    Code:
+       0: aload_0
+       1: invokestatic  #14                 // Method toX509Certificates:(Ljava/io/File;)[Ljava/security/cert/X509Certificate;
+       4: areturn
+       5: astore_1
+       6: new           #19                 // class javax/net/ssl/SSLException
+       9: dup
+      10: aload_1
+      11: invokespecial #167                // Method javax/net/ssl/SSLException."<init>":(Ljava/lang/Throwable;)V
+      14: athrow
+    Exception table:
+       from    to  target type
+           0     4     5   Class java/security/cert/CertificateException
+
+  protected static javax.net.ssl.KeyManagerFactory buildKeyManagerFactory(java.security.cert.X509Certificate[], java.lang.String, java.security.PrivateKey, java.lang.String, javax.net.ssl.KeyManagerFactory, java.lang.String) throws java.security.KeyStoreException, java.security.NoSuchAlgorithmException, java.io.IOException, java.security.cert.CertificateException, java.security.UnrecoverableKeyException;
+    Code:
+       0: aload_1
+       1: ifnonnull     8
+       4: invokestatic  #169                // Method javax/net/ssl/KeyManagerFactory.getDefaultAlgorithm:()Ljava/lang/String;
+       7: astore_1
+       8: aload_3
+       9: invokestatic  #170                // Method keyStorePassword:(Ljava/lang/String;)[C
+      12: astore        6
+      14: aload_0
+      15: aload_2
+      16: aload         6
+      18: aload         5
+      20: invokestatic  #171                // Method buildKeyStore:([Ljava/security/cert/X509Certificate;Ljava/security/PrivateKey;[CLjava/lang/String;)Ljava/security/KeyStore;
+      23: astore        7
+      25: aload         7
+      27: aload_1
+      28: aload         6
+      30: aload         4
+      32: invokestatic  #172                // Method buildKeyManagerFactory:(Ljava/security/KeyStore;Ljava/lang/String;[CLjavax/net/ssl/KeyManagerFactory;)Ljavax/net/ssl/KeyManagerFactory;
+      35: areturn
+
+  static javax.net.ssl.KeyManagerFactory buildKeyManagerFactory(java.security.KeyStore, java.lang.String, char[], javax.net.ssl.KeyManagerFactory) throws java.security.KeyStoreException, java.security.NoSuchAlgorithmException, java.security.UnrecoverableKeyException;
+    Code:
+       0: aload_3
+       1: ifnonnull     17
+       4: aload_1
+       5: ifnonnull     12
+       8: invokestatic  #169                // Method javax/net/ssl/KeyManagerFactory.getDefaultAlgorithm:()Ljava/lang/String;
+      11: astore_1
+      12: aload_1
+      13: invokestatic  #173                // Method javax/net/ssl/KeyManagerFactory.getInstance:(Ljava/lang/String;)Ljavax/net/ssl/KeyManagerFactory;
+      16: astore_3
+      17: aload_3
+      18: aload_0
+      19: aload_2
+      20: invokevirtual #174                // Method javax/net/ssl/KeyManagerFactory.init:(Ljava/security/KeyStore;[C)V
+      23: aload_3
+      24: areturn
+
+  static char[] keyStorePassword(java.lang.String);
+    Code:
+       0: aload_0
+       1: ifnonnull     10
+       4: getstatic     #175                // Field io/netty/util/internal/EmptyArrays.EMPTY_CHARS:[C
+       7: goto          14
+      10: aload_0
+      11: invokevirtual #135                // Method java/lang/String.toCharArray:()[C
+      14: areturn
+
+  static {};
+    Code:
+       0: ldc           #110                // class io/netty/handler/ssl/SslContext
+       2: invokestatic  #176                // Method io/netty/util/internal/logging/InternalLoggerFactory.getInstance:(Ljava/lang/Class;)Lio/netty/util/internal/logging/InternalLogger;
+       5: putstatic     #177                // Field logger:Lio/netty/util/internal/logging/InternalLogger;
+       8: ldc           #150                // String X.509
+      10: invokestatic  #151                // Method java/security/cert/CertificateFactory.getInstance:(Ljava/lang/String;)Ljava/security/cert/CertificateFactory;
+      13: putstatic     #178                // Field X509_CERT_FACTORY:Ljava/security/cert/CertificateFactory;
+      16: goto          31
+      19: astore_0
+      20: new           #179                // class java/lang/IllegalStateException
+      23: dup
+      24: ldc           #180                // String unable to instance X.509 CertificateFactory
+      26: aload_0
+      27: invokespecial #181                // Method java/lang/IllegalStateException."<init>":(Ljava/lang/String;Ljava/lang/Throwable;)V
+      30: athrow
+      31: ldc           #182                // String io.netty.handler.ssl.defaultEndpointVerificationAlgorithm
+      33: invokestatic  #183                // Method io/netty/util/internal/SystemPropertyUtil.get:(Ljava/lang/String;)Ljava/lang/String;
+      36: astore_0
+      37: ldc           #184                // String LDAP
+      39: aload_0
+      40: invokevirtual #185                // Method java/lang/String.equalsIgnoreCase:(Ljava/lang/String;)Z
+      43: ifeq          54
+      46: ldc           #184                // String LDAP
+      48: putstatic     #53                 // Field defaultEndpointVerificationAlgorithm:Ljava/lang/String;
+      51: goto          114
+      54: ldc           #186                // String NONE
+      56: aload_0
+      57: invokevirtual #185                // Method java/lang/String.equalsIgnoreCase:(Ljava/lang/String;)Z
+      60: ifeq          83
+      63: getstatic     #177                // Field logger:Lio/netty/util/internal/logging/InternalLogger;
+      66: ldc           #187                // String Default SSL endpoint verification has been disabled:  -D{}=\"{}\"
+      68: ldc           #182                // String io.netty.handler.ssl.defaultEndpointVerificationAlgorithm
+      70: aload_0
+      71: invokeinterface #188,  4          // InterfaceMethod io/netty/util/internal/logging/InternalLogger.info:(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
+      76: aconst_null
+      77: putstatic     #53                 // Field defaultEndpointVerificationAlgorithm:Ljava/lang/String;
+      80: goto          114
+      83: aload_0
+      84: ifnull        109
+      87: ldc           #189                // String HTTPS
+      89: aload_0
+      90: invokevirtual #185                // Method java/lang/String.equalsIgnoreCase:(Ljava/lang/String;)Z
+      93: ifne          109
+      96: getstatic     #177                // Field logger:Lio/netty/util/internal/logging/InternalLogger;
+      99: ldc           #190                // String Unknown default SSL endpoint verification algorithm: -D{}=\"{}\", will use \"HTTPS\" instead.
+     101: ldc           #182                // String io.netty.handler.ssl.defaultEndpointVerificationAlgorithm
+     103: aload_0
+     104: invokeinterface #191,  4          // InterfaceMethod io/netty/util/internal/logging/InternalLogger.warn:(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
+     109: ldc           #189                // String HTTPS
+     111: putstatic     #53                 // Field defaultEndpointVerificationAlgorithm:Ljava/lang/String;
+     114: return
+    Exception table:
+       from    to  target type
+           8    16    19   Class java/security/cert/CertificateException
+}

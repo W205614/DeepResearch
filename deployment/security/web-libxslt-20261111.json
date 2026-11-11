@@ -1,0 +1,81 @@
+{
+  "schema": "web-signed-libxslt-update-v1",
+  "reviewed_at": "2026-11-11",
+  "platform": "linux/amd64",
+  "previous_version": "1.1.43-r3",
+  "fixed_version": "1.1.43-r4",
+  "fixed_cves": [
+    "CVE-2025-10911",
+    "CVE-2026-9947",
+    "CVE-2026-87636",
+    "CVE-2026-125350"
+  ],
+  "package": {
+    "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/libxslt-1.1.43-r4.apk",
+    "bytes": 129876,
+    "sha256": "40e6cc7d09ce1e69421c2b37e1da4e9afef486843f21c3a79339cd6d93c1c617",
+    "signed_control_checksum": "Q1cyIvzxFSSOgmbmCMwIZKhazZCRw=",
+    "verification": "Both APK and official APKINDEX verified with the unchanged original image Alpine public keys; no allow-untrusted"
+  },
+  "aports_commit": "e85ecba78539486bd0a685963ca5da3e1652fbd0",
+  "source_inputs": [
+    {
+      "name": "libxslt-1.1.43.tar.xz",
+      "bytes": 1518364,
+      "sha256": "5a3d6b383ca5afc235b171118e90f5ff6aa27e9fea3303065231a6d403f0183a",
+      "sha512": "96110b0397a8f5791f489127574e2143845feb61bea0581d7b7e3c1101fd0718483bae81a7ce417b971bd678293bfd95daddad0dadd3e256c87d41a69faed85a"
+    },
+    {
+      "name": "CVE-2025-10911.patch",
+      "bytes": 22984,
+      "sha256": "463aea2eacebcc3f73383828c2c055e05dd9fe5d4a7276c0e1d748c55be1ab02",
+      "sha512": "c452508f6d82636acf8bbb5e78aa8dc26d0de6c5472067ada23d7bc32720e972eaaf69ab2f6ef5b75d958fa5ee6af0b4b62616d402ddd5069e886a3594f4d622"
+    },
+    {
+      "name": "CVE-2026-9947.patch",
+      "bytes": 1448,
+      "sha256": "4dc2f0a0e9c675bd45d39ddb20425e218bf373c937c6ba9e43300d7ab96ee8c0",
+      "sha512": "09f53bbb90a8ac2d6d2df8e028c988042da353a9f71f4f5d4dc83848bf400e9e44632cf60b1a0939272f4009f343ab5c3bbaa8c75a7e32601aa0f37390c6deb4"
+    },
+    {
+      "name": "CVE-2026-87636.patch",
+      "bytes": 1645,
+      "sha256": "dfeb8418499779927a8a9c720c8ee195bf4a4c7d9a1cd55692d4e68b354dbf9e",
+      "sha512": "9d3ef2c71f1423705748a834c859e624300a0395cbc198212c27fb067cd502b1d29eedbe268405c9401f1b577bf103cb5714ea6d7492fa27c1c553d6ccdf2902"
+    },
+    {
+      "name": "CVE-2026-125350.patch",
+      "bytes": 1651,
+      "sha256": "45fcc40a7a9e8e3a83a3d30e0ccd959af2d8b707a6a05246b0a41a2d4613eecc",
+      "sha512": "dc4c07bee877de560797ea29a406542f7e98dd2480e06a33a6c087db1e2104f89ee90d2b29a82a2671a63d6c5405128578de1c10d88d1a41b5a284b88fb8e562"
+    }
+  ],
+  "corresponding_source_supplement": {
+    "file": "libxslt-1.1.43-r4-corresponding-sources.tar.gz",
+    "bytes": 1532377,
+    "sha256": "f994a328c853b027737a4cd2846ac12647973244821ade00480d612942be4af8",
+    "members": 9,
+    "source_only": true,
+    "content": "Complete libxslt1.1.43 source, exact APKBUILD and four patches, original libxslt/libexslt Copyright, source index and README; release availability verified separately"
+  },
+  "actual_update_contract": {
+    "packages_before": 71,
+    "packages_after": 71,
+    "changed_package_only": "libxslt",
+    "expected_changed_paths": [
+      "etc/apk/world",
+      "lib/apk/db/installed",
+      "usr/bin/xsltproc",
+      "usr/lib/libxslt.so.1.1.43",
+      "var/log/apk.log"
+    ],
+    "static_frontend_files_unchanged": 8,
+    "runtime_configuration_unchanged": true,
+    "final_distribution_must_flatten": true
+  },
+  "review_evidence": {
+    "filesystem": "deployment/security/web-libxslt-20261111-evidence/filesystem-difference-contract.json",
+    "known_openssl_paths": "deployment/security/web-libxslt-20261111-evidence/openssl-configured-route-review.json"
+  },
+  "scope": "Native Web repair only; final legal tree, actual final archive scan, Registry pull and whole-stack business acceptance have separate receipts"
+}

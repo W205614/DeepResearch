@@ -135,6 +135,11 @@ def scan_loaded_archive(archive: Path, image: dict, output: Path, *, scanner: st
             raise ValueError("Complete unfiltered publication image scan is required")
         receipt["raw_sha256"] = file_hash(raw)
         verdict = publication_scan_verdict(json.loads(raw.read_bytes()), image, diff_ids, started, finished)
+        receipt.update({key: value for key, value in verdict.items() if key != "passed"})
+        # Keep a complete secret-free report when the exact technical review blocks.
+        if not verdict["unresolved_secret_count"]:
+            raw = raw.rename(output / "raw.json")
+        receipt["raw_file"] = raw.name
         if image.get('security_review_profile'):
             if image['service'] != 'agent' or image['security_review_profile'] != 'agent-full-scope-20261110':
                 raise ValueError('Unknown application-specific technical review')
@@ -154,11 +159,6 @@ def scan_loaded_archive(archive: Path, image: dict, output: Path, *, scanner: st
                 'technical_review': technical,
                 'policy': 'Exact all-severity fixed-code and application-path review; every new finding or changed runtime blocks'}
         receipt.update(verdict)
-        # A raw secret match can contain credential values. Keep it and scanner
-        # logs in the runner's private output, outside the uploaded artifact set.
-        if not verdict["unresolved_secret_count"]:
-            raw = raw.rename(output / "raw.json")
-        receipt["raw_file"] = raw.name
         if not verdict["passed"]:
             raise ValueError("Publication blocked by unresolved all-severity image findings; see verdict.json")
     except (ValueError, KeyError, TypeError, OSError, subprocess.SubprocessError, tarfile.TarError) as error:

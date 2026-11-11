@@ -1,0 +1,83 @@
+{
+  "schema": "web-configured-openssl-advisory-route-review-v1",
+  "intermediate_subject": {
+    "image_id": "sha256:995a53440a4d79be5d88ac18d29c46beb1d72cecf184f832b8bae5ee611f0e2a",
+    "native_inventory_sha256": "04c780c20082bf08d5c7ce5fbf3da8e02626711562a649e6e0deff72215bf2b5"
+  },
+  "primary_advisory_url": "https://openssl-library.org/news/secadv/20261110.txt",
+  "primary_advisory_sha256": "31f4c88950cd9cd310794a218361b787d293a940d2568f9f82334915ac54a402",
+  "primary_source_audit": "OpenSSL primary trigger conditions independently reviewed in the paired Agent source audit; this document measures the separate Web runtime rather than reusing its Agent reachability conclusions.",
+  "risk_acceptance": false,
+  "intrinsic_library_fix_claimed": false,
+  "image_library_presence_not_ignored": true,
+  "configured_entrypoint_facts": {
+    "nginx_listeners": [
+      "80"
+    ],
+    "active_load_module_directives": [],
+    "active_js_tls_acme_directives": [],
+    "openssl_packages": {
+      "libssl3": {
+        "V": "3.5.9-r0",
+        "o": "openssl",
+        "c": "29b9ec24b1b5b39aeef51fa2a044210e2ec5258e"
+      },
+      "libcrypto3": {
+        "V": "3.5.9-r0",
+        "o": "openssl",
+        "c": "29b9ec24b1b5b39aeef51fa2a044210e2ec5258e"
+      }
+    },
+    "openssl_cli_present": false,
+    "curl_has_http3": false,
+    "nginx_compiled_http3": true,
+    "ordinary_proxy_upstream": "http://backend:8080",
+    "maintenance_probe_scheme": "http",
+    "healthcheck_scheme": "http",
+    "cms_importer_present_but_not_loaded": "usr/lib/nginx/modules/ngx_http_acme_module-debug.so",
+    "aes_gcm_siv_implementation_present_in_libcrypto": true,
+    "openssl_quic_implementation_present_in_libssl": true
+  },
+  "findings": [
+    {
+      "id": "CVE-2026-88822",
+      "upstream_severity": "Low",
+      "required_trigger": "OpenSSL QUIC client peer-address discovery",
+      "decision": "TRIGGER_NOT_IN_BOUND_CURRENT_WEB_APPLICATION_PATH",
+      "basis": "Only TCP80 is listening; no UDP socket, no OpenSSL QUIC-client constructor import outside the implementation, and curl lacks HTTP3. Nginx has a compiled HTTP3 module but current config does not enable it."
+    },
+    {
+      "id": "CVE-2026-95691",
+      "upstream_severity": "Low",
+      "required_trigger": "OpenSSL QUIC client CRYPTO retransmission processing",
+      "decision": "TRIGGER_NOT_IN_BOUND_CURRENT_WEB_APPLICATION_PATH",
+      "basis": "The same current QUIC-client entry path is absent. This does not assert that OpenSSL QUIC code is absent or repaired."
+    },
+    {
+      "id": "CVE-2026-88823",
+      "upstream_severity": "Low",
+      "required_trigger": "AES-GCM-SIV multi-part AAD including an empty update",
+      "decision": "TRIGGER_NOT_IN_BOUND_CURRENT_WEB_APPLICATION_PATH",
+      "basis": "The libraries retain AES-GCM-SIV. The configured Web path serves plain HTTP and proxies plain HTTP; no JS or other dynamic module is loaded and no application endpoint selects an arbitrary EVP cipher or supplies AAD."
+    },
+    {
+      "id": "CVE-2026-95692",
+      "upstream_severity": "Low",
+      "required_trigger": "AES-GCM-SIV initialization using an IV length other than 12 bytes",
+      "decision": "TRIGGER_NOT_IN_BOUND_CURRENT_WEB_APPLICATION_PATH",
+      "basis": "No current Web API supplies cipher names or IVs to EVP; this is a current application-route conclusion, not a claim that the installed primitive is fixed."
+    },
+    {
+      "id": "CVE-2026-107496",
+      "upstream_severity": "Low",
+      "required_trigger": "CMS encryption to a hostile EC recipient certificate",
+      "decision": "TRIGGER_NOT_IN_BOUND_CURRENT_WEB_APPLICATION_PATH",
+      "basis": "An ACME debug module imports CMS_encrypt and is retained in the inventory. It is not loaded by current config or master maps. There is no openssl CLI, active ACME/JS workflow or configured CMS-encryption endpoint."
+    }
+  ],
+  "reuse_conditions": [
+    "Final flattened image retains these exact nonlegal native files, Nginx configuration and command/environment contract; verify its actual final identity.",
+    "Current deployment retains cleartext internal HTTP80/HTTP backend and the identified health command; new TLS/QUIC, dynamic modules, JS, ACME/CMS or custom native/CLI workflows require reassessment."
+  ],
+  "boundary": "Installed OpenSSL3.5.9 is not said to contain the announced fixes. General library capabilities and arbitrary future operator-created programs/configuration are not certified. This review does not suppress or change raw scanner results."
+}

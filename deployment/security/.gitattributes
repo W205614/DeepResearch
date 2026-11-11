@@ -1,4 +1,11 @@
 /grafana-source-candidate4-review-20261107.json -text whitespace=cr-at-eol
+/agent-full-scope-evidence-20261111.json -text whitespace=cr-at-eol
+/agent-openssl-20261111-evidence/** -text whitespace=cr-at-eol
+/backend-openssl-20261111-evidence/** -text whitespace=cr-at-eol
+# Preserve the exact JDK javap tableswitch output, including emitted CR bytes.
+/backend-openssl-20261111-evidence/critical-bytecode/io_netty_handler_ssl_SslContext.class.javap.txt -whitespace
+/web-libxslt-20261111-evidence/** -text whitespace=cr-at-eol
+/web-libxslt-20261111.json -text whitespace=cr-at-eol
 /grafana-source-candidate4-evidence-20261107/actual-validation-image-elf-binding.json -text whitespace=cr-at-eol
 /grafana-source-candidate4-evidence-20261107/actual-validation-image-inspect.json -text whitespace=cr-at-eol
 

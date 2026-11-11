@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 import hashlib
 import io
 import json
+from pathlib import Path
 import subprocess
 import tarfile
 
@@ -118,7 +119,7 @@ def decide(inputs, *, scan_source="docker"):
 
 def test_exact_review_keeps_original_findings_and_is_not_raw_zero(reviewed_inputs):
     verdict = decide(reviewed_inputs)
-    assert verdict["passed"] and verdict["raw_findings"] == 83
+    assert verdict["passed"] and verdict["raw_findings"] == 88
     assert verdict["unresolved_applicable_findings"] == 0
     assert not verdict["raw_zero_claim"] and not verdict["risk_acceptance"]
 
@@ -224,6 +225,23 @@ def test_profile_is_explicit_and_source_evidence_is_pinned(tmp_path, monkeypatch
     changed.write_text(json.dumps({"risk_acceptance": True}))
     monkeypatch.setattr(gate, "PROFILE_PATH", changed)
     with pytest.raises(ValueError, match="profile changed"):
+        gate.load_profile(gate.PROFILE_NAME)
+
+
+@pytest.mark.parametrize("target", ["review", "support"])
+def test_new_openssl_review_and_supporting_evidence_are_pinned(monkeypatch, target):
+    profile = gate.load_profile(gate.PROFILE_NAME)
+    review_path = gate.ROOT / profile["source_review_evidence"]["path"]
+    review = json.loads(review_path.read_bytes())
+    changed = review_path if target == "review" else gate.ROOT / review["additional_evidence_files"][0]["path"]
+    original = Path.read_bytes
+
+    def read_bytes(path):
+        raw = original(path)
+        return raw + b"changed" if path == changed else raw
+
+    monkeypatch.setattr(Path, "read_bytes", read_bytes)
+    with pytest.raises(ValueError, match="source evidence changed"):
         gate.load_profile(gate.PROFILE_NAME)
 
 

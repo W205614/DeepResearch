@@ -478,7 +478,7 @@
     "scripts/scan_grafana_source_20261110.py": "b8dba2c4190ad1196d02e5e213ca63312ddaa3e0f0fa5772f3f64fcf1b59824b",
     "scripts/check_grafana_source_scan_20261110.py": "27bd5634a9e521c03c92fd357fc1b3a9bf47e93e43da5a5b357169a7c976be4d",
     "scripts/grafana_source_context_20261110.py": "04eb0e8985c5cb58edfd7267672f1ca38f371dfa32d7125d8fad93bd8fc7d3bd",
-    "scripts/publish_application_packages.py": "53322d73aa16528bda4d12fc94b10608f00e3aedca8dc11b86115252f3cf3161",
+    "scripts/publish_application_packages.py": "e3dd3c67fc236eab1342a97609b444088e3d7cf2c5b22ca73e6881a2dc6e8d50",
     "scripts/grafana_source_build_facts_20261110.py": "8e3df74a0142de5b85e50f764a919725113525bd2c9dc1b5c11c57a1d697fa19",
     "scripts/runtime_ci_inventory.py": "0c12bebe53c8b8ed03c276d29136a15e0084f69213644d941108b9cb0a88a844",
     "compose.yaml": "c8b0e862f51e8df6ec8ddf8254656491a939cbb9bf9231d31b545d449df7dc0e",
@@ -492,7 +492,13 @@
     "deployment/security/grafana-source-20261110-evidence/runtime/canonical-file-modes-20261110.json": "82096cbb5ad2dd03cbd688011c42c8ba9893c0a5d5b9075ffb2b4e856a29e20f",
     "deployment/security/grafana-source-20261110-evidence/runtime/canonical-fresh-scan-facts-20261110.json": "eabd9755a597a74e3251428b0d9c5331b692b309f5223f433ddc893cae90ab9b",
     "deployment/security/grafana-source-20261110-evidence/review-runtime-c.json": "b9c00e555c1b0c3cc358e6df3799ad923778c84a084af0fa75f7a3407f46bc83",
-    "deployment/security/grafana-source-20261110-evidence/review-runtime-d.json": "9a255c228ffd993f1c53a89ee4fce196469f1958f24d0167adcb3db2452a0497"
+    "deployment/security/grafana-source-20261110-evidence/review-runtime-d.json": "9a255c228ffd993f1c53a89ee4fce196469f1958f24d0167adcb3db2452a0497",
+    "deployment/security/grafana-source-20261110-evidence/openssl-known-paths-review.json": "9ac6f70977c540257a011f1f15a143ee8debaee6ca92504a369b5975f839654d",
+    "deployment/security/grafana-source-20261110-evidence/openssl-known-native-inventory.json": "54d8b0a92ec908d91c6fb30648f376e13f85ebb0da7910810b117b0ab3be184e",
+    "deployment/security/grafana-source-20261110-evidence/openssl-known-go-closure.json": "57a6e472df930b22f4256ac68b632fee7c197f555142650ba614648af02e0900",
+    "deployment/security/grafana-source-20261110-evidence/openssl-known-probe-facts.json": "a3a464fe51ada246d33bef7144a8c49bb05c6c806e0e54df45c6a293218e4a2a",
+    "deployment/security/grafana-source-20261110-evidence/review-runtime-e.json": "93665e9aded09097800e2b4805cfe0605a1b3c5ce0956fe6f7cb2484fbfaec70",
+    "deployment/security/grafana-source-20261110-evidence/review-runtime-f.json": "c1cd510aa77c1b4e63dbbd47a555d9690953fa047944d63a5aa47657c9a94f1d"
   },
   "expected": {
     "native_sha256": {
@@ -6288,8 +6294,8 @@
     ]
   },
   "independent_reviews": [
-    "deployment/security/grafana-source-20261110-evidence/review-runtime-c.json",
-    "deployment/security/grafana-source-20261110-evidence/review-runtime-d.json"
+    "deployment/security/grafana-source-20261110-evidence/review-runtime-e.json",
+    "deployment/security/grafana-source-20261110-evidence/review-runtime-f.json"
   ],
   "facts_collected_at_utc": "2026-11-10T10:31:26.014140+00:00",
   "binary_redistribution_approved": false,

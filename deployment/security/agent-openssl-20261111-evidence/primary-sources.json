@@ -1,0 +1,88 @@
+{
+  "schema": "agent-openssl-primary-sources-v1",
+  "sources": [
+    {
+      "name": "CVE-2026-107496.html",
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-107496",
+      "sha256": "915be2fa4b791c7a44e9df46b38997a4e0dc3c5cefaed8154690a54522d6900d",
+      "bytes": 4018
+    },
+    {
+      "name": "CVE-2026-107496.patch",
+      "url": "https://github.com/openssl/openssl/commit/a0051cfe699bf5a047bc1c4faef65f80f7987366.patch",
+      "sha256": "77d3759d279c71af59629c4a0fa82d8272a099762f2fa9e3f66d7ca5ed544157",
+      "bytes": 3375
+    },
+    {
+      "name": "CVE-2026-88822.html",
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-88822",
+      "sha256": "66926d3ed1e542181ce8fd8d5be2715ee2e6238ddcb7d56df33e0a0575ea30f9",
+      "bytes": 3998
+    },
+    {
+      "name": "CVE-2026-88822.patch",
+      "url": "https://github.com/openssl/openssl/commit/1a73dc590cbad62d6f0329ea4779eadaa8d8fd75.patch",
+      "sha256": "50f7cc52fb146703379ca043d17e204c4fda99c684efe3db6d6f3ae1d175bd2a",
+      "bytes": 2321
+    },
+    {
+      "name": "CVE-2026-88823.html",
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-88823",
+      "sha256": "0c60ae67278cfb56899fe587aff119de24db43c01ad1d00a956f5a6a397aa407",
+      "bytes": 3998
+    },
+    {
+      "name": "CVE-2026-88823.patch",
+      "url": "https://github.com/openssl/openssl/commit/159e1de0c448d7b9f09ad768c8e141def4aa1eb4.patch",
+      "sha256": "a945077c0a978dbfe5af5e4f7174a2151466547f8fb94562f395baa7b6b7c147",
+      "bytes": 3483
+    },
+    {
+      "name": "CVE-2026-95691.html",
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-95691",
+      "sha256": "9bd17c492e8e5852fbd4312e90febbe0e82e68c3ad6b130f576c486db637b13a",
+      "bytes": 3998
+    },
+    {
+      "name": "CVE-2026-95691.patch",
+      "url": "https://github.com/openssl/openssl/commit/f6244675833e097c2429a40d1b206d95385bd42f.patch",
+      "sha256": "93d8e82fdc995172a6d5cc6952491658106191bd5ac221d34596adbddfcd1afe",
+      "bytes": 7377
+    },
+    {
+      "name": "CVE-2026-95692.html",
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-95692",
+      "sha256": "99a3ed7e4664a421d13dd18b010997e8755f51be0a390a71b8b7ebe9cffe64cf",
+      "bytes": 3998
+    },
+    {
+      "name": "CVE-2026-95692.patch",
+      "url": "https://github.com/openssl/openssl/commit/257a3427aa0ef8d9dd2ef5b3e2d1c021a221b116.patch",
+      "sha256": "0e328604c0038de6629a29322ae5f02d2f5f5128c2625b57ca64262efab99e05",
+      "bytes": 2100
+    },
+    {
+      "name": "openssl-advisory-20261110.txt",
+      "url": "https://openssl-library.org/news/secadv/20261110.txt",
+      "sha256": "31f4c88950cd9cd310794a218361b787d293a940d2568f9f82334915ac54a402",
+      "bytes": 11780
+    }
+  ],
+  "fix_commits_3_5": {
+    "CVE-2026-88823": "159e1de0c448d7b9f09ad768c8e141def4aa1eb4",
+    "CVE-2026-107496": "a0051cfe699bf5a047bc1c4faef65f80f7987366",
+    "CVE-2026-88822": "1a73dc590cbad62d6f0329ea4779eadaa8d8fd75",
+    "CVE-2026-95691": "f6244675833e097c2429a40d1b206d95385bd42f",
+    "CVE-2026-95692": "257a3427aa0ef8d9dd2ef5b3e2d1c021a221b116"
+  },
+  "quic_method_documentation": {
+    "url": "https://docs.openssl.org/3.5/man3/OSSL_QUIC_client_method/",
+    "finding": "QUIC support requires selecting the OSSL_QUIC SSL_METHOD family for SSL_CTX_new_ex."
+  },
+  "cpython_source_url": "https://github.com/python/cpython/blob/v3.11.18/Modules/_ssl.c",
+  "cryptography_api_urls": [
+    "https://cryptography.io/en/50.0.1/hazmat/primitives/aead/#cryptography.hazmat.primitives.ciphers.aead.AESGCMSIV",
+    "https://cryptography.io/en/50.0.1/hazmat/primitives/asymmetric/serialization/#cryptography.hazmat.primitives.serialization.pkcs7.PKCS7EnvelopeBuilder"
+  ],
+  "copyright_boundary": "Only source URLs/digests and own-word findings are published. Original advisory/HTML/patch snapshots remain in the private audit workspace."
+}

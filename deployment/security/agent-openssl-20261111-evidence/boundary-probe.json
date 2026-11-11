@@ -1,0 +1,34 @@
+{
+  "python_version": "3.11.18 (main, Nov  8 2026, 11:17:56) [GCC 14.2.0]",
+  "cryptography_version": "50.0.1",
+  "aes_gcm_siv_nonce_rejections": [
+    {
+      "nonce_bytes": 0,
+      "rejected": true,
+      "message": "Nonce must be 12 bytes long"
+    },
+    {
+      "nonce_bytes": 11,
+      "rejected": true,
+      "message": "Nonce must be 12 bytes long"
+    },
+    {
+      "nonce_bytes": 13,
+      "rejected": true,
+      "message": "Nonce must be 12 bytes long"
+    },
+    {
+      "nonce_bytes": 16,
+      "rejected": true,
+      "message": "Nonce must be 12 bytes long"
+    }
+  ],
+  "aes_gcm_siv_12_byte_roundtrip": true,
+  "aes_gcm_siv_incremental_update_methods": [],
+  "pkcs7_ec_recipient_rejected_before_encryption": {
+    "rejected": true,
+    "message": "Only RSA keys are supported at this time."
+  },
+  "network_calls": 0,
+  "provider_calls": 0
+}

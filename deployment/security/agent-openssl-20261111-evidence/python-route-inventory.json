@@ -1,0 +1,59 @@
+{
+  "schema": "agent-openssl-python-routes-v1",
+  "python_source_closure": {
+    "files": 5972,
+    "sha256": "5cabbf1da9d5ef348e88a51d68109855fad3f6c58a2d918f174a5f5805606921"
+  },
+  "patterns": "CMS_encrypt|PKCS7EnvelopeBuilder|AESGCMSIV|GCM[-_]SIV|OSSL_QUIC|SSL_set1_initial_peer_addr|SSL_new_stream|SSL_handle_events|SSL_poll|aioquic|http3 (case insensitive)",
+  "matches": [
+    {
+      "path": "/opt/venv/lib/python3.11/site-packages/cryptography/hazmat/primitives/ciphers/aead.py",
+      "sha256": "173972c7bc3c29841a9330e9d735a026722beb6ce066b815875bb68787b1079e",
+      "matching_lines": [
+        {
+          "line": 12,
+          "text": "    \"AESGCMSIV\","
+        },
+        {
+          "line": 23,
+          "text": "AESGCMSIV = rust_openssl.aead.AESGCMSIV"
+        }
+      ]
+    },
+    {
+      "path": "/opt/venv/lib/python3.11/site-packages/cryptography/hazmat/primitives/serialization/pkcs7.py",
+      "sha256": "98533b385b99f1c0b1506528a380a87fa06708773f21bc750108e37f19cf971a",
+      "matching_lines": [
+        {
+          "line": 189,
+          "text": "class PKCS7EnvelopeBuilder:"
+        },
+        {
+          "line": 212,
+          "text": "    def set_data(self, data: bytes) -> PKCS7EnvelopeBuilder:"
+        },
+        {
+          "line": 217,
+          "text": "        return PKCS7EnvelopeBuilder("
+        },
+        {
+          "line": 226,
+          "text": "    ) -> PKCS7EnvelopeBuilder:"
+        },
+        {
+          "line": 233,
+          "text": "        return PKCS7EnvelopeBuilder("
+        },
+        {
+          "line": 244,
+          "text": "    ) -> PKCS7EnvelopeBuilder:"
+        },
+        {
+          "line": 253,
+          "text": "        return PKCS7EnvelopeBuilder("
+        }
+      ]
+    }
+  ],
+  "interpretation": "The only matching files are cryptography API definitions/aliases, not application/dependency call sites; this is combined with the native binding graph and actual wrapper contracts."
+}

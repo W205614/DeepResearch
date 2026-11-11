@@ -1,8 +1,26 @@
 # 应用镜像的全级别安全复核
 
-核对日期：2026-11-10。当前默认分支的 70 条 Code scanning 告警已逐项处置，见[原登记与证据](security-alert-review-20261110.md)。它们与下面的镜像扫描属于不同范围。Secret scanning 当前活动项为 0；Dependabot 页面显示未启用，不能写作扫描后为 0。
+核对日期：2026-11-11。当前默认分支的 70 条 Code scanning 告警已逐项处置，见[原登记与证据](security-alert-review-20261110.md)。它们与下面的镜像扫描属于不同范围。Secret scanning 当前活动项为 0；Dependabot 页面显示未启用，不能写作扫描后为 0。
 
-## 公开制品与尚未完成的门槛
+## 2026-11-11 增量复核与真实修复
+
+[`v0.1.2`](https://github.com/W205614/DeepResearch/releases/tag/v0.1.2) 已公开，源码 Tag 为 `488550ecb61e7f369dd4967c7fa35e4c64369e75`；该提交的 [CI](https://github.com/W205614/DeepResearch/actions/runs/42827369515) 全部 4 项及 [Security](https://github.com/W205614/DeepResearch/actions/runs/42827369414) 全部 22 项成功。其 1,227,806,395 字节对应源码已实际匿名完整取回，全部 74 分片、整包 SHA-256、索引成员与嵌套归档通过，原始断流及分段恢复记录保留。
+
+随后新官方漏洞库增加了告警。[Packages 作业](https://github.com/W205614/DeepResearch/actions/runs/42953274265) 在精确元组检查处失败，尚未执行 Registry 推送。本机使用同一候选与最新官方库独立复现，不能把旧库通过写成新库通过。这个云端失败的原始扫描当时只留在临时 runner，已上传的是失败裁决和日志；发布器现补正为在确认扫描完整且 secret 为 0 后保存未改写的公开 raw，即使后续技术复核失败也保留诊断。含 secret 的 raw 仍不公开。定向反例还复现了 raw-zero 初步结果可能在技术复核中断前提前写入通过状态的问题；现仅在完整技术复核结束后记录通过，`KeyboardInterrupt` 与 `RuntimeError` 均保留失败收据并传播，不执行推送。
+
+Agent 原 83 条全部保留，新增 5 条 OpenSSL `UNKNOWN`，合计 88 条（3 HIGH、57 MEDIUM、23 LOW、5 UNKNOWN）。[新增逐项证据](../deployment/security/agent-openssl-20261111-evidence/new-findings-source-review.json)区分 Debian 系统库、cryptography 和 psycopg 的私有实现，核对 515 ELF、5972 Python 文件、实际 TLS method、真实 nonce／EC recipient 边界及当前调用方。新正式门槛实际通过，适用未解决 0、secret 0；默认 raw-zero 仍失败。原始级别和上游“包仍受影响、未发行固定版”的事实保留，结论仅为这五个触发路径不在精确当前应用中，不是 OpenSSL 已修复。
+
+Web 的新库结果是 libxslt 四条告警（2 HIGH、1 MEDIUM、1 UNKNOWN）。[官方签名 `1.1.43-r4` 更新](../deployment/security/web-libxslt-20261111.json)真实替换原生实现和 APK 元数据，完整运行树只有五个预期路径变化，71 个包中仅该包升级，八个静态前端文件与运行配置保持。四补丁按准确 APKBUILD 顺序零 fuzz 应用；实际 XSLT／EXSLT、Nginx 配置和静态文件 HTTP 检查通过。修复中间镜像全级别 raw 与 secret 为 0；最终镜像仍须扁平化、更新法律／源码索引、复扫并完成整栈验收，不能直接发布继承旧层的中间镜像。
+
+Backend 使用最新漏洞库及最新 Java 识别库复扫，raw 与 secret 为 0。另按已知 OpenSSL 公告补核未被 Alpine 库报告的路径：[Backend 证据](../deployment/security/backend-openssl-20261111-evidence/review.json)保留其确实存在的通用 OpenSSL CLI，核对 91 ELF、97 JAR 全部 26717 条目、61 业务 class、34 源码指纹及真实 JDK TLS；[Web 证据](../deployment/security/web-libxslt-20261111-evidence/openssl-configured-route-review.json)保留已编译的 HTTP/3 及 ACME CMS 调用模块，核对当前实际 HTTP80、无 UDP、无动态模块映射的进程。两者只得出当前配置／业务调用路径不适用，未声称整个镜像没有相应实现。手工 CLI、新 provider／JNI、TLS／QUIC／ACME 配置或入口改变均须重新评估。
+
+Web 发生真实二进制修复，因此使用新修复版本 `v0.1.3`，不移动或覆盖已公开的 `v0.1.2`；这不是为验证轮次创建版本。未变的 Agent／Backend 只在 config 与所有实际层完全一致时复用，原 OCI 来源、NOTICE 与两次真实官方 API 记录保留原身份。新版本引用固定旧完整源码，再补 r4 完整源码与新工程归档，明确 reference 模式，不把小补充包称为自包含所有旧材料。最终工程 CI、组合核心、实际 Packages 拉取和日常升级属于各自验收收据，不能由本节本地成功替代。
+
+Grafana 对同一已验收镜像另核对上述五项 OpenSSL 公告：[当前路径证据](../deployment/security/grafana-source-20261110-evidence/openssl-known-paths-review.json)覆盖完整 97 ELF、14 个 Go 制品及其编译图、实际 curl 能力、入口和配置，以及只读挂载得到的当前两项浏览器插件清单。库仍受影响，没有称作二进制修复。两个 AI 代理分别交叉核对实际字节、完整清单和调用路径，再对新增证据及发布器修复后的精确 subject 作增量复核；这不等于独立人工审查或第三方二进制重分发批准。原审查、失败与原始扫描保留，不把旧 subject 的结论直接套到新源码上。
+
+下文保留 2026-11-10 各阶段基线、原始扫描及失败范围；最终交付版本和镜像对应关系以[版本说明](container-packages.md)为准。
+
+## 2026-11-10 的公开制品基线
 
 本轮使用无凭据 Docker 配置，重新匿名拉取三个已发布 `v0.1.1` 的不可变 digest，核对 manifest、config 与解压层身份，再用固定 Trivy 0.75.0、空配置和空 ignore 执行全部严重级别的漏洞与秘密扫描。扫描器成功不代表漏洞为零。
 
@@ -46,4 +64,4 @@ Agent 配方将 glibc 从 Debian 13 基础层的 2.41 更新为官方 `2.43-7`�
 
 该提交的 Security 整体仍失败：两次干净 runner 的 Grafana 构建虽有相同的 85 项输入摘要、14 个 ELF 和运行配置，完整文件清单因权限差异被严格门槛拒绝。Windows 传入的 66 个新增源码、许可证及归档文件为 `0755`，Linux Git 检出为 `0644`。配方现只固定这两棵材料树和单个来源锁文件的权限；两个可执行文件、继承的插件清单、所有文件内容及其他清单字段保持。[实际修正构建的完整清单](../deployment/security/grafana-source-20261110-evidence/runtime/canonical-file-modes-20261110.json)与两次干净 CI 的 `d0707a9f…` 精确相同。没有忽略模式字段或放松门槛。
 
-CI 同时保留完整文件清单作为 JSON 诊断证据，不上传新第三方镜像二进制。普通版本的候选归档标签绑定源码 SHA 前 12 位，避免修复轮次覆盖此前本机候选；公开 Registry 仍只使用正式版本号，历史 artifact 规则保持。修正后的最终工程 CI、应用候选及公开发布验收尚待完成，不能把上述权限复现写成最终 CI 已通过。
+CI 同时保留完整文件清单作为 JSON 诊断证据，不上传新第三方镜像二进制。普通版本的候选归档标签绑定源码 SHA 前 12 位，避免修复轮次覆盖此前本机候选；公开 Registry 仍只使用正式版本号，历史 artifact 规则保持。随后 `488550e` 的实际 CI／Security 全部成功，最终候选完成相应本地复核；11 月 11 日新漏洞库的增量与 Packages 阻断另见上方记录。不同阶段的失败和通过不合并为同一次验证。

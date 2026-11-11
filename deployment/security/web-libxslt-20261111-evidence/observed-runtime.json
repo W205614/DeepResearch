@@ -1,0 +1,102 @@
+{
+  "schema": "web-libxslt-r4-observed-runtime-v1",
+  "intermediate_image_id": "sha256:995a53440a4d79be5d88ac18d29c46beb1d72cecf184f832b8bae5ee611f0e2a",
+  "readonly_network_none": true,
+  "real_libxslt_exslt_basic_transform_passed": true,
+  "actual_transform_result": "<result name=\"DeepResearch\" count=\"2\">verified</result>",
+  "nginx_config_test_passed": true,
+  "nginx_local_liveness_passed": true,
+  "actual_wget_client_local_liveness_passed": true,
+  "established_compose_healthcheck": {
+    "Test": [
+      "CMD",
+      "wget",
+      "-q",
+      "-O",
+      "/dev/null",
+      "http://127.0.0.1/healthz"
+    ],
+    "Interval": 15000000000,
+    "Timeout": 5000000000,
+    "Retries": 5
+  },
+  "full_backend_healthcheck_executed_in_this_probe": false,
+  "backend_healthcheck_boundary": "/healthz requires real backend dependencies; this probe covers actual wget client on the independent local nginx-livez endpoint and static application content only",
+  "actual_http_static_hashes": [
+    {
+      "path": "usr/share/nginx/html/50x.html",
+      "http_exit_code": 0,
+      "bytes": 497,
+      "expected_sha256": "876766b4e80133fd490603e073d3567425b88794828a9292104244c9e40875ed",
+      "actual_sha256": "876766b4e80133fd490603e073d3567425b88794828a9292104244c9e40875ed"
+    },
+    {
+      "path": "usr/share/nginx/html/assets/index-D4IdCRMA.css",
+      "http_exit_code": 0,
+      "bytes": 34766,
+      "expected_sha256": "3e9e34e4010cef323fad0a9278393cabce4700b12409be276d64117b5e8728c7",
+      "actual_sha256": "3e9e34e4010cef323fad0a9278393cabce4700b12409be276d64117b5e8728c7"
+    },
+    {
+      "path": "usr/share/nginx/html/assets/index-hx3C9Qet.js",
+      "http_exit_code": 0,
+      "bytes": 262376,
+      "expected_sha256": "f7c25d6400562e2d120ba6a7d9f0abc707e2eba9a56fe43c97ef3d8bd8fa64cb",
+      "actual_sha256": "f7c25d6400562e2d120ba6a7d9f0abc707e2eba9a56fe43c97ef3d8bd8fa64cb"
+    },
+    {
+      "path": "usr/share/nginx/html/favicon.svg",
+      "http_exit_code": 0,
+      "bytes": 271,
+      "expected_sha256": "e15d2ec2b608e62a8971c07807937daf0e6fa34093c951e372c6c23c84d525c8",
+      "actual_sha256": "e15d2ec2b608e62a8971c07807937daf0e6fa34093c951e372c6c23c84d525c8"
+    },
+    {
+      "path": "usr/share/nginx/html/fonts/OFL.txt",
+      "http_exit_code": 0,
+      "bytes": 4402,
+      "expected_sha256": "46ba5f18ee20ea529f21d96c0ef8637a8314c1a5cfb2aa84018bc8157cbeff41",
+      "actual_sha256": "46ba5f18ee20ea529f21d96c0ef8637a8314c1a5cfb2aa84018bc8157cbeff41"
+    },
+    {
+      "path": "usr/share/nginx/html/fonts/README.txt",
+      "http_exit_code": 0,
+      "bytes": 229,
+      "expected_sha256": "d6692cc369f555571ba15b76cbcde94b493c01e5ac92fe512a5f4c36ee8116dc",
+      "actual_sha256": "d6692cc369f555571ba15b76cbcde94b493c01e5ac92fe512a5f4c36ee8116dc"
+    },
+    {
+      "path": "usr/share/nginx/html/fonts/bricolage-grotesque-latin.woff2",
+      "http_exit_code": 0,
+      "bytes": 41344,
+      "expected_sha256": "a97804dc9fbe5fc972a08018c5eda4dab7ef2346f64c57e61419d05e6de4ea1c",
+      "actual_sha256": "a97804dc9fbe5fc972a08018c5eda4dab7ef2346f64c57e61419d05e6de4ea1c"
+    },
+    {
+      "path": "usr/share/nginx/html/index.html",
+      "http_exit_code": 0,
+      "bytes": 669,
+      "expected_sha256": "c65b3c9d28e8c73ee72739451d32060f5fb1ed42d4369a04ca54fdd66d693797",
+      "actual_sha256": "c65b3c9d28e8c73ee72739451d32060f5fb1ed42d4369a04ca54fdd66d693797"
+    }
+  ],
+  "actual_master_mapped_files": [
+    "/lib/ld-musl-x86_64.so.1",
+    "/usr/lib/libcrypto.so.3",
+    "/usr/lib/libpcre2-8.so.0.16.1",
+    "/usr/lib/libssl.so.3",
+    "/usr/lib/libz.so.1.4",
+    "/usr/sbin/nginx"
+  ],
+  "actual_dynamic_nginx_modules_mapped": [],
+  "actual_listening_tcp_sockets": [
+    {
+      "table": "tcp",
+      "port": 80,
+      "address": "00000000"
+    }
+  ],
+  "actual_udp_sockets": [],
+  "initial_probe_failure_preserved": "Probe incorrectly expected image-level Healthcheck; KeyError was preserved and fixed by identifying the real Compose wget check. Nginx local health/config already passed; no application success was fabricated. Full backend check remains for the parent stack acceptance.",
+  "all_owned_probes_removed": true
+}

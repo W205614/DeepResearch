@@ -1,0 +1,154 @@
+{
+  "schema": "grafana-known-openssl-path-review-20261111-v1",
+  "recorded_at_utc": "2026-11-11T05:12:39.839509+00:00",
+  "actor": "/root/openssl_new_findings_20261111",
+  "actor_kind": "AI technical fact contributor, also contributed prior Agent OpenSSL analysis; not an independent human or legal reviewer",
+  "facts_passed": true,
+  "binary_fixed_claim": false,
+  "risk_acceptance": false,
+  "human_review": false,
+  "binary_redistribution_approved": false,
+  "image_id": "sha256:476eb9c63518bf1bd5776e66d15cdbe4198aea97201cc46902ceed16ec893f7c",
+  "portable_config_digest": "sha256:57a5e02c69079fdb0e623fdbd642bd979a131f544d6b1a5c8c889c42a14a3984",
+  "complete_runtime_manifest_sha256": "d0707a9f15c66427df74f6c39daa3836dc47d294cc9fdf971e976b7a7c360010",
+  "complete_runtime_records": 15694,
+  "complete_native_elf_count": 97,
+  "openssl_packages": [
+    {
+      "P": "libcrypto3",
+      "V": "3.5.9-r0",
+      "o": "openssl",
+      "c": "29b9ec24b1b5b39aeef51fa2a044210e2ec5258e"
+    },
+    {
+      "P": "libssl3",
+      "V": "3.5.9-r0",
+      "o": "openssl",
+      "c": "29b9ec24b1b5b39aeef51fa2a044210e2ec5258e"
+    }
+  ],
+  "affected_library_still_present": true,
+  "library_sha256": {
+    "usr/lib/libcrypto.so.3": "bb2d86be6845456696f90f0948b6de6369f66612b7cf3ffa755e664436fdbc88",
+    "usr/lib/libssl.so.3": "ed8d30405217b3904a8df9ac311002d0ae43df516e60c5b3a8a998eda68ee340"
+  },
+  "upstream_status": {
+    "official_advisory": "https://openssl-library.org/news/secadv/20261110.txt",
+    "official_advisory_snapshot_sha256": "31f4c88950cd9cd310794a218361b787d293a940d2568f9f82334915ac54a402",
+    "official_catalog": "https://openssl-library.org/news/vulnerabilities-3.5/",
+    "severity": "LOW upstream; original scanner severity/absence is not modified",
+    "fix_release_boundary": "OpenSSL 3.5.10 is scheduled for 2026-12-01; no claim that 3.5.9-r0 includes these fixes."
+  },
+  "findings": [
+    {
+      "id": "CVE-2026-88822",
+      "trigger_summary": "QUIC automatic peer-address detection.",
+      "upstream_3_5_fix_commit": "1a73dc590cbad62d6f0329ea4779eadaa8d8fd75",
+      "current_path_basis": "No external ELF imports QUIC constructors or peer-address APIs. curl reports no HTTP3; ssl_client/libapk select ordinary TLS methods. Fourteen Go binaries use Go TLS, not OpenSSL.",
+      "disposition": "NOT_AFFECTED_FUNCTION_NOT_IN_CURRENT_APPLICATION_PATH",
+      "library_affected": true,
+      "library_fixed": false
+    },
+    {
+      "id": "CVE-2026-95691",
+      "trigger_summary": "QUIC CRYPTO-frame retransmission ownership.",
+      "upstream_3_5_fix_commit": "f6244675833e097c2429a40d1b206d95385bd42f",
+      "current_path_basis": "Same exact QUIC constructor exclusion, not a generic TLS-client exemption.",
+      "disposition": "NOT_AFFECTED_FUNCTION_NOT_IN_CURRENT_APPLICATION_PATH",
+      "library_affected": true,
+      "library_fixed": false
+    },
+    {
+      "id": "CVE-2026-88823",
+      "trigger_summary": "AES-GCM-SIV repeated or empty incremental AAD and context reuse.",
+      "upstream_3_5_fix_commit": "159e1de0c448d7b9f09ad768c8e141def4aa1eb4",
+      "current_path_basis": "No external ELF carries GCM-SIV algorithm strings or selects that algorithm. Ordinary TLS ciphers do not select GCM-SIV. Main and plugins use Go crypto; no current entrypoint invokes OpenSSL encryption tools.",
+      "disposition": "NOT_AFFECTED_FUNCTION_NOT_IN_CURRENT_APPLICATION_PATH",
+      "library_affected": true,
+      "library_fixed": false
+    },
+    {
+      "id": "CVE-2026-95692",
+      "trigger_summary": "AES-GCM-SIV initialization with a non-12-byte IV.",
+      "upstream_3_5_fix_commit": "257a3427aa0ef8d9dd2ef5b3e2d1c021a221b116",
+      "current_path_basis": "Same exact GCM-SIV selection exclusion; no current application nonce is passed to this OpenSSL provider path.",
+      "disposition": "NOT_AFFECTED_FUNCTION_NOT_IN_CURRENT_APPLICATION_PATH",
+      "library_affected": true,
+      "library_fixed": false
+    },
+    {
+      "id": "CVE-2026-107496",
+      "trigger_summary": "CMS encryption to specially crafted EC recipients can loop in key generation.",
+      "upstream_3_5_fix_commit": "a0051cfe699bf5a047bc1c4faef65f80f7987366",
+      "current_path_basis": "No external ELF imports CMS_encrypt or CMS_encrypt_ex; no openssl CLI exists. Main smallstep/pkcs7 is pure Go. Current entrypoint does not execute a CMS tool.",
+      "disposition": "NOT_AFFECTED_FUNCTION_NOT_IN_CURRENT_APPLICATION_PATH",
+      "library_affected": true,
+      "library_fixed": false
+    }
+  ],
+  "native_consumers": {
+    "ordinary_tls_consumers": [
+      "usr/bin/ssl_client",
+      "usr/lib/libapk.so.3.0.0",
+      "usr/lib/libcurl.so.4.8.0"
+    ],
+    "certificate_hash_utility": "usr/bin/c_rehash imports certificate/CRL parsing and digest/hash functions, not CMS encryption or cipher init.",
+    "library_implementation": "libssl itself exports QUIC and libcrypto contains CMS/GCM-SIV. These implementations are present and not claimed fixed.",
+    "generic_crypto_consumers": "afalg/padlock/loader_attic engines and legacy provider are inventoried; generic EVP APIs in a module do not prove GCM-SIV selected. The current OpenSSL configuration only names the default provider; no active engine or extra provider module is configured.",
+    "dynamic_lookup": "Only bash and libcrypto import dlopen/dlsym in all97ELFs. bash supports loadable builtins, but /run.sh contains no enable -f or source/import hook; actual current daily config has no BASH_ENV/LD/OPENSSL overrides. libcrypto retains provider/engine loading capabilities; config has no active external engine/provider path."
+  },
+  "configuration": {
+    "image_entrypoint": "/run.sh -> exec grafana server",
+    "image_command": null,
+    "default_server_protocol": "http",
+    "default_server_port": 3000,
+    "no_openssl_cli": true,
+    "no_current_entrypoint_openssl_curl_or_apk_invocation": true,
+    "image_configuration_file_sha256": {
+      "etc/grafana/grafana.ini": "445a3638f1f0050f56bfafe5236bc7791ad37ee144707be9730a15c50e47f2e8",
+      "etc/ssl/openssl.cnf": "a65a2cb9f4ee8ffdc7ef4f0ac600c0bdafb95b7b1ab457188ac610a62f5ad6b3",
+      "run.sh": "f82912b9620b76fd8c84b971ac99c600e4dee1fd4c8150e5d3411de773a430e2",
+      "usr/share/grafana/conf/defaults.ini": "0c0ba9bee1b78e02dfbcb95cae457e2985cf5946bb57a84f78c43723a7d5cd4f"
+    },
+    "current_stopped_daily_config_boundary": {
+      "state": "exited",
+      "entrypoint": [
+        "/run.sh"
+      ],
+      "cmd": null,
+      "nonsecret_runtime_overrides": {
+        "GF_PLUGINS_PREINSTALL_DISABLED": "true",
+        "GF_PLUGINS_PREINSTALL_AUTO_UPDATE": "false",
+        "GF_PLUGINS_PUBLIC_KEY_RETRIEVAL_DISABLED": "true",
+        "GF_ANALYTICS_CHECK_FOR_UPDATES": "false",
+        "GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES": "false"
+      },
+      "mounts": [
+        {
+          "type": "bind",
+          "destination": "/etc/grafana/provisioning",
+          "rw": false
+        },
+        {
+          "type": "volume",
+          "destination": "/var/lib/grafana",
+          "rw": true
+        }
+      ],
+      "scope": "Current stopped daily configuration only; not current candidate runtime execution"
+    },
+    "candidate_not_yet_daily_running": "These are exact image/configuration path facts and read-only plugin inventory, not a claim of new daily startup."
+  },
+  "supporting_evidence_sha256": {
+    "openssl-known-native-inventory.json": "54d8b0a92ec908d91c6fb30648f376e13f85ebb0da7910810b117b0ab3be184e",
+    "openssl-known-go-closure.json": "57a6e472df930b22f4256ac68b632fee7c197f555142650ba614648af02e0900",
+    "openssl-known-probe-facts.json": "a3a464fe51ada246d33bef7144a8c49bb05c6c806e0e54df45c6a293218e4a2a"
+  },
+  "limits_and_reaudit_triggers": [
+    "No library binary repair is claimed; raw scanner results and original severity remain intact.",
+    "Recheck if any native ELF, Go compiled graph, container entrypoint, effective configuration, provider/engine environment, or plugins volume changes.",
+    "Enabling an OpenSSL QUIC consumer, selecting AES-GCM-SIV through a new caller or loaded module, introducing CMS encryption, invoking a new administrative tool, or installing a backend plugin invalidates this current-path finding.",
+    "This evidence does not approve broad arbitrary shell/admin commands, future plugin downloads, unexamined mounts, human security assurance, or binary redistribution.",
+    "No paid API calls; no business database reads, daily startup, volume writes, build or remote mutation."
+  ]
+}

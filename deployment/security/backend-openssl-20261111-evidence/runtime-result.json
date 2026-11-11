@@ -1,0 +1,126 @@
+{
+  "java_version": "21.0.13+9-LTS",
+  "user": "app",
+  "default_ssl_provider": "SunJSSE",
+  "default_ssl_protocols": [
+    "TLSv1.3",
+    "TLSv1.2"
+  ],
+  "http_client_versions": [
+    "HTTP_1_1",
+    "HTTP_2"
+  ],
+  "providers": [
+    {
+      "services": 69,
+      "name": "SUN",
+      "class": "sun.security.provider.Sun",
+      "info": "SUN (DSA key/parameter generation; DSA signing; SHA-1, MD5 digests; SecureRandom; X.509 certificates; PKCS12, JKS & DKS keystores; PKIX CertPathValidator; PKIX CertPathBuilder; LDAP, Collection CertStores, JavaPolicy Policy; JavaLoginConfig Configuration)"
+    },
+    {
+      "services": 19,
+      "name": "SunRsaSign",
+      "class": "sun.security.rsa.SunRsaSign",
+      "info": "Sun RSA signature provider"
+    },
+    {
+      "services": 42,
+      "name": "SunEC",
+      "class": "sun.security.ec.SunEC",
+      "info": "Sun Elliptic Curve provider"
+    },
+    {
+      "services": 15,
+      "name": "SunJSSE",
+      "class": "sun.security.ssl.SunJSSE",
+      "info": "Sun JSSE provider(PKCS12, SunX509/PKIX key/trust factories, SSLv3/TLSv1/TLSv1.1/TLSv1.2/TLSv1.3/DTLSv1.0/DTLSv1.2)"
+    },
+    {
+      "services": 191,
+      "name": "SunJCE",
+      "class": "com.sun.crypto.provider.SunJCE",
+      "info": "SunJCE Provider (implements RSA, DES, Triple DES, AES, Blowfish, ARCFOUR, RC2, PBE, Diffie-Hellman, HMAC, ChaCha20, DHKEM, and ML-KEM)"
+    },
+    {
+      "services": 2,
+      "name": "SunJGSS",
+      "class": "sun.security.jgss.SunProvider",
+      "info": "Sun (Kerberos v5, SPNEGO)"
+    },
+    {
+      "services": 8,
+      "name": "SunSASL",
+      "class": "com.sun.security.sasl.Provider",
+      "info": "Sun SASL provider(implements client mechanisms for: DIGEST-MD5, EXTERNAL, PLAIN, CRAM-MD5, NTLM; server mechanisms for: DIGEST-MD5, CRAM-MD5, NTLM)"
+    },
+    {
+      "services": 13,
+      "name": "XMLDSig",
+      "class": "org.jcp.xml.dsig.internal.dom.XMLDSigRI",
+      "info": "XMLDSig (DOM XMLSignatureFactory; DOM KeyInfoFactory; C14N 1.0, C14N 1.1, Exclusive C14N, Base64, Enveloped, XPath, XPath2, XSLT TransformServices)"
+    },
+    {
+      "services": 1,
+      "name": "SunPCSC",
+      "class": "sun.security.smartcardio.SunPCSC",
+      "info": "Sun PC/SC provider"
+    },
+    {
+      "services": 1,
+      "name": "JdkLDAP",
+      "class": "sun.security.provider.certpath.ldap.JdkLDAP",
+      "info": "JdkLDAP Provider (implements LDAP CertStore)"
+    },
+    {
+      "services": 2,
+      "name": "JdkSASL",
+      "class": "com.sun.security.sasl.gsskerb.JdkSASL",
+      "info": "JDK SASL provider(implements client and server mechanisms for GSSAPI)"
+    },
+    {
+      "services": 0,
+      "name": "SunPKCS11",
+      "class": "sun.security.pkcs11.SunPKCS11",
+      "info": "Unconfigured and unusable PKCS11 provider"
+    }
+  ],
+  "security_overrides": {
+    "java.security.properties": null,
+    "javax.net.ssl.keyStore": null,
+    "javax.net.ssl.trustStore": null,
+    "jdk.tls.client.protocols": null
+  },
+  "aes_gcm_provider": "SunJCE",
+  "aes_gcm_siv": {
+    "available": false,
+    "message": "Cannot find any provider supporting AES/GCM-SIV/NoPadding",
+    "exception": "java.security.NoSuchAlgorithmException"
+  },
+  "netty_openssl_available": false,
+  "netty_openssl_unavailability": "java.lang.ClassNotFoundException: io.netty.internal.tcnative.SSLContext",
+  "netty_default_client_provider": "JDK",
+  "lettuce_default_ssl_context_class": "io.netty.handler.ssl.JdkSslClientContext",
+  "postgres_ssl_factory_class": "org.postgresql.ssl.LibPQFactory",
+  "postgres_delegate_ssl_factory_class": "sun.security.ssl.SSLSocketFactoryImpl",
+  "actual_loopback_tls": {
+    "protocol": "TLSv1.3",
+    "cipher_suite": "TLS_AES_256_GCM_SHA384",
+    "http_status": 200,
+    "response": "probe-ok",
+    "http_client_ssl_provider": "SunJSSE"
+  },
+  "loaded_shared_objects_after_tls": [
+    "/lib/ld-musl-x86_64.so.1",
+    "/opt/java/openjdk/lib/libextnet.so",
+    "/opt/java/openjdk/lib/libjava.so",
+    "/opt/java/openjdk/lib/libjimage.so",
+    "/opt/java/openjdk/lib/libjli.so",
+    "/opt/java/openjdk/lib/libjsvml.so",
+    "/opt/java/openjdk/lib/libnet.so",
+    "/opt/java/openjdk/lib/libnio.so",
+    "/opt/java/openjdk/lib/libzip.so",
+    "/opt/java/openjdk/lib/server/libjvm.so"
+  ],
+  "paid_or_external_requests": 0,
+  "passed": true
+}

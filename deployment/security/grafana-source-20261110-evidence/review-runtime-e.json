@@ -1,0 +1,142 @@
+{
+  "schema": "grafana-source-20261110-incremental-technical-review-v1",
+  "actor": "/root/openssl_new_findings_20261111",
+  "actor_kind": "automated_incremental_technical_reviewer_with_disclosed_contributions",
+  "recorded_at_utc": "2026-11-11T05:14:48.235385+00:00",
+  "facts_passed": true,
+  "risk_acceptance": false,
+  "human_review": false,
+  "binary_redistribution_approved": false,
+  "old_authorization_inherited": false,
+  "subject": {
+    "profile": "grafana-source-20261110",
+    "source_inputs_sha256": "91bc8284cbd791a17c9969908048406f073145f65706fc310358b58e2fb6b131",
+    "native_sha256": {
+      "usr/share/grafana/bin/grafana": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64": "599f81b6cb18227c719074099c3f5f3dd0928d8a5b3d2a55ac8a02a0210fa10c",
+      "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64": "c7798b1bbea42ddad8a7259fd1c3c5846cdd8d89f7f1f8034858871e392de9e3",
+      "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64": "73db79edd48a44159ee66583ae4a646a0e52aaf0cbfa252aece9753273961aa1",
+      "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64": "019b92b07c3bd36176e28e2ee1693d69b423a129b6e6a9945e98adffa53c3ee1",
+      "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64": "3343e2ff45c76058067bb945baf7c0fc341edf0b647b59d3c8e2a95211df73a4",
+      "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64": "d290d4840deb7e1edffaee453271ca87d02094f3f8ab0f3e27680605f1f5fd5a",
+      "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64": "50ba9d95a58a20a52a9131a44d04313c955a20ccc199b02e29f474b70af6fd3a",
+      "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64": "e4abc533b0ed7cddea5d1753a2556971dd50e5d3c7b1d8cac1ace9d4ae018a8c",
+      "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64": "4bd3b2b5d547a73c02a231eb5fa1231f167b1c1a7e46a61687916440c6c0771a",
+      "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64": "c4ab7df53197950cd6bcb36235d72c7b5c268f00ecda2ee13b6962d34181394c",
+      "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64": "5c3f2027bcb5d6b03e219230a9a90bf8e1511d46e7a1536b1efb991839da4157",
+      "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": "58a9b276af17f22a5c9729ff1da2bd248f9e69add6e25e8a495df00065837c1d",
+      "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": "1ef41b794a8c882213ab5826d82bbe9a1d5d05b3a9068e86065e12190aef9865"
+    },
+    "runtime_manifest_sha256": "d0707a9f15c66427df74f6c39daa3836dc47d294cc9fdf971e976b7a7c360010",
+    "complete_expected_sha256": "229ab0ff46358f7a5af78aa18e7d90c4e5fe6e55be117b6f0950453fd53cd625",
+    "technical_evidence_sha256": "5e24011a89da34ada991afb82ca8c0302d26b4375a65c7134ef25769bd5604ea",
+    "reviewed_findings_sha256": "62a52125ed1438c5794734ef60746a4f01580b21c4479da770ca58244388152d"
+  },
+  "canonical_subject_sha256": "c0d27af75e8143535a5074a85befcfaf2e2cbd98ecade9fb86bef8691ee1cf6f",
+  "profile_sha256_at_review": "005e9d282e819717a63be7726796614bdf34ea6841cbd59d4108a3a38923e043",
+  "prior_contribution_disclosure": [
+    "Previously investigated the five new OpenSSL advisories and prepared exact Agent native/Python path evidence; I am a contributor to those facts, not an author-independent human reviewer.",
+    "Prepared the four new Grafana known-OpenSSL path fact files in this subject, including actual native/Go graph inventories and owned read-only/network-none probes; a separate reviewer must independently crosscheck those facts.",
+    "Did not implement the current publisher source delta or its regression tests. This review independently inspected that delta and executed the six relevant control-flow test cases.",
+    "This AI incremental technical review does not provide human security review, risk acceptance, inherited OCI approval, or binary redistribution permission."
+  ],
+  "review_scope": "Exact source/correctness delta of the publication diagnostic change, current known OpenSSL path supplement, and cryptographic identity of the unchanged built Grafana runtime. This is not a new complete historical vulnerability investigation or business acceptance.",
+  "historical_full_technical_basis": {
+    "historical_reviews": [
+      {
+        "path": "deployment/security/grafana-source-20261110-evidence/review-runtime-a.json",
+        "sha256": "8b51f1e1e43fe1158518d86c42a02f0e13246932791ed6a6e90fe088d66ac7f4"
+      },
+      {
+        "path": "deployment/security/grafana-source-20261110-evidence/review-runtime-b.json",
+        "sha256": "e40bb3c0075f29f0b30df3fb1273260be312c0f9cd67aae343ada30a5fe0fba7"
+      },
+      {
+        "path": "deployment/security/grafana-source-20261110-evidence/review-runtime-c.json",
+        "sha256": "b9c00e555c1b0c3cc358e6df3799ad923778c84a084af0fa75f7a3407f46bc83"
+      },
+      {
+        "path": "deployment/security/grafana-source-20261110-evidence/review-runtime-d.json",
+        "sha256": "9a255c228ffd993f1c53a89ee4fce196469f1958f24d0167adcb3db2452a0497"
+      }
+    ],
+    "same_85_source_inputs": true,
+    "same_expected_runtime_and_configuration": true,
+    "same_14_compiled_executable_hashes": true,
+    "same_full_runtime_manifest_sha256": "d0707a9f15c66427df74f6c39daa3836dc47d294cc9fdf971e976b7a7c360010",
+    "same_original_exact_findings": {
+      "Trivy": 40,
+      "Grype": 10
+    },
+    "original_evidence_files": 400,
+    "only_original_evidence_byte_change": "scripts/publish_application_packages.py",
+    "all_original_complete_graph_and_source_proofs_preserved_by_hash": true,
+    "historical_full_tuple_proofs_and_business_tests_not_recomputed": true,
+    "historical_approval_not_reused_for_this_new_subject": true
+  },
+  "source_delta_review": {
+    "path": "scripts/publish_application_packages.py",
+    "old_sha256": "53322d73aa16528bda4d12fc94b10608f00e3aedca8dc11b86115252f3cf3161",
+    "new_sha256": "e3dd3c67fc236eab1342a97609b444088e3d7cf2c5b22ca73e6881a2dc6e8d50",
+    "finding": "A complete secret-free raw report was previously retained only after the Agent-specific adjudicator finished; a new tuple could fail that review before raw.json became uploadable.",
+    "reviewed_behavior": [
+      "Full scan completeness, version, archive image/diff-ID/platform, package inventory and all-severity checks finish before a raw report can become public.",
+      "Default raw verdict diagnostics are copied early while the receipt passed flag stays False; only completion of the technical review permits assigning the final verdict passed field.",
+      "Secret-free raw reports are renamed raw.json before Agent adjudication, so a failed or interrupted technical review retains the exact unmodified raw evidence. Secret-containing reports stay raw.private.json and the artifact upload allowlist does not include private outputs.",
+      "KeyboardInterrupt and RuntimeError are not newly swallowed. The finally-written verdict remains passed False if adjudication aborts, including raw-zero input.",
+      "Registry queries, login, tag and push remain unreachable after this failure; the default policy remains all raw vulnerabilities/secrets block. No broad ignore or severity relaxation was introduced."
+    ],
+    "independent_tests": {
+      "command": ".venv/Scripts/python.exe -B -m pytest -q tests/test_application_package_publication.py -k loaded_archive_is_scanned_and_blocked_before_any_registry_write --basetemp .cache/release-readme-cleanup-20261110/grafana-publisher-incremental-review-20261111/review-e-pytest-final",
+      "result": "6 passed, 38 deselected",
+      "log_sha256": "3699a6d4c21d53743169db3177d00ecaffeb4719c8e89418c64717d23c02025e",
+      "cases": "LOW without secret; secret; exact technical failure with and without secret; raw-zero KeyboardInterrupt; raw-zero RuntimeError. Real publisher control flow with isolated external-process boundaries, exact raw-byte retention and no registry side effects asserted."
+    },
+    "earlier_301732c_and_1bcb_subject_are_not_approved": true
+  },
+  "actual_artifact_identity": {
+    "image_id": "sha256:476eb9c63518bf1bd5776e66d15cdbe4198aea97201cc46902ceed16ec893f7c",
+    "portable_config_digest": "sha256:57a5e02c69079fdb0e623fdbd642bd979a131f544d6b1a5c8c889c42a14a3984",
+    "runtime_config_sha256": "d99afbbe2aede604c5ca3d492521ad62df619a42aecd39878798e42aae410991",
+    "complete_export_independently_rehashed_records": 15694,
+    "complete_runtime_manifest_sha256": "d0707a9f15c66427df74f6c39daa3836dc47d294cc9fdf971e976b7a7c360010",
+    "all_14_expected_native_hashes_verified": true,
+    "actual_saved_raw_config_equals_docker_inspect_config": true,
+    "measurement_receipt_sha256": "33496d1cc3b093b9b1345eef7e99665dbc3d4092ee0b6e9041ca5e8b49fdf960",
+    "build_receipt_sha256": "4f4908d898ea4440f9afdf490834cc4e5a3a624ac24cf285d54afdb7fe66c0f2",
+    "final_candidate_source_and_evidence_check": {
+      "source_files": 85,
+      "evidence_files_checked": 404,
+      "pending_only_this_and_other_new_reviewer_hashes": true,
+      "check_receipt_sha256": "9a28f107a5a728746421bbd4ce5fb330fc98c6dac6df44e7b3719a3297015748"
+    },
+    "verify_receipt_is_identity_only_not_full_gate_approval": true
+  },
+  "known_openssl_paths": {
+    "public_evidence_sha256": {
+      "deployment/security/grafana-source-20261110-evidence/openssl-known-paths-review.json": "9ac6f70977c540257a011f1f15a143ee8debaee6ca92504a369b5975f839654d",
+      "deployment/security/grafana-source-20261110-evidence/openssl-known-native-inventory.json": "54d8b0a92ec908d91c6fb30648f376e13f85ebb0da7910810b117b0ab3be184e",
+      "deployment/security/grafana-source-20261110-evidence/openssl-known-go-closure.json": "57a6e472df930b22f4256ac68b632fee7c197f555142650ba614648af02e0900",
+      "deployment/security/grafana-source-20261110-evidence/openssl-known-probe-facts.json": "a3a464fe51ada246d33bef7144a8c49bb05c6c806e0e54df45c6a293218e4a2a"
+    },
+    "five_known_advisories_checked_even_though_not_current_vendor_scan_rows": true,
+    "affected_3_5_9_libraries_remain": true,
+    "library_fixed_claim": false,
+    "exact_current_path_disposition_only": true,
+    "native_elf_inventory_count": 97,
+    "main_compiled_packages": 4200,
+    "plugin_graphs": 13,
+    "all_14_executables_cgo_zero_and_no_needed_libraries": true,
+    "actual_curl_features_http2_without_http3": true,
+    "current_plugin_volume_regular_files": 74,
+    "current_plugin_volume_elf_count": 0,
+    "two_browser_plugins_no_backend_executable": true,
+    "current_configuration_and_future_reaudit_limits_explicit_in_fact_review": true
+  },
+  "boundaries": [
+    "Facts depend on the exact candidate subject and actual unchanged immutable runtime; source, configuration, plugins, libraries or entrypoint changes require review.",
+    "The normal strict profile loader and full current scan/CI remain the parent execution responsibility after both new exact-subject review hashes are adopted. Pending review placeholders were not treated as a normal gate pass.",
+    "No new Grafana build or daily functional acceptance is claimed in this incremental review. All original failure, raw scan severity and historical approval records remain preserved.",
+    "Owned read-only/network-none --rm probes only; plugin data volume mounted read-only and only plugin paths read. No business database files read, daily containers started, paid APIs used, or remote state changed."
+  ]
+}

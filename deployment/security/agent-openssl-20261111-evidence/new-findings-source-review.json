@@ -1,0 +1,325 @@
+{
+  "schema": "agent-openssl-current-path-review-v1",
+  "reviewed_at_utc": "2026-11-11T04:14:31.608148+00:00",
+  "risk_acceptance": false,
+  "reviewer": "AI technical review; parent must independently review and hash-pin before use",
+  "decision_scope": "Exact current application execution paths, not a claim that the installed OpenSSL package is fixed or that future QUIC/CMS/SIV applications are safe",
+  "source_sha": "488550ecb61e7f369dd4967c7fa35e4c64369e75",
+  "artifact": {
+    "local_engine_id": "sha256:dd0ff5e0be21cf1ce7aed5f064752994d00dd2b11cb458e700372854e84d7c54",
+    "portable_config_digest": "sha256:fbde5203f64cf35014e27a93717462506384e7b9afdb89b69ede5d2706d326bf",
+    "archive_sha256": "dd0d7aef7b31a13c5474907ea20c374e98d5e57774466f6109d45cf4401d5c04",
+    "candidate_rootfs_sha256": "9f262df15696ef378d7c75a02fd6881ec4fe7cee2630f4a885e29a84216a1f5e",
+    "ordered_diff_ids": [
+      "sha256:48a50e6d6e5940b2eb6b97fb5de3526b49974cf6c8289622f22c29724ee533f4",
+      "sha256:ac702cb66060ac6b44239ccc4ce4f18be2e022ffee51dfa3ce4f7e663f1ef85f",
+      "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef"
+    ],
+    "runtime_config": {
+      "User": "10001:10001",
+      "ExposedPorts": {
+        "8000/tcp": {}
+      },
+      "Env": [
+        "PATH=/opt/venv/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "PYTHONUNBUFFERED=1",
+        "UV_PROJECT_ENVIRONMENT=/opt/venv",
+        "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt",
+        "LD_LIBRARY_PATH=/usr/local/lib",
+        "DATA_DIR=/data"
+      ],
+      "Cmd": [
+        "uvicorn",
+        "backend.api.app:create_app",
+        "--factory",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000",
+        "--workers",
+        "1",
+        "--no-access-log"
+      ],
+      "WorkingDir": "/app",
+      "ArgsEscaped": true,
+      "Healthcheck": {
+        "Test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=3)"
+        ],
+        "Interval": 15000000000,
+        "Timeout": 5000000000,
+        "StartPeriod": 20000000000,
+        "Retries": 5
+      }
+    },
+    "runtime_config_sha256": "3f5c9aded0641b17a2b30b2915cc0f199fc916c2d7c8207d85bebb6531636077",
+    "actual_saved_config_and_inspection_equal": true
+  },
+  "closures": {
+    "native_elf": {
+      "files": 515,
+      "sha256": "7bde6d27b4fd6015f058da3f28d8c1e5dfb0155aadca77a61919225674d4f348"
+    },
+    "python_source": {
+      "files": 5972,
+      "sha256": "5cabbf1da9d5ef348e88a51d68109855fad3f6c58a2d918f174a5f5805606921"
+    }
+  },
+  "original_profile": {
+    "immutable_url": "https://github.com/W205614/DeepResearch/blob/488550ecb61e7f369dd4967c7fa35e4c64369e75/deployment/security/agent-full-scope-20261110.json",
+    "sha256": "87602c1f941fc7c8a98ec741bc3470e392a21d3f1902fe2c7ec643ba551ff35c",
+    "original_findings": 83
+  },
+  "current_database": {
+    "updated_at": "2026-11-10T19:01:23.081219346Z",
+    "official_oci_layer": "sha256:f8fa030ece295d1e057521fa1dd9621ee06e547c6453f962014329ba7fb2fdee",
+    "actual_database_sha256": "cf7fa3086682e8f77298ca8178419a530f97d7c4bd3ac203a64f2977f82e94a6",
+    "current_raw_findings": 88,
+    "new_records": 5,
+    "original_records_removed": 0,
+    "raw_scan_sha256": "ff678b8b2f664e43ea6fb5f626b6b1d44b81ea3a9a42cbf17fa0f85869ff2d84"
+  },
+  "upstream_status": {
+    "as_of": "2026-11-11",
+    "debian_current_package": "3.5.7-1~deb13u3 remains vulnerable/unfixed in the official tracker",
+    "fixed_source_commits_public": true,
+    "announced_upstream_target_release": "3.5.10",
+    "announced_release_date": "2026-12-01",
+    "formal_fixed_release_available_claim": false,
+    "severity_note": "The raw UNKNOWN tuples stay unchanged; upstream Low is additional source metadata."
+  },
+  "technical_records": [
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        },
+        "id": "CVE-2026-107496",
+        "package": "libssl3t64",
+        "package_id": "libssl3t64@3.5.7-1~deb13u3",
+        "purl": "pkg:deb/debian/libssl3t64@3.5.7-1~deb13u3?arch=amd64&distro=debian-13.7",
+        "severity": "UNKNOWN",
+        "status": "affected",
+        "type": "debian",
+        "version": "3.5.7-1~deb13u3"
+      },
+      "disposition": "NOT_AFFECTED_FUNCTION_NOT_IN_CURRENT_APPLICATION_PATH",
+      "upstream_package_affected": true,
+      "binary_fixed_claim": false,
+      "risk_acceptance": false,
+      "affected_feature": "CMS encryption to attacker-controlled EC recipient",
+      "basis": "No ELF imports CMS_encrypt/CMS_encrypt_ex, no current Python call site performs CMS envelope encryption, and no openssl CLI exists in the Agent. The installed separate cryptography PKCS7 wrapper also rejects EC recipients before encryption; the recorded synthetic EC-certificate test exercises that real boundary.",
+      "official_severity": "Low",
+      "raw_severity_unchanged": "UNKNOWN",
+      "official_advisory": "https://openssl-library.org/news/secadv/20261110.txt",
+      "official_tracker": "https://security-tracker.debian.org/tracker/CVE-2026-107496",
+      "fix_commit_3_5": "https://github.com/openssl/openssl/commit/a0051cfe699bf5a047bc1c4faef65f80f7987366",
+      "evidence": [
+        "native-route-inventory.json",
+        "python-route-inventory.json",
+        "loaded-probe.json",
+        "boundary-probe.json",
+        "cpython-source-selection.json",
+        "primary-sources.json"
+      ]
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        },
+        "id": "CVE-2026-88822",
+        "package": "libssl3t64",
+        "package_id": "libssl3t64@3.5.7-1~deb13u3",
+        "purl": "pkg:deb/debian/libssl3t64@3.5.7-1~deb13u3?arch=amd64&distro=debian-13.7",
+        "severity": "UNKNOWN",
+        "status": "affected",
+        "type": "debian",
+        "version": "3.5.7-1~deb13u3"
+      },
+      "disposition": "NOT_AFFECTED_FUNCTION_NOT_IN_CURRENT_APPLICATION_PATH",
+      "upstream_package_affected": true,
+      "binary_fixed_claim": false,
+      "risk_acceptance": false,
+      "affected_feature": "QUIC automated peer detection",
+      "basis": "The only consumer of the Debian libssl is CPython _ssl, which selects TLS method objects, imports no QUIC methods and performs no dynamic lookup. The reviewed HTTP stack exposes no HTTP/3 or QUIC call site; ordinary TLS negotiation cannot select the separate QUIC transport.",
+      "official_severity": "Low",
+      "raw_severity_unchanged": "UNKNOWN",
+      "official_advisory": "https://openssl-library.org/news/secadv/20261110.txt",
+      "official_tracker": "https://security-tracker.debian.org/tracker/CVE-2026-88822",
+      "fix_commit_3_5": "https://github.com/openssl/openssl/commit/1a73dc590cbad62d6f0329ea4779eadaa8d8fd75",
+      "evidence": [
+        "native-route-inventory.json",
+        "python-route-inventory.json",
+        "loaded-probe.json",
+        "boundary-probe.json",
+        "cpython-source-selection.json",
+        "primary-sources.json"
+      ]
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        },
+        "id": "CVE-2026-88823",
+        "package": "libssl3t64",
+        "package_id": "libssl3t64@3.5.7-1~deb13u3",
+        "purl": "pkg:deb/debian/libssl3t64@3.5.7-1~deb13u3?arch=amd64&distro=debian-13.7",
+        "severity": "UNKNOWN",
+        "status": "affected",
+        "type": "debian",
+        "version": "3.5.7-1~deb13u3"
+      },
+      "disposition": "NOT_AFFECTED_FUNCTION_NOT_IN_CURRENT_APPLICATION_PATH",
+      "upstream_package_affected": true,
+      "binary_fixed_claim": false,
+      "risk_acceptance": false,
+      "affected_feature": "AES-GCM-SIV AAD update/reinitialization",
+      "basis": "No current application or dependency call site requests AES-GCM-SIV. The system-library path is conventional TLS plus hashing; its actual TLS cipher set contains no GCM-SIV. The separate cryptography implementation is explicitly identified rather than conflated with Debian libcrypto; its installed API definitions are not application call sites.",
+      "official_severity": "Low",
+      "raw_severity_unchanged": "UNKNOWN",
+      "official_advisory": "https://openssl-library.org/news/secadv/20261110.txt",
+      "official_tracker": "https://security-tracker.debian.org/tracker/CVE-2026-88823",
+      "fix_commit_3_5": "https://github.com/openssl/openssl/commit/159e1de0c448d7b9f09ad768c8e141def4aa1eb4",
+      "evidence": [
+        "native-route-inventory.json",
+        "python-route-inventory.json",
+        "loaded-probe.json",
+        "boundary-probe.json",
+        "cpython-source-selection.json",
+        "primary-sources.json"
+      ]
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        },
+        "id": "CVE-2026-95691",
+        "package": "libssl3t64",
+        "package_id": "libssl3t64@3.5.7-1~deb13u3",
+        "purl": "pkg:deb/debian/libssl3t64@3.5.7-1~deb13u3?arch=amd64&distro=debian-13.7",
+        "severity": "UNKNOWN",
+        "status": "affected",
+        "type": "debian",
+        "version": "3.5.7-1~deb13u3"
+      },
+      "disposition": "NOT_AFFECTED_FUNCTION_NOT_IN_CURRENT_APPLICATION_PATH",
+      "upstream_package_affected": true,
+      "binary_fixed_claim": false,
+      "risk_acceptance": false,
+      "affected_feature": "QUIC CRYPTO retransmission",
+      "basis": "The same exact TLS-method and caller closure excludes the QUIC CRYPTO-stream processing entry path. This does not claim that a general-purpose QUIC client is unaffected.",
+      "official_severity": "Low",
+      "raw_severity_unchanged": "UNKNOWN",
+      "official_advisory": "https://openssl-library.org/news/secadv/20261110.txt",
+      "official_tracker": "https://security-tracker.debian.org/tracker/CVE-2026-95691",
+      "fix_commit_3_5": "https://github.com/openssl/openssl/commit/f6244675833e097c2429a40d1b206d95385bd42f",
+      "evidence": [
+        "native-route-inventory.json",
+        "python-route-inventory.json",
+        "loaded-probe.json",
+        "boundary-probe.json",
+        "cpython-source-selection.json",
+        "primary-sources.json"
+      ]
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        },
+        "id": "CVE-2026-95692",
+        "package": "libssl3t64",
+        "package_id": "libssl3t64@3.5.7-1~deb13u3",
+        "purl": "pkg:deb/debian/libssl3t64@3.5.7-1~deb13u3?arch=amd64&distro=debian-13.7",
+        "severity": "UNKNOWN",
+        "status": "affected",
+        "type": "debian",
+        "version": "3.5.7-1~deb13u3"
+      },
+      "disposition": "NOT_AFFECTED_FUNCTION_NOT_IN_CURRENT_APPLICATION_PATH",
+      "upstream_package_affected": true,
+      "binary_fixed_claim": false,
+      "risk_acceptance": false,
+      "affected_feature": "AES-GCM-SIV nonstandard IV",
+      "basis": "The exact current system-library consumers do not select AES-GCM-SIV. Separately, the installed high-level cryptography wrapper rejects tested IV lengths 0,11,13,16 and accepts 12; it has no incremental-update API. These observations are not an upstream fixed-binary claim.",
+      "official_severity": "Low",
+      "raw_severity_unchanged": "UNKNOWN",
+      "official_advisory": "https://openssl-library.org/news/secadv/20261110.txt",
+      "official_tracker": "https://security-tracker.debian.org/tracker/CVE-2026-95692",
+      "fix_commit_3_5": "https://github.com/openssl/openssl/commit/257a3427aa0ef8d9dd2ef5b3e2d1c021a221b116",
+      "evidence": [
+        "native-route-inventory.json",
+        "python-route-inventory.json",
+        "loaded-probe.json",
+        "boundary-probe.json",
+        "cpython-source-selection.json",
+        "primary-sources.json"
+      ]
+    }
+  ],
+  "binding_separation": {
+    "system_python_ssl": "Debian OpenSSL 3.5.7, actual mapped system DSOs",
+    "cryptography": "Independent statically linked OpenSSL 4.0.2 in _rust; no DT_NEEDED on the system libssl/libcrypto",
+    "psycopg": "Separately named bundled OpenSSL libraries resolved by $ORIGIN; not the Debian DSOs"
+  },
+  "configuration_boundary": {
+    "agent_openssl_cli_paths": [],
+    "image_openssl_cnf_members": [],
+    "image_openSSL_configuration_environment": [],
+    "existing_daily_relevant_environment": [
+      "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt",
+      "LD_LIBRARY_PATH=/usr/local/lib"
+    ],
+    "current_uvicorn_command_has_tls_certificate_options": false,
+    "invalidation": "Changed native/Python bytes, effective OPENSSL_CONF/OPENSSL_MODULES/LD_PRELOAD/LD_LIBRARY_PATH, engine/provider selection, protocol/cipher feature or application command requires a new review. Generic trusted FFI or arbitrary future code is not granted by this decision.",
+    "existing_daily_extra_openssl_or_loader_overrides": false
+  },
+  "probe_scope": {
+    "image_read_only": true,
+    "network": "none",
+    "paid_provider_calls": 0,
+    "owned_probe_containers_removed": true,
+    "loaded_probe_output_sha256": "18de856291f7d904e9269b045a2bbdd340e1b616877100f2688bda67065d7446",
+    "boundary_probe_output_sha256": "2faa9969ccc3eaeeeee334dc0dfc66e22cd1512de1522d879ae73ae086edaf15"
+  },
+  "supporting_files_sha256": {
+    "boundary-probe.json": "2faa9969ccc3eaeeeee334dc0dfc66e22cd1512de1522d879ae73ae086edaf15",
+    "cpython-source-selection.json": "e7109c05bcb0453a63172f9f5212e4e2af424de60ab66757b8217aaa399f1330",
+    "loaded-probe.json": "18de856291f7d904e9269b045a2bbdd340e1b616877100f2688bda67065d7446",
+    "native-route-inventory.json": "2d54ea3ecb123bd6f6b890f8342a8ec1192ab6866adf925e17b6fef5d2f46474",
+    "primary-sources.json": "c192fb9b84eeb62105a092d689f6f819dcc116d18b2c129b9f30bc83861e5dc3",
+    "probe_high_level_boundaries.py": "b2bb2d879796ec44224c7c26f4c5c19c07caf6854b5c622af9a8b60e71ca5a91",
+    "probe_loaded_openssl.py": "c41bf6159529c97179c3f2cf517e4381dc784de2f1af2822368f15696590661e",
+    "python-route-inventory.json": "1a9d8973cbda82a73027a16feb69ba4cd7ed31d08e5d2f932c0e4d9be7850c88",
+    "reproduce.md": "2a5a1486b43979c2b5397e5744b9b2303a83986125beb2643d7ddf6b9ab9ebf7"
+  },
+  "remaining": "Parent review, exact profile tuple append/hash pin, real updated gate/CI and publication are separate actions and are not claimed completed by this evidence.",
+  "limitations": [
+    "This is an engineering applicability review combining exact binaries, source, API and configuration; dynamic import absence alone is not a formal proof of every possible runtime behavior.",
+    "The high-level nonce/EC tests are scoped contract observations, not a full validation or upstream fix of embedded OpenSSL.",
+    "The library package remains affected upstream; enabling QUIC, AES-GCM-SIV, CMS EC recipient encryption or new provider/engine/configuration paths invalidates this current-application decision.",
+    "No new real provider calls were made; reuse of an earlier API result requires the deliverer to verify the exact accepted runtime identity."
+  ]
+}

@@ -20,7 +20,7 @@ from scripts.check_image_secrets import assess  # noqa: E402
 
 PROFILE_NAME = "agent-full-scope-20261110"
 PROFILE_PATH = ROOT / "deployment/security/agent-full-scope-20261110.json"
-PROFILE_SHA256 = "87602c1f941fc7c8a98ec741bc3470e392a21d3f1902fe2c7ec643ba551ff35c"
+PROFILE_SHA256 = "ab92a7f1ade51ff150c9e48092a2dca898142b4541460f5b50b305c240ab09d3"
 
 
 def require(condition, message):
@@ -42,10 +42,16 @@ def load_profile(name):
         "Technical fixed-code/component review required",
     )
     evidence = profile["source_review_evidence"]
+    review_bytes = (ROOT / evidence["path"]).read_bytes()
     require(
-        hashlib.sha256((ROOT / evidence["path"]).read_bytes()).hexdigest() == evidence["sha256"],
+        hashlib.sha256(review_bytes).hexdigest() == evidence["sha256"],
         "Reviewed technical source evidence changed",
     )
+    for item in json.loads(review_bytes)["additional_evidence_files"]:
+        require(
+            hashlib.sha256((ROOT / item["path"]).read_bytes()).hexdigest() == item["sha256"],
+            "Reviewed supporting source evidence changed",
+        )
     return profile
 
 

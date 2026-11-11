@@ -222,8 +222,8 @@ def test_incomplete_or_unbound_image_scan_cannot_authorize_publication(change):
         scan_verdict(scan)
 
 
-@pytest.mark.parametrize("secret", [False, True])
-def test_loaded_vulnerable_archive_is_scanned_and_blocked_before_any_registry_write(tmp_path, monkeypatch, secret):
+@pytest.mark.parametrize("secret,technical_failure", [(False, False), (True, False), (False, True), (True, True), (False, "interrupt"), (False, "runtime")])
+def test_loaded_archive_is_scanned_and_blocked_before_any_registry_write(tmp_path, monkeypatch, secret, technical_failure):
     data = manifest()
     config = json.dumps({"os": "linux", "architecture": "amd64", "rootfs": {
         "type": "layers", "diff_ids": ["sha256:" + "e" * 64]}}).encode()
@@ -247,10 +247,28 @@ def test_loaded_vulnerable_archive_is_scanned_and_blocked_before_any_registry_wr
             "assets": [{"name": "publication-manifest.json", "size": len(raw_manifest)}]})
     monkeypatch.setattr(publication, "download", lambda asset, destination: destination.write_bytes(raw_manifest))
     monkeypatch.setattr(publication, "assemble", lambda *args: source_archive)
-    monkeypatch.setattr(publication.subprocess, "check_output", lambda *args, **kwargs: "c" * 40)
+    monkeypatch.setattr(publication.subprocess, "check_output", lambda command, **kwargs:
+        json.dumps([{"Id": data["images"][0]["image_id"]}]) if command[:3] == ["docker", "image", "inspect"] else "c" * 40)
     monkeypatch.setattr(publication, "registry_manifest", lambda *args: pytest.fail("Registry queried before failed gate"))
     monkeypatch.setenv("TRIVY_SKIP_FILES", "**/*")
     monkeypatch.setenv("TRIVY_IGNORE_UNFIXED", "true")
+    if technical_failure:
+        from scripts import check_agent_full_scope as scope
+
+        data["images"][0]["security_review_profile"] = scope.PROFILE_NAME
+        raw_manifest = json.dumps(data).encode()
+        monkeypatch.setattr(scope, "load_profile", lambda name: {})
+        monkeypatch.setattr(scope, "capture_actual_config", lambda inspection: config)
+        monkeypatch.setattr(scope, "probe_image", lambda *args: {})
+
+        def unreviewed(*args, **kwargs):
+            if technical_failure == "interrupt":
+                raise KeyboardInterrupt("Incomplete technical review")
+            if technical_failure == "runtime":
+                raise RuntimeError("Incomplete technical review")
+            raise ValueError("Unreviewed finding in exact technical review")
+
+        monkeypatch.setattr(scope, "adjudicate", unreviewed)
 
     def external_process(command, **kwargs):
         calls.append(command)
@@ -269,7 +287,7 @@ def test_loaded_vulnerable_archive_is_scanned_and_blocked_before_any_registry_wr
             scan["Metadata"]["ImageID"] = data["images"][0]["image_id"]
             if secret:
                 scan["Results"][0]["Secrets"] = [{"Severity": "MEDIUM", "Match": "fixture-sensitive-match"}]
-            else:
+            elif technical_failure not in {"interrupt", "runtime"}:
                 scan["Results"][0]["Vulnerabilities"] = [{"VulnerabilityID": "CVE-TEST-LOW", "PkgName": "libc6",
                     "InstalledVersion": "2.41-1", "Severity": "LOW"}]
             raw = json.dumps(scan).encode()
@@ -282,7 +300,9 @@ def test_loaded_vulnerable_archive_is_scanned_and_blocked_before_any_registry_wr
     monkeypatch.setattr(publication.subprocess, "run", external_process)
     monkeypatch.setattr(sys, "argv", ["publish_application_packages.py", "--release-tag", data["artifact_release"],
         "--manifest-sha256", hashlib.sha256(raw_manifest).hexdigest(), "--output", str(output)])
-    with pytest.raises(ValueError, match="blocked by unresolved all-severity"):
+    error = KeyboardInterrupt if technical_failure == "interrupt" else RuntimeError if technical_failure == "runtime" else ValueError
+    message = "Incomplete technical review" if technical_failure in {"interrupt", "runtime"} else "Unreviewed finding" if technical_failure else "blocked by unresolved all-severity"
+    with pytest.raises(error, match=message):
         publication.main()
     assert any(command[:2] == ["docker", "load"] for command in calls)
     assert any(command[:3] == ["docker", "image", "save"] for command in calls)
@@ -290,6 +310,7 @@ def test_loaded_vulnerable_archive_is_scanned_and_blocked_before_any_registry_wr
     directory = output / "security/agent"
     verdict = json.loads((directory / "verdict.json").read_bytes())
     assert verdict["passed"] is False
+    assert verdict["raw_file"] == ("raw.private.json" if secret else "raw.json")
     assert (directory / ("raw.private.json" if secret else "raw.json")).read_bytes() == original_report[0]
     assert "fixture-sensitive-match" not in (directory / "verdict.json").read_text()
     assert (directory / "raw.json").exists() is not secret
