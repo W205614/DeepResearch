@@ -83,9 +83,29 @@ def validate_claim(text: str, sources: list[dict]) -> tuple[bool, str]:
     # A model may still repeat one in prose; its hexadecimal digits are not
     # factual numbers and must not make an otherwise supported claim fail.
     numeric_text = text
+    named_local_attribution = False
+    local_titles = set()
     for source in sources:
         if source.get("id"):
             numeric_text = numeric_text.replace(source["id"], "")
+        if source.get("kind") == "local" and source.get("title"):
+            title = re.escape(f"《{source['title']}》")
+            local_titles.add(title)
+            label = title
+            if source.get("locator"):
+                # Only the cited source's exact locator is metadata. Formatting
+                # whitespace may differ, but invented ranges remain factual targets.
+                locator = r"\s*".join(re.escape(c) for c in source["locator"] if not c.isspace())
+                located_label = title + rf"\s*[（(]\s*{locator}\s*[）)]"
+                numeric_text = re.sub(located_label, "", numeric_text)
+                label += rf"(?:\s*[（(]\s*{locator}\s*[）)])?"
+            named_local_attribution |= bool(re.search(
+                label + r"\s*(?:正文)?\s*(?:明确)?(?:记载|说明|规定|记录|指出|提到)", text
+            ))
+    # The same document may supply several chunks. Consume every bound locator
+    # before removing bare titles so source ordering cannot hide a later locator.
+    for title in local_titles:
+        numeric_text = re.sub(title, "", numeric_text)
     numbers = numeric_tokens(numeric_text)
     normalized = numeric_tokens(combined)
     source_values = {value for value, _ in normalized}
@@ -96,7 +116,7 @@ def validate_claim(text: str, sources: list[dict]) -> tuple[bool, str]:
             return False, "图片结论必须明确限定为图中显示，不能视作外部核实事实"
         return True, "图片可见内容通过数字检查，仍需语义校验"
     if sources and all(s.get("kind") == "local" for s in sources):
-        if not re.search(r"根据.{0,8}资料|资料中|文档中|该文档", text):
+        if not named_local_attribution and not re.search(r"根据.{0,8}资料|资料中|文档中|该文档", text):
             return False, "内部资料结论必须明确限定为资料中的记录，不能当作外部核实事实"
         return True, "资料内陈述通过数字检查，仍需版本和语义校验"
     if not requires_strong_evidence(text):
