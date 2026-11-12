@@ -88,7 +88,7 @@ docker compose -f compose.yaml -f deployment/compose/compose.core.yaml -f deploy
 
 `v0.1.2` 源码 Tag 仍为 `488550ecb61e7f369dd4967c7fa35e4c64369e75`，正常 Release 的 93 个附件继续保留，承担上述对应源码职责。其旧 Packages 作业因新漏洞库发现被门槛阻断，失败发生在 Registry 推送前；不将它写作已发布的 `v0.1.2` Packages。`v0.1.3` 是真实 libxslt／工程修复版本，不为验证轮次重复创建版本。
 
-历史 [v0.1.1 应用制品与源码材料 Release](https://github.com/W205614/DeepResearch/releases/tag/artifact-applications-v0.1.1-r1) 仍提供它自己的下列材料，不以当前源码身份替换：
+历史 [v0.1.1 版本页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.1) 自 2026-11-12 起集中提供源码说明及原应用制品 Release 的完整 88 个附件。原 Release ID `439279902`、全部 asset ID 和字节保持，只有版本页及浏览器下载路径迁移；源码 Tag 保持 `b2da9da7`，应用分发提交仍为 `0005df53`。它提供下列历史材料，不以当前源码身份替换：
 
 - `publication-manifest.json`：最终源码、三个实际 image ID、分片长度／SHA-256、归档 SHA-256 和本地验收状态。
 - 应用镜像归档分片：由经过验收的同一候选生成，发布工作流只校验、加载和推送，不重新构建。
@@ -101,7 +101,7 @@ docker compose -f compose.yaml -f deployment/compose/compose.core.yaml -f deploy
 
 ## 维护者发布
 
-先确定源码提交、实际候选与许可材料，完成本地安全和运行验收，生成归档分片与清单。先确认版本、现有 Release 和镜像来源，核对所有材料后发布；同一待发版本复用草稿，不为重测或传输轮次新增版本。现有 `artifact-applications-v0.1.1-r1` 被工具、固定镜像材料和对应源码入口绑定，保留其职责；后续版本入口不能靠移动旧 Tag 获得。保留失败及未知结果，不上传私密 `.env`、业务数据、恢复包、本机 AGENTS.md 或本地证据目录。
+先确定源码提交、实际候选与许可材料，完成本地安全和运行验收，生成归档分片与清单。先确认版本、现有 Release 和镜像来源，核对所有材料后发布；同一待发版本复用草稿，不为重测或传输轮次新增版本。旧 `artifact-applications-v0.1.1-r1` 的附件已并入 `v0.1.1`，原清单的 `artifact_release` 字段保留历史值，仅供追溯；当前历史材料从版本页下载，不用它重新触发发布器或覆盖镜像。迁移和保留依据见[辅助发布记录](release-asset-retention-20261112.md)。保留失败及未知结果，不上传私密 `.env`、业务数据、恢复包、本机 AGENTS.md 或本地证据目录。
 
 等待该提交 CI／Security 成功后，显式运行 [Publish verified application packages](../.github/workflows/publish-application-packages.yml)，传入对应单一 Release 标签与已验收清单的 SHA-256。发布器在推送前对实际加载归档执行完整 Trivy 漏洞和秘密扫描，默认要求全部级别 raw zero；Agent 仅可显式采用已绑定字节、运行配置、515 ELF／5972 Python 文件／290 glibc 项及逐条 tuple 的固定技术门槛。新发现、证据或配置变化失败，不能凭历史绿色 CI 或 `security` 布尔值放行。原始失败、扫描与裁决保留，秘密值不放进公开附件。
 
