@@ -45,3 +45,13 @@ Grafana 的远端 39 份文档差异已完整取回：14 份图只有 `Stale`／
 [权限实证](../../../deployment/security/grafana-source-20261112-evidence/license-directory-mode-proof-20261112.json)与[新精确 profile](../../../deployment/security/grafana-source-20261112-profile.json)绑定 subject `f85d4705…04bb94b`。新镜像清单与该 Enterprise 产物完整一致；两个审核者独立导出、解析 14 个程序与完整图、实际以 UID472 读取相同摘要许可证，并严格重判新 Trivy40／Grype10 与完整 SBOM。旧镜像 ID 后来不可直接检查，审核明确复用之前保存的真实失败探针及当时完整清单／receipt，不重建旧制品或伪称重跑。新权限版 CodeQL 44 项回归与原四身份实际回放通过；原始失败、未签尝试及严重级别保留。这一修复仍不构成新真实模型验收或日常切换。
 
 Tomcat 升级后的源码扫描仍有原 79 个目标及原 71 条 finding tuple，只有完整 110 包清单中的三个 Tomcat 版本由 11.0.25 改为 11.0.27。[独立精确迁移证明](../../../deployment/security/grafana-source-20261112-evidence/source-fs-tomcat27-review-20261112.json)只选择这个已复核清单；其他 78 个目标、全部原 finding、逐项证明、14 个编译图及原安全规则保持。30 项反例和实际原始报告回放通过，旧 profile 和原始失败继续保留，没有按版本范围泛化豁免。
+
+## 企业栈磁盘保护失败与 CI 生命周期修正
+
+`fae2060` 的 [Security 22 项全部成功](https://github.com/W205614/DeepResearch/actions/runs/43214045285)，但 [Enterprise 烟测失败](https://github.com/W205614/DeepResearch/actions/runs/43214045286/job/131168637970)，浏览器未运行。Grafana 源码构建和完整清单门槛已成功，应用容器也已健康；失败在等待日志与链路实际写入存储，不能把健康检查当成存储通过。
+
+原始 Loki 日志在烟测失败、清退之前的 `2026-11-12T13:12:45Z` 明确记录 WAL 所在文件系统使用率 `96.09%`，超过原阈值 `90.00%` 并限制写入。固定版本 v3.7.9 的 [WAL 实现](https://github.com/grafana/loki/blob/d3b4a2f76bfc5625abee7ceb00b8896fa3c31549/pkg/ingester/wal.go#L210)设置磁盘限流状态，[Push 实现](https://github.com/grafana/loki/blob/d3b4a2f76bfc5625abee7ceb00b8896fa3c31549/pkg/ingester/ingester.go#L1010)将该状态返回为 `Ingester is shutting down`。Collector 在失败前持续收到同文案的 503，Loki 查询为空；该文案不证明进程真的收到退出信号。
+
+CI 将原先的构建并启动分成同等的步骤：先构建全部镜像，再仅在该次 GitHub 托管临时机器上回收已不使用的编译缓存，然后以原 `force-recreate`、`wait` 和 300 秒参数启动已构建镜像，最后执行同一个完整烟测。[Docker 的该命令只处理 unused build cache](https://docs.docker.com/reference/cli/docker/builder/prune/)，不清理镜像、卷、网络或工作区证据；操作前后记录实际磁盘和 Docker 用量。MinIO、Grafana 的已审核加载镜像继续使用原身份；未在本机执行缓存清理。
+
+Loki 原 90% 保护、存储查询断言、等待上限与全部浏览器检查保持。这是 CI 资源生命周期修正；是否消除该次失败仍以新提交实际 CI 为准，不预先写成通过，也不代替未通过的真实模型验收。

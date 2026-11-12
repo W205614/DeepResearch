@@ -261,8 +261,19 @@ def test_enterprise_and_compose_consume_source_image_without_a_second_uncontroll
     ci = yaml.safe_load((ROOT / '.github/workflows/ci.yml').read_text(encoding='utf-8'))
     steps = ci['jobs']['enterprise-compose-smoke']['steps']
     build_index, build, args = command(steps, 'build_go_stdlib_security_20261112.py', artifact='grafana')
-    smoke_index = next(i for i, step in enumerate(steps) if 'scripts/smoke-enterprise.py --start' in step.get('run', ''))
-    assert build_index < smoke_index and not build.get('continue-on-error') and build.get('if') is None
+    compile_index = next(i for i, step in enumerate(steps) if step.get('run') == 'docker compose build')
+    cache_index = next(i for i, step in enumerate(steps) if 'docker builder prune' in step.get('run', ''))
+    start_index = next(i for i, step in enumerate(steps) if step.get('run') ==
+                       'docker compose up -d --no-build --force-recreate --wait --wait-timeout 300')
+    smoke_index = next(i for i, step in enumerate(steps) if step.get('run') == 'python scripts/smoke-enterprise.py')
+    assert build_index < compile_index < cache_index < start_index < smoke_index
+    assert steps[cache_index]['if'] == "runner.environment == 'github-hosted'"
+    assert steps[cache_index]['run'].splitlines() == [
+        'df -h .', 'docker system df', 'docker builder prune --all --force', 'docker system df', 'df -h .']
+    for index in (build_index, compile_index, cache_index, start_index, smoke_index):
+        assert not steps[index].get('continue-on-error')
+        if index != cache_index:
+            assert steps[index].get('if') is None
     assert args == {'--artifact': 'grafana', '--output-dir': BASE + 'grafana-source-build'}
     assert not any('scripts/fetch_grafana_fixed_20261107.py' in step.get('run', '') for step in steps)
     receipt_upload = next(step for step in steps if step.get('with', {}).get('name', '').startswith('enterprise-grafana-source-'))
