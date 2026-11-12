@@ -36,6 +36,9 @@ jobs:
           path: |
             .cache/eval/*-source-build/*.log
             .cache/eval/*-source-build/*.command.json
+            .cache/eval/*-source-build/build-receipt.json
+            .cache/eval/*-source-build/image-inspect.json
+            .cache/eval/*-source-build/actual-payload/runtime-manifest.json.gz
             .cache/eval/minio-source-build/diagnostic-graphs/*.json
           if-no-files-found: warn
       - run: python scripts/verify_components.py --drill
@@ -120,6 +123,9 @@ jobs:
           path: |
             .cache/eval/*-source-build/*.log
             .cache/eval/*-source-build/*.command.json
+            .cache/eval/*-source-build/build-receipt.json
+            .cache/eval/*-source-build/image-inspect.json
+            .cache/eval/*-source-build/actual-payload/runtime-manifest.json.gz
             .cache/eval/minio-source-build/diagnostic-graphs/*.json
             .cache/eval/grafana-source-build/diagnostic-graphs/*.json
             .cache/eval/grafana-source-build/diagnostic-graphs/*.json.gz

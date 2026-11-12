@@ -155,9 +155,12 @@ def test_current_continuation_preserves_original_exact_identities_and_bound_byte
     prior_path = root / 'deployment/security/codeql-reviewed-findings-20261110.json'
     prior = json.loads(prior_path.read_bytes())
     current = json.loads(REVIEW.read_bytes())
-    assert REVIEW.name == 'codeql-reviewed-findings-20261112-minio-info.json'
+    assert REVIEW.name == 'codeql-reviewed-findings-20261112-tomcat27.json'
     assert [row['identity'] for row in current['findings']] == [row['identity'] for row in prior['findings']]
-    assert current['findings'][:3] == prior['findings'][:3]
+    assert current['findings'][:2] == prior['findings'][:2]
+    for name, expected in prior['findings'][2]['evidence_sha256'].items():
+        if name != 'business-backend/pom.xml':
+            assert current['findings'][2]['evidence_sha256'][name] == expected
     proof = root / current['continuation_review_20261112']['evidence']
     reviewed = json.loads(proof.read_bytes())
     assert reviewed['prior_review']['sha256'] == hashlib.sha256(prior_path.read_bytes()).hexdigest()
@@ -172,10 +175,18 @@ def test_current_continuation_preserves_original_exact_identities_and_bound_byte
     assert audit['recipe_delta']['all_copy_add_instructions_identical'] is True
     assert len(audit['recipe_delta']['only_added_lines']) == 5
     assert audit['new_codeql_scan_claimed'] is False
+    tomcat = current['tomcat_patch_addendum']
+    tomcat_path = root / tomcat['path']
+    assert hashlib.sha256(tomcat_path.read_bytes()).hexdigest() == tomcat['sha256']
+    assert hashlib.sha256((root / tomcat['prior_profile']).read_bytes()).hexdigest() == tomcat['prior_profile_sha256']
+    renewed = json.loads(tomcat_path.read_bytes())
+    assert renewed['pom_delta']['only_managed_tomcat_patch_version_changed'] is True
+    assert renewed['actual_java_regression']['total'] == {'tests': 69, 'failures': 0, 'errors': 0, 'skipped': 0}
+    assert renewed['new_codeql_scan_claimed'] is False
     assert reviewed_findings([], REVIEW, root) == ([], [])
 
 
-@pytest.mark.parametrize('change', ['web-context', 'new-go-copy', 'proof', 'addendum'])
+@pytest.mark.parametrize('change', ['web-context', 'new-go-copy', 'proof', 'addendum', 'pom', 'tomcat-addendum'])
 def test_current_continuation_still_rejects_changed_compose_go_recipe_or_proof(tmp_path, change):
     root = Path(__file__).resolve().parents[1]
     record = json.loads(REVIEW.read_bytes())
@@ -199,8 +210,16 @@ def test_current_continuation_still_rejects_changed_compose_go_recipe_or_proof(t
     elif change == 'proof':
         changed = tmp_path / 'deployment/security/codeql-continuation-review-20261112.json'
         after = changed.read_bytes() + b'\n'
-    else:
+    elif change == 'addendum':
         changed = tmp_path / record['minio_module_info_addendum']['path']
+        after = changed.read_bytes() + b'\n'
+    elif change == 'pom':
+        changed = tmp_path / 'business-backend/pom.xml'
+        before = changed.read_bytes()
+        after = before.replace(b'<tomcat.version>11.0.27</tomcat.version>', b'<tomcat.version>11.0.25</tomcat.version>')
+        assert before != after
+    else:
+        changed = tmp_path / record['tomcat_patch_addendum']['path']
         after = changed.read_bytes() + b'\n'
     changed.write_bytes(after)
     with pytest.raises(ValueError, match='reviewed source or proof changed'):

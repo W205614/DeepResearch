@@ -1,0 +1,395 @@
+{
+  "schema": "codeql-tomcat-patch-exact-addendum-20261112-v1",
+  "actor": "/root/release_prepare",
+  "actor_kind": "automated_independent_agent",
+  "observed_at_utc": "2026-11-12T08:27:26.673651+00:00",
+  "comparison_source_sha": "7377d4fba37aa952bf83d1076f161c146954d1e9",
+  "prior_profile": {
+    "path": "deployment/security/codeql-reviewed-findings-20261112-minio-info.json",
+    "sha256": "0afcd0ada1b2df0594f50c45062bee6963ff937716a58e1752efd4a18ec52db0",
+    "bytes_preserved": true
+  },
+  "scope": "Renew only the POM binding for the same four exact findings after the Tomcat11.0.25 to11.0.27 security patch. No application feature, source exception or threshold change.",
+  "pom_delta": {
+    "path": "business-backend/pom.xml",
+    "prior_sha256": "8a859c557e726d5f8ff818494c7eb5cf008c3cbbb5f130ca9fa8d0b765330301",
+    "current_sha256": "c5947abb575ffe01db6615726427363ad08ff5c4ec375bbb8abb7417d55be46f",
+    "exact_unified_diff": "--- prior/business-backend/pom.xml\n+++ current/business-backend/pom.xml\n@@ -18,7 +18,7 @@\n         <java.version>21</java.version>\n         <jackson-bom.version>3.1.7</jackson-bom.version>\n         <jackson-2-bom.version>2.21.7</jackson-2-bom.version>\n-        <tomcat.version>11.0.25</tomcat.version>\n+        <tomcat.version>11.0.27</tomcat.version>\n     </properties>\n     <dependencies>\n         <dependency>\n",
+    "only_managed_tomcat_patch_version_changed": true
+  },
+  "all_other_preexisting_bound_inputs_unchanged": {
+    "deployment/security/codeql-finding-review-20261110.md": "7585522420e6a8cb160ef2b173460762833e8128790a259ed0a4b779d8824948",
+    "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java": "9729af95b2760eb00fdc36f8e86f8abaa7f0f4deb999f976a9342d7a93365aea",
+    "business-backend/src/main/java/com/deepresearch/business/config/DeepResearchProperties.java": "94211bb68e6735e0200f9c660814a64bd87ac205b944f060eb5a6920ded15ad3",
+    "business-backend/src/main/java/com/deepresearch/business/api/AgentProxyController.java": "f81f0ecfbf502797025bc8a0f0365b207f67c88474659dde8c9a18844c58564b",
+    "business-backend/src/test/java/com/deepresearch/business/service/AgentClientOriginTest.java": "2d837c336c37be593a4240b3490b8503382ddbe7831f01fbf8a9ee5de71493d1",
+    "business-backend/src/main/java/com/deepresearch/business/config/SecurityConfig.java": "4dbaf829a97464e83d29329f41aa33888a0d26d4e28362c88b82f14e9d01afc7",
+    "business-backend/src/main/java/com/deepresearch/business/security/PlatformAccountFilter.java": "6907c46c7e1e452794a5a0fd37d1cfedd8923dc918f4bbe8c0d48530edbc312c",
+    "business-backend/src/main/java/com/deepresearch/business/security/ApiRateLimitFilter.java": "67ee1e48aa7749d8e0873977d2be30db1e40e08257d63a5f25765e7a984a3533",
+    "business-backend/src/test/java/com/deepresearch/business/config/SecurityConfigBearerTest.java": "21e2841835abc51f50e5ba06a6cc67f091cc5f900a2330605259972ac2fbf603",
+    "frontend/src/api.ts": "b2fa83c547576f376a59d572cb689a882a3d52d0d509dfa5ae78e88a462f0e52",
+    "deployment/security/agent-native-evidence/supplement-20261107/sqlite-release-3_54_1.html": "69bf98f8cb8730c88b01414cdc4436fb3c65443dae405957b40efab9976f1e12",
+    "deployment/security/agent-native-fixed-code-supplement-20261107.json": "f0960cbc117072656b5038706634e11f79281fe876f84642fa234953f25338df",
+    "scripts/check_agent_native_packages.py": "a61f5a7ad61481aa3a88f8432db57dffd545027248cf861fcd766a01c99374d3",
+    "compose.yaml": "bf127d53a0a7829b77055da53db469a90bf651409849c5e0de78bdc685fa5343",
+    "frontend/Dockerfile": "9b100c4df9ef23ed29b73e5f944772dd5b4d96986a797f46611dbf872c2f01c1",
+    "frontend/nginx.conf": "9dfa67b7fe4d3159b2dabf772c51a82e625b3757de35ca37bd36db297c15ccb2",
+    "Dockerfile": "66d6ffccb8f8f7416f98c62081562f81f9cc76c95747ec176125b28964eea508",
+    "deployment/security/codeql-continuation-review-20261111.json": "ab47a6c04b523a9f45396a04cc0199ddb83f21b07ad5677030ce1e4441488e4f",
+    "deployment/security/codeql-continuation-review-20261112.json": "25a5f0bde760347ea4367d0dfaf0df3ebe1b53a12607d484a85e1a876121bb82",
+    "deployment/docker/Dockerfile.minio-20261112": "aa37214feaadb223f727c83bbf42726a887800ce37f89e5e5f741877c1f36635",
+    "deployment/docker/Dockerfile.grafana-20261112": "58576129268143771b8841ec8392b20a2a0192670ff84cfdbe88b0e843fb00c3",
+    "deployment/security/codeql-minio-info-addendum-20261112.json": "6c7a8225e81ff45457a6dc1267375a3b5b010ee94a72839c37c99e3e0b03fc3f"
+  },
+  "actual_java_regression": {
+    "passed": true,
+    "command": [
+      "mvn",
+      "-B",
+      "-f",
+      "business-backend/pom.xml",
+      "test"
+    ],
+    "exit_code": 0,
+    "total": {
+      "tests": 69,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "suites": [
+      {
+        "name": "com.deepresearch.business.api.HealthControllerTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "xml_sha256": "a365068ba412a78acaa41565d7b9f1bc047d3372ea097549b2c052c8f1d883d7"
+      },
+      {
+        "name": "com.deepresearch.business.api.MarkdownDownloadTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "xml_sha256": "cc640867fe14a27bb74d8e70df20b7c9c6093b716d0f0a3a55bd1bb39772f6b4"
+      },
+      {
+        "name": "com.deepresearch.business.BusinessBackendIntegrationTest",
+        "tests": 39,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "xml_sha256": "951110976f299788588005dc39d4408a997e9dbb78deece6a7e92a6cc2919c04"
+      },
+      {
+        "name": "com.deepresearch.business.config.SecurityConfigBearerTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "xml_sha256": "e6d7affe23950ec0b5e4ad31b0a9d0172b95f085827479a3682a383984bf3cfa"
+      },
+      {
+        "name": "com.deepresearch.business.DeepResearchPropertiesTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "xml_sha256": "8152f18f460d761c15b6450cc11ca57cb1480edab925947e5fe7f6f017314245"
+      },
+      {
+        "name": "com.deepresearch.business.PlatformGovernanceIntegrationTest",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "xml_sha256": "bd6851cf743acba839f803876963bf3931e08847b9d611d503478bde161ae1c2"
+      },
+      {
+        "name": "com.deepresearch.business.ResearchIntakeIntegrationTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "xml_sha256": "b7a868d1eeef039cbad4f961ea7b415e85dad6bb00c1863f9d8378641fe329c5"
+      },
+      {
+        "name": "com.deepresearch.business.RunRequestValidationTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "xml_sha256": "9868e5511f307d4d83bb55b2e0e57ae9ee35124526f594d433b3dc2c8b6627e6"
+      },
+      {
+        "name": "com.deepresearch.business.security.ApiRateLimitFilterTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "xml_sha256": "25e57695a3376cc4dd1d5c83fc733f246f1638a437b7c8e788267cdc905392a0"
+      },
+      {
+        "name": "com.deepresearch.business.service.AgentClientOriginTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "xml_sha256": "f679b06b35ac84e63d68f11f684889bc04f37ef0702e2c3a6aff861cf5c159c1"
+      },
+      {
+        "name": "com.deepresearch.business.service.AgentClientReliabilityTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "xml_sha256": "e6ad431c9fc872009ee27c403b40d0311f0615a9e0f2226cea9f0700a0f02554"
+      },
+      {
+        "name": "com.deepresearch.business.service.ResearchCommandContractTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "xml_sha256": "10d6ffd00c5681861b192dba4f043ddd9916d82f7bb631f46aef0eefc9d6fea7"
+      }
+    ],
+    "maven_log_sha256": "1398407b1fd6b02a82548926433dc7702b7a16ab05a52aac54a2d7c155e9efdd",
+    "pom_prior_sha256": "8a859c557e726d5f8ff818494c7eb5cf008c3cbbb5f130ca9fa8d0b765330301",
+    "pom_current_sha256": "c5947abb575ffe01db6615726427363ad08ff5c4ec375bbb8abb7417d55be46f",
+    "only_version_property_changed": true,
+    "provider_calls": 0,
+    "daily_environment_started": false
+  },
+  "primary_version_sources": [
+    {
+      "url": "https://tomcat.apache.org/security-11.html",
+      "status": 200,
+      "sha256": "f5f03b4e37cb90b23a8870d08ed0d4c4c0bf4fa0e8fbe70d4d63dd8438e26b5c",
+      "bytes": 90253
+    },
+    {
+      "url": "https://tomcat.apache.org/whichversion.html",
+      "status": 200,
+      "sha256": "05209ab1dd390c8f05c9774d8dc1f7ccc34eafd6f5405c2d7b595180dbec12be",
+      "bytes": 26446
+    },
+    {
+      "url": "https://tomcat.apache.org/tomcat-11.0-doc/changelog.html",
+      "status": 200,
+      "sha256": "cd9391c0ed6693b77172fa04f818abf2d847e3327ff43098eb9a7540a2e6b11c",
+      "bytes": 367826
+    }
+  ],
+  "official_affected_and_fixed_versions": [
+    {
+      "id": "CVE-2026-76183",
+      "scanner_severity": "Critical",
+      "official_fixed": "11.0.26",
+      "official_affected_range": "11.0.0-M1 to 11.0.25"
+    },
+    {
+      "id": "CVE-2026-101296",
+      "scanner_severity": "Critical",
+      "official_fixed": "11.0.27",
+      "official_affected_range": "11.0.0-M1 to 11.0.26"
+    },
+    {
+      "id": "CVE-2026-77791",
+      "scanner_severity": "High",
+      "official_fixed": "11.0.26",
+      "official_affected_range": "11.0.0-M5 to 11.0.25"
+    },
+    {
+      "id": "CVE-2026-101356",
+      "scanner_severity": "Critical",
+      "official_fixed": "11.0.27",
+      "official_affected_range": "11.0.22 to 11.0.26"
+    },
+    {
+      "id": "CVE-2026-93446",
+      "scanner_severity": "High",
+      "official_fixed": "11.0.27",
+      "official_affected_range": "11.0.0-M21 to 11.0.26"
+    },
+    {
+      "id": "CVE-2026-88041",
+      "scanner_severity": "High",
+      "official_fixed": "11.0.27",
+      "official_affected_range": "11.0.0-M23 to 11.0.26"
+    },
+    {
+      "id": "CVE-2026-75973",
+      "scanner_severity": "High",
+      "official_fixed": "11.0.26",
+      "official_affected_range": "11.0.0-M1 to 11.0.25"
+    },
+    {
+      "id": "CVE-2026-78437",
+      "scanner_severity": "High",
+      "official_fixed": "11.0.26",
+      "official_affected_range": "11.0.19 to 11.0.25"
+    },
+    {
+      "id": "CVE-2026-78383",
+      "scanner_severity": "High",
+      "official_fixed": "11.0.26",
+      "official_affected_range": "11.0.0-M1 to 11.0.25"
+    },
+    {
+      "id": "CVE-2026-77762",
+      "scanner_severity": "High",
+      "official_fixed": "11.0.26",
+      "official_affected_range": "11.0.0-M1 to 11.0.25"
+    }
+  ],
+  "official_jar_checksums": [
+    {
+      "version": "11.0.25",
+      "artifact": "tomcat-embed-core",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/11.0.25/tomcat-embed-core-11.0.25.jar",
+      "bytes": 3636833,
+      "sha1": "d4f3c448998c6cf8267fb5077b7eeeb0980cd37d",
+      "sha256": "282b65b9fe43647b1459c0df11101f8599a58de5832075acff485c3705ba4894",
+      "sha512": "d03633bece0f07f38eaf4086be549a3465f030a295da7309953b82fcd9e6c9a362fc970ad8118aeeea104411634b7c74e0a6413766014fd7135e4e0e03b901d7",
+      "official_sha512_verified": true,
+      "source": "Prior actual direct official download; SHA1 agrees with both original successful/failed CI SBOMs"
+    },
+    {
+      "version": "11.0.25",
+      "artifact": "tomcat-embed-el",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-el/11.0.25/tomcat-embed-el-11.0.25.jar",
+      "bytes": 271294,
+      "sha1": "ee9244d0c6a0ff7d066c5fe3b0642f201891cbc1",
+      "sha256": "5f84c660ff9a8f85b1c28e1ebe75bb2df486f2457d00257c823888a2e964a793",
+      "sha512": "b361e6911e22321113164739f9bf4d1339599abe20d58ab157e47ba9a46cb05bd4b6cd487cd10a98d71425104480331575bee1c0ea3739af5eb7fada21a0ea0e",
+      "official_sha512_verified": true,
+      "source": "Prior actual direct official download; SHA1 agrees with both original successful/failed CI SBOMs"
+    },
+    {
+      "version": "11.0.25",
+      "artifact": "tomcat-embed-websocket",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/11.0.25/tomcat-embed-websocket-11.0.25.jar",
+      "bytes": 289433,
+      "sha1": "855e2e8777a08c1c8c95aedb937f5742f022e0f9",
+      "sha256": "7d05c8cac38f39e2e0ac6e6d7d0920823372b3f9dc4fac53aaea96727107601a",
+      "sha512": "4423038712ca27ae9b1bd365bd6adfe3625caa2c4897b5419dedc542d25794f64792f43514e873f2ae493822d46947603fa5148fd30eee07f229d0d7e0ab02d2",
+      "official_sha512_verified": true,
+      "source": "Prior actual direct official download; SHA1 agrees with both original successful/failed CI SBOMs"
+    },
+    {
+      "version": "11.0.27",
+      "artifact": "tomcat-embed-core",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/11.0.27/tomcat-embed-core-11.0.27.jar",
+      "bytes": 3656521,
+      "sha1": "30cc98777f843d290bbca645f15c54864cc64491",
+      "sha256": "b71785ff101c0df501064b3e3b8c4a02e4f9cc3047a7fa686c41fc4edc2f0cb4",
+      "sha512": "89cf58c4d201db13b97dde21a76a524b1470cd79e7197a43b1b62d4debf17a9f549d4e33f78501331a216bc223ffa32be3f2e7d0dd2021e5b87c771011a70eba",
+      "official_sha512_verified": true,
+      "source": "Actual Maven-resolved JAR used by69 tests, byte identity authenticated against official Central SHA512 and HTTP200 HEAD length"
+    },
+    {
+      "version": "11.0.27",
+      "artifact": "tomcat-embed-el",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-el/11.0.27/tomcat-embed-el-11.0.27.jar",
+      "bytes": 271410,
+      "sha1": "349ae4673953057dc8d0f51f17e5cf7088cca660",
+      "sha256": "206d6c6b1b6ce67b1c9af9ed0f6f43b4dbbc26164dd47bb49b9aad1583191f33",
+      "sha512": "d649042de58d6f636efae9c38401c1c059c0ba0b4210a982ec1c7a8d5b6c9edcee51c538ff6afa25c81310370773350142b78a886238dc937ae36b47334bdb23",
+      "official_sha512_verified": true,
+      "source": "Actual Maven-resolved JAR used by69 tests, byte identity authenticated against official Central SHA512 and HTTP200 HEAD length"
+    },
+    {
+      "version": "11.0.27",
+      "artifact": "tomcat-embed-websocket",
+      "url": "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/11.0.27/tomcat-embed-websocket-11.0.27.jar",
+      "bytes": 291822,
+      "sha1": "f94e1b5ad075e0a8d47aa8fe9c9d8d842eb1d67e",
+      "sha256": "cbcd7ed6d7428fa71af6572d541a3ef74ceff42dfc523273950fe586062dc60f",
+      "sha512": "2908920eefc8fb3d6dc13ba5e1029f08b138542a0856022db5d960985a0fb5c91b72798fea35a7957e048124aade75e83a54731c09f6508f6e9dbbc2a190a5e8",
+      "official_sha512_verified": true,
+      "source": "Actual Maven-resolved JAR used by69 tests, byte identity authenticated against official Central SHA512 and HTTP200 HEAD length"
+    }
+  ],
+  "authentication_boundary": "Production SecurityConfig, credential resolver, rate/account filters, frontend explicit Bearer handling, AgentClient origin construction and all original proof tests retain their exact source hashes. The same full Java suite actually passes, including4 real-origin and4 Bearer-only regressions. The Tomcat patch stays on the same Servlet6.1 family; this is project-specific regression evidence, not a universal compatibility claim.",
+  "other_findings": "Both SSRF source/test records and the HTML-serving boundary retain all previous source/proof hashes and exact identities.",
+  "prior_actual_sarif_reused": [
+    {
+      "kind": "main",
+      "artifact_id": 13920183935,
+      "zip_sha256": "4a9502e9a88207628de5dd5ff638ef04a3c1e1a8ba129c587a50386fb1755439",
+      "sarif_sha256": {
+        "java.sarif": "49db941fc9b4d77ab6250c557d15c366670a59604a7159131d09d674da85ce72",
+        "javascript.sarif": "ae4f908724ce1638302a49035e74e677a9ce31be87ea50e3cdb708646b008351",
+        "python.sarif": "da5e8bccade463248624dc20c69e74f7b36ce835d305999a1c5cd01b0e97dbde"
+      },
+      "blocking_findings": [
+        {
+          "rule_id": "java/ssrf",
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java",
+          "start_line": 95,
+          "end_line": 95,
+          "start_column": 62,
+          "end_column": 114,
+          "message": "Potential server-side request forgery due to a [user-provided value](1)."
+        },
+        {
+          "rule_id": "java/ssrf",
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java",
+          "start_line": 144,
+          "end_line": 144,
+          "start_column": 57,
+          "end_column": 64,
+          "message": "Potential server-side request forgery due to a [user-provided value](1)."
+        },
+        {
+          "rule_id": "java/spring-disabled-csrf-protection",
+          "path": "business-backend/src/main/java/com/deepresearch/business/config/SecurityConfig.java",
+          "start_line": 34,
+          "end_line": 34,
+          "start_column": 27,
+          "end_column": 41,
+          "message": "CSRF vulnerability due to protection being disabled."
+        },
+        {
+          "rule_id": "js/xss-through-dom",
+          "path": "deployment/security/agent-native-evidence/supplement-20261107/sqlite-release-3_54_1.html",
+          "start_line": 97,
+          "end_line": 97,
+          "start_column": 45,
+          "end_column": 72,
+          "message": "[DOM text](1) is reinterpreted as HTML without escaping meta-characters."
+        }
+      ]
+    },
+    {
+      "kind": "bootstrap",
+      "artifact_id": 13920113835,
+      "zip_sha256": "0b531eb895de785ba16e8c977196e459b6718c84df344dc38c198af6673ffc16",
+      "sarif_sha256": {
+        "go.sarif": "f513db1f58b66fd2161edf999f78ec3d3071c2bb7860076e534e9fd33b0a7fec"
+      },
+      "blocking_findings": []
+    }
+  ],
+  "original_profile_replay": [
+    {
+      "kind": "main",
+      "passed": false,
+      "error": "CodeQL reviewed source or proof changed; renewed review required: business-backend/pom.xml"
+    },
+    {
+      "kind": "bootstrap",
+      "passed": false,
+      "error": "CodeQL reviewed source or proof changed; renewed review required: business-backend/pom.xml"
+    }
+  ],
+  "raw_sarif_modified": false,
+  "new_codeql_scan_claimed": false,
+  "new_backend_image_security_is_separate": true,
+  "severity_threshold_unchanged": 7.0,
+  "risk_acceptance": false,
+  "human_review": false,
+  "new_findings_exempted": false
+}

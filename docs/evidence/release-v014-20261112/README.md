@@ -29,3 +29,5 @@
 MinIO 两个程序、Grafana 主程序及十三个插件实际使用固定 Go 1.27.4 重编译，消除新增的 16 条 `GO-2026-6859`／`CVE-2026-97054` 扫描记录。最终正常构建、实际镜像复扫及原门槛通过，详见[安全专属收据](go-security-acceptance.json)。MinIO 原始记录 43→41，另有 34 条 LOW／MEDIUM 未完成全量技术复核；Grafana Trivy 54→40、Grype 保留 10 条，原级别和逐项证据保持，Secret 均为 0。不是 raw zero、全无缓存构建或第三方二进制分发批准，也不能代替失败的真实研究流程。
 
 本轮只提交源码与诚实的阶段证据，不发布新版本、不更新日常镜像。日常 25 个容器与隔离 17 个容器均恢复停止，日常配置、镜像和数据未切换。
+
+后续干净 CI 的新漏洞库又报告 Backend 原 Tomcat 11.0.25 的 10 条 HIGH／CRITICAL 阻断；相同 JAR 在前一日漏洞库通过不代表新库通过。按 Apache 官方修复范围将唯一版本属性升级至 11.0.27，69 项 Java 测试、原 Dockerfile 的实际构建与完整 Trivy 复扫通过；当前官方 Grype 数据库下 native 为 0、full 仅保留原 3 条 BusyBox MEDIUM，13 条 Tomcat 记录全部消失。两次数据库下载短读均保留，完整同摘要归档经原有受控导入和完整检查后才给出结论，详见[Backend 安全修复收据](backend-tomcat27-acceptance.json)。这不表示整套 CI、真实模型流程、发布或日常切换通过。

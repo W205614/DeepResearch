@@ -1,0 +1,418 @@
+{
+  "schema": "backend-tomcat-security-repair-public-20261112-v1",
+  "observed_at_utc": "2026-11-12T08:42:33.150241+00:00",
+  "phase": "Local source-only security repair; no product release or daily deployment",
+  "source_base_sha": "7377d4fba37aa952bf83d1076f161c146954d1e9",
+  "source_commit_of_this_repair_pending": true,
+  "application_source_delta": {
+    "path": "business-backend/pom.xml",
+    "property": "tomcat.version",
+    "before": "11.0.25",
+    "after": "11.0.27",
+    "only_dependency_property_changed": true,
+    "sha256": "c5947abb575ffe01db6615726427363ad08ff5c4ec375bbb8abb7417d55be46f"
+  },
+  "original_docker_recipe_and_JRE_signature_policy_unchanged": true,
+  "original_failure": {
+    "run_id": 43179926148,
+    "job_id": 131053300727,
+    "artifact_id": 13924754985,
+    "artifact_zip_sha256": "9d8b41894e6ba78c23f2637fbfb100503f1150b6094667e515f1c6164ef2c6dc",
+    "tomcat_blocking_high_critical_unknown": 10,
+    "full_counts": {
+      "Critical": 3,
+      "High": 7,
+      "Medium": 5,
+      "Low": 1
+    },
+    "database_built": "2026-11-12T06:20:58Z",
+    "earlier_success_run_id": 43171409751,
+    "earlier_database_built": "2026-11-11T06:21:32Z",
+    "actual_three_tomcat25_jar_sha1_identical_between_runs": true,
+    "original_raw_and_failures_preserved": true
+  },
+  "official_security_source": "https://tomcat.apache.org/security-11.html",
+  "official_release_and_spec_source": "https://tomcat.apache.org/whichversion.html",
+  "official_blocking_ranges": [
+    {
+      "id": "CVE-2026-76183",
+      "scanner_severity": "Critical",
+      "official_fixed": "11.0.26",
+      "official_affected_range": "11.0.0-M1 to 11.0.25"
+    },
+    {
+      "id": "CVE-2026-101296",
+      "scanner_severity": "Critical",
+      "official_fixed": "11.0.27",
+      "official_affected_range": "11.0.0-M1 to 11.0.26"
+    },
+    {
+      "id": "CVE-2026-77791",
+      "scanner_severity": "High",
+      "official_fixed": "11.0.26",
+      "official_affected_range": "11.0.0-M5 to 11.0.25"
+    },
+    {
+      "id": "CVE-2026-101356",
+      "scanner_severity": "Critical",
+      "official_fixed": "11.0.27",
+      "official_affected_range": "11.0.22 to 11.0.26"
+    },
+    {
+      "id": "CVE-2026-93446",
+      "scanner_severity": "High",
+      "official_fixed": "11.0.27",
+      "official_affected_range": "11.0.0-M21 to 11.0.26"
+    },
+    {
+      "id": "CVE-2026-88041",
+      "scanner_severity": "High",
+      "official_fixed": "11.0.27",
+      "official_affected_range": "11.0.0-M23 to 11.0.26"
+    },
+    {
+      "id": "CVE-2026-75973",
+      "scanner_severity": "High",
+      "official_fixed": "11.0.26",
+      "official_affected_range": "11.0.0-M1 to 11.0.25"
+    },
+    {
+      "id": "CVE-2026-78437",
+      "scanner_severity": "High",
+      "official_fixed": "11.0.26",
+      "official_affected_range": "11.0.19 to 11.0.25"
+    },
+    {
+      "id": "CVE-2026-78383",
+      "scanner_severity": "High",
+      "official_fixed": "11.0.26",
+      "official_affected_range": "11.0.0-M1 to 11.0.25"
+    },
+    {
+      "id": "CVE-2026-77762",
+      "scanner_severity": "High",
+      "official_fixed": "11.0.26",
+      "official_affected_range": "11.0.0-M1 to 11.0.25"
+    }
+  ],
+  "severity_boundary": "Apache impact labels differ from Grype for some advisories. Original Grype severities are preserved; none is dismissed or reclassified. The affected/fixed version ranges agree with the patch.",
+  "jar_byte_identity": [
+    {
+      "artifact": "tomcat-embed-core",
+      "version": "11.0.25",
+      "sha1": "d4f3c448998c6cf8267fb5077b7eeeb0980cd37d",
+      "sha256": "282b65b9fe43647b1459c0df11101f8599a58de5832075acff485c3705ba4894",
+      "official_sha512": "d03633bece0f07f38eaf4086be549a3465f030a295da7309953b82fcd9e6c9a362fc970ad8118aeeea104411634b7c74e0a6413766014fd7135e4e0e03b901d7",
+      "official_sha512_verified": true,
+      "url": "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/11.0.25/tomcat-embed-core-11.0.25.jar",
+      "verification_method": "Prior actual direct official download; SHA1 agrees with both original successful/failed CI SBOMs"
+    },
+    {
+      "artifact": "tomcat-embed-el",
+      "version": "11.0.25",
+      "sha1": "ee9244d0c6a0ff7d066c5fe3b0642f201891cbc1",
+      "sha256": "5f84c660ff9a8f85b1c28e1ebe75bb2df486f2457d00257c823888a2e964a793",
+      "official_sha512": "b361e6911e22321113164739f9bf4d1339599abe20d58ab157e47ba9a46cb05bd4b6cd487cd10a98d71425104480331575bee1c0ea3739af5eb7fada21a0ea0e",
+      "official_sha512_verified": true,
+      "url": "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-el/11.0.25/tomcat-embed-el-11.0.25.jar",
+      "verification_method": "Prior actual direct official download; SHA1 agrees with both original successful/failed CI SBOMs"
+    },
+    {
+      "artifact": "tomcat-embed-websocket",
+      "version": "11.0.25",
+      "sha1": "855e2e8777a08c1c8c95aedb937f5742f022e0f9",
+      "sha256": "7d05c8cac38f39e2e0ac6e6d7d0920823372b3f9dc4fac53aaea96727107601a",
+      "official_sha512": "4423038712ca27ae9b1bd365bd6adfe3625caa2c4897b5419dedc542d25794f64792f43514e873f2ae493822d46947603fa5148fd30eee07f229d0d7e0ab02d2",
+      "official_sha512_verified": true,
+      "url": "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/11.0.25/tomcat-embed-websocket-11.0.25.jar",
+      "verification_method": "Prior actual direct official download; SHA1 agrees with both original successful/failed CI SBOMs"
+    },
+    {
+      "artifact": "tomcat-embed-core",
+      "version": "11.0.27",
+      "sha1": "30cc98777f843d290bbca645f15c54864cc64491",
+      "sha256": "b71785ff101c0df501064b3e3b8c4a02e4f9cc3047a7fa686c41fc4edc2f0cb4",
+      "official_sha512": "89cf58c4d201db13b97dde21a76a524b1470cd79e7197a43b1b62d4debf17a9f549d4e33f78501331a216bc223ffa32be3f2e7d0dd2021e5b87c771011a70eba",
+      "official_sha512_verified": true,
+      "url": "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/11.0.27/tomcat-embed-core-11.0.27.jar",
+      "verification_method": "Actual Maven-resolved JAR used by69 tests, byte identity authenticated against official Central SHA512 and HTTP200 HEAD length"
+    },
+    {
+      "artifact": "tomcat-embed-el",
+      "version": "11.0.27",
+      "sha1": "349ae4673953057dc8d0f51f17e5cf7088cca660",
+      "sha256": "206d6c6b1b6ce67b1c9af9ed0f6f43b4dbbc26164dd47bb49b9aad1583191f33",
+      "official_sha512": "d649042de58d6f636efae9c38401c1c059c0ba0b4210a982ec1c7a8d5b6c9edcee51c538ff6afa25c81310370773350142b78a886238dc937ae36b47334bdb23",
+      "official_sha512_verified": true,
+      "url": "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-el/11.0.27/tomcat-embed-el-11.0.27.jar",
+      "verification_method": "Actual Maven-resolved JAR used by69 tests, byte identity authenticated against official Central SHA512 and HTTP200 HEAD length"
+    },
+    {
+      "artifact": "tomcat-embed-websocket",
+      "version": "11.0.27",
+      "sha1": "f94e1b5ad075e0a8d47aa8fe9c9d8d842eb1d67e",
+      "sha256": "cbcd7ed6d7428fa71af6572d541a3ef74ceff42dfc523273950fe586062dc60f",
+      "official_sha512": "2908920eefc8fb3d6dc13ba5e1029f08b138542a0856022db5d960985a0fb5c91b72798fea35a7957e048124aade75e83a54731c09f6508f6e9dbbc2a190a5e8",
+      "official_sha512_verified": true,
+      "url": "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/11.0.27/tomcat-embed-websocket-11.0.27.jar",
+      "verification_method": "Actual Maven-resolved JAR used by69 tests, byte identity authenticated against official Central SHA512 and HTTP200 HEAD length"
+    }
+  ],
+  "actual_local_image": {
+    "engine_id": "sha256:acaa1c82eb576ffdc04c12b7ced27bb3aeac039c27c29df99c55e5f73e3209e7",
+    "portable_config_digest": "sha256:687236db34c04451345b67635a9772f1835483788afa820a4b0ce586541298c7",
+    "app_jar_sha256": "aba6a4e5df9edbdef1fb9f6600762a73cab4b44703af79bed9698a55fd48778b",
+    "embedded_three_tomcat27_jars_match_authenticated_central_bytes": true,
+    "runtime_source_fingerprint_inputs_verified": 34,
+    "original_recipe_build_passed_on_attempt": 2,
+    "build_cache_reused": true,
+    "all_cold_build_claimed": false
+  },
+  "java_regression": {
+    "tests": 69,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "actual_JRE_byte_verification": {
+    "verified_entries": 255,
+    "verified_regular_bytes": 164682680
+  },
+  "actual_JVM": {
+    "name": "openjdk",
+    "version": "21.0.13+9-LTS",
+    "cpe": "cpe:2.3:a:oracle:openjdk:21.0.13:*:*:*:*:*:*:*"
+  },
+  "trivy": {
+    "passed": true,
+    "all_severities_scanned": true,
+    "list_all_packages": true,
+    "vulnerability_raw_counts": {},
+    "secret_passed": true,
+    "raw_sha256": "e530a1a5d00ff9f13ee8209633ed6308e6d5d340e0e57d935a62e5f424b8be27"
+  },
+  "grype": {
+    "passed_original_threshold": true,
+    "scanner_version": "0.121.0",
+    "native_raw_counts": {
+      "High": 0,
+      "Critical": 0,
+      "Unknown": 0,
+      "Medium": 0,
+      "Low": 0,
+      "Negligible": 0
+    },
+    "full_package_count": 140,
+    "full_raw_counts": {
+      "High": 0,
+      "Critical": 0,
+      "Unknown": 0,
+      "Medium": 3,
+      "Low": 0,
+      "Negligible": 0
+    },
+    "removed_tomcat_tuples": [
+      {
+        "id": "CVE-2026-76183",
+        "package": "tomcat-embed-websocket",
+        "version": "11.0.25",
+        "severity": "Critical",
+        "count": 1
+      },
+      {
+        "id": "CVE-2026-101296",
+        "package": "tomcat-embed-core",
+        "version": "11.0.25",
+        "severity": "Critical",
+        "count": 1
+      },
+      {
+        "id": "CVE-2026-77791",
+        "package": "tomcat-embed-websocket",
+        "version": "11.0.25",
+        "severity": "High",
+        "count": 1
+      },
+      {
+        "id": "CVE-2026-101356",
+        "package": "tomcat-embed-core",
+        "version": "11.0.25",
+        "severity": "Critical",
+        "count": 1
+      },
+      {
+        "id": "CVE-2026-93446",
+        "package": "tomcat-embed-core",
+        "version": "11.0.25",
+        "severity": "High",
+        "count": 1
+      },
+      {
+        "id": "CVE-2026-88041",
+        "package": "tomcat-embed-core",
+        "version": "11.0.25",
+        "severity": "High",
+        "count": 1
+      },
+      {
+        "id": "CVE-2026-75973",
+        "package": "tomcat-embed-core",
+        "version": "11.0.25",
+        "severity": "High",
+        "count": 1
+      },
+      {
+        "id": "CVE-2026-78437",
+        "package": "tomcat-embed-core",
+        "version": "11.0.25",
+        "severity": "High",
+        "count": 1
+      },
+      {
+        "id": "CVE-2026-78383",
+        "package": "tomcat-embed-core",
+        "version": "11.0.25",
+        "severity": "High",
+        "count": 1
+      },
+      {
+        "id": "CVE-2026-77762",
+        "package": "tomcat-embed-core",
+        "version": "11.0.25",
+        "severity": "High",
+        "count": 1
+      },
+      {
+        "id": "CVE-2026-74048",
+        "package": "tomcat-embed-core",
+        "version": "11.0.25",
+        "severity": "Medium",
+        "count": 1
+      },
+      {
+        "id": "CVE-2026-77756",
+        "package": "tomcat-embed-core",
+        "version": "11.0.25",
+        "severity": "Low",
+        "count": 1
+      },
+      {
+        "id": "CVE-2026-73581",
+        "package": "tomcat-embed-core",
+        "version": "11.0.25",
+        "severity": "Medium",
+        "count": 1
+      }
+    ],
+    "remaining_tuples": [
+      {
+        "id": "CVE-2025-60876",
+        "package": "busybox",
+        "version": "1.37.0-r31",
+        "severity": "Medium",
+        "count": 1
+      },
+      {
+        "id": "CVE-2025-60876",
+        "package": "busybox-binsh",
+        "version": "1.37.0-r31",
+        "severity": "Medium",
+        "count": 1
+      },
+      {
+        "id": "CVE-2025-60876",
+        "package": "ssl_client",
+        "version": "1.37.0-r31",
+        "severity": "Medium",
+        "count": 1
+      }
+    ],
+    "remaining_reclassified_or_modified": false,
+    "raw_report_sha256": "cfdc14f8a4fb094303cbea239c94d9ce03aabdc8f119bbf3353005559f6e2718",
+    "all_severity_raw_zero": false,
+    "all_severity_technical_clearance_claimed": false
+  },
+  "database": {
+    "archive_sha256": "c98bd6bd207590fa04c8e2fea3db1859f7f952b57400fc62e19f517f1b562f5e",
+    "archive_bytes": 201260155,
+    "built": "2026-11-12T06:20:58Z",
+    "schema": "v6.1.10",
+    "fresh_controlled_import": true,
+    "import_metadata": {
+      "digest": "xxh64:b8912068fb7cd11c",
+      "source": "manual import",
+      "client_version": "v6.1.10"
+    },
+    "derived_database": {
+      "bytes": 3420876800,
+      "sha256": "3796b632bcd52d82c135e579bcc4635d902382cab550ff8c01a940a4f90893ca"
+    },
+    "before_after_integrity_checks": [
+      {
+        "stage": "after-status",
+        "bytes": 3420876800,
+        "sha256": "3796b632bcd52d82c135e579bcc4635d902382cab550ff8c01a940a4f90893ca"
+      },
+      {
+        "stage": "after-native-scan",
+        "bytes": 3420876800,
+        "sha256": "3796b632bcd52d82c135e579bcc4635d902382cab550ff8c01a940a4f90893ca"
+      },
+      {
+        "stage": "after-full-scan",
+        "bytes": 3420876800,
+        "sha256": "3796b632bcd52d82c135e579bcc4635d902382cab550ff8c01a940a4f90893ca"
+      }
+    ]
+  },
+  "local_archive_transport": {
+    "original_consumer_sha256": "65039288153d432cf0a77c4d8c4b91caf7b127128c4be1af8df3c30301f8a886",
+    "runner_sha256": "a67000518577601900ab2127ce4824db33cbaa29185ace81e96ce6badd378771",
+    "only_main_ast_changes": [
+      "required archive input",
+      "existing verified-archive transport parameter"
+    ],
+    "all_validation_logic_and_thresholds_unchanged": true,
+    "schema_age_xxh64_and_derived_before_after_checks_passed": true,
+    "two_original_short_download_failures_preserved": true,
+    "source_consumer_or_policy_changed": false,
+    "old_database_fallback_used": false
+  },
+  "codeql": {
+    "profile": "deployment/security/codeql-reviewed-findings-20261112-tomcat27.json",
+    "profile_sha256": "de04cf7391c8c05b1b67f5331e8b09c656c5d09d5e1c52ab16bb4c6040300a09",
+    "addendum": "deployment/security/codeql-tomcat27-addendum-20261112.json",
+    "addendum_sha256": "643dbfeaf98a6c9ccb64e6c5906cfb9613fc0a411c78df8db8b22fc7967ac2f3",
+    "same_four_exact_identities": true,
+    "severity_threshold": 7,
+    "existing_raw_replay": [
+      {
+        "kind": "main",
+        "exit_code": 0,
+        "reviewed": 4,
+        "unresolved": 0,
+        "stdout": "CodeQL HIGH/CRITICAL security findings: 4\nExactly reviewed false positives: 4; unresolved: 0\n",
+        "raw_sarif_unchanged": true
+      },
+      {
+        "kind": "bootstrap",
+        "exit_code": 0,
+        "reviewed": 0,
+        "unresolved": 0,
+        "stdout": "CodeQL HIGH/CRITICAL security findings: 0\nExactly reviewed false positives: 0; unresolved: 0\n",
+        "raw_sarif_unchanged": true
+      }
+    ],
+    "new_scan_claimed": false,
+    "related_pytest_passed": 36
+  },
+  "private_acceptance_sha256": "4e30a79af95a7da606f848f3570819f9b72821df49c3749422ffa41e1495e9e5",
+  "raw_reports_modified": false,
+  "new_paid_model_calls": 0,
+  "new_real_model_acceptance_completed": false,
+  "prior_final_model_failure_superseded": false,
+  "source_CI_suite_pass_claimed": false,
+  "daily_environment_updated": false,
+  "public_images_pushed": false,
+  "new_tag_or_release_created": false
+}

@@ -131,3 +131,14 @@ def test_diagnostic_does_not_hide_failures_or_capture_unrelated_images(mutation)
         next(s for s in steps if 'diagnostic-graphs/*.json' in s.get('with', {}).get('path', ''))['if'] = 'success()'
     with pytest.raises(AssertionError):
         assert_workflow_contract(steps, security=True)
+
+
+@pytest.mark.parametrize('job', ['real-components', 'enterprise-compose-smoke'])
+def test_ci_source_build_failure_retains_actual_receipt_config_and_manifest(job):
+    uploads = [step for step in steps_for('ci.yml', job)
+               if '-go-source-build-logs-' in step.get('with', {}).get('name', '')]
+    assert len(uploads) == 1 and uploads[0]['if'] == 'always()'
+    assert {'.cache/eval/*-source-build/build-receipt.json',
+            '.cache/eval/*-source-build/image-inspect.json',
+            '.cache/eval/*-source-build/actual-payload/runtime-manifest.json.gz'}.issubset(
+                uploads[0]['with']['path'].splitlines())
