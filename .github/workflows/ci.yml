@@ -110,6 +110,9 @@ jobs:
         run: uv run --frozen --no-dev python scripts/build_go_stdlib_security_20261112.py --artifact grafana --output-dir .cache/eval/grafana-source-build
         env:
           GITHUB_TOKEN: ${{ github.token }}
+      - name: Retain only differing Grafana graph and provenance documents after a failed build gate
+        if: always() && failure() && hashFiles('.cache/eval/grafana-source-build/build-receipt.json') != '' && hashFiles('.cache/eval/grafana-source-build/actual-payload/runtime-manifest.json.gz') != '' && hashFiles('.cache/eval/grafana-source-build/actual-payload/rootfs.tar') != ''
+        run: uv run --frozen --no-dev python scripts/capture_go_graph_diagnostic_20261112.py --artifact grafana --build-dir .cache/eval/grafana-source-build
       - uses: actions/upload-artifact@v6
         if: always()
         with:
@@ -118,6 +121,8 @@ jobs:
             .cache/eval/*-source-build/*.log
             .cache/eval/*-source-build/*.command.json
             .cache/eval/minio-source-build/diagnostic-graphs/*.json
+            .cache/eval/grafana-source-build/diagnostic-graphs/*.json
+            .cache/eval/grafana-source-build/diagnostic-graphs/*.json.gz
           if-no-files-found: warn
       - uses: actions/upload-artifact@v6
         if: always() && hashFiles('.cache/eval/grafana-source-build/build-receipt.json') != ''

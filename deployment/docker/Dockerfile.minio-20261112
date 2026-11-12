@@ -36,6 +36,11 @@ RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache
       -o /out/mcli github.com/minio/mc && \
     go version -m /out/silo > /out/silo-buildinfo.txt && go version -m /out/mcli > /out/mcli-buildinfo.txt && \
     go version -m -json /out/silo > /out/silo-native.json && go version -m -json /out/mcli > /out/mcli-native.json && \
+    sha256sum go.mod go.sum > /tmp/go-locks-before-module-info.sha256 && \
+    go mod download -json github.com/coreos/go-systemd/v22@v22.6.0 > /tmp/coreos-module-download.json && \
+    grep -F '"Sum": "h1:aGVa/v8B7hpb0TKl0MWoAavPDmHvobFe5R5zn0bCJWo="' /tmp/coreos-module-download.json && \
+    grep -F '"GoModSum": "h1:iG+pp635Fo7ZmV/j14KUcmEyWF+0X7Lua8rrTWzYgWU="' /tmp/coreos-module-download.json && \
+    sha256sum -c /tmp/go-locks-before-module-info.sha256 && \
     CGO_ENABLED=0 go list -mod=readonly -tags=kqueue -deps -json . > /out/silo-graph.json && \
     CGO_ENABLED=0 go list -mod=readonly -deps -json github.com/minio/mc > /out/mcli-graph.json
 # Retain maintained runtime OS, console, S3/IAM and CLI entrypoint behavior.

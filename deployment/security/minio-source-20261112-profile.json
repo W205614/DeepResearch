@@ -6,7 +6,7 @@
   "dockerfile": "deployment/docker/Dockerfile.minio-20261112",
   "context": ".",
   "source_inputs": {
-    "deployment/docker/Dockerfile.minio-20261112": "b0f30dea8ddf9e18f5c988dbde494930fe8aa0db0421031fa203b91412f60852",
+    "deployment/docker/Dockerfile.minio-20261112": "aa37214feaadb223f727c83bbf42726a887800ce37f89e5e5f741877c1f36635",
     "deployment/docker/Dockerfile.minio-20261112.dockerignore": "c2da2af78d20ac5746524327f5f42b0eb6dd65b0cf3ca82c388cf812f19b7e23",
     "deployment/security/go-stdlib-20261112-evidence/Go-LICENSE": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
     "deployment/security/go-stdlib-20261112-evidence/source.lock.json": "20746730bbf420fce6ed6765e79bac882c02d237f5a51cf212581840ff019dbe",
@@ -417,10 +417,16 @@
     "deployment/security/minio-source-20261112-evidence/mcli-graph.json.gz": "7f314001fb00815a9b4db56e15dddb17524290a8992df43009304dc10c695bb0",
     "deployment/security/minio-source-20261112-evidence/mcli-new-native.json": "e91c5fa4f494232baefe30d2faa36e989b808d8a5d0238c25031541e22ccfa09",
     "deployment/security/minio-source-20261112-evidence/mcli-prior-native.json": "163ef812176c2a19f50fe88690c6efc59facd38ed7cec8bb1e06b37a2dbf1642",
+    "deployment/security/minio-source-20261112-evidence/module-info-prefetch/Dockerfile.control": "d12e89c8d4a1544b26fa6d178e7db5530b993657d8e31237e4dce3b544b38ec1",
+    "deployment/security/minio-source-20261112-evidence/module-info-prefetch/go-module-download.json": "a789e42f2740aaacc72339a62f505e2d70178fab22718d0d1330294426a39a7c",
+    "deployment/security/minio-source-20261112-evidence/module-info-prefetch/mcli-missing-info-graph.json.gz": "4c40ce0903efe09f22b193579ccd5221a79419dd21419544be168301cddf7674",
+    "deployment/security/minio-source-20261112-evidence/module-info-prefetch/official-module-info.json": "17a9483ae34e468614c8aebc08a18fc76134d0cacdc5615da2f4f93a59d63ea0",
+    "deployment/security/minio-source-20261112-evidence/module-info-prefetch/result.json": "fa5f70cdcf8ea4bd8136908f71b3f0c02479e90dad491d82854297766b7ff20c",
+    "deployment/security/minio-source-20261112-evidence/module-info-prefetch/silo-missing-info-graph.json.gz": "b5f1a7ebb0be9b2479c56894ee504b9833c14e5f1205094aef7d4829e51f4d73",
     "deployment/security/minio-source-20261112-evidence/prior-image-config.json": "45b3d3e48a5b0a92e7ff52b046573268a241207fe6ddfafa504a48bc543cb1f3",
     "deployment/security/minio-source-20261112-evidence/prior-raw-trivy.json.gz": "5402310b30a7984d4c7e14064579101ceae078ddfb9b888f98596f77d6150e80",
     "deployment/security/minio-source-20261112-evidence/prior-runtime-manifest.json.gz": "a881209141bd96b93201aac277e739e65ebc2a4c113ed1b40aed598391400950",
-    "deployment/security/minio-source-20261112-evidence/raw-trivy.json.gz": "e898537321d5a2ef1cdff6a1de28ce49b740204bb188e53199d40589aea53d2d",
+    "deployment/security/minio-source-20261112-evidence/raw-trivy.json.gz": "9727fcd5c84982faaed638d74346f28484efab8e9a3f6231ea1c5136d8286597",
     "deployment/security/minio-source-20261112-evidence/runtime-manifest.json.gz": "21b00470cafbf16ab3350c51e895cb8062942cf596fcf90eb741ff64cb21086a",
     "deployment/security/minio-source-20261112-evidence/silo-graph.json.gz": "050298733fde75da9526e72357465a6a4e40c110d4b10744080942b890e1d61e",
     "deployment/security/minio-source-20261112-evidence/silo-new-native.json": "17bc94f2892bdd5621d268ee3e238e1a31fba964208e0b39312bbe2d56338348",
@@ -430,8 +436,8 @@
     "scripts/go_stdlib_rebuild_20261112.py": "3e61188b573e3f52c9497d60681604ef8c697bcf53b1947e5088b92efccfc69b",
     "scripts/prepare_go_stdlib_profiles_20261112.py": "2d242481b757d17883a5b9ede3bab19901931ae5854a30f2323a61f46a31d869",
     "tests/test_go_stdlib_rebuild_20261112.py": "884eaae550605bf4f6ae0f69ab7a2f51989680dcfe7050bd26a34f16fc7bf9e8",
-    "deployment/security/minio-source-20261112-evidence/review-root.json": "15c7e845bb88a2a7691f4bd2fcd1655ddea0a7087878476a2ddd94f5ce18bf53",
-    "deployment/security/minio-source-20261112-evidence/review-release-prepare.json": "b69f45d8304cb894220381da98f4832ccba6327d307b6b622334c07a1e3ffdef"
+    "deployment/security/minio-source-20261112-evidence/review-root.json": "62a1ef3150c6d75936a45f77fc11e40162b586db4aff410bf1a017c06a9a2f84",
+    "deployment/security/minio-source-20261112-evidence/review-release-prepare.json": "c59adc5591477c30b1390d50dcde9018e208bacaf1f1b6210ae6c40cecaaf6d0"
   },
   "migration_facts": {
     "usr/bin/mcli": {
@@ -662,5 +668,5 @@
     "unrelated_rows_unchanged": true,
     "raw_reports_modified": false
   },
-  "review_subject_sha256": "08885c8f3db046b3e33c80b677d98350621a12488ec05c8c3539fb22e618a28d"
+  "review_subject_sha256": "9976e9f25573e6544546e8392427734964ac6fe488de17c8a7ee809dcfcfb9d6"
 }

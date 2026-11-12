@@ -135,6 +135,9 @@ jobs:
       - name: Retain the two actual MinIO graph documents after a failed build gate
         if: always() && matrix.artifact == 'minio' && failure() && hashFiles('.cache/eval/minio-source-build/build-receipt.json') != '' && hashFiles('.cache/eval/minio-source-build/actual-payload/runtime-manifest.json.gz') != '' && hashFiles('.cache/eval/minio-source-build/actual-payload/rootfs.tar') != ''
         run: uv run --frozen --no-dev python scripts/capture_go_graph_diagnostic_20261112.py --build-dir .cache/eval/minio-source-build
+      - name: Retain only differing Grafana graph and provenance documents after a failed build gate
+        if: always() && matrix.artifact == 'grafana' && failure() && hashFiles('.cache/eval/grafana-source-build/build-receipt.json') != '' && hashFiles('.cache/eval/grafana-source-build/actual-payload/runtime-manifest.json.gz') != '' && hashFiles('.cache/eval/grafana-source-build/actual-payload/rootfs.tar') != ''
+        run: uv run --frozen --no-dev python scripts/capture_go_graph_diagnostic_20261112.py --artifact grafana --build-dir .cache/eval/grafana-source-build
       - name: Scan ordinary runtime image with unchanged HIGH gate
         if: matrix.approved_artifact != true && matrix.source_build_profile == ''
         uses: aquasecurity/trivy-action@v0.36.0
@@ -245,6 +248,8 @@ jobs:
             .cache/eval/*-source-build/*.log
             .cache/eval/*-source-build/*.command.json
             .cache/eval/minio-source-build/diagnostic-graphs/*.json
+            .cache/eval/grafana-source-build/diagnostic-graphs/*.json
+            .cache/eval/grafana-source-build/diagnostic-graphs/*.json.gz
             .cache/eval/grafana-source-build/build-receipt.json
             .cache/eval/grafana-source-build/image-inspect.json
             .cache/eval/grafana-source-build/actual-payload/runtime-manifest.json.gz

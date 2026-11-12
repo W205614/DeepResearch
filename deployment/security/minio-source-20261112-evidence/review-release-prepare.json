@@ -2,16 +2,33 @@
   "schema": "go-stdlib-independent-technical-review-20261112-v1",
   "actor": "/root/release_prepare",
   "actor_kind": "automated_independent_agent",
-  "subject_sha256": "08885c8f3db046b3e33c80b677d98350621a12488ec05c8c3539fb22e618a28d",
+  "subject_sha256": "9976e9f25573e6544546e8392427734964ac6fe488de17c8a7ee809dcfcfb9d6",
   "facts_passed": true,
   "risk_acceptance": false,
   "binary_redistribution_approved": false,
-  "observed_at_utc": "2026-11-12T05:34:00.547983+00:00",
-  "observations_sha256": "bd040927ce3af540dd6e29d46eeb7c5df4d0b2fafa857a61cea44f51fbf14ff1",
+  "observed_at_utc": "2026-11-12T07:50:36.678529+00:00",
+  "observations_sha256": "4e9c39ee2b127871a7fa14e7935a5b1f2fb4f29b6c0456fcf8248d9080bec4e7",
+  "prior_review": {
+    "subject_sha256": "08885c8f3db046b3e33c80b677d98350621a12488ec05c8c3539fb22e618a28d",
+    "sha256": "b69f45d8304cb894220381da98f4832ccba6327d307b6b622334c07a1e3ffdef",
+    "bytes_preserved_in_amendment_backup": true
+  },
+  "exact_recipe_delta_review": {
+    "path": "deployment/security/codeql-minio-info-addendum-20261112.json",
+    "sha256": "6c7a8225e81ff45457a6dc1267375a3b5b010ee94a72839c37c99e3e0b03fc3f",
+    "prior_recipe_sha256": "b0f30dea8ddf9e18f5c988dbde494930fe8aa0db0421031fa203b91412f60852",
+    "current_recipe_sha256": "aa37214feaadb223f727c83bbf42726a887800ce37f89e5e5f741877c1f36635"
+  },
+  "source_inputs_difference": {
+    "deployment/docker/Dockerfile.minio-20261112": {
+      "before": "b0f30dea8ddf9e18f5c988dbde494930fe8aa0db0421031fa203b91412f60852",
+      "after": "aa37214feaadb223f727c83bbf42726a887800ce37f89e5e5f741877c1f36635"
+    }
+  },
   "actual_image": {
-    "engine_id": "sha256:5e20c6adc5e491a589d6c2f45b467bc74f3f60573e559686874766f45a13e194",
-    "portable_config_digest": "sha256:b7e62d55e9af52ee4754c8f768b3fb5d27f002f652817ba49db4f8881c7ebef9",
-    "ordered_diff_ids": [
+    "actual_engine_id": "sha256:0de4cbd48c7e9a34dc05c0b89b34d78dfa8fff35a437296db6adc713eb852e1f",
+    "portable_config_digest": "sha256:621bd380d3c9842829f1316a30cb4b311c7f6488356cf33a53a34b299d507109",
+    "diff_ids": [
       "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99",
       "sha256:6e10a27c77d9a6a73577bd8d8bf37a1b0620ad9ccf489a2b01108a6642d8bc5c",
       "sha256:bd250dd660c815efd2d451f5fce3b5d361fd435253e76e6d64539233bbcbff1c",
@@ -36,18 +53,14 @@
     "usr/bin/silo": "f3c853d27fdc691f981edc2a544c02d9c236f58550c2f4d60ad4121a20b73683"
   },
   "independently_checked": [
-    "All non-review source/evidence byte hashes and review-subject digest",
-    "Actual immutable image inspection, independent never-started full-rootfs export and portable-config hashing",
-    "Actual two ELF hashes and reparsed complete native module/checksum/replace metadata with the pinned official Go toolchain",
-    "Every native build setting matches its prior executable; no ignored settings difference in these subjects",
-    "Complete production graphs:616/1410 total packages and107/260 native modules; all non-stdlib imports/module identities preserved",
-    "Full runtime diff limited to the two changed executable payloads and documentary build files; entrypoint/env/config and other runtime contents retained",
-    "Official Go1.27.4 net/http/server.go fetched independently and byte-identical to the actual SDK source; requestTooLarge uses atomic Store, not unsynchronized Header.Set",
-    "Official GO-2026-6859 JSON independently fetched and matches the fixed-version/package/alias/fix-reference evidence",
-    "Current complete unfiltered vuln+secret scan,41 records; only the two exact CVE-2026-97054 stdlib rows removed from original43",
-    "Existing CSV and legacy multipart regression outputs contain real named RUN/PASS records, not skipped or no-tests output"
+    "Exact new subject and every non-review source/evidence hash",
+    "Source-input delta limited to the five-line standard Go download/check insertion; COPY/ADD/routing and lock files stay bound",
+    "All prior expected native, package graph, runtime, package inventory, tuple and threshold facts remain exactly equal",
+    "Actual new immutable candidate exported independently without starting it; complete runtime manifest and portable config checked",
+    "Both actual ELF payloads independently copied/reparsed and byte-identical to the previous accepted native subjects",
+    "Actual current full raw scan assessed by the unchanged gate; full finding multiset exactly equals prior41 records"
   ],
-  "sdk_source_verification": {
+  "reused_official_sdk_source_evidence": {
     "toolchain": "golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf",
     "actual_toolchain_engine_id": "sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf",
     "fixed_requestTooLarge_body_sha256": "1b3e4ef7749ba16627333f614b7483d269e9fbee4720714ba827ee853d29ebef",
@@ -58,29 +71,59 @@
     },
     "official_advisory_sha256": "9eb1590c57233fd8a63e8ad737d12cbdef5572eed86ffee05897291fff12a9ce"
   },
-  "controlled_trivy_snapshot": {
-    "explicit_skip_update_used_for_same_snapshot_comparison": true,
-    "metadata": {
-      "Version": 2,
-      "NextUpdate": "2026-11-13T01:03:48.608294356Z",
-      "UpdatedAt": "2026-11-12T01:03:48.608294617Z",
-      "DownloadedAt": "2026-11-12T04:00:58.7979105Z"
+  "reused_module_info_control_evidence": {
+    "public_result_path": "deployment/security/minio-source-20261112-evidence/module-info-prefetch/result.json",
+    "public_result_sha256": "fa5f70cdcf8ea4bd8136908f71b3f0c02479e90dad491d82854297766b7ff20c",
+    "independent_saved_graph_comparison_sha256": "f72af783b9d60634756b58127457cc3731d8b8ca13f5242d5c7f27bf2192175e",
+    "complete_saved_graph_comparison": {
+      "mcli": {
+        "complete_package_count": 616,
+        "differences": [
+          {
+            "package": "github.com/coreos/go-systemd/v22/journal",
+            "field": "Module.Replace.Time",
+            "before": "0001-01-01T00:00:00Z",
+            "after": "2025-08-20T18:00:08Z"
+          }
+        ],
+        "missing_raw_sha256": "61e94077bfe68934eba01c71004aba46bb1284aacf5eff2ef32c9b9fb6c3e820",
+        "reviewed_raw_sha256": "61b98438da7c3ef4fcdadb7a15faec37ecaea76bc6d3fd20ef5ad8447cf428dc",
+        "entire_restored_byte_sequence_equal": true
+      },
+      "silo": {
+        "complete_package_count": 1410,
+        "differences": [
+          {
+            "package": "github.com/coreos/go-systemd/v22/daemon",
+            "field": "Module.Replace.Time",
+            "before": "0001-01-01T00:00:00Z",
+            "after": "2025-08-20T18:00:08Z"
+          },
+          {
+            "package": "github.com/coreos/go-systemd/v22/journal",
+            "field": "Module.Replace.Time",
+            "before": "0001-01-01T00:00:00Z",
+            "after": "2025-08-20T18:00:08Z"
+          }
+        ],
+        "missing_raw_sha256": "e40981942199696e2f95e5b4e511ff1c95d3016a120d833933ee48b0bc093cc9",
+        "reviewed_raw_sha256": "712d37f7a5e0d3b3faf6520e29cdf72ba983a92546dcfeec2f36a52857452824",
+        "entire_restored_byte_sequence_equal": true
+      }
     },
-    "metadata_sha256": "90b2d37dd6025a9038eb345f5c7c061bc82963c0ac07d7ed1ee44a4945221c47",
-    "database_sha256": "719de0cb21fdbc1bf3cb433f7ea57f68910c9d1771f8334026035f5fb11ff325",
-    "fresh_until": "2026-11-13T01:03:48.608294356Z",
-    "not_a_default_network_update_claim": true
+    "actual_control_experiment_repeated": false,
+    "official_metadata_fetch_repeated": false,
+    "scope": "Saved original control graphs and standard Go return/official-info bytes independently inspected and compared; original experiment and metadata download are reused."
   },
   "scope": {
-    "new_stdlib_findings_fixed": 2,
+    "fixed_new_stdlib_targets": 2,
     "raw_findings_remaining": 41,
-    "raw_severity_counts": {
+    "raw_counts": {
       "MEDIUM": 26,
       "LOW": 10,
       "UNKNOWN": 2,
       "HIGH": 3
     },
-    "unresolved_threshold_count": 0,
     "threshold_severities": [
       "HIGH",
       "CRITICAL",
@@ -92,10 +135,17 @@
     "services_started": false,
     "paid_provider_calls": 0
   },
+  "execution_boundary": {
+    "new_independent_runtime_export_and_native_parse_performed": true,
+    "new_scan_performed_by_this_reviewer": false,
+    "new_official_sdk_fetch_performed": false,
+    "resumed_after_own_os_transport_label_comparison_error": true,
+    "sdk_reuse_basis": "Exact same digest-pinned Go1.27.4 SDK and previously verified official source/OSV bytes.",
+    "model_acceptance_repeated": false
+  },
   "limits": [
-    "This is an automated technical review, not independent human approval or production capacity testing.",
-    "No old binary approval or new third-party binary redistribution approval is inherited.",
-    "The existing34 low/medium OS records are retained unmodified and have not been expanded into a full all-severity applicability review.",
-    "Application S3/runtime integration and the final real-model combination are separate acceptance steps."
+    "Automated independent technical review, not human risk acceptance or binary redistribution approval.",
+    "Original34 low/medium OS records remain unreviewed at full-severity scope, with the original HIGH/CRITICAL/UNKNOWN threshold unchanged.",
+    "The final real-model combination previously failed; this source-metadata repair does not claim a new model, deployment, or complete release acceptance."
   ]
 }

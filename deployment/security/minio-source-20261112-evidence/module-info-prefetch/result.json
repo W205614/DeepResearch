@@ -1,0 +1,129 @@
+{
+  "schema": "minio-module-info-source-prefetch-proof-20261112-v1",
+  "observed_remote_source": "01c15d75a58caf791ebd1c767852f38922f147af",
+  "original_recipe_sha256": "b0f30dea8ddf9e18f5c988dbde494930fe8aa0db0421031fa203b91412f60852",
+  "official_metadata_url": "https://proxy.golang.org/github.com/coreos/go-systemd/v22/@v/v22.6.0.info",
+  "official_info": {
+    "Version": "v22.6.0",
+    "Time": "2025-08-20T18:00:08Z",
+    "Origin": {
+      "VCS": "git",
+      "URL": "https://github.com/coreos/go-systemd",
+      "Hash": "8214e15a7a799dc18f0ef8dd788b830f815d7530",
+      "Ref": "refs/tags/v22.6.0"
+    }
+  },
+  "replacement_identity": {
+    "Path": "github.com/coreos/go-systemd/v22",
+    "Version": "v22.6.0",
+    "Sum": "h1:aGVa/v8B7hpb0TKl0MWoAavPDmHvobFe5R5zn0bCJWo=",
+    "GoModSum": "h1:iG+pp635Fo7ZmV/j14KUcmEyWF+0X7Lua8rrTWzYgWU="
+  },
+  "actual_remote_image_id": "sha256:8a758db1c6a0643be6f050f6753b6f29d74f2dfea25443a6ff0a0a34eb8d8bab",
+  "actual_remote_native_sha256": {
+    "usr/bin/mcli": "a1e263c8b0cadf9b6a19cc9729a7bb6d1eb0329152347955cb4326ca0ebb6845",
+    "usr/bin/silo": "f3c853d27fdc691f981edc2a544c02d9c236f58550c2f4d60ad4121a20b73683"
+  },
+  "actual_raw_scanner_severities_changed": false,
+  "graph_fields_normalized_or_ignored": false,
+  "expected_runtime_or_native_hashes_changed": false,
+  "go_mod_and_go_sum_unchanged_in_actual_experiment": true,
+  "controlled_experiment": {
+    "mcli": {
+      "missing_info_reproduces_actual_remote_raw_byte_for_byte": true,
+      "standard_go_mod_download_restores_entire_reviewed_raw_byte_for_byte": true,
+      "before_sha256": "61e94077bfe68934eba01c71004aba46bb1284aacf5eff2ef32c9b9fb6c3e820",
+      "after_sha256": "61b98438da7c3ef4fcdadb7a15faec37ecaea76bc6d3fd20ef5ad8447cf428dc",
+      "actual_native_sha256": "a1e263c8b0cadf9b6a19cc9729a7bb6d1eb0329152347955cb4326ca0ebb6845",
+      "strict_graph_comparison_after": {
+        "complete_package_count": 616,
+        "nonstdlib_package_count": 382,
+        "nonstdlib_graph_sha256": "3a47926591235c534772be21af081b839dbbc40a6b8962f8c7a637c6e50f642c",
+        "nonstdlib_graph_identical": true,
+        "complete_import_closure": true
+      }
+    },
+    "silo": {
+      "missing_info_reproduces_actual_remote_raw_byte_for_byte": true,
+      "standard_go_mod_download_restores_entire_reviewed_raw_byte_for_byte": true,
+      "before_sha256": "e40981942199696e2f95e5b4e511ff1c95d3016a120d833933ee48b0bc093cc9",
+      "after_sha256": "712d37f7a5e0d3b3faf6520e29cdf72ba983a92546dcfeec2f36a52857452824",
+      "actual_native_sha256": "f3c853d27fdc691f981edc2a544c02d9c236f58550c2f4d60ad4121a20b73683",
+      "strict_graph_comparison_after": {
+        "complete_package_count": 1410,
+        "nonstdlib_package_count": 1146,
+        "nonstdlib_graph_sha256": "0c93d3871a043a75e3ff5d0f5e9a5d410b033669443b198bfe6a91aa26ff3d34",
+        "nonstdlib_graph_identical": true,
+        "complete_import_closure": true
+      }
+    }
+  },
+  "exact_remote_differences": {
+    "mcli": [
+      {
+        "package": "github.com/coreos/go-systemd/v22/journal",
+        "changes": [
+          {
+            "field": "Module.Replace.Time",
+            "expected": "2025-08-20T18:00:08Z",
+            "actual": "0001-01-01T00:00:00Z"
+          }
+        ]
+      }
+    ],
+    "silo": [
+      {
+        "package": "github.com/coreos/go-systemd/v22/daemon",
+        "changes": [
+          {
+            "field": "Module.Replace.Time",
+            "expected": "2025-08-20T18:00:08Z",
+            "actual": "0001-01-01T00:00:00Z"
+          }
+        ]
+      },
+      {
+        "package": "github.com/coreos/go-systemd/v22/journal",
+        "changes": [
+          {
+            "field": "Module.Replace.Time",
+            "expected": "2025-08-20T18:00:08Z",
+            "actual": "0001-01-01T00:00:00Z"
+          }
+        ]
+      }
+    ]
+  },
+  "package_order_and_all_other_fields_equal": true,
+  "source_artifact": {
+    "url": "https://github.com/W205614/DeepResearch/actions/runs/43174282542/artifacts/13923697146",
+    "zip_sha256": "7576c74e33cc26df780e26745e93636885dd9d3d2f09cf27628a361c00974db0"
+  },
+  "files": {
+    "official-module-info.json": {
+      "sha256": "17a9483ae34e468614c8aebc08a18fc76134d0cacdc5615da2f4f93a59d63ea0",
+      "bytes": 195
+    },
+    "go-module-download.json": {
+      "sha256": "a789e42f2740aaacc72339a62f505e2d70178fab22718d0d1330294426a39a7c",
+      "bytes": 520
+    },
+    "Dockerfile.control": {
+      "sha256": "d12e89c8d4a1544b26fa6d178e7db5530b993657d8e31237e4dce3b544b38ec1",
+      "bytes": 6392
+    },
+    "mcli-missing-info-graph.json.gz": {
+      "compressed_sha256": "4c40ce0903efe09f22b193579ccd5221a79419dd21419544be168301cddf7674",
+      "compressed_bytes": 145641,
+      "raw_sha256": "61e94077bfe68934eba01c71004aba46bb1284aacf5eff2ef32c9b9fb6c3e820",
+      "raw_bytes": 2082807
+    },
+    "silo-missing-info-graph.json.gz": {
+      "compressed_sha256": "b5f1a7ebb0be9b2479c56894ee504b9833c14e5f1205094aef7d4829e51f4d73",
+      "compressed_bytes": 428160,
+      "raw_sha256": "e40981942199696e2f95e5b4e511ff1c95d3016a120d833933ee48b0bc093cc9",
+      "raw_bytes": 7415889
+    }
+  },
+  "scope": "Standard Go tool retrieval of the already-selected exact replacement metadata. No dependency, source sum, native binary, runtime contract, raw-finding tuple, threshold or third-party binary publication change."
+}

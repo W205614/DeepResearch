@@ -155,7 +155,7 @@ def test_current_continuation_preserves_original_exact_identities_and_bound_byte
     prior_path = root / 'deployment/security/codeql-reviewed-findings-20261110.json'
     prior = json.loads(prior_path.read_bytes())
     current = json.loads(REVIEW.read_bytes())
-    assert REVIEW.name == 'codeql-reviewed-findings-20261112.json'
+    assert REVIEW.name == 'codeql-reviewed-findings-20261112-minio-info.json'
     assert [row['identity'] for row in current['findings']] == [row['identity'] for row in prior['findings']]
     assert current['findings'][:3] == prior['findings'][:3]
     proof = root / current['continuation_review_20261112']['evidence']
@@ -163,10 +163,19 @@ def test_current_continuation_preserves_original_exact_identities_and_bound_byte
     assert reviewed['prior_review']['sha256'] == hashlib.sha256(prior_path.read_bytes()).hexdigest()
     assert reviewed['compose_delta']['all_other_parsed_configuration_equal'] is True
     assert reviewed['html_boundary']['mtimelink_nodes'] == 0
+    addendum = current['minio_module_info_addendum']
+    previous = root / addendum['prior_profile']
+    assert hashlib.sha256(previous.read_bytes()).hexdigest() == addendum['prior_profile_sha256']
+    audit_path = root / addendum['path']
+    assert hashlib.sha256(audit_path.read_bytes()).hexdigest() == addendum['sha256']
+    audit = json.loads(audit_path.read_bytes())
+    assert audit['recipe_delta']['all_copy_add_instructions_identical'] is True
+    assert len(audit['recipe_delta']['only_added_lines']) == 5
+    assert audit['new_codeql_scan_claimed'] is False
     assert reviewed_findings([], REVIEW, root) == ([], [])
 
 
-@pytest.mark.parametrize('change', ['web-context', 'new-go-copy', 'proof'])
+@pytest.mark.parametrize('change', ['web-context', 'new-go-copy', 'proof', 'addendum'])
 def test_current_continuation_still_rejects_changed_compose_go_recipe_or_proof(tmp_path, change):
     root = Path(__file__).resolve().parents[1]
     record = json.loads(REVIEW.read_bytes())
@@ -187,8 +196,11 @@ def test_current_continuation_still_rejects_changed_compose_go_recipe_or_proof(t
     elif change == 'new-go-copy':
         changed = tmp_path / 'deployment/docker/Dockerfile.minio-20261112'
         after = changed.read_bytes() + b'COPY deployment/security /tmp/exposed-evidence\n'
-    else:
+    elif change == 'proof':
         changed = tmp_path / 'deployment/security/codeql-continuation-review-20261112.json'
+        after = changed.read_bytes() + b'\n'
+    else:
+        changed = tmp_path / record['minio_module_info_addendum']['path']
         after = changed.read_bytes() + b'\n'
     changed.write_bytes(after)
     with pytest.raises(ValueError, match='reviewed source or proof changed'):

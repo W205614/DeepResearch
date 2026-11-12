@@ -1,22 +1,43 @@
 {
   "actor": "/root",
   "actor_kind": "automated_independent_agent",
-  "observed_at_utc": "2026-11-12T05:23:55.960633+00:00",
-  "subject_sha256": "08885c8f3db046b3e33c80b677d98350621a12488ec05c8c3539fb22e618a28d",
+  "observed_at_utc": "2026-11-12T07:52:13.018483+00:00",
+  "subject_sha256": "9976e9f25573e6544546e8392427734964ac6fe488de17c8a7ee809dcfcfb9d6",
   "facts_passed": true,
   "risk_acceptance": false,
   "binary_redistribution_approved": false,
-  "actual_engine_id": "sha256:5e20c6adc5e491a589d6c2f45b467bc74f3f60573e559686874766f45a13e194",
-  "actual_portable_config_digest": "sha256:b7e62d55e9af52ee4754c8f768b3fb5d27f002f652817ba49db4f8881c7ebef9",
-  "reviewed_draft_sha256": "a52e6782fb2258aea0ce1a41158224e6710c5324c9022ebbb3deef560debd381",
-  "actual_raw_scan_sha256": "96db7581414add8f8cc6ba93e201444423dd19b28605b7a1dab51052020b8d36",
+  "actual_engine_id": "sha256:0de4cbd48c7e9a34dc05c0b89b34d78dfa8fff35a437296db6adc713eb852e1f",
+  "actual_portable_config_digest": "sha256:621bd380d3c9842829f1316a30cb4b311c7f6488356cf33a53a34b299d507109",
+  "reviewed_draft_sha256": "8e9a8524c89b5c9245134279c404c0b1f7fc88d4feb02bf8c5da8a8f109922d7",
+  "actual_raw_scan_sha256": "afe25689bb333b3a25b26bdd100207454e0595226eeea0453b40baefbe55060b",
+  "prior_review_sha256": "15c7e845bb88a2a7691f4bd2fcd1655ddea0a7087878476a2ddd94f5ce18bf53",
+  "graph_review": {
+    "mcli": {
+      "complete_nodes": 616,
+      "only_changed_field": "Module.Replace.Time",
+      "changed_nodes": [
+        "github.com/coreos/go-systemd/v22/journal"
+      ],
+      "actual_final_raw_sha256": "61b98438da7c3ef4fcdadb7a15faec37ecaea76bc6d3fd20ef5ad8447cf428dc",
+      "matches_complete_prior_review_raw": true
+    },
+    "silo": {
+      "complete_nodes": 1410,
+      "only_changed_field": "Module.Replace.Time",
+      "changed_nodes": [
+        "github.com/coreos/go-systemd/v22/daemon",
+        "github.com/coreos/go-systemd/v22/journal"
+      ],
+      "actual_final_raw_sha256": "712d37f7a5e0d3b3faf6520e29cdf72ba983a92546dcfeec2f36a52857452824",
+      "matches_complete_prior_review_raw": true
+    }
+  },
   "observations": [
-    "Inspected the fixed official Go1.27.4 recipe, source commit/module checksum locks and unchanged protocol/runtime configuration.",
-    "Independently recomputed complete native/source graph and runtime migration facts; both real ELF payloads are new and compiled with go1.27.4.",
-    "Independently exported and hashed the actual prepared image; complete runtime/native/config identity matches the proposed profile.",
-    "Full raw scan changes43to41 only removes the two named Go advisory rows; no other new/missing/changed finding is accepted and secrets remain blocked.",
-    "Required CSV and legacy compatibility test names actually ran and passed; no-tests output is rejected.",
-    "The original H/C/U threshold remains;34 old LOW/MEDIUM records are not an all-severity technical clearance.",
-    "This is an automated technical review of this exact subject, not human approval or third-party binary redistribution permission."
+    "Independently checked the exact five added standard Go metadata-download/locked-file-check lines; no source/native/threshold/expected-runtime tuple changed.",
+    "Independently exported and hashed the actual new prepared image; complete runtime/config and both ELF hashes equal the already reviewed runtime.",
+    "Independently parsed every raw graph object from the actual image and the preserved remote zero-time graphs. Only one/two exact Replace.Time fields differ; all nodes/order/other fields match and final complete raw documents equal the old reviewed bytes.",
+    "Fresh complete raw41 assessment passed against actual image and unchanged profile facts; all34 retained LOW/MEDIUM remain outside all-severity clearance.",
+    "The official info fetch, earlier Go1.27.4 SDK/upstream test and temporary-cache control execution are reused with pinned evidence. This review repeats actual image export/full graph/receipt/raw adjudication, not those network/control executions.",
+    "Automated technical exact-subject review only; no model acceptance, human approval or third-party binary redistribution permission."
   ]
 }

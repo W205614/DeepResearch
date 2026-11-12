@@ -1,0 +1,76 @@
+# Candidate Go stdlib security rebuild; no prior artifact approval is inherited.
+# syntax=docker/dockerfile:1.7
+FROM golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf AS source
+ARG GOPROXY=https://proxy.golang.org
+ENV GOPROXY=${GOPROXY} GOTOOLCHAIN=local GOMAXPROCS=2 GOFLAGS=-p=2 GOMEMLIMIT=768MiB
+RUN apk add --no-cache git
+# Maintained fork, immutable release commit. Keep real VCS/module metadata so
+# complete image scans can still attribute inherited MinIO advisories honestly.
+COPY --from=miniosource / /prefetched-minio.git/
+RUN git clone --no-hardlinks /prefetched-minio.git /src && cd /src && git checkout --detach 0cd388c666f8211f552604ae73448a066e9c25ce \
+    && git remote set-url origin https://github.com/pgsty/silo.git && git config core.hooksPath /dev/null && git fsck --full
+WORKDIR /src
+COPY --from=securitymodules / /prefetched-proxy/
+ENV GOPROXY=file:///prefetched-proxy,https://proxy.golang.org
+RUN test "$(git rev-parse HEAD)" = 0cd388c666f8211f552604ae73448a066e9c25ce
+COPY deployment/vendors/minio/legacy_part_compat.go cmd/legacy_part_compat.go
+COPY deployment/vendors/minio/legacy-part-compat.patch /tmp/legacy-part-compat.patch
+RUN git apply --check /tmp/legacy-part-compat.patch && git apply /tmp/legacy-part-compat.patch
+FROM source AS csv-regression
+COPY deployment/vendors/minio/csv_record_bound_test.go internal/s3select/csv/pinned_record_bound_test.go
+COPY deployment/vendors/minio/legacy_part_compat_test.go cmd/legacy_part_compat_test.go
+COPY deployment/vendors/minio/legacy-part2024.msgp cmd/testdata/deepresearch-legacy-part2024.msgp
+RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
+    go test -mod=readonly ./internal/s3select/csv -run '^TestPinnedCVE202639414' -count=1 -v > /tmp/csv-regression.txt && \
+    go test -mod=readonly ./cmd -run '^TestPinnedLegacyPart2024' -count=1 -v > /tmp/legacy-multipart-regression.txt
+FROM scratch AS regression-evidence
+COPY --from=csv-regression /tmp/csv-regression.txt /tmp/legacy-multipart-regression.txt /
+FROM source AS build
+COPY --from=csv-regression /tmp/csv-regression.txt /out/csv-regression.txt
+COPY --from=csv-regression /tmp/legacy-multipart-regression.txt /out/legacy-multipart-regression.txt
+RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
+    CGO_ENABLED=0 go build -mod=readonly -buildvcs=true -tags kqueue -trimpath \
+      -ldflags="$(MINIO_RELEASE=RELEASE go run buildscripts/gen-ldflags.go 2026-10-18T00:00:00Z)" -o /out/silo . && \
+    CGO_ENABLED=0 go build -mod=readonly -trimpath \
+      -ldflags='-s -w -X github.com/minio/mc/cmd.Version=2026-10-18T00:00:00Z -X github.com/minio/mc/cmd.ReleaseTag=RELEASE.2026-10-18T00-00-00Z -X github.com/minio/mc/cmd.CommitID=fa3b8bf72458b9b5480c4da0ce63a4f224e058c8' \
+      -o /out/mcli github.com/minio/mc && \
+    go version -m /out/silo > /out/silo-buildinfo.txt && go version -m /out/mcli > /out/mcli-buildinfo.txt && \
+    go version -m -json /out/silo > /out/silo-native.json && go version -m -json /out/mcli > /out/mcli-native.json && \
+    CGO_ENABLED=0 go list -mod=readonly -tags=kqueue -deps -json . > /out/silo-graph.json && \
+    CGO_ENABLED=0 go list -mod=readonly -deps -json github.com/minio/mc > /out/mcli-graph.json
+# Retain maintained runtime OS, console, S3/IAM and CLI entrypoint behavior.
+# This candidate is not eligible for deployment until the unsuppressed full
+# frozen-DB scan and old-volume compatibility gate both pass.
+FROM pgsty/silo@sha256:706e0d419d23bdab663486044165fb4de1ee6b82885a8637b2935216fb2286ec
+COPY --from=build /out/silo /usr/bin/silo
+COPY --from=build /out/mcli /usr/bin/mcli
+COPY --from=build /out/silo-buildinfo.txt /out/mcli-buildinfo.txt /out/*json /usr/share/deepresearch-build/
+EXPOSE 9000 9001
+
+COPY --chmod=0644 deployment/security/go-stdlib-20261112-evidence/source.lock.json /usr/share/deepresearch-build/go-security-source.lock.json
+COPY --chmod=0644 deployment/security/go-stdlib-20261112-evidence/Go-LICENSE /usr/share/deepresearch-build/Go-LICENSE
+ARG PROJECT_SOURCE_REVISION=uncommitted-validation-inputs
+ARG PROJECT_INPUTS_SHA256=unrecorded-validation-inputs
+LABEL org.deepresearch.project.source_revision="${PROJECT_SOURCE_REVISION}" org.deepresearch.project.inputs_sha256="${PROJECT_INPUTS_SHA256}"
+LABEL org.opencontainers.image.version="silo-go1.27.4-source-maintenance-20261112"
+
+FROM build AS module-info-diagnostic
+RUN --mount=type=cache,target=/go/pkg/mod \
+    mkdir -p /tmp/coreos-module-metadata && \
+    cp -a /go/pkg/mod/cache/download/github.com/coreos/go-systemd/v22/@v/. /tmp/coreos-module-metadata/
+RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
+    --mount=type=tmpfs,target=/go/pkg/mod/cache/download/github.com/coreos/go-systemd/v22/@v \
+    find /tmp/coreos-module-metadata -maxdepth 1 -type f ! -name v22.6.0.info -exec cp {} /go/pkg/mod/cache/download/github.com/coreos/go-systemd/v22/@v/ \; && \
+    test ! -e /go/pkg/mod/cache/download/github.com/coreos/go-systemd/v22/@v/v22.6.0.info && \
+    CGO_ENABLED=0 go list -mod=readonly -tags=kqueue -deps -json . > /out/missing-info-silo-graph.json && \
+    CGO_ENABLED=0 go list -mod=readonly -deps -json github.com/minio/mc > /out/missing-info-mcli-graph.json && \
+    sha256sum go.mod go.sum > /tmp/source-locks-before && \
+    go mod download -json github.com/coreos/go-systemd/v22@v22.6.0 > /out/coreos-download.json && \
+    sha256sum -c /tmp/source-locks-before && \
+    grep -F '"Sum": "h1:aGVa/v8B7hpb0TKl0MWoAavPDmHvobFe5R5zn0bCJWo="' /out/coreos-download.json && \
+    grep -F '"GoModSum": "h1:iG+pp635Fo7ZmV/j14KUcmEyWF+0X7Lua8rrTWzYgWU="' /out/coreos-download.json && \
+    cp /go/pkg/mod/cache/download/github.com/coreos/go-systemd/v22/@v/v22.6.0.info /out/coreos-info.json && \
+    CGO_ENABLED=0 go list -mod=readonly -tags=kqueue -deps -json . > /out/complete-info-silo-graph.json && \
+    CGO_ENABLED=0 go list -mod=readonly -deps -json github.com/minio/mc > /out/complete-info-mcli-graph.json
+FROM scratch AS module-info-diagnostic-evidence
+COPY --from=module-info-diagnostic /out/missing-info-silo-graph.json /out/missing-info-mcli-graph.json /out/complete-info-silo-graph.json /out/complete-info-mcli-graph.json /out/coreos-download.json /out/coreos-info.json /out/silo-native.json /out/mcli-native.json /out/silo /out/mcli /

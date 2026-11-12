@@ -90,7 +90,7 @@ def steps_for(workflow, job):
 
 
 def assert_workflow_contract(steps, *, security):
-    selected = [(i, step) for i, step in enumerate(steps) if SCRIPT in step.get('run', '')]
+    selected = [(i, step) for i, step in enumerate(steps) if SCRIPT in step.get('run', '') and '--artifact grafana' not in step['run']]
     assert len(selected) == 1
     index, step = selected[0]
     builder = next(s for s in steps[:index] if 'scripts/build_go_stdlib_security_20261112.py' in s.get('run', ''))
