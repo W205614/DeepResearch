@@ -1,43 +1,89 @@
 {
   "actor": "/root",
   "actor_kind": "automated_independent_agent",
-  "observed_at_utc": "2026-11-12T07:52:13.018483+00:00",
-  "subject_sha256": "9976e9f25573e6544546e8392427734964ac6fe488de17c8a7ee809dcfcfb9d6",
+  "observed_at_utc": "2026-11-12T09:17:48.229191+00:00",
+  "subject_sha256": "a12f172a92a1810a14565b0877c628f92981e19d6dad088141233f42c61da358",
   "facts_passed": true,
   "risk_acceptance": false,
   "binary_redistribution_approved": false,
-  "actual_engine_id": "sha256:0de4cbd48c7e9a34dc05c0b89b34d78dfa8fff35a437296db6adc713eb852e1f",
-  "actual_portable_config_digest": "sha256:621bd380d3c9842829f1316a30cb4b311c7f6488356cf33a53a34b299d507109",
-  "reviewed_draft_sha256": "8e9a8524c89b5c9245134279c404c0b1f7fc88d4feb02bf8c5da8a8f109922d7",
-  "actual_raw_scan_sha256": "afe25689bb333b3a25b26bdd100207454e0595226eeea0453b40baefbe55060b",
-  "prior_review_sha256": "15c7e845bb88a2a7691f4bd2fcd1655ddea0a7087878476a2ddd94f5ce18bf53",
-  "graph_review": {
-    "mcli": {
-      "complete_nodes": 616,
-      "only_changed_field": "Module.Replace.Time",
-      "changed_nodes": [
-        "github.com/coreos/go-systemd/v22/journal"
-      ],
-      "actual_final_raw_sha256": "61b98438da7c3ef4fcdadb7a15faec37ecaea76bc6d3fd20ef5ad8447cf428dc",
-      "matches_complete_prior_review_raw": true
+  "reviewed_draft_sha256": "787ab96ad6749859f5b97a0bfd311b88a9f49a6d314ee488e431eecb9450d87c",
+  "actual_engine_id": "sha256:f6b144d41efacb4f5953479b65cc63a9ca09f5a39f6378c277d9565d34b552b9",
+  "actual_portable_config_digest": "sha256:f260171265260fe2e77f094c3c82c4787c7da47eec3b51219d57fe9dbeba3fa1",
+  "actual_diff_ids": [
+    "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99",
+    "sha256:6e10a27c77d9a6a73577bd8d8bf37a1b0620ad9ccf489a2b01108a6642d8bc5c",
+    "sha256:bd250dd660c815efd2d451f5fce3b5d361fd435253e76e6d64539233bbcbff1c",
+    "sha256:1b4744aeef73e83c76419dd22b1cfcbdf7da7c3f575d675abb20658306315917",
+    "sha256:75202b75ba034f72c8f0650eec04f730cfbe40a97d6d50fc822d28d8e33aa1a4",
+    "sha256:58c9b5b0f2c9a7b7366fc7ed287869fe051e946fc2104e0632ad7bf36e8c8da4",
+    "sha256:c55c57e7b6539bf8039461fe247b59c18ceeeb7e01a7908f3d49622c593edfeb",
+    "sha256:5c3f3e3b45efc366ba174d9f850b92923195118993abadad8643e832d686daf1",
+    "sha256:c4a473e412444c2df97187857967b21f53a31fbd53cfffc641ce85385e69b913",
+    "sha256:f55834e2ab0b5f33f03330f3f76070a41f819754b7d958f5a092a7fbe5e267b3",
+    "sha256:c41ef0bde233118c05ff8febc3776277a17773433f8bb2b016eabdbb60304bd5",
+    "sha256:4707d377d5e7169c508f53a5d504cfbdc59eccbcad5176ea099da91fb156f50a",
+    "sha256:c84bb1ce844b444087b7ae311fbea98cec71e9124262bf350737ed187533c781",
+    "sha256:2892aa10dc56ef3cfb6f081d7c8b124c51f9892bbf2f60d4e859456397f20e57",
+    "sha256:8fcbf2f82d52c7278696b0f2aea3f42fbabc42f63eeec99fd9875270059071e2",
+    "sha256:5abf704d1660d78d821384ebe414462de05ca408526376c5c545509d8b801cc1"
+  ],
+  "actual_runtime_manifest_sha256": "6af801f3903e16994c05b5736c23ef088ea9b9ceb779c96f7255d4e73a46cccb",
+  "actual_native_sha256": {
+    "usr/bin/mcli": "a1e263c8b0cadf9b6a19cc9729a7bb6d1eb0329152347955cb4326ca0ebb6845",
+    "usr/bin/silo": "f3c853d27fdc691f981edc2a544c02d9c236f58550c2f4d60ad4121a20b73683"
+  },
+  "actual_graphs": {
+    "usr/bin/mcli": {
+      "sha256": "61b98438da7c3ef4fcdadb7a15faec37ecaea76bc6d3fd20ef5ad8447cf428dc",
+      "nodes": 616
     },
-    "silo": {
-      "complete_nodes": 1410,
-      "only_changed_field": "Module.Replace.Time",
-      "changed_nodes": [
-        "github.com/coreos/go-systemd/v22/daemon",
-        "github.com/coreos/go-systemd/v22/journal"
-      ],
-      "actual_final_raw_sha256": "712d37f7a5e0d3b3faf6520e29cdf72ba983a92546dcfeec2f36a52857452824",
-      "matches_complete_prior_review_raw": true
+    "usr/bin/silo": {
+      "sha256": "712d37f7a5e0d3b3faf6520e29cdf72ba983a92546dcfeec2f36a52857452824",
+      "nodes": 1410
     }
   },
+  "actual_original_raw_scan_sha256": "9bda6e198f5a66c28eb1ea49ad57ee1fdea3b240f0eeed24c6cb5cc2e6482191",
+  "reused_scan_verdict": {
+    "passed": true,
+    "profile": "minio-source-20261112",
+    "unresolved_threshold_count": 0,
+    "trivy_identity_kind": "portable_config_digest",
+    "threshold_severities": [
+      "HIGH",
+      "CRITICAL",
+      "UNKNOWN"
+    ],
+    "raw_report_modified": false,
+    "raw_counts": {
+      "MEDIUM": 26,
+      "LOW": 10,
+      "UNKNOWN": 2,
+      "HIGH": 3
+    },
+    "retained_unreviewed_low_medium_count": 34,
+    "all_severity_technical_clear": false,
+    "fixed_new_stdlib_targets": 2,
+    "binary_redistribution_approved": false
+  },
+  "source_inputs_and_all_expected_facts_unchanged": true,
+  "changed_evidence_only": [
+    "scripts/go_stdlib_rebuild_20261112.py",
+    "tests/test_go_stdlib_rebuild_20261112.py"
+  ],
+  "targeted_tests_executed_by_root": {
+    "passed": 62,
+    "test_sha256": "d31c4bfab2372500886cf2baecdcd5f7bdbc0cd54f88c83f338020de42fd24a1"
+  },
   "observations": [
-    "Independently checked the exact five added standard Go metadata-download/locked-file-check lines; no source/native/threshold/expected-runtime tuple changed.",
-    "Independently exported and hashed the actual new prepared image; complete runtime/config and both ELF hashes equal the already reviewed runtime.",
-    "Independently parsed every raw graph object from the actual image and the preserved remote zero-time graphs. Only one/two exact Replace.Time fields differ; all nodes/order/other fields match and final complete raw documents equal the old reviewed bytes.",
-    "Fresh complete raw41 assessment passed against actual image and unchanged profile facts; all34 retained LOW/MEDIUM remain outside all-severity clearance.",
-    "The official info fetch, earlier Go1.27.4 SDK/upstream test and temporary-cache control execution are reused with pinned evidence. This review repeats actual image export/full graph/receipt/raw adjudication, not those network/control executions.",
-    "Automated technical exact-subject review only; no model acceptance, human approval or third-party binary redistribution permission."
+    "Root inspected the one-point comparison change and independently ran 62 actual tests, including strict nonempty User and all other runtime fields.",
+    "Only absent/null/empty User is equivalent for receipt versus exact reviewed profile. Actual inspection/receipt and scanned config/CID/ordered diffID chains stay strict; originals are not rewritten.",
+    "Root independently exported the exact current local image without starting its services, rehashed its complete filesystem, copied/reparsed both ELF files and compared complete raw graphs.",
+    "The original complete raw41 was re-adjudicated against the actual immutable image; no new scan was claimed and all34 retained LOW/MEDIUM remain outside all-severity clearance.",
+    "No actual process UID/GID measurement is claimed. OCI optional-null and Docker documented default User semantics justify only the narrow representation comparison.",
+    "No paid model calls, daily deployment, human approval, or third-party binary redistribution approval."
+  ],
+  "primary_reference_urls": [
+    "https://github.com/opencontainers/image-spec/blob/main/config.md",
+    "https://docs.docker.com/engine/containers/run/#user"
   ]
 }

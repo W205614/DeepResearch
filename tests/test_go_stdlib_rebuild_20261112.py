@@ -98,6 +98,97 @@ def scan_identity():
     return report, inspection, receipt
 
 
+@pytest.mark.parametrize('actual_user', [{}, {'User': None}, {'User': ''}])
+@pytest.mark.parametrize('expected_user', [{}, {'User': None}, {'User': ''}])
+def test_only_unspecified_user_representations_are_equivalent(actual_user, expected_user):
+    _, _, receipt = scan_identity()
+    settings = {key: value for key, value in receipt['runtime_config'].items() if key != 'User'}
+    actual, expected = settings | actual_user, deepcopy(settings) | expected_user
+    originals = deepcopy((actual, expected))
+    assert gate.reviewed_runtime_config_equivalent(actual, expected)
+    assert (actual, expected) == originals
+
+
+@pytest.mark.parametrize('user', ['0', 'root', '1000', '0:0', ' ', 0, False, []])
+def test_explicit_or_invalid_user_cannot_inherit_unspecified_user_review(user):
+    _, _, receipt = scan_identity()
+    expected = receipt['runtime_config'] | {'User': None}
+    assert not gate.reviewed_runtime_config_equivalent(expected | {'User': user}, expected)
+    assert not gate.reviewed_runtime_config_equivalent(expected, expected | {'User': user})
+
+
+def test_explicit_users_remain_exact():
+    assert gate.reviewed_runtime_config_equivalent({'User': '1000'}, {'User': '1000'})
+    assert not gate.reviewed_runtime_config_equivalent({'User': '0'}, {'User': 'root'})
+    assert not gate.reviewed_runtime_config_equivalent({'User': '1000'}, {'User': '1000:1000'})
+
+
+@pytest.mark.parametrize('field', ['Env', 'Entrypoint', 'Cmd', 'WorkingDir', 'ExposedPorts',
+                                  'Volumes', 'Healthcheck', 'StopSignal'])
+@pytest.mark.parametrize('change', ['remove', 'replace'])
+def test_every_other_runtime_field_stays_exact(field, change):
+    _, _, receipt = scan_identity()
+    expected = receipt['runtime_config']
+    actual = deepcopy(expected)
+    if change == 'remove':
+        actual.pop(field)
+    else:
+        actual[field] = None if expected[field] is not None else 'unreviewed-setting'
+    assert not gate.reviewed_runtime_config_equivalent(actual, expected)
+
+
+def receipt_identity(tmp_path):
+    _, inspection, receipt = scan_identity()
+    source = tmp_path / 'build-input.txt'
+    source.write_text('bounded verification input\n', encoding='utf8')
+    sources = {source.name: gate.shared.digest(source)}
+    inspection['RootFS'] = {'Layers': receipt['diff_ids']}
+    inspection['Config']['Labels']['org.deepresearch.project.inputs_sha256'] = gate.shared.manifest_hash(sources)
+    receipt.update(schema='go-stdlib-source-build-receipt-20261112-v1', profile='minio-source-20261112',
+                   image='deepresearch-minio-source:20261112', source_inputs=sources,
+                   image_id=inspection['Id'], native_sha256={'actual-test-target': 'native-identity'},
+                   runtime_manifest_sha256='runtime-identity')
+    profile = {'source_inputs': sources, 'expected': {key: deepcopy(receipt[key]) for key in
+               ('native_sha256', 'runtime_manifest_sha256', 'runtime_config')}}
+    profile['expected']['runtime_config']['User'] = None
+    return receipt, inspection, profile
+
+
+def test_actual_receipt_allows_only_reviewed_default_user_representation(tmp_path):
+    receipt, inspection, profile = receipt_identity(tmp_path)
+    receipt['runtime_config']['User'] = inspection['Config']['User'] = ''
+    original = deepcopy((receipt, inspection, profile))
+    assert gate.verify_receipt(receipt, inspection, profile, 'minio', root=tmp_path) is receipt
+    assert (receipt, inspection, profile) == original
+
+
+def test_inspection_to_receipt_stays_strict_for_unspecified_user(tmp_path):
+    receipt, inspection, profile = receipt_identity(tmp_path)
+    receipt['runtime_config']['User'] = None
+    inspection['Config']['User'] = ''
+    with pytest.raises(ValueError, match='Actual runtime config differs'):
+        gate.verify_receipt(receipt, inspection, profile, 'minio', root=tmp_path)
+
+
+@pytest.mark.parametrize('value', [None, '', []])
+def test_missing_or_invalid_runtime_config_remains_an_explicit_receipt_failure(tmp_path, value):
+    receipt, inspection, profile = receipt_identity(tmp_path)
+    if value is None:
+        receipt.pop('runtime_config')
+    else:
+        receipt['runtime_config'] = value
+    with pytest.raises(ValueError, match='New build receipt differs: runtime_config'):
+        gate.verify_receipt(receipt, inspection, profile, 'minio', root=tmp_path)
+
+
+def test_scan_config_to_receipt_stays_strict_for_unspecified_user():
+    report, inspection, receipt = scan_identity()
+    receipt['runtime_config']['User'] = None
+    report['Metadata']['ImageConfig']['config']['User'] = ''
+    with pytest.raises(ValueError, match='Scanned portable config differs'):
+        gate.verify_trivy_source(report, inspection, receipt)
+
+
 def test_saved_archive_config_and_engine_id_are_distinct_verified_identity_nodes():
     report, inspection, receipt = scan_identity()
     assert gate.verify_trivy_source(report, inspection, receipt) == 'portable_config_digest'

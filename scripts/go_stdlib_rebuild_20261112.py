@@ -106,6 +106,16 @@ def check_advisory(advisory):
             'official_fix': 'https://go.dev/cl/862185'}
 
 
+def reviewed_runtime_config_equivalent(actual, expected):
+    # Docker's inspect/export paths represent an unspecified User as absent,
+    # null or "". Keep every explicit user and all other settings exact.
+    actual_user, expected_user = actual.get('User'), expected.get('User')
+    return ({key: value for key, value in actual.items() if key != 'User'}
+            == {key: value for key, value in expected.items() if key != 'User'}
+            and (actual_user == expected_user
+                 or actual_user in (None, '') and expected_user in (None, '')))
+
+
 def verify_receipt(receipt, inspection, profile, artifact, *, root=shared.ROOT):
     require(receipt.get('schema') == 'go-stdlib-source-build-receipt-20261112-v1'
             and receipt.get('profile') == artifact + '-source-20261112'
@@ -115,8 +125,11 @@ def verify_receipt(receipt, inspection, profile, artifact, *, root=shared.ROOT):
             and receipt.get('diff_ids') == inspection.get('RootFS', {}).get('Layers')
             and inspection.get('Os') == 'linux' and inspection.get('Architecture') == 'amd64',
             'Actual image/source/platform differs from the new rebuild receipt')
-    for name in ('native_sha256', 'runtime_manifest_sha256', 'runtime_config'):
+    for name in ('native_sha256', 'runtime_manifest_sha256'):
         require(receipt.get(name) == profile['expected'][name], 'New build receipt differs: ' + name)
+    require(isinstance(receipt.get('runtime_config'), dict)
+            and reviewed_runtime_config_equivalent(receipt['runtime_config'], profile['expected']['runtime_config']),
+            'New build receipt differs: runtime_config')
     require(shared.runtime_config(inspection['Config']) == receipt['runtime_config']
             and isinstance(receipt.get('config_digest'), str)
             and shared.retained.DIGEST.fullmatch(receipt['config_digest']), 'Actual runtime config differs')

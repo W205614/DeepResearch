@@ -155,7 +155,7 @@ def test_current_continuation_preserves_original_exact_identities_and_bound_byte
     prior_path = root / 'deployment/security/codeql-reviewed-findings-20261110.json'
     prior = json.loads(prior_path.read_bytes())
     current = json.loads(REVIEW.read_bytes())
-    assert REVIEW.name == 'codeql-reviewed-findings-20261112-tomcat27.json'
+    assert REVIEW.name == 'codeql-reviewed-findings-20261112-grafana-stable.json'
     assert [row['identity'] for row in current['findings']] == [row['identity'] for row in prior['findings']]
     assert current['findings'][:2] == prior['findings'][:2]
     for name, expected in prior['findings'][2]['evidence_sha256'].items():
@@ -183,10 +183,27 @@ def test_current_continuation_preserves_original_exact_identities_and_bound_byte
     assert renewed['pom_delta']['only_managed_tomcat_patch_version_changed'] is True
     assert renewed['actual_java_regression']['total'] == {'tests': 69, 'failures': 0, 'errors': 0, 'skipped': 0}
     assert renewed['new_codeql_scan_claimed'] is False
+    stable = current['grafana_stable_graphs_addendum']
+    stable_path = root / stable['path']
+    assert hashlib.sha256(stable_path.read_bytes()).hexdigest() == stable['sha256']
+    previous_profile = root / stable['prior_profile']
+    assert hashlib.sha256(previous_profile.read_bytes()).hexdigest() == stable['prior_profile_sha256']
+    assert current['findings'][:3] == json.loads(previous_profile.read_bytes())['findings'][:3]
+    producer = json.loads(stable_path.read_bytes())
+    assert producer['recipe_delta']['source_runtime_stage_bytes_identical'] is True
+    assert producer['recipe_delta']['all_previous_copy_add_instructions_preserved_in_order'] is True
+    assert producer['recipe_delta']['new_copy_instructions'] == [
+        'COPY deployment/vendors/grafana-20261110/prepare_stable_graphs_20261112.py /tools/',
+        'COPY deployment/vendors/grafana-20261110/prepare_stable_graphs_20261112.py /tools/',
+        'COPY --from=plugins /external-evidence/ /plugins/',
+        'COPY --from=build /external-evidence/ /main/']
+    assert producer['severity_threshold_unchanged'] == 7.0
+    assert producer['new_codeql_scan_claimed'] is False
     assert reviewed_findings([], REVIEW, root) == ([], [])
 
 
-@pytest.mark.parametrize('change', ['web-context', 'new-go-copy', 'proof', 'addendum', 'pom', 'tomcat-addendum'])
+@pytest.mark.parametrize('change', ['web-context', 'new-go-copy', 'proof', 'addendum', 'pom', 'tomcat-addendum',
+                                    'grafana-recipe', 'stable-helper', 'original-capture', 'plugin-inventory', 'stable-addendum'])
 def test_current_continuation_still_rejects_changed_compose_go_recipe_or_proof(tmp_path, change):
     root = Path(__file__).resolve().parents[1]
     record = json.loads(REVIEW.read_bytes())
@@ -218,8 +235,16 @@ def test_current_continuation_still_rejects_changed_compose_go_recipe_or_proof(t
         before = changed.read_bytes()
         after = before.replace(b'<tomcat.version>11.0.27</tomcat.version>', b'<tomcat.version>11.0.25</tomcat.version>')
         assert before != after
-    else:
+    elif change == 'tomcat-addendum':
         changed = tmp_path / record['tomcat_patch_addendum']['path']
+        after = changed.read_bytes() + b'\n'
+    else:
+        names = {'grafana-recipe': 'deployment/docker/Dockerfile.grafana-20261112',
+                 'stable-helper': 'deployment/vendors/grafana-20261110/prepare_stable_graphs_20261112.py',
+                 'original-capture': 'deployment/vendors/grafana-20261107/capture_graphs.py',
+                 'plugin-inventory': 'deployment/vendors/grafana-20261107/plugin-modules.json',
+                 'stable-addendum': record['grafana_stable_graphs_addendum']['path']}
+        changed = tmp_path / names[change]
         after = changed.read_bytes() + b'\n'
     changed.write_bytes(after)
     with pytest.raises(ValueError, match='reviewed source or proof changed'):

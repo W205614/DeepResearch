@@ -31,3 +31,13 @@ MinIO 两个程序、Grafana 主程序及十三个插件实际使用固定 Go 1.
 本轮只提交源码与诚实的阶段证据，不发布新版本、不更新日常镜像。日常 25 个容器与隔离 17 个容器均恢复停止，日常配置、镜像和数据未切换。
 
 后续干净 CI 的新漏洞库又报告 Backend 原 Tomcat 11.0.25 的 10 条 HIGH／CRITICAL 阻断；相同 JAR 在前一日漏洞库通过不代表新库通过。按 Apache 官方修复范围将唯一版本属性升级至 11.0.27，69 项 Java 测试、原 Dockerfile 的实际构建与完整 Trivy 复扫通过；当前官方 Grype 数据库下 native 为 0、full 仅保留原 3 条 BusyBox MEDIUM，13 条 Tomcat 记录全部消失。两次数据库下载短读均保留，完整同摘要归档经原有受控导入和完整检查后才给出结论，详见[Backend 安全修复收据](backend-tomcat27-acceptance.json)。这不表示整套 CI、真实模型流程、发布或日常切换通过。
+
+## 构建证据与完整清单的后续核对
+
+三份同提交 MinIO CI 工件的完整文件、两个 ELF、完整依赖图及输入相同，配置差异仅是默认 `User` 被记为缺失或空字符串。只在实际 receipt 与已复核 profile 的比较处将缺失、null、空串视为同一种未指定表示；非空用户、其他配置及实际 inspect／扫描／config digest／有序 diffID 链继续严格匹配，原件没有改写。62 项反例和三份实际 receipt 回放通过，两名自动化代理分别实际导出、解析和复核后更新[精确 MinIO profile](../../../deployment/security/minio-source-20261112-profile.json)。这是默认表示的比较修正，不是降低扫描门槛，也没有把实际进程 GID 写成已经测得。
+
+Grafana 的远端 39 份文档差异已完整取回：14 份图只有 `Stale`／`StaleReason` 差异，14 份 receipt 仅派生摘要变化，11 份来源记录新增实际官方 `Origin.URL`；程序、其余模块字段与导入关系保持。新步骤先用标准 Go 工具获取并校验完整官方模块元数据、准备只读 export 缓存，再调用原冻结 capture。固定运输包只供 `.mod`／`.zip`，不复制 `.info` 或 `.ziphash`；Go 自身生成的完整官方 `.info` 经固定版本、双摘要、来源提交和仓库 URL 校验后才使用。完整 raw 图与 receipt 不过滤、不清洗，仍由完整运行时摘要约束。[受控实验记录](../../../deployment/security/grafana-source-20261112-evidence/stable-graph-producer-control-20261112.json)包含 14 份冷／热原始图逐字节一致、13 份完整官方元数据及正式步骤双空缓存验证；它不代替最终镜像复扫或同提交 CI。
+
+最终冻结输入的实际构建、完整镜像复扫与两份独立导出／原生解析复核已完成，[精确 Grafana profile](../../../deployment/security/grafana-source-20261112-profile.json)绑定 subject `1a800ee2…a55a770`。14 个程序与此前 Go 1.27.4 修复制品逐字节相同，其他运行时字节、模式、所有权和配置保持，完整差异仅这 39 份文档。实际 Trivy 保留原 40 条、Grype 保留原 10 条及严重级别，Secret 为 0；过期数据库运输被原检查拒绝后，改用同轮已完整核验的当前官方归档，未降低快照、年龄、schema、xxh64 或派生字节校验。19 项 producer 回归、41 项精确 CodeQL 回归和旧构建入口／上下文 31 项回归通过。原失败和暂态输入保留；这些结果仍不替代完整真实模型验收或日常升级。
+
+Tomcat 升级后的源码扫描仍有原 79 个目标及原 71 条 finding tuple，只有完整 110 包清单中的三个 Tomcat 版本由 11.0.25 改为 11.0.27。[独立精确迁移证明](../../../deployment/security/grafana-source-20261112-evidence/source-fs-tomcat27-review-20261112.json)只选择这个已复核清单；其他 78 个目标、全部原 finding、逐项证明、14 个编译图及原安全规则保持。30 项反例和实际原始报告回放通过，旧 profile 和原始失败继续保留，没有按版本范围泛化豁免。

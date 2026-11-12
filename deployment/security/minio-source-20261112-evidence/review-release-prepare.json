@@ -1,33 +1,26 @@
 {
   "schema": "go-stdlib-independent-technical-review-20261112-v1",
-  "actor": "/root/release_prepare",
+  "actor": "/root/review_provenance",
   "actor_kind": "automated_independent_agent",
-  "subject_sha256": "9976e9f25573e6544546e8392427734964ac6fe488de17c8a7ee809dcfcfb9d6",
+  "subject_sha256": "a12f172a92a1810a14565b0877c628f92981e19d6dad088141233f42c61da358",
   "facts_passed": true,
   "risk_acceptance": false,
   "binary_redistribution_approved": false,
-  "observed_at_utc": "2026-11-12T07:50:36.678529+00:00",
-  "observations_sha256": "4e9c39ee2b127871a7fa14e7935a5b1f2fb4f29b6c0456fcf8248d9080bec4e7",
-  "prior_review": {
-    "subject_sha256": "08885c8f3db046b3e33c80b677d98350621a12488ec05c8c3539fb22e618a28d",
-    "sha256": "b69f45d8304cb894220381da98f4832ccba6327d307b6b622334c07a1e3ffdef",
-    "bytes_preserved_in_amendment_backup": true
-  },
-  "exact_recipe_delta_review": {
-    "path": "deployment/security/codeql-minio-info-addendum-20261112.json",
-    "sha256": "6c7a8225e81ff45457a6dc1267375a3b5b010ee94a72839c37c99e3e0b03fc3f",
-    "prior_recipe_sha256": "b0f30dea8ddf9e18f5c988dbde494930fe8aa0db0421031fa203b91412f60852",
-    "current_recipe_sha256": "aa37214feaadb223f727c83bbf42726a887800ce37f89e5e5f741877c1f36635"
-  },
-  "source_inputs_difference": {
-    "deployment/docker/Dockerfile.minio-20261112": {
-      "before": "b0f30dea8ddf9e18f5c988dbde494930fe8aa0db0421031fa203b91412f60852",
-      "after": "aa37214feaadb223f727c83bbf42726a887800ce37f89e5e5f741877c1f36635"
+  "observed_at_utc": "2026-11-12T09:16:42.191674+00:00",
+  "observations_sha256": "13e1fc4c20b7dc778bbba40866256088d518a3653b9b0abdb9fb2086d4d4c326",
+  "evidence_delta": {
+    "scripts/go_stdlib_rebuild_20261112.py": {
+      "before": "3e61188b573e3f52c9497d60681604ef8c697bcf53b1947e5088b92efccfc69b",
+      "after": "4ab322a90cf12c68bb67fd8722eb5c9811ddbfd605f86083a25d891c7eafdc51"
+    },
+    "tests/test_go_stdlib_rebuild_20261112.py": {
+      "before": "884eaae550605bf4f6ae0f69ab7a2f51989680dcfe7050bd26a34f16fc7bf9e8",
+      "after": "d31c4bfab2372500886cf2baecdcd5f7bdbc0cd54f88c83f338020de42fd24a1"
     }
   },
   "actual_image": {
-    "actual_engine_id": "sha256:0de4cbd48c7e9a34dc05c0b89b34d78dfa8fff35a437296db6adc713eb852e1f",
-    "portable_config_digest": "sha256:621bd380d3c9842829f1316a30cb4b311c7f6488356cf33a53a34b299d507109",
+    "actual_engine_id": "sha256:f6b144d41efacb4f5953479b65cc63a9ca09f5a39f6378c277d9565d34b552b9",
+    "portable_config_digest": "sha256:f260171265260fe2e77f094c3c82c4787c7da47eec3b51219d57fe9dbeba3fa1",
     "diff_ids": [
       "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99",
       "sha256:6e10a27c77d9a6a73577bd8d8bf37a1b0620ad9ccf489a2b01108a6642d8bc5c",
@@ -52,100 +45,42 @@
     "usr/bin/mcli": "a1e263c8b0cadf9b6a19cc9729a7bb6d1eb0329152347955cb4326ca0ebb6845",
     "usr/bin/silo": "f3c853d27fdc691f981edc2a544c02d9c236f58550c2f4d60ad4121a20b73683"
   },
-  "independently_checked": [
-    "Exact new subject and every non-review source/evidence hash",
-    "Source-input delta limited to the five-line standard Go download/check insertion; COPY/ADD/routing and lock files stay bound",
-    "All prior expected native, package graph, runtime, package inventory, tuple and threshold facts remain exactly equal",
-    "Actual new immutable candidate exported independently without starting it; complete runtime manifest and portable config checked",
-    "Both actual ELF payloads independently copied/reparsed and byte-identical to the previous accepted native subjects",
-    "Actual current full raw scan assessed by the unchanged gate; full finding multiset exactly equals prior41 records"
-  ],
-  "reused_official_sdk_source_evidence": {
-    "toolchain": "golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf",
-    "actual_toolchain_engine_id": "sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf",
-    "fixed_requestTooLarge_body_sha256": "1b3e4ef7749ba16627333f614b7483d269e9fbee4720714ba827ee853d29ebef",
-    "official_server_source": {
-      "url": "https://go.googlesource.com/go/+/refs/tags/go1.27.4/src/net/http/server.go?format=TEXT",
-      "sha256": "10c0a1fa7cc5224c949f57b7054e025bede1a6d0662fef90473d799ee95e405b",
-      "actual_sdk_bytes_equal": true
-    },
-    "official_advisory_sha256": "9eb1590c57233fd8a63e8ad737d12cbdef5572eed86ffee05897291fff12a9ce"
-  },
-  "reused_module_info_control_evidence": {
-    "public_result_path": "deployment/security/minio-source-20261112-evidence/module-info-prefetch/result.json",
-    "public_result_sha256": "fa5f70cdcf8ea4bd8136908f71b3f0c02479e90dad491d82854297766b7ff20c",
-    "independent_saved_graph_comparison_sha256": "f72af783b9d60634756b58127457cc3731d8b8ca13f5242d5c7f27bf2192175e",
-    "complete_saved_graph_comparison": {
-      "mcli": {
-        "complete_package_count": 616,
-        "differences": [
-          {
-            "package": "github.com/coreos/go-systemd/v22/journal",
-            "field": "Module.Replace.Time",
-            "before": "0001-01-01T00:00:00Z",
-            "after": "2025-08-20T18:00:08Z"
-          }
-        ],
-        "missing_raw_sha256": "61e94077bfe68934eba01c71004aba46bb1284aacf5eff2ef32c9b9fb6c3e820",
-        "reviewed_raw_sha256": "61b98438da7c3ef4fcdadb7a15faec37ecaea76bc6d3fd20ef5ad8447cf428dc",
-        "entire_restored_byte_sequence_equal": true
-      },
-      "silo": {
-        "complete_package_count": 1410,
-        "differences": [
-          {
-            "package": "github.com/coreos/go-systemd/v22/daemon",
-            "field": "Module.Replace.Time",
-            "before": "0001-01-01T00:00:00Z",
-            "after": "2025-08-20T18:00:08Z"
-          },
-          {
-            "package": "github.com/coreos/go-systemd/v22/journal",
-            "field": "Module.Replace.Time",
-            "before": "0001-01-01T00:00:00Z",
-            "after": "2025-08-20T18:00:08Z"
-          }
-        ],
-        "missing_raw_sha256": "e40981942199696e2f95e5b4e511ff1c95d3016a120d833933ee48b0bc093cc9",
-        "reviewed_raw_sha256": "712d37f7a5e0d3b3faf6520e29cdf72ba983a92546dcfeec2f36a52857452824",
-        "entire_restored_byte_sequence_equal": true
-      }
-    },
-    "actual_control_experiment_repeated": false,
-    "official_metadata_fetch_repeated": false,
-    "scope": "Saved original control graphs and standard Go return/official-info bytes independently inspected and compared; original experiment and metadata download are reused."
-  },
   "scope": {
-    "fixed_new_stdlib_targets": 2,
-    "raw_findings_remaining": 41,
+    "passed": true,
+    "profile": "minio-source-20261112",
+    "unresolved_threshold_count": 0,
+    "trivy_identity_kind": "portable_config_digest",
+    "threshold_severities": [
+      "HIGH",
+      "CRITICAL",
+      "UNKNOWN"
+    ],
+    "raw_report_modified": false,
     "raw_counts": {
       "MEDIUM": 26,
       "LOW": 10,
       "UNKNOWN": 2,
       "HIGH": 3
     },
-    "threshold_severities": [
-      "HIGH",
-      "CRITICAL",
-      "UNKNOWN"
-    ],
     "retained_unreviewed_low_medium_count": 34,
     "all_severity_technical_clear": false,
-    "raw_reports_modified": false,
-    "services_started": false,
-    "paid_provider_calls": 0
+    "fixed_new_stdlib_targets": 2,
+    "binary_redistribution_approved": false
   },
-  "execution_boundary": {
-    "new_independent_runtime_export_and_native_parse_performed": true,
-    "new_scan_performed_by_this_reviewer": false,
-    "new_official_sdk_fetch_performed": false,
-    "resumed_after_own_os_transport_label_comparison_error": true,
-    "sdk_reuse_basis": "Exact same digest-pinned Go1.27.4 SDK and previously verified official source/OSV bytes.",
-    "model_acceptance_repeated": false
-  },
+  "independently_checked": [
+    "Only common/test evidence hashes and subject/review metadata change; all build/runtime/native/raw/threshold contracts stay exact.",
+    "Reviewed User equivalence is limited to absent/null/empty in receipt versus profile; actual inspection and scanned config chains stay strict.",
+    "62 actual targeted tests and Ruff passed; default representations, explicit users, other fields, missing receipts and strict identity chains checked.",
+    "Exact local Engine independently exported without starting service, both ELF payloads copied/reparsed with fixed offline Go toolchain, complete actual graphs match.",
+    "Original full raw41 re-adjudicated against exact image; no raw scans changed and 34 retained LOW/MEDIUM remain outside all-severity clearance."
+  ],
+  "primary_reference_urls": [
+    "https://github.com/opencontainers/image-spec/blob/main/config.md",
+    "https://docs.docker.com/engine/containers/run/#user"
+  ],
   "limits": [
-    "Automated independent technical review, not human risk acceptance or binary redistribution approval.",
-    "Original34 low/medium OS records remain unreviewed at full-severity scope, with the original HIGH/CRITICAL/UNKNOWN threshold unchanged.",
-    "The final real-model combination previously failed; this source-metadata repair does not claim a new model, deployment, or complete release acceptance."
+    "No actual process UID/GID measurement; Docker documented default root UID0 does not prove a CI process GID.",
+    "Original scanner and SDK/source-control evidence reused; this review repeats runtime export, native parsing, graphs and scan adjudication.",
+    "No model retry, deployment acceptance, human risk acceptance or binary redistribution approval."
   ]
 }

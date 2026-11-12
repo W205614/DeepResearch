@@ -15,10 +15,12 @@ COPY --from=securitymodules / /prefetched-proxy/
 ENV GOPROXY=file:///prefetched-proxy,https://proxy.golang.org
 COPY deployment/vendors/grafana-20261107/candidate_build_backends.py deployment/vendors/grafana-20261107/capture_graphs.py deployment/vendors/grafana-20261107/plugin-modules.json /tools/
 COPY deployment/vendors/grafana-20261107/build_candidate_backends.py /tools/
+COPY deployment/vendors/grafana-20261110/prepare_stable_graphs_20261112.py /tools/
 COPY deployment/vendors/grafana-20261107/plugins/ /locks/
 RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
+    python3 /tools/prepare_stable_graphs_20261112.py metadata --inventory /tools/plugin-modules.json --evidence /external-evidence/metadata && \
     python3 /tools/build_candidate_backends.py --inventory /tools/plugin-modules.json --locks /locks --output /out && \
-    python3 /tools/capture_graphs.py --inventory /tools/plugin-modules.json --plugins-root /source-plugins --output /out/graphs
+    python3 /tools/prepare_stable_graphs_20261112.py plugins --inventory /tools/plugin-modules.json --output /out/graphs --evidence /external-evidence/exports/plugins
 FROM toolchain AS build
 WORKDIR /source
 # The fixed source transport contains real upstream Git objects, verified before
@@ -40,6 +42,7 @@ COPY deployment/vendors/grafana-20261107/main/ ./
 COPY deployment/vendors/grafana-20261110/main/ ./
 COPY deployment/vendors/grafana-20261107/build_candidate_backends.py /tools/
 COPY deployment/vendors/grafana-20261107/prepare_rebuild.py deployment/vendors/grafana-20261107/capture_graphs.py deployment/vendors/grafana-20261107/plugin-modules.json /tools/
+COPY deployment/vendors/grafana-20261110/prepare_stable_graphs_20261112.py /tools/
 RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
     python3 /tools/build_candidate_backends.py --prepare-source /source --receipt /out/checksum-preparation/main.json
 COPY --from=plugins /out/plugins/ /rebuilt/
@@ -58,12 +61,16 @@ RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache
     && go version -m /out/grafana > /out/build-info.txt \
     && grep -F 'vcs.revision=ce471d869a4810cd83c987dd3521c4b67689dbb6' /out/build-info.txt
 RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
-    python3 /tools/capture_graphs.py --source /source --package ./pkg/cmd/grafana --target main --output /out/graphs
+    python3 /tools/prepare_stable_graphs_20261112.py main --output /out/graphs --evidence /external-evidence/exports/main
 COPY deployment/vendors/grafana-20261107/verify_native_versions.py /tools/
 RUN python3 /tools/verify_native_versions.py --root /rebuilt --inventory /tools/plugin-modules.json --main /out/grafana --output /out/native-version-verification.json
 ARG PROJECT_SOURCE_REVISION=uncommitted-validation-inputs
 ARG PROJECT_INPUTS_SHA256=unrecorded-validation-inputs
 LABEL org.deepresearch.project.source_revision="${PROJECT_SOURCE_REVISION}" org.deepresearch.project.inputs_sha256="${PROJECT_INPUTS_SHA256}" org.deepresearch.upstream.grafana_revision="ce471d869a4810cd83c987dd3521c4b67689dbb6"
+
+FROM scratch AS stable-graph-evidence
+COPY --from=plugins /external-evidence/ /plugins/
+COPY --from=build /external-evidence/ /main/
 
 FROM ${FIXED_RUNTIME_IMAGE} AS source-runtime
 USER 0

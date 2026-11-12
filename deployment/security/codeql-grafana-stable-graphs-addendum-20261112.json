@@ -1,0 +1,178 @@
+{
+  "schema": "codeql-grafana-stable-graphs-exact-addendum-20261112-v1",
+  "actor": "/root/release_prepare",
+  "actor_kind": "automated_independent_agent",
+  "observed_at_utc": "2026-11-12T09:30:29.076070+00:00",
+  "comparison_source_sha": "20bbbebd79bb326acc241e4d4d1349e95694a04b",
+  "prior_profile": {
+    "path": "deployment/security/codeql-reviewed-findings-20261112-tomcat27.json",
+    "sha256": "de04cf7391c8c05b1b67f5331e8b09c656c5d09d5e1c52ab16bb4c6040300a09",
+    "bytes_preserved": true
+  },
+  "scope": "Renew only the Grafana recipe and new build-only helper binding for the same four exact findings. Preserve every prior authentication/SSRF/HTML proof and the >=7 threshold.",
+  "recipe_delta": {
+    "path": "deployment/docker/Dockerfile.grafana-20261112",
+    "prior_sha256": "58576129268143771b8841ec8392b20a2a0192670ff84cfdbe88b0e843fb00c3",
+    "current_sha256": "c362f05174a88fdf6645518707db3772bbf1e18f4ee94efa533696229beb2e8f",
+    "exact_unified_diff": "--- prior/deployment/docker/Dockerfile.grafana-20261112\n+++ current/deployment/docker/Dockerfile.grafana-20261112\n@@ -15,10 +15,12 @@\n ENV GOPROXY=file:///prefetched-proxy,https://proxy.golang.org\n COPY deployment/vendors/grafana-20261107/candidate_build_backends.py deployment/vendors/grafana-20261107/capture_graphs.py deployment/vendors/grafana-20261107/plugin-modules.json /tools/\n COPY deployment/vendors/grafana-20261107/build_candidate_backends.py /tools/\n+COPY deployment/vendors/grafana-20261110/prepare_stable_graphs_20261112.py /tools/\n COPY deployment/vendors/grafana-20261107/plugins/ /locks/\n RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \\\n+    python3 /tools/prepare_stable_graphs_20261112.py metadata --inventory /tools/plugin-modules.json --evidence /external-evidence/metadata && \\\n     python3 /tools/build_candidate_backends.py --inventory /tools/plugin-modules.json --locks /locks --output /out && \\\n-    python3 /tools/capture_graphs.py --inventory /tools/plugin-modules.json --plugins-root /source-plugins --output /out/graphs\n+    python3 /tools/prepare_stable_graphs_20261112.py plugins --inventory /tools/plugin-modules.json --output /out/graphs --evidence /external-evidence/exports/plugins\n FROM toolchain AS build\n WORKDIR /source\n # The fixed source transport contains real upstream Git objects, verified before\n@@ -40,6 +42,7 @@\n COPY deployment/vendors/grafana-20261110/main/ ./\n COPY deployment/vendors/grafana-20261107/build_candidate_backends.py /tools/\n COPY deployment/vendors/grafana-20261107/prepare_rebuild.py deployment/vendors/grafana-20261107/capture_graphs.py deployment/vendors/grafana-20261107/plugin-modules.json /tools/\n+COPY deployment/vendors/grafana-20261110/prepare_stable_graphs_20261112.py /tools/\n RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \\\n     python3 /tools/build_candidate_backends.py --prepare-source /source --receipt /out/checksum-preparation/main.json\n COPY --from=plugins /out/plugins/ /rebuilt/\n@@ -58,12 +61,16 @@\n     && go version -m /out/grafana > /out/build-info.txt \\\n     && grep -F 'vcs.revision=ce471d869a4810cd83c987dd3521c4b67689dbb6' /out/build-info.txt\n RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \\\n-    python3 /tools/capture_graphs.py --source /source --package ./pkg/cmd/grafana --target main --output /out/graphs\n+    python3 /tools/prepare_stable_graphs_20261112.py main --output /out/graphs --evidence /external-evidence/exports/main\n COPY deployment/vendors/grafana-20261107/verify_native_versions.py /tools/\n RUN python3 /tools/verify_native_versions.py --root /rebuilt --inventory /tools/plugin-modules.json --main /out/grafana --output /out/native-version-verification.json\n ARG PROJECT_SOURCE_REVISION=uncommitted-validation-inputs\n ARG PROJECT_INPUTS_SHA256=unrecorded-validation-inputs\n LABEL org.deepresearch.project.source_revision=\"${PROJECT_SOURCE_REVISION}\" org.deepresearch.project.inputs_sha256=\"${PROJECT_INPUTS_SHA256}\" org.deepresearch.upstream.grafana_revision=\"ce471d869a4810cd83c987dd3521c4b67689dbb6\"\n+\n+FROM scratch AS stable-graph-evidence\n+COPY --from=plugins /external-evidence/ /plugins/\n+COPY --from=build /external-evidence/ /main/\n \n FROM ${FIXED_RUNTIME_IMAGE} AS source-runtime\n USER 0\n",
+    "all_previous_copy_add_instructions_preserved_in_order": true,
+    "new_copy_instructions": [
+      "COPY deployment/vendors/grafana-20261110/prepare_stable_graphs_20261112.py /tools/",
+      "COPY deployment/vendors/grafana-20261110/prepare_stable_graphs_20261112.py /tools/",
+      "COPY --from=plugins /external-evidence/ /plugins/",
+      "COPY --from=build /external-evidence/ /main/"
+    ],
+    "only_new_stage": "scratch AS stable-graph-evidence",
+    "source_runtime_stage_bytes_identical": true,
+    "external_evidence_not_copied_to_final_runtime": true
+  },
+  "new_bound_build_inputs": {
+    "deployment/vendors/grafana-20261110/prepare_stable_graphs_20261112.py": "9dd31a8d493309867e6ad6444f99b34ab45e913f1cef971ab192699714a84ddc",
+    "deployment/vendors/grafana-20261107/capture_graphs.py": "23d65fdae263353b74b3ca608300695c6041abccdfb98e71bed74206edbd83e3",
+    "deployment/vendors/grafana-20261107/plugin-modules.json": "63238edb60aadeb5d7607b4c6d31cb8a850392bb9fd87fd8e2148b6533a7b7fa"
+  },
+  "helper_source_review": {
+    "modes": [
+      "metadata",
+      "plugins",
+      "main"
+    ],
+    "metadata": "The exact existing module-cache or fixed /prefetched-proxy mod/zip bytes seed a fresh metadata download without copying .info or ziphash. Fresh-cache download forces the official Go proxy; shared-cache revalidation retains the Dockerfile existing fixed file proxy plus official proxy. Both require official sumdb, pinned module/source sums and exact Git Origin verification. Only complete Go-produced .info is copied, and external receipts remain outside the final runtime stage.",
+    "graph_capture": "Read-only go list -deps -export primes export metadata, verifies source lock hashes before/after and calls the original unchanged capture helper with the same package, plugin tags and GOWORK contract. It does not filter graph fields or change the prior capture command.",
+    "web_boundary": "The new helper is copied only to /tools in the plugins and build stages. The separate scratch evidence target copies only /external-evidence. The final source-runtime stage is byte-identical, and there is no new frontend build, HTTP route, Web context or HTML serving path.",
+    "separate_native_review_required": "New actual full image/native/source graph/scan identity is adjudicated separately. This addendum does not preapprove the new Grafana subject, assert cache experiments or image scans passed, or declare runtime bytes unchanged."
+  },
+  "all_other_preexisting_bound_inputs_unchanged": {
+    "deployment/security/codeql-finding-review-20261110.md": "7585522420e6a8cb160ef2b173460762833e8128790a259ed0a4b779d8824948",
+    "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java": "9729af95b2760eb00fdc36f8e86f8abaa7f0f4deb999f976a9342d7a93365aea",
+    "business-backend/src/main/java/com/deepresearch/business/config/DeepResearchProperties.java": "94211bb68e6735e0200f9c660814a64bd87ac205b944f060eb5a6920ded15ad3",
+    "business-backend/src/main/java/com/deepresearch/business/api/AgentProxyController.java": "f81f0ecfbf502797025bc8a0f0365b207f67c88474659dde8c9a18844c58564b",
+    "business-backend/src/test/java/com/deepresearch/business/service/AgentClientOriginTest.java": "2d837c336c37be593a4240b3490b8503382ddbe7831f01fbf8a9ee5de71493d1",
+    "business-backend/src/main/java/com/deepresearch/business/config/SecurityConfig.java": "4dbaf829a97464e83d29329f41aa33888a0d26d4e28362c88b82f14e9d01afc7",
+    "business-backend/src/main/java/com/deepresearch/business/security/PlatformAccountFilter.java": "6907c46c7e1e452794a5a0fd37d1cfedd8923dc918f4bbe8c0d48530edbc312c",
+    "business-backend/src/main/java/com/deepresearch/business/security/ApiRateLimitFilter.java": "67ee1e48aa7749d8e0873977d2be30db1e40e08257d63a5f25765e7a984a3533",
+    "business-backend/src/test/java/com/deepresearch/business/config/SecurityConfigBearerTest.java": "21e2841835abc51f50e5ba06a6cc67f091cc5f900a2330605259972ac2fbf603",
+    "frontend/src/api.ts": "b2fa83c547576f376a59d572cb689a882a3d52d0d509dfa5ae78e88a462f0e52",
+    "business-backend/pom.xml": "c5947abb575ffe01db6615726427363ad08ff5c4ec375bbb8abb7417d55be46f",
+    "deployment/security/codeql-tomcat27-addendum-20261112.json": "643dbfeaf98a6c9ccb64e6c5906cfb9613fc0a411c78df8db8b22fc7967ac2f3",
+    "deployment/security/agent-native-evidence/supplement-20261107/sqlite-release-3_54_1.html": "69bf98f8cb8730c88b01414cdc4436fb3c65443dae405957b40efab9976f1e12",
+    "deployment/security/agent-native-fixed-code-supplement-20261107.json": "f0960cbc117072656b5038706634e11f79281fe876f84642fa234953f25338df",
+    "scripts/check_agent_native_packages.py": "a61f5a7ad61481aa3a88f8432db57dffd545027248cf861fcd766a01c99374d3",
+    "compose.yaml": "bf127d53a0a7829b77055da53db469a90bf651409849c5e0de78bdc685fa5343",
+    "frontend/Dockerfile": "9b100c4df9ef23ed29b73e5f944772dd5b4d96986a797f46611dbf872c2f01c1",
+    "frontend/nginx.conf": "9dfa67b7fe4d3159b2dabf772c51a82e625b3757de35ca37bd36db297c15ccb2",
+    "Dockerfile": "66d6ffccb8f8f7416f98c62081562f81f9cc76c95747ec176125b28964eea508",
+    "deployment/security/codeql-continuation-review-20261111.json": "ab47a6c04b523a9f45396a04cc0199ddb83f21b07ad5677030ce1e4441488e4f",
+    "deployment/security/codeql-continuation-review-20261112.json": "25a5f0bde760347ea4367d0dfaf0df3ebe1b53a12607d484a85e1a876121bb82",
+    "deployment/docker/Dockerfile.minio-20261112": "aa37214feaadb223f727c83bbf42726a887800ce37f89e5e5f741877c1f36635",
+    "deployment/security/codeql-minio-info-addendum-20261112.json": "6c7a8225e81ff45457a6dc1267375a3b5b010ee94a72839c37c99e3e0b03fc3f"
+  },
+  "unchanged_html_boundary": {
+    "path": "deployment/security/agent-native-evidence/supplement-20261107/sqlite-release-3_54_1.html",
+    "sha256": "69bf98f8cb8730c88b01414cdc4436fb3c65443dae405957b40efab9976f1e12",
+    "ids_observed": [
+      "search_menubutton",
+      "submenu",
+      "searchmenu",
+      "searchtype",
+      "searchbox"
+    ],
+    "mtimelink_nodes": 0,
+    "compose_web_context": "./frontend",
+    "compose_web_copy_routing_html_and_all_authentication_sources_unchanged": true
+  },
+  "actual_sarif_reused": {
+    "schema": "actual-codeql-20bbb-replay-v1",
+    "source_sha": "20bbbebd79bb326acc241e4d4d1349e95694a04b",
+    "run_id": 43186413053,
+    "profile": "deployment\\security\\codeql-reviewed-findings-20261112-tomcat27.json",
+    "profile_sha256": "de04cf7391c8c05b1b67f5331e8b09c656c5d09d5e1c52ab16bb4c6040300a09",
+    "results": [
+      {
+        "kind": "main",
+        "artifact_id": 13928807022,
+        "zip_sha256": "06e788ad74c27d8916ce858e52e427816605e4cbfa4ce77e0617f3c69e0c2014",
+        "sarif_sha256": {
+          "java.sarif": "06196660da723b79b2e74c8538928bab7551ed94c062c248620324eb87ed9ebc",
+          "javascript.sarif": "891dd1d3d6fbebc98b22e1301d70f90223432cc32ad888b36812b666cb1a6677",
+          "python.sarif": "025aef9117cb882fd87318aacbe9aca7ea304cf14ff810c3e412ae11f185a302"
+        },
+        "blocking_findings": [
+          {
+            "rule_id": "java/ssrf",
+            "path": "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java",
+            "start_line": 95,
+            "end_line": 95,
+            "start_column": 62,
+            "end_column": 114,
+            "message": "Potential server-side request forgery due to a [user-provided value](1)."
+          },
+          {
+            "rule_id": "java/ssrf",
+            "path": "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java",
+            "start_line": 144,
+            "end_line": 144,
+            "start_column": 57,
+            "end_column": 64,
+            "message": "Potential server-side request forgery due to a [user-provided value](1)."
+          },
+          {
+            "rule_id": "java/spring-disabled-csrf-protection",
+            "path": "business-backend/src/main/java/com/deepresearch/business/config/SecurityConfig.java",
+            "start_line": 34,
+            "end_line": 34,
+            "start_column": 27,
+            "end_column": 41,
+            "message": "CSRF vulnerability due to protection being disabled."
+          },
+          {
+            "rule_id": "js/xss-through-dom",
+            "path": "deployment/security/agent-native-evidence/supplement-20261107/sqlite-release-3_54_1.html",
+            "start_line": 97,
+            "end_line": 97,
+            "start_column": 45,
+            "end_column": 72,
+            "message": "[DOM text](1) is reinterpreted as HTML without escaping meta-characters."
+          }
+        ],
+        "same_exact_identities_as_7bee": true,
+        "reviewed": 4,
+        "unresolved": 0,
+        "threshold": 7.0,
+        "raw_sarif_modified": false
+      },
+      {
+        "kind": "bootstrap",
+        "artifact_id": 13928651503,
+        "zip_sha256": "31ba50385223e03b7fa8a9a156fd7f1ebfd8f2c033a26a57e34ae1ba79d4c529",
+        "sarif_sha256": {
+          "go.sarif": "670c5b922b7868d6e86c0ae631736592bfe85cf08594a6ba9d92e2e3a4d23aec"
+        },
+        "blocking_findings": [],
+        "same_exact_identities_as_7bee": true,
+        "reviewed": 0,
+        "unresolved": 0,
+        "threshold": 7.0,
+        "raw_sarif_modified": false
+      }
+    ]
+  },
+  "original_profile_replay": [
+    {
+      "kind": "main",
+      "passed": false,
+      "error": "CodeQL reviewed source or proof changed; renewed review required: deployment/docker/Dockerfile.grafana-20261112"
+    },
+    {
+      "kind": "bootstrap",
+      "passed": false,
+      "error": "CodeQL reviewed source or proof changed; renewed review required: deployment/docker/Dockerfile.grafana-20261112"
+    }
+  ],
+  "raw_sarif_modified": false,
+  "new_codeql_scan_claimed": false,
+  "severity_threshold_unchanged": 7.0,
+  "risk_acceptance": false,
+  "human_review": false,
+  "new_findings_exempted": false
+}
