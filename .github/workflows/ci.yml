@@ -26,6 +26,9 @@ jobs:
         run: uv run --frozen --no-dev python scripts/build_go_stdlib_security_20261112.py --artifact minio --output-dir .cache/eval/minio-source-build
         env:
           GITHUB_TOKEN: ${{ github.token }}
+      - name: Retain the two actual MinIO graph documents after a failed build gate
+        if: always() && failure() && hashFiles('.cache/eval/minio-source-build/build-receipt.json') != '' && hashFiles('.cache/eval/minio-source-build/actual-payload/runtime-manifest.json.gz') != '' && hashFiles('.cache/eval/minio-source-build/actual-payload/rootfs.tar') != ''
+        run: uv run --frozen --no-dev python scripts/capture_go_graph_diagnostic_20261112.py --build-dir .cache/eval/minio-source-build
       - uses: actions/upload-artifact@v6
         if: always()
         with:
@@ -33,6 +36,7 @@ jobs:
           path: |
             .cache/eval/*-source-build/*.log
             .cache/eval/*-source-build/*.command.json
+            .cache/eval/minio-source-build/diagnostic-graphs/*.json
           if-no-files-found: warn
       - run: python scripts/verify_components.py --drill
   quality:
@@ -99,6 +103,9 @@ jobs:
         run: uv run --frozen --no-dev python scripts/build_go_stdlib_security_20261112.py --artifact minio --output-dir .cache/eval/minio-source-build
         env:
           GITHUB_TOKEN: ${{ github.token }}
+      - name: Retain the two actual MinIO graph documents after a failed build gate
+        if: always() && failure() && hashFiles('.cache/eval/minio-source-build/build-receipt.json') != '' && hashFiles('.cache/eval/minio-source-build/actual-payload/runtime-manifest.json.gz') != '' && hashFiles('.cache/eval/minio-source-build/actual-payload/rootfs.tar') != ''
+        run: uv run --frozen --no-dev python scripts/capture_go_graph_diagnostic_20261112.py --build-dir .cache/eval/minio-source-build
       - name: Build the exact reviewed Grafana source profile before Compose startup
         run: uv run --frozen --no-dev python scripts/build_go_stdlib_security_20261112.py --artifact grafana --output-dir .cache/eval/grafana-source-build
         env:
@@ -110,6 +117,7 @@ jobs:
           path: |
             .cache/eval/*-source-build/*.log
             .cache/eval/*-source-build/*.command.json
+            .cache/eval/minio-source-build/diagnostic-graphs/*.json
           if-no-files-found: warn
       - uses: actions/upload-artifact@v6
         if: always() && hashFiles('.cache/eval/grafana-source-build/build-receipt.json') != ''
