@@ -249,6 +249,62 @@ def test_ordinary_profile_preserves_findings_and_rejects_the_old_python_closure(
         decide(reviewed_inputs)
 
 
+def test_ordinary_profile_source_snapshot_matches_historical_runtime_manifest():
+    profile = gate.load_profile(gate.ORDINARY_PROFILE_NAME)
+    review = json.loads((gate.ROOT / profile['source_review_evidence']['path']).read_bytes())
+    change = review['source_change']
+    snapshot = change['source_snapshot']
+    assert change['runtime_path'] == '/app/' + change['path']
+    assert snapshot['git_path'] == change['path']
+    assert Path(snapshot['path']).suffix == '.txt'
+    assert hashlib.sha256((gate.ROOT / snapshot['path']).read_bytes()).hexdigest() == snapshot['sha256']
+    assert snapshot['sha256'] == change['after_sha256'] == review['complete_backend_manifest'][change['path']]
+    assert {'path': snapshot['path'], 'sha256': snapshot['sha256']} in review['additional_evidence_files']
+    assert not any(row['path'] == change['path'] for row in review['additional_evidence_files'])
+    assert profile['python_source_closure'] == review['actual_snapshot']['python_source_closure']
+
+
+def test_ordinary_profile_rejects_modified_historical_source_snapshot(monkeypatch):
+    profile = gate.load_profile(gate.ORDINARY_PROFILE_NAME)
+    review = json.loads((gate.ROOT / profile['source_review_evidence']['path']).read_bytes())
+    snapshot = gate.ROOT / review['source_change']['source_snapshot']['path']
+    original = Path.read_bytes
+
+    def read_bytes(path):
+        raw = original(path)
+        return raw + b'changed historical snapshot' if path == snapshot else raw
+
+    monkeypatch.setattr(Path, 'read_bytes', read_bytes)
+    with pytest.raises(ValueError, match='supporting source evidence changed'):
+        gate.load_profile(gate.ORDINARY_PROFILE_NAME)
+
+
+def test_ordinary_profile_does_not_pin_the_moving_checkout_as_old_runtime_evidence(monkeypatch):
+    profile = gate.load_profile(gate.ORDINARY_PROFILE_NAME)
+    original = Path.read_bytes
+    current_policy = gate.ROOT / 'backend/research/evidence_policy.py'
+
+    def read_bytes(path):
+        raw = original(path)
+        return raw + b'legitimate later checkout change' if path == current_policy else raw
+
+    monkeypatch.setattr(Path, 'read_bytes', read_bytes)
+    assert gate.load_profile(gate.ORDINARY_PROFILE_NAME) == profile
+
+
+@pytest.mark.parametrize('reviewed_inputs', [gate.ORDINARY_PROFILE_NAME], indirect=True)
+def test_changed_policy_in_the_measured_python_manifest_cannot_use_old_review(reviewed_inputs):
+    profile = reviewed_inputs[3]
+    review = json.loads((gate.ROOT / profile['source_review_evidence']['path']).read_bytes())
+    projection = review['source_change']['unapproved_policy_projection']
+    assert not projection['candidate_built'] and not projection['model_tested'] and not projection['security_approved']
+    assert projection['policy_sha256'] != review['source_change']['after_sha256']
+    assert projection['python_source_closure']['files'] == profile['python_source_closure']['files'] == 5972
+    reviewed_inputs[2]['python_source_closure'] = projection['python_source_closure']
+    with pytest.raises(ValueError, match='Python source closure'):
+        decide(reviewed_inputs)
+
+
 @pytest.mark.parametrize("target", ["review", "support"])
 def test_new_openssl_review_and_supporting_evidence_are_pinned(monkeypatch, target):
     profile = gate.load_profile(gate.PROFILE_NAME)

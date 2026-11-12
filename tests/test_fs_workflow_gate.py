@@ -69,6 +69,9 @@ def command(steps, script, *, artifact=None):
     run = step['run']
     assert not any(token in run for token in ('||', '&&', ';', '|', '`'))
     tokens = shlex.split(run)
+    if script == 'build_go_stdlib_security_20261112.py':
+        assert tokens[:4] == ['uv', 'run', '--frozen', '--no-dev']
+        tokens = tokens[4:]
     assert tokens[:2] == ['python', 'scripts/' + script] and len(tokens[2:]) % 2 == 0
     arguments = dict(zip(tokens[2::2], tokens[3::2]))
     assert len(arguments) == len(tokens[2:]) // 2

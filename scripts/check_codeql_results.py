@@ -7,7 +7,7 @@ from pathlib import Path
 from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parents[1]
-REVIEW = ROOT / 'deployment/security/codeql-reviewed-findings-20261110.json'
+REVIEW = ROOT / 'deployment/security/codeql-reviewed-findings-20261112.json'
 
 
 def result_rule(tool, result):

@@ -121,9 +121,14 @@ jobs:
         run: python scripts/fetch_grafana_fixed_20261107.py --tag deepresearch-scan-grafana:20261107 --output .cache/eval/approved-grafana-load.json
         env:
           GITHUB_TOKEN: ${{ github.token }}
+      - uses: astral-sh/setup-uv@v7
+        if: matrix.source_build_profile == 'grafana-source-20261112' || matrix.source_build_profile == 'minio-source-20261112'
+      - name: Install locked Python dependencies for Go source preparation
+        if: matrix.source_build_profile == 'grafana-source-20261112' || matrix.source_build_profile == 'minio-source-20261112'
+        run: uv sync --frozen --no-dev
       - name: Build the reviewed Go-fixed source without publishing a third-party image
         if: matrix.source_build_profile == 'grafana-source-20261112' || matrix.source_build_profile == 'minio-source-20261112'
-        run: python scripts/build_go_stdlib_security_20261112.py --artifact "$ARTIFACT" --output-dir ".cache/eval/$ARTIFACT-source-build"
+        run: uv run --frozen --no-dev python scripts/build_go_stdlib_security_20261112.py --artifact "$ARTIFACT" --output-dir ".cache/eval/$ARTIFACT-source-build"
         env:
           ARTIFACT: ${{ matrix.artifact }}
           GITHUB_TOKEN: ${{ github.token }}
@@ -234,6 +239,8 @@ jobs:
             .cache/eval/minio-source-build/image-inspect.json
             .cache/eval/minio-source-build/actual-payload/runtime-manifest.json.gz
             .cache/eval/minio-source-build/regressions/*.txt
+            .cache/eval/*-source-build/*.log
+            .cache/eval/*-source-build/*.command.json
             .cache/eval/grafana-source-build/build-receipt.json
             .cache/eval/grafana-source-build/image-inspect.json
             .cache/eval/grafana-source-build/actual-payload/runtime-manifest.json.gz

@@ -1,0 +1,201 @@
+{
+  "schema": "codeql-exact-continuation-review-20261112-v1",
+  "actor": "/root/release_prepare",
+  "actor_kind": "automated_independent_agent",
+  "observed_at_utc": "2026-11-12T06:33:20.280047+00:00",
+  "reviewed_source_sha": "7bee1d0d97f48401d356165d13c81f53409de7b2",
+  "comparison_source_sha": "78a19df9dfa6f072af6ebe40ff99cf164d0c4ff8",
+  "security_run": "https://github.com/W205614/DeepResearch/actions/runs/43167693308",
+  "prior_review": {
+    "path": "deployment/security/codeql-reviewed-findings-20261110.json",
+    "sha256": "e781a9903c7c1003ebf5582fb64ce1a2ae3a34bf14fbe8fccd522b7b1b68ac22",
+    "bytes_unchanged": true
+  },
+  "scope": "Renew only the original four exact identities after two Go-source Compose image/profile selections. No new exception, threshold change or raw SARIF modification.",
+  "fresh_raw_sarif": [
+    {
+      "kind": "main",
+      "artifact_id": 13920183935,
+      "zip_sha256": "4a9502e9a88207628de5dd5ff638ef04a3c1e1a8ba129c587a50386fb1755439",
+      "sarif_sha256": {
+        "java.sarif": "49db941fc9b4d77ab6250c557d15c366670a59604a7159131d09d674da85ce72",
+        "javascript.sarif": "ae4f908724ce1638302a49035e74e677a9ce31be87ea50e3cdb708646b008351",
+        "python.sarif": "da5e8bccade463248624dc20c69e74f7b36ce835d305999a1c5cd01b0e97dbde"
+      },
+      "blocking_findings": [
+        {
+          "rule_id": "java/ssrf",
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java",
+          "start_line": 95,
+          "end_line": 95,
+          "start_column": 62,
+          "end_column": 114,
+          "message": "Potential server-side request forgery due to a [user-provided value](1)."
+        },
+        {
+          "rule_id": "java/ssrf",
+          "path": "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java",
+          "start_line": 144,
+          "end_line": 144,
+          "start_column": 57,
+          "end_column": 64,
+          "message": "Potential server-side request forgery due to a [user-provided value](1)."
+        },
+        {
+          "rule_id": "java/spring-disabled-csrf-protection",
+          "path": "business-backend/src/main/java/com/deepresearch/business/config/SecurityConfig.java",
+          "start_line": 34,
+          "end_line": 34,
+          "start_column": 27,
+          "end_column": 41,
+          "message": "CSRF vulnerability due to protection being disabled."
+        },
+        {
+          "rule_id": "js/xss-through-dom",
+          "path": "deployment/security/agent-native-evidence/supplement-20261107/sqlite-release-3_54_1.html",
+          "start_line": 97,
+          "end_line": 97,
+          "start_column": 45,
+          "end_column": 72,
+          "message": "[DOM text](1) is reinterpreted as HTML without escaping meta-characters."
+        }
+      ],
+      "original_gate": {
+        "passed": false,
+        "error": "CodeQL reviewed source or proof changed; renewed review required: compose.yaml"
+      }
+    },
+    {
+      "kind": "bootstrap",
+      "artifact_id": 13920113835,
+      "zip_sha256": "0b531eb895de785ba16e8c977196e459b6718c84df344dc38c198af6673ffc16",
+      "sarif_sha256": {
+        "go.sarif": "f513db1f58b66fd2161edf999f78ec3d3071c2bb7860076e534e9fd33b0a7fec"
+      },
+      "blocking_findings": [],
+      "original_gate": {
+        "passed": false,
+        "error": "CodeQL reviewed source or proof changed; renewed review required: compose.yaml"
+      }
+    }
+  ],
+  "compose_delta": {
+    "old_sha256": "c8b0e862f51e8df6ec8ddf8254656491a939cbb9bf9231d31b545d449df7dc0e",
+    "new_sha256": "bf127d53a0a7829b77055da53db469a90bf651409849c5e0de78bdc685fa5343",
+    "only_changes": [
+      "services.minio.image",
+      "services.minio.x-deepresearch-source-build",
+      "services.grafana.image",
+      "services.grafana.x-deepresearch-source-build"
+    ],
+    "all_other_parsed_configuration_equal": true,
+    "web_build": {
+      "context": "./frontend"
+    },
+    "web_context_and_mounts_unchanged": true
+  },
+  "unchanged_bound_sources_and_proofs": {
+    "deployment/security/codeql-finding-review-20261110.md": "7585522420e6a8cb160ef2b173460762833e8128790a259ed0a4b779d8824948",
+    "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java": "9729af95b2760eb00fdc36f8e86f8abaa7f0f4deb999f976a9342d7a93365aea",
+    "business-backend/src/main/java/com/deepresearch/business/config/DeepResearchProperties.java": "94211bb68e6735e0200f9c660814a64bd87ac205b944f060eb5a6920ded15ad3",
+    "business-backend/src/main/java/com/deepresearch/business/api/AgentProxyController.java": "f81f0ecfbf502797025bc8a0f0365b207f67c88474659dde8c9a18844c58564b",
+    "business-backend/src/test/java/com/deepresearch/business/service/AgentClientOriginTest.java": "2d837c336c37be593a4240b3490b8503382ddbe7831f01fbf8a9ee5de71493d1",
+    "business-backend/src/main/java/com/deepresearch/business/config/SecurityConfig.java": "4dbaf829a97464e83d29329f41aa33888a0d26d4e28362c88b82f14e9d01afc7",
+    "business-backend/src/main/java/com/deepresearch/business/security/PlatformAccountFilter.java": "6907c46c7e1e452794a5a0fd37d1cfedd8923dc918f4bbe8c0d48530edbc312c",
+    "business-backend/src/main/java/com/deepresearch/business/security/ApiRateLimitFilter.java": "67ee1e48aa7749d8e0873977d2be30db1e40e08257d63a5f25765e7a984a3533",
+    "business-backend/src/test/java/com/deepresearch/business/config/SecurityConfigBearerTest.java": "21e2841835abc51f50e5ba06a6cc67f091cc5f900a2330605259972ac2fbf603",
+    "frontend/src/api.ts": "b2fa83c547576f376a59d572cb689a882a3d52d0d509dfa5ae78e88a462f0e52",
+    "business-backend/pom.xml": "8a859c557e726d5f8ff818494c7eb5cf008c3cbbb5f130ca9fa8d0b765330301",
+    "deployment/security/agent-native-evidence/supplement-20261107/sqlite-release-3_54_1.html": "69bf98f8cb8730c88b01414cdc4436fb3c65443dae405957b40efab9976f1e12",
+    "deployment/security/agent-native-fixed-code-supplement-20261107.json": "f0960cbc117072656b5038706634e11f79281fe876f84642fa234953f25338df",
+    "scripts/check_agent_native_packages.py": "a61f5a7ad61481aa3a88f8432db57dffd545027248cf861fcd766a01c99374d3",
+    "frontend/Dockerfile": "9b100c4df9ef23ed29b73e5f944772dd5b4d96986a797f46611dbf872c2f01c1",
+    "frontend/nginx.conf": "9dfa67b7fe4d3159b2dabf772c51a82e625b3757de35ca37bd36db297c15ccb2",
+    "Dockerfile": "66d6ffccb8f8f7416f98c62081562f81f9cc76c95747ec176125b28964eea508",
+    "deployment/security/codeql-continuation-review-20261111.json": "ab47a6c04b523a9f45396a04cc0199ddb83f21b07ad5677030ce1e4441488e4f"
+  },
+  "go_source_recipes": {
+    "deployment/docker/Dockerfile.minio-20261112": {
+      "sha256": "b0f30dea8ddf9e18f5c988dbde494930fe8aa0db0421031fa203b91412f60852",
+      "copy_add_instructions": [
+        "COPY --from=miniosource / /prefetched-minio.git/",
+        "COPY --from=securitymodules / /prefetched-proxy/",
+        "COPY deployment/vendors/minio/legacy_part_compat.go cmd/legacy_part_compat.go",
+        "COPY deployment/vendors/minio/legacy-part-compat.patch /tmp/legacy-part-compat.patch",
+        "COPY deployment/vendors/minio/csv_record_bound_test.go internal/s3select/csv/pinned_record_bound_test.go",
+        "COPY deployment/vendors/minio/legacy_part_compat_test.go cmd/legacy_part_compat_test.go",
+        "COPY deployment/vendors/minio/legacy-part2024.msgp cmd/testdata/deepresearch-legacy-part2024.msgp",
+        "COPY --from=csv-regression /tmp/csv-regression.txt /tmp/legacy-multipart-regression.txt /",
+        "COPY --from=csv-regression /tmp/csv-regression.txt /out/csv-regression.txt",
+        "COPY --from=csv-regression /tmp/legacy-multipart-regression.txt /out/legacy-multipart-regression.txt",
+        "COPY --from=build /out/silo /usr/bin/silo",
+        "COPY --from=build /out/mcli /usr/bin/mcli",
+        "COPY --from=build /out/silo-buildinfo.txt /out/mcli-buildinfo.txt /out/*json /usr/share/deepresearch-build/",
+        "COPY --chmod=0644 deployment/security/go-stdlib-20261112-evidence/source.lock.json /usr/share/deepresearch-build/go-security-source.lock.json",
+        "COPY --chmod=0644 deployment/security/go-stdlib-20261112-evidence/Go-LICENSE /usr/share/deepresearch-build/Go-LICENSE"
+      ]
+    },
+    "deployment/docker/Dockerfile.grafana-20261112": {
+      "sha256": "58576129268143771b8841ec8392b20a2a0192670ff84cfdbe88b0e843fb00c3",
+      "copy_add_instructions": [
+        "COPY --from=retained /usr/share/grafana/data/plugins-bundled/ /reviewed-plugins/",
+        "COPY deployment/vendors/grafana-20261107/plugin-modules.json deployment/vendors/grafana-20261107/verify_retained_assets.py /tools/",
+        "COPY --from=moduletransport / /prefetched-proxy/",
+        "COPY --from=securitymodules / /prefetched-proxy/",
+        "COPY deployment/vendors/grafana-20261107/candidate_build_backends.py deployment/vendors/grafana-20261107/capture_graphs.py deployment/vendors/grafana-20261107/plugin-modules.json /tools/",
+        "COPY deployment/vendors/grafana-20261107/build_candidate_backends.py /tools/",
+        "COPY deployment/vendors/grafana-20261107/plugins/ /locks/",
+        "COPY --from=grafanasource / /prefetched-grafana.git/",
+        "COPY --from=moduletransport / /prefetched-proxy/",
+        "COPY --from=securitymodules / /prefetched-proxy/",
+        "COPY --from=thrifttransport / /prefetched-proxy/",
+        "COPY deployment/vendors/grafana/main/ ./",
+        "COPY deployment/vendors/grafana-20261107/main/ ./",
+        "COPY deployment/vendors/grafana-20261110/main/ ./",
+        "COPY deployment/vendors/grafana-20261107/build_candidate_backends.py /tools/",
+        "COPY deployment/vendors/grafana-20261107/prepare_rebuild.py deployment/vendors/grafana-20261107/capture_graphs.py deployment/vendors/grafana-20261107/plugin-modules.json /tools/",
+        "COPY --from=plugins /out/plugins/ /rebuilt/",
+        "COPY --from=assets /reviewed-plugins/ /reviewed-plugins/",
+        "COPY deployment/vendors/grafana/reviewed_backend_verifier.go deployment/vendors/grafana/reviewed_backend_verifier_test.go /source/pkg/plugins/manager/signature/",
+        "COPY deployment/vendors/grafana-20261107/verify_native_versions.py /tools/",
+        "COPY --from=plugins /out/plugins/ /usr/share/grafana/data/plugins-bundled/",
+        "COPY --from=build /out/grafana /usr/share/grafana/bin/grafana",
+        "COPY --from=build /out/build-info.txt /usr/share/deepresearch/grafana-candidate/build-info/main.txt",
+        "COPY --from=build /out/native-version-verification.json /usr/share/deepresearch/grafana-candidate/native-version-verification.json",
+        "COPY --from=build /generated/rebuild-provenance.json /usr/share/deepresearch/grafana-candidate/provenance/rebuild-provenance.json",
+        "COPY --from=build /out/graphs/*.json.gz /out/graphs/*.receipt.json /usr/share/deepresearch/grafana-candidate/graphs/main/",
+        "COPY --from=build /out/graphs/locks/ /usr/share/deepresearch/grafana-candidate/actual-locks/main/",
+        "COPY --from=build /out/checksum-preparation/ /usr/share/deepresearch/grafana-candidate/checksum-preparation/main/",
+        "COPY --from=plugins /out/graphs/*.json.gz /out/graphs/*.receipt.json /usr/share/deepresearch/grafana-candidate/graphs/plugins/",
+        "COPY --from=plugins /out/graphs/locks/ /usr/share/deepresearch/grafana-candidate/actual-locks/plugins/",
+        "COPY --from=plugins /out/build-info/ /usr/share/deepresearch/grafana-candidate/build-info/plugins/",
+        "COPY --from=plugins /out/checksum-preparation/ /usr/share/deepresearch/grafana-candidate/checksum-preparation/plugins/",
+        "COPY --from=plugins /out/source-provenance/ /usr/share/deepresearch/grafana-candidate/provenance/plugins/",
+        "COPY --chmod=0644 deployment/security/go-stdlib-20261112-evidence/source.lock.json /usr/share/deepresearch/grafana-candidate/source.lock.json",
+        "COPY --chmod=0644 deployment/security/go-stdlib-20261112-evidence/Go-LICENSE /usr/share/deepresearch/grafana-candidate/go-stdlib/Go-LICENSE"
+      ]
+    }
+  },
+  "html_boundary": {
+    "path": "deployment/security/agent-native-evidence/supplement-20261107/sqlite-release-3_54_1.html",
+    "sha256": "69bf98f8cb8730c88b01414cdc4436fb3c65443dae405957b40efab9976f1e12",
+    "ids_observed": [
+      "search_menubutton",
+      "submenu",
+      "searchmenu",
+      "searchtype",
+      "searchbox"
+    ],
+    "mtimelink_nodes": 0,
+    "web_context": "./frontend",
+    "served_root": "/usr/share/nginx/html",
+    "conclusion": "The exact upstream HTML remains outside the Web build context and served dist, has no mtimelink target, and is not newly copied by either Go-source recipe. The only Compose changes select the two local source builds and their exact profile names."
+  },
+  "unchanged_other_three_findings": "Existing Java origin/Bearer implementation, real regression tests and proof bytes match all previous hashes. No new Java runtime execution is claimed.",
+  "validation_boundary": "Actual downloaded current main SARIF contains four original blocking identities; bootstrap contains none. Both original gates fail on the old Compose binding. The new profile is subsequently exercised against those unmodified files; no future CI success is claimed here.",
+  "raw_sarif_modified": false,
+  "severity_threshold_unchanged": 7.0,
+  "risk_acceptance": false,
+  "human_review": false,
+  "new_findings_exempted": false
+}

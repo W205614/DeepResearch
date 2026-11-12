@@ -1,7 +1,7 @@
 {
   "schema": "agent-full-scope-source-review-v3",
   "risk_acceptance": false,
-  "review_scope": "Exact one-file evidence metadata/attribution repair; existing native and dependency applicability decisions retained only for unchanged bytes and execution paths.",
+  "review_scope": "Exact one-file evidence metadata/attribution repair; existing native and dependency applicability decisions retained only for unchanged bytes and execution paths. This historical artifact review pins immutable source evidence; it does not approve the current checkout or its later citation-field change.",
   "retained_profile": {
     "path": "deployment/security/agent-full-scope-20261110.json",
     "sha256": "ab92a7f1ade51ff150c9e48092a2dca898142b4541460f5b50b305c240ab09d3"
@@ -16,7 +16,32 @@
     "after_sha256": "49d56ab18e9e6257ab37b050d9573970278da3a7667b9d1333cc71a55eaf2bdb",
     "diff_sha256": "b0de742c6801adc3b75d983ca80c464fa05aae1fb9880bfbe90df3639f9e709b",
     "behavior": "Treat only a cited local document title and its exact bound locator as provenance metadata in numeric validation; recognize explicit record attribution to that cited title. All semantic validation and counterexamples remain mandatory.",
-    "security_path_review": "The changed code uses the existing Python re/string/set paths only. It adds no imports, process execution, file/network access, serialization, codec, compression, TLS/crypto/provider/engine/configuration, native FFI or database extension paths. Existing numeric/negative/source trust checks and independent semantic validation remain active."
+    "security_path_review": "The changed code uses the existing Python re/string/set paths only. It adds no imports, process execution, file/network access, serialization, codec, compression, TLS/crypto/provider/engine/configuration, native FFI or database extension paths. Existing numeric/negative/source trust checks and independent semantic validation remain active.",
+    "runtime_path": "/app/backend/research/evidence_policy.py",
+    "source_snapshot": {
+      "path": "deployment/security/agent-ordinary-query-20261112-evidence/evidence_policy-ec6c8e6.txt",
+      "sha256": "49d56ab18e9e6257ab37b050d9573970278da3a7667b9d1333cc71a55eaf2bdb",
+      "git_path": "backend/research/evidence_policy.py",
+      "source_commits": [
+        "ec6c8e670761f235d307831c799c811761236912",
+        "bb71de0b3bd3ca0a17d8a596286c2e8334046eae"
+      ],
+      "git_blob_oid": "8171aa07f192cda55da29ae13e30accbbdd337c4",
+      "purpose": "Exact historical runtime source evidence, not the moving checkout"
+    },
+    "unapproved_policy_projection": {
+      "source_revision": "7bee1d0d97f48401d356165d13c81f53409de7b2",
+      "policy_sha256": "8e1180e8c0a884a708eeb4beb18389c9e683ed474f0ecf89f3c46613f7019339",
+      "python_source_closure": {
+        "files": 5972,
+        "sha256": "224fd209fe4627f534f42ecbf0a52e3b8371d58a86330ca983b3f77679aa3691"
+      },
+      "calculation": "Replace only the measured /app/backend/research/evidence_policy.py SHA in the actual5972-file snapshot manifest; all other entries retained.",
+      "candidate_built": false,
+      "model_tested": false,
+      "security_approved": false,
+      "purpose": "Negative control: the historical ordinary profile must reject a filesystem containing this changed policy"
+    }
   },
   "complete_backend_manifest": {
     "backend/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -105,7 +130,8 @@
   "limitations": [
     "The raw scanner findings remain present. This is exact technical applicability review, not upstream fixed-binary or raw-zero proof.",
     "Different source bytes, dependency/native closure, effective runtime configuration or scanner tuples invalidate this review.",
-    "This snapshot is not a publication artifact. The final distribution must retain this measured non-legal runtime and pass a fresh actual-artifact scan."
+    "This snapshot is not a publication artifact. The final distribution must retain this measured non-legal runtime and pass a fresh actual-artifact scan.",
+    "The historical policy49d56ab snapshot is preserved even when the live source changes. The complete backend manifest and5972-file Python closure remain historical; no later source bytes acquire this review through a metadata refresh."
   ],
   "additional_evidence_files": [
     {
@@ -157,7 +183,7 @@
       "sha256": "89b958c3bfe703cb6ef48e28d28f991ca8dbf204e4625dedae93af9b7d997fe6"
     },
     {
-      "path": "backend/research/evidence_policy.py",
+      "path": "deployment/security/agent-ordinary-query-20261112-evidence/evidence_policy-ec6c8e6.txt",
       "sha256": "49d56ab18e9e6257ab37b050d9573970278da3a7667b9d1333cc71a55eaf2bdb"
     },
     {
