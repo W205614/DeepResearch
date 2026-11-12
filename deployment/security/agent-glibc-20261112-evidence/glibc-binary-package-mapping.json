@@ -1,0 +1,1502 @@
+{
+  "schema": "agent-glibc-binary-package-component-review-v1",
+  "cves": [
+    "CVE-2026-100290",
+    "CVE-2026-115819"
+  ],
+  "disposition_proposed": "NOT_AFFECTED_BINARY_PACKAGE_COMPONENT",
+  "risk_acceptance": false,
+  "library_fixed_claim": false,
+  "component_scope": "Only the exact libc-gconv-modules-extra2.43-7 tuples; this is not an exclusion for libc6.",
+  "official_binary_packages": {
+    "libc6": {
+      "file": "libc6_2.43-7_amd64.deb",
+      "sha256": "5c71715c51103beb4fbba9fe9f8dff604af6610dfa71c70bff342f54a7860803",
+      "elf_files": 28
+    },
+    "libc-gconv-modules-extra": {
+      "file": "libc-gconv-modules-extra_2.43-7_amd64.deb",
+      "sha256": "8abae40b5e2bfca58fbc838329b48f525c98463e930b8d3ed075d0c9e960a57a",
+      "elf_files": 245
+    }
+  },
+  "libc_implementation": {
+    "binary_package": "libc6",
+    "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+    "sha256": "47178713f5bda59f2ea8240a56971de4dc0b3a6cb71e996e2782d9a59746bfef"
+  },
+  "gconv_elf_payload": [
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ARMSCII-8.so",
+      "sha256": "92caa4ce3931453dd427deb77ab7bfb49cf5371103f81b61cb539940ab84575e",
+      "original_readelf_log_sha256": "c6762c3fe765200a0bd8088f525fd5a505db55fbbb7232954645e12b37e172af",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ASMO_449.so",
+      "sha256": "bc30e7b77b0887e92c3b671a8859c53b766ee32fb0c3ada918b44b96890c40fa",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/BIG5.so",
+      "sha256": "2f87f15048fde0522a0017ab4efd763173c55f7c940728fab8416ee9dd72fc14",
+      "original_readelf_log_sha256": "834d48ffd1af3360dd93eb908cafa2c4a1e3e515a92da190ea5d390d2ec6fa89",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/BIG5HKSCS.so",
+      "sha256": "fee8d914320d881ae1efd9d66fa76da6231686a812a39e7dd9a53477b7de6598",
+      "original_readelf_log_sha256": "ff536d1a771add0b7ff3e42ea06049393b6dd02baf6d04da88b69c250d6af8c8",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/BRF.so",
+      "sha256": "05db067dab6678d247947b59440bdf529a5731ee04241dbb7161bcbfd02c8345",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP10007.so",
+      "sha256": "61c65d3cf460d8ea3eadf8f86fc689f058abbd85ea1faf9e2afa5b87d6ba94f9",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP1125.so",
+      "sha256": "2489e6b1b2b240ccfdbcde5d65b1ce38bce4c6428cbbb2c6b9dc2a1c0744608e",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP1250.so",
+      "sha256": "1b89c0cadb5ce61982c49eb4a66e5c2913cc4c95261a3c5b4d2ddea450487005",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP1251.so",
+      "sha256": "50167eaf5967a1b37dd9bc33ea4b22f2642acfce6351e05c065cfa944be325a9",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP1253.so",
+      "sha256": "51a4374828bb44061aa465d1436a889d5e40060b51a4f35b7ccb87f8b4504945",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP1254.so",
+      "sha256": "7b37b15ba3e31a71c7812b751c3aa4a99fa166f47cc98c93824aebcd9c58f3dc",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP1255.so",
+      "sha256": "bb5a6918d316fb864f009144253b81f113393eb7a16732d34c9d61bbb649ce7b",
+      "original_readelf_log_sha256": "e41b7662aa7cb7724308389b550c3280bd2e561ee3fc61c894fe666c409cb8ea",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP1256.so",
+      "sha256": "e180b640752067fe99667cfacb633c7f7444a80aad3e69566b57736829ff44bb",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP1257.so",
+      "sha256": "8131fc1bc309ec97117d12f4196eef4099d323eb50b9b6f877de93b2d4a1c69b",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP1258.so",
+      "sha256": "18b071a829cf454c45b6e562354262e186f25e94472dda876db451d096322039",
+      "original_readelf_log_sha256": "3feb7f6a2d0e626cb368e1dca3564c4f880cccd2d7f39b1f507cd4cd88c0fdce",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP737.so",
+      "sha256": "758ba51c1659fb5c748927de2560969b0870228b87650f7a076f0a281b76e716",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP770.so",
+      "sha256": "da7798dce4493b3a4fc0e5458ed3dbb3a1a1b16efda6cd931e08093d1856af0f",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP771.so",
+      "sha256": "4a383e408f7a3f8fbdbc1f2fd7ad61dd1829cb402a338406453be17dfdcea47f",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP772.so",
+      "sha256": "3e90e9c4e9826688b85fb854c3ace870b04f25a5c546a1319b7196eef6948ce8",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP773.so",
+      "sha256": "669dac931dc3db207450636a50e334ebe070409a66bbbfa0dac9dc205b9357a8",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP774.so",
+      "sha256": "064028149d90e4d8617eff6e2faf04e93b14a8ee1a5c66e20053fb3a4467917c",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP775.so",
+      "sha256": "a836cdec294759613cf368faff086cb85cdc8db0e26ea28cd2262e833a0cb9e4",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CP932.so",
+      "sha256": "f9d0bd8bef84f03279f11ff5db4ec192540da6658070074a1bd1849ce6b9ad20",
+      "original_readelf_log_sha256": "2a75e51cb69ed98246a9fe1315d68efbb4fd66ad6603aeddd37ca17011da3b05",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CSN_369103.so",
+      "sha256": "8bad08f5578c0a1931f3029b185d6c53bd5f5b0567efb8356991a6dd09bad0c3",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/CWI.so",
+      "sha256": "35e7813a21d9eef17bf1b9e2aa4926acec4119ba16ba44308a02f236c7f58af8",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/DEC-MCS.so",
+      "sha256": "2942a516a5d6d39a03a1056df3d33e749fa0f34019d923f6220294a606be6886",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-AT-DE-A.so",
+      "sha256": "2be6e74f4cba461ea61b4f7c2fec2d75d34a6f54b76e4aebc7e1d507590587ec",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-AT-DE.so",
+      "sha256": "97f10e2ffa2a06baa7cfbb0f74dd79ed82fb7f8c5919cde324841856b49bca15",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-CA-FR.so",
+      "sha256": "a704603190f7107fb829763dff41755156825291782cc46c1e67d70bb60a1d9e",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-DK-NO-A.so",
+      "sha256": "bf8be10290ff8d841874dc5536c1fe5273c07db783210f49384bf1ede81c26e1",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-DK-NO.so",
+      "sha256": "222bb626e9e8bdca46ca7a5d65293b55b11b74a06401c93cb28232fa1c944464",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-ES-A.so",
+      "sha256": "80d8b740dd8bca4125abe0ac8d1d2844abd20ad6f570989fd4fe66793504b655",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-ES-S.so",
+      "sha256": "a1e76df49b07586381ad164819e308496704ebf5bcd9655ba364838070c53baf",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-ES.so",
+      "sha256": "3f72c6a62895e0f91d9549ce69f1fd22daeb07914ac763cd385d3ce3a4291ebc",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-FI-SE-A.so",
+      "sha256": "572a6cae0f1802fff44d4a66433b0e22df749ba297635b403811d201524816d7",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-FI-SE.so",
+      "sha256": "3f059cab7c900bbff6a776531ec69e6ac975d3adaf945a4832d1c277b6d0b1ec",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-FR.so",
+      "sha256": "a4a39d9b6f8cf0b9c895870937002620694212d4ac959bd2c1d9ee04c81278a7",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-IS-FRISS.so",
+      "sha256": "0b7625b7ce5b6ac9e67ec7768ffe395d4f1976c4f42557ba22f51f4d887897cf",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-IT.so",
+      "sha256": "71dd52859a3ad5e85d2479386007342f92cb53f1aa8cd5d883e24a0a7f7291a0",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-PT.so",
+      "sha256": "0377432839979e85b63dcd6e059459b556bb9f1c81314b5d5c2fe479d3266a7c",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-UK.so",
+      "sha256": "dfe53961cb437d9a0ca5700b5414353b3ddc1b68635ae7020e844008f6b9ab69",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EBCDIC-US.so",
+      "sha256": "803e2d57f4c72585e5128af06e4809ba8ff10185ea6b0b3dbe73d67f900f23da",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ECMA-CYRILLIC.so",
+      "sha256": "7153c702fe34a1ae5c315b67b7630e51d0c9be425e59969d8be79e4fa60bf251",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EUC-CN.so",
+      "sha256": "ed439ea411947b922fe553a684d31e424dac781afe9a5ea427f9ed0cd5bcbd83",
+      "original_readelf_log_sha256": "32db52fa7ccdb2c6bdaca8b7a5a16b935cdc553be1dc5e87fb798a4fa703f293",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EUC-JISX0213.so",
+      "sha256": "577683b6cb376e96fcd126658a76c2bb13f2da2aad3e85c0752e94e148d85191",
+      "original_readelf_log_sha256": "e0da2dc46c5b409d9ff86a766cae7c998d0f439597966c7bbadd8e48cc033945",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EUC-JP-MS.so",
+      "sha256": "29f1b9c223f1a47b61d8e4d85a4238c60ac73c7e293f37142b4c45f6961aaff4",
+      "original_readelf_log_sha256": "887220b318f3ca7370a9e4506e5ba7b2cfdae02c2842a8ade043f394f1e0282c",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EUC-JP.so",
+      "sha256": "fb1db5bcdf49b2ecb6e44c5092e0e8bec75cd07d84cbd64e0fb21ce4561a975a",
+      "original_readelf_log_sha256": "a0096011234c20e6517dfd3ac5b81989b643554c1d3554fc1e11f96b994b438a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EUC-KR.so",
+      "sha256": "29adb3c2e738722211482bce0280e22478cd74a3b05f877dea9ac9b9fa47470c",
+      "original_readelf_log_sha256": "eadeab6952f68c8d08a4e9c27af57c89b424c499e7db7452e26a8ed878f253b2",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/EUC-TW.so",
+      "sha256": "1896c70d3d979b3a55c580ce318a90e75dbcfb95c64344b2743b470642f1cd2b",
+      "original_readelf_log_sha256": "d2e38b320451eaa8f4acc1834fba3782280a80491eb2c7cfadf057640796a333",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/GB18030.so",
+      "sha256": "f28604c13642a472c657f8b26f104f0ea5cd18ef381533c9fb1ec9545ce341c4",
+      "original_readelf_log_sha256": "1ea4977ef2de146594b9507939fb736267960fcbec097095688de0f0ea6c32ed",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/GBBIG5.so",
+      "sha256": "6cf5b1c19b292a0ed3cccc8fa6c7c016fd1debd02b3fd3747bbeb8e7d290462f",
+      "original_readelf_log_sha256": "d6858f7088f4b1043e4be2ff54ccd08c55b00e3140a3518947db79f8d63664ff",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/GBGBK.so",
+      "sha256": "f11dc62060c1260a3261df71ee3ec9764033e44887150c8756c07387148bfd6a",
+      "original_readelf_log_sha256": "dca152aba3b972976b8a9b2e9db575674b2f1dbb1dd15ff645edb1a108ea7281",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/GBK.so",
+      "sha256": "f083854229791325d6f264296d317c28179ed7bf1962dc93a966edc796afc84e",
+      "original_readelf_log_sha256": "2acc66820220e91aceea098a177d3ec6d963cff8aaea3bf5deb6a230f6422dd3",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/GEORGIAN-ACADEMY.so",
+      "sha256": "0a4856205db8ce0131b102619ad1f6d3f8f0018f94f67e516508abbb8744e399",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/GEORGIAN-PS.so",
+      "sha256": "f484b4b72f3265f62c883545669483aa8bf33049f8a9ac88fc2ab547fc3515be",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/GOST_19768-74.so",
+      "sha256": "722dfbb07770cc671470430e664e4fde5ad582638a8987d829647c3da4cb7f54",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/GREEK-CCITT.so",
+      "sha256": "3fff9525cc1e529f6a2fa744235ea2d51ec3529a280e1424ab84bfe7bcb4a3bc",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/GREEK7-OLD.so",
+      "sha256": "f455f9f6b4878d682952bba34f72067151e339b0e5145eb22bf5e73b3d4f4c87",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/GREEK7.so",
+      "sha256": "8bfab58f515b3888ef0615cf80eb4505e6483b521c9af05345e9fe12a0f1ec32",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/HP-GREEK8.so",
+      "sha256": "9649d4fbdf3a354367fd170a0dcce370522586aade4d905b3379cc973d3745ad",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/HP-ROMAN8.so",
+      "sha256": "09f5dc2d5198f4b487f6e691e9c630ae4bd03505981b4f93bdb05b32d47bf62d",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/HP-ROMAN9.so",
+      "sha256": "7a43b791249cadbe3b949eebcc5d51488348dcff11c0dbcd822ef6834a3b1c68",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/HP-THAI8.so",
+      "sha256": "dfe4089d478563142113b152a43dc888e1cc4a215dbeed20446935b68f514795",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/HP-TURKISH8.so",
+      "sha256": "2c9b3c23f722cdf38c3ca898315d12b2fa254460779ee8c3064a790241e10913",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM037.so",
+      "sha256": "b405bf4209f29d993c6dabc57cf7659ed5ef242b6772d2f4aa6589cfd1854f26",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM038.so",
+      "sha256": "325fdb8c23a60e02e3f0c8b6117c2197f365c09ef062ce61d400d6a72ef69520",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1004.so",
+      "sha256": "b3df9a528e1dce10ebdcce92605e1619de00851af6f537960b693ff9c700a069",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1008.so",
+      "sha256": "59326c4d03627950447711688f6e3d2f4279fd8d160050c46c5d5bcd160a6116",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1008_420.so",
+      "sha256": "b73348aaaaa4bf50bb0768df491d72c2964643b49ee414c5202bdcb5a2586aaf",
+      "original_readelf_log_sha256": "98dbaff583003bb8d7ad1bda481365ab4f44dd77523dcb93cb91c8b923e635bd",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1025.so",
+      "sha256": "9b84c7eddfb673a9563a7364d488a381da8e4c731465361a6f2372a50af90dd6",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1026.so",
+      "sha256": "6d3d64a330b655131df2192bfd81aadcbb46e37675c3132e8524c816ffa5e40e",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1046.so",
+      "sha256": "3278dd221fda26e9269a35191932d7335ac247432a1f9b3d50387b0aca604de8",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1047.so",
+      "sha256": "e79f0e9fe66078fed3877aaced0182aba8be7ebe5067f079d1f236bc16ffc37b",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1097.so",
+      "sha256": "7901098eabf91a3c5280c6eabd3dbad16ac6694828aa96b0410f660d7d3c5c1e",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1112.so",
+      "sha256": "de23afe9eb89f1ea30c645b017a8fc0ecc36f2c8efc78b0475ea0e762de8ef2f",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1122.so",
+      "sha256": "f0fd4aabccd92aa639ca51d225b0904c264da33e3c359349b0e3f14f9e91e751",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1123.so",
+      "sha256": "281571029d7658768fbbc2748f298fe9207c90c929fc59071081e21e058af860",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1124.so",
+      "sha256": "efec948eeacaf2afd1f688e6e03c90092eb9638bd60144a5f11d1a4fba69425e",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1129.so",
+      "sha256": "a26544c58d39142249071682a86a61b8197ee791c81cd82f01d0df416959b2be",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1130.so",
+      "sha256": "2b80983c990fe69d68c5d40df9f3afeda2797753b56526228907a5cefab08b73",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1132.so",
+      "sha256": "6e29eac3fe45dabe143a06019e9e4fb6d1bb6ac1323812a4033dc570436b65b7",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1133.so",
+      "sha256": "a3fbd0729e3906c2845f687c0d7a3f5c1d0291fc6b25d35522b542a7f697329b",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1137.so",
+      "sha256": "b4f313329ea550b51af1a96682b0398a636536045e7b9714c64b22d90bbb9291",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1140.so",
+      "sha256": "e40d86fe111ace314b730c8b88e8ccc4cb0dedb51b181d9b33eba20f63fab0e7",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1141.so",
+      "sha256": "64f35b1344d035afd77f6056e08802b2114004c3abda5c72f7f883559cc8c5c9",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1142.so",
+      "sha256": "1313e511026780e09bd0b7ed103066e1a15a1ddb65046e9159157510f0336ca4",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1143.so",
+      "sha256": "23c349fe997a1e7c5bba05ad040211e1a0f1cdd1013e1996b5e808841e935510",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1144.so",
+      "sha256": "b445ae2ca5e24ae6a8d08048df1a309a8a8c53c7b08454dd60cb1aaa1e3b669d",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1145.so",
+      "sha256": "3922bcfc5cbad7c4399d14709442ddc7cc3216975ae85571a1e4e781c1a03322",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1146.so",
+      "sha256": "078768c8d79c038bd9c716ae0e2a3dc2efb6313fceb00791b680a53669f6d5fc",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1147.so",
+      "sha256": "cd8dc041479be6bd962a5149f2a821d2cf07030fda87f2859bd675646ea3b8c5",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1148.so",
+      "sha256": "43a238343aabed040c934d8372867645eb684a7fc9bc27c4b302296ab18540b7",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1149.so",
+      "sha256": "348b9e09294d9e5da12e15d6371405130e32418ad4c3e9396d29d80deacaba91",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1153.so",
+      "sha256": "7c804f5e55624efdb9893ce981a42d5cb8e10678de3aa86d7bc343f73637f21b",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1154.so",
+      "sha256": "cb684098a4ad515ad23709f5603063ed85759107744bb14d0ca0ba21cfde4f53",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1155.so",
+      "sha256": "85306e38159ac0884e2a3298be5726720527ee8d956102918ca0ea2aba1aa38c",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1156.so",
+      "sha256": "a2e5861238b76f919c34c1e29686688008b4890e9fd5e4617ea0bc2ae1f60733",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1157.so",
+      "sha256": "009d5fab8b906590387870044cc4c250b74c8373c0413d6030477a1c70d47a89",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1158.so",
+      "sha256": "ac7d6c4f30965ca2ea11fed9cd82fc1835ff15cc0c5f842f4f9d528d631a1be7",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1160.so",
+      "sha256": "d446bcdca81e4f5fc6113c1d32d641fbdcecdfa17504c616a57cfd13d41c021f",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1161.so",
+      "sha256": "50dbe243878c001d117763b6999c8ba269785615b45d1db7681f648eb3f24019",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1162.so",
+      "sha256": "26984c7d9218720ba16fa6ad60a50ce80a29f2fb30a1b9faa83c87a24f6273c0",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1163.so",
+      "sha256": "5e867ab3cecc7f8b05f07d0842ee3a83b8b3e128a7da67cea502c3cb03fbcd50",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1164.so",
+      "sha256": "53412bf0e64267e17f157877cfd8a0b31f5b0931aaf8f75128cee5c7c3b89b0e",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1166.so",
+      "sha256": "8756ba68d6bc059e0d1af6fc48eaf675c60667039d61a34843f2dbe27f084297",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1167.so",
+      "sha256": "ac6f47754748fb9c27efb367e495283b4cb891d7695583ebbe8143e74844435c",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM12712.so",
+      "sha256": "a22ac2f03364549de99d0d43c0ef8d70b08be2a9db2a079790a126fec7f3bb60",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1364.so",
+      "sha256": "d5b3c2edb25ce4cce9b1bbaf2e141cd56140d2db1c73f07867ec5db9caf6d9a2",
+      "original_readelf_log_sha256": "df496b43312c08b98205cba63964f191ea045faaeeb239093bdea052d792e7f1",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1371.so",
+      "sha256": "5962cd4c61023959bf04e518b46e7cbcce9a2cc296f81a4a9911f33b5fa3728b",
+      "original_readelf_log_sha256": "b320cf1c2ebaa93afcf4ef539740bfd7816ddd792e35867b803fdc35ad6da327",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1388.so",
+      "sha256": "598ec195240a1ea787bfeff7646ede651cbe781defa079ad6105ff95998d37e2",
+      "original_readelf_log_sha256": "bc96250e41ad89890ff1f03d811e6dcfbb292fcd6b9136eeba919c3eee375ecb",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1390.so",
+      "sha256": "76cf40fac042dfd0e62c90b21bb257c29c61924ddb2bd55b94728daadaa7175a",
+      "original_readelf_log_sha256": "443c5d451b49e7e07e1e85e700694184411ff12de873bf12cad45b2d92365345",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM1399.so",
+      "sha256": "bda95c908e1689418f247976a56ac9ea28d325b3224d01b73093d18f798c03cb",
+      "original_readelf_log_sha256": "443c5d451b49e7e07e1e85e700694184411ff12de873bf12cad45b2d92365345",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM16804.so",
+      "sha256": "fabcbf74779c6e72bc872c382203f98984a8f4332d7351de1db399f91822d17c",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM256.so",
+      "sha256": "de0fdc8cb5c38a493e3896d0120f795e8f093878c9b0045179354b027b4921a7",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM273.so",
+      "sha256": "08ec7e275387e92cc23d828bdaef36bbdea099d26b0cd0832985454f9ce25e24",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM274.so",
+      "sha256": "f0332aa693d046ac9391c1330e8be5cad004a12b6714dfa2eac8b9b9e433d6be",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM275.so",
+      "sha256": "1d66cd8351240fa1657dca6f2ae16aaedacf3b6796688895668bba1d13fa4f1c",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM277.so",
+      "sha256": "304e3fff40b07e2352dc35749deebff6a5368a44a6381e35a39cd948f45ae8e3",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM278.so",
+      "sha256": "a05917b1364d806e40d240773cabad5aca071521088c2013af9c8701afe7b411",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM280.so",
+      "sha256": "2292a409a872659b7a294f6d24828c4a83fbc3b40ad883cb77c6a981d9492802",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM281.so",
+      "sha256": "528212fa3d6f4b4d8f1d8fc17e60936e8a3fb956bb26ec43dbec6394f4a40ead",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM284.so",
+      "sha256": "d9786434ed4083ff8ea8ecb5e02b58965fd19da473ca966aaa34f9db5681a0be",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM285.so",
+      "sha256": "a2e6879ecf6966329d81467b50a77f45183a4b052bf17763258687690fcf2e34",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM290.so",
+      "sha256": "99cc6aab5c6b5f1e169535a093f638b9fd360ac5fdf389ff77e0dc80a4d72384",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM297.so",
+      "sha256": "0b1c8303569113c53aaf1f5a2c040a17df7bb9488f7adaa27c5b4ecb69e9ee9c",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM420.so",
+      "sha256": "93922eea0f2dbee1233a4cff63c3d23b1421b53eb8a4c5d1319157c7dde416a2",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM423.so",
+      "sha256": "c870570cdfaede1c2e44e7cb9c1389e04b71cebfe868d84f1724196b1c1ad6fd",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM424.so",
+      "sha256": "519b51f6364804ca453f31ece70bad1c2410d4d6e50cb4d89ab8e6c9d9e08fa9",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM437.so",
+      "sha256": "3343bbcb9462ef65e5d1e3a4da2e974ac739ec0c18586ad6ae682352156ac5ab",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM4517.so",
+      "sha256": "de2eca5a630a567f1bc3dbf0bb2b1ce03d9f6bebc44ae92c6a86f3738b21b728",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM4899.so",
+      "sha256": "3411903fce57797cb9d944f2f9e63d6da77f5bdbec899a5f1f71c1ae2262ed78",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM4909.so",
+      "sha256": "5cb0f4bef6ec5ec4ce23358e6004731061b43bda28924b986365079bac34289d",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM4971.so",
+      "sha256": "7a9aa9cefd3e39f1203b93a37a4144ce443a4b8a077a39cbb70b96fd9c67729a",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM500.so",
+      "sha256": "d89f5b685c66b8f306638afbd2a760a387cd7a72a074f2d95808c66e6a3a6a0b",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM5347.so",
+      "sha256": "ce2d483a991c0faaa578cd7f84c310e53c6563af75d04e821aeb52bafd6e8c77",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM803.so",
+      "sha256": "ecfc7e895aa27123621b0f6971993e13598ed74c5d4f99020458549132c9f786",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM850.so",
+      "sha256": "847e4a7c504d00956b81aa738e9026e467d6ba7494cade4ead482b0022770cb9",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM851.so",
+      "sha256": "a6837e2be4f78b0f98f55e2f1a53f6adbbd901de1c12f38bbeb94517bccc0b18",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM852.so",
+      "sha256": "8ad03f7db0bf348e05fd2524293353905759b776d05e430cac8682e52fbba39f",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM855.so",
+      "sha256": "eb881b9019b52c2c96f042c8630fd147b657bf148e6b0c59efbfe9fcad2f607e",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM856.so",
+      "sha256": "7cb7e04eac6a1f75fe6cae554bd1c217df4bfff50ee98f90e5b6eb8780f661f4",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM857.so",
+      "sha256": "2da94cb758f7eb7f019cba1cbd855fb214c12ca9042b057da698358a8f57216b",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM858.so",
+      "sha256": "ffb069611f750eaeccbbb431707a67824542200993c3029b67bc202662f72d4f",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM860.so",
+      "sha256": "75e84ac7fd761524620b6efc0d946bb155052f921037144dc91c3e6a6796b48a",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM861.so",
+      "sha256": "acac0d2e3c1bf995c43bdd1658bff6c9b30495d206212119328baa2927e7eb0a",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM862.so",
+      "sha256": "dece3765264306abf1a3542a61d60a6df0f18b4363c59632029247bfb36636f3",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM863.so",
+      "sha256": "7e9c9d2d2f9d89cb334c79d7771075989bbd263bd418b2fb3d308a9cb43c3e1d",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM864.so",
+      "sha256": "2bbeac689a4f1d166a387870ec6415141d0992c0dd647b539d3feb7565056e16",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM865.so",
+      "sha256": "1c2f349f9b1d23d755f55c701884205c4b92026d61a2a093ddd2a75d77f92128",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM866.so",
+      "sha256": "f3243ac65b585348f0aa258df21f31e926309fe28f13a322ae71dee0aad705e9",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM866NAV.so",
+      "sha256": "a5fdb3b5a37162755c5ef3a2078268eafc4a983aca86fe843a322bfb92295d70",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM868.so",
+      "sha256": "67e708068c3a541661f3889bd8b4e4668902e1c5d6bd6ad6d77627ba99ed3bd3",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM869.so",
+      "sha256": "ce5ab810dcd042534e2ebafd82b89bd95864dc41998055c4b6db354f4316543b",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM870.so",
+      "sha256": "f407c3062bbfc349b2842510c7acfcc6246f75bbb2483bd67afb757560a50933",
+      "original_readelf_log_sha256": "401c7eb70681fe44fa8a6c002d6fb89f19e129f2d3d41c889f341aad8150f5ef",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM871.so",
+      "sha256": "8ec80069db16b77ecf08085a39e07a40b3d1524f1a8dce0007d25ef95dea86a8",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM874.so",
+      "sha256": "dc246d962be4304d234627b70115c506c5696a6f6458dde1db6d936b84d391eb",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM875.so",
+      "sha256": "03085c054daf1fc90ef22914efbb3a424ef9f7542f00a79816498428a7bd4d86",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM880.so",
+      "sha256": "2e959269a013a2e4f99143a4c3021445b9521bd76b72fa959a14bd86ce2ab178",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM891.so",
+      "sha256": "5d5049e3ee1abd80432894983d5214cc96967b0d03154253b981b8fb5c0f185e",
+      "original_readelf_log_sha256": "dc18e504359d8556ae9494d52825e94ef90caed45507cdcf13ee44020f6ce4a3",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM901.so",
+      "sha256": "a6c464bf3fd7d40e2506234fdd76e0175c3414d72008acc82bc2c0e5ef4478ca",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM902.so",
+      "sha256": "590613769fd4d602a09ed755e7214d567f7167577f1e986296f67aee5cd7bd67",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM903.so",
+      "sha256": "c824f2eba5376e670cf9741d1ec606086ce2c3b20313e253ebaae74980dfccb7",
+      "original_readelf_log_sha256": "dc18e504359d8556ae9494d52825e94ef90caed45507cdcf13ee44020f6ce4a3",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM9030.so",
+      "sha256": "7211145835fd5c17f4da6181b5c3aa81f7424b213bbdf785f4ea2f03dda03676",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM904.so",
+      "sha256": "285031a097bb7ec9081cedcbfce5bb4c492df3c9a23541cf735f86829774ee73",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM905.so",
+      "sha256": "c44f6552a5cc5d0b7caa641d848b36d62ab145f81e2b6a43610125430af43cb0",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM9066.so",
+      "sha256": "b0bddf6cb6cb5bc36f41b0c1751e4d299acf5e52b3f4cb9b1cd5435b7ae0d21e",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM918.so",
+      "sha256": "d36525606915a9dc7aa79ecfb817528173f86bb1ae2f9f7f340c39412dd7d0f3",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM921.so",
+      "sha256": "b61b6581bcb31240ca4adf530c7979d5b3268d8d59df7cf4271d0d41ba2a1e4b",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM922.so",
+      "sha256": "1c12c8b56eab4dd9e9863820cb24d1edf5ddae85cfab6dc0fe7ab4a328b4c723",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM930.so",
+      "sha256": "cfd65585f4a327f2f59b1c63fb23927f0fa153520a7356a8f16d88027373ab97",
+      "original_readelf_log_sha256": "6c62dbd9400f218a95dedb2feefe1ea562b109dc01f45539cd2187e64c16cee5",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM932.so",
+      "sha256": "3846caaae49a8188c5f99ed1f73b39fdd86c84aff4e622f86e3adf8b6f593abd",
+      "original_readelf_log_sha256": "1685374816d43ddfc64a8022be1148cbedf556ff190ff3fad5a981a114809bae",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM933.so",
+      "sha256": "7244f38f6846090b3ab82406e841263e7786dd6d4397657b4e7b53d4d4861e8c",
+      "original_readelf_log_sha256": "a7acf121de0b741f269387e425ea7745ccaf38ecb3c17ac39dfa99b0c468b447",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM935.so",
+      "sha256": "0ce7b2232c892a74ab6893ddda24316c0cf6e0475fac32df2a78b8d87013fdb4",
+      "original_readelf_log_sha256": "06dde948a23fdf5a6cc7d20fa57d0d1a8ebab8549ec6d4680a9df4c988da13b9",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM937.so",
+      "sha256": "1a38c1e927a3aa229bfba0e0316487ab64a3dcbe5cb515b2d6f4a3f24d49808b",
+      "original_readelf_log_sha256": "3352cefaece6760081270a11305f703732de4c7c50fa3cb0c4f289bc4ebf08bf",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM939.so",
+      "sha256": "5babc20f35380da671b25ad051bc624e3f5dd5ebbed0669fcce2079cea91b834",
+      "original_readelf_log_sha256": "b0be32d4c40e81f6b6abb0b37fbbad528503f57eeecde119ce6ce826873b02ab",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM943.so",
+      "sha256": "63540eed27ca42d7865e0f29faa466780ced2877d1376f8dbe9e35240b17f8a6",
+      "original_readelf_log_sha256": "e22e25266bafb350e9af824b53ff1f1a55f89792dfb58139034581811bf5d882",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IBM9448.so",
+      "sha256": "afc4a783371061ca0450135c0d500175a1156a17b32a36bf79ca5f2b20a641a8",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/IEC_P27-1.so",
+      "sha256": "9b775932075ca71e553e55ad192f0cebc3d9a42574b7961bad4df6987f1d6d71",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/INIS-8.so",
+      "sha256": "132c6b93df6935c4544a06d75ea69441afc7394361cc0f76ea035ba3ead2c71f",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/INIS-CYRILLIC.so",
+      "sha256": "17ee24072a96aa3240a161e695738ebbf0a8b1953231ee387d19a00424808f81",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/INIS.so",
+      "sha256": "f88ec215f1b6d59a79b211ffa2c653aaa8c9fccfa9028a4eea145655b6c66bc5",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISIRI-3342.so",
+      "sha256": "699df95bf757114ccea307cffd78e45911d9060e8c1cc067be2b7255766c8f0a",
+      "original_readelf_log_sha256": "109e2e7651f9526af68f114ae800d618de37a7a12ae56face2ce693ed35202b6",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO-2022-CN-EXT.so",
+      "sha256": "c834b8d98062a4c6c58b707f5e07e9b4e8363afc8ec5fc46cb9be950c2b7db02",
+      "original_readelf_log_sha256": "1ad846109486b8e0321ca9183d210e8a6147d3b48fcb6113dcc093419bf689ae",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO-2022-CN.so",
+      "sha256": "db09cb1b761255cfabb3b426ca64e25e9a44a012f19c9279f06488d83a66a8fd",
+      "original_readelf_log_sha256": "16433874dca893122fad16cbfa7d377ab002c2955ab6ba0e7e7fb7b456e43852",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO-2022-JP-3.so",
+      "sha256": "f54ca7f7275d5094cc24282c10f8a377ffa10e7e884ffea7ba9508e22a3e91ba",
+      "original_readelf_log_sha256": "6eb322b7f73d04ad2d1bfd703bc2e8947e52dde1db9f80fa15829c6aff9ca8fb",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO-2022-JP.so",
+      "sha256": "abcdad66ebc9e3b56a53b275f041fc85868472b19828e84db1588d4aba74ac9f",
+      "original_readelf_log_sha256": "ed90ca2d3dcd66b7d70e4e7491970a2b7802f3a949b49ee824201af12d983731",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO-2022-KR.so",
+      "sha256": "23b0180ae50fdc356531f628ba4a33d04a600a4a3bc06099ad7e881211731829",
+      "original_readelf_log_sha256": "8f5c9ccbe2dfdff4f9ea74cbced50c415ab04933e8c5a940e77431568726675d",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO-IR-197.so",
+      "sha256": "c2ae0b9415a66d3437b423d9f8716a9e79f53f7d74f4f94d93ae9c5dcfc577c0",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO-IR-209.so",
+      "sha256": "d8cdfcbff8d49875a259e2f06ef76943f6d865817c5b90854d3cb06d7783cabd",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO646.so",
+      "sha256": "ef3fcac7f49eff9a1d47992207e4b09bbab03337e1985aea40d527e4ee980230",
+      "original_readelf_log_sha256": "84ea2792c8f1da576a1dfe8d117df1c2a84346e7f72792e6bc5fdb12ba961fe5",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-10.so",
+      "sha256": "74fca00b42c44d9cfdd09b2972d6f41442db51c33d2c72b666c795221e673960",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-11.so",
+      "sha256": "4cad555b68d4e17b04294f0559ba675765a8f4f5a1e55b50f9a9af41bbd2011d",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-13.so",
+      "sha256": "6916426ac0570d76e7fa188ab6eecc0b23851ec67e00c0effc9603f5b0797f72",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-14.so",
+      "sha256": "64c501533f2cb156aa49be65989ed163d03a2f6eae35e991cd4bdbd680fdc033",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-16.so",
+      "sha256": "1fe630bbabd40109ab614f0f0ec0fda8f06961f8e428a0ea8f131aa3a20aaf48",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-2.so",
+      "sha256": "c676f666497d519967cb32ef9e7488c42221fac9283e197bb91f895abd036b06",
+      "original_readelf_log_sha256": "401c7eb70681fe44fa8a6c002d6fb89f19e129f2d3d41c889f341aad8150f5ef",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-3.so",
+      "sha256": "c22190f8a62324b42238a4c7f80a62538648e5f1e4fd991a697225967aa6c737",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-4.so",
+      "sha256": "4c1bad4e39e11435c57d1391df55ac29790dfd32e7fffe33ce0cfe4b313b9ec1",
+      "original_readelf_log_sha256": "401c7eb70681fe44fa8a6c002d6fb89f19e129f2d3d41c889f341aad8150f5ef",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-5.so",
+      "sha256": "6f1ba734c72f9e0dc45161719f694929662a7dd1ce9e4b5cceecd9d8131ae5cd",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-6.so",
+      "sha256": "f26eebf695f655c9046812b183efc94c840b0abc2f1ad221bde9dbaa361b6fe7",
+      "original_readelf_log_sha256": "02f713a3c9f31745c550588579d9a8f5983b8a0955ce2d8752f52458353afef7",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-7.so",
+      "sha256": "a2574be006122e043e880465c755bb65ba4e66600f8e51196ec73c7031e80a5d",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-8.so",
+      "sha256": "ba01455186903735bb4aac9bdfa06dae4743729d2c17266faf0ee51d0a559c2e",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-9.so",
+      "sha256": "cf53bd0467c29413508f93d279236ee971c56af0a03d6e53b8c77d4076163830",
+      "original_readelf_log_sha256": "401c7eb70681fe44fa8a6c002d6fb89f19e129f2d3d41c889f341aad8150f5ef",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO8859-9E.so",
+      "sha256": "ba0b7f08fd9e9ebc2e0bde215b3042f1576ed1cb0475a38774b21fbc3201df0c",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO_10367-BOX.so",
+      "sha256": "bf38ef94a321fca24ce65bcb49690e2a1e6f5d9e62af164386587e5cd3c69daa",
+      "original_readelf_log_sha256": "1ff129d183a365ac234511ca1ecdc250ba82e5ce10b870497a36176116738489",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO_11548-1.so",
+      "sha256": "097dd050dcc1eec32a37bdba7943cdd7bf165e8a2ae375d95f46f430fbb1f4bd",
+      "original_readelf_log_sha256": "60d6c29f6e60a0da49ecdcc71a1de6119eb89835a22cb9a772bcc3712ce48ed4",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO_2033.so",
+      "sha256": "22302cabb00d20efaf963182a2f4fd5b7a2452a9b59bc03c766ebc546a69302d",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO_5427-EXT.so",
+      "sha256": "ca2e5e1c2f89c599357bc50568297c619f11b9ed29f9745c4064045adda133bf",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO_5427.so",
+      "sha256": "55abc61d276b54fea74e1fae2c909e24425c3a705df5a9c92c22d1539795d597",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO_5428.so",
+      "sha256": "8d60252589ff3dee28c7b9ec6918b4eb89687f9d75f6bb6e06f0b81d37a60e87",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO_6937-2.so",
+      "sha256": "d74c0ae4531b7ebd9bdfa5d69fc7f71d769006396c8432292348d3ec781456f1",
+      "original_readelf_log_sha256": "fd4252fa9a50dc56f69fea604610e3c79e85b2675e7ba86a8fc9ededba99919a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/ISO_6937.so",
+      "sha256": "2c542e7453faf9eb4c9cd551d504d30f0f829cd5ab61b0e4f3f62fa410237bf6",
+      "original_readelf_log_sha256": "fd4252fa9a50dc56f69fea604610e3c79e85b2675e7ba86a8fc9ededba99919a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/JOHAB.so",
+      "sha256": "c9fae6d3d70f97c64af40ffb60d7fb8f73b7a40c36baf1bbacd2ec019b363f2a",
+      "original_readelf_log_sha256": "13301164b30e77373e8bcae88e2f072b52d283a50aac94c3f33ee2c56c90ff2b",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/KOI-8.so",
+      "sha256": "a5057393ff59de6bf4ca7b3afa4b3a87bfb0c83ad723d4acef52724b27ad1394",
+      "original_readelf_log_sha256": "137362241acfdf8c51b69c06fa6056219317216cc0dd3bf23ebf081a0ff25d08",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/KOI8-R.so",
+      "sha256": "4e92bc4929b821c199450f57dc329d1984ca2a10eca592fb919c58470d37385a",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/KOI8-RU.so",
+      "sha256": "41b914e37656637b855dfd0c0fd20efbfeed5d24eb4e1acf8cd35ead2fc1886a",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/KOI8-T.so",
+      "sha256": "242cc213df1951a7a14b872a9c2f070d7719ace1599bfb8771149c46bd55f23e",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/KOI8-U.so",
+      "sha256": "87875c537374009dba10251f95881e9b3776ca874b8588d88563e96e1c9f563c",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/LATIN-GREEK-1.so",
+      "sha256": "5d61388f747e0e24f63b3d062ec760c73c85b0ec9f9bace5140e7b57c948ed8d",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/LATIN-GREEK.so",
+      "sha256": "8dcc40120306e60a5193e270bd0d1c88b84733feb55e4dfdf2a827991d10f6fd",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/MAC-CENTRALEUROPE.so",
+      "sha256": "66fbfef63d8b487ec3e3c90e639d1e6c9d99d4528847c713544e905f4e4ff913",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/MAC-IS.so",
+      "sha256": "fe41b6d70b646e33cca9130f4f4c55f92d92ef53dc562eb49c0372f210fe1a26",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/MAC-SAMI.so",
+      "sha256": "18eea6a6c67a2751b5f756766887ffe64566aa129b21f5a0f4072529d181b913",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/MAC-UK.so",
+      "sha256": "adc8ce7c0c408ca70836dfe4e967383e3fc3d90b3d6901220d36ffab01ce05fe",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/MACINTOSH.so",
+      "sha256": "92ab171fab1becf26266e02218067abd60892f5e16d99e36b32e0ac2f71765ce",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/MIK.so",
+      "sha256": "5d42b175e67e63d54b7dc58db8f460986bb59d067f748966203953778f12439a",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/NATS-DANO.so",
+      "sha256": "6b87839dc7008d064026434e987fa50c5c499fa44b1e38c9ba1b9b326f809013",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/NATS-SEFI.so",
+      "sha256": "e6e58ac0844cbf6b2485b9e3c75bbe806b2c63305f4ff0a9f7b684114a66dedb",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/PT154.so",
+      "sha256": "180ef9f810a693de05993b5338d206860ffc6de943a3aa4e9ef0cea0c961d0e2",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/RK1048.so",
+      "sha256": "62098d286c6414c9eee22e8fe736289b5ad160194afdf1f599566326f7ce20cf",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/SAMI-WS2.so",
+      "sha256": "624e175df7b98f097b2980d81f6f512e138d754821ddc00ec15f2a0343620c6c",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/SHIFT_JISX0213.so",
+      "sha256": "e5a5f9305896cc576fe1c377b315edae79234bc5fb70fa04b6179fb8e7abed78",
+      "original_readelf_log_sha256": "04642073e0965b059ba40cd38bfe31352d1d0db3f3704316e49d27fbb5a58767",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/SJIS.so",
+      "sha256": "19f8b57fc7515cd1e2b909b7d65caa0ecaa9866ea14def1363c8070985909822",
+      "original_readelf_log_sha256": "9d6b47b26839a9aaeef59f62bdf0c983caf8a259cefe8ea16005a3002823755d",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/T.61.so",
+      "sha256": "9693e31391282b946c2c89decc01d5e2de7ecc58dc843811ad75c2712a88860c",
+      "original_readelf_log_sha256": "85a46c481607cbf667cc468f720167379117f256239098bfdc16c83fa1d11769",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/TCVN5712-1.so",
+      "sha256": "9d9d98d66721f4b4a8290a6fab008f22b3e7d0bd2c595e157473e7babdce60a4",
+      "original_readelf_log_sha256": "fb067328d6fb7704d06265519e331a012dd3f933dcbf2cf60c5597a27a74e15c",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/TIS-620.so",
+      "sha256": "c554d611503ea9d47411f1104eb64baf8993df11f93b58d501f8d5c0743cb1d4",
+      "original_readelf_log_sha256": "0ccde30c625148e711add7cedb4869fd741ea93c4ecc4494168733b43a08ab62",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/TSCII.so",
+      "sha256": "d200d683acde07039020afbacca8c2b6d41e2c7a872892cb49b9005cc497e642",
+      "original_readelf_log_sha256": "46b6541c8867ebae9c4fae826ee6ce23932332b8b96b81d446881e2c51f31a70",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/UHC.so",
+      "sha256": "f18450c97789f41a643b2b175a139446c616c1174ef650167133e7d6d56a27b0",
+      "original_readelf_log_sha256": "100ac269ba55ac31dcf77a0eeb746546825684a8c67cdd21f0b7175968bf25c7",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/VISCII.so",
+      "sha256": "ae054574fc3b387db099dbfb2632bbe46906bbda711f9644d0695cf9f6974aef",
+      "original_readelf_log_sha256": "613ef29275aa1c047148b1aa6f481f41e084a71f48ba7e940c9783d05b3db79a",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/libCNS.so",
+      "sha256": "ac00b770b39fb6044773061860aa65dbedd33d5f7a03365e95c34a670f72b610",
+      "original_readelf_log_sha256": "bed6492b923c2491d78ae06e394a4b2dbdf699763bcad5f908023f2948d4e4ba",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/libGB.so",
+      "sha256": "d2c65e260779ff4075f4ea00f6fda0d22db23819376755518dcbf390e18a2f5b",
+      "original_readelf_log_sha256": "450b4120041a7b1cf91d2f2656f85146a0f8cbf8d6f101087d223da428038f11",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/libISOIR165.so",
+      "sha256": "39821b7e12c3149cdd5d7c1e8536351aba1c022204dbd7cdce0df151b5e62289",
+      "original_readelf_log_sha256": "a9bb0eae813fd02710edad035634f964c74fadb8a64b9aa06ae54ee161c9fba8",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/libJIS.so",
+      "sha256": "5ca52522542a42343ab139db4a87f7a7b42ceab5a50a67ed88fefcd24897e120",
+      "original_readelf_log_sha256": "43cf366080f7ed6b7f465b49d38fdbc09cdce7b67d5f066bacf4efc226a6d406",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/libJISX0213.so",
+      "sha256": "3731b04f52eec1f5e9935709e62ec5a22225f0bb3d9be996b284b1f90cfe841d",
+      "original_readelf_log_sha256": "1d4e43cdf3cf485e2cbad9afcc0b00d5b862d97872b78297f2dd7ee528cbc6c1",
+      "affected_import_or_definition": []
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/gconv/libKSC.so",
+      "sha256": "f6d90dea76abf2b7e03034e12ac3b1128e3e986e754b5d6ed8e07be7a128a74f",
+      "original_readelf_log_sha256": "909e0656ce46ea6c7ed03fc34c188cad3f343321bc580c89286ace00499508b8",
+      "affected_import_or_definition": []
+    }
+  ],
+  "mapping_reason": "The245 exact extra gconv ELF files are character conversion modules and contain none of the affected implementations/imports or the reviewed libc wrapper entries. The actual regex and wide-scanner implementations reside in the separately packaged libc.so.6. Propagating a source-package CVE to these binary-component tuples does not show those modules contain that implementation.",
+  "limitations": "Character converters may be called by the affected libc scanner. That does not make the converter the implementation of the scanner defect, and does not exclude the real libc6 finding. Actual libc6 needs its own current-path review."
+}

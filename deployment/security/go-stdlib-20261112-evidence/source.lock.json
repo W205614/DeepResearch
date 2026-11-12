@@ -1,0 +1,20 @@
+{
+  "schema": "go-stdlib-security-inputs-20261112-v1",
+  "toolchain": "golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf",
+  "amd64_manifest": "sha256:ea30e25680a5470bac02b08bb0e0a735fb75bd0ab7d431b9b95ee0abef362586",
+  "advisory": "GO-2026-6859",
+  "cve": "CVE-2026-97054",
+  "source_modified": "2026-11-11T02:51:11Z",
+  "fixed_version": "go1.27.4",
+  "official_sources": [
+    "https://vuln.go.dev/ID/GO-2026-6859.json",
+    "https://go.dev/cl/862185"
+  ],
+  "evidence": {
+    "deployment/security/go-stdlib-20261112-evidence/862185.patch": "719fb2a28c3f3984b3d6d9b5358d9d330ec4faa7ce3584c0b832f60c14cb8d79",
+    "deployment/security/go-stdlib-20261112-evidence/GO-2026-6859.json": "9eb1590c57233fd8a63e8ad737d12cbdef5572eed86ffee05897291fff12a9ce",
+    "deployment/security/go-stdlib-20261112-evidence/Go-LICENSE": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+  },
+  "scope": "Separate local source rebuild. No inherited approval or new third-party binary redistribution.",
+  "go_license_url": "https://go.googlesource.com/go/+/refs/tags/go1.27.4/LICENSE"
+}

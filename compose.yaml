@@ -271,7 +271,8 @@ services:
   minio:
     <<: *service-defaults
     platform: linux/amd64
-    image: deepresearch-approved-minio:20261026
+    image: deepresearch-minio-source:20261112
+    x-deepresearch-source-build: minio-source-20261112
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-deepresearch}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in .env}
@@ -633,8 +634,8 @@ services:
   grafana:
     <<: *service-defaults
     # Prepared by the profile-bound build entry before startup; not a published image.
-    image: deepresearch-grafana-source:20261110
-    x-deepresearch-source-build: grafana-source-20261110
+    image: deepresearch-grafana-source:20261112
+    x-deepresearch-source-build: grafana-source-20261112
     pull_policy: never
     environment:
       GF_SECURITY_ADMIN_PASSWORD: "${GRAFANA_ADMIN_PASSWORD:?Set GRAFANA_ADMIN_PASSWORD in .env}"

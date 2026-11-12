@@ -1,0 +1,40 @@
+{
+  "actor": "/root",
+  "actor_kind": "automated_independent_agent",
+  "observed_at_utc": "2026-11-12T05:56:46.005128+00:00",
+  "subject_sha256": "9311a51919b4cde9b6731db5b7759465cf78638f6fe94026cdd33f8fd9805cf3",
+  "facts_passed": true,
+  "risk_acceptance": false,
+  "binary_redistribution_approved": false,
+  "actual_engine_id": "sha256:b408e7a44d9b8dec24669555dd133090af216fd15cc2ff02e0a8a8e3bcccc632",
+  "actual_portable_config_digest": "sha256:fb56ed3c0eb536bc3b9e56678b95927929e6da41f18e38aab32480fe46c62667",
+  "reviewed_draft_sha256": "d2393468a56b838ca90c89a0a71b6a78222e9351832ed3cc97ac1a8337ca0822",
+  "actual_trivy_raw_sha256": "d23162ed421a54567fd3ec85421530a99067ec07d2fa5393bc0667055329c8ac",
+  "actual_grype_raw_sha256": "bf4c506ad0ef5d473800471ce209a125b3a0384cea17e60f4b1e4b92b43a2dff",
+  "actual_sbom_sha256": "9fec0cee8028f9f849cca6d906bdf610d3ef7366f8d90ca53c0b468711e8070a",
+  "observations": [
+    "Inspected the official fixed Go1.27.4 toolchain pin, locked main/plugin source and module checksums, retained signature/asset checks and backend integrity regression dependency.",
+    "Independently recomputed all14 complete native/module/import graphs and full runtime migration; every affected ELF changed, while non-stdlib graph identity and non-target runtime files are retained.",
+    "Independently exported and hashed the actual prepared image; full runtime/native/config identities match the exact proposed subject.",
+    "Trivy54to40 removes exactly the14 named Go advisory rows; no new/missing/changed raw finding is accepted and secrets remain blocked.",
+    "Actual copied14-ELF Syft/Grype scope and full package inventory are verified; the original40 Trivy and10 Grype exact applicability facts remain required with raw severity unchanged.",
+    "The prior review uses the immutable78a19df historical source snapshot only as baseline evidence; current image, recipe, source graph and scanners are independently bound.",
+    "This automated technical review is not human approval or third-party binary redistribution permission."
+  ],
+  "metadata_amendment": {
+    "prior_subject_sha256": "f4182564f3df5dd10fb23b755966fedf28aeb6d341607bbd9b1fb4931326720d",
+    "prior_review_sha256": "f9f027952c7b536b5ff788ae55c318ab9a019923c623d9f2c0200f6f0a98ddc5",
+    "exact_change": "Remove one extra final LF; AST identical; sole changed non-review fact is the transport helper evidence hash.",
+    "all_other_subject_facts_identical": true,
+    "rechecked": [
+      "strict subject diff",
+      "profile and every evidence hash",
+      "actual immutable image and build receipt",
+      "unchanged full raw scan and SBOM adjudication"
+    ],
+    "reused_actual_execution": "Prior root actual complete image export and fourteen native/source/runtime/database observations remain valid because those bytes and all related facts are identical.",
+    "complete_image_export_repeated": false,
+    "native_parsing_repeated": false,
+    "database_scan_or_model_calls_repeated": false
+  }
+}

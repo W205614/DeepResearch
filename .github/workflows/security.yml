@@ -12,6 +12,7 @@ jobs:
     permissions: { contents: read, security-events: write }
     steps:
       - uses: actions/checkout@v7
+        with: { fetch-depth: 0, fetch-tags: true }
       - uses: actions/setup-java@v5
         with: { distribution: temurin, java-version: "21", cache: maven }
       - run: mvn -B dependency:resolve
@@ -51,7 +52,7 @@ jobs:
       - name: Enforce exact source findings against the current reviewed source profile
         if: always() && steps.source_scan.outcome == 'success'
         run: >-
-          python scripts/check_grafana_source_scan_20261110.py
+          python scripts/check_grafana_source_scan_20261112.py
           --scan .cache/eval/source-fs/raw.json
           --scan-receipt .cache/eval/source-fs/completion.json
           --original-verdict .cache/eval/source-fs-original-verdict.json
@@ -88,6 +89,7 @@ jobs:
       custom_matrix: ${{ steps.images.outputs.custom_matrix }}
     steps:
       - uses: actions/checkout@v7
+        with: { fetch-depth: 0, fetch-tags: true }
       - id: images
         run: python scripts/runtime_ci_inventory.py
       - uses: actions/upload-artifact@v6
@@ -105,10 +107,10 @@ jobs:
       - uses: actions/checkout@v7
         with: { fetch-depth: 0, fetch-tags: true }
       - name: Verify immutable ancestor artifact source reuse
-        if: matrix.approved_artifact == true || matrix.source_build_profile == 'grafana-source-20261110'
+        if: matrix.approved_artifact == true || matrix.source_build_profile != ''
         run: python scripts/check_artifact_source_reuse.py --output .cache/eval/artifact-source-reuse.json
       - name: Load each independently approved OCI artifact without rebuilding
-        if: matrix.artifact == 'minio'
+        if: matrix.artifact == 'minio' && matrix.source_build_profile == ''
         run: python scripts/fetch_approved_image.py --artifact "$ARTIFACT" --tag "$SCAN_TAG" --output ".cache/eval/approved-$ARTIFACT-load.json"
         env:
           ARTIFACT: ${{ matrix.artifact }}
@@ -119,10 +121,11 @@ jobs:
         run: python scripts/fetch_grafana_fixed_20261107.py --tag deepresearch-scan-grafana:20261107 --output .cache/eval/approved-grafana-load.json
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      - name: Build the reviewed Grafana main and BusyBox without publishing a third-party image
-        if: matrix.source_build_profile == 'grafana-source-20261110'
-        run: python scripts/build_grafana_source_20261110.py --output-dir .cache/eval/grafana-source-build
+      - name: Build the reviewed Go-fixed source without publishing a third-party image
+        if: matrix.source_build_profile == 'grafana-source-20261112' || matrix.source_build_profile == 'minio-source-20261112'
+        run: python scripts/build_go_stdlib_security_20261112.py --artifact "$ARTIFACT" --output-dir ".cache/eval/$ARTIFACT-source-build"
         env:
+          ARTIFACT: ${{ matrix.artifact }}
           GITHUB_TOKEN: ${{ github.token }}
       - name: Scan ordinary runtime image with unchanged HIGH gate
         if: matrix.approved_artifact != true && matrix.source_build_profile == ''
@@ -137,10 +140,10 @@ jobs:
           output: runtime-image.json
       - name: Keep complete raw approved or source-built image scan for exact disposition
         id: approved_scan
-        if: matrix.approved_artifact == true || matrix.source_build_profile == 'grafana-source-20261110'
+        if: matrix.approved_artifact == true || matrix.source_build_profile != ''
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: ${{ matrix.source_build_profile == 'grafana-source-20261110' && matrix.image || matrix.artifact == 'grafana' && 'deepresearch-scan-grafana:20261107' || 'deepresearch-scan-minio:ci' }}
+          image-ref: ${{ matrix.source_build_profile != '' && matrix.image || matrix.artifact == 'grafana' && 'deepresearch-scan-grafana:20261107' || 'deepresearch-scan-minio:ci' }}
           severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
           scanners: vuln,secret
           list-all-pkgs: 'true'
@@ -150,13 +153,13 @@ jobs:
           format: json
           output: runtime-image.json
       - name: Reject every secret finding independently of vulnerability dispositions
-        if: (matrix.approved_artifact == true || matrix.source_build_profile == 'grafana-source-20261110') && steps.approved_scan.outcome == 'success'
+        if: (matrix.approved_artifact == true || matrix.source_build_profile != '') && steps.approved_scan.outcome == 'success'
         run: >-
           python scripts/check_image_secrets.py
           --scan runtime-image.json --scanner-exit-code 0
           --output .cache/eval/approved-image-secret-gate.json
       - name: Enforce original FIXED and independently reviewed exact OpenPGP and HTML facts
-        if: matrix.artifact == 'minio' && steps.approved_scan.outcome == 'success'
+        if: matrix.artifact == 'minio' && matrix.source_build_profile == '' && steps.approved_scan.outcome == 'success'
         run: >-
           python scripts/check_minio_html_exact4.py
           --archive .cache/eval/approved-minio.oci.tar
@@ -165,6 +168,15 @@ jobs:
           --scanner-exit-code 0
           --original-output .cache/eval/minio-original-disposition.json
           --exact2-output .cache/eval/minio-openpgp2-disposition.json
+          --output .cache/eval/minio-ci-disposition.json
+      - name: Enforce the unchanged MinIO threshold and exact new Go-fixed subject
+        if: matrix.source_build_profile == 'minio-source-20261112' && steps.approved_scan.outcome == 'success'
+        run: >-
+          python scripts/check_minio_source_build_20261112.py
+          --build-receipt .cache/eval/minio-source-build/build-receipt.json
+          --scan runtime-image.json
+          --inspect .cache/eval/minio-source-build/image-inspect.json
+          --scanner-exit-code 0
           --output .cache/eval/minio-ci-disposition.json
       - name: Collect complete native and full Grafana reports
         if: matrix.artifact == 'grafana' && matrix.source_build_profile == '' && steps.approved_scan.outcome == 'success'
@@ -181,16 +193,16 @@ jobs:
           --scanner-exit-code 0 --grype-exit-code 0
           --output .cache/eval/grafana-ci-disposition.json
       - name: Collect complete native and full source-built Grafana reports
-        if: matrix.source_build_profile == 'grafana-source-20261110' && steps.approved_scan.outcome == 'success'
+        if: matrix.source_build_profile == 'grafana-source-20261112' && steps.approved_scan.outcome == 'success'
         run: >-
-          python scripts/scan_grafana_source_20261110.py
-          --image deepresearch-grafana-source:20261110
+          python scripts/scan_grafana_source_20261112.py
+          --image deepresearch-grafana-source:20261112
           --build-receipt .cache/eval/grafana-source-build/build-receipt.json
           --output-dir .cache/eval/grafana-native
       - name: Enforce all-severity findings against the actual source-built Grafana subject
-        if: matrix.source_build_profile == 'grafana-source-20261110' && steps.approved_scan.outcome == 'success'
+        if: matrix.source_build_profile == 'grafana-source-20261112' && steps.approved_scan.outcome == 'success'
         run: >-
-          python scripts/check_grafana_source_build_20261110.py
+          python scripts/check_grafana_source_build_20261112.py
           --build-receipt .cache/eval/grafana-source-build/build-receipt.json
           --scan runtime-image.json
           --grype-scan .cache/eval/grafana-native/full-grype.json
@@ -218,6 +230,10 @@ jobs:
             .cache/eval/approved-image-secret-gate.json
             .cache/eval/artifact-source-reuse.json
             .cache/eval/grafana-native/*.json
+            .cache/eval/minio-source-build/build-receipt.json
+            .cache/eval/minio-source-build/image-inspect.json
+            .cache/eval/minio-source-build/actual-payload/runtime-manifest.json.gz
+            .cache/eval/minio-source-build/regressions/*.txt
             .cache/eval/grafana-source-build/build-receipt.json
             .cache/eval/grafana-source-build/image-inspect.json
             .cache/eval/grafana-source-build/actual-payload/runtime-manifest.json.gz

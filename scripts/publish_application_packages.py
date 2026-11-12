@@ -19,6 +19,7 @@ from urllib.request import Request, urlopen
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.check_image_secrets import assess  # noqa: E402
+from scripts import check_agent_full_scope  # noqa: E402
 
 REPOSITORY = "W205614/DeepResearch"
 SERVICES = {"agent", "backend", "web"}
@@ -141,10 +142,8 @@ def scan_loaded_archive(archive: Path, image: dict, output: Path, *, scanner: st
             raw = raw.rename(output / "raw.json")
         receipt["raw_file"] = raw.name
         if image.get('security_review_profile'):
-            if image['service'] != 'agent' or image['security_review_profile'] != 'agent-full-scope-20261110':
+            if image['service'] != 'agent' or image['security_review_profile'] not in check_agent_full_scope.PROFILE_NAMES:
                 raise ValueError('Unknown application-specific technical review')
-            from scripts import check_agent_full_scope
-
             profile = check_agent_full_scope.load_profile(image['security_review_profile'])
             inspection, = json.loads(subprocess.check_output(['docker', 'image', 'inspect', image['archive_tag']]))
             actual_config_raw = check_agent_full_scope.capture_actual_config(inspection)
@@ -187,7 +186,7 @@ def validate_manifest(data: dict, source_sha: str, release_tag: str) -> None:
     for image in images:
         service = image["service"]
         if ('security_review_profile' in image and (service != 'agent'
-                or image['security_review_profile'] != 'agent-full-scope-20261110')):
+                or image['security_review_profile'] not in check_agent_full_scope.PROFILE_NAMES)):
             raise ValueError('Only the exact Agent technical review can replace the raw-zero default')
         if image.get("repository") != "ghcr.io/w205614/deepresearch-" + service:
             raise ValueError("Unexpected package namespace")

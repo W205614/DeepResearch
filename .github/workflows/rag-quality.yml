@@ -19,8 +19,8 @@ jobs:
         with: { fetch-depth: 0, fetch-tags: true }
       - name: Verify immutable ancestor artifact source reuse
         run: python scripts/check_artifact_source_reuse.py --output .cache/eval/rag-artifact-source-reuse.json
-      - name: Load the approved storage artifact for the isolated RAG fixture
-        run: python scripts/fetch_approved_image.py
+      - name: Build the reviewed Go-fixed storage source for the isolated RAG fixture
+        run: python scripts/build_go_stdlib_security_20261112.py --artifact minio --output-dir .cache/eval/minio-source-build
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - run: docker build -t deepresearch-rag-quality .

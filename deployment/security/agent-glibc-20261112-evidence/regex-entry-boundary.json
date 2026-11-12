@@ -1,0 +1,499 @@
+{
+  "schema": "agent-glibc-regex-entry-boundary-v1",
+  "cve": "CVE-2026-100290",
+  "risk_acceptance": false,
+  "binary_fixed_claim": false,
+  "upstream_source_archive": {
+    "url": "https://deb.debian.org/debian/pool/main/g/glibc/glibc_2.43.orig.tar.xz",
+    "sha256": "b8f0d50a7d4255658efe1f608cacdc4be82bb3c009875626df5968cc64c58880"
+  },
+  "source_files": [
+    {
+      "path": "glibc-2.43/iconvdata/Makefile",
+      "sha256": "d951823a1fd1fb79264abef7c5959b1d92a4703bcd6df690ad0a03728abd2ac1"
+    },
+    {
+      "path": "glibc-2.43/misc/regexp.c",
+      "sha256": "6ea187764239e5eccedfc12f5173daf3c60130aaaceae0094443b51bdc5cd25f"
+    },
+    {
+      "path": "glibc-2.43/posix/regcomp.c",
+      "sha256": "aac6a6bdb92aa46a15807f1e1a25f3657f0ccdf6430e320b9ed07f4f4bb497e1"
+    },
+    {
+      "path": "glibc-2.43/posix/regex.c",
+      "sha256": "68ce561ab352a590cbec5121d2baf86fcf67ad2b1a914cb369566a3dfbddda87"
+    },
+    {
+      "path": "glibc-2.43/posix/regex.h",
+      "sha256": "f2261e677fc2eb3e891a198ceb54fba6d4dd2bb681599491bcbfb361dca666cb"
+    },
+    {
+      "path": "glibc-2.43/posix/regex_internal.c",
+      "sha256": "30b2e449bc936468df2ba8250a8798749958138337a543941631d39a5a275ffe"
+    },
+    {
+      "path": "glibc-2.43/posix/regexec.c",
+      "sha256": "a5c59655c7fcb37abd0a3572f1f9e751c97cf7bc240160b9dbb014bf24e4d8d6"
+    },
+    {
+      "path": "glibc-2.43/stdlib/rpmatch.c",
+      "sha256": "1383aedc7e902564be76f86eeee1481b4f9cf5980dd9c8ba849511b7e2c23030"
+    },
+    {
+      "path": "glibc-2.43/malloc/set-freeres.c",
+      "sha256": "adda054207c5899f8561725b36a01783e92fd3ef871f873e3d4c0b6dff95cec9"
+    },
+    {
+      "path": "glibc-2.43/misc/Versions",
+      "sha256": "b10f1ef823d884553fafef968c8d56c917113d0daa6cebc9dcdbf53eda325574"
+    },
+    {
+      "path": "glibc-2.43/posix/Versions",
+      "sha256": "7a17e6e911937f7c44a6d68f422d59ffc4fc1d60f5141ab910c772d0cdc2075d"
+    },
+    {
+      "path": "glibc-2.43/stdlib/Versions",
+      "sha256": "22d9ddaaa8738a3def7e77f08950949d55dc82bf85abfdddca2c3bd852eb8ed6"
+    }
+  ],
+  "full_source_entry_occurrence_inventory_sha256": "3e33866598c0cd40be6af5f45d51aac516a8f559b9ee1df949036bae17a94c29",
+  "source_assembly": "Under _LIBC, posix/regex.c maps the public names to internal aliases and includes regex_internal.c, regcomp.c and regexec.c in one compilation unit. Their static helper names are not independent dynamic ABI roots.",
+  "public_entry_families": [
+    {
+      "names": [
+        "regcomp",
+        "__regcomp",
+        "re_compile_pattern",
+        "__re_compile_pattern"
+      ],
+      "route": "regcomp.c -> re_compile_internal -> parser/DFA node construction -> re_dfa_add_node and build_range_exp",
+      "source_lines": {
+        "regcomp.c": [
+          217,
+          230,
+          491,
+          727,
+          1394,
+          1615,
+          2690,
+          2943
+        ]
+      }
+    },
+    {
+      "names": [
+        "regexec",
+        "__regexec",
+        "re_search",
+        "__re_search",
+        "re_search_2",
+        "__re_search_2",
+        "re_match",
+        "__re_match",
+        "re_match_2",
+        "__re_match_2"
+      ],
+      "route": "regexec.c matcher wrappers -> re_search_internal and backreference-context helpers -> match_ctx_add_entry",
+      "scope": "GNU matching/search APIs are covered even if no regexec import exists."
+    },
+    {
+      "names": [
+        "re_comp",
+        "__re_comp",
+        "re_exec",
+        "__re_exec"
+      ],
+      "route": "BSD shared-pattern compilation through re_compile_internal; re_exec calls regexec on that shared buffer.",
+      "source_condition": "defined _REGEX_RE_COMP OR defined _LIBC; these roots are included in glibc, not excluded by the optional non-libc compatibility macro.",
+      "source_lines": {
+        "regcomp.c": [
+          656,
+          659,
+          668,
+          703
+        ],
+        "regexec.c": [
+          562,
+          567,
+          569
+        ]
+      },
+      "actual_exports": [
+        "re_comp@@GLIBC_2.2.5",
+        "re_exec@@GLIBC_2.2.5"
+      ]
+    },
+    {
+      "names": [
+        "re_compile_fastmap",
+        "__re_compile_fastmap",
+        "re_set_registers",
+        "__re_set_registers",
+        "re_set_syntax",
+        "__re_set_syntax"
+      ],
+      "route": "Included as regex state/configuration support APIs. Their absence is checked, rather than omitting GNU support functions from the boundary."
+    },
+    {
+      "names": [
+        "regfree",
+        "__regfree",
+        "regerror",
+        "__regerror"
+      ],
+      "route": "regfree frees an existing DFA and related buffers; regerror formats/copies a translated diagnostic and does not compile or match.",
+      "source_lines": {
+        "regcomp.c": [
+          519,
+          633,
+          639,
+          650
+        ]
+      },
+      "cleanup_condition": "regfree may consume damaged state after the affected allocation failure. It is included with the compile/match precursor; it is not declared safe simply because it is a cleanup API."
+    }
+  ],
+  "libc_wrapper_roots": [
+    {
+      "names": [
+        "rpmatch",
+        "__rpmatch"
+      ],
+      "source": "stdlib/rpmatch.c",
+      "route": "Localized yes/no pattern helper compiles and matches cached POSIX regex; calls __regcomp at43 and __regexec at49."
+    },
+    {
+      "names": [
+        "step",
+        "__step",
+        "advance",
+        "__advance"
+      ],
+      "source": "misc/regexp.c",
+      "route": "Legacy matching wrappers call __regexec at56/79. Actual current libc retains versioned step/advance ABI symbols."
+    },
+    {
+      "names": [
+        "__libc_freeres",
+        "__libc_regcomp_freemem"
+      ],
+      "source": [
+        "malloc/set-freeres.c",
+        "posix/regcomp.c"
+      ],
+      "route": "Global cleanup can invoke the BSD shared-pattern cleanup, which calls __regfree(re_comp_buf).",
+      "precursor": "The shared BSD buffer is file-static and initialized through re_comp. Cleanup is not omitted: the native libc_malloc_debug import of __libc_freeres is retained below, and requires the absent re_comp precursor before it could free a poisoned BSD DFA."
+    }
+  ],
+  "other_source_occurrences": "locale/programs/ld-messages.c uses regcomp while building locales; it is a localedef build/tool source, not another libc API. No installed localedef ELF exists in the reviewed515-file runtime inventory. Test and benchmark source references are not counted as installed callers.",
+  "actual_libc": {
+    "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+    "sha256": "47178713f5bda59f2ea8240a56971de4dc0b3a6cb71e996e2782d9a59746bfef",
+    "readelf_log_sha256": "3ed7f55a21e4c3d4f077a861013a47f720bf2109519ceb9e24c86e29ace4fc9a",
+    "regex_and_wrapper_exports": [
+      {
+        "symbol_with_version": "__libc_freeres@@GLIBC_2.2.5",
+        "type": "FUNC",
+        "binding": "GLOBAL"
+      },
+      {
+        "symbol_with_version": "advance@GLIBC_2.2.5",
+        "type": "FUNC",
+        "binding": "WEAK"
+      },
+      {
+        "symbol_with_version": "re_comp@@GLIBC_2.2.5",
+        "type": "FUNC",
+        "binding": "WEAK"
+      },
+      {
+        "symbol_with_version": "re_compile_fastmap@@GLIBC_2.2.5",
+        "type": "FUNC",
+        "binding": "WEAK"
+      },
+      {
+        "symbol_with_version": "re_compile_pattern@@GLIBC_2.2.5",
+        "type": "FUNC",
+        "binding": "WEAK"
+      },
+      {
+        "symbol_with_version": "re_exec@@GLIBC_2.2.5",
+        "type": "FUNC",
+        "binding": "WEAK"
+      },
+      {
+        "symbol_with_version": "re_match@@GLIBC_2.2.5",
+        "type": "FUNC",
+        "binding": "WEAK"
+      },
+      {
+        "symbol_with_version": "re_match_2@@GLIBC_2.2.5",
+        "type": "FUNC",
+        "binding": "WEAK"
+      },
+      {
+        "symbol_with_version": "re_max_failures@@GLIBC_2.2.5",
+        "type": "OBJECT",
+        "binding": "GLOBAL"
+      },
+      {
+        "symbol_with_version": "re_search@@GLIBC_2.2.5",
+        "type": "FUNC",
+        "binding": "WEAK"
+      },
+      {
+        "symbol_with_version": "re_search_2@@GLIBC_2.2.5",
+        "type": "FUNC",
+        "binding": "WEAK"
+      },
+      {
+        "symbol_with_version": "re_set_registers@@GLIBC_2.2.5",
+        "type": "FUNC",
+        "binding": "WEAK"
+      },
+      {
+        "symbol_with_version": "re_set_syntax@@GLIBC_2.2.5",
+        "type": "FUNC",
+        "binding": "WEAK"
+      },
+      {
+        "symbol_with_version": "re_syntax_options@@GLIBC_2.2.5",
+        "type": "OBJECT",
+        "binding": "GLOBAL"
+      },
+      {
+        "symbol_with_version": "regcomp@@GLIBC_2.2.5",
+        "type": "FUNC",
+        "binding": "WEAK"
+      },
+      {
+        "symbol_with_version": "regerror@@GLIBC_2.2.5",
+        "type": "FUNC",
+        "binding": "WEAK"
+      },
+      {
+        "symbol_with_version": "regexec@@GLIBC_2.3.4",
+        "type": "FUNC",
+        "binding": "GLOBAL"
+      },
+      {
+        "symbol_with_version": "regexec@GLIBC_2.2.5",
+        "type": "FUNC",
+        "binding": "GLOBAL"
+      },
+      {
+        "symbol_with_version": "regfree@@GLIBC_2.2.5",
+        "type": "FUNC",
+        "binding": "WEAK"
+      },
+      {
+        "symbol_with_version": "rpmatch@@GLIBC_2.2.5",
+        "type": "FUNC",
+        "binding": "GLOBAL"
+      },
+      {
+        "symbol_with_version": "step@GLIBC_2.2.5",
+        "type": "FUNC",
+        "binding": "WEAK"
+      }
+    ]
+  },
+  "data_objects_not_independent_call_roots": [
+    "re_max_failures",
+    "re_syntax_options"
+  ],
+  "exact_native_boundary": {
+    "closure": {
+      "files": 515,
+      "sha256": "7bde6d27b4fd6015f058da3f28d8c1e5dfb0155aadca77a61919225674d4f348"
+    },
+    "matched_imports": [
+      {
+        "paths": [
+          "/usr/lib/x86_64-linux-gnu/libc_malloc_debug.so.0"
+        ],
+        "sha256": "2eb91fbaf99980e51e6018bd0705bd9a7e22c1faa096e63b00de6bf26b0148a5",
+        "symbols": [
+          "__libc_freeres"
+        ],
+        "original_readelf_log_sha256": "156af3d49e922ab8bd36697d4fd1446840190b0ca026b88a6f4056ed356bfe0c"
+      },
+      {
+        "paths": [
+          "/opt/venv/lib/python3.11/site-packages/psycopg_binary.libs/libkrb5-fcafa220.so.3.3"
+        ],
+        "sha256": "94dc6413050486a6c8de4b6f3bfdd288390892b72bc68580c6c53929721fa07b",
+        "symbols": [
+          "regcomp",
+          "regexec",
+          "regfree"
+        ],
+        "original_readelf_log_sha256": "f411cfc34021955bc7afc5cf06567ffd5633c905ba7db3e9cee501eb2ecbb7e5"
+      }
+    ],
+    "reviewed_names_including_internal_aliases": [
+      "advance",
+      "libc_freeres",
+      "libc_regcomp_freemem",
+      "re_comp",
+      "re_compile_fastmap",
+      "re_compile_pattern",
+      "re_exec",
+      "re_match",
+      "re_match_2",
+      "re_search",
+      "re_search_2",
+      "re_set_registers",
+      "re_set_syntax",
+      "regcomp",
+      "regerror",
+      "regexec",
+      "regfree",
+      "rpmatch",
+      "step"
+    ],
+    "interpretation": "The only compile/match/free consumer is the exact libkrb5 library. The only additional matched cleanup import is libc_malloc_debug -> __libc_freeres. All GNU/BSD roots and rpmatch/step/advance have no external import. This result is combined with the separate Kerberos client-path and complete Python FFI reviews; absence of one import is not a full decision."
+  },
+  "python_boundary_file": "python-ffi-boundary.json",
+  "kerberos_path_file": "regex-kerberos-review.json",
+  "gconv_source_build_mapping": {
+    "source": "iconvdata/Makefile",
+    "sha256": "d951823a1fd1fb79264abef7c5959b1d92a4703bcd6df690ad0a03728abd2ac1",
+    "facts": "The extra conversion modules are built from the iconvdata module list and converter helper routines; they are separate from the posix regex and stdio-common scanner compilation units.",
+    "debian_packaging_refs": [
+      {
+        "path": "debian/changelog",
+        "sha256": "658f8a3cd2ec42d95fcaccf54342dbdf7fe143c937af4943ed5aea57f672f9ab",
+        "matches": [
+          {
+            "line": 405,
+            "text": "* debian/control.in/main: change libc-gconv-modules-extra to Multi-Arch:"
+          },
+          {
+            "line": 459,
+            "text": "libc-gconv-modules-extra Recommends into a Depends as many packages still"
+          },
+          {
+            "line": 469,
+            "text": "libc-gconv-modules-extra to avoid creating a dependency loop. This can be"
+          },
+          {
+            "line": 522,
+            "text": "- debian/control.in/main: add libc-gconv-modules-extra."
+          },
+          {
+            "line": 523,
+            "text": "- debian/control.in/libc: recommends libc-gconv-modules-extra."
+          },
+          {
+            "line": 528,
+            "text": "libc-gconv-modules-extra packages."
+          },
+          {
+            "line": 529,
+            "text": "- debian/rules: Add libc-gconv-modules-extra to the list of arch:any"
+          }
+        ]
+      },
+      {
+        "path": "debian/control",
+        "sha256": "3171a548eee7cb613538c1f459e3ea297cb2093b2bac76f13db372c780e6cf8c",
+        "matches": [
+          {
+            "line": 77,
+            "text": "Package: libc-gconv-modules-extra"
+          },
+          {
+            "line": 175,
+            "text": "Depends: ${shlibs:Depends}, ${libgcc:Depends}, ${libc-gconv-modules-extra:Depends}"
+          },
+          {
+            "line": 245,
+            "text": "Depends: ${shlibs:Depends}, ${libgcc:Depends}, ${libc-gconv-modules-extra:Depends}"
+          },
+          {
+            "line": 315,
+            "text": "Depends: ${shlibs:Depends}, ${libgcc:Depends}, ${libc-gconv-modules-extra:Depends}"
+          }
+        ]
+      },
+      {
+        "path": "debian/control.in/libc",
+        "sha256": "6bff80e7c82c1fdcef0809055b730bc14c041216eacac0afee8d69cbc84450d6",
+        "matches": [
+          {
+            "line": 6,
+            "text": "Depends: ${shlibs:Depends}, ${libgcc:Depends}, ${libc-gconv-modules-extra:Depends}"
+          }
+        ]
+      },
+      {
+        "path": "debian/control.in/main",
+        "sha256": "32df9e6be7535b209bb990f7e690ef47effb13c719e0d087545fad56466f87d3",
+        "matches": [
+          {
+            "line": 77,
+            "text": "Package: libc-gconv-modules-extra"
+          }
+        ]
+      },
+      {
+        "path": "debian/debhelper.in/libc-gconv-modules-extra.lintian-overrides",
+        "sha256": "e9cdf54d069638063919c3f657ca3f85b2bb8744dfbd1e5f653048021847767c",
+        "matches": [
+          {
+            "line": 1,
+            "text": "# libc-gconv-modules-extra has no dependency on libc6 to avoid creating a"
+          },
+          {
+            "line": 5,
+            "text": "# libc-gconv-modules-extra is demoted to a recommends."
+          }
+        ]
+      },
+      {
+        "path": "debian/rules",
+        "sha256": "8df9fc06916db91883cedcf8f8df75353e4a36c9d94b5f39e682dfc0c1148cb3",
+        "matches": [
+          {
+            "line": 138,
+            "text": "DEB_ARCH_REGULAR_PACKAGES = $(libc) $(libc)-dev $(libc)-dbg libc-bin libc-dev-bin libc-gconv-modules-extra"
+          }
+        ]
+      },
+      {
+        "path": "debian/rules.d/debhelper.mk",
+        "sha256": "631774c07ebf386d40174f61b76fc62d87630f8e33795eb106f261c7d70a0bb4",
+        "matches": [
+          {
+            "line": 23,
+            "text": "$(stamp)binaryinst_glibc-gconv-modules-extra:: $(stamp)binaryinst_$(libc)"
+          },
+          {
+            "line": 177,
+            "text": "echo 'libc-gconv-modules-extra:Depends=libc-gconv-modules-extra (= $${binary:Version})' >> tmp.substvars"
+          },
+          {
+            "line": 231,
+            "text": "extraconffiles=\"$$gconvdir/gconv-modules.d/gconv-modules-extra.conf\" ; \\"
+          },
+          {
+            "line": 233,
+            "text": "sed -e \"/gconv/d\" -i debian/$(libc).install debian/libc-gconv-modules-extra.install ; \\"
+          },
+          {
+            "line": 239,
+            "text": "echo $$f >> debian/libc-gconv-modules-extra.install ; \\"
+          },
+          {
+            "line": 246,
+            "text": "echo $$gconvdir/$$mod.so >> debian/libc-gconv-modules-extra.install ; \\"
+          }
+        ]
+      }
+    ],
+    "actual_binary_package_mapping_file": "glibc-binary-package-mapping.json"
+  },
+  "limits": "A bounded current application/API proof, not a fixed-library assertion. New regex or local-authorization use, arbitrary native code/FFI dispatch, extra plugins, changed source/ELF/Python bytes or changed runtime contracts invalidates it. No conclusion uses memory pressure, authentication passwords, low severity or normal-pattern size as a mitigation."
+}

@@ -12,9 +12,9 @@ import pytest
 from scripts import check_agent_full_scope as gate
 
 
-@pytest.fixture
-def reviewed_inputs():
-    profile = gate.load_profile(gate.PROFILE_NAME)
+@pytest.fixture(params=gate.PROFILE_NAMES)
+def reviewed_inputs(request):
+    profile = gate.load_profile(request.param)
     now = datetime(2026, 11, 10, 12, tzinfo=timezone.utc)
     config = copy.deepcopy(profile["runtime_config"])
     image_id = "sha256:" + "a" * 64
@@ -119,7 +119,8 @@ def decide(inputs, *, scan_source="docker"):
 
 def test_exact_review_keeps_original_findings_and_is_not_raw_zero(reviewed_inputs):
     verdict = decide(reviewed_inputs)
-    assert verdict["passed"] and verdict["raw_findings"] == 88
+    expected_count = 88 if reviewed_inputs[3]['name'] == gate.PROFILE_NAME else 92
+    assert verdict["passed"] and verdict["raw_findings"] == expected_count
     assert verdict["unresolved_applicable_findings"] == 0
     assert not verdict["raw_zero_claim"] and not verdict["risk_acceptance"]
 
@@ -201,7 +202,7 @@ def test_actual_runtime_changes_require_new_review(reviewed_inputs, change):
 def test_new_image_identity_requires_its_own_scan_binding_and_same_runtime(reviewed_inputs):
     report, inspection, runtime, profile, _, _ = reviewed_inputs
     replacement_id = "sha256:" + "e" * 64
-    assert replacement_id != profile["baseline_evidence_only"]["image_id"]
+    assert replacement_id not in profile["baseline_evidence_only"].values()
     inspection["Id"] = report["Metadata"]["ImageID"] = replacement_id
     inspection["RootFS"]["Layers"] = report["Metadata"]["DiffIDs"] = ["sha256:" + "d" * 64]
     report["Metadata"]["ImageConfig"]["rootfs"]["diff_ids"] = inspection["RootFS"]["Layers"]
@@ -226,6 +227,26 @@ def test_profile_is_explicit_and_source_evidence_is_pinned(tmp_path, monkeypatch
     monkeypatch.setattr(gate, "PROFILE_PATH", changed)
     with pytest.raises(ValueError, match="profile changed"):
         gate.load_profile(gate.PROFILE_NAME)
+
+
+def test_ordinary_profile_preserves_findings_and_rejects_the_old_python_closure(reviewed_inputs):
+    ordinary = gate.load_profile(gate.ORDINARY_PROFILE_NAME)
+    original = gate.load_profile(gate.PROFILE_NAME)
+    assert ordinary['findings'][:88] == original['findings']
+    assert {(row['tuple']['id'], row['tuple']['package'], row['tuple']['severity'])
+            for row in ordinary['findings'][88:]} == {
+        (cve, package, 'UNKNOWN')
+        for cve in ('CVE-2026-100290', 'CVE-2026-115819')
+        for package in ('libc6', 'libc-gconv-modules-extra')
+    }
+    assert all(row['upstream_package_affected'] and not row['binary_fixed_claim']
+               and not row['risk_acceptance'] for row in ordinary['findings'][88:])
+    assert ordinary['packages'] == original['packages']
+    assert ordinary['native_elf_closure'] == original['native_elf_closure']
+    other = ordinary if reviewed_inputs[3]['name'] == gate.PROFILE_NAME else original
+    reviewed_inputs[2]['python_source_closure'] = copy.deepcopy(other['python_source_closure'])
+    with pytest.raises(ValueError, match='Python source closure'):
+        decide(reviewed_inputs)
 
 
 @pytest.mark.parametrize("target", ["review", "support"])

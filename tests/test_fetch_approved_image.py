@@ -355,6 +355,25 @@ def test_source_grafana_stays_in_vendor_full_scan_matrix_and_out_of_generic_buil
         inventory.matrices(config, tmp_path)
 
 
+def test_go_fixed_minio_requires_its_source_profile_and_cannot_inherit_old_approval(tmp_path, monkeypatch):
+    calls = []
+    monkeypatch.setattr(inventory, 'load_minio_source_profile', lambda root: calls.append(root))
+    config = {'services': {'minio': {'image': inventory.SOURCE_MINIO},
+                           'agent': {'build': {'context': str(tmp_path)}}}}
+    vendor, custom = inventory.matrices(config, tmp_path)
+    row, = vendor['include']
+    assert row['image'] == inventory.SOURCE_MINIO and row['artifact'] == 'minio'
+    assert row['source_build_profile'] == inventory.MINIO_PROFILE and row['approved_artifact'] is False
+    assert calls == [tmp_path] and [row['name'] for row in custom['include']] == ['agent']
+    copied = deepcopy(config)
+    copied['services']['other'] = {'image': inventory.SOURCE_MINIO}
+    with pytest.raises(ValueError, match='namespaces'):
+        inventory.matrices(copied, tmp_path)
+    config['services']['minio']['build'] = {'context': str(tmp_path)}
+    with pytest.raises(ValueError, match='profile-bound build entry'):
+        inventory.matrices(config, tmp_path)
+
+
 def test_source_grafana_inventory_binds_selected_recipe_and_does_not_claim_old_approval(tmp_path, monkeypatch):
     import scripts
     from types import SimpleNamespace
@@ -368,7 +387,7 @@ def test_source_grafana_inventory_binds_selected_recipe_and_does_not_claim_old_a
     profile = {'profile': inventory.SOURCE_PROFILE, 'image': inventory.SOURCE_GRAFANA,
                'context': '.', 'dockerfile': inventory.SOURCE_DOCKERFILE,
                'source_inputs': {inventory.SOURCE_DOCKERFILE: inventory.candidate.file_hash(dockerfile)}}
-    monkeypatch.setattr(scripts, 'check_grafana_source_build_20261110',
+    monkeypatch.setattr(scripts, 'check_grafana_source_build_20261112',
                         SimpleNamespace(load_profile=lambda root: profile), raising=False)
     selection = inventory.grafana_selection(tmp_path)
     assert selection['profile'] == inventory.SOURCE_PROFILE and selection['mode'] == 'source_build'

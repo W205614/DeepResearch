@@ -19,8 +19,8 @@ jobs:
         with:
           name: component-artifact-source-${{ github.sha }}
           path: .cache/eval/artifact-source-reuse.json
-      - name: Load the approved storage artifact for the isolated component fixture
-        run: python scripts/fetch_approved_image.py
+      - name: Build the reviewed Go-fixed storage source for the isolated component fixture
+        run: python scripts/build_go_stdlib_security_20261112.py --artifact minio --output-dir .cache/eval/minio-source-build
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - run: python scripts/verify_components.py --drill
@@ -28,6 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with: { fetch-depth: 0, fetch-tags: true }
       - uses: astral-sh/setup-uv@v7
       - run: uv sync --all-groups --frozen
       - run: uv run ruff check backend tests scripts main.py
@@ -80,12 +81,12 @@ jobs:
         with:
           name: enterprise-artifact-source-${{ github.sha }}
           path: .cache/eval/artifact-source-reuse.json
-      - name: Load the exact approved storage artifact before Compose startup
-        run: python scripts/fetch_approved_image.py
+      - name: Build the reviewed Go-fixed storage source before Compose startup
+        run: python scripts/build_go_stdlib_security_20261112.py --artifact minio --output-dir .cache/eval/minio-source-build
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Build the exact reviewed Grafana source profile before Compose startup
-        run: python scripts/build_grafana_source_20261110.py --output-dir .cache/eval/grafana-source-build
+        run: python scripts/build_go_stdlib_security_20261112.py --artifact grafana --output-dir .cache/eval/grafana-source-build
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - uses: actions/upload-artifact@v6

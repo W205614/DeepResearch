@@ -1,6 +1,6 @@
 # 2026-11-12 版本页合并与辅助发布保留依据
 
-本次整理以 `v0.1.3` 为当前产品版本，不新增版本、不移动产品 Tag、不重推或覆盖现有镜像。产品版本保留 `v0.1.0`、`v0.1.1`、`v0.1.2`、`v0.1.3` 各自的源码边界。下列判断来自实际 GitHub Release/asset 清单和当前仓库调用关系，不能据名称或年代直接删除材料。
+下述迁移整理完成时以 `v0.1.3` 为产品版本，当时没有新增版本、移动产品 Tag 或覆盖现有镜像；后续 `v0.1.4` 工程修复的交付边界另列于下文。产品版本保留 `v0.1.0`、`v0.1.1`、`v0.1.2`、`v0.1.3` 各自的源码边界。下列判断来自实际 GitHub Release/asset 清单和当前仓库调用关系，不能据名称或年代直接删除材料。
 
 ## 已迁入产品版本页的应用制品
 
@@ -14,21 +14,29 @@
 
 README 和下载文档已在提交 `e8b1e372a5b90d83ed282d6f5de4bc30ac2f8006` 推送到远端 main；四份文件的完整远端字节均与本地相同。随后实际删除旧辅助 Tag `artifact-applications-v0.1.1-r1`，官方 API 复核为 404。原制品 Release 已并入 `v0.1.1`，不再占用单独的辅助发布入口。
 
-清退后实际远端为 **9 个 Tag、9 个 Release：4 个产品版本及下述 5 个有依赖的第三方保留例外**，没有草稿。4 个产品版本的 Tag/源码提交保持原值，`v0.1.1` 保留完整 88 附件；`v0.1.2` 保留 93 附件，`v0.1.3` 保留原 24 附件。没有删除容器包或修改镜像摘要。
+清退后实际远端为 **9 个 Tag、9 个 Release：4 个产品版本及下述 5 个有依赖的第三方保留例外**，没有草稿。4 个产品版本的 Tag/源码提交保持原值，`v0.1.1` 保留完整 88 附件；`v0.1.2` 保留 93 附件，`v0.1.3` 保留原 24 个核心附件，后续最终 CI 补充收据也继续保留。没有删除容器包或修改镜像摘要。
 
 ## 保留的五个第三方发布
 
 | Tag / Release | Release ID | 具体引用及保留原因 |
 | --- | ---: | --- |
-| [artifact-minio-fixed-20261026](https://github.com/W205614/DeepResearch/releases/tag/artifact-minio-fixed-20261026) | 424228449 | 核心安装的固定 MinIO/Silo 下载。`scripts/fetch_approved_image.py` 绑定 Release ID、Tag、asset ID `678114320` 和归档摘要；`scripts/check_artifact_source_reuse.py` 还核对原 Tag 对应祖先提交。删除会影响首次获取及源码身份校验。 |
+| [artifact-minio-fixed-20261026](https://github.com/W205614/DeepResearch/releases/tag/artifact-minio-fixed-20261026) | 424228449 | 历史安装路线与冻结来源核验的固定 MinIO/Silo 下载；`v0.1.4` 已改用本地源码入口，旧绑定仍有复现职责。`scripts/fetch_approved_image.py` 绑定 Release ID、Tag、asset ID `678114320` 和归档摘要；`scripts/check_artifact_source_reuse.py` 还核对原 Tag 对应祖先提交。删除会影响首次获取及源码身份校验。 |
 | [artifact-grafana-reviewed-20261026](https://github.com/W205614/DeepResearch/releases/tag/artifact-grafana-reviewed-20261026) | 424356978 | 原 Grafana 的分片运输和来源祖先绑定。`scripts/fetch_approved_image.py` 与 `scripts/check_artifact_source_reuse.py` 使用固定 Release/Tag；原始层、源码及法律材料仍有来源职责。不能用较新但字节不同的 Grafana 替换。 |
 | [artifact-grafana-exact28-20261028](https://github.com/W205614/DeepResearch/releases/tag/artifact-grafana-exact28-20261028) | 426729499 | `scripts/fetch_grafana_candidate.py` 的默认 exact28 消费路径；`deployment/security/grafana-candidate-transport.json` 固定 13 个分片 ID，运输文件本身受 SHA-256 绑定。保留原独立制品和验证路径。 |
 | [artifact-grafana-maintenance-20261105](https://github.com/W205614/DeepResearch/releases/tag/artifact-grafana-maintenance-20261105) | 434994246 | `scripts/check_grafana_maintenance.py`、`scripts/check_grafana_active_source_retirement.py`、`scripts/grafana_source_candidate4.py` 仍核对维护制品、运输摘要和来源退役证据；12 个分片不是普通临时日志。 |
-| [artifact-grafana-fixed-20261107](https://github.com/W205614/DeepResearch/releases/tag/artifact-grafana-fixed-20261107) | 437518277 | 当前 `scripts/build_grafana_source_20261110.py` 会调用 `scripts/fetch_grafana_fixed_20261107.py` 获取固定构建基底。`scripts/check_grafana_release_20261107.py` 同时绑定实际来源、运输和发布材料；14 个分片仍承担新安装构建输入职责。 |
+| [artifact-grafana-fixed-20261107](https://github.com/W205614/DeepResearch/releases/tag/artifact-grafana-fixed-20261107) | 437518277 | 保留的 `scripts/build_grafana_source_20261110.py` 会调用 `scripts/fetch_grafana_fixed_20261107.py` 获取固定构建基底。`scripts/check_grafana_release_20261107.py` 同时绑定实际来源、运输和发布材料；14 个分片仍承担新安装构建输入职责。 |
 
 这些是有具体依赖的保留例外，不称作“Tag/Release 已全部只有产品版本”。后续合并需要迁移准确字节及固定下载绑定，并验证当前和仍支持的来源路径；单纯更名或删除 Tag 会破坏现有契约。本次不更改第三方安全批准、摘要或冻结的历史配方，也不新增其公开二进制分发。
 
 正常历史 `v0.1.2` 的 93 个附件继续保留，其中 74 个源码分片仍被当前 `v0.1.3` 的对应源码清单引用，不在辅助发布删除范围内。
+
+## v0.1.4 的保留与新增边界
+
+`v0.1.4` 修复常规资料问法的校验问题，新增交付只使用产品版本 Tag／Release，不新建模型测试、扫描或运输轮次的辅助发布。其发布清单、镜像身份、分片和最终验收／CI 以 [v0.1.4 版本页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.4)实际收据为准，不移动既有产品或辅助 Tag。
+
+本版 MinIO／Silo 和 Grafana 使用 `scripts/build_go_stdlib_security_20261112.py --artifact minio`／`--artifact grafana` 的本地源码入口，没有新增公开第三方二进制分发。这不消除上表五个旧 `artifact-*` 的固定输入、精确历史审查及法律／来源职责；新构建器仍通过原绑定入口或历史快照复核相应材料，不能因采用新 Go 版本就删除旧资产。
+
+应用对应源码仍由本版补充材料、固定 `v0.1.3` 补充材料及 `v0.1.2` 完整源码共同组成，不是自包含新包。旧 `v0.1.2` 的 74 个必需源码分片、各版本核心附件与后续补充收据继续保留。上文 9 Tag／9 Release 是迁移完成时的已核实快照，不是新增产品版本后的库存声明；最终数量仍须按实际远端清单核对。
 
 ## 可复核入口
 

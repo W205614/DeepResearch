@@ -1,0 +1,242 @@
+{
+  "schema": "agent-glibc-wide-scanf-path-review-v1",
+  "cve": "CVE-2026-115819",
+  "risk_acceptance": false,
+  "upstream_package_affected": true,
+  "binary_fixed_claim": false,
+  "disposition_proposed": "NOT_AFFECTED_FUNCTION_NOT_IN_CURRENT_APPLICATION_PATH",
+  "independent_second_review_required": true,
+  "official_implementation": {
+    "source_url": "https://deb.debian.org/debian/pool/main/g/glibc/glibc_2.43.orig.tar.xz",
+    "source_archive_sha256": "b8f0d50a7d4255658efe1f608cacdc4be82bb3c009875626df5968cc64c58880",
+    "path": "stdio-common/vfscanf-internal.c",
+    "sha256": "3ab7e4cbce32b1b31454a7cc00c9abfc7594771c44a1cfc43cb0eb9915efc85c",
+    "affected_branch": "COMPILE_WSCANF branch: __wcrtomb(buf, NUL, &state) at original line1213, copying n bytes at1245, followed by a second appended null at1247.",
+    "debian_patch_review": "The exact2.43-7 Debian delta touches only three allocation growth expressions near original lines862/936/991 in this file. It does not remove the extra terminating write. No fixed-code claim is made."
+  },
+  "libc_internal_entry_review": {
+    "source_matching_files": 100,
+    "inventory_sha256": "35fa93d02f7d24d0a8c8fd767bbe80ad1bda9f084f06ebc04913562eab40d242",
+    "routes": "The affected core is the wide scanner instantiation. Production references are the wide scanf wrapper/compatibility families, their prototypes and aliases. Narrow scanning and wchar conversion functions are separate entry paths; __wcrtomb being available does not itself invoke wide scanning.",
+    "review_exclusions": "The source inventory also includes test programs and alternative-ABI wrappers. Those are not treated as installed runtime callers merely because their source is present."
+  },
+  "exact_native_boundary": {
+    "closure": {
+      "files": 515,
+      "sha256": "7bde6d27b4fd6015f058da3f28d8c1e5dfb0155aadca77a61919225674d4f348"
+    },
+    "wide_scanf_dynamic_imports": [],
+    "non_libc_wide_name_occurrences": [
+      {
+        "elf_sha256": "a933f358cda2bf507536c9d8f85b43002d33d313db47735c722783db43bc457c",
+        "section": ".debug_str",
+        "flags": 48,
+        "allocated": false,
+        "matching_names": [
+          "vfwscanf",
+          "vswscanf",
+          "vwscanf"
+        ]
+      },
+      {
+        "elf_sha256": "8ae79a58d6f7e26c524801e5cc8cb4379cedc2d176b4841b822eff8ff6dc5882",
+        "section": ".debug_str",
+        "flags": 48,
+        "allocated": false,
+        "matching_names": [
+          "vfwscanf",
+          "vswscanf",
+          "vwscanf"
+        ]
+      }
+    ],
+    "greenlet_review": "Both non-libc occurrences are only .debug_str, SHF_ALLOC unset. Neither has a wide scanf dynamic import. Debug declaration strings are not runtime symbol dispatch targets.",
+    "dynamic_lookup_callers": [
+      {
+        "paths": [
+          "/opt/venv/lib/python3.11/site-packages/psycopg_binary.libs/libkrb5support-d0bcff84.so.0.1"
+        ],
+        "sha256": "0eb5322b05ac46e4db7ddb779ee0269006dd01801aaa67b84f8e7f753bfdddf2",
+        "lookup_imports": [
+          "dlopen",
+          "dlsym"
+        ]
+      },
+      {
+        "paths": [
+          "/opt/venv/lib/python3.11/site-packages/PIL/_imagingft.cpython-311-x86_64-linux-gnu.so"
+        ],
+        "sha256": "104f1199ccb1a6e501edcfa229f7209cc970a781bf00a9fb78d95264cd38c64f",
+        "lookup_imports": [
+          "dlopen",
+          "dlsym"
+        ]
+      },
+      {
+        "paths": [
+          "/opt/venv/lib/python3.11/site-packages/_cffi_backend.cpython-311-x86_64-linux-gnu.so"
+        ],
+        "sha256": "192828af4429c83d5cd92c40275ffd3c71459c3dc7a58e43cf4b5c346d78dc8e",
+        "lookup_imports": [
+          "dlopen",
+          "dlsym"
+        ]
+      },
+      {
+        "paths": [
+          "/usr/lib/x86_64-linux-gnu/libsqlite3.so.3.54.1"
+        ],
+        "sha256": "225ceb839db2c1dd484cfcaa5ef9fbdd429eb1d5f1e0c39fbd50150bca5fc7bc",
+        "lookup_imports": [
+          "dlopen",
+          "dlsym"
+        ]
+      },
+      {
+        "paths": [
+          "/usr/lib/x86_64-linux-gnu/libc_malloc_debug.so.0"
+        ],
+        "sha256": "2eb91fbaf99980e51e6018bd0705bd9a7e22c1faa096e63b00de6bf26b0148a5",
+        "lookup_imports": [
+          "dlsym"
+        ]
+      },
+      {
+        "paths": [
+          "/opt/venv/lib/python3.11/site-packages/uuid_utils/_uuid_utils.cpython-311-x86_64-linux-gnu.so"
+        ],
+        "sha256": "3ab8d9bdb8628b11400a8ed507b3ba7d009eb80a7374cc725ff88441dfb5e2f6",
+        "lookup_imports": [
+          "dlsym"
+        ]
+      },
+      {
+        "paths": [
+          "/opt/venv/lib/python3.11/site-packages/cryptography/hazmat/bindings/_rust.abi3.so"
+        ],
+        "sha256": "3d6423664bffe926fd91d1913d1c5ddda5c31ee7ff1cae06fc8b71c47c9501a1",
+        "lookup_imports": [
+          "dlopen",
+          "dlsym"
+        ]
+      },
+      {
+        "paths": [
+          "/opt/venv/lib/python3.11/site-packages/pydantic_core/_pydantic_core.cpython-311-x86_64-linux-gnu.so"
+        ],
+        "sha256": "4ac2f56180cbde0758f23ab5772f85b3cdd28e93e875962f1e3475dc7a3c50d3",
+        "lookup_imports": [
+          "dlsym"
+        ]
+      },
+      {
+        "paths": [
+          "/opt/venv/lib/python3.11/site-packages/PIL/_imagingtk.cpython-311-x86_64-linux-gnu.so"
+        ],
+        "sha256": "6052e7d8d22918a4efc6fd8b5999bffbc4544d31564197e25355c0882ec5b648",
+        "lookup_imports": [
+          "dlopen",
+          "dlsym"
+        ]
+      },
+      {
+        "paths": [
+          "/usr/lib/x86_64-linux-gnu/libgomp.so.1.0.0"
+        ],
+        "sha256": "6456b504ac347bd50c419667440b691f6966ad8aff5309d2f06c977fe2f9debe",
+        "lookup_imports": [
+          "dlopen",
+          "dlsym"
+        ]
+      },
+      {
+        "paths": [
+          "/usr/local/lib/python3.11/lib-dynload/_ctypes.cpython-311-x86_64-linux-gnu.so"
+        ],
+        "sha256": "71d6c0af4bb4eb602c5b33db6e245354053f85d58c07c140e5169f8b0900e505",
+        "lookup_imports": [
+          "dlopen",
+          "dlsym"
+        ]
+      },
+      {
+        "paths": [
+          "/opt/venv/lib/python3.11/site-packages/psycopg_binary.libs/libcrypto-d2905bf5.so.3"
+        ],
+        "sha256": "7a8efbd82926925ac29888804343c1e823eb0eac26785fcc43d78f4a73808567",
+        "lookup_imports": [
+          "dlopen",
+          "dlsym"
+        ]
+      },
+      {
+        "paths": [
+          "/usr/local/lib/libpython3.11.so.1.0"
+        ],
+        "sha256": "7f660d632b8204f0947d9faa3dfaf26060e4f48edf4b5315cddab446c293a6d4",
+        "lookup_imports": [
+          "dlopen",
+          "dlsym"
+        ]
+      },
+      {
+        "paths": [
+          "/usr/lib/x86_64-linux-gnu/libcrypto.so.3"
+        ],
+        "sha256": "8ae56f0a9481280a68c19f59809cd242a07a91ad7142944d21a878221992244b",
+        "lookup_imports": [
+          "dlopen",
+          "dlsym"
+        ]
+      },
+      {
+        "paths": [
+          "/usr/lib/x86_64-linux-gnu/libmemusage.so"
+        ],
+        "sha256": "8b60ca3e0878c482e88efea3caaa4d5ee18aeaf688a0a95ac81bde12b384f781",
+        "lookup_imports": [
+          "dlsym"
+        ]
+      },
+      {
+        "paths": [
+          "/opt/venv/lib/python3.11/site-packages/psycopg_binary.libs/libselinux-0922c95c.so.1"
+        ],
+        "sha256": "99e60178aed625f6d2e2af58bccf605b13619b1544058e9f985a2772affb4a88",
+        "lookup_imports": [
+          "dlopen",
+          "dlsym"
+        ]
+      },
+      {
+        "paths": [
+          "/opt/venv/lib/python3.11/site-packages/pillow.libs/libavif-c6062d5f.so.16.4.2"
+        ],
+        "sha256": "d12ec0b696860b292114b130ecac6082fc75c198c1b4fa57b26089e9b0a7eb6a",
+        "lookup_imports": [
+          "dlsym"
+        ]
+      },
+      {
+        "paths": [
+          "/opt/venv/lib/python3.11/site-packages/psycopg_binary.libs/libsasl2-84219a89.so.3.0.0"
+        ],
+        "sha256": "e84be55110f16f7ca930af373e9f41fa7f4ec60733c013d933d1443ae5056a98",
+        "lookup_imports": [
+          "dlopen",
+          "dlsym"
+        ]
+      }
+    ]
+  },
+  "python_boundary_file": "python-ffi-boundary.json",
+  "decision_basis": "Taken together: exact runtime native identity/imports, only nonallocated debug-name occurrences outside libc, the libc entry-wrapper boundary, and the current application/Python fixed binding review show no selected affected wide-scanning entry in the current API flow. This is a bounded application-path proposal, not a statement that the library code or every imaginable FFI program is safe.",
+  "not_used_as_proof": [
+    "A low/unknown scanner severity",
+    "C locale or absence of UTF-8 locales",
+    "A version comparison alone",
+    "A successful narrow scanf call",
+    "Zero imports alone"
+  ],
+  "invalidation": "A new wide scanf entry, generic user-selectable FFI/native execution, external plugin, changed native/Python closure or changed source/runtime contract invalidates this proposal."
+}

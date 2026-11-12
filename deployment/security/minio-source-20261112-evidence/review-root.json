@@ -1,0 +1,22 @@
+{
+  "actor": "/root",
+  "actor_kind": "automated_independent_agent",
+  "observed_at_utc": "2026-11-12T05:23:55.960633+00:00",
+  "subject_sha256": "08885c8f3db046b3e33c80b677d98350621a12488ec05c8c3539fb22e618a28d",
+  "facts_passed": true,
+  "risk_acceptance": false,
+  "binary_redistribution_approved": false,
+  "actual_engine_id": "sha256:5e20c6adc5e491a589d6c2f45b467bc74f3f60573e559686874766f45a13e194",
+  "actual_portable_config_digest": "sha256:b7e62d55e9af52ee4754c8f768b3fb5d27f002f652817ba49db4f8881c7ebef9",
+  "reviewed_draft_sha256": "a52e6782fb2258aea0ce1a41158224e6710c5324c9022ebbb3deef560debd381",
+  "actual_raw_scan_sha256": "96db7581414add8f8cc6ba93e201444423dd19b28605b7a1dab51052020b8d36",
+  "observations": [
+    "Inspected the fixed official Go1.27.4 recipe, source commit/module checksum locks and unchanged protocol/runtime configuration.",
+    "Independently recomputed complete native/source graph and runtime migration facts; both real ELF payloads are new and compiled with go1.27.4.",
+    "Independently exported and hashed the actual prepared image; complete runtime/native/config identity matches the proposed profile.",
+    "Full raw scan changes43to41 only removes the two named Go advisory rows; no other new/missing/changed finding is accepted and secrets remain blocked.",
+    "Required CSV and legacy compatibility test names actually ran and passed; no-tests output is rejected.",
+    "The original H/C/U threshold remains;34 old LOW/MEDIUM records are not an all-severity technical clearance.",
+    "This is an automated technical review of this exact subject, not human approval or third-party binary redistribution permission."
+  ]
+}

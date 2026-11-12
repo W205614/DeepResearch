@@ -115,9 +115,11 @@ def test_observability_prepares_source_profile_before_start_and_never_reuses_old
         arguments.append('--no-build')
     assert local.main(arguments) == 0
     assert len(calls) == 3
-    assert calls[0][1] == str(local.ROOT / 'scripts/fetch_approved_image.py')
-    assert calls[1][:4] == [local.sys.executable, str(local.ROOT / 'scripts/build_grafana_source_20261110.py'),
-                            '--output-dir', str(local.ROOT / '.cache/grafana-source-20261110')]
+    assert calls[0][:4] == [local.sys.executable, str(local.ROOT / 'scripts/build_go_stdlib_security_20261112.py'),
+                            '--artifact', 'minio']
+    assert ('--no-build' in calls[0]) is no_build
+    assert calls[1][:4] == [local.sys.executable, str(local.ROOT / 'scripts/build_go_stdlib_security_20261112.py'),
+                            '--artifact', 'grafana']
     assert ('--no-build' in calls[1]) is no_build
     assert calls[2][:2] == ['docker', 'compose'] and 'up' in calls[2]
     assert calls[2][calls[2].index('-p') + 1] == 'isolated-fixture'
@@ -139,7 +141,7 @@ def test_missing_or_changed_source_image_blocks_local_start_without_old_artifact
 
     def run(command, **kwargs):
         calls.append(command)
-        if str(local.ROOT / 'scripts/build_grafana_source_20261110.py') in command:
+        if str(local.ROOT / 'scripts/build_go_stdlib_security_20261112.py') in command and 'grafana' in command:
             raise subprocess.CalledProcessError(1, command)
 
     monkeypatch.setattr(local.subprocess, 'run', run)

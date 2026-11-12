@@ -48,7 +48,8 @@ def historical_grafana_maintenance_root(tmp_path_factory):
     helpers = repository / 'tests/fixtures/grafana-source-candidate4-historical'
     selectors = repository / 'tests/fixtures/grafana-fixed-20261107/selectors-before'
     selector_names = {'compose.yaml', 'scripts/runtime_ci_inventory.py',
-                      '.github/workflows/ci.yml', '.github/workflows/security.yml'}
+                      '.github/workflows/ci.yml', '.github/workflows/security.yml',
+                      '.github/workflows/rag-quality.yml', 'deployment/compose/compose.verify.yaml'}
     selection = json.loads((repository / gate.MAINTENANCE_REVIEW_PATH).read_bytes())
     root = tmp_path_factory.mktemp('source18-historical-files')
     # This is a historical replay, not the current repository's authorization.

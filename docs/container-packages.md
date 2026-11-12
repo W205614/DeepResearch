@@ -2,6 +2,28 @@
 
 应用制品分成三个 Linux/amd64 包。Agent 包还用于 Worker、资料 Worker、迁移、数据库初始化、容量指标和告警中继；角色命令由原 Compose 服务配置决定。
 
+## 正式 v0.1.4
+
+[v0.1.4 版本页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.4)集中提供本版 `publication-manifest.json`、镜像分片、引用式对应源码和最终发布／验收收据。源码／分发 SHA、不可变 manifest 与 portable config digest、分片长度／摘要及实际 CI run 以这些收据核对，本页不预设它们的最终值。本版 CI／Security、显式 Packages 发布、匿名获取和日常验收的实际完成状态统一记录于版本页 `final-release-acceptance.json`；未完成或跳过不能视为通过。
+
+| 组件 | 本版真实改动与复用边界 |
+| --- | --- |
+| Agent | 更新常规资料问法的证据校验代码，并补齐本版法律／来源封装；原生依赖字节保持。正文数字及独立语义门槛未放宽，没有改研究提示词 |
+| Backend | 精确复用已有 config、层与内置组件标签；`v0.1.4` 是本次发布 cohort 版本，不表示该组件重新编译 |
+| Web | 精确复用已有 config、层与内置组件标签；原 libxslt 修复和分发材料保持 |
+
+镜像内置 OCI 标签记录原组件来源，不能只因 Registry 新版本名就将其改写为所有组件的新编译来源。拉取使用版本清单中的 `ghcr.io/...@sha256:...`；manifest digest、portable config digest 与本机 Engine ID 分别记录，不互相代替。
+
+相同常规问题的[第一轮修复复验](evidence/release-v014-20261112/README.md)，截至该时点得到两条支持事实、0 删除、无修订、`original_request_answered=true`；该阶段累计 32 次请求全部上界预留 3.547734 USD，包含旧失败，未重置 5 USD 累计预算。这不是供应商账单。第一轮向量不可用后明确回退关键词检索，报告仍为 `partial`；该阶段最终 UI 状态未进一步验收，不称整个检索与模型质量全部通过。
+
+最终封装的 Agent 与新 Go MinIO 的组合复验单独记录在 [v0.1.4 版本页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.4)补充附件 `final-combination-acceptance.json`。最终组合状态、截至该轮的累计请求及费用预留、实际检索路径和 UI 转换结论均以该收据为准；第一轮结果独立保留。
+
+本轮 Agent 原始扫描记录为 92 条（原 88 条加四条新 glibc UNKNOWN）。库仍受影响；`libc6` 的处置仅限实际应用函数路径不适用，额外 gconv 包不含对应实现，完整来源与闭包见[精确复核材料](../deployment/security/agent-glibc-20261112-evidence/primary-sources.json)。默认 raw-zero 失败、原严重级别、失败记录及失效条件保留；最终发布须通过当前归档及拉取制品的实际门槛，不把这些记录写成 fixed 或零漏洞。
+
+MinIO／Silo 本地源码镜像的两个程序已采用 Go 1.27.4 重建，43 条原始记录变为 41 条，去除新增两条 stdlib 记录；其中遗留 34 条 LOW／MEDIUM 尚未完成全量技术审查。Grafana 主程序及十三插件的最终新 Go 构建／扫描结果：主程序和十三个插件均以 Go 1.27.4 实际重编译，Trivy 54→40，恰好移除新增十四条 stdlib 记录；Grype 保留十条原始记录。原四十条 Trivy 与十条 Grype 仍按完整库存、实际代码和精确路径逐项核查，原严重级别与失败保持，不称零漏洞。这两项是本地源码依赖，没有新增公开第三方二进制 Packages；准备命令见[运行依赖](source-release.md#运行依赖如何获取)。
+
+下节保留 `v0.1.3` 的固定身份与当时结果，不把其旧快照当作本版新检查。
+
 ## 正式 v0.1.3
 
 正式 [v0.1.3](https://github.com/W205614/DeepResearch/releases/tag/v0.1.3) 的源码与分发提交为 `78a19df9dfa6f072af6ebe40ff99cf164d0c4ff8`，[CI](https://github.com/W205614/DeepResearch/actions/runs/42968387539)全部 4 项、[Security](https://github.com/W205614/DeepResearch/actions/runs/42968387608)全部 22 项成功。[Packages 工作流](https://github.com/W205614/DeepResearch/actions/runs/42977626649)实际发布成功，三个原有 GHCR 目标保持公开，版本名和不可变 digest 均已实际匿名获取、拉取及运行核验。
@@ -46,18 +68,18 @@ Manifest digest 用于 `docker pull ghcr.io/w205614/deepresearch-<service>@sha25
 
 ## 获取与启动
 
-以下为新安装的 `v0.1.3` 核心栈路线。覆盖文件兼容旧默认值，必须显式设置 `DEEPRESEARCH_PACKAGE_VERSION=v0.1.3`；否则会选择旧 `v0.1.1`。已有日常部署继续沿用原项目、配置、端口／网络覆盖和不可变 digest overlay，不直接套用新安装命令。
+以下为新安装的 `v0.1.4` 核心栈路线。覆盖文件兼容旧默认值，必须显式设置 `DEEPRESEARCH_PACKAGE_VERSION=v0.1.4`；否则会选择旧 `v0.1.1`。已有日常部署继续沿用原项目、配置、端口／网络覆盖和不可变 digest overlay，不直接套用新安装命令。
 
-使用同一正式源码标签取得 Compose 覆盖和工具，需要 Git、Python 3.11+、Docker Linux/amd64 和 Compose v2。初始化后按[配置说明](source-release.md)填写私密凭据。固定 MinIO 镜像及第三方构建型服务仍须准备；下面 `build` 只选择第三方依赖，应用使用实际公开 Packages：
+使用同一正式源码标签取得 Compose 覆盖和工具，需要 Git、Python 3.11+、Docker Linux/amd64 和 Compose v2。初始化后按[配置说明](source-release.md)填写私密凭据。MinIO／Silo 先使用受控源码入口准备，其他第三方构建型服务仍须构建；下面的 `build` 不构建应用，应用使用版本页对应的公开 Packages。保留完整 Git 历史以核对固定审查快照，不用缺少历史对象的浅克隆或独立源码 ZIP 替代：
 
 ```powershell
-git clone --config core.autocrlf=false --branch v0.1.3 https://github.com/W205614/DeepResearch.git
+git clone --config core.autocrlf=false --branch v0.1.4 https://github.com/W205614/DeepResearch.git
 cd DeepResearch
 python scripts/local.py init
 # 填写本机 .env 的模型／嵌入凭据及可选重排配置后继续。
 python scripts/local.py check
-python scripts/fetch_approved_image.py
-$env:DEEPRESEARCH_PACKAGE_VERSION = 'v0.1.3'
+python scripts/build_go_stdlib_security_20261112.py --artifact minio
+$env:DEEPRESEARCH_PACKAGE_VERSION = 'v0.1.4'
 docker compose -f compose.yaml -f deployment/compose/compose.core.yaml -f deployment/compose/compose.packages.yaml config --quiet
 docker compose -f compose.yaml -f deployment/compose/compose.core.yaml -f deployment/compose/compose.packages.yaml build postgres keycloak-postgres etcd milvus keycloak storage-init
 docker compose -f compose.yaml -f deployment/compose/compose.core.yaml -f deployment/compose/compose.packages.yaml pull agent backend web
@@ -76,15 +98,17 @@ docker compose -f compose.yaml -f deployment/compose/compose.core.yaml -f deploy
 
 这些 PowerShell 命令在同一会话执行；其他 shell 使用其环境变量语法。后续 `ps`／`logs`／`stop` 也保持相同变量和 Compose 参数。首次安装并非一次 `pull` 即取得完整第三方栈；有 `build` 的依赖仍会按固定源码构建。可选完整观测栈还须使用[受控 Grafana 源码入口](source-release.md#运行依赖如何获取)，不把旧公开输入当作新构建完成。
 
-版本标签首次发布后不覆盖；正式部署可另加本机覆盖文件，将九个应用角色固定到上表三个 `ghcr.io/...@sha256:...`。不能仅凭版本名或 `latest` 判断字节身份。本轮三个既有公开包已用空 Docker 配置匿名拉取，不需要为获取它们增加个人令牌权限。
+版本标签首次发布后不覆盖；正式部署可另加本机覆盖文件，将九个应用角色固定到本版清单中的三个 `ghcr.io/...@sha256:...`。不能仅凭版本名或 `latest` 判断字节身份。本轮三个既有公开包已用空 Docker 配置匿名拉取，不需要为获取它们增加个人令牌权限。
 
 ## 制品来源与许可材料
 
 镜像内 `/usr/share/deepresearch-distribution/` 提供原创 MIT LICENSE、第三方声明、实际依赖／许可清单、保留的版权与许可文本，以及对应源码的准确获取说明。整个镜像不统一改为 MIT；第三方组件保留自身许可。
 
-当前 [v0.1.3 Release](https://github.com/W205614/DeepResearch/releases/tag/v0.1.3) 有 24 个附件：发布清单、验收摘要、17 个应用镜像分片和 5 个新对应源码分片；发布清单 SHA-256 为 `a783597268a3d48f2154554e8517b8a2e9341d655822bdecc14fa117ec9e2ce8`。
+`v0.1.4` 使用本版发布清单和补充材料，并继续依赖固定 `v0.1.3`、`v0.1.2` 对应源码；新材料不是自包含包，实际分片数量、长度和 SHA-256 以本版清单及源码索引为准。
 
-对应源码采用 reference-v3，**不是自包含包**。先按该清单长度／摘要合并五个 `sources.tar.gz.partNNN`，得到 `distribution-source-reference.tar.gz`（82,413,180 字节，SHA-256 `4ace5acbf322d7f152d3f22aebc8f2cb1ff6423cabfd711bed2cf8d23f92ed5b`），解包阅读索引；其中包括工程归档、准确 libxslt r4 完整源码补充和重建配方。还必须取得固定 [v0.1.2 Release](https://github.com/W205614/DeepResearch/releases/tag/v0.1.2) 的 74 个源码分片并按其清单合并：旧清单 SHA-256 `890685dde617ffe3b8afbade8aa3cab61eb77e4c731b98e467cc11fd409ce9fd`，完整源码归档 1,227,806,395 字节，SHA-256 `5f87eea184278c15d621971cec53774d4177a1ca60a128d148d04888f2bcd88a`。合并按分片编号排序，以二进制方式拼接，先验证每个分片，再验证整包与索引成员，不能用文本拼接。新五分片及旧七十四分片的实际匿名完整获取和成员验证均已完成，曾发生的下载断流和范围恢复记录保留。
+历史 [v0.1.3 Release](https://github.com/W205614/DeepResearch/releases/tag/v0.1.3) 保留固定的 24 个核心附件（发布清单、验收摘要、17 个应用镜像分片和 5 个对应源码分片），另保留最终 CI 补充收据；不能用原核心数冒充当前总附件数。原发布清单 SHA-256 为 `a783597268a3d48f2154554e8517b8a2e9341d655822bdecc14fa117ec9e2ce8`。
+
+下述历史 `v0.1.3` 对应源码采用 reference-v3，**不是自包含包**；本版引用这些准确旧材料，不改写其身份。先按该清单长度／摘要合并五个 `sources.tar.gz.partNNN`，得到 `distribution-source-reference.tar.gz`（82,413,180 字节，SHA-256 `4ace5acbf322d7f152d3f22aebc8f2cb1ff6423cabfd711bed2cf8d23f92ed5b`），解包阅读索引；其中包括工程归档、准确 libxslt r4 完整源码补充和重建配方。还必须取得固定 [v0.1.2 Release](https://github.com/W205614/DeepResearch/releases/tag/v0.1.2) 的 74 个源码分片并按其清单合并：旧清单 SHA-256 `890685dde617ffe3b8afbade8aa3cab61eb77e4c731b98e467cc11fd409ce9fd`，完整源码归档 1,227,806,395 字节，SHA-256 `5f87eea184278c15d621971cec53774d4177a1ca60a128d148d04888f2bcd88a`。合并按分片编号排序，以二进制方式拼接，先验证每个分片，再验证整包与索引成员，不能用文本拼接。新五分片及旧七十四分片的实际匿名完整获取和成员验证均已完成，曾发生的下载断流和范围恢复记录保留。
 
 `v0.1.2` 源码 Tag 仍为 `488550ecb61e7f369dd4967c7fa35e4c64369e75`，正常 Release 的 93 个附件继续保留，承担上述对应源码职责。其旧 Packages 作业因新漏洞库发现被门槛阻断，失败发生在 Registry 推送前；不将它写作已发布的 `v0.1.2` Packages。`v0.1.3` 是真实 libxslt／工程修复版本，不为验证轮次重复创建版本。
 

@@ -27,9 +27,15 @@
 
 [正式审核画面](docs/images/report-review.png)与[手机工作台](docs/images/workspace-mobile.png)展示同一类操作。以上是仓库已有的真实页面截图，使用固定展示资料和合成账号，**不是本轮新模型回答或新部署验收**；来源与重现入口见[素材说明](docs/images/README.md)。
 
-2026-11-11 交付的 `v0.1.3` 三个应用镜像已公开并通过匿名拉取、完整身份与法律材料核验。该阶段隔离核心验收中，4 个浏览器用例通过、0 跳过，完成资料研究与引用检查，研究模型使用受控夹具。另复用 2026-11-10 从同一未变化 Agent 制品执行的 2 次官方 API 实测：合成文本 JSON 和 3072 维 Embedding，均成功、0 重试，原调用预算上限 1 USD；该交付阶段没有追加调用，也不将它们写成全面模型质量评估。
+`v0.1.4` 修复了常规内部资料问法返回 `insufficient` 的校验缺陷：精确绑定的文件名和字符定位按引用元数据处理，正文事实数字、来源归属及独立语义核查仍使用原门槛，没有改研究提示词。[第一轮修复复验](docs/evidence/release-v014-20261112/README.md)使用原常规问题，截至该时点两条事实均支持、0 删除、无修订，`original_request_answered=true`。第一轮向量检索不可用，明确回退到关键词检索且质量仍为 `partial`；该阶段最终 UI 状态转换未进一步验收，不能据此声称全面模型质量、向量检索或界面完成状态全部通过。
 
-2026-11-12 另用同一正式制品执行了[新的真实模型研究验收](docs/evidence/release-20261112/README.md)：累计 23 次外发（22 次 HTTP 200、1 次 HTTP 400），全部请求上界累计预留 2.373213 USD，处于本轮 5 USD 上限内。常规问法得到 `insufficient`；明确资料归因及引用表达的另一个场景完成浏览器检查，但报告仍为 `partial`、完整回答标记为 false。两份结果及失败均保留，不能称默认研究与模型质量全部通过。同日 Security 被 MinIO 新增两条未完成适用性判断的 UNKNOWN 扫描记录阻断，未放宽门槛。
+第一轮修复复验阶段，截至该时点累计 32 次真实外发，全部请求上界累计预留为 3.547734 USD，包含旧失败请求的预留，不是供应商账单；该阶段新增 6 次文本与 3 次嵌入请求均 HTTP 200。账本未重置，也没有重建日常历史向量。此前同一问题的[失败结果](docs/evidence/release-20261112/default-prompt-insufficient.json)和第一轮成功结果均保留。
+
+最终封装的 Agent 与新 Go MinIO 组合复验结果、截至最终轮的累计费用预留、检索降级及 UI 状态转换，以 [v0.1.4 版本页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.4)的补充收据 `final-combination-acceptance.json` 为准，仍受同一累计 5 USD 上限约束。第一轮使用的组合、费用和未验证项不自动成为最终组合的结论。
+
+版本清单、不可变镜像身份、实际分片和最终 CI／Security 结果集中在 [v0.1.4 版本页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.4)的 `publication-manifest.json` 与最终验收收据，避免把变化中的汇总数当作制品身份。本版 CI／Security、显式 Packages 发布、匿名获取和日常验收的实际完成状态统一记录于版本页 `final-release-acceptance.json`；未完成或跳过不能视为通过。
+
+下段是 `v0.1.3` 阶段的日常交付记录；`v0.1.4` 的新结果以上述版本收据为准。`v0.1.3` 当时的隔离四浏览器用例使用受控模型夹具，两次官方 API 历史探针也不等于本次常规研究复验。
 
 本机日常环境已使用实际拉取的制品完成普通端口、接口和运行源码验收：更新九个应用角色、Grafana 与两个 PostgreSQL 角色，其余十三个容器身份保持，14 张业务表摘要、持久化资源和原有保护配置保持一致，结束后恢复全部 25 个容器停止。隔离浏览器使用专用 Windows TCP relay，普通日常端口的结论来自单独的日常验收，不混作同一次验证。
 
@@ -72,11 +78,11 @@ Java 管理公开接口、权限、任务准入、Outbox 和正式报告。Pytho
 
 | 目的 | 来源与入口 | 需要的工具 |
 | --- | --- | --- |
-| 获取预构建应用镜像 | 公开 `v0.1.3`，三个 Packages 已实际匿名拉取并完成日常验收；[版本、digest 与步骤](docs/container-packages.md) | Git、Python 3.11+、Docker Linux/amd64、Compose v2 |
-| 从固定源码构建 | 源码 Tag `v0.1.3`，工程提交 `78a19df9dfa6f072af6ebe40ff99cf164d0c4ff8`；[构建启动步骤](docs/source-release.md#克隆后启动) | 同上；Java／Node 由 Docker 构建 |
+| 获取预构建应用镜像 | `v0.1.4` 三个应用 Packages；精确身份和最终验收以版本收据为准，[版本与启动步骤](docs/container-packages.md#正式-v014) | Git、Python 3.11+、Docker Linux/amd64、Compose v2 |
+| 从固定源码构建 | 完整克隆并检出源码 Tag `v0.1.4`，保留固定历史审查对象；[构建启动步骤](docs/source-release.md#克隆后启动) | 同上；Java／Node 由 Docker 构建 |
 | 修改当前开发源码 | `main` + Python 容器热更新，或独立组件开发检查；[开发指南](CONTRIBUTING.md#开发环境) | 完整开发检查另需 Python／uv、JDK 21／Maven、Node.js 22／npm |
 
-三个应用镜像不包含完整依赖栈。首次安装仍须获取固定 MinIO／Silo 镜像，并按仓库配方构建 PostgreSQL、Keycloak、Milvus 等依赖。支持的平台为 Linux/amd64；Windows 使用 Docker Desktop 的 Linux 容器，未声称 arm64 已验收。网络下载、外部账号和模型调用额度由使用者准备。
+三个应用镜像不包含完整依赖栈。首次安装须按受控源码入口准备 MinIO／Silo，并按仓库配方构建 PostgreSQL、Keycloak、Milvus 等依赖；完整观测栈还须准备 Grafana。支持的平台为 Linux/amd64；Windows 使用 Docker Desktop 的 Linux 容器，未声称 arm64 已验收。网络下载、外部账号和模型调用额度由使用者准备。
 
 ### 新安装的配置
 
@@ -108,7 +114,8 @@ Java 管理公开接口、权限、任务准入、Outbox 和正式报告。Pytho
 
 | 对象 | 固定来源 | 获取与对应材料 |
 | --- | --- | --- |
-| 正式 `v0.1.3` | 源码与分发提交 `78a19df9dfa6f072af6ebe40ff99cf164d0c4ff8` | [Release](https://github.com/W205614/DeepResearch/releases/tag/v0.1.3) · [CI：4 项成功](https://github.com/W205614/DeepResearch/actions/runs/42968387539) · [Security：22 项成功](https://github.com/W205614/DeepResearch/actions/runs/42968387608) · [Packages 发布成功](https://github.com/W205614/DeepResearch/actions/runs/42977626649) |
+| 正式 `v0.1.4` | 最终源码／分发 SHA、三个应用的 manifest/config 身份和组件来源见版本清单 | [Release](https://github.com/W205614/DeepResearch/releases/tag/v0.1.4) · [真实常规问法复验](docs/evidence/release-v014-20261112/README.md) · [制品边界](docs/container-packages.md#正式-v014) |
+| 历史正式 `v0.1.3` | 源码与分发提交 `78a19df9dfa6f072af6ebe40ff99cf164d0c4ff8` | [Release](https://github.com/W205614/DeepResearch/releases/tag/v0.1.3) · [CI：4 项成功](https://github.com/W205614/DeepResearch/actions/runs/42968387539) · [Security：22 项成功](https://github.com/W205614/DeepResearch/actions/runs/42968387608) · [Packages 发布成功](https://github.com/W205614/DeepResearch/actions/runs/42977626649) |
 | 三个 `v0.1.3` Packages | Agent／Backend 保留已验收的 `v0.1.2` 完整 config、层与标签；Web 包含新的 libxslt 修复与法律材料 | [Agent](https://github.com/users/W205614/packages/container/package/deepresearch-agent) · [Backend](https://github.com/users/W205614/packages/container/package/deepresearch-backend) · [Web](https://github.com/users/W205614/packages/container/package/deepresearch-web) · [精确身份与来源](docs/container-packages.md) |
 | 历史 `v0.1.2` | `488550ecb61e7f369dd4967c7fa35e4c64369e75`；正常公开源码与对应源码载体 | [Release](https://github.com/W205614/DeepResearch/releases/tag/v0.1.2)；其 Packages 作业在推送前被新告警阻断。74 个对应源码分片仍由 `v0.1.3` 引用，继续保留 |
 | 历史源码 `v0.1.1` | `b2da9da7c390bd50944c2947afd1381613c37192` | [源码 Release](https://github.com/W205614/DeepResearch/releases/tag/v0.1.1) |
@@ -117,9 +124,13 @@ Java 管理公开接口、权限、任务准入、Outbox 和正式报告。Pytho
 
 2026-11-11 核对：默认分支 Code scanning 与 Secret scanning 活动项均为 0。原 70 条告警为 1 条实际 fixed、68 条有依据误报关闭、1 条维护补丁缓解；随后 6 条 Go 清单告警按真实编译图逐项关闭。本轮新增两条验收探针静态 IV 告警已通过随机密钥／nonce 实际修复，新扫描自动标记为 fixed，没有 dismiss。原始报告、失败和依据保留，无活动告警不等于零漏洞，详见[全级别复核](docs/application-security-status-20261110.md)。
 
-正式 Agent 已更新官方 glibc，完整范围扫描仍保留 **3 HIGH、57 MEDIUM、23 LOW、5 UNKNOWN** 共 88 条原始记录。精确逐项门槛结合完整运行闭包、官方固定代码和当前调用路径，确认适用未解决及秘密发现为 0；默认 raw-zero 的失败也保留。Backend 与修复 libxslt 后的 Web 原始发现为 0。这些结论已对实际公开归档和匿名拉取制品核验，不能自动套用于旧镜像或任意新增插件。
+`v0.1.3` 阶段的 Agent 更新过官方 glibc，当时完整范围扫描保留 **3 HIGH、57 MEDIUM、23 LOW、5 UNKNOWN** 共 88 条原始记录。精确逐项门槛结合完整运行闭包、官方固定代码和当前调用路径，确认适用未解决及秘密发现为 0；默认 raw-zero 的失败也保留。Backend 与修复 libxslt 后的 Web 原始发现为 0。这些结论已对实际公开归档和匿名拉取制品核验，不能自动套用于旧镜像或任意新增插件。
 
-Grafana 使用 `grafana-source-20261110` 本地源码构建入口，主程序、BusyBox、十三个原插件与完整文件清单均已核验；PostgreSQL 保持 17.11 及 gosu 字节，实际修复 Kerberos、libxslt、zlib。两者已完成本机运行验收，没有新增公开第三方镜像。正常历史版本及仍有输入、许可或对应源码职责的 `artifact-*` 保留，不移动公开 Tag、不覆盖镜像版本。新对应源码采用小补充包加固定旧源码分片的引用方式，不能只下载新包就称为自包含，详见[源码获取](docs/container-packages.md)。
+`v0.1.4` Agent 的原生依赖字节保持，新增四条 glibc UNKNOWN 后原始记录为 92 条：`libc6` 的库仍受影响，技术依据仅排除当前应用调用路径；`libc-gconv-modules-extra` 不包含对应缺陷实现。原 88 条及新四条的完整证据、精确闭包和失效条件均保留，不称 glibc 已修复或零漏洞，见[逐项材料](deployment/security/agent-glibc-20261112-evidence/primary-sources.json)和版本最终安全收据。
+
+MinIO／Silo 的两个 Go 程序实际升级到 Go 1.27.4，扫描记录从 43 条变为 41 条，仅去除本次新增的两条 stdlib 记录；遗留 34 条 LOW／MEDIUM 尚未完成全量技术复核，不能写成全级别归零。Grafana 十四个 Go 程序的最终重建／扫描结果：主程序和十三个插件均以 Go 1.27.4 实际重编译，Trivy 54→40，恰好移除新增十四条 stdlib 记录；Grype 保留十条原始记录。原四十条 Trivy 与十条 Grype 仍按完整库存、实际代码和精确路径逐项核查，原严重级别与失败保持，不称零漏洞。两者均采用新的[本地源码构建入口](docs/source-release.md#运行依赖如何获取)，没有新增公开第三方二进制镜像。五个仍承担固定输入或来源职责的辅助发布继续保留，新增产品交付仅使用 `v0.1.4` 版本 Tag／Release。
+
+PostgreSQL 沿用此前 17.11／gosu 及已验收的原生修复；本轮应用分发不冒充数据库重新构建。对应源码继续由新补充材料加固定 `v0.1.3`、`v0.1.2` 材料组成，不能只下载新包就称为自包含，详见[源码获取](docs/container-packages.md#制品来源与许可材料)。
 
 ## 开发、测试与排错
 

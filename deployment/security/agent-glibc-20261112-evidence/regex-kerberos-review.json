@@ -1,0 +1,345 @@
+{
+  "schema": "agent-glibc-posix-regex-path-review-v1",
+  "cve": "CVE-2026-100290",
+  "risk_acceptance": false,
+  "binary_fixed_claim": false,
+  "upstream_package_affected": true,
+  "disposition_proposed": "NOT_AFFECTED_FUNCTION_NOT_IN_CURRENT_APPLICATION_PATH",
+  "official_advisory": "https://www.openwall.com/lists/oss-security/2026/11/11/8",
+  "official_tracker": "https://security-tracker.debian.org/tracker/CVE-2026-100290",
+  "source_rpm": {
+    "url": "https://vault.centos.org/7.9.2009/updates/Source/SPackages/krb5-1.15.1-55.el7_9.src.rpm",
+    "sha256": "d154824d46dff5aece0cdb8e4c9df299058bacadbaf7fb16be8d9163ca2814bb"
+  },
+  "runtime_kerberos_library": {
+    "path": "/opt/venv/lib/python3.11/site-packages/psycopg_binary.libs/libkrb5-fcafa220.so.3.3",
+    "sha256": "94dc6413050486a6c8de4b6f3bfdd288390892b72bc68580c6c53929721fa07b",
+    "build_id": "52c5b6279da9cd210e5d58d1b1e0e080e5c8b232",
+    "upstream_binary_rpm_sha256": "0b514834510f57ab09a2051d0b0c2be8a61777452ad125d1b3e5e90abeb6fa22"
+  },
+  "source_files": [
+    {
+      "path": "krb5-1.15.1/src/tests/localauth.c",
+      "sha256": "2fd1624bad154b3ec1fb1376025e20098bcc184da626ce563614d8da1fae6036",
+      "relevant_lines": [
+        66
+      ]
+    },
+    {
+      "path": "krb5-1.15.1/src/lib/gssapi/krb5/gssapi_krb5.c",
+      "sha256": "85a7d3326b960448a51d448b63fed47b2c8e9aad01187f70be1aec920bffa0fb",
+      "relevant_lines": [
+        787
+      ]
+    },
+    {
+      "path": "krb5-1.15.1/src/lib/kadm5/srv/svr_iters.c",
+      "sha256": "50f64cd69fe13f3602aa349565929a2e06317f3de56a63c849314f7f675e210a",
+      "relevant_lines": [
+        137,
+        210
+      ]
+    },
+    {
+      "path": "krb5-1.15.1/src/lib/krb5/os/t_an_to_ln.c",
+      "sha256": "3032ee9cf7a3d115b5a44db72dd8c098cfc48669dd05e70ff15032700cb93a11",
+      "relevant_lines": [
+        20
+      ]
+    },
+    {
+      "path": "krb5-1.15.1/src/lib/krb5/os/localauth_rule.c",
+      "sha256": "93cd37e0c17b58ba9fb7be2a473d920c0803d61a7e5fc7c763cd210f77a6cc5b",
+      "relevant_lines": [
+        100,
+        101,
+        121,
+        124
+      ]
+    },
+    {
+      "path": "krb5-1.15.1/src/lib/krb5/os/localauth.c",
+      "sha256": "92123a63565c736d13aa9fb4a155cf28ca47c3859c0ac436413846d981e37650",
+      "relevant_lines": [
+        409
+      ]
+    },
+    {
+      "path": "krb5-1.15.1/src/lib/krb5/os/localauth_an2ln.c",
+      "sha256": "fb11b2929e52e1a322b927a15f91ed285e229386662e5b8d267b2414a35b2d0d",
+      "relevant_lines": [
+        46
+      ]
+    },
+    {
+      "path": "krb5-1.15.1/src/plugins/preauth/pkinit/pkinit_matching.c",
+      "sha256": "c4282b06a6982d14d348461d99bbf7852c3c6c8fb5e15bd4e7d774a4bf81fe26",
+      "relevant_lines": [
+        343,
+        458
+      ]
+    },
+    {
+      "path": "krb5-1.15.1/src/clients/ksu/authorization.c",
+      "sha256": "b15f7424a2dbe2b40fbbdba0e5b8c74b887b4be9105b23b3c27397bcc6f3cf65",
+      "relevant_lines": [
+        176
+      ]
+    },
+    {
+      "path": "krb5-1.15.1/src/kadmin/dbutil/kdb5_mkey.c",
+      "sha256": "3775e188b3f81827b8d37528f9606485bbc510deb0e2272d63b204e49f61953b",
+      "relevant_lines": [
+        765,
+        922
+      ]
+    },
+    {
+      "path": "krb5-1.15.1/src/kadmin/dbutil/dump.c",
+      "sha256": "344ccba871736ade6fa41f34b529fa2c93a0c2b66db949d6a27252db1a6aeca6",
+      "relevant_lines": [
+        247,
+        255
+      ]
+    }
+  ],
+  "libpq_client_source": {
+    "source_release": "PostgreSQL18.6",
+    "official_url": "https://ftp.postgresql.org/pub/source/v18.6/postgresql-18.6.tar.bz2",
+    "archive_sha256": "555610c24d53e4316da5b7d3fc25c279d96856d5e0e23ee308c328c5fa881d9f",
+    "runtime_pq_version": 180006,
+    "complete_libpq_client_source_inventory": [
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-auth-oauth.c",
+        "sha256": "e909c6c453e820e091de35825c0c4c563a5079dd67f62a76ab96a42611bd8be5"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-auth-oauth.h",
+        "sha256": "a61ed01a496dd5a7cc735ddb2a8d8da242c8cef60801e61a7ba167354e41f69b"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-auth-sasl.h",
+        "sha256": "776098fe87c61b4bec8cd99c714a797b0606f35a14e61029c39cdda749b4468a"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-auth-scram.c",
+        "sha256": "3509ab9c61f2fe691f4b60cf43b68b71c50dd9a2e2524a31dba8aceec402f8f5"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-auth.c",
+        "sha256": "4e06c94ec49258fe6fc1c208091d777df9afb2d840e21518b42698de615f24ba"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-auth.h",
+        "sha256": "07563bb1c95089e4777e1eaecddbd4a3808f4bed7fd4dd8980b281dabf33990f"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-cancel.c",
+        "sha256": "e1acd1002bb3087c2fdfde11c60d443ced8148c68cd6f842f67ea3e8ac73a9e2"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-connect.c",
+        "sha256": "44a6e386cbfd67ebe768d6ef5493098119c2e6b4796239d53e5ed7b122b206a5"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-exec.c",
+        "sha256": "a9c1341e6e0e08180cca55b8ac72d40a267af1a1c3103284910050c9aa62e7a9"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-gssapi-common.c",
+        "sha256": "291b3f8b3d06527e74473b03c3d7b7c9ffc5351e28e88e2017107f668a75480b"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-gssapi-common.h",
+        "sha256": "5acfe6a4318a578dc2f3d433a3dd49e1f31c20e5d143d5c4e8cfcf5e6dd5ed0b"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-lobj.c",
+        "sha256": "e43bdd1bd128ead13ade6f68b170dc5c012e412d8c726a05e1741ed70fef6973"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-misc.c",
+        "sha256": "349309d69a08b33a51e6864fad83e1a4abda917bb1658fa8e4b0fb9a0d50cb79"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-print.c",
+        "sha256": "4ba383b4758fb8a1ac29e46c475fed1d92a3069bbf620967ca7e226b65f3c326"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-protocol3.c",
+        "sha256": "0d0dab827459251bf529288e786d26a16ef817870fde556bd429ad919cd03464"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-secure-common.c",
+        "sha256": "9df7206362ecb08f7b755f742735bebc11b741ae36389058eb42d25f57a84ba8"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-secure-common.h",
+        "sha256": "c5818eea72b565e21fe7fd300b0608607acfd7af9e9626fdd898ca7b6e5888ea"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-secure-gssapi.c",
+        "sha256": "d8a23522ec863b0a3dcdc629a4a605b1f72a417fd4e343277a187e7e140e98b9"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-secure-openssl.c",
+        "sha256": "403810fe35520dd8117ff9400553795a42df494e04a59cb766ca911736187ee0"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-secure.c",
+        "sha256": "e71604dcc68f2159d49951d23edbde0bef7c1ccfdbde3e6326ed80f9e003db07"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-trace.c",
+        "sha256": "27ab31d792939a5229c2fe041dac9dfb881a9f638ed26a42320a1c05bc4aa92a"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/legacy-pqsignal.c",
+        "sha256": "23ff40984375c9d935c2bea38f0129ee8b3379919c1cd758e2d1e8e7f5a63692"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/libpq-events.c",
+        "sha256": "4ee274dadc1eb52d1bdbbf801fd86a5491e76681d774fbc5f57c5921ab3b40ec"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/libpq-events.h",
+        "sha256": "1f68ab7cf5e957bac8e9a4994e6dc6253736b231ddfa1ae4ea61517a583f202a"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/libpq-fe.h",
+        "sha256": "499d984421f5490be016f7d49a8599e7f8be120f0cf80c200e872265064be7c0"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/libpq-int.h",
+        "sha256": "acc7d91545a610d4b63e1a33d797b305d1aa6f8f8999bd56655df7b6ec882492"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/pqexpbuffer.c",
+        "sha256": "81695b84fd5d0025736ea8e3e57e8d0a284a45034c6f5f8d6b8c5f8a3bad5dc0"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/pqexpbuffer.h",
+        "sha256": "25f0959ada949487847e25b309bedc10e0abcbb4f8b7a31da71acf08211ff061"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/pthread-win32.c",
+        "sha256": "9555a6891a93338675d694b38b0ed86bfda5888477d2208cea67168f6befb280"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/test/libpq_testclient.c",
+        "sha256": "e3f1c7320a0bafe6d6355e090427c3e7b9e4a2044e3a25a85bb0a14edb8d79fa"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/test/libpq_uri_regress.c",
+        "sha256": "dec61536820b560c9d2ff2b761fb0fc99b01d921a662f9de6c4e0062d9f20bce"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/win32.c",
+        "sha256": "c68436eb644af8a139cc9beb8922737774b12c4e82fa610d0409b1213f4fdeb7"
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/win32.h",
+        "sha256": "971d34ee02242fbb45f8adab25069183c56a0e34ccb4736dc4e665f172767c15"
+      }
+    ],
+    "client_gss_calls": [
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-auth.c",
+        "sha256": "4e06c94ec49258fe6fc1c208091d777df9afb2d840e21518b42698de615f24ba",
+        "symbols": [
+          "gss_delete_sec_context",
+          "gss_init_sec_context",
+          "gss_release_buffer",
+          "gss_release_name"
+        ]
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-connect.c",
+        "sha256": "44a6e386cbfd67ebe768d6ef5493098119c2e6b4796239d53e5ed7b122b206a5",
+        "symbols": [
+          "gss_delete_sec_context",
+          "gss_release_cred",
+          "gss_release_name"
+        ]
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-gssapi-common.c",
+        "sha256": "291b3f8b3d06527e74473b03c3d7b7c9ffc5351e28e88e2017107f668a75480b",
+        "symbols": [
+          "gss_acquire_cred",
+          "gss_display_status",
+          "gss_import_name",
+          "gss_release_buffer"
+        ]
+      },
+      {
+        "path": "postgresql-18.6/src/interfaces/libpq/fe-secure-gssapi.c",
+        "sha256": "d8a23522ec863b0a3dcdc629a4a605b1f72a417fd4e343277a187e7e140e98b9",
+        "symbols": [
+          "gss_init_sec_context",
+          "gss_read",
+          "gss_release_buffer",
+          "gss_release_cred",
+          "gss_unwrap",
+          "gss_wrap",
+          "gss_wrap_size_limit"
+        ]
+      }
+    ],
+    "localname_api_references": [],
+    "scope": "The PostgreSQL client interface has no localname/authorization API call or symbol-name lookup. This is not inferred from password authentication or disabled GSS."
+  },
+  "complete_kerberos_c_h_api_reference_files": {
+    "krb5_aname_to_localname": [
+      "krb5-1.15.1/src/tests/localauth.c",
+      "krb5-1.15.1/src/lib/gssapi/krb5/gssapi_krb5.c",
+      "krb5-1.15.1/src/lib/krb5/os/t_an_to_ln.c",
+      "krb5-1.15.1/src/lib/krb5/os/localauth.c",
+      "krb5-1.15.1/src/lib/krb5/os/localauth_an2ln.c",
+      "krb5-1.15.1/src/include/krb5/localauth_plugin.h",
+      "krb5-1.15.1/src/clients/ksu/authorization.c"
+    ],
+    "krb5_kuserok": [
+      "krb5-1.15.1/src/tests/localauth.c",
+      "krb5-1.15.1/src/lib/gssapi/krb5/gssapi_krb5.c",
+      "krb5-1.15.1/src/lib/krb5/os/t_kuserok.c",
+      "krb5-1.15.1/src/lib/krb5/os/localauth.c"
+    ],
+    "krb5_gss_localname": [
+      "krb5-1.15.1/src/lib/gssapi/krb5/gssapi_krb5.c"
+    ],
+    "krb5_gss_authorize_localname": [
+      "krb5-1.15.1/src/lib/gssapi/krb5/gssapi_krb5.c"
+    ],
+    "regcomp": [
+      "krb5-1.15.1/src/lib/kadm5/srv/svr_iters.c",
+      "krb5-1.15.1/src/lib/krb5/os/localauth_rule.c",
+      "krb5-1.15.1/src/plugins/preauth/pkinit/pkinit_matching.c",
+      "krb5-1.15.1/src/kadmin/dbutil/kdb5_mkey.c",
+      "krb5-1.15.1/src/kadmin/dbutil/dump.c"
+    ],
+    "regexec": [
+      "krb5-1.15.1/src/lib/kadm5/srv/svr_iters.c",
+      "krb5-1.15.1/src/lib/krb5/os/localauth_rule.c",
+      "krb5-1.15.1/src/plugins/preauth/pkinit/pkinit_matching.c",
+      "krb5-1.15.1/src/kadmin/dbutil/kdb5_mkey.c",
+      "krb5-1.15.1/src/kadmin/dbutil/dump.c"
+    ]
+  },
+  "centos_spec_sha256": "461b5a83cb368f5d2e82b9ff0fd4303181be1bf3e76b1635ccf5763a5d448b60",
+  "gssapi_ssf_patch_sha256": "b754e1c0d6067aa006560d855aa4dc8721a982fe4ada9d091df55acdccec198c",
+  "kerberos_call_chain": [
+    "libkrb5 localauth_rule.an2ln_rule -> aname_do_match/aname_replacer -> regcomp/regexec",
+    "krb5_aname_to_localname or krb5_kuserok -> local authorization module -> RULE callback",
+    "libgssapi krb5_gss_localname or krb5_gss_authorize_localname -> the above local authorization entry points"
+  ],
+  "reviewed_client_boundary": "PostgreSQL18.6 libpq client uses only the eleven measured client GSS APIs. All33 client C/H sources contain no localname/userok API or symbol-name lookup. The Kerberos mechanism registers localname/authorization callbacks separately from its client init/acquire/wrap paths. The affected local-authorization path is not selected by these client APIs, including when libpq gssencmode is prefer and GSS is used.",
+  "not_a_password_configuration_exception": true,
+  "libc_cleanup_boundary": "libc_malloc_debug.so.0 imports __libc_freeres. Its __libc_regcomp_freemem hook can call __regfree on the shared BSD regex buffer; it is not claimed uncalled. That buffer is initialized only by re_comp, and no current client/API/FFI entry selects re_comp. Thus this cleanup hook does not establish a reachable preceding damaged BSD DFA state.",
+  "downstream_patch_review": "The exact CentOS SRPM has no patch to localauth_rule.c or its regcomp/regexec calls. The patch touching gssapi_krb5.c only adds a separate SASL-SSF inquiry OID handler; it does not change the localname/authorization callbacks or add a client call to them.",
+  "uninstalled_source_targets": "Other SRPM regcomp/regexec uses belong to kadmin server/tools or PKINIT plugin source. None of their ELF paths is installed in this exact runtime closure.",
+  "invalidation": [
+    "New native/Python bytes; new FFI path; calling GSS localname/authorization or direct POSIX regex APIs; loading external Kerberos/GSS plugins; changing the application client-only boundary requires renewed review."
+  ],
+  "remaining": "Independent complete Python FFI/dynamic lookup and libc-internal entry-point reviews must also support this decision. No proof is based only on absent imports or the local .env password."
+}

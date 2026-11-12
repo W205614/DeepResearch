@@ -1,0 +1,155 @@
+{
+  "schema": "agent-kerberos-source-binary-section-review-v1",
+  "official_binary_rpm_sha256": "0b514834510f57ab09a2051d0b0c2be8a61777452ad125d1b3e5e90abeb6fa22",
+  "official_binary_rpm_url": "https://vault.centos.org/7.9.2009/updates/x86_64/Packages/krb5-libs-1.15.1-55.el7_9.x86_64.rpm",
+  "rpm_header": {
+    "1000": "krb5-libs",
+    "1001": "1.15.1",
+    "1002": "55.el7_9",
+    "1022": "x86_64",
+    "1044": "krb5-1.15.1-55.el7_9.src.rpm"
+  },
+  "source_rpm_sha256": "d154824d46dff5aece0cdb8e4c9df299058bacadbaf7fb16be8d9163ca2814bb",
+  "records": [
+    {
+      "actual_path": "/opt/venv/lib/python3.11/site-packages/psycopg_binary.libs/libkrb5-fcafa220.so.3.3",
+      "actual_sha256": "94dc6413050486a6c8de4b6f3bfdd288390892b72bc68580c6c53929721fa07b",
+      "official_rpm_library": "libkrb5.so.3.3",
+      "official_rpm_library_sha256": "fcafa2202eb41916a526c8f4b07df4f389c2ca2d55f1684f77006fad56433742",
+      "identical_allocated_executable_and_progbits_sections": {
+        ".init": {
+          "sha256": "70bf14bb4b38af9de50790d1a9f088fc3c5a2e8601a75421cb42f1b0b5e729b4",
+          "bytes": 26,
+          "flags": 6
+        },
+        ".plt": {
+          "sha256": "ccbda6b5e6409e7441b6e5899f759504bc562498a52f71b3e841130ea24072ba",
+          "bytes": 10560,
+          "flags": 6
+        },
+        ".text": {
+          "sha256": "9202fda90ca2c053b9843b6205a0259030fefddcd63997b858c0efc3b07451e2",
+          "bytes": 425642,
+          "flags": 6
+        },
+        ".fini": {
+          "sha256": "66e6f54550612182b4ad78f30b140dd08318b968db3878de2db65fef87dc04d7",
+          "bytes": 9,
+          "flags": 6
+        },
+        ".rodata": {
+          "sha256": "e11bd288eb093c5754fa3f58cae650774c0a762e84351773d408e84253bfb4ba",
+          "bytes": 208414,
+          "flags": 2
+        },
+        ".eh_frame_hdr": {
+          "sha256": "234c27563b3fb57922957413a1667cb8eff7464c6a5c05c44bf69547432a2017",
+          "bytes": 13372,
+          "flags": 2
+        },
+        ".eh_frame": {
+          "sha256": "d36d8d5880c4c8b8eb4d63b064f3ef79f21cf3cb19fdf70154931ee946d36d70",
+          "bytes": 84324,
+          "flags": 2
+        },
+        ".jcr": {
+          "sha256": "af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc",
+          "bytes": 8,
+          "flags": 3
+        },
+        ".data.rel.ro": {
+          "sha256": "00d8eb1c83852cc012247d3793115fa6cb6c1074b62fdbb25bef0d538aab159c",
+          "bytes": 53280,
+          "flags": 3
+        },
+        ".got": {
+          "sha256": "1f6c9de2e555d5d589e1149fed58f9cbcc101739df97d4a4d694a13f1242c5b9",
+          "bytes": 280,
+          "flags": 3
+        },
+        ".got.plt": {
+          "sha256": "eab90c0c4fa754750a97130c67672a5155851ba17b04adc085e3eab61015235b",
+          "bytes": 5296,
+          "flags": 3
+        },
+        ".data": {
+          "sha256": "d521f39b81817da48c02bffa89fe9aa33f052879cb34e8d2d1b7343ddb4f6c9e",
+          "bytes": 4744,
+          "flags": 3
+        }
+      },
+      "full_elf_identity_equal": false,
+      "metadata_rewrite_boundary": "Auditwheel uses renamed DT_NEEDED/RPATH metadata; actual allocated machine-code and PROGBITS data (including local callback tables) are compared independently, not inferred from BuildID alone."
+    },
+    {
+      "actual_path": "/opt/venv/lib/python3.11/site-packages/psycopg_binary.libs/libgssapi_krb5-497db0c6.so.2.2",
+      "actual_sha256": "ef73998b86c24e54667a843be6d589442dd082e1b9fc605aa15bcc2293858806",
+      "official_rpm_library": "libgssapi_krb5.so.2.2",
+      "official_rpm_library_sha256": "497db0c6049bd447c873af5e262950d544adf23b1812c85457d836225f147582",
+      "identical_allocated_executable_and_progbits_sections": {
+        ".init": {
+          "sha256": "a8f17f244b7ee226620cda1d903937ba0f1982e39539a3524c5da26c0c6d0d5b",
+          "bytes": 26,
+          "flags": 6
+        },
+        ".plt": {
+          "sha256": "3bdbebb8fff4017fb4ce5c77dcc20e138b0e00845aa1bc54388feda713b92d1f",
+          "bytes": 5408,
+          "flags": 6
+        },
+        ".text": {
+          "sha256": "17d4b4ce27650528b7acfc468385b13864f5bcbe3636a4e1e8c29137ac7f1abe",
+          "bytes": 205994,
+          "flags": 6
+        },
+        ".fini": {
+          "sha256": "66e6f54550612182b4ad78f30b140dd08318b968db3878de2db65fef87dc04d7",
+          "bytes": 9,
+          "flags": 6
+        },
+        ".rodata": {
+          "sha256": "a11b7b2f88e76819a415fda2e735fcc141934a187cdc28dd55a1f0b0292ecb26",
+          "bytes": 14537,
+          "flags": 2
+        },
+        ".eh_frame_hdr": {
+          "sha256": "8ad16e02f91bfa0b13e046fe3578240b9933fbcc4f6b898bf15ed71368e89036",
+          "bytes": 3884,
+          "flags": 2
+        },
+        ".eh_frame": {
+          "sha256": "86e2a30747d616d7078e5f2edefe325090728539007c6bd1a19903f4339eec5b",
+          "bytes": 26740,
+          "flags": 2
+        },
+        ".jcr": {
+          "sha256": "af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc",
+          "bytes": 8,
+          "flags": 3
+        },
+        ".data.rel.ro": {
+          "sha256": "bd75ae84eccaa62d92ee1f5d6bc2d3f86272b32ee1ea02c23a942b219acecfb9",
+          "bytes": 2312,
+          "flags": 3
+        },
+        ".got": {
+          "sha256": "16d0edc8b7ad7705b23a14058f366ff1c0dfa16a0ad14f741924c308754cf8d1",
+          "bytes": 840,
+          "flags": 3
+        },
+        ".got.plt": {
+          "sha256": "a77d1e7fa3f2e3d67f97137d379f6daf9f77e8bbe345fc870978c0f59f8bb24d",
+          "bytes": 2720,
+          "flags": 3
+        },
+        ".data": {
+          "sha256": "a3e52df1f3223f881cba04186a025563ae661619233b63e2a0c98c8537e8ad26",
+          "bytes": 3032,
+          "flags": 3
+        }
+      },
+      "full_elf_identity_equal": false,
+      "metadata_rewrite_boundary": "Auditwheel uses renamed DT_NEEDED/RPATH metadata; actual allocated machine-code and PROGBITS data (including local callback tables) are compared independently, not inferred from BuildID alone."
+    }
+  ]
+}

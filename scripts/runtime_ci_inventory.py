@@ -14,10 +14,12 @@ from scripts import check_grafana_release_20261107 as candidate  # noqa: E402
 
 APPROVED_MINIO = "deepresearch-approved-minio:20261026"
 APPROVED_GRAFANA = candidate.APPROVED_TAG
-SOURCE_GRAFANA = 'deepresearch-grafana-source:20261110'
-SOURCE_PROFILE = 'grafana-source-20261110'
-SOURCE_DOCKERFILE = 'deployment/docker/Dockerfile.grafana-20261110'
-SOURCE_PROFILE_PATH = Path('deployment/security/grafana-source-20261110-profile.json')
+SOURCE_GRAFANA = 'deepresearch-grafana-source:20261112'
+SOURCE_PROFILE = 'grafana-source-20261112'
+SOURCE_DOCKERFILE = 'deployment/docker/Dockerfile.grafana-20261112'
+SOURCE_PROFILE_PATH = Path('deployment/security/grafana-source-20261112-profile.json')
+SOURCE_MINIO = 'deepresearch-minio-source:20261112'
+MINIO_PROFILE = 'minio-source-20261112'
 
 
 def load_grafana_binding(root):
@@ -31,7 +33,7 @@ def load_grafana_binding(root):
 
 
 def load_grafana_source_profile(root):
-    from scripts import check_grafana_source_build_20261110 as source_candidate
+    from scripts import check_grafana_source_build_20261112 as source_candidate
 
     profile = source_candidate.load_profile(root)
     if (profile['profile'] != SOURCE_PROFILE or profile['image'] != SOURCE_GRAFANA
@@ -44,17 +46,32 @@ def load_grafana_source_profile(root):
 def grafana_selection(root):
     load_grafana_source_profile(root)
     digest = candidate.file_hash(root / SOURCE_PROFILE_PATH)
-    return {'image': SOURCE_GRAFANA, 'profile': 'grafana-source-20261110',
+    return {'image': SOURCE_GRAFANA, 'profile': 'grafana-source-20261112',
             'profile_sha256': digest, 'mode': 'source_build', 'published': False,
             'subject': {'build_profile': SOURCE_PROFILE, 'profile_sha256': digest}}
+
+
+def load_minio_source_profile(root):
+    from scripts import check_minio_source_build_20261112 as source
+    profile = source.load_profile(root)
+    if (profile['profile'] != MINIO_PROFILE or profile['image'] != SOURCE_MINIO
+            or profile['context'] != '.' or profile['dockerfile'] != source.DOCKERFILE
+            or profile['source_inputs'].get(source.DOCKERFILE) != candidate.file_hash(root / source.DOCKERFILE)):
+        raise ValueError('MinIO source profile does not bind the current build entry')
+    return profile
 
 
 def matrices(configuration, root):
     """Never let a rebuild or another service inherit the fixed-artifact approval."""
     minio = configuration.get("services", {}).get("minio", {})
-    if minio.get("build") or minio.get("image") != APPROVED_MINIO:
-        raise ValueError("MinIO must load the exact approved artifact; rebuild requires renewed review")
-    load_binding(root)
+    if minio.get('build'):
+        raise ValueError('MinIO source builds must use the profile-bound build entry')
+    if minio.get('image') == SOURCE_MINIO:
+        load_minio_source_profile(root)
+    elif minio.get('image') == APPROVED_MINIO:
+        load_binding(root)
+    else:
+        raise ValueError('MinIO must select its exact artifact or reviewed source profile')
     if "grafana" in configuration.get("services", {}):
         grafana = configuration["services"]["grafana"]
         if grafana.get("build"):
@@ -70,7 +87,7 @@ def matrices(configuration, root):
         reference = definition.get("image")
         if reference and "@" in reference and not re.fullmatch(r"[^@\s]+@sha256:[0-9a-f]{64}", reference):
             raise ValueError("Runtime image digest must be a complete SHA256 descriptor")
-        if ((reference == APPROVED_MINIO and name != "minio")
+        if ((reference in {APPROVED_MINIO, SOURCE_MINIO} and name != "minio")
                 or (reference in {APPROVED_GRAFANA, SOURCE_GRAFANA} and name != "grafana")):
             raise ValueError("Approved or source-profile namespaces cannot spread to another service")
         if definition.get("build"):
@@ -88,8 +105,8 @@ def matrices(configuration, root):
         by_reference.setdefault(reference, []).append(name)
     matrix = {"include": [{"name": "-".join(services), "image": image, "services": ",".join(services),
                             "approved_artifact": image in {APPROVED_MINIO, APPROVED_GRAFANA},
-                            "artifact": "minio" if image == APPROVED_MINIO else "grafana" if image in {APPROVED_GRAFANA, SOURCE_GRAFANA} else "",
-                            "source_build_profile": SOURCE_PROFILE if image == SOURCE_GRAFANA else "",
+                            "artifact": "minio" if image in {APPROVED_MINIO, SOURCE_MINIO} else "grafana" if image in {APPROVED_GRAFANA, SOURCE_GRAFANA} else "",
+                            "source_build_profile": SOURCE_PROFILE if image == SOURCE_GRAFANA else MINIO_PROFILE if image == SOURCE_MINIO else "",
                             "native_jvm_profile": "keycloak" if "keycloak" in services else ""}
                            for image, services in sorted(by_reference.items())]}
     custom_matrix = {"include": [{"name": services[0], "context": key[0], "dockerfile": key[1], "services": ",".join(services),

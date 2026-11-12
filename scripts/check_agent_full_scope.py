@@ -21,6 +21,10 @@ from scripts.check_image_secrets import assess  # noqa: E402
 PROFILE_NAME = "agent-full-scope-20261110"
 PROFILE_PATH = ROOT / "deployment/security/agent-full-scope-20261110.json"
 PROFILE_SHA256 = "ab92a7f1ade51ff150c9e48092a2dca898142b4541460f5b50b305c240ab09d3"
+ORDINARY_PROFILE_NAME = "agent-ordinary-query-20261112"
+ORDINARY_PROFILE_PATH = ROOT / "deployment/security/agent-ordinary-query-profile-20261112.json"
+ORDINARY_PROFILE_SHA256 = "a1637945413b477475339024c4b201b1f4c5809a7bc602c28346f03dc863bcc8"
+PROFILE_NAMES = (PROFILE_NAME, ORDINARY_PROFILE_NAME)
 
 
 def require(condition, message):
@@ -32,13 +36,21 @@ def canonical(value):
     return json.dumps(value, sort_keys=True, separators=(",", ":"))
 
 
+def profile_identity(name):
+    if name == PROFILE_NAME:
+        return PROFILE_PATH, PROFILE_SHA256
+    require(name == ORDINARY_PROFILE_NAME, "Unknown exact technical review profile")
+    return ORDINARY_PROFILE_PATH, ORDINARY_PROFILE_SHA256
+
+
 def load_profile(name):
-    require(name == PROFILE_NAME, "Unknown exact technical review profile")
-    content = PROFILE_PATH.read_bytes()
-    require(hashlib.sha256(content).hexdigest() == PROFILE_SHA256, "Reviewed Agent profile changed")
+    path, expected_sha256 = profile_identity(name)
+    content = path.read_bytes()
+    require(hashlib.sha256(content).hexdigest() == expected_sha256, "Reviewed Agent profile changed")
     profile = json.loads(content)
     require(
-        profile["schema"] == "agent-exact-full-scope-profile-v1" and profile["risk_acceptance"] is False,
+        profile["schema"] == "agent-exact-full-scope-profile-v1" and profile["name"] == name
+        and profile["risk_acceptance"] is False,
         "Technical fixed-code/component review required",
     )
     evidence = profile["source_review_evidence"]
@@ -258,7 +270,7 @@ def adjudicate(report, inspection, runtime, profile, *, actual_config_raw, scan_
     return {
         "passed": True,
         "review_profile": profile["name"],
-        "review_profile_sha256": PROFILE_SHA256,
+        "review_profile_sha256": profile_identity(profile["name"])[1],
         "source_review_evidence_sha256": profile["source_review_evidence"]["sha256"],
         "risk_acceptance": False,
         "image_id": inspection["Id"],
@@ -344,7 +356,7 @@ def probe_image(image_id, profile):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--review-profile", required=True, choices=[PROFILE_NAME])
+    parser.add_argument("--review-profile", required=True, choices=PROFILE_NAMES)
     parser.add_argument("--image", required=True)
     parser.add_argument("--report", type=Path, required=True)
     parser.add_argument("--scan-source", choices=["docker", "archive"], default="docker")

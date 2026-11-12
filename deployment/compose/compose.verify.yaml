@@ -18,7 +18,7 @@ services:
     healthcheck: {test: [CMD, etcdctl, endpoint, health], interval: 3s, timeout: 3s, retries: 30}
   minio:
     platform: linux/amd64
-    image: deepresearch-approved-minio:20261026
+    image: deepresearch-minio-source:20261112
     environment: {MINIO_ROOT_USER: deepresearch, MINIO_ROOT_PASSWORD: verification-only}
     command: [silo, server, /data]
     healthcheck: {test: [CMD, silo, healthcheck, --url, 'http://localhost:9000', --timeout, 3s, live], interval: 3s, timeout: 5s, retries: 30}

@@ -1,0 +1,666 @@
+{
+  "schema": "go-stdlib-source-profile-20261112-v1",
+  "status": "verified",
+  "profile": "minio-source-20261112",
+  "image": "deepresearch-minio-source:20261112",
+  "dockerfile": "deployment/docker/Dockerfile.minio-20261112",
+  "context": ".",
+  "source_inputs": {
+    "deployment/docker/Dockerfile.minio-20261112": "b0f30dea8ddf9e18f5c988dbde494930fe8aa0db0421031fa203b91412f60852",
+    "deployment/docker/Dockerfile.minio-20261112.dockerignore": "c2da2af78d20ac5746524327f5f42b0eb6dd65b0cf3ca82c388cf812f19b7e23",
+    "deployment/security/go-stdlib-20261112-evidence/Go-LICENSE": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+    "deployment/security/go-stdlib-20261112-evidence/source.lock.json": "20746730bbf420fce6ed6765e79bac882c02d237f5a51cf212581840ff019dbe",
+    "deployment/vendors/minio/csv_record_bound_test.go": "cb51ba37bc33b66764b64c8ed214d372a1db4f945093f6d0c5103a5d16bacf16",
+    "deployment/vendors/minio/legacy-part-compat.patch": "d7ce090041a4353cf35ca58168cff11a47a17ee0bf9355a6c44c16a7352f2320",
+    "deployment/vendors/minio/legacy-part2024.msgp": "cca3483e758d59aa0fd0ad3cc0ccc0ecb1e2afcdc6ebf399c57d515e7c4598cb",
+    "deployment/vendors/minio/legacy_part_compat.go": "2fcd20ee874cf8cd837651224135463925a98a1209fd1dd7f3a4298ae41a3792",
+    "deployment/vendors/minio/legacy_part_compat_test.go": "a4d464887c7fbb89116ed3309f4cfa039c405755d9bfff55b51d01bc50008ad6",
+    "scripts/build_go_stdlib_security_20261112.py": "d860a5261625e0dc745e32969e426e77c8ca33b92e3412f33a884ab146222fe4",
+    "scripts/prefetch_go_security_modules_20261112.py": "2b6864129c0f8e1d2b555cd135eef9f1aba90a0146af06f22bd7d21b15bad391",
+    "scripts/prefetch_minio_source_20261112.py": "97f8de995d1fb62e8210b778193b9571c2bf5f86a9011640959531676e4b859b"
+  },
+  "expected": {
+    "native_sha256": {
+      "usr/bin/mcli": "a1e263c8b0cadf9b6a19cc9729a7bb6d1eb0329152347955cb4326ca0ebb6845",
+      "usr/bin/silo": "f3c853d27fdc691f981edc2a544c02d9c236f58550c2f4d60ad4121a20b73683"
+    },
+    "runtime_manifest_sha256": "6af801f3903e16994c05b5736c23ef088ea9b9ceb779c96f7255d4e73a46cccb",
+    "runtime_config": {
+      "User": null,
+      "Env": [
+        "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "MINIO_ACCESS_KEY_FILE=access_key",
+        "MINIO_SECRET_KEY_FILE=secret_key",
+        "MINIO_ROOT_USER_FILE=access_key",
+        "MINIO_ROOT_PASSWORD_FILE=secret_key",
+        "MINIO_KMS_SECRET_KEY_FILE=kms_master_key",
+        "MINIO_CONFIG_ENV_FILE=config.env",
+        "HOME=/tmp",
+        "MC_CONFIG_DIR=/tmp/.mc"
+      ],
+      "Entrypoint": [
+        "/usr/bin/docker-entrypoint.sh"
+      ],
+      "Cmd": [
+        "silo"
+      ],
+      "WorkingDir": "/",
+      "ExposedPorts": {
+        "9000/tcp": {},
+        "9001/tcp": {}
+      },
+      "Volumes": {
+        "/data": {}
+      },
+      "Healthcheck": null,
+      "StopSignal": null
+    },
+    "trivy_inventory_sha256": {
+      "redhat": "39658504445071be43b0b2e4754f77f27888096fd9f56e43e2449669a794a875",
+      "usr/bin/mcli": "57d24a0efc0f3f3426ec6dba0a11e7baa97c43f319025424a152a86bcb126338",
+      "usr/bin/silo": "88578a63cf923a0fe318199e95efc0700a5be857ef8e49a7bc6078dd70d060fd"
+    }
+  },
+  "reviewed_findings": {
+    "Trivy": [
+      {
+        "id": "GO-2026-5932",
+        "target": "usr/bin/mcli",
+        "package": "golang.org/x/crypto",
+        "version": "v0.58.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "CVE-2026-78661",
+        "target": "usr/bin/mcli",
+        "package": "golang.org/x/net",
+        "version": "v0.61.0",
+        "severity": "HIGH"
+      },
+      {
+        "id": "CVE-2026-97045",
+        "target": "usr/bin/mcli",
+        "package": "golang.org/x/net",
+        "version": "v0.61.0",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "CVE-2026-39414",
+        "target": "usr/bin/silo",
+        "package": "github.com/minio/minio",
+        "version": "v0.0.0-20261018143912-0cd388c666f8+dirty",
+        "severity": "HIGH"
+      },
+      {
+        "id": "GO-2026-5932",
+        "target": "usr/bin/silo",
+        "package": "golang.org/x/crypto",
+        "version": "v0.58.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "CVE-2026-78661",
+        "target": "usr/bin/silo",
+        "package": "golang.org/x/net",
+        "version": "v0.61.0",
+        "severity": "HIGH"
+      },
+      {
+        "id": "CVE-2026-97045",
+        "target": "usr/bin/silo",
+        "package": "golang.org/x/net",
+        "version": "v0.61.0",
+        "severity": "MEDIUM"
+      }
+    ]
+  },
+  "historical_review_source": "78a19df9dfa6f072af6ebe40ff99cf164d0c4ff8",
+  "old_binary_approval_inherited": false,
+  "binary_redistribution_approved": false,
+  "native_evidence": {
+    "usr/bin/mcli": {
+      "elf_sha256": "a1e263c8b0cadf9b6a19cc9729a7bb6d1eb0329152347955cb4326ca0ebb6845",
+      "prior_elf_sha256": "66a22d1bada31f44635405a95fb8005e9d23e4c77a3b9d2a74cfb58735d4094a",
+      "native": "deployment/security/minio-source-20261112-evidence/mcli-new-native.json",
+      "prior_native": "deployment/security/minio-source-20261112-evidence/mcli-prior-native.json",
+      "graph": "deployment/security/minio-source-20261112-evidence/mcli-graph.json.gz",
+      "prior_graph": "deployment/security/minio-html4-evidence/mcli-production-graph-complete.json.gz"
+    },
+    "usr/bin/silo": {
+      "elf_sha256": "f3c853d27fdc691f981edc2a544c02d9c236f58550c2f4d60ad4121a20b73683",
+      "prior_elf_sha256": "865e488f9e455b6b7306482b2d4a147ea841f15f141c32678851d3168c624bc2",
+      "native": "deployment/security/minio-source-20261112-evidence/silo-new-native.json",
+      "prior_native": "deployment/security/minio-source-20261112-evidence/silo-prior-native.json",
+      "graph": "deployment/security/minio-source-20261112-evidence/silo-graph.json.gz",
+      "prior_graph": "deployment/security/minio-html4-evidence/silo-production-graph-complete.json.gz"
+    }
+  },
+  "stdlib_fix": {
+    "advisory": "GO-2026-6859",
+    "cve": "CVE-2026-97054",
+    "fixed_version": "go1.27.4",
+    "official_fix": "https://go.dev/cl/862185"
+  },
+  "prior_runtime_manifest_sha256": "1a85c80b554435046eac579d0ce633da0241ec1629a8acf39cca80108519b47e",
+  "runtime_evidence": {
+    "prior": "deployment/security/minio-source-20261112-evidence/prior-runtime-manifest.json.gz",
+    "current": "deployment/security/minio-source-20261112-evidence/runtime-manifest.json.gz"
+  },
+  "scan_migration": {
+    "prior": "deployment/security/minio-source-20261112-evidence/prior-raw-trivy.json.gz",
+    "current": "deployment/security/minio-source-20261112-evidence/raw-trivy.json.gz"
+  },
+  "independent_reviews": [
+    "deployment/security/minio-source-20261112-evidence/review-root.json",
+    "deployment/security/minio-source-20261112-evidence/review-release-prepare.json"
+  ],
+  "threshold_severities": [
+    "HIGH",
+    "CRITICAL",
+    "UNKNOWN"
+  ],
+  "retained_unreviewed_os_findings": [
+    {
+      "id": "CVE-2026-56391",
+      "target": "os:redhat",
+      "package": "coreutils-single",
+      "version": "8.32-41.el9_8.1",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-122054",
+      "target": "os:redhat",
+      "package": "glibc",
+      "version": "2.34-283.el9_8",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-84243",
+      "target": "os:redhat",
+      "package": "glibc",
+      "version": "2.34-283.el9_8",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-8674",
+      "target": "os:redhat",
+      "package": "glibc",
+      "version": "2.34-283.el9_8",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-86805",
+      "target": "os:redhat",
+      "package": "glibc",
+      "version": "2.34-283.el9_8",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-89092",
+      "target": "os:redhat",
+      "package": "glibc",
+      "version": "2.34-283.el9_8",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-95818",
+      "target": "os:redhat",
+      "package": "glibc",
+      "version": "2.34-283.el9_8",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-97399",
+      "target": "os:redhat",
+      "package": "glibc",
+      "version": "2.34-283.el9_8",
+      "severity": "LOW"
+    },
+    {
+      "id": "CVE-2026-122054",
+      "target": "os:redhat",
+      "package": "glibc-common",
+      "version": "2.34-283.el9_8",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-84243",
+      "target": "os:redhat",
+      "package": "glibc-common",
+      "version": "2.34-283.el9_8",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-8674",
+      "target": "os:redhat",
+      "package": "glibc-common",
+      "version": "2.34-283.el9_8",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-86805",
+      "target": "os:redhat",
+      "package": "glibc-common",
+      "version": "2.34-283.el9_8",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-89092",
+      "target": "os:redhat",
+      "package": "glibc-common",
+      "version": "2.34-283.el9_8",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-95818",
+      "target": "os:redhat",
+      "package": "glibc-common",
+      "version": "2.34-283.el9_8",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-97399",
+      "target": "os:redhat",
+      "package": "glibc-common",
+      "version": "2.34-283.el9_8",
+      "severity": "LOW"
+    },
+    {
+      "id": "CVE-2026-122054",
+      "target": "os:redhat",
+      "package": "glibc-minimal-langpack",
+      "version": "2.34-283.el9_8",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-84243",
+      "target": "os:redhat",
+      "package": "glibc-minimal-langpack",
+      "version": "2.34-283.el9_8",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-8674",
+      "target": "os:redhat",
+      "package": "glibc-minimal-langpack",
+      "version": "2.34-283.el9_8",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-86805",
+      "target": "os:redhat",
+      "package": "glibc-minimal-langpack",
+      "version": "2.34-283.el9_8",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-89092",
+      "target": "os:redhat",
+      "package": "glibc-minimal-langpack",
+      "version": "2.34-283.el9_8",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-95818",
+      "target": "os:redhat",
+      "package": "glibc-minimal-langpack",
+      "version": "2.34-283.el9_8",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-97399",
+      "target": "os:redhat",
+      "package": "glibc-minimal-langpack",
+      "version": "2.34-283.el9_8",
+      "severity": "LOW"
+    },
+    {
+      "id": "CVE-2026-102010",
+      "target": "os:redhat",
+      "package": "libgcc",
+      "version": "11.5.0-14.el9",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-114690",
+      "target": "os:redhat",
+      "package": "libgcc",
+      "version": "11.5.0-14.el9",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-114691",
+      "target": "os:redhat",
+      "package": "libgcc",
+      "version": "11.5.0-14.el9",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-125709",
+      "target": "os:redhat",
+      "package": "libgcc",
+      "version": "11.5.0-14.el9",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-95619",
+      "target": "os:redhat",
+      "package": "libgcc",
+      "version": "11.5.0-14.el9",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2021-46195",
+      "target": "os:redhat",
+      "package": "libgcc",
+      "version": "11.5.0-14.el9",
+      "severity": "LOW"
+    },
+    {
+      "id": "CVE-2022-27943",
+      "target": "os:redhat",
+      "package": "libgcc",
+      "version": "11.5.0-14.el9",
+      "severity": "LOW"
+    },
+    {
+      "id": "CVE-2026-115456",
+      "target": "os:redhat",
+      "package": "libgcc",
+      "version": "11.5.0-14.el9",
+      "severity": "LOW"
+    },
+    {
+      "id": "CVE-2023-50495",
+      "target": "os:redhat",
+      "package": "ncurses-base",
+      "version": "6.2-12.20210508.el9",
+      "severity": "LOW"
+    },
+    {
+      "id": "CVE-2023-50495",
+      "target": "os:redhat",
+      "package": "ncurses-libs",
+      "version": "6.2-12.20210508.el9",
+      "severity": "LOW"
+    },
+    {
+      "id": "CVE-2022-41409",
+      "target": "os:redhat",
+      "package": "pcre2",
+      "version": "10.40-7.el9_8",
+      "severity": "LOW"
+    },
+    {
+      "id": "CVE-2022-41409",
+      "target": "os:redhat",
+      "package": "pcre2-syntax",
+      "version": "10.40-7.el9_8",
+      "severity": "LOW"
+    }
+  ],
+  "regressions": {
+    "csv": "deployment/security/minio-source-20261112-evidence/csv-regression.txt",
+    "legacy": "deployment/security/minio-source-20261112-evidence/legacy-multipart-regression.txt"
+  },
+  "evidence_sha256": {
+    "deployment/security/go-stdlib-20261112-evidence/862185.patch": "719fb2a28c3f3984b3d6d9b5358d9d330ec4faa7ce3584c0b832f60c14cb8d79",
+    "deployment/security/go-stdlib-20261112-evidence/GO-2026-6859.json": "9eb1590c57233fd8a63e8ad737d12cbdef5572eed86ffee05897291fff12a9ce",
+    "deployment/security/go-stdlib-20261112-evidence/Go-LICENSE": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+    "deployment/security/go-stdlib-20261112-evidence/source.lock.json": "20746730bbf420fce6ed6765e79bac882c02d237f5a51cf212581840ff019dbe",
+    "deployment/security/go-stdlib-20261112-evidence/stdlib-regression-result.json": "383c692313dac61e8df04cf0196bf23dd8449800fa107ede39c77de113ab5a3e",
+    "deployment/security/go-stdlib-20261112-evidence/stdlib-regression.log": "98d5f2f7ac8e6ba4d93e9472bcdb10d4c14649537078a8d4f248735372f7d61a",
+    "deployment/security/minio-html4-evidence/mcli-production-graph-complete.json.gz": "3420ff491b27fe36423c835ebd543fca73912b60b629c93b7e000be0f5616f1f",
+    "deployment/security/minio-html4-evidence/silo-production-graph-complete.json.gz": "08d9048b758e9fa8541a6ca91a6b4857f73061228cfc37bfe575550dbcac1799",
+    "deployment/security/minio-source-20261112-evidence/csv-regression.txt": "47e04e4ed779c333d9e3740595e07f1e679a620a881f3eb827b764f67b215d9f",
+    "deployment/security/minio-source-20261112-evidence/legacy-multipart-regression.txt": "cf9cec0509dc509bf709668ab591c5265bd7bc62e930316a2890746c7f04d315",
+    "deployment/security/minio-source-20261112-evidence/mcli-graph.json.gz": "7f314001fb00815a9b4db56e15dddb17524290a8992df43009304dc10c695bb0",
+    "deployment/security/minio-source-20261112-evidence/mcli-new-native.json": "e91c5fa4f494232baefe30d2faa36e989b808d8a5d0238c25031541e22ccfa09",
+    "deployment/security/minio-source-20261112-evidence/mcli-prior-native.json": "163ef812176c2a19f50fe88690c6efc59facd38ed7cec8bb1e06b37a2dbf1642",
+    "deployment/security/minio-source-20261112-evidence/prior-image-config.json": "45b3d3e48a5b0a92e7ff52b046573268a241207fe6ddfafa504a48bc543cb1f3",
+    "deployment/security/minio-source-20261112-evidence/prior-raw-trivy.json.gz": "5402310b30a7984d4c7e14064579101ceae078ddfb9b888f98596f77d6150e80",
+    "deployment/security/minio-source-20261112-evidence/prior-runtime-manifest.json.gz": "a881209141bd96b93201aac277e739e65ebc2a4c113ed1b40aed598391400950",
+    "deployment/security/minio-source-20261112-evidence/raw-trivy.json.gz": "e898537321d5a2ef1cdff6a1de28ce49b740204bb188e53199d40589aea53d2d",
+    "deployment/security/minio-source-20261112-evidence/runtime-manifest.json.gz": "21b00470cafbf16ab3350c51e895cb8062942cf596fcf90eb741ff64cb21086a",
+    "deployment/security/minio-source-20261112-evidence/silo-graph.json.gz": "050298733fde75da9526e72357465a6a4e40c110d4b10744080942b890e1d61e",
+    "deployment/security/minio-source-20261112-evidence/silo-new-native.json": "17bc94f2892bdd5621d268ee3e238e1a31fba964208e0b39312bbe2d56338348",
+    "deployment/security/minio-source-20261112-evidence/silo-prior-native.json": "43829085667eb5aad69bba93fecc814d55d28a4a107ee9c795031765038dce67",
+    "scripts/capture_go_native_20261112.py": "708c91b964058399e941bf77a654171e3265f1d48a3d87eab6830485028e5b47",
+    "scripts/check_minio_source_build_20261112.py": "2eb36f68c589a8da314b3324e9fe795c293f364a31b5ecb0d97d30d05b8a0b0d",
+    "scripts/go_stdlib_rebuild_20261112.py": "3e61188b573e3f52c9497d60681604ef8c697bcf53b1947e5088b92efccfc69b",
+    "scripts/prepare_go_stdlib_profiles_20261112.py": "2d242481b757d17883a5b9ede3bab19901931ae5854a30f2323a61f46a31d869",
+    "tests/test_go_stdlib_rebuild_20261112.py": "884eaae550605bf4f6ae0f69ab7a2f51989680dcfe7050bd26a34f16fc7bf9e8",
+    "deployment/security/minio-source-20261112-evidence/review-root.json": "15c7e845bb88a2a7691f4bd2fcd1655ddea0a7087878476a2ddd94f5ce18bf53",
+    "deployment/security/minio-source-20261112-evidence/review-release-prepare.json": "b69f45d8304cb894220381da98f4832ccba6327d307b6b622334c07a1e3ffdef"
+  },
+  "migration_facts": {
+    "usr/bin/mcli": {
+      "elf_sha256": "a1e263c8b0cadf9b6a19cc9729a7bb6d1eb0329152347955cb4326ca0ebb6845",
+      "prior_elf_sha256": "66a22d1bada31f44635405a95fb8005e9d23e4c77a3b9d2a74cfb58735d4094a",
+      "go_version": "go1.27.4",
+      "entry_package": "github.com/minio/mc",
+      "module_count": 107,
+      "nonstdlib_modules_sha256": "057a86e9702a555b8111f843201adb83c86f2a009581c2fd7ac513c22b0d7ceb",
+      "nonstdlib_modules_identical": true,
+      "source_and_build_settings_preserved": true,
+      "complete_package_count": 616,
+      "nonstdlib_package_count": 382,
+      "nonstdlib_graph_sha256": "3a47926591235c534772be21af081b839dbbc40a6b8962f8c7a637c6e50f642c",
+      "nonstdlib_graph_identical": true,
+      "complete_import_closure": true
+    },
+    "usr/bin/silo": {
+      "elf_sha256": "f3c853d27fdc691f981edc2a544c02d9c236f58550c2f4d60ad4121a20b73683",
+      "prior_elf_sha256": "865e488f9e455b6b7306482b2d4a147ea841f15f141c32678851d3168c624bc2",
+      "go_version": "go1.27.4",
+      "entry_package": "github.com/minio/minio",
+      "module_count": 260,
+      "nonstdlib_modules_sha256": "9dda7d85cf0120cc4797dc1235398bbeecd3e89badaee800c9ecfefe8e2eabfc",
+      "nonstdlib_modules_identical": true,
+      "source_and_build_settings_preserved": true,
+      "complete_package_count": 1410,
+      "nonstdlib_package_count": 1146,
+      "nonstdlib_graph_sha256": "0c93d3871a043a75e3ff5d0f5e9a5d410b033669443b198bfe6a91aa26ff3d34",
+      "nonstdlib_graph_identical": true,
+      "complete_import_closure": true
+    }
+  },
+  "runtime_changes": [
+    {
+      "path": "usr/bin/mcli",
+      "before": {
+        "bytes": 31133856,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/bin/mcli",
+        "sha256": "66a22d1bada31f44635405a95fb8005e9d23e4c77a3b9d2a74cfb58735d4094a",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 31133856,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/bin/mcli",
+        "sha256": "a1e263c8b0cadf9b6a19cc9729a7bb6d1eb0329152347955cb4326ca0ebb6845",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/bin/silo",
+      "before": {
+        "bytes": 98566304,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/bin/silo",
+        "sha256": "865e488f9e455b6b7306482b2d4a147ea841f15f141c32678851d3168c624bc2",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 98566304,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/bin/silo",
+        "sha256": "f3c853d27fdc691f981edc2a544c02d9c236f58550c2f4d60ad4121a20b73683",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch-build/Go-LICENSE",
+      "before": null,
+      "after": {
+        "bytes": 1453,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch-build/Go-LICENSE",
+        "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch-build/csv-regression.txt",
+      "before": {
+        "bytes": 304,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch-build/csv-regression.txt",
+        "sha256": "f7dfc803f6dfcb3809ce00bcfc6a4bece002cf88fc6c2bc027f3b41123209b42",
+        "type": "file",
+        "uid": 0
+      },
+      "after": null
+    },
+    {
+      "path": "usr/share/deepresearch-build/go-security-source.lock.json",
+      "before": null,
+      "after": {
+        "bytes": 1126,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch-build/go-security-source.lock.json",
+        "sha256": "20746730bbf420fce6ed6765e79bac882c02d237f5a51cf212581840ff019dbe",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch-build/legacy-multipart-regression.txt",
+      "before": {
+        "bytes": 172,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch-build/legacy-multipart-regression.txt",
+        "sha256": "07d39637bb446d35ba30622a53b8a271df305651cc32480ae94706fea33de60a",
+        "type": "file",
+        "uid": 0
+      },
+      "after": null
+    },
+    {
+      "path": "usr/share/deepresearch-build/mcli-buildinfo.txt",
+      "before": {
+        "bytes": 9987,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch-build/mcli-buildinfo.txt",
+        "sha256": "b437b65feaa7df1026c165ff6b6a9b8d9de992dc4aa512168a59212c78f74957",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 9987,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch-build/mcli-buildinfo.txt",
+        "sha256": "1d8719d70d8ef4a3f2d3d5afe44cf1c4dce649be63d92a593106007c61e8264c",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch-build/mcli-graph.json",
+      "before": null,
+      "after": {
+        "bytes": 2082807,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch-build/mcli-graph.json",
+        "sha256": "61b98438da7c3ef4fcdadb7a15faec37ecaea76bc6d3fd20ef5ad8447cf428dc",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch-build/mcli-native.json",
+      "before": null,
+      "after": {
+        "bytes": 15363,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch-build/mcli-native.json",
+        "sha256": "32ae2b4c92715c4715d8e849538525bc5fe365696506629463d78e6b4a206c48",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch-build/silo-buildinfo.txt",
+      "before": {
+        "bytes": 24422,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch-build/silo-buildinfo.txt",
+        "sha256": "eabda05b2ba397f5ecae4f6a22c69ccf717785af3a7993f171c7d999799dc55b",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 24422,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch-build/silo-buildinfo.txt",
+        "sha256": "95ecc8cee8f5b4b5ed2f201dec3f554b7f81a6eb3ac7d11d1706ea25228ddd90",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch-build/silo-graph.json",
+      "before": null,
+      "after": {
+        "bytes": 7415889,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch-build/silo-graph.json",
+        "sha256": "712d37f7a5e0d3b3faf6520e29cdf72ba983a92546dcfeec2f36a52857452824",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch-build/silo-native.json",
+      "before": null,
+      "after": {
+        "bytes": 37174,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch-build/silo-native.json",
+        "sha256": "a0b753e6fcb0c00e1ea4b9a7a5c42148d73abf09d27c1ca1561c2912b201be67",
+        "type": "file",
+        "uid": 0
+      }
+    }
+  ],
+  "scan_migration_facts": {
+    "prior_count": 43,
+    "current_count": 41,
+    "fixed_stdlib_rows": 2,
+    "unrelated_rows_unchanged": true,
+    "raw_reports_modified": false
+  },
+  "review_subject_sha256": "08885c8f3db046b3e33c80b677d98350621a12488ec05c8c3539fb22e618a28d"
+}

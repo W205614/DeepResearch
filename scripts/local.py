@@ -91,13 +91,12 @@ def main(argv: list[str] | None = None) -> int:
     if args.action == "check":
         print("Local configuration and Compose validated; no provider request sent.")
         return 0
-    subprocess.run([sys.executable, str(ROOT / "scripts/fetch_approved_image.py")], check=True)
-    if args.observability:
-        grafana = [sys.executable, str(ROOT / "scripts/build_grafana_source_20261110.py"),
-                   "--output-dir", str(ROOT / ".cache/grafana-source-20261110")]
+    for artifact in ['minio', *(['grafana'] if args.observability else [])]:
+        candidate = [sys.executable, str(ROOT / 'scripts/build_go_stdlib_security_20261112.py'),
+                     '--artifact', artifact]
         if args.no_build:
-            grafana.append("--no-build")
-        subprocess.run(grafana, check=True)
+            candidate.append('--no-build')
+        subprocess.run(candidate, check=True)
     build = ["--no-build", "--pull", "never"] if args.no_build else ["--build"]
     subprocess.run([*command, "up", "-d", *build, "--wait", "--wait-timeout", str(args.wait_timeout)], check=True)
     print("Local stack started. Run the same command with action 'stop' to pause it.")

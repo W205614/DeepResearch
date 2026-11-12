@@ -94,11 +94,12 @@ def test_historical_artifact_release_keeps_only_its_existing_unsuffixed_archive_
         validate_manifest(data, data['source_sha'], data['artifact_release'])
 
 
-def test_technical_review_is_bound_to_exact_agent_profile():
+@pytest.mark.parametrize('profile', ['agent-full-scope-20261110', 'agent-ordinary-query-20261112'])
+def test_technical_review_is_bound_to_exact_agent_profile(profile):
     data = manifest()
-    data['images'][0]['security_review_profile'] = 'agent-full-scope-20261110'
+    data['images'][0]['security_review_profile'] = profile
     validate_manifest(data, 'c' * 40, data['artifact_release'])
-    data['images'][1]['security_review_profile'] = 'agent-full-scope-20261110'
+    data['images'][1]['security_review_profile'] = profile
     with pytest.raises(ValueError, match='Only the exact Agent technical review'):
         validate_manifest(data, 'c' * 40, data['artifact_release'])
     data['images'][1].pop('security_review_profile')

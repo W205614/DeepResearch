@@ -1,0 +1,48 @@
+{
+  "schema": "agent-glibc-20261112-primary-source-facts-v1",
+  "reviewed_at_utc": "2026-11-12T04:22:11.002112+00:00",
+  "announcement": {
+    "url": "https://www.openwall.com/lists/oss-security/2026/11/11/8",
+    "author": "Adhemerval Zanella Netto, posted to libc-announce and oss-security",
+    "raw_sha256": "410dae950c25d5986e8d9fbfe8466f3270c01d3561987162334d2e21a0fa5fcb",
+    "published_date": "2026-11-11",
+    "fixed_commit_provided": false
+  },
+  "records": [
+    {
+      "id": "CVE-2026-115819",
+      "advisory": "GLIBC-SA-2026-0027",
+      "introduced_commit": "d64b6ad07585b8a37e5fecc9a47fcee766d52ede",
+      "tracker": "https://security-tracker.debian.org/tracker/CVE-2026-115819",
+      "tracker_raw_sha256": "3507d7102b938a3e9b39cd13e904936e05a80c51277c3eb8ca85be6a905edf31",
+      "observed_debian_sid_status": "2.43-7 vulnerable; unstable unfixed",
+      "conditions": "Wide scanf %s or %[ without l converts into a narrow destination and adds a second null byte after the shift-state terminator. Exact destination exhaustion can cause a one-byte null overwrite. Narrow scanf, wide-output l conversions and allocating a/m conversions are outside this defect."
+    },
+    {
+      "id": "CVE-2026-100290",
+      "advisory": "GLIBC-SA-2026-0028",
+      "introduced_commit": "3b0bdc723579a7c6df2cace0115a6ca0977d73f9",
+      "tracker": "https://security-tracker.debian.org/tracker/CVE-2026-100290",
+      "tracker_raw_sha256": "438fdb7a542dd956fc0fb6c079b620a91893ccc2a5b34401145cf79fa92e58ce",
+      "observed_debian_sid_status": "2.43-7 vulnerable; unstable unfixed",
+      "conditions": "Allocation failure during POSIX regex compilation or matching can leave stale realloc pointers in re_dfa_add_node, build_range_exp or match_ctx_add_entry; subsequent cleanup can free them again. This is not limited to deliberately crafted patterns; memory pressure is a condition, not a general mitigation."
+    }
+  ],
+  "unaccepted_retrievals": [
+    {
+      "url": "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=advisories/GLIBC-SA-2026-0027",
+      "http_status": 200,
+      "body_is_advisory": false,
+      "body_kind": "Anubis bot challenge HTML",
+      "raw_sha256": "446135d6e0901384372fca83195768e2021f5515cf07d256e87b191332554fb5"
+    },
+    {
+      "url": "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=advisories/GLIBC-SA-2026-0028",
+      "http_status": 200,
+      "body_is_advisory": false,
+      "body_kind": "Anubis bot challenge HTML",
+      "raw_sha256": "9f003eac4f63d576f15f811daf3fefa9e6b6e014ace95e7016e60b4490198b41"
+    }
+  ],
+  "no_fixed_library_claim": true
+}

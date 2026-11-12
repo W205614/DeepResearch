@@ -1,0 +1,47 @@
+{
+  "schema": "agent-glibc-independent-second-review-v1",
+  "risk_acceptance": false,
+  "binary_fixed_claim": false,
+  "reviewed_source_files": {
+    "wide-scanf-review.json": "9ad4b71493023ecdf05d77cd05a8fb1c7da44db42758f9f6cb47f0ff0c420b09",
+    "python-ffi-boundary.json": "a37405ab4db94d996b76c9f4c538aa2b7ce5f0c6808125d88faa6f855acd5b05",
+    "glibc-binary-package-mapping.json": "3c52b793ae33ad733e7e4bb09d2f3d65d5e2fcc6ea3632f85d9dee09f03533ea"
+  },
+  "observed_python_closure": {
+    "files": 5972,
+    "sha256": "406ed46dfd00d3d21d42d696f6b350f2fadb4fda81894060e7053beed8438e1d"
+  },
+  "observed_native_closure": {
+    "files": 515,
+    "sha256": "7bde6d27b4fd6015f058da3f28d8c1e5dfb0155aadca77a61919225674d4f348"
+  },
+  "wide_names_in_all5972_python_files": [],
+  "greenlet_debug_sections_independently_parsed": [
+    {
+      "path": "/opt/venv/lib/python3.11/site-packages/greenlet/_greenlet.cpython-311-x86_64-linux-gnu.so",
+      "sha256": "a933f358cda2bf507536c9d8f85b43002d33d313db47735c722783db43bc457c",
+      "matches": [
+        {
+          "section": ".debug_str",
+          "flags": 48,
+          "runtime_allocated": false
+        }
+      ]
+    },
+    {
+      "path": "/opt/venv/lib/python3.11/site-packages/greenlet/tests/_test_extension_cpp.cpython-311-x86_64-linux-gnu.so",
+      "sha256": "8ae79a58d6f7e26c524801e5cc8cb4379cedc2d176b4841b822eff8ff6dc5882",
+      "matches": [
+        {
+          "section": ".debug_str",
+          "flags": 48,
+          "runtime_allocated": false
+        }
+      ]
+    }
+  ],
+  "exact_extra_gconv_elfs_checked": 245,
+  "all_gconv_affected_imports_and_definitions_absent": true,
+  "review_conclusion": "The bounded current application path does not select the affected wide scanner: all current Python files contain no target binding, application FFI is guarded Windows process control, the Linux bindings use fixed unrelated APIs, and complete native imports/internal-wrapper review plus actual debug-section classification support the absence of an active wide scanner entry. The extra gconv component does not contain either defect implementation. This does not assert a fixed libc or safe arbitrary native/FFI programs.",
+  "limits": "Generic FFI/plugin facilities remain present; changing code/bytes, adding an affected binding or external plugin, or enabling user-selected native execution invalidates this exact review."
+}

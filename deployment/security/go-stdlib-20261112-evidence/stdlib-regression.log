@@ -1,0 +1,19 @@
+go version go1.27.4 linux/amd64
+func (w *response) requestTooLarge() {
+	w.requestBodyLimitHit.Store(true)
+}
+
+// disableWriteContinue stops Request.Body.Read from sending an automatic
+// 100 Continue. As the name implies, it is only useful when the request
+// expects a 100 Continue and the body is wrapped in an expectContinueReader;
+// otherwise, it is a no-op.
+// If a 100-Continue is being written, it waits for it to complete before
+TestServerMaxBytesHeaderRace
+=== RUN   TestServerMaxBytesHeaderRace
+=== RUN   TestServerMaxBytesHeaderRace/h1
+=== RUN   TestServerMaxBytesHeaderRace/h2
+--- PASS: TestServerMaxBytesHeaderRace (0.01s)
+    --- PASS: TestServerMaxBytesHeaderRace/h1 (0.00s)
+    --- PASS: TestServerMaxBytesHeaderRace/h2 (0.01s)
+PASS
+ok  	net/http	0.019s

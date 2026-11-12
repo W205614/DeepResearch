@@ -1,0 +1,281 @@
+{
+  "schema": "ordinary-query-real-provider-acceptance-v1",
+  "phase": "first_code_fix_validation_before_third_party_upgrade",
+  "source_fix_sha": "ec6c8e670761f235d307831c799c811761236912",
+  "runtime_agent_image": "sha256:982d6f60e7511937afbf844f22ed1bfe1b5b327c903d7b46756f82b8d3192f93",
+  "runtime_images": {
+    "web": "sha256:013ba5daedc8d2d082f0b99ac88937781c8222c9321f28fdb8cd04ad253009e3",
+    "backend": "sha256:c63727c9a3ecbce4b5d4964e6a483a4535798bfa190e0b0b72b932c451459149",
+    "agent": "sha256:982d6f60e7511937afbf844f22ed1bfe1b5b327c903d7b46756f82b8d3192f93",
+    "worker": "sha256:982d6f60e7511937afbf844f22ed1bfe1b5b327c903d7b46756f82b8d3192f93",
+    "document-worker": "sha256:982d6f60e7511937afbf844f22ed1bfe1b5b327c903d7b46756f82b8d3192f93",
+    "migrate": "sha256:982d6f60e7511937afbf844f22ed1bfe1b5b327c903d7b46756f82b8d3192f93",
+    "bootstrap-db": "sha256:982d6f60e7511937afbf844f22ed1bfe1b5b327c903d7b46756f82b8d3192f93",
+    "milvus": "sha256:036b5a49f4fb4a11251c1eba96c5db86ad088e568dcd2d24ac210fc7dd889990",
+    "keycloak": "sha256:f734dabcd4a46e676fd2a4e86710ed2ae1661458377d49fb0b8533305f12f658",
+    "redis": "sha256:57e4255cc971b1c8d6f8a6ca283ac01bc3ecdd914273ef6bfaede87aaecd6541",
+    "postgres": "sha256:3018790ed892ee8595961a044fbf2565826a4f8602335c44866b2eb00879d769",
+    "clamav": "sha256:e73991068f2037e10cf15669dd3b48c24345658f5488430746b414c0f761270f",
+    "storage-init": "sha256:834d0151e176505b20305304abdc7b07ca3f54d95097a9a94830ced3f111e97c",
+    "minio": "sha256:151cd83d5e6500f4d1b3d7f0a12756fe80e8ffcbf91150afd6b9b9605bc2369a",
+    "etcd": "sha256:dbfc4f5bf58f607c0dc14b2157531391264803d53ab5f1bc4a9401cfaac163bf",
+    "keycloak-postgres": "sha256:3018790ed892ee8595961a044fbf2565826a4f8602335c44866b2eb00879d769",
+    "alert-token-init": "sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a"
+  },
+  "evidence_policy_sha256": "49d56ab18e9e6257ab37b050d9573970278da3a7667b9d1333cc71a55eaf2bdb",
+  "original_prompt_unchanged": true,
+  "topic": "根据本地功能验收资料，说明工作空间成员权限在哪里校验，以及删除资料后的检索预期。请分别说明两点并给出资料引用，不推测其他功能。",
+  "run_id": "607626a2284940438d4f015c5eebb23c",
+  "status": "completed",
+  "validation": {
+    "verification_contract": "verification-v3-claim-span",
+    "verification_wire": "verification-v4-target-id",
+    "checked_claims": 2,
+    "supported_claims": 2,
+    "removed_claims": 0,
+    "repaired": false,
+    "insufficient": false,
+    "checks": [
+      {
+        "atomic_checks": [
+          {
+            "text": "根据所提供本地资料《lifecycle.txt》（正文·字符1–41），工作空间成员权限在后端校验。",
+            "supported": true,
+            "target_id": "0:0"
+          }
+        ],
+        "unsupported_parts": [],
+        "omitted_conditions": [],
+        "index": 0,
+        "supported": true,
+        "reason": "引用直接支持权限校验位于后端；结论未将资料记载扩大为实际验证结果。",
+        "verification_complete": true,
+        "format_error": ""
+      },
+      {
+        "atomic_checks": [
+          {
+            "text": "根据所提供本地资料《lifecycle.txt》（正文·字符1–41），删除资料后的检索预期是：被删除的资料不应在知识库检索结果中出现。",
+            "supported": true,
+            "target_id": "1:0"
+          }
+        ],
+        "unsupported_parts": [],
+        "omitted_conditions": [],
+        "index": 1,
+        "supported": true,
+        "reason": "引用直接支持删除后的检索预期，结论没有将“不应出现”替换为已验证不会出现。",
+        "verification_complete": true,
+        "format_error": ""
+      }
+    ],
+    "gaps": [
+      "资料未提供实际验收结果，不能将上述校验位置说明及删除后的检索预期认定为已验收通过。"
+    ],
+    "unanswered_questions": [],
+    "original_request_answered": true,
+    "evidence_metrics": {
+      "source_count": 1,
+      "unique_web_domains": 0,
+      "source_kinds": [
+        "local"
+      ],
+      "access_types": [
+        "document"
+      ],
+      "evidence_levels": [
+        "local"
+      ],
+      "trusted_sources": 0
+    },
+    "quality": "partial",
+    "reasons": [
+      "vector_unavailable"
+    ],
+    "retrieval_outcomes": [
+      {
+        "source": "web",
+        "outcome": "policy_blocked"
+      },
+      {
+        "source": "local",
+        "outcome": "vector_unavailable"
+      },
+      {
+        "source": "local",
+        "outcome": "ok"
+      }
+    ]
+  },
+  "browser": {
+    "startTime": "2026-11-12T03:46:58.356Z",
+    "duration": 67975.35800000001,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "provider_fixtures_loaded": false,
+  "provider_models": [
+    "gpt-6.1-sol",
+    "text-embedding-3-large"
+  ],
+  "new_requests": [
+    {
+      "id": 24,
+      "path": "embeddings",
+      "model": "text-embedding-3-large",
+      "payload_sha256": "f940f23f95992a175cba2fde25017f07bfe86596bd617c55789c74e675a6bc9e",
+      "started": 1794455235.045909,
+      "reserved_usd": 0.00431,
+      "status": 200,
+      "prompt_tokens": 39,
+      "completion_tokens": 0,
+      "estimated_usd": 3.9e-05,
+      "request_id": "req_2cdc0c90f1464dcb9197ebffcd047ba7",
+      "response_sha256": "b0928f619a9d8d9c86fc343799abc204680268170ec6353a7a987746af387690"
+    },
+    {
+      "id": 25,
+      "path": "embeddings",
+      "model": "text-embedding-3-large",
+      "payload_sha256": "26c3580be7db2acba7b801b29b57c6acb07f652ec9f386173da06e8bba36e821",
+      "started": 1794455240.8514102,
+      "reserved_usd": 0.004211,
+      "status": 200,
+      "prompt_tokens": 7,
+      "completion_tokens": 0,
+      "estimated_usd": 7e-06,
+      "request_id": "req_48848e4e7ce7492a972eba09bb4a9939",
+      "response_sha256": "12c72ff5af5078a637e286a2b0e746313a98398769a60384ae789182765017b5"
+    },
+    {
+      "id": 26,
+      "path": "chat/completions",
+      "model": "gpt-6.1-sol",
+      "payload_sha256": "3f3705ace18bbb83ef97cca4672eca8ecb03579ad2257703a6ed4e96f560ff5e",
+      "started": 1794455245.4018528,
+      "reserved_usd": 0.188376,
+      "status": 200,
+      "prompt_tokens": 710,
+      "completion_tokens": 202,
+      "estimated_usd": 0.00344,
+      "request_id": "req_80d9b5d56d6b49b6a935586a9fc6390b",
+      "response_sha256": "ce5d7d8f8bfb381cda6ecdee82e9ae0d928032fea6a3c3acefb89aca406f1f21"
+    },
+    {
+      "id": 27,
+      "path": "embeddings",
+      "model": "text-embedding-3-large",
+      "payload_sha256": "41e6582c6f9843406df7cdfd7bf9a03432a2b2a338f571e6d5b7947ee08ef854",
+      "started": 1794455252.4075716,
+      "reserved_usd": 0.004276,
+      "status": 200,
+      "prompt_tokens": 28,
+      "completion_tokens": 0,
+      "estimated_usd": 2.8e-05,
+      "request_id": "req_a1f800a8dc39488ebd9c400a14dc4778",
+      "response_sha256": "bc56f40ddf236d924c0f9a675ec384b0e036680bd3e1e7f137e5a1b16146bec2"
+    },
+    {
+      "id": 28,
+      "path": "chat/completions",
+      "model": "gpt-6.1-sol",
+      "payload_sha256": "6328f837e921ecd29507292943383cdc5c63e4ef66efc884c6081bdbcfdfbaac",
+      "started": 1794455256.2097287,
+      "reserved_usd": 0.192844,
+      "status": 200,
+      "prompt_tokens": 1059,
+      "completion_tokens": 159,
+      "estimated_usd": 0.003708,
+      "request_id": "req_7a44a42fb89343c3b2f7cb61999f91ab",
+      "response_sha256": "66d59ffab5c667276d358bb0ebdf6547e6e57c0765eb29af0964de2303faae1e"
+    },
+    {
+      "id": 29,
+      "path": "chat/completions",
+      "model": "gpt-6.1-sol",
+      "payload_sha256": "3d20a80500448814a0801a7d7ab738a4c5cd12e4ff75ace6745519acdee37661",
+      "started": 1794455260.2925453,
+      "reserved_usd": 0.198284,
+      "status": 200,
+      "prompt_tokens": 1426,
+      "completion_tokens": 194,
+      "estimated_usd": 0.004792,
+      "request_id": "req_3c5b372da65942e5a42928eaab20ced7",
+      "response_sha256": "0b6519fc81e2966fb6eabea7b489086342ebe77f968111980ff3e46dffccb0fa"
+    },
+    {
+      "id": 30,
+      "path": "chat/completions",
+      "model": "gpt-6.1-sol",
+      "payload_sha256": "e95e087595cfd13200765114343f062ec383c31cd8ff13814adfcbeda8a41808",
+      "started": 1794455264.7541404,
+      "reserved_usd": 0.1869,
+      "status": 200,
+      "prompt_tokens": 624,
+      "completion_tokens": 32,
+      "estimated_usd": 0.001568,
+      "request_id": "req_7c8dbe97276144daa2c05b183c19c8cf",
+      "response_sha256": "dae90e5fef560f1d3d0d6f4a8d35406349188cdf96c793a83b9fc1c8e4cdb1af"
+    },
+    {
+      "id": 31,
+      "path": "chat/completions",
+      "model": "gpt-6.1-sol",
+      "payload_sha256": "62ac8295e8f32df8fbf2a61ab369bad79f026a9818e9fce3210f2264565e8b9b",
+      "started": 1794455266.973042,
+      "reserved_usd": 0.207504,
+      "status": 200,
+      "prompt_tokens": 2008,
+      "completion_tokens": 224,
+      "estimated_usd": 0.006256,
+      "request_id": "req_0be7e247b350446dbdcec41ae9c222c9",
+      "response_sha256": "69a5b49409611f58216cb5e5310c48dd84804aab68d46af7686779f3790e100f"
+    },
+    {
+      "id": 32,
+      "path": "chat/completions",
+      "model": "gpt-6.1-sol",
+      "payload_sha256": "f8cb0f5d2e6d9c89c99154f3ab5664485f9c765c74212e3bb711033112fafb1c",
+      "started": 1794455272.5852726,
+      "reserved_usd": 0.187816,
+      "status": 200,
+      "prompt_tokens": 640,
+      "completion_tokens": 151,
+      "estimated_usd": 0.00279,
+      "request_id": "req_15028719d846487d87f6432447212d51",
+      "response_sha256": "d4e70666588d7f25d4cf849c7b0f4fd384c65ebdc954653e3b125b104d5b4c88"
+    }
+  ],
+  "new_request_types": {
+    "embeddings": 3,
+    "chat/completions": 6
+  },
+  "budget": {
+    "maximum_total_usd": 5,
+    "all_attempts_including_previous_failures": 32,
+    "full_reservations_total_usd": 3.547734,
+    "invoice_actual_usd": null,
+    "unknown_http_results": 0,
+    "historical_http_failures_preserved": {
+      "400": 1
+    }
+  },
+  "source_document": [
+    {
+      "title": "lifecycle.txt",
+      "text": "功能验收资料：工作空间成员权限在后端校验。删除资料后，不应在知识库检索结果中出现。",
+      "locator": "正文 · 字符 1–41",
+      "content_hash": "20a66cc40d14ef3bb08aa03dc46f9ff2b888e662a7ae38f4ce954a745b556683"
+    }
+  ],
+  "raw_result_sha256": "14e4ed6359903f3759f64dabdf86fae87298810aff26566322ec9c666ae653eb",
+  "report_text_sha256": "97eccdf857038922d7019a2065651539ad7191b2c2c52e3777a849cb65c8a904",
+  "boundary": [
+    "Vector retrieval was unavailable; the run explicitly used keyword retrieval and quality=partial.",
+    "The two source-attributed statements answer the original request; they do not establish actual system behavior.",
+    "The report screenshot still shows the UI researching state. The final UI status transition was not further verified; API status, events and browser assertions establish backend completion only."
+  ],
+  "report_file_sha256": "19193a20686aa69451f0076c50e8eba36b203056fbffcf48dd792d64c5e0fd0f"
+}
