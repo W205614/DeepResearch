@@ -89,6 +89,7 @@ COPY --from=plugins /out/checksum-preparation/ /usr/share/deepresearch/grafana-c
 COPY --from=plugins /out/source-provenance/ /usr/share/deepresearch/grafana-candidate/provenance/plugins/
 COPY --chmod=0644 deployment/security/go-stdlib-20261112-evidence/source.lock.json /usr/share/deepresearch/grafana-candidate/source.lock.json
 COPY --chmod=0644 deployment/security/go-stdlib-20261112-evidence/Go-LICENSE /usr/share/deepresearch/grafana-candidate/go-stdlib/Go-LICENSE
+RUN chmod 0755 /usr/share/deepresearch/grafana-candidate/go-stdlib
 USER 472
 ARG PROJECT_SOURCE_REVISION=uncommitted-validation-inputs
 ARG PROJECT_INPUTS_SHA256=unrecorded-validation-inputs

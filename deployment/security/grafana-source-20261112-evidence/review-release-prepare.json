@@ -1,21 +1,25 @@
 {
   "schema": "go-stdlib-independent-technical-review-20261112-v1",
-  "actor": "/root/release_prepare",
+  "actor": "/root/review_provenance",
   "actor_kind": "automated_independent_agent",
-  "subject_sha256": "1a800ee2441ef91bdba378047dc2b95cb2ca617204d192a1bf9122d98a55a770",
+  "subject_sha256": "f85d4705a1c3ca54ed1858237d8f336beb913d69c1e93a243a015fcb504bb94b",
   "facts_passed": true,
   "risk_acceptance": false,
   "binary_redistribution_approved": false,
-  "observed_at_utc": "2026-11-12T10:28:33.653195+00:00",
-  "observations_sha256": "fc0877ec8536d75f80a5f5371b7afe16e147e8499ece47dec69b3fd220abd6a9",
-  "database_observations_sha256": "8e89b6cb024f9f899150bce4557d6ce362f74cae5092e971bae3b4350759a373",
-  "prior_fixed_comparison_sha256": "9ba381ef9dd8d9b053b32b3c901d15e4d9c4359614be8dbee5f5681947bbedde",
-  "prior_review_sha256": "27a7f6cc77da9d931e2fea1063ee4ec4c5d6099a9006f45d1df5e2c263d677a3",
+  "observed_at_utc": "2026-11-12T11:55:28.885524+00:00",
+  "observations_sha256": "4056c458d295f2a4059775249f14df66097ad8b606f31df493cc41053624e268",
+  "prior_review_sha256": "b15262b1a0137970b34af35028060db57f3d3cb46a85af250d4e2174d9baa7e0",
   "prior_review_preserved": true,
+  "source_inputs_delta": {
+    "deployment/docker/Dockerfile.grafana-20261112": {
+      "before": "c362f05174a88fdf6645518707db3772bbf1e18f4ee94efa533696229beb2e8f",
+      "after": "4653c95547ca5f96b19db2cb52d74f0bbd98c35c05ad772ed7318fb0102845b9"
+    }
+  },
   "actual_image": {
-    "engine_id": "sha256:9ca15026a4ec081c7a158a13645e78900210414abf8c80f2be0cb2549bb8bc87",
-    "portable_config_digest": "sha256:9d3bab500b2c6f6e097e111a58d0b370acd9f3e31e5a515cb374382e69e2bdda",
-    "ordered_diff_ids": [
+    "actual_engine_id": "sha256:5b32f2dd4bedc4a147c1579af1b8434534eadb7cefceb2b716e9d75052c5dafb",
+    "portable_config_digest": "sha256:ee3dad4bc33df1110222e84f340c42af36fb6554b57930280de70d5de0540037",
+    "diff_ids": [
       "sha256:75c137aedfb2760f88629236cb7b797630aed0c3d91d626d1d1bb694878fc2ba",
       "sha256:3b65ad5d0600ae408b194a3e00c3ce5f18e2f3775b6efe2578fbded330a241a3",
       "sha256:afbd9e1d092a95dec6977836724da893497654babce2e3f73ea99afd6476f2ed",
@@ -72,9 +76,10 @@
       "sha256:65e32b16888fe76616497e51abcde80d62247c39d7855ef756861c2e51eb7d9a",
       "sha256:c00c413790518d402680c1e61019ff5fd7c9f705ee5f4dd57a1bbe3dadaa35e4",
       "sha256:3fd597b16d50390efd09dc5b549a3319962b271c4d6eb5cb78a96f70f98ff4e2",
-      "sha256:4bc088f3dc446ba72e2f6fc70e21dd670c0cb00bf580c98d17261e9cfd3bc6de"
+      "sha256:4bc088f3dc446ba72e2f6fc70e21dd670c0cb00bf580c98d17261e9cfd3bc6de",
+      "sha256:1560a1f8c0c3eaf94858a6b722f9c57ff65f3bd72dcc88e333430c45706c0dc7"
     ],
-    "runtime_manifest_sha256": "4042c4837ce609becd6960518e167e42c7e670508a51462325b34aa53bb89006"
+    "runtime_manifest_sha256": "506571107dda8b51362a5229f131df6d1d1c1446d79b4a4fd55a4e097da6d78d"
   },
   "native_sha256": {
     "usr/share/grafana/bin/grafana": "cb1d1fca4dd56395bdffe0cc821efef47565bd9066c47027fffa6c7fe45862d7",
@@ -119,40 +124,113 @@
     "binary_redistribution_approved": false,
     "scope": "Exactly reviewed locally built runtime; original OCI approval and historical scans unchanged."
   },
-  "independently_checked": [
-    "Every non-review source/evidence SHA and exact frozen subject digest; current strict profile, original migrations and receipt gates.",
-    "Actual immutable image inspected; independently created a never-started network-none container, exported its full rootfs and saved its complete OCI image config and ordered DiffIDs.",
-    "All fourteen real ELF payloads independently copied and reparsed by the pinned official Go1.27.4 SDK. Complete native metadata equals the exact new source graphs, and actual fourteen native hashes equal the prior fixed build.",
-    "Every complete current/prior source graph, module identity, replacement and production import closure was revalidated by the unchanged strict migration consumers. Builder-produced cold/hot and double-empty control executions are bound evidence reused here; those builds were not rerun by this reviewer.",
-    "All source/runtime changes were revalidated against the original subject. Independent comparison to the previous fixedGo subject finds exactly39 JSON or JSON.gz metadata documents changed, with every other runtime tree entry identical.",
-    "Current complete original Trivy40 and Grype10 tuples and severities match both the new subject and previous fixedGo exact reviews. Secret0 and SBOM/config/DiffID/raw scan identity chains verified; no raw finding or report was modified.",
-    "Current official c98 compressed database archive and3420876800-byte derived3796 database independently hashed. Original controlled import metadata and schema/age verified; actual pinned Grype db status forced xxh64/age validation with updates disabled and derived bytes rehashed afterward. No new import or scanner run by this reviewer.",
-    "Actual pinned SDK source/version copied and compared to a newly fetched official Go1.27.4 source, and the current official GO-2026-6859 advisory checked; these source HTTP requests are not model/provider calls."
+  "full_runtime_differences": [
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/go-stdlib",
+      "before": {
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/go-stdlib",
+        "type": "directory",
+        "uid": 0
+      },
+      "after": {
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/deepresearch/grafana-candidate/go-stdlib",
+        "type": "directory",
+        "uid": 0
+      }
+    }
   ],
-  "database": {
-    "archive_sha256": "c98bd6bd207590fa04c8e2fea3db1859f7f952b57400fc62e19f517f1b562f5e",
-    "archive_bytes": 201260155,
-    "derived_database": {
-      "bytes": 3420876800,
-      "sha256": "3796b632bcd52d82c135e579bcc4635d902382cab550ff8c01a940a4f90893ca"
+  "new_actual_uid472_permission_probes": [
+    {
+      "phase": "after",
+      "image_id": "sha256:5b32f2dd4bedc4a147c1579af1b8434534eadb7cefceb2b716e9d75052c5dafb",
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--pull",
+        "never",
+        "--network",
+        "none",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--user",
+        "472",
+        "--entrypoint",
+        "/bin/sh",
+        "sha256:5b32f2dd4bedc4a147c1579af1b8434534eadb7cefceb2b716e9d75052c5dafb",
+        "-c",
+        "set -eu; printf 'uid='; id -u; printf 'gid='; id -g; sha256sum /usr/share/deepresearch/grafana-candidate/go-stdlib/Go-LICENSE"
+      ],
+      "exit_code": 0,
+      "stdout": "uid=472\ngid=0\n911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad  /usr/share/deepresearch/grafana-candidate/go-stdlib/Go-LICENSE\n",
+      "stderr": "",
+      "default_entrypoint_started": false
+    }
+  ],
+  "reused_before_uid472_permission_evidence": {
+    "performed_by": "/root/security_go",
+    "repeated_by_this_reviewer": false,
+    "reuse_reason": "The old exact Engine is no longer inspectable; the first failed attempt is preserved. No old image imported or rebuilt.",
+    "image_id": "sha256:bb5615cdd8803db7ec426dcbe5837581e2d8a38db9829b033b2fe957c3d7a372",
+    "actual_uid": 472,
+    "license_readable": false,
+    "source_files_sha256": {
+      "security/grafana-license-directory-amendment-01/before-permission-probes.json": "3ca1d03db10f0225629bb992c8830de22ceac7de8f68de23bc1997007ca3ede8",
+      "security/grafana-license-directory-amendment-01/before-user472.stdout.txt": "f1d528180bac878d83ae6541bd05b018a4098cc8f9d0b4e3b9ef599e8de58c42",
+      "security/grafana-license-directory-amendment-01/before-user472.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "security/grafana-license-directory-amendment-01/before-user0.stdout.txt": "7475a4b95437fc7811fc953bf2cacaed109e31d50fd5bbd19c9c3882eff7c5bc",
+      "security/grafana-license-directory-amendment-01/before-user0.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
-    "schema": "v6.1.10",
-    "built": "2026-11-12T06:20:58Z",
-    "import_digest": "xxh64:b8912068fb7cd11c",
-    "hashes_before_after_status_equal": true
+    "original_build_receipt_sha256": "b4ad235624486477988f42a5b91ac559e0ca62afa1979a8f38df2da892b5fcf5",
+    "original_inspection_sha256": "d24e74611fa3b82964a28f88e00a070bf3326b30906f7e8bb7b9f7a2aa841b74",
+    "original_portable_config_digest": "sha256:2458a29719bb37fe69c62657865aed25f8dad995a2a3caafcf28d73ba5b93868",
+    "complete_original_manifest_file_sha256": "85b4f703feae9b241e27af96f411c164417286a584acec74d07e218dd98c359d",
+    "complete_original_manifest_sha256": "4042c4837ce609becd6960518e167e42c7e670508a51462325b34aa53bb89006",
+    "all_15696_original_rows_equal_prior_bound_manifest": true,
+    "archived_license_file_sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+    "new_license_sha256_identical": true,
+    "saved_uid472_probe": {
+      "user": "472",
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--user",
+        "472",
+        "--entrypoint",
+        "/bin/sh",
+        "sha256:bb5615cdd8803db7ec426dcbe5837581e2d8a38db9829b033b2fe957c3d7a372",
+        "-c",
+        "printf 'uid='; id -u; if test -r /usr/share/deepresearch/grafana-candidate/go-stdlib/Go-LICENSE; then echo license_readable=yes; exit 3; else echo license_readable=no; fi"
+      ],
+      "exit_code": 0,
+      "stdout": "uid=472\nlicense_readable=no\n",
+      "stderr": ""
+    }
   },
-  "limits": [
-    "This is an automated independent technical fact review, not a human approval or risk acceptance.",
-    "Raw Trivy40/Grype10 remain; this is not a raw-zero or blanket future-version exemption.",
-    "The prior02 obsolete archive rejection and all prior failed/raw materials remain preserved.",
-    "This review does not approve binary redistribution, assert final model-flow success, publish a release or update daily containers."
+  "independently_checked": [
+    "Exact recipe change is one nonrecursive chmod0755 on the license parent directory; fixed source/build inputs otherwise unchanged.",
+    "Actual complete new image independently exported: only directory0644-to0755 differs from the prior 15696-entry payload; all entries equal preserved Enterprise CI payload.",
+    "All fourteen actual ELF payloads independently copied and reparsed with the pinned Go toolchain offline; native hashes and complete fourteen raw graphs exactly retained.",
+    "Saved security_go original UID472 test-r failure reused after exact receipt/config/full-manifest/archive-license cross-check; old unavailable Engine was not rerun.",
+    "Independently executed new isolated UID472 sha256sum reads the identical0644 Go-LICENSE after repair; no business entrypoint started.",
+    "Fresh original Trivy40/Grype10/full-SBOM reports re-adjudicated with strict identity, coverage, source hashes and all-severity tuple gates unchanged."
   ],
-  "complete_image_export_repeated": true,
-  "native_parsing_repeated": true,
-  "source_graph_and_original_scan_adjudication_repeated": true,
-  "database_byte_hash_and_status_validation_repeated": true,
-  "database_import_repeated": false,
-  "scanner_execution_repeated": false,
+  "limits": [
+    "Automated independent technical review, not human risk acceptance or third-party binary redistribution approval.",
+    "Scanner execution and prior official SDK/source-control evidence reused; this reviewer performs export, native parsing, graphs, new-image UID472 probe and original scan adjudication.",
+    "The old-image UID472 unreadable probe is explicitly reused from security_go; the first attempt failed to inspect that unavailable old Engine and is preserved.",
+    "No new real-model acceptance or deployment; original failed model/release evidence remains."
+  ],
   "services_started": false,
   "paid_provider_calls": 0
 }

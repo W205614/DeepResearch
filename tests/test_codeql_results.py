@@ -155,7 +155,7 @@ def test_current_continuation_preserves_original_exact_identities_and_bound_byte
     prior_path = root / 'deployment/security/codeql-reviewed-findings-20261110.json'
     prior = json.loads(prior_path.read_bytes())
     current = json.loads(REVIEW.read_bytes())
-    assert REVIEW.name == 'codeql-reviewed-findings-20261112-grafana-stable.json'
+    assert REVIEW.name == 'codeql-reviewed-findings-20261112-grafana-license-directory.json'
     assert [row['identity'] for row in current['findings']] == [row['identity'] for row in prior['findings']]
     assert current['findings'][:2] == prior['findings'][:2]
     for name, expected in prior['findings'][2]['evidence_sha256'].items():
@@ -199,11 +199,26 @@ def test_current_continuation_preserves_original_exact_identities_and_bound_byte
         'COPY --from=build /external-evidence/ /main/']
     assert producer['severity_threshold_unchanged'] == 7.0
     assert producer['new_codeql_scan_claimed'] is False
+    directory = current['grafana_license_directory_addendum']
+    directory_path = root / directory['path']
+    assert hashlib.sha256(directory_path.read_bytes()).hexdigest() == directory['sha256']
+    previous_directory_profile = root / directory['prior_profile']
+    assert hashlib.sha256(previous_directory_profile.read_bytes()).hexdigest() == directory['prior_profile_sha256']
+    assert current['findings'][:3] == json.loads(previous_directory_profile.read_bytes())['findings'][:3]
+    permission = json.loads(directory_path.read_bytes())
+    assert permission['recipe_delta']['only_added_line'] == 'RUN chmod 0755 /usr/share/deepresearch/grafana-candidate/go-stdlib'
+    assert permission['recipe_delta']['recursive'] is False
+    assert permission['recipe_delta']['all_copy_add_instructions_identical'] is True
+    assert permission['recipe_delta']['license_file_copy_mode_unchanged'] == '0644'
+    assert permission['new_codeql_scan_claimed'] is False
+    assert permission['actual_prior_sarif_reused']['source_sha'] == '0b532b1c277e572896ba2c51a3ec6814120e4899'
+    assert permission['severity_threshold_unchanged'] == 7.0
     assert reviewed_findings([], REVIEW, root) == ([], [])
 
 
 @pytest.mark.parametrize('change', ['web-context', 'new-go-copy', 'proof', 'addendum', 'pom', 'tomcat-addendum',
-                                    'grafana-recipe', 'stable-helper', 'original-capture', 'plugin-inventory', 'stable-addendum'])
+                                    'grafana-recipe', 'stable-helper', 'original-capture', 'plugin-inventory', 'stable-addendum',
+                                    'license-mode', 'license-file', 'license-addendum'])
 def test_current_continuation_still_rejects_changed_compose_go_recipe_or_proof(tmp_path, change):
     root = Path(__file__).resolve().parents[1]
     record = json.loads(REVIEW.read_bytes())
@@ -237,6 +252,17 @@ def test_current_continuation_still_rejects_changed_compose_go_recipe_or_proof(t
         assert before != after
     elif change == 'tomcat-addendum':
         changed = tmp_path / record['tomcat_patch_addendum']['path']
+        after = changed.read_bytes() + b'\n'
+    elif change == 'license-mode':
+        changed = tmp_path / 'deployment/docker/Dockerfile.grafana-20261112'
+        before = changed.read_bytes()
+        after = before.replace(b'RUN chmod 0755 ', b'RUN chmod 0777 ', 1)
+        assert before != after
+    elif change == 'license-file':
+        changed = tmp_path / 'deployment/security/go-stdlib-20261112-evidence/Go-LICENSE'
+        after = changed.read_bytes() + b'\n'
+    elif change == 'license-addendum':
+        changed = tmp_path / record['grafana_license_directory_addendum']['path']
         after = changed.read_bytes() + b'\n'
     else:
         names = {'grafana-recipe': 'deployment/docker/Dockerfile.grafana-20261112',

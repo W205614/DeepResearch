@@ -1,0 +1,78 @@
+{
+  "schema": "grafana-explicit-license-directory-mode-proof-20261112-v1",
+  "scope": "One runtime directory permission correction. No native code, graph, package, scanner severity or gate relaxation.",
+  "prior_project_source_commit": "0b532b1c277e572896ba2c51a3ec6814120e4899",
+  "prior_profile_sha256": "2fa2323cecc60cf9ef1e0a048694779c831fda656f06d630031e2a80ea6e7715",
+  "prior_review_subject_sha256": "1a800ee2441ef91bdba378047dc2b95cb2ca617204d192a1bf9122d98a55a770",
+  "source_inputs_sole_difference": {
+    "deployment/docker/Dockerfile.grafana-20261112": {
+      "before": "c362f05174a88fdf6645518707db3772bbf1e18f4ee94efa533696229beb2e8f",
+      "after": "4653c95547ca5f96b19db2cb52d74f0bbd98c35c05ad772ed7318fb0102845b9"
+    }
+  },
+  "producer_change": "One nonrecursive RUN chmod 0755 on the exact go-stdlib directory after the existing Go-LICENSE COPY --chmod=0644 and before USER 472.",
+  "enterprise_evidence": {
+    "job_url": "https://github.com/W205614/DeepResearch/actions/runs/43201592241/job/131126115795",
+    "source_commit": "0b532b1c277e572896ba2c51a3ec6814120e4899",
+    "artifact_id": 13939711832,
+    "artifact_bytes": 737775,
+    "artifact_sha256": "77ce6ddd08c1512dbcbb388fce736ecbc3c862d8619f4c32ad23e087595921d2",
+    "source_inputs_exactly_match_prior_profile": true,
+    "entry_count": 15696,
+    "sole_difference_from_prior_runtime": [
+      {
+        "path": "usr/share/deepresearch/grafana-candidate/go-stdlib",
+        "before": {
+          "gid": 0,
+          "mode": 420,
+          "path": "usr/share/deepresearch/grafana-candidate/go-stdlib",
+          "type": "directory",
+          "uid": 0
+        },
+        "after": {
+          "gid": 0,
+          "mode": 493,
+          "path": "usr/share/deepresearch/grafana-candidate/go-stdlib",
+          "type": "directory",
+          "uid": 0
+        }
+      }
+    ],
+    "actual_runtime_manifest_sha256": "506571107dda8b51362a5229f131df6d1d1c1446d79b4a4fd55a4e097da6d78d"
+  },
+  "actual_corrected_runtime": {
+    "image_id": "sha256:5b32f2dd4bedc4a147c1579af1b8434534eadb7cefceb2b716e9d75052c5dafb",
+    "portable_config_digest": "sha256:ee3dad4bc33df1110222e84f340c42af36fb6554b57930280de70d5de0540037",
+    "runtime_manifest_sha256": "506571107dda8b51362a5229f131df6d1d1c1446d79b4a4fd55a4e097da6d78d",
+    "all_15696_entries_exactly_equal_enterprise_runtime": true,
+    "all_other_15695_entries_identical_to_prior_reviewed_runtime": true,
+    "all14_native_sha256_identical": true,
+    "all9_runtime_config_fields_identical": true,
+    "license_file_mode": "0644",
+    "license_file_sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+  },
+  "actual_uid472_readability": {
+    "before_directory_mode": "0644",
+    "before_readable": false,
+    "after_directory_mode": "0755",
+    "after_readable": true,
+    "actual_uid": 472,
+    "network": "none",
+    "before_probe_stdout": "uid=472\nlicense_readable=no\n",
+    "after_probe_stdout": "uid=472\n911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad  /usr/share/deepresearch/grafana-candidate/go-stdlib/Go-LICENSE\nlicense_readable=yes\n",
+    "before_probe_exit_code": 0,
+    "after_probe_exit_code": 0,
+    "both_used_shell_entrypoint_only": true
+  },
+  "boundaries": {
+    "raw_ci_failure_and_prior_bytes_preserved": true,
+    "expected_hash_manually_modified": false,
+    "gate_or_directory_whitelist_relaxed": false,
+    "helper_or_shared_builder_changed": false,
+    "minio_changed": false,
+    "extra_cold_warm_experiments_rerun": false,
+    "model_provider_calls": 0,
+    "daily_start": false,
+    "binary_redistribution_approved": false
+  }
+}

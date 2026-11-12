@@ -1,15 +1,15 @@
 {
   "actor": "/root",
   "actor_kind": "automated_independent_agent",
-  "observed_at_utc": "2026-11-12T10:26:51.283745+00:00",
-  "subject_sha256": "1a800ee2441ef91bdba378047dc2b95cb2ca617204d192a1bf9122d98a55a770",
+  "observed_at_utc": "2026-11-12T11:55:46.677317+00:00",
+  "subject_sha256": "f85d4705a1c3ca54ed1858237d8f336beb913d69c1e93a243a015fcb504bb94b",
   "facts_passed": true,
   "risk_acceptance": false,
   "binary_redistribution_approved": false,
-  "reviewed_draft_sha256": "a63d765a3ce53c6b9f1a4d6e70edd8b0552aa25a31a9154c8582bcb19e201db5",
-  "actual_engine_id": "sha256:9ca15026a4ec081c7a158a13645e78900210414abf8c80f2be0cb2549bb8bc87",
-  "actual_portable_config_digest": "sha256:9d3bab500b2c6f6e097e111a58d0b370acd9f3e31e5a515cb374382e69e2bdda",
-  "actual_diff_ids": [
+  "reviewed_draft_sha256": "4fd028fcf7b15b38359a228fe03a075eb6a86c5bb532d30db6fb0618b2fa8889",
+  "actual_engine_id": "sha256:5b32f2dd4bedc4a147c1579af1b8434534eadb7cefceb2b716e9d75052c5dafb",
+  "portable_config_digest": "sha256:ee3dad4bc33df1110222e84f340c42af36fb6554b57930280de70d5de0540037",
+  "diff_ids": [
     "sha256:75c137aedfb2760f88629236cb7b797630aed0c3d91d626d1d1bb694878fc2ba",
     "sha256:3b65ad5d0600ae408b194a3e00c3ce5f18e2f3775b6efe2578fbded330a241a3",
     "sha256:afbd9e1d092a95dec6977836724da893497654babce2e3f73ea99afd6476f2ed",
@@ -66,9 +66,34 @@
     "sha256:65e32b16888fe76616497e51abcde80d62247c39d7855ef756861c2e51eb7d9a",
     "sha256:c00c413790518d402680c1e61019ff5fd7c9f705ee5f4dd57a1bbe3dadaa35e4",
     "sha256:3fd597b16d50390efd09dc5b549a3319962b271c4d6eb5cb78a96f70f98ff4e2",
-    "sha256:4bc088f3dc446ba72e2f6fc70e21dd670c0cb00bf580c98d17261e9cfd3bc6de"
+    "sha256:4bc088f3dc446ba72e2f6fc70e21dd670c0cb00bf580c98d17261e9cfd3bc6de",
+    "sha256:1560a1f8c0c3eaf94858a6b722f9c57ff65f3bd72dcc88e333430c45706c0dc7"
   ],
-  "actual_runtime_manifest_sha256": "4042c4837ce609becd6960518e167e42c7e670508a51462325b34aa53bb89006",
+  "actual_runtime_manifest_sha256": "506571107dda8b51362a5229f131df6d1d1c1446d79b4a4fd55a4e097da6d78d",
+  "changed_runtime_entries": [
+    "usr/share/deepresearch/grafana-candidate/go-stdlib"
+  ],
+  "unchanged_runtime_entries": 15695,
+  "actual_uid472_before_and_after_probes": [
+    {
+      "image": "sha256:bb5615cdd8803db7ec426dcbe5837581e2d8a38db9829b033b2fe957c3d7a372",
+      "uid": 472,
+      "license_readable": false,
+      "reused_actual_probe_actor": "/root/security_go",
+      "probe_sha256": "3ca1d03db10f0225629bb992c8830de22ceac7de8f68de23bc1997007ca3ede8",
+      "actual_probe_repeated_by_root": false,
+      "reason": "Prior image ID is no longer available locally."
+    },
+    {
+      "image": "sha256:5b32f2dd4bedc4a147c1579af1b8434534eadb7cefceb2b716e9d75052c5dafb",
+      "network": "none",
+      "uid": 472,
+      "license_readable": true,
+      "stdout": "uid=472\n911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad  /usr/share/deepresearch/grafana-candidate/go-stdlib/Go-LICENSE\n"
+    }
+  ],
+  "resumed_after_old_image_unavailable": true,
+  "completed_own_actual_export_and_native_parse_reused_on_resume": true,
   "actual_native_sha256": {
     "usr/share/grafana/bin/grafana": "cb1d1fca4dd56395bdffe0cc821efef47565bd9066c47027fffa6c7fe45862d7",
     "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64": "bd80bd856b3c2458bb6e32617d77b88f5576b3eac71ddbcaced5a237024da906",
@@ -85,208 +110,12 @@
     "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": "b6137332e24906f89238899a255fcad557a95b9045e4bd80bee5aeccdc91f168",
     "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": "4157391c162f4e311a8f50b962d2c07dc68306eafd6442437677aad61834ca91"
   },
-  "actual_graph_diagnostics": {
-    "usr/share/grafana/bin/grafana": {
-      "complete_nodes": 4200,
-      "changed_nodes": 3223,
-      "only_changed_fields": [
-        "Stale",
-        "StaleReason"
-      ],
-      "full_raw_sha256": "bf5feb13f5e033e2965149fdd501e74d67bf1e1fb85d8ec8eb4bb75af6067ab1"
-    },
-    "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64": {
-      "complete_nodes": 1078,
-      "changed_nodes": 638,
-      "only_changed_fields": [
-        "Stale",
-        "StaleReason"
-      ],
-      "full_raw_sha256": "fb639afba67dd5d45b1267b4f2e886a488b2a924bdf4cf15772065c10adf7432"
-    },
-    "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64": {
-      "complete_nodes": 590,
-      "changed_nodes": 189,
-      "only_changed_fields": [
-        "Stale",
-        "StaleReason"
-      ],
-      "full_raw_sha256": "290b3e8122332ba56855c082b9c02489b5b91f2e13410a14aa42e0ead1ef0a1d"
-    },
-    "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64": {
-      "complete_nodes": 594,
-      "changed_nodes": 211,
-      "only_changed_fields": [
-        "Stale",
-        "StaleReason"
-      ],
-      "full_raw_sha256": "7246c19ffb9ca24703d67967355cc71ea7ace647ed0311de61108ba661ff8a65"
-    },
-    "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64": {
-      "complete_nodes": 585,
-      "changed_nodes": 204,
-      "only_changed_fields": [
-        "Stale",
-        "StaleReason"
-      ],
-      "full_raw_sha256": "1cecb393680c2f4862db1192aff60cff8a432b72ccfe2fd9fd7a56d6f81e28aa"
-    },
-    "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64": {
-      "complete_nodes": 726,
-      "changed_nodes": 293,
-      "only_changed_fields": [
-        "Stale",
-        "StaleReason"
-      ],
-      "full_raw_sha256": "aaf173c910a15f4e15ebd2f841d94336951502578abc7a6eb802f6b14fd0ea2e"
-    },
-    "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64": {
-      "complete_nodes": 630,
-      "changed_nodes": 233,
-      "only_changed_fields": [
-        "Stale",
-        "StaleReason"
-      ],
-      "full_raw_sha256": "a8fe46c62b37f76fc538ab6684dcd58f47a28ee3c06e03e83774ccf46f463bec"
-    },
-    "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64": {
-      "complete_nodes": 627,
-      "changed_nodes": 222,
-      "only_changed_fields": [
-        "Stale",
-        "StaleReason"
-      ],
-      "full_raw_sha256": "1d435b7591f79b477a86ee0cd743db14f6272a6e5c606cf23a07ac7dd652e213"
-    },
-    "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64": {
-      "complete_nodes": 618,
-      "changed_nodes": 208,
-      "only_changed_fields": [
-        "Stale",
-        "StaleReason"
-      ],
-      "full_raw_sha256": "f9c44d75ebb76087a0d377c742a7e99ed545b785ce0543c4a3f13cf8ac07c211"
-    },
-    "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64": {
-      "complete_nodes": 743,
-      "changed_nodes": 417,
-      "only_changed_fields": [
-        "Stale",
-        "StaleReason"
-      ],
-      "full_raw_sha256": "10cc45b4bfa79ac304520ce35076bdc5c01a09900697df9e682cc0faed3f4d20"
-    },
-    "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64": {
-      "complete_nodes": 676,
-      "changed_nodes": 285,
-      "only_changed_fields": [
-        "Stale",
-        "StaleReason"
-      ],
-      "full_raw_sha256": "395bb77b82659f53e7de9dff5f059abd3058f0f8c1c2408bdac407196493fc0e"
-    },
-    "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64": {
-      "complete_nodes": 723,
-      "changed_nodes": 394,
-      "only_changed_fields": [
-        "Stale",
-        "StaleReason"
-      ],
-      "full_raw_sha256": "86832dc6f470628cb489b860a0411325bddb76404b42fc32227b8b21d8b2f4dc"
-    },
-    "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": {
-      "complete_nodes": 605,
-      "changed_nodes": 275,
-      "only_changed_fields": [
-        "Stale",
-        "StaleReason"
-      ],
-      "full_raw_sha256": "6ee3c2feeb058591a9b825e9c834ced2a4b68f6abf8b1de7ce71185e463e69ce"
-    },
-    "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": {
-      "complete_nodes": 586,
-      "changed_nodes": 260,
-      "only_changed_fields": [
-        "Stale",
-        "StaleReason"
-      ],
-      "full_raw_sha256": "72f4fbabeb68dfce060594502733ce970192ff27bb7e6567ef3c060e3ccaae70"
-    }
+  "scan_sha256": {
+    "trivy": "1cd7f58320612415102ee2901650b4a56095052cefa059e78d1582eabf8ef84a",
+    "grype": "34bb419e7720f42ccceb27c30ec0bbe727f770a76ac4e0064927e4f9f6d786f9",
+    "sbom": "b87e8dcaa866039d87e82fd7407dcfc5b143de244ed53cdac3d67c4dc1679b74"
   },
-  "runtime_document_changes_only": [
-    "usr/share/deepresearch/grafana-candidate/graphs/main/main.json.gz",
-    "usr/share/deepresearch/grafana-candidate/graphs/main/main.receipt.json",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/elasticsearch.json.gz",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/elasticsearch.receipt.json",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/grafana-postgresql-datasource.json.gz",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/grafana-postgresql-datasource.receipt.json",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/grafana-pyroscope-datasource.json.gz",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/grafana-pyroscope-datasource.receipt.json",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/influxdb.json.gz",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/influxdb.receipt.json",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/jaeger.json.gz",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/jaeger.receipt.json",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/loki.json.gz",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/loki.receipt.json",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/mssql.json.gz",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/mssql.receipt.json",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/mysql.json.gz",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/mysql.receipt.json",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/opentsdb.json.gz",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/opentsdb.receipt.json",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/prometheus.json.gz",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/prometheus.receipt.json",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/stackdriver.json.gz",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/stackdriver.receipt.json",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/tempo.json.gz",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/tempo.receipt.json",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/zipkin.json.gz",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/zipkin.receipt.json",
-    "usr/share/deepresearch/grafana-candidate/provenance/plugins/elasticsearch.json",
-    "usr/share/deepresearch/grafana-candidate/provenance/plugins/grafana-postgresql-datasource.json",
-    "usr/share/deepresearch/grafana-candidate/provenance/plugins/grafana-pyroscope-datasource.json",
-    "usr/share/deepresearch/grafana-candidate/provenance/plugins/influxdb.json",
-    "usr/share/deepresearch/grafana-candidate/provenance/plugins/jaeger.json",
-    "usr/share/deepresearch/grafana-candidate/provenance/plugins/loki.json",
-    "usr/share/deepresearch/grafana-candidate/provenance/plugins/mssql.json",
-    "usr/share/deepresearch/grafana-candidate/provenance/plugins/mysql.json",
-    "usr/share/deepresearch/grafana-candidate/provenance/plugins/opentsdb.json",
-    "usr/share/deepresearch/grafana-candidate/provenance/plugins/prometheus.json",
-    "usr/share/deepresearch/grafana-candidate/provenance/plugins/stackdriver.json"
-  ],
-  "non_graph_document_diagnostics": {
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/tempo.receipt.json": "Only complete raw/compressed byte count and SHA256 receipt fields changed.",
-    "usr/share/deepresearch/grafana-candidate/provenance/plugins/opentsdb.json": "Only the actual official Origin.URL was added; complete remaining JSON is identical.",
-    "usr/share/deepresearch/grafana-candidate/provenance/plugins/influxdb.json": "Only the actual official Origin.URL was added; complete remaining JSON is identical.",
-    "usr/share/deepresearch/grafana-candidate/graphs/main/main.receipt.json": "Only complete raw/compressed byte count and SHA256 receipt fields changed.",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/elasticsearch.receipt.json": "Only complete raw/compressed byte count and SHA256 receipt fields changed.",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/opentsdb.receipt.json": "Only complete raw/compressed byte count and SHA256 receipt fields changed.",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/loki.receipt.json": "Only complete raw/compressed byte count and SHA256 receipt fields changed.",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/stackdriver.receipt.json": "Only complete raw/compressed byte count and SHA256 receipt fields changed.",
-    "usr/share/deepresearch/grafana-candidate/provenance/plugins/mssql.json": "Only the actual official Origin.URL was added; complete remaining JSON is identical.",
-    "usr/share/deepresearch/grafana-candidate/provenance/plugins/stackdriver.json": "Only the actual official Origin.URL was added; complete remaining JSON is identical.",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/influxdb.receipt.json": "Only complete raw/compressed byte count and SHA256 receipt fields changed.",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/mssql.receipt.json": "Only complete raw/compressed byte count and SHA256 receipt fields changed.",
-    "usr/share/deepresearch/grafana-candidate/provenance/plugins/prometheus.json": "Only the actual official Origin.URL was added; complete remaining JSON is identical.",
-    "usr/share/deepresearch/grafana-candidate/provenance/plugins/mysql.json": "Only the actual official Origin.URL was added; complete remaining JSON is identical.",
-    "usr/share/deepresearch/grafana-candidate/provenance/plugins/loki.json": "Only the actual official Origin.URL was added; complete remaining JSON is identical.",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/mysql.receipt.json": "Only complete raw/compressed byte count and SHA256 receipt fields changed.",
-    "usr/share/deepresearch/grafana-candidate/provenance/plugins/grafana-postgresql-datasource.json": "Only the actual official Origin.URL was added; complete remaining JSON is identical.",
-    "usr/share/deepresearch/grafana-candidate/provenance/plugins/elasticsearch.json": "Only the actual official Origin.URL was added; complete remaining JSON is identical.",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/grafana-pyroscope-datasource.receipt.json": "Only complete raw/compressed byte count and SHA256 receipt fields changed.",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/prometheus.receipt.json": "Only complete raw/compressed byte count and SHA256 receipt fields changed.",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/jaeger.receipt.json": "Only complete raw/compressed byte count and SHA256 receipt fields changed.",
-    "usr/share/deepresearch/grafana-candidate/provenance/plugins/grafana-pyroscope-datasource.json": "Only the actual official Origin.URL was added; complete remaining JSON is identical.",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/grafana-postgresql-datasource.receipt.json": "Only complete raw/compressed byte count and SHA256 receipt fields changed.",
-    "usr/share/deepresearch/grafana-candidate/graphs/plugins/zipkin.receipt.json": "Only complete raw/compressed byte count and SHA256 receipt fields changed.",
-    "usr/share/deepresearch/grafana-candidate/provenance/plugins/jaeger.json": "Only the actual official Origin.URL was added; complete remaining JSON is identical."
-  },
-  "actual_scan_sha256": {
-    "trivy": "b523c53023bb38780897ad870dc6170eaf1927107019882e99ff5eca59b6541d",
-    "grype": "545d1d0beea59b1801b27719ae4d8d2c2c905e73e89c476cda6857e94ccb3693",
-    "sbom": "781a6571138bfc9362f2ff00fe36610604615ae293c2ab9cec057598c949c3b7"
-  },
-  "recomputed_original_gates": {
+  "recomputed_scan_verdict": {
     "passed": true,
     "profile": "grafana-source-20261112",
     "unresolved_count": 0,
@@ -314,13 +143,11 @@
     "scope": "Exactly reviewed locally built runtime; original OCI approval and historical scans unchanged."
   },
   "observations": [
-    "Root reviewed the exact new producer and Dockerfile. Only the new helper and recipe change build inputs; frozen capture and final runtime COPY contract remain unchanged.",
-    "The producer obtains whole official module info with SumDB, exact sums, repository URL and commit; it uses existing fixed zip/mod transport and never copies ziphash or constructs metadata fields.",
-    "Standard readonly export uses the original package/tags/environment and lock fingerprint checks before calling the frozen complete capture; no graph normalization or gate threshold change.",
-    "Root independently exported the actual image and hashed its complete runtime/config, copied all14 ELF files and reparsed their native metadata with the fixed offline Go toolchain.",
-    "Every ELF remains byte-identical to the already fixed Go1.27.4 subject. Every non-document runtime byte and file mode/ownership is unchanged; complete new raw graphs are pinned, with their diagnostic differences confined to Stale/StaleReason.",
-    "Full exact Trivy40 and Grype10 raw identities, package inventories, secret checks and config/CID/ordered diffID chains passed unchanged gates. Earlier failures remain preserved.",
-    "Original compiler/advisory/upstream tests and controlled cold/hot experiments are reused by exact evidence hashes; this review repeats actual image/native/graph/raw adjudication, not those executions.",
-    "No model rerun, full UI acceptance, human approval, Registry publication or daily upgrade is claimed."
+    "Root verified the sole nonrecursive chmod0755 line after the unchanged license COPY0644 and before the unchanged USER472. No scan gate, helper, MinIO or native source changes.",
+    "Root independently exported the full actual image/config. Its complete15696-entry manifest equals the real Linux CI payload; only the named directory mode differs from the old local subject, and all15695 other entries are exact.",
+    "Root independently copied/reparsed all14 actual ELF files and compared every full compressed raw graph with both the new subject and prior subject; all are byte-identical.",
+    "The earlier actual UID472 before-probe by security_go is reused by exact SHA and old receipt/full manifest after the old image ID became unavailable. Root did not recreate that image or claim to repeat its probe. Root independently ran the new UID472 probe and read the unchanged644 license with its exact official SHA256.",
+    "Full fresh rawTrivy40/Grype10 and SBOM/config/CID/ordered-diffID chains pass the unmodified gates with original severities retained; no raw normalization or source/permission ignore was introduced.",
+    "No actual model acceptance, human risk acceptance, binary redistribution, Registry publication or daily upgrade is claimed."
   ]
 }
