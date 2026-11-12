@@ -14,9 +14,11 @@ SOURCE = {
 }
 ORIGINAL = "根据所提供的本地资料《lifecycle.txt》（正文·字符1–41），工作空间成员权限在后端校验。原文：“工作空间成员权限在后端校验。”"
 REPAIR = "《lifecycle.txt》正文明确说明，工作空间成员权限在后端校验。原文：“工作空间成员权限在后端校验。”"
+FINAL_ORIGINAL = "根据所提供的本地功能验收资料，工作空间成员权限在后端校验。原文：“工作空间成员权限在后端校验。”引用位置：lifecycle.txt，正文 · 字符 1–41。"
+FINAL_DELETION = "根据所提供的本地功能验收资料，删除资料后的检索预期是：被删除的资料不应在知识库检索结果中出现。原文：“删除资料后，不应在知识库检索结果中出现。”引用位置：lifecycle.txt，正文 · 字符 1–41。"
 
 
-@pytest.mark.parametrize("text", [ORIGINAL, REPAIR])
+@pytest.mark.parametrize("text", [ORIGINAL, REPAIR, FINAL_ORIGINAL, FINAL_DELETION])
 def test_actual_failed_claims_reach_semantic_validation(text):
     allowed, reason = validate_claim(text, [SOURCE])
     assert allowed, reason
@@ -30,6 +32,16 @@ def test_actual_failed_claims_reach_semantic_validation(text):
     ORIGINAL + "存在1项缺陷。",
     "工作空间成员权限在后端校验。",
     "《other.txt》正文明确说明，工作空间成员权限在后端校验。",
+    FINAL_ORIGINAL.replace("1–41", "1–42"),
+    FINAL_ORIGINAL.replace("1–41", "1–410"),
+    FINAL_ORIGINAL.replace("1–41", "1–41.5"),
+    FINAL_ORIGINAL.replace("1–41", "1–41万"),
+    FINAL_ORIGINAL.replace("lifecycle.txt", "other.txt"),
+    FINAL_ORIGINAL + "校验耗时41毫秒。",
+    FINAL_ORIGINAL + "存在1项缺陷。",
+    FINAL_ORIGINAL.replace("根据所提供的本地功能验收资料，", ""),
+    FINAL_ORIGINAL.replace("根据所提供的本地功能验收资料，", "根据推测，其他资料缺失。"),
+    FINAL_ORIGINAL.replace("根据所提供的本地功能验收资料，", "根据什么？本地功能验收资料，"),
 ])
 def test_unbound_metadata_and_unattributed_facts_stay_blocked(text):
     assert not validate_claim(text, [SOURCE])[0]
@@ -56,8 +68,8 @@ def test_same_document_chunk_provenance_is_source_order_independent(reverse):
 
 async def test_bound_provenance_keeps_full_claim_and_semantic_rejection(runtime):
     graph = ResearchGraph(runtime.settings, runtime.db, runtime.providers, runtime.vectors, runtime.documents)
-    contradiction = REPAIR.replace("后端", "前端")
-    texts = [ORIGINAL, REPAIR, contradiction, ORIGINAL.replace("1–41", "1–42")]
+    contradiction = FINAL_ORIGINAL.replace("后端", "前端")
+    texts = [FINAL_ORIGINAL, FINAL_DELETION, contradiction, FINAL_ORIGINAL.replace("1–41", "1–42")]
     draft = ReportDraft.model_validate({"title": "验收", "sections": [{"heading": "权限", "claims": [
         {"text": text, "source_ids": [SOURCE["id"]]} for text in texts
     ]}]})

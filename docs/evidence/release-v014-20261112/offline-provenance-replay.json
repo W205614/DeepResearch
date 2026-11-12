@@ -1,0 +1,50 @@
+{
+  "schema": "offline-original-provider-response-provenance-replay-v1",
+  "passed": true,
+  "baseline_commit": "bb71de0b3bd3ca0a17d8a596286c2e8334046eae",
+  "baseline_policy_sha256": "49d56ab18e9e6257ab37b050d9573970278da3a7667b9d1333cc71a55eaf2bdb",
+  "tested_policy_sha256": "8e1180e8c0a884a708eeb4beb18389c9e683ed474f0ecf89f3c46613f7019339",
+  "request_sha256": "e91aa86276170c46f733945164ad2a06fceefce876faba4a4e4b2eef650cd298",
+  "response_sha256": "5064e6f29ef9847585d339512aebcfff7d686dc866ad0fe8f0445927fac2e46b",
+  "repair_response_sha256": "ca841461cc8a92fc62b9aece32bef6a4a33b369ecff4adc1109a49fa3d58cb30",
+  "failed_run_id": "8e83be7fadbc42738cbf7653b661e19f",
+  "sources": [
+    {
+      "id": "L-6fa9a02b82ea",
+      "kind": "local",
+      "title": "lifecycle.txt",
+      "locator": "正文 · 字符 1–41",
+      "text": "功能验收资料：工作空间成员权限在后端校验。删除资料后，不应在知识库检索结果中出现。",
+      "content_hash": "20a66cc40d14ef3bb08aa03dc46f9ff2b888e662a7ae38f4ce954a745b556683"
+    }
+  ],
+  "claims": [
+    {
+      "text": "根据所提供的本地功能验收资料，工作空间成员权限在后端校验。原文：“工作空间成员权限在后端校验。”引用位置：lifecycle.txt，正文 · 字符 1–41。",
+      "before": {
+        "allowed": false,
+        "reason": "数字、日期或比例未在引用片段中逐字出现"
+      },
+      "after": {
+        "allowed_to_reach_semantic_validation": true,
+        "reason": "资料内陈述通过数字检查，仍需版本和语义校验"
+      }
+    },
+    {
+      "text": "根据所提供的本地功能验收资料，删除资料后的检索预期是：被删除的资料不应在知识库检索结果中出现。原文：“删除资料后，不应在知识库检索结果中出现。”引用位置：lifecycle.txt，正文 · 字符 1–41。",
+      "before": {
+        "allowed": false,
+        "reason": "数字、日期或比例未在引用片段中逐字出现"
+      },
+      "after": {
+        "allowed_to_reach_semantic_validation": true,
+        "reason": "资料内陈述通过数字检查，仍需版本和语义校验"
+      }
+    }
+  ],
+  "unattributed_repairs_remain_blocked": true,
+  "new_provider_calls": 0,
+  "semantic_validation_repeated": false,
+  "complete_research_repeated": false,
+  "boundary": "Offline replay of immutable provider responses through the real deterministic implementation only. Passing means the original attributed claims reach the unchanged independent semantic gate; it does not establish a successful new real-model workflow."
+}

@@ -98,6 +98,11 @@ def validate_claim(text: str, sources: list[dict]) -> tuple[bool, str]:
                 locator = r"\s*".join(re.escape(c) for c in source["locator"] if not c.isspace())
                 located_label = title + rf"\s*[（(]\s*{locator}\s*[）)]"
                 numeric_text = re.sub(located_label, "", numeric_text)
+                # The same bound label may be written as an explicit citation
+                # field rather than parenthesized after a book-title label.
+                citation_field = (r"引用位置\s*[:：]\s*" + re.escape(source["title"])
+                                  + rf"\s*[,，]\s*{locator}(?=$|[。；;，,\n])")
+                numeric_text = re.sub(citation_field, "", numeric_text)
                 label += rf"(?:\s*[（(]\s*{locator}\s*[）)])?"
             named_local_attribution |= bool(re.search(
                 label + r"\s*(?:正文)?\s*(?:明确)?(?:记载|说明|规定|记录|指出|提到)", text
@@ -116,7 +121,7 @@ def validate_claim(text: str, sources: list[dict]) -> tuple[bool, str]:
             return False, "图片结论必须明确限定为图中显示，不能视作外部核实事实"
         return True, "图片可见内容通过数字检查，仍需语义校验"
     if sources and all(s.get("kind") == "local" for s in sources):
-        if not named_local_attribution and not re.search(r"根据.{0,8}资料|资料中|文档中|该文档", text):
+        if not named_local_attribution and not re.search(r"根据[^，,。；;：:？！?!\r\n]*资料|资料中|文档中|该文档", text):
             return False, "内部资料结论必须明确限定为资料中的记录，不能当作外部核实事实"
         return True, "资料内陈述通过数字检查，仍需版本和语义校验"
     if not requires_strong_evidence(text):

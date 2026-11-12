@@ -1,0 +1,217 @@
+{
+  "schema": "deepresearch-final-combination-acceptance-v1",
+  "version": "v0.1.4",
+  "phase": "final_packaged_applications_and_go_fixed_minio",
+  "source_sha": "bb71de0b3bd3ca0a17d8a596286c2e8334046eae",
+  "passed": false,
+  "checks": {
+    "same_final_source": true,
+    "final_applications_and_go_fixed_minio": true,
+    "matches_authorized_images": true,
+    "source_and_minio_security_bound": true,
+    "ordinary_topic_unchanged": true,
+    "real_provider_instrumentation": true,
+    "backend_completed_original_request": false,
+    "local_citation_present": false,
+    "single_browser_test_passed_without_retry_or_skip": false,
+    "browser_report_uses_this_run_configuration": true,
+    "final_ui_assertions_executed": false,
+    "owned_containers_stopped": true,
+    "runner_passed": false,
+    "prior_ledger_rows_unchanged": true,
+    "runner_ledger_matches_readonly_snapshot": true,
+    "cumulative_reservations_within_5_usd": true,
+    "new_requests_have_observed_200_results": true,
+    "both_real_models_observed": true,
+    "no_automatic_retry_authorized": true,
+    "same_authorized_5_usd_cap": true
+  },
+  "expected_runtime_images": {
+    "worker": "sha256:a850638cd74ed33fb9e9809f495b09f425b0840089bb4093e7ac7cad10ac4204",
+    "migrate": "sha256:a850638cd74ed33fb9e9809f495b09f425b0840089bb4093e7ac7cad10ac4204",
+    "agent": "sha256:a850638cd74ed33fb9e9809f495b09f425b0840089bb4093e7ac7cad10ac4204",
+    "bootstrap-db": "sha256:a850638cd74ed33fb9e9809f495b09f425b0840089bb4093e7ac7cad10ac4204",
+    "document-worker": "sha256:a850638cd74ed33fb9e9809f495b09f425b0840089bb4093e7ac7cad10ac4204",
+    "backend": "sha256:c63727c9a3ecbce4b5d4964e6a483a4535798bfa190e0b0b72b932c451459149",
+    "web": "sha256:013ba5daedc8d2d082f0b99ac88937781c8222c9321f28fdb8cd04ad253009e3",
+    "minio": "sha256:a302e87958741532bdb42d340e79b40a01f55af615179492aad978373694a8d5"
+  },
+  "observed_runtime_images": {
+    "agent": "sha256:a850638cd74ed33fb9e9809f495b09f425b0840089bb4093e7ac7cad10ac4204",
+    "backend": "sha256:c63727c9a3ecbce4b5d4964e6a483a4535798bfa190e0b0b72b932c451459149",
+    "bootstrap-db": "sha256:a850638cd74ed33fb9e9809f495b09f425b0840089bb4093e7ac7cad10ac4204",
+    "document-worker": "sha256:a850638cd74ed33fb9e9809f495b09f425b0840089bb4093e7ac7cad10ac4204",
+    "migrate": "sha256:a850638cd74ed33fb9e9809f495b09f425b0840089bb4093e7ac7cad10ac4204",
+    "minio": "sha256:a302e87958741532bdb42d340e79b40a01f55af615179492aad978373694a8d5",
+    "web": "sha256:013ba5daedc8d2d082f0b99ac88937781c8222c9321f28fdb8cd04ad253009e3",
+    "worker": "sha256:a850638cd74ed33fb9e9809f495b09f425b0840089bb4093e7ac7cad10ac4204"
+  },
+  "research_run_id": "8e83be7fadbc42738cbf7653b661e19f",
+  "original_topic": "根据本地功能验收资料，说明工作空间成员权限在哪里校验，以及删除资料后的检索预期。请分别说明两点并给出资料引用，不推测其他功能。",
+  "observed_topic_sha256": "6853746c0409e5377ee9147ad426d8e589ca9767989a12489ca6f8ed214f3093",
+  "status": "insufficient",
+  "backend_original_request_completed": false,
+  "final_ui_completion_render_verified": false,
+  "validation": {
+    "checked_claims": 2,
+    "supported_claims": 0,
+    "removed_claims": 2,
+    "repaired": true,
+    "insufficient": true,
+    "original_request_answered": false,
+    "quality": "insufficient",
+    "reasons": [
+      "insufficient_evidence"
+    ],
+    "verification_contract": "verification-v3-claim-span",
+    "verification_wire": "verification-v4-target-id"
+  },
+  "browser": {
+    "expected": 0,
+    "unexpected": 1,
+    "flaky": 0,
+    "skipped": 0
+  },
+  "new_request_types": {
+    "embeddings": 3,
+    "chat/completions": 5
+  },
+  "new_requests": [
+    {
+      "id": 33,
+      "path": "embeddings",
+      "model": "text-embedding-3-large",
+      "payload_sha256": "f940f23f95992a175cba2fde25017f07bfe86596bd617c55789c74e675a6bc9e",
+      "reserved_usd": 0.00431,
+      "status": 200,
+      "prompt_tokens": 39,
+      "completion_tokens": 0,
+      "response_sha256": "b0928f619a9d8d9c86fc343799abc204680268170ec6353a7a987746af387690"
+    },
+    {
+      "id": 34,
+      "path": "embeddings",
+      "model": "text-embedding-3-large",
+      "payload_sha256": "26c3580be7db2acba7b801b29b57c6acb07f652ec9f386173da06e8bba36e821",
+      "reserved_usd": 0.004211,
+      "status": 200,
+      "prompt_tokens": 7,
+      "completion_tokens": 0,
+      "response_sha256": "12c72ff5af5078a637e286a2b0e746313a98398769a60384ae789182765017b5"
+    },
+    {
+      "id": 35,
+      "path": "chat/completions",
+      "model": "gpt-6.1-sol",
+      "payload_sha256": "3f3705ace18bbb83ef97cca4672eca8ecb03579ad2257703a6ed4e96f560ff5e",
+      "reserved_usd": 0.188376,
+      "status": 200,
+      "prompt_tokens": 710,
+      "completion_tokens": 237,
+      "response_sha256": "bdae9bf80b1fb50bbf51039c0dfd6c5fb3b2629ddd06e433315d56fd813e8dc9"
+    },
+    {
+      "id": 36,
+      "path": "embeddings",
+      "model": "text-embedding-3-large",
+      "payload_sha256": "41e6582c6f9843406df7cdfd7bf9a03432a2b2a338f571e6d5b7947ee08ef854",
+      "reserved_usd": 0.004276,
+      "status": 200,
+      "prompt_tokens": 28,
+      "completion_tokens": 0,
+      "response_sha256": "bc56f40ddf236d924c0f9a675ec384b0e036680bd3e1e7f137e5a1b16146bec2"
+    },
+    {
+      "id": 37,
+      "path": "chat/completions",
+      "model": "gpt-6.1-sol",
+      "payload_sha256": "b1ff5bf3a62544df9d14c0cca154d334a26749d0251fd6159eb295ba4e2bddbc",
+      "reserved_usd": 0.193432,
+      "status": 200,
+      "prompt_tokens": 1094,
+      "completion_tokens": 185,
+      "response_sha256": "89cea236485c5d22bea702bf565824e7b00b23cacd417d4b0d6fe12ad8796bf6"
+    },
+    {
+      "id": 38,
+      "path": "chat/completions",
+      "model": "gpt-6.1-sol",
+      "payload_sha256": "e91aa86276170c46f733945164ad2a06fceefce876faba4a4e4b2eef650cd298",
+      "reserved_usd": 0.198872,
+      "status": 200,
+      "prompt_tokens": 1461,
+      "completion_tokens": 212,
+      "response_sha256": "5064e6f29ef9847585d339512aebcfff7d686dc866ad0fe8f0445927fac2e46b"
+    },
+    {
+      "id": 39,
+      "path": "chat/completions",
+      "model": "gpt-6.1-sol",
+      "payload_sha256": "150e0b9becc0df07c4fafd084b7874577f56b1c5ed48ad42cc217de23896f20f",
+      "reserved_usd": 0.187728,
+      "status": 200,
+      "prompt_tokens": 676,
+      "completion_tokens": 32,
+      "response_sha256": "753728118b1604502764e2b46e8a7ce421794643c7456a6ae366249c5d5475d3"
+    },
+    {
+      "id": 40,
+      "path": "chat/completions",
+      "model": "gpt-6.1-sol",
+      "payload_sha256": "885e62a993e6a453bba14ba1d87c364ad0c564bbaa205f2d81e9c5bde80f23ab",
+      "reserved_usd": 0.205576,
+      "status": 200,
+      "prompt_tokens": 1917,
+      "completion_tokens": 164,
+      "response_sha256": "ca841461cc8a92fc62b9aece32bef6a4a33b369ecff4adc1109a49fa3d58cb30"
+    }
+  ],
+  "budget": {
+    "maximum_cumulative_usd": 5,
+    "all_attempts_including_previous_failures": 40,
+    "new_attempts": 8,
+    "full_reservations_total_usd": 4.534515,
+    "previous_full_reservations_preserved_usd": 3.547734,
+    "new_full_reservations_usd": 0.986781,
+    "invoice_actual_usd": null,
+    "all_http_status_counts": {
+      "200": 39,
+      "400": 1
+    },
+    "unknown_http_results": 0,
+    "reservation_is_not_invoice": true
+  },
+  "first_stage": {
+    "receipt_sha256": "94c42e73c43499229cc3fd3b3e00489cbcfef148172870d36f4e2194e786859b",
+    "run_id": "607626a2284940438d4f015c5eebb23c",
+    "phase": "first_code_fix_validation_before_third_party_upgrade",
+    "attempts_as_of_first_stage": 32,
+    "full_reservations_as_of_first_stage_usd": 3.547734,
+    "final_ui_status_unverified_at_first_stage": true,
+    "original_evidence_modified": false
+  },
+  "report_text_sha256": "a931005c2dee5eda59195b7614af936f25bbdccd315302956d2de5016b375aa6",
+  "boundary": [
+    "Original failures and the first-stage successful result remain separate immutable evidence.",
+    "Quality and vector fallback belong to this observed run; supported answers do not prove vector retrieval or general model quality.",
+    "The two requested facts describe the synthetic source; they do not establish actual system behavior.",
+    "UI pass requires the actual no-retry selected browser test plus its two explicit final-state assertions; backend completion alone is insufficient.",
+    "All full reservations include failed and unknown attempts; invoice actual cost remains unknown."
+  ],
+  "generated_at_utc": "2026-11-12T06:15:03.470390+00:00",
+  "input_sha256": {
+    "summary": "414bd9ecad7d6e2916ee267129122f4a32ca767b6ec8fbfed133bf3eb8a15743",
+    "authorization": "443442127041c106c425d381b20417b811ed844b5361bb027b7a3fceb85c70e1",
+    "plan": "e21ba30d8c818ba19b82443fdc1e04c32d86eff64e7061c8ad8ae413c6312e63",
+    "cohort": "1a1f756ba83f2d9944ddceafee84b62d36d31ad2095e96af31d1a886012128a9",
+    "minio": "f20b2669dd1780a40c11e5e67c4a782ce52d840cce398c12ab7f60390129d326",
+    "minio_verdict": "da513340d769df729b9da27fcd8095e35b0838c090c2079c3741669424c7c65b",
+    "test_source": "3012267f773b0fcb5b223f526ad35a48c3fc961771cf127dc4e9b2e9eb61c692",
+    "test_config": "3e92f319edd30406751861f4c36e4ddffc5fcbd093672150128227149a3075de",
+    "runner": "db1fc6ddc74e15d33504217034b4246c9844d80dc5d9ea6cd32525fd2e34587d",
+    "result": "ce4b365633c9124fde3d2a8f16dd72589c9026aad1ce4eb96ad00514526f8e48",
+    "browser": "fd986f35ffa1ccf0b2ce3cf264f9eae525865972753e23f0464b973cfd8dc02a"
+  },
+  "ledger_snapshot_sha256": "63a637045437e4c498f8092f50ed2161c29e101eddfb822b07a859c0bb6ad82a",
+  "first_ledger_snapshot_sha256": "c32aeeed1729946eded0fa357aaa9d95a2850556333013e3a530f2458f019e73"
+}
