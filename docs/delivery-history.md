@@ -2,6 +2,14 @@
 
 这些记录描述对应日期的验收，不代表当前版本的自动验证结果。当前使用方法见 [README](../README.md)。
 
+## 2026-11-12 真实模型复验与版本入口整理
+
+复用正式 `v0.1.3` 的同一 Agent/Backend/Web 镜像，在隔离环境完成真实官方模型与嵌入研究。常规问法结果为 `insufficient`，另一个明确表达约束的场景通过 1 个浏览器检查、0 跳过；研究状态 completed、2 条事实支持，但报告仍为 partial、`original_request_answered=false`。累计 23 次 HTTP（22 次 200、1 次 400），所有请求外发前完整上界累计预留 2.373213 USD，未超过本次新授权的 5 USD。失败、未知用量预留与原账本保留，不重新评价为全套通过。具体路径、费用边界、默认问法问题和真实截图见[本次验收](evidence/release-20261112/README.md)。
+
+原 `artifact-applications-v0.1.1-r1` 的 88 个原资产及其 Release ID 已关联到 `v0.1.1`，源码 Tag 保持 b2da9da7、镜像分发来源保持 0005df53；远端引用迁移提交 e8b1e37 的完整字节核对后，已删除旧辅助 Tag。实际保留 9 个 Tag/9 个 Release：4 个产品版本、5 个有具体依赖的第三方例外，见[保留证据](release-asset-retention-20261112.md)。没有新版本、镜像重推、日常环境更新或历史产品 Tag 移动。
+
+迁移提交的 Security 21 项成功、MinIO 1 项失败：两个实际二进制的 stdlib v1.27.3 新增 `CVE-2026-97054 / UNKNOWN`，适用性尚未判定，原门槛阻断并保留原始扫描；默认分支活动 Code scanning/Secret 项仍为 0，两者不混淆。本次没有改动安全门槛或旧第三方制品。日常 25 个容器身份、挂载、配置和停止状态保持，临时容器/进程结束，临时卷和账本保留。
+
 ## 2026-11-11 v0.1.3 正式交付
 
 正式 [v0.1.3](https://github.com/W205614/DeepResearch/releases/tag/v0.1.3) 固定 `78a19df9dfa6f072af6ebe40ff99cf164d0c4ff8`，[CI](https://github.com/W205614/DeepResearch/actions/runs/42968387539)4 项、[Security](https://github.com/W205614/DeepResearch/actions/runs/42968387608)22 项全部成功；[Packages](https://github.com/W205614/DeepResearch/actions/runs/42977626649)实际发布成功。三个原有公开 Linux/amd64 GHCR 应用包完成匿名拉取，manifest、portable config、全部层、NOTICE 和全级别安全门槛通过。精确 digest 见[镜像表](container-packages.md#正式-v013)。Agent 原始 88 条逐项复核，适用未解决 0；Backend／Web 原始 0，secret 均为 0，原始扫描和失败保留。

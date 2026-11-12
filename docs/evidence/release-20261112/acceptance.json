@@ -1,0 +1,547 @@
+{
+  "date": "2026-11-12",
+  "overall_acceptance_status": "partial",
+  "default_prompt_case_passed": false,
+  "format_constrained_representative_flow_passed": true,
+  "source_tag": "v0.1.3",
+  "source_sha": "78a19df9dfa6f072af6ebe40ff99cf164d0c4ff8",
+  "scope": "One synthetic local-document research via browser/OIDC/Java/Python Worker/real embeddings/Milvus/real model/citation report; document deletion and viewer write denial",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "low",
+  "embedding_model": "text-embedding-3-large",
+  "embedding_dimension": 3072,
+  "provider": "openai",
+  "upstream_endpoint": "https://api.openai.com/v1",
+  "transport": "Direct official HTTP with acceptance-only httpx before/after budget hooks; no URL/header/payload rewriting",
+  "reranker_enabled": false,
+  "public_web_search_tested": false,
+  "model_and_embedding_fixtures_loaded": false,
+  "published_image_bytes_rebuilt_or_modified": false,
+  "runtime_images": {
+    "web": "sha256:013ba5daedc8d2d082f0b99ac88937781c8222c9321f28fdb8cd04ad253009e3",
+    "backend": "sha256:c63727c9a3ecbce4b5d4964e6a483a4535798bfa190e0b0b72b932c451459149",
+    "agent": "sha256:dd0ff5e0be21cf1ce7aed5f064752994d00dd2b11cb458e700372854e84d7c54",
+    "document-worker": "sha256:dd0ff5e0be21cf1ce7aed5f064752994d00dd2b11cb458e700372854e84d7c54",
+    "worker": "sha256:dd0ff5e0be21cf1ce7aed5f064752994d00dd2b11cb458e700372854e84d7c54",
+    "migrate": "sha256:dd0ff5e0be21cf1ce7aed5f064752994d00dd2b11cb458e700372854e84d7c54",
+    "milvus": "sha256:036b5a49f4fb4a11251c1eba96c5db86ad088e568dcd2d24ac210fc7dd889990",
+    "bootstrap-db": "sha256:dd0ff5e0be21cf1ce7aed5f064752994d00dd2b11cb458e700372854e84d7c54",
+    "storage-init": "sha256:834d0151e176505b20305304abdc7b07ca3f54d95097a9a94830ced3f111e97c",
+    "clamav": "sha256:e73991068f2037e10cf15669dd3b48c24345658f5488430746b414c0f761270f",
+    "redis": "sha256:57e4255cc971b1c8d6f8a6ca283ac01bc3ecdd914273ef6bfaede87aaecd6541",
+    "postgres": "sha256:3018790ed892ee8595961a044fbf2565826a4f8602335c44866b2eb00879d769",
+    "keycloak": "sha256:f734dabcd4a46e676fd2a4e86710ed2ae1661458377d49fb0b8533305f12f658",
+    "minio": "sha256:151cd83d5e6500f4d1b3d7f0a12756fe80e8ffcbf91150afd6b9b9605bc2369a",
+    "keycloak-postgres": "sha256:3018790ed892ee8595961a044fbf2565826a4f8602335c44866b2eb00879d769",
+    "etcd": "sha256:dbfc4f5bf58f607c0dc14b2157531391264803d53ab5f1bc4a9401cfaac163bf",
+    "alert-token-init": "sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a"
+  },
+  "browser_stats": {
+    "startTime": "2026-11-12T01:50:17.668Z",
+    "duration": 59790.878,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "provider_http_attempts": 23,
+  "http_200": 22,
+  "wrapper_summary_passed": false,
+  "wrapper_postprocessing_error": "Windows default GBK decoding failed reading the UTF-8 result after successful browser execution. This exporter reads the original result explicitly as UTF-8; original false wrapper summary is retained unchanged.",
+  "http_400": 1,
+  "unknown_http_results": 0,
+  "budget": {
+    "authorized_usd": 5,
+    "known_usage_estimate_usd": 0.04073344,
+    "failed_or_unknown_usage_reserved_usd": 0.18824,
+    "combined_estimate_and_reservation_usd": 0.22897344,
+    "cumulative_full_request_reservations_usd": 2.373213,
+    "is_account_invoice": false,
+    "pricing_sources": [
+      "https://developers.openai.com/api/docs/pricing",
+      "https://developers.openai.com/api/docs/models/text-embedding-3-large"
+    ]
+  },
+  "failed_attempts_preserved": [
+    {
+      "stage": "OIDC issuer/redirect callback and test startup",
+      "upstream_calls": 0,
+      "passed": false
+    },
+    {
+      "stage": "Fixture-derived compatible provider config",
+      "http_200_embeddings": 2,
+      "http_400_model": 1,
+      "passed": false,
+      "correction": "Use existing effective LLM_PROVIDER=openai; no application code change. Prior attempt remains in the cumulative USD ledger."
+    },
+    {
+      "stage": "Five-second browser login assertion timeout",
+      "upstream_calls": 0,
+      "passed": false,
+      "correction": "Wait up to 30 seconds for the same login assertion"
+    },
+    {
+      "stage": "Official endpoint guard rejects local transport URL",
+      "http_200_embeddings": 2,
+      "model_requests_sent": 0,
+      "passed": false,
+      "correction": "Preserve exact official URLs and use only HTTP accounting hooks; application guard unchanged"
+    },
+    {
+      "stage": "Isolated index retained an earlier test endpoint fingerprint",
+      "http_200_embeddings": 1,
+      "passed": false,
+      "correction": "Use a fresh isolated database/vector scope at the official endpoint; original test volumes and cumulative ledger retained"
+    },
+    {
+      "stage": "Default prompt real research",
+      "status": "insufficient",
+      "passed": false,
+      "reason": "Model included locator numbers in factual claims; repair removed explicit document attribution. Original insufficient result is preserved separately; no gate was relaxed."
+    }
+  ],
+  "final_research": {
+    "run_id": "594abd8b031448b3b79fb8e681166454",
+    "status": "completed",
+    "report": "# 仅根据上传的 lifecycle.txt 回答两点：资料写明的工作空间成员权限校验位置是什么、删除资料后的检索预期是什么？每条结论以“根据所提供资料”开头，只写资料中的事实，使用系统引用编号，不重复文件名、页码或字符定位数字。资料不能证明的实际效果单独列入局限。\n\n研究主题：仅根据上传的 lifecycle.txt 回答两点：资料写明的工作空间成员权限校验位置是什么、删除资料后的检索预期是什么？每条结论以“根据所提供资料”开头，只写资料中的事实，使用系统引用编号，不重复文件名、页码或字符定位数字。资料不能证明的实际效果单独列入局限。\n\n## 上传资料明确写明的工作空间成员权限校验位置和删除资料后的检索预期分别是什么，哪些实际效果尚不能由资料证明？\n\n根据所提供资料，工作空间成员权限在后端校验。 [L-0e65841ae3c0]\n\n根据所提供资料，删除资料后，该资料不应在知识库检索结果中出现。 [L-0e65841ae3c0]\n\n## 研究局限\n\n- 仍有 4 项研究缺口；待确认事项：根据所提供资料，工作空间成员权限在后端校验。；根据所提供资料，删除资料后，该资料不应在知识库检索结果中出现；这是资料写明的预期，而非实际效果的验证结果。；局限：资料未提供实际权限校验或删除后检索的测试记录，不能据此证明权限校验实际有效，或被删除资料实际已不再出现在检索结果中。；局限：资料未提供实际验证结果，不能据此证明后端权限校验的实际有效性，也不能证明删除资料后其已实际不再出现在知识库检索结果中。\n\n## 参考来源\n\n- [L-0e65841ae3c0] lifecycle.txt · 正文 · 字符 1–41 · 等级：local · local\n\n## 尚未确认完整回答的问题\n\n- 上传资料明确写明的工作空间成员权限校验位置和删除资料后的检索预期分别是什么，哪些实际效果尚不能由资料证明？\n- 仅根据上传的 lifecycle.txt 回答两点：资料写明的工作空间成员权限校验位置是什么、删除资料后的检索预期是什么？每条结论以“根据所提供资料”开头，只写资料中的事实，使用系统引用编号，不重复文件名、页码或字符定位数字。资料不能证明的实际效果单独列入局限。",
+    "sources": [
+      {
+        "index_version": 1,
+        "chunk_id": "0e65841ae3c0c0efbc669d0d3a79f5a0",
+        "document_hash": "20a66cc40d14ef3bb08aa03dc46f9ff2b888e662a7ae38f4ce954a745b556683",
+        "id": "L-0e65841ae3c0",
+        "kind": "local",
+        "attachment_id": "",
+        "title": "lifecycle.txt",
+        "url": "",
+        "text": "功能验收资料：工作空间成员权限在后端校验。删除资料后，不应在知识库检索结果中出现。",
+        "published_at": "",
+        "retrieved_at": "2026-11-12T01:50:46.555505+00:00",
+        "locator": "正文 · 字符 1–41",
+        "document_id": "e81545b9d0e74347a096ecb1b2c00ec2",
+        "content_hash": "20a66cc40d14ef3bb08aa03dc46f9ff2b888e662a7ae38f4ce954a745b556683",
+        "access": "document",
+        "domain": "",
+        "evidence_level": "local",
+        "trust_label": ""
+      }
+    ],
+    "validation": {
+      "verification_contract": "verification-v3-claim-span",
+      "verification_wire": "verification-v4-target-id",
+      "checked_claims": 2,
+      "supported_claims": 2,
+      "removed_claims": 0,
+      "repaired": false,
+      "insufficient": false,
+      "checks": [
+        {
+          "atomic_checks": [
+            {
+              "text": "根据所提供资料，工作空间成员权限在后端校验。",
+              "supported": true,
+              "target_id": "0:0"
+            }
+          ],
+          "unsupported_parts": [],
+          "omitted_conditions": [],
+          "index": 0,
+          "supported": true,
+          "reason": "结论准确复述资料明确记载的权限校验位置，未延伸断言实际校验效果。",
+          "verification_complete": true,
+          "format_error": ""
+        },
+        {
+          "atomic_checks": [
+            {
+              "text": "根据所提供资料，删除资料后，该资料不应在知识库检索结果中出现。",
+              "supported": true,
+              "target_id": "1:0"
+            }
+          ],
+          "unsupported_parts": [],
+          "omitted_conditions": [],
+          "index": 1,
+          "supported": true,
+          "reason": "结论保留了原文“不应”的预期表述，并未将其替换为已经实现的实际效果。",
+          "verification_complete": true,
+          "format_error": ""
+        }
+      ],
+      "gaps": [
+        "局限：资料未提供实际验证结果，不能据此证明后端权限校验的实际有效性，也不能证明删除资料后其已实际不再出现在知识库检索结果中。"
+      ],
+      "unanswered_questions": [
+        "上传资料明确写明的工作空间成员权限校验位置和删除资料后的检索预期分别是什么，哪些实际效果尚不能由资料证明？",
+        "仅根据上传的 lifecycle.txt 回答两点：资料写明的工作空间成员权限校验位置是什么、删除资料后的检索预期是什么？每条结论以“根据所提供资料”开头，只写资料中的事实，使用系统引用编号，不重复文件名、页码或字符定位数字。资料不能证明的实际效果单独列入局限。"
+      ],
+      "original_request_answered": false,
+      "evidence_metrics": {
+        "source_count": 1,
+        "unique_web_domains": 0,
+        "source_kinds": [
+          "local"
+        ],
+        "access_types": [
+          "document"
+        ],
+        "evidence_levels": [
+          "local"
+        ],
+        "trusted_sources": 0
+      },
+      "quality": "partial",
+      "reasons": [],
+      "retrieval_outcomes": [
+        {
+          "source": "web",
+          "outcome": "policy_blocked"
+        },
+        {
+          "source": "local",
+          "outcome": "ok"
+        }
+      ]
+    },
+    "events": "id:55\ndata:{\"id\":55,\"type\":\"queued\",\"created_at\":\"2026-11-12T01:50:34.373598542Z\",\"data\":{\"message\":\"研究任务已创建\"}}\n\nid:56\ndata:{\"id\":56,\"type\":\"running\",\"created_at\":\"2026-11-12T01:50:35.322030+00:00\",\"data\":{\"resumed\":false}}\n\nid:57\ndata:{\"id\":57,\"type\":\"memory_context\",\"created_at\":\"2026-11-12T01:50:35.341156+00:00\",\"data\":{\"preferences\":0,\"session_runs\":0,\"session_detail_runs\":0,\"semantic_memories\":0,\"semantic_min_score\":0.35}}\n\nid:58\ndata:{\"id\":58,\"type\":\"agent_start\",\"created_at\":\"2026-11-12T01:50:35.394826+00:00\",\"data\":{\"agent\":\"router\",\"label\":\"协调路由 Agent\",\"tools\":[\"model\",\"profile\"],\"round\":0}}\n\nid:59\ndata:{\"id\":59,\"type\":\"node_start\",\"created_at\":\"2026-11-12T01:50:35.398130+00:00\",\"data\":{\"node\":\"router\",\"round\":0}}\n\nid:60\ndata:{\"id\":60,\"type\":\"route\",\"created_at\":\"2026-11-12T01:50:35.476664+00:00\",\"data\":{\"mode\":\"quick\",\"reason\":\"按用户指定模式执行\",\"strategy\":\"manual\",\"signals\":[\"explicit_mode\"]}}\n\nid:61\ndata:{\"id\":61,\"type\":\"node_end\",\"created_at\":\"2026-11-12T01:50:35.508241+00:00\",\"data\":{\"node\":\"router\",\"duration_ms\":113}}\n\nid:62\ndata:{\"id\":62,\"type\":\"agent_handoff\",\"created_at\":\"2026-11-12T01:50:35.537063+00:00\",\"data\":{\"from\":\"router\",\"to\":[\"chat\",\"planner\"],\"artifacts\":[\"mode\"]}}\n\nid:63\ndata:{\"id\":63,\"type\":\"agent_start\",\"created_at\":\"2026-11-12T01:50:35.561898+00:00\",\"data\":{\"agent\":\"planner\",\"label\":\"研究规划 Agent\",\"tools\":[\"model\"],\"round\":0}}\n\nid:64\ndata:{\"id\":64,\"type\":\"node_start\",\"created_at\":\"2026-11-12T01:50:35.580212+00:00\",\"data\":{\"node\":\"planner\",\"round\":0}}\n\nid:65\ndata:{\"id\":65,\"type\":\"plan\",\"created_at\":\"2026-11-12T01:50:42.942706+00:00\",\"data\":{\"title\":\"工作空间权限校验位置与删除后检索预期核查\",\"questions\":[\"上传资料明确写明的工作空间成员权限校验位置和删除资料后的检索预期分别是什么，哪些实际效果尚不能由资料证明？\"],\"queries\":[\"在上传的 lifecycle.txt 中查找工作空间成员权限校验的位置、删除资料后的检索预期及相关限定表述。\"],\"scope\":\"仅依据上传资料，不使用外部来源或历史摘要作为事实证据；时间、地区未指定，不作假设。提取资料对权限校验位置和删除后检索预期的明确陈述，区分资料描述的预期与已验证的实际效果。最终回答两点，每条结论以“根据所提供资料”开头，使用系统引用编号，不重复文件名、页码或字符定位数字；资料不能证明的实际效果单独列入“局限”。当前输入未包含文件正文，需读取上传资料后才能形成事实结论；如无法读取，应明确说明，不能推断内容或编造引用。\"}}\n\nid:66\ndata:{\"id\":66,\"type\":\"node_end\",\"created_at\":\"2026-11-12T01:50:43.045803+00:00\",\"data\":{\"node\":\"planner\",\"duration_ms\":7484}}\n\nid:67\ndata:{\"id\":67,\"type\":\"agent_handoff\",\"created_at\":\"2026-11-12T01:50:43.137819+00:00\",\"data\":{\"from\":\"planner\",\"to\":[\"web_scout\",\"local_scout\"],\"artifacts\":[\"evidence\",\"limitations\",\"plan\",\"queries\",\"round\",\"searched\"]}}\n\nid:68\ndata:{\"id\":68,\"type\":\"agent_start\",\"created_at\":\"2026-11-12T01:50:43.150346+00:00\",\"data\":{\"agent\":\"local_scout\",\"label\":\"本地资料 Agent\",\"tools\":[\"local_retrieval\"],\"round\":0}}\n\nid:69\ndata:{\"id\":69,\"type\":\"agent_start\",\"created_at\":\"2026-11-12T01:50:43.232199+00:00\",\"data\":{\"agent\":\"web_scout\",\"label\":\"网络调研 Agent\",\"tools\":[\"web_fetch\",\"web_search\"],\"round\":0}}\n\nid:70\ndata:{\"id\":70,\"type\":\"node_start\",\"created_at\":\"2026-11-12T01:50:43.172244+00:00\",\"data\":{\"node\":\"local_scout\",\"round\":0}}\n\nid:71\ndata:{\"id\":71,\"type\":\"node_start\",\"created_at\":\"2026-11-12T01:50:43.360016+00:00\",\"data\":{\"node\":\"web_scout\",\"round\":0}}\n\nid:72\ndata:{\"id\":72,\"type\":\"retrieval_status\",\"created_at\":\"2026-11-12T01:50:43.525137+00:00\",\"data\":{\"source\":\"web\",\"outcome\":\"policy_blocked\"}}\n\nid:73\ndata:{\"id\":73,\"type\":\"sources_found\",\"created_at\":\"2026-11-12T01:50:43.646920+00:00\",\"data\":{\"kind\":\"web\",\"count\":0,\"candidates\":0,\"queries\":1}}\n\nid:74\ndata:{\"id\":74,\"type\":\"node_end\",\"created_at\":\"2026-11-12T01:50:43.732672+00:00\",\"data\":{\"node\":\"web_scout\",\"duration_ms\":501}}\n\nid:75\ndata:{\"id\":75,\"type\":\"agent_handoff\",\"created_at\":\"2026-11-12T01:50:43.900126+00:00\",\"data\":{\"from\":\"web_scout\",\"to\":[\"judge\"],\"artifacts\":[\"searched\",\"web_outcomes\",\"web_results\"]}}\n\nid:76\ndata:{\"id\":76,\"type\":\"local_retrieval\",\"created_at\":\"2026-11-12T01:50:46.550290+00:00\",\"data\":{\"cache_hit\":false,\"corpus_cache_hit\":false,\"queries\":1,\"corpus_documents\":1,\"corpus_chunks\":1,\"hydrated_chunks\":1,\"lexical_backend\":\"small_corpus_bm25\",\"cache_ms\":14.8,\"corpus_ms\":27.8,\"embedding_ms\":1277.39,\"vector_ms\":1609.17,\"reranker_ms\":0.0,\"ranking_stage\":\"fusion\",\"total_ms\":3008.82,\"candidates\":1,\"selected\":1,\"reasons\":[],\"vector_candidates\":{\"requested\":18,\"received\":1,\"valid\":1,\"invalid\":0,\"refills\":0}}}\n\nid:77\ndata:{\"id\":77,\"type\":\"retrieval_status\",\"created_at\":\"2026-11-12T01:50:46.555642+00:00\",\"data\":{\"source\":\"local\",\"outcome\":\"ok\"}}\n\nid:78\ndata:{\"id\":78,\"type\":\"sources_found\",\"created_at\":\"2026-11-12T01:50:46.592426+00:00\",\"data\":{\"kind\":\"local\",\"count\":1}}\n\nid:79\ndata:{\"id\":79,\"type\":\"node_end\",\"created_at\":\"2026-11-12T01:50:46.637848+00:00\",\"data\":{\"node\":\"local_scout\",\"duration_ms\":3487}}\n\nid:80\ndata:{\"id\":80,\"type\":\"agent_handoff\",\"created_at\":\"2026-11-12T01:50:46.675454+00:00\",\"data\":{\"from\":\"local_scout\",\"to\":[\"judge\"],\"artifacts\":[\"local_outcomes\",\"local_results\"]}}\n\nid:81\ndata:{\"id\":81,\"type\":\"agent_start\",\"created_at\":\"2026-11-12T01:50:46.740005+00:00\",\"data\":{\"agent\":\"judge\",\"label\":\"证据裁决 Agent\",\"tools\":[\"model\"],\"round\":0}}\n\nid:82\ndata:{\"id\":82,\"type\":\"node_start\",\"created_at\":\"2026-11-12T01:50:46.743039+00:00\",\"data\":{\"node\":\"judge\",\"round\":0}}\n\nid:83\ndata:{\"id\":83,\"type\":\"evidence_context\",\"created_at\":\"2026-11-12T01:50:46.790922+00:00\",\"data\":{\"sources\":1,\"excerpt_chars\":41,\"truncated_sources\":0}}\n\nid:84\ndata:{\"id\":84,\"type\":\"evidence_judged\",\"created_at\":\"2026-11-12T01:50:50.619626+00:00\",\"data\":{\"initially_accepted\":1,\"recovered\":false,\"accepted\":1,\"rejected\":0,\"conflicts\":[],\"candidate_metrics\":{\"source_count\":1,\"unique_web_domains\":0,\"source_kinds\":[\"local\"],\"access_types\":[\"document\"],\"evidence_levels\":[\"local\"],\"trusted_sources\":0},\"accepted_metrics\":{\"source_count\":1,\"unique_web_domains\":0,\"source_kinds\":[\"local\"],\"access_types\":[\"document\"],\"evidence_levels\":[\"local\"],\"trusted_sources\":0}}}\n\nid:85\ndata:{\"id\":85,\"type\":\"node_end\",\"created_at\":\"2026-11-12T01:50:50.662011+00:00\",\"data\":{\"node\":\"judge\",\"duration_ms\":3923}}\n\nid:86\ndata:{\"id\":86,\"type\":\"agent_handoff\",\"created_at\":\"2026-11-12T01:50:50.699660+00:00\",\"data\":{\"from\":\"judge\",\"to\":[\"analyst\"],\"artifacts\":[\"conflicts\",\"evidence\",\"limitations\",\"recovered_claims\"]}}\n\nid:87\ndata:{\"id\":87,\"type\":\"agent_start\",\"created_at\":\"2026-11-12T01:50:50.768433+00:00\",\"data\":{\"agent\":\"analyst\",\"label\":\"分析 Agent\",\"tools\":[\"model\"],\"round\":0}}\n\nid:88\ndata:{\"id\":88,\"type\":\"node_start\",\"created_at\":\"2026-11-12T01:50:50.770805+00:00\",\"data\":{\"node\":\"analyst\",\"round\":0}}\n\nid:89\ndata:{\"id\":89,\"type\":\"analysis_result\",\"created_at\":\"2026-11-12T01:50:58.993501+00:00\",\"data\":{\"generated_claims\":2,\"retained_claims\":2,\"gaps\":1}}\n\nid:90\ndata:{\"id\":90,\"type\":\"node_end\",\"created_at\":\"2026-11-12T01:50:59.036367+00:00\",\"data\":{\"node\":\"analyst\",\"duration_ms\":8268}}\n\nid:91\ndata:{\"id\":91,\"type\":\"agent_handoff\",\"created_at\":\"2026-11-12T01:50:59.101854+00:00\",\"data\":{\"from\":\"analyst\",\"to\":[\"reflect\"],\"artifacts\":[\"analysis_input_hash\",\"claims\",\"gaps\"]}}\n\nid:92\ndata:{\"id\":92,\"type\":\"agent_start\",\"created_at\":\"2026-11-12T01:50:59.267661+00:00\",\"data\":{\"agent\":\"reflect\",\"label\":\"补搜决策 Agent\",\"tools\":[\"model\"],\"round\":0}}\n\nid:93\ndata:{\"id\":93,\"type\":\"node_start\",\"created_at\":\"2026-11-12T01:50:59.273299+00:00\",\"data\":{\"node\":\"reflect\",\"round\":0}}\n\nid:94\ndata:{\"id\":94,\"type\":\"reflection\",\"created_at\":\"2026-11-12T01:50:59.350549+00:00\",\"data\":{\"queries\":[],\"reason\":\"快速研究不追加补搜。\",\"stop_reason\":\"quick_mode\"}}\n\nid:95\ndata:{\"id\":95,\"type\":\"node_end\",\"created_at\":\"2026-11-12T01:50:59.404463+00:00\",\"data\":{\"node\":\"reflect\",\"duration_ms\":137}}\n\nid:96\ndata:{\"id\":96,\"type\":\"agent_handoff\",\"created_at\":\"2026-11-12T01:50:59.446580+00:00\",\"data\":{\"from\":\"reflect\",\"to\":[\"web_scout\",\"local_scout\",\"writer\"],\"artifacts\":[\"reflect\"]}}\n\nid:97\ndata:{\"id\":97,\"type\":\"agent_start\",\"created_at\":\"2026-11-12T01:50:59.565584+00:00\",\"data\":{\"agent\":\"writer\",\"label\":\"报告撰写 Agent\",\"tools\":[\"model\"],\"round\":0}}\n\nid:98\ndata:{\"id\":98,\"type\":\"node_start\",\"created_at\":\"2026-11-12T01:50:59.577567+00:00\",\"data\":{\"node\":\"writer\",\"round\":0}}\n\nid:99\ndata:{\"id\":99,\"type\":\"report_assembly\",\"created_at\":\"2026-11-12T01:51:02.033106+00:00\",\"data\":{\"input_claims\":2,\"output_claims\":2,\"sections\":1}}\n\nid:100\ndata:{\"id\":100,\"type\":\"node_end\",\"created_at\":\"2026-11-12T01:51:02.070361+00:00\",\"data\":{\"node\":\"writer\",\"duration_ms\":2505}}\n\nid:101\ndata:{\"id\":101,\"type\":\"agent_handoff\",\"created_at\":\"2026-11-12T01:51:02.108182+00:00\",\"data\":{\"from\":\"writer\",\"to\":[\"validator\"],\"artifacts\":[\"draft\"]}}\n\nid:102\ndata:{\"id\":102,\"type\":\"agent_start\",\"created_at\":\"2026-11-12T01:51:02.174242+00:00\",\"data\":{\"agent\":\"validator\",\"label\":\"引用核验 Agent\",\"tools\":[\"model\"],\"round\":0}}\n\nid:103\ndata:{\"id\":103,\"type\":\"node_start\",\"created_at\":\"2026-11-12T01:51:02.176691+00:00\",\"data\":{\"node\":\"validator\",\"round\":0}}\n\nid:104\ndata:{\"id\":104,\"type\":\"validation\",\"created_at\":\"2026-11-12T01:51:09.705955+00:00\",\"data\":{\"verification_contract\":\"verification-v3-claim-span\",\"verification_wire\":\"verification-v4-target-id\",\"checked_claims\":2,\"supported_claims\":2,\"removed_claims\":0,\"repaired\":false,\"insufficient\":false,\"checks\":[{\"atomic_checks\":[{\"text\":\"根据所提供资料，工作空间成员权限在后端校验。\",\"supported\":true,\"target_id\":\"0:0\"}],\"unsupported_parts\":[],\"omitted_conditions\":[],\"index\":0,\"supported\":true,\"reason\":\"结论准确复述资料明确记载的权限校验位置，未延伸断言实际校验效果。\",\"verification_complete\":true,\"format_error\":\"\"},{\"atomic_checks\":[{\"text\":\"根据所提供资料，删除资料后，该资料不应在知识库检索结果中出现。\",\"supported\":true,\"target_id\":\"1:0\"}],\"unsupported_parts\":[],\"omitted_conditions\":[],\"index\":1,\"supported\":true,\"reason\":\"结论保留了原文“不应”的预期表述，并未将其替换为已经实现的实际效果。\",\"verification_complete\":true,\"format_error\":\"\"}],\"gaps\":[\"局限：资料未提供实际验证结果，不能据此证明后端权限校验的实际有效性，也不能证明删除资料后其已实际不再出现在知识库检索结果中。\"],\"unanswered_questions\":[\"上传资料明确写明的工作空间成员权限校验位置和删除资料后的检索预期分别是什么，哪些实际效果尚不能由资料证明？\",\"仅根据上传的 lifecycle.txt 回答两点：资料写明的工作空间成员权限校验位置是什么、删除资料后的检索预期是什么？每条结论以“根据所提供资料”开头，只写资料中的事实，使用系统引用编号，不重复文件名、页码或字符定位数字。资料不能证明的实际效果单独列入局限。\"],\"original_request_answered\":false,\"evidence_metrics\":{\"source_count\":1,\"unique_web_domains\":0,\"source_kinds\":[\"local\"],\"access_types\":[\"document\"],\"evidence_levels\":[\"local\"],\"trusted_sources\":0}}}\n\nid:105\ndata:{\"id\":105,\"type\":\"node_end\",\"created_at\":\"2026-11-12T01:51:09.737815+00:00\",\"data\":{\"node\":\"validator\",\"duration_ms\":7563}}\n\nid:106\ndata:{\"id\":106,\"type\":\"agent_handoff\",\"created_at\":\"2026-11-12T01:51:09.773982+00:00\",\"data\":{\"from\":\"validator\",\"to\":[],\"artifacts\":[\"evidence\",\"final_claims\",\"report\",\"validation\"]}}\n\nid:107\ndata:{\"id\":107,\"type\":\"done\",\"created_at\":\"2026-11-12T01:51:09.925590+00:00\",\"data\":{\"status\":\"completed\"}}\n\nid:108\ndata:{\"id\":108,\"type\":\"result_status\",\"created_at\":\"2026-11-12T01:51:09.938985+00:00\",\"data\":{\"status\":\"completed\",\"reasons\":[]}}\n\n:keep-alive\n\nevent:close\ndata:{}\n\n"
+  },
+  "provider_requests": [
+    {
+      "id": 1,
+      "path": "embeddings",
+      "model": "text-embedding-3-large",
+      "payload_sha256": "f940f23f95992a175cba2fde25017f07bfe86596bd617c55789c74e675a6bc9e",
+      "started": 1794446979.7638369,
+      "reserved_usd": 0.00431,
+      "status": 200,
+      "prompt_tokens": 39,
+      "completion_tokens": 0,
+      "estimated_usd": 3.9e-05,
+      "request_id": "req_1f21a6250a6b49c7a1a4b8f2daa880f7",
+      "response_sha256": "b0928f619a9d8d9c86fc343799abc204680268170ec6353a7a987746af387690"
+    },
+    {
+      "id": 2,
+      "path": "embeddings",
+      "model": "text-embedding-3-large",
+      "payload_sha256": "26c3580be7db2acba7b801b29b57c6acb07f652ec9f386173da06e8bba36e821",
+      "started": 1794446984.725035,
+      "reserved_usd": 0.004211,
+      "status": 200,
+      "prompt_tokens": 7,
+      "completion_tokens": 0,
+      "estimated_usd": 7e-06,
+      "request_id": "req_5887e902d7044e959c8003d860f42525",
+      "response_sha256": "12c72ff5af5078a637e286a2b0e746313a98398769a60384ae789182765017b5"
+    },
+    {
+      "id": 3,
+      "path": "chat/completions",
+      "model": "gpt-6.1-sol",
+      "payload_sha256": "a0df18d6ec49ee7193970c60835da08e8669cde4b641b3fb6f1d293201da8244",
+      "started": 1794446988.8170416,
+      "reserved_usd": 0.18824,
+      "status": 400,
+      "prompt_tokens": null,
+      "completion_tokens": null,
+      "estimated_usd": null,
+      "request_id": "req_9e7a00b0c71548fd9971cdc6c631bfa8",
+      "response_sha256": "dfe7d625f753e638fcdc2be8f23ee2d42671c2fb5ec93099892ff9c597682529"
+    },
+    {
+      "id": 4,
+      "path": "embeddings",
+      "model": "text-embedding-3-large",
+      "payload_sha256": "f940f23f95992a175cba2fde25017f07bfe86596bd617c55789c74e675a6bc9e",
+      "started": 1794447320.5966914,
+      "reserved_usd": 0.00431,
+      "status": 200,
+      "prompt_tokens": 39,
+      "completion_tokens": 0,
+      "estimated_usd": 3.9e-05,
+      "request_id": "req_faf6f2fa4384469fa0de9cf073927939",
+      "response_sha256": "b0928f619a9d8d9c86fc343799abc204680268170ec6353a7a987746af387690"
+    },
+    {
+      "id": 5,
+      "path": "embeddings",
+      "model": "text-embedding-3-large",
+      "payload_sha256": "26c3580be7db2acba7b801b29b57c6acb07f652ec9f386173da06e8bba36e821",
+      "started": 1794447324.0353026,
+      "reserved_usd": 0.004211,
+      "status": 200,
+      "prompt_tokens": 7,
+      "completion_tokens": 0,
+      "estimated_usd": 7e-06,
+      "request_id": "req_9dbff702c22c4223aa30eda4d740231c",
+      "response_sha256": "12c72ff5af5078a637e286a2b0e746313a98398769a60384ae789182765017b5"
+    },
+    {
+      "id": 6,
+      "path": "embeddings",
+      "model": "text-embedding-3-large",
+      "payload_sha256": "f940f23f95992a175cba2fde25017f07bfe86596bd617c55789c74e675a6bc9e",
+      "started": 1794447585.8491442,
+      "reserved_usd": 0.00431,
+      "status": 200,
+      "prompt_tokens": 39,
+      "completion_tokens": 0,
+      "estimated_usd": 3.9e-05,
+      "request_id": "req_36166a0c6e1e440081b8e080f2f37161",
+      "response_sha256": "b0928f619a9d8d9c86fc343799abc204680268170ec6353a7a987746af387690"
+    },
+    {
+      "id": 7,
+      "path": "embeddings",
+      "model": "text-embedding-3-large",
+      "payload_sha256": "f940f23f95992a175cba2fde25017f07bfe86596bd617c55789c74e675a6bc9e",
+      "started": 1794447907.9821854,
+      "reserved_usd": 0.00431,
+      "status": 200,
+      "prompt_tokens": 39,
+      "completion_tokens": 0,
+      "estimated_usd": 3.9e-05,
+      "request_id": "req_c174e3039f5c42398d436d7fca4f383d",
+      "response_sha256": "b0928f619a9d8d9c86fc343799abc204680268170ec6353a7a987746af387690"
+    },
+    {
+      "id": 8,
+      "path": "embeddings",
+      "model": "text-embedding-3-large",
+      "payload_sha256": "26c3580be7db2acba7b801b29b57c6acb07f652ec9f386173da06e8bba36e821",
+      "started": 1794447913.1214225,
+      "reserved_usd": 0.004211,
+      "status": 200,
+      "prompt_tokens": 7,
+      "completion_tokens": 0,
+      "estimated_usd": 7e-06,
+      "request_id": "req_4e619078ed0a46538e4494e2acfb5969",
+      "response_sha256": "12c72ff5af5078a637e286a2b0e746313a98398769a60384ae789182765017b5"
+    },
+    {
+      "id": 9,
+      "path": "chat/completions",
+      "model": "gpt-6.1-sol",
+      "payload_sha256": "3f3705ace18bbb83ef97cca4672eca8ecb03579ad2257703a6ed4e96f560ff5e",
+      "started": 1794447917.2037153,
+      "reserved_usd": 0.188376,
+      "status": 200,
+      "prompt_tokens": 710,
+      "completion_tokens": 238,
+      "estimated_usd": 0.0038,
+      "request_id": "req_f1aeabc99c554770b5b229362b436c67",
+      "response_sha256": "5595dd6ef00cb16ac0e78719423324ec1be56f50725778aff40976662e680320"
+    },
+    {
+      "id": 10,
+      "path": "embeddings",
+      "model": "text-embedding-3-large",
+      "payload_sha256": "41e6582c6f9843406df7cdfd7bf9a03432a2b2a338f571e6d5b7947ee08ef854",
+      "started": 1794447924.4519384,
+      "reserved_usd": 0.004276,
+      "status": 200,
+      "prompt_tokens": 28,
+      "completion_tokens": 0,
+      "estimated_usd": 2.8e-05,
+      "request_id": "req_421e82e37bf24bd79050dbd0f0d74e94",
+      "response_sha256": "bc56f40ddf236d924c0f9a675ec384b0e036680bd3e1e7f137e5a1b16146bec2"
+    },
+    {
+      "id": 11,
+      "path": "chat/completions",
+      "model": "gpt-6.1-sol",
+      "payload_sha256": "10a4836c36d89ed76393b0d6efde5cd7690c49fa93a4d082f4def2bb1a5b3e55",
+      "started": 1794447927.5398371,
+      "reserved_usd": 0.193504,
+      "status": 200,
+      "prompt_tokens": 1098,
+      "completion_tokens": 134,
+      "estimated_usd": 0.003536,
+      "request_id": "req_c18b1fd526244aabbee61617166ddf78",
+      "response_sha256": "0db26dd78d52176d9d874e2dbeecb15a235174eaaa703517952dffbb32c715cf"
+    },
+    {
+      "id": 12,
+      "path": "chat/completions",
+      "model": "gpt-6.1-sol",
+      "payload_sha256": "b0fd51b83b1d8b3dd2388eff70f55af02e0c857520ff3340799ee81dd1bcef68",
+      "started": 1794447931.3878233,
+      "reserved_usd": 0.198944,
+      "status": 200,
+      "prompt_tokens": 1465,
+      "completion_tokens": 207,
+      "estimated_usd": 0.005,
+      "request_id": "req_45269f05a50645f2833b9513f7b12cc7",
+      "response_sha256": "8f418b7087d22370f221df8851017044fb9b88544f734fa4e2bc17999de86420"
+    },
+    {
+      "id": 13,
+      "path": "chat/completions",
+      "model": "gpt-6.1-sol",
+      "payload_sha256": "4c6e6481b17390efea6fce93f78f9990680fa3cefff8e6bdb87abd56b84e6e4f",
+      "started": 1794447935.925347,
+      "reserved_usd": 0.18744,
+      "status": 200,
+      "prompt_tokens": 656,
+      "completion_tokens": 32,
+      "estimated_usd": 0.001632,
+      "request_id": "req_37f2b04bea4a441386fe9e2718d46c41",
+      "response_sha256": "5f948b8652ffd0cddd1495876a57cf7b6802d4336c9dbee00f06e8b4a332493c"
+    },
+    {
+      "id": 14,
+      "path": "chat/completions",
+      "model": "gpt-6.1-sol",
+      "payload_sha256": "72258d9b9b276b3265a31d7850127454b8d7025f1aba5cb9c4a450501a63fdd3",
+      "started": 1794447938.3772182,
+      "reserved_usd": 0.205264,
+      "status": 200,
+      "prompt_tokens": 1897,
+      "completion_tokens": 153,
+      "estimated_usd": 0.005324,
+      "request_id": "req_57b516b480b44e068d4e127ef4704b12",
+      "response_sha256": "e2b64458c0d6963c5ffbe43a176ab4e87021e46e8d4235229560882048792bde"
+    },
+    {
+      "id": 15,
+      "path": "embeddings",
+      "model": "text-embedding-3-large",
+      "payload_sha256": "f940f23f95992a175cba2fde25017f07bfe86596bd617c55789c74e675a6bc9e",
+      "started": 1794448229.3328998,
+      "reserved_usd": 0.00431,
+      "status": 200,
+      "prompt_tokens": 39,
+      "completion_tokens": 0,
+      "estimated_usd": 3.9e-05,
+      "request_id": "req_cbbfc0efb7304b29a814f179eb9d2e28",
+      "response_sha256": "b0928f619a9d8d9c86fc343799abc204680268170ec6353a7a987746af387690"
+    },
+    {
+      "id": 16,
+      "path": "embeddings",
+      "model": "text-embedding-3-large",
+      "payload_sha256": "26c3580be7db2acba7b801b29b57c6acb07f652ec9f386173da06e8bba36e821",
+      "started": 1794448231.8792424,
+      "reserved_usd": 0.004211,
+      "status": 200,
+      "prompt_tokens": 7,
+      "completion_tokens": 0,
+      "estimated_usd": 7e-06,
+      "request_id": "req_f283137a956649c888267c46279416bb",
+      "response_sha256": "12c72ff5af5078a637e286a2b0e746313a98398769a60384ae789182765017b5"
+    },
+    {
+      "id": 17,
+      "path": "chat/completions",
+      "model": "gpt-6.1-sol",
+      "payload_sha256": "a208cbfd68cbf51765c502a3344aa401e5a6b29661a6bda12628e052745e36ff",
+      "started": 1794448235.7027912,
+      "reserved_usd": 0.189072,
+      "status": 200,
+      "prompt_tokens": 750,
+      "completion_tokens": 260,
+      "estimated_usd": 0.0041,
+      "request_id": "req_f5bd032be4ba419ba9f1d8f56d5f4d35",
+      "response_sha256": "76e2b37397481a1057a12143ede38b81fe1696a5e5807d5e853e043ca3a40899"
+    },
+    {
+      "id": 18,
+      "path": "embeddings",
+      "model": "text-embedding-3-large",
+      "payload_sha256": "8feefeb82660b90af60fc75fd25f6276b0d968d9dfd724549186b8edfc09a52c",
+      "started": 1794448244.112964,
+      "reserved_usd": 0.004319,
+      "status": 200,
+      "prompt_tokens": 37,
+      "completion_tokens": 0,
+      "estimated_usd": 3.7e-05,
+      "request_id": "req_b85fcf3a3c844ce59125080f0914854a",
+      "response_sha256": "46dab19aeddb0fdf1016d378501e1d84b78e503316916c32b552260947239035"
+    },
+    {
+      "id": 19,
+      "path": "chat/completions",
+      "model": "gpt-6.1-sol",
+      "payload_sha256": "24e7b31462b0d4cac01c15c0a74b0a3b949fda698a890c27db3d03fdc6df0f0b",
+      "started": 1794448246.9580739,
+      "reserved_usd": 0.194324,
+      "status": 200,
+      "prompt_tokens": 1143,
+      "completion_tokens": 127,
+      "estimated_usd": 0.003556,
+      "request_id": "req_372bb3cd538a4fc0812664c66cc88792",
+      "response_sha256": "ca3a215e8042fa51a506575a4bbe1b3ccb9d8105dca7ca3cc61e508c48b53268"
+    },
+    {
+      "id": 20,
+      "path": "chat/completions",
+      "model": "gpt-6.1-sol",
+      "payload_sha256": "5df47283caff5b216a213aad364986f002d50e4ee455bfdc392b29e026c9e6ab",
+      "started": 1794448250.9551659,
+      "reserved_usd": 0.199764,
+      "status": 200,
+      "prompt_tokens": 1510,
+      "completion_tokens": 171,
+      "estimated_usd": 0.00473,
+      "request_id": "req_ec8cc230ce9c4061a6eeb3b281220e52",
+      "response_sha256": "2fb2070dcc61a6b1f6ebed1050771f28036a62568d20c6514a9a364a4850f006"
+    },
+    {
+      "id": 21,
+      "path": "chat/completions",
+      "model": "gpt-6.1-sol",
+      "payload_sha256": "50168281b805dbce676b3bcdfe43d3e51c2606404fffbe73330dc303cebef0a6",
+      "started": 1794448259.766521,
+      "reserved_usd": 0.186912,
+      "status": 200,
+      "prompt_tokens": 617,
+      "completion_tokens": 23,
+      "estimated_usd": 0.001464,
+      "request_id": "req_9a9d12cdc4a44da0977c6e4e6abc6395",
+      "response_sha256": "058b7fcecdf5116e2da76db6be14ac571d15e9a05d9d6b3e214c7f01285d7ca7"
+    },
+    {
+      "id": 22,
+      "path": "chat/completions",
+      "model": "gpt-6.1-sol",
+      "payload_sha256": "9ad6df4ef0ef06ee9ca1c9321bc14c205537f7aafe237d79897057930365ac34",
+      "started": 1794448262.37832,
+      "reserved_usd": 0.206304,
+      "status": 200,
+      "prompt_tokens": 1931,
+      "completion_tokens": 189,
+      "estimated_usd": 0.005752,
+      "request_id": "req_a149e57e659646b38038b1c92737f0f2",
+      "response_sha256": "9e515d0f726b117f5acb6cd8853194fcddfe4840b9ab1f9c8723259635124de9"
+    },
+    {
+      "id": 23,
+      "path": "chat/completions",
+      "model": "gpt-6.1-sol",
+      "payload_sha256": "e25a1e2834538b696193a68d3eb60f6a66efdf36fb068cde7b5567566f0c0a80",
+      "started": 1794448266.2427158,
+      "reserved_usd": 0.18808,
+      "status": 200,
+      "prompt_tokens": 646,
+      "completion_tokens": 51,
+      "estimated_usd": 0.001802,
+      "request_id": "req_38da9cc78ad44a428e4be3175aacb14f",
+      "response_sha256": "001bd0ba59aa778fdb32732a173be72ae85fdc9730e85265b02d1f72fbce19ed"
+    }
+  ],
+  "preservation": {
+    "passed": true,
+    "daily_container_count": 25,
+    "daily_container_ids_images_mounts_and_stopped_states_unchanged": true,
+    "private_configuration_sha256_unchanged": true,
+    "owned_test_containers_removed": 17,
+    "isolated_volumes_and_networks_retained_for_evidence": true,
+    "automatic_backup_policy_changed": false
+  },
+  "harness_sha256": {
+    "sitecustomize.py": "10404218c9c595a91a1eda356bd62d3c48ec26813171d57801e8452917d840c7",
+    "run.py": "bd0800dad1f22f5c94a157021ff2d00b5948d2e9ad40ae2bede604cc620563dd",
+    "enterprise.package.e2e.ts": "4c58bd6266b0de6924364ffe3abcf80c045a12f7d0b54d38a46d26c32fca2056"
+  }
+}
