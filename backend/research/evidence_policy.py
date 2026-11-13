@@ -42,6 +42,50 @@ EXPLICIT_STATUS_CODE = re.compile(
     r"(?:HTTP(?:status(?:code)?)?[`*:=：-]{0,8}|(?:HTTP)?(?:错误)?状态码(?:为|是)?[`*:=：-]{0,8})[1-5]\d{2}(?!\d)", re.I
 )
 ATTRIBUTED_CONFLICT = re.compile(r"(?:均|都|各自)(?:明确)?(?:指出|记载|声明|说明|提到).{0,60}(?:冲突|矛盾|不一致)")
+LOCAL_CLAUSE_START = r"(?:^|[，,。；;：:？！?!\r\n])\s*"
+LOCAL_VERSION = r"v\d+(?:\.\d+)*"
+LOCAL_DOCUMENT_SUBJECT = (
+    r"(?:所提供的)?(?:[一二三四五六七八九十两\d]+份)?(?:合成演示)?资料"
+    rf"(?:《[^《》\r\n]+》)?(?:{LOCAL_VERSION})?(?:评审纪要|补充试验|评审|试验)?"
+    r"(?:[（(]记录日期\d{4}-\d{2}-\d{2}[）)])?"
+)
+LOCAL_RECORD_ATTRIBUTION = re.compile(
+    LOCAL_CLAUSE_START + rf"(?P<subject>{LOCAL_DOCUMENT_SUBJECT})"
+    r"(?:均|都|各自)?(?:自注|标明|标注|记载|记录|说明|规定|指出|提到)"
+)
+LOCAL_SCOPE_ATTRIBUTION = re.compile(
+    LOCAL_CLAUSE_START + r"(?:在|仅就|就)(?P<subject>" + LOCAL_DOCUMENT_SUBJECT + r")"
+    r"(?:中|(?:的|所设定的)?(?:同次)?(?:记录|样本|测试|试验|需求与试验情境)(?:中|内|而言))"
+)
+LOCAL_VERSIONED_ATTRIBUTION = re.compile(
+    LOCAL_CLAUSE_START + r"(?:(?:根据|依据|对照)所提供的)?"
+    r"(?P<subject>(?:需求|评审纪要|评审|补充试验|试验|待验清单|清单)"
+    + LOCAL_VERSION + r")(?:记载|记录|说明|规定|指出|提到|列出|将)"
+)
+LOCAL_LEGACY_ATTRIBUTION = re.compile(
+    LOCAL_CLAUSE_START + r"(?P<subject>(?:(?:根据|仅?依据)[^《》，,。；;：:？！?!\r\n]*资料"
+    r"(?:《[^《》\r\n]+》)?|资料中|文档中|该文档))"
+)
+
+
+def has_local_attribution(text: str, sources: list[dict]) -> bool:
+    compact = re.sub(r"\s+", "", text)
+    labels = [re.sub(r"\s+", "", source.get(field, ""))
+              for source in sources for field in ("title", "locator")]
+    # A short book-title label may be the heading in a real chunk locator.
+    labels = [re.split(r"·字符\d", label, maxsplit=1)[0] for label in labels]
+    for pattern in (LOCAL_RECORD_ATTRIBUTION, LOCAL_SCOPE_ATTRIBUTION, LOCAL_LEGACY_ATTRIBUTION):
+        for match in pattern.finditer(compact):
+            quoted = re.findall(r"《([^《》]+)》", match["subject"])
+            if all(any(label == title or label.endswith("：" + title) for label in labels) for title in quoted):
+                return True
+    # A versioned document descriptor is a source-bound name, not an arbitrary
+    # requirement mentioned in the question or a promise of external verification.
+    for match in LOCAL_VERSIONED_ATTRIBUTION.finditer(compact):
+        if any(match["subject"] in re.sub(r"\s+", "", source.get(field, ""))
+               for source in sources for field in ("title", "locator", "text")):
+            return True
+    return False
 
 
 def requires_strong_evidence(text: str) -> bool:
@@ -105,7 +149,7 @@ def validate_claim(text: str, sources: list[dict]) -> tuple[bool, str]:
                 numeric_text = re.sub(citation_field, "", numeric_text)
                 label += rf"(?:\s*[（(]\s*{locator}\s*[）)])?"
             named_local_attribution |= bool(re.search(
-                label + r"\s*(?:正文)?\s*(?:明确)?(?:记载|说明|规定|记录|指出|提到)", text
+                LOCAL_CLAUSE_START + label + r"\s*(?:正文)?\s*(?:明确)?(?:记载|说明|规定|记录|指出|提到)", text
             ))
     # The same document may supply several chunks. Consume every bound locator
     # before removing bare titles so source ordering cannot hide a later locator.
@@ -121,7 +165,7 @@ def validate_claim(text: str, sources: list[dict]) -> tuple[bool, str]:
             return False, "图片结论必须明确限定为图中显示，不能视作外部核实事实"
         return True, "图片可见内容通过数字检查，仍需语义校验"
     if sources and all(s.get("kind") == "local" for s in sources):
-        if not named_local_attribution and not re.search(r"根据[^，,。；;：:？！?!\r\n]*资料|资料中|文档中|该文档", text):
+        if not named_local_attribution and not has_local_attribution(text, sources):
             return False, "内部资料结论必须明确限定为资料中的记录，不能当作外部核实事实"
         return True, "资料内陈述通过数字检查，仍需版本和语义校验"
     if not requires_strong_evidence(text):
