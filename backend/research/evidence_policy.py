@@ -144,7 +144,7 @@ def validate_claim(text: str, sources: list[dict]) -> tuple[bool, str]:
                 numeric_text = re.sub(located_label, "", numeric_text)
                 # The same bound label may be written as an explicit citation
                 # field rather than parenthesized after a book-title label.
-                citation_field = (r"引用位置\s*[:：]\s*" + re.escape(source["title"])
+                citation_field = (r"引用(?:位置)?\s*[:：]\s*" + re.escape(source["title"])
                                   + rf"\s*[,，]\s*{locator}(?=$|[。；;，,\n])")
                 numeric_text = re.sub(citation_field, "", numeric_text)
                 label += rf"(?:\s*[（(]\s*{locator}\s*[）)])?"

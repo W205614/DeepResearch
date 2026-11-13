@@ -16,6 +16,8 @@ ORIGINAL = "根据所提供的本地资料《lifecycle.txt》（正文·字符1�
 REPAIR = "《lifecycle.txt》正文明确说明，工作空间成员权限在后端校验。原文：“工作空间成员权限在后端校验。”"
 FINAL_ORIGINAL = "根据所提供的本地功能验收资料，工作空间成员权限在后端校验。原文：“工作空间成员权限在后端校验。”引用位置：lifecycle.txt，正文 · 字符 1–41。"
 FINAL_DELETION = "根据所提供的本地功能验收资料，删除资料后的检索预期是：被删除的资料不应在知识库检索结果中出现。原文：“删除资料后，不应在知识库检索结果中出现。”引用位置：lifecycle.txt，正文 · 字符 1–41。"
+ACTUAL_CITATION = "根据所提供的本地功能验收资料，工作空间成员权限在后端校验。引用：lifecycle.txt，正文·字符1–41，原文“工作空间成员权限在后端校验”。"
+ACTUAL_CITATION_DELETION = "根据所提供的本地功能验收资料，删除资料后的预期是：被删除的资料不应在知识库检索结果中出现。引用：lifecycle.txt，正文·字符1–41，原文“删除资料后，不应在知识库检索结果中出现”。"
 REVIEW_SOURCE = {
     "id": "review-source", "kind": "local", "title": "review.md", "access": "document",
     "locator": "项目：补充试验 v0.4 · 字符 1–100",
@@ -23,7 +25,8 @@ REVIEW_SOURCE = {
 }
 
 
-@pytest.mark.parametrize("text", [ORIGINAL, REPAIR, FINAL_ORIGINAL, FINAL_DELETION])
+@pytest.mark.parametrize("text", [ORIGINAL, REPAIR, FINAL_ORIGINAL, FINAL_DELETION,
+                                  ACTUAL_CITATION, ACTUAL_CITATION_DELETION])
 def test_actual_failed_claims_reach_semantic_validation(text):
     allowed, reason = validate_claim(text, [SOURCE])
     assert allowed, reason
@@ -47,6 +50,14 @@ def test_actual_failed_claims_reach_semantic_validation(text):
     FINAL_ORIGINAL.replace("根据所提供的本地功能验收资料，", ""),
     FINAL_ORIGINAL.replace("根据所提供的本地功能验收资料，", "根据推测，其他资料缺失。"),
     FINAL_ORIGINAL.replace("根据所提供的本地功能验收资料，", "根据什么？本地功能验收资料，"),
+    ACTUAL_CITATION.replace("1–41", "1–42"),
+    ACTUAL_CITATION.replace("1–41", "1–410"),
+    ACTUAL_CITATION.replace("1–41", "1–41.5"),
+    ACTUAL_CITATION.replace("1–41", "1–41万"),
+    ACTUAL_CITATION.replace("lifecycle.txt", "other.txt"),
+    ACTUAL_CITATION + "校验耗时41毫秒。",
+    ACTUAL_CITATION + "存在1项缺陷。",
+    ACTUAL_CITATION.replace("根据所提供的本地功能验收资料，", ""),
 ])
 def test_unbound_metadata_and_unattributed_facts_stay_blocked(text):
     assert not validate_claim(text, [SOURCE])[0]
@@ -147,10 +158,13 @@ async def test_new_record_grammar_preserves_sources_and_full_semantic_targets(ru
     assert [claim.text for claim in draft.sections[0].claims] == texts
 
 
-async def test_bound_provenance_keeps_full_claim_and_semantic_rejection(runtime):
+@pytest.mark.parametrize("citation_label", ["引用位置", "引用"])
+async def test_bound_provenance_keeps_full_claim_and_semantic_rejection(runtime, citation_label):
     graph = ResearchGraph(runtime.settings, runtime.db, runtime.providers, runtime.vectors, runtime.documents)
-    contradiction = FINAL_ORIGINAL.replace("后端", "前端")
-    texts = [FINAL_ORIGINAL, FINAL_DELETION, contradiction, FINAL_ORIGINAL.replace("1–41", "1–42")]
+    original = FINAL_ORIGINAL.replace("引用位置", citation_label)
+    deletion = FINAL_DELETION.replace("引用位置", citation_label)
+    contradiction = original.replace("后端", "前端")
+    texts = [original, deletion, contradiction, original.replace("1–41", "1–42")]
     draft = ReportDraft.model_validate({"title": "验收", "sections": [{"heading": "权限", "claims": [
         {"text": text, "source_ids": [SOURCE["id"]]} for text in texts
     ]}]})
