@@ -22,12 +22,12 @@ jobs:
         shell: bash
         run: |
           mkdir -p .cache/operator-source0b
-          curl --fail --location --silent --show-error --connect-timeout 20 --max-time 180 --retry 2 --retry-all-errors --retry-max-time 180 --output .cache/operator-source0b/promote_v014_source0b.py https://github.com/W205614/DeepResearch/releases/download/v0.1.4/promote_v014_source0b.py
-          printf '%s  %s\n' "$ADAPTER_SHA256" .cache/operator-source0b/promote_v014_source0b.py | sha256sum --check --status
+          curl --fail --location --silent --show-error --connect-timeout 20 --max-time 180 --retry 2 --retry-all-errors --retry-max-time 180 --output .cache/operator-source0b/promote_v014_source0b_index.py https://github.com/W205614/DeepResearch/releases/download/v0.1.4/promote_v014_source0b_index.py
+          printf '%s  %s\n' "$ADAPTER_SHA256" .cache/operator-source0b/promote_v014_source0b_index.py | sha256sum --check --status
         env:
-          ADAPTER_SHA256: 4606002c09cf99cae76f4dfd5c3ed2301f6b81ce920c7065adbb442dcb05cb31
+          ADAPTER_SHA256: 027752a2d6dfc9f2922e5d0385ea7a2c96d5bb6262db6e4f4dffecac9c4ef6db
       - name: Promote only accepted archive bytes under the exact one-release CI waiver
-        run: python .cache/operator-source0b/promote_v014_source0b.py
+        run: python .cache/operator-source0b/promote_v014_source0b_index.py
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - uses: actions/upload-artifact@v6
