@@ -1,0 +1,82 @@
+{
+  "old_python_closure": {
+    "files": 5972,
+    "sha256": "dfe8e53e3c7e35acb4db60bd17428b0a2b57ab27e05060b36a71edf5791f9baa"
+  },
+  "new_python_closure": {
+    "files": 5972,
+    "sha256": "6f952d9974a0eef03e03da6ff354fe8a8942138769db1d4d4d4a25d43165c57f"
+  },
+  "python_file_delta": {
+    "/app/backend/research/evidence_policy.py": {
+      "before": "196384a4bf6519b8b23832125aea5d6fe1da09bc4d2ef16ef015ff5d4bcd0f2f",
+      "after": "fc6e217fe91c6a775068f47eb560c5c67181a03a604d636bcaf380d77daf040c"
+    }
+  },
+  "unchanged_python_files": 5971,
+  "native_elf_closure": {
+    "files": 515,
+    "sha256": "7bde6d27b4fd6015f058da3f28d8c1e5dfb0155aadca77a61919225674d4f348"
+  },
+  "all_515_native_files_exact_equal": true,
+  "complete_python_feature_matches_exact_equal": true,
+  "application_imported": false,
+  "network_requests": 0,
+  "structured_delta_AST_review": {
+    "existing_module_AST_equal_except_new_helper_and_two_validate_assignments": true,
+    "replaced_assignments": [
+      "locator",
+      "citation_field"
+    ],
+    "new_helper_calls": [
+      "c.isspace",
+      "escaped_whitespace_string.join",
+      "fields.groups",
+      "re.escape",
+      "re.fullmatch"
+    ],
+    "new_imports_or_native_FFI_calls": false,
+    "scope": "Python re.fullmatch and escaped pattern construction only; GNU libc regex names and native entry selection unchanged."
+  },
+  "exact_source_diff": "--- \n+++ \n@@ -66,6 +66,21 @@\n     LOCAL_CLAUSE_START + r\"(?P<subject>(?:(?:根据|仅?依据)[^《》，,。；;：:？！?!\\r\\n]*资料\"\n     r\"(?:《[^《》\\r\\n]+》)?|资料中|文档中|该文档))\"\n )\n+\n+\n+def local_locator_pattern(locator: str) -> str:\n+    literal = r\"\\s*\".join(re.escape(c) for c in locator if not c.isspace())\n+    fields = re.fullmatch(r\"(.*?)\\s*·\\s*字符\\s*(\\d+)\\s*[–-]\\s*(\\d+)\", locator)\n+    if fields is None:\n+        return literal\n+    heading, start, end = fields.groups()\n+    heading = r\"\\s*\".join(re.escape(c) for c in heading if not c.isspace())\n+    start = r\"\\s*\".join(re.escape(c) for c in start)\n+    end = r\"\\s*\".join(re.escape(c) for c in end)\n+    span = rf\"字\\s*符\\s*{start}\\s*[–-]\\s*{end}\"\n+    # These delimiters format the same bound heading and complete character range.\n+    # They do not normalize numbers, units, or any part of the factual claim.\n+    return heading + rf\"\\s*(?:·\\s*{span}|（\\s*{span}\\s*）|\\(\\s*{span}\\s*\\))\"\n \n \n def has_local_attribution(text: str, sources: list[dict]) -> bool:\n@@ -139,13 +154,13 @@\n             if source.get(\"locator\"):\n                 # Only the cited source's exact locator is metadata. Formatting\n                 # whitespace may differ, but invented ranges remain factual targets.\n-                locator = r\"\\s*\".join(re.escape(c) for c in source[\"locator\"] if not c.isspace())\n+                locator = local_locator_pattern(source[\"locator\"])\n                 located_label = title + rf\"\\s*[（(]\\s*{locator}\\s*[）)]\"\n                 numeric_text = re.sub(located_label, \"\", numeric_text)\n                 # The same bound label may be written as an explicit citation\n                 # field rather than parenthesized after a book-title label.\n                 citation_field = (r\"引用(?:位置)?\\s*[:：]\\s*\" + re.escape(source[\"title\"])\n-                                  + rf\"\\s*[,，]\\s*{locator}(?=$|[。；;，,\\n])\")\n+                                  + rf\"\\s*[,，]\\s*{locator}(?=$|[。；;，,：:\\n])\")\n                 numeric_text = re.sub(citation_field, \"\", numeric_text)\n                 label += rf\"(?:\\s*[（(]\\s*{locator}\\s*[）)])?\"\n             named_local_attribution |= bool(re.search(\n",
+  "all_92_complete_finding_tuples_exact_equal": true,
+  "complete_package_inventory_exact_equal": true,
+  "current_raw_sha256": "e07fd8ab5a83bb6a2e21c87d353f1dd1f09da51553026e416a73585baaf07288",
+  "current_scan_receipt": {
+    "command": [
+      "E:\\project\\DeepResearch\\.cache\\security-fix-20261105\\trivy.exe",
+      "image",
+      "--image-src",
+      "docker",
+      "--config",
+      "E:\\project\\DeepResearch\\.cache\\release-followup-20261113\\agent-profile-structured-locator-20261113\\trivy-09\\empty-trivy.yaml",
+      "--ignorefile",
+      "E:\\project\\DeepResearch\\.cache\\release-followup-20261113\\agent-profile-structured-locator-20261113\\trivy-09\\empty.ignore",
+      "--cache-dir",
+      "E:\\project\\DeepResearch\\.cache\\release-followup-20261113\\backend-busybox\\trivy-cache",
+      "--db-repository",
+      "ghcr.io/aquasecurity/trivy-db:2",
+      "--scanners",
+      "vuln,secret",
+      "--list-all-pkgs",
+      "--severity",
+      "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL",
+      "--ignore-unfixed=false",
+      "--exit-code",
+      "0",
+      "--timeout",
+      "10m",
+      "--format",
+      "json",
+      "--output",
+      "E:\\project\\DeepResearch\\.cache\\release-followup-20261113\\agent-profile-structured-locator-20261113\\trivy-09\\raw.private.json",
+      "sha256:1225911b6a70bb901881a3dd5cb118c252bc3d2e7e2c6d8bb9c20a94130c3952"
+    ],
+    "started_epoch": 1794563712.7780993,
+    "no_paid_requests": true,
+    "skipped_db_updates": false,
+    "exit_code": 0,
+    "finished_epoch": 1794563717.1014295,
+    "raw_sha256": "e07fd8ab5a83bb6a2e21c87d353f1dd1f09da51553026e416a73585baaf07288"
+  }
+}

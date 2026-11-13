@@ -323,7 +323,7 @@ def test_current_source_review_binds_complete_closure_and_two_source_snapshots()
 
 def test_reference_locator_profile_preserves_all_retained_technical_facts():
     previous = gate.load_profile(gate.PROVIDER_PROFILE_NAME)
-    current = gate.load_profile(gate.CURRENT_PROFILE_NAME)
+    current = gate.load_profile(gate.REFERENCE_PROFILE_NAME)
     expected = copy.deepcopy(previous)
     for field in ('name', 'python_source_closure', 'source_review_evidence', 'review_scope', 'baseline_evidence_only'):
         expected[field] = current[field]
@@ -342,9 +342,38 @@ def test_reference_locator_profile_preserves_all_retained_technical_facts():
     assert current['python_source_closure'] != previous['python_source_closure']
 
 
-@pytest.mark.parametrize('reviewed_inputs', [gate.CURRENT_PROFILE_NAME], indirect=True)
+@pytest.mark.parametrize('reviewed_inputs', [gate.REFERENCE_PROFILE_NAME], indirect=True)
 def test_reference_locator_review_rejects_previous_python_closure(reviewed_inputs):
     reviewed_inputs[2]['python_source_closure'] = gate.load_profile(gate.PROVIDER_PROFILE_NAME)['python_source_closure']
+    with pytest.raises(ValueError, match='Python source closure'):
+        decide(reviewed_inputs)
+
+
+def test_structured_locator_profile_retains_exact_technical_facts_and_bounds():
+    previous = gate.load_profile(gate.REFERENCE_PROFILE_NAME)
+    current = gate.load_profile(gate.CURRENT_PROFILE_NAME)
+    expected = copy.deepcopy(previous)
+    for field in ('name', 'python_source_closure', 'source_review_evidence', 'review_scope', 'baseline_evidence_only'):
+        expected[field] = current[field]
+    assert current == expected
+    review = json.loads((gate.ROOT / current['source_review_evidence']['path']).read_bytes())
+    assert set(review['source_changes']) == {'/app/backend/research/evidence_policy.py'}
+    assert review['inherited_native_and_ffi_review']['unchanged_python_files'] == 5971
+    comparison_file = next(item for item in review['additional_evidence_files']
+                           if item['path'].startswith('deployment/security/agent-structured-locator-20261113-evidence/')
+                           and item['path'].endswith('source-native-comparison.json'))
+    comparison = json.loads((gate.ROOT / comparison_file['path']).read_bytes())
+    assert comparison['complete_python_feature_matches_exact_equal'] is True
+    assert comparison['all_515_native_files_exact_equal'] is True
+    assert comparison['structured_delta_AST_review']['replaced_assignments'] == ['locator', 'citation_field']
+    assert comparison['structured_delta_AST_review']['new_imports_or_native_FFI_calls'] is False
+    assert current['python_source_closure']['files'] == previous['python_source_closure']['files'] == 5972
+    assert current['python_source_closure'] != previous['python_source_closure']
+
+
+@pytest.mark.parametrize('reviewed_inputs', [gate.CURRENT_PROFILE_NAME], indirect=True)
+def test_structured_locator_review_rejects_previous_python_closure(reviewed_inputs):
+    reviewed_inputs[2]['python_source_closure'] = gate.load_profile(gate.REFERENCE_PROFILE_NAME)['python_source_closure']
     with pytest.raises(ValueError, match='Python source closure'):
         decide(reviewed_inputs)
 
