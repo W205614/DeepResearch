@@ -1,0 +1,36 @@
+{
+  "original_rejection": {
+    "passed": false,
+    "actual_original_profile_sha256": "62a3bc7653a7a27c72d96a669286c5a56d2db92bb76d4ca27b2cb7650c0229c1",
+    "actual_original_gate_sha256": "3e74727aacd069e4f9b35e3ef9221b1b3a63b8445cb8f69ee52bcd49fbddae51",
+    "error": "Complete native/Go SBOM inventory changed"
+  },
+  "observations": {
+    "final-native-grype-01": {
+      "actual_sbom_sha256": "ab7c3c84edefe600913f8ce04de25d9268afe97c8e5e0a4b3ac6334a07737d36",
+      "actual_receipt_sha256": "2ba580e9dfe05d223d014f10f7a3a79a87fd4542bf1a376dfa1d0b8b5ef8966d",
+      "actual_layers": [
+        "sha256:f8e552bb79aa8b5bc64b603c038e9dda64e0998d3c41fa87b9ce0c27eebb3a47"
+      ],
+      "bound_inventory_sha256": "a7ced15a1e3233571da5c42b9eb1ceab96acac7726e0df9d3443ae149b0ce2cf"
+    },
+    "final-native-grype-03": {
+      "actual_sbom_sha256": "7b7abe9400393d757b8f02ee412ace93a34d079fdbfadd49affa7d65449b1b0b",
+      "actual_receipt_sha256": "8ed95dac77ebd42985d5956508bc907c658bd36c5b1e68090a5b45369a3a752d",
+      "actual_layers": [
+        "sha256:80d73bb69ee8b6f3f62fcf079b8671d3fa0fabb4b903d7a6b2dc2d26098c50c8"
+      ],
+      "bound_inventory_sha256": "a7ced15a1e3233571da5c42b9eb1ceab96acac7726e0df9d3443ae149b0ce2cf"
+    },
+    "final-native-normal-grype-2c578e2": {
+      "actual_sbom_sha256": "5bfeca37b178b7b6783f04efe9cbdde79094a3be593d60f5cf05fde7e248fd15",
+      "actual_receipt_sha256": "d8921a5d049d0fb15f393f31ff0a1a57deb3112ba889a6bdd766b7bdf2e45c94",
+      "actual_layers": [
+        "sha256:488abf51dd2226f9d0a08cfaac3d0de77ef45a8a5f9607978e90a2984e768c64"
+      ],
+      "bound_inventory_sha256": "a7ced15a1e3233571da5c42b9eb1ceab96acac7726e0df9d3443ae149b0ce2cf"
+    }
+  },
+  "only_actual_location_layer_identity_replaced_with_bound_index": true,
+  "all_other_artifact_fields_and_location_count_preserved": true
+}

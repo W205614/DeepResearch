@@ -229,19 +229,22 @@
     "deployment/security/minio-source-20261112-evidence/mcli-new-native.json": "e91c5fa4f494232baefe30d2faa36e989b808d8a5d0238c25031541e22ccfa09",
     "deployment/security/minio-source-20261112-evidence/silo-graph.json.gz": "050298733fde75da9526e72357465a6a4e40c110d4b10744080942b890e1d61e",
     "deployment/security/minio-source-20261112-evidence/silo-new-native.json": "17bc94f2892bdd5621d268ee3e238e1a31fba964208e0b39312bbe2d56338348",
-    "scripts/check_minio_os_20261113.py": "3e74727aacd069e4f9b35e3ef9221b1b3a63b8445cb8f69ee52bcd49fbddae51",
+    "scripts/check_minio_os_20261113.py": "0fb0d9b914ff0e6195608ee096f2208e43c352d09e5c93218cbabfa08484e441",
     "scripts/check_native_jvm.py": "3081ed1f47765ac2fc60f64d1482099b312331f0fb7626ef7b1472ba2fcd0de6",
     "scripts/go_stdlib_rebuild_20261112.py": "4ab322a90cf12c68bb67fd8722eb5c9811ddbfd605f86083a25d891c7eafdc51",
-    "scripts/prepare_minio_os_profile_20261113.py": "035e87fd50529ca7c7648518ed3531ba2705ada0c93ec8dd34ffeaba43f069cf",
+    "scripts/prepare_minio_os_profile_20261113.py": "6d171a669ac4b1dc83057315340008cdc7c7c40209412d32a8f6b3cb493cab62",
     "tests/fixtures/minio-native-20261113/scanner-controls.json": "1a702a9b8b74ba5b01add5f01bcf7b4975bba83ff6222284707f107b95210cfc",
-    "tests/test_minio_os_20261113.py": "344deb08cb718096dc7d6fb77b20384a4c770b70c01e1328b096f30bbd80eb98",
+    "tests/test_minio_os_20261113.py": "e52b49a465ccd6da717d22ac0d58a3f1a5a9713a88eb3aa98a9a55310a63896f",
     "tests/test_minio_rpm_facts_20261113.py": "408c3aa353574edba47f6a4657e36cb4ede639e052f12435ff2437ef1c1b6fd8",
     "deployment/security/minio-os-source-20261113-evidence/review-root.json": "9dbe811d1535a8d503bd0268555155f7455e5156ca7f873204c891a0f021d327",
-    "deployment/security/minio-os-source-20261113-evidence/review-release-prepare.json": "8d91cfe463906148301c1f4a3af857d3fa28ed344d947a35e67cfcab1e11b6d9"
+    "deployment/security/minio-os-source-20261113-evidence/review-release-prepare.json": "8d91cfe463906148301c1f4a3af857d3fa28ed344d947a35e67cfcab1e11b6d9",
+    "deployment/security/minio-os-source-20261113-evidence/support/sbom-layer-amendment-01/actual-three-sbom-bound-layer-replay.json": "bbc8f400eb15471c6a810f21dfe97a74194a9a461cd7071eb226f7abc63b90d1",
+    "deployment/security/minio-os-source-20261113-evidence/review-layer-root.json": "1e6d8050811659d0ed6b5afbf3be2e2c247e9d9bcd692c4d208eaaf62592c5fd",
+    "deployment/security/minio-os-source-20261113-evidence/review-layer-provenance.json": "5a3acd96e61c480ce153f59142263f8a623ac7b8ee43cb833f68dcb0b1c5da70"
   },
   "independent_reviews": [
-    "deployment/security/minio-os-source-20261113-evidence/review-root.json",
-    "deployment/security/minio-os-source-20261113-evidence/review-release-prepare.json"
+    "deployment/security/minio-os-source-20261113-evidence/review-layer-root.json",
+    "deployment/security/minio-os-source-20261113-evidence/review-layer-provenance.json"
   ],
   "runtime_evidence": {
     "current": "deployment/security/minio-os-source-20261113-evidence/runtime-manifest.json.gz"
@@ -291,7 +294,7 @@
       "usr/bin/mcli": "57d24a0efc0f3f3426ec6dba0a11e7baa97c43f319025424a152a86bcb126338",
       "usr/bin/silo": "08d9447f88dbc193ce1c8bab55b31d99dc7e2d6937482db0e1655635361796fd"
     },
-    "syft_inventory_sha256": "9991ba8d059f96a843b390772b9d789c449f15aac14f4a6bf3484ef44288b8ef",
+    "syft_inventory_sha256": "a7ced15a1e3233571da5c42b9eb1ceab96acac7726e0df9d3443ae149b0ce2cf",
     "scanner_controls": {
       "syft_catalogers_sha256": "8ce95158e307f9a249c5cd1ff11878b00ac90d0af67c40f702ad198b2aa2509e",
       "grype_builtin_kernel_header_rules_sha256": "de91806bbc574052d009c46ef8fcbe768232385cd2639ae9853cb6f73692d1d5",
@@ -3708,5 +3711,18 @@
     "current_checks": "Actual compiler/settings/full linked modules and complete import closure; benign CSV/Parquet/legacy regressions",
     "scope": "New Thrift0.25 closure; previous binary approval is not inherited"
   },
-  "review_subject_sha256": "0c1f264c7e86221618da3e9b4d0d2356ce2c9c500da7705fb6a74dfe968c1193"
+  "review_subject_sha256": "802d076e3e20d7650201b11c1460975b42d7f54108614a809f0285185397bc6c",
+  "consumer_layer_identity_amendment": {
+    "prior_profile_sha256": "62a3bc7653a7a27c72d96a669286c5a56d2db92bb76d4ca27b2cb7650c0229c1",
+    "prior_subject_sha256": "0c1f264c7e86221618da3e9b4d0d2356ce2c9c500da7705fb6a74dfe968c1193",
+    "prior_inventory_sha256": "9991ba8d059f96a843b390772b9d789c449f15aac14f4a6bf3484ef44288b8ef",
+    "actual_three_sbom_replay": "deployment/security/minio-os-source-20261113-evidence/support/sbom-layer-amendment-01/actual-three-sbom-bound-layer-replay.json",
+    "native_source_runtime_recompiled": false,
+    "prior_physical_native_observations_reused": true,
+    "prior_independent_reviews_sha256": {
+      "deployment/security/minio-os-source-20261113-evidence/review-root.json": "9dbe811d1535a8d503bd0268555155f7455e5156ca7f873204c891a0f021d327",
+      "deployment/security/minio-os-source-20261113-evidence/review-release-prepare.json": "8d91cfe463906148301c1f4a3af857d3fa28ed344d947a35e67cfcab1e11b6d9"
+    },
+    "scope": "Verify each of three exact Syft Location shapes against actual ordered image layers; preserve all other fields"
+  }
 }

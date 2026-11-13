@@ -19,9 +19,9 @@ def test_full_sbom_binds_all_catalogued_fields_except_transaction_layer():
     original = {'artifacts': [artifact()]}
     changed = copy.deepcopy(original)
     changed['artifacts'][0]['locations'][0]['layerID'] = 'sha256:other-actual-transaction'
-    assert gate.sbom_inventory(original) == gate.sbom_inventory(changed)
+    assert gate.sbom_inventory(original, ['sha256:actual']) == gate.sbom_inventory(changed, ['sha256:other-actual-transaction'])
     changed['artifacts'][0]['metadata']['architecture'] = 'ppc64'
-    assert gate.sbom_inventory(original) != gate.sbom_inventory(changed)
+    assert gate.sbom_inventory(original, ['sha256:actual']) != gate.sbom_inventory(changed, ['sha256:other-actual-transaction'])
 
 
 @pytest.mark.parametrize('field,value', [('name', 'other'), ('version', '2'), ('type', 'go-module'),
@@ -36,7 +36,49 @@ def test_match_must_belong_to_exact_actual_sbom(field, value):
 
 def test_duplicate_full_sbom_identity_is_rejected():
     with pytest.raises(ValueError, match='Duplicate'):
-        gate.sbom_inventory({'artifacts': [artifact(), artifact()]})
+        gate.sbom_inventory({'artifacts': [artifact(), artifact()]}, ['sha256:actual'])
+
+
+@pytest.mark.parametrize('kind', ['package', 'license', 'binary-signature'])
+def test_nested_location_layers_are_bound_to_actual_ordered_image(kind):
+    row = artifact()
+    location = copy.deepcopy(row['locations'][0])
+    if kind == 'license':
+        row['licenses'] = [{'value': 'MIT', 'locations': [location]}]
+    elif kind == 'binary-signature':
+        row['metadata']['matches'] = [{'classifier': 'curl-binary', 'location': location}]
+    old = {'artifacts': [row]}
+    new = copy.deepcopy(old)
+    def replace(value):
+        if isinstance(value, dict):
+            for key, item in value.items():
+                if key == 'layerID':
+                    value[key] = 'sha256:new'
+                else:
+                    replace(item)
+        elif isinstance(value, list):
+            for item in value:
+                replace(item)
+    replace(new)
+    expected = gate.sbom_inventory(old, ['sha256:actual'])
+    assert expected == gate.sbom_inventory(new, ['sha256:new'])
+    assert expected != gate.sbom_inventory(new, ['sha256:actual', 'sha256:new'])
+    with pytest.raises(ValueError, match='unknown or missing'):
+        gate.sbom_inventory(new, ['sha256:unrelated'])
+    selected = new['artifacts'][0]['locations'][0]
+    if kind == 'license':
+        selected = new['artifacts'][0]['licenses'][0]['locations'][0]
+    elif kind == 'binary-signature':
+        selected = new['artifacts'][0]['metadata']['matches'][0]['location']
+    selected['accessPath'] = '/different'
+    assert expected != gate.sbom_inventory(new, ['sha256:new'])
+
+
+def test_unknown_nested_layer_structure_is_rejected():
+    row = artifact()
+    row['metadata']['unreviewed'] = {'path': '/usr/bin/curl', 'layerID': 'sha256:actual'}
+    with pytest.raises(ValueError, match='unreviewed SBOM'):
+        gate.sbom_inventory({'artifacts': [row]}, ['sha256:actual'])
 
 
 @pytest.fixture

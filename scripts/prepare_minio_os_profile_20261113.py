@@ -46,7 +46,7 @@ def create(args):
     profile['expected'] = {key: receipt[key] for key in ('runtime_config', 'native_sha256')}
     profile['expected'].update(rpm_database_stable_sha256=receipt['rpm_database']['stable_sha256'],
                                trivy_inventory_sha256=inventory,
-                               syft_inventory_sha256=gate.sbom_inventory(sbom),
+                               syft_inventory_sha256=gate.sbom_inventory(sbom, receipt['diff_ids']),
                                scanner_controls=gate.scanner_controls(grype, sbom))
     profile['reviewed_findings'] = {'Trivy': rows, 'Grype': gate.grype_rows(grype)}
     for source, name in ((args.trivy, 'raw-trivy.json.gz'), (args.grype, 'raw-grype.json.gz'),
@@ -159,6 +159,53 @@ def assemble(args):
     return profile
 
 
+def amend_layer_identity(args):
+    gate.common.require(gate.digest(args.prior_profile) ==
+                        '62a3bc7653a7a27c72d96a669286c5a56d2db92bb76d4ca27b2cb7650c0229c1',
+                        'Layer-only amendment requires the exact original reviewed profile')
+    profile = gate.read(args.prior_profile)
+    original_reviews = {
+        EVIDENCE + '/review-root.json': '9dbe811d1535a8d503bd0268555155f7455e5156ca7f873204c891a0f021d327',
+        EVIDENCE + '/review-release-prepare.json': '8d91cfe463906148301c1f4a3af857d3fa28ed344d947a35e67cfcab1e11b6d9'}
+    gate.common.require(profile['review_subject_sha256'] ==
+                        '0c1f264c7e86221618da3e9b4d0d2356ce2c9c500da7705fb6a74dfe968c1193'
+                        and all(profile['evidence_sha256'][name] == gate.digest(ROOT / name) == expected
+                                for name, expected in original_reviews.items()),
+                        'Original physical-subject independent reviews must remain unchanged')
+    receipt = gate.read(args.build_dir / 'build-receipt.json')
+    gate.common.require(profile['source_inputs'] == receipt['source_inputs'] == gate.builder.source_inputs(),
+                        'A consumer-only amendment cannot change actual compilation inputs')
+    allowed = {'scripts/check_minio_os_20261113.py', 'scripts/prepare_minio_os_profile_20261113.py',
+               'tests/test_minio_os_20261113.py'}
+    for name, expected in profile['evidence_sha256'].items():
+        if name not in allowed and name not in profile['independent_reviews']:
+            gate.common.require(gate.digest(ROOT / name) == expected,
+                                'An unrelated original evidence file changed: ' + name)
+    prior_subject, prior_inventory = profile['review_subject_sha256'], profile['expected']['syft_inventory_sha256']
+    profile['expected']['syft_inventory_sha256'] = gate.sbom_inventory(gate.read(args.sbom), receipt['diff_ids'])
+    proof = ROOT / EVIDENCE / 'support/sbom-layer-amendment-01/actual-three-sbom-bound-layer-replay.json'
+    proof.parent.mkdir(parents=True, exist_ok=True)
+    proof.write_bytes(args.replay.read_bytes())
+    binding = proof.relative_to(ROOT).as_posix()
+    profile['consumer_layer_identity_amendment'] = {
+        'prior_profile_sha256': gate.digest(args.prior_profile), 'prior_subject_sha256': prior_subject,
+        'prior_inventory_sha256': prior_inventory, 'actual_three_sbom_replay': binding,
+        'native_source_runtime_recompiled': False, 'prior_physical_native_observations_reused': True,
+        'prior_independent_reviews_sha256': original_reviews,
+        'scope': 'Verify each of three exact Syft Location shapes against actual ordered image layers; preserve all other fields'}
+    for name in allowed | {binding}:
+        profile['evidence_sha256'][name] = gate.digest(ROOT / name)
+    profile['independent_reviews'] = [EVIDENCE + '/review-layer-root.json', EVIDENCE + '/review-layer-provenance.json']
+    profile['status'] = 'prepared'
+    profile['review_subject_sha256'] = gate.review_subject(profile)
+    gate.validate_profile(profile, reviewed=False)
+    gate.verify_receipt(receipt, gate.read(args.build_dir / 'image-inspect.json'), profile)
+    gate.assess(gate.read(args.trivy), gate.read(args.grype), gate.read(args.sbom),
+                gate.read(args.build_dir / 'image-inspect.json'), receipt, profile, 0, 0)
+    write(args.output, profile)
+    return profile
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='operation', required=True)
@@ -168,8 +215,12 @@ def main():
     draft.add_argument('--support', type=Path, action='append', default=[])
     final = sub.add_parser('assemble-reviewed')
     final.add_argument('--draft', type=Path, required=True)
+    amendment = sub.add_parser('amend-layer-identity')
+    for name in ('prior-profile', 'build-dir', 'trivy', 'grype', 'sbom', 'replay', 'output'):
+        amendment.add_argument('--' + name, type=Path, required=True)
     args = parser.parse_args()
-    profile = create(args) if args.operation == 'create' else assemble(args)
+    profile = {'create': create, 'amend-layer-identity': amend_layer_identity,
+               'assemble-reviewed': assemble}[args.operation](args)
     print(json.dumps({'subject': profile['review_subject_sha256'], 'status': profile['status']}))
 
 

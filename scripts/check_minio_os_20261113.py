@@ -322,15 +322,33 @@ def row_counter(rows):
     return Counter(json.dumps(row, sort_keys=True, separators=(',', ':')) for row in rows)
 
 
-def sbom_inventory(sbom):
+def sbom_inventory(sbom, diff_ids):
     artifacts = sbom['artifacts']
     common.require(len({row['id'] for row in artifacts}) == len(artifacts),
                    'Duplicate full SBOM artifact identity')
-    # Layer IDs identify this particular transaction. validate_source separately
-    # binds them to the actual image; retain every other catalogued field.
-    rows = [{key: value for key, value in row.items() if key not in ('id', 'locations')}
-            | {'locations': [{key: value for key, value in location.items() if key != 'layerID'}
-                             for location in row['locations']]} for row in artifacts]
+    common.require(diff_ids and len(set(diff_ids)) == len(diff_ids), 'Actual ordered image layer identity is incomplete')
+    def location_path(path):
+        return ((len(path) == 2 and path[0] == 'locations' and isinstance(path[1], int))
+                or (len(path) == 4 and path[0] == 'licenses' and isinstance(path[1], int)
+                    and path[2] == 'locations' and isinstance(path[3], int))
+                or (len(path) == 4 and path[:2] == ('metadata', 'matches')
+                    and isinstance(path[2], int) and path[3] == 'location'))
+    def bound(value, path=()):
+        if isinstance(value, list):
+            return [bound(row, path + (index,)) for index, row in enumerate(value)]
+        if isinstance(value, dict):
+            if location_path(path):
+                common.require(value.get('layerID') in diff_ids,
+                               'A complete SBOM location has an unknown or missing actual image layer')
+            if 'layerID' in value:
+                common.require(location_path(path), 'An unreviewed SBOM layer-location structure appeared')
+            return {key: diff_ids.index(row) if key == 'layerID' else bound(row, path + (key,))
+                    for key, row in value.items()}
+        return value
+    # Three actual Syft Location shapes carry the same ordered image identity:
+    # package locations, declared-license locations, binary-signature matches.
+    # Retain each object/field and replace only its verified layer with its index.
+    rows = [bound({key: value for key, value in row.items() if key != 'id'}) for row in artifacts]
     return shared.manifest_hash(sorted(row_counter(rows).items()))
 
 
@@ -394,7 +412,7 @@ def assess(trivy, grype, sbom, inspection, receipt, profile, scanner_exit_code, 
     common.require('sha256:' + hashlib.sha256(config).hexdigest() == receipt['config_digest']
                    and shared.runtime_config(json.loads(config)['config']) == receipt['runtime_config'],
                    'Full SBOM does not belong to the actual portable config')
-    common.require(sbom_inventory(sbom) == profile['expected']['syft_inventory_sha256'],
+    common.require(sbom_inventory(sbom, receipt['diff_ids']) == profile['expected']['syft_inventory_sha256'],
                    'Complete native/Go SBOM inventory changed')
     common.require(scanner_controls(grype, sbom) == profile['expected']['scanner_controls'],
                    'Complete scanner selection differs')
