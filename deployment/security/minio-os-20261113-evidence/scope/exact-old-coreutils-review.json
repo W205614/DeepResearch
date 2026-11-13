@@ -1,0 +1,78 @@
+{
+  "schema": "independent-minio-exact-old-coreutils-scope-v1",
+  "actor": "/root/review_provenance",
+  "observed_at_utc": "2026-11-13T03:41:48.664547+00:00",
+  "cve": "CVE-2026-56391",
+  "package": "coreutils-single",
+  "installed_version": "8.32-41.el9_8.1",
+  "status": "SUPPORTED_DIFFERENT_IMPLEMENTATION_BASELINE",
+  "candidate_approved": false,
+  "exact_old_vendor_i18n_sha256": "2c4e2ed25e2fbbebd2afb3badce09d68b93df152b17d6f27fa60fed598ded11f",
+  "exact_old_source_archive_sha256": "4458d8de7849df44ccab15e16b1548b285224dbba5f08fac070c1c0e0bcc4cfa",
+  "uniq_vendor_diff_identical_to_reviewed_newer_source": true,
+  "uniq_vendor_diff_excluding_index_sha256": "d4869f0fa650ffbd52cd480f14218c75e08a8e2a5e6255ef083d9916ce5050b0",
+  "all_exact_old_patches_touching_uniq": [
+    {
+      "file": "E:\\project\\DeepResearch\\.cache\\release-followup-20261113\\security-minio\\old-source-verify-01\\sources\\coreutils\\coreutils-i18n.patch",
+      "sha256": "2c4e2ed25e2fbbebd2afb3badce09d68b93df152b17d6f27fa60fed598ded11f"
+    }
+  ],
+  "source_facts": [
+    "Upstream d64e35a fixes the coreutils-9.5 mcel_scan pointer loop in find_field, which computes a byte length for later memcmp.",
+    "Exact old source tar is the same 8.32 tar as inspected, SHA4458d8de7849df44ccab15e16b1548b285224dbba5f08fac070c1c0e0bcc4cfa.",
+    "Exact old vendor i18n patch differs overall from newer 43; its src/uniq.c patch body is independently compared and identical, not assumed from version.",
+    "Only coreutils-i18n.patch among all exact-old vendor patch files changes src/uniq.c. Old spec applies it through unconditional %autopatch -p1.",
+    "find_field_multi advances a bounded pos through skip_fields/skip_chars with MBCHAR_TO_WCHAR and returns lp+pos; it does not contain mcel_scan or the defective fixed-lp/advancing-ep loop.",
+    "The -w comparison remains the original different function, clipping oldlen and newlen by check_chars before equality/length-checked memcmp; no expanding multibyte check_chars byte length exists.",
+    "Actual usr/bin/coreutils and uniq dispatch script match the retained installed x86_64 RPM header file digests; complete 70 ELF runtime headers independently identify x86_64."
+  ],
+  "source_architecture_boundary": "Signed source RPM query reports aarch64. Its NEVR/source archive and generic uniq vendor source match the actual x86_64 installed package SOURCERPM name, with no architecture condition on this patch; this is source-scope corroboration, not a cryptographic reproducible-build claim that this particular SRPM blob produced the old x86_64 binary.",
+  "evidence_files": [
+    {
+      "path": "old-source-verify-01/sources/coreutils/coreutils.spec",
+      "sha256": "ba7dd8d5723659081abef9705ffe0c605d9528ef13988afdafa930d6fc500c2c",
+      "bytes": 88673
+    },
+    {
+      "path": "old-source-verify-01/sources/coreutils/coreutils-8.32.tar.xz",
+      "sha256": "4458d8de7849df44ccab15e16b1548b285224dbba5f08fac070c1c0e0bcc4cfa",
+      "bytes": 5547836
+    },
+    {
+      "path": "old-source-verify-01/sources/coreutils/coreutils-i18n.patch",
+      "sha256": "2c4e2ed25e2fbbebd2afb3badce09d68b93df152b17d6f27fa60fed598ded11f",
+      "bytes": 109209
+    },
+    {
+      "path": "source-extract-01/sources/coreutils/coreutils-i18n.patch",
+      "sha256": "ea6a3a9592ae6c99d7fefb375cd2ca4f7de67b43883faf6f5a48f64d89e85ca6",
+      "bytes": 109278
+    },
+    {
+      "path": "old-source-verify-01/sources/signatures.txt",
+      "sha256": "7ec9504c6e661a43ce3d93d6fddb68678f1220fc4f72a819413586049e991113",
+      "bytes": 289
+    },
+    {
+      "path": "old-source-verify-01/sources/identities.txt",
+      "sha256": "ad7c9c7f8e1750fb3198ea6a097d717e3d2cf4759f30188d18fb9b42bdc98944",
+      "bytes": 125
+    },
+    {
+      "path": "upstream/coreutils-fix.patch",
+      "sha256": "c350a7bc41e15e3b9f5a988cb02e5b2efd9fb1e331cc65fa9e7ccd0d249c8bf4",
+      "bytes": 2542
+    },
+    {
+      "path": "independent-unaffected-scope/baseline-rpm-package-files-02.json",
+      "sha256": "1408298cfc84f32964f9777b3c7398396feb599c8bfde804aabd950e3af372b2",
+      "bytes": 244698
+    },
+    {
+      "path": "independent-unaffected-scope/baseline-payload-inventory.json",
+      "sha256": "ea5bcd32b4429f0ba08153e61b8aa153c65f326fbdf309a293208911dd76ea79",
+      "bytes": 528487
+    }
+  ],
+  "no_poc_or_native_execution": true
+}

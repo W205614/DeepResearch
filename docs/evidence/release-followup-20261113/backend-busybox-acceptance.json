@@ -1,0 +1,139 @@
+{
+  "schema": "backend-busybox-exact-native-repair-acceptance-20261113-v1",
+  "phase": "Verified local candidate, not final clean-source cohort, product release or daily deployment",
+  "source_commit_at_build": "5513d649eaacc21694a6736761b3082473f63d59",
+  "source_boundary": "Recipe/checker changes were not yet committed at the build. Exact source inputs are bound in the profile. Final clean-source packaging remains required.",
+  "actual_engine_id": "sha256:32e8b219fa7d921086eeb31beab2ba0b88670c72b728536c3fd42b1d800d2046",
+  "portable_config_digest": "sha256:c9818b39b8ab2abb74830cea982e37348b2a673246ff3b1ce91ebcc12b255db0",
+  "profile": "deployment/security/backend-busybox-20261113-profile.json",
+  "profile_sha256": "c32273c12b1b932a1aab4197741cbeb424d4a7c86475674bc44e4a631a5c0d8a",
+  "build": {
+    "normal_source_build_exit_code": 0,
+    "bounded_Maven_short_reads_preserved": true,
+    "local_locked_download_inputs_reused_with_SHA_and_APK_signature_checks": true,
+    "cold_build_claimed": false
+  },
+  "runtime_config_unchanged": true,
+  "Tomcat27_JAR_all_member_bytes_unchanged": true,
+  "prior_69_Java_tests_reused_not_rerun": true,
+  "complete_package_inventory_unchanged": true,
+  "full_packages": 140,
+  "common_hashed_files": 1117,
+  "common_hashed_file_changes": [
+    "/bin/busybox",
+    "/app/app.jar"
+  ],
+  "legal_source_runtime_path": "/usr/share/deepresearch/backend-busybox/",
+  "legal_source_regular_files": 83,
+  "normal_runtime_probe": {
+    "exit_code": 0,
+    "container_retained": "dr-backend-busybox-benign-20261113",
+    "network": "none",
+    "runtime_read_only": true,
+    "malicious_inputs": false,
+    "model_calls": 0,
+    "musl_sha256": "095b047c631447e4fa50401fa7ffce01f678587040d65ba18c574981dc630de5",
+    "sha256_stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "sha256_stderr": "477d64a6b08c9a9dd143deae108edf7929a93b40434d87285d41addc8fba509f"
+  },
+  "new_malicious_inputs_or_exploit_reproduction": false,
+  "actual_JRE_bytes": {
+    "verified_entries": 255,
+    "verified_regular_bytes": 164682680
+  },
+  "native_Grype_raw_counts": {
+    "High": 0,
+    "Critical": 0,
+    "Unknown": 0,
+    "Medium": 0,
+    "Low": 0,
+    "Negligible": 0
+  },
+  "full_Grype_raw_counts": {
+    "High": 0,
+    "Critical": 0,
+    "Unknown": 0,
+    "Medium": 3,
+    "Low": 0,
+    "Negligible": 0
+  },
+  "exact_all_severity_gate": {
+    "passed": true,
+    "all_severity_technical_clear": true,
+    "raw_findings": 3,
+    "raw_report_modified": false,
+    "risk_acceptance": false,
+    "profile_sha256": "c32273c12b1b932a1aab4197741cbeb424d4a7c86475674bc44e4a631a5c0d8a",
+    "dispositions": {
+      "busybox": "FIXED_IN_EXACT_REBUILT_SHARED_BUSYBOX",
+      "busybox-binsh": "FIXED_IN_EXACT_SHARED_DISPATCHER_PAYLOAD",
+      "ssl_client": "AFFECTED_HTTP_WRITER_NOT_IN_STANDALONE_COMPONENT"
+    },
+    "legal_source_regular_files": 83,
+    "actual_fixed_busybox_sha256": "68dba7ae251db2ecca77e6ef405bf781111dc41f87c93c30205745fdbe2c697e",
+    "actual_standalone_ssl_client_sha256": "8b23a9dbfea3da8c6da65b93c0fc6d979a82245c17c40d8fbf94d531263b98b4",
+    "boundary": "Only these exact component bytes, source closure and retained finding identities; no raw-zero claim."
+  },
+  "Trivy_all_severity_raw_counts": {},
+  "Trivy_secret_count": 0,
+  "Trivy_exit_code": 0,
+  "Trivy_raw_sha256": "b107c2acad322443b3f814adedd5de7e2da286c1185ca664db0f18cb21193bc0",
+  "Trivy_actual_engine_id": "sha256:32e8b219fa7d921086eeb31beab2ba0b88670c72b728536c3fd42b1d800d2046",
+  "Trivy_final_official_repositories_no_skip_or_insecure": true,
+  "Trivy_database_hashes_before_after": {
+    "db/trivy.db": "15982ae74263f22790b348c89b181c9edfd21d70b08b2364aedcf0f7ef8fab29",
+    "java-db/trivy-java.db": "751b0549b469b1dd47b58d417e0a4e8559d28e75f11ac8d8a062af01c476e075"
+  },
+  "Java_DB_transport": {
+    "official_manifest_sha256": "81112bc7e5c30046b289bd9e3a4a68f63280187c1f514480fc98fb4a89d2a49b",
+    "official_layer_digest": "sha256:d1ef50b7b265c67362f7d61a22d7dcc507346b1252e2173d046edd5ddcb26fd6",
+    "official_layer_bytes": 998935932,
+    "natural_official_client_metadata": {
+      "Version": 1,
+      "NextUpdate": "2026-11-16T01:08:15.464357255Z",
+      "UpdatedAt": "2026-11-13T01:08:15.464357406Z",
+      "DownloadedAt": "2026-11-13T04:45:20.3049916Z"
+    },
+    "actual_database_sha256": "751b0549b469b1dd47b58d417e0a4e8559d28e75f11ac8d8a062af01c476e075",
+    "metadata_hand_edited": false,
+    "server_stopped_before_scan": true,
+    "original_mirror_GHCR_EOF_and_signed_redirect_403_retained": true
+  },
+  "Grype_database": {
+    "fresh_official_publisher": {
+      "url": "https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-11-12T00:22:10Z_1794464458.tar.zst?checksum=sha256%3Ac98bd6bd207590fa04c8e2fea3db1859f7f952b57400fc62e19f517f1b562f5e",
+      "archive_sha256": "c98bd6bd207590fa04c8e2fea3db1859f7f952b57400fc62e19f517f1b562f5e",
+      "schema": "v6.1.10",
+      "built": "2026-11-12T06:20:58Z",
+      "max_snapshot_age_days": 7
+    },
+    "normal_fresh_controlled_import": true,
+    "import_metadata": {
+      "digest": "xxh64:b8912068fb7cd11c",
+      "source": "manual import",
+      "client_version": "v6.1.10"
+    },
+    "derived": {
+      "bytes": 3420876800,
+      "sha256": "3796b632bcd52d82c135e579bcc4635d902382cab550ff8c01a940a4f90893ca"
+    }
+  },
+  "evidence_sha256": {
+    "build-01/build-intent.json": "c71e1216007817d171f35e886235388aad4404852d9562d2d4c3ffeeb8095df7",
+    "build-01/build.log": "dd1d5c3c521d90b5a4d4ae2e21e80546685ec7f1df256a0f78eddf39e98efed1",
+    "native-jvm-01/summary.json": "5d39c6d2d131cb0db0d2a1f95bc62df8b62e7faa5c9ae8afccef1dd03a695ebe",
+    "native-jvm-01/full-grype.json": "9ceff3382b3b320565e6b198e0716302293d2050f37f58453860825841ebee44",
+    "native-jvm-01/full-syft.json": "c9cc1af4480cf4a48ad4bc9fa8aff6c84352cc259085912e9e6ec937db3adf6b",
+    "native-jvm-01/backend-busybox/verdict.json": "f6b02ec27db29ade522c3640ed7e355fffb512374203562eb13c259060f212e9",
+    "native-jvm-01/prior-full-sbom-comparison.json": "af722f58e647273253754bb191a80b9de9109338324d47efdc1a9817ac2d10b1",
+    "trivy-03/scan-receipt.json": "174e93515923c525acedf31a4ca046d3bce6d95e3e772d14c5f57bdf49ac75c1",
+    "trivy-03/raw.private.json": "b107c2acad322443b3f814adedd5de7e2da286c1185ca664db0f18cb21193bc0",
+    "java-db-loopback-import-01/result.json": "dc6cd5897f2aa96036d8088f3b05871881cda251ee138c0eebe55125dc81de28"
+  },
+  "raw_reports_modified": false,
+  "risk_acceptance": false,
+  "raw_zero_vulnerability_claim": false,
+  "new_paid_model_calls_by_this_work": 0,
+  "new_release_or_registry_push": false,
+  "daily_environment_changed": false
+}

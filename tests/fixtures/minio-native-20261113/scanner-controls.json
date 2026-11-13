@@ -1,0 +1,1838 @@
+{
+  "actual_raw_grype_sha256": "536f8e366cd44d6dcd29c9352e59daa592a1416281cb564a279d07d94e0110f2",
+  "grype": {
+    "descriptor": {
+      "configuration": {
+        "output": [
+          "json"
+        ],
+        "file": "E:\\project\\DeepResearch\\.cache\\release-followup-20261113\\security-minio\\final-native-grype-03\\full-grype.json",
+        "pretty": false,
+        "distro": "",
+        "add-cpes-if-none": false,
+        "output-template-file": "",
+        "check-for-app-update": false,
+        "only-fixed": false,
+        "only-notfixed": false,
+        "ignore-wontfix": "",
+        "platform": "",
+        "search": {
+          "scope": "squashed",
+          "unindexed-archives": false,
+          "indexed-archives": true
+        },
+        "ignore": [
+          {
+            "vulnerability": "",
+            "include-aliases": false,
+            "reason": "",
+            "namespace": "",
+            "fix-state": "",
+            "package": {
+              "name": "kernel-headers",
+              "version": "",
+              "language": "",
+              "type": "rpm",
+              "location": "",
+              "upstream-name": "kernel"
+            },
+            "vex-status": "",
+            "vex-justification": "",
+            "match-type": "exact-indirect-match"
+          },
+          {
+            "vulnerability": "",
+            "include-aliases": false,
+            "reason": "",
+            "namespace": "",
+            "fix-state": "",
+            "package": {
+              "name": "linux(-.*)?-headers-.*",
+              "version": "",
+              "language": "",
+              "type": "deb",
+              "location": "",
+              "upstream-name": "linux.*"
+            },
+            "vex-status": "",
+            "vex-justification": "",
+            "match-type": "exact-indirect-match"
+          },
+          {
+            "vulnerability": "",
+            "include-aliases": false,
+            "reason": "",
+            "namespace": "",
+            "fix-state": "",
+            "package": {
+              "name": "linux-libc-dev",
+              "version": "",
+              "language": "",
+              "type": "deb",
+              "location": "",
+              "upstream-name": "linux"
+            },
+            "vex-status": "",
+            "vex-justification": "",
+            "match-type": "exact-indirect-match"
+          },
+          {
+            "vulnerability": "",
+            "include-aliases": false,
+            "reason": "",
+            "namespace": "",
+            "fix-state": "",
+            "package": {
+              "name": "linux-kbuild-.*",
+              "version": "",
+              "language": "",
+              "type": "deb",
+              "location": "",
+              "upstream-name": "linux.*"
+            },
+            "vex-status": "",
+            "vex-justification": "",
+            "match-type": "exact-indirect-match"
+          }
+        ],
+        "exclude": [],
+        "externalSources": {
+          "enable": false,
+          "maven": {
+            "searchUpstreamBySha1": true,
+            "baseUrl": "https://search.maven.org/solrsearch/select",
+            "rateLimit": 300000000
+          }
+        },
+        "match": {
+          "java": {
+            "using-cpes": false
+          },
+          "jvm": {
+            "using-cpes": true
+          },
+          "dotnet": {
+            "using-cpes": false
+          },
+          "golang": {
+            "using-cpes": false,
+            "always-use-cpe-for-stdlib": false,
+            "allow-main-module-pseudo-version-comparison": false
+          },
+          "javascript": {
+            "using-cpes": false
+          },
+          "python": {
+            "using-cpes": false
+          },
+          "ruby": {
+            "using-cpes": false
+          },
+          "rust": {
+            "using-cpes": false
+          },
+          "hex": {
+            "using-cpes": false
+          },
+          "stock": {
+            "using-cpes": true
+          },
+          "dpkg": {
+            "using-cpes": false,
+            "missing-epoch-strategy": "zero",
+            "use-cpes-for-eol": false
+          },
+          "rpm": {
+            "using-cpes": false,
+            "missing-epoch-strategy": "auto",
+            "use-cpes-for-eol": false
+          }
+        },
+        "fail-on-severity": "",
+        "registry": {
+          "insecure-skip-tls-verify": false,
+          "insecure-use-http": false,
+          "ca-cert": ""
+        },
+        "show-suppressed": false,
+        "include-matcher-suppressions": false,
+        "by-cve": false,
+        "SortBy": {
+          "sort-by": "risk"
+        },
+        "name": "",
+        "default-image-pull-source": "",
+        "from": null,
+        "vex-documents": [],
+        "vex-add": [],
+        "match-upstream-kernel-headers": false,
+        "fix-channel": {
+          "redhat-eus": {
+            "apply": "auto",
+            "versions": ">= 8.0"
+          },
+          "ubuntu-esm": {
+            "apply": "auto",
+            "versions": ""
+          }
+        },
+        "timestamp": true,
+        "alerts": {
+          "enable-eol-distro-warnings": true
+        },
+        "db": {
+          "cache-dir": "E:\\project\\DeepResearch\\.cache\\release-followup-20261113\\security-minio\\grype-own-db\\verified-import-nlbh5iuv",
+          "update-url": "https://grype.anchore.io/databases",
+          "ca-cert": "",
+          "auto-update": false,
+          "validate-by-hash-on-start": true,
+          "validate-age": true,
+          "max-allowed-built-age": 432000000000000,
+          "require-update-check": false,
+          "update-available-timeout": 30000000000,
+          "update-download-timeout": 300000000000,
+          "max-update-check-frequency": 7200000000000
+        },
+        "exp": {},
+        "dev": {
+          "db": {
+            "debug": false
+          }
+        }
+      }
+    }
+  },
+  "sbom": {
+    "schema": {
+      "version": "16.1.11",
+      "url": "https://raw.githubusercontent.com/anchore/syft/main/schema/json/schema-16.1.11.json"
+    },
+    "descriptor": {
+      "name": "syft",
+      "version": "1.55.0",
+      "configuration": {
+        "catalogers": {
+          "requested": {
+            "default": [
+              "image",
+              "file"
+            ]
+          },
+          "used": [
+            "alpm-db-cataloger",
+            "apk-db-cataloger",
+            "apple-app-bundle-cataloger",
+            "binary-classifier-cataloger",
+            "bitnami-cataloger",
+            "cargo-auditable-binary-cataloger",
+            "conan-info-cataloger",
+            "dotnet-deps-binary-cataloger",
+            "dotnet-packages-lock-cataloger",
+            "dpkg-db-cataloger",
+            "elf-binary-package-cataloger",
+            "file-content-cataloger",
+            "file-digest-cataloger",
+            "file-executable-cataloger",
+            "file-metadata-cataloger",
+            "gguf-cataloger",
+            "go-module-binary-cataloger",
+            "graalvm-native-image-cataloger",
+            "homebrew-cataloger",
+            "java-archive-cataloger",
+            "java-jvm-cataloger",
+            "javascript-package-cataloger",
+            "linux-kernel-cataloger",
+            "lua-rock-cataloger",
+            "nix-cataloger",
+            "pe-binary-package-cataloger",
+            "perl-cpan-installed-cataloger",
+            "php-composer-installed-cataloger",
+            "php-interpreter-cataloger",
+            "php-pear-serialized-cataloger",
+            "portage-cataloger",
+            "python-installed-package-cataloger",
+            "r-package-cataloger",
+            "rpm-db-cataloger",
+            "ruby-installed-gemspec-cataloger",
+            "safetensors-cataloger",
+            "snap-cataloger",
+            "wordpress-plugins-cataloger"
+          ]
+        },
+        "search": {
+          "scope": "squashed"
+        }
+      }
+    },
+    "artifacts": [
+      {
+        "name": "aead.dev/mem",
+        "type": "go-module"
+      },
+      {
+        "name": "aead.dev/minisign",
+        "type": "go-module"
+      },
+      {
+        "name": "aead.dev/mtls",
+        "type": "go-module"
+      },
+      {
+        "name": "basesystem",
+        "type": "rpm"
+      },
+      {
+        "name": "bash",
+        "type": "rpm"
+      },
+      {
+        "name": "cel.dev/expr",
+        "type": "go-module"
+      },
+      {
+        "name": "cloud.google.com/go",
+        "type": "go-module"
+      },
+      {
+        "name": "cloud.google.com/go/auth",
+        "type": "go-module"
+      },
+      {
+        "name": "cloud.google.com/go/auth/oauth2adapt",
+        "type": "go-module"
+      },
+      {
+        "name": "cloud.google.com/go/compute/metadata",
+        "type": "go-module"
+      },
+      {
+        "name": "cloud.google.com/go/iam",
+        "type": "go-module"
+      },
+      {
+        "name": "cloud.google.com/go/monitoring",
+        "type": "go-module"
+      },
+      {
+        "name": "cloud.google.com/go/storage",
+        "type": "go-module"
+      },
+      {
+        "name": "coreutils-single",
+        "type": "rpm"
+      },
+      {
+        "name": "curl",
+        "type": "binary"
+      },
+      {
+        "name": "filesystem",
+        "type": "rpm"
+      },
+      {
+        "name": "filippo.io/edwards25519",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/Azure/azure-sdk-for-go/sdk/azcore",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/Azure/azure-sdk-for-go/sdk/azidentity",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/Azure/azure-sdk-for-go/sdk/internal",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/Azure/azure-sdk-for-go/sdk/storage/azblob",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/Azure/go-ntlmssp",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/AzureAD/microsoft-authentication-library-for-go",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/IBM/sarama",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/VividCortex/ewma",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/VividCortex/ewma",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/acarl005/stripansi",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/acarl005/stripansi",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/alecthomas/participle",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/apache/thrift",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/aymanbagabas/go-osc52/v2",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/aymanbagabas/go-osc52/v2",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/beevik/ntp",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/beorn7/perks",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/beorn7/perks",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/buger/jsonparser",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/cespare/xxhash/v2",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/cespare/xxhash/v2",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/charmbracelet/bubbles",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/charmbracelet/bubbles",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/charmbracelet/bubbletea",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/charmbracelet/bubbletea",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/charmbracelet/colorprofile",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/charmbracelet/colorprofile",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/charmbracelet/harmonica",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/charmbracelet/lipgloss",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/charmbracelet/lipgloss",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/charmbracelet/x/ansi",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/charmbracelet/x/ansi",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/charmbracelet/x/cellbuf",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/charmbracelet/x/cellbuf",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/charmbracelet/x/term",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/charmbracelet/x/term",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/cheggaaa/pb",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/cheggaaa/pb",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/clipperhouse/displaywidth",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/clipperhouse/displaywidth",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/clipperhouse/uax29/v2",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/clipperhouse/uax29/v2",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/cncf/xds/go",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/coreos/go-oidc/v3",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/coreos/go-semver",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/coreos/go-semver",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/coreos/go-systemd/v22",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/coreos/go-systemd/v22",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/cosnicolaou/pbzip2",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/davecgh/go-spew",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/dchest/siphash",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/docker/go-units",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/dustin/go-humanize",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/dustin/go-humanize",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/eapache/go-resiliency",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/eapache/go-xerial-snappy",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/eapache/queue",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/eclipse/paho.mqtt.golang",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/elastic/go-elasticsearch/v7",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/envoyproxy/go-control-plane/envoy",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/envoyproxy/protoc-gen-validate",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/fatih/color",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/fatih/color",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/fatih/structs",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/fatih/structs",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/felixge/fgprof",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/felixge/httpsnoop",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/fraugster/parquet-go",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-asn1-ber/asn1-ber",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-jose/go-jose/v4",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-ldap/ldap/v3",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-logr/logr",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-logr/stdr",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-openapi/analysis",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-openapi/errors",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-openapi/jsonpointer",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-openapi/jsonreference",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-openapi/loads",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-openapi/runtime",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-openapi/runtime/server-middleware",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-openapi/spec",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-openapi/strfmt",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-openapi/swag",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-openapi/swag/cmdutils",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-openapi/swag/conv",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-openapi/swag/fileutils",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-openapi/swag/jsonutils",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-openapi/swag/loading",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-openapi/swag/mangling",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-openapi/swag/netutils",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-openapi/swag/pools",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-openapi/swag/stringutils",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-openapi/swag/typeutils",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-openapi/swag/yamlutils",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-openapi/validate",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-sql-driver/mysql",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/go-viper/mapstructure/v2",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/gobwas/httphead",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/gobwas/pool",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/gobwas/ws",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/gogo/protobuf",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/golang-jwt/jwt/v4",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/golang-jwt/jwt/v4",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/golang-jwt/jwt/v5",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/golang/protobuf",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/golang/protobuf",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/golang/snappy",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/gomodule/redigo",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/google/pprof",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/google/s2a-go",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/google/shlex",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/google/shlex",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/google/uuid",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/google/uuid",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/googleapis/enterprise-certificate-proxy",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/googleapis/gax-go/v2",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/gorilla/websocket",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/grafana/regexp",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/grafana/regexp",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/grpc-ecosystem/grpc-gateway/v2",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/grpc-ecosystem/grpc-gateway/v2",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/hashicorp/errwrap",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/hashicorp/errwrap",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/hashicorp/go-multierror",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/hashicorp/go-multierror",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/hashicorp/go-uuid",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/inconshreveable/mousetrap",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/inconshreveable/mousetrap",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/jcmturner/aescts/v2",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/jcmturner/dnsutils/v2",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/jcmturner/gofork",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/jcmturner/gokrb5/v8",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/jcmturner/rpc/v2",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/jedib0t/go-pretty/v6",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/jedib0t/go-pretty/v6",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/jessevdk/go-flags",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/json-iterator/go",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/juju/ratelimit",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/juju/ratelimit",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/klauspost/compress",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/klauspost/compress",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/klauspost/cpuid/v2",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/klauspost/cpuid/v2",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/klauspost/crc32",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/klauspost/crc32",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/klauspost/filepathx",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/klauspost/pgzip",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/klauspost/readahead",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/klauspost/reedsolomon",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/kr/fs",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/kylelemons/godebug",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/lestrrat-go/blackmagic",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/lestrrat-go/blackmagic",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/lestrrat-go/dsig",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/lestrrat-go/dsig",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/lestrrat-go/httpcc",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/lestrrat-go/httpcc",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/lestrrat-go/httprc/v3",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/lestrrat-go/httprc/v3",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/lestrrat-go/jwx/v3",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/lestrrat-go/jwx/v3",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/lestrrat-go/option/v2",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/lestrrat-go/option/v2",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/lib/pq",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/lithammer/shortuuid/v4",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/lucasb-eyer/go-colorful",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/lucasb-eyer/go-colorful",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/mattn/go-colorable",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/mattn/go-colorable",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/mattn/go-ieproxy",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/mattn/go-ieproxy",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/mattn/go-isatty",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/mattn/go-isatty",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/mattn/go-runewidth",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/mattn/go-runewidth",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/matttproud/golang_protobuf_extensions",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/matttproud/golang_protobuf_extensions",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/miekg/dns",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/cli",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/cli",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/colorjson",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/colorjson",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/crc64nvme",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/crc64nvme",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/csvparser",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/dnscache",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/dperf",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/filepath",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/filepath",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/highwayhash",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/kms-go/kes",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/kms-go/kms",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/madmin-go/v3",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/madmin-go/v3",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/md5-simd",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/md5-simd",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/minio",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/minio-go/v7",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/minio-go/v7",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/mux",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/pkg/v3",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/pkg/v3",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/selfupdate",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/simdjson-go",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/sio",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/websocket",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/xxml",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/minio/zipindex",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/mitchellh/go-homedir",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/mitchellh/go-homedir",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/modern-go/concurrent",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/modern-go/reflect2",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/muesli/ansi",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/muesli/ansi",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/muesli/cancelreader",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/muesli/cancelreader",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/muesli/reflow",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/muesli/reflow",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/muesli/termenv",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/muesli/termenv",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/munnerz/goautoneg",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/munnerz/goautoneg",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/nats-io/nats.go",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/nats-io/nkeys",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/nats-io/nuid",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/nats-io/stan.go",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/ncw/directio",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/nsqio/go-nsq",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/oklog/ulid/v2",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/olekukonko/tablewriter",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/olekukonko/tablewriter",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/pgsty/mc",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/pgsty/mc",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/pgsty/silo-console",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/pgsty/silo-pkg/v3",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/pgsty/silo-pkg/v3",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/philhofer/fwd",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/philhofer/fwd",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/pierrec/lz4/v4",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/pkg/browser",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/pkg/errors",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/pkg/sftp",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/pkg/xattr",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/pkg/xattr",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/posener/complete",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/posener/complete",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/prometheus/client_golang",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/prometheus/client_golang",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/prometheus/client_model",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/prometheus/client_model",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/prometheus/common",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/prometheus/common",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/prometheus/procfs",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/prometheus/procfs",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/prometheus/prom2json",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/prometheus/prom2json",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/prometheus/prometheus",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/prometheus/prometheus",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/puzpuzpuz/xsync/v3",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/rabbitmq/amqp091-go",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/rcrowley/go-metrics",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/rivo/uniseg",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/rivo/uniseg",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/rjeczalik/notify",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/rjeczalik/notify",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/rs/cors",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/rs/xid",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/rs/xid",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/safchain/ethtool",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/safchain/ethtool",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/secure-io/sio-go",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/secure-io/sio-go",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/shirou/gopsutil/v3",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/shirou/gopsutil/v3",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/spiffe/go-spiffe/v2",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/tidwall/gjson",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/tidwall/gjson",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/tidwall/match",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/tidwall/match",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/tidwall/pretty",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/tidwall/pretty",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/tinylib/msgp",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/tinylib/msgp",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/tklauser/go-sysconf",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/tklauser/go-sysconf",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/tklauser/numcpus",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/tklauser/numcpus",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/unrolled/secure",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/valyala/bytebufferpool",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/valyala/fastjson",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/valyala/fastjson",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/vbauerster/cupwriter",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/vbauerster/cupwriter",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/vbauerster/mpb/v8",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/vbauerster/mpb/v8",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/xdg/scram",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/xdg/stringprep",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/xo/terminfo",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/xo/terminfo",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/zeebo/xxh3",
+        "type": "go-module"
+      },
+      {
+        "name": "github.com/zeebo/xxh3",
+        "type": "go-module"
+      },
+      {
+        "name": "glibc",
+        "type": "rpm"
+      },
+      {
+        "name": "glibc-common",
+        "type": "rpm"
+      },
+      {
+        "name": "glibc-minimal-langpack",
+        "type": "rpm"
+      },
+      {
+        "name": "go.etcd.io/etcd/api/v3",
+        "type": "go-module"
+      },
+      {
+        "name": "go.etcd.io/etcd/api/v3",
+        "type": "go-module"
+      },
+      {
+        "name": "go.etcd.io/etcd/client/pkg/v3",
+        "type": "go-module"
+      },
+      {
+        "name": "go.etcd.io/etcd/client/pkg/v3",
+        "type": "go-module"
+      },
+      {
+        "name": "go.etcd.io/etcd/client/v3",
+        "type": "go-module"
+      },
+      {
+        "name": "go.etcd.io/etcd/client/v3",
+        "type": "go-module"
+      },
+      {
+        "name": "go.opentelemetry.io/auto/sdk",
+        "type": "go-module"
+      },
+      {
+        "name": "go.opentelemetry.io/contrib/detectors/gcp",
+        "type": "go-module"
+      },
+      {
+        "name": "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc",
+        "type": "go-module"
+      },
+      {
+        "name": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",
+        "type": "go-module"
+      },
+      {
+        "name": "go.opentelemetry.io/otel",
+        "type": "go-module"
+      },
+      {
+        "name": "go.opentelemetry.io/otel/metric",
+        "type": "go-module"
+      },
+      {
+        "name": "go.opentelemetry.io/otel/sdk",
+        "type": "go-module"
+      },
+      {
+        "name": "go.opentelemetry.io/otel/sdk/metric",
+        "type": "go-module"
+      },
+      {
+        "name": "go.opentelemetry.io/otel/trace",
+        "type": "go-module"
+      },
+      {
+        "name": "go.uber.org/atomic",
+        "type": "go-module"
+      },
+      {
+        "name": "go.uber.org/multierr",
+        "type": "go-module"
+      },
+      {
+        "name": "go.uber.org/multierr",
+        "type": "go-module"
+      },
+      {
+        "name": "go.uber.org/zap",
+        "type": "go-module"
+      },
+      {
+        "name": "go.uber.org/zap",
+        "type": "go-module"
+      },
+      {
+        "name": "go.yaml.in/yaml/v3",
+        "type": "go-module"
+      },
+      {
+        "name": "go.yaml.in/yaml/v3",
+        "type": "go-module"
+      },
+      {
+        "name": "goftp.io/server/v2",
+        "type": "go-module"
+      },
+      {
+        "name": "golang.org/x/crypto",
+        "type": "go-module"
+      },
+      {
+        "name": "golang.org/x/crypto",
+        "type": "go-module"
+      },
+      {
+        "name": "golang.org/x/net",
+        "type": "go-module"
+      },
+      {
+        "name": "golang.org/x/net",
+        "type": "go-module"
+      },
+      {
+        "name": "golang.org/x/oauth2",
+        "type": "go-module"
+      },
+      {
+        "name": "golang.org/x/sync",
+        "type": "go-module"
+      },
+      {
+        "name": "golang.org/x/sync",
+        "type": "go-module"
+      },
+      {
+        "name": "golang.org/x/sys",
+        "type": "go-module"
+      },
+      {
+        "name": "golang.org/x/sys",
+        "type": "go-module"
+      },
+      {
+        "name": "golang.org/x/term",
+        "type": "go-module"
+      },
+      {
+        "name": "golang.org/x/term",
+        "type": "go-module"
+      },
+      {
+        "name": "golang.org/x/text",
+        "type": "go-module"
+      },
+      {
+        "name": "golang.org/x/text",
+        "type": "go-module"
+      },
+      {
+        "name": "golang.org/x/time",
+        "type": "go-module"
+      },
+      {
+        "name": "google.golang.org/api",
+        "type": "go-module"
+      },
+      {
+        "name": "google.golang.org/genproto",
+        "type": "go-module"
+      },
+      {
+        "name": "google.golang.org/genproto/googleapis/api",
+        "type": "go-module"
+      },
+      {
+        "name": "google.golang.org/genproto/googleapis/api",
+        "type": "go-module"
+      },
+      {
+        "name": "google.golang.org/genproto/googleapis/rpc",
+        "type": "go-module"
+      },
+      {
+        "name": "google.golang.org/genproto/googleapis/rpc",
+        "type": "go-module"
+      },
+      {
+        "name": "google.golang.org/grpc",
+        "type": "go-module"
+      },
+      {
+        "name": "google.golang.org/grpc",
+        "type": "go-module"
+      },
+      {
+        "name": "google.golang.org/protobuf",
+        "type": "go-module"
+      },
+      {
+        "name": "google.golang.org/protobuf",
+        "type": "go-module"
+      },
+      {
+        "name": "gopkg.in/ini.v1",
+        "type": "go-module"
+      },
+      {
+        "name": "gopkg.in/ini.v1",
+        "type": "go-module"
+      },
+      {
+        "name": "gopkg.in/yaml.v2",
+        "type": "go-module"
+      },
+      {
+        "name": "gopkg.in/yaml.v2",
+        "type": "go-module"
+      },
+      {
+        "name": "gpg-pubkey",
+        "type": "rpm"
+      },
+      {
+        "name": "gpg-pubkey",
+        "type": "rpm"
+      },
+      {
+        "name": "libacl",
+        "type": "rpm"
+      },
+      {
+        "name": "libattr",
+        "type": "rpm"
+      },
+      {
+        "name": "libcap",
+        "type": "rpm"
+      },
+      {
+        "name": "libgcc",
+        "type": "rpm"
+      },
+      {
+        "name": "libselinux",
+        "type": "rpm"
+      },
+      {
+        "name": "libsepol",
+        "type": "rpm"
+      },
+      {
+        "name": "ncurses-base",
+        "type": "rpm"
+      },
+      {
+        "name": "ncurses-libs",
+        "type": "rpm"
+      },
+      {
+        "name": "pcre2",
+        "type": "rpm"
+      },
+      {
+        "name": "pcre2-syntax",
+        "type": "rpm"
+      },
+      {
+        "name": "redhat-release",
+        "type": "rpm"
+      },
+      {
+        "name": "setup",
+        "type": "rpm"
+      },
+      {
+        "name": "stdlib",
+        "type": "go-module"
+      },
+      {
+        "name": "stdlib",
+        "type": "go-module"
+      },
+      {
+        "name": "tzdata",
+        "type": "rpm"
+      }
+    ]
+  }
+}

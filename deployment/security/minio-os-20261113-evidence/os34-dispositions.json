@@ -1,0 +1,3146 @@
+{
+  "schema": "minio-original-os34-dispositions-20261113-v1",
+  "actor": "/root",
+  "binary_redistribution_approved": false,
+  "whole_candidate_approved": false,
+  "scope": "Original 34 LOW/MEDIUM OS tuples only; complete current Go/curl/native gate is separate.",
+  "baseline_rows": 34,
+  "resolution_counts": {
+    "exact_component_not_affected": 13,
+    "verified_source_fix": 4,
+    "signed_vendor_update": 17
+  },
+  "current_os_raw_rows": 17,
+  "current_total_raw_trivy_rows": 24,
+  "candidate_engine": "sha256:743a1870218e8ed4a24c2501480ce8cf041f7b18fa2390e13a206fdf039b2a05",
+  "candidate_portable_config": "sha256:ef21c5e11ca591fd3a40d7ad8cd97cc9dcb93ba24b172cf51cdabab1d6a669c0",
+  "not_zero_vulnerabilities": true,
+  "raw_severity_unchanged": true,
+  "source_fix_and_exclusion_rows_remain_in_raw_scan": true,
+  "original_failure_and_unknown_results_retained": true,
+  "primary_sources": {
+    "original_raw": {
+      "path": "deployment/security/minio-os-20261113-evidence/original-raw-trivy.json.gz",
+      "sha256": "9727fcd5c84982faaed638d74346f28484efab8e9a3f6231ea1c5136d8286597",
+      "source_sha256": "afe25689bb333b3a25b26bdd100207454e0595226eeea0453b40baefbe55060b",
+      "bytes": 108901
+    },
+    "candidate_raw": {
+      "path": "deployment/security/minio-os-20261113-evidence/candidate03-raw-trivy.json.gz",
+      "sha256": "009d53de84e9e1768340935e38dbbd92730fcf6593472e345ad83705bcaa1ece",
+      "source_sha256": "594766d096779f3c6e66b6701e738c9aee08e6200f52e0f2fdde90f7b7b2c9da",
+      "bytes": 99505
+    },
+    "candidate_build": {
+      "path": "deployment/security/minio-os-20261113-evidence/candidate03-build-receipt.json",
+      "sha256": "8ed95dac77ebd42985d5956508bc907c658bd36c5b1e68090a5b45369a3a752d",
+      "source_sha256": "8ed95dac77ebd42985d5956508bc907c658bd36c5b1e68090a5b45369a3a752d",
+      "bytes": 5895
+    },
+    "scope_review": {
+      "path": "deployment/security/minio-os-20261113-evidence/baseline-scope-review.json",
+      "sha256": "180d75b07ff759a4e47bcb74e2b8e27076da5eb6a0f24467b43bfb634b54bc62",
+      "source_sha256": "180d75b07ff759a4e47bcb74e2b8e27076da5eb6a0f24467b43bfb634b54bc62",
+      "bytes": 18968
+    },
+    "scope/baseline-payload-inventory.json": {
+      "path": "deployment/security/minio-os-20261113-evidence/scope/baseline-payload-inventory.json",
+      "sha256": "ea5bcd32b4429f0ba08153e61b8aa153c65f326fbdf309a293208911dd76ea79",
+      "source_sha256": "ea5bcd32b4429f0ba08153e61b8aa153c65f326fbdf309a293208911dd76ea79",
+      "bytes": 528487
+    },
+    "scope/baseline-rpm-package-files-02.json": {
+      "path": "deployment/security/minio-os-20261113-evidence/scope/baseline-rpm-package-files-02.json",
+      "sha256": "1408298cfc84f32964f9777b3c7398396feb599c8bfde804aabd950e3af372b2",
+      "source_sha256": "1408298cfc84f32964f9777b3c7398396feb599c8bfde804aabd950e3af372b2",
+      "bytes": 244698
+    },
+    "scope/source-selection-receipt-02.json": {
+      "path": "deployment/security/minio-os-20261113-evidence/scope/source-selection-receipt-02.json",
+      "sha256": "a294008cca140531131721ac83ea3ae8df0ff5dd1745d3821c36d86de0550825",
+      "source_sha256": "a294008cca140531131721ac83ea3ae8df0ff5dd1745d3821c36d86de0550825",
+      "bytes": 4594
+    },
+    "scope/exact-old-coreutils-review.json": {
+      "path": "deployment/security/minio-os-20261113-evidence/scope/exact-old-coreutils-review.json",
+      "sha256": "e46ce7ffc9ee5173125a2db1dafcb98f530ca503ef92a11f93aab482d3946c5a",
+      "source_sha256": "e46ce7ffc9ee5173125a2db1dafcb98f530ca503ef92a11f93aab482d3946c5a",
+      "bytes": 4346
+    },
+    "scope/ncurses-fix-20230424.patch.gz": {
+      "path": "deployment/security/minio-os-20261113-evidence/scope/ncurses-fix-20230424.patch.gz",
+      "sha256": "ba00a9ca08f19c6d3f93832924ace31a3da090c1d73f015708eafb0b1c3c6181",
+      "source_sha256": "ba00a9ca08f19c6d3f93832924ace31a3da090c1d73f015708eafb0b1c3c6181",
+      "bytes": 4488
+    },
+    "scope/pcre2-94e1c.patch": {
+      "path": "deployment/security/minio-os-20261113-evidence/scope/pcre2-94e1c.patch",
+      "sha256": "19b6e97fe60d4762806e8ad0d5acf1603ab1c4c1020ce981d796574af51cab0f",
+      "source_sha256": "19b6e97fe60d4762806e8ad0d5acf1603ab1c4c1020ce981d796574af51cab0f",
+      "bytes": 1903
+    },
+    "scope/glibc-c580.patch": {
+      "path": "deployment/security/minio-os-20261113-evidence/scope/glibc-c580.patch",
+      "sha256": "a6bf372675d602315ccb70aeb0d6160241b42ed28cecf3beefeb7b0ba44fd4c7",
+      "source_sha256": "a6bf372675d602315ccb70aeb0d6160241b42ed28cecf3beefeb7b0ba44fd4c7",
+      "bytes": 8153
+    },
+    "scope/glibc-old-big5hkscs.c": {
+      "path": "deployment/security/minio-os-20261113-evidence/scope/glibc-old-big5hkscs.c",
+      "sha256": "1c090a09a7879995842b166b865f00e6ed6c0fd61eae209df47d01108e6d7efa",
+      "source_sha256": "1c090a09a7879995842b166b865f00e6ed6c0fd61eae209df47d01108e6d7efa",
+      "bytes": 1327493
+    },
+    "scope/glibc-old-gconv-modules-extra.conf": {
+      "path": "deployment/security/minio-os-20261113-evidence/scope/glibc-old-gconv-modules-extra.conf",
+      "sha256": "f8238aa5945b0f9524fff7610c9eb3afe879f73dfdf8bcca49659865ee58e5b1",
+      "source_sha256": "f8238aa5945b0f9524fff7610c9eb3afe879f73dfdf8bcca49659865ee58e5b1",
+      "bytes": 53974
+    },
+    "scope/ncurses-old-parse_entry.c": {
+      "path": "deployment/security/minio-os-20261113-evidence/scope/ncurses-old-parse_entry.c",
+      "sha256": "a9a619d78aca2cfb08f499b22d52d756c5e30e0c3e5f765e6776970bcdac1444",
+      "source_sha256": "a9a619d78aca2cfb08f499b22d52d756c5e30e0c3e5f765e6776970bcdac1444",
+      "bytes": 33146
+    },
+    "scope/ncurses-old-alloc_entry.c": {
+      "path": "deployment/security/minio-os-20261113-evidence/scope/ncurses-old-alloc_entry.c",
+      "sha256": "90ad24ae421923439cb6f54a688e8c141c837cd659d972f18ab0296d4cbc42e5",
+      "source_sha256": "90ad24ae421923439cb6f54a688e8c141c837cd659d972f18ab0296d4cbc42e5",
+      "bytes": 9112
+    },
+    "build/rpm-signatures.txt": {
+      "path": "deployment/security/minio-os-20261113-evidence/build/rpm-signatures.txt",
+      "sha256": "8fb853acfb5ff2543abeee9458d1aaa3e4dde16de5d0e7669af7a4dc3849c4d5",
+      "source_sha256": "8fb853acfb5ff2543abeee9458d1aaa3e4dde16de5d0e7669af7a4dc3849c4d5",
+      "bytes": 449
+    },
+    "build/signed-update.txt": {
+      "path": "deployment/security/minio-os-20261113-evidence/build/signed-update.txt",
+      "sha256": "a9830f7f94ebc2ad8470be934a650ef2ac53249a772d186c45bf001fa475c9ee",
+      "source_sha256": "a9830f7f94ebc2ad8470be934a650ef2ac53249a772d186c45bf001fa475c9ee",
+      "bytes": 3148
+    },
+    "build/before-packages.txt": {
+      "path": "deployment/security/minio-os-20261113-evidence/build/before-packages.txt",
+      "sha256": "149aa1b6f44d2a1f2014072086b1304fd4de3b0a5380dd972b14acde03eb75d0",
+      "source_sha256": "149aa1b6f44d2a1f2014072086b1304fd4de3b0a5380dd972b14acde03eb75d0",
+      "bytes": 700
+    },
+    "build/after-packages.txt": {
+      "path": "deployment/security/minio-os-20261113-evidence/build/after-packages.txt",
+      "sha256": "0e5f157553ee10e964d398f0e655fbd35c0a3ef0af498fa82f3b708f8eae95bd",
+      "source_sha256": "0e5f157553ee10e964d398f0e655fbd35c0a3ef0af498fa82f3b708f8eae95bd",
+      "bytes": 702
+    },
+    "build/glibc/language-fix-apply.txt": {
+      "path": "deployment/security/minio-os-20261113-evidence/build/glibc/language-fix-apply.txt",
+      "sha256": "4edd01240b5759f904140457fba8d4a3406dcbc210218b11f7a247df1e1b8a03",
+      "source_sha256": "4edd01240b5759f904140457fba8d4a3406dcbc210218b11f7a247df1e1b8a03",
+      "bytes": 32
+    },
+    "build/glibc/libc-normal-intl-tests.sum": {
+      "path": "deployment/security/minio-os-20261113-evidence/build/glibc/libc-normal-intl-tests.sum",
+      "sha256": "db310fb24404f5df7633050ed721b74767fb138efc37b6e66d8d0203dd506c4e",
+      "source_sha256": "db310fb24404f5df7633050ed721b74767fb138efc37b6e66d8d0203dd506c4e",
+      "bytes": 437
+    },
+    "build/glibc/libc-normal-intl-check.txt": {
+      "path": "deployment/security/minio-os-20261113-evidence/build/glibc/libc-normal-intl-check.txt",
+      "sha256": "c8a9afeacdd6a851ad7369f8a27ae210a66d624be86a12667e6cda972cb970d7",
+      "source_sha256": "c8a9afeacdd6a851ad7369f8a27ae210a66d624be86a12667e6cda972cb970d7",
+      "bytes": 447827
+    },
+    "abi": {
+      "path": "deployment/security/minio-os-20261113-evidence/abi-full-symbol-delta.json",
+      "sha256": "1235932a6d4f91eb6327bffb95e24aa6fa0a96019dfb0c9a87a3fce6686fa3bf",
+      "source_sha256": "1235932a6d4f91eb6327bffb95e24aa6fa0a96019dfb0c9a87a3fce6686fa3bf",
+      "bytes": 264
+    },
+    "primary/CVE-2026-56391": {
+      "path": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-56391.json.gz",
+      "sha256": "c682a2945dfe0729b240891e259f05b6ae41330cda03ea0346e94cf796279511",
+      "source_sha256": "9f9db11db34f428202aefcd8fe3787568e7d61626f9941d557daa46bd361e75c",
+      "bytes": 1953
+    },
+    "primary/CVE-2026-122054": {
+      "path": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-122054.json.gz",
+      "sha256": "7e0fb18307f072c2da97418df6016514fbc85d55a3004ee400ac9e9913ea66f9",
+      "source_sha256": "6d327bed90353328e6d2a09f34aca489690e2be147464e789f55343c3ab394bb",
+      "bytes": 1513
+    },
+    "primary/CVE-2026-84243": {
+      "path": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-84243.json.gz",
+      "sha256": "1e9e3331eaef7204f45feb6aa88d27009a1ed268a0767bf0ad89e5391f012265",
+      "source_sha256": "a1c8897b6ba039c59f3398f31cd3b4f554b898c454854abe14b29d328356d49d",
+      "bytes": 2568
+    },
+    "primary/CVE-2026-8674": {
+      "path": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-8674.json.gz",
+      "sha256": "4ac9426e7e7a37110db8daa1f5dba9ee9f63fd5064a2dd2704570957bf1aa1ea",
+      "source_sha256": "1caa95e2def4ce39bf21074b8f8a71d0ec0d32055aaca4c7765ea166e73e9403",
+      "bytes": 2725
+    },
+    "primary/CVE-2026-86805": {
+      "path": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-86805.json.gz",
+      "sha256": "bbcbc992c569eb45ec7d580693104f7f61340e32a9fc0aed35f7d9f2395896ec",
+      "source_sha256": "47a38e28056ff7b131a7b424c0948e6f0871bfcac0b51a7061b5747029e2a2b6",
+      "bytes": 2189
+    },
+    "primary/CVE-2026-89092": {
+      "path": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-89092.json.gz",
+      "sha256": "b1f56f787da581fd735cd1664724d82dcc78823d973a5d8303a13ac713287407",
+      "source_sha256": "1816bfad556ac5c232b03fed1d37408a23f3aa19f10e5f2b691ffa5733bbbea4",
+      "bytes": 2578
+    },
+    "primary/CVE-2026-95818": {
+      "path": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-95818.json.gz",
+      "sha256": "16882c27617eab3c455dca01e8c7dffd1800036b2d424576c0e42d9fbad7aa67",
+      "source_sha256": "10a7d2fc893978cceaf5191834329b8dceb200d650a4ba9a20600996d23fcb3f",
+      "bytes": 1920
+    },
+    "primary/CVE-2026-97399": {
+      "path": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-97399.json.gz",
+      "sha256": "a87048ab9241664bbd53496261320d17c0c306260e56b27fdeb00866a884f769",
+      "source_sha256": "bd8a53de1b71671935f14d178018127ecaa32b2db1ce1b3780710d0d8099e7d7",
+      "bytes": 1817
+    },
+    "primary/CVE-2026-102010": {
+      "path": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-102010.json.gz",
+      "sha256": "3da581052e12d9cf7a0fa763cc82a69f74ee697699b6a06f07ecbc3f4452d548",
+      "source_sha256": "b414dfc39af35e5938c5519257cbbf3597e05b33dbed36598b5265e3008c1b06",
+      "bytes": 2449
+    },
+    "primary/CVE-2026-114690": {
+      "path": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-114690.json.gz",
+      "sha256": "4f82c12adb4c2f0d66fc962819cb017731162e80181b568ec0591baf8b50704a",
+      "source_sha256": "5e25603fe8c16c76e5452fe47e42c64192e980da62fd05120866ae8950ac1c5e",
+      "bytes": 1891
+    },
+    "primary/CVE-2026-114691": {
+      "path": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-114691.json.gz",
+      "sha256": "c14daaf782e95d5b45b25fa0f2b513559a80dc2f2b1e41d2dd76f8ca44435aa8",
+      "source_sha256": "2763fc8eb21260ddae61e3df95cd0b6b271670de3160971d9c0940f36589f25b",
+      "bytes": 1954
+    },
+    "primary/CVE-2026-125709": {
+      "path": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-125709.json.gz",
+      "sha256": "ffdae33a7f0e54a80596951a22be4c554d699f3d584414bdeda9d7c371088631",
+      "source_sha256": "7ec5d6bbff3cce4ef39e303549bbc22533e8aad6e7d117f668d6b6a4ce6672ed",
+      "bytes": 1293
+    },
+    "primary/CVE-2026-95619": {
+      "path": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-95619.json.gz",
+      "sha256": "0f746393a9f380ae46278d5fd9710bb0ccfdcf9945d754ebe64c390d817095fc",
+      "source_sha256": "85177007813c22e3e06df9e4f774ba68b744aab67e6a63c94f7d22916b00658e",
+      "bytes": 1623
+    },
+    "primary/CVE-2021-46195": {
+      "path": "deployment/security/minio-os-20261113-evidence/primary/CVE-2021-46195.json.gz",
+      "sha256": "e6a509ccaff55902235c3b02b001147403a1be61b81279f93f28698cc78949b2",
+      "source_sha256": "48ca070b4669eef85725f23ff4d05bc21084d91e8b1afacfea109a5afdc0fa43",
+      "bytes": 1423
+    },
+    "primary/CVE-2022-27943": {
+      "path": "deployment/security/minio-os-20261113-evidence/primary/CVE-2022-27943.json.gz",
+      "sha256": "46dc2cebc4ec5c27e02670c331ab49f179c3a0e7a31bdec9ca401b519bb88bba",
+      "source_sha256": "8a0e15cc0404d2ab1838b1a4ba9ec26c6a05207b2216799357c04f42adb3203e",
+      "bytes": 1612
+    },
+    "primary/CVE-2026-115456": {
+      "path": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-115456.json.gz",
+      "sha256": "686ceebb6617426d1064a06e2f69fb06cb7284061b6147183485826c5558870c",
+      "source_sha256": "d37c25bb17a6409e8dc2ee2d254d63ffc79afcb665088cc9d78c027244ba6d8a",
+      "bytes": 1855
+    },
+    "primary/CVE-2023-50495": {
+      "path": "deployment/security/minio-os-20261113-evidence/primary/CVE-2023-50495.json.gz",
+      "sha256": "ca4138ab86252fb467f7a514c84f7d58d8e2223480efa09955d52b0150b41222",
+      "source_sha256": "96d87b361ed7446cd872b7c54d57238084cd827d49b20b1c406890c473b150ce",
+      "bytes": 1328
+    },
+    "primary/CVE-2022-41409": {
+      "path": "deployment/security/minio-os-20261113-evidence/primary/CVE-2022-41409.json.gz",
+      "sha256": "d5237fc384eb25fe0a0faf7c3f00b4224be5b6bf68e37fe29b1272f8211ed889",
+      "source_sha256": "c63062a574d0a7bba8068ffafcf482b29db931eafb32799c12bbdc641b3ee993",
+      "bytes": 1599
+    }
+  },
+  "dispositions": [
+    {
+      "vulnerability_id": "CVE-2026-56391",
+      "package": "coreutils-single",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-56391",
+        "PkgID": "coreutils-single@8.32-41.el9_8.1.x86_64",
+        "PkgName": "coreutils-single",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/coreutils-single@8.32-41.el9_8.1?arch=x86_64&distro=redhat-9.8",
+          "UID": "de64f6ee359bf1ef"
+        },
+        "InstalledVersion": "8.32-41.el9_8.1",
+        "Status": "affected",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-56391",
+        "Fingerprint": "sha256:7a0e4fcb52f09aec5fe0f116e47937081ba70802de04ea917a18eacc0ef37ccc",
+        "Title": "coreutils: GNU coreutils uniq: Denial of Service and information disclosure via out-of-bounds read with multibyte input",
+        "Description": "GNU coreutils uniq is vulnerable to an out‑of‑bounds read due to incorrect handling of multibyte input when the -w (--check-chars) option is used. The find_field() function miscalculates the byte length of characters by repeatedly processing a fixed pointer instead of advancing through the input, resulting in an inflated length value. \nThis incorrect length is later used in a memcmp operation, causing reads beyond the allocated buffer when processing crafted multibyte input.\n\nWhen running GNU coreutils uniq with attacker-provided arguments, this behavior leads to a crash and potential adjacent heap memory exposure.\n\n\nThis issue has been fixed in the commit d64e35a8a4c0e4608321433e0d84d917e4e36371.",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-125"
+        ],
+        "VendorSeverity": {
+          "alma": 2,
+          "julia": 2,
+          "nvd": 2,
+          "oracle-oval": 2,
+          "redhat": 2,
+          "rocky": 2,
+          "ubuntu": 2
+        },
+        "CVSS": {
+          "julia": {
+            "V40Vector": "CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:A/VC:L/VI:N/VA:L/SC:N/SI:N/SA:N",
+            "V40Score": 4.6
+          },
+          "nvd": {
+            "V3Vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:H",
+            "V3Score": 6.1
+          },
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:H",
+            "V3Score": 6.1
+          }
+        },
+        "References": [
+          "https://access.redhat.com/errata/RHSA-2026:67886",
+          "https://access.redhat.com/security/cve/CVE-2026-56391",
+          "https://bugzilla.redhat.com/2506691",
+          "https://bugzilla.redhat.com/2506694",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2506691",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2506694",
+          "https://cert.pl/en/posts/2026/07/CVE-2026-56391",
+          "https://creativecommons.org/licenses/by/4.0/",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-56391",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-56392",
+          "https://errata.almalinux.org/10/ALSA-2026-67886.html",
+          "https://errata.rockylinux.org/RLSA-2026:67886",
+          "https://git.savannah.gnu.org/cgit/coreutils.git",
+          "https://git.savannah.gnu.org/cgit/coreutils.git/",
+          "https://git.savannah.gnu.org/cgit/coreutils.git/commit/?id=d64e35a8a4c0e4608321433e0d84d917e4e36371",
+          "https://github.com/advisories/GHSA-7xvj-m9x7-qgxq",
+          "https://linux.oracle.com/cve/CVE-2026-56391.html",
+          "https://linux.oracle.com/errata/ELSA-2026-67886.html",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-56391",
+          "https://ubuntu.com/security/notices/USN-8697-1",
+          "https://www.cve.org/CVERecord?id=CVE-2026-56391",
+          "https://www.openwall.com/lists/oss-security/2026/07/25/2"
+        ],
+        "PublishedDate": "2026-07-24T09:16:25.003Z",
+        "LastModifiedDate": "2026-10-24T13:10:00.147Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-56391.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-56391.json.gz",
+      "official_source_sha256": "9f9db11db34f428202aefcd8fe3787568e7d61626f9941d557daa46bd361e75c",
+      "current_raw_finding_retained": true,
+      "resolution": "exact_component_not_affected",
+      "rationale": "Upstream d64e35a fixes the coreutils-9.5 mcel_scan pointer-advance implementation. Actual old 8.32-41 source plus every vendor patch touching uniq were independently inspected: only i18n patch applies, it advances a bounded pos for skips and leaves -w in length-clipped different/memcmp; no defective mcel_scan/ep-length expansion implementation. Old i18n differs overall from newer 43 but exact src/uniq.c patch body is independently equal. Actual coreutils ELF/dispatch hashes match original x86_64 RPM.",
+      "scope_status": "SUPPORTED_DIFFERENT_IMPLEMENTATION_BASELINE",
+      "scope_evidence": "deployment/security/minio-os-20261113-evidence/baseline-scope-review.json",
+      "current_installed_version": "8.32-41.el9_8.1",
+      "source_architecture_boundary": "Signed source RPM query reports aarch64. Its NEVR/source archive and generic uniq vendor source match the actual x86_64 installed package SOURCERPM name, with no architecture condition on this patch; this is source-scope corroboration, not a cryptographic reproducible-build claim that this particular SRPM blob produced the old x86_64 binary."
+    },
+    {
+      "vulnerability_id": "CVE-2026-122054",
+      "package": "glibc",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-122054",
+        "PkgID": "glibc@2.34-283.el9_8.x86_64",
+        "PkgName": "glibc",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/glibc@2.34-283.el9_8?arch=x86_64&distro=redhat-9.8",
+          "UID": "6c68af857b0f5d41"
+        },
+        "InstalledVersion": "2.34-283.el9_8",
+        "Status": "affected",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-122054",
+        "Fingerprint": "sha256:32837ea8359a5d9c8cbde3f2bc18e311d7fd645782e3eaa9ffe37785dd5bb78c",
+        "Title": "glibc: glibc: Denial of Service via crafted BIG-HKSCS input conversion",
+        "Description": "Converting crafted BIG-HKSCS input to UCS-4 or the internal wide character encoding, for example with iconv, in the GNU C Library version 2.18 through 2.31 may result in the converter making no progress, causing the calling application to hang.",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-835"
+        ],
+        "VendorSeverity": {
+          "redhat": 2
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H",
+            "V3Score": 5.9
+          }
+        },
+        "References": [
+          "http://www.openwall.com/lists/oss-security/2026/11/04/10",
+          "https://access.redhat.com/security/cve/CVE-2026-122054",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-122054",
+          "https://sourceware.org/bugzilla/show_bug.cgi?id=25734",
+          "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=advisories/GLIBC-SA-2026-0026",
+          "https://www.cve.org/CVERecord?id=CVE-2026-122054"
+        ],
+        "PublishedDate": "2026-11-04T18:17:43.253Z",
+        "LastModifiedDate": "2026-11-09T22:18:33.413Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-122054.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-122054.json.gz",
+      "official_source_sha256": "6d327bed90353328e6d2a09f34aca489690e2be147464e789f55343c3ab394bb",
+      "current_raw_finding_retained": true,
+      "resolution": "exact_component_not_affected",
+      "rationale": "Official fault is the BIG5-HKSCS gconv implementation. Exact old 2.34-283 SRPM source maps it to BIG5HKSCS.so in gconv-modules-extra.conf. Complete actual payload contains only seven named other gconv ELF modules; BIG5HKSCS implementation and extra configuration are absent. Exact old source also includes the c580 pending-character state reset, but this record does not infer every binary is fixed from version alone.",
+      "scope_status": "SUPPORTED_COMPONENT_EXCLUSION_BASELINE",
+      "scope_evidence": "deployment/security/minio-os-20261113-evidence/baseline-scope-review.json",
+      "current_installed_version": "2.34-290.el9_9"
+    },
+    {
+      "vulnerability_id": "CVE-2026-84243",
+      "package": "glibc",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-84243",
+        "PkgID": "glibc@2.34-283.el9_8.x86_64",
+        "PkgName": "glibc",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/glibc@2.34-283.el9_8?arch=x86_64&distro=redhat-9.8",
+          "UID": "6c68af857b0f5d41"
+        },
+        "InstalledVersion": "2.34-283.el9_8",
+        "Status": "affected",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-84243",
+        "Fingerprint": "sha256:e3f993d2afa2caef7fe69c8a875f29887681cc8d2d542821bac31df00635bf58",
+        "Title": "glibc: glibc: Arbitrary code execution via directory traversal in LANGUAGE environment variable",
+        "Description": "The gettext family of functions in the GNU C Library version 2.0 and later accept LANGUAGE environment variable entries that contain '/' or that are equal to \"..\", unless the program is setuid or setgid (AT_SECURE).  An attacker who can set LANGUAGE in the environment of a program that uses gettext can make it load a message catalog (.mo file) from an arbitrary location in the file system.  A crafted .mo file can crash the program through out-of-range offsets, or supply translations whose format directives do not match the arguments passed by the program.  That causes undefined behaviour in the printf family of functions and may allow arbitrary code execution with the privileges of the program.  The safety of message catalogs relies on them being installed in trusted, read-only locations, and the directory traversal bypasses this.\n\nThe fix for CVE-2014-0475 rejects \"..\" path components in locale names passed to setlocale or taken from the LC_ALL, LC_* and LANG environment variables.  gettext reads LANGUAGE directly and appends each colon-separated entry to the message catalog directory, so that fix did not cover LANGUAGE.\n\nLANGUAGE is only used when the LC_MESSAGES locale is not \"C\", \"C.<encoding>\" or \"POSIX\", so the attacker must also be able to select another installed locale, for example through LANG or LC_ALL.  Exploitation also requires that the attacker can place the crafted file in a location readable by the target program, and that the environment crosses a trust boundary without the program running as AT_SECURE.  An example is an SSH server that accepts LANGUAGE and LANG from clients through the AcceptEnv directive and restricts an account to a forced command; the attacker may use this to escape the restriction.",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-22"
+        ],
+        "VendorSeverity": {
+          "redhat": 2
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H",
+            "V3Score": 7
+          }
+        },
+        "References": [
+          "https://access.redhat.com/security/cve/CVE-2026-84243",
+          "https://inbox.sourceware.org/libc-alpha/20261012112453.47383-1-avinal.xlvii@gmail.com",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-84243",
+          "https://sourceware.org/bugzilla/show_bug.cgi?id=17142",
+          "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=advisories/GLIBC-SA-2026-0025",
+          "https://www.cve.org/CVERecord?id=CVE-2026-84243"
+        ],
+        "PublishedDate": "2026-10-30T18:18:13.65Z",
+        "LastModifiedDate": "2026-10-31T04:18:21.89Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-84243.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-84243.json.gz",
+      "official_source_sha256": "a1c8897b6ba039c59f3398f31cd3b4f554b898c454854abe14b29d328356d49d",
+      "current_raw_finding_retained": true,
+      "resolution": "verified_source_fix",
+      "rationale": "The signed vendor glibc source is rebuilt with the LANGUAGE path-component exclusion in intl/dcigettext.c. The actual libc and loader are replaced; ordinary intl tests and complete exported ABI comparison are retained. Package metadata stays vendor-versioned, so the raw scanner row remains.",
+      "patch": "deployment/security/minio-os-20261113/patches/glibc-LANGUAGE.patch",
+      "patch_sha256": "795bf9c17379d1e22266a471668724c19c2931171410b4c20568bcfac39a3513",
+      "actual_native_sha256": {
+        "usr/lib64/libc.so.6": "82e9dc7fad1051fbea6d8c35d2683aa00f2c6eb7c8d63d1098b9b5366592c3ad",
+        "usr/lib64/ld-linux-x86-64.so.2": "950e08c9ae646e5d7f9bb3163d83e5ae9df58dd0eabb5bcf26dda951257606ac"
+      },
+      "current_installed_version": "2.34-290.el9_9",
+      "exploit_payload_executed": false
+    },
+    {
+      "vulnerability_id": "CVE-2026-8674",
+      "package": "glibc",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-8674",
+        "VendorIDs": [
+          "RHSA-2026:95618"
+        ],
+        "PkgID": "glibc@2.34-283.el9_8.x86_64",
+        "PkgName": "glibc",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/glibc@2.34-283.el9_8?arch=x86_64&distro=redhat-9.8",
+          "UID": "6c68af857b0f5d41"
+        },
+        "InstalledVersion": "2.34-283.el9_8",
+        "FixedVersion": "2.34-284.el9_8.4",
+        "Status": "fixed",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-8674",
+        "Fingerprint": "sha256:b567a0506cf6e251f075f65b6196a937810c492e51ac271c9c797a4f53f295a0",
+        "Title": "glibc: glibc DNS stub resolver: Denial of Service via long search domain in configuration",
+        "Description": "Initializing the DNS stub resolver from an /etc/resolv.conf file, or a LOCALDOMAIN environment variable, whose search list contains a domain of roughly 200 characters or more in the GNU C Library version 2.26 to 2.44 results in an assertion failure which aborts the process.\n\nThe resolver truncates the search list when copying it into the fixed-size _res.defdname buffer, then asserts that the copy is consistent with the full configuration.  The consistency check compared against the wrong size and did not handle a first entry that does not fit, so a correctly truncated list failed the assertion.  Any process that resolves names through the library is affected, including long-running processes that reload /etc/resolv.conf on the next query after it changes.  Search domains are commonly written to /etc/resolv.conf from data received over DHCP or from a VPN server, so an attacker on the local network may be able to trigger this without privileges on the target system, subject to validation by the network configuration software.",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-617"
+        ],
+        "VendorSeverity": {
+          "alma": 2,
+          "oracle-oval": 2,
+          "redhat": 2,
+          "rocky": 2
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H",
+            "V3Score": 5.3
+          }
+        },
+        "References": [
+          "http://www.openwall.com/lists/oss-security/2026/09/17/4",
+          "https://access.redhat.com/errata/RHSA-2026:95618",
+          "https://access.redhat.com/errata/RHSA-2026:96087",
+          "https://access.redhat.com/security/cve/CVE-2026-8674",
+          "https://bugzilla.redhat.com/2531725",
+          "https://bugzilla.redhat.com/2536382",
+          "https://bugzilla.redhat.com/2538209",
+          "https://bugzilla.redhat.com/2538306",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2531725",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2536382",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538209",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538306",
+          "https://creativecommons.org/licenses/by/4.0/",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-8674",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-86805",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-89092",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-95818",
+          "https://errata.almalinux.org/8/ALSA-2026-96087.html",
+          "https://errata.rockylinux.org/RLSA-2026:95618",
+          "https://joshua.hu/fuzzing-glibc-libresolv",
+          "https://linux.oracle.com/cve/CVE-2026-8674.html",
+          "https://linux.oracle.com/errata/ELSA-2026-96087.html",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-8674",
+          "https://sourceware.org/bugzilla/show_bug.cgi?id=31026",
+          "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=advisories/GLIBC-SA-2026-0021",
+          "https://sourceware.org/git/?p=glibc.git;a=commit;h=506ea57086bfb9ce3daff1c14246a1cb532aba0a",
+          "https://www.cve.org/CVERecord?id=CVE-2026-8674"
+        ],
+        "PublishedDate": "2026-09-17T17:16:53.22Z",
+        "LastModifiedDate": "2026-09-18T18:17:47.257Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-8674.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-8674.json.gz",
+      "official_source_sha256": "1caa95e2def4ce39bf21074b8f8a71d0ec0d32055aaca4c7765ea166e73e9403",
+      "current_raw_finding_retained": false,
+      "resolution": "signed_vendor_update",
+      "current_installed_version": "2.34-290.el9_9",
+      "official_rhel9_fixed_releases": [
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        }
+      ],
+      "signed_rpm": "glibc-2.34-290.el9_9.x86_64.rpm",
+      "rationale": "Installed the complete signed Red Hat package update. Signature verification, actual RPM inventory, vendor fixed-release records and the complete current raw scan are bound together; this exact original CVE/package tuple is absent in the new scan. No raw rows or severity values were filtered or rewritten."
+    },
+    {
+      "vulnerability_id": "CVE-2026-86805",
+      "package": "glibc",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-86805",
+        "VendorIDs": [
+          "RHSA-2026:95618"
+        ],
+        "PkgID": "glibc@2.34-283.el9_8.x86_64",
+        "PkgName": "glibc",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/glibc@2.34-283.el9_8?arch=x86_64&distro=redhat-9.8",
+          "UID": "6c68af857b0f5d41"
+        },
+        "InstalledVersion": "2.34-283.el9_8",
+        "FixedVersion": "2.34-284.el9_8.4",
+        "Status": "fixed",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-86805",
+        "Fingerprint": "sha256:6aa1036255d2a2507c4c095242393ae8c24ac8da5cd6c45cc4cc78b5b379e335",
+        "Title": "glibc: glibc: Privilege escalation and arbitrary code execution via TOCTOU race condition in dynamic loader",
+        "Description": "A time-of-check to time-of-use (TOCTOU) race condition in the dynamic loader (ld.so) of the GNU C Library (glibc) versions 2.14 through 2.44 allows a local attacker to escalate privileges. When expanding $ORIGIN in DT_RPATH for setuid/setgid (AT_SECURE) programs, glibc validates the lexically normalized search path against the trusted directories but then opens the raw, un-normalized path. On systems where the Linux fs.protected_hardlinks sysctl is disabled, a local attacker who hard-links such a program into an attacker-controlled directory and wins a race to replace an intermediate path component with a symbolic link can direct the loader outside the trusted directory, causing it to load an attacker-controlled shared object and execute arbitrary code with the elevated privileges of the program.\n\nExploitation requires an installed setuid or setgid binary whose DT_RPATH uses $ORIGIN followed by \"..\" traversal that normalizes into a trusted directory, and the ability to hard-link that binary and win the race by swapping a path component for a symbolic link. Major Linux-based OS distributions ship with fs.protected_hardlinks enabled by default and mitigate the vulnerability.",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-367"
+        ],
+        "VendorSeverity": {
+          "alma": 2,
+          "amazon": 3,
+          "oracle-oval": 2,
+          "redhat": 2,
+          "rocky": 2
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H",
+            "V3Score": 7
+          }
+        },
+        "References": [
+          "https://access.redhat.com/errata/RHSA-2026:95618",
+          "https://access.redhat.com/errata/RHSA-2026:96087",
+          "https://access.redhat.com/security/cve/CVE-2026-86805",
+          "https://bugzilla.redhat.com/2531725",
+          "https://bugzilla.redhat.com/2536382",
+          "https://bugzilla.redhat.com/2538209",
+          "https://bugzilla.redhat.com/2538306",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2531725",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2536382",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538209",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538306",
+          "https://creativecommons.org/licenses/by/4.0/",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-8674",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-86805",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-89092",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-95818",
+          "https://errata.almalinux.org/8/ALSA-2026-96087.html",
+          "https://errata.rockylinux.org/RLSA-2026:95618",
+          "https://linux.oracle.com/cve/CVE-2026-86805.html",
+          "https://linux.oracle.com/errata/ELSA-2026-96087.html",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-86805",
+          "https://sourceware.org/bugzilla/show_bug.cgi?id=34360",
+          "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=advisories/GLIBC-SA-2026-0022",
+          "https://www.cve.org/CVERecord?id=CVE-2026-86805"
+        ],
+        "PublishedDate": "2026-09-22T16:18:06.23Z",
+        "LastModifiedDate": "2026-09-23T04:17:57.137Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-86805.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-86805.json.gz",
+      "official_source_sha256": "47a38e28056ff7b131a7b424c0948e6f0871bfcac0b51a7061b5747029e2a2b6",
+      "current_raw_finding_retained": false,
+      "resolution": "signed_vendor_update",
+      "current_installed_version": "2.34-290.el9_9",
+      "official_rhel9_fixed_releases": [
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98512",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-290.el9_9"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98512",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-290.el9_9"
+        }
+      ],
+      "signed_rpm": "glibc-2.34-290.el9_9.x86_64.rpm",
+      "rationale": "Installed the complete signed Red Hat package update. Signature verification, actual RPM inventory, vendor fixed-release records and the complete current raw scan are bound together; this exact original CVE/package tuple is absent in the new scan. No raw rows or severity values were filtered or rewritten."
+    },
+    {
+      "vulnerability_id": "CVE-2026-89092",
+      "package": "glibc",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-89092",
+        "VendorIDs": [
+          "RHSA-2026:95618"
+        ],
+        "PkgID": "glibc@2.34-283.el9_8.x86_64",
+        "PkgName": "glibc",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/glibc@2.34-283.el9_8?arch=x86_64&distro=redhat-9.8",
+          "UID": "6c68af857b0f5d41"
+        },
+        "InstalledVersion": "2.34-283.el9_8",
+        "FixedVersion": "2.34-284.el9_8.4",
+        "Status": "fixed",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-89092",
+        "Fingerprint": "sha256:067dd616ec0a467bd77e944121491266fbb05eaa5a5ef173d42c7616300d182c",
+        "Title": "glibc: nscd stack overflow leads to degraded DNS resolution",
+        "Description": "The nscd service in the GNU C Library 2.3.4 onwards may crash due to a \nstack overflow when a malicious DNS server returns too large a response \nfor a DNS query, resulting in degraded DNS resolution for the system.\n\n\n\nExploitation of this bug needs a system that has nscd enabled and using \nan untrusted DNS server for name resolution, with the compromised DNS \nserver being capable of processing records large enough to result in a \nstack overflow in an nscd thread stack.  During experimentation, bind 9 \nwas unable to handle large records, but that could change in future or \nwith a different name server.  In typical installations, nscd is \nexecuted in an isolated context as its own user without a shell, due to \nwhich any compromise of that service is isolated.\n\n\n\nThere is a remote possibility of nscd cache corruption if an attacker \nmanages to get the stack pointer into a desired point in the heap, \npotentially resulting in other caches in nscd being overwritten with \ncorrupt data through the stack overflow, until the buggy code path \neventually results in a crash.\n\n\n\nFinally, a crash in nscd may result in performance degradation when \nresolving names, but it does not result in a denial of service.",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-789"
+        ],
+        "VendorSeverity": {
+          "alma": 2,
+          "oracle-oval": 2,
+          "redhat": 2,
+          "rocky": 2,
+          "ubuntu": 2
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:L",
+            "V3Score": 4.2
+          }
+        },
+        "References": [
+          "http://www.openwall.com/lists/oss-security/2026/09/11/2",
+          "https://access.redhat.com/errata/RHSA-2026:95618",
+          "https://access.redhat.com/errata/RHSA-2026:96087",
+          "https://access.redhat.com/security/cve/CVE-2026-89092",
+          "https://bugzilla.redhat.com/2531725",
+          "https://bugzilla.redhat.com/2536382",
+          "https://bugzilla.redhat.com/2538209",
+          "https://bugzilla.redhat.com/2538306",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2531725",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2536382",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538209",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538306",
+          "https://creativecommons.org/licenses/by/4.0/",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-8674",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-86805",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-89092",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-95818",
+          "https://errata.almalinux.org/8/ALSA-2026-96087.html",
+          "https://errata.rockylinux.org/RLSA-2026:95618",
+          "https://linux.oracle.com/cve/CVE-2026-89092.html",
+          "https://linux.oracle.com/errata/ELSA-2026-96087.html",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-89092",
+          "https://sourceware.org/bugzilla/show_bug.cgi?id=34624",
+          "https://sourceware.org/git/?p=glibc.git;a=blob;f=advisories/GLIBC-SA-2026-0016",
+          "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=advisories/GLIBC-SA-2026-0016",
+          "https://www.cve.org/CVERecord?id=CVE-2026-89092"
+        ],
+        "PublishedDate": "2026-09-11T02:18:35.46Z",
+        "LastModifiedDate": "2026-10-26T23:10:00.183Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-89092.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-89092.json.gz",
+      "official_source_sha256": "1816bfad556ac5c232b03fed1d37408a23f3aa19f10e5f2b691ffa5733bbbea4",
+      "current_raw_finding_retained": false,
+      "resolution": "signed_vendor_update",
+      "current_installed_version": "2.34-290.el9_9",
+      "official_rhel9_fixed_releases": [
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98512",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-290.el9_9"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98512",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-290.el9_9"
+        }
+      ],
+      "signed_rpm": "glibc-2.34-290.el9_9.x86_64.rpm",
+      "rationale": "Installed the complete signed Red Hat package update. Signature verification, actual RPM inventory, vendor fixed-release records and the complete current raw scan are bound together; this exact original CVE/package tuple is absent in the new scan. No raw rows or severity values were filtered or rewritten."
+    },
+    {
+      "vulnerability_id": "CVE-2026-95818",
+      "package": "glibc",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-95818",
+        "VendorIDs": [
+          "RHSA-2026:95618"
+        ],
+        "PkgID": "glibc@2.34-283.el9_8.x86_64",
+        "PkgName": "glibc",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/glibc@2.34-283.el9_8?arch=x86_64&distro=redhat-9.8",
+          "UID": "6c68af857b0f5d41"
+        },
+        "InstalledVersion": "2.34-283.el9_8",
+        "FixedVersion": "2.34-284.el9_8.4",
+        "Status": "fixed",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-95818",
+        "Fingerprint": "sha256:98b0b6b4286e0dcd755caad471a30b737ca3913474be1f107eaed89bfeb9d15d",
+        "Title": "glibc: glibc: Local attacker can cause denial of service and information disclosure via stack-based buffer overflow.",
+        "Description": "A stack-based buffer overflow in the dynamic loader (ld.so) of the GNU C Library (glibc) versions 2.14 through 2.44 allows a local attacker to crash or corrupt the memory of setuid/setgid (AT_SECURE) programs.\n\nWhen such a program's DT_RPATH or DT_RUNPATH begins with $ORIGIN and is followed by NUL or '/' the loader both reads past the end of the path buffer and writes past the end of a stack-allocated internal buffer. The corrupted loader stack can lead to a loader crash (denial of service) and limited disclosure of process memory.",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-121"
+        ],
+        "VendorSeverity": {
+          "alma": 2,
+          "oracle-oval": 2,
+          "redhat": 2,
+          "rocky": 2
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H",
+            "V3Score": 7
+          }
+        },
+        "References": [
+          "https://access.redhat.com/errata/RHSA-2026:95618",
+          "https://access.redhat.com/errata/RHSA-2026:96087",
+          "https://access.redhat.com/security/cve/CVE-2026-95818",
+          "https://bugzilla.redhat.com/2531725",
+          "https://bugzilla.redhat.com/2536382",
+          "https://bugzilla.redhat.com/2538209",
+          "https://bugzilla.redhat.com/2538306",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2531725",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2536382",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538209",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538306",
+          "https://creativecommons.org/licenses/by/4.0/",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-8674",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-86805",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-89092",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-95818",
+          "https://errata.almalinux.org/8/ALSA-2026-96087.html",
+          "https://errata.rockylinux.org/RLSA-2026:95618",
+          "https://linux.oracle.com/cve/CVE-2026-95818.html",
+          "https://linux.oracle.com/errata/ELSA-2026-96087.html",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-95818",
+          "https://sourceware.org/bugzilla/show_bug.cgi?id=34360",
+          "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=advisories/GLIBC-SA-2026-0023",
+          "https://www.cve.org/CVERecord?id=CVE-2026-95818"
+        ],
+        "PublishedDate": "2026-09-22T17:17:32.093Z",
+        "LastModifiedDate": "2026-09-22T19:56:19.073Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-95818.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-95818.json.gz",
+      "official_source_sha256": "10a7d2fc893978cceaf5191834329b8dceb200d650a4ba9a20600996d23fcb3f",
+      "current_raw_finding_retained": false,
+      "resolution": "signed_vendor_update",
+      "current_installed_version": "2.34-290.el9_9",
+      "official_rhel9_fixed_releases": [
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98512",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-290.el9_9"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98512",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-290.el9_9"
+        }
+      ],
+      "signed_rpm": "glibc-2.34-290.el9_9.x86_64.rpm",
+      "rationale": "Installed the complete signed Red Hat package update. Signature verification, actual RPM inventory, vendor fixed-release records and the complete current raw scan are bound together; this exact original CVE/package tuple is absent in the new scan. No raw rows or severity values were filtered or rewritten."
+    },
+    {
+      "vulnerability_id": "CVE-2026-97399",
+      "package": "glibc",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-97399",
+        "PkgID": "glibc@2.34-283.el9_8.x86_64",
+        "PkgName": "glibc",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/glibc@2.34-283.el9_8?arch=x86_64&distro=redhat-9.8",
+          "UID": "6c68af857b0f5d41"
+        },
+        "InstalledVersion": "2.34-283.el9_8",
+        "Status": "affected",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-97399",
+        "Fingerprint": "sha256:85df9291cda96067146e5cba08c1c5c1f98c5f8098601386f6cd90c1ef0b45ab",
+        "Title": "glibc: glibc: Denial of Service via out-of-bounds read in strncasecmp",
+        "Description": "The strncasecmp function in the GNU C Library 2.24 and later optimized for the Power8 architecture may read one byte beyond the input size limit, which may crash a program when that byte is not readable.\n\nThis condition may happen when the input strings to the strncasecmp function are attacker controlled in an application and they match all the way up to the edge of their page and the neighbouring page is either not mapped or is not readable.",
+        "Severity": "LOW",
+        "CweIDs": [
+          "CWE-126"
+        ],
+        "VendorSeverity": {
+          "redhat": 1
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L",
+            "V3Score": 3.7
+          }
+        },
+        "References": [
+          "http://www.openwall.com/lists/oss-security/2026/09/28/7",
+          "https://access.redhat.com/security/cve/CVE-2026-97399",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-97399",
+          "https://sourceware.org/bugzilla/show_bug.cgi?id=34683",
+          "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=advisories/GLIBC-SA-2026-0024",
+          "https://www.cve.org/CVERecord?id=CVE-2026-97399"
+        ],
+        "PublishedDate": "2026-09-28T16:17:18.55Z",
+        "LastModifiedDate": "2026-09-29T21:36:39.547Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-97399.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-97399.json.gz",
+      "official_source_sha256": "bd8a53de1b71671935f14d178018127ecaa32b2db1ce1b3780710d0d8099e7d7",
+      "current_raw_finding_retained": true,
+      "resolution": "exact_component_not_affected",
+      "rationale": "Official advisory confines the faulty strncasecmp implementation to Power8. All 70 actual runtime ELF headers are ELF64 little-endian e_machine=62 (x86_64), including original RPM libc. Actual libc defines x86 SSE/AVX/EVEX strncasecmp implementations. No claim that Power8 implementation is fixed.",
+      "scope_status": "SUPPORTED_ARCHITECTURE_EXCLUSION_BASELINE",
+      "scope_evidence": "deployment/security/minio-os-20261113-evidence/baseline-scope-review.json",
+      "current_installed_version": "2.34-290.el9_9"
+    },
+    {
+      "vulnerability_id": "CVE-2026-122054",
+      "package": "glibc-common",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-122054",
+        "PkgID": "glibc-common@2.34-283.el9_8.x86_64",
+        "PkgName": "glibc-common",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/glibc-common@2.34-283.el9_8?arch=x86_64&distro=redhat-9.8",
+          "UID": "ef0cba39eb345bbe"
+        },
+        "InstalledVersion": "2.34-283.el9_8",
+        "Status": "affected",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-122054",
+        "Fingerprint": "sha256:8ca2e745b1f2778afcb27303fadef2d4efffb051173532c0a5b20dc939af41e1",
+        "Title": "glibc: glibc: Denial of Service via crafted BIG-HKSCS input conversion",
+        "Description": "Converting crafted BIG-HKSCS input to UCS-4 or the internal wide character encoding, for example with iconv, in the GNU C Library version 2.18 through 2.31 may result in the converter making no progress, causing the calling application to hang.",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-835"
+        ],
+        "VendorSeverity": {
+          "redhat": 2
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H",
+            "V3Score": 5.9
+          }
+        },
+        "References": [
+          "http://www.openwall.com/lists/oss-security/2026/11/04/10",
+          "https://access.redhat.com/security/cve/CVE-2026-122054",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-122054",
+          "https://sourceware.org/bugzilla/show_bug.cgi?id=25734",
+          "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=advisories/GLIBC-SA-2026-0026",
+          "https://www.cve.org/CVERecord?id=CVE-2026-122054"
+        ],
+        "PublishedDate": "2026-11-04T18:17:43.253Z",
+        "LastModifiedDate": "2026-11-09T22:18:33.413Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-122054.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-122054.json.gz",
+      "official_source_sha256": "6d327bed90353328e6d2a09f34aca489690e2be147464e789f55343c3ab394bb",
+      "current_raw_finding_retained": true,
+      "resolution": "exact_component_not_affected",
+      "rationale": "Official fault is the BIG5-HKSCS gconv implementation. Exact old 2.34-283 SRPM source maps it to BIG5HKSCS.so in gconv-modules-extra.conf. Complete actual payload contains only seven named other gconv ELF modules; BIG5HKSCS implementation and extra configuration are absent. Exact old source also includes the c580 pending-character state reset, but this record does not infer every binary is fixed from version alone.",
+      "scope_status": "SUPPORTED_COMPONENT_EXCLUSION_BASELINE",
+      "scope_evidence": "deployment/security/minio-os-20261113-evidence/baseline-scope-review.json",
+      "current_installed_version": "2.34-290.el9_9"
+    },
+    {
+      "vulnerability_id": "CVE-2026-84243",
+      "package": "glibc-common",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-84243",
+        "PkgID": "glibc-common@2.34-283.el9_8.x86_64",
+        "PkgName": "glibc-common",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/glibc-common@2.34-283.el9_8?arch=x86_64&distro=redhat-9.8",
+          "UID": "ef0cba39eb345bbe"
+        },
+        "InstalledVersion": "2.34-283.el9_8",
+        "Status": "affected",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-84243",
+        "Fingerprint": "sha256:c455f32a285d9eec0d05496f56e6113c7d570b98b0898db89e4751c3cf856a60",
+        "Title": "glibc: glibc: Arbitrary code execution via directory traversal in LANGUAGE environment variable",
+        "Description": "The gettext family of functions in the GNU C Library version 2.0 and later accept LANGUAGE environment variable entries that contain '/' or that are equal to \"..\", unless the program is setuid or setgid (AT_SECURE).  An attacker who can set LANGUAGE in the environment of a program that uses gettext can make it load a message catalog (.mo file) from an arbitrary location in the file system.  A crafted .mo file can crash the program through out-of-range offsets, or supply translations whose format directives do not match the arguments passed by the program.  That causes undefined behaviour in the printf family of functions and may allow arbitrary code execution with the privileges of the program.  The safety of message catalogs relies on them being installed in trusted, read-only locations, and the directory traversal bypasses this.\n\nThe fix for CVE-2014-0475 rejects \"..\" path components in locale names passed to setlocale or taken from the LC_ALL, LC_* and LANG environment variables.  gettext reads LANGUAGE directly and appends each colon-separated entry to the message catalog directory, so that fix did not cover LANGUAGE.\n\nLANGUAGE is only used when the LC_MESSAGES locale is not \"C\", \"C.<encoding>\" or \"POSIX\", so the attacker must also be able to select another installed locale, for example through LANG or LC_ALL.  Exploitation also requires that the attacker can place the crafted file in a location readable by the target program, and that the environment crosses a trust boundary without the program running as AT_SECURE.  An example is an SSH server that accepts LANGUAGE and LANG from clients through the AcceptEnv directive and restricts an account to a forced command; the attacker may use this to escape the restriction.",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-22"
+        ],
+        "VendorSeverity": {
+          "redhat": 2
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H",
+            "V3Score": 7
+          }
+        },
+        "References": [
+          "https://access.redhat.com/security/cve/CVE-2026-84243",
+          "https://inbox.sourceware.org/libc-alpha/20261012112453.47383-1-avinal.xlvii@gmail.com",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-84243",
+          "https://sourceware.org/bugzilla/show_bug.cgi?id=17142",
+          "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=advisories/GLIBC-SA-2026-0025",
+          "https://www.cve.org/CVERecord?id=CVE-2026-84243"
+        ],
+        "PublishedDate": "2026-10-30T18:18:13.65Z",
+        "LastModifiedDate": "2026-10-31T04:18:21.89Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-84243.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-84243.json.gz",
+      "official_source_sha256": "a1c8897b6ba039c59f3398f31cd3b4f554b898c454854abe14b29d328356d49d",
+      "current_raw_finding_retained": true,
+      "resolution": "verified_source_fix",
+      "rationale": "The signed vendor glibc source is rebuilt with the LANGUAGE path-component exclusion in intl/dcigettext.c. The actual libc and loader are replaced; ordinary intl tests and complete exported ABI comparison are retained. Package metadata stays vendor-versioned, so the raw scanner row remains.",
+      "patch": "deployment/security/minio-os-20261113/patches/glibc-LANGUAGE.patch",
+      "patch_sha256": "795bf9c17379d1e22266a471668724c19c2931171410b4c20568bcfac39a3513",
+      "actual_native_sha256": {
+        "usr/lib64/libc.so.6": "82e9dc7fad1051fbea6d8c35d2683aa00f2c6eb7c8d63d1098b9b5366592c3ad",
+        "usr/lib64/ld-linux-x86-64.so.2": "950e08c9ae646e5d7f9bb3163d83e5ae9df58dd0eabb5bcf26dda951257606ac"
+      },
+      "current_installed_version": "2.34-290.el9_9",
+      "exploit_payload_executed": false
+    },
+    {
+      "vulnerability_id": "CVE-2026-8674",
+      "package": "glibc-common",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-8674",
+        "VendorIDs": [
+          "RHSA-2026:95618"
+        ],
+        "PkgID": "glibc-common@2.34-283.el9_8.x86_64",
+        "PkgName": "glibc-common",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/glibc-common@2.34-283.el9_8?arch=x86_64&distro=redhat-9.8",
+          "UID": "ef0cba39eb345bbe"
+        },
+        "InstalledVersion": "2.34-283.el9_8",
+        "FixedVersion": "2.34-284.el9_8.4",
+        "Status": "fixed",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-8674",
+        "Fingerprint": "sha256:68fea5fa05858b6ac542dd5d0e2175e7281f49eccdcb5f76a603226167ea105d",
+        "Title": "glibc: glibc DNS stub resolver: Denial of Service via long search domain in configuration",
+        "Description": "Initializing the DNS stub resolver from an /etc/resolv.conf file, or a LOCALDOMAIN environment variable, whose search list contains a domain of roughly 200 characters or more in the GNU C Library version 2.26 to 2.44 results in an assertion failure which aborts the process.\n\nThe resolver truncates the search list when copying it into the fixed-size _res.defdname buffer, then asserts that the copy is consistent with the full configuration.  The consistency check compared against the wrong size and did not handle a first entry that does not fit, so a correctly truncated list failed the assertion.  Any process that resolves names through the library is affected, including long-running processes that reload /etc/resolv.conf on the next query after it changes.  Search domains are commonly written to /etc/resolv.conf from data received over DHCP or from a VPN server, so an attacker on the local network may be able to trigger this without privileges on the target system, subject to validation by the network configuration software.",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-617"
+        ],
+        "VendorSeverity": {
+          "alma": 2,
+          "oracle-oval": 2,
+          "redhat": 2,
+          "rocky": 2
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H",
+            "V3Score": 5.3
+          }
+        },
+        "References": [
+          "http://www.openwall.com/lists/oss-security/2026/09/17/4",
+          "https://access.redhat.com/errata/RHSA-2026:95618",
+          "https://access.redhat.com/errata/RHSA-2026:96087",
+          "https://access.redhat.com/security/cve/CVE-2026-8674",
+          "https://bugzilla.redhat.com/2531725",
+          "https://bugzilla.redhat.com/2536382",
+          "https://bugzilla.redhat.com/2538209",
+          "https://bugzilla.redhat.com/2538306",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2531725",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2536382",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538209",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538306",
+          "https://creativecommons.org/licenses/by/4.0/",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-8674",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-86805",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-89092",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-95818",
+          "https://errata.almalinux.org/8/ALSA-2026-96087.html",
+          "https://errata.rockylinux.org/RLSA-2026:95618",
+          "https://joshua.hu/fuzzing-glibc-libresolv",
+          "https://linux.oracle.com/cve/CVE-2026-8674.html",
+          "https://linux.oracle.com/errata/ELSA-2026-96087.html",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-8674",
+          "https://sourceware.org/bugzilla/show_bug.cgi?id=31026",
+          "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=advisories/GLIBC-SA-2026-0021",
+          "https://sourceware.org/git/?p=glibc.git;a=commit;h=506ea57086bfb9ce3daff1c14246a1cb532aba0a",
+          "https://www.cve.org/CVERecord?id=CVE-2026-8674"
+        ],
+        "PublishedDate": "2026-09-17T17:16:53.22Z",
+        "LastModifiedDate": "2026-09-18T18:17:47.257Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-8674.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-8674.json.gz",
+      "official_source_sha256": "1caa95e2def4ce39bf21074b8f8a71d0ec0d32055aaca4c7765ea166e73e9403",
+      "current_raw_finding_retained": false,
+      "resolution": "signed_vendor_update",
+      "current_installed_version": "2.34-290.el9_9",
+      "official_rhel9_fixed_releases": [
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        }
+      ],
+      "signed_rpm": "glibc-common-2.34-290.el9_9.x86_64.rpm",
+      "rationale": "Installed the complete signed Red Hat package update. Signature verification, actual RPM inventory, vendor fixed-release records and the complete current raw scan are bound together; this exact original CVE/package tuple is absent in the new scan. No raw rows or severity values were filtered or rewritten."
+    },
+    {
+      "vulnerability_id": "CVE-2026-86805",
+      "package": "glibc-common",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-86805",
+        "VendorIDs": [
+          "RHSA-2026:95618"
+        ],
+        "PkgID": "glibc-common@2.34-283.el9_8.x86_64",
+        "PkgName": "glibc-common",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/glibc-common@2.34-283.el9_8?arch=x86_64&distro=redhat-9.8",
+          "UID": "ef0cba39eb345bbe"
+        },
+        "InstalledVersion": "2.34-283.el9_8",
+        "FixedVersion": "2.34-284.el9_8.4",
+        "Status": "fixed",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-86805",
+        "Fingerprint": "sha256:7dfd9333b2d314d946d71cdd85fad5f67d3d9e912f400d5aa3074c0c42865582",
+        "Title": "glibc: glibc: Privilege escalation and arbitrary code execution via TOCTOU race condition in dynamic loader",
+        "Description": "A time-of-check to time-of-use (TOCTOU) race condition in the dynamic loader (ld.so) of the GNU C Library (glibc) versions 2.14 through 2.44 allows a local attacker to escalate privileges. When expanding $ORIGIN in DT_RPATH for setuid/setgid (AT_SECURE) programs, glibc validates the lexically normalized search path against the trusted directories but then opens the raw, un-normalized path. On systems where the Linux fs.protected_hardlinks sysctl is disabled, a local attacker who hard-links such a program into an attacker-controlled directory and wins a race to replace an intermediate path component with a symbolic link can direct the loader outside the trusted directory, causing it to load an attacker-controlled shared object and execute arbitrary code with the elevated privileges of the program.\n\nExploitation requires an installed setuid or setgid binary whose DT_RPATH uses $ORIGIN followed by \"..\" traversal that normalizes into a trusted directory, and the ability to hard-link that binary and win the race by swapping a path component for a symbolic link. Major Linux-based OS distributions ship with fs.protected_hardlinks enabled by default and mitigate the vulnerability.",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-367"
+        ],
+        "VendorSeverity": {
+          "alma": 2,
+          "amazon": 3,
+          "oracle-oval": 2,
+          "redhat": 2,
+          "rocky": 2
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H",
+            "V3Score": 7
+          }
+        },
+        "References": [
+          "https://access.redhat.com/errata/RHSA-2026:95618",
+          "https://access.redhat.com/errata/RHSA-2026:96087",
+          "https://access.redhat.com/security/cve/CVE-2026-86805",
+          "https://bugzilla.redhat.com/2531725",
+          "https://bugzilla.redhat.com/2536382",
+          "https://bugzilla.redhat.com/2538209",
+          "https://bugzilla.redhat.com/2538306",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2531725",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2536382",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538209",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538306",
+          "https://creativecommons.org/licenses/by/4.0/",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-8674",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-86805",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-89092",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-95818",
+          "https://errata.almalinux.org/8/ALSA-2026-96087.html",
+          "https://errata.rockylinux.org/RLSA-2026:95618",
+          "https://linux.oracle.com/cve/CVE-2026-86805.html",
+          "https://linux.oracle.com/errata/ELSA-2026-96087.html",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-86805",
+          "https://sourceware.org/bugzilla/show_bug.cgi?id=34360",
+          "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=advisories/GLIBC-SA-2026-0022",
+          "https://www.cve.org/CVERecord?id=CVE-2026-86805"
+        ],
+        "PublishedDate": "2026-09-22T16:18:06.23Z",
+        "LastModifiedDate": "2026-09-23T04:17:57.137Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-86805.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-86805.json.gz",
+      "official_source_sha256": "47a38e28056ff7b131a7b424c0948e6f0871bfcac0b51a7061b5747029e2a2b6",
+      "current_raw_finding_retained": false,
+      "resolution": "signed_vendor_update",
+      "current_installed_version": "2.34-290.el9_9",
+      "official_rhel9_fixed_releases": [
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98512",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-290.el9_9"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98512",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-290.el9_9"
+        }
+      ],
+      "signed_rpm": "glibc-common-2.34-290.el9_9.x86_64.rpm",
+      "rationale": "Installed the complete signed Red Hat package update. Signature verification, actual RPM inventory, vendor fixed-release records and the complete current raw scan are bound together; this exact original CVE/package tuple is absent in the new scan. No raw rows or severity values were filtered or rewritten."
+    },
+    {
+      "vulnerability_id": "CVE-2026-89092",
+      "package": "glibc-common",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-89092",
+        "VendorIDs": [
+          "RHSA-2026:95618"
+        ],
+        "PkgID": "glibc-common@2.34-283.el9_8.x86_64",
+        "PkgName": "glibc-common",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/glibc-common@2.34-283.el9_8?arch=x86_64&distro=redhat-9.8",
+          "UID": "ef0cba39eb345bbe"
+        },
+        "InstalledVersion": "2.34-283.el9_8",
+        "FixedVersion": "2.34-284.el9_8.4",
+        "Status": "fixed",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-89092",
+        "Fingerprint": "sha256:47ff8388f3829b8917156587f0ad0d707a20f14ba30c6728cabd642968c91423",
+        "Title": "glibc: nscd stack overflow leads to degraded DNS resolution",
+        "Description": "The nscd service in the GNU C Library 2.3.4 onwards may crash due to a \nstack overflow when a malicious DNS server returns too large a response \nfor a DNS query, resulting in degraded DNS resolution for the system.\n\n\n\nExploitation of this bug needs a system that has nscd enabled and using \nan untrusted DNS server for name resolution, with the compromised DNS \nserver being capable of processing records large enough to result in a \nstack overflow in an nscd thread stack.  During experimentation, bind 9 \nwas unable to handle large records, but that could change in future or \nwith a different name server.  In typical installations, nscd is \nexecuted in an isolated context as its own user without a shell, due to \nwhich any compromise of that service is isolated.\n\n\n\nThere is a remote possibility of nscd cache corruption if an attacker \nmanages to get the stack pointer into a desired point in the heap, \npotentially resulting in other caches in nscd being overwritten with \ncorrupt data through the stack overflow, until the buggy code path \neventually results in a crash.\n\n\n\nFinally, a crash in nscd may result in performance degradation when \nresolving names, but it does not result in a denial of service.",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-789"
+        ],
+        "VendorSeverity": {
+          "alma": 2,
+          "oracle-oval": 2,
+          "redhat": 2,
+          "rocky": 2,
+          "ubuntu": 2
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:L",
+            "V3Score": 4.2
+          }
+        },
+        "References": [
+          "http://www.openwall.com/lists/oss-security/2026/09/11/2",
+          "https://access.redhat.com/errata/RHSA-2026:95618",
+          "https://access.redhat.com/errata/RHSA-2026:96087",
+          "https://access.redhat.com/security/cve/CVE-2026-89092",
+          "https://bugzilla.redhat.com/2531725",
+          "https://bugzilla.redhat.com/2536382",
+          "https://bugzilla.redhat.com/2538209",
+          "https://bugzilla.redhat.com/2538306",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2531725",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2536382",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538209",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538306",
+          "https://creativecommons.org/licenses/by/4.0/",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-8674",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-86805",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-89092",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-95818",
+          "https://errata.almalinux.org/8/ALSA-2026-96087.html",
+          "https://errata.rockylinux.org/RLSA-2026:95618",
+          "https://linux.oracle.com/cve/CVE-2026-89092.html",
+          "https://linux.oracle.com/errata/ELSA-2026-96087.html",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-89092",
+          "https://sourceware.org/bugzilla/show_bug.cgi?id=34624",
+          "https://sourceware.org/git/?p=glibc.git;a=blob;f=advisories/GLIBC-SA-2026-0016",
+          "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=advisories/GLIBC-SA-2026-0016",
+          "https://www.cve.org/CVERecord?id=CVE-2026-89092"
+        ],
+        "PublishedDate": "2026-09-11T02:18:35.46Z",
+        "LastModifiedDate": "2026-10-26T23:10:00.183Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-89092.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-89092.json.gz",
+      "official_source_sha256": "1816bfad556ac5c232b03fed1d37408a23f3aa19f10e5f2b691ffa5733bbbea4",
+      "current_raw_finding_retained": false,
+      "resolution": "signed_vendor_update",
+      "current_installed_version": "2.34-290.el9_9",
+      "official_rhel9_fixed_releases": [
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98512",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-290.el9_9"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98512",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-290.el9_9"
+        }
+      ],
+      "signed_rpm": "glibc-common-2.34-290.el9_9.x86_64.rpm",
+      "rationale": "Installed the complete signed Red Hat package update. Signature verification, actual RPM inventory, vendor fixed-release records and the complete current raw scan are bound together; this exact original CVE/package tuple is absent in the new scan. No raw rows or severity values were filtered or rewritten."
+    },
+    {
+      "vulnerability_id": "CVE-2026-95818",
+      "package": "glibc-common",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-95818",
+        "VendorIDs": [
+          "RHSA-2026:95618"
+        ],
+        "PkgID": "glibc-common@2.34-283.el9_8.x86_64",
+        "PkgName": "glibc-common",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/glibc-common@2.34-283.el9_8?arch=x86_64&distro=redhat-9.8",
+          "UID": "ef0cba39eb345bbe"
+        },
+        "InstalledVersion": "2.34-283.el9_8",
+        "FixedVersion": "2.34-284.el9_8.4",
+        "Status": "fixed",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-95818",
+        "Fingerprint": "sha256:06d2b453b9b77d655687a89e372b7a59dbeeb66ca5cb226938f880aa686c40f0",
+        "Title": "glibc: glibc: Local attacker can cause denial of service and information disclosure via stack-based buffer overflow.",
+        "Description": "A stack-based buffer overflow in the dynamic loader (ld.so) of the GNU C Library (glibc) versions 2.14 through 2.44 allows a local attacker to crash or corrupt the memory of setuid/setgid (AT_SECURE) programs.\n\nWhen such a program's DT_RPATH or DT_RUNPATH begins with $ORIGIN and is followed by NUL or '/' the loader both reads past the end of the path buffer and writes past the end of a stack-allocated internal buffer. The corrupted loader stack can lead to a loader crash (denial of service) and limited disclosure of process memory.",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-121"
+        ],
+        "VendorSeverity": {
+          "alma": 2,
+          "oracle-oval": 2,
+          "redhat": 2,
+          "rocky": 2
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H",
+            "V3Score": 7
+          }
+        },
+        "References": [
+          "https://access.redhat.com/errata/RHSA-2026:95618",
+          "https://access.redhat.com/errata/RHSA-2026:96087",
+          "https://access.redhat.com/security/cve/CVE-2026-95818",
+          "https://bugzilla.redhat.com/2531725",
+          "https://bugzilla.redhat.com/2536382",
+          "https://bugzilla.redhat.com/2538209",
+          "https://bugzilla.redhat.com/2538306",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2531725",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2536382",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538209",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538306",
+          "https://creativecommons.org/licenses/by/4.0/",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-8674",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-86805",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-89092",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-95818",
+          "https://errata.almalinux.org/8/ALSA-2026-96087.html",
+          "https://errata.rockylinux.org/RLSA-2026:95618",
+          "https://linux.oracle.com/cve/CVE-2026-95818.html",
+          "https://linux.oracle.com/errata/ELSA-2026-96087.html",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-95818",
+          "https://sourceware.org/bugzilla/show_bug.cgi?id=34360",
+          "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=advisories/GLIBC-SA-2026-0023",
+          "https://www.cve.org/CVERecord?id=CVE-2026-95818"
+        ],
+        "PublishedDate": "2026-09-22T17:17:32.093Z",
+        "LastModifiedDate": "2026-09-22T19:56:19.073Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-95818.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-95818.json.gz",
+      "official_source_sha256": "10a7d2fc893978cceaf5191834329b8dceb200d650a4ba9a20600996d23fcb3f",
+      "current_raw_finding_retained": false,
+      "resolution": "signed_vendor_update",
+      "current_installed_version": "2.34-290.el9_9",
+      "official_rhel9_fixed_releases": [
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98512",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-290.el9_9"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98512",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-290.el9_9"
+        }
+      ],
+      "signed_rpm": "glibc-common-2.34-290.el9_9.x86_64.rpm",
+      "rationale": "Installed the complete signed Red Hat package update. Signature verification, actual RPM inventory, vendor fixed-release records and the complete current raw scan are bound together; this exact original CVE/package tuple is absent in the new scan. No raw rows or severity values were filtered or rewritten."
+    },
+    {
+      "vulnerability_id": "CVE-2026-97399",
+      "package": "glibc-common",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-97399",
+        "PkgID": "glibc-common@2.34-283.el9_8.x86_64",
+        "PkgName": "glibc-common",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/glibc-common@2.34-283.el9_8?arch=x86_64&distro=redhat-9.8",
+          "UID": "ef0cba39eb345bbe"
+        },
+        "InstalledVersion": "2.34-283.el9_8",
+        "Status": "affected",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-97399",
+        "Fingerprint": "sha256:9bd5599033b70a4d1b110da0c886a022ef4a55b9f8ee66041a7decf1a8582a7a",
+        "Title": "glibc: glibc: Denial of Service via out-of-bounds read in strncasecmp",
+        "Description": "The strncasecmp function in the GNU C Library 2.24 and later optimized for the Power8 architecture may read one byte beyond the input size limit, which may crash a program when that byte is not readable.\n\nThis condition may happen when the input strings to the strncasecmp function are attacker controlled in an application and they match all the way up to the edge of their page and the neighbouring page is either not mapped or is not readable.",
+        "Severity": "LOW",
+        "CweIDs": [
+          "CWE-126"
+        ],
+        "VendorSeverity": {
+          "redhat": 1
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L",
+            "V3Score": 3.7
+          }
+        },
+        "References": [
+          "http://www.openwall.com/lists/oss-security/2026/09/28/7",
+          "https://access.redhat.com/security/cve/CVE-2026-97399",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-97399",
+          "https://sourceware.org/bugzilla/show_bug.cgi?id=34683",
+          "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=advisories/GLIBC-SA-2026-0024",
+          "https://www.cve.org/CVERecord?id=CVE-2026-97399"
+        ],
+        "PublishedDate": "2026-09-28T16:17:18.55Z",
+        "LastModifiedDate": "2026-09-29T21:36:39.547Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-97399.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-97399.json.gz",
+      "official_source_sha256": "bd8a53de1b71671935f14d178018127ecaa32b2db1ce1b3780710d0d8099e7d7",
+      "current_raw_finding_retained": true,
+      "resolution": "exact_component_not_affected",
+      "rationale": "Official advisory confines the faulty strncasecmp implementation to Power8. All 70 actual runtime ELF headers are ELF64 little-endian e_machine=62 (x86_64), including original RPM libc. Actual libc defines x86 SSE/AVX/EVEX strncasecmp implementations. No claim that Power8 implementation is fixed.",
+      "scope_status": "SUPPORTED_ARCHITECTURE_EXCLUSION_BASELINE",
+      "scope_evidence": "deployment/security/minio-os-20261113-evidence/baseline-scope-review.json",
+      "current_installed_version": "2.34-290.el9_9"
+    },
+    {
+      "vulnerability_id": "CVE-2026-122054",
+      "package": "glibc-minimal-langpack",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-122054",
+        "PkgID": "glibc-minimal-langpack@2.34-283.el9_8.x86_64",
+        "PkgName": "glibc-minimal-langpack",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/glibc-minimal-langpack@2.34-283.el9_8?arch=x86_64&distro=redhat-9.8",
+          "UID": "3458c3587797c88d"
+        },
+        "InstalledVersion": "2.34-283.el9_8",
+        "Status": "affected",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-122054",
+        "Fingerprint": "sha256:e026cb80aac565c0c111f4c98bfde1337af84659d8aaaf579d0b50af70681763",
+        "Title": "glibc: glibc: Denial of Service via crafted BIG-HKSCS input conversion",
+        "Description": "Converting crafted BIG-HKSCS input to UCS-4 or the internal wide character encoding, for example with iconv, in the GNU C Library version 2.18 through 2.31 may result in the converter making no progress, causing the calling application to hang.",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-835"
+        ],
+        "VendorSeverity": {
+          "redhat": 2
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H",
+            "V3Score": 5.9
+          }
+        },
+        "References": [
+          "http://www.openwall.com/lists/oss-security/2026/11/04/10",
+          "https://access.redhat.com/security/cve/CVE-2026-122054",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-122054",
+          "https://sourceware.org/bugzilla/show_bug.cgi?id=25734",
+          "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=advisories/GLIBC-SA-2026-0026",
+          "https://www.cve.org/CVERecord?id=CVE-2026-122054"
+        ],
+        "PublishedDate": "2026-11-04T18:17:43.253Z",
+        "LastModifiedDate": "2026-11-09T22:18:33.413Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-122054.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-122054.json.gz",
+      "official_source_sha256": "6d327bed90353328e6d2a09f34aca489690e2be147464e789f55343c3ab394bb",
+      "current_raw_finding_retained": true,
+      "resolution": "exact_component_not_affected",
+      "rationale": "Official fault is the BIG5-HKSCS gconv implementation. Exact old 2.34-283 SRPM source maps it to BIG5HKSCS.so in gconv-modules-extra.conf. Complete actual payload contains only seven named other gconv ELF modules; BIG5HKSCS implementation and extra configuration are absent. Exact old source also includes the c580 pending-character state reset, but this record does not infer every binary is fixed from version alone.",
+      "scope_status": "SUPPORTED_COMPONENT_EXCLUSION_BASELINE",
+      "scope_evidence": "deployment/security/minio-os-20261113-evidence/baseline-scope-review.json",
+      "current_installed_version": "2.34-290.el9_9"
+    },
+    {
+      "vulnerability_id": "CVE-2026-84243",
+      "package": "glibc-minimal-langpack",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-84243",
+        "PkgID": "glibc-minimal-langpack@2.34-283.el9_8.x86_64",
+        "PkgName": "glibc-minimal-langpack",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/glibc-minimal-langpack@2.34-283.el9_8?arch=x86_64&distro=redhat-9.8",
+          "UID": "3458c3587797c88d"
+        },
+        "InstalledVersion": "2.34-283.el9_8",
+        "Status": "affected",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-84243",
+        "Fingerprint": "sha256:ff84c75a3d3504c5618a950e70fe4fb31209a976f92a1be91c3fa0ffa530769e",
+        "Title": "glibc: glibc: Arbitrary code execution via directory traversal in LANGUAGE environment variable",
+        "Description": "The gettext family of functions in the GNU C Library version 2.0 and later accept LANGUAGE environment variable entries that contain '/' or that are equal to \"..\", unless the program is setuid or setgid (AT_SECURE).  An attacker who can set LANGUAGE in the environment of a program that uses gettext can make it load a message catalog (.mo file) from an arbitrary location in the file system.  A crafted .mo file can crash the program through out-of-range offsets, or supply translations whose format directives do not match the arguments passed by the program.  That causes undefined behaviour in the printf family of functions and may allow arbitrary code execution with the privileges of the program.  The safety of message catalogs relies on them being installed in trusted, read-only locations, and the directory traversal bypasses this.\n\nThe fix for CVE-2014-0475 rejects \"..\" path components in locale names passed to setlocale or taken from the LC_ALL, LC_* and LANG environment variables.  gettext reads LANGUAGE directly and appends each colon-separated entry to the message catalog directory, so that fix did not cover LANGUAGE.\n\nLANGUAGE is only used when the LC_MESSAGES locale is not \"C\", \"C.<encoding>\" or \"POSIX\", so the attacker must also be able to select another installed locale, for example through LANG or LC_ALL.  Exploitation also requires that the attacker can place the crafted file in a location readable by the target program, and that the environment crosses a trust boundary without the program running as AT_SECURE.  An example is an SSH server that accepts LANGUAGE and LANG from clients through the AcceptEnv directive and restricts an account to a forced command; the attacker may use this to escape the restriction.",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-22"
+        ],
+        "VendorSeverity": {
+          "redhat": 2
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H",
+            "V3Score": 7
+          }
+        },
+        "References": [
+          "https://access.redhat.com/security/cve/CVE-2026-84243",
+          "https://inbox.sourceware.org/libc-alpha/20261012112453.47383-1-avinal.xlvii@gmail.com",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-84243",
+          "https://sourceware.org/bugzilla/show_bug.cgi?id=17142",
+          "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=advisories/GLIBC-SA-2026-0025",
+          "https://www.cve.org/CVERecord?id=CVE-2026-84243"
+        ],
+        "PublishedDate": "2026-10-30T18:18:13.65Z",
+        "LastModifiedDate": "2026-10-31T04:18:21.89Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-84243.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-84243.json.gz",
+      "official_source_sha256": "a1c8897b6ba039c59f3398f31cd3b4f554b898c454854abe14b29d328356d49d",
+      "current_raw_finding_retained": true,
+      "resolution": "verified_source_fix",
+      "rationale": "The signed vendor glibc source is rebuilt with the LANGUAGE path-component exclusion in intl/dcigettext.c. The actual libc and loader are replaced; ordinary intl tests and complete exported ABI comparison are retained. Package metadata stays vendor-versioned, so the raw scanner row remains.",
+      "patch": "deployment/security/minio-os-20261113/patches/glibc-LANGUAGE.patch",
+      "patch_sha256": "795bf9c17379d1e22266a471668724c19c2931171410b4c20568bcfac39a3513",
+      "actual_native_sha256": {
+        "usr/lib64/libc.so.6": "82e9dc7fad1051fbea6d8c35d2683aa00f2c6eb7c8d63d1098b9b5366592c3ad",
+        "usr/lib64/ld-linux-x86-64.so.2": "950e08c9ae646e5d7f9bb3163d83e5ae9df58dd0eabb5bcf26dda951257606ac"
+      },
+      "current_installed_version": "2.34-290.el9_9",
+      "exploit_payload_executed": false
+    },
+    {
+      "vulnerability_id": "CVE-2026-8674",
+      "package": "glibc-minimal-langpack",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-8674",
+        "VendorIDs": [
+          "RHSA-2026:95618"
+        ],
+        "PkgID": "glibc-minimal-langpack@2.34-283.el9_8.x86_64",
+        "PkgName": "glibc-minimal-langpack",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/glibc-minimal-langpack@2.34-283.el9_8?arch=x86_64&distro=redhat-9.8",
+          "UID": "3458c3587797c88d"
+        },
+        "InstalledVersion": "2.34-283.el9_8",
+        "FixedVersion": "2.34-284.el9_8.4",
+        "Status": "fixed",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-8674",
+        "Fingerprint": "sha256:d2dee38d5100bb1d25407b707bdca22e117063a8019fa6d6b1f5f851a2e22a23",
+        "Title": "glibc: glibc DNS stub resolver: Denial of Service via long search domain in configuration",
+        "Description": "Initializing the DNS stub resolver from an /etc/resolv.conf file, or a LOCALDOMAIN environment variable, whose search list contains a domain of roughly 200 characters or more in the GNU C Library version 2.26 to 2.44 results in an assertion failure which aborts the process.\n\nThe resolver truncates the search list when copying it into the fixed-size _res.defdname buffer, then asserts that the copy is consistent with the full configuration.  The consistency check compared against the wrong size and did not handle a first entry that does not fit, so a correctly truncated list failed the assertion.  Any process that resolves names through the library is affected, including long-running processes that reload /etc/resolv.conf on the next query after it changes.  Search domains are commonly written to /etc/resolv.conf from data received over DHCP or from a VPN server, so an attacker on the local network may be able to trigger this without privileges on the target system, subject to validation by the network configuration software.",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-617"
+        ],
+        "VendorSeverity": {
+          "alma": 2,
+          "oracle-oval": 2,
+          "redhat": 2,
+          "rocky": 2
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H",
+            "V3Score": 5.3
+          }
+        },
+        "References": [
+          "http://www.openwall.com/lists/oss-security/2026/09/17/4",
+          "https://access.redhat.com/errata/RHSA-2026:95618",
+          "https://access.redhat.com/errata/RHSA-2026:96087",
+          "https://access.redhat.com/security/cve/CVE-2026-8674",
+          "https://bugzilla.redhat.com/2531725",
+          "https://bugzilla.redhat.com/2536382",
+          "https://bugzilla.redhat.com/2538209",
+          "https://bugzilla.redhat.com/2538306",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2531725",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2536382",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538209",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538306",
+          "https://creativecommons.org/licenses/by/4.0/",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-8674",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-86805",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-89092",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-95818",
+          "https://errata.almalinux.org/8/ALSA-2026-96087.html",
+          "https://errata.rockylinux.org/RLSA-2026:95618",
+          "https://joshua.hu/fuzzing-glibc-libresolv",
+          "https://linux.oracle.com/cve/CVE-2026-8674.html",
+          "https://linux.oracle.com/errata/ELSA-2026-96087.html",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-8674",
+          "https://sourceware.org/bugzilla/show_bug.cgi?id=31026",
+          "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=advisories/GLIBC-SA-2026-0021",
+          "https://sourceware.org/git/?p=glibc.git;a=commit;h=506ea57086bfb9ce3daff1c14246a1cb532aba0a",
+          "https://www.cve.org/CVERecord?id=CVE-2026-8674"
+        ],
+        "PublishedDate": "2026-09-17T17:16:53.22Z",
+        "LastModifiedDate": "2026-09-18T18:17:47.257Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-8674.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-8674.json.gz",
+      "official_source_sha256": "1caa95e2def4ce39bf21074b8f8a71d0ec0d32055aaca4c7765ea166e73e9403",
+      "current_raw_finding_retained": false,
+      "resolution": "signed_vendor_update",
+      "current_installed_version": "2.34-290.el9_9",
+      "official_rhel9_fixed_releases": [
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        }
+      ],
+      "signed_rpm": "glibc-minimal-langpack-2.34-290.el9_9.x86_64.rpm",
+      "rationale": "Installed the complete signed Red Hat package update. Signature verification, actual RPM inventory, vendor fixed-release records and the complete current raw scan are bound together; this exact original CVE/package tuple is absent in the new scan. No raw rows or severity values were filtered or rewritten."
+    },
+    {
+      "vulnerability_id": "CVE-2026-86805",
+      "package": "glibc-minimal-langpack",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-86805",
+        "VendorIDs": [
+          "RHSA-2026:95618"
+        ],
+        "PkgID": "glibc-minimal-langpack@2.34-283.el9_8.x86_64",
+        "PkgName": "glibc-minimal-langpack",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/glibc-minimal-langpack@2.34-283.el9_8?arch=x86_64&distro=redhat-9.8",
+          "UID": "3458c3587797c88d"
+        },
+        "InstalledVersion": "2.34-283.el9_8",
+        "FixedVersion": "2.34-284.el9_8.4",
+        "Status": "fixed",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-86805",
+        "Fingerprint": "sha256:8cb62b0b0de72a8df69d60fe46606871d91dc872a3f6bdd40b05e414b807307a",
+        "Title": "glibc: glibc: Privilege escalation and arbitrary code execution via TOCTOU race condition in dynamic loader",
+        "Description": "A time-of-check to time-of-use (TOCTOU) race condition in the dynamic loader (ld.so) of the GNU C Library (glibc) versions 2.14 through 2.44 allows a local attacker to escalate privileges. When expanding $ORIGIN in DT_RPATH for setuid/setgid (AT_SECURE) programs, glibc validates the lexically normalized search path against the trusted directories but then opens the raw, un-normalized path. On systems where the Linux fs.protected_hardlinks sysctl is disabled, a local attacker who hard-links such a program into an attacker-controlled directory and wins a race to replace an intermediate path component with a symbolic link can direct the loader outside the trusted directory, causing it to load an attacker-controlled shared object and execute arbitrary code with the elevated privileges of the program.\n\nExploitation requires an installed setuid or setgid binary whose DT_RPATH uses $ORIGIN followed by \"..\" traversal that normalizes into a trusted directory, and the ability to hard-link that binary and win the race by swapping a path component for a symbolic link. Major Linux-based OS distributions ship with fs.protected_hardlinks enabled by default and mitigate the vulnerability.",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-367"
+        ],
+        "VendorSeverity": {
+          "alma": 2,
+          "amazon": 3,
+          "oracle-oval": 2,
+          "redhat": 2,
+          "rocky": 2
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H",
+            "V3Score": 7
+          }
+        },
+        "References": [
+          "https://access.redhat.com/errata/RHSA-2026:95618",
+          "https://access.redhat.com/errata/RHSA-2026:96087",
+          "https://access.redhat.com/security/cve/CVE-2026-86805",
+          "https://bugzilla.redhat.com/2531725",
+          "https://bugzilla.redhat.com/2536382",
+          "https://bugzilla.redhat.com/2538209",
+          "https://bugzilla.redhat.com/2538306",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2531725",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2536382",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538209",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538306",
+          "https://creativecommons.org/licenses/by/4.0/",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-8674",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-86805",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-89092",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-95818",
+          "https://errata.almalinux.org/8/ALSA-2026-96087.html",
+          "https://errata.rockylinux.org/RLSA-2026:95618",
+          "https://linux.oracle.com/cve/CVE-2026-86805.html",
+          "https://linux.oracle.com/errata/ELSA-2026-96087.html",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-86805",
+          "https://sourceware.org/bugzilla/show_bug.cgi?id=34360",
+          "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=advisories/GLIBC-SA-2026-0022",
+          "https://www.cve.org/CVERecord?id=CVE-2026-86805"
+        ],
+        "PublishedDate": "2026-09-22T16:18:06.23Z",
+        "LastModifiedDate": "2026-09-23T04:17:57.137Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-86805.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-86805.json.gz",
+      "official_source_sha256": "47a38e28056ff7b131a7b424c0948e6f0871bfcac0b51a7061b5747029e2a2b6",
+      "current_raw_finding_retained": false,
+      "resolution": "signed_vendor_update",
+      "current_installed_version": "2.34-290.el9_9",
+      "official_rhel9_fixed_releases": [
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98512",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-290.el9_9"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98512",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-290.el9_9"
+        }
+      ],
+      "signed_rpm": "glibc-minimal-langpack-2.34-290.el9_9.x86_64.rpm",
+      "rationale": "Installed the complete signed Red Hat package update. Signature verification, actual RPM inventory, vendor fixed-release records and the complete current raw scan are bound together; this exact original CVE/package tuple is absent in the new scan. No raw rows or severity values were filtered or rewritten."
+    },
+    {
+      "vulnerability_id": "CVE-2026-89092",
+      "package": "glibc-minimal-langpack",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-89092",
+        "VendorIDs": [
+          "RHSA-2026:95618"
+        ],
+        "PkgID": "glibc-minimal-langpack@2.34-283.el9_8.x86_64",
+        "PkgName": "glibc-minimal-langpack",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/glibc-minimal-langpack@2.34-283.el9_8?arch=x86_64&distro=redhat-9.8",
+          "UID": "3458c3587797c88d"
+        },
+        "InstalledVersion": "2.34-283.el9_8",
+        "FixedVersion": "2.34-284.el9_8.4",
+        "Status": "fixed",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-89092",
+        "Fingerprint": "sha256:1340fa1da711ede500ee07145a34f7c0c26c458bc898ecbc7a2a50fed3358363",
+        "Title": "glibc: nscd stack overflow leads to degraded DNS resolution",
+        "Description": "The nscd service in the GNU C Library 2.3.4 onwards may crash due to a \nstack overflow when a malicious DNS server returns too large a response \nfor a DNS query, resulting in degraded DNS resolution for the system.\n\n\n\nExploitation of this bug needs a system that has nscd enabled and using \nan untrusted DNS server for name resolution, with the compromised DNS \nserver being capable of processing records large enough to result in a \nstack overflow in an nscd thread stack.  During experimentation, bind 9 \nwas unable to handle large records, but that could change in future or \nwith a different name server.  In typical installations, nscd is \nexecuted in an isolated context as its own user without a shell, due to \nwhich any compromise of that service is isolated.\n\n\n\nThere is a remote possibility of nscd cache corruption if an attacker \nmanages to get the stack pointer into a desired point in the heap, \npotentially resulting in other caches in nscd being overwritten with \ncorrupt data through the stack overflow, until the buggy code path \neventually results in a crash.\n\n\n\nFinally, a crash in nscd may result in performance degradation when \nresolving names, but it does not result in a denial of service.",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-789"
+        ],
+        "VendorSeverity": {
+          "alma": 2,
+          "oracle-oval": 2,
+          "redhat": 2,
+          "rocky": 2,
+          "ubuntu": 2
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:L",
+            "V3Score": 4.2
+          }
+        },
+        "References": [
+          "http://www.openwall.com/lists/oss-security/2026/09/11/2",
+          "https://access.redhat.com/errata/RHSA-2026:95618",
+          "https://access.redhat.com/errata/RHSA-2026:96087",
+          "https://access.redhat.com/security/cve/CVE-2026-89092",
+          "https://bugzilla.redhat.com/2531725",
+          "https://bugzilla.redhat.com/2536382",
+          "https://bugzilla.redhat.com/2538209",
+          "https://bugzilla.redhat.com/2538306",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2531725",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2536382",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538209",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538306",
+          "https://creativecommons.org/licenses/by/4.0/",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-8674",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-86805",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-89092",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-95818",
+          "https://errata.almalinux.org/8/ALSA-2026-96087.html",
+          "https://errata.rockylinux.org/RLSA-2026:95618",
+          "https://linux.oracle.com/cve/CVE-2026-89092.html",
+          "https://linux.oracle.com/errata/ELSA-2026-96087.html",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-89092",
+          "https://sourceware.org/bugzilla/show_bug.cgi?id=34624",
+          "https://sourceware.org/git/?p=glibc.git;a=blob;f=advisories/GLIBC-SA-2026-0016",
+          "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=advisories/GLIBC-SA-2026-0016",
+          "https://www.cve.org/CVERecord?id=CVE-2026-89092"
+        ],
+        "PublishedDate": "2026-09-11T02:18:35.46Z",
+        "LastModifiedDate": "2026-10-26T23:10:00.183Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-89092.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-89092.json.gz",
+      "official_source_sha256": "1816bfad556ac5c232b03fed1d37408a23f3aa19f10e5f2b691ffa5733bbbea4",
+      "current_raw_finding_retained": false,
+      "resolution": "signed_vendor_update",
+      "current_installed_version": "2.34-290.el9_9",
+      "official_rhel9_fixed_releases": [
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98512",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-290.el9_9"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98512",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-290.el9_9"
+        }
+      ],
+      "signed_rpm": "glibc-minimal-langpack-2.34-290.el9_9.x86_64.rpm",
+      "rationale": "Installed the complete signed Red Hat package update. Signature verification, actual RPM inventory, vendor fixed-release records and the complete current raw scan are bound together; this exact original CVE/package tuple is absent in the new scan. No raw rows or severity values were filtered or rewritten."
+    },
+    {
+      "vulnerability_id": "CVE-2026-95818",
+      "package": "glibc-minimal-langpack",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-95818",
+        "VendorIDs": [
+          "RHSA-2026:95618"
+        ],
+        "PkgID": "glibc-minimal-langpack@2.34-283.el9_8.x86_64",
+        "PkgName": "glibc-minimal-langpack",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/glibc-minimal-langpack@2.34-283.el9_8?arch=x86_64&distro=redhat-9.8",
+          "UID": "3458c3587797c88d"
+        },
+        "InstalledVersion": "2.34-283.el9_8",
+        "FixedVersion": "2.34-284.el9_8.4",
+        "Status": "fixed",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-95818",
+        "Fingerprint": "sha256:1a71010e51252f0d2e9dca76d87bc760f3b70c66397387bfb220260a6e2667ed",
+        "Title": "glibc: glibc: Local attacker can cause denial of service and information disclosure via stack-based buffer overflow.",
+        "Description": "A stack-based buffer overflow in the dynamic loader (ld.so) of the GNU C Library (glibc) versions 2.14 through 2.44 allows a local attacker to crash or corrupt the memory of setuid/setgid (AT_SECURE) programs.\n\nWhen such a program's DT_RPATH or DT_RUNPATH begins with $ORIGIN and is followed by NUL or '/' the loader both reads past the end of the path buffer and writes past the end of a stack-allocated internal buffer. The corrupted loader stack can lead to a loader crash (denial of service) and limited disclosure of process memory.",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-121"
+        ],
+        "VendorSeverity": {
+          "alma": 2,
+          "oracle-oval": 2,
+          "redhat": 2,
+          "rocky": 2
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H",
+            "V3Score": 7
+          }
+        },
+        "References": [
+          "https://access.redhat.com/errata/RHSA-2026:95618",
+          "https://access.redhat.com/errata/RHSA-2026:96087",
+          "https://access.redhat.com/security/cve/CVE-2026-95818",
+          "https://bugzilla.redhat.com/2531725",
+          "https://bugzilla.redhat.com/2536382",
+          "https://bugzilla.redhat.com/2538209",
+          "https://bugzilla.redhat.com/2538306",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2531725",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2536382",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538209",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2538306",
+          "https://creativecommons.org/licenses/by/4.0/",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-8674",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-86805",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-89092",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-95818",
+          "https://errata.almalinux.org/8/ALSA-2026-96087.html",
+          "https://errata.rockylinux.org/RLSA-2026:95618",
+          "https://linux.oracle.com/cve/CVE-2026-95818.html",
+          "https://linux.oracle.com/errata/ELSA-2026-96087.html",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-95818",
+          "https://sourceware.org/bugzilla/show_bug.cgi?id=34360",
+          "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=advisories/GLIBC-SA-2026-0023",
+          "https://www.cve.org/CVERecord?id=CVE-2026-95818"
+        ],
+        "PublishedDate": "2026-09-22T17:17:32.093Z",
+        "LastModifiedDate": "2026-09-22T19:56:19.073Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-95818.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-95818.json.gz",
+      "official_source_sha256": "10a7d2fc893978cceaf5191834329b8dceb200d650a4ba9a20600996d23fcb3f",
+      "current_raw_finding_retained": false,
+      "resolution": "signed_vendor_update",
+      "current_installed_version": "2.34-290.el9_9",
+      "official_rhel9_fixed_releases": [
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98512",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-290.el9_9"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-05T00:00:00Z",
+          "advisory": "RHSA-2026:95618",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-284.el9_8.4"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98512",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "glibc-0:2.34-290.el9_9"
+        }
+      ],
+      "signed_rpm": "glibc-minimal-langpack-2.34-290.el9_9.x86_64.rpm",
+      "rationale": "Installed the complete signed Red Hat package update. Signature verification, actual RPM inventory, vendor fixed-release records and the complete current raw scan are bound together; this exact original CVE/package tuple is absent in the new scan. No raw rows or severity values were filtered or rewritten."
+    },
+    {
+      "vulnerability_id": "CVE-2026-97399",
+      "package": "glibc-minimal-langpack",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-97399",
+        "PkgID": "glibc-minimal-langpack@2.34-283.el9_8.x86_64",
+        "PkgName": "glibc-minimal-langpack",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/glibc-minimal-langpack@2.34-283.el9_8?arch=x86_64&distro=redhat-9.8",
+          "UID": "3458c3587797c88d"
+        },
+        "InstalledVersion": "2.34-283.el9_8",
+        "Status": "affected",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-97399",
+        "Fingerprint": "sha256:15b726faa975a34b3bb77f4725f4fba0e0c33c3a3ab00a52aabb0f59e6c7cf10",
+        "Title": "glibc: glibc: Denial of Service via out-of-bounds read in strncasecmp",
+        "Description": "The strncasecmp function in the GNU C Library 2.24 and later optimized for the Power8 architecture may read one byte beyond the input size limit, which may crash a program when that byte is not readable.\n\nThis condition may happen when the input strings to the strncasecmp function are attacker controlled in an application and they match all the way up to the edge of their page and the neighbouring page is either not mapped or is not readable.",
+        "Severity": "LOW",
+        "CweIDs": [
+          "CWE-126"
+        ],
+        "VendorSeverity": {
+          "redhat": 1
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L",
+            "V3Score": 3.7
+          }
+        },
+        "References": [
+          "http://www.openwall.com/lists/oss-security/2026/09/28/7",
+          "https://access.redhat.com/security/cve/CVE-2026-97399",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-97399",
+          "https://sourceware.org/bugzilla/show_bug.cgi?id=34683",
+          "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=advisories/GLIBC-SA-2026-0024",
+          "https://www.cve.org/CVERecord?id=CVE-2026-97399"
+        ],
+        "PublishedDate": "2026-09-28T16:17:18.55Z",
+        "LastModifiedDate": "2026-09-29T21:36:39.547Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-97399.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-97399.json.gz",
+      "official_source_sha256": "bd8a53de1b71671935f14d178018127ecaa32b2db1ce1b3780710d0d8099e7d7",
+      "current_raw_finding_retained": true,
+      "resolution": "exact_component_not_affected",
+      "rationale": "Official advisory confines the faulty strncasecmp implementation to Power8. All 70 actual runtime ELF headers are ELF64 little-endian e_machine=62 (x86_64), including original RPM libc. Actual libc defines x86 SSE/AVX/EVEX strncasecmp implementations. No claim that Power8 implementation is fixed.",
+      "scope_status": "SUPPORTED_ARCHITECTURE_EXCLUSION_BASELINE",
+      "scope_evidence": "deployment/security/minio-os-20261113-evidence/baseline-scope-review.json",
+      "current_installed_version": "2.34-290.el9_9"
+    },
+    {
+      "vulnerability_id": "CVE-2026-102010",
+      "package": "libgcc",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-102010",
+        "PkgID": "libgcc@11.5.0-14.el9.x86_64",
+        "PkgName": "libgcc",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/libgcc@11.5.0-14.el9?arch=x86_64&distro=redhat-9.8",
+          "UID": "a77348f899be0072"
+        },
+        "InstalledVersion": "11.5.0-14.el9",
+        "Status": "affected",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-102010",
+        "Fingerprint": "sha256:e658f683ccb0c8c8e8f57ffc68572feede93e511353fc87a897898b5d866cde9",
+        "Title": "gcc-toolset-15-gcc: gcc: gcc-toolset-16: gcc: Denial of Service via use-after-free in binary heap erase_if",
+        "Description": "A flaw was found in GCC. When an application calls the erase_if function on a binary heap priority queue in libstdc++, the library reallocates storage but fails to update its internal entry pointer. An attacker capable of triggering this operation can exploit this use-after-free condition, leading to a Denial of Service (DoS) via an application crash or potential memory corruption.",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-825"
+        ],
+        "VendorSeverity": {
+          "alma": 2,
+          "oracle-oval": 2,
+          "redhat": 2,
+          "rocky": 2
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:H",
+            "V3Score": 7
+          }
+        },
+        "References": [
+          "https://access.redhat.com/errata/RHSA-2026:73642",
+          "https://access.redhat.com/errata/RHSA-2026:74569",
+          "https://access.redhat.com/errata/RHSA-2026:89830",
+          "https://access.redhat.com/errata/RHSA-2026:89891",
+          "https://access.redhat.com/errata/RHSA-2026:90915",
+          "https://access.redhat.com/errata/RHSA-2026:95581",
+          "https://access.redhat.com/errata/RHSA-2026:98474",
+          "https://access.redhat.com/errata/RHSA-2026:98475",
+          "https://access.redhat.com/errata/RHSA-2026:98483",
+          "https://access.redhat.com/errata/RHSA-2026:98576",
+          "https://access.redhat.com/errata/RHSA-2026:98577",
+          "https://access.redhat.com/errata/RHSA-2026:98580",
+          "https://access.redhat.com/errata/RHSA-2026:99032",
+          "https://access.redhat.com/errata/RHSA-2026:99041",
+          "https://access.redhat.com/errata/RHSA-2026:99089",
+          "https://access.redhat.com/security/cve/CVE-2026-102010",
+          "https://bugzilla.redhat.com/2478395",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2478395",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2537811",
+          "https://creativecommons.org/licenses/by/4.0/",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-102010",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-95619",
+          "https://errata.almalinux.org/8/ALSA-2026-90915.html",
+          "https://errata.rockylinux.org/RLSA-2026:89830",
+          "https://linux.oracle.com/cve/CVE-2026-102010.html",
+          "https://linux.oracle.com/errata/ELSA-2026-90915.html",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-102010",
+          "https://www.cve.org/CVERecord?id=CVE-2026-102010"
+        ],
+        "PublishedDate": "2026-09-28T19:16:48.83Z",
+        "LastModifiedDate": "2026-11-11T20:17:04.977Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-102010.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-102010.json.gz",
+      "official_source_sha256": "b414dfc39af35e5938c5519257cbbf3597e05b33dbed36598b5265e3008c1b06",
+      "current_raw_finding_retained": false,
+      "resolution": "signed_vendor_update",
+      "current_installed_version": "11.5.0-17.el9_9",
+      "official_rhel9_fixed_releases": [
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98474",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "gcc-toolset-15-gcc-0:15.2.1-7.3.el9_9"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98475",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "gcc-0:11.5.0-16.el9_9"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98483",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "gcc-toolset-16-gcc-0:16.2.1-1.3.el9_9"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98475",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "gcc-0:11.5.0-16.el9_9"
+        }
+      ],
+      "signed_rpm": "libgcc-11.5.0-17.el9_9.x86_64.rpm",
+      "rationale": "Installed the complete signed Red Hat package update. Signature verification, actual RPM inventory, vendor fixed-release records and the complete current raw scan are bound together; this exact original CVE/package tuple is absent in the new scan. No raw rows or severity values were filtered or rewritten."
+    },
+    {
+      "vulnerability_id": "CVE-2026-114690",
+      "package": "libgcc",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-114690",
+        "PkgID": "libgcc@11.5.0-14.el9.x86_64",
+        "PkgName": "libgcc",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/libgcc@11.5.0-14.el9?arch=x86_64&distro=redhat-9.8",
+          "UID": "a77348f899be0072"
+        },
+        "InstalledVersion": "11.5.0-14.el9",
+        "Status": "affected",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-114690",
+        "Fingerprint": "sha256:97e57b3aaf0025daba2396fac932dfeaecb527ac200ee2263d74d9f10006b88b",
+        "Title": "gcc: Confirmed out-of-bounds read/write in libstdc++ parallel `std",
+        "Description": "A flaw was found in GCC. An out-of-bounds memory access vulnerability exists in the libstdc++ parallel search implementation due to an undersized internal buffer. A local attacker can exploit this flaw by providing crafted search data to an application compiled with parallel mode, causing the process to crash and leading to a Denial of Service (DoS).",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-787"
+        ],
+        "VendorSeverity": {
+          "redhat": 2
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+            "V3Score": 6.2
+          }
+        },
+        "References": [
+          "https://access.redhat.com/errata/RHSA-2026:98115",
+          "https://access.redhat.com/errata/RHSA-2026:98524",
+          "https://access.redhat.com/errata/RHSA-2026:98526",
+          "https://access.redhat.com/errata/RHSA-2026:98534",
+          "https://access.redhat.com/errata/RHSA-2026:98633",
+          "https://access.redhat.com/errata/RHSA-2026:98640",
+          "https://access.redhat.com/errata/RHSA-2026:98648",
+          "https://access.redhat.com/security/cve/CVE-2026-114690",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2478652",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-114690",
+          "https://www.cve.org/CVERecord?id=CVE-2026-114690"
+        ],
+        "PublishedDate": "2026-10-30T08:16:55.047Z",
+        "LastModifiedDate": "2026-11-11T19:17:29.35Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-114690.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-114690.json.gz",
+      "official_source_sha256": "5e25603fe8c16c76e5452fe47e42c64192e980da62fd05120866ae8950ac1c5e",
+      "current_raw_finding_retained": false,
+      "resolution": "signed_vendor_update",
+      "current_installed_version": "11.5.0-17.el9_9",
+      "official_rhel9_fixed_releases": [
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98524",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "gcc-0:11.5.0-17.el9_9"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98526",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "gcc-toolset-15-gcc-0:15.2.1-7.4.el9_9"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98534",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "gcc-toolset-16-gcc-0:16.2.1-1.4.el9_9"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98524",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "gcc-0:11.5.0-17.el9_9"
+        }
+      ],
+      "signed_rpm": "libgcc-11.5.0-17.el9_9.x86_64.rpm",
+      "rationale": "Installed the complete signed Red Hat package update. Signature verification, actual RPM inventory, vendor fixed-release records and the complete current raw scan are bound together; this exact original CVE/package tuple is absent in the new scan. No raw rows or severity values were filtered or rewritten."
+    },
+    {
+      "vulnerability_id": "CVE-2026-114691",
+      "package": "libgcc",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-114691",
+        "PkgID": "libgcc@11.5.0-14.el9.x86_64",
+        "PkgName": "libgcc",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/libgcc@11.5.0-14.el9?arch=x86_64&distro=redhat-9.8",
+          "UID": "a77348f899be0072"
+        },
+        "InstalledVersion": "11.5.0-14.el9",
+        "Status": "affected",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-114691",
+        "Fingerprint": "sha256:36addc7b5e0cde1b939dca2579f15cbd5ca140981c48f8582947a0f8dd624c04",
+        "Title": "gcc: Integer wrap in `std",
+        "Description": "A flaw was found in the libstdc++ component of GCC. An attacker who can provide an excessively large element count to a boolean vector (std::vector<bool>) constructor can trigger an integer wrap during internal memory calculations. This issue leaves the container in an inconsistent state, leading to out-of-bounds memory access and resulting in an application crash or a Denial of Service (DoS) during subsequent operations.",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-190"
+        ],
+        "VendorSeverity": {
+          "redhat": 2
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H",
+            "V3Score": 5.9
+          }
+        },
+        "References": [
+          "https://access.redhat.com/errata/RHSA-2026:98115",
+          "https://access.redhat.com/errata/RHSA-2026:98524",
+          "https://access.redhat.com/errata/RHSA-2026:98526",
+          "https://access.redhat.com/errata/RHSA-2026:98534",
+          "https://access.redhat.com/errata/RHSA-2026:98633",
+          "https://access.redhat.com/errata/RHSA-2026:98640",
+          "https://access.redhat.com/errata/RHSA-2026:98648",
+          "https://access.redhat.com/security/cve/CVE-2026-114691",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2478508",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-114691",
+          "https://www.cve.org/CVERecord?id=CVE-2026-114691"
+        ],
+        "PublishedDate": "2026-10-30T08:16:55.257Z",
+        "LastModifiedDate": "2026-11-11T19:17:29.64Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-114691.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-114691.json.gz",
+      "official_source_sha256": "2763fc8eb21260ddae61e3df95cd0b6b271670de3160971d9c0940f36589f25b",
+      "current_raw_finding_retained": false,
+      "resolution": "signed_vendor_update",
+      "current_installed_version": "11.5.0-17.el9_9",
+      "official_rhel9_fixed_releases": [
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98524",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "gcc-0:11.5.0-17.el9_9"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98526",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "gcc-toolset-15-gcc-0:15.2.1-7.4.el9_9"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98534",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "gcc-toolset-16-gcc-0:16.2.1-1.4.el9_9"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98524",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "gcc-0:11.5.0-17.el9_9"
+        }
+      ],
+      "signed_rpm": "libgcc-11.5.0-17.el9_9.x86_64.rpm",
+      "rationale": "Installed the complete signed Red Hat package update. Signature verification, actual RPM inventory, vendor fixed-release records and the complete current raw scan are bound together; this exact original CVE/package tuple is absent in the new scan. No raw rows or severity values were filtered or rewritten."
+    },
+    {
+      "vulnerability_id": "CVE-2026-125709",
+      "package": "libgcc",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-125709",
+        "PkgID": "libgcc@11.5.0-14.el9.x86_64",
+        "PkgName": "libgcc",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/libgcc@11.5.0-14.el9?arch=x86_64&distro=redhat-9.8",
+          "UID": "a77348f899be0072"
+        },
+        "InstalledVersion": "11.5.0-14.el9",
+        "Status": "affected",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-125709",
+        "Fingerprint": "sha256:6c62aee160240d983d0f4ade8456f02b4d507ac1b4e066731c1a1f9863432ee6",
+        "Title": "libstdc++: overflow leaves streambuf in inconsistent state on I/O error.",
+        "Description": "A flaw was found in libstdc++. When a byte-by-byte write operation fails during file stream processing, the library may still append data into the internal memory buffer. An attacker capable of inducing repeated write failures in an affected service can trigger a buffer overflow, potentially resulting in a Denial of Service (DoS) or memory corruption.",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-787"
+        ],
+        "VendorSeverity": {
+          "redhat": 2
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:N/I:L/A:L",
+            "V3Score": 4.2
+          }
+        },
+        "References": [
+          "https://access.redhat.com/security/cve/CVE-2026-125709",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2569390",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-125709",
+          "https://www.cve.org/CVERecord?id=CVE-2026-125709"
+        ],
+        "PublishedDate": "2026-11-10T12:17:18.407Z",
+        "LastModifiedDate": "2026-11-10T19:21:13.047Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-125709.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-125709.json.gz",
+      "official_source_sha256": "7ec5d6bbff3cce4ef39e303549bbc22533e8aad6e7d117f668d6b6a4ce6672ed",
+      "current_raw_finding_retained": true,
+      "resolution": "exact_component_not_affected",
+      "rationale": "Official affected component is libstdc++ file-stream buffering, structurally separate from libgcc. Exact actual libgcc_s original RPM hash, complete package file map and all-runtime dependency inventory contain no libstdc++ library/tool or streambuf implementation symbols; libgcc_s DT_NEEDED is libc.so.6 only. GCC source libgcc build/files and libstdc++ fstream.tcc corroborate the component separation. No claim libstdc++ itself is fixed or that all components of gcc SRPM are safe.",
+      "scope_status": "SUPPORTED_BINARY_PACKAGE_COMPONENT_EXCLUSION_BASELINE",
+      "scope_evidence": "deployment/security/minio-os-20261113-evidence/baseline-scope-review.json",
+      "current_installed_version": "11.5.0-17.el9_9"
+    },
+    {
+      "vulnerability_id": "CVE-2026-95619",
+      "package": "libgcc",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-95619",
+        "PkgID": "libgcc@11.5.0-14.el9.x86_64",
+        "PkgName": "libgcc",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/libgcc@11.5.0-14.el9?arch=x86_64&distro=redhat-9.8",
+          "UID": "a77348f899be0072"
+        },
+        "InstalledVersion": "11.5.0-14.el9",
+        "Status": "affected",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-95619",
+        "Fingerprint": "sha256:bbd336089e0dcca597015a31a80b8692921f3f19db097b49601c6181fff4cc9c",
+        "Title": "gcc: libstdc++ integer overflow in `new` operator",
+        "Description": "A flaw was found in libstdc++. An integer overflow can occur when processing large inputs to the aligned operator new in the C++ library. This vulnerability could lead to an undersized memory allocation, potentially causing memory corruption or application instability.",
+        "Severity": "MEDIUM",
+        "CweIDs": [
+          "CWE-190"
+        ],
+        "VendorSeverity": {
+          "alma": 2,
+          "oracle-oval": 2,
+          "redhat": 2,
+          "rocky": 2,
+          "ubuntu": 2
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:H/A:H",
+            "V3Score": 7.7
+          }
+        },
+        "References": [
+          "https://access.redhat.com/errata/RHSA-2026:58503",
+          "https://access.redhat.com/errata/RHSA-2026:67275",
+          "https://access.redhat.com/errata/RHSA-2026:89830",
+          "https://access.redhat.com/errata/RHSA-2026:98475",
+          "https://access.redhat.com/errata/RHSA-2026:99032",
+          "https://access.redhat.com/security/cve/CVE-2026-95619",
+          "https://bugzilla.redhat.com/2478395",
+          "https://bugzilla.redhat.com/2537811",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2478395",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2537811",
+          "https://creativecommons.org/licenses/by/4.0/",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-102010",
+          "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-95619",
+          "https://errata.almalinux.org/8/ALSA-2026-89830.html",
+          "https://errata.rockylinux.org/RLSA-2026:89830",
+          "https://gcc.gnu.org/pipermail/gcc-patches/2026-September/732381.html",
+          "https://linux.oracle.com/cve/CVE-2026-95619.html",
+          "https://linux.oracle.com/errata/ELSA-2026-89830.html",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-95619",
+          "https://www.cve.org/CVERecord?id=CVE-2026-95619"
+        ],
+        "PublishedDate": "2026-09-22T13:17:13.3Z",
+        "LastModifiedDate": "2026-11-11T20:17:10.75Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-95619.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-95619.json.gz",
+      "official_source_sha256": "85177007813c22e3e06df9e4f774ba68b744aab67e6a63c94f7d22916b00658e",
+      "current_raw_finding_retained": false,
+      "resolution": "signed_vendor_update",
+      "current_installed_version": "11.5.0-17.el9_9",
+      "official_rhel9_fixed_releases": [
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98475",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "gcc-0:11.5.0-16.el9_9"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98475",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "gcc-0:11.5.0-16.el9_9"
+        }
+      ],
+      "signed_rpm": "libgcc-11.5.0-17.el9_9.x86_64.rpm",
+      "rationale": "Installed the complete signed Red Hat package update. Signature verification, actual RPM inventory, vendor fixed-release records and the complete current raw scan are bound together; this exact original CVE/package tuple is absent in the new scan. No raw rows or severity values were filtered or rewritten."
+    },
+    {
+      "vulnerability_id": "CVE-2021-46195",
+      "package": "libgcc",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2021-46195",
+        "PkgID": "libgcc@11.5.0-14.el9.x86_64",
+        "PkgName": "libgcc",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/libgcc@11.5.0-14.el9?arch=x86_64&distro=redhat-9.8",
+          "UID": "a77348f899be0072"
+        },
+        "InstalledVersion": "11.5.0-14.el9",
+        "Status": "affected",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2021-46195",
+        "Fingerprint": "sha256:662b03a91da2644fb7a7df6ac11da747e91ae75e1c6d16251e26a05f39be1f82",
+        "Title": "gcc: uncontrolled recursion in libiberty/rust-demangle.c",
+        "Description": "GCC v12.0 was discovered to contain an uncontrolled recursion via the component libiberty/rust-demangle.c. This vulnerability allows attackers to cause a Denial of Service (DoS) by consuming excessive CPU and memory resources.",
+        "Severity": "LOW",
+        "CweIDs": [
+          "CWE-674"
+        ],
+        "VendorSeverity": {
+          "alma": 1,
+          "nvd": 2,
+          "oracle-oval": 1,
+          "photon": 2,
+          "redhat": 1,
+          "ubuntu": 1
+        },
+        "CVSS": {
+          "nvd": {
+            "V2Vector": "AV:N/AC:M/Au:N/C:N/I:N/A:P",
+            "V3Vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+            "V2Score": 4.3,
+            "V3Score": 5.5
+          },
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:L",
+            "V3Score": 3.3
+          }
+        },
+        "References": [
+          "https://access.redhat.com/errata/RHSA-2022:8415",
+          "https://access.redhat.com/security/cve/CVE-2021-46195",
+          "https://bugzilla.redhat.com/2046300",
+          "https://cert-portal.siemens.com/productcert/html/ssa-398330.html",
+          "https://errata.almalinux.org/9/ALSA-2022-8415.html",
+          "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=103841",
+          "https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=f10bec5ffa487ad3033ed5f38cfd0fc7d696deab",
+          "https://linux.oracle.com/cve/CVE-2021-46195.html",
+          "https://linux.oracle.com/errata/ELSA-2022-8415.html",
+          "https://nvd.nist.gov/vuln/detail/CVE-2021-46195",
+          "https://www.cve.org/CVERecord?id=CVE-2021-46195"
+        ],
+        "PublishedDate": "2022-01-14T20:15:15.6Z",
+        "LastModifiedDate": "2026-10-14T13:17:12.637Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2021-46195.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2021-46195.json.gz",
+      "official_source_sha256": "48ca070b4669eef85725f23ff4d05bc21084d91e8b1afacfea109a5afdc0fa43",
+      "current_raw_finding_retained": true,
+      "resolution": "exact_component_not_affected",
+      "rationale": "Official affected implementation is libiberty/rust-demangle.c, not libgcc runtime unwinding. Actual RPM database maps libgcc to one original-hash libgcc_s ELF plus links/build-id/licenses; no libiberty or demangler tool/library is present. All actual ELF defined/undefined symbols and DT_NEEDED were inspected, without Rust demangle implementation symbols or libiberty dependency. Official Red Hat 2022-27943 statement explicitly excludes libgcc; GCC source/spec additionally separates libgcc from libiberty. This is package-component scope, not proof all GCC-source components are fixed.",
+      "scope_status": "SUPPORTED_BINARY_PACKAGE_COMPONENT_EXCLUSION_BASELINE",
+      "scope_evidence": "deployment/security/minio-os-20261113-evidence/baseline-scope-review.json",
+      "current_installed_version": "11.5.0-17.el9_9"
+    },
+    {
+      "vulnerability_id": "CVE-2022-27943",
+      "package": "libgcc",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2022-27943",
+        "PkgID": "libgcc@11.5.0-14.el9.x86_64",
+        "PkgName": "libgcc",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/libgcc@11.5.0-14.el9?arch=x86_64&distro=redhat-9.8",
+          "UID": "a77348f899be0072"
+        },
+        "InstalledVersion": "11.5.0-14.el9",
+        "Status": "affected",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2022-27943",
+        "Fingerprint": "sha256:adc57f2dbedba59056508bf05bbe93d3c8909ee52cbc33f6731b8e6f49fd49eb",
+        "Title": "binutils: libiberty/rust-demangle.c in GNU GCC 11.2 allows stack exhaustion in demangle_const",
+        "Description": "libiberty/rust-demangle.c in GNU GCC 11.2 allows stack consumption in demangle_const, as demonstrated by nm-new.",
+        "Severity": "LOW",
+        "CweIDs": [
+          "CWE-674"
+        ],
+        "VendorSeverity": {
+          "amazon": 1,
+          "nvd": 2,
+          "redhat": 1,
+          "ubuntu": 1
+        },
+        "CVSS": {
+          "nvd": {
+            "V2Vector": "AV:N/AC:M/Au:N/C:N/I:N/A:P",
+            "V3Vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+            "V2Score": 4.3,
+            "V3Score": 5.5
+          },
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+            "V3Score": 5.5
+          }
+        },
+        "References": [
+          "https://access.redhat.com/security/cve/CVE-2022-27943",
+          "https://cert-portal.siemens.com/productcert/html/ssa-398330.html",
+          "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105039",
+          "https://gcc.gnu.org/git/gitweb.cgi?p=gcc.git;h=1a770b01ef415e114164b6151d1e55acdee09371",
+          "https://gcc.gnu.org/git/gitweb.cgi?p=gcc.git;h=9234cdca6ee88badfc00297e72f13dac4e540c79",
+          "https://gcc.gnu.org/git/gitweb.cgi?p=gcc.git;h=fc968115a742d9e4674d9725ce9c2106b91b6ead",
+          "https://gcc.gnu.org/pipermail/gcc-patches/2022-March/592244.html",
+          "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/H424YXGW7OKXS2NCAP35OP6Y4P4AW6VG/",
+          "https://nvd.nist.gov/vuln/detail/CVE-2022-27943",
+          "https://sourceware.org/bugzilla/show_bug.cgi?id=28995",
+          "https://www.cve.org/CVERecord?id=CVE-2022-27943"
+        ],
+        "PublishedDate": "2022-03-26T13:15:07.9Z",
+        "LastModifiedDate": "2026-10-14T17:17:37.83Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2022-27943.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2022-27943.json.gz",
+      "official_source_sha256": "8a0e15cc0404d2ab1838b1a4ba9ec26c6a05207b2216799357c04f42adb3203e",
+      "current_raw_finding_retained": true,
+      "resolution": "exact_component_not_affected",
+      "rationale": "Official affected implementation is libiberty/rust-demangle.c, not libgcc runtime unwinding. Actual RPM database maps libgcc to one original-hash libgcc_s ELF plus links/build-id/licenses; no libiberty or demangler tool/library is present. All actual ELF defined/undefined symbols and DT_NEEDED were inspected, without Rust demangle implementation symbols or libiberty dependency. Official Red Hat 2022-27943 statement explicitly excludes libgcc; GCC source/spec additionally separates libgcc from libiberty. This is package-component scope, not proof all GCC-source components are fixed.",
+      "scope_status": "SUPPORTED_BINARY_PACKAGE_COMPONENT_EXCLUSION_BASELINE",
+      "scope_evidence": "deployment/security/minio-os-20261113-evidence/baseline-scope-review.json",
+      "current_installed_version": "11.5.0-17.el9_9"
+    },
+    {
+      "vulnerability_id": "CVE-2026-115456",
+      "package": "libgcc",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2026-115456",
+        "PkgID": "libgcc@11.5.0-14.el9.x86_64",
+        "PkgName": "libgcc",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/libgcc@11.5.0-14.el9?arch=x86_64&distro=redhat-9.8",
+          "UID": "a77348f899be0072"
+        },
+        "InstalledVersion": "11.5.0-14.el9",
+        "Status": "affected",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2026-115456",
+        "Fingerprint": "sha256:77cf32967f620997a49d7c373f5b25a6a61cfda2cc2a1251e8a4c847f1597bc3",
+        "Title": "gcc: Out-of-bounds read in std::from_chars",
+        "Description": "A flaw was found in gcc. An attacker could cause a Denial of Service (DoS) by passing a string that is not null-terminated to the std::from_chars() function in the libstdc++ library. This issue triggers an out-of-bounds read beyond the allocated buffer, potentially leading to invalid data parsing or an application crash.",
+        "Severity": "LOW",
+        "CweIDs": [
+          "CWE-125"
+        ],
+        "VendorSeverity": {
+          "redhat": 1
+        },
+        "CVSS": {
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L",
+            "V3Score": 3.7
+          }
+        },
+        "References": [
+          "https://access.redhat.com/errata/RHSA-2026:98524",
+          "https://access.redhat.com/errata/RHSA-2026:98526",
+          "https://access.redhat.com/errata/RHSA-2026:98534",
+          "https://access.redhat.com/errata/RHSA-2026:98633",
+          "https://access.redhat.com/errata/RHSA-2026:98640",
+          "https://access.redhat.com/errata/RHSA-2026:98648",
+          "https://access.redhat.com/security/cve/CVE-2026-115456",
+          "https://bugzilla.redhat.com/show_bug.cgi?id=2563044",
+          "https://nvd.nist.gov/vuln/detail/CVE-2026-115456",
+          "https://www.cve.org/CVERecord?id=CVE-2026-115456"
+        ],
+        "PublishedDate": "2026-10-30T09:17:14.413Z",
+        "LastModifiedDate": "2026-11-11T20:17:05.333Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-115456.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2026-115456.json.gz",
+      "official_source_sha256": "d37c25bb17a6409e8dc2ee2d254d63ffc79afcb665088cc9d78c027244ba6d8a",
+      "current_raw_finding_retained": false,
+      "resolution": "signed_vendor_update",
+      "current_installed_version": "11.5.0-17.el9_9",
+      "official_rhel9_fixed_releases": [
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98524",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "gcc-0:11.5.0-17.el9_9"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98526",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "gcc-toolset-15-gcc-0:15.2.1-7.4.el9_9"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98534",
+          "cpe": "cpe:/a:redhat:enterprise_linux:9",
+          "package": "gcc-toolset-16-gcc-0:16.2.1-1.4.el9_9"
+        },
+        {
+          "product_name": "Red Hat Enterprise Linux 9",
+          "release_date": "2026-11-11T00:00:00Z",
+          "advisory": "RHSA-2026:98524",
+          "cpe": "cpe:/o:redhat:enterprise_linux:9",
+          "package": "gcc-0:11.5.0-17.el9_9"
+        }
+      ],
+      "signed_rpm": "libgcc-11.5.0-17.el9_9.x86_64.rpm",
+      "rationale": "Installed the complete signed Red Hat package update. Signature verification, actual RPM inventory, vendor fixed-release records and the complete current raw scan are bound together; this exact original CVE/package tuple is absent in the new scan. No raw rows or severity values were filtered or rewritten."
+    },
+    {
+      "vulnerability_id": "CVE-2023-50495",
+      "package": "ncurses-base",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2023-50495",
+        "PkgID": "ncurses-base@6.2-12.20210508.el9.noarch",
+        "PkgName": "ncurses-base",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/ncurses-base@6.2-12.20210508.el9?arch=noarch&distro=redhat-9.8",
+          "UID": "d864ddfd41ee2e06"
+        },
+        "InstalledVersion": "6.2-12.20210508.el9",
+        "Status": "affected",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-50495",
+        "Fingerprint": "sha256:1f3d664610fbe467f428373d5d4a41ecc95151e2343d628c7ff57e689cf9d019",
+        "Title": "ncurses: segmentation fault via _nc_wrap_entry()",
+        "Description": "NCurse v6.4-20230418 was discovered to contain a segmentation fault via the component _nc_wrap_entry().",
+        "Severity": "LOW",
+        "VendorSeverity": {
+          "amazon": 2,
+          "cbl-mariner": 2,
+          "nvd": 2,
+          "redhat": 1,
+          "ubuntu": 1
+        },
+        "CVSS": {
+          "nvd": {
+            "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+            "V3Score": 6.5
+          },
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+            "V3Score": 6.5
+          }
+        },
+        "References": [
+          "https://access.redhat.com/security/cve/CVE-2023-50495",
+          "https://cert-portal.siemens.com/productcert/html/ssa-794697.html",
+          "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/LU4MYMKFEZQ5VSCVLRIZGDQOUW3T44GT/",
+          "https://lists.gnu.org/archive/html/bug-ncurses/2023-04/msg00020.html",
+          "https://lists.gnu.org/archive/html/bug-ncurses/2023-04/msg00029.html",
+          "https://nvd.nist.gov/vuln/detail/CVE-2023-50495",
+          "https://security.netapp.com/advisory/ntap-20240119-0008/",
+          "https://ubuntu.com/security/notices/USN-6684-1",
+          "https://www.cve.org/CVERecord?id=CVE-2023-50495"
+        ],
+        "PublishedDate": "2023-12-12T15:15:07.867Z",
+        "LastModifiedDate": "2026-10-15T01:17:11.997Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2023-50495.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2023-50495.json.gz",
+      "official_source_sha256": "96d87b361ed7446cd872b7c54d57238084cd827d49b20b1c406890c473b150ce",
+      "current_raw_finding_retained": true,
+      "resolution": "exact_component_not_affected",
+      "rationale": "Actual ncurses-base package is terminfo data, directories and license, with no executable implementation. Source defect is parser handling of source terminfo strings, not a defect located in this binary data subpackage. IMPORTANT: same image DOES include affected implementation via ncurses-libs/libtic; this per-package mapping never clears that other tuple or the image as a whole.",
+      "scope_status": "SUPPORTED_BINARY_PACKAGE_COMPONENT_EXCLUSION_BASELINE",
+      "scope_evidence": "deployment/security/minio-os-20261113-evidence/baseline-scope-review.json",
+      "current_installed_version": "6.2-12.20210508.el9"
+    },
+    {
+      "vulnerability_id": "CVE-2023-50495",
+      "package": "ncurses-libs",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2023-50495",
+        "PkgID": "ncurses-libs@6.2-12.20210508.el9.x86_64",
+        "PkgName": "ncurses-libs",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/ncurses-libs@6.2-12.20210508.el9?arch=x86_64&distro=redhat-9.8",
+          "UID": "498121e5967f3e0e"
+        },
+        "InstalledVersion": "6.2-12.20210508.el9",
+        "Status": "affected",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-50495",
+        "Fingerprint": "sha256:41310a298bf9b7f3899dab80a40606eb17021a46222a09034e36f4d34b31cbb1",
+        "Title": "ncurses: segmentation fault via _nc_wrap_entry()",
+        "Description": "NCurse v6.4-20230418 was discovered to contain a segmentation fault via the component _nc_wrap_entry().",
+        "Severity": "LOW",
+        "VendorSeverity": {
+          "amazon": 2,
+          "cbl-mariner": 2,
+          "nvd": 2,
+          "redhat": 1,
+          "ubuntu": 1
+        },
+        "CVSS": {
+          "nvd": {
+            "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+            "V3Score": 6.5
+          },
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+            "V3Score": 6.5
+          }
+        },
+        "References": [
+          "https://access.redhat.com/security/cve/CVE-2023-50495",
+          "https://cert-portal.siemens.com/productcert/html/ssa-794697.html",
+          "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/LU4MYMKFEZQ5VSCVLRIZGDQOUW3T44GT/",
+          "https://lists.gnu.org/archive/html/bug-ncurses/2023-04/msg00020.html",
+          "https://lists.gnu.org/archive/html/bug-ncurses/2023-04/msg00029.html",
+          "https://nvd.nist.gov/vuln/detail/CVE-2023-50495",
+          "https://security.netapp.com/advisory/ntap-20240119-0008/",
+          "https://ubuntu.com/security/notices/USN-6684-1",
+          "https://www.cve.org/CVERecord?id=CVE-2023-50495"
+        ],
+        "PublishedDate": "2023-12-12T15:15:07.867Z",
+        "LastModifiedDate": "2026-10-15T01:17:11.997Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2023-50495.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2023-50495.json.gz",
+      "official_source_sha256": "96d87b361ed7446cd872b7c54d57238084cd827d49b20b1c406890c473b150ce",
+      "current_raw_finding_retained": true,
+      "resolution": "verified_source_fix",
+      "rationale": "The actual libtic.so.6.2 contains the affected terminfo parser even though tic is absent. Rebuilt the signed vendor source with upstream _nc_save_str NULL guards, retaining vendor patches and hardening. Actual libtic replaced; ordinary compiler/query and ABI checks retained. Raw version-based finding remains.",
+      "patch": "deployment/security/minio-os-20261113/patches/ncurses-save-string.patch",
+      "patch_sha256": "4ac6a608a4ca021076316189f46f7fe9417dc6bcb1a87e6f2313d54594da4e46",
+      "actual_native_sha256": {
+        "usr/lib64/libtic.so.6.2": "1e7a0d5aeba145ac9a7eeedcd9403fd6c6e33784bc2b6aa0bfb60953ec1e907c"
+      },
+      "current_installed_version": "6.2-12.20210508.el9",
+      "exploit_payload_executed": false
+    },
+    {
+      "vulnerability_id": "CVE-2022-41409",
+      "package": "pcre2",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2022-41409",
+        "PkgID": "pcre2@10.40-7.el9_8.x86_64",
+        "PkgName": "pcre2",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/pcre2@10.40-7.el9_8?arch=x86_64&distro=redhat-9.8",
+          "UID": "92898bb8601ab41d"
+        },
+        "InstalledVersion": "10.40-7.el9_8",
+        "Status": "affected",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2022-41409",
+        "Fingerprint": "sha256:b9eedbd8439c1a0d4a0974d44cb8323c9d2e77688c1a54071ce53af4ff9fd405",
+        "Title": "pcre2: negative repeat value in a pcre2test subject line leads to inifinite loop",
+        "Description": "Integer overflow vulnerability in pcre2test before 10.41 allows attackers to cause a denial of service or other unspecified impacts via negative input.",
+        "Severity": "LOW",
+        "CweIDs": [
+          "CWE-190"
+        ],
+        "VendorSeverity": {
+          "amazon": 1,
+          "cbl-mariner": 3,
+          "julia": 3,
+          "nvd": 3,
+          "photon": 3,
+          "redhat": 1,
+          "ubuntu": 1
+        },
+        "CVSS": {
+          "julia": {
+            "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+            "V3Score": 7.5
+          },
+          "nvd": {
+            "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+            "V3Score": 7.5
+          },
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+            "V3Score": 5.3
+          }
+        },
+        "References": [
+          "https://access.redhat.com/security/cve/CVE-2022-41409",
+          "https://github.com/PCRE2Project/pcre2/commit/94e1c001761373b7d9450768aa15d04c25547a35",
+          "https://github.com/PCRE2Project/pcre2/issues/141",
+          "https://github.com/advisories/GHSA-4qfx-v7wh-3q4j",
+          "https://nvd.nist.gov/vuln/detail/CVE-2022-41409",
+          "https://www.cve.org/CVERecord?id=CVE-2022-41409"
+        ],
+        "PublishedDate": "2023-07-18T14:15:12.197Z",
+        "LastModifiedDate": "2026-11-10T12:10:00.177Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2022-41409.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2022-41409.json.gz",
+      "official_source_sha256": "c63062a574d0a7bba8068ffafcf482b29db931eafb32799c12bbdc641b3ee993",
+      "current_raw_finding_retained": true,
+      "resolution": "exact_component_not_affected",
+      "rationale": "Official fix 94e1c changes src/pcre2test.c negative-repeat command-line test parsing, not PCRE2 matching library APIs. Red Hat explicitly scopes affected program to pcre2-tools, absent in UBI. Exact actual pcre2/pcre2-syntax files contain original-hash library ELF or syntax/license data, no pcre2test utility; complete rootfs independently confirms absence. No claim that other PCRE2 vulnerabilities are resolved.",
+      "scope_status": "SUPPORTED_BINARY_PACKAGE_COMPONENT_EXCLUSION_BASELINE",
+      "scope_evidence": "deployment/security/minio-os-20261113-evidence/baseline-scope-review.json",
+      "current_installed_version": "10.40-7.el9_8"
+    },
+    {
+      "vulnerability_id": "CVE-2022-41409",
+      "package": "pcre2-syntax",
+      "original_target": "E:\\project\\DeepResearch\\.cache\\ordinary-flow-security-fix-20261112\\security\\minio-info-build-01\\actual-payload\\image.tar (redhat 9.8)",
+      "original_finding": {
+        "VulnerabilityID": "CVE-2022-41409",
+        "PkgID": "pcre2-syntax@10.40-7.el9_8.noarch",
+        "PkgName": "pcre2-syntax",
+        "PkgIdentifier": {
+          "PURL": "pkg:rpm/redhat/pcre2-syntax@10.40-7.el9_8?arch=noarch&distro=redhat-9.8",
+          "UID": "fb3c4bf3775e9150"
+        },
+        "InstalledVersion": "10.40-7.el9_8",
+        "Status": "affected",
+        "Layer": {
+          "Digest": "sha256:25582d7c77aa56d9dedfd696290f345d9bf9d15932274698c7770714442a18a4",
+          "DiffID": "sha256:76a101b85b66bbdf48f47beed620127a6d2c1c3657c52920db691d63ce81df99"
+        },
+        "SeveritySource": "redhat",
+        "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2022-41409",
+        "Fingerprint": "sha256:2859b0d4bc50fc68165212171bc58566a697f93fabeb8de00901a8add131c187",
+        "Title": "pcre2: negative repeat value in a pcre2test subject line leads to inifinite loop",
+        "Description": "Integer overflow vulnerability in pcre2test before 10.41 allows attackers to cause a denial of service or other unspecified impacts via negative input.",
+        "Severity": "LOW",
+        "CweIDs": [
+          "CWE-190"
+        ],
+        "VendorSeverity": {
+          "amazon": 1,
+          "cbl-mariner": 3,
+          "julia": 3,
+          "nvd": 3,
+          "photon": 3,
+          "redhat": 1,
+          "ubuntu": 1
+        },
+        "CVSS": {
+          "julia": {
+            "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+            "V3Score": 7.5
+          },
+          "nvd": {
+            "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+            "V3Score": 7.5
+          },
+          "redhat": {
+            "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+            "V3Score": 5.3
+          }
+        },
+        "References": [
+          "https://access.redhat.com/security/cve/CVE-2022-41409",
+          "https://github.com/PCRE2Project/pcre2/commit/94e1c001761373b7d9450768aa15d04c25547a35",
+          "https://github.com/PCRE2Project/pcre2/issues/141",
+          "https://github.com/advisories/GHSA-4qfx-v7wh-3q4j",
+          "https://nvd.nist.gov/vuln/detail/CVE-2022-41409",
+          "https://www.cve.org/CVERecord?id=CVE-2022-41409"
+        ],
+        "PublishedDate": "2023-07-18T14:15:12.197Z",
+        "LastModifiedDate": "2026-11-10T12:10:00.177Z"
+      },
+      "official_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2022-41409.json",
+      "official_evidence": "deployment/security/minio-os-20261113-evidence/primary/CVE-2022-41409.json.gz",
+      "official_source_sha256": "c63062a574d0a7bba8068ffafcf482b29db931eafb32799c12bbdc641b3ee993",
+      "current_raw_finding_retained": true,
+      "resolution": "exact_component_not_affected",
+      "rationale": "Official fix 94e1c changes src/pcre2test.c negative-repeat command-line test parsing, not PCRE2 matching library APIs. Red Hat explicitly scopes affected program to pcre2-tools, absent in UBI. Exact actual pcre2/pcre2-syntax files contain original-hash library ELF or syntax/license data, no pcre2test utility; complete rootfs independently confirms absence. No claim that other PCRE2 vulnerabilities are resolved.",
+      "scope_status": "SUPPORTED_BINARY_PACKAGE_COMPONENT_EXCLUSION_BASELINE",
+      "scope_evidence": "deployment/security/minio-os-20261113-evidence/baseline-scope-review.json",
+      "current_installed_version": "10.40-7.el9_8"
+    }
+  ]
+}

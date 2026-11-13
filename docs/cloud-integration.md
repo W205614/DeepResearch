@@ -88,12 +88,12 @@ Python span/任务日志用 OTLP/gRPC，配置 OTEL_EXPORTER_OTLP_ENDPOINT=https
 
 ## Compose 应用层
 
-云端编排为独立入口，不与 compose.yaml 混用；不部署本机数据/身份组件，五个应用角色各默认两个副本，edge 与 Agent gateway 分发，无会话粘滞。
+云端编排为独立入口，不与 compose.yaml 混用；不部署本机数据/身份组件，五个应用角色各默认两个副本，edge 与 Agent gateway 分发，无会话粘滞。当前 Backend 固定源码修复需要仓库根构建上下文，使用下述额外 build overlay；原云端模板保持历史冻结字节。该 overlay 只修改 Backend 的构建 context/dockerfile，不改变云端运行配置，详见 [Backend 修复范围](backend-busybox-security-20261113.md)。以下命令从仓库根目录执行。
 
 ```powershell
 python scripts/check_production_config.py --env-file .env.cloud --output .cache/cloud-preflight.json
 # 外部服务/恢复点准备、审批和迁移验收后，在目标机器启动。
-docker compose --project-directory . --env-file .env.cloud -f deployment/compose/compose.cloud.yaml up -d --build --wait --wait-timeout 300
+docker compose --project-directory . --env-file .env.cloud -f deployment/compose/compose.cloud.yaml -f deployment/compose/compose.cloud.backend-build.yaml up -d --build --wait --wait-timeout 300
 python scripts/probe_external.py --base-url https://你的域名
 ```
 

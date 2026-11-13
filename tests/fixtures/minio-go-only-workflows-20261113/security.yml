@@ -1,0 +1,365 @@
+name: Security
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule: [{ cron: "18 3 * * 1" }]
+
+jobs:
+  dependency-and-image-scan:
+    runs-on: ubuntu-latest
+    permissions: { contents: read, security-events: write }
+    steps:
+      - uses: actions/checkout@v7
+        with: { fetch-depth: 0, fetch-tags: true }
+      - uses: actions/setup-java@v5
+        with: { distribution: temurin, java-version: "21", cache: maven }
+      - run: mvn -B dependency:resolve
+        working-directory: business-backend
+      # Full raw preserves all severities; independent exact2 compiled facts keep the original HIGH,CRITICAL source threshold.
+      - uses: aquasecurity/setup-trivy@3fb12ec12f41e471780db15c232d5dd185dcb514 # v0.2.6, same installer as trivy-action v0.36.0
+        with: { version: v0.75.0, cache: true }
+      - name: Produce fresh complete source scan and independent completion proof
+        id: source_scan
+        run: >-
+          python scripts/run_fs_source_scan.py
+          --scanner "$(command -v trivy)"
+          --output-dir .cache/eval/source-fs
+          --source-sha "$EXPECTED_SOURCE_SHA"
+        env:
+          EXPECTED_SOURCE_SHA: ${{ github.sha }}
+      - name: Preserve the original independently reviewed source2 verdict
+        id: source_original
+        continue-on-error: true
+        run: >-
+          python scripts/check_fs_source_applicability.py
+          --scan .cache/eval/source-fs/raw.json
+          --scan-receipt .cache/eval/source-fs/completion.json
+          --output .cache/eval/source-fs-original-verdict.json
+      - name: Recompute the original verdict and apply only the new exact candidate source2 facts
+        if: always() && steps.source_scan.outcome == 'success'
+        continue-on-error: true
+        run: >-
+          python scripts/check_grafana_candidate_source_exact2.py
+          --scan .cache/eval/source-fs/raw.json
+          --scan-receipt .cache/eval/source-fs/completion.json
+          --original-verdict .cache/eval/source-fs-original-verdict.json
+          --output .cache/eval/source-fs-candidate-verdict.json
+      - name: Derive the actual current Compose and CI runtime selection
+        if: always() && steps.source_scan.outcome == 'success'
+        run: python scripts/runtime_ci_inventory.py
+      - name: Enforce exact source findings against the current reviewed source profile
+        if: always() && steps.source_scan.outcome == 'success'
+        run: >-
+          python scripts/check_grafana_source_scan_20261112.py
+          --scan .cache/eval/source-fs/raw.json
+          --scan-receipt .cache/eval/source-fs/completion.json
+          --original-verdict .cache/eval/source-fs-original-verdict.json
+          --candidate-verdict .cache/eval/source-fs-candidate-verdict.json
+          --runtime-inventory .cache/eval/runtime-image-inventory.json
+          --output .cache/eval/source-fs-verdict.json
+      - name: Convert original complete source scan even when its gate fails
+        if: always() && hashFiles('.cache/eval/source-fs/raw.json') != ''
+        run: trivy convert --format sarif --output trivy-fs.sarif .cache/eval/source-fs/raw.json
+      - uses: github/codeql-action/upload-sarif@v4
+        if: always() && hashFiles('trivy-fs.sarif') != ''
+        with: { sarif_file: trivy-fs.sarif }
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: filesystem-security-${{ github.sha }}
+          path: |
+            .cache/eval/source-fs/raw.json
+            .cache/eval/source-fs/completion.json
+            .cache/eval/source-fs/scanner-version.log
+            .cache/eval/source-fs/stdout.private.log
+            .cache/eval/source-fs/stderr.private.log
+            .cache/eval/source-fs-original-verdict.json
+            .cache/eval/source-fs-candidate-verdict.json
+            .cache/eval/runtime-image-inventory.json
+            .cache/eval/source-fs-verdict.json
+            trivy-fs.sarif
+          if-no-files-found: error
+  inventory-runtime:
+    runs-on: ubuntu-latest
+    permissions: { contents: read }
+    outputs:
+      matrix: ${{ steps.images.outputs.matrix }}
+      custom_matrix: ${{ steps.images.outputs.custom_matrix }}
+    steps:
+      - uses: actions/checkout@v7
+        with: { fetch-depth: 0, fetch-tags: true }
+      - id: images
+        run: python scripts/runtime_ci_inventory.py
+      - uses: actions/upload-artifact@v6
+        with:
+          name: runtime-image-inventory-${{ github.sha }}
+          path: .cache/eval/runtime-image-inventory.json
+  runtime-image-scan:
+    needs: inventory-runtime
+    runs-on: ubuntu-latest
+    permissions: { contents: read }
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.inventory-runtime.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v7
+        with: { fetch-depth: 0, fetch-tags: true }
+      - name: Verify immutable ancestor artifact source reuse
+        if: matrix.approved_artifact == true || matrix.source_build_profile != ''
+        run: python scripts/check_artifact_source_reuse.py --output .cache/eval/artifact-source-reuse.json
+      - name: Load each independently approved OCI artifact without rebuilding
+        if: matrix.artifact == 'minio' && matrix.source_build_profile == ''
+        run: python scripts/fetch_approved_image.py --artifact "$ARTIFACT" --tag "$SCAN_TAG" --output ".cache/eval/approved-$ARTIFACT-load.json"
+        env:
+          ARTIFACT: ${{ matrix.artifact }}
+          SCAN_TAG: deepresearch-scan-${{ matrix.artifact }}:ci
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Load only the independently reviewed maintenance Grafana artifact without rebuilding
+        if: matrix.artifact == 'grafana' && matrix.source_build_profile == ''
+        run: python scripts/fetch_grafana_fixed_20261107.py --tag deepresearch-scan-grafana:20261107 --output .cache/eval/approved-grafana-load.json
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - uses: astral-sh/setup-uv@v7
+        if: matrix.source_build_profile == 'grafana-source-20261112' || matrix.source_build_profile == 'minio-source-20261112'
+      - name: Install locked Python dependencies for Go source preparation
+        if: matrix.source_build_profile == 'grafana-source-20261112' || matrix.source_build_profile == 'minio-source-20261112'
+        run: uv sync --frozen --no-dev
+      - name: Build the reviewed Go-fixed source without publishing a third-party image
+        if: matrix.source_build_profile == 'grafana-source-20261112' || matrix.source_build_profile == 'minio-source-20261112'
+        run: uv run --frozen --no-dev python scripts/build_go_stdlib_security_20261112.py --artifact "$ARTIFACT" --output-dir ".cache/eval/$ARTIFACT-source-build"
+        env:
+          ARTIFACT: ${{ matrix.artifact }}
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Retain the two actual MinIO graph documents after a failed build gate
+        if: always() && matrix.artifact == 'minio' && failure() && hashFiles('.cache/eval/minio-source-build/build-receipt.json') != '' && hashFiles('.cache/eval/minio-source-build/actual-payload/runtime-manifest.json.gz') != '' && hashFiles('.cache/eval/minio-source-build/actual-payload/rootfs.tar') != ''
+        run: uv run --frozen --no-dev python scripts/capture_go_graph_diagnostic_20261112.py --build-dir .cache/eval/minio-source-build
+      - name: Retain only differing Grafana graph and provenance documents after a failed build gate
+        if: always() && matrix.artifact == 'grafana' && failure() && hashFiles('.cache/eval/grafana-source-build/build-receipt.json') != '' && hashFiles('.cache/eval/grafana-source-build/actual-payload/runtime-manifest.json.gz') != '' && hashFiles('.cache/eval/grafana-source-build/actual-payload/rootfs.tar') != ''
+        run: uv run --frozen --no-dev python scripts/capture_go_graph_diagnostic_20261112.py --artifact grafana --build-dir .cache/eval/grafana-source-build
+      - name: Scan ordinary runtime image with unchanged HIGH gate
+        if: matrix.approved_artifact != true && matrix.source_build_profile == ''
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ${{ matrix.image }}
+          severity: HIGH,CRITICAL
+          exit-code: '1'
+          version: v0.75.0
+          timeout: 5m
+          format: json
+          output: runtime-image.json
+      - name: Keep complete raw approved or source-built image scan for exact disposition
+        id: approved_scan
+        if: matrix.approved_artifact == true || matrix.source_build_profile != ''
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ${{ matrix.source_build_profile != '' && matrix.image || matrix.artifact == 'grafana' && 'deepresearch-scan-grafana:20261107' || 'deepresearch-scan-minio:ci' }}
+          severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+          scanners: vuln,secret
+          list-all-pkgs: 'true'
+          exit-code: '0'
+          version: v0.75.0
+          timeout: 5m
+          format: json
+          output: runtime-image.json
+      - name: Reject every secret finding independently of vulnerability dispositions
+        if: (matrix.approved_artifact == true || matrix.source_build_profile != '') && steps.approved_scan.outcome == 'success'
+        run: >-
+          python scripts/check_image_secrets.py
+          --scan runtime-image.json --scanner-exit-code 0
+          --output .cache/eval/approved-image-secret-gate.json
+      - name: Enforce original FIXED and independently reviewed exact OpenPGP and HTML facts
+        if: matrix.artifact == 'minio' && matrix.source_build_profile == '' && steps.approved_scan.outcome == 'success'
+        run: >-
+          python scripts/check_minio_html_exact4.py
+          --archive .cache/eval/approved-minio.oci.tar
+          --scan runtime-image.json
+          --inspect .cache/eval/approved-minio-load-inspect.json
+          --scanner-exit-code 0
+          --original-output .cache/eval/minio-original-disposition.json
+          --exact2-output .cache/eval/minio-openpgp2-disposition.json
+          --output .cache/eval/minio-ci-disposition.json
+      - name: Enforce the unchanged MinIO threshold and exact new Go-fixed subject
+        if: matrix.source_build_profile == 'minio-source-20261112' && steps.approved_scan.outcome == 'success'
+        run: >-
+          python scripts/check_minio_source_build_20261112.py
+          --build-receipt .cache/eval/minio-source-build/build-receipt.json
+          --scan runtime-image.json
+          --inspect .cache/eval/minio-source-build/image-inspect.json
+          --scanner-exit-code 0
+          --output .cache/eval/minio-ci-disposition.json
+      - name: Collect complete native and full Grafana reports
+        if: matrix.artifact == 'grafana' && matrix.source_build_profile == '' && steps.approved_scan.outcome == 'success'
+        run: python scripts/scan_grafana_fixed_20261107.py --image deepresearch-scan-grafana:20261107 --output-dir .cache/eval/grafana-native
+      - name: Enforce exact independently authorized Grafana per-finding dispositions
+        if: matrix.artifact == 'grafana' && matrix.source_build_profile == '' && steps.approved_scan.outcome == 'success'
+        run: >-
+          python scripts/check_grafana_release_20261107.py
+          --archive .cache/eval/approved-grafana-fixed-20261107.oci.tar
+          --scan runtime-image.json
+          --grype-scan .cache/eval/grafana-native/full-grype.json
+          --sbom .cache/eval/grafana-native/full-syft.json
+          --inspect .cache/eval/approved-grafana-load-inspect.json
+          --scanner-exit-code 0 --grype-exit-code 0
+          --output .cache/eval/grafana-ci-disposition.json
+      - name: Collect complete native and full source-built Grafana reports
+        if: matrix.source_build_profile == 'grafana-source-20261112' && steps.approved_scan.outcome == 'success'
+        run: >-
+          python scripts/scan_grafana_source_20261112.py
+          --image deepresearch-grafana-source:20261112
+          --build-receipt .cache/eval/grafana-source-build/build-receipt.json
+          --output-dir .cache/eval/grafana-native
+      - name: Enforce all-severity findings against the actual source-built Grafana subject
+        if: matrix.source_build_profile == 'grafana-source-20261112' && steps.approved_scan.outcome == 'success'
+        run: >-
+          python scripts/check_grafana_source_build_20261112.py
+          --build-receipt .cache/eval/grafana-source-build/build-receipt.json
+          --scan runtime-image.json
+          --grype-scan .cache/eval/grafana-native/full-grype.json
+          --sbom .cache/eval/grafana-native/full-syft.json
+          --inspect .cache/eval/grafana-source-build/image-inspect.json
+          --scanner-exit-code 0 --grype-exit-code 0
+          --output .cache/eval/grafana-ci-disposition.json
+      - name: Verify actual native JVM bytes and native/full advisory coverage
+        if: matrix.native_jvm_profile != ''
+        run: python scripts/check_native_jvm.py --image "$SCAN_IMAGE" --profile "$JVM_PROFILE" --output-dir .cache/eval/native-jvm
+        env:
+          SCAN_IMAGE: ${{ matrix.image }}
+          JVM_PROFILE: ${{ matrix.native_jvm_profile }}
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: runtime-security-${{ matrix.name }}-${{ github.sha }}
+          path: |
+            runtime-image.json
+            .cache/eval/approved-*-load*.json
+            .cache/eval/minio-ci-disposition.json
+            .cache/eval/minio-original-disposition.json
+            .cache/eval/minio-openpgp2-disposition.json
+            .cache/eval/grafana-ci-disposition.json
+            .cache/eval/approved-image-secret-gate.json
+            .cache/eval/artifact-source-reuse.json
+            .cache/eval/grafana-native/*.json
+            .cache/eval/minio-source-build/build-receipt.json
+            .cache/eval/minio-source-build/image-inspect.json
+            .cache/eval/minio-source-build/actual-payload/runtime-manifest.json.gz
+            .cache/eval/minio-source-build/regressions/*.txt
+            .cache/eval/*-source-build/*.log
+            .cache/eval/*-source-build/*.command.json
+            .cache/eval/minio-source-build/diagnostic-graphs/*.json
+            .cache/eval/grafana-source-build/diagnostic-graphs/*.json
+            .cache/eval/grafana-source-build/diagnostic-graphs/*.json.gz
+            .cache/eval/grafana-source-build/build-receipt.json
+            .cache/eval/grafana-source-build/image-inspect.json
+            .cache/eval/grafana-source-build/actual-payload/runtime-manifest.json.gz
+            .cache/eval/native-jvm/*.json
+  application-image-scan:
+    needs: inventory-runtime
+    runs-on: ubuntu-latest
+    permissions: { contents: read }
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.inventory-runtime.outputs.custom_matrix) }}
+    steps:
+      - uses: actions/checkout@v7
+      - run: python scripts/build_ci_image.py
+        env:
+          SCAN_BUILD_CONTEXT: ${{ matrix.context }}
+          SCAN_DOCKERFILE: ${{ matrix.dockerfile }}
+          SCAN_BUILD_NAME: ${{ matrix.name }}
+      - uses: actions/setup-go@v6
+        if: matrix.name == 'tempo'
+        with: { go-version: '1.27.3', cache: false }
+      - name: Preserve actual Tempo ELF, native identity and runtime version for independent review
+        if: matrix.name == 'tempo'
+        run: >-
+          python scripts/collect_tempo_evidence.py --image deepresearch-scan-tempo:ci
+          --output-dir .cache/eval/tempo-native
+      - uses: aquasecurity/trivy-action@v0.36.0
+        if: matrix.name != 'tempo' && matrix.name != 'agent'
+        with:
+          image-ref: deepresearch-scan-${{ matrix.name }}:ci
+          severity: HIGH,CRITICAL
+          exit-code: '1'
+          version: v0.75.0
+          format: json
+          output: application-image.json
+      - uses: aquasecurity/setup-trivy@3fb12ec12f41e471780db15c232d5dd185dcb514
+        if: matrix.name == 'tempo' || matrix.name == 'agent'
+        with: { version: v0.75.0, cache: true }
+      - name: Preserve complete fresh agent scan before checking fixed native bytes
+        if: matrix.name == 'agent'
+        run: >-
+          trivy image --scanners vuln,secret --list-all-pkgs
+          --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --exit-code 0 --timeout 10m
+          --format json --output application-image.json deepresearch-scan-agent:ci
+      - name: Keep the HIGH gate and verify the exact fixed SQLite and zlib libraries
+        if: matrix.name == 'agent'
+        run: >-
+          python scripts/check_agent_native_packages.py --image deepresearch-scan-agent:ci
+          --scan application-image.json --scanner-exit-code 0 --output-dir .cache/eval/agent-native
+      - name: Preserve complete fresh Tempo findings for exact technical review
+        if: matrix.name == 'tempo'
+        run: >-
+          trivy image --scanners vuln,secret --list-all-pkgs
+          --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --exit-code 0 --timeout 10m
+          --format json --output application-image.json deepresearch-scan-tempo:ci
+      - name: Apply only the independently reviewed exact Tempo ELF applicability fact
+        if: matrix.name == 'tempo'
+        run: >-
+          python scripts/check_tempo_app_exact1.py --scan application-image.json
+          --materials-dir .cache/eval/tempo-native --scanner-exit-code 0
+          --output .cache/eval/tempo-app1-disposition.json
+      - name: Verify actual native JVM bytes and native/full advisory coverage
+        if: matrix.native_jvm_profile != ''
+        run: python scripts/check_native_jvm.py --image "$SCAN_IMAGE" --profile "$JVM_PROFILE" --output-dir .cache/eval/native-jvm
+        env:
+          SCAN_IMAGE: deepresearch-scan-${{ matrix.name }}:ci
+          JVM_PROFILE: ${{ matrix.native_jvm_profile }}
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: application-security-${{ matrix.name }}-${{ github.sha }}
+          path: |
+            application-image.json
+            .cache/eval/native-jvm/*.json
+            .cache/eval/tempo-native/
+            .cache/eval/tempo-app1-disposition.json
+            .cache/eval/agent-native/
+  source-analysis:
+    runs-on: ubuntu-latest
+    permissions: { contents: read, security-events: write }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: github/codeql-action/init@v4
+        with: { languages: "python,javascript-typescript,java-kotlin", build-mode: none }
+      - uses: github/codeql-action/analyze@v4
+        with: { output: .cache/codeql }
+      - run: python scripts/check_codeql_results.py .cache/codeql
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: source-security-${{ github.sha }}
+          path: .cache/codeql/*.sarif
+  source-analysis-bootstrap:
+    runs-on: ubuntu-latest
+    permissions: { contents: read, security-events: write }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: scripts/storage-bootstrap/go.mod
+          cache-dependency-path: scripts/storage-bootstrap/go.sum
+      - uses: github/codeql-action/init@v4
+        with: { languages: go, build-mode: manual }
+      - run: go build -mod=readonly ./...
+        working-directory: scripts/storage-bootstrap
+      - uses: github/codeql-action/analyze@v4
+        with: { output: .cache/codeql-bootstrap }
+      - run: python scripts/check_codeql_results.py .cache/codeql-bootstrap
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: bootstrap-source-security-${{ github.sha }}
+          path: .cache/codeql-bootstrap/*.sarif

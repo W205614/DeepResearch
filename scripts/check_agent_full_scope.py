@@ -24,7 +24,10 @@ PROFILE_SHA256 = "ab92a7f1ade51ff150c9e48092a2dca898142b4541460f5b50b305c240ab09
 ORDINARY_PROFILE_NAME = "agent-ordinary-query-20261112"
 ORDINARY_PROFILE_PATH = ROOT / "deployment/security/agent-ordinary-query-profile-20261112.json"
 ORDINARY_PROFILE_SHA256 = "01ec992443377f574be444c8258f95addb7cba1a9d3906e3d0ffed5f1fbc7517"
-PROFILE_NAMES = (PROFILE_NAME, ORDINARY_PROFILE_NAME)
+CURRENT_PROFILE_NAME = "agent-ordinary-query-20261113"
+CURRENT_PROFILE_PATH = ROOT / "deployment/security/agent-ordinary-query-profile-20261113.json"
+CURRENT_PROFILE_SHA256 = "b8b08682948a9abeed85ff951e4296462a35b5ffedfb2fb4cc70b680ac124996"
+PROFILE_NAMES = (PROFILE_NAME, ORDINARY_PROFILE_NAME, CURRENT_PROFILE_NAME)
 
 
 def require(condition, message):
@@ -39,8 +42,10 @@ def canonical(value):
 def profile_identity(name):
     if name == PROFILE_NAME:
         return PROFILE_PATH, PROFILE_SHA256
-    require(name == ORDINARY_PROFILE_NAME, "Unknown exact technical review profile")
-    return ORDINARY_PROFILE_PATH, ORDINARY_PROFILE_SHA256
+    if name == ORDINARY_PROFILE_NAME:
+        return ORDINARY_PROFILE_PATH, ORDINARY_PROFILE_SHA256
+    require(name == CURRENT_PROFILE_NAME, "Unknown exact technical review profile")
+    return CURRENT_PROFILE_PATH, CURRENT_PROFILE_SHA256
 
 
 def load_profile(name):

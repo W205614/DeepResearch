@@ -1,0 +1,56 @@
+{
+  "passed": true,
+  "mode": "offline Compose config only; no build/start/deployment/provider call",
+  "frozen_cloud_template_sha256": "3212fded2d09598aba9562a31efbfb63d8919ee9401d7f01872f83c9b137b2c9",
+  "overlay_sha256": "712ddd2d0a6c7d7e719e5f1ebfba99cec1d0d6250eaadde6aef9bf250ada5a9e",
+  "backend_dockerfile_sha256": "e8bf35e9cd32249ea9497a0a499bce36303a10c0e38cb84a42456b7cf02a78ea",
+  "public_example_env_sha256": "9d3ce1c7b0d8894d2da2ed0a54f9419b27193cba1d0f3f28a22aecfcc15fa485",
+  "every_other_configuration_field_exact_equal": true,
+  "backend_copy_sources": [
+    {
+      "line": "COPY business-backend/pom.xml .",
+      "resolved_sources_exist": true
+    },
+    {
+      "line": "COPY business-backend/src src",
+      "resolved_sources_exist": true
+    },
+    {
+      "line": "COPY deployment/vendors/grafana-20261110/busybox/ /recipe/",
+      "resolved_sources_exist": true
+    },
+    {
+      "line": "COPY business-backend/runtime/backend_busybox_benign.py /backend_busybox_benign.py",
+      "resolved_sources_exist": true
+    },
+    {
+      "line": "COPY business-backend/Dockerfile /out/corresponding-source/backend-integration/Dockerfile",
+      "resolved_sources_exist": true
+    },
+    {
+      "line": "COPY business-backend/runtime/backend_busybox_benign.py /out/corresponding-source/backend-integration/backend_busybox_benign.py",
+      "resolved_sources_exist": true
+    },
+    {
+      "line": "COPY business-backend/runtime/adoptium-public.asc /tmp/adoptium-public.asc",
+      "resolved_sources_exist": true
+    }
+  ],
+  "production_deployment_claimed": false,
+  "environment": "Only OS executable/runtime locations retained; explicit public deployment/cloud.env.example and unusable synthetic placeholders for its blank credentials. User .env/cloud configuration not read.",
+  "prior_attempts": "01/02 stripped environment prevented Docker CLI plugin discovery. 03 failed on intentionally empty public-template credential placeholders. 04 incorrectly expected slash-normalized context strings; 05 compares exact resolved Windows paths and every other field. Failures preserved; no user credentials, policy or recipes were substituted.",
+  "schema": "backend-cloud-build-compatibility-20261113-v1",
+  "actual_comparison_sha256": "9df11eb1d7ecf095f8bef923922d5d7db35ba25489a84929eccdd5bd4e4836bb",
+  "before_backend_build": {
+    "context": "<repository>/business-backend",
+    "dockerfile": "Dockerfile"
+  },
+  "after_backend_build": {
+    "context": "<repository>",
+    "dockerfile": "business-backend/Dockerfile"
+  },
+  "compose_client": {
+    "sha256": "18b6393f8006a07aba46ed0ea27e880389e8cb8741581d9b0f97c978c1529501",
+    "version": "v5.6.1"
+  }
+}

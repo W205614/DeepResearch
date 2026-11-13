@@ -1,0 +1,108 @@
+# Candidate Go stdlib security rebuild; no prior artifact approval is inherited.
+# syntax=docker/dockerfile:1.7
+FROM golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf AS source
+ARG GOPROXY=https://proxy.golang.org
+ENV GOPROXY=${GOPROXY} GOTOOLCHAIN=local GOMAXPROCS=2 GOFLAGS=-p=2 GOMEMLIMIT=768MiB
+RUN apk add --no-cache git
+# Maintained fork, immutable release commit. Keep real VCS/module metadata so
+# complete image scans can still attribute inherited MinIO advisories honestly.
+COPY --from=miniosource / /prefetched-minio.git/
+RUN git clone --no-hardlinks /prefetched-minio.git /src && cd /src && git checkout --detach 0cd388c666f8211f552604ae73448a066e9c25ce \
+    && git remote set-url origin https://github.com/pgsty/silo.git && git config core.hooksPath /dev/null && git fsck --full
+WORKDIR /src
+COPY --from=securitymodules / /prefetched-proxy/
+ENV GOPROXY=file:///prefetched-proxy,https://proxy.golang.org
+RUN test "$(git rev-parse HEAD)" = 0cd388c666f8211f552604ae73448a066e9c25ce
+COPY deployment/vendors/minio/legacy_part_compat.go cmd/legacy_part_compat.go
+COPY deployment/vendors/minio/legacy-part-compat.patch /tmp/legacy-part-compat.patch
+RUN git apply --check /tmp/legacy-part-compat.patch && git apply /tmp/legacy-part-compat.patch
+FROM source AS thrift-updated
+COPY --from=native-inputs /thrift-v0.25.0.mod /tmp/thrift-v0.25.0.mod
+COPY --from=native-inputs /thrift-v0.25.0.zip /tmp/thrift-v0.25.0.zip
+COPY --from=native-inputs /thrift-v0.25.0.info /tmp/thrift-v0.25.0.info
+RUN mkdir -p /thrift-proxy/github.com/apache/thrift/@v && cp /tmp/thrift-v0.25.0.mod /thrift-proxy/github.com/apache/thrift/@v/v0.25.0.mod && cp /tmp/thrift-v0.25.0.zip /thrift-proxy/github.com/apache/thrift/@v/v0.25.0.zip && cp /tmp/thrift-v0.25.0.info /thrift-proxy/github.com/apache/thrift/@v/v0.25.0.info
+ENV GOPROXY=file:///thrift-proxy,file:///prefetched-proxy,https://proxy.golang.org
+RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build mkdir -p /out && cp go.mod /out/go.mod.before && cp go.sum /out/go.sum.before && go list -mod=readonly -m -json all > /out/modules-before.json && go mod edit -require=github.com/apache/thrift@v0.25.0 && go mod download -json github.com/apache/thrift@v0.25.0 > /out/thrift-download.json && grep -F '"Sum": "h1:6LLlvoPjy8Cc/0b5TYRcTR3RZa2W0at3WQRcOkDwVGs="' /out/thrift-download.json && grep -F '"GoModSum": "h1:4lwyToijD9T70w7GlevFk7FnpY60Wv8I8krMkF6FkAo="' /out/thrift-download.json && go list -mod=readonly -m -json all > /out/modules-after.json && cp go.mod /out/go.mod.after && cp go.sum /out/go.sum.after && git diff -- go.mod go.sum > /out/module-locks.diff && sha256sum go.mod go.sum > /out/go-locks-after.sha256
+COPY deployment/security/minio-os-20261113/regression/normal_parquet_test.go internal/s3select/parquet/pinned_normal_test.go
+COPY deployment/security/minio-os-20261113/regression/normal_csv_test.go internal/s3select/csv/pinned_normal_test.go
+COPY deployment/vendors/minio/legacy_part_compat_test.go cmd/legacy_part_compat_test.go
+COPY deployment/vendors/minio/legacy-part2024.msgp cmd/testdata/deepresearch-legacy-part2024.msgp
+RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build set -o pipefail; go test -mod=readonly ./internal/s3select/parquet -run '^TestNormalThrift025ParquetRoundTrip$' -count=1 -v 2>&1 | tee /out/normal-parquet.txt && go test -mod=readonly ./internal/s3select/csv -run '^TestNormalNativeRepairPreservesValidCSV$' -count=1 -v 2>&1 | tee /out/normal-csv.txt && go test -mod=readonly ./cmd -run '^TestPinnedLegacyPart2024PreservesCompleteMetadata$' -count=1 -v 2>&1 | tee /out/normal-legacy-multipart.txt && sha256sum -c /out/go-locks-after.sha256
+FROM thrift-updated AS go-repair-build
+RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build CGO_ENABLED=0 go build -mod=readonly -buildvcs=true -tags kqueue -trimpath -ldflags="$(MINIO_RELEASE=RELEASE go run buildscripts/gen-ldflags.go 2026-10-18T00:00:00Z)" -o /out/silo . && CGO_ENABLED=0 go build -mod=readonly -trimpath -ldflags='-s -w -X github.com/minio/mc/cmd.Version=2026-10-18T00:00:00Z -X github.com/minio/mc/cmd.ReleaseTag=RELEASE.2026-10-18T00-00-00Z -X github.com/minio/mc/cmd.CommitID=fa3b8bf72458b9b5480c4da0ce63a4f224e058c8' -o /out/mcli github.com/minio/mc && go version -m /out/silo > /out/silo-buildinfo.txt && go version -m /out/mcli > /out/mcli-buildinfo.txt && go version -m -json /out/silo > /out/silo-native.json && go version -m -json /out/mcli > /out/mcli-native.json && go mod download -json github.com/coreos/go-systemd/v22@v22.6.0 > /out/coreos-download.json && sha256sum -c /out/go-locks-after.sha256 && CGO_ENABLED=0 go list -mod=readonly -tags=kqueue -deps -json . > /out/silo-graph.json && CGO_ENABLED=0 go list -mod=readonly -deps -json github.com/minio/mc > /out/mcli-graph.json && sha256sum -c /out/go-locks-after.sha256
+FROM golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf AS curl-build
+COPY --from=native-inputs /binutils-2.45.1-r1.apk /brotli-1.2.1-r0.apk /brotli-dev-1.2.1-r0.apk /brotli-libs-1.2.1-r0.apk /brotli-static-1.2.1-r0.apk /build-base-0.5-r4.apk /busybox-1.37.0-r31.apk /busybox-binsh-1.37.0-r31.apk /c-ares-1.34.9-r0.apk /ca-certificates-20261020-r0.apk /ca-certificates-bundle-20261020-r0.apk /curl-8.23.0-r0.apk /file-5.47-r2.apk /fortify-headers-3.0.1-r2.apk /g++-15.2.0-r5.apk /gcc-15.2.0-r5.apk /gdbm-1.26-r0.apk /gmp-6.3.0-r4.apk /gnupg-2.4.9-r1.apk /gnupg-dirmngr-2.4.9-r1.apk /gnupg-gpgconf-2.4.9-r1.apk /gnupg-keyboxd-2.4.9-r1.apk /gnupg-utils-2.4.9-r1.apk /gnupg-wks-client-2.4.9-r1.apk /gnutls-3.8.13-r0.apk /gpg-2.4.9-r1.apk /gpg-agent-2.4.9-r1.apk /gpg-wks-server-2.4.9-r1.apk /gpgsm-2.4.9-r1.apk /gpgv-2.4.9-r1.apk /isl26-0.26-r2.apk /jansson-2.15.0-r0.apk /libassuan-3.0.2-r0.apk /libatomic-15.2.0-r5.apk /libbz2-1.0.8-r6.apk /libcrypto3-3.5.9-r0.apk /libcurl-8.23.0-r0.apk /libffi-3.5.2-r1.apk /libgcc-15.2.0-r5.apk /libgcc-static-15.2.0-r5.apk /libgcrypt-1.12.2-r0.apk /libgomp-15.2.0-r5.apk /libgpg-error-1.61-r0.apk /libidn2-2.3.8-r0.apk /libidn2-dev-2.3.8-r0.apk /libidn2-static-2.3.8-r0.apk /libksba-1.7.0-r0.apk /libldap-2.6.15-r0.apk /libmagic-5.47-r2.apk /libncursesw-6.6_p20260516-r0.apk /libpsl-0.21.5-r3.apk /libpsl-dev-0.21.5-r3.apk /libpsl-static-0.21.5-r3.apk /libpsl-utils-0.21.5-r3.apk /libsasl-2.1.28-r9.apk /libssh2-1.11.1-r4.apk /libssh2-dev-1.11.1-r4.apk /libssh2-static-1.11.1-r4.apk /libssl3-3.5.9-r0.apk /libstdc++-15.2.0-r5.apk /libstdc++-dev-15.2.0-r5.apk /libtasn1-4.21.0-r0.apk /libunistring-1.4.2-r0.apk /libunistring-dev-1.4.2-r0.apk /libunistring-static-1.4.2-r0.apk /make-4.4.1-r4.apk /mpc1-1.3.1-r1.apk /mpfr4-4.2.2-r0.apk /musl-1.2.6-r3.apk /musl-dev-1.2.6-r3.apk /ncurses-terminfo-base-6.6_p20260516-r0.apk /nettle-3.10.2-r0.apk /nghttp2-dev-1.70.0-r0.apk /nghttp2-libs-1.70.0-r0.apk /nghttp2-static-1.70.0-r0.apk /npth-1.8-r0.apk /openssl-dev-3.5.9-r0.apk /openssl-libs-static-3.5.9-r0.apk /p11-kit-0.26.2-r0.apk /patch-2.8.1-r0.apk /pinentry-1.3.2-r0.apk /pkgconf-2.5.1-r0.apk /sqlite-libs-3.53.4-r0.apk /ssl_client-1.37.0-r31.apk /zlib-1.4-r0.apk /zlib-dev-1.4-r0.apk /zlib-static-1.4-r0.apk /zstd-1.5.7-r2.apk /zstd-dev-1.5.7-r2.apk /zstd-libs-1.5.7-r2.apk /zstd-static-1.5.7-r2.apk /evidence/signed-apks/
+RUN apk add --no-network --upgrade /evidence/signed-apks/*.apk > /evidence/apk-install.txt && sha256sum /evidence/signed-apks/*.apk > /evidence/apk-sha256.txt && apk info -a > /evidence/apk-complete-info.txt && apk info -v | sort > /evidence/build-packages.txt && cp /etc/apk/repositories /evidence/apk-repositories.txt && tar -cf /evidence/apk-trusted-keys.tar /etc/apk/keys
+COPY --from=native-inputs /curl-8.23.0.tar.xz /curl-8.23.0.tar.xz.asc /daniel-stenberg.asc /curl-source/
+RUN mkdir -p /build/curl && gpg --batch --no-autostart --dearmor --output /curl-keyring.gpg /curl-source/daniel-stenberg.asc && gpgv --keyring /curl-keyring.gpg --status-fd 1 /curl-source/curl-8.23.0.tar.xz.asc /curl-source/curl-8.23.0.tar.xz > /evidence/curl-signature.txt 2>&1 && grep -F 'VALIDSIG 27EDEAF22F3ABCEB50DB9A125CC908FDB71E12C2' /evidence/curl-signature.txt && echo '8dadd7d2536a314f982ad05a651b713f426bf7d02cc2c76cffb9796f2218e6c5  /curl-source/curl-8.23.0.tar.xz' | sha256sum -c - && tar -xJf /curl-source/curl-8.23.0.tar.xz -C /build/curl --strip-components=1
+WORKDIR /build/curl
+RUN PKG_CONFIG="pkg-config --static" LDFLAGS="-static" ./configure --disable-shared --enable-static --with-openssl --with-libssh2 --with-nghttp2 --with-brotli --with-zstd --with-libidn2 --with-libpsl --with-ca-bundle=/etc/ssl/certs/ca-certificates.crt --without-ca-path --disable-ldap --disable-ldaps > /evidence/curl-configure.txt && make -j4 LDFLAGS="-all-static" > /evidence/curl-build.txt 2>&1 && strip src/curl && src/curl --version > /evidence/curl-version.txt && readelf -l -d src/curl > /evidence/curl-elf.txt && ! grep -E 'INTERP|NEEDED' /evidence/curl-elf.txt
+RUN cp COPYING /evidence/curl-COPYING && tar -cf /evidence/curl-native-artifacts.tar src/curl COPYING
+FROM registry.access.redhat.com/ubi9/ubi@sha256:3c3fa194551e503333f03a017bf418fc1f658545db1e2df1e58ccc67e203c324 AS tooling
+RUN dnf -y --setopt=install_weak_deps=0 --setopt=gpgcheck=1 install dnf-plugins-core rpm-build gcc gcc-c++ make python3 patch diffutils binutils
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+COPY deployment/security/minio-os-20261113/source.lock.json /tools/source.lock.json
+COPY scripts/prefetch_minio_os_inputs_20261113.py /tools/verify_inputs.py
+COPY --from=native-inputs / /inputs/
+RUN python3 /tools/verify_inputs.py --lock /tools/source.lock.json --directory /inputs --verify-only
+RUN mkdir -p /evidence/rpms /evidence/srpms /sources/glibc /sources/ncurses /gnu && cp /inputs/*.x86_64.rpm /evidence/rpms/ && cp /inputs/*.src.rpm /evidence/srpms/ && cp /inputs/bison-3.8.2.tar.xz /inputs/bison-3.8.2.tar.xz.sig /inputs/gnu-keyring.gpg /gnu/ && rpmkeys --checksig /evidence/rpms/*.rpm /evidence/srpms/*.rpm > /evidence/rpm-signatures.txt && sha256sum /evidence/rpms/*.rpm /evidence/srpms/*.rpm > /evidence/rpm-sha256.txt && rpm -qa --qf '%{NAME} %{VERSION}-%{RELEASE} %{ARCH}\n' > /evidence/tool-packages.txt && cp /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release /evidence/RPM-GPG-KEY-redhat-release
+RUN cd /sources/glibc && rpm2cpio /inputs/glibc-2.34-290.el9_9.src.rpm | cpio -idm --no-absolute-filenames && cd /sources/ncurses && rpm2cpio /inputs/ncurses-6.2-12.20210508.el9.src.rpm | cpio -idm --no-absolute-filenames
+FROM tooling AS native-tools
+RUN dnf -y --setopt=install_weak_deps=0 --setopt=gpgcheck=1 install gnupg2 gettext gawk m4
+RUN echo '9bba0214ccf7f1079c5d59210045227bcf619519840ebfa80cd3849cff5a5bf2  /gnu/bison-3.8.2.tar.xz' | sha256sum -c - && gpg --batch --no-default-keyring --keyring /gnu/gnu-keyring.gpg --status-fd 1 --verify /gnu/bison-3.8.2.tar.xz.sig /gnu/bison-3.8.2.tar.xz > /evidence/bison-signature.txt 2>&1
+RUN mkdir /gnu/build-bison && tar -xf /gnu/bison-3.8.2.tar.xz -C /gnu/build-bison --strip-components=1 && cd /gnu/build-bison && ./configure --prefix=/opt/native-tools --disable-nls > /evidence/bison-configure.txt && make -j2 > /evidence/bison-build.txt && make install > /evidence/bison-install.txt
+ENV PATH=/opt/native-tools/bin:$PATH
+FROM native-tools AS glibc-prep
+RUN mkdir -p /build/glibc && rpmbuild -bp --nodeps --define '_sourcedir /sources/glibc' --define '_builddir /build/glibc' /sources/glibc/glibc.spec > /evidence/glibc-prep.txt 2>&1
+FROM glibc-prep AS libc-build
+RUN dnf -y --setopt=install_weak_deps=0 --setopt=gpgcheck=1 install kernel-headers glibc-devel systemtap-sdt-devel perl-interpreter
+RUN mkdir /build/glibc-build && cd /build/glibc-build && ../glibc/glibc-2.34/configure --prefix=/usr --libdir=/usr/lib64 --enable-kernel=3.2 --with-headers=/usr/include --enable-bind-now --enable-stack-protector=strong --enable-tunables --enable-systemtap --with-rtld-early-cflags=-march=x86-64 --disable-profile --disable-crypt --enable-cet CFLAGS='-O2 -g -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection' > /evidence/libc-configure.txt 2>&1
+RUN cd /build/glibc-build && make -j4 > /evidence/libc-build.txt 2>&1
+FROM libc-build AS libc-fixed
+COPY deployment/security/minio-os-20261113/patches/glibc-LANGUAGE.patch /tmp/language-fix.patch
+RUN cd /build/glibc/glibc-2.34 && patch -p1 --fuzz=0 < /tmp/language-fix.patch > /evidence/language-fix-apply.txt && cd /build/glibc-build && make -j4 > /evidence/libc-patched-build.txt 2>&1 && make -j4 subdirs=intl check > /evidence/libc-normal-intl-check.txt 2>&1 && cp tests.sum /evidence/libc-normal-intl-tests.sum
+FROM native-tools AS ncurses-prep
+RUN mkdir -p /build/ncurses && gpg --batch --import /sources/ncurses/dickey-invisible-island.txt > /evidence/ncurses-key-import.txt 2>&1 && gpg --batch --status-fd 1 --verify /sources/ncurses/ncurses-6.2-20210508.tgz.asc /sources/ncurses/ncurses-6.2-20210508.tgz > /evidence/ncurses-signature.txt 2>&1 && tar -xf /sources/ncurses/ncurses-6.2-20210508.tgz -C /build/ncurses --strip-components=1 && cd /build/ncurses && for patchname in ncurses-config.patch ncurses-libs.patch ncurses-urxvt.patch ncurses-kbs.patch ncurses-cve-2023-29491.patch ncurses-setuid.patch ncurses-cve-2022-29458.patch; do patch -p1 --fuzz=0 < /sources/ncurses/$patchname; done > /evidence/ncurses-vendor-prep.txt
+FROM ncurses-prep AS ncurses-fixed
+COPY deployment/security/minio-os-20261113/patches/ncurses-save-string.patch /tmp/upstream-parse-entry.patch
+RUN cd /build/ncurses && patch -p1 --fuzz=0 < /tmp/upstream-parse-entry.patch > /evidence/ncurses-fix-apply.txt
+RUN mkdir /build/ncurses-wide && cd /build/ncurses-wide && ../ncurses/configure --prefix=/usr --libdir=/usr/lib64 --enable-colorfgbg --enable-hard-tabs --enable-overwrite --enable-pc-files --enable-xmc-glitch --disable-setuid-environ --disable-stripping --disable-wattr-macros --with-cxx-shared --with-ospeed=unsigned --with-pkg-config-libdir=/usr/lib64/pkgconfig --with-shared --with-terminfo-dirs=/etc/terminfo:/usr/share/terminfo --with-termlib=tinfo --with-ticlib=tic --with-xterm-kbs=DEL --without-ada --with-abi-version=6 --enable-widec CFLAGS='-O2 -g -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -fstack-protector-strong -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -march=x86-64-v2 -mtune=generic' LDFLAGS='-Wl,-z,relro -Wl,-z,now' > /evidence/ncurses-configure.txt 2>&1 && make -j4 libs > /evidence/ncurses-build.txt 2>&1 && make -j4 -C progs > /evidence/ncurses-progs-build.txt 2>&1
+RUN printf 'dr-safe|DeepResearch normal terminal,\n\tcols#80, lines#24, clear=\\E[H\\E[2J,\n' > /tmp/normal-terminal.src && TERMINFO=/tmp/normal-terminfo LD_LIBRARY_PATH=/build/ncurses-wide/lib /build/ncurses-wide/progs/tic -o /tmp/normal-terminfo /tmp/normal-terminal.src > /evidence/ncurses-normal-tic.txt 2>&1 && LD_LIBRARY_PATH=/build/ncurses-wide/lib /build/ncurses-wide/progs/infocmp -A /tmp/normal-terminfo dr-safe > /evidence/ncurses-normal-infocmp.txt
+RUN tar -cf /evidence/ncurses-outputs.tar -C /build/ncurses-wide lib progs/tic
+FROM pgsty/silo@sha256:706e0d419d23bdab663486044165fb4de1ee6b82885a8637b2935216fb2286ec AS retained
+FROM tooling AS updated
+COPY --from=retained / /minio-root/
+RUN rpm --root /minio-root -qa --qf '%{NAME} %{VERSION}-%{RELEASE} %{ARCH}\n' | sort > /evidence/before-packages.txt && sha256sum /minio-root/usr/bin/silo /minio-root/usr/bin/mcli > /evidence/before-go-sha256.txt
+ARG TRANSACTION_OBSERVATION=normal
+RUN printf '%s\n' "$TRANSACTION_OBSERVATION" > /evidence/transaction-observation.txt && dnf -y --installroot=/minio-root --releasever=9 --disablerepo='*' --setopt=localpkg_gpgcheck=1 --setopt=install_weak_deps=0 upgrade /evidence/rpms/glibc-2.34-290.el9_9.x86_64.rpm /evidence/rpms/glibc-common-2.34-290.el9_9.x86_64.rpm /evidence/rpms/glibc-minimal-langpack-2.34-290.el9_9.x86_64.rpm /evidence/rpms/libgcc-11.5.0-17.el9_9.x86_64.rpm > /evidence/signed-update.txt 2>&1
+RUN rpm --root /minio-root -qa --qf '%{NAME} %{VERSION}-%{RELEASE} %{ARCH}\n' | sort > /evidence/after-packages.txt && sha256sum -c /evidence/before-go-sha256.txt && (rpm --root /minio-root -Va > /evidence/after-rpm-verify.txt; printf "%s\n" "$?" > /evidence/after-rpm-verify.exitcode)
+FROM updated AS candidate-payload
+COPY --from=go-repair-build /out/silo /minio-root/usr/bin/silo
+COPY --from=go-repair-build /out/mcli /minio-root/usr/bin/mcli
+COPY --from=go-repair-build /out/silo-buildinfo.txt /out/mcli-buildinfo.txt /out/silo-native.json /out/mcli-native.json /out/silo-graph.json /out/mcli-graph.json /minio-root/usr/share/deepresearch-build/
+COPY --chmod=0644 deployment/security/go-stdlib-20261112-evidence/source.lock.json /minio-root/usr/share/deepresearch-build/go-security-source.lock.json
+COPY --chmod=0644 deployment/security/go-stdlib-20261112-evidence/Go-LICENSE /minio-root/usr/share/deepresearch-build/Go-LICENSE
+COPY --from=curl-build /build/curl/src/curl /minio-root/usr/bin/curl
+COPY --from=curl-build /evidence/curl-COPYING /minio-root/licenses/curl/COPYING
+COPY --from=curl-build /evidence/build-packages.txt /minio-root/licenses/curl/build-packages.txt
+COPY --from=libc-fixed /build/glibc-build/libc.so /minio-root/usr/lib64/libc.so.6
+COPY --from=libc-fixed /build/glibc-build/elf/ld.so /minio-root/usr/lib64/ld-linux-x86-64.so.2
+COPY --from=ncurses-fixed /build/ncurses-wide/lib/libtic.so.6.2 /minio-root/usr/lib64/libtic.so.6.2
+RUN chmod 0755 /minio-root/usr/lib64/libc.so.6 /minio-root/usr/lib64/ld-linux-x86-64.so.2 /minio-root/usr/lib64/libtic.so.6.2 && sha256sum /minio-root/usr/bin/silo /minio-root/usr/bin/mcli /minio-root/usr/lib64/libc.so.6 /minio-root/usr/lib64/ld-linux-x86-64.so.2 /minio-root/usr/lib64/libtic.so.6.2 > /evidence/candidate-native-sha256.txt && chroot /minio-root /bin/sh -c 'printf "normal-shell-ok\n"; chroot --version' > /evidence/candidate-basic-runtime.txt
+RUN mkdir -p /evidence/runtime-build-artifacts && for path in var/cache/ldconfig/aux-cache var/lib/dnf/history.sqlite var/lib/dnf/history.sqlite-shm var/lib/dnf/history.sqlite-wal var/log/dnf.librepo.log var/log/dnf.log var/log/dnf.rpm.log var/log/hawkey.log; do test -f /minio-root/$path && test ! -L /minio-root/$path && sha256sum /minio-root/$path >> /evidence/runtime-build-artifacts-before.sha256 && mkdir -p /evidence/runtime-build-artifacts/$(dirname "$path") && mv /minio-root/$path /evidence/runtime-build-artifacts/$path || exit 1; done && tar -cf /evidence/runtime-build-artifacts.tar -C /evidence/runtime-build-artifacts .
+FROM scratch AS candidate
+ARG PROJECT_SOURCE_REVISION
+LABEL org.opencontainers.image.source="https://github.com/W205614/DeepResearch" org.opencontainers.image.revision=$PROJECT_SOURCE_REVISION org.deepresearch.binary-redistribution-approved="false"
+COPY --from=candidate-payload /minio-root/ /
+ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin MINIO_ACCESS_KEY_FILE=access_key MINIO_SECRET_KEY_FILE=secret_key MINIO_ROOT_USER_FILE=access_key MINIO_ROOT_PASSWORD_FILE=secret_key MINIO_KMS_SECRET_KEY_FILE=kms_master_key MINIO_CONFIG_ENV_FILE=config.env HOME=/tmp MC_CONFIG_DIR=/tmp/.mc
+WORKDIR /
+ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
+CMD ["silo"]
+EXPOSE 9000 9001
+VOLUME ["/data"]
+FROM scratch AS build-evidence
+COPY --from=candidate-payload /evidence/ /
+COPY --from=libc-fixed /evidence/language-fix-apply.txt /evidence/libc-patched-build.txt /evidence/libc-normal-intl-check.txt /evidence/libc-normal-intl-tests.sum /glibc/
+COPY --from=ncurses-fixed /evidence/ncurses-signature.txt /evidence/ncurses-vendor-prep.txt /evidence/ncurses-fix-apply.txt /evidence/ncurses-configure.txt /evidence/ncurses-build.txt /evidence/ncurses-normal-tic.txt /evidence/ncurses-normal-infocmp.txt /ncurses/
+COPY --from=go-repair-build /out/ /go-repair/
+COPY --from=curl-build /evidence/ /curl/

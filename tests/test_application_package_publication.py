@@ -94,7 +94,7 @@ def test_historical_artifact_release_keeps_only_its_existing_unsuffixed_archive_
         validate_manifest(data, data['source_sha'], data['artifact_release'])
 
 
-@pytest.mark.parametrize('profile', ['agent-full-scope-20261110', 'agent-ordinary-query-20261112'])
+@pytest.mark.parametrize('profile', publication.check_agent_full_scope.PROFILE_NAMES)
 def test_technical_review_is_bound_to_exact_agent_profile(profile):
     data = manifest()
     data['images'][0]['security_review_profile'] = profile
@@ -183,6 +183,107 @@ def test_complete_clean_publication_scan_passes_without_changing_report():
     before = copy.deepcopy(scan)
     assert scan_verdict(scan)["passed"] is True
     assert scan == before
+
+
+@pytest.mark.parametrize('failure', [None, 'portable-config', 'exit', 'missing-busybox', 'different-image', 'retag', 'timeout'])
+def test_backend_native_gate_binds_the_same_loaded_archive_and_propagates_failure(tmp_path, monkeypatch, failure):
+    config = b'{"os":"linux","architecture":"amd64"}'
+    image = {'service': 'backend', 'archive_tag': 'dr-package-candidate-backend:v0.1.4-' + 'a' * 12,
+             'image_id': 'sha256:' + hashlib.sha256(config).hexdigest()}
+    inspection = {'Id': 'sha256:' + 'b' * 64, 'RootFS': {'Layers': ['layer']}, 'Config': {'User': 'app'}}
+    output = tmp_path / 'security'
+    output.mkdir()
+    inspected = []
+
+    def inspect(command):
+        assert command == ['docker', 'image', 'inspect', image['archive_tag']]
+        inspected.append(command)
+        after = copy.deepcopy(inspection)
+        if failure == 'retag' and len(inspected) == 2:
+            after['Id'] = 'sha256:' + 'c' * 64
+        return json.dumps([after]).encode()
+
+    monkeypatch.setattr(publication.subprocess, 'check_output', inspect)
+    monkeypatch.setattr(publication.check_agent_full_scope, 'capture_actual_config',
+                        lambda actual: b'changed' if failure == 'portable-config' else config)
+    calls = []
+
+    def native(command, **kwargs):
+        calls.append(command)
+        assert command[:2] == [sys.executable, str(publication.ROOT / 'scripts/check_native_jvm.py')]
+        assert command[command.index('--image') + 1] == image['archive_tag']
+        assert command[command.index('--profile') + 1] == 'business-java'
+        assert kwargs['env'] == {'FIXTURE': 'no-secret'} and 'shell' not in kwargs
+        if failure == 'timeout':
+            raise subprocess.TimeoutExpired(command, 1200, output=b'partial stdout', stderr=b'partial stderr')
+        directory = Path(command[command.index('--output-dir') + 1])
+        directory.mkdir()
+        summary = {'passed': True, 'actual_image_id': inspection['Id'],
+                   'backend_busybox': {'passed': True, 'all_severity_technical_clear': True}}
+        if failure == 'missing-busybox':
+            summary.pop('backend_busybox')
+        if failure == 'different-image':
+            summary['actual_image_id'] = 'sha256:' + 'c' * 64
+        (directory / 'summary.json').write_text(json.dumps(summary))
+        return subprocess.CompletedProcess(command, 1 if failure == 'exit' else 0, b'fixture', b'')
+
+    monkeypatch.setattr(publication.subprocess, 'run', native)
+    if failure:
+        with pytest.raises(ValueError):
+            publication.verify_backend_native(image, output, {'FIXTURE': 'no-secret'})
+        assert len(calls) == (0 if failure == 'portable-config' else 1)
+        if failure != 'portable-config':
+            assert json.loads((output / 'native-backend-evidence.json').read_bytes())['passed'] is False
+        if failure == 'timeout':
+            assert (output / 'native-backend.stdout.private.log').read_bytes() == b'partial stdout'
+            assert (output / 'native-backend.stderr.private.log').read_bytes() == b'partial stderr'
+    else:
+        actual = publication.verify_backend_native(image, output, {'FIXTURE': 'no-secret'})
+        assert actual['passed'] and actual['actual_engine_id'] == inspection['Id']
+        assert actual['accepted_image_id'] == image['image_id']
+        assert 'summary.json' in actual['files']
+
+
+@pytest.mark.parametrize('raw_finding', [False, True])
+def test_outer_backend_publication_route_requires_native_after_raw_zero(tmp_path, monkeypatch, raw_finding):
+    image = {'service': 'backend', 'image_id': 'sha256:' + 'd' * 64,
+             'archive_tag': 'dr-package-candidate-backend:v0.1.4-' + 'a' * 12}
+    archive = tmp_path / 'accepted.tar'
+    with tarfile.open(archive, 'w') as saved:
+        for name, value in [('manifest.json', [{'Config': 'config.json'}]),
+                            ('config.json', {'rootfs': {'diff_ids': ['sha256:' + 'e' * 64]}})]:
+            content = json.dumps(value).encode()
+            member = tarfile.TarInfo(name)
+            member.size = len(content)
+            saved.addfile(member, io.BytesIO(content))
+
+    def scan(command, **kwargs):
+        if command == ['trivy', '--version']:
+            return subprocess.CompletedProcess(command, 0, b'Version: 0.75.0\n', b'')
+        raw = image_scan()
+        raw['Results'][0]['Type'] = 'alpine'
+        raw['Results'][1]['Type'] = 'jar'
+        if raw_finding:
+            raw['Results'][0]['Vulnerabilities'] = [{'VulnerabilityID': 'CVE-TEST-1',
+                'PkgName': 'libc6', 'InstalledVersion': '2.41-1', 'Severity': 'MEDIUM'}]
+        Path(command[command.index('--output') + 1]).write_text(json.dumps(raw))
+        return subprocess.CompletedProcess(command, 0, b'', b'')
+
+    calls = []
+
+    def native(actual, output, environment):
+        calls.append(actual)
+        assert actual == image
+        assert json.loads((output / 'raw.json').read_bytes())['Metadata']['ImageID'] == image['image_id']
+        raise ValueError('fixture native gate failed')
+
+    monkeypatch.setattr(publication.subprocess, 'run', scan)
+    monkeypatch.setattr(publication, 'verify_backend_native', native)
+    output = tmp_path / 'security'
+    with pytest.raises(ValueError, match='unresolved all-severity' if raw_finding else 'fixture native gate failed'):
+        publication.scan_loaded_archive(archive, image, output)
+    assert calls == ([] if raw_finding else [image])
+    assert json.loads((output / 'verdict.json').read_bytes())['passed'] is False
 
 
 @pytest.mark.parametrize("change", ["image", "layers", "platform", "stale", "version", "os-coverage",

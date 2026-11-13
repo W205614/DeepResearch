@@ -1,0 +1,5071 @@
+[
+  {
+    "apk_name": "binutils-2.45.1-r1.apk",
+    "archive_sha256": "15682887459d216585feb438bbfb7ec63e1f33e77c453f44637d2d9d8c35977d",
+    "package_info_sha256": "d0d6e11921b74fd8993c814bce8b8d605745f3448c15b77721b9a065169c1216",
+    "fields": {
+      "pkgname": [
+        "binutils"
+      ],
+      "pkgver": [
+        "2.45.1-r1"
+      ],
+      "pkgdesc": [
+        "Tools necessary to build programs"
+      ],
+      "url": [
+        "https://www.gnu.org/software/binutils/"
+      ],
+      "builddate": [
+        "1767883750"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "10583042"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "binutils"
+      ],
+      "commit": [
+        "673df4f3ce2e71e9bcfbf64939332917a35795fc"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "GPL-2.0-or-later AND LGPL-2.1-or-later AND BSD-3-Clause"
+      ],
+      "provides": [
+        "cmd:addr2line=2.45.1-r1",
+        "cmd:ar=2.45.1-r1",
+        "cmd:as=2.45.1-r1",
+        "cmd:c++filt=2.45.1-r1",
+        "cmd:dwp=2.45.1-r1",
+        "cmd:elfedit=2.45.1-r1",
+        "cmd:gprof=2.45.1-r1",
+        "cmd:ld.bfd=2.45.1-r1",
+        "cmd:ld=2.45.1-r1",
+        "cmd:nm=2.45.1-r1",
+        "cmd:objcopy=2.45.1-r1",
+        "cmd:objdump=2.45.1-r1",
+        "cmd:ranlib=2.45.1-r1",
+        "cmd:readelf=2.45.1-r1",
+        "cmd:size=2.45.1-r1",
+        "cmd:strings=2.45.1-r1",
+        "cmd:strip=2.45.1-r1",
+        "so:libbfd-2.45.1.so=0",
+        "so:libctf-nobfd.so.0=0.0.0",
+        "so:libctf.so.0=0.0.0",
+        "so:libopcodes-2.45.1.so=0",
+        "so:libsframe.so.2=2.0.0"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1",
+        "so:libgcc_s.so.1",
+        "so:libjansson.so.4",
+        "so:libstdc++.so.6",
+        "so:libz.so.1",
+        "so:libzstd.so.1"
+      ],
+      "datahash": [
+        "2a44b0f5ca33b9bed87d034a0b72afbf5b30ad671755b34170016ea27609a645"
+      ]
+    }
+  },
+  {
+    "apk_name": "brotli-1.2.1-r0.apk",
+    "archive_sha256": "2e23ad581e6228d3fa554b2b0faff7f18252706c028545f9cc45799005da9ec2",
+    "package_info_sha256": "ac76408e24e4e9503cf075658fe5dff4f16b7349f2924e1749ab6361d377f09b",
+    "fields": {
+      "pkgname": [
+        "brotli"
+      ],
+      "pkgver": [
+        "1.2.1-r0"
+      ],
+      "pkgdesc": [
+        "Generic lossless compressor"
+      ],
+      "url": [
+        "https://github.com/google/brotli"
+      ],
+      "builddate": [
+        "1792636353"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "34704"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "brotli"
+      ],
+      "commit": [
+        "8313352127992a9d82e2c2024494f6c38a4dffb4"
+      ],
+      "maintainer": [
+        "prspkt <prspkt@protonmail.com>"
+      ],
+      "license": [
+        "MIT"
+      ],
+      "provides": [
+        "cmd:brotli=1.2.1-r0"
+      ],
+      "depend": [
+        "so:libbrotlidec.so.1",
+        "so:libbrotlienc.so.1",
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "c6d482df56f1835f51af25b25d3f61724b95b9e8f6e1b398e4e8e3792afb4ef2"
+      ]
+    }
+  },
+  {
+    "apk_name": "brotli-dev-1.2.1-r0.apk",
+    "archive_sha256": "0f3c6906b1c76293488b0dd4b61a29df2d0fea24c385e47f97e626197c1e6e92",
+    "package_info_sha256": "a6929c46e5e240865f8e1c4a6c4ee42b56146c36e5508aa38d218816fcb04b58",
+    "fields": {
+      "pkgname": [
+        "brotli-dev"
+      ],
+      "pkgver": [
+        "1.2.1-r0"
+      ],
+      "pkgdesc": [
+        "Generic lossless compressor (development files)"
+      ],
+      "url": [
+        "https://github.com/google/brotli"
+      ],
+      "builddate": [
+        "1792636353"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "55281"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "brotli"
+      ],
+      "commit": [
+        "8313352127992a9d82e2c2024494f6c38a4dffb4"
+      ],
+      "maintainer": [
+        "prspkt <prspkt@protonmail.com>"
+      ],
+      "license": [
+        "MIT"
+      ],
+      "depend": [
+        "brotli=1.2.1-r0",
+        "brotli-libs=1.2.1-r0",
+        "pkgconfig"
+      ],
+      "provides": [
+        "pc:libbrotlicommon=1.2.1",
+        "pc:libbrotlidec=1.2.1",
+        "pc:libbrotlienc=1.2.1"
+      ],
+      "datahash": [
+        "4dbc3431ef0783e30695018f1ccde03d9d360084785e5df790491d0265d72ed4"
+      ]
+    }
+  },
+  {
+    "apk_name": "brotli-libs-1.2.1-r0.apk",
+    "archive_sha256": "62a7e37e43bbfc1f8525a00ad2125fd5897135dc93b849733884cb78ffd8e26c",
+    "package_info_sha256": "7df7e4e6e730352c9b57e604774f81c2a5b08047e5a6f0595270b6fda2e01a5f",
+    "fields": {
+      "pkgname": [
+        "brotli-libs"
+      ],
+      "pkgver": [
+        "1.2.1-r0"
+      ],
+      "pkgdesc": [
+        "Generic lossless compressor (libraries)"
+      ],
+      "url": [
+        "https://github.com/google/brotli"
+      ],
+      "builddate": [
+        "1792636353"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "980488"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "brotli"
+      ],
+      "commit": [
+        "8313352127992a9d82e2c2024494f6c38a4dffb4"
+      ],
+      "maintainer": [
+        "prspkt <prspkt@protonmail.com>"
+      ],
+      "license": [
+        "MIT"
+      ],
+      "provides": [
+        "so:libbrotlicommon.so.1=1.2.1",
+        "so:libbrotlidec.so.1=1.2.1",
+        "so:libbrotlienc.so.1=1.2.1"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "2a6b292372b2f1765518413b98eb6f0b14faddaaed8a39545fccab1ded43594c"
+      ]
+    }
+  },
+  {
+    "apk_name": "brotli-static-1.2.1-r0.apk",
+    "archive_sha256": "37d3d14f2af37b2e1596f08bf234fd2b7ef3722e8839e6e9d0ba2acce64c5ace",
+    "package_info_sha256": "5b466502d83bc7d0719f8fac3433b99d2641519c5686b28a31fcdbcd80d7f940",
+    "fields": {
+      "pkgname": [
+        "brotli-static"
+      ],
+      "pkgver": [
+        "1.2.1-r0"
+      ],
+      "pkgdesc": [
+        "Generic lossless compressor (static library)"
+      ],
+      "url": [
+        "https://github.com/google/brotli"
+      ],
+      "builddate": [
+        "1792636353"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "3000672"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "brotli"
+      ],
+      "commit": [
+        "8313352127992a9d82e2c2024494f6c38a4dffb4"
+      ],
+      "maintainer": [
+        "prspkt <prspkt@protonmail.com>"
+      ],
+      "license": [
+        "MIT"
+      ],
+      "depend": [
+        "brotli-dev"
+      ],
+      "datahash": [
+        "be9012b01dd9bdc3604fde1dfd24a48bee91b7642a6ff148a1f27ed46e23ed48"
+      ]
+    }
+  },
+  {
+    "apk_name": "build-base-0.5-r4.apk",
+    "archive_sha256": "3ac72e74e96150995e8d797b6c33fc3b46d69e3667c47bd0ff25ce89f9fc4eaf",
+    "package_info_sha256": "0c6892439f6e8be5d07cf9de696e31be7956877e2187f4c3ee9056e7d47e376a",
+    "fields": {
+      "pkgname": [
+        "build-base"
+      ],
+      "pkgver": [
+        "0.5-r4"
+      ],
+      "pkgdesc": [
+        "Meta package for build base"
+      ],
+      "url": [
+        "https://gitlab.alpinelinux.org/alpine/aports/-/blob/master/main/build-base/APKBUILD"
+      ],
+      "builddate": [
+        "1769500947"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "0"
+      ],
+      "arch": [
+        "noarch"
+      ],
+      "origin": [
+        "build-base"
+      ],
+      "commit": [
+        "1eff03395e9533e60c804a7a21400e59d5c8a1bf"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "MIT"
+      ],
+      "depend": [
+        "binutils",
+        "file",
+        "gcc",
+        "g++",
+        "make",
+        "libc-dev",
+        "fortify-headers",
+        "patch"
+      ],
+      "datahash": [
+        "b1dd88cdd8bf09af2539d0b345e647129d8fd55c92b6d824b6ecc53efd531028"
+      ]
+    }
+  },
+  {
+    "apk_name": "busybox-1.37.0-r31.apk",
+    "archive_sha256": "0e626fa97cf937fda7bba4ed4dde8e2f2dbb5083ac34e02180cec0c4eba9351b",
+    "package_info_sha256": "8328a16d69465f67b2ab1b6a054da1935d1e9320febb8be809250e4c527418bc",
+    "fields": {
+      "pkgname": [
+        "busybox"
+      ],
+      "pkgver": [
+        "1.37.0-r31"
+      ],
+      "pkgdesc": [
+        "Size optimized toolbox of many common UNIX utilities"
+      ],
+      "url": [
+        "https://busybox.net/"
+      ],
+      "builddate": [
+        "1768059508"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "813480"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "busybox"
+      ],
+      "commit": [
+        "c3ef5d10e6ef6528852c51f0564963e2f8c1be19"
+      ],
+      "maintainer": [
+        "S\u00f6ren Tempel <soeren+alpine@soeren-tempel.net>"
+      ],
+      "license": [
+        "GPL-2.0-only"
+      ],
+      "replaces": [
+        "busybox-initscripts"
+      ],
+      "triggers": [
+        "/bin /usr/bin /sbin /usr/sbin /lib/modules/* /usr/lib/modules/*"
+      ],
+      "provides": [
+        "cmd:busybox=1.37.0-r31"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "8b4ee62b0e6716cf4aecafc6ad5ed5ec5320dd9577b0f64a07562910e48401e6"
+      ]
+    }
+  },
+  {
+    "apk_name": "busybox-binsh-1.37.0-r31.apk",
+    "archive_sha256": "93f803ae5db6b729c0f66f4afba6e907ccc17d7d5f8b8c3d25bdb4636de2c48a",
+    "package_info_sha256": "7daa5883d76d521b8b051a060e1a696421becb25a713043ba5a92a3ef80f2033",
+    "fields": {
+      "pkgname": [
+        "busybox-binsh"
+      ],
+      "pkgver": [
+        "1.37.0-r31"
+      ],
+      "pkgdesc": [
+        "busybox ash /bin/sh"
+      ],
+      "url": [
+        "https://busybox.net/"
+      ],
+      "builddate": [
+        "1768059508"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "1"
+      ],
+      "arch": [
+        "noarch"
+      ],
+      "origin": [
+        "busybox"
+      ],
+      "commit": [
+        "c3ef5d10e6ef6528852c51f0564963e2f8c1be19"
+      ],
+      "maintainer": [
+        "S\u00f6ren Tempel <soeren+alpine@soeren-tempel.net>"
+      ],
+      "provider_priority": [
+        "100"
+      ],
+      "license": [
+        "GPL-2.0-only"
+      ],
+      "replaces": [
+        "busybox-initscripts"
+      ],
+      "provides": [
+        "/bin/sh",
+        "cmd:sh=1.37.0-r31"
+      ],
+      "depend": [
+        "busybox=1.37.0-r31"
+      ],
+      "datahash": [
+        "01e4c8cf14988e2746aa37ebfd7bc25d6c3596cb39e024102b5ea52d4542e8a9"
+      ]
+    }
+  },
+  {
+    "apk_name": "c-ares-1.34.9-r0.apk",
+    "archive_sha256": "3539a3e11c1ef1516117d8179a546ac882086e94e0d78ad51d687b3fa2b3b5f2",
+    "package_info_sha256": "ec7d8da71ddf42f58f082a07a13f601b3f53546808cd0271a177c2625fcdcd28",
+    "fields": {
+      "pkgname": [
+        "c-ares"
+      ],
+      "pkgver": [
+        "1.34.9-r0"
+      ],
+      "pkgdesc": [
+        "Asynchronous DNS/names resolver library"
+      ],
+      "url": [
+        "https://c-ares.org/"
+      ],
+      "builddate": [
+        "1792583714"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "247512"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "c-ares"
+      ],
+      "commit": [
+        "50f178d7a4c30ea44b54b7d4731ab58558c38b14"
+      ],
+      "maintainer": [
+        "Carlo Landmeter <clandmeter@alpinelinux.org>"
+      ],
+      "license": [
+        "MIT"
+      ],
+      "provides": [
+        "so:libcares.so.2=2.19.8"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "3329633ee28dd39c922ca7062d111d3a0029ecc87c983263c52002e561b69c4c"
+      ]
+    }
+  },
+  {
+    "apk_name": "ca-certificates-20261020-r0.apk",
+    "archive_sha256": "ca8de7a7469e2a04b9008eb728d6de1a6da691e09e3379d83dfd77bbfce4e3f9",
+    "package_info_sha256": "faf1391cc40112ba370a15245bc1b52f4c5a78d2519eed7ed5973c8f6fe0b8d7",
+    "fields": {
+      "pkgname": [
+        "ca-certificates"
+      ],
+      "pkgver": [
+        "20261020-r0"
+      ],
+      "pkgdesc": [
+        "Common CA certificates PEM files from Mozilla"
+      ],
+      "url": [
+        "https://www.mozilla.org/en-US/about/governance/policies/security-group/certs/"
+      ],
+      "builddate": [
+        "1792510288"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "212273"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "ca-certificates"
+      ],
+      "commit": [
+        "e78f5987166c6ffbe23f6472e2e8f040298fe2da"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "MPL-2.0 AND MIT"
+      ],
+      "replaces": [
+        "openssl"
+      ],
+      "depend": [
+        "/bin/sh",
+        "so:libc.musl-x86_64.so.1",
+        "so:libcrypto.so.3"
+      ],
+      "triggers": [
+        "/usr/share/ca-certificates /usr/local/share/ca-certificates /etc/ssl/certs /etc/ca-certificates/update.d"
+      ],
+      "provides": [
+        "cmd:c_rehash=20261020-r0",
+        "cmd:update-ca-certificates=20261020-r0"
+      ],
+      "datahash": [
+        "fd08cee4df5ab52ee0edc6fb35a99f4f965d8ff40adf4a1e69eec68fd5ee8a23"
+      ]
+    }
+  },
+  {
+    "apk_name": "ca-certificates-bundle-20261020-r0.apk",
+    "archive_sha256": "bb008f6d214b6af7576324659856fb63dc8dcb4373f8345ff706388696f1254d",
+    "package_info_sha256": "f0d9bd49f56a77be6184f1256dc045c4de69f31736c0dde8fae6bcc2b5ac77fb",
+    "fields": {
+      "pkgname": [
+        "ca-certificates-bundle"
+      ],
+      "pkgver": [
+        "20261020-r0"
+      ],
+      "pkgdesc": [
+        "Pre generated bundle of Mozilla certificates"
+      ],
+      "url": [
+        "https://www.mozilla.org/en-US/about/governance/policies/security-group/certs/"
+      ],
+      "builddate": [
+        "1792510288"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "178791"
+      ],
+      "arch": [
+        "noarch"
+      ],
+      "origin": [
+        "ca-certificates"
+      ],
+      "commit": [
+        "e78f5987166c6ffbe23f6472e2e8f040298fe2da"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "MPL-2.0 AND MIT"
+      ],
+      "replaces": [
+        "libressl2.7-libcrypto",
+        "libcrypto1.1"
+      ],
+      "provides": [
+        "ca-certificates-cacert=20261020-r0"
+      ],
+      "datahash": [
+        "8bb252a6e7db8c70fd0a73ebe00cdd9da4212383323fa0542cda82c83007fd0d"
+      ]
+    }
+  },
+  {
+    "apk_name": "curl-8.23.0-r0.apk",
+    "archive_sha256": "531ae298451a4c1c44f563fc3b2eedc2c1d7e0a26a33bdfc0efe6faaff6a5942",
+    "package_info_sha256": "3c1ac08211c4c0e2eac4efa2dc4e3ae3195e967eca155d07ed9ffcf7c7b85766",
+    "fields": {
+      "pkgname": [
+        "curl"
+      ],
+      "pkgver": [
+        "8.23.0-r0"
+      ],
+      "pkgdesc": [
+        "URL retrieval utility and library"
+      ],
+      "url": [
+        "https://curl.se/"
+      ],
+      "builddate": [
+        "1792943290"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "285358"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "curl"
+      ],
+      "commit": [
+        "c65a7b3f6d6bc4b3c0a8a6fff759d8fd05a167ce"
+      ],
+      "maintainer": [
+        "Achill Gilgenast <achill@achill.org>"
+      ],
+      "license": [
+        "curl"
+      ],
+      "replaces": [
+        "wcurl"
+      ],
+      "depend": [
+        "libcurl=8.23.0-r0",
+        "so:libc.musl-x86_64.so.1",
+        "so:libcurl.so.4",
+        "so:libz.so.1"
+      ],
+      "provides": [
+        "wcurl=8.23.0-r0",
+        "cmd:curl=8.23.0-r0",
+        "cmd:wcurl=8.23.0-r0"
+      ],
+      "datahash": [
+        "910962420126c233834b8c9f3764e1a5219a712495bdc293bc67ef732989a1ca"
+      ]
+    }
+  },
+  {
+    "apk_name": "file-5.47-r2.apk",
+    "archive_sha256": "4681c153c509aec126e2b9ea2c959730309b24a792d49fc8cc26fa5fa87e8fdd",
+    "package_info_sha256": "83cdf4a5b729e3ff130495466368f12b6edfa2140953bdbdbcb5f086c1128257",
+    "fields": {
+      "pkgname": [
+        "file"
+      ],
+      "pkgver": [
+        "5.47-r2"
+      ],
+      "pkgdesc": [
+        "File type identification utility"
+      ],
+      "url": [
+        "https://www.darwinsys.com/file/"
+      ],
+      "builddate": [
+        "1777644640"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "26944"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "file"
+      ],
+      "commit": [
+        "a05d36fa86411cd0ce86d756f818e525d0eee1c3"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "BSD-2-Clause"
+      ],
+      "provides": [
+        "cmd:file=5.47-r2"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1",
+        "so:libmagic.so.1"
+      ],
+      "datahash": [
+        "afba539833f6b384eb943221dc46d83af7ffc54b41cb46b4b1258abf63755445"
+      ]
+    }
+  },
+  {
+    "apk_name": "fortify-headers-3.0.1-r2.apk",
+    "archive_sha256": "5ffaebd9f141ac3e3fa0cc99f798f64b4c0aa16fb06a7a77e68f63f350fe23aa",
+    "package_info_sha256": "17d62c70bbae7c291d4272c3ea0c38d2425ba7f41821ba11478737aef7086222",
+    "fields": {
+      "pkgname": [
+        "fortify-headers"
+      ],
+      "pkgver": [
+        "3.0.1-r2"
+      ],
+      "pkgdesc": [
+        "standalone fortify source implementation"
+      ],
+      "url": [
+        "https://github.com/jvoisin/fortify-headers"
+      ],
+      "builddate": [
+        "1773403094"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "34988"
+      ],
+      "arch": [
+        "noarch"
+      ],
+      "origin": [
+        "fortify-headers"
+      ],
+      "commit": [
+        "363be18be4b1f33af5a058990ba9b297e8fb547b"
+      ],
+      "maintainer": [
+        "Timo Ter\u00e4s <timo.teras@iki.fi>"
+      ],
+      "license": [
+        "0BSD"
+      ],
+      "datahash": [
+        "501448d04f6604ae5e50277a02b79abbe7c9546b2ef86a04be53c253a6927801"
+      ]
+    }
+  },
+  {
+    "apk_name": "g++-15.2.0-r5.apk",
+    "archive_sha256": "35c39e8d3667d8603fe209dbafe67681c64b1cda66bf9c836bfb4d05b19a71fd",
+    "package_info_sha256": "4c0552eff111c9f4d2b078200c58b9996b7d4a623a954be0ff4bac572fc20278",
+    "fields": {
+      "pkgname": [
+        "g++"
+      ],
+      "pkgver": [
+        "15.2.0-r5"
+      ],
+      "pkgdesc": [
+        "GNU C++ standard library and compiler"
+      ],
+      "url": [
+        "https://gcc.gnu.org"
+      ],
+      "builddate": [
+        "1780084766"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "47240136"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "gcc"
+      ],
+      "commit": [
+        "423a8ad043d07f2c7546c8ec3e2b0384cda360ae"
+      ],
+      "maintainer": [
+        "Ariadne Conill <ariadne@dereferenced.org>"
+      ],
+      "license": [
+        "GPL-2.0-or-later AND LGPL-2.1-or-later"
+      ],
+      "replaces": [
+        "libstdc++",
+        "binutils"
+      ],
+      "depend": [
+        "libstdc++-dev=15.2.0-r5",
+        "gcc=15.2.0-r5",
+        "musl-dev",
+        "libstdc++=15.2.0-r5",
+        "so:libc.musl-x86_64.so.1",
+        "so:libgmp.so.10",
+        "so:libisl.so.23",
+        "so:libmpc.so.3",
+        "so:libmpfr.so.6",
+        "so:libz.so.1"
+      ],
+      "provides": [
+        "cmd:c++=15.2.0-r5",
+        "cmd:g++=15.2.0-r5",
+        "cmd:x86_64-alpine-linux-musl-c++=15.2.0-r5",
+        "cmd:x86_64-alpine-linux-musl-g++=15.2.0-r5"
+      ],
+      "datahash": [
+        "bbbf29ed677c2fe12029014fef6f952943f64929c01e91715954bd5e1fbe7e3b"
+      ]
+    }
+  },
+  {
+    "apk_name": "gcc-15.2.0-r5.apk",
+    "archive_sha256": "d1d482472ed91240731c60dbae8176bc1e32e1dfb694856da6759f6d32716325",
+    "package_info_sha256": "55b269020acaeccaa1bde099c1e024c69ec47789651644b8c368e1ae68a402c0",
+    "fields": {
+      "pkgname": [
+        "gcc"
+      ],
+      "pkgver": [
+        "15.2.0-r5"
+      ],
+      "pkgdesc": [
+        "The GNU Compiler Collection"
+      ],
+      "url": [
+        "https://gcc.gnu.org"
+      ],
+      "builddate": [
+        "1780084766"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "167691096"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "gcc"
+      ],
+      "commit": [
+        "423a8ad043d07f2c7546c8ec3e2b0384cda360ae"
+      ],
+      "maintainer": [
+        "Ariadne Conill <ariadne@dereferenced.org>"
+      ],
+      "license": [
+        "GPL-2.0-or-later AND LGPL-2.1-or-later"
+      ],
+      "replaces": [
+        "libstdc++",
+        "binutils"
+      ],
+      "depend": [
+        "binutils",
+        "libgcc-static",
+        "libgomp=15.2.0-r5",
+        "libatomic=15.2.0-r5",
+        "libgomp=15.2.0-r5",
+        "so:libc.musl-x86_64.so.1",
+        "so:libgcc_s.so.1",
+        "so:libgmp.so.10",
+        "so:libisl.so.23",
+        "so:libmpc.so.3",
+        "so:libmpfr.so.6",
+        "so:libstdc++.so.6",
+        "so:libz.so.1"
+      ],
+      "provides": [
+        "cmd:c89=15.2.0-r5",
+        "cmd:c99=15.2.0-r5",
+        "cmd:cc=15.2.0-r5",
+        "cmd:cpp=15.2.0-r5",
+        "cmd:gcc-ar=15.2.0-r5",
+        "cmd:gcc-nm=15.2.0-r5",
+        "cmd:gcc-ranlib=15.2.0-r5",
+        "cmd:gcc=15.2.0-r5",
+        "cmd:gcov-dump=15.2.0-r5",
+        "cmd:gcov-tool=15.2.0-r5",
+        "cmd:gcov=15.2.0-r5",
+        "cmd:lto-dump=15.2.0-r5",
+        "cmd:x86_64-alpine-linux-musl-cc=15.2.0-r5",
+        "cmd:x86_64-alpine-linux-musl-gcc-15.2.0=15.2.0-r5",
+        "cmd:x86_64-alpine-linux-musl-gcc-ar=15.2.0-r5",
+        "cmd:x86_64-alpine-linux-musl-gcc-nm=15.2.0-r5",
+        "cmd:x86_64-alpine-linux-musl-gcc-ranlib=15.2.0-r5",
+        "cmd:x86_64-alpine-linux-musl-gcc=15.2.0-r5",
+        "so:libasan.so.8=8.0.0",
+        "so:libcc1.so.0=0.0.0",
+        "so:libhwasan.so.0=0.0.0",
+        "so:libitm.so.1=1.0.0",
+        "so:liblsan.so.0=0.0.0",
+        "so:libtsan.so.2=2.0.0",
+        "so:libubsan.so.1=1.0.0"
+      ],
+      "datahash": [
+        "fe0ceea69093568b9a3de00e85a42b473342efdf47994c981a3cd517cae93dff"
+      ]
+    }
+  },
+  {
+    "apk_name": "gdbm-1.26-r0.apk",
+    "archive_sha256": "3278ccba30b241168ca4ab93c919be805411b918fdc062f06d3684d12dc33ae3",
+    "package_info_sha256": "8a5a5fde2f0347179b1766e0f48e752598683401f670fcc633598bbdcb08f6a2",
+    "fields": {
+      "pkgname": [
+        "gdbm"
+      ],
+      "pkgver": [
+        "1.26-r0"
+      ],
+      "pkgdesc": [
+        "GNU dbm is a set of database routines that use extensible hashing"
+      ],
+      "url": [
+        "https://www.gnu.org/software/gdbm/"
+      ],
+      "builddate": [
+        "1753888742"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "73200"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "gdbm"
+      ],
+      "commit": [
+        "1ea03990396db618edfcc8a9a0bc6b72662bac8f"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "GPL-3.0-or-later"
+      ],
+      "provides": [
+        "so:libgdbm.so.6=6.0.0",
+        "so:libgdbm_compat.so.4=4.0.0"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "a49a6f978a0b986fd99f3d0d5650d5b6ff0707b78fdcd6accecfa80633fc5409"
+      ]
+    }
+  },
+  {
+    "apk_name": "gmp-6.3.0-r4.apk",
+    "archive_sha256": "85323ef5bce8ff234736dc2d6592ea37aebdc6348a531e27430bdfe38364d256",
+    "package_info_sha256": "8e40a631fde6b1e84e84b4d951e699bd8d2f21bb326188ab84e078455423e65c",
+    "fields": {
+      "pkgname": [
+        "gmp"
+      ],
+      "pkgver": [
+        "6.3.0-r4"
+      ],
+      "pkgdesc": [
+        "free library for arbitrary precision arithmetic"
+      ],
+      "url": [
+        "https://gmplib.org/"
+      ],
+      "builddate": [
+        "1767883750"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "423880"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "gmp"
+      ],
+      "commit": [
+        "206e7b39f7884d62a174aba4d33a42454518c1c2"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "LGPL-3.0-or-later OR GPL-2.0-or-later"
+      ],
+      "replaces": [
+        "gmp5"
+      ],
+      "provides": [
+        "so:libgmp.so.10=10.5.0"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "d0ab168c53a0b94c8e7a96f6a9d3449c42e33c24c712410bf6cf1fba06c57ab1"
+      ]
+    }
+  },
+  {
+    "apk_name": "gnupg-2.4.9-r1.apk",
+    "archive_sha256": "10bf737f41a77120e6219aa09914acf5f5aeb6fa4990509bb3e229f11bea3654",
+    "package_info_sha256": "9d138ea1095fdf497afcf04379b97f15becb5069f1608236b237212d2d1782f6",
+    "fields": {
+      "pkgname": [
+        "gnupg"
+      ],
+      "pkgver": [
+        "2.4.9-r1"
+      ],
+      "pkgdesc": [
+        "GNU Privacy Guard 2 - meta package for full GnuPG suite"
+      ],
+      "url": [
+        "https://www.gnupg.org/"
+      ],
+      "builddate": [
+        "1780466039"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "0"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "gnupg"
+      ],
+      "commit": [
+        "d71dde667049817d90cb84fe7b1e21630784b52f"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "GPL-3.0-or-later"
+      ],
+      "depend": [
+        "gpg=2.4.9-r1",
+        "gpg-agent=2.4.9-r1",
+        "gpg-wks-server=2.4.9-r1",
+        "gpgsm=2.4.9-r1",
+        "gpgv=2.4.9-r1",
+        "gnupg-dirmngr=2.4.9-r1",
+        "gnupg-utils=2.4.9-r1",
+        "gnupg-wks-client=2.4.9-r1"
+      ],
+      "datahash": [
+        "b1dd88cdd8bf09af2539d0b345e647129d8fd55c92b6d824b6ecc53efd531028"
+      ]
+    }
+  },
+  {
+    "apk_name": "gnupg-dirmngr-2.4.9-r1.apk",
+    "archive_sha256": "e67ec6bf5669f2d4b40de6bf20ac1ffdaccda1c7f14ba6e5a188307287ba71bd",
+    "package_info_sha256": "99e0bc5b74bca043b8fd712dab04478aaa0ce6cdfb1c7b35b3c197d894c1a813",
+    "fields": {
+      "pkgname": [
+        "gnupg-dirmngr"
+      ],
+      "pkgver": [
+        "2.4.9-r1"
+      ],
+      "pkgdesc": [
+        "GNU Privacy Guard 2 - network certificate management service"
+      ],
+      "url": [
+        "https://www.gnupg.org/"
+      ],
+      "builddate": [
+        "1780466039"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "640648"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "gnupg"
+      ],
+      "commit": [
+        "d71dde667049817d90cb84fe7b1e21630784b52f"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "GPL-3.0-or-later"
+      ],
+      "replaces": [
+        "gnupg"
+      ],
+      "depend": [
+        "gnupg-gpgconf=2.4.9-r1",
+        "so:libassuan.so.9",
+        "so:libc.musl-x86_64.so.1",
+        "so:libgcrypt.so.20",
+        "so:libgnutls.so.30",
+        "so:libgpg-error.so.0",
+        "so:libksba.so.8",
+        "so:liblber.so.2",
+        "so:libldap.so.2",
+        "so:libnpth.so.0"
+      ],
+      "provides": [
+        "dirmngr=2.4.9-r1",
+        "cmd:dirmngr-client=2.4.9-r1",
+        "cmd:dirmngr=2.4.9-r1"
+      ],
+      "datahash": [
+        "e5ae9674253f603a204922543b31a4785c951812e2d622faf202ef27287c1288"
+      ]
+    }
+  },
+  {
+    "apk_name": "gnupg-gpgconf-2.4.9-r1.apk",
+    "archive_sha256": "bb4bc4670567fe9880deac2ed0984a317f65ba8650c0c8deaa6494f2100bca9f",
+    "package_info_sha256": "e063cb494fbb6d0f133da0b5bfa7b74b9e574bd5a61bfa0f1c778357689da5fd",
+    "fields": {
+      "pkgname": [
+        "gnupg-gpgconf"
+      ],
+      "pkgver": [
+        "2.4.9-r1"
+      ],
+      "pkgdesc": [
+        "GNU Privacy Guard 2 - core configuration utilities"
+      ],
+      "url": [
+        "https://www.gnupg.org/"
+      ],
+      "builddate": [
+        "1780466039"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "239349"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "gnupg"
+      ],
+      "commit": [
+        "d71dde667049817d90cb84fe7b1e21630784b52f"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "GPL-3.0-or-later"
+      ],
+      "replaces": [
+        "gnupg"
+      ],
+      "depend": [
+        "pinentry",
+        "so:libassuan.so.9",
+        "so:libc.musl-x86_64.so.1",
+        "so:libgcrypt.so.20",
+        "so:libgpg-error.so.0"
+      ],
+      "provides": [
+        "gpgconf=2.4.9-r1",
+        "cmd:gpg-connect-agent=2.4.9-r1",
+        "cmd:gpgconf=2.4.9-r1"
+      ],
+      "datahash": [
+        "7852a15b9afc86650eb51038fc069d3c016046b6f5d5b8eae3319d942fbca9f4"
+      ]
+    }
+  },
+  {
+    "apk_name": "gnupg-keyboxd-2.4.9-r1.apk",
+    "archive_sha256": "0308bd31e5776b0881908e6bc84ac010bbd8d18da29ccf737e90c1b4dee9a2bd",
+    "package_info_sha256": "c3145f902b8e77b45b35a56cb4e48bf05e20c5538fc60f1d3f3ebdb58be52e78",
+    "fields": {
+      "pkgname": [
+        "gnupg-keyboxd"
+      ],
+      "pkgver": [
+        "2.4.9-r1"
+      ],
+      "pkgdesc": [
+        "GNU Privacy Guard 2 - keyboxd manager"
+      ],
+      "url": [
+        "https://www.gnupg.org/"
+      ],
+      "builddate": [
+        "1780466039"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "228560"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "gnupg"
+      ],
+      "commit": [
+        "d71dde667049817d90cb84fe7b1e21630784b52f"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "GPL-3.0-or-later"
+      ],
+      "depend": [
+        "so:libassuan.so.9",
+        "so:libc.musl-x86_64.so.1",
+        "so:libgcrypt.so.20",
+        "so:libgpg-error.so.0",
+        "so:libksba.so.8",
+        "so:libnpth.so.0",
+        "so:libsqlite3.so.0"
+      ],
+      "datahash": [
+        "03242eafca9007ffb53feac42b1a8abac96c8e8c546dd97c6d9f4e887a35fc1d"
+      ]
+    }
+  },
+  {
+    "apk_name": "gnupg-utils-2.4.9-r1.apk",
+    "archive_sha256": "70ba94f6fbc91b3f0073373312faf3e555e918d1b7d74ec3d314be40b78a0361",
+    "package_info_sha256": "8f44c77f415363c08fd602a6ebd9ceca3b44ba1f48460b089a9706e9d30b8d0e",
+    "fields": {
+      "pkgname": [
+        "gnupg-utils"
+      ],
+      "pkgver": [
+        "2.4.9-r1"
+      ],
+      "pkgdesc": [
+        "GNU Privacy Guard 2 - utility programs"
+      ],
+      "url": [
+        "https://www.gnupg.org/"
+      ],
+      "builddate": [
+        "1780466039"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "843916"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "gnupg"
+      ],
+      "commit": [
+        "d71dde667049817d90cb84fe7b1e21630784b52f"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "provider_priority": [
+        "100"
+      ],
+      "license": [
+        "GPL-3.0-or-later"
+      ],
+      "replaces": [
+        "gnupg"
+      ],
+      "provides": [
+        "cmd:addgnupghome=2.4.9-r1",
+        "cmd:applygnupgdefaults=2.4.9-r1",
+        "cmd:gpg-card=2.4.9-r1",
+        "cmd:gpg-mail-tube=2.4.9-r1",
+        "cmd:gpgparsemail=2.4.9-r1",
+        "cmd:gpgsplit=2.4.9-r1",
+        "cmd:gpgtar=2.4.9-r1",
+        "cmd:kbxutil=2.4.9-r1",
+        "cmd:watchgnupg=2.4.9-r1"
+      ],
+      "depend": [
+        "so:libassuan.so.9",
+        "so:libbz2.so.1",
+        "so:libc.musl-x86_64.so.1",
+        "so:libgcrypt.so.20",
+        "so:libgpg-error.so.0",
+        "so:libksba.so.8",
+        "so:libz.so.1"
+      ],
+      "datahash": [
+        "1b50d2803d70f8fcc7ceebb78d28e117e65e2083aada400f6557d71149ca23dd"
+      ]
+    }
+  },
+  {
+    "apk_name": "gnupg-wks-client-2.4.9-r1.apk",
+    "archive_sha256": "d3e0206d5b8a3a6409f237a1ee3e47e86497b0832cf5f8eb200b38e12f824d89",
+    "package_info_sha256": "ba367673368000b7c3ecc0d639948a45c051212fead3073e3ddcd9066d52a696",
+    "fields": {
+      "pkgname": [
+        "gnupg-wks-client"
+      ],
+      "pkgver": [
+        "2.4.9-r1"
+      ],
+      "pkgdesc": [
+        "GNU Privacy Guard 2 - Web Key Service client"
+      ],
+      "url": [
+        "https://www.gnupg.org/"
+      ],
+      "builddate": [
+        "1780466039"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "171326"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "gnupg"
+      ],
+      "commit": [
+        "d71dde667049817d90cb84fe7b1e21630784b52f"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "GPL-3.0-or-later"
+      ],
+      "replaces": [
+        "gnupg"
+      ],
+      "depend": [
+        "gpg=2.4.9-r1",
+        "gpg-agent=2.4.9-r1",
+        "gnupg-dirmngr=2.4.9-r1",
+        "so:libassuan.so.9",
+        "so:libc.musl-x86_64.so.1",
+        "so:libgcrypt.so.20",
+        "so:libgpg-error.so.0"
+      ],
+      "provides": [
+        "cmd:gpg-wks-client=2.4.9-r1"
+      ],
+      "datahash": [
+        "b270e5b00c60a26239db78bb598c42651f6a0429684448154ae0018757806b39"
+      ]
+    }
+  },
+  {
+    "apk_name": "gnutls-3.8.13-r0.apk",
+    "archive_sha256": "8d3f3612145db8cd7feb83607187a60f809f06cfa3c2e74d310d58a6b053d54c",
+    "package_info_sha256": "fcf7b414bb3797abc70b3837996f850294b481232aba5fcf396522f00bbab4af",
+    "fields": {
+      "pkgname": [
+        "gnutls"
+      ],
+      "pkgver": [
+        "3.8.13-r0"
+      ],
+      "pkgdesc": [
+        "TLS protocol implementation"
+      ],
+      "url": [
+        "https://www.gnutls.org/"
+      ],
+      "builddate": [
+        "1777563056"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "2060368"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "gnutls"
+      ],
+      "commit": [
+        "c09f2e94a4b0b4077da49683cf0faa09ed63fb5b"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "LGPL-2.1-or-later"
+      ],
+      "provides": [
+        "so:libgnutls.so.30=30.42.0"
+      ],
+      "depend": [
+        "so:libbrotlidec.so.1",
+        "so:libbrotlienc.so.1",
+        "so:libc.musl-x86_64.so.1",
+        "so:libgmp.so.10",
+        "so:libhogweed.so.6",
+        "so:libidn2.so.0",
+        "so:libnettle.so.8",
+        "so:libp11-kit.so.0",
+        "so:libtasn1.so.6",
+        "so:libunistring.so.5",
+        "so:libz.so.1",
+        "so:libzstd.so.1"
+      ],
+      "datahash": [
+        "63dcf415b5e5ccb6d721060fd9031ea20a31943c924fe0b91d297d54d701e511"
+      ]
+    }
+  },
+  {
+    "apk_name": "gpg-2.4.9-r1.apk",
+    "archive_sha256": "1e89d877891d8ae01e68abde2144a2749395bce143a1ed4a6a3f569d4f9df758",
+    "package_info_sha256": "0ae64424d9a364d3f5a72b208cc358186f12e6b175bec0227c4e7ac5b791c024",
+    "fields": {
+      "pkgname": [
+        "gpg"
+      ],
+      "pkgver": [
+        "2.4.9-r1"
+      ],
+      "pkgdesc": [
+        "GNU Privacy Guard 2 - public key operations only"
+      ],
+      "url": [
+        "https://www.gnupg.org/"
+      ],
+      "builddate": [
+        "1780466039"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "947304"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "gnupg"
+      ],
+      "commit": [
+        "d71dde667049817d90cb84fe7b1e21630784b52f"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "provider_priority": [
+        "100"
+      ],
+      "license": [
+        "GPL-3.0-or-later"
+      ],
+      "replaces": [
+        "gnupg"
+      ],
+      "depend": [
+        "gnupg-dirmngr=2.4.9-r1",
+        "gnupg-gpgconf=2.4.9-r1",
+        "gnupg-keyboxd=2.4.9-r1",
+        "so:libassuan.so.9",
+        "so:libbz2.so.1",
+        "so:libc.musl-x86_64.so.1",
+        "so:libgcrypt.so.20",
+        "so:libgpg-error.so.0",
+        "so:libnpth.so.0",
+        "so:libsqlite3.so.0",
+        "so:libz.so.1"
+      ],
+      "provides": [
+        "cmd:gpg2=2.4.9-r1",
+        "cmd:gpg=2.4.9-r1"
+      ],
+      "datahash": [
+        "32d548d6b719e8ee591652e5e970b5157341ea9920d23683a539c2ffece8d42c"
+      ]
+    }
+  },
+  {
+    "apk_name": "gpg-agent-2.4.9-r1.apk",
+    "archive_sha256": "9e15e6d5edf60f44ac2079e3e9a1f3c5468fec6319311c6e39de32f6728883ec",
+    "package_info_sha256": "905834c089e82535cab128fb4e6ab01bdbf46c6ac98255a97daa60a4b90ec84f",
+    "fields": {
+      "pkgname": [
+        "gpg-agent"
+      ],
+      "pkgver": [
+        "2.4.9-r1"
+      ],
+      "pkgdesc": [
+        "GNU Privacy Guard 2 - cryptographic agent"
+      ],
+      "url": [
+        "https://www.gnupg.org/"
+      ],
+      "builddate": [
+        "1780466039"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "649963"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "gnupg"
+      ],
+      "commit": [
+        "d71dde667049817d90cb84fe7b1e21630784b52f"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "GPL-3.0-or-later"
+      ],
+      "replaces": [
+        "gnupg"
+      ],
+      "depend": [
+        "gnupg-gpgconf=2.4.9-r1",
+        "so:libassuan.so.9",
+        "so:libc.musl-x86_64.so.1",
+        "so:libgcrypt.so.20",
+        "so:libgpg-error.so.0",
+        "so:libnpth.so.0"
+      ],
+      "provides": [
+        "cmd:gpg-agent=2.4.9-r1"
+      ],
+      "datahash": [
+        "cb1a2c9e36fb72d0aa38a9d3c9f32eb8d7ee38ce1311de7380a2c57f6cba614b"
+      ]
+    }
+  },
+  {
+    "apk_name": "gpg-wks-server-2.4.9-r1.apk",
+    "archive_sha256": "abd178c632aa8cd266853ffc8643cb3388d2261810ea27062ce0e5ae31607d3c",
+    "package_info_sha256": "383bff947fafbbf729e7b1df1942da6e06dce86b1069a342909f2814d60eb5e8",
+    "fields": {
+      "pkgname": [
+        "gpg-wks-server"
+      ],
+      "pkgver": [
+        "2.4.9-r1"
+      ],
+      "pkgdesc": [
+        "GNU Privacy Guard 2 - Web Key Service server"
+      ],
+      "url": [
+        "https://www.gnupg.org/"
+      ],
+      "builddate": [
+        "1780466039"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "154520"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "gnupg"
+      ],
+      "commit": [
+        "d71dde667049817d90cb84fe7b1e21630784b52f"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "GPL-3.0-or-later"
+      ],
+      "replaces": [
+        "gnupg"
+      ],
+      "depend": [
+        "gpg=2.4.9-r1",
+        "gpg-agent=2.4.9-r1",
+        "so:libc.musl-x86_64.so.1",
+        "so:libgcrypt.so.20",
+        "so:libgpg-error.so.0"
+      ],
+      "provides": [
+        "cmd:gpg-wks-server=2.4.9-r1"
+      ],
+      "datahash": [
+        "de6332a38f9e873737846a85d08092b08ecaaac6a2e3e98c2893ee17004eebcd"
+      ]
+    }
+  },
+  {
+    "apk_name": "gpgsm-2.4.9-r1.apk",
+    "archive_sha256": "cde4851680d0b15a26f76f61a5963239e801556c7e139db862eba61dd3f10d56",
+    "package_info_sha256": "708ebcf258fa1fbcd04dbf6ce7bbcb59cf89c55f3d66e58c38632fb7b827fd37",
+    "fields": {
+      "pkgname": [
+        "gpgsm"
+      ],
+      "pkgver": [
+        "2.4.9-r1"
+      ],
+      "pkgdesc": [
+        "GNU Privacy Guard 2 - S/MIME version"
+      ],
+      "url": [
+        "https://www.gnupg.org/"
+      ],
+      "builddate": [
+        "1780466039"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "488776"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "gnupg"
+      ],
+      "commit": [
+        "d71dde667049817d90cb84fe7b1e21630784b52f"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "GPL-3.0-or-later"
+      ],
+      "replaces": [
+        "gnupg"
+      ],
+      "depend": [
+        "gnupg-gpgconf=2.4.9-r1",
+        "so:libassuan.so.9",
+        "so:libc.musl-x86_64.so.1",
+        "so:libgcrypt.so.20",
+        "so:libgpg-error.so.0",
+        "so:libksba.so.8",
+        "so:libnpth.so.0"
+      ],
+      "provides": [
+        "cmd:gpgsm=2.4.9-r1"
+      ],
+      "datahash": [
+        "434b826cd84997c4c16d09e287ab7b9a2c3f885d92b461f3036669a3549d1edb"
+      ]
+    }
+  },
+  {
+    "apk_name": "gpgv-2.4.9-r1.apk",
+    "archive_sha256": "a772d49fa38fa1261f7221e6e13551bdfc25d1fad34cf262dc0e37bb4d7222a7",
+    "package_info_sha256": "572a254ebef83896f44c55317b16c901b0518419f391d43d897926d832c84f3d",
+    "fields": {
+      "pkgname": [
+        "gpgv"
+      ],
+      "pkgver": [
+        "2.4.9-r1"
+      ],
+      "pkgdesc": [
+        "GNU Privacy Guard 2 - signature verification only"
+      ],
+      "url": [
+        "https://www.gnupg.org/"
+      ],
+      "builddate": [
+        "1780466039"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "438536"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "gnupg"
+      ],
+      "commit": [
+        "d71dde667049817d90cb84fe7b1e21630784b52f"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "provider_priority": [
+        "100"
+      ],
+      "license": [
+        "GPL-3.0-or-later"
+      ],
+      "replaces": [
+        "gnupg"
+      ],
+      "provides": [
+        "cmd:gpgv2=2.4.9-r1",
+        "cmd:gpgv=2.4.9-r1"
+      ],
+      "depend": [
+        "so:libassuan.so.9",
+        "so:libbz2.so.1",
+        "so:libc.musl-x86_64.so.1",
+        "so:libgcrypt.so.20",
+        "so:libgpg-error.so.0",
+        "so:libnpth.so.0",
+        "so:libz.so.1"
+      ],
+      "datahash": [
+        "50bbf946106c715e6d3b7bd4494ffb5fd970926d0d078200048e38f855376312"
+      ]
+    }
+  },
+  {
+    "apk_name": "isl26-0.26-r2.apk",
+    "archive_sha256": "30999fb66e296c8ea7aa102cad0d3095519b3022abb622d2951dd29367310ea9",
+    "package_info_sha256": "100c5e7f226bc05e288e66b85561dba43ed2f9caa62da3246e3558e6446bb2c7",
+    "fields": {
+      "pkgname": [
+        "isl26"
+      ],
+      "pkgver": [
+        "0.26-r2"
+      ],
+      "pkgdesc": [
+        "An Integer Set Library for the Polyhedral Model"
+      ],
+      "url": [
+        "http://isl.gforge.inria.fr/"
+      ],
+      "builddate": [
+        "1770623981"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "2226792"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "isl26"
+      ],
+      "commit": [
+        "4f94ecd650b5ea9d18882e45048ad78536fd3149"
+      ],
+      "maintainer": [
+        "Timo Ter\u00e4s <timo.teras@iki.fi>"
+      ],
+      "license": [
+        "MIT"
+      ],
+      "replaces": [
+        "isl24",
+        "isl25"
+      ],
+      "provides": [
+        "so:libisl.so.23=23.3.0"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1",
+        "so:libgmp.so.10"
+      ],
+      "datahash": [
+        "9b1516f2d49f9f93234b7bbc0dd1bf00e9c679d292a8a56b49ce005b48e01c09"
+      ]
+    }
+  },
+  {
+    "apk_name": "jansson-2.15.0-r0.apk",
+    "archive_sha256": "7681b41486e1f2b2efce11875c839533464ae8857d30fc49130f0039c6585fdb",
+    "package_info_sha256": "9371dfbc0609562fd2ffb3fe6b60f8f3c855ded33100f85539ee39394f5eb09f",
+    "fields": {
+      "pkgname": [
+        "jansson"
+      ],
+      "pkgver": [
+        "2.15.0-r0"
+      ],
+      "pkgdesc": [
+        "lightweight JSON library"
+      ],
+      "url": [
+        "http://www.digip.org/jansson/"
+      ],
+      "builddate": [
+        "1769436749"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "87832"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "jansson"
+      ],
+      "commit": [
+        "88919740865a31680e7f1c4cb568dfd7a87e9f08"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "MIT"
+      ],
+      "provides": [
+        "so:libjansson.so.4=4.15.0"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "5443ebae20c90a743c884818549d81ad36032d2defc8d448f30fc9d1bb4f261f"
+      ]
+    }
+  },
+  {
+    "apk_name": "libassuan-3.0.2-r0.apk",
+    "archive_sha256": "785f314ba8d612ce2f03273ff5455a50383e7b6f2c6bf4b12a28d20ed5662a4a",
+    "package_info_sha256": "a1a1875243912be06c3b746ad853a3283759fbebc871b28e7b8706f5eb5c62b6",
+    "fields": {
+      "pkgname": [
+        "libassuan"
+      ],
+      "pkgver": [
+        "3.0.2-r0"
+      ],
+      "pkgdesc": [
+        "IPC library used by some GnuPG related software"
+      ],
+      "url": [
+        "https://www.gnupg.org/software/libassuan/index.html"
+      ],
+      "builddate": [
+        "1751760492"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "75848"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "libassuan"
+      ],
+      "commit": [
+        "dc3fc2d94931a406ff0810e5fb276e289d771d99"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "LGPL-2.1-or-later"
+      ],
+      "provides": [
+        "so:libassuan.so.9=9.0.2"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1",
+        "so:libgpg-error.so.0"
+      ],
+      "datahash": [
+        "e94648801ff0e4312dd58a5cc1618ce7ff959dc8097f03f0dfb3b1e7eba1a0c5"
+      ]
+    }
+  },
+  {
+    "apk_name": "libatomic-15.2.0-r5.apk",
+    "archive_sha256": "c5ec550c73dd7b4e81e206fdff3cf4c46b0ae1b29fec1db5cd4e12d88416abbf",
+    "package_info_sha256": "742228567d9a0c96ceb722f2d9d91670944f880877a8a6a72ad1834fee94987b",
+    "fields": {
+      "pkgname": [
+        "libatomic"
+      ],
+      "pkgver": [
+        "15.2.0-r5"
+      ],
+      "pkgdesc": [
+        "GCC Atomic library"
+      ],
+      "url": [
+        "https://gcc.gnu.org"
+      ],
+      "builddate": [
+        "1780084766"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "30320"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "gcc"
+      ],
+      "commit": [
+        "423a8ad043d07f2c7546c8ec3e2b0384cda360ae"
+      ],
+      "maintainer": [
+        "Ariadne Conill <ariadne@dereferenced.org>"
+      ],
+      "license": [
+        "GPL-2.0-or-later AND LGPL-2.1-or-later"
+      ],
+      "replaces": [
+        "gcc"
+      ],
+      "provides": [
+        "so:libatomic.so.1=1.2.0"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "05fcee63967e187dea66c3875a652d569b1ba818bab8f396bc3d69683b85fbb0"
+      ]
+    }
+  },
+  {
+    "apk_name": "libbz2-1.0.8-r6.apk",
+    "archive_sha256": "2737e2b23ed08d4911ee62cd0163b5f4bf0379cacf4dc35b23a00209584c98fd",
+    "package_info_sha256": "160c5a11f438e1fa92c5e4ef4aec4779cd5e44c24cdc6195bd3566a114bae428",
+    "fields": {
+      "pkgname": [
+        "libbz2"
+      ],
+      "pkgver": [
+        "1.0.8-r6"
+      ],
+      "pkgdesc": [
+        "Shared library for bz2"
+      ],
+      "url": [
+        "https://sourceware.org/bzip2/"
+      ],
+      "builddate": [
+        "1684120357"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "78480"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "bzip2"
+      ],
+      "commit": [
+        "33283848034c9885d984c8e8697c645c57324938"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "bzip2-1.0.6"
+      ],
+      "provides": [
+        "so:libbz2.so.1=1.0.8"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "216da3e564ede9b68d36bcf57dd053aaec9dac8f97c9c878a6cad6ff4feace01"
+      ]
+    }
+  },
+  {
+    "apk_name": "libcrypto3-3.5.9-r0.apk",
+    "archive_sha256": "6632d758d8f5e9ea3b650fe966f23bbf9a202f8b8dceecac93da135dec5e3689",
+    "package_info_sha256": "5231738033d165fc58efc83cd300d7740d0e468ddf3093c758b0c790ba5840d8",
+    "fields": {
+      "pkgname": [
+        "libcrypto3"
+      ],
+      "pkgver": [
+        "3.5.9-r0"
+      ],
+      "pkgdesc": [
+        "Crypto library from openssl"
+      ],
+      "url": [
+        "https://www.openssl.org/"
+      ],
+      "builddate": [
+        "1790752173"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "5221974"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "openssl"
+      ],
+      "commit": [
+        "29b9ec24b1b5b39aeef51fa2a044210e2ec5258e"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "provider_priority": [
+        "100"
+      ],
+      "license": [
+        "Apache-2.0"
+      ],
+      "replaces": [
+        "libcrypto1.1"
+      ],
+      "provides": [
+        "so:libcrypto.so.3=3"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "99512a3bccc0fc807b2eac681dc4a648a8609cc65fd940ebdea8c88c80288f3b"
+      ]
+    }
+  },
+  {
+    "apk_name": "libcurl-8.23.0-r0.apk",
+    "archive_sha256": "1f70ca404818805a6465b615bbfe84ef861488a963d7e630108ebd7fbaa51665",
+    "package_info_sha256": "3d228a2deb0303168ca3cf070bf7036f444c2f1d42aeaa92115667c6b6f8f0f1",
+    "fields": {
+      "pkgname": [
+        "libcurl"
+      ],
+      "pkgver": [
+        "8.23.0-r0"
+      ],
+      "pkgdesc": [
+        "The multiprotocol file transfer library"
+      ],
+      "url": [
+        "https://curl.se/"
+      ],
+      "builddate": [
+        "1792943290"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "751435"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "curl"
+      ],
+      "commit": [
+        "c65a7b3f6d6bc4b3c0a8a6fff759d8fd05a167ce"
+      ],
+      "maintainer": [
+        "Achill Gilgenast <achill@achill.org>"
+      ],
+      "license": [
+        "curl"
+      ],
+      "replaces": [
+        "wcurl"
+      ],
+      "depend": [
+        "ca-certificates-bundle",
+        "so:libbrotlidec.so.1",
+        "so:libc.musl-x86_64.so.1",
+        "so:libcares.so.2",
+        "so:libcrypto.so.3",
+        "so:libidn2.so.0",
+        "so:libnghttp2.so.14",
+        "so:libpsl.so.5",
+        "so:libssl.so.3",
+        "so:libz.so.1",
+        "so:libzstd.so.1"
+      ],
+      "provides": [
+        "so:libcurl.so.4=4.8.0"
+      ],
+      "datahash": [
+        "01e940ca4dc5cb927ed6eb766a117584e09c4e802cfd4c6a60ba11bb1054ef24"
+      ]
+    }
+  },
+  {
+    "apk_name": "libffi-3.5.2-r1.apk",
+    "archive_sha256": "6da1a19313a40c56cac756fb11e2c4d5267831e1c22fc8323f24c943c94da6e0",
+    "package_info_sha256": "ef9417c98dcd99a1ecbb467f1c5729d8e9253beacf013203512530085409be41",
+    "fields": {
+      "pkgname": [
+        "libffi"
+      ],
+      "pkgver": [
+        "3.5.2-r1"
+      ],
+      "pkgdesc": [
+        "portable, high level programming interface to various calling conventions."
+      ],
+      "url": [
+        "https://sourceware.org/libffi/"
+      ],
+      "builddate": [
+        "1776273462"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "38960"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "libffi"
+      ],
+      "commit": [
+        "2c2a7bb4a8b16066834e90402567b2c19403a790"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "MIT"
+      ],
+      "provides": [
+        "so:libffi.so.8=8.2.0"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "80312f0165ce5832253bc60d674159867ebb548996aa12b704b964ee798a0b50"
+      ]
+    }
+  },
+  {
+    "apk_name": "libgcc-15.2.0-r5.apk",
+    "archive_sha256": "393dcd32629f06d7d85409c272d142d0c082772d10b87ef55ee82f47de3be637",
+    "package_info_sha256": "2cfe9160864fc0f678e8a3b01102471b45c7b24ace25fdc9df21b2925a7252e3",
+    "fields": {
+      "pkgname": [
+        "libgcc"
+      ],
+      "pkgver": [
+        "15.2.0-r5"
+      ],
+      "pkgdesc": [
+        "GNU C compiler runtime libraries"
+      ],
+      "url": [
+        "https://gcc.gnu.org"
+      ],
+      "builddate": [
+        "1780084766"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "173920"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "gcc"
+      ],
+      "commit": [
+        "423a8ad043d07f2c7546c8ec3e2b0384cda360ae"
+      ],
+      "maintainer": [
+        "Ariadne Conill <ariadne@dereferenced.org>"
+      ],
+      "license": [
+        "GPL-2.0-or-later AND LGPL-2.1-or-later"
+      ],
+      "replaces": [
+        "libstdc++",
+        "binutils"
+      ],
+      "provides": [
+        "so:libgcc_s.so.1=1"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "9c5a34452c22bfc14b1cdc57da8625296137b0dbc626f00648c6132ed97ec93f"
+      ]
+    }
+  },
+  {
+    "apk_name": "libgcc-static-15.2.0-r5.apk",
+    "archive_sha256": "563244a562f5c48b921f7f0b4a571e373cfcba65175fe2d4f752c5f975738bcd",
+    "package_info_sha256": "d451fcc5bc67e7e829319e4f0bd3aeb33ec64e1b77aebbc12ae630c13d5f3f59",
+    "fields": {
+      "pkgname": [
+        "libgcc-static"
+      ],
+      "pkgver": [
+        "15.2.0-r5"
+      ],
+      "pkgdesc": [
+        "GNU C compiler runtime libraries"
+      ],
+      "url": [
+        "https://gcc.gnu.org"
+      ],
+      "builddate": [
+        "1780084766"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "3286420"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "gcc"
+      ],
+      "commit": [
+        "423a8ad043d07f2c7546c8ec3e2b0384cda360ae"
+      ],
+      "maintainer": [
+        "Ariadne Conill <ariadne@dereferenced.org>"
+      ],
+      "license": [
+        "GPL-2.0-or-later AND LGPL-2.1-or-later"
+      ],
+      "replaces": [
+        "libstdc++",
+        "binutils"
+      ],
+      "datahash": [
+        "c174e331263ffa814382156efbc4f5a3618caaf9e1cc833c77a5a45c067d363d"
+      ]
+    }
+  },
+  {
+    "apk_name": "libgcrypt-1.12.2-r0.apk",
+    "archive_sha256": "e7dd4be813331a5a42d433b2e2a0ce6ebf4e1f0752ce2bdf7e81a38f88a6517d",
+    "package_info_sha256": "5a009a9c4cc1af957c36da1b57088b4853805cd307a77d857f82d3cd8d6d166c",
+    "fields": {
+      "pkgname": [
+        "libgcrypt"
+      ],
+      "pkgver": [
+        "1.12.2-r0"
+      ],
+      "pkgdesc": [
+        "General purpose crypto library based on the code used in GnuPG"
+      ],
+      "url": [
+        "https://www.gnupg.org/"
+      ],
+      "builddate": [
+        "1776358988"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "1546768"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "libgcrypt"
+      ],
+      "commit": [
+        "0ae860b01c54e362509a5b1354f3dd2369b9dffc"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "LGPL-2.1-or-later AND GPL-2.0-or-later"
+      ],
+      "provides": [
+        "so:libgcrypt.so.20=20.7.2"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1",
+        "so:libgpg-error.so.0"
+      ],
+      "datahash": [
+        "4f37e764829e06a9c50bc67505975d36bd504b56a4c0212f824ce51db735fe0e"
+      ]
+    }
+  },
+  {
+    "apk_name": "libgomp-15.2.0-r5.apk",
+    "archive_sha256": "e7204aad00e31d544e0a34eac5a7eb7d3586d2b7b22afd6e5907189c4e0337cc",
+    "package_info_sha256": "d731957f313ff94b40050cfddc4ab74562f0c2cdbfdf117fd2cb4cd013d29a93",
+    "fields": {
+      "pkgname": [
+        "libgomp"
+      ],
+      "pkgver": [
+        "15.2.0-r5"
+      ],
+      "pkgdesc": [
+        "GCC shared-memory parallel programming API library"
+      ],
+      "url": [
+        "https://gcc.gnu.org"
+      ],
+      "builddate": [
+        "1780084766"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "338704"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "gcc"
+      ],
+      "commit": [
+        "423a8ad043d07f2c7546c8ec3e2b0384cda360ae"
+      ],
+      "maintainer": [
+        "Ariadne Conill <ariadne@dereferenced.org>"
+      ],
+      "license": [
+        "GPL-2.0-or-later AND LGPL-2.1-or-later"
+      ],
+      "replaces": [
+        "gcc"
+      ],
+      "provides": [
+        "so:libgomp.so.1=1.0.0"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "71a01f9468f2902ec5e30fad14cde52d0549d01e66dec15dd76ef2fbbc116cde"
+      ]
+    }
+  },
+  {
+    "apk_name": "libgpg-error-1.61-r0.apk",
+    "archive_sha256": "580b80e679adda234e5d36e7633023c25cf20ce9fcf3ee8f9dd85ba578d886b6",
+    "package_info_sha256": "a1f9d3bbca5d03170fe14b1874dece5c7234cfae151085d220ccea9390682cc5",
+    "fields": {
+      "pkgname": [
+        "libgpg-error"
+      ],
+      "pkgver": [
+        "1.61-r0"
+      ],
+      "pkgdesc": [
+        "Support library for libgcrypt"
+      ],
+      "url": [
+        "https://www.gnupg.org/"
+      ],
+      "builddate": [
+        "1778752511"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "184784"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "libgpg-error"
+      ],
+      "commit": [
+        "8caf2102b9e8f0d9189cc11ad1069060d8a10f53"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "GPL-2.0-or-later AND LGPL-2.1-or-later"
+      ],
+      "provides": [
+        "cmd:gpg-error=1.61-r0",
+        "so:libgpg-error.so.0=0.42.1"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "ebc187af9d2bf6e68a90c6348b95e02de621273f867f71e66fc30c6baab96113"
+      ]
+    }
+  },
+  {
+    "apk_name": "libidn2-2.3.8-r0.apk",
+    "archive_sha256": "7d038ac558dde464964b033ce5126dd2eaf84cc414dc15e77c5424a321d0ebee",
+    "package_info_sha256": "06b2843ba86483cbd2e85aa813b306ede3816106bc3394560bc4a864712c311c",
+    "fields": {
+      "pkgname": [
+        "libidn2"
+      ],
+      "pkgver": [
+        "2.3.8-r0"
+      ],
+      "pkgdesc": [
+        "Encode/Decode library for internationalized domain names"
+      ],
+      "url": [
+        "https://www.gnu.org/software/libidn#libidn2"
+      ],
+      "builddate": [
+        "1751290607"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "198632"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "libidn2"
+      ],
+      "commit": [
+        "8240e09aa2fdd8f9979b2016be082273965aff0c"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "GPL-2.0-or-later OR LGPL-3.0-or-later"
+      ],
+      "provides": [
+        "so:libidn2.so.0=0.4.0"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1",
+        "so:libunistring.so.5"
+      ],
+      "datahash": [
+        "239312a494eb6f1069e339514a52bd4e7fad02f08a1521ffa0ca91b2bb598ff8"
+      ]
+    }
+  },
+  {
+    "apk_name": "libidn2-dev-2.3.8-r0.apk",
+    "archive_sha256": "37fc2c7f245df0464239d1a99b218abe2e5757552f641349d9fa1dc531c77f5e",
+    "package_info_sha256": "bbe1bac080d7055722315224cf1ef0e512b8398377c76b9a301f5734c7be758c",
+    "fields": {
+      "pkgname": [
+        "libidn2-dev"
+      ],
+      "pkgver": [
+        "2.3.8-r0"
+      ],
+      "pkgdesc": [
+        "Encode/Decode library for internationalized domain names (development files)"
+      ],
+      "url": [
+        "https://www.gnu.org/software/libidn#libidn2"
+      ],
+      "builddate": [
+        "1751290607"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "14449"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "libidn2"
+      ],
+      "commit": [
+        "8240e09aa2fdd8f9979b2016be082273965aff0c"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "GPL-2.0-or-later OR LGPL-3.0-or-later"
+      ],
+      "provides": [
+        "pc:libidn2=2.3.8"
+      ],
+      "depend": [
+        "libidn2=2.3.8-r0",
+        "pkgconfig"
+      ],
+      "datahash": [
+        "87e528d30f0c970c48833d508692ddf1a7d2e20c7f3a185767dfa98315240fab"
+      ]
+    }
+  },
+  {
+    "apk_name": "libidn2-static-2.3.8-r0.apk",
+    "archive_sha256": "77b1d45b93a28e67b90cb280031c5f0d6e300ea8258ba8c6921f35365ed71cbe",
+    "package_info_sha256": "01ea5441fac61299b80381904ee7a6fcf511c27ebbc406b3f4f104d448c39497",
+    "fields": {
+      "pkgname": [
+        "libidn2-static"
+      ],
+      "pkgver": [
+        "2.3.8-r0"
+      ],
+      "pkgdesc": [
+        "Encode/Decode library for internationalized domain names (static library)"
+      ],
+      "url": [
+        "https://www.gnu.org/software/libidn#libidn2"
+      ],
+      "builddate": [
+        "1751290607"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "270524"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "libidn2"
+      ],
+      "commit": [
+        "8240e09aa2fdd8f9979b2016be082273965aff0c"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "GPL-2.0-or-later OR LGPL-3.0-or-later"
+      ],
+      "depend": [
+        "libidn2-dev"
+      ],
+      "datahash": [
+        "11e6b376adc6ff139e8629296e4c78344eb95f810b87615912940a7152226246"
+      ]
+    }
+  },
+  {
+    "apk_name": "libksba-1.7.0-r0.apk",
+    "archive_sha256": "6604a6fb30ae9e19ebb2ba50e34603a9726cf88eb705b7f19cd7780e83abb738",
+    "package_info_sha256": "3e64e3bdf6e60daf67747d9c92d5fb011604543844cc080deb45f62806cede11",
+    "fields": {
+      "pkgname": [
+        "libksba"
+      ],
+      "pkgver": [
+        "1.7.0-r0"
+      ],
+      "pkgdesc": [
+        "Libksba is a CMS and X.509 access library"
+      ],
+      "url": [
+        "https://www.gnupg.org/software/libksba/index.html"
+      ],
+      "builddate": [
+        "1778752009"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "210880"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "libksba"
+      ],
+      "commit": [
+        "a753c0e07020a12107aaf290e8e9b02e149f6666"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "LGPL-3.0-only AND GPL-2.0-only AND GPL-3.0-only"
+      ],
+      "provides": [
+        "so:libksba.so.8=8.15.0"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1",
+        "so:libgpg-error.so.0"
+      ],
+      "datahash": [
+        "79f198c50c844fad28fcd99eb96055500fc053e36f840500df0a5cbd0ea708dc"
+      ]
+    }
+  },
+  {
+    "apk_name": "libldap-2.6.15-r0.apk",
+    "archive_sha256": "e6bcaad784d2b3c8585b1d5ac2a5f69ed414c5328231e2b7e4b69b25de6cb948",
+    "package_info_sha256": "fa5e1137883d13c64efccbef2d5b50f0534712bce92ca43773a6cbc3f4be543f",
+    "fields": {
+      "pkgname": [
+        "libldap"
+      ],
+      "pkgver": [
+        "2.6.15-r0"
+      ],
+      "pkgdesc": [
+        "OpenLDAP libraries"
+      ],
+      "url": [
+        "https://www.openldap.org/"
+      ],
+      "builddate": [
+        "1790747326"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "373967"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "openldap"
+      ],
+      "commit": [
+        "dff61c85c6c68e2c5fb8abac65f0dd97d4ad8763"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "OLDAP-2.8"
+      ],
+      "provides": [
+        "so:liblber.so.2=2.0.200",
+        "so:libldap.so.2=2.0.200"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1",
+        "so:libcrypto.so.3",
+        "so:libsasl2.so.3",
+        "so:libssl.so.3"
+      ],
+      "datahash": [
+        "8474155fe04beac73518fddbf9d59b6395d8e4c464c95770c414d626cf41b840"
+      ]
+    }
+  },
+  {
+    "apk_name": "libmagic-5.47-r2.apk",
+    "archive_sha256": "1820acd299025619a848b19ac98c7996fd92c06965255898800b6a790a8b03a2",
+    "package_info_sha256": "620fb0e5199424bac84d0de8caaf7b9b202b3ef0595bc2974033d36335cfe88d",
+    "fields": {
+      "pkgname": [
+        "libmagic"
+      ],
+      "pkgver": [
+        "5.47-r2"
+      ],
+      "pkgdesc": [
+        "File type identification library"
+      ],
+      "url": [
+        "https://www.darwinsys.com/file/"
+      ],
+      "builddate": [
+        "1777644640"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "10787312"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "file"
+      ],
+      "commit": [
+        "a05d36fa86411cd0ce86d756f818e525d0eee1c3"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "BSD-2-Clause"
+      ],
+      "provides": [
+        "so:libmagic.so.1=1.0.0"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "c7c79b29e63f72a0e7ae130f235dba9ebef007868d66dfc9e71cc33687053949"
+      ]
+    }
+  },
+  {
+    "apk_name": "libncursesw-6.6_p20260516-r0.apk",
+    "archive_sha256": "cf8caa8a88bc4ce9d9e395567fefaf9ef7fbd55c50ae6155b35c1b58f3755023",
+    "package_info_sha256": "175dcbed7710b059c9e9be02a4e41965c84a36e37a9305871a66ae0cf69a1498",
+    "fields": {
+      "pkgname": [
+        "libncursesw"
+      ],
+      "pkgver": [
+        "6.6_p20260516-r0"
+      ],
+      "pkgdesc": [
+        "Console display library (libncursesw)"
+      ],
+      "url": [
+        "https://invisible-island.net/ncurses/"
+      ],
+      "builddate": [
+        "1779608199"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "342888"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "ncurses"
+      ],
+      "commit": [
+        "2cee8a7328d061418336ad327b512d96bcd7bc5e"
+      ],
+      "maintainer": [
+        "Milan P. Stani\u0107 <mps@arvanta.net>"
+      ],
+      "license": [
+        "X11"
+      ],
+      "depend": [
+        "ncurses-terminfo-base=6.6_p20260516-r0",
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "provides": [
+        "so:libncursesw.so.6=6.6"
+      ],
+      "datahash": [
+        "3637f0aeb3b3e63401d91414b6097e01ce8214beb15451fd18102ac1f4207610"
+      ]
+    }
+  },
+  {
+    "apk_name": "libpsl-0.21.5-r3.apk",
+    "archive_sha256": "ec665a344b6e887f00f0a47015cc732c3a281b69e84641dc8662ea234fde6cdb",
+    "package_info_sha256": "a66d41fafede8e8397c32781e80135cca34d2931d57d2d24852157fc73498abd",
+    "fields": {
+      "pkgname": [
+        "libpsl"
+      ],
+      "pkgver": [
+        "0.21.5-r3"
+      ],
+      "pkgdesc": [
+        "C library for the Publix Suffix List"
+      ],
+      "url": [
+        "https://rockdaboot.github.io/libpsl"
+      ],
+      "builddate": [
+        "1746823694"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "75536"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "libpsl"
+      ],
+      "commit": [
+        "6bd45b53fb316dc01bda59f5feaf1e127eb64f22"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "MIT"
+      ],
+      "provides": [
+        "so:libpsl.so.5=5.3.5"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1",
+        "so:libidn2.so.0",
+        "so:libunistring.so.5"
+      ],
+      "datahash": [
+        "f25257ba4ae1c964b779e88532a8d18068885a0455e33b6a53f0d390ffb8c25c"
+      ]
+    }
+  },
+  {
+    "apk_name": "libpsl-dev-0.21.5-r3.apk",
+    "archive_sha256": "ed01191a16eddf755b3e7f1b3a96fab83f0600eaf6a44789c9398eac72d8557d",
+    "package_info_sha256": "84f71995d25fa722acbbf148e5adad9a6241ba6dc00daa5929f62cc2143b7fa0",
+    "fields": {
+      "pkgname": [
+        "libpsl-dev"
+      ],
+      "pkgver": [
+        "0.21.5-r3"
+      ],
+      "pkgdesc": [
+        "C library for the Publix Suffix List (development files)"
+      ],
+      "url": [
+        "https://rockdaboot.github.io/libpsl"
+      ],
+      "builddate": [
+        "1746823694"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "6026"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "libpsl"
+      ],
+      "commit": [
+        "6bd45b53fb316dc01bda59f5feaf1e127eb64f22"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "MIT"
+      ],
+      "depend": [
+        "libpsl-utils=0.21.5-r3",
+        "libpsl=0.21.5-r3",
+        "pc:libidn2",
+        "pkgconfig"
+      ],
+      "provides": [
+        "pc:libpsl=0.21.5"
+      ],
+      "datahash": [
+        "0ebaf8a57eaf7878678e5418a1390b5fd1e1d673a76aac13797ac8cfdb3e8dfb"
+      ]
+    }
+  },
+  {
+    "apk_name": "libpsl-static-0.21.5-r3.apk",
+    "archive_sha256": "c1db59907b8318be291ee6e86faffccede08fa7d3727846c399f14043b4a9ebd",
+    "package_info_sha256": "d88c5a7f0446cf3ee0644326fbbaa1724ce0e6795238aa7162d7adb7a6637fb8",
+    "fields": {
+      "pkgname": [
+        "libpsl-static"
+      ],
+      "pkgver": [
+        "0.21.5-r3"
+      ],
+      "pkgdesc": [
+        "C library for the Publix Suffix List (static library)"
+      ],
+      "url": [
+        "https://rockdaboot.github.io/libpsl"
+      ],
+      "builddate": [
+        "1746823694"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "123422"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "libpsl"
+      ],
+      "commit": [
+        "6bd45b53fb316dc01bda59f5feaf1e127eb64f22"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "MIT"
+      ],
+      "depend": [
+        "libpsl-dev"
+      ],
+      "datahash": [
+        "c3fb94da9783b409ad7e384df6090b36b4d9d308b246309d5d5f758caef8b4d0"
+      ]
+    }
+  },
+  {
+    "apk_name": "libpsl-utils-0.21.5-r3.apk",
+    "archive_sha256": "2bf00bbfb67e173187d8fd43f7114a8cb2244f6c7a83344977bd967cff8e8deb",
+    "package_info_sha256": "9b3a81a50ddb76b015768fc16f8225046a3a1b09020028336b896585e56cabb1",
+    "fields": {
+      "pkgname": [
+        "libpsl-utils"
+      ],
+      "pkgver": [
+        "0.21.5-r3"
+      ],
+      "pkgdesc": [
+        "C library for the Publix Suffix List (utils)"
+      ],
+      "url": [
+        "https://rockdaboot.github.io/libpsl"
+      ],
+      "builddate": [
+        "1746823694"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "37003"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "libpsl"
+      ],
+      "commit": [
+        "6bd45b53fb316dc01bda59f5feaf1e127eb64f22"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "MIT"
+      ],
+      "provides": [
+        "cmd:psl-make-dafsa=0.21.5-r3",
+        "cmd:psl=0.21.5-r3"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1",
+        "so:libpsl.so.5"
+      ],
+      "datahash": [
+        "8943dbd6499bcdc2af9f332ec97ab5bab7e8d23924f960671c8b7c4f5a8ef12b"
+      ]
+    }
+  },
+  {
+    "apk_name": "libsasl-2.1.28-r9.apk",
+    "archive_sha256": "ae838d4be2c0eba0d8cdc4fe5029fcc2cb187ec5814366b9bb954e41b8dcd1d6",
+    "package_info_sha256": "3cdcaa6902030d2ca3f8c490daed9ae16507d4567a2ad51cd195a4e88061f7a4",
+    "fields": {
+      "pkgname": [
+        "libsasl"
+      ],
+      "pkgver": [
+        "2.1.28-r9"
+      ],
+      "pkgdesc": [
+        "Cyrus Simple Authentication and Security Layer (SASL) library"
+      ],
+      "url": [
+        "https://www.cyrusimap.org/sasl/"
+      ],
+      "builddate": [
+        "1753849934"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "167824"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "cyrus-sasl"
+      ],
+      "commit": [
+        "fac808c0fddf93e8980ec1f55972e6f69b78ba6f"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "BSD-3-Clause-Attribution AND BSD-4-Clause"
+      ],
+      "replaces": [
+        "cyrus-sasl-plain"
+      ],
+      "provides": [
+        "so:libsasl2.so.3=3.0.0"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1",
+        "so:libgdbm.so.6"
+      ],
+      "datahash": [
+        "dc99dc7e8f7f1501296a5aaf0fb831714168340413ddaba57625ccbac19bb5a3"
+      ]
+    }
+  },
+  {
+    "apk_name": "libssh2-1.11.1-r4.apk",
+    "archive_sha256": "13f707f411380e1e195e590ba80bce4c2406ffed6b28ef03f75043b45db156d5",
+    "package_info_sha256": "28995790d945aaa92a50434ab1ba556df6128b48b6c60b29052348c2d5cbf56c",
+    "fields": {
+      "pkgname": [
+        "libssh2"
+      ],
+      "pkgver": [
+        "1.11.1-r4"
+      ],
+      "pkgdesc": [
+        "library for accessing ssh1/ssh2 protocol servers"
+      ],
+      "url": [
+        "https://libssh2.org/"
+      ],
+      "builddate": [
+        "1792494496"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "244152"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "libssh2"
+      ],
+      "commit": [
+        "5b3f244265eaf572693cbba1ac4b2548287980ff"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "BSD-3-Clause"
+      ],
+      "provides": [
+        "so:libssh2.so.1=1.0.1"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1",
+        "so:libcrypto.so.3",
+        "so:libz.so.1"
+      ],
+      "datahash": [
+        "e6187aee199fc349b14bdf7695751c0bbab572d3d7bbef19d9a2bd49aadf2d77"
+      ]
+    }
+  },
+  {
+    "apk_name": "libssh2-dev-1.11.1-r4.apk",
+    "archive_sha256": "d8617c51c60bd90f64fef01c48cd05f19750972afdf58ccd895dd2ed8ec3dd39",
+    "package_info_sha256": "f131105b41f5a5036fbdb8cb57217abfa438dfbc476a7d4e1bbba830a38a4bb8",
+    "fields": {
+      "pkgname": [
+        "libssh2-dev"
+      ],
+      "pkgver": [
+        "1.11.1-r4"
+      ],
+      "pkgdesc": [
+        "library for accessing ssh1/ssh2 protocol servers (development files)"
+      ],
+      "url": [
+        "https://libssh2.org/"
+      ],
+      "builddate": [
+        "1792494496"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "83594"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "libssh2"
+      ],
+      "commit": [
+        "5b3f244265eaf572693cbba1ac4b2548287980ff"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "BSD-3-Clause"
+      ],
+      "provides": [
+        "pc:libssh2=1.11.1"
+      ],
+      "depend": [
+        "libssh2=1.11.1-r4",
+        "pc:libcrypto",
+        "pc:zlib",
+        "pkgconfig"
+      ],
+      "datahash": [
+        "562f050b236d8b8cdb3804d7fd0b55f74c2603b4f058f3eee5174aa4ce8ae717"
+      ]
+    }
+  },
+  {
+    "apk_name": "libssh2-static-1.11.1-r4.apk",
+    "archive_sha256": "43f5c31cfea7d96426fe6d65ecb768edba65657667eb1f90e90be22f942e3a16",
+    "package_info_sha256": "3068b7f864139c65e7938cf317394af6a0d890e553a60acf3edfe3181102982a",
+    "fields": {
+      "pkgname": [
+        "libssh2-static"
+      ],
+      "pkgver": [
+        "1.11.1-r4"
+      ],
+      "pkgdesc": [
+        "library for accessing ssh1/ssh2 protocol servers (static library)"
+      ],
+      "url": [
+        "https://libssh2.org/"
+      ],
+      "builddate": [
+        "1792494496"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "1529222"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "libssh2"
+      ],
+      "commit": [
+        "5b3f244265eaf572693cbba1ac4b2548287980ff"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "BSD-3-Clause"
+      ],
+      "depend": [
+        "libssh2-dev"
+      ],
+      "datahash": [
+        "5979005c16119a40f86eb1368cec9fb43693c48fe91fa5d304a81afa83e80e8d"
+      ]
+    }
+  },
+  {
+    "apk_name": "libssl3-3.5.9-r0.apk",
+    "archive_sha256": "05e3393fb95aa5751ca2f9d242f659f6cff82c1cc7767cc2df4a086f7ad01877",
+    "package_info_sha256": "3072521dc0444f7b969c6a88c22ae71d553101467596708fac6a3f27c3754699",
+    "fields": {
+      "pkgname": [
+        "libssl3"
+      ],
+      "pkgver": [
+        "3.5.9-r0"
+      ],
+      "pkgdesc": [
+        "SSL shared libraries"
+      ],
+      "url": [
+        "https://www.openssl.org/"
+      ],
+      "builddate": [
+        "1790752173"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "843640"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "openssl"
+      ],
+      "commit": [
+        "29b9ec24b1b5b39aeef51fa2a044210e2ec5258e"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "provider_priority": [
+        "100"
+      ],
+      "license": [
+        "Apache-2.0"
+      ],
+      "depend": [
+        "libcrypto3=3.5.9-r0",
+        "so:libc.musl-x86_64.so.1",
+        "so:libcrypto.so.3"
+      ],
+      "provides": [
+        "so:libssl.so.3=3"
+      ],
+      "datahash": [
+        "d14238e7aa9047d2a53077f97a675f05ab618565d6677f3ccca674e5a7c53343"
+      ]
+    }
+  },
+  {
+    "apk_name": "libstdc++-15.2.0-r5.apk",
+    "archive_sha256": "14c987b556f5385a5db18376e788c75f37d85321b8dc1920d926ea7daac1d6f6",
+    "package_info_sha256": "13b0191849263d005918159522892c0ff449e8ff36d50f113b21903e22825c72",
+    "fields": {
+      "pkgname": [
+        "libstdc++"
+      ],
+      "pkgver": [
+        "15.2.0-r5"
+      ],
+      "pkgdesc": [
+        "GNU C++ standard runtime library"
+      ],
+      "url": [
+        "https://gcc.gnu.org"
+      ],
+      "builddate": [
+        "1780084766"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "2804104"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "gcc"
+      ],
+      "commit": [
+        "423a8ad043d07f2c7546c8ec3e2b0384cda360ae"
+      ],
+      "maintainer": [
+        "Ariadne Conill <ariadne@dereferenced.org>"
+      ],
+      "license": [
+        "GPL-2.0-or-later AND LGPL-2.1-or-later"
+      ],
+      "replaces": [
+        "libstdc++",
+        "binutils"
+      ],
+      "provides": [
+        "so:libstdc++.so.6=6.0.34"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1",
+        "so:libgcc_s.so.1"
+      ],
+      "datahash": [
+        "8647ab3fb299b95c5c263e3afd0e1ada36a73f53fdfb69794a851b0287666e49"
+      ]
+    }
+  },
+  {
+    "apk_name": "libstdc++-dev-15.2.0-r5.apk",
+    "archive_sha256": "62ce308cdbf127dcac6eee1520a4ffec8dc98b30974653908842fe4cc7d90b43",
+    "package_info_sha256": "634869dac59383e8eeff481469ed9c1d65cbc34ea17fb18527402634f7b5512a",
+    "fields": {
+      "pkgname": [
+        "libstdc++-dev"
+      ],
+      "pkgver": [
+        "15.2.0-r5"
+      ],
+      "pkgdesc": [
+        "GNU C++ standard runtime library (development files)"
+      ],
+      "url": [
+        "https://gcc.gnu.org"
+      ],
+      "builddate": [
+        "1780084766"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "22988587"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "gcc"
+      ],
+      "commit": [
+        "423a8ad043d07f2c7546c8ec3e2b0384cda360ae"
+      ],
+      "maintainer": [
+        "Ariadne Conill <ariadne@dereferenced.org>"
+      ],
+      "license": [
+        "GPL-2.0-or-later AND LGPL-2.1-or-later"
+      ],
+      "replaces": [
+        "g++"
+      ],
+      "depend": [
+        "libstdc++=15.2.0-r5"
+      ],
+      "datahash": [
+        "4f8ccf091582a74479d5916c73d009238531b8f0c0ad0b9e2e3fbc83cd2c13cc"
+      ]
+    }
+  },
+  {
+    "apk_name": "libtasn1-4.21.0-r0.apk",
+    "archive_sha256": "407f255c5af989f4e22a5e9404c4558f6fda04f14a4209a2ca1e06c3f2ba476e",
+    "package_info_sha256": "340f6b5742c5113e9c52fd468b5d5e0ecc414495e6fa47291219bf2c62b86161",
+    "fields": {
+      "pkgname": [
+        "libtasn1"
+      ],
+      "pkgver": [
+        "4.21.0-r0"
+      ],
+      "pkgdesc": [
+        "The ASN.1 library used in GNUTLS"
+      ],
+      "url": [
+        "https://www.gnu.org/software/gnutls/"
+      ],
+      "builddate": [
+        "1767940088"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "67424"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "libtasn1"
+      ],
+      "commit": [
+        "771f180774aa0d9d3783d7f4eb9e3788c615658b"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "LGPL-2.1-or-later"
+      ],
+      "provides": [
+        "so:libtasn1.so.6=6.6.5"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "bb194fad51a4c126816318338db2fdd2713487f3caddfa6bea4a09a8928d6c46"
+      ]
+    }
+  },
+  {
+    "apk_name": "libunistring-1.4.2-r0.apk",
+    "archive_sha256": "3aa6030e603e34d96192742f327c0509f409c6769ce2e7b1463685dede38d714",
+    "package_info_sha256": "0121c33ba50dcdc70af982e101be57139b40bde0d852b750dc6534ffb80e9497",
+    "fields": {
+      "pkgname": [
+        "libunistring"
+      ],
+      "pkgver": [
+        "1.4.2-r0"
+      ],
+      "pkgdesc": [
+        "Library for manipulating Unicode strings and C strings"
+      ],
+      "url": [
+        "https://www.gnu.org/software/libunistring/"
+      ],
+      "builddate": [
+        "1776358990"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "1922880"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "libunistring"
+      ],
+      "commit": [
+        "30d9f19340385b2cd16eaf1cc6a9a8b30c4afe1c"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "GPL-2.0-or-later OR LGPL-3.0-or-later"
+      ],
+      "provides": [
+        "so:libunistring.so.5=5.2.1"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "1d97f47d538a05b6109885b16ad43d4b5e1ebfef27412c70fc086239df604513"
+      ]
+    }
+  },
+  {
+    "apk_name": "libunistring-dev-1.4.2-r0.apk",
+    "archive_sha256": "e7e0093eac3c103758f24f923d0aabb38d171240b4fb8326c85e2f10068aff2d",
+    "package_info_sha256": "77fabeec42730815238edaba5dfce0b04ffcc5fb71e802aabc6affe51fa0e2c3",
+    "fields": {
+      "pkgname": [
+        "libunistring-dev"
+      ],
+      "pkgver": [
+        "1.4.2-r0"
+      ],
+      "pkgdesc": [
+        "Library for manipulating Unicode strings and C strings (development files)"
+      ],
+      "url": [
+        "https://www.gnu.org/software/libunistring/"
+      ],
+      "builddate": [
+        "1776358990"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "198057"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "libunistring"
+      ],
+      "commit": [
+        "30d9f19340385b2cd16eaf1cc6a9a8b30c4afe1c"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "GPL-2.0-or-later OR LGPL-3.0-or-later"
+      ],
+      "depend": [
+        "libunistring=1.4.2-r0"
+      ],
+      "datahash": [
+        "4153f1ff32b2d0ba1774b7111bf2b0969a5e97eb169573fdbcf55f51ca5ae6fa"
+      ]
+    }
+  },
+  {
+    "apk_name": "libunistring-static-1.4.2-r0.apk",
+    "archive_sha256": "50a8827a187ea87b1a3cfe9691febd12ee759ef89f135a5a12f77e66b636da88",
+    "package_info_sha256": "deb65ab8c55c461f9036f68395ec48a0c6d3477da36c775ccc9445f11ecd9421",
+    "fields": {
+      "pkgname": [
+        "libunistring-static"
+      ],
+      "pkgver": [
+        "1.4.2-r0"
+      ],
+      "pkgdesc": [
+        "Library for manipulating Unicode strings and C strings (static library)"
+      ],
+      "url": [
+        "https://www.gnu.org/software/libunistring/"
+      ],
+      "builddate": [
+        "1776358990"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "2919612"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "libunistring"
+      ],
+      "commit": [
+        "30d9f19340385b2cd16eaf1cc6a9a8b30c4afe1c"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "GPL-2.0-or-later OR LGPL-3.0-or-later"
+      ],
+      "depend": [
+        "libunistring-dev"
+      ],
+      "datahash": [
+        "8ee04de4dddfbf580fb03fd317887d955ea57abe96fdfccfeb7e1c2dd4b36c4c"
+      ]
+    }
+  },
+  {
+    "apk_name": "make-4.4.1-r4.apk",
+    "archive_sha256": "a916626a876f64c6b6fb32a6bf0fa93351d09fae0aa7684135642390da647e60",
+    "package_info_sha256": "ee01140d5cc1f2c8a77884d6085540a300e73b69e74573ffb2f8bc50224bd55b",
+    "fields": {
+      "pkgname": [
+        "make"
+      ],
+      "pkgver": [
+        "4.4.1-r4"
+      ],
+      "pkgdesc": [
+        "GNU make utility to maintain groups of programs"
+      ],
+      "url": [
+        "https://www.gnu.org/software/make"
+      ],
+      "builddate": [
+        "1769151900"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "227881"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "make"
+      ],
+      "commit": [
+        "9368161bd37f74fb11747ba79197f8480aaca7dc"
+      ],
+      "maintainer": [
+        "Runxi Yu <me@runxiyu.org>"
+      ],
+      "license": [
+        "GPL-3.0-or-later"
+      ],
+      "provides": [
+        "cmd:gmake=4.4.1-r4",
+        "cmd:make=4.4.1-r4"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "1c2e7c907027416eaad7e1812822d3acce9addce7a57cfb45f7a308091c4c0d7"
+      ]
+    }
+  },
+  {
+    "apk_name": "mpc1-1.3.1-r1.apk",
+    "archive_sha256": "c2247438e163f1c11646428f07576ceb3cf3167f9a9a5c6526021f778d77adb6",
+    "package_info_sha256": "8cfdbb945bc54b82171ef3a362f9582346ae473bcb71510fd4a0ca35a84f2a36",
+    "fields": {
+      "pkgname": [
+        "mpc1"
+      ],
+      "pkgver": [
+        "1.3.1-r1"
+      ],
+      "pkgdesc": [
+        "Multiprecision C library"
+      ],
+      "url": [
+        "http://www.multiprecision.org/"
+      ],
+      "builddate": [
+        "1681228881"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "116336"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "mpc1"
+      ],
+      "commit": [
+        "84a227baf001b6e0208e3352b294e4d7a40e93de"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "LGPL-3.0-or-later"
+      ],
+      "provides": [
+        "so:libmpc.so.3=3.3.1"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1",
+        "so:libgmp.so.10",
+        "so:libmpfr.so.6"
+      ],
+      "datahash": [
+        "67f6270fcc0157c5f44d0154028cb9cbe9fae39b3bb435659760f1297da1c1ce"
+      ]
+    }
+  },
+  {
+    "apk_name": "mpfr4-4.2.2-r0.apk",
+    "archive_sha256": "93620a803d416e8c05150fb14413796df14ea370322dff6bd106455deab15646",
+    "package_info_sha256": "c45b0f0c06fccf0bd77ac38a932d1e8d5bf86c96ba9304ca03363c6c18a56a18",
+    "fields": {
+      "pkgname": [
+        "mpfr4"
+      ],
+      "pkgver": [
+        "4.2.2-r0"
+      ],
+      "pkgdesc": [
+        "multiple-precision floating-point library"
+      ],
+      "url": [
+        "https://www.mpfr.org/"
+      ],
+      "builddate": [
+        "1749584851"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "677184"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "mpfr4"
+      ],
+      "commit": [
+        "011955c827a3e7545ea82225e1f20c6a06617c7a"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "LGPL-3.0-or-later"
+      ],
+      "replaces": [
+        "mpfr"
+      ],
+      "provides": [
+        "mpfr=4.2.2-r0",
+        "so:libmpfr.so.6=6.2.2"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1",
+        "so:libgmp.so.10"
+      ],
+      "datahash": [
+        "bcd99a25fa96a34620b47de4035bbdba5b78b67fdbaea2a7b8a155e8b19048a4"
+      ]
+    }
+  },
+  {
+    "apk_name": "musl-1.2.6-r3.apk",
+    "archive_sha256": "e142255d0fa397f14318996bc10378093dcc069dc3dd1b6818c8f28a789c21da",
+    "package_info_sha256": "9ce97a54370f1059cbdd6b940a2b0fac4d5e2b370103b0329895310af948d8e0",
+    "fields": {
+      "pkgname": [
+        "musl"
+      ],
+      "pkgver": [
+        "1.2.6-r3"
+      ],
+      "pkgdesc": [
+        "the musl c library (libc) implementation"
+      ],
+      "url": [
+        "https://musl.libc.org/"
+      ],
+      "builddate": [
+        "1792597816"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "670312"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "musl"
+      ],
+      "commit": [
+        "8f79d39391b46d6dbf1800fb68b8212a21d5ee2e"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "MIT"
+      ],
+      "provides": [
+        "so:libc.musl-x86_64.so.1=1"
+      ],
+      "datahash": [
+        "987ccf509d0709cdb461f0a3e6cdc37523a72f729547772e915da3184e77c3dc"
+      ]
+    }
+  },
+  {
+    "apk_name": "musl-dev-1.2.6-r3.apk",
+    "archive_sha256": "310b51cff12e1d5ce5f135c558a82e2550427da5465bbd16c9ff9b05e63ee3d9",
+    "package_info_sha256": "fcee1d1112be6ad0b3b23243e111dbc98cc11c508592361e5113d2774df490df",
+    "fields": {
+      "pkgname": [
+        "musl-dev"
+      ],
+      "pkgver": [
+        "1.2.6-r3"
+      ],
+      "pkgdesc": [
+        "the musl c library (libc) implementation (development files)"
+      ],
+      "url": [
+        "https://musl.libc.org/"
+      ],
+      "builddate": [
+        "1792597816"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "9904045"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "musl"
+      ],
+      "commit": [
+        "8f79d39391b46d6dbf1800fb68b8212a21d5ee2e"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "MIT"
+      ],
+      "provides": [
+        "libc-dev=1.2.6-r3"
+      ],
+      "depend": [
+        "musl=1.2.6-r3"
+      ],
+      "datahash": [
+        "dcda1ed50065b54c622e87bfaa878c0388f78e8545b71b872c3993e28b79c5f0"
+      ]
+    }
+  },
+  {
+    "apk_name": "ncurses-terminfo-base-6.6_p20260516-r0.apk",
+    "archive_sha256": "ce83be6d0bd10584a53c3a5868cc1595ce5f0f8e0b621f8f7f70b6144e521fc9",
+    "package_info_sha256": "629285bd7081e2f4d299ba8497dc72a9fda102ec3f9b8748ed65facff03e3b7b",
+    "fields": {
+      "pkgname": [
+        "ncurses-terminfo-base"
+      ],
+      "pkgver": [
+        "6.6_p20260516-r0"
+      ],
+      "pkgdesc": [
+        "Descriptions of common terminals"
+      ],
+      "url": [
+        "https://invisible-island.net/ncurses/"
+      ],
+      "builddate": [
+        "1779608199"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "103017"
+      ],
+      "arch": [
+        "noarch"
+      ],
+      "origin": [
+        "ncurses"
+      ],
+      "commit": [
+        "2cee8a7328d061418336ad327b512d96bcd7bc5e"
+      ],
+      "maintainer": [
+        "Milan P. Stani\u0107 <mps@arvanta.net>"
+      ],
+      "license": [
+        "X11"
+      ],
+      "datahash": [
+        "2c2ecce3338df2e850ebdcbb569cb65d073238e0dcc5258dbabc17fff912d170"
+      ]
+    }
+  },
+  {
+    "apk_name": "nettle-3.10.2-r0.apk",
+    "archive_sha256": "693c1a99b781cd17149916df30113ccd6bdddac130298c17b1286fd2ae438386",
+    "package_info_sha256": "9c6c24ec2bf67a1a791841f1382c5a962ce12166362ec49edb2753c76978bdfc",
+    "fields": {
+      "pkgname": [
+        "nettle"
+      ],
+      "pkgver": [
+        "3.10.2-r0"
+      ],
+      "pkgdesc": [
+        "Low-level cryptographic library"
+      ],
+      "url": [
+        "https://www.lysator.liu.se/~nisse/nettle/"
+      ],
+      "builddate": [
+        "1753179968"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "597872"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "nettle"
+      ],
+      "commit": [
+        "bf898e6d067c1c0ecc0f5ff39c79fc893399acd8"
+      ],
+      "maintainer": [
+        "Patrycja Rosa <alpine@ptrcnull.me>"
+      ],
+      "license": [
+        "GPL-2.0-or-later OR LGPL-3.0-or-later"
+      ],
+      "provides": [
+        "so:libhogweed.so.6=6.11",
+        "so:libnettle.so.8=8.11"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1",
+        "so:libgmp.so.10"
+      ],
+      "datahash": [
+        "fd0da215e549d730d391a13ce1cb744c969b7caffa6efb945e01a0ddf502371c"
+      ]
+    }
+  },
+  {
+    "apk_name": "nghttp2-dev-1.70.0-r0.apk",
+    "archive_sha256": "6cf749f5dd79f7d92311e095e0527b3bcc171f6793e9fd7e623ef497b0abc90f",
+    "package_info_sha256": "4d38dbdd01e5ad53aef26970f8da57fc84e39f8b0cadbdc4ba3f7a66e4b0e227",
+    "fields": {
+      "pkgname": [
+        "nghttp2-dev"
+      ],
+      "pkgver": [
+        "1.70.0-r0"
+      ],
+      "pkgdesc": [
+        "HTTP/2 C client, server and proxy (development files)"
+      ],
+      "url": [
+        "https://nghttp2.org"
+      ],
+      "builddate": [
+        "1790857349"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "245343"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "nghttp2"
+      ],
+      "commit": [
+        "d5a34efc88bbe8d18737fda28125071c4aef8517"
+      ],
+      "maintainer": [
+        "Francesco Colista <fcolista@alpinelinux.org>"
+      ],
+      "license": [
+        "MIT"
+      ],
+      "provides": [
+        "pc:libnghttp2=1.70.0"
+      ],
+      "depend": [
+        "nghttp2-libs=1.70.0-r0",
+        "pkgconfig"
+      ],
+      "datahash": [
+        "d43a0cbf5b4dd4672df3df8c715fc949d8cfa019b407b1342f7bb851172e891c"
+      ]
+    }
+  },
+  {
+    "apk_name": "nghttp2-libs-1.70.0-r0.apk",
+    "archive_sha256": "f0c4014eb2f10308dcdfd84cd49c121673c7b78cb8182b6e7a1388d8ae112a3b",
+    "package_info_sha256": "d555d3ec509de976d9a7c3e4fd66cce8e27a0f19e82918b015a587f03e1de658",
+    "fields": {
+      "pkgname": [
+        "nghttp2-libs"
+      ],
+      "pkgver": [
+        "1.70.0-r0"
+      ],
+      "pkgdesc": [
+        "HTTP/2 C client, server and proxy (libraries)"
+      ],
+      "url": [
+        "https://nghttp2.org"
+      ],
+      "builddate": [
+        "1790857349"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "132896"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "nghttp2"
+      ],
+      "commit": [
+        "d5a34efc88bbe8d18737fda28125071c4aef8517"
+      ],
+      "maintainer": [
+        "Francesco Colista <fcolista@alpinelinux.org>"
+      ],
+      "license": [
+        "MIT"
+      ],
+      "provides": [
+        "so:libnghttp2.so.14=14.29.5"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "5bfd79f2458e8f31ec57df6d4d10f3b0088f8bf4722a646c6277ff24d42cb73f"
+      ]
+    }
+  },
+  {
+    "apk_name": "nghttp2-static-1.70.0-r0.apk",
+    "archive_sha256": "6f3898fcbcc317a9abd024187b2d6613b8039e59b59ac95fc9128871a7e031d0",
+    "package_info_sha256": "921e4eadfc7bde06ea57305bd71fca2a2dc25a6071f25c6346d210fbad7ada84",
+    "fields": {
+      "pkgname": [
+        "nghttp2-static"
+      ],
+      "pkgver": [
+        "1.70.0-r0"
+      ],
+      "pkgdesc": [
+        "HTTP/2 C client, server and proxy (static library)"
+      ],
+      "url": [
+        "https://nghttp2.org"
+      ],
+      "builddate": [
+        "1790857349"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "1296264"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "nghttp2"
+      ],
+      "commit": [
+        "d5a34efc88bbe8d18737fda28125071c4aef8517"
+      ],
+      "maintainer": [
+        "Francesco Colista <fcolista@alpinelinux.org>"
+      ],
+      "license": [
+        "MIT"
+      ],
+      "depend": [
+        "nghttp2-dev"
+      ],
+      "datahash": [
+        "a0ba1a5003311fc353a3ffce2834c403a4ce7fc814acd5524952a219aec50dcc"
+      ]
+    }
+  },
+  {
+    "apk_name": "npth-1.8-r0.apk",
+    "archive_sha256": "d92e7427c7e054467162218eee78589d94407bf34faf82aaf8f60dd3bd321521",
+    "package_info_sha256": "240bd4ebbed2a9b7bfdf79426fe16bbd03e665ec16cdf5c87345c13f4619cdde",
+    "fields": {
+      "pkgname": [
+        "npth"
+      ],
+      "pkgver": [
+        "1.8-r0"
+      ],
+      "pkgdesc": [
+        "The New GNU Portable Threads library"
+      ],
+      "url": [
+        "https://gnupg.org/related_software/npth/"
+      ],
+      "builddate": [
+        "1741043830"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "18192"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "npth"
+      ],
+      "commit": [
+        "bf86ff2a6bc3bc18850fada852dc3653434f2d41"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "LGPL-2.0-or-later"
+      ],
+      "provides": [
+        "so:libnpth.so.0=0.3.0"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "dadc1402003de4f790fb6c48001ac878ac6e00c7af5679387272f38c50000cda"
+      ]
+    }
+  },
+  {
+    "apk_name": "openssl-dev-3.5.9-r0.apk",
+    "archive_sha256": "2479885dfc1414b44cf0f2578b014b70a3ce671d7607db62c8366e46f5b77ca6",
+    "package_info_sha256": "6d5b04abf80e52a2ce7e7d94bbc81e50facf0f5eb3a3b2b2716c8cfa8931841d",
+    "fields": {
+      "pkgname": [
+        "openssl-dev"
+      ],
+      "pkgver": [
+        "3.5.9-r0"
+      ],
+      "pkgdesc": [
+        "Toolkit for Transport Layer Security (TLS) (development files)"
+      ],
+      "url": [
+        "https://www.openssl.org/"
+      ],
+      "builddate": [
+        "1790752173"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "2007458"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "openssl"
+      ],
+      "commit": [
+        "29b9ec24b1b5b39aeef51fa2a044210e2ec5258e"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "provider_priority": [
+        "100"
+      ],
+      "license": [
+        "Apache-2.0"
+      ],
+      "replaces": [
+        "openssl3-dev"
+      ],
+      "provides": [
+        "openssl3-dev=3.5.9-r0",
+        "pc:libcrypto=3.5.9",
+        "pc:libssl=3.5.9",
+        "pc:openssl=3.5.9"
+      ],
+      "depend": [
+        "libcrypto3=3.5.9-r0",
+        "libssl3=3.5.9-r0",
+        "pkgconfig"
+      ],
+      "datahash": [
+        "8bcaedae33540b94b8e69f434ef893f55d6a922746b6770f864eb62d7789eaec"
+      ]
+    }
+  },
+  {
+    "apk_name": "openssl-libs-static-3.5.9-r0.apk",
+    "archive_sha256": "1ff255d219f15604deb5b37d8bc55eacd3f722aa406ea036f241ed49bd586060",
+    "package_info_sha256": "4cd4618d7b8d985e608c2dee4f9e2615232bdc9e2f351176dda0a417330a399e",
+    "fields": {
+      "pkgname": [
+        "openssl-libs-static"
+      ],
+      "pkgver": [
+        "3.5.9-r0"
+      ],
+      "pkgdesc": [
+        "Toolkit for Transport Layer Security (TLS) (static library)"
+      ],
+      "url": [
+        "https://www.openssl.org/"
+      ],
+      "builddate": [
+        "1790752173"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "35211054"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "openssl"
+      ],
+      "commit": [
+        "29b9ec24b1b5b39aeef51fa2a044210e2ec5258e"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "provider_priority": [
+        "100"
+      ],
+      "license": [
+        "Apache-2.0"
+      ],
+      "depend": [
+        "openssl-dev"
+      ],
+      "datahash": [
+        "9e1a68ce8110b3ee93f396dea6bcd8d2e5c68b665dc997ef8be175d388d9672b"
+      ]
+    }
+  },
+  {
+    "apk_name": "p11-kit-0.26.2-r0.apk",
+    "archive_sha256": "134d653aeeb4ada32746fbc3e2a7ae4201f584725de9263e4f32503658f3ddd8",
+    "package_info_sha256": "87073ed1e9fd234f1cd77a514d400bfb2d5024e84974375085898ff27fb2c0e0",
+    "fields": {
+      "pkgname": [
+        "p11-kit"
+      ],
+      "pkgver": [
+        "0.26.2-r0"
+      ],
+      "pkgdesc": [
+        "Library for loading and sharing PKCS#11 modules"
+      ],
+      "url": [
+        "https://p11-glue.freedesktop.org/"
+      ],
+      "builddate": [
+        "1782380770"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "1586639"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "p11-kit"
+      ],
+      "commit": [
+        "922ca1ffc9cc326f7d95b093b365e31da5cba1a9"
+      ],
+      "maintainer": [
+        "Patrycja Rosa <alpine@ptrcnull.me>"
+      ],
+      "license": [
+        "BSD-3-Clause"
+      ],
+      "provides": [
+        "cmd:p11-kit=0.26.2-r0",
+        "so:libp11-kit.so.0=0.4.8"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1",
+        "so:libffi.so.8",
+        "so:libtasn1.so.6"
+      ],
+      "datahash": [
+        "77833bbeacd5f58113b0832ff6a7de011bacbbb16fa401804b1c70a8c8d7f31c"
+      ]
+    }
+  },
+  {
+    "apk_name": "patch-2.8.1-r0.apk",
+    "archive_sha256": "9ea3be7dca8efce2031dbf3f885a54ad75515f2afe9a19e238d79e2ffbbe4240",
+    "package_info_sha256": "b881ed8e21958f9e83bec17c3b47e4163e9280ec0976d6b8fd0873498987cd40",
+    "fields": {
+      "pkgname": [
+        "patch"
+      ],
+      "pkgver": [
+        "2.8.1-r0"
+      ],
+      "pkgdesc": [
+        "Utility to apply diffs to files"
+      ],
+      "url": [
+        "https://www.gnu.org/software/patch/patch.html"
+      ],
+      "builddate": [
+        "1793840764"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "129480"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "patch"
+      ],
+      "commit": [
+        "5120e945a123efcb74ac4f3e9617165ea551c7d2"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "GPL-3.0-or-later"
+      ],
+      "provides": [
+        "cmd:patch=2.8.1-r0"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "367c15044a655f34c132f073c8288c3f6e5a9b929081f9828efda249d7649434"
+      ]
+    }
+  },
+  {
+    "apk_name": "pinentry-1.3.2-r0.apk",
+    "archive_sha256": "a95d99634b1f2398d27105e079c1a068cee60d14839e55678b0ce41f8c6a3a0f",
+    "package_info_sha256": "deb13280766cb4bad245abf3e50562336fb107f2824704653e3165739505493f",
+    "fields": {
+      "pkgname": [
+        "pinentry"
+      ],
+      "pkgver": [
+        "1.3.2-r0"
+      ],
+      "pkgdesc": [
+        "Collection of simple PIN or passphrase entry dialogs which utilize the Assuan protocol"
+      ],
+      "url": [
+        "https://www.gnupg.org/aegypten2/"
+      ],
+      "builddate": [
+        "1753738724"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "68072"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "pinentry"
+      ],
+      "commit": [
+        "0c05b7bd82c7560340de5c02bf96db417366b697"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "GPL-2.0-or-later"
+      ],
+      "depend": [
+        "/bin/sh",
+        "so:libassuan.so.9",
+        "so:libc.musl-x86_64.so.1",
+        "so:libgpg-error.so.0",
+        "so:libncursesw.so.6"
+      ],
+      "provides": [
+        "cmd:pinentry-curses=1.3.2-r0"
+      ],
+      "datahash": [
+        "4fe43773a549d1b0323637b326491e09c343b9a481d9b9ed3a053a89780f5bf9"
+      ]
+    }
+  },
+  {
+    "apk_name": "pkgconf-2.5.1-r0.apk",
+    "archive_sha256": "20cc47b76b82e9424a35ecc4fdd7bd904ef49ada1684214910fae31bc0cab737",
+    "package_info_sha256": "a08b90bca33f222a330b38cbd01cad7c63f38f602478ea404929f3247a5cd240",
+    "fields": {
+      "pkgname": [
+        "pkgconf"
+      ],
+      "pkgver": [
+        "2.5.1-r0"
+      ],
+      "pkgdesc": [
+        "development framework configuration tools"
+      ],
+      "url": [
+        "https://gitea.treehouse.systems/ariadne/pkgconf"
+      ],
+      "builddate": [
+        "1750805931"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "145379"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "pkgconf"
+      ],
+      "commit": [
+        "c6f80aa8e59c70d19e2d556c526f151656058536"
+      ],
+      "maintainer": [
+        "Ariadne Conill <ariadne@dereferenced.org>"
+      ],
+      "license": [
+        "ISC"
+      ],
+      "replaces": [
+        "pkgconfig"
+      ],
+      "provides": [
+        "pkgconfig=1",
+        "cmd:bomtool=2.5.1-r0",
+        "cmd:pkg-config=2.5.1-r0",
+        "cmd:pkgconf=2.5.1-r0",
+        "so:libpkgconf.so.7=7.0.0"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "4161119a000717386fa3591d079bc8a652d396eab479f1a78e8010b8d7ec926b"
+      ]
+    }
+  },
+  {
+    "apk_name": "sqlite-libs-3.53.4-r0.apk",
+    "archive_sha256": "a8a216e53d22faa3f04d2e3650c1991af66f8d0b42fadff5afcdb9afb60b19e5",
+    "package_info_sha256": "5e4e250243174f8d4ebfebf46b4a5b8d3e6dd2a49a445ce2f3fe3dc87c2d5634",
+    "fields": {
+      "pkgname": [
+        "sqlite-libs"
+      ],
+      "pkgver": [
+        "3.53.4-r0"
+      ],
+      "pkgdesc": [
+        "C library that implements an SQL database engine (libraries)"
+      ],
+      "url": [
+        "https://www.sqlite.org/"
+      ],
+      "builddate": [
+        "1787333779"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "1640464"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "sqlite"
+      ],
+      "commit": [
+        "a9c3ba8b9129ec0f294d0a9bf538c2f1632bb016"
+      ],
+      "maintainer": [
+        "Jingyun Hua <huajingyun@loongson.cn>"
+      ],
+      "license": [
+        "blessing"
+      ],
+      "provides": [
+        "so:libsqlite3.so.0=3.53.4"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "8746c7bcf390f034705dc680795f83109a0824280f4a95d178307f798532349d"
+      ]
+    }
+  },
+  {
+    "apk_name": "ssl_client-1.37.0-r31.apk",
+    "archive_sha256": "e578a140670e4cf9816117b0c2063632bf3754ecbe8fa593a7fd2b4039372bf0",
+    "package_info_sha256": "49f3c2a2a7c46e324518a9a2d1a165e44681f80b25422a5b67806f587620cdde",
+    "fields": {
+      "pkgname": [
+        "ssl_client"
+      ],
+      "pkgver": [
+        "1.37.0-r31"
+      ],
+      "pkgdesc": [
+        "External ssl_client for busybox wget"
+      ],
+      "url": [
+        "https://busybox.net/"
+      ],
+      "builddate": [
+        "1768059508"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "14384"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "busybox"
+      ],
+      "commit": [
+        "c3ef5d10e6ef6528852c51f0564963e2f8c1be19"
+      ],
+      "maintainer": [
+        "S\u00f6ren Tempel <soeren+alpine@soeren-tempel.net>"
+      ],
+      "license": [
+        "GPL-2.0-only"
+      ],
+      "replaces": [
+        "busybox-initscripts"
+      ],
+      "install_if": [
+        "busybox=1.37.0-r31 libssl3"
+      ],
+      "provides": [
+        "cmd:ssl_client=1.37.0-r31"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1",
+        "so:libcrypto.so.3",
+        "so:libssl.so.3"
+      ],
+      "datahash": [
+        "5dacd54833d7ccc38a8ac97554c4365d3b6ca54520675122cc5426799ae5992e"
+      ]
+    }
+  },
+  {
+    "apk_name": "zlib-1.4-r0.apk",
+    "archive_sha256": "7b05bc778b8b25cd880835b40114182bd4d1581717504d0129c810c0a14291cb",
+    "package_info_sha256": "2eb5885520ad91e7ad574c6a77472ba3cd33a145235c2bc17156d8d7c19ba1da",
+    "fields": {
+      "pkgname": [
+        "zlib"
+      ],
+      "pkgver": [
+        "1.4-r0"
+      ],
+      "pkgdesc": [
+        "A compression/decompression Library"
+      ],
+      "url": [
+        "https://zlib.net/"
+      ],
+      "builddate": [
+        "1793989322"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "108376"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "zlib"
+      ],
+      "commit": [
+        "bdf501c870a92a05c097857401f69c48c4810384"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "Zlib"
+      ],
+      "provides": [
+        "so:libz.so.1=1.4"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "f61b1f06252eab0298295d1808d0c70115a15baecbc9e9ea70b3925f3215ed1c"
+      ]
+    }
+  },
+  {
+    "apk_name": "zlib-dev-1.4-r0.apk",
+    "archive_sha256": "889ed6014fc9acb815a7755732d4099bd84b1176b4845853bb050361d8b876b2",
+    "package_info_sha256": "658bf136cd21e9ab8b8feccc133b322a73ad7e21b427325c06d6118c1f25f234",
+    "fields": {
+      "pkgname": [
+        "zlib-dev"
+      ],
+      "pkgver": [
+        "1.4-r0"
+      ],
+      "pkgdesc": [
+        "A compression/decompression Library (development files)"
+      ],
+      "url": [
+        "https://zlib.net/"
+      ],
+      "builddate": [
+        "1793989322"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "122415"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "zlib"
+      ],
+      "commit": [
+        "bdf501c870a92a05c097857401f69c48c4810384"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "Zlib"
+      ],
+      "provides": [
+        "pc:zlib=1.4"
+      ],
+      "depend": [
+        "zlib=1.4-r0",
+        "pkgconfig"
+      ],
+      "datahash": [
+        "191b310695b483ea64417c49d84b235977ee9ffacb64b10ca49a39a1272cea4c"
+      ]
+    }
+  },
+  {
+    "apk_name": "zlib-static-1.4-r0.apk",
+    "archive_sha256": "3e02130f63e764b969f14ae62fe1f50b58436f709895c9d9fa2b7496c98a03b5",
+    "package_info_sha256": "a17b47e20666724fb7cbe2f599d661db3e13e64b0db9798fb089f5536fd05116",
+    "fields": {
+      "pkgname": [
+        "zlib-static"
+      ],
+      "pkgver": [
+        "1.4-r0"
+      ],
+      "pkgdesc": [
+        "A compression/decompression Library (static library)"
+      ],
+      "url": [
+        "https://zlib.net/"
+      ],
+      "builddate": [
+        "1793989322"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "141478"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "zlib"
+      ],
+      "commit": [
+        "bdf501c870a92a05c097857401f69c48c4810384"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "Zlib"
+      ],
+      "depend": [
+        "zlib-dev"
+      ],
+      "datahash": [
+        "9e18f8a2cb7b069a58b051016eaa59cd024fdfd61cf60d2c28e9eab8a4d1a2c5"
+      ]
+    }
+  },
+  {
+    "apk_name": "zstd-1.5.7-r2.apk",
+    "archive_sha256": "774da060da278110a2075de01ecee04fb036033ec19de9f3c36f0283c150a487",
+    "package_info_sha256": "0f044121c64e12a6500e6bb72d2ebb7b56d3d5ebeebd189eab1f7fcb6c1a7fb9",
+    "fields": {
+      "pkgname": [
+        "zstd"
+      ],
+      "pkgver": [
+        "1.5.7-r2"
+      ],
+      "pkgdesc": [
+        "Zstandard - Fast real-time compression algorithm"
+      ],
+      "url": [
+        "https://facebook.github.io/zstd/"
+      ],
+      "builddate": [
+        "1753704404"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "285818"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "zstd"
+      ],
+      "commit": [
+        "3c6e2ee2b16f403d53eab39c4426eb61f003c322"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "BSD-3-Clause OR GPL-2.0-or-later"
+      ],
+      "provides": [
+        "cmd:pzstd=1.5.7-r2",
+        "cmd:unzstd=1.5.7-r2",
+        "cmd:zstd=1.5.7-r2",
+        "cmd:zstdcat=1.5.7-r2",
+        "cmd:zstdgrep=1.5.7-r2",
+        "cmd:zstdless=1.5.7-r2",
+        "cmd:zstdmt=1.5.7-r2"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1",
+        "so:libgcc_s.so.1",
+        "so:libstdc++.so.6",
+        "so:libzstd.so.1"
+      ],
+      "datahash": [
+        "e02f23367f5d325e7d7274cc18e3e5688bcbca2327acd4ec15c1ebc2926cf317"
+      ]
+    }
+  },
+  {
+    "apk_name": "zstd-dev-1.5.7-r2.apk",
+    "archive_sha256": "1b548f46268e658cdd79fc65eb3e58e627d57d8694c3615f6e9490e6f70ba0cd",
+    "package_info_sha256": "1c39190a645f5dc45bf07f3c58c420a67a86b0a003db3fb204ad512ca5084e59",
+    "fields": {
+      "pkgname": [
+        "zstd-dev"
+      ],
+      "pkgver": [
+        "1.5.7-r2"
+      ],
+      "pkgdesc": [
+        "Zstandard - Fast real-time compression algorithm (development files)"
+      ],
+      "url": [
+        "https://facebook.github.io/zstd/"
+      ],
+      "builddate": [
+        "1753704404"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "212801"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "zstd"
+      ],
+      "commit": [
+        "3c6e2ee2b16f403d53eab39c4426eb61f003c322"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "BSD-3-Clause OR GPL-2.0-or-later"
+      ],
+      "depend": [
+        "zstd=1.5.7-r2",
+        "zstd-libs=1.5.7-r2",
+        "pkgconfig"
+      ],
+      "provides": [
+        "pc:libzstd=1.5.7"
+      ],
+      "datahash": [
+        "0e61b63be0196e728be882e81e1614e9a9f8272c9a94aaf3948492d0a3d2a9f7"
+      ]
+    }
+  },
+  {
+    "apk_name": "zstd-libs-1.5.7-r2.apk",
+    "archive_sha256": "23c6065b0049b2406441564bcf0032515a43f78e80d76fcb85535a3803ef5d4e",
+    "package_info_sha256": "cc0c70b740db8003bc59da3f3b8778fd390592b0d647e273ba8d580867be89e5",
+    "fields": {
+      "pkgname": [
+        "zstd-libs"
+      ],
+      "pkgver": [
+        "1.5.7-r2"
+      ],
+      "pkgdesc": [
+        "Zstandard - Fast real-time compression algorithm (libraries)"
+      ],
+      "url": [
+        "https://facebook.github.io/zstd/"
+      ],
+      "builddate": [
+        "1753704404"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "714432"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "zstd"
+      ],
+      "commit": [
+        "3c6e2ee2b16f403d53eab39c4426eb61f003c322"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "BSD-3-Clause OR GPL-2.0-or-later"
+      ],
+      "provides": [
+        "so:libzstd.so.1=1.5.7"
+      ],
+      "depend": [
+        "so:libc.musl-x86_64.so.1"
+      ],
+      "datahash": [
+        "f830ec60830951cf4bd93a62e080901ef883d0e218db37cb74384152a7b06e57"
+      ]
+    }
+  },
+  {
+    "apk_name": "zstd-static-1.5.7-r2.apk",
+    "archive_sha256": "d8a3eea451aa7f1355d563eddf8de31b14519ffbf3397c9365346a22ff4124d8",
+    "package_info_sha256": "0f66809b173b9c8150a16cb30d74c4295b327917668650a4904edcfa630a6989",
+    "fields": {
+      "pkgname": [
+        "zstd-static"
+      ],
+      "pkgver": [
+        "1.5.7-r2"
+      ],
+      "pkgdesc": [
+        "Zstandard - Fast real-time compression algorithm (static library)"
+      ],
+      "url": [
+        "https://facebook.github.io/zstd/"
+      ],
+      "builddate": [
+        "1753704404"
+      ],
+      "packager": [
+        "Buildozer <alpine-devel@lists.alpinelinux.org>"
+      ],
+      "size": [
+        "4678164"
+      ],
+      "arch": [
+        "x86_64"
+      ],
+      "origin": [
+        "zstd"
+      ],
+      "commit": [
+        "3c6e2ee2b16f403d53eab39c4426eb61f003c322"
+      ],
+      "maintainer": [
+        "Natanael Copa <ncopa@alpinelinux.org>"
+      ],
+      "license": [
+        "BSD-3-Clause OR GPL-2.0-or-later"
+      ],
+      "depend": [
+        "zstd-dev"
+      ],
+      "datahash": [
+        "07eadcfd60e40e01f32b8f458310dfa3e72dcfd6404704bf8984387619433b7b"
+      ]
+    }
+  }
+]

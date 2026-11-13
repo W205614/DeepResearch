@@ -1,0 +1,142 @@
+{
+  "schema": "independent-rpm-normalization-bounded-exception-review-v1",
+  "actor": "/root/review_provenance",
+  "observed_at_utc": "2026-11-13T04:52:50.018690+00:00",
+  "decision": "SUPPORTED_FOR_EXACT_BOUNDED_METADATA_CONTRACT",
+  "native_candidate_approved": false,
+  "helper_sha256": "23e7fd3ef3666e212bc1f3eb49704e9d6ee6b260e90b3b82e55d45162e293d3e",
+  "actual_before": {
+    "raw_sha256": "137285a2aedde0cbaee859aa90818febc4695f4c5d5763b19e0a65180a107dc4",
+    "stable_sha256": "7da3ee237e5d8c33dcd537650cc526304ff8653d1ac674b54d4e7cf9398f4cc9",
+    "install_observations": {
+      "23": {
+        "name": "glibc-common",
+        "INSTALLTIME": 1794538494,
+        "INSTALLTID": 1794538494
+      },
+      "24": {
+        "name": "glibc-minimal-langpack",
+        "INSTALLTIME": 1794538494,
+        "INSTALLTID": 1794538494
+      },
+      "25": {
+        "name": "libgcc",
+        "INSTALLTIME": 1794538494,
+        "INSTALLTID": 1794538494
+      },
+      "26": {
+        "name": "glibc",
+        "INSTALLTIME": 1794538494,
+        "INSTALLTID": 1794538494
+      }
+    },
+    "package_count": 22,
+    "table_count": 21
+  },
+  "actual_after": {
+    "raw_sha256": "d260804cec132ed6a934931eb5f44606e2c18750e29b1bd2596807cec14f3798",
+    "stable_sha256": "7da3ee237e5d8c33dcd537650cc526304ff8653d1ac674b54d4e7cf9398f4cc9",
+    "install_observations": {
+      "23": {
+        "name": "glibc-common",
+        "INSTALLTIME": 1794541224,
+        "INSTALLTID": 1794541224
+      },
+      "24": {
+        "name": "glibc-minimal-langpack",
+        "INSTALLTIME": 1794541224,
+        "INSTALLTID": 1794541224
+      },
+      "25": {
+        "name": "libgcc",
+        "INSTALLTIME": 1794541225,
+        "INSTALLTID": 1794541224
+      },
+      "26": {
+        "name": "glibc",
+        "INSTALLTIME": 1794541225,
+        "INSTALLTID": 1794541224
+      }
+    },
+    "package_count": 22,
+    "table_count": 21
+  },
+  "independent_raw_closure_proof_sha256": "2315447a43a9ea1762e992040e26c913ab84f49f9606eb6798cdc2f8f1191ada",
+  "all_other_header_bytes_and_logical_rows_equal": true,
+  "persistent_application_metadata": {
+    "user_version": 0,
+    "application_id": 0
+  },
+  "counterexample_replays_after_fix": [
+    {
+      "pragma": "user_version",
+      "actual_value": 1,
+      "raw_sha256": "c58a4302109352d379fabd1284e3016d8d9571d42a9a599ea9ebd1c66d0a7592",
+      "new_stable_sha256": "aefe80b91a5a245eb95b0ed0741fa46d23f8b4bc270aad0c165ca95b101b77ad",
+      "original_collision_now_rejected_by_stable_identity": true
+    },
+    {
+      "pragma": "application_id",
+      "actual_value": 12345678,
+      "raw_sha256": "eede3a4bf9046c403233c4e3c3e1f75b7163b3123dee35bada91854a97df62ac",
+      "new_stable_sha256": "8bf677e189c0785237b39da2f42e905a79e260e5330bb93721fe02fbc37a00ff",
+      "original_collision_now_rejected_by_stable_identity": true
+    }
+  ],
+  "actual_offline_tests": {
+    "command": ".venv/Scripts/python.exe -X utf8 -m pytest tests/test_minio_rpm_facts_20261113.py .cache/release-followup-20261113/security-minio/independent-rpm-normalization-01/test_actual_rpm_closure.py -q",
+    "passed": 30,
+    "observed_duration_seconds": 11.35,
+    "rerun_by_this_renderer": false,
+    "coverage": "21 maintained tests plus9 independent actual DB-copy mutations: unknown tag5119, alignment padding, Name index, SQLschema, unmodified-package installclock, user_version/application_id, exact Installtid key/idx binding."
+  },
+  "contract": "All logical SQL schema/columns/tables/rows and persistent user_version/application_id are bound. Every complete RPM header byte, including indices, padding and unknown fields, remains bound except exactly one uint32 INSTALLTIME1008 and INSTALLTID1128 for each of four fixed NEVRA packages, plus only their matching Installtid key with idx0. Raw DB hashes and exact clock observations remain recorded separately.",
+  "not_bound_as_logical_identity": "Physical SQLite page layout, free space and storage/update counters are not claimed as stable logical contents; this is explicit, not a blanket RPM-header or application-metadata exception.",
+  "meaningful_limit": "The consumer must compare this stable identity to the exact approved profile, retain raw DB/runtime/scan identities, and separately verify actual signatures/full payload/source/native fixes. Primitive success alone does not approve an image, source set or vulnerability disposition.",
+  "history_preserved": "Original cf8d6b actual closure, old helper/tests, raw04/05 and private nonclock counterexamples are preserved; the new7da3 identity is a real regenerated fuller contract, not relabelled old approval.",
+  "evidence_files": [
+    {
+      "path": "scripts/minio_rpm_facts_20261113.py",
+      "bytes": 7119,
+      "sha256": "23e7fd3ef3666e212bc1f3eb49704e9d6ee6b260e90b3b82e55d45162e293d3e"
+    },
+    {
+      "path": "tests/test_minio_rpm_facts_20261113.py",
+      "bytes": 6187,
+      "sha256": "408c3aa353574edba47f6a4657e36cb4ede639e052f12435ff2437ef1c1b6fd8"
+    },
+    {
+      "path": ".cache/release-followup-20261113/security-minio/independent-rpm-normalization-01/test_actual_rpm_closure.py",
+      "bytes": 3458,
+      "sha256": "312926b1f0eb5890d54f43bd7982cdd14c5202632fa739112215eafca377895b"
+    },
+    {
+      "path": ".cache/release-followup-20261113/security-minio/independent-rpm-normalization-01/compare_raw_closure.py",
+      "bytes": 7845,
+      "sha256": "686478be276382596099bff97e9e46b2ac198bf97500d9a3a38c1f97911ef6d0"
+    },
+    {
+      "path": ".cache/release-followup-20261113/security-minio/independent-rpm-normalization-01/actual-two-database-complete-closure.json",
+      "bytes": 5816,
+      "sha256": "2315447a43a9ea1762e992040e26c913ab84f49f9606eb6798cdc2f8f1191ada"
+    },
+    {
+      "path": ".cache/release-followup-20261113/security-minio/independent-rpm-normalization-01/sqlite-metadata-counterexamples-02.json",
+      "bytes": 871,
+      "sha256": "e1cea52173eaac2d2d0da511a1349b0be928cdaccdb404a822ca11fb7adacef7"
+    },
+    {
+      "path": ".cache/release-followup-20261113/security-minio/rpm-reproducibility-01/complete-header-diff.json",
+      "bytes": 1598,
+      "sha256": "11d0606525cf958f05d7f2465cbeb1f2f9419a182313d32e14b90b1601a8abb4"
+    },
+    {
+      "path": ".cache/release-followup-20261113/security-minio/rpm-reproducibility-01/complete-header-and-application-metadata-diff.json",
+      "bytes": 1871,
+      "sha256": "c80314959740b33e59944c5f275289e8b718b125b62d731b6a3013ce25d21c99"
+    }
+  ],
+  "new_provider_calls": 0,
+  "malicious_cve_input_or_poc_executed": false,
+  "owner_files_edited_by_reviewer": false
+}

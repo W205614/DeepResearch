@@ -1,0 +1,66 @@
+
+Elf file type is DYN (Position-Independent Executable file)
+Entry point 0xc7eb6
+There are 11 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset             VirtAddr           PhysAddr
+                 FileSiz            MemSiz              Flags  Align
+  LOAD           0x0000000000000000 0x0000000000000000 0x0000000000000000
+                 0x00000000000a65a0 0x00000000000a65a0  R      0x1000
+  LOAD           0x00000000000a7000 0x00000000000a7000 0x00000000000a7000
+                 0x0000000000460fda 0x0000000000460fda  R E    0x1000
+  LOAD           0x0000000000508000 0x0000000000508000 0x0000000000508000
+                 0x000000000024c9e0 0x000000000024c9e0  R      0x1000
+  LOAD           0x00000000007554f0 0x00000000007554f0 0x00000000007554f0
+                 0x000000000008afc0 0x00000000000909f0  RW     0x1000
+  DYNAMIC        0x00000000007d8d70 0x00000000007d8d70 0x00000000007d8d70
+                 0x0000000000000170 0x0000000000000170  RW     0x8
+  NOTE           0x00000000000002a8 0x00000000000002a8 0x00000000000002a8
+                 0x0000000000000030 0x0000000000000030  R      0x8
+  NOTE           0x00000000000002d8 0x00000000000002d8 0x00000000000002d8
+                 0x0000000000000024 0x0000000000000024  R      0x4
+  GNU_PROPERTY   0x00000000000002a8 0x00000000000002a8 0x00000000000002a8
+                 0x0000000000000030 0x0000000000000030  R      0x8
+  GNU_EH_FRAME   0x000000000068a090 0x000000000068a090 0x000000000068a090
+                 0x000000000002257c 0x000000000002257c  R      0x4
+  GNU_STACK      0x0000000000000000 0x0000000000000000 0x0000000000000000
+                 0x0000000000000000 0x0000000000000000  RW     0x10
+  GNU_RELRO      0x00000000007554f0 0x00000000007554f0 0x00000000007554f0
+                 0x0000000000083b10 0x0000000000083b10  R      0x1
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     .note.gnu.property .note.gnu.build-id .gnu.hash .dynsym .dynstr .rela.dyn 
+   01     .init .text .fini 
+   02     .rodata .eh_frame_hdr .eh_frame 
+   03     .init_array .fini_array .data.rel.ro .dynamic .got .data .bss 
+   04     .dynamic 
+   05     .note.gnu.property 
+   06     .note.gnu.build-id 
+   07     .note.gnu.property 
+   08     .eh_frame_hdr 
+   09     
+   10     .init_array .fini_array .data.rel.ro .dynamic .got 
+
+Dynamic section at offset 0x7d8d70 contains 19 entries:
+  Tag        Type                         Name/Value
+ 0x000000000000000c (INIT)               0xa7000
+ 0x000000000000000d (FINI)               0x507fd7
+ 0x0000000000000019 (INIT_ARRAY)         0x7554f0
+ 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x7554f8
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x300
+ 0x0000000000000005 (STRTAB)             0x338
+ 0x0000000000000006 (SYMTAB)             0x320
+ 0x000000000000000a (STRSZ)              1 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000015 (DEBUG)              0x0
+ 0x0000000000000007 (RELA)               0x340
+ 0x0000000000000008 (RELASZ)             680544 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW PIE
+ 0x000000006ffffff9 (RELACOUNT)          28356
+ 0x0000000000000000 (NULL)               0x0

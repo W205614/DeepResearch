@@ -1,0 +1,108 @@
+{
+  "schema": "minio-os-source-build-receipt-20261113-v1",
+  "profile": "minio-os-source-20261113",
+  "image": "deepresearch-minio-source:20261113",
+  "image_id": "sha256:743a1870218e8ed4a24c2501480ce8cf041f7b18fa2390e13a206fdf039b2a05",
+  "config_digest": "sha256:ef21c5e11ca591fd3a40d7ad8cd97cc9dcb93ba24b172cf51cdabab1d6a669c0",
+  "diff_ids": [
+    "sha256:80d73bb69ee8b6f3f62fcf079b8671d3fa0fabb4b903d7a6b2dc2d26098c50c8"
+  ],
+  "source_inputs": {
+    "deployment/docker/Dockerfile.minio-20261112": "aa37214feaadb223f727c83bbf42726a887800ce37f89e5e5f741877c1f36635",
+    "deployment/docker/Dockerfile.minio-20261112.dockerignore": "c2da2af78d20ac5746524327f5f42b0eb6dd65b0cf3ca82c388cf812f19b7e23",
+    "deployment/docker/Dockerfile.minio-20261113": "dbc788dfd0b39351781b09926f886c28c5eb1401beed677e4b2521bc5f41af7f",
+    "deployment/docker/Dockerfile.minio-20261113.dockerignore": "e7924e20ac76f6d27c40d9abb4cd05141f59d58b7e4fe5d44d659fda30337d6d",
+    "deployment/security/go-stdlib-20261112-evidence/Go-LICENSE": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+    "deployment/security/go-stdlib-20261112-evidence/source.lock.json": "20746730bbf420fce6ed6765e79bac882c02d237f5a51cf212581840ff019dbe",
+    "deployment/security/minio-os-20261113/patches/glibc-LANGUAGE.patch": "795bf9c17379d1e22266a471668724c19c2931171410b4c20568bcfac39a3513",
+    "deployment/security/minio-os-20261113/patches/ncurses-save-string.patch": "4ac6a608a4ca021076316189f46f7fe9417dc6bcb1a87e6f2313d54594da4e46",
+    "deployment/security/minio-os-20261113/regression/normal_csv_test.go": "d4b19a06700b8eeb7334143dc8bc36e13f684a1ea2f26db48f593e0d7722e98a",
+    "deployment/security/minio-os-20261113/regression/normal_parquet_test.go": "14b30e9fd5a40ddfafcaef09bc43b6875cc5749faa8d75a42a505fb57709eaee",
+    "deployment/security/minio-os-20261113/source.lock.json": "f7c3711efef5db02fb3e53d3fe3e67e8f1ab84e9ed9516cb71541572097dc424",
+    "deployment/security/minio-source-20261112-profile.json": "9ad8ca661eb547fbd8d1666e493fa4a85bfb7d278845f4e31866807fc270c3bd",
+    "deployment/vendors/minio/csv_record_bound_test.go": "cb51ba37bc33b66764b64c8ed214d372a1db4f945093f6d0c5103a5d16bacf16",
+    "deployment/vendors/minio/legacy-part-compat.patch": "d7ce090041a4353cf35ca58168cff11a47a17ee0bf9355a6c44c16a7352f2320",
+    "deployment/vendors/minio/legacy-part2024.msgp": "cca3483e758d59aa0fd0ad3cc0ccc0ecb1e2afcdc6ebf399c57d515e7c4598cb",
+    "deployment/vendors/minio/legacy_part_compat.go": "2fcd20ee874cf8cd837651224135463925a98a1209fd1dd7f3a4298ae41a3792",
+    "deployment/vendors/minio/legacy_part_compat_test.go": "a4d464887c7fbb89116ed3309f4cfa039c405755d9bfff55b51d01bc50008ad6",
+    "scripts/build_go_stdlib_security_20261112.py": "d860a5261625e0dc745e32969e426e77c8ca33b92e3412f33a884ab146222fe4",
+    "scripts/build_minio_os_20261113.py": "28700eed440f39872674c80dfb55b7bbe298375be628ecd9c2eb2401a6178b54",
+    "scripts/collect_minio_os_native_20261113.py": "1adfa20b2ca496dc19117808cfbb136051ec99e5aa74cb03e69da4bb0bad8076",
+    "scripts/minio_rpm_facts_20261113.py": "23e7fd3ef3666e212bc1f3eb49704e9d6ee6b260e90b3b82e55d45162e293d3e",
+    "scripts/prefetch_go_security_modules_20261112.py": "2b6864129c0f8e1d2b555cd135eef9f1aba90a0146af06f22bd7d21b15bad391",
+    "scripts/prefetch_minio_os_inputs_20261113.py": "2cb68b0a148f496c37aa42cd066d9e62702ebfff1d5d3a4daad33c6e6d6fac34",
+    "scripts/prefetch_minio_source_20261112.py": "97f8de995d1fb62e8210b778193b9571c2bf5f86a9011640959531676e4b859b"
+  },
+  "runtime_manifest_sha256": "dc8eb973091c44f58e1c2a5bdf1e90905e8a813b83591ac2def182a54095b214",
+  "runtime_config": {
+    "User": null,
+    "Env": [
+      "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "MINIO_ACCESS_KEY_FILE=access_key",
+      "MINIO_SECRET_KEY_FILE=secret_key",
+      "MINIO_ROOT_USER_FILE=access_key",
+      "MINIO_ROOT_PASSWORD_FILE=secret_key",
+      "MINIO_KMS_SECRET_KEY_FILE=kms_master_key",
+      "MINIO_CONFIG_ENV_FILE=config.env",
+      "HOME=/tmp",
+      "MC_CONFIG_DIR=/tmp/.mc"
+    ],
+    "Entrypoint": [
+      "/usr/bin/docker-entrypoint.sh"
+    ],
+    "Cmd": [
+      "silo"
+    ],
+    "WorkingDir": "/",
+    "ExposedPorts": {
+      "9000/tcp": {},
+      "9001/tcp": {}
+    },
+    "Volumes": {
+      "/data": {}
+    },
+    "Healthcheck": null,
+    "StopSignal": null
+  },
+  "native_sha256": {
+    "usr/bin/mcli": "a1e263c8b0cadf9b6a19cc9729a7bb6d1eb0329152347955cb4326ca0ebb6845",
+    "usr/bin/silo": "bdc4b5d8c4189790397df1d2f4b253e08446936eaa1d958d3d6034103678d5cb",
+    "usr/bin/curl": "a93e7a6be3b3666da13838a1f4101912c5a434376f2a63ac3197ff65ca3fe241",
+    "usr/lib64/libc.so.6": "82e9dc7fad1051fbea6d8c35d2683aa00f2c6eb7c8d63d1098b9b5366592c3ad",
+    "usr/lib64/ld-linux-x86-64.so.2": "950e08c9ae646e5d7f9bb3163d83e5ae9df58dd0eabb5bcf26dda951257606ac",
+    "usr/lib64/libtic.so.6.2": "1e7a0d5aeba145ac9a7eeedcd9403fd6c6e33784bc2b6aa0bfb60953ec1e907c"
+  },
+  "rpm_database": {
+    "raw_sha256": "bc3d9f70c4120c38a5c9fa4bab357bacfe19188000c57384113cde4f0e617d2d",
+    "stable_sha256": "7da3ee237e5d8c33dcd537650cc526304ff8653d1ac674b54d4e7cf9398f4cc9",
+    "install_observations": {
+      "23": {
+        "name": "glibc-common",
+        "INSTALLTIME": 1794548946,
+        "INSTALLTID": 1794548946
+      },
+      "24": {
+        "name": "glibc-minimal-langpack",
+        "INSTALLTIME": 1794548946,
+        "INSTALLTID": 1794548946
+      },
+      "25": {
+        "name": "libgcc",
+        "INSTALLTIME": 1794548946,
+        "INSTALLTID": 1794548946
+      },
+      "26": {
+        "name": "glibc",
+        "INSTALLTIME": 1794548947,
+        "INSTALLTID": 1794548946
+      }
+    },
+    "package_count": 22,
+    "table_count": 21
+  },
+  "operation": "build-and-verify",
+  "build_executed": true,
+  "observed_at_utc": "2026-11-13T05:49:33.690296+00:00",
+  "preparation_only": true,
+  "binary_redistribution_approved": false
+}

@@ -91,9 +91,11 @@ def main(argv: list[str] | None = None) -> int:
     if args.action == "check":
         print("Local configuration and Compose validated; no provider request sent.")
         return 0
-    for artifact in ['minio', *(['grafana'] if args.observability else [])]:
-        candidate = [sys.executable, str(ROOT / 'scripts/build_go_stdlib_security_20261112.py'),
-                     '--artifact', artifact]
+    builders = [[sys.executable, str(ROOT / 'scripts/build_minio_os_20261113.py')]]
+    if args.observability:
+        builders.append([sys.executable, str(ROOT / 'scripts/build_go_stdlib_security_20261112.py'),
+                         '--artifact', 'grafana'])
+    for candidate in builders:
         if args.no_build:
             candidate.append('--no-build')
         subprocess.run(candidate, check=True)

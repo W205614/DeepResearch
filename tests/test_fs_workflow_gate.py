@@ -69,7 +69,7 @@ def command(steps, script, *, artifact=None):
     run = step['run']
     assert not any(token in run for token in ('||', '&&', ';', '|', '`'))
     tokens = shlex.split(run)
-    if script == 'build_go_stdlib_security_20261112.py':
+    if script in {'build_go_stdlib_security_20261112.py', 'build_minio_os_20261113.py'}:
         assert tokens[:4] == ['uv', 'run', '--frozen', '--no-dev']
         tokens = tokens[4:]
     assert tokens[:2] == ['python', 'scripts/' + script] and len(tokens[2:]) % 2 == 0
@@ -228,7 +228,7 @@ def test_source_built_grafana_keeps_full_native_all_severity_gate_before_accepta
     scan = steps[scan_index]
     condition = "matrix.source_build_profile == 'grafana-source-20261112'"
     assert build_index < scan_index < secret_index < native_index < gate_index
-    assert build['if'] == condition + " || matrix.source_build_profile == 'minio-source-20261112'"
+    assert build['if'] == condition
     assert native['if'] == gate['if'] == condition + " && steps.approved_scan.outcome == 'success'"
     assert "matrix.source_build_profile != ''" in scan['if'] and "matrix.source_build_profile != ''" in secret['if']
     assert 'matrix.image' in scan['with']['image-ref']
@@ -255,6 +255,38 @@ def test_source_built_grafana_keeps_full_native_all_severity_gate_before_accepta
     assert {receipt, BASE + 'grafana-source-build/image-inspect.json',
             BASE + 'grafana-ci-disposition.json', BASE + 'grafana-native/*.json'}.issubset(
                 artifacts['with']['path'].splitlines())
+
+
+def test_minio_native_repair_requires_new_producer_complete_scans_and_strict_consumer():
+    document = yaml.safe_load((ROOT / '.github/workflows/security.yml').read_text(encoding='utf-8'))
+    steps = document['jobs']['runtime-image-scan']['steps']
+    build_index, build, build_args = command(steps, 'build_minio_os_20261113.py')
+    native_index, native, native_args = command(steps, 'collect_minio_os_native_20261113.py')
+    gate_index, gate, gate_args = command(steps, 'check_minio_os_20261113.py')
+    scan_index = next(i for i, step in enumerate(steps) if step.get('id') == 'approved_scan')
+    secret_index, _, _ = command(steps, 'check_image_secrets.py')
+    condition = "matrix.source_build_profile == 'minio-os-source-20261113'"
+    assert build['if'] == condition
+    assert native['if'] == gate['if'] == condition + " && steps.approved_scan.outcome == 'success'"
+    assert build_index < scan_index < secret_index < native_index < gate_index
+    assert build_args == {'--output-dir': BASE + 'minio-source-build'}
+    assert native_args == {'--image': 'deepresearch-minio-source:20261113',
+        '--build-receipt': BASE + 'minio-source-build/build-receipt.json',
+        '--output-dir': BASE + 'minio-native', '--db-cache': BASE + 'minio-grype-db'}
+    assert gate_args == {'--build-receipt': BASE + 'minio-source-build/build-receipt.json',
+        '--scan': 'runtime-image.json', '--inspect': BASE + 'minio-source-build/image-inspect.json',
+        '--grype-scan': BASE + 'minio-native/full-grype.json', '--sbom': BASE + 'minio-native/full-syft.json',
+        '--scanner-exit-code': '0', '--grype-exit-code': '0', '--output': BASE + 'minio-ci-disposition.json'}
+    assert not any(step.get('continue-on-error') for step in (build, native, gate))
+    assert not any('scripts/check_minio_source_build_20261112.py' in step.get('run', '') for step in steps)
+    upload = next(step for step in steps if step.get('uses', '').startswith('actions/upload-artifact@'))
+    assert upload['if'] == 'always()'
+    assert {BASE + 'minio-native/*.json', BASE + 'minio-source-build/build-receipt.json',
+            BASE + 'minio-source-build/image-inspect.json', BASE + 'minio-ci-disposition.json',
+            BASE + 'minio-source-build/build-evidence/go-repair/*.json'}.issubset(upload['with']['path'].splitlines())
+    for filename in ('compose.yaml', 'deployment/compose/compose.verify.yaml'):
+        minio = yaml.safe_load((ROOT / filename).read_bytes())['services']['minio']
+        assert minio['image'] == 'deepresearch-minio-source:20261113' and 'build' not in minio
 
 
 def test_enterprise_and_compose_consume_source_image_without_a_second_uncontrolled_build():

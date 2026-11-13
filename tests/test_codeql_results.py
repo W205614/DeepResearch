@@ -155,7 +155,7 @@ def test_current_continuation_preserves_original_exact_identities_and_bound_byte
     prior_path = root / 'deployment/security/codeql-reviewed-findings-20261110.json'
     prior = json.loads(prior_path.read_bytes())
     current = json.loads(REVIEW.read_bytes())
-    assert REVIEW.name == 'codeql-reviewed-findings-20261112-grafana-license-directory.json'
+    assert REVIEW.name == 'codeql-reviewed-findings-20261113-native-defaults.json'
     assert [row['identity'] for row in current['findings']] == [row['identity'] for row in prior['findings']]
     assert current['findings'][:2] == prior['findings'][:2]
     for name, expected in prior['findings'][2]['evidence_sha256'].items():
@@ -213,12 +213,45 @@ def test_current_continuation_preserves_original_exact_identities_and_bound_byte
     assert permission['new_codeql_scan_claimed'] is False
     assert permission['actual_prior_sarif_reused']['source_sha'] == '0b532b1c277e572896ba2c51a3ec6814120e4899'
     assert permission['severity_threshold_unchanged'] == 7.0
+    backend = current['backend_busybox_addendum']
+    backend_path = root / backend['path']
+    assert hashlib.sha256(backend_path.read_bytes()).hexdigest() == backend['sha256']
+    assert hashlib.sha256((root / backend['prior_profile']).read_bytes()).hexdigest() == backend['prior_profile_sha256']
+    backend_review = json.loads(backend_path.read_bytes())
+    assert backend_review['compose_delta']['only_backend_build_context_and_dockerfile_changed'] is True
+    assert backend_review['compose_delta']['all_other_parsed_configuration_equal'] is True
+    assert backend_review['backend_boundary']['no_blanket_root_COPY_or_ADD'] is True
+    assert backend_review['backend_boundary']['source_html_outside_all_host_copy_roots'] is True
+    assert backend_review['severity_threshold_unchanged'] == 7.0
+    assert backend_review['same_four_exact_identities'] is True
+    assert backend_review['new_codeql_scan_claimed'] is False
+    native = current['native_defaults_addendum']
+    native_path = root / native['path']
+    assert hashlib.sha256(native_path.read_bytes()).hexdigest() == native['sha256']
+    assert hashlib.sha256((root / native['prior_profile']).read_bytes()).hexdigest() == native['prior_profile_sha256']
+    native_review = json.loads(native_path.read_bytes())
+    assert native_review['compose_delta']['only_minio_image_and_profile_selection_changed'] is True
+    assert native_review['compose_delta']['all_other_parsed_configuration_equal'] is True
+    assert native_review['minio_compilation_source']['source_input_count'] == 24
+    assert native_review['minio_compilation_source']['all_inputs_match_actual_preparation_build'] is True
+    assert native_review['minio_compilation_source']['no_blanket_host_root_COPY_or_ADD'] is True
+    assert native_review['minio_compilation_source']['final_clean_source_commit_or_binary_approval_claimed'] is False
+    assert native_review['cloud_backend_boundary']['actual_merged_configuration_checked'] is True
+    assert native_review['cloud_backend_boundary']['deployment_claimed'] is False
+    assert native_review['default_routing']['prepare_flag_or_old_minio_go_consumer_used_by_default'] is False
+    assert native_review['severity_threshold_unchanged'] == 7.0
+    assert native_review['same_four_exact_identities'] is True and native_review['new_findings_exempted'] is False
+    assert native_review['new_codeql_scan_claimed'] is False
     assert reviewed_findings([], REVIEW, root) == ([], [])
 
 
 @pytest.mark.parametrize('change', ['web-context', 'new-go-copy', 'proof', 'addendum', 'pom', 'tomcat-addendum',
                                     'grafana-recipe', 'stable-helper', 'original-capture', 'plugin-inventory', 'stable-addendum',
-                                    'license-mode', 'license-file', 'license-addendum'])
+                                    'license-mode', 'license-file', 'license-addendum',
+                                    'backend-recipe', 'backend-benign', 'backend-ignore', 'backend-addendum',
+                                    'minio-native-recipe', 'minio-source-lock', 'minio-collector', 'minio-default-local',
+                                    'minio-default-inventory', 'minio-workflow', 'cloud-build-overlay',
+                                    'cloud-preflight', 'native-defaults-addendum'])
 def test_current_continuation_still_rejects_changed_compose_go_recipe_or_proof(tmp_path, change):
     root = Path(__file__).resolve().parents[1]
     record = json.loads(REVIEW.read_bytes())
@@ -269,7 +302,20 @@ def test_current_continuation_still_rejects_changed_compose_go_recipe_or_proof(t
                  'stable-helper': 'deployment/vendors/grafana-20261110/prepare_stable_graphs_20261112.py',
                  'original-capture': 'deployment/vendors/grafana-20261107/capture_graphs.py',
                  'plugin-inventory': 'deployment/vendors/grafana-20261107/plugin-modules.json',
-                 'stable-addendum': record['grafana_stable_graphs_addendum']['path']}
+                 'stable-addendum': record['grafana_stable_graphs_addendum']['path'],
+                 'backend-recipe': 'business-backend/Dockerfile',
+                 'backend-benign': 'business-backend/runtime/backend_busybox_benign.py',
+                 'backend-ignore': '.dockerignore',
+                 'backend-addendum': record['backend_busybox_addendum']['path'],
+                 'minio-native-recipe': 'deployment/docker/Dockerfile.minio-20261113',
+                 'minio-source-lock': 'deployment/security/minio-os-20261113/source.lock.json',
+                 'minio-collector': 'scripts/collect_minio_os_native_20261113.py',
+                 'minio-default-local': 'scripts/local.py',
+                 'minio-default-inventory': 'scripts/runtime_ci_inventory.py',
+                 'minio-workflow': '.github/workflows/security.yml',
+                 'cloud-build-overlay': 'deployment/compose/compose.cloud.backend-build.yaml',
+                 'cloud-preflight': 'scripts/check_production_config.py',
+                 'native-defaults-addendum': record['native_defaults_addendum']['path']}
         changed = tmp_path / names[change]
         after = changed.read_bytes() + b'\n'
     changed.write_bytes(after)

@@ -374,6 +374,34 @@ def test_go_fixed_minio_requires_its_source_profile_and_cannot_inherit_old_appro
         inventory.matrices(config, tmp_path)
 
 
+def test_minio_inventory_selects_only_the_new_native_consumer_and_exact_recipe(tmp_path, monkeypatch):
+    import scripts
+    from types import SimpleNamespace
+
+    path = 'deployment/docker/Dockerfile.minio-20261113'
+    recipe = tmp_path / path
+    recipe.parent.mkdir(parents=True)
+    recipe.write_text('FROM scratch\n')
+    profile = {'profile': 'minio-os-source-20261113', 'image': 'deepresearch-minio-source:20261113',
+               'context': '.', 'dockerfile': path,
+               'source_inputs': {path: inventory.candidate.file_hash(recipe)}}
+    calls = []
+    monkeypatch.setattr(scripts, 'check_minio_os_20261113', SimpleNamespace(
+        DOCKERFILE=path, load_profile=lambda root: calls.append(root) or profile), raising=False)
+    monkeypatch.setattr(scripts, 'check_minio_source_build_20261112', SimpleNamespace(
+        load_profile=lambda *_: pytest.fail('old Go-only consumer must not validate new native subject')), raising=False)
+    assert inventory.load_minio_source_profile(tmp_path) == profile and calls == [tmp_path]
+    recipe.write_text('FROM changed\n')
+    with pytest.raises(ValueError, match='current build entry'):
+        inventory.load_minio_source_profile(tmp_path)
+
+
+def test_new_default_inventory_does_not_treat_the_old_go_only_namespace_as_native_review(tmp_path):
+    config = {'services': {'minio': {'image': 'deepresearch-minio-source:20261112'}}}
+    with pytest.raises(ValueError, match='exact artifact or reviewed source profile'):
+        inventory.matrices(config, tmp_path)
+
+
 def test_source_grafana_inventory_binds_selected_recipe_and_does_not_claim_old_approval(tmp_path, monkeypatch):
     import scripts
     from types import SimpleNamespace

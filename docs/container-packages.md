@@ -4,7 +4,7 @@
 
 当前正式版本仍为 `v0.1.3`，下表和安装命令继续指向已发布制品。2026-11-12 的 main 候选没有创建 `v0.1.4` Tag／Release、推送候选公开镜像或更新本机日常环境。[候选验证目录](evidence/release-v014-20261112/README.md)不代表正式版本：第一轮 `607626a2…` 真实流程完成（累计 32 次请求，上界预留 3.547734 USD），最终封装 Agent／Go 修复 MinIO 的同题组合 `8e83be7f…` 仍为 `insufficient`（累计 40 次、4.534515 USD）。后续仅离线补齐资料归因和引用位置解析，未新增真实调用，不能宣布最终验收通过或发布。
 
-main 的 MinIO／Grafana 通过 `scripts/build_go_stdlib_security_20261112.py --artifact minio`／`--artifact grafana` 使用 Go 1.27.4 本地源码重建，入口见[运行依赖](source-release.md#运行依赖如何获取)。16 条新增 stdlib 记录随实际修复消失；原 MinIO 41 条、Grafana Trivy 40／Grype 10 条保持，精确门槛通过，不是原始发现清零或第三方二进制分发批准。下面 `v0.1.3` 的身份、历史验证和旧依赖获取方式不因此改写。
+main 的 Grafana 继续由 `scripts/build_go_stdlib_security_20261112.py --artifact grafana` 使用 Go 1.27.4 本地源码重建；MinIO 改由 `scripts/build_minio_os_20261113.py` 同时修补原生依赖、curl 与 Thrift，入口见[运行依赖](source-release.md#运行依赖如何获取)。原 16 条 stdlib 记录随实际修复消失。MinIO 原 34 条 LOW/MEDIUM 的 17 条签名更新、4 条源码修复、13 条精确不适用依据，以及完整扫描仍保留的记录见[新技术范围](minio-native-security-20261113.md)；Grafana Trivy 40／Grype 10 保持。它们不是零漏洞声明或新的第三方二进制分发批准。下面 `v0.1.3` 的身份、历史验证和旧依赖获取方式不因此改写。
 
 ## 正式 v0.1.3
 

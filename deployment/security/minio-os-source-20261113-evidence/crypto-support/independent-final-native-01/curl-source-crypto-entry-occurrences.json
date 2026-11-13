@@ -1,0 +1,94 @@
+{
+  "source_sha256": "8dadd7d2536a314f982ad05a651b713f426bf7d02cc2c76cffb9796f2218e6c5",
+  "complete_lib_src_c_h_files": 474,
+  "matches": [
+    {
+      "path": "curl-8.23.0/lib/easyoptions.c",
+      "sha256": "8ea2c6045272b31f724fe43867cd804cda94b29d73895b3ed0968e7b08ec80a6",
+      "occurrences": [
+        {
+          "line": 322,
+          "text": "  { \"SSL_CTX_FUNCTION\", CURLOPT_SSL_CTX_FUNCTION, CURLOT_FUNCTION, 0 },"
+        }
+      ]
+    },
+    {
+      "path": "curl-8.23.0/lib/setopt.c",
+      "sha256": "efe581ec220776a639eac600f4b193fc8de1b4873593c10f0d7dc920c10bd5be",
+      "occurrences": [
+        {
+          "line": 2617,
+          "text": "  case CURLOPT_SSL_CTX_FUNCTION:"
+        }
+      ]
+    },
+    {
+      "path": "curl-8.23.0/lib/setup-vms.h",
+      "sha256": "073784f8d8df866e973601c23adb8809a2ce9170d02138c96ba0337664068a76",
+      "occurrences": [
+        {
+          "line": 274,
+          "text": "#define SSL_CTX_set_cipher_list         SSL_CTX_SET_CIPHER_LIST"
+        }
+      ]
+    },
+    {
+      "path": "curl-8.23.0/lib/vdns/doh.c",
+      "sha256": "7523e78e70443d733a98ebc3cbf3d9ab69dbcd0b72ed5c92b0f2e5768f289b27",
+      "occurrences": [
+        {
+          "line": 357,
+          "text": "      ERROR_CHECK_SETOPT(CURLOPT_SSL_CTX_FUNCTION, data->set.ssl_fsslctx);"
+        }
+      ]
+    },
+    {
+      "path": "curl-8.23.0/lib/vtls/openssl.c",
+      "sha256": "973be1862430afef1bf15bd92e80eb8733d9fb62b9b32ed1a3063471e9c51331",
+      "occurrences": [
+        {
+          "line": 129,
+          "text": "/* Whether SSL_CTX_set_ciphersuites is available."
+        },
+        {
+          "line": 1634,
+          "text": "  OPENSSL_init_ssl(flags, NULL);"
+        },
+        {
+          "line": 3677,
+          "text": "      *pmethod = TLS_client_method();"
+        },
+        {
+          "line": 3873,
+          "text": "    if(!SSL_CTX_set_cipher_list(octx->ssl_ctx, ciphers)) {"
+        },
+        {
+          "line": 3887,
+          "text": "      if(!SSL_CTX_set_ciphersuites(octx->ssl_ctx, ciphers13)) {"
+        }
+      ]
+    },
+    {
+      "path": "curl-8.23.0/lib/vtls/wolfssl.c",
+      "sha256": "7c1dd81577161bbc362563ddb90b72fe1e8072762173953588e176f8a7d6a85d",
+      "occurrences": [
+        {
+          "line": 1079,
+          "text": "    if(!SSL_CTX_set_cipher_list(wctx->ssl_ctx, ciphers)) {"
+        },
+        {
+          "line": 1112,
+          "text": "      if(!wolfSSL_CTX_set_cipher_list(wctx->ssl_ctx, curlx_dyn_ptr(&c))) {"
+        },
+        {
+          "line": 1342,
+          "text": "  req_method = wolfTLS_client_method();"
+        },
+        {
+          "line": 1429,
+          "text": "          \" can load certificates via CURLOPT_SSL_CTX_FUNCTION.\");"
+        }
+      ]
+    }
+  ]
+}

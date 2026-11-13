@@ -181,7 +181,8 @@ services:
   backend:
     <<: *service-defaults
     build:
-      context: ./business-backend
+      context: .
+      dockerfile: business-backend/Dockerfile
     mem_limit: 1g
     cpus: 1
     pids_limit: 256
@@ -271,8 +272,8 @@ services:
   minio:
     <<: *service-defaults
     platform: linux/amd64
-    image: deepresearch-minio-source:20261112
-    x-deepresearch-source-build: minio-source-20261112
+    image: deepresearch-minio-source:20261113
+    x-deepresearch-source-build: minio-os-source-20261113
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-deepresearch}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in .env}

@@ -1,10 +1,10 @@
 # 第三方代码、素材与分发说明
 
-核查日期：2026-11-10。根目录 [MIT LICENSE](LICENSE) 适用于 W205614 有权授权的独立原创代码和文档。第三方源码、字体、依赖、容器基础层及其派生程序保留各自的版权与许可证；MIT 不替换这些许可证，也不授权第三方商标。
+初次核查日期：2026-11-10；Backend BusyBox / MinIO 增补日期：2026-11-13。根目录 [MIT LICENSE](LICENSE) 适用于 W205614 有权授权的独立原创代码和文档。第三方源码、字体、依赖、容器基础层及其派生程序保留各自的版权与许可证；MIT 不替换这些许可证，也不授权第三方商标。
 
 本文列出已识别的来源和发布前仍需验证的事项，**不代表所有二进制分发义务已经完成**。固定版本、源码提交和字节身份以对应锁文件、构建配方与实际制品记录为准；历史锁和原始证据保持原样。
 
-应用源码版本仅提供 Git 跟踪的项目源码和既有第三方声明，不附预构建容器、依赖包或运行数据；具体流程见[源码发布与运行](docs/source-release.md)。源码内的第三方文件仍按本页所列各自许可。既有 `artifact-*` 镜像及下载器仍单独管理，其待验事项不会因应用源码发版而消失；CI 临时镜像归档也不能仅因保留时间短就视为不涉及分发。
+源码归档本身提供 Git 跟踪的项目源码和第三方声明，不包含运行数据；另行发布的应用容器及材料按[源码发布与运行](docs/source-release.md)和对应版本页核对。源码内的第三方文件仍按本页所列各自许可。既有 `artifact-*` 镜像及下载器仍有各自的来源职责，其待验事项不会因应用源码发版而消失；CI 临时镜像归档也不能仅因保留时间短就视为不涉及分发。
 
 ## 仓库内保留的第三方内容
 
@@ -21,6 +21,20 @@
 | 其他运行时 CA／时区包 | 按原软件包版权，不统一归为 MIT | [包来源与摘要](deployment/vendors/runtime-data/packages.lock.json)、[打包说明](deployment/vendors/runtime-data/README.md)。 |
 | Agent 源码配方的 glibc 2.43-7 运行库与 gconv | 保留官方 Debian 包内版权与许可，不改为 MIT | [两个匹配包、原始源码、Debian 补丁与 DSC 的精确来源](deployment/security/agent-glibc-runtime-20261110.json)。配方复制完整运行库、转换模块、版权和真实包记录；此变更不覆盖既有 `v0.1.1` 镜像。 |
 | Grafana 安全复核的上游源码与补丁副本，`deployment/security/grafana-source-20261110-evidence/extra22/` | 按实际文件分别保留 AGPL-3.0-only、Apache-2.0 等原许可，不改为 MIT | [逐文件许可映射](deployment/security/grafana-source-20261110-evidence/extra22/source-license-map.json)、[完整许可与来源回执](deployment/security/grafana-source-20261110-evidence/extra22/legal-source-receipts.json)。映射覆盖精确 Grafana 提交、历史修复补丁及经 Go 模块摘要验证的 Loki／MySQL／Tempo／Alerting 源码；`packages/grafana-data` 使用其真实 Apache 例外。这些源码证据不构成新第三方二进制分发批准。 |
+
+## 2026-11-13 Backend BusyBox 修补材料
+
+Backend 候选复用[锁定的 BusyBox 构建输入](deployment/vendors/grafana-20261110/busybox/source.lock.json)，重新构建带 HTTP 请求边界修补的实际程序；不是官方 Alpine 新修订版。BusyBox 保留 GPL-2.0-only、原 AUTHORS 与完整 LICENSE，参与构建的 utmps／skalibs 保留各自 ISC 许可；不把这些组件改为 MIT，也不据此改变独立 Java 源码的许可。
+
+候选镜像中的 `/usr/share/deepresearch/backend-busybox/` 提供 `licenses/`、`metadata/` 和 `corresponding-source/`：包括三个实际源归档、Alpine 补丁、本地修补、配置、来源及工具链锁、构建脚本，以及 Backend Dockerfile 和普通回归入口。83 个普通文件的精确清单、实际程序和动态依赖身份见[新制品绑定](deployment/security/backend-busybox-20261113-profile.json)。构建期使用的 APK 与源码继续按锁定长度、摘要和官方 APK 签名核验；不声称所有包均为本次无缓存下载。
+
+这份记录描述实际候选内的材料，不替代新版本发布时对完整镜像、应用依赖、对应源码获取路径和匿名可用性的核验。历史版本内置的声明与字节保持原样；候选状态与尚未完成的扫描见[Backend 修补记录](docs/backend-busybox-security-20261113.md)。
+
+## 2026-11-13 MinIO 原生依赖补充
+
+新源码配方使用签名 Red Hat glibc / ncurses 源包、GNU Bison、curl 原始源码与签名，以及摘要核验的 Apache Thrift Go 模块。各自保留 GNU LGPL / GPL、ncurses、curl、Apache 等原有许可；新增补丁不替换上游许可。具体源包、构建工具、依赖和签名来源见[固定输入](deployment/security/minio-os-20261113/source.lock.json)，实际修补和仍存在的嵌入 OpenSSL 条件见[本次技术范围](docs/minio-native-security-20261113.md)。构建工具的 APK、二进制 RPM 与基础镜像属于外部获取输入，不因列入锁文件就作为新附件重新分发。
+
+本轮 MinIO 仅提供经逐项核实的对应源码、补丁、配方和来源材料，不批准或发布新的 MinIO 二进制 Package。历史辅助 Release 中仍被固定下载器依赖的来源不能只为清洁列表而删除；[53 个必要资产的索引和迁移边界](docs/release-asset-migration-20261113.md)继续适用。新版本如附来源补充包，应按其精确清单与实际匿名获取记录判断完整性，不能将“有源码链接”视为全部分发义务已经履行。
 
 ## AGPL 组件与对应源码
 

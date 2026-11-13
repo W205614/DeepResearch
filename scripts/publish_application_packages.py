@@ -17,7 +17,8 @@ from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 from scripts.check_image_secrets import assess  # noqa: E402
 from scripts import check_agent_full_scope  # noqa: E402
 
@@ -92,6 +93,46 @@ def publication_scan_verdict(scan: dict, image: dict, diff_ids: list[str], start
             "applicability_exceptions_applied": [], "raw_report_modified": False}
 
 
+def verify_backend_native(image: dict, output: Path, environment: dict) -> dict:
+    inspection, = json.loads(subprocess.check_output(['docker', 'image', 'inspect', image['archive_tag']]))
+    actual_config = check_agent_full_scope.capture_actual_config(inspection)
+    if 'sha256:' + hashlib.sha256(actual_config).hexdigest() != image['image_id']:
+        raise ValueError('Loaded Backend differs from the accepted portable archive config')
+    directory = output / 'native-backend'
+    command = [sys.executable, str(ROOT / 'scripts/check_native_jvm.py'), '--image', image['archive_tag'],
+               '--profile', 'business-java', '--output-dir', str(directory)]
+    receipt = {'passed': False, 'command': command, 'accepted_image_id': image['image_id'],
+               'actual_engine_id': inspection['Id'], 'native_consumer_sha256': file_hash(ROOT / 'scripts/check_native_jvm.py')}
+    path = output / 'native-backend-evidence.json'
+    path.write_text(json.dumps(receipt, indent=2) + '\n', encoding='utf-8')
+    try:
+        try:
+            process = subprocess.run(command, cwd=ROOT, capture_output=True, env=environment, timeout=1200)
+        except subprocess.TimeoutExpired as error:
+            (output / 'native-backend.stdout.private.log').write_bytes(error.stdout or b'')
+            (output / 'native-backend.stderr.private.log').write_bytes(error.stderr or b'')
+            raise ValueError('Backend native/full gate timed out; no publication is authorized') from None
+        (output / 'native-backend.stdout.private.log').write_bytes(process.stdout)
+        (output / 'native-backend.stderr.private.log').write_bytes(process.stderr)
+        receipt['exit_code'] = process.returncode
+        if process.returncode != 0:
+            raise ValueError('Backend native/full gate failed; no publication is authorized')
+        summary = json.loads((directory / 'summary.json').read_bytes())
+        if (summary.get('passed') is not True or summary.get('actual_image_id') != inspection['Id']
+                or summary.get('backend_busybox', {}).get('passed') is not True
+                or summary['backend_busybox'].get('all_severity_technical_clear') is not True):
+            raise ValueError('Backend native/full evidence is incomplete or belongs to another image')
+        after, = json.loads(subprocess.check_output(['docker', 'image', 'inspect', image['archive_tag']]))
+        if any(after[key] != inspection[key] for key in ('Id', 'RootFS', 'Config')):
+            raise ValueError('Accepted Backend tag changed during its native/full verification')
+        receipt['files'] = {p.relative_to(directory).as_posix(): file_hash(p)
+                            for p in sorted(directory.rglob('*.json')) if p.is_file() and not p.is_symlink()}
+        receipt['passed'] = True
+        return receipt
+    finally:
+        path.write_text(json.dumps(receipt, indent=2) + '\n', encoding='utf-8')
+
+
 def scan_loaded_archive(archive: Path, image: dict, output: Path, *, scanner: str = "trivy", cache_dir: Path | None = None) -> None:
     output.mkdir(parents=True, exist_ok=False)
     output = output.resolve()
@@ -157,6 +198,8 @@ def scan_loaded_archive(archive: Path, image: dict, output: Path, *, scanner: st
                 'applicability_exceptions_applied': technical['technical_dispositions'],
                 'technical_review': technical,
                 'policy': 'Exact all-severity fixed-code and application-path review; every new finding or changed runtime blocks'}
+        if image['service'] == 'backend' and verdict['passed']:
+            receipt['backend_native_verification'] = verify_backend_native(image, output, environment)
         receipt.update(verdict)
         if not verdict["passed"]:
             raise ValueError("Publication blocked by unresolved all-severity image findings; see verdict.json")

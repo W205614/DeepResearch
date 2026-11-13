@@ -1,0 +1,88 @@
+{
+  "schema": "independent-static-curl-openssl-current-path-review-v1",
+  "actor": "/root/review_provenance",
+  "observed_at_utc": "2026-11-13T05:33:00.887452+00:00",
+  "image_id": "sha256:1803c41a337b20268cc29c4f37a600b919cb7a6e49e9669632373cd42d489224",
+  "curl_sha256": "a93e7a6be3b3666da13838a1f4101912c5a434376f2a63ac3197ff65ca3fe241",
+  "actual_curl_version": "8.23.0",
+  "actual_embedded_openssl": "3.5.9",
+  "openssl_source_package_affected": true,
+  "openssl_binary_fixed_claim": false,
+  "known_upstream_conditions": [
+    {
+      "id": "CVE-2026-107496",
+      "condition": "CMS_encrypt/CMS_encrypt_ex encrypts to an attacker-controlled EC recipient certificate"
+    },
+    {
+      "id": "CVE-2026-88822",
+      "condition": "OpenSSL native QUIC automated peer detection"
+    },
+    {
+      "id": "CVE-2026-95691",
+      "condition": "OpenSSL native QUIC CRYPTO retransmission"
+    },
+    {
+      "id": "CVE-2026-88823",
+      "condition": "AES-GCM-SIV incremental AAD/reinitialization"
+    },
+    {
+      "id": "CVE-2026-95692",
+      "condition": "AES-GCM-SIV initialization using a nonstandard IV length"
+    }
+  ],
+  "primary_advisory": "https://openssl-library.org/news/secadv/20261110.txt",
+  "scanner_boundary": "Current Grype identifies curl as one binary, not its separate embedded libssl/libcrypto. The absence of these five tuples in raw reports is not evidence of a fixed library. They are additional known embedded-component conditions and do not alter the original reports.",
+  "actual_build_and_source": {
+    "curl_source_tar_sha256": "8dadd7d2536a314f982ad05a651b713f426bf7d02cc2c76cffb9796f2218e6c5",
+    "curl_signer": "27EDEAF22F3ABCEB50DB9A125CC908FDB71E12C2",
+    "complete_lib_src_c_h_files_read": 474,
+    "cms_encrypt_pkcs7_encrypt_gcm_siv_native_quic_client_method_source_occurrences": 0,
+    "tcp_tls_selection": "lib/vtls/openssl.c:3677 selects TLS_client_method. The cipher options at3873/3887 call SSL_CTX_set_cipher_list / SSL_CTX_set_ciphersuites and select TLS cipher suites, not generic EVP AES-GCM-SIV.",
+    "curl_cli_source": "src C/H contains no CMS_encrypt/PKCS7_encrypt, EVP cipher initialization/fetch, GCM-SIV, OSSL_QUIC or SSL_CTX_FUNCTION callback entry.",
+    "actual_http3": "configure HTTP3=no, proxy-HTTP3=no; actual --version features omit HTTP3; the currently built curl does not expose a QUIC transport.",
+    "tls_cipher_source": "Official openssl-3.5.9 ssl/s3_lib.c and ssl/ssl_ciph.c list TLS suite implementations. GCM-SIV is not a TLS cipher suite. Normal AES-GCM is not equated with AES-GCM-SIV.",
+    "libssh2_package": "Independently extracted signed APK .PKGINFO from exact libssh2-static-1.11.1-r4.apk; archive43f5c31cfea7d96426fe6d65ecb768edba65657667eb1f90e90be22f942e3a16, PKGINFO3068b7f864139c65e7938cf317394af6a0d890e553a60acf3edfe3181102982a, commit5b3f244265eaf572693cbba1ac4b2548287980ff.",
+    "libssh2_source": "Official1.11.1 crypt.c SSH algorithm table and openssl.h bind AES-GCM/CTR/CBC through fixed EVP_aes_* functions. openssl.c compares AES-GCM EVP function pointers; no GCM-SIV, CMS encryption or QUIC entry. Exact Alpine source commit APKBUILD plus all11 listed vendor patches captured; none introduces the affected entry/algorithm names. This is source-selection corroboration, not a fresh reproducible compilation of the vendor APK.",
+    "configuration": "Actual914-entry image manifest contains no openssl.cnf, engines or ossl-modules path. Image runtime9-field config remains the retained MinIO contract with no external OpenSSL config/provider environment.",
+    "actual_service_entry": "Current project Compose minio command is silo server; healthcheck is silo healthcheck, not curl. Silo/mcli use their pinned Go TLS graph; actual normal curl loopback HTTP was a separate benign fixture check.",
+    "elf_symbols": "Actual stripped curl has no .symtab. The attempted metadata reader reports no symbol section; no claim of absence of embedded vulnerable functions is made."
+  },
+  "conclusion": "Supports exclusion of these five affected features from the pinned current MinIO service and normal curl TLS/SSH implementation paths, not a fixed OpenSSL package. Current raw scan counts and severities remain unchanged.",
+  "limits": [
+    "No universal claim about arbitrary user programs, external plugins/engines/providers, injected SSL_CTX callbacks, custom EVP/cipher use, future HTTP3 builds, or changed source/configuration.",
+    "The static library may contain affected code. Evidence is source/API/configuration path selection, not an import-only or symbol-absence argument.",
+    "No crafted malicious input, vulnerability reproduction, model request, code edit or remote mutation was performed.",
+    "This additional review does not alone approve the final MinIO profile, clean-source label, redistribution, full raw scan dispositions or final runtime switch."
+  ],
+  "supporting_files_sha256": {
+    "curl823-build-03\\evidence\\complete-apk-package-origins.json": "f6439dd946c22ea5dea873101b1052a3bba768c5b964d0ca1e55d69e43f3729f",
+    "final-native-prepare-01\\build-evidence\\curl\\curl-configure.txt": "7ebd9410daf11d40cc1da278848ad61d44455558464368b01e373c9c4af7f29b",
+    "final-native-prepare-01\\build-evidence\\curl\\curl-signature.txt": "385bb53e0c8a04f7d5508769641ac97e73783d9b4b3bc69fe467c0de5eb1cefa",
+    "independent-final-native-01\\actual-curl-crypto-symbols.stderr": "6d5a79473507171d53546508d7ff5ca8984793c49e2b4448a7213e6cf102cd95",
+    "independent-final-native-01\\actual-curl-version.txt": "cd3ff578d94abfd3fbb38f82888b1ad67dfb7a1b17f9b6d921c7f37cf95e4b90",
+    "independent-final-native-01\\actual-native-functions.json": "564154f946dfc240ea7a273bfc5407db9016b068689d671f94d03067826c347e",
+    "independent-final-native-01\\curl-openssl-primary\\alpine-libssh2-APKBUILD": "b1db52dd4b491e2ac462e4c3079e0c583bf341b08b24222d1a706e2045e20c66",
+    "independent-final-native-01\\curl-openssl-primary\\CVE-2025-15661.patch": "473ea2ffcf3509b39b5037196dc3e58153da2a2cd2a7a6514dd989349f472c71",
+    "independent-final-native-01\\curl-openssl-primary\\CVE-2026-55199.patch": "bf25bf737729215481b35500abc6b8c14c13b9c95695a2f444e143fb85e5125f",
+    "independent-final-native-01\\curl-openssl-primary\\CVE-2026-55200.patch": "896acbe8e74c312b623ec1e64adff0b4f16776a23e549f3a1a5bbb19e159910c",
+    "independent-final-native-01\\curl-openssl-primary\\CVE-2026-58050.patch": "e05eb89d9bfcc6dd93a769a9beb87b05eccd0a1ce801e8cf729ef0bd05fd2ef6",
+    "independent-final-native-01\\curl-openssl-primary\\CVE-2026-58051.patch": "cc733a4e67d45e2a9eecef00a4c054d1db7a72a34607ca08324a80e99a1ca31b",
+    "independent-final-native-01\\curl-openssl-primary\\CVE-2026-66032.patch": "1fa55785573bb821718ff9375e8bb283ef06629b27ffd21e71766b3e4cec824b",
+    "independent-final-native-01\\curl-openssl-primary\\CVE-2026-66033.patch": "4e8dae97d89b680927d0158dbbb7d46e96aa1ea117fa3b94b016e303404617ab",
+    "independent-final-native-01\\curl-openssl-primary\\CVE-2026-66034.patch": "c5883daa1f3b2a5131237f2c9c0ab9139845e75988a1a275c0e5fd7b5b847669",
+    "independent-final-native-01\\curl-openssl-primary\\CVE-2026-66035.patch": "f96afd769fa0df8ee980a689611351c7e1171c0de238a80e3b8b63c62ef3903f",
+    "independent-final-native-01\\curl-openssl-primary\\CVE-2026-7598.patch": "fd4775228fe04a11532043355099fe2643993aae4fb63576620b1941f9a80645",
+    "independent-final-native-01\\curl-openssl-primary\\libssh-unconst-backport.patch": "8dcd3515bef419b683f7e4587928d168b141b4a2e230f4ccb976acdb5682d008",
+    "independent-final-native-01\\curl-openssl-primary\\libssh2-crypt.c": "2d69312c6059192560bb72e4bfa967e4b6e7c4453383580da90ab86233e98aa4",
+    "independent-final-native-01\\curl-openssl-primary\\libssh2-exact-APKBUILD": "b1db52dd4b491e2ac462e4c3079e0c583bf341b08b24222d1a706e2045e20c66",
+    "independent-final-native-01\\curl-openssl-primary\\libssh2-exact-vendor-patches.json": "5e218c8459a2d5c7e7dc2cb9a3ab3d26984cd7839830ec969135731df1cf52aa",
+    "independent-final-native-01\\curl-openssl-primary\\libssh2-openssl.c": "684f67a0cc3af33017cba458c8885b8cbb549834409cf1d9afd1b35acb131444",
+    "independent-final-native-01\\curl-openssl-primary\\libssh2-openssl.h": "bdc6cc39f5a075d4497cc0222892ac371418133e6cfcaa357b131cd62d54e82a",
+    "independent-final-native-01\\curl-openssl-primary\\openssl-s3_lib.c": "170634ba07043eed0b70c4251fd84f88f372175a173c503d2e161b53c92c91cc",
+    "independent-final-native-01\\curl-openssl-primary\\openssl-ssl_ciph.c": "88c6aa0a7a453d0fd1be6ccad99b2f17f76aa1565e567c05a8228100484c5018",
+    "independent-final-native-01\\curl-openssl-primary\\receipts.json": "eb3dedf945352e08e7931d94b8e172ebf44b845b8f41719113818f23d048fe96",
+    "independent-final-native-01\\curl-source-crypto-entry-occurrences.json": "ef81479a28d1afe7ba124526446f9c263bd5b81e034e0a7ce73254c0ac13beb5",
+    "independent-final-native-01\\openssl.c": "973be1862430afef1bf15bd92e80eb8733d9fb62b9b32ed1a3063471e9c51331"
+  },
+  "final_candidate_approved": false
+}

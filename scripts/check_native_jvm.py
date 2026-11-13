@@ -13,6 +13,7 @@ import platform
 import re
 import stat
 import subprocess
+import sys
 import tarfile
 import tempfile
 import time
@@ -21,6 +22,7 @@ from urllib.parse import parse_qsl, quote, unquote, urlencode, urlsplit, urlunsp
 from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 LOCK = ROOT / "deployment/security/native-jvm-tools.json"
 MAX_DATABASE_ARCHIVE_BYTES = 4 * 1024**3
 
@@ -485,6 +487,10 @@ def main():
             prepared.assert_unchanged("after-" + mode + "-scan")
             report = json.loads(report_path.read_text(encoding="utf-8"))
             summary[mode] = {"packages": len(sbom["artifacts"]), "raw_counts": validate_scan(report, sbom), "sbom_sha256": digest(sbom_path), "report_sha256": digest(report_path)}
+            if mode == "full" and args.profile == "business-java":
+                from scripts.check_backend_busybox_20261113 import collect_and_assess
+
+                summary["backend_busybox"] = collect_and_assess(name, report, sbom, args.output_dir / "backend-busybox", run)
         summary["passed"] = True
     except Exception as error:
         summary["error_type"] = type(error).__name__

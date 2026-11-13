@@ -122,19 +122,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - uses: astral-sh/setup-uv@v7
-        if: matrix.source_build_profile == 'grafana-source-20261112' || matrix.source_build_profile == 'minio-source-20261112'
+        if: matrix.source_build_profile == 'grafana-source-20261112' || matrix.source_build_profile == 'minio-os-source-20261113'
       - name: Install locked Python dependencies for Go source preparation
-        if: matrix.source_build_profile == 'grafana-source-20261112' || matrix.source_build_profile == 'minio-source-20261112'
+        if: matrix.source_build_profile == 'grafana-source-20261112' || matrix.source_build_profile == 'minio-os-source-20261113'
         run: uv sync --frozen --no-dev
       - name: Build the reviewed Go-fixed source without publishing a third-party image
-        if: matrix.source_build_profile == 'grafana-source-20261112' || matrix.source_build_profile == 'minio-source-20261112'
+        if: matrix.source_build_profile == 'grafana-source-20261112'
         run: uv run --frozen --no-dev python scripts/build_go_stdlib_security_20261112.py --artifact "$ARTIFACT" --output-dir ".cache/eval/$ARTIFACT-source-build"
         env:
           ARTIFACT: ${{ matrix.artifact }}
           GITHUB_TOKEN: ${{ github.token }}
-      - name: Retain the two actual MinIO graph documents after a failed build gate
-        if: always() && matrix.artifact == 'minio' && failure() && hashFiles('.cache/eval/minio-source-build/build-receipt.json') != '' && hashFiles('.cache/eval/minio-source-build/actual-payload/runtime-manifest.json.gz') != '' && hashFiles('.cache/eval/minio-source-build/actual-payload/rootfs.tar') != ''
-        run: uv run --frozen --no-dev python scripts/capture_go_graph_diagnostic_20261112.py --build-dir .cache/eval/minio-source-build
+      - name: Build the exact reviewed MinIO native repair without publishing a third-party image
+        if: matrix.source_build_profile == 'minio-os-source-20261113'
+        run: uv run --frozen --no-dev python scripts/build_minio_os_20261113.py --output-dir .cache/eval/minio-source-build
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - name: Retain only differing Grafana graph and provenance documents after a failed build gate
         if: always() && matrix.artifact == 'grafana' && failure() && hashFiles('.cache/eval/grafana-source-build/build-receipt.json') != '' && hashFiles('.cache/eval/grafana-source-build/actual-payload/runtime-manifest.json.gz') != '' && hashFiles('.cache/eval/grafana-source-build/actual-payload/rootfs.tar') != ''
         run: uv run --frozen --no-dev python scripts/capture_go_graph_diagnostic_20261112.py --artifact grafana --build-dir .cache/eval/grafana-source-build
@@ -180,14 +182,24 @@ jobs:
           --original-output .cache/eval/minio-original-disposition.json
           --exact2-output .cache/eval/minio-openpgp2-disposition.json
           --output .cache/eval/minio-ci-disposition.json
-      - name: Enforce the unchanged MinIO threshold and exact new Go-fixed subject
-        if: matrix.source_build_profile == 'minio-source-20261112' && steps.approved_scan.outcome == 'success'
+      - name: Collect complete native and full MinIO repair reports
+        if: matrix.source_build_profile == 'minio-os-source-20261113' && steps.approved_scan.outcome == 'success'
         run: >-
-          python scripts/check_minio_source_build_20261112.py
+          python scripts/collect_minio_os_native_20261113.py
+          --image deepresearch-minio-source:20261113
+          --build-receipt .cache/eval/minio-source-build/build-receipt.json
+          --output-dir .cache/eval/minio-native
+          --db-cache .cache/eval/minio-grype-db
+      - name: Enforce all-severity findings against the exact MinIO native repair subject
+        if: matrix.source_build_profile == 'minio-os-source-20261113' && steps.approved_scan.outcome == 'success'
+        run: >-
+          python scripts/check_minio_os_20261113.py
           --build-receipt .cache/eval/minio-source-build/build-receipt.json
           --scan runtime-image.json
+          --grype-scan .cache/eval/minio-native/full-grype.json
+          --sbom .cache/eval/minio-native/full-syft.json
           --inspect .cache/eval/minio-source-build/image-inspect.json
-          --scanner-exit-code 0
+          --scanner-exit-code 0 --grype-exit-code 0
           --output .cache/eval/minio-ci-disposition.json
       - name: Collect complete native and full Grafana reports
         if: matrix.artifact == 'grafana' && matrix.source_build_profile == '' && steps.approved_scan.outcome == 'success'
@@ -241,13 +253,15 @@ jobs:
             .cache/eval/approved-image-secret-gate.json
             .cache/eval/artifact-source-reuse.json
             .cache/eval/grafana-native/*.json
+            .cache/eval/minio-native/*.json
             .cache/eval/minio-source-build/build-receipt.json
             .cache/eval/minio-source-build/image-inspect.json
             .cache/eval/minio-source-build/actual-payload/runtime-manifest.json.gz
             .cache/eval/minio-source-build/regressions/*.txt
             .cache/eval/*-source-build/*.log
             .cache/eval/*-source-build/*.command.json
-            .cache/eval/minio-source-build/diagnostic-graphs/*.json
+            .cache/eval/minio-source-build/build-evidence/go-repair/*.json
+            .cache/eval/minio-source-build/build-evidence/**/*.txt
             .cache/eval/grafana-source-build/diagnostic-graphs/*.json
             .cache/eval/grafana-source-build/diagnostic-graphs/*.json.gz
             .cache/eval/grafana-source-build/build-receipt.json

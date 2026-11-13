@@ -43,4 +43,7 @@ jobs:
             .cache/eval/application-publication/security/*/verdict.json
             .cache/eval/application-publication/security/*/raw.json
             .cache/eval/application-publication/security/*/scanner-version.log
+            .cache/eval/application-publication/security/backend/native-backend-evidence.json
+            .cache/eval/application-publication/security/backend/native-backend/*.json
+            .cache/eval/application-publication/security/backend/native-backend/backend-busybox/verdict.json
           if-no-files-found: error

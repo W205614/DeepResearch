@@ -4,6 +4,8 @@
 
 适合需要保留依据、反复追问和协作审阅的个人或小团队。Agent 负责规划、检索、分析和写作；身份权限、任务预算、资料授权与正式报告由业务系统管理。模型生成内容仍需人工判断，资料不足会显示部分结果和未回答问题。
 
+正式交付状态、镜像和最终验收以[最新版本页](https://github.com/W205614/DeepResearch/releases/latest)为准。下文带日期的验证段落保留提交时的阶段记录；后续版本不会改写旧失败或旧截图。
+
 - 部署：[选择启动方式](#选择启动方式) · [容器 Packages](docs/container-packages.md) · [源码启动](docs/source-release.md)。
 - 理解项目：[架构与目录](#架构与目录) · [源码调用路径](docs/project-structure.md) · [Java／Python 职责](docs/java-python-ownership.md)。
 - 维护：[贡献指南](CONTRIBUTING.md) · [升级与恢复](docs/deployment-security-operations.md) · [安全报告](SECURITY.md)。
@@ -139,7 +141,7 @@ Java 管理公开接口、权限、任务准入、Outbox 和正式报告。Pytho
 
 本轮未发布 Agent 候选的最新复扫为 92 条，新增四条 glibc UNKNOWN；原生库字节未变，`libc6` 的库仍受影响，逐项技术依据只排除当前应用调用路径，另一组件不含缺陷实现。原 88 条、新四条及失效条件均保留，不能说 glibc 已修复，见[新发现依据](deployment/security/agent-glibc-20261112-evidence/primary-sources.json)。
 
-正式 `v0.1.3` 的 Grafana 使用 `grafana-source-20261110` 本地源码入口；其与 PostgreSQL 的原运行验收保持历史边界。main 候选通过 `scripts/build_go_stdlib_security_20261112.py --artifact minio`／`--artifact grafana` 使用 Go 1.27.4 真实重建 2／14 个可执行文件，新增 16 条 `CVE-2026-97054` 记录随修复消失。MinIO 原始 43→41、Grafana Trivy 54→40／Grype 10 保留，精确安全门槛通过；MinIO 另有 34 条原低／中级记录未扩展为全级别适用性复核，不声称 raw zero。安全检查不替代上述失败的最终真实流程，也没有新增公开第三方镜像。正常历史版本及仍有输入、许可或对应源码职责的 `artifact-*` 保留，不移动公开 Tag、不覆盖镜像版本。正式制品的对应源码仍须同时获取补充包和固定旧分片，详见[源码获取](docs/container-packages.md)。
+正式 `v0.1.3` 的 Grafana 使用 `grafana-source-20261110` 本地源码入口；其与 PostgreSQL 的原运行验收保持历史边界。main 的固定 Go 1.27.4 重建已消除 16 条新增 stdlib 记录。MinIO 后续改用 `scripts/build_minio_os_20261113.py`：原 34 条 LOW/MEDIUM 中，17 条通过签名更新消除、4 条实际源码修复、13 条有精确不适用证据；另升级 curl／Thrift 消除补充扫描的 26 条记录。当前准备候选仍保留 Trivy 24／Grype 23 条原始发现，静态 OpenSSL 仍受影响的条件单独说明，不声称 raw zero，见[MinIO 技术范围](docs/minio-native-security-20261113.md)。Grafana Trivy 40／Grype 10 保留。Backend 另实际修补 BusyBox，完整三条原始 Medium 按固定代码和独立 helper 逐项核对，见[Backend 修补范围](docs/backend-busybox-security-20261113.md)。这些安全证据不代替最终组合的真实模型复验，也没有新增公开第三方镜像。仍有输入、许可或对应源码职责的五个辅助发布有据保留，[迁移索引](docs/release-asset-migration-20261113.md)说明不能删除的具体原因；不移动历史 Tag 或覆盖镜像版本。正式制品的对应源码仍须同时获取补充包和固定旧分片，详见[源码获取](docs/container-packages.md)。
 
 ## 开发、测试与排错
 

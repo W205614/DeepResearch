@@ -1,0 +1,43 @@
+{
+  "schema": "minio-os-source-independent-technical-review-20261113-v1",
+  "actor": "/root",
+  "actor_kind": "automated_independent_agent",
+  "observed_at_utc": "2026-11-13T06:11:27.728283+00:00",
+  "subject_sha256": "0c1f264c7e86221618da3e9b4d0d2356ce2c9c500da7705fb6a74dfe968c1193",
+  "facts_passed": true,
+  "risk_acceptance": false,
+  "binary_redistribution_approved": false,
+  "candidate_engine": "sha256:743a1870218e8ed4a24c2501480ce8cf041f7b18fa2390e13a206fdf039b2a05",
+  "candidate_portable_config": "sha256:ef21c5e11ca591fd3a40d7ad8cd97cc9dcb93ba24b172cf51cdabab1d6a669c0",
+  "checks": [
+    "Personally reviewed current producer Dockerfile, deny-all build context, fixed sources, signatures, source build stages and default caller diffs.",
+    "Fresh independent Docker create/export/save of immutable Engine: never started, network none; complete914 runtime rows including metadata, portable config and six native hashes equal the actual producer03 receipt.",
+    "Complete logical RPM facts independently recomputed from own exported database; exact schema/all tables/rows/full headers and application metadata binding retained. Only bounded signed-package install clocks are normalized.",
+    "All34 original LOW/MEDIUM OS tuples including original full finding and target compared with the untouched raw baseline; all41 public source-object hashes verified. Actual17 signed-update tuples absent; four source-fix and13 precise-scope tuples retained in raw current scan.",
+    "Current libc3025 and loader41 exported ABI entries equal baseline; normal intl16 checks, ncurses normal compile/query, original hardening checks and actual fixed native hashes reviewed.",
+    "Original CSV reader obtained directly by git show of actual prefetched0cd388c commit:10365bytes/SHA51cece44627f51103893c5e8f84eda642523b415040e89e660d3802da773e496 equals reviewed fixed source. No malicious regression rerun.",
+    "Actual mcli616 and Silo1410 compiled-package graphs, compiler/Main/settings and full linked module closures bind new native outputs. Silo module migration is only Thrift0.24 to0.25 and its sole direct import delta removes testing; affected HTML/OpenPGP packages absent.",
+    "Complete actual Trivy24/secret0 and full Grype23 plus392-artifact Syft report assessed against immutable config; additional curl21 and Thrift5 findings removed by actual source upgrades, not report filtering.",
+    "Four tool-built-in kernel-header match rules are fixed verbatim and no corresponding package exists in complete SBOM; no ignored matches or user suppression accepted.",
+    "Embedded OpenSSL3.5.9 remains upstream-affected. Reviewed exact curl CLI TCP TLS/SSH, non-HTTP3 build, libssh2 algorithm and source/configuration bounds. No symbol-absence, fixed-library, plugin or future-use claim.",
+    "Actual normal S3 five checks and separately documented Parquet-enabled Select receipt reviewed; default-disabled failed request remains recorded; no default or daily configuration changed.",
+    "Current strict generator validate_profile(reviewed=False), verify_receipt, verify_payload against Root own export, assess of original actual reports all executed successfully. Root separately executed54 current MinIO/RPM tests:54passed."
+  ],
+  "raw_trivy_counts": {
+    "MEDIUM": 10,
+    "LOW": 9,
+    "UNKNOWN": 2,
+    "HIGH": 3
+  },
+  "raw_grype_counts": {
+    "Low": 9,
+    "High": 2,
+    "Medium": 10,
+    "Unknown": 2
+  },
+  "limits": [
+    "Technical review for exact current source/runtime subject only; libraries with excluded paths remain affected. No zero-vulnerability or risk-acceptance claim.",
+    "Preparation03 label is historical current HEAD; final clean-source normal build, complete packaged application scans, real models, CI, public source retrieval and final switch are separate pending stages.",
+    "No model HTTP, daily business database query, crafted exploit input, remote mutation or fourth binary Package publication during this review."
+  ]
+}

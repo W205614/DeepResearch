@@ -86,7 +86,13 @@ def test_evidence_outside_checkout_cache_is_rejected(tmp_path):
 
 
 def steps_for(workflow, job):
-    return yaml.safe_load((ROOT / '.github/workflows' / workflow).read_text(encoding='utf-8'))['jobs'][job]['steps']
+    # This diagnostic accepts only the retained Go-only subject. Keep its
+    # historical workflow contract separate from the new native repair default.
+    fixture = ROOT / 'tests/fixtures/minio-go-only-workflows-20261113' / workflow
+    provenance = json.loads((fixture.parent / 'provenance.json').read_bytes())
+    assert provenance['source_commit'] == '5513d649eaacc21694a6736761b3082473f63d59'
+    assert hashlib.sha256(fixture.read_bytes()).hexdigest() == provenance['files'][workflow]['sha256']
+    return yaml.safe_load(fixture.read_text(encoding='utf-8'))['jobs'][job]['steps']
 
 
 def assert_workflow_contract(steps, *, security):
@@ -112,7 +118,7 @@ def assert_workflow_contract(steps, *, security):
 @pytest.mark.parametrize(('workflow', 'job', 'security'), [
     ('ci.yml', 'real-components', False), ('ci.yml', 'enterprise-compose-smoke', False),
     ('security.yml', 'runtime-image-scan', True)])
-def test_only_failed_minio_builds_with_all_actual_inputs_collect_bounded_evidence(workflow, job, security):
+def test_historical_failed_go_only_minio_builds_keep_bounded_evidence(workflow, job, security):
     assert_workflow_contract(steps_for(workflow, job), security=security)
 
 
@@ -134,7 +140,7 @@ def test_diagnostic_does_not_hide_failures_or_capture_unrelated_images(mutation)
 
 
 @pytest.mark.parametrize('job', ['real-components', 'enterprise-compose-smoke'])
-def test_ci_source_build_failure_retains_actual_receipt_config_and_manifest(job):
+def test_historical_go_only_ci_failure_keeps_receipt_config_and_manifest(job):
     uploads = [step for step in steps_for('ci.yml', job)
                if '-go-source-build-logs-' in step.get('with', {}).get('name', '')]
     assert len(uploads) == 1 and uploads[0]['if'] == 'always()'

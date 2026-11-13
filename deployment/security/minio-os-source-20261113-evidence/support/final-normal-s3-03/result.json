@@ -1,0 +1,16 @@
+{
+  "image_id": "sha256:743a1870218e8ed4a24c2501480ce8cf041f7b18fa2390e13a206fdf039b2a05",
+  "fixture_container": "dr-minio-os-normal-final-20261113-03",
+  "fixture_volume": "dr-minio-os-normal-final-20261113-03-data",
+  "daily_touched": false,
+  "model_requests": 0,
+  "checks": [
+    "readiness-http200-and-signed-list-buckets",
+    "actual-new-curl-normal-loopback-http200",
+    "bucket-put-head-list-get-exact-bytes",
+    "versioning-and-exact-old-version-get",
+    "normal-two-part-multipart-complete-exact-sha256"
+  ],
+  "passed": true,
+  "retained_container_and_synthetic_volume": true
+}

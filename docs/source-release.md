@@ -44,7 +44,7 @@ python scripts/local.py stop
 | 内容 | 来源与版本依据 |
 | --- | --- |
 | Java、Python、前端及其他带 `build` 的服务 | 从所检出标签中的 Dockerfile 和锁文件构建 |
-| 核心 MinIO／Silo | 正式 `v0.1.3` 用 `fetch_approved_image.py` 获取固定 `artifact-minio-fixed-20261026`；main 候选改用下述 Go 1.27.4 源码入口与 `deepresearch-minio-source:20261112` |
+| 核心 MinIO／Silo | 正式 `v0.1.3` 用 `fetch_approved_image.py` 获取固定 `artifact-minio-fixed-20261026`；main 候选改用下述原生依赖修补入口与 `deepresearch-minio-source:20261113` |
 | 可选 Grafana | 正式 `v0.1.3` 的 `--observability` 使用 `scripts/build_grafana_source_20261110.py`／`deepresearch-grafana-source:20261110`；main 候选改用下述统一入口与 `deepresearch-grafana-source:20261112` |
 | Redis、ClamAV 等上游镜像 | 使用 `compose.yaml` 中固定的版本与摘要 |
 
@@ -60,17 +60,17 @@ python scripts/build_grafana_source_20261110.py --no-build --output-dir .cache/g
 
 这是本地源码构建入口，未新增公开第三方镜像，不继承旧 OCI 的安全批准；正常 profile 和原始全级别扫描的完整技术门槛独立核验。它仍依赖旧 `artifact-grafana-*` 中的精确输入与材料，不能删除旧 Release／附件或改变摘要。首次构建包含 Go／BusyBox 源码下载和编译，并非完全脱离旧镜像或离线安装。第三方许可和分发边界见 [THIRD_PARTY_NOTICES](../THIRD_PARTY_NOTICES.md)。
 
-main 候选使用独立的 2026-11-12 源码 profile，将 MinIO／Silo 两个程序和 Grafana 主程序／十三插件全部用固定 Go 1.27.4 重建。`scripts/local.py start` 会先准备 MinIO，带 `--observability` 时再准备 Grafana；`--no-build` 只核对现有实际镜像和收据，缺失或不符会失败。单独准备当前 main 依赖使用以下入口，每次输出到新的证据目录：
+main 候选沿用固定 Go 1.27.4 重建 MinIO／Silo 两个程序和 Grafana 主程序／十三插件；MinIO 另使用 2026-11-13 独立源码 profile 修补系统库、curl 和 Thrift。`scripts/local.py start` 会先准备 MinIO，带 `--observability` 时再准备 Grafana；`--no-build` 只核对现有实际镜像和收据，缺失或不符会失败。单独准备当前 main 依赖使用以下入口，每次输出到新的证据目录：
 
 ```powershell
-python scripts/build_go_stdlib_security_20261112.py --artifact minio --output-dir .cache/minio-source-20261112-build
+python scripts/build_minio_os_20261113.py --output-dir .cache/minio-source-20261113-build
 python scripts/build_go_stdlib_security_20261112.py --artifact grafana --output-dir .cache/grafana-source-20261112-build
 # 仅核对已有实际镜像；保留前次收据，使用新输出目录。
-python scripts/build_go_stdlib_security_20261112.py --artifact minio --no-build --output-dir .cache/minio-source-20261112-verify
+python scripts/build_minio_os_20261113.py --no-build --output-dir .cache/minio-source-20261113-verify
 python scripts/build_go_stdlib_security_20261112.py --artifact grafana --no-build --output-dir .cache/grafana-source-20261112-verify
 ```
 
-该候选的 16 条新增 `CVE-2026-97054` 记录随真实修复消失；MinIO 原始 43→41、Grafana Trivy 54→40／Grype 10 保持，其余依赖／源码图与运行配置经精确迁移核对。安全门槛通过不是 raw zero；MinIO 34 条原低／中级记录未扩展为全级别适用性复核。旧 MinIO 下载器已不作为 main 的默认运行镜像入口，但历史版本、构建基底与来源校验仍使用其冻结材料，不能删除；上述本地构建也没有新增公开第三方镜像或分发批准。
+Go 升级使原 16 条 `CVE-2026-97054` 记录随真实修复消失，Grafana Trivy 54→40／Grype 10 保留。MinIO 后续对原 34 条 LOW/MEDIUM 逐项处理：17 条由签名包更新消除、4 条由实际源码修复、13 条有精确组件或架构不适用依据；另实际升级 curl／Thrift，消除补充扫描的 26 条记录。当前准备候选 Trivy 保留 24 条、Grype 保留 23 条，全部严重级别及完整库存受新精确门槛约束，不是 raw zero；静态 OpenSSL 的已知受影响条件也单独保留。[修补和验证边界](minio-native-security-20261113.md)区分源码、正常功能、恶意回归未执行及二进制分发范围。旧 MinIO 下载器已不作为 main 的默认运行镜像入口，但历史版本、构建基底与来源校验仍使用其冻结材料，不能删除；上述本地构建也没有新增公开第三方镜像或分发批准。
 
 历史源码 `v0.1.1` 的启动仍使用它原来的 Grafana loader，不具有上述新入口；需要复现时明确检出 `v0.1.1`，不要混用当前 main 的脚本。三个旧应用镜像及材料从[历史应用制品入口](container-packages.md#历史-v011-公开制品)获取。源码发布本身不代表所有第三方制品的二进制分发验收完成。
 

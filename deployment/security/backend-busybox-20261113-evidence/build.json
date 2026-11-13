@@ -1,0 +1,20 @@
+{
+  "component": "BusyBox 1.37.0 + Alpine c3ef5d10e6ef 44 patches + local CVE-2025-60876 HTTP-boundary patch",
+  "architecture": "linux/amd64",
+  "custom_build": true,
+  "official_alpine_revision": false,
+  "source_date_epoch": 1768059508,
+  "busybox_sha256": "68dba7ae251db2ecca77e6ef405bf781111dc41f87c93c30205745fdbe2c697e",
+  "config_sha256": "ed9257cfc238ccaac57e06ff22867f88a0afab5527fcaf5ce9518c0b30c0ab60",
+  "patched_wget_sha256": "265ec6b409f75851458ef155acccaad83018a3d718de3736caf672d6dfe24535",
+  "source_lock_sha256": "87cd1e1c527dc417b7c19fd4c687957218f4e4998a3e69ca0ae6c3d47cfb8814",
+  "dt_needed": [
+    "libc.musl-x86_64.so.1"
+  ],
+  "licenses": [
+    "GPL-2.0-only",
+    "ISC (utmps, skalibs)"
+  ],
+  "corresponding_source": "../corresponding-source/",
+  "scope": "Fixed code for CVE-2025-60876; not an assertion that raw scanner findings are zero."
+}

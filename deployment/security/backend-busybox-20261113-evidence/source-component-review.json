@@ -1,0 +1,64 @@
+{
+  "schema": "backend-busybox-source-component-scope-20261113-v1",
+  "actor": "/root/release_prepare",
+  "actor_kind": "automated_agent_builder_and_technical_reviewer",
+  "original_full_grype_sha256": "cfdc14f8a4fb094303cbea239c94d9ce03aabdc8f119bbf3353005559f6e2718",
+  "original_full_sbom_sha256": "d6dec4677965a9e3b2fa25b36f0d50960d68c319526867f3aa21fd9ae24591ef",
+  "original_busybox_sha256": "01a989eb4d1d04b0d146c790ac536abd88f374ec74a2e110c58910b840d42045",
+  "original_busybox_applied_patches": "Exact Alpine c3ef5d10e6ef 44 patches. Only Accept-header and HTTPS-helper patches touch networking/wget.c; neither checks raw request-target bytes.",
+  "original_component_affected": true,
+  "patched_component": {
+    "component": "BusyBox 1.37.0 + Alpine c3ef5d10e6ef 44 patches + local CVE-2025-60876 HTTP-boundary patch",
+    "architecture": "linux/amd64",
+    "custom_build": true,
+    "official_alpine_revision": false,
+    "source_date_epoch": 1768059508,
+    "busybox_sha256": "68dba7ae251db2ecca77e6ef405bf781111dc41f87c93c30205745fdbe2c697e",
+    "config_sha256": "ed9257cfc238ccaac57e06ff22867f88a0afab5527fcaf5ce9518c0b30c0ab60",
+    "patched_wget_sha256": "265ec6b409f75851458ef155acccaad83018a3d718de3736caf672d6dfe24535",
+    "source_lock_sha256": "87cd1e1c527dc417b7c19fd4c687957218f4e4998a3e69ca0ae6c3d47cfb8814",
+    "dt_needed": [
+      "libc.musl-x86_64.so.1"
+    ],
+    "licenses": [
+      "GPL-2.0-only",
+      "ISC (utmps, skalibs)"
+    ],
+    "corresponding_source": "../corresponding-source/",
+    "scope": "Fixed code for CVE-2025-60876; not an assertion that raw scanner findings are zero."
+  },
+  "standalone_ssl_client": {
+    "source_sha256": "f36fb83637a12fe0706f828a3e9a4181ac6ed452b59d5d30fcf4dbe1884b8aed",
+    "actual_binary_sha256": "8b23a9dbfea3da8c6da65b93c0fc6d979a82245c17c40d8fbf94d531263b98b4",
+    "scope": "The exact separately compiled Alpine ssl_client.c TLS byte relay does not parse a URL or serialize an HTTP request target. This CVE code is in BusyBox wget, not that relay. No general libssl/crypto clearance."
+  },
+  "binsh": "The exact Alpine recipe supplies only /bin/sh -> /bin/busybox; its shared implementation is fixed by replacing the common measured payload, not by pretending this is a second independent wget defect.",
+  "official_sources": [
+    {
+      "url": "https://lists.busybox.net/pipermail/busybox/2025-November/091840.html",
+      "purpose": "Reviewed upstream proposal locating raw URL control/space validation"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/c3ef5d10e6ef6528852c51f0564963e2f8c1be19/main/busybox/APKBUILD",
+      "http_status": 200,
+      "bytes": 24569,
+      "sha256": "98f019f62291aff63cb798f046fb59dfd43340885de63ca2f127651fc21d0450"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/c3ef5d10e6ef6528852c51f0564963e2f8c1be19/main/busybox/ssl_client.c",
+      "http_status": 200,
+      "bytes": 3418,
+      "sha256": "f36fb83637a12fe0706f828a3e9a4181ac6ed452b59d5d30fcf4dbe1884b8aed"
+    }
+  ],
+  "fixed_code": {
+    "patch": "deployment/vendors/grafana-20261110/busybox/wget-http-request-boundary.patch",
+    "sha256": "2c0e1249492901997598679ad17f381b7ca8fb1c13c0ae3872abb9da6b6c2602",
+    "source_identity_and_prior_regression_reused": "Exact existing 68dba7 payload and 265ec6 patched wget source; retained historical Grafana fixed-code review remains. No new malicious request or exploit reproduction.",
+    "current_actual_build": "Original signed APK/SHA gates and full source build completed, then only ordinary applets, shell and loopback GET were run."
+  },
+  "full_old_raw_rows_preserved": true,
+  "risk_acceptance": false,
+  "new_scan_claimed_here": false,
+  "independent_peer_review_not_claimed": true
+}

@@ -1,0 +1,229 @@
+{
+  "schema": "agent-exact-severity-migration-v1",
+  "raw_report_modified": false,
+  "old_profile_sha256": "01ec992443377f574be444c8258f95addb7cba1a9d3906e3d0ffed5f1fbc7517",
+  "current_raw_sha256": "7f247d82312eb42f9074f25d2a733a36f29e77e4be852adba793a3beea3df293",
+  "current_scan": {
+    "command": [
+      "E:\\project\\DeepResearch\\.cache\\security-fix-20261105\\trivy.exe",
+      "image",
+      "--cache-dir",
+      "E:\\project\\DeepResearch\\.cache\\release-followup-20261113\\agent-profile-20261113\\trivy-cache",
+      "--db-repository",
+      "ghcr.io/aquasecurity/trivy-db:2",
+      "--scanners",
+      "vuln,secret",
+      "--list-all-pkgs",
+      "--severity",
+      "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL",
+      "--exit-code",
+      "0",
+      "--timeout",
+      "10m",
+      "--format",
+      "json",
+      "--output",
+      "E:\\project\\DeepResearch\\.cache\\release-followup-20261113\\agent-profile-20261113\\trivy-04\\raw.private.json",
+      "sha256:e0bbf28eb040febb1ab9c04b615e0ac7f185d6a6919461d3508dfffaa176dd89"
+    ],
+    "started_epoch": 1794544344.2845583,
+    "no_paid_requests": true,
+    "skipped_db_updates": false,
+    "db_sha256": "15982ae74263f22790b348c89b181c9edfd21d70b08b2364aedcf0f7ef8fab29",
+    "exit_code": 0,
+    "finished_epoch": 1794544353.5968523,
+    "raw_sha256": "7f247d82312eb42f9074f25d2a733a36f29e77e4be852adba793a3beea3df293"
+  },
+  "all_92_identity_fields_except_severity_exact_equal": true,
+  "package_inventory_exact_equal": true,
+  "transitions": [
+    {
+      "before": {
+        "class": "os-pkgs",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        },
+        "id": "CVE-2026-107496",
+        "package": "libssl3t64",
+        "package_id": "libssl3t64@3.5.7-1~deb13u3",
+        "purl": "pkg:deb/debian/libssl3t64@3.5.7-1~deb13u3?arch=amd64&distro=debian-13.7",
+        "severity": "UNKNOWN",
+        "status": "affected",
+        "type": "debian",
+        "version": "3.5.7-1~deb13u3"
+      },
+      "after": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-107496",
+        "package": "libssl3t64",
+        "version": "3.5.7-1~deb13u3",
+        "package_id": "libssl3t64@3.5.7-1~deb13u3",
+        "purl": "pkg:deb/debian/libssl3t64@3.5.7-1~deb13u3?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "only_changed_field": "severity",
+      "disposition_unchanged": true
+    },
+    {
+      "before": {
+        "class": "os-pkgs",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        },
+        "id": "CVE-2026-88822",
+        "package": "libssl3t64",
+        "package_id": "libssl3t64@3.5.7-1~deb13u3",
+        "purl": "pkg:deb/debian/libssl3t64@3.5.7-1~deb13u3?arch=amd64&distro=debian-13.7",
+        "severity": "UNKNOWN",
+        "status": "affected",
+        "type": "debian",
+        "version": "3.5.7-1~deb13u3"
+      },
+      "after": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-88822",
+        "package": "libssl3t64",
+        "version": "3.5.7-1~deb13u3",
+        "package_id": "libssl3t64@3.5.7-1~deb13u3",
+        "purl": "pkg:deb/debian/libssl3t64@3.5.7-1~deb13u3?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "only_changed_field": "severity",
+      "disposition_unchanged": true
+    },
+    {
+      "before": {
+        "class": "os-pkgs",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        },
+        "id": "CVE-2026-88823",
+        "package": "libssl3t64",
+        "package_id": "libssl3t64@3.5.7-1~deb13u3",
+        "purl": "pkg:deb/debian/libssl3t64@3.5.7-1~deb13u3?arch=amd64&distro=debian-13.7",
+        "severity": "UNKNOWN",
+        "status": "affected",
+        "type": "debian",
+        "version": "3.5.7-1~deb13u3"
+      },
+      "after": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-88823",
+        "package": "libssl3t64",
+        "version": "3.5.7-1~deb13u3",
+        "package_id": "libssl3t64@3.5.7-1~deb13u3",
+        "purl": "pkg:deb/debian/libssl3t64@3.5.7-1~deb13u3?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "only_changed_field": "severity",
+      "disposition_unchanged": true
+    },
+    {
+      "before": {
+        "class": "os-pkgs",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        },
+        "id": "CVE-2026-95691",
+        "package": "libssl3t64",
+        "package_id": "libssl3t64@3.5.7-1~deb13u3",
+        "purl": "pkg:deb/debian/libssl3t64@3.5.7-1~deb13u3?arch=amd64&distro=debian-13.7",
+        "severity": "UNKNOWN",
+        "status": "affected",
+        "type": "debian",
+        "version": "3.5.7-1~deb13u3"
+      },
+      "after": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-95691",
+        "package": "libssl3t64",
+        "version": "3.5.7-1~deb13u3",
+        "package_id": "libssl3t64@3.5.7-1~deb13u3",
+        "purl": "pkg:deb/debian/libssl3t64@3.5.7-1~deb13u3?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "only_changed_field": "severity",
+      "disposition_unchanged": true
+    },
+    {
+      "before": {
+        "class": "os-pkgs",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        },
+        "id": "CVE-2026-95692",
+        "package": "libssl3t64",
+        "package_id": "libssl3t64@3.5.7-1~deb13u3",
+        "purl": "pkg:deb/debian/libssl3t64@3.5.7-1~deb13u3?arch=amd64&distro=debian-13.7",
+        "severity": "UNKNOWN",
+        "status": "affected",
+        "type": "debian",
+        "version": "3.5.7-1~deb13u3"
+      },
+      "after": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-95692",
+        "package": "libssl3t64",
+        "version": "3.5.7-1~deb13u3",
+        "package_id": "libssl3t64@3.5.7-1~deb13u3",
+        "purl": "pkg:deb/debian/libssl3t64@3.5.7-1~deb13u3?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "only_changed_field": "severity",
+      "disposition_unchanged": true
+    }
+  ],
+  "all_other_87_dispositions_and_tuples_exact_equal": true,
+  "current_raw_severities": {
+    "MEDIUM": 62,
+    "LOW": 23,
+    "UNKNOWN": 4,
+    "HIGH": 3
+  },
+  "scope": "Scanner metadata migration, not a fixed-library claim. All 92 complete current tuples remain mandatory; no severity filter or range."
+}

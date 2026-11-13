@@ -29,13 +29,14 @@ def test_rag_loads_approved_storage_before_starting_retrieval_services():
     )
     commands = [step.get('run', '') for step in workflow['jobs']['live-reranker-evaluation']['steps']]
     proof = next(i for i, command in enumerate(commands) if 'scripts/check_artifact_source_reuse.py' in command)
-    load = next(i for i, command in enumerate(commands) if 'scripts/build_go_stdlib_security_20261112.py' in command)
+    load = next(i for i, command in enumerate(commands) if 'scripts/build_minio_os_20261113.py' in command)
     start = next(i for i, command in enumerate(commands) if ' up ' in command)
     steps = workflow['jobs']['live-reranker-evaluation']['steps']
     setup = next(i for i, step in enumerate(steps) if step.get('uses', '').startswith('astral-sh/setup-uv@'))
     sync = commands.index('uv sync --frozen --no-dev')
     assert proof < setup < sync < load < start
     assert commands[load].startswith('uv run --frozen --no-dev python ')
+    assert '--artifact' not in commands[load] and '--prepare' not in commands[load]
     assert '--build --wait' in commands[start]
     preflight = next(command for command in commands if 'scripts/evaluate_retrieval.py' in command and '--help' in command)
     assert '--network none' in preflight

@@ -1,0 +1,44 @@
+{
+  "schema": "minio-os-source-independent-review-20261113-v1",
+  "actor": "/root/review_provenance",
+  "actor_kind": "automated_independent_agent",
+  "reviewed_at_utc": "2026-11-13T06:13:15.356288+00:00",
+  "subject_sha256": "0c1f264c7e86221618da3e9b4d0d2356ce2c9c500da7705fb6a74dfe968c1193",
+  "draft_sha256": "3df448e7ca5a38085bf3d46b107bdf53719e87049e5c08e3e3c87a5b69deb1b3",
+  "facts_passed": true,
+  "risk_acceptance": false,
+  "binary_redistribution_approved": false,
+  "actual_engine_image_id": "sha256:743a1870218e8ed4a24c2501480ce8cf041f7b18fa2390e13a206fdf039b2a05",
+  "actual_portable_config_digest": "sha256:ef21c5e11ca591fd3a40d7ad8cd97cc9dcb93ba24b172cf51cdabab1d6a669c0",
+  "actual_runtime_manifest_sha256": "dc8eb973091c44f58e1c2a5bdf1e90905e8a813b83591ac2def182a54095b214",
+  "review_scope": "Independent exact-source and current-runtime technical review; no inherited binary approval and no binary redistribution authorization.",
+  "observations": {
+    "source_and_evidence": "Validated all24 actual build source-input pins and all194 frozen subject evidence pins through the real validate_profile(reviewed=False); subject unchanged before/after independent replay.",
+    "independent_actual_export": "Independently captured this exact Engine through an owned never-started network-none container, with saved portable config/layers and full914-entry mode/uid/gid/type/link/content manifest. The complete actual manifest/config equals the frozen producer03 evidence.",
+    "native_closure": "Independently rehashed all70 actual ELF files; every file ELF64 little-endian x86_64. All70 native bytes equal the reviewed combined01 bytes, including curl/Silo/new libc/loader/libtic;01-to03 complete914 manifest differs only in RPM database hash. Six explicit native targets match the frozen profile.",
+    "original_os34": "All34 complete original finding dictionaries and original targets retained exactly. All41 supporting source-file hashes verified. Exactly17 signed vendor update rows absent in current raw,4 verified source-fix rows and13 exact component/architecture exclusions remain with original severities. Actual source-package metadata retained; not raw zero.",
+    "signed_vendor_updates": "Four complete signed x86_64 Red Hat RPM updates, signed source RPMs, actual inventory and Red Hat fixed-release records reviewed together; actual glibc/libgcc payload source repairs remain distinct from the vendor-version metadata.",
+    "source_fixes": "Actual libc/loader built from vendor290 plus LANGUAGE directory-component exclusion; actual libtic contains the formerly affected parser and was rebuilt with both upstream save-string guards. No tic-absence dismissal. Ordinary intl/terminfo/compiler checks and complete vendor libc/loader ABI evidence retained. Independently compared all31 public defined libtic dynamic ABI symbols against the actual old library: names/types/bindings/visibility/versions/library/object sizes equal.",
+    "component_exclusions": "Exact old coreutils41 vendor-i18n implementation reviewed, not a version-only dismissal. Seven actual gconv modules contain no BIG5-HKSCS component; all70 actual ELF headers exclude Power8 architecture. Actual libgcc runtime mapping excludes libiberty/libstdc++ implementation; current full914 manifest contains no such libraries or pcre2test. ncurses-base is a data component and was not conflated with the genuinely affected libtic implementation.",
+    "rpm_bounded_metadata": "Independent raw byte comparison actual04-to03 across all22 complete RPM headers/index/padding/unknown bytes and21 full SQL tables/rows/schema plus persistent user_version/application_id. Only4 exact updated packages times1008/1128 and4 matching little-endian Installtid index keys differ. Actual03 rawbc3d9f70...; logical stable7da3ee237e5d8c33dcd537650cc526304ff8653d1ac674b54d4e7cf9398f4cc9. Physical page/free/counter encoding is not claimed equal. Actual WAL bytes0; all other runtime files are exact.",
+    "curl_and_thrift": "Actual curl8.23 a93e7a6... replaces8.22; Thrift0.25 official module sums replace0.24 in actual Silo bdc4b5...; mcli remainsa1e263.... Original21 curl and5 Thrift raw findings absent in current full Grype. Curl protocols/features preserved with real embedded zlib1.4 and Brotli1.2.1 changes recorded, not described as unchanged dependencies.",
+    "go7_source_bridge": "Actual Go1.27.4/settings/complete linked modules and imported package graph verified. Full824 MVS only Thrift changes; go.mod exactly1 dependency change/go.sum exactly2 official additions. Silo1410/mcli616 compiled package paths complete; only Thrift import removes testing. No HTML/OpenPGP affected packages. Fixed CSV reader source51cece... remains compiled as reader.go from exact Git0cd388c...; benign CSV/Parquet/legacy tests actually run/pass. Original abnormal CSV test is historical only and was not reexecuted.",
+    "embedded_openssl_boundary": "Static OpenSSL3.5.9 remains upstream affected. Exact curl bytes and the entire native/configuration context are unchanged between reviewed01 and03. Signed curl source474 C/H, actual HTTP3-disabled config, TLS cipher-suite and exact Alpine libssh2 source/11 vendor-patch selections support the pinned current CLI TLS/SSH route exclusions for five known CMS/QUIC/GCM-SIV conditions. Current service/health command is Go Silo. No generic library safety or vendor-fixed claim; no symbol-absence claim because actual curl is stripped and .symtab is unavailable.",
+    "complete_scanners": "Actual unsuppressed full Trivy24(OS17+Go7)/Secret0 and Grype23(OS17+Go6) with complete392-artifact SBOM bind to actual portable config/layers. Actual four built-in kernel-header ignore rules retained exactly; zero matching packages in complete392 SBOM. ignoredMatches field is absent, with zero ignored findings. Full default catalogers and no only-fixed/exclude/VEX/custom-ignore controls verified.",
+    "normal_runtime": "Read actual03 normal S3 five checks and separate HTTP Parquet Select result: id7/normal-value with explicit test-only MINIO_API_SELECT_PARQUET=on. Image default environment unchanged. Default-off01 failure retained. These benign fixtures made0 model requests and did not touch daily data.",
+    "real_consumer_and_counterexamples": "Independently replayed real validate_profile, verify_receipt, verify_payload and assess against own export/current raw.67 relevant pytest cases passed (54 repository+13 independent actual-data cases).8 extra actual-subject mutation checks rejected changed/missing Trivy, Grype severity/ignored match, unknown SBOM metadata, native hash, RPM file mode and portable config substitution."
+  },
+  "supporting_independent_receipts_sha256": {
+    "actual-export-facts": "c02aef92d6a8101a82169e69d157ab8153880203e916f628decfea3955643ddb",
+    "all70-elf": "cf456de74a57a0743296d8def6453cb800522532edae9d2e117fce3be5544263",
+    "full-rpm-byte-closure": "86c2c1ec5cc55ea2ce58302fa183e367ee3b7dc685d6a1d14ae1f938b5e42725",
+    "full-public-libtic-abi": "7757b7f49a65cdd219c26e270bd149caf78ab07caee5f5a9c9ab9ebe0e23c888",
+    "actual-consumer-replay-and-eight-counterexamples": "cb82f8158d0ac0dfcb0d85f5187ddc4312fcc483b4304a87082d3cae88ed0f35"
+  },
+  "limitations": [
+    "The observed image is producer03 PREPARE with its actual earlier source label. It is not presented as a clean final-commit build, published binary, anonymous pull or deployment acceptance.",
+    "A future clean-source image must satisfy the frozen source/runtime/RPM/full scan contracts on its own actual receipt; this review does not manufacture a new source label or update old stage receipts.",
+    "Raw24/23 records remain. Upstream affected OpenSSL and component/path-specific exclusions are not library fixes, broad suppressions or risk acceptance.",
+    "No malicious PoC, crafted exploit input, blocked abnormal CSV test, paid model call, remote mutation, daily data access or binary distribution was performed by this reviewer."
+  ]
+}

@@ -1,0 +1,182 @@
+{
+  "schema": "independent-final03-rpm-complete-closure-v1",
+  "actor": "/root/review_provenance",
+  "observed_at_utc": "2026-11-13T06:03:36.381021+00:00",
+  "before_raw_sha256": "137285a2aedde0cbaee859aa90818febc4695f4c5d5763b19e0a65180a107dc4",
+  "actual03_raw_sha256": "bc3d9f70c4120c38a5c9fa4bab357bacfe19188000c57384113cde4f0e617d2d",
+  "logical_stable_sha256": "7da3ee237e5d8c33dcd537650cc526304ff8653d1ac674b54d4e7cf9398f4cc9",
+  "full_schema_and_columns_equal": true,
+  "application_metadata": {
+    "user_version": 0,
+    "application_id": 0
+  },
+  "packages": 22,
+  "tables": 21,
+  "changed_headers": [
+    {
+      "hnum": 23,
+      "name": "glibc-common",
+      "header_bytes": 46264,
+      "changed_byte_offsets": [
+        33782,
+        33783,
+        33850,
+        33851
+      ],
+      "clock_offsets": {
+        "1008": 33780,
+        "1128": 33848
+      }
+    },
+    {
+      "hnum": 24,
+      "name": "glibc-minimal-langpack",
+      "header_bytes": 24112,
+      "changed_byte_offsets": [
+        23894,
+        23895,
+        23906,
+        23907
+      ],
+      "clock_offsets": {
+        "1008": 23892,
+        "1128": 23904
+      }
+    },
+    {
+      "hnum": 25,
+      "name": "libgcc",
+      "header_bytes": 10812,
+      "changed_byte_offsets": [
+        8122,
+        8123,
+        8146,
+        8147
+      ],
+      "clock_offsets": {
+        "1008": 8120,
+        "1128": 8144
+      }
+    },
+    {
+      "hnum": 26,
+      "name": "glibc",
+      "header_bytes": 81468,
+      "changed_byte_offsets": [
+        55802,
+        55803,
+        55926,
+        55927
+      ],
+      "clock_offsets": {
+        "1008": 55800,
+        "1128": 55924
+      }
+    }
+  ],
+  "all_other_header_bytes_index_padding_unknown_fields_equal": true,
+  "complete_other_tables": [
+    {
+      "table": "Basenames",
+      "rows": 19938,
+      "exact_except_bound_installtid": true
+    },
+    {
+      "table": "Conflictname",
+      "rows": 13,
+      "exact_except_bound_installtid": true
+    },
+    {
+      "table": "Dirnames",
+      "rows": 1713,
+      "exact_except_bound_installtid": true
+    },
+    {
+      "table": "Enhancename",
+      "rows": 0,
+      "exact_except_bound_installtid": true
+    },
+    {
+      "table": "Filetriggername",
+      "rows": 0,
+      "exact_except_bound_installtid": true
+    },
+    {
+      "table": "Group",
+      "rows": 22,
+      "exact_except_bound_installtid": true
+    },
+    {
+      "table": "Installtid",
+      "rows": 22,
+      "exact_except_bound_installtid": true
+    },
+    {
+      "table": "Name",
+      "rows": 22,
+      "exact_except_bound_installtid": true
+    },
+    {
+      "table": "Obsoletename",
+      "rows": 19,
+      "exact_except_bound_installtid": true
+    },
+    {
+      "table": "Providename",
+      "rows": 233,
+      "exact_except_bound_installtid": true
+    },
+    {
+      "table": "Recommendname",
+      "rows": 2,
+      "exact_except_bound_installtid": true
+    },
+    {
+      "table": "Requirename",
+      "rows": 180,
+      "exact_except_bound_installtid": true
+    },
+    {
+      "table": "Sha1header",
+      "rows": 22,
+      "exact_except_bound_installtid": true
+    },
+    {
+      "table": "Sigmd5",
+      "rows": 20,
+      "exact_except_bound_installtid": true
+    },
+    {
+      "table": "Suggestname",
+      "rows": 2,
+      "exact_except_bound_installtid": true
+    },
+    {
+      "table": "Supplementname",
+      "rows": 0,
+      "exact_except_bound_installtid": true
+    },
+    {
+      "table": "Transfiletriggername",
+      "rows": 8,
+      "exact_except_bound_installtid": true
+    },
+    {
+      "table": "Triggername",
+      "rows": 0,
+      "exact_except_bound_installtid": true
+    },
+    {
+      "table": "sqlite_sequence",
+      "rows": 1,
+      "exact_except_bound_installtid": true
+    },
+    {
+      "table": "sqlite_stat1",
+      "rows": 19,
+      "exact_except_bound_installtid": true
+    }
+  ],
+  "raw_comparison_helper_sha256": "686478be276382596099bff97e9e46b2ac198bf97500d9a3a38c1f97911ef6d0",
+  "boundary": "Only4 exact package clock uint32 slots plus matching4 index keys. Full logical SQL and header bytes bound; not physical page/free/counter equivalence. Not final subject approval."
+}

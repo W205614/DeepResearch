@@ -1,0 +1,64 @@
+2026-11-13T05:49:06+0000 INFO --- logging initialized ---
+2026-11-13T05:49:06+0000 DDEBUG timer: config: 3 ms
+2026-11-13T05:49:06+0000 DEBUG Loaded plugins: builddep, changelog, config-manager, copr, debug, debuginfo-install, download, generate_completion_cache, groups-manager, needs-restarting, playground, product-id, repoclosure, repodiff, repograph, repomanage, reposync, subscription-manager, system-upgrade, uploadprofile
+2026-11-13T05:49:06+0000 INFO Updating Subscription Management repositories.
+2026-11-13T05:49:06+0000 INFO Unable to read consumer identity
+2026-11-13T05:49:06+0000 INFO 
+This system is not registered with an entitlement server. You can use subscription-manager to register.
+
+2026-11-13T05:49:06+0000 DEBUG DNF version: 4.14.0
+2026-11-13T05:49:06+0000 DDEBUG Command: dnf -y --installroot=/minio-root --releasever=9 --disablerepo=* --setopt=localpkg_gpgcheck=1 --setopt=install_weak_deps=0 upgrade /evidence/rpms/glibc-2.34-290.el9_9.x86_64.rpm /evidence/rpms/glibc-common-2.34-290.el9_9.x86_64.rpm /evidence/rpms/glibc-minimal-langpack-2.34-290.el9_9.x86_64.rpm /evidence/rpms/libgcc-11.5.0-17.el9_9.x86_64.rpm 
+2026-11-13T05:49:06+0000 DDEBUG Installroot: /minio-root
+2026-11-13T05:49:06+0000 DDEBUG Releasever: 9
+2026-11-13T05:49:06+0000 DEBUG cachedir: /minio-root/var/cache/dnf
+2026-11-13T05:49:06+0000 DDEBUG Base command: upgrade
+2026-11-13T05:49:06+0000 DDEBUG Extra commands: ['-y', '--installroot=/minio-root', '--releasever=9', '--disablerepo=*', '--setopt=localpkg_gpgcheck=1', '--setopt=install_weak_deps=0', 'upgrade', '/evidence/rpms/glibc-2.34-290.el9_9.x86_64.rpm', '/evidence/rpms/glibc-common-2.34-290.el9_9.x86_64.rpm', '/evidence/rpms/glibc-minimal-langpack-2.34-290.el9_9.x86_64.rpm', '/evidence/rpms/libgcc-11.5.0-17.el9_9.x86_64.rpm']
+2026-11-13T05:49:06+0000 DEBUG User-Agent: constructed: 'libdnf (Red Hat Enterprise Linux 9.9; generic; Linux.x86_64)'
+2026-11-13T05:49:06+0000 DDEBUG timer: sack setup: 44 ms
+2026-11-13T05:49:06+0000 DEBUG --> Starting dependency resolution
+2026-11-13T05:49:06+0000 DEBUG ---> Package glibc.x86_64 2.34-283.el9_8 will be upgraded
+2026-11-13T05:49:06+0000 DEBUG ---> Package glibc.x86_64 2.34-290.el9_9 will be an upgrade
+2026-11-13T05:49:06+0000 DEBUG ---> Package glibc-common.x86_64 2.34-283.el9_8 will be upgraded
+2026-11-13T05:49:06+0000 DEBUG ---> Package glibc-common.x86_64 2.34-290.el9_9 will be an upgrade
+2026-11-13T05:49:06+0000 DEBUG ---> Package glibc-minimal-langpack.x86_64 2.34-283.el9_8 will be upgraded
+2026-11-13T05:49:06+0000 DEBUG ---> Package glibc-minimal-langpack.x86_64 2.34-290.el9_9 will be an upgrade
+2026-11-13T05:49:06+0000 DEBUG ---> Package libgcc.x86_64 11.5.0-14.el9 will be upgraded
+2026-11-13T05:49:06+0000 DEBUG ---> Package libgcc.x86_64 11.5.0-17.el9_9 will be an upgrade
+2026-11-13T05:49:06+0000 DEBUG --> Finished dependency resolution
+2026-11-13T05:49:06+0000 DDEBUG timer: depsolve: 13 ms
+2026-11-13T05:49:06+0000 INFO Dependencies resolved.
+2026-11-13T05:49:06+0000 INFO ================================================================================
+ Package                   Arch      Version              Repository       Size
+================================================================================
+Upgrading:
+ glibc                     x86_64    2.34-290.el9_9       @commandline    2.0 M
+ glibc-common              x86_64    2.34-290.el9_9       @commandline    315 k
+ glibc-minimal-langpack    x86_64    2.34-290.el9_9       @commandline     30 k
+ libgcc                    x86_64    11.5.0-17.el9_9      @commandline     88 k
+
+Transaction Summary
+================================================================================
+Upgrade  4 Packages
+
+2026-11-13T05:49:06+0000 INFO Total size: 2.4 M
+2026-11-13T05:49:06+0000 INFO Downloading Packages:
+2026-11-13T05:49:06+0000 DEBUG Using rpmkeys executable at /usr/bin/rpmkeys to verify signatures
+2026-11-13T05:49:06+0000 INFO Running transaction check
+2026-11-13T05:49:06+0000 INFO Transaction check succeeded.
+2026-11-13T05:49:06+0000 INFO Running transaction test
+2026-11-13T05:49:06+0000 INFO Transaction test succeeded.
+2026-11-13T05:49:06+0000 DDEBUG timer: transaction test: 51 ms
+2026-11-13T05:49:06+0000 INFO Running transaction
+2026-11-13T05:49:06+0000 DDEBUG RPM transaction start.
+2026-11-13T05:49:08+0000 DDEBUG RPM transaction over.
+2026-11-13T05:49:08+0000 DDEBUG timer: verify transaction: 27 ms
+2026-11-13T05:49:08+0000 DDEBUG timer: transaction: 2052 ms
+2026-11-13T05:49:08+0000 INFO Installed products updated.
+2026-11-13T05:49:08+0000 DEBUG Completion plugin: Generating completion cache...
+2026-11-13T05:49:08+0000 DEBUG Upgraded: glibc-2.34-290.el9_9.x86_64
+2026-11-13T05:49:08+0000 DEBUG Upgraded: glibc-common-2.34-290.el9_9.x86_64
+2026-11-13T05:49:08+0000 DEBUG Upgraded: glibc-minimal-langpack-2.34-290.el9_9.x86_64
+2026-11-13T05:49:08+0000 DEBUG Upgraded: libgcc-11.5.0-17.el9_9.x86_64
+2026-11-13T05:49:08+0000 INFO Complete!
+2026-11-13T05:49:08+0000 DDEBUG Cleaning up.
+2026-11-13T05:49:08+0000 DDEBUG Plugins were unloaded.

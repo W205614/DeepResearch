@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "image_id": "sha256:743a1870218e8ed4a24c2501480ce8cf041f7b18fa2390e13a206fdf039b2a05",
+  "test_only_overrides": {
+    "MINIO_API_SELECT_PARQUET": "on"
+  },
+  "image_default_environment_changed": false,
+  "daily_touched": false,
+  "model_requests": 0,
+  "fixture_container": "dr-minio-parquet-select-final-20261113-03",
+  "fixture_volume": "dr-minio-parquet-select-final-20261113-03-data",
+  "query": "SELECT s.id, s.label FROM S3Object s",
+  "response_rows": [
+    {
+      "id": 7,
+      "label": "normal-value"
+    }
+  ],
+  "response_sha256": "7e7f16bdfe79d7735325699cc939e2bd891a077db33dc038130e192df23e9d53",
+  "fixture_sha256": "d0eb122e3610b2c1c583449536bb2b83fe91e662fef8c6698f32c2ea57c38760",
+  "owned_container_and_volume_retained": true
+}

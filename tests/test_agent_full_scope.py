@@ -264,6 +264,63 @@ def test_ordinary_profile_source_snapshot_matches_historical_runtime_manifest():
     assert profile['python_source_closure'] == review['actual_snapshot']['python_source_closure']
 
 
+def test_current_profile_preserves_exact_five_observed_severity_transitions():
+    previous = gate.load_profile(gate.ORDINARY_PROFILE_NAME)
+    current = gate.load_profile(gate.CURRENT_PROFILE_NAME)
+    changes = []
+    for before, after in zip(previous['findings'], current['findings'], strict=True):
+        if before != after:
+            expected = copy.deepcopy(before)
+            expected['tuple']['severity'] = 'MEDIUM'
+            expected['raw_severity_unchanged'] = 'MEDIUM'
+            assert before['tuple']['severity'] == 'UNKNOWN'
+            assert before['tuple']['package'] == 'libssl3t64'
+            assert before['tuple']['version'] == '3.5.7-1~deb13u3'
+            assert after == expected
+            changes.append(before['tuple']['id'])
+    assert set(changes) == {
+        'CVE-2026-107496', 'CVE-2026-88822', 'CVE-2026-88823',
+        'CVE-2026-95691', 'CVE-2026-95692',
+    }
+    assert len(changes) == 5
+    assert current['packages'] == previous['packages']
+    assert current['native_elf_closure'] == previous['native_elf_closure']
+    assert current['python_source_closure'] != previous['python_source_closure']
+
+
+@pytest.mark.parametrize('change', ['old-severity', 'new-status', 'old-python'])
+@pytest.mark.parametrize('reviewed_inputs', [gate.CURRENT_PROFILE_NAME], indirect=True)
+def test_current_profile_cannot_accept_old_or_unreviewed_metadata(reviewed_inputs, change):
+    if change == 'old-python':
+        reviewed_inputs[2]['python_source_closure'] = gate.load_profile(
+            gate.ORDINARY_PROFILE_NAME)['python_source_closure']
+    else:
+        row = next(v for r in reviewed_inputs[0]['Results'] for v in r['Vulnerabilities']
+                   if v['VulnerabilityID'] == 'CVE-2026-107496')
+        if change == 'old-severity':
+            row['Severity'] = 'UNKNOWN'
+        else:
+            row['Status'] = 'fixed'
+    with pytest.raises(ValueError):
+        decide(reviewed_inputs)
+
+
+def test_current_source_review_binds_complete_closure_and_two_source_snapshots():
+    profile = gate.load_profile(gate.CURRENT_PROFILE_NAME)
+    review = json.loads((gate.ROOT / profile['source_review_evidence']['path']).read_bytes())
+    assert review['inherited_native_and_ffi_review']['python_source_closure'] == profile['python_source_closure']
+    assert review['inherited_native_and_ffi_review']['native_elf_closure'] == profile['native_elf_closure']
+    assert set(review['source_changes']) == {
+        '/app/backend/infrastructure/providers.py', '/app/backend/research/evidence_policy.py',
+    }
+    assert review['inherited_native_and_ffi_review']['unchanged_python_files'] == 5970
+    for path, delta in review['source_changes'].items():
+        source = next(item for item in review['additional_evidence_files']
+                      if item['path'].endswith(Path(path).name + '.txt'))
+        assert source['sha256'] == delta['after']
+        assert hashlib.sha256((gate.ROOT / source['path']).read_bytes()).hexdigest() == delta['after']
+
+
 def test_ordinary_profile_rejects_modified_historical_source_snapshot(monkeypatch):
     profile = gate.load_profile(gate.ORDINARY_PROFILE_NAME)
     review = json.loads((gate.ROOT / profile['source_review_evidence']['path']).read_bytes())

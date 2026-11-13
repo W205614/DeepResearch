@@ -1,0 +1,175 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  real-components:
+    runs-on: ubuntu-latest
+    permissions: { contents: read }
+    steps:
+      - uses: actions/checkout@v7
+        with: { fetch-depth: 0, fetch-tags: true }
+      - name: Verify immutable ancestor artifact source reuse
+        run: python scripts/check_artifact_source_reuse.py --output .cache/eval/artifact-source-reuse.json
+      - uses: actions/upload-artifact@v6
+        if: always() && hashFiles('.cache/eval/artifact-source-reuse.json') != ''
+        with:
+          name: component-artifact-source-${{ github.sha }}
+          path: .cache/eval/artifact-source-reuse.json
+      - uses: astral-sh/setup-uv@v7
+      - name: Install locked Python dependencies for Go source preparation
+        run: uv sync --frozen --no-dev
+      - name: Build the reviewed Go-fixed storage source for the isolated component fixture
+        run: uv run --frozen --no-dev python scripts/build_go_stdlib_security_20261112.py --artifact minio --output-dir .cache/eval/minio-source-build
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Retain the two actual MinIO graph documents after a failed build gate
+        if: always() && failure() && hashFiles('.cache/eval/minio-source-build/build-receipt.json') != '' && hashFiles('.cache/eval/minio-source-build/actual-payload/runtime-manifest.json.gz') != '' && hashFiles('.cache/eval/minio-source-build/actual-payload/rootfs.tar') != ''
+        run: uv run --frozen --no-dev python scripts/capture_go_graph_diagnostic_20261112.py --build-dir .cache/eval/minio-source-build
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: component-go-source-build-logs-${{ github.sha }}
+          path: |
+            .cache/eval/*-source-build/*.log
+            .cache/eval/*-source-build/*.command.json
+            .cache/eval/*-source-build/build-receipt.json
+            .cache/eval/*-source-build/image-inspect.json
+            .cache/eval/*-source-build/actual-payload/runtime-manifest.json.gz
+            .cache/eval/minio-source-build/diagnostic-graphs/*.json
+          if-no-files-found: warn
+      - run: python scripts/verify_components.py --drill
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with: { fetch-depth: 0, fetch-tags: true }
+      - uses: astral-sh/setup-uv@v7
+      - run: uv sync --all-groups --frozen
+      - run: uv run ruff check backend tests scripts main.py
+      - run: uv run pytest -q
+      - run: QUEUE_BACKEND=local DOCUMENT_SCAN_MODE=disabled OBJECT_STORE_BACKEND=filesystem uv run python scripts/evaluate.py --verify
+      - uses: actions/setup-java@v5
+        with: { distribution: temurin, java-version: "21", cache: maven }
+      - run: mvn -B test
+        working-directory: business-backend
+      - uses: actions/setup-node@v7
+        with: { node-version: 22, cache: npm, cache-dependency-path: frontend/package-lock.json }
+      - run: npm ci
+        working-directory: frontend
+      - run: npm test -- --run
+        working-directory: frontend
+      - run: npm run build
+        working-directory: frontend
+  compose-smoke:
+    # Keep the existing check name without building a second enterprise stack.
+    needs: enterprise-compose-smoke
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - run: test "$ENTERPRISE_RESULT" = success
+        env:
+          ENTERPRISE_RESULT: ${{ needs.enterprise-compose-smoke.result }}
+  enterprise-compose-smoke:
+    # The locked Playwright 1.55 browser dependencies support Ubuntu 24.04.
+    runs-on: ubuntu-24.04
+    permissions: { contents: read }
+    env:
+      POSTGRES_PASSWORD: ci-postgres-password
+      MIGRATOR_DB_PASSWORD: ci-migrator-password
+      JAVA_DB_PASSWORD: ci-java-password-distinct
+      PYTHON_DB_PASSWORD: ci-python-password-distinct
+      MONITOR_DB_PASSWORD: ci-monitor-password-distinct
+      OBJECT_STORE_SECRET_KEY: ci-business-objects-password
+      MILVUS_STORAGE_PASSWORD: ci-milvus-storage-password
+      KEYCLOAK_DB_PASSWORD: ci-keycloak-db-password
+      KEYCLOAK_ADMIN_PASSWORD: ci-keycloak-admin-password
+      MINIO_ROOT_PASSWORD: ci-minio-password
+      GRAFANA_ADMIN_PASSWORD: ci-grafana-password
+    steps:
+      - uses: actions/checkout@v7
+        with: { fetch-depth: 0, fetch-tags: true }
+      - name: Verify immutable ancestor artifact source reuse
+        run: python scripts/check_artifact_source_reuse.py --output .cache/eval/artifact-source-reuse.json
+      - uses: actions/upload-artifact@v6
+        if: always() && hashFiles('.cache/eval/artifact-source-reuse.json') != ''
+        with:
+          name: enterprise-artifact-source-${{ github.sha }}
+          path: .cache/eval/artifact-source-reuse.json
+      - uses: astral-sh/setup-uv@v7
+      - name: Install locked Python dependencies for Go source preparation
+        run: uv sync --frozen --no-dev
+      - name: Build the reviewed Go-fixed storage source before Compose startup
+        run: uv run --frozen --no-dev python scripts/build_go_stdlib_security_20261112.py --artifact minio --output-dir .cache/eval/minio-source-build
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Retain the two actual MinIO graph documents after a failed build gate
+        if: always() && failure() && hashFiles('.cache/eval/minio-source-build/build-receipt.json') != '' && hashFiles('.cache/eval/minio-source-build/actual-payload/runtime-manifest.json.gz') != '' && hashFiles('.cache/eval/minio-source-build/actual-payload/rootfs.tar') != ''
+        run: uv run --frozen --no-dev python scripts/capture_go_graph_diagnostic_20261112.py --build-dir .cache/eval/minio-source-build
+      - name: Build the exact reviewed Grafana source profile before Compose startup
+        run: uv run --frozen --no-dev python scripts/build_go_stdlib_security_20261112.py --artifact grafana --output-dir .cache/eval/grafana-source-build
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Retain only differing Grafana graph and provenance documents after a failed build gate
+        if: always() && failure() && hashFiles('.cache/eval/grafana-source-build/build-receipt.json') != '' && hashFiles('.cache/eval/grafana-source-build/actual-payload/runtime-manifest.json.gz') != '' && hashFiles('.cache/eval/grafana-source-build/actual-payload/rootfs.tar') != ''
+        run: uv run --frozen --no-dev python scripts/capture_go_graph_diagnostic_20261112.py --artifact grafana --build-dir .cache/eval/grafana-source-build
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: enterprise-go-source-build-logs-${{ github.sha }}
+          path: |
+            .cache/eval/*-source-build/*.log
+            .cache/eval/*-source-build/*.command.json
+            .cache/eval/*-source-build/build-receipt.json
+            .cache/eval/*-source-build/image-inspect.json
+            .cache/eval/*-source-build/actual-payload/runtime-manifest.json.gz
+            .cache/eval/minio-source-build/diagnostic-graphs/*.json
+            .cache/eval/grafana-source-build/diagnostic-graphs/*.json
+            .cache/eval/grafana-source-build/diagnostic-graphs/*.json.gz
+          if-no-files-found: warn
+      - uses: actions/upload-artifact@v6
+        if: always() && hashFiles('.cache/eval/grafana-source-build/build-receipt.json') != ''
+        with:
+          name: enterprise-grafana-source-${{ github.sha }}
+          path: |
+            .cache/eval/grafana-source-build/build-receipt.json
+            .cache/eval/grafana-source-build/image-inspect.json
+            .cache/eval/grafana-source-build/actual-payload/runtime-manifest.json.gz
+          if-no-files-found: error
+      - name: Validate the maintained collector with the current complete telemetry configuration
+        run: |
+          docker compose build otel-collector
+          docker run --rm --network none --read-only --cap-drop ALL \
+            -v "$PWD/observability/otel-collector.yaml:/etc/otelcol-contrib/config.yaml:ro" \
+            deepresearch-otel-collector:0.163.2-security-20261028 \
+            validate --config=/etc/otelcol-contrib/config.yaml
+      - name: Build the remaining enterprise images before telemetry startup
+        run: docker compose build
+      # Unused compiler caches share the hosted runner's filesystem with Loki's
+      # WAL, whose disk guard rejected writes at 96.09% usage in the prior run.
+      - name: Release unused build cache on this ephemeral hosted runner
+        if: runner.environment == 'github-hosted'
+        run: |
+          df -h .
+          docker system df
+          docker builder prune --all --force
+          docker system df
+          df -h .
+      - name: Start the built enterprise images without rebuilding compiler caches
+        run: docker compose up -d --no-build --force-recreate --wait --wait-timeout 300
+      - run: python scripts/smoke-enterprise.py
+      - run: curl --fail --retry 15 --retry-connrefused http://127.0.0.1:8080/livez
+      - run: curl --fail --retry 15 --retry-connrefused http://127.0.0.1:8080/readyz
+      - uses: actions/setup-node@v7
+        with: { node-version: 22, cache: npm, cache-dependency-path: frontend/package-lock.json }
+      - run: npm ci
+        working-directory: frontend
+      - run: npx playwright install --with-deps chromium
+        working-directory: frontend
+      - run: npm run test:e2e:enterprise
+        working-directory: frontend
+      - if: always()
+        run: docker compose logs --no-color && docker compose down

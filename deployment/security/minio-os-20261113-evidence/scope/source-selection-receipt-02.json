@@ -1,0 +1,106 @@
+{
+  "schema": "independent-minio-source-selection-v1",
+  "records": [
+    {
+      "srpm": "E:\\project\\DeepResearch\\.cache\\release-followup-20261113\\security-minio\\tooling-02\\evidence\\srpms\\coreutils-8.32-43.el9.src.rpm",
+      "srpm_sha256": "40e12f1cefe7fb913329a3fce5f7f30a3e14777be46cf9b3d961ac3f69e4be55",
+      "source_archive": "coreutils-8.32.tar.xz",
+      "source_archive_sha256": "4458d8de7849df44ccab15e16b1548b285224dbba5f08fac070c1c0e0bcc4cfa",
+      "files": [
+        {
+          "srpm_member": "coreutils.spec",
+          "file": "coreutils--coreutils.spec",
+          "bytes": 89022,
+          "sha256": "cd3b94e44912aa202bb696fe9ce5d5a1437c37ff222db20d9768ac61acdc918f"
+        },
+        {
+          "source_member": "coreutils-8.32/src/uniq.c",
+          "file": "coreutils--src__uniq.c",
+          "bytes": 18749,
+          "sha256": "f2a8dc809110dfce5139d8fef6fbe362b52a71abe664d5a857f224aad1291cf3"
+        }
+      ],
+      "relevant_vendor_patches": [
+        {
+          "srpm_member": "coreutils-i18n.patch",
+          "file": "coreutils--coreutils-i18n.patch",
+          "bytes": 109278,
+          "sha256": "ea6a3a9592ae6c99d7fefb375cd2ca4f7de67b43883faf6f5a48f64d89e85ca6"
+        }
+      ]
+    },
+    {
+      "srpm": "E:\\project\\DeepResearch\\.cache\\release-followup-20261113\\security-minio\\tooling-02\\evidence\\srpms\\gcc-11.5.0-17.el9_9.src.rpm",
+      "srpm_sha256": "2b68dc5e93cbbf5151bfb7ecc436571c6f3cff0fee5d671bb41251e281e108c5",
+      "source_archive": "gcc-11.5.0-20240719.tar.xz",
+      "source_archive_sha256": "5afa39da43a8aca51afb4cb74e9d8522d5366c4a2a962806f135df64a341b308",
+      "files": [
+        {
+          "srpm_member": "gcc.spec",
+          "file": "gcc--gcc.spec",
+          "bytes": 205756,
+          "sha256": "5a43f5a0bc4aea8f4e849e0dffd50ea9d17b0acf7710f31e67ff92ff6921fbcf"
+        },
+        {
+          "source_member": "gcc-11.5.0-20240719/libgcc/Makefile.in",
+          "file": "gcc--libgcc__Makefile.in",
+          "bytes": 39540,
+          "sha256": "0b07cf7fb9a5f1e2db600cd79603835611159e84c9d62b15ffe917b4559e077a"
+        },
+        {
+          "source_member": "gcc-11.5.0-20240719/libgcc/config/t-slibgcc",
+          "file": "gcc--libgcc__config__t-slibgcc",
+          "bytes": 1962,
+          "sha256": "564d40db1352ad2a97baffa7575cad7f228ede5f90e005fcfe50b15ebc35f80f"
+        },
+        {
+          "source_member": "gcc-11.5.0-20240719/libiberty/rust-demangle.c",
+          "file": "gcc--libiberty__rust-demangle.c",
+          "bytes": 33223,
+          "sha256": "1b95b78843ccd9a043f39de3bf800dc3e719d2e7ff154cb393ea5f28fa80dfcf"
+        },
+        {
+          "source_member": "gcc-11.5.0-20240719/libstdc++-v3/include/bits/fstream.tcc",
+          "file": "gcc--libstdc++-v3__include__bits__fstream.tcc",
+          "bytes": 33672,
+          "sha256": "9a9ae6fbdf0371dd923feafdd5ffb5a4af44680ad1c0d7c5bb3b6fe57a5b2d9f"
+        }
+      ],
+      "relevant_vendor_patches": []
+    },
+    {
+      "srpm": "E:\\project\\DeepResearch\\.cache\\release-followup-20261113\\security-minio\\tooling-02\\evidence\\srpms\\glibc-2.34-290.el9_9.src.rpm",
+      "srpm_sha256": "341a60277f0acd08c83da9051a513124280d617425e7e68747d27cb85ac285aa",
+      "source_archive": "glibc-2.34.tar.xz",
+      "source_archive_sha256": "44d26a1fe20b8853a48f470ead01e4279e869ac149b195dda4e44a195d981ab2",
+      "files": [
+        {
+          "srpm_member": "glibc.spec",
+          "file": "glibc--glibc.spec",
+          "bytes": 159937,
+          "sha256": "16c6a332ddd35dc2f50c915719e4a5642fb3da42c35ec09f51a8062970b609ac"
+        },
+        {
+          "source_member": "glibc-2.34/iconvdata/Makefile",
+          "file": "glibc--iconvdata__Makefile",
+          "bytes": 13956,
+          "sha256": "cabdeda27f211601759316f3235a37bde48af61e3fb96d6ba9884cc602a763fd"
+        },
+        {
+          "source_member": "glibc-2.34/iconvdata/big5hkscs.c",
+          "file": "glibc--iconvdata__big5hkscs.c",
+          "bytes": 1327493,
+          "sha256": "1c090a09a7879995842b166b865f00e6ed6c0fd61eae209df47d01108e6d7efa"
+        },
+        {
+          "source_member": "glibc-2.34/iconvdata/gconv-modules",
+          "file": "glibc--iconvdata__gconv-modules",
+          "bytes": 3808,
+          "sha256": "9976193fd6fb671112a0f10486e50ad3bfb79e9a08429544c820365cdd3bfd35"
+        }
+      ],
+      "relevant_vendor_patches": []
+    }
+  ],
+  "boundary": "These downloaded SRPM versions are newer than the retained baseline. Selected source is component/implementation evidence; not a claim the old binaries were rebuilt or byte-equivalent."
+}

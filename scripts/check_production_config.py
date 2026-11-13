@@ -12,6 +12,7 @@ from urllib.parse import parse_qs, unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 COMPOSE = ROOT / "deployment/compose/compose.cloud.yaml"
+BACKEND_BUILD = ROOT / "deployment/compose/compose.cloud.backend-build.yaml"
 
 
 def inspect_configuration(config: dict, *, allow_legacy_embedding_endpoint: bool = False) -> dict:
@@ -212,7 +213,7 @@ def main():
     args = parser.parse_args()
     try:
         result = subprocess.run(["docker", "compose", "--project-directory", str(ROOT), "--env-file", str(args.env_file.resolve()),
-                                 "-f", str(COMPOSE), "config", "--format", "json"],
+                                 "-f", str(COMPOSE), "-f", str(BACKEND_BUILD), "config", "--format", "json"],
                                 cwd=ROOT, capture_output=True, text=True, timeout=30, check=False)
         if result.returncode:
             raise ValueError("Configuration rendering failed")

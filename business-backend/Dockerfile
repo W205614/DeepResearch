@@ -1,7 +1,7 @@
 FROM maven:3.9.11-eclipse-temurin-21 AS build
 WORKDIR /workspace
-COPY pom.xml .
-COPY src src
+COPY business-backend/pom.xml .
+COPY business-backend/src src
 RUN (sha256sum pom.xml; find src/main -type f -print0 | sort -z | xargs -0 sha256sum) > /workspace/source-fingerprint.txt
 RUN --mount=type=cache,target=/root/.m2 \
     for attempt in 1 2 3; do \
@@ -10,12 +10,20 @@ RUN --mount=type=cache,target=/root/.m2 \
       sleep $((attempt * 3)); \
     done; exit 1
 
+FROM alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a AS backend-busybox-fix
+COPY deployment/vendors/grafana-20261110/busybox/ /recipe/
+COPY business-backend/runtime/backend_busybox_benign.py /backend_busybox_benign.py
+RUN sh /recipe/build.sh
+RUN --network=none python3 /backend_busybox_benign.py > /out/metadata/backend-benign-regression.json
+COPY business-backend/Dockerfile /out/corresponding-source/backend-integration/Dockerfile
+COPY business-backend/runtime/backend_busybox_benign.py /out/corresponding-source/backend-integration/backend_busybox_benign.py
+
 FROM alpine:3.24.3 AS jre-security-update
 RUN for attempt in 1 2 3; do \
       apk add --no-cache ca-certificates curl gnupg tar libstdc++ zlib && exit 0; \
       sleep "$attempt"; \
     done; exit 1
-COPY runtime/adoptium-public.asc /tmp/adoptium-public.asc
+COPY business-backend/runtime/adoptium-public.asc /tmp/adoptium-public.asc
 # Exact Temurin21.0.13+9 musl JRE/SBOM assets; their original SHA and PGP gates remain.
 RUN curl --fail --location --connect-timeout 20 --max-time 180 --retry 2 --retry-max-time 180 --retry-all-errors --header 'Accept: application/octet-stream' https://api.github.com/repos/adoptium/temurin21-binaries/releases/assets/665302157 --output /tmp/jre.tar.gz
 RUN curl --fail --location --connect-timeout 20 --max-time 180 --retry 2 --retry-max-time 180 --retry-all-errors --header 'Accept: application/octet-stream' https://api.github.com/repos/adoptium/temurin21-binaries/releases/assets/665302362 --output /tmp/jre.tar.gz.sig \
@@ -43,6 +51,10 @@ RUN apk add --no-cache --upgrade 'libexpat>=2.10.0-r0' 'brotli-libs>=1.2.1-r0' '
     && addgroup -S app && adduser -S -G app app
 COPY --from=jre-security-update /opt/verified-java /opt/java/openjdk
 COPY --from=jre-security-update /tmp/temurin-sbom.json /opt/java/temurin-sbom.json
+COPY --from=backend-busybox-fix /out/busybox /bin/busybox
+COPY --from=backend-busybox-fix /out/metadata/ /usr/share/deepresearch/backend-busybox/metadata/
+COPY --from=backend-busybox-fix /out/licenses/ /usr/share/deepresearch/backend-busybox/licenses/
+COPY --from=backend-busybox-fix /out/corresponding-source/ /usr/share/deepresearch/backend-busybox/corresponding-source/
 WORKDIR /app
 COPY --from=build /workspace/target/business-backend-0.1.0.jar app.jar
 COPY --from=build /workspace/source-fingerprint.txt /app/source-fingerprint.txt

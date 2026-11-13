@@ -1,0 +1,543 @@
+make -r PARALLELMFLAGS="" -C ../glibc/glibc-2.34 objdir=`pwd` all
+make[1]: Entering directory '/build/glibc/glibc-2.34'
+
+type "make help" for help with common glibc makefile targets
+
+make  subdir=csu -C csu ..=../ subdir_lib
+make  subdir=iconv -C iconv ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/iconv'
+make[2]: Leaving directory '/build/glibc/glibc-2.34/iconv'
+make  subdir=locale -C locale ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/locale'
+make[2]: Leaving directory '/build/glibc/glibc-2.34/locale'
+make  subdir=localedata -C localedata ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/localedata'
+make[2]: Nothing to be done for 'subdir_lib'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/localedata'
+make  subdir=iconvdata -C iconvdata ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/iconvdata'
+make[2]: Nothing to be done for 'subdir_lib'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/iconvdata'
+make  subdir=assert -C assert ..=../ subdir_lib
+make  subdir=ctype -C ctype ..=../ subdir_lib
+make  subdir=intl -C intl ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/intl'
+gcc dcigettext.c -c -std=gnu11 -fgnu89-inline  -O2 -g -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -Wall -Wwrite-strings -Wundef -Werror -fmerge-all-constants -frounding-math -fstack-protector-strong -fno-common -Wstrict-prototypes -Wold-style-definition -fmath-errno    -fpie -fcf-protection   -ftls-model=initial-exec      -I../include -I/build/glibc-build/intl  -I/build/glibc-build  -I../sysdeps/unix/sysv/linux/x86_64/64  -I../sysdeps/unix/sysv/linux/x86_64  -I../sysdeps/unix/sysv/linux/x86/include -I../sysdeps/unix/sysv/linux/x86  -I../sysdeps/x86/nptl  -I../sysdeps/unix/sysv/linux/wordsize-64  -I../sysdeps/x86_64/nptl  -I../sysdeps/unix/sysv/linux/include -I../sysdeps/unix/sysv/linux  -I../sysdeps/nptl  -I../sysdeps/pthread  -I../sysdeps/gnu  -I../sysdeps/unix/inet  -I../sysdeps/unix/sysv  -I../sysdeps/unix/x86_64  -I../sysdeps/unix  -I../sysdeps/posix  -I../sysdeps/x86_64/64  -I../sysdeps/x86_64/fpu/multiarch  -I../sysdeps/x86_64/fpu  -I../sysdeps/x86/fpu  -I../sysdeps/x86_64/multiarch  -I../sysdeps/x86_64  -I../sysdeps/x86/include -I../sysdeps/x86  -I../sysdeps/ieee754/float128  -I../sysdeps/ieee754/ldbl-96/include -I../sysdeps/ieee754/ldbl-96  -I../sysdeps/ieee754/dbl-64  -I../sysdeps/ieee754/flt-32  -I../sysdeps/wordsize-64  -I../sysdeps/ieee754  -I../sysdeps/generic  -I.. -I../libio -I. -nostdinc -isystem /usr/lib/gcc/x86_64-redhat-linux/11/include -isystem /usr/include -D_LIBC_REENTRANT -include /build/glibc-build/libc-modules.h -DMODULE_NAME=libc -include ../include/libc-symbols.h  -DPIC     -DTOP_NAMESPACE=glibc -D'LOCALEDIR="/usr/share/locale"' -D'LOCALE_ALIAS_PATH="/usr/share/locale"' -o /build/glibc-build/intl/dcigettext.o -MD -MP -MF /build/glibc-build/intl/dcigettext.o.dt -MT /build/glibc-build/intl/dcigettext.o
+gcc dcigettext.c -c -std=gnu11 -fgnu89-inline  -O2 -g -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -Wall -Wwrite-strings -Wundef -Werror -fmerge-all-constants -frounding-math -fstack-protector-strong -fno-common -Wstrict-prototypes -Wold-style-definition -fmath-errno    -fPIC -fcf-protection   -ftls-model=initial-exec      -I../include -I/build/glibc-build/intl  -I/build/glibc-build  -I../sysdeps/unix/sysv/linux/x86_64/64  -I../sysdeps/unix/sysv/linux/x86_64  -I../sysdeps/unix/sysv/linux/x86/include -I../sysdeps/unix/sysv/linux/x86  -I../sysdeps/x86/nptl  -I../sysdeps/unix/sysv/linux/wordsize-64  -I../sysdeps/x86_64/nptl  -I../sysdeps/unix/sysv/linux/include -I../sysdeps/unix/sysv/linux  -I../sysdeps/nptl  -I../sysdeps/pthread  -I../sysdeps/gnu  -I../sysdeps/unix/inet  -I../sysdeps/unix/sysv  -I../sysdeps/unix/x86_64  -I../sysdeps/unix  -I../sysdeps/posix  -I../sysdeps/x86_64/64  -I../sysdeps/x86_64/fpu/multiarch  -I../sysdeps/x86_64/fpu  -I../sysdeps/x86/fpu  -I../sysdeps/x86_64/multiarch  -I../sysdeps/x86_64  -I../sysdeps/x86/include -I../sysdeps/x86  -I../sysdeps/ieee754/float128  -I../sysdeps/ieee754/ldbl-96/include -I../sysdeps/ieee754/ldbl-96  -I../sysdeps/ieee754/dbl-64  -I../sysdeps/ieee754/flt-32  -I../sysdeps/wordsize-64  -I../sysdeps/ieee754  -I../sysdeps/generic  -I.. -I../libio -I. -nostdinc -isystem /usr/lib/gcc/x86_64-redhat-linux/11/include -isystem /usr/include -D_LIBC_REENTRANT -include /build/glibc-build/libc-modules.h -DMODULE_NAME=libc -include ../include/libc-symbols.h  -DPIC -DSHARED     -DTOP_NAMESPACE=glibc -D'LOCALEDIR="/usr/share/locale"' -D'LOCALE_ALIAS_PATH="/usr/share/locale"' -o /build/glibc-build/intl/dcigettext.os -MD -MP -MF /build/glibc-build/intl/dcigettext.os.dt -MT /build/glibc-build/intl/dcigettext.os
+echo 'intl/bindtextdom.o intl/dcgettext.o intl/dgettext.o intl/gettext.o intl/dcigettext.o intl/dcngettext.o intl/dngettext.o intl/ngettext.o intl/finddomain.o intl/loadmsgcat.o intl/localealias.o intl/textdomain.o intl/l10nflist.o intl/explodename.o intl/plural.o intl/plural-exp.o intl/hash-string.o' > /build/glibc-build/intl/stamp.oT
+echo 'intl/bindtextdom.os intl/dcgettext.os intl/dgettext.os intl/gettext.os intl/dcigettext.os intl/dcngettext.os intl/dngettext.os intl/ngettext.os intl/finddomain.os intl/loadmsgcat.os intl/localealias.os intl/textdomain.os intl/l10nflist.os intl/explodename.os intl/plural.os intl/plural-exp.os intl/hash-string.os' > /build/glibc-build/intl/stamp.osT
+mv -f /build/glibc-build/intl/stamp.oT /build/glibc-build/intl/stamp.o
+mv -f /build/glibc-build/intl/stamp.osT /build/glibc-build/intl/stamp.os
+make[2]: Leaving directory '/build/glibc/glibc-2.34/intl'
+make  subdir=catgets -C catgets ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/catgets'
+make[2]: Leaving directory '/build/glibc/glibc-2.34/catgets'
+make  subdir=math -C math ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/math'
+make[2]: Leaving directory '/build/glibc/glibc-2.34/math'
+make  subdir=setjmp -C setjmp ..=../ subdir_lib
+make  subdir=signal -C signal ..=../ subdir_lib
+make  subdir=stdlib -C stdlib ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/stdlib'
+make[2]: Leaving directory '/build/glibc/glibc-2.34/stdlib'
+make  subdir=stdio-common -C stdio-common ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/stdio-common'
+../Rules:231: target '/build/glibc-build/stdio-common/tst-setvbuf2' given more than once in the same rule
+../Rules:231: target '/build/glibc-build/stdio-common/tst-setvbuf2-ind' given more than once in the same rule
+make[2]: Leaving directory '/build/glibc/glibc-2.34/stdio-common'
+make  subdir=libio -C libio ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/libio'
+make[2]: Leaving directory '/build/glibc/glibc-2.34/libio'
+make  subdir=dlfcn -C dlfcn ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/dlfcn'
+make[2]: Leaving directory '/build/glibc/glibc-2.34/dlfcn'
+make  subdir=nptl -C nptl ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/nptl'
+make[2]: Leaving directory '/build/glibc/glibc-2.34/nptl'
+make  subdir=rt -C rt ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/rt'
+make[2]: Leaving directory '/build/glibc/glibc-2.34/rt'
+make  subdir=malloc -C malloc ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/malloc'
+make[2]: Leaving directory '/build/glibc/glibc-2.34/malloc'
+make  subdir=string -C string ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/string'
+make[2]: Leaving directory '/build/glibc/glibc-2.34/string'
+make  subdir=wcsmbs -C wcsmbs ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/wcsmbs'
+make[2]: Leaving directory '/build/glibc/glibc-2.34/wcsmbs'
+make  subdir=timezone -C timezone ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/timezone'
+make[2]: Nothing to be done for 'subdir_lib'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/timezone'
+make  subdir=time -C time ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/time'
+make[2]: Leaving directory '/build/glibc/glibc-2.34/time'
+make  subdir=dirent -C dirent ..=../ subdir_lib
+make  subdir=grp -C grp ..=../ subdir_lib
+make  subdir=pwd -C pwd ..=../ subdir_lib
+make  subdir=posix -C posix ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/posix'
+make[2]: Leaving directory '/build/glibc/glibc-2.34/posix'
+make  subdir=io -C io ..=../ subdir_lib
+make  subdir=termios -C termios ..=../ subdir_lib
+make  subdir=resource -C resource ..=../ subdir_lib
+make  subdir=misc -C misc ..=../ subdir_lib
+make  subdir=socket -C socket ..=../ subdir_lib
+make  subdir=sysvipc -C sysvipc ..=../ subdir_lib
+make  subdir=gmon -C gmon ..=../ subdir_lib
+make  subdir=gnulib -C gnulib ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/gnulib'
+make[2]: Nothing to be done for 'subdir_lib'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/gnulib'
+make  subdir=wctype -C wctype ..=../ subdir_lib
+make  subdir=manual -C manual ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/manual'
+make[2]: Nothing to be done for 'subdir_lib'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/manual'
+make  subdir=shadow -C shadow ..=../ subdir_lib
+make  subdir=gshadow -C gshadow ..=../ subdir_lib
+make  subdir=po -C po ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/po'
+make[2]: Nothing to be done for 'subdir_lib'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/po'
+make  subdir=argp -C argp ..=../ subdir_lib
+make  subdir=conform -C conform ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/conform'
+make[2]: Nothing to be done for 'subdir_lib'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/conform'
+make  subdir=debug -C debug ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/debug'
+make[2]: Leaving directory '/build/glibc/glibc-2.34/debug'
+make  subdir=mathvec -C mathvec ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/mathvec'
+make[2]: Nothing to be done for 'subdir_lib'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/mathvec'
+make  subdir=support -C support ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/support'
+make[2]: Nothing to be done for 'subdir_lib'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/support'
+make  subdir=nptl_db -C nptl_db ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/nptl_db'
+make[2]: Nothing to be done for 'subdir_lib'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/nptl_db'
+make  subdir=inet -C inet ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/inet'
+make[2]: Leaving directory '/build/glibc/glibc-2.34/inet'
+make  subdir=resolv -C resolv ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/resolv'
+make[2]: Leaving directory '/build/glibc/glibc-2.34/resolv'
+make  subdir=nss -C nss ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/nss'
+make[2]: Leaving directory '/build/glibc/glibc-2.34/nss'
+make  subdir=hesiod -C hesiod ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/hesiod'
+make[2]: Nothing to be done for 'subdir_lib'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/hesiod'
+make  subdir=sunrpc -C sunrpc ..=../ subdir_lib
+make  subdir=nis -C nis ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/nis'
+make[2]: Nothing to be done for 'subdir_lib'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/nis'
+make  subdir=nscd -C nscd ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/nscd'
+make[2]: Leaving directory '/build/glibc/glibc-2.34/nscd'
+make  subdir=login -C login ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/login'
+make[2]: Leaving directory '/build/glibc/glibc-2.34/login'
+make  subdir=elf -C elf ..=../ subdir_lib
+make[2]: Entering directory '/build/glibc/glibc-2.34/elf'
+cd /build/glibc-build && ar cruv libc_pic.a `cat csu/stamp.os iconv/stamp.os locale/stamp.os localedata/stamp.os iconvdata/stamp.os assert/stamp.os ctype/stamp.os intl/stamp.os catgets/stamp.os math/stamp.os setjmp/stamp.os signal/stamp.os stdlib/stamp.os stdio-common/stamp.os libio/stamp.os dlfcn/stamp.os nptl/stamp.os rt/stamp.os malloc/stamp.os string/stamp.os wcsmbs/stamp.os timezone/stamp.os time/stamp.os dirent/stamp.os grp/stamp.os pwd/stamp.os posix/stamp.os io/stamp.os termios/stamp.os resource/stamp.os misc/stamp.os socket/stamp.os sysvipc/stamp.os gmon/stamp.os gnulib/stamp.os wctype/stamp.os manual/stamp.os shadow/stamp.os gshadow/stamp.os po/stamp.os argp/stamp.os conform/stamp.os debug/stamp.os mathvec/stamp.os support/stamp.os nptl_db/stamp.os inet/stamp.os resolv/stamp.os nss/stamp.os hesiod/stamp.os sunrpc/stamp.os nis/stamp.os nscd/stamp.os login/stamp.os elf/stamp.os stamp.os`
+r - intl/dcigettext.os
+gcc   -nostdlib -nostartfiles -r -o /build/glibc-build/libc_pic.os \
+ -Wl,-d -Wl,--whole-archive /build/glibc-build/libc_pic.a -o /build/glibc-build/libc_pic.os
+for symbol in __GI___pthread_disable_asynccancel __GI___pthread_enable_asynccancel __libc_assert_fail __pthread_disable_asynccancel __pthread_enable_asynccancel calloc free malloc realloc  __stack_chk_fail __stack_chk_fail_local; do \
+	echo ".globl $symbol"; \
+	echo "$symbol:"; \
+done | gcc -o /build/glibc-build/elf/librtld.mapT.o -g -Werror=undef -Wa,--noexecstack  -c -x assembler -
+gcc   -nostdlib -nostartfiles -r -o /build/glibc-build/elf/librtld.map.o /build/glibc-build/elf/librtld.mapT.o '-Wl,-(' /build/glibc-build/elf/dl-allobjs.os /build/glibc-build/libc_pic.a -lgcc '-Wl,-)' -Wl,-Map,/build/glibc-build/elf/librtld.mapT
+rm -f %@T.o /build/glibc-build/elf/librtld.map.o
+mv -f /build/glibc-build/elf/librtld.mapT /build/glibc-build/elf/librtld.map
+LC_ALL=C \
+sed -n 's@^[0-9a-f ]*/build/glibc-build/\([^(]*\)(\([^)]*\.os\)) *.*$@\1 \2@p' \
+    /build/glibc-build/elf/librtld.map | \
+while read lib file; do \
+  case $lib in \
+  libc_pic.a) \
+    LC_ALL=C fgrep -l /$file \
+	  /build/glibc-build/stamp.os /build/glibc-build/*/stamp.os | \
+    LC_ALL=C \
+    sed 's@^/build/glibc-build/\([^/]*\)/stamp\.os$@rtld-\1'" +=$file@"\
+    ;; \
+  */*.a) \
+    echo rtld-${lib%%/*} += $file ;; \
+  *) echo "Wasn't expecting $lib($file)" >&2; exit 1 ;; \
+  esac; \
+done > /build/glibc-build/elf/librtld.mkT
+echo rtld-subdirs = `LC_ALL=C sed 's/^rtld-\([^ ]*\).*$/\1/' /build/glibc-build/elf/librtld.mkT \
+		     | LC_ALL=C sort -u` >> /build/glibc-build/elf/librtld.mkT
+mv -f /build/glibc-build/elf/librtld.mkT /build/glibc-build/elf/librtld.mk
+make -f /build/glibc-build/elf/librtld.mk -f rtld-Rules
+make[3]: Entering directory '/build/glibc/glibc-2.34/elf'
+make subdir=csu -C ../csu ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-check_fds.os rtld-errno.os rtld-check_fds.os rtld-check_fds.os'
+make subdir=dirent -C ../dirent ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-closedir.os rtld-fdopendir.os rtld-readdir64.os rtld-rewinddir.os rtld-rewinddir.os rtld-getdents64.os rtld-readdir64.os'
+make subdir=elf -C ../elf ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-dl-addr-obj.os'
+make subdir=gmon -C ../gmon ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-profil.os rtld-prof-freq.os rtld-profil.os rtld-profil.os rtld-profil.os'
+make[4]: Entering directory '/build/glibc/glibc-2.34/elf'
+make subdir=io -C ../io ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-stat64.os rtld-fstat64.os rtld-lstat64.os rtld-fstatat64.os rtld-openat64.os rtld-lseek64.os rtld-access.os rtld-close_nocancel.os rtld-fcntl_nocancel.os rtld-open64_nocancel.os rtld-read_nocancel.os rtld-pread64_nocancel.os rtld-write_nocancel.os'
+make subdir=malloc -C ../malloc ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-scratch_buffer_set_array_size.os'
+make subdir=misc -C ../misc ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-mmap64.os rtld-munmap.os rtld-mprotect.os'
+make[4]: Entering directory '/build/glibc/glibc-2.34/malloc'
+make[4]: Leaving directory '/build/glibc/glibc-2.34/malloc'
+make subdir=nptl -C ../nptl ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-lowlevellock.os'
+make subdir=posix -C ../posix ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-uname.os rtld-_exit.os rtld-getpid.os rtld-environ.os'
+make subdir=setjmp -C ../setjmp ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-setjmp.os rtld-__longjmp.os'
+make[4]: Entering directory '/build/glibc/glibc-2.34/posix'
+make subdir=signal -C ../signal ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-sigaction.os rtld-libc_sigaction.os rtld-sigaction.os'
+make[4]: Leaving directory '/build/glibc/glibc-2.34/posix'
+make subdir=stdio-common -C ../stdio-common ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-errlist.os'
+make[4]: Entering directory '/build/glibc/glibc-2.34/nptl'
+make subdir=string -C ../string ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-strchr.os rtld-strcmp.os rtld-strcspn.os rtld-strdup.os rtld-strlen.os rtld-strnlen.os rtld-strncmp.os rtld-memchr.os rtld-memcmp.os rtld-memmove.os rtld-memset.os rtld-mempcpy.os rtld-stpcpy.os rtld-memcpy.os rtld-rawmemchr.os rtld-strerrorname_np.os rtld-memchr-avx2.os rtld-memchr.os rtld-memchr-avx2-rtm.os rtld-memchr.os rtld-memchr-evex.os rtld-memchr.os rtld-memchr-evex512.os rtld-memchr.os rtld-memchr-evex-rtm.os rtld-memchr.os rtld-memchr-sse2.os rtld-memchr.os rtld-memcmp-avx2-movbe.os rtld-memcmp.os rtld-memcmp-avx2-movbe-rtm.os rtld-memcmp.os rtld-memcmp-evex-movbe.os rtld-memcmp.os rtld-memcmp-sse2.os rtld-memcmp.os rtld-memcmp-ssse3.os rtld-memcmp.os rtld-memcpy-ssse3.os rtld-mempcpy.os rtld-memcpy-ssse3-back.os rtld-mempcpy.os rtld-memmove-avx-unaligned-erms.os rtld-mempcpy.os rtld-memmove-avx-unaligned-erms-rtm.os rtld-mempcpy.os rtld-memmove-avx512-no-vzeroupper.os rtld-mempcpy.os rtld-memmove-avx512-unaligned-erms.os rtld-mempcpy.os rtld-memmove-erms.os rtld-mempcpy.os rtld-memmove-evex-unaligned-erms.os rtld-mempcpy.os rtld-memmove-sse2-unaligned-erms.os rtld-mempcpy.os rtld-memmove-ssse3.os rtld-memmove.os rtld-memmove-ssse3-back.os rtld-memmove.os rtld-memset-avx2-unaligned-erms.os rtld-memset.os rtld-memset-avx2-unaligned-erms-rtm.os rtld-memset.os rtld-memset-avx512-no-vzeroupper.os rtld-memset.os rtld-memset-avx512-unaligned-erms.os rtld-memset.os rtld-memset-erms.os rtld-memset.os rtld-memset-evex-unaligned-erms.os rtld-memset.os rtld-memset-sse2-unaligned-erms.os rtld-memset.os rtld-rawmemchr-avx2.os rtld-rawmemchr.os rtld-rawmemchr-avx2-rtm.os rtld-rawmemchr.os rtld-rawmemchr-evex.os rtld-rawmemchr.os rtld-rawmemchr-evex-rtm.os rtld-rawmemchr.os rtld-rawmemchr-sse2.os rtld-rawmemchr.os rtld-stpcpy-avx2.os rtld-stpcpy.os rtld-stpcpy-avx2-rtm.os rtld-stpcpy.os rtld-stpcpy-evex.os rtld-stpcpy.os rtld-stpcpy-sse2.os rtld-stpcpy.os rtld-stpcpy-sse2-unaligned.os rtld-stpcpy.os rtld-stpcpy-ssse3.os rtld-stpcpy.os rtld-strchr-avx2.os rtld-strchr.os rtld-strchr-avx2-rtm.os rtld-strchr.os rtld-strchr-evex.os rtld-strchr.os rtld-strchr-evex512.os rtld-strchr.os rtld-strchr-sse2.os rtld-strchr.os rtld-strchr-sse2-no-bsf.os rtld-strchr.os rtld-strcmp-avx2.os rtld-strcmp.os rtld-strcmp-avx2-rtm.os rtld-strcmp.os rtld-strcmp-evex.os rtld-strcmp.os rtld-strcmp-sse2.os rtld-strcmp.os rtld-strcmp-sse2-unaligned.os rtld-strcmp.os rtld-strcmp-sse4_2.os rtld-strcmp.os rtld-strcmp-ssse3.os rtld-strcmp.os rtld-strcspn-c.os rtld-strcspn.os rtld-strcspn-sse2.os rtld-strcspn.os rtld-strlen-avx2.os rtld-strlen.os rtld-strlen-avx2-rtm.os rtld-strlen.os rtld-strlen-evex.os rtld-strlen.os rtld-strlen-evex512.os rtld-strlen.os rtld-strlen-sse2.os rtld-strlen.os rtld-strncmp-avx2.os rtld-strncmp.os rtld-strncmp-avx2-rtm.os rtld-strncmp.os rtld-strncmp-evex.os rtld-strncmp.os rtld-strncmp-sse2.os rtld-strncmp.os rtld-strncmp-sse4_2.os rtld-strncmp.os rtld-strncmp-ssse3.os rtld-strncmp.os rtld-strnlen-avx2.os rtld-strnlen.os rtld-strnlen-avx2-rtm.os rtld-strnlen.os rtld-strnlen-evex.os rtld-strnlen.os rtld-strnlen-evex512.os rtld-strnlen.os rtld-strnlen-sse2.os rtld-strnlen.os rtld-varshift.os rtld-strcspn-c.os rtld-cacheinfo.os rtld-memcpy-ssse3-back.os rtld-strerrorname_np.os rtld-strchrnul.os rtld-strcspn-sse2.os rtld-strchrnul-avx2.os rtld-strchrnul.os rtld-strchrnul-avx2-rtm.os rtld-strchrnul.os rtld-strchrnul-evex.os rtld-strchrnul.os rtld-strchrnul-evex512.os rtld-strchrnul.os rtld-strchrnul-sse2.os rtld-strchrnul.os'
+make[4]: Leaving directory '/build/glibc/glibc-2.34/nptl'
+make subdir=time -C ../time ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-setitimer.os'
+make[4]: Entering directory '/build/glibc/glibc-2.34/stdio-common'
+../Rules:231: target '/build/glibc-build/stdio-common/tst-setvbuf2' given more than once in the same rule
+../Rules:231: target '/build/glibc-build/stdio-common/tst-setvbuf2-ind' given more than once in the same rule
+make[4]: Entering directory '/build/glibc/glibc-2.34/time'
+make[4]: Leaving directory '/build/glibc/glibc-2.34/stdio-common'
+make[4]: Entering directory '/build/glibc/glibc-2.34/string'
+make[4]: Leaving directory '/build/glibc/glibc-2.34/time'
+make[4]: Leaving directory '/build/glibc/glibc-2.34/elf'
+make[4]: Leaving directory '/build/glibc/glibc-2.34/string'
+make[3]: Leaving directory '/build/glibc/glibc-2.34/elf'
+gcc   -shared -static-libgcc -Wl,-O1  -Wl,-z,defs -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2  -B/build/glibc-build/csu/  -Wl,--version-script=/build/glibc-build/libc.map -Wl,-soname=libc.so.6 -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both -Wl,-z,now -nostdlib -nostartfiles -e __libc_main -L/build/glibc-build -L/build/glibc-build/math -L/build/glibc-build/elf -L/build/glibc-build/dlfcn -L/build/glibc-build/nss -L/build/glibc-build/nis -L/build/glibc-build/rt -L/build/glibc-build/resolv -L/build/glibc-build/mathvec -L/build/glibc-build/support -L/build/glibc-build/debug -L/build/glibc-build/nptl -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/libc.so -T /build/glibc-build/shlib.lds /build/glibc-build/csu/abi-note.o /build/glibc-build/libc_pic.os /build/glibc-build/elf/interp.os /build/glibc-build/elf/ld.so -lgcc /build/glibc-build/elf/sofini.os
+gcc   -shared -static-libgcc  -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2 -Wl,-z,defs -B/build/glibc-build/csu/  -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both -Wl,-z,now -L/build/glibc-build -L/build/glibc-build/math -L/build/glibc-build/elf -L/build/glibc-build/dlfcn -L/build/glibc-build/nss -L/build/glibc-build/nis -L/build/glibc-build/rt -L/build/glibc-build/resolv -L/build/glibc-build/mathvec -L/build/glibc-build/support -L/build/glibc-build/debug -L/build/glibc-build/nptl -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/elf/sotruss-lib.so -T /build/glibc-build/shlib.lds /build/glibc-build/csu/abi-note.o -Wl,--as-needed /build/glibc-build/elf/sotruss-lib.os  -Wl,--no-as-needed -Wl,--start-group /build/glibc-build/libc.so /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -Wl,--end-group
+make[2]: Leaving directory '/build/glibc/glibc-2.34/elf'
+cd /build/glibc-build && ar cruv libc.a `cat csu/stamp.o iconv/stamp.o locale/stamp.o localedata/stamp.o iconvdata/stamp.o assert/stamp.o ctype/stamp.o intl/stamp.o catgets/stamp.o math/stamp.o setjmp/stamp.o signal/stamp.o stdlib/stamp.o stdio-common/stamp.o libio/stamp.o dlfcn/stamp.o nptl/stamp.o rt/stamp.o malloc/stamp.o string/stamp.o wcsmbs/stamp.o timezone/stamp.o time/stamp.o dirent/stamp.o grp/stamp.o pwd/stamp.o posix/stamp.o io/stamp.o termios/stamp.o resource/stamp.o misc/stamp.o socket/stamp.o sysvipc/stamp.o gmon/stamp.o gnulib/stamp.o wctype/stamp.o manual/stamp.o shadow/stamp.o gshadow/stamp.o po/stamp.o argp/stamp.o conform/stamp.o debug/stamp.o mathvec/stamp.o support/stamp.o nptl_db/stamp.o inet/stamp.o resolv/stamp.o nss/stamp.o hesiod/stamp.o sunrpc/stamp.o nis/stamp.o nscd/stamp.o login/stamp.o elf/stamp.o stamp.o`
+r - intl/dcigettext.o
+(cd /build/glibc-build/linkobj; \
+ ar x ../libc_pic.a; \
+ rm $(ar t ../sunrpc/librpc_compat_pic.a | sed 's/^compat-//'); \
+ ar x ../sunrpc/librpc_compat_pic.a; \
+ ar cr libc_pic.a *.os; \
+ rm *.os)
+gcc   -shared -static-libgcc -Wl,-O1  -Wl,-z,defs -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2  -B/build/glibc-build/csu/  -Wl,--version-script=/build/glibc-build/libc.map -Wl,-soname=libc.so.6 -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both -Wl,-z,now -nostdlib -nostartfiles -e __libc_main -L/build/glibc-build -L/build/glibc-build/math -L/build/glibc-build/elf -L/build/glibc-build/dlfcn -L/build/glibc-build/nss -L/build/glibc-build/nis -L/build/glibc-build/rt -L/build/glibc-build/resolv -L/build/glibc-build/mathvec -L/build/glibc-build/support -L/build/glibc-build/debug -L/build/glibc-build/nptl -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/linkobj/libc.so -T /build/glibc-build/shlib.lds /build/glibc-build/csu/abi-note.o -Wl,--whole-archive /build/glibc-build/linkobj/libc_pic.a -Wl,--no-whole-archive /build/glibc-build/elf/interp.os /build/glibc-build/elf/ld.so -lgcc /build/glibc-build/elf/sofini.os
+make  subdir=csu -C csu ..=../ others
+make  subdir=iconv -C iconv ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/iconv'
+gcc -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/iconv/iconvconfig -pie -Wl,-O1 -nostdlib -nostartfiles    -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both /build/glibc-build/csu/Scrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/iconv/iconvconfig.o /build/glibc-build/iconv/strtab.o /build/glibc-build/iconv/xmalloc.o /build/glibc-build/iconv/xasprintf.o /build/glibc-build/iconv/xstrdup.o /build/glibc-build/iconv/hash-string.o  -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2 -Wl,-z,now /build/glibc-build/libc.so.6 /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -lgcc  `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+gcc -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/iconv/iconv_prog -pie -Wl,-O1 -nostdlib -nostartfiles    -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both /build/glibc-build/csu/Scrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/iconv/iconv_prog.o /build/glibc-build/iconv/iconv_charmap.o /build/glibc-build/iconv/charmap.o /build/glibc-build/iconv/charmap-dir.o /build/glibc-build/iconv/linereader.o /build/glibc-build/iconv/dummy-repertoire.o /build/glibc-build/iconv/simple-hash.o /build/glibc-build/iconv/xstrdup.o /build/glibc-build/iconv/xmalloc.o /build/glibc-build/iconv/record-status.o  -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2 -Wl,-z,now /build/glibc-build/libc.so.6 /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -lgcc  `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+make[2]: Leaving directory '/build/glibc/glibc-2.34/iconv'
+make  subdir=locale -C locale ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/locale'
+gcc -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/locale/localedef -pie -Wl,-O1 -nostdlib -nostartfiles    -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both /build/glibc-build/csu/Scrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/locale/localedef.o /build/glibc-build/locale/ld-ctype.o /build/glibc-build/locale/ld-messages.o /build/glibc-build/locale/ld-monetary.o /build/glibc-build/locale/ld-numeric.o /build/glibc-build/locale/ld-time.o /build/glibc-build/locale/ld-paper.o /build/glibc-build/locale/ld-name.o /build/glibc-build/locale/ld-address.o /build/glibc-build/locale/ld-telephone.o /build/glibc-build/locale/ld-measurement.o /build/glibc-build/locale/ld-identification.o /build/glibc-build/locale/ld-collate.o /build/glibc-build/locale/charmap.o /build/glibc-build/locale/linereader.o /build/glibc-build/locale/locfile.o /build/glibc-build/locale/repertoire.o /build/glibc-build/locale/locarchive.o /build/glibc-build/locale/md5.o /build/glibc-build/locale/charmap-dir.o /build/glibc-build/locale/simple-hash.o /build/glibc-build/locale/xmalloc.o /build/glibc-build/locale/xstrdup.o /build/glibc-build/locale/record-status.o /build/glibc-build/locale/xasprintf.o  -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2 -Wl,-z,now /build/glibc-build/libc.so.6 /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -lgcc  `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+gcc -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/locale/locale -pie -Wl,-O1 -nostdlib -nostartfiles    -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both /build/glibc-build/csu/Scrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/locale/locale.o /build/glibc-build/locale/locale-spec.o /build/glibc-build/locale/charmap-dir.o /build/glibc-build/locale/simple-hash.o /build/glibc-build/locale/xmalloc.o /build/glibc-build/locale/xstrdup.o /build/glibc-build/locale/record-status.o /build/glibc-build/locale/xasprintf.o  -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2 -Wl,-z,now /build/glibc-build/libc.so.6 /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -lgcc  `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+gcc   -shared -static-libgcc -Wl,-O1  -Wl,-z,defs -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2  -B/build/glibc-build/csu/  -Wl,--version-script=/build/glibc-build/libBrokenLocale.map -Wl,-soname=libBrokenLocale.so.1 -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both -Wl,-z,now  -L/build/glibc-build -L/build/glibc-build/math -L/build/glibc-build/elf -L/build/glibc-build/dlfcn -L/build/glibc-build/nss -L/build/glibc-build/nis -L/build/glibc-build/rt -L/build/glibc-build/resolv -L/build/glibc-build/mathvec -L/build/glibc-build/support -L/build/glibc-build/debug -L/build/glibc-build/nptl -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/locale/libBrokenLocale.so -T /build/glibc-build/shlib.lds /build/glibc-build/csu/abi-note.o -Wl,--whole-archive /build/glibc-build/locale/libBrokenLocale_pic.a -Wl,--no-whole-archive   -Wl,--start-group /build/glibc-build/libc.so /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -Wl,--end-group
+rm -f /build/glibc-build/locale/libBrokenLocale.so.1.new
+/bin/sh ../scripts/rellns-sh /build/glibc-build/locale/libBrokenLocale.so /build/glibc-build/locale/libBrokenLocale.so.1.new
+mv -f /build/glibc-build/locale/libBrokenLocale.so.1.new /build/glibc-build/locale/libBrokenLocale.so.1
+make[2]: Leaving directory '/build/glibc/glibc-2.34/locale'
+make  subdir=localedata -C localedata ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/localedata'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/localedata'
+make  subdir=iconvdata -C iconvdata ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/iconvdata'
+make[2]: Leaving directory '/build/glibc/glibc-2.34/iconvdata'
+make  subdir=assert -C assert ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/assert'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/assert'
+make  subdir=ctype -C ctype ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/ctype'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/ctype'
+make  subdir=intl -C intl ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/intl'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/intl'
+make  subdir=catgets -C catgets ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/catgets'
+gcc -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/catgets/gencat -pie -Wl,-O1 -nostdlib -nostartfiles    -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both /build/glibc-build/csu/Scrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/catgets/gencat.o /build/glibc-build/catgets/xmalloc.o  -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2 -Wl,-z,now /build/glibc-build/libc.so.6 /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -lgcc  `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+make[2]: Leaving directory '/build/glibc/glibc-2.34/catgets'
+make  subdir=math -C math ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/math'
+gcc   -shared -static-libgcc -Wl,-O1  -Wl,-z,defs -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2  -B/build/glibc-build/csu/  -Wl,--version-script=/build/glibc-build/libm.map -Wl,-soname=libm.so.6 -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both -Wl,-z,now  -L/build/glibc-build -L/build/glibc-build/math -L/build/glibc-build/elf -L/build/glibc-build/dlfcn -L/build/glibc-build/nss -L/build/glibc-build/nis -L/build/glibc-build/rt -L/build/glibc-build/resolv -L/build/glibc-build/mathvec -L/build/glibc-build/support -L/build/glibc-build/debug -L/build/glibc-build/nptl -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/math/libm.so -T /build/glibc-build/shlib.lds /build/glibc-build/csu/abi-note.o -Wl,--whole-archive /build/glibc-build/math/libm_pic.a -Wl,--no-whole-archive   -Wl,--start-group /build/glibc-build/libc.so /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -Wl,--end-group
+rm -f /build/glibc-build/math/libm.so.6.new
+/bin/sh ../scripts/rellns-sh /build/glibc-build/math/libm.so /build/glibc-build/math/libm.so.6.new
+mv -f /build/glibc-build/math/libm.so.6.new /build/glibc-build/math/libm.so.6
+make[2]: Leaving directory '/build/glibc/glibc-2.34/math'
+make  subdir=setjmp -C setjmp ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/setjmp'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/setjmp'
+make  subdir=signal -C signal ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/signal'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/signal'
+make  subdir=stdlib -C stdlib ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/stdlib'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/stdlib'
+make  subdir=stdio-common -C stdio-common ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/stdio-common'
+../Rules:231: target '/build/glibc-build/stdio-common/tst-setvbuf2' given more than once in the same rule
+../Rules:231: target '/build/glibc-build/stdio-common/tst-setvbuf2-ind' given more than once in the same rule
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/stdio-common'
+make  subdir=libio -C libio ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/libio'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/libio'
+make  subdir=dlfcn -C dlfcn ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/dlfcn'
+gcc   -shared -static-libgcc -Wl,-O1  -Wl,-z,defs -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2  -B/build/glibc-build/csu/  -Wl,--version-script=/build/glibc-build/libdl.map -Wl,-soname=libdl.so.2 -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both -Wl,-z,now  -L/build/glibc-build -L/build/glibc-build/math -L/build/glibc-build/elf -L/build/glibc-build/dlfcn -L/build/glibc-build/nss -L/build/glibc-build/nis -L/build/glibc-build/rt -L/build/glibc-build/resolv -L/build/glibc-build/mathvec -L/build/glibc-build/support -L/build/glibc-build/debug -L/build/glibc-build/nptl -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/dlfcn/libdl.so -T /build/glibc-build/shlib.lds /build/glibc-build/csu/abi-note.o -Wl,--whole-archive /build/glibc-build/dlfcn/libdl_pic.a -Wl,--no-whole-archive   -Wl,--start-group /build/glibc-build/libc.so /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -Wl,--end-group
+rm -f /build/glibc-build/dlfcn/libdl.so.2.new
+/bin/sh ../scripts/rellns-sh /build/glibc-build/dlfcn/libdl.so /build/glibc-build/dlfcn/libdl.so.2.new
+mv -f /build/glibc-build/dlfcn/libdl.so.2.new /build/glibc-build/dlfcn/libdl.so.2
+make[2]: Leaving directory '/build/glibc/glibc-2.34/dlfcn'
+make  subdir=nptl -C nptl ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/nptl'
+gcc   -shared -static-libgcc -Wl,-O1  -Wl,-z,defs -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2  -B/build/glibc-build/csu/  -Wl,--version-script=/build/glibc-build/libpthread.map -Wl,-soname=libpthread.so.0 -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both -Wl,-z,now  -L/build/glibc-build -L/build/glibc-build/math -L/build/glibc-build/elf -L/build/glibc-build/dlfcn -L/build/glibc-build/nss -L/build/glibc-build/nis -L/build/glibc-build/rt -L/build/glibc-build/resolv -L/build/glibc-build/mathvec -L/build/glibc-build/support -L/build/glibc-build/debug -L/build/glibc-build/nptl -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/nptl/libpthread.so -T /build/glibc-build/shlib.lds /build/glibc-build/csu/abi-note.o -Wl,--whole-archive /build/glibc-build/nptl/libpthread_pic.a -Wl,--no-whole-archive   -Wl,--start-group /build/glibc-build/libc.so /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -Wl,--end-group
+rm -f /build/glibc-build/nptl/libpthread.so.0.new
+/bin/sh ../scripts/rellns-sh /build/glibc-build/nptl/libpthread.so /build/glibc-build/nptl/libpthread.so.0.new
+mv -f /build/glibc-build/nptl/libpthread.so.0.new /build/glibc-build/nptl/libpthread.so.0
+make[2]: Leaving directory '/build/glibc/glibc-2.34/nptl'
+make  subdir=rt -C rt ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/rt'
+gcc   -shared -static-libgcc -Wl,-O1  -Wl,-z,defs -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2  -B/build/glibc-build/csu/  -Wl,--version-script=/build/glibc-build/librt.map -Wl,-soname=librt.so.1 -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both -Wl,-z,now -Wl,--enable-new-dtags,-z,nodelete -L/build/glibc-build -L/build/glibc-build/math -L/build/glibc-build/elf -L/build/glibc-build/dlfcn -L/build/glibc-build/nss -L/build/glibc-build/nis -L/build/glibc-build/rt -L/build/glibc-build/resolv -L/build/glibc-build/mathvec -L/build/glibc-build/support -L/build/glibc-build/debug -L/build/glibc-build/nptl -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/rt/librt.so -T /build/glibc-build/shlib.lds /build/glibc-build/csu/abi-note.o -Wl,--whole-archive /build/glibc-build/rt/librt_pic.a -Wl,--no-whole-archive   -Wl,--start-group /build/glibc-build/libc.so /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -Wl,--end-group
+rm -f /build/glibc-build/rt/librt.so.1.new
+/bin/sh ../scripts/rellns-sh /build/glibc-build/rt/librt.so /build/glibc-build/rt/librt.so.1.new
+mv -f /build/glibc-build/rt/librt.so.1.new /build/glibc-build/rt/librt.so.1
+make[2]: Leaving directory '/build/glibc/glibc-2.34/rt'
+make  subdir=malloc -C malloc ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/malloc'
+gcc   -shared -static-libgcc -Wl,-O1  -Wl,-z,defs -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2  -B/build/glibc-build/csu/   -Wl,-soname=libmemusage.so -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both -Wl,-z,now  -L/build/glibc-build -L/build/glibc-build/math -L/build/glibc-build/elf -L/build/glibc-build/dlfcn -L/build/glibc-build/nss -L/build/glibc-build/nis -L/build/glibc-build/rt -L/build/glibc-build/resolv -L/build/glibc-build/mathvec -L/build/glibc-build/support -L/build/glibc-build/debug -L/build/glibc-build/nptl -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/malloc/libmemusage.so -T /build/glibc-build/shlib.lds /build/glibc-build/csu/abi-note.o -Wl,--whole-archive /build/glibc-build/malloc/libmemusage_pic.a -Wl,--no-whole-archive   -Wl,--start-group /build/glibc-build/libc.so /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -Wl,--end-group
+gcc   -shared -static-libgcc -Wl,-O1  -Wl,-z,defs -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2  -B/build/glibc-build/csu/  -Wl,--version-script=/build/glibc-build/libc_malloc_debug.map -Wl,-soname=libc_malloc_debug.so.0 -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both -Wl,-z,now  -L/build/glibc-build -L/build/glibc-build/math -L/build/glibc-build/elf -L/build/glibc-build/dlfcn -L/build/glibc-build/nss -L/build/glibc-build/nis -L/build/glibc-build/rt -L/build/glibc-build/resolv -L/build/glibc-build/mathvec -L/build/glibc-build/support -L/build/glibc-build/debug -L/build/glibc-build/nptl -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/malloc/libc_malloc_debug.so -T /build/glibc-build/shlib.lds /build/glibc-build/csu/abi-note.o -Wl,--whole-archive /build/glibc-build/malloc/libc_malloc_debug_pic.a -Wl,--no-whole-archive   -Wl,--start-group /build/glibc-build/libc.so /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -Wl,--end-group
+rm -f /build/glibc-build/malloc/libc_malloc_debug.so.0.new
+/bin/sh ../scripts/rellns-sh /build/glibc-build/malloc/libc_malloc_debug.so /build/glibc-build/malloc/libc_malloc_debug.so.0.new
+mv -f /build/glibc-build/malloc/libc_malloc_debug.so.0.new /build/glibc-build/malloc/libc_malloc_debug.so.0
+make[2]: Leaving directory '/build/glibc/glibc-2.34/malloc'
+make  subdir=string -C string ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/string'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/string'
+make  subdir=wcsmbs -C wcsmbs ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/wcsmbs'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/wcsmbs'
+make  subdir=timezone -C timezone ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/timezone'
+gcc -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/timezone/zdump -pie -Wl,-O1 -nostdlib -nostartfiles    -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both /build/glibc-build/csu/Scrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/timezone/zdump.o  -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2 -Wl,-z,now /build/glibc-build/libc.so.6 /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -lgcc  `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+gcc -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/timezone/zic -pie -Wl,-O1 -nostdlib -nostartfiles    -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both /build/glibc-build/csu/Scrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/timezone/zic.o  -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2 -Wl,-z,now /build/glibc-build/libc.so.6 /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -lgcc  `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+make[2]: Leaving directory '/build/glibc/glibc-2.34/timezone'
+make  subdir=time -C time ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/time'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/time'
+make  subdir=dirent -C dirent ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/dirent'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/dirent'
+make  subdir=grp -C grp ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/grp'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/grp'
+make  subdir=pwd -C pwd ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/pwd'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/pwd'
+make  subdir=posix -C posix ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/posix'
+gcc -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/posix/getconf -pie -Wl,-O1 -nostdlib -nostartfiles    -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both /build/glibc-build/csu/Scrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/posix/getconf.o  -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2 -Wl,-z,now /build/glibc-build/libc.so.6 /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -lgcc  `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+make[2]: Leaving directory '/build/glibc/glibc-2.34/posix'
+make  subdir=io -C io ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/io'
+gcc -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/io/pwd -pie -Wl,-O1 -nostdlib -nostartfiles    -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both /build/glibc-build/csu/Scrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/io/pwd.o  -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2 -Wl,-z,now /build/glibc-build/libc.so.6 /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -lgcc  `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+make[2]: Leaving directory '/build/glibc/glibc-2.34/io'
+make  subdir=termios -C termios ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/termios'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/termios'
+make  subdir=resource -C resource ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/resource'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/resource'
+make  subdir=misc -C misc ..=../ others
+make  subdir=socket -C socket ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/socket'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/socket'
+make  subdir=sysvipc -C sysvipc ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/sysvipc'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/sysvipc'
+make  subdir=gmon -C gmon ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/gmon'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/gmon'
+make  subdir=gnulib -C gnulib ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/gnulib'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/gnulib'
+make  subdir=wctype -C wctype ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/wctype'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/wctype'
+make  subdir=manual -C manual ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/manual'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/manual'
+make  subdir=shadow -C shadow ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/shadow'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/shadow'
+make  subdir=gshadow -C gshadow ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/gshadow'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/gshadow'
+make  subdir=po -C po ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/po'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/po'
+make  subdir=argp -C argp ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/argp'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/argp'
+make  subdir=conform -C conform ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/conform'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/conform'
+make  subdir=debug -C debug ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/debug'
+gcc -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/debug/pcprofiledump -pie -Wl,-O1 -nostdlib -nostartfiles    -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both /build/glibc-build/csu/Scrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/debug/pcprofiledump.o  -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2 -Wl,-z,now /build/glibc-build/libc.so.6 /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -lgcc  `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+gcc   -shared -static-libgcc -Wl,-O1  -Wl,-z,defs -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2  -B/build/glibc-build/csu/   -Wl,-soname=libSegFault.so -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both -Wl,-z,now -Wl,--enable-new-dtags,-z,nodelete -L/build/glibc-build -L/build/glibc-build/math -L/build/glibc-build/elf -L/build/glibc-build/dlfcn -L/build/glibc-build/nss -L/build/glibc-build/nis -L/build/glibc-build/rt -L/build/glibc-build/resolv -L/build/glibc-build/mathvec -L/build/glibc-build/support -L/build/glibc-build/debug -L/build/glibc-build/nptl -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/debug/libSegFault.so -T /build/glibc-build/shlib.lds /build/glibc-build/csu/abi-note.o -Wl,--whole-archive /build/glibc-build/debug/libSegFault_pic.a -Wl,--no-whole-archive   -Wl,--start-group /build/glibc-build/libc.so /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -Wl,--end-group
+gcc   -shared -static-libgcc -Wl,-O1  -Wl,-z,defs -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2  -B/build/glibc-build/csu/   -Wl,-soname=libpcprofile.so -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both -Wl,-z,now  -L/build/glibc-build -L/build/glibc-build/math -L/build/glibc-build/elf -L/build/glibc-build/dlfcn -L/build/glibc-build/nss -L/build/glibc-build/nis -L/build/glibc-build/rt -L/build/glibc-build/resolv -L/build/glibc-build/mathvec -L/build/glibc-build/support -L/build/glibc-build/debug -L/build/glibc-build/nptl -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/debug/libpcprofile.so -T /build/glibc-build/shlib.lds /build/glibc-build/csu/abi-note.o -Wl,--whole-archive /build/glibc-build/debug/libpcprofile_pic.a -Wl,--no-whole-archive   -Wl,--start-group /build/glibc-build/libc.so /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -Wl,--end-group
+make[2]: Leaving directory '/build/glibc/glibc-2.34/debug'
+make  subdir=mathvec -C mathvec ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/mathvec'
+gcc   -shared -static-libgcc -Wl,-O1  -Wl,-z,defs -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2  -B/build/glibc-build/csu/  -Wl,--version-script=/build/glibc-build/libmvec.map -Wl,-soname=libmvec.so.1 -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both -Wl,-z,now  -L/build/glibc-build -L/build/glibc-build/math -L/build/glibc-build/elf -L/build/glibc-build/dlfcn -L/build/glibc-build/nss -L/build/glibc-build/nis -L/build/glibc-build/rt -L/build/glibc-build/resolv -L/build/glibc-build/mathvec -L/build/glibc-build/support -L/build/glibc-build/debug -L/build/glibc-build/nptl -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/mathvec/libmvec.so -T /build/glibc-build/shlib.lds /build/glibc-build/csu/abi-note.o -Wl,--whole-archive /build/glibc-build/mathvec/libmvec_pic.a -Wl,--no-whole-archive /build/glibc-build/math/libm.so.6   -Wl,--start-group /build/glibc-build/libc.so /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -Wl,--end-group
+rm -f /build/glibc-build/mathvec/libmvec.so.1.new
+/bin/sh ../scripts/rellns-sh /build/glibc-build/mathvec/libmvec.so /build/glibc-build/mathvec/libmvec.so.1.new
+mv -f /build/glibc-build/mathvec/libmvec.so.1.new /build/glibc-build/mathvec/libmvec.so.1
+make[2]: Leaving directory '/build/glibc/glibc-2.34/mathvec'
+make  subdir=support -C support ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/support'
+gcc -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/support/test-container -pie -Wl,-O1 -nostdlib -nostartfiles    -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both /build/glibc-build/csu/Scrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/support/test-container.o /build/glibc-build/support/libsupport_nonshared.a -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2 -Wl,-z,now /build/glibc-build/libc.so.6 /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -lgcc  `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+gcc -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/support/echo-container -pie -Wl,-O1 -nostdlib -nostartfiles    -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both /build/glibc-build/csu/Scrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/support/echo-container.o /build/glibc-build/support/libsupport_nonshared.a  -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2 -Wl,-z,now /build/glibc-build/libc.so.6 /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -lgcc  `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+gcc -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/support/shell-container -pie -Wl,-O1 -nostdlib -nostartfiles    -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both /build/glibc-build/csu/Scrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/support/shell-container.o /build/glibc-build/support/libsupport_nonshared.a  -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2 -Wl,-z,now /build/glibc-build/libc.so.6 /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -lgcc  `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+gcc -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/support/true-container -pie -Wl,-O1 -nostdlib -nostartfiles    -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both /build/glibc-build/csu/Scrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/support/true-container.o /build/glibc-build/support/libsupport_nonshared.a  -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2 -Wl,-z,now /build/glibc-build/libc.so.6 /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -lgcc  `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+gcc -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/support/links-dso-program-c -pie -Wl,-O1 -nostdlib -nostartfiles    -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both /build/glibc-build/csu/Scrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/support/links-dso-program-c.o  -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2 -Wl,-z,now /build/glibc-build/libc.so.6 /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -lgcc  `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+gcc -o /build/glibc-build/support/test-run-command -nostdlib -nostartfiles -static -static-pie    /build/glibc-build/csu/rcrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/support/test-run-command.o /build/glibc-build/elf/static-stubs.o /build/glibc-build/support/libsupport_nonshared.a -Wl,-z,now -Wl,--start-group /build/glibc-build/libc.a -lgcc  -Wl,--end-group `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+make[2]: Leaving directory '/build/glibc/glibc-2.34/support'
+make  subdir=nptl_db -C nptl_db ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/nptl_db'
+gcc   -shared -static-libgcc -Wl,-O1   -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2  -B/build/glibc-build/csu/  -Wl,--version-script=/build/glibc-build/libthread_db.map -Wl,-soname=libthread_db.so.1 -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both -Wl,-z,now  -L/build/glibc-build -L/build/glibc-build/math -L/build/glibc-build/elf -L/build/glibc-build/dlfcn -L/build/glibc-build/nss -L/build/glibc-build/nis -L/build/glibc-build/rt -L/build/glibc-build/resolv -L/build/glibc-build/mathvec -L/build/glibc-build/support -L/build/glibc-build/debug -L/build/glibc-build/nptl -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/nptl_db/libthread_db.so -T /build/glibc-build/shlib.lds /build/glibc-build/csu/abi-note.o -Wl,--whole-archive /build/glibc-build/nptl_db/libthread_db_pic.a -Wl,--no-whole-archive   -Wl,--start-group /build/glibc-build/libc.so /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -Wl,--end-group
+rm -f /build/glibc-build/nptl_db/libthread_db.so.1.new
+/bin/sh ../scripts/rellns-sh /build/glibc-build/nptl_db/libthread_db.so /build/glibc-build/nptl_db/libthread_db.so.1.new
+mv -f /build/glibc-build/nptl_db/libthread_db.so.1.new /build/glibc-build/nptl_db/libthread_db.so.1
+make[2]: Leaving directory '/build/glibc/glibc-2.34/nptl_db'
+make  subdir=inet -C inet ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/inet'
+make[2]: Nothing to be done for 'others'.
+make[2]: Leaving directory '/build/glibc/glibc-2.34/inet'
+make  subdir=resolv -C resolv ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/resolv'
+gcc   -shared -static-libgcc -Wl,-O1  -Wl,-z,defs -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2  -B/build/glibc-build/csu/  -Wl,--version-script=/build/glibc-build/libresolv.map -Wl,-soname=libresolv.so.2 -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both -Wl,-z,now  -L/build/glibc-build -L/build/glibc-build/math -L/build/glibc-build/elf -L/build/glibc-build/dlfcn -L/build/glibc-build/nss -L/build/glibc-build/nis -L/build/glibc-build/rt -L/build/glibc-build/resolv -L/build/glibc-build/mathvec -L/build/glibc-build/support -L/build/glibc-build/debug -L/build/glibc-build/nptl -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/resolv/libresolv.so -T /build/glibc-build/shlib.lds /build/glibc-build/csu/abi-note.o -Wl,--whole-archive /build/glibc-build/resolv/libresolv_pic.a -Wl,--no-whole-archive   -Wl,--start-group /build/glibc-build/libc.so /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -Wl,--end-group
+gcc   -shared -static-libgcc -Wl,-O1  -Wl,-z,defs -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2  -B/build/glibc-build/csu/  -Wl,--version-script=/build/glibc-build/libanl.map -Wl,-soname=libanl.so.1 -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both -Wl,-z,now  -L/build/glibc-build -L/build/glibc-build/math -L/build/glibc-build/elf -L/build/glibc-build/dlfcn -L/build/glibc-build/nss -L/build/glibc-build/nis -L/build/glibc-build/rt -L/build/glibc-build/resolv -L/build/glibc-build/mathvec -L/build/glibc-build/support -L/build/glibc-build/debug -L/build/glibc-build/nptl -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/resolv/libanl.so -T /build/glibc-build/shlib.lds /build/glibc-build/csu/abi-note.o -Wl,--whole-archive /build/glibc-build/resolv/libanl_pic.a -Wl,--no-whole-archive   -Wl,--start-group /build/glibc-build/libc.so /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -Wl,--end-group
+rm -f /build/glibc-build/resolv/libanl.so.1.new
+/bin/sh ../scripts/rellns-sh /build/glibc-build/resolv/libanl.so /build/glibc-build/resolv/libanl.so.1.new
+rm -f /build/glibc-build/resolv/libresolv.so.2.new
+gcc   -shared -static-libgcc -Wl,-O1  -Wl,-z,defs -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2  -B/build/glibc-build/csu/  -Wl,--version-script=/build/glibc-build/libnss_dns.map -Wl,-soname=libnss_dns.so.2 -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both -Wl,-z,now  -L/build/glibc-build -L/build/glibc-build/math -L/build/glibc-build/elf -L/build/glibc-build/dlfcn -L/build/glibc-build/nss -L/build/glibc-build/nis -L/build/glibc-build/rt -L/build/glibc-build/resolv -L/build/glibc-build/mathvec -L/build/glibc-build/support -L/build/glibc-build/debug -L/build/glibc-build/nptl -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/resolv/libnss_dns.so -T /build/glibc-build/shlib.lds /build/glibc-build/csu/abi-note.o -Wl,--whole-archive /build/glibc-build/resolv/libnss_dns_pic.a -Wl,--no-whole-archive /build/glibc-build/resolv/libresolv.so   -Wl,--start-group /build/glibc-build/libc.so /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -Wl,--end-group
+/bin/sh ../scripts/rellns-sh /build/glibc-build/resolv/libresolv.so /build/glibc-build/resolv/libresolv.so.2.new
+rm -f /build/glibc-build/resolv/libnss_dns.so.2.new
+/bin/sh ../scripts/rellns-sh /build/glibc-build/resolv/libnss_dns.so /build/glibc-build/resolv/libnss_dns.so.2.new
+mv -f /build/glibc-build/resolv/libanl.so.1.new /build/glibc-build/resolv/libanl.so.1
+mv -f /build/glibc-build/resolv/libresolv.so.2.new /build/glibc-build/resolv/libresolv.so.2
+mv -f /build/glibc-build/resolv/libnss_dns.so.2.new /build/glibc-build/resolv/libnss_dns.so.2
+make[2]: Leaving directory '/build/glibc/glibc-2.34/resolv'
+make  subdir=nss -C nss ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/nss'
+gcc -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/nss/getent -pie -Wl,-O1 -nostdlib -nostartfiles    -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both /build/glibc-build/csu/Scrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/nss/getent.o  -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2 -Wl,-z,now /build/glibc-build/libc.so.6 /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -lgcc  `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+gcc -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/nss/makedb -pie -Wl,-O1 -nostdlib -nostartfiles    -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both /build/glibc-build/csu/Scrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/nss/makedb.o /build/glibc-build/nss/xmalloc.o /build/glibc-build/nss/hash-string.o  -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2 -Wl,-z,now /build/glibc-build/libc.so.6 /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -lgcc  `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+gcc   -shared -static-libgcc -Wl,-O1  -Wl,-z,defs -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2  -B/build/glibc-build/csu/  -Wl,--version-script=/build/glibc-build/libnss_files.map -Wl,-soname=libnss_files.so.2 -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both -Wl,-z,now  -L/build/glibc-build -L/build/glibc-build/math -L/build/glibc-build/elf -L/build/glibc-build/dlfcn -L/build/glibc-build/nss -L/build/glibc-build/nis -L/build/glibc-build/rt -L/build/glibc-build/resolv -L/build/glibc-build/mathvec -L/build/glibc-build/support -L/build/glibc-build/debug -L/build/glibc-build/nptl -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/nss/libnss_files.so -T /build/glibc-build/shlib.lds /build/glibc-build/csu/abi-note.o -Wl,--whole-archive /build/glibc-build/nss/libnss_files_pic.a -Wl,--no-whole-archive   -Wl,--start-group /build/glibc-build/linkobj/libc.so /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -Wl,--end-group
+gcc   -shared -static-libgcc -Wl,-O1  -Wl,-z,defs -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2  -B/build/glibc-build/csu/  -Wl,--version-script=/build/glibc-build/libnss_db.map -Wl,-soname=libnss_db.so.2 -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both -Wl,-z,now  -L/build/glibc-build -L/build/glibc-build/math -L/build/glibc-build/elf -L/build/glibc-build/dlfcn -L/build/glibc-build/nss -L/build/glibc-build/nis -L/build/glibc-build/rt -L/build/glibc-build/resolv -L/build/glibc-build/mathvec -L/build/glibc-build/support -L/build/glibc-build/debug -L/build/glibc-build/nptl -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/nss/libnss_db.so -T /build/glibc-build/shlib.lds /build/glibc-build/csu/abi-note.o -Wl,--whole-archive /build/glibc-build/nss/libnss_db_pic.a -Wl,--no-whole-archive   -Wl,--start-group /build/glibc-build/linkobj/libc.so /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -Wl,--end-group
+gcc   -shared -static-libgcc -Wl,-O1  -Wl,-z,defs -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2  -B/build/glibc-build/csu/  -Wl,--version-script=/build/glibc-build/libnss_compat.map -Wl,-soname=libnss_compat.so.2 -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both -Wl,-z,now  -L/build/glibc-build -L/build/glibc-build/math -L/build/glibc-build/elf -L/build/glibc-build/dlfcn -L/build/glibc-build/nss -L/build/glibc-build/nis -L/build/glibc-build/rt -L/build/glibc-build/resolv -L/build/glibc-build/mathvec -L/build/glibc-build/support -L/build/glibc-build/debug -L/build/glibc-build/nptl -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/nss/libnss_compat.so -T /build/glibc-build/shlib.lds /build/glibc-build/csu/abi-note.o -Wl,--whole-archive /build/glibc-build/nss/libnss_compat_pic.a -Wl,--no-whole-archive   -Wl,--start-group /build/glibc-build/linkobj/libc.so /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -Wl,--end-group
+rm -f /build/glibc-build/nss/libnss_files.so.2.new
+/bin/sh ../scripts/rellns-sh /build/glibc-build/nss/libnss_files.so /build/glibc-build/nss/libnss_files.so.2.new
+rm -f /build/glibc-build/nss/libnss_db.so.2.new
+/bin/sh ../scripts/rellns-sh /build/glibc-build/nss/libnss_db.so /build/glibc-build/nss/libnss_db.so.2.new
+rm -f /build/glibc-build/nss/libnss_compat.so.2.new
+/bin/sh ../scripts/rellns-sh /build/glibc-build/nss/libnss_compat.so /build/glibc-build/nss/libnss_compat.so.2.new
+mv -f /build/glibc-build/nss/libnss_files.so.2.new /build/glibc-build/nss/libnss_files.so.2
+mv -f /build/glibc-build/nss/libnss_db.so.2.new /build/glibc-build/nss/libnss_db.so.2
+mv -f /build/glibc-build/nss/libnss_compat.so.2.new /build/glibc-build/nss/libnss_compat.so.2
+make[2]: Leaving directory '/build/glibc/glibc-2.34/nss'
+make  subdir=hesiod -C hesiod ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/hesiod'
+gcc   -shared -static-libgcc -Wl,-O1  -Wl,-z,defs -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2  -B/build/glibc-build/csu/  -Wl,--version-script=/build/glibc-build/libnss_hesiod.map -Wl,-soname=libnss_hesiod.so.2 -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both -Wl,-z,now  -L/build/glibc-build -L/build/glibc-build/math -L/build/glibc-build/elf -L/build/glibc-build/dlfcn -L/build/glibc-build/nss -L/build/glibc-build/nis -L/build/glibc-build/rt -L/build/glibc-build/resolv -L/build/glibc-build/mathvec -L/build/glibc-build/support -L/build/glibc-build/debug -L/build/glibc-build/nptl -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/hesiod/libnss_hesiod.so -T /build/glibc-build/shlib.lds /build/glibc-build/csu/abi-note.o -Wl,--whole-archive /build/glibc-build/hesiod/libnss_hesiod_pic.a -Wl,--no-whole-archive /build/glibc-build/resolv/libresolv.so /build/glibc-build/nss/libnss_files.so   -Wl,--start-group /build/glibc-build/libc.so /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -Wl,--end-group
+rm -f /build/glibc-build/hesiod/libnss_hesiod.so.2.new
+/bin/sh ../scripts/rellns-sh /build/glibc-build/hesiod/libnss_hesiod.so /build/glibc-build/hesiod/libnss_hesiod.so.2.new
+mv -f /build/glibc-build/hesiod/libnss_hesiod.so.2.new /build/glibc-build/hesiod/libnss_hesiod.so.2
+make[2]: Leaving directory '/build/glibc/glibc-2.34/hesiod'
+make  subdir=sunrpc -C sunrpc ..=../ others
+make  subdir=nis -C nis ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/nis'
+gcc   -shared -static-libgcc -Wl,-O1  -Wl,-z,defs -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2  -B/build/glibc-build/csu/  -Wl,--version-script=/build/glibc-build/libnsl.map -Wl,-soname=libnsl.so.1 -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both -Wl,-z,now  -L/build/glibc-build -L/build/glibc-build/math -L/build/glibc-build/elf -L/build/glibc-build/dlfcn -L/build/glibc-build/nss -L/build/glibc-build/nis -L/build/glibc-build/rt -L/build/glibc-build/resolv -L/build/glibc-build/mathvec -L/build/glibc-build/support -L/build/glibc-build/debug -L/build/glibc-build/nptl -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/nis/libnsl.so -T /build/glibc-build/shlib.lds /build/glibc-build/csu/abi-note.o -Wl,--whole-archive /build/glibc-build/nis/libnsl_pic.a -Wl,--no-whole-archive   -Wl,--start-group /build/glibc-build/linkobj/libc.so /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -Wl,--end-group
+rm -f /build/glibc-build/nis/libnsl.so.1.new
+/bin/sh ../scripts/rellns-sh /build/glibc-build/nis/libnsl.so /build/glibc-build/nis/libnsl.so.1.new
+mv -f /build/glibc-build/nis/libnsl.so.1.new /build/glibc-build/nis/libnsl.so.1
+make[2]: Leaving directory '/build/glibc/glibc-2.34/nis'
+make  subdir=nscd -C nscd ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/nscd'
+gcc -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/nscd/nscd -pie -Wl,-O1 -nostdlib -nostartfiles   -Wl,-z,now -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both /build/glibc-build/csu/Scrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/nscd/nscd.o /build/glibc-build/nscd/connections.o /build/glibc-build/nscd/pwdcache.o /build/glibc-build/nscd/getpwnam_r.o /build/glibc-build/nscd/getpwuid_r.o /build/glibc-build/nscd/grpcache.o /build/glibc-build/nscd/getgrnam_r.o /build/glibc-build/nscd/getgrgid_r.o /build/glibc-build/nscd/hstcache.o /build/glibc-build/nscd/gethstbyad_r.o /build/glibc-build/nscd/gethstbynm3_r.o /build/glibc-build/nscd/getsrvbynm_r.o /build/glibc-build/nscd/getsrvbypt_r.o /build/glibc-build/nscd/servicescache.o /build/glibc-build/nscd/dbg_log.o /build/glibc-build/nscd/nscd_conf.o /build/glibc-build/nscd/nscd_stat.o /build/glibc-build/nscd/cache.o /build/glibc-build/nscd/mem.o /build/glibc-build/nscd/nscd_setup_thread.o /build/glibc-build/nscd/xmalloc.o /build/glibc-build/nscd/xstrdup.o /build/glibc-build/nscd/aicache.o /build/glibc-build/nscd/initgrcache.o /build/glibc-build/nscd/gai.o /build/glibc-build/nscd/res_hconf.o /build/glibc-build/nscd/netgroupcache.o /build/glibc-build/nscd/cachedumper.o  -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2 -Wl,-z,now /build/glibc-build/libc.so.6 /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -lgcc  `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+make[2]: Leaving directory '/build/glibc/glibc-2.34/nscd'
+make  subdir=login -C login ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/login'
+gcc   -shared -static-libgcc -Wl,-O1  -Wl,-z,defs -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2  -B/build/glibc-build/csu/  -Wl,--version-script=/build/glibc-build/libutil.map -Wl,-soname=libutil.so.1 -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both -Wl,-z,now  -L/build/glibc-build -L/build/glibc-build/math -L/build/glibc-build/elf -L/build/glibc-build/dlfcn -L/build/glibc-build/nss -L/build/glibc-build/nis -L/build/glibc-build/rt -L/build/glibc-build/resolv -L/build/glibc-build/mathvec -L/build/glibc-build/support -L/build/glibc-build/debug -L/build/glibc-build/nptl -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/login/libutil.so -T /build/glibc-build/shlib.lds /build/glibc-build/csu/abi-note.o -Wl,--whole-archive /build/glibc-build/login/libutil_pic.a -Wl,--no-whole-archive   -Wl,--start-group /build/glibc-build/libc.so /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -Wl,--end-group
+gcc -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/login/utmpdump -pie -Wl,-O1 -nostdlib -nostartfiles    -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both /build/glibc-build/csu/Scrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/login/utmpdump.o  -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2 -Wl,-z,now /build/glibc-build/libc.so.6 /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -lgcc  `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+rm -f /build/glibc-build/login/libutil.so.1.new
+/bin/sh ../scripts/rellns-sh /build/glibc-build/login/libutil.so /build/glibc-build/login/libutil.so.1.new
+mv -f /build/glibc-build/login/libutil.so.1.new /build/glibc-build/login/libutil.so.1
+make[2]: Leaving directory '/build/glibc/glibc-2.34/login'
+make  subdir=elf -C elf ..=../ others
+make[2]: Entering directory '/build/glibc/glibc-2.34/elf'
+make -f /build/glibc-build/elf/librtld.mk -f rtld-Rules
+make[3]: Entering directory '/build/glibc/glibc-2.34/elf'
+make subdir=csu -C ../csu ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-check_fds.os rtld-errno.os rtld-check_fds.os rtld-check_fds.os'
+make subdir=dirent -C ../dirent ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-closedir.os rtld-fdopendir.os rtld-readdir64.os rtld-rewinddir.os rtld-rewinddir.os rtld-getdents64.os rtld-readdir64.os'
+make subdir=elf -C ../elf ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-dl-addr-obj.os'
+make subdir=gmon -C ../gmon ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-profil.os rtld-prof-freq.os rtld-profil.os rtld-profil.os rtld-profil.os'
+make[4]: Entering directory '/build/glibc/glibc-2.34/elf'
+make subdir=io -C ../io ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-stat64.os rtld-fstat64.os rtld-lstat64.os rtld-fstatat64.os rtld-openat64.os rtld-lseek64.os rtld-access.os rtld-close_nocancel.os rtld-fcntl_nocancel.os rtld-open64_nocancel.os rtld-read_nocancel.os rtld-pread64_nocancel.os rtld-write_nocancel.os'
+make subdir=malloc -C ../malloc ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-scratch_buffer_set_array_size.os'
+make subdir=misc -C ../misc ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-mmap64.os rtld-munmap.os rtld-mprotect.os'
+make[4]: Entering directory '/build/glibc/glibc-2.34/malloc'
+make[4]: Leaving directory '/build/glibc/glibc-2.34/malloc'
+make subdir=nptl -C ../nptl ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-lowlevellock.os'
+make subdir=posix -C ../posix ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-uname.os rtld-_exit.os rtld-getpid.os rtld-environ.os'
+make subdir=setjmp -C ../setjmp ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-setjmp.os rtld-__longjmp.os'
+make[4]: Entering directory '/build/glibc/glibc-2.34/posix'
+make subdir=signal -C ../signal ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-sigaction.os rtld-libc_sigaction.os rtld-sigaction.os'
+make[4]: Leaving directory '/build/glibc/glibc-2.34/posix'
+make subdir=stdio-common -C ../stdio-common ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-errlist.os'
+make[4]: Entering directory '/build/glibc/glibc-2.34/nptl'
+make subdir=string -C ../string ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-strchr.os rtld-strcmp.os rtld-strcspn.os rtld-strdup.os rtld-strlen.os rtld-strnlen.os rtld-strncmp.os rtld-memchr.os rtld-memcmp.os rtld-memmove.os rtld-memset.os rtld-mempcpy.os rtld-stpcpy.os rtld-memcpy.os rtld-rawmemchr.os rtld-strerrorname_np.os rtld-memchr-avx2.os rtld-memchr.os rtld-memchr-avx2-rtm.os rtld-memchr.os rtld-memchr-evex.os rtld-memchr.os rtld-memchr-evex512.os rtld-memchr.os rtld-memchr-evex-rtm.os rtld-memchr.os rtld-memchr-sse2.os rtld-memchr.os rtld-memcmp-avx2-movbe.os rtld-memcmp.os rtld-memcmp-avx2-movbe-rtm.os rtld-memcmp.os rtld-memcmp-evex-movbe.os rtld-memcmp.os rtld-memcmp-sse2.os rtld-memcmp.os rtld-memcmp-ssse3.os rtld-memcmp.os rtld-memcpy-ssse3.os rtld-mempcpy.os rtld-memcpy-ssse3-back.os rtld-mempcpy.os rtld-memmove-avx-unaligned-erms.os rtld-mempcpy.os rtld-memmove-avx-unaligned-erms-rtm.os rtld-mempcpy.os rtld-memmove-avx512-no-vzeroupper.os rtld-mempcpy.os rtld-memmove-avx512-unaligned-erms.os rtld-mempcpy.os rtld-memmove-erms.os rtld-mempcpy.os rtld-memmove-evex-unaligned-erms.os rtld-mempcpy.os rtld-memmove-sse2-unaligned-erms.os rtld-mempcpy.os rtld-memmove-ssse3.os rtld-memmove.os rtld-memmove-ssse3-back.os rtld-memmove.os rtld-memset-avx2-unaligned-erms.os rtld-memset.os rtld-memset-avx2-unaligned-erms-rtm.os rtld-memset.os rtld-memset-avx512-no-vzeroupper.os rtld-memset.os rtld-memset-avx512-unaligned-erms.os rtld-memset.os rtld-memset-erms.os rtld-memset.os rtld-memset-evex-unaligned-erms.os rtld-memset.os rtld-memset-sse2-unaligned-erms.os rtld-memset.os rtld-rawmemchr-avx2.os rtld-rawmemchr.os rtld-rawmemchr-avx2-rtm.os rtld-rawmemchr.os rtld-rawmemchr-evex.os rtld-rawmemchr.os rtld-rawmemchr-evex-rtm.os rtld-rawmemchr.os rtld-rawmemchr-sse2.os rtld-rawmemchr.os rtld-stpcpy-avx2.os rtld-stpcpy.os rtld-stpcpy-avx2-rtm.os rtld-stpcpy.os rtld-stpcpy-evex.os rtld-stpcpy.os rtld-stpcpy-sse2.os rtld-stpcpy.os rtld-stpcpy-sse2-unaligned.os rtld-stpcpy.os rtld-stpcpy-ssse3.os rtld-stpcpy.os rtld-strchr-avx2.os rtld-strchr.os rtld-strchr-avx2-rtm.os rtld-strchr.os rtld-strchr-evex.os rtld-strchr.os rtld-strchr-evex512.os rtld-strchr.os rtld-strchr-sse2.os rtld-strchr.os rtld-strchr-sse2-no-bsf.os rtld-strchr.os rtld-strcmp-avx2.os rtld-strcmp.os rtld-strcmp-avx2-rtm.os rtld-strcmp.os rtld-strcmp-evex.os rtld-strcmp.os rtld-strcmp-sse2.os rtld-strcmp.os rtld-strcmp-sse2-unaligned.os rtld-strcmp.os rtld-strcmp-sse4_2.os rtld-strcmp.os rtld-strcmp-ssse3.os rtld-strcmp.os rtld-strcspn-c.os rtld-strcspn.os rtld-strcspn-sse2.os rtld-strcspn.os rtld-strlen-avx2.os rtld-strlen.os rtld-strlen-avx2-rtm.os rtld-strlen.os rtld-strlen-evex.os rtld-strlen.os rtld-strlen-evex512.os rtld-strlen.os rtld-strlen-sse2.os rtld-strlen.os rtld-strncmp-avx2.os rtld-strncmp.os rtld-strncmp-avx2-rtm.os rtld-strncmp.os rtld-strncmp-evex.os rtld-strncmp.os rtld-strncmp-sse2.os rtld-strncmp.os rtld-strncmp-sse4_2.os rtld-strncmp.os rtld-strncmp-ssse3.os rtld-strncmp.os rtld-strnlen-avx2.os rtld-strnlen.os rtld-strnlen-avx2-rtm.os rtld-strnlen.os rtld-strnlen-evex.os rtld-strnlen.os rtld-strnlen-evex512.os rtld-strnlen.os rtld-strnlen-sse2.os rtld-strnlen.os rtld-varshift.os rtld-strcspn-c.os rtld-cacheinfo.os rtld-memcpy-ssse3-back.os rtld-strerrorname_np.os rtld-strchrnul.os rtld-strcspn-sse2.os rtld-strchrnul-avx2.os rtld-strchrnul.os rtld-strchrnul-avx2-rtm.os rtld-strchrnul.os rtld-strchrnul-evex.os rtld-strchrnul.os rtld-strchrnul-evex512.os rtld-strchrnul.os rtld-strchrnul-sse2.os rtld-strchrnul.os'
+make[4]: Leaving directory '/build/glibc/glibc-2.34/nptl'
+make subdir=time -C ../time ..=../ objdir=/build/glibc-build -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-setitimer.os'
+make[4]: Entering directory '/build/glibc/glibc-2.34/stdio-common'
+../Rules:231: target '/build/glibc-build/stdio-common/tst-setvbuf2' given more than once in the same rule
+../Rules:231: target '/build/glibc-build/stdio-common/tst-setvbuf2-ind' given more than once in the same rule
+make[4]: Entering directory '/build/glibc/glibc-2.34/time'
+make[4]: Leaving directory '/build/glibc/glibc-2.34/stdio-common'
+gcc -o /build/glibc-build/elf/sln -nostdlib -nostartfiles -static -static-pie    /build/glibc-build/csu/rcrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/elf/sln.o /build/glibc-build/elf/static-stubs.o  -Wl,-z,now -Wl,--start-group /build/glibc-build/libc.a -lgcc  -Wl,--end-group `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+make[4]: Entering directory '/build/glibc/glibc-2.34/string'
+make[4]: Leaving directory '/build/glibc/glibc-2.34/elf'
+make[4]: Leaving directory '/build/glibc/glibc-2.34/time'
+gcc -o /build/glibc-build/elf/ldconfig -nostdlib -nostartfiles -static -static-pie    /build/glibc-build/csu/rcrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/elf/ldconfig.o /build/glibc-build/elf/cache.o /build/glibc-build/elf/chroot_canon.o /build/glibc-build/elf/readlib.o /build/glibc-build/elf/static-stubs.o /build/glibc-build/elf/stringtable.o /build/glibc-build/elf/xmalloc.o /build/glibc-build/elf/xstrdup.o  -Wl,-z,now -Wl,--start-group /build/glibc-build/libc.a -lgcc  -Wl,--end-group `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+make[4]: Leaving directory '/build/glibc/glibc-2.34/string'
+make[3]: Leaving directory '/build/glibc/glibc-2.34/elf'
+gcc -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/elf/sprof -pie -Wl,-O1 -nostdlib -nostartfiles    -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both /build/glibc-build/csu/Scrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/elf/sprof.o  -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2 -Wl,-z,now /build/glibc-build/libc.so.6 /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -lgcc  `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+gcc -Wl,-rpath-link=/build/glibc-build:/build/glibc-build/math:/build/glibc-build/elf:/build/glibc-build/dlfcn:/build/glibc-build/nss:/build/glibc-build/nis:/build/glibc-build/rt:/build/glibc-build/resolv:/build/glibc-build/mathvec:/build/glibc-build/support:/build/glibc-build/debug:/build/glibc-build/nptl -o /build/glibc-build/elf/pldd -pie -Wl,-O1 -nostdlib -nostartfiles    -Wl,-z,combreloc -Wl,-z,relro -Wl,--hash-style=both /build/glibc-build/csu/Scrt1.o /build/glibc-build/csu/crti.o `gcc  --print-file-name=crtbeginS.o` /build/glibc-build/elf/pldd.o /build/glibc-build/elf/xmalloc.o  -Wl,-dynamic-linker=/lib64/ld-linux-x86-64.so.2 -Wl,-z,now /build/glibc-build/libc.so.6 /build/glibc-build/libc_nonshared.a -Wl,--as-needed /build/glibc-build/elf/ld.so -Wl,--no-as-needed -lgcc  `gcc  --print-file-name=crtendS.o` /build/glibc-build/csu/crtn.o
+make[2]: Leaving directory '/build/glibc/glibc-2.34/elf'
+make[1]: Leaving directory '/build/glibc/glibc-2.34'

@@ -18,8 +18,8 @@ SOURCE_GRAFANA = 'deepresearch-grafana-source:20261112'
 SOURCE_PROFILE = 'grafana-source-20261112'
 SOURCE_DOCKERFILE = 'deployment/docker/Dockerfile.grafana-20261112'
 SOURCE_PROFILE_PATH = Path('deployment/security/grafana-source-20261112-profile.json')
-SOURCE_MINIO = 'deepresearch-minio-source:20261112'
-MINIO_PROFILE = 'minio-source-20261112'
+SOURCE_MINIO = 'deepresearch-minio-source:20261113'
+MINIO_PROFILE = 'minio-os-source-20261113'
 
 
 def load_grafana_binding(root):
@@ -52,7 +52,7 @@ def grafana_selection(root):
 
 
 def load_minio_source_profile(root):
-    from scripts import check_minio_source_build_20261112 as source
+    from scripts import check_minio_os_20261113 as source
     profile = source.load_profile(root)
     if (profile['profile'] != MINIO_PROFILE or profile['image'] != SOURCE_MINIO
             or profile['context'] != '.' or profile['dockerfile'] != source.DOCKERFILE
@@ -97,6 +97,8 @@ def matrices(configuration, root):
                 raise ValueError("Custom build context/args require explicit security inventory support")
             filename = build.get("dockerfile", "Dockerfile")
             key = (str(context.relative_to(root)).replace("\\", "/") or ".", filename)
+            if name == 'backend' and key != ('.', 'business-backend/Dockerfile'):
+                raise ValueError('Backend must include the exact reviewed BusyBox source build context')
             custom.setdefault(key, []).append(name)
             continue
         reference = definition.get("image")
