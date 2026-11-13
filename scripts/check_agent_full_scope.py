@@ -30,12 +30,15 @@ PROVIDER_PROFILE_SHA256 = "b8b08682948a9abeed85ff951e4296462a35b5ffedfb2fb4cc70b
 REFERENCE_PROFILE_NAME = "agent-reference-locator-20261113"
 REFERENCE_PROFILE_PATH = ROOT / "deployment/security/agent-reference-locator-profile-20261113.json"
 REFERENCE_PROFILE_SHA256 = "2a300cac09bc6b9b0d4f4a5ddbcbccf809cc050b75ec27c2510ee64d871ebaa1"
-CURRENT_PROFILE_NAME = "agent-structured-locator-20261113"
-CURRENT_PROFILE_PATH = ROOT / "deployment/security/agent-structured-locator-profile-20261113.json"
-CURRENT_PROFILE_SHA256 = "450112b53fd94278d33bb2603d5a0dd2fa012c3d4fad48140db9fcbfae56bb65"
+STRUCTURED_PROFILE_NAME = "agent-structured-locator-20261113"
+STRUCTURED_PROFILE_PATH = ROOT / "deployment/security/agent-structured-locator-profile-20261113.json"
+STRUCTURED_PROFILE_SHA256 = "450112b53fd94278d33bb2603d5a0dd2fa012c3d4fad48140db9fcbfae56bb65"
+CURRENT_PROFILE_NAME = "agent-local-attribution-20261113"
+CURRENT_PROFILE_PATH = ROOT / "deployment/security/agent-local-attribution-profile-20261113.json"
+CURRENT_PROFILE_SHA256 = "b39a5f5ee18031c7e07fadd79a96a288de9c248d09865c73fce84cbd73e7b570"
 PROFILE_NAMES = (
     PROFILE_NAME, ORDINARY_PROFILE_NAME, PROVIDER_PROFILE_NAME, REFERENCE_PROFILE_NAME,
-    CURRENT_PROFILE_NAME,
+    STRUCTURED_PROFILE_NAME, CURRENT_PROFILE_NAME,
 )
 
 
@@ -57,6 +60,8 @@ def profile_identity(name):
         return PROVIDER_PROFILE_PATH, PROVIDER_PROFILE_SHA256
     if name == REFERENCE_PROFILE_NAME:
         return REFERENCE_PROFILE_PATH, REFERENCE_PROFILE_SHA256
+    if name == STRUCTURED_PROFILE_NAME:
+        return STRUCTURED_PROFILE_PATH, STRUCTURED_PROFILE_SHA256
     require(name == CURRENT_PROFILE_NAME, "Unknown exact technical review profile")
     return CURRENT_PROFILE_PATH, CURRENT_PROFILE_SHA256
 

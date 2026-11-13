@@ -1,0 +1,82 @@
+{
+  "old_python_closure": {
+    "files": 5972,
+    "sha256": "6f952d9974a0eef03e03da6ff354fe8a8942138769db1d4d4d4a25d43165c57f"
+  },
+  "new_python_closure": {
+    "files": 5972,
+    "sha256": "65afcf37293fd4aca0086828680b4cdeeee91638c8e3787b02968335bc97af93"
+  },
+  "python_file_delta": {
+    "/app/backend/research/evidence_policy.py": {
+      "before": "fc6e217fe91c6a775068f47eb560c5c67181a03a604d636bcaf380d77daf040c",
+      "after": "9f9c9e3fccbdf06886f4f200ed3ae69345af1c273797fffd30abed8a657ff447"
+    }
+  },
+  "unchanged_python_files": 5971,
+  "native_elf_closure": {
+    "files": 515,
+    "sha256": "7bde6d27b4fd6015f058da3f28d8c1e5dfb0155aadca77a61919225674d4f348"
+  },
+  "all_515_native_files_exact_equal": true,
+  "complete_python_feature_matches_exact_equal": true,
+  "application_imported": false,
+  "network_requests": 0,
+  "local_attribution_delta_AST_review": {
+    "all_old_module_bindings_and_positive_prefix_AST_exact_equal": true,
+    "validate_claim_all_numeric_trust_semantic_prerequisites_AST_exact_equal": true,
+    "new_fallback_line_range": [
+      103,
+      103
+    ],
+    "actual_old_ordinary_candidates": 8,
+    "ordinary_new_fallback_unreachable": true,
+    "new_helpers": [
+      "local_attribution_clauses",
+      "bound_local_attribution"
+    ],
+    "new_imports_or_native_FFI_calls": false,
+    "scope": "Source-bound affirmative Python string/regex attribution fallback, reached only after all unchanged old positive paths return false. Actual ordinary8 inputs return in the old positive prefix."
+  },
+  "exact_source_diff": "--- \n+++ \n@@ -99,6 +99,109 @@\n     for match in LOCAL_VERSIONED_ATTRIBUTION.finditer(compact):\n         if any(match[\"subject\"] in re.sub(r\"\\s+\", \"\", source.get(field, \"\"))\n                for source in sources for field in (\"title\", \"locator\", \"text\")):\n+            return True\n+    return bound_local_attribution(compact, sources)\n+\n+\n+def local_attribution_clauses(text: str, separators: str) -> list[str]:\n+    pairs = {\"《\": \"》\", \"（\": \"）\", \"(\": \")\", \"“\": \"”\"}\n+    stack, clauses, start = [], [], 0\n+    for index, char in enumerate(text):\n+        if char in pairs:\n+            stack.append(pairs[char])\n+        elif char in pairs.values():\n+            if not stack or stack.pop() != char:\n+                return []\n+        elif char in separators and not stack:\n+            clauses.append(text[start:index])\n+            start = index + 1\n+    return [] if stack else [*clauses, text[start:]]\n+\n+\n+def bound_local_attribution(text: str, sources: list[dict]) -> bool:\n+    \"\"\"Recognize affirmative document scope; content still needs full semantic checks.\"\"\"\n+    if not sources or any(source.get(\"kind\") != \"local\" for source in sources) or re.search(r\"[？?]\", text):\n+        return False\n+    documents = []\n+    for source in sources:\n+        body = re.sub(r\"\\s+\", \"\", source.get(\"text\", \"\"))\n+        heading = re.split(r\"\\s*·\\s*字符\\s*\\d\", source.get(\"locator\", \"\"), maxsplit=1)[0]\n+        labels = {re.sub(r\"\\s+\", \"\", source.get(\"title\", \"\")), re.sub(r\"\\s+\", \"\", heading)} - {\"\"}\n+        labels |= {re.split(r\"[：:]\", label)[-1] for label in labels}\n+        # Only explicit metadata declarations supply additional document names.\n+        # A version mentioned in a comparison in the body is not this document's version.\n+        declarations = re.findall(r\"(?:^|[。；;\\n])\\s*(?:文档|试验|记录)?版本\\s*[:：]\\s*([^。；;\\n]+)\", source.get(\"text\", \"\"))\n+        declarations = {re.sub(r\"\\s+\", \"\", value) for value in declarations}\n+        labels |= {value for value in declarations if not re.fullmatch(LOCAL_VERSION, value)}\n+        versions = {version for label in labels | declarations for version in re.findall(LOCAL_VERSION, label)}\n+        dates = set(re.findall(r\"(?:^|[。；;\\n])\\s*记录日期\\s*[:：]\\s*(\\d{4}-\\d{2}-\\d{2})\", source.get(\"text\", \"\")))\n+        documents.append((labels, versions, dates, body))\n+    nouns = re.compile(r\"资料|材料|文档|文件|需求|评审|纪要|试验|测试|清单|记录|结果|样本|项目|情境|说明|范围\")\n+\n+    def bound_subject(subject):\n+        provided = bool(re.match(r\"(?:所提供的?|这些|上述|该)\", subject))\n+        subject = re.sub(r\"^(?:所提供的?|这些|上述|该)\", \"\", subject)\n+        parts = local_attribution_clauses(subject, \"、和及与\")\n+        if not parts:\n+            return False\n+        for part in parts:\n+            part = re.sub(r\"^(?:[一二三四五六七八九十两\\d]+(?:份|次|个))\", \"\", part)\n+            quoted = re.findall(r\"《([^《》]+)》\", part)\n+            if part.count(\"《\") != len(quoted) or part.count(\"》\") != len(quoted):\n+                return False\n+            unquoted = re.sub(r\"《[^《》]+》\", \"\", part)\n+            if re.search(r\"并非|不是|没有|未|不曾|是否|能否|可否\", unquoted):\n+                return False\n+            versions = set(re.findall(LOCAL_VERSION, part))\n+            dates = set(re.findall(r\"\\d{4}-\\d{2}-\\d{2}\", part))\n+            candidates = [(labels, body) for labels, source_versions, source_dates, body in documents\n+                          if all(title in labels for title in quoted)\n+                          and versions <= source_versions and dates <= source_dates]\n+            if not candidates:\n+                return False\n+            name = unquoted\n+            name = re.sub(r\"\\d{4}-\\d{2}-\\d{2}|\" + LOCAL_VERSION, \"\", name)\n+            name = re.sub(r\"记录日期|[（()），,）]\", \"\", name)\n+            name = re.sub(r\"所设定的|所描述的|所记录的|中的|的|中\", \"\", name)\n+            scoped_name = re.sub(r\"合成演示|虚构\", \"\", name)\n+            if not any(\n+                name in labels or (quoted and not name) or (\n+                    (provided or quoted or \"合成演示资料\" in part or \"虚构\" in part\n+                     or any(name and name in label for label in labels))\n+                    and (matches := list(nouns.finditer(scoped_name))) and matches[-1].end() == len(scoped_name)\n+                    and all(\n+                        not fragment or fragment in body or fragment in \"\".join(labels)\n+                        for fragment in nouns.split(scoped_name)\n+                    ) and all(noun.group() in body or noun.group() in \"\".join(labels)\n+                              for noun in nouns.finditer(name))\n+                    and (\"合成演示\" not in part or \"合成演示资料\" in body)\n+                    and (\"虚构\" not in part or \"虚构\" in body)\n+                ) for labels, body in candidates\n+            ):\n+                return False\n+        return True\n+\n+    for clause in local_attribution_clauses(text, \"，,。；;：:\\r\\n\"):\n+        if re.match(r\"(?:并非|不是|没有|未|不|是否|能否)\", clause):\n+            continue\n+        according = re.match(r\"(?:根据|依据|对照|按照|按)(.+)$\", clause)\n+        if according and bound_subject(according[1]):\n+            return True\n+        scope = re.match(r\"(?:仅针对|针对|仅就|就|在)(.+?)(?:范围内|而言|判断|中|内)?$\", clause)\n+        if scope and bound_subject(scope[1]):\n+            return True\n+        # Direct document subjects need a record predicate or explicit containment.\n+        for predicate in re.finditer(r\"(?:均|都|各自)?(?:明确)?(?:记载|记录|说明|规定|指出|提到|列出|将|称|中)\", clause):\n+            subject = clause[:predicate.start()]\n+            if predicate.group().endswith(\"中\") and not re.search(\n+                r\"(?:资料|材料|文档|文件|记录|试验|样本|情境|项目|》|\" + LOCAL_VERSION + r\")$\", subject\n+            ):\n+                continue\n+            if not re.search(r\"(?:未|没有|并非|不是|不曾|不)(?:明确)?$\", subject) and bound_subject(subject):\n+                return True\n+        classification = re.search(r\"(?:均|都|各自)?(?:明确)?(?:自标为|自注为|标明为|标注为|属于)[“\\\"]?合成演示资料\", clause)\n+        if (classification and all(\"合成演示资料\" in body for _, _, _, body in documents)\n+                and bound_subject(clause[:classification.start()])):\n             return True\n     return False\n \n",
+  "all_92_complete_finding_tuples_exact_equal": true,
+  "complete_package_inventory_exact_equal": true,
+  "current_raw_sha256": "1d9513de50ff840e4acb03a9fa8aa3c0d94bf452b6c8b3b6f0df851277072e12",
+  "current_scan_receipt": {
+    "command": [
+      "E:\\project\\DeepResearch\\.cache\\security-fix-20261105\\trivy.exe",
+      "image",
+      "--image-src",
+      "docker",
+      "--config",
+      "E:\\project\\DeepResearch\\.cache\\release-followup-20261113\\agent-profile-local-attribution-20261113\\trivy-10\\empty-trivy.yaml",
+      "--ignorefile",
+      "E:\\project\\DeepResearch\\.cache\\release-followup-20261113\\agent-profile-local-attribution-20261113\\trivy-10\\empty.ignore",
+      "--cache-dir",
+      "E:\\project\\DeepResearch\\.cache\\release-followup-20261113\\backend-busybox\\trivy-cache",
+      "--db-repository",
+      "ghcr.io/aquasecurity/trivy-db:2",
+      "--scanners",
+      "vuln,secret",
+      "--list-all-pkgs",
+      "--severity",
+      "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL",
+      "--ignore-unfixed=false",
+      "--exit-code",
+      "0",
+      "--timeout",
+      "10m",
+      "--format",
+      "json",
+      "--output",
+      "E:\\project\\DeepResearch\\.cache\\release-followup-20261113\\agent-profile-local-attribution-20261113\\trivy-10\\raw.private.json",
+      "sha256:2703be0627243f4a386e9bbd631bef66781059ccb7e77be5c9e05395a16aa225"
+    ],
+    "started_epoch": 1794568249.0450206,
+    "no_paid_requests": true,
+    "skipped_db_updates": false,
+    "exit_code": 0,
+    "finished_epoch": 1794568253.356516,
+    "raw_sha256": "1d9513de50ff840e4acb03a9fa8aa3c0d94bf452b6c8b3b6f0df851277072e12"
+  }
+}
