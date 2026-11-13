@@ -620,6 +620,8 @@ class Providers:
         label = "OpenAI" if openai else "DeepSeek"
         if openai:
             self.require_official_openai()
+            # One reserved search must not expand into uncounted hosted tool calls.
+            payload["max_tool_calls"] = 1
             payload.update(reasoning={"effort": self.settings.llm_reasoning_effort},
                            include=["web_search_call.action.sources"], store=False)
         async with self.gate:

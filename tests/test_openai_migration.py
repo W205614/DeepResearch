@@ -84,6 +84,7 @@ async def test_openai_search_uses_native_sources_and_never_falls_back(tmp_path):
         calls.append(request)
         body = json.loads(request.content)
         assert request.url.path == '/v1/responses'
+        assert body['max_tool_calls'] == 1
         assert body['reasoning'] == {'effort': 'low'}
         assert body['include'] == ['web_search_call.action.sources'] and body['store'] is False
         return httpx.Response(200, json={'output': [{'type': 'web_search_call', 'action': {
