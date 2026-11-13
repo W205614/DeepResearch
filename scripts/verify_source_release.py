@@ -22,6 +22,7 @@ def verify(root: Path, ref: str, output: Path) -> dict:
         for name, item in files.items():
             path = PurePosixPath(name)
             if (path.is_absolute() or ".." in path.parts or set(path.parts) & private_names
+                    or path.name == "AGENTS.md"
                     or (path.name.startswith(".env") and path.name != ".env.example")
                     or ((item.external_attr >> 16) & 0o170000) == 0o120000):
                 raise ValueError("Private path or symbolic link in source archive: " + name)

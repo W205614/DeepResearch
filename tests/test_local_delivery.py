@@ -184,7 +184,7 @@ def test_source_archive_uses_committed_source_and_excludes_ignored_configuration
         assert not any(name.startswith(".cache/") for name in archive.namelist())
 
 
-@pytest.mark.parametrize("private_path", [".env", "nested/.env.production", ".cache/private.json", ".local/private.txt", "node_modules/dependency.js"])
+@pytest.mark.parametrize("private_path", [".env", "nested/.env.production", ".cache/private.json", ".local/private.txt", "node_modules/dependency.js", "AGENTS.md", "nested/AGENTS.md"])
 def test_source_archive_rejects_accidentally_tracked_private_paths(tmp_path, private_path):
     root = source_repository(tmp_path)
     path = root / private_path
