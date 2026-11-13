@@ -1,0 +1,38 @@
+{
+  "id": "4e82ce164d6044838153619833f85c19",
+  "topic": "我想做一个个人技术笔记库：约 1,200 份中英混排 Markdown，单机 4 核、16 GB 内存，最多 3 个客户端，需要精确查找故障编号，也要用不同说法找同一问题，并按项目筛选、删除过期笔记。请基于官方资料比较 PostgreSQL 全文检索加 pgvector 与 Milvus 两条路线，说明各自需要怎样组合能力、版本限制和维护代价，再给出第一版的取舍及仍需实测的项目。",
+  "mode": "quick",
+  "status": "failed",
+  "report": "# 检索服务暂不可用\n\n所有可用检索来源均发生故障，请重试或检查当前搜索及资料库服务配置。\n\n- 针对约 1,200 份中英混排 Markdown、单机 4 核与 16 GB 内存、最多 3 个客户端的场景，官方资料明确支持或尚未验证哪些能力：两条路线如何组合故障编号精确查找、同义表达检索、项目筛选和过期笔记删除，分别有哪些版本限制与维护代价，以及第一版应如何取舍、哪些项目仍需实测？\n\n> 部分检索服务发生故障；证据不足，请补充资料或调整问题",
+  "sources": [],
+  "validation": {
+    "retrieval_failed": true,
+    "verification_contract": "verification-v3-claim-span",
+    "verification_wire": "verification-v4-target-id",
+    "checked_claims": 0,
+    "supported_claims": 0,
+    "insufficient": true,
+    "quality": "insufficient",
+    "reasons": [
+      "error",
+      "insufficient_evidence"
+    ],
+    "retrieval_outcomes": [
+      {
+        "source": "web",
+        "outcome": "error"
+      },
+      {
+        "source": "local",
+        "outcome": "policy_blocked"
+      }
+    ]
+  },
+  "usage": {
+    "run_id": "4e82ce164d6044838153619833f85c19",
+    "search_calls": 1,
+    "llm_calls": 1,
+    "prompt_tokens": 713,
+    "completion_tokens": 414
+  }
+}
