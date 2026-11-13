@@ -136,7 +136,9 @@ def bound_local_attribution(text: str, sources: list[dict]) -> bool:
         versions = {version for label in labels | declarations for version in re.findall(LOCAL_VERSION, label)}
         dates = set(re.findall(r"(?:^|[。；;\n])\s*记录日期\s*[:：]\s*(\d{4}-\d{2}-\d{2})", source.get("text", "")))
         documents.append((labels, versions, dates, body))
-    nouns = re.compile(r"资料|材料|文档|文件|需求|评审|纪要|试验|测试|清单|记录|结果|样本|项目|情境|说明|范围")
+    nouns = re.compile(r"资料|材料|文档|文件|需求|评审|纪要|试验|测试|清单|记录|结果|样本|项目|情境|说明|声明|范围")
+    document_nouns = {"资料", "材料", "文档", "文件"}
+    record_nouns = {"记录", "结果", "说明", "声明", "纪要"}
 
     def bound_subject(subject):
         provided = bool(re.match(r"(?:所提供的?|这些|上述|该)", subject))
@@ -162,17 +164,22 @@ def bound_local_attribution(text: str, sources: list[dict]) -> bool:
             name = unquoted
             name = re.sub(r"\d{4}-\d{2}-\d{2}|" + LOCAL_VERSION, "", name)
             name = re.sub(r"记录日期|[（()），,）]", "", name)
-            name = re.sub(r"所设定的|所描述的|所记录的|中的|的|中", "", name)
+            name = re.sub(r"所设定的|所描述的|所记录的|各自的|各自|中的|的|中", "", name)
             scoped_name = re.sub(r"合成演示|虚构", "", name)
+            record = re.fullmatch(r"(.*?)(?:记录|结果|说明|声明|纪要)", name)
             if not any(
                 name in labels or (quoted and not name) or (
                     (provided or quoted or "合成演示资料" in part or "虚构" in part
-                     or any(name and name in label for label in labels))
+                     or any(name and name in label for label in labels)
+                     or record and (record[1] in document_nouns
+                                    or bool(record[1]) and any(record[1] in label for label in labels)
+                                    or not record[1] and bool(versions)))
                     and (matches := list(nouns.finditer(scoped_name))) and matches[-1].end() == len(scoped_name)
                     and all(
                         not fragment or fragment in body or fragment in "".join(labels)
                         for fragment in nouns.split(scoped_name)
-                    ) and all(noun.group() in body or noun.group() in "".join(labels)
+                    ) and all(noun.group() in document_nouns | record_nouns
+                              or noun.group() in body or noun.group() in "".join(labels)
                               for noun in nouns.finditer(name))
                     and ("合成演示" not in part or "合成演示资料" in body)
                     and ("虚构" not in part or "虚构" in body)
@@ -184,7 +191,7 @@ def bound_local_attribution(text: str, sources: list[dict]) -> bool:
     for clause in local_attribution_clauses(text, "，,。；;：:\r\n"):
         if re.match(r"(?:并非|不是|没有|未|不|是否|能否)", clause):
             continue
-        according = re.match(r"(?:根据|依据|对照|按照|按)(.+)$", clause)
+        according = re.match(r"(?:根据|依据|对照|按照|按|据)(.+)$", clause)
         if according and bound_subject(according[1]):
             return True
         scope = re.match(r"(?:仅针对|针对|仅就|就|在)(.+?)(?:范围内|而言|判断|中|内)?$", clause)

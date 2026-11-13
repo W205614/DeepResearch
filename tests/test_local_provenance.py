@@ -224,6 +224,29 @@ def test_bound_metadata_uses_document_version_not_a_version_mentioned_in_body():
     assert not validate_claim("根据所提供的需求v2.7，乙比甲多命中3条。", [SCOPED_SOURCE])[0]
 
 
+@pytest.mark.parametrize("prefix", [
+    "据两份材料各自的声明，",
+    "依据v2.7记录，",
+    "对照需求与v3.1清单记录，",
+    "据两次清单记录，",
+])
+def test_record_metadata_composition_retains_explicit_document_scope(prefix):
+    assert validate_claim(prefix + "甲命中5条，乙命中8条。", [SCOPED_SOURCE, OTHER_SCOPED_SOURCE])[0]
+
+
+@pytest.mark.parametrize("prefix", [
+    "据真实测量结果，", "据产品排名记录，", "据v2.7真实测量结果，",
+    "依据v3.1记录，", "依据v2.7真实产品排名记录，",
+    "据《另一份需求》的记录，", "据v2.7记录？",
+])
+def test_record_metadata_does_not_bind_body_mentions_external_results_or_wrong_versions(prefix):
+    assert not has_local_attribution(prefix + "甲命中5条。", [SCOPED_SOURCE])
+
+
+def test_record_metadata_does_not_admit_derived_numeric_difference():
+    assert not validate_claim("依据v2.7记录，甲命中5条、乙命中8条，乙多命中3条。", [SCOPED_SOURCE])[0]
+
+
 async def test_scope_eligibility_preserves_every_semantic_target_and_rejects_external_generalization(runtime):
     graph = ResearchGraph(runtime.settings, runtime.db, runtime.providers, runtime.vectors, runtime.documents)
     texts = ["根据所提供的需求v2.7，甲命中5条。",
