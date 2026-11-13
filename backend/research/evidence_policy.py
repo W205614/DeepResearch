@@ -100,6 +100,109 @@ def has_local_attribution(text: str, sources: list[dict]) -> bool:
         if any(match["subject"] in re.sub(r"\s+", "", source.get(field, ""))
                for source in sources for field in ("title", "locator", "text")):
             return True
+    return bound_local_attribution(compact, sources)
+
+
+def local_attribution_clauses(text: str, separators: str) -> list[str]:
+    pairs = {"《": "》", "（": "）", "(": ")", "“": "”"}
+    stack, clauses, start = [], [], 0
+    for index, char in enumerate(text):
+        if char in pairs:
+            stack.append(pairs[char])
+        elif char in pairs.values():
+            if not stack or stack.pop() != char:
+                return []
+        elif char in separators and not stack:
+            clauses.append(text[start:index])
+            start = index + 1
+    return [] if stack else [*clauses, text[start:]]
+
+
+def bound_local_attribution(text: str, sources: list[dict]) -> bool:
+    """Recognize affirmative document scope; content still needs full semantic checks."""
+    if not sources or any(source.get("kind") != "local" for source in sources) or re.search(r"[？?]", text):
+        return False
+    documents = []
+    for source in sources:
+        body = re.sub(r"\s+", "", source.get("text", ""))
+        heading = re.split(r"\s*·\s*字符\s*\d", source.get("locator", ""), maxsplit=1)[0]
+        labels = {re.sub(r"\s+", "", source.get("title", "")), re.sub(r"\s+", "", heading)} - {""}
+        labels |= {re.split(r"[：:]", label)[-1] for label in labels}
+        # Only explicit metadata declarations supply additional document names.
+        # A version mentioned in a comparison in the body is not this document's version.
+        declarations = re.findall(r"(?:^|[。；;\n])\s*(?:文档|试验|记录)?版本\s*[:：]\s*([^。；;\n]+)", source.get("text", ""))
+        declarations = {re.sub(r"\s+", "", value) for value in declarations}
+        labels |= {value for value in declarations if not re.fullmatch(LOCAL_VERSION, value)}
+        versions = {version for label in labels | declarations for version in re.findall(LOCAL_VERSION, label)}
+        dates = set(re.findall(r"(?:^|[。；;\n])\s*记录日期\s*[:：]\s*(\d{4}-\d{2}-\d{2})", source.get("text", "")))
+        documents.append((labels, versions, dates, body))
+    nouns = re.compile(r"资料|材料|文档|文件|需求|评审|纪要|试验|测试|清单|记录|结果|样本|项目|情境|说明|范围")
+
+    def bound_subject(subject):
+        provided = bool(re.match(r"(?:所提供的?|这些|上述|该)", subject))
+        subject = re.sub(r"^(?:所提供的?|这些|上述|该)", "", subject)
+        parts = local_attribution_clauses(subject, "、和及与")
+        if not parts:
+            return False
+        for part in parts:
+            part = re.sub(r"^(?:[一二三四五六七八九十两\d]+(?:份|次|个))", "", part)
+            quoted = re.findall(r"《([^《》]+)》", part)
+            if part.count("《") != len(quoted) or part.count("》") != len(quoted):
+                return False
+            unquoted = re.sub(r"《[^《》]+》", "", part)
+            if re.search(r"并非|不是|没有|未|不曾|是否|能否|可否", unquoted):
+                return False
+            versions = set(re.findall(LOCAL_VERSION, part))
+            dates = set(re.findall(r"\d{4}-\d{2}-\d{2}", part))
+            candidates = [(labels, body) for labels, source_versions, source_dates, body in documents
+                          if all(title in labels for title in quoted)
+                          and versions <= source_versions and dates <= source_dates]
+            if not candidates:
+                return False
+            name = unquoted
+            name = re.sub(r"\d{4}-\d{2}-\d{2}|" + LOCAL_VERSION, "", name)
+            name = re.sub(r"记录日期|[（()），,）]", "", name)
+            name = re.sub(r"所设定的|所描述的|所记录的|中的|的|中", "", name)
+            scoped_name = re.sub(r"合成演示|虚构", "", name)
+            if not any(
+                name in labels or (quoted and not name) or (
+                    (provided or quoted or "合成演示资料" in part or "虚构" in part
+                     or any(name and name in label for label in labels))
+                    and (matches := list(nouns.finditer(scoped_name))) and matches[-1].end() == len(scoped_name)
+                    and all(
+                        not fragment or fragment in body or fragment in "".join(labels)
+                        for fragment in nouns.split(scoped_name)
+                    ) and all(noun.group() in body or noun.group() in "".join(labels)
+                              for noun in nouns.finditer(name))
+                    and ("合成演示" not in part or "合成演示资料" in body)
+                    and ("虚构" not in part or "虚构" in body)
+                ) for labels, body in candidates
+            ):
+                return False
+        return True
+
+    for clause in local_attribution_clauses(text, "，,。；;：:\r\n"):
+        if re.match(r"(?:并非|不是|没有|未|不|是否|能否)", clause):
+            continue
+        according = re.match(r"(?:根据|依据|对照|按照|按)(.+)$", clause)
+        if according and bound_subject(according[1]):
+            return True
+        scope = re.match(r"(?:仅针对|针对|仅就|就|在)(.+?)(?:范围内|而言|判断|中|内)?$", clause)
+        if scope and bound_subject(scope[1]):
+            return True
+        # Direct document subjects need a record predicate or explicit containment.
+        for predicate in re.finditer(r"(?:均|都|各自)?(?:明确)?(?:记载|记录|说明|规定|指出|提到|列出|将|称|中)", clause):
+            subject = clause[:predicate.start()]
+            if predicate.group().endswith("中") and not re.search(
+                r"(?:资料|材料|文档|文件|记录|试验|样本|情境|项目|》|" + LOCAL_VERSION + r")$", subject
+            ):
+                continue
+            if not re.search(r"(?:未|没有|并非|不是|不曾|不)(?:明确)?$", subject) and bound_subject(subject):
+                return True
+        classification = re.search(r"(?:均|都|各自)?(?:明确)?(?:自标为|自注为|标明为|标注为|属于)[“\"]?合成演示资料", clause)
+        if (classification and all("合成演示资料" in body for _, _, _, body in documents)
+                and bound_subject(clause[:classification.start()])):
+            return True
     return False
 
 

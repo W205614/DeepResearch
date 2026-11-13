@@ -3,7 +3,7 @@
 import pytest
 
 from backend.domain.models import ReportDraft, TargetVerification
-from backend.research.evidence_policy import validate_claim
+from backend.research.evidence_policy import has_local_attribution, validate_claim
 from backend.research.graph import ResearchGraph
 
 
@@ -24,6 +24,20 @@ REVIEW_SOURCE = {
     "id": "review-source", "kind": "local", "title": "review.md", "access": "document",
     "locator": "项目：补充试验 v0.4 · 字符 1–100",
     "text": "合成演示资料。文档版本：需求 v0.4。记录日期：2026-11-12。甲命中5条，乙命中8条。尚未验收上线。",
+}
+SCOPED_SOURCE = {
+    "id": "scoped-source", "kind": "local", "title": "design.md", "access": "document",
+    "locator": "工具设计：首版需求 · 字符 1–200",
+    "text": "合成演示资料。文档版本：需求 v2.7。记录日期：2025-07-09。项目与试验数据均为虚构。"
+            "小样本结果和延迟记录仅用于说明版本边界。甲命中5条，乙命中8条。尚未验收上线。"
+            "另有试验v3.1在2025-08-10的记录被提及，不是本需求的版本或记录日期。"
+            "不是实际测量结果，也不是产品排名记录；正文提及《另一份需求》不代表它是本文名称。",
+}
+OTHER_SCOPED_SOURCE = {
+    **SCOPED_SOURCE, "id": "other-scoped-source", "title": "checks.md",
+    "locator": "工具设计：待验清单 · 字符 1–200",
+    "text": "合成演示资料。试验版本：v3.1。记录日期：2025-08-10。项目与试验数据均为虚构。"
+            "甲命中5条，乙命中8条。待验清单没有提供已经验收上线的证明。",
 }
 
 
@@ -153,6 +167,92 @@ def test_versioned_descriptor_must_exist_in_the_actual_cited_source():
     source = {**REVIEW_SOURCE, "text": "试验版本 v0.4。甲命中5条，乙命中8条。"}
     assert not validate_claim("需求v0.4规定，甲命中5条。", [source])[0]
     assert validate_claim("补充试验v0.4记录，甲命中5条。", [source])[0]
+
+
+@pytest.mark.parametrize("prefix", [
+    "根据所提供的需求v2.7，",
+    "根据所提供的2025-07-09需求v2.7，",
+    "对照所提供的版本记录，",
+    "对照所提供的两次小样本结果，",
+    "按这些资料的说明，",
+    "合成演示资料中，",
+    "v2.7合成演示资料的虚构试验记录称，",
+    "v2.7合成演示资料中的虚构延迟记录为，",
+    "仅针对合成演示资料所设定的项目，",
+    "针对合成演示资料中的项目，",
+    "仅就两份合成演示资料的虚构记录而言，",
+    "在所提供合成演示资料的记录范围内，",
+    "合成演示资料《首版需求》（记录日期2025-07-09，需求v2.7）将试验结果记录为：",
+    "合成演示资料《需求v2.7》将试验结果记录为：",
+    "所提供的需求与待验清单均明确属于合成演示资料；",
+    "需求与待验清单均自标为“合成演示资料”；",
+])
+def test_bound_scope_grammar_handles_document_phrases_without_project_specific_names(prefix):
+    text = prefix + "甲命中5条，乙命中8条。"
+    assert validate_claim(text, [SCOPED_SOURCE, OTHER_SCOPED_SOURCE])[0]
+
+
+@pytest.mark.parametrize("text", [
+    "甲命中5条，乙命中8条。",
+    "并非根据所提供的需求v2.7，甲命中5条。",
+    "不是在v2.7合成演示资料的记录中，甲命中5条。",
+    "合成演示资料未记录甲命中5条。",
+    "合成演示资料没有记载甲命中5条。",
+    "合成演示资料是否记录甲命中5条。",
+    "是否根据所提供的需求v2.7，甲命中5条。",
+    "根据所提供的需求v2.7？甲命中5条。",
+    "所提供的需求v2.7不属于合成演示资料，甲命中5条。",
+    "根据真实测量结果，甲命中5条。",
+    "根据产品排名记录，甲命中5条。",
+    "在真实测量结果中，甲命中5条。",
+    "真实测量结果记录，甲命中5条。",
+    "根据所提供的《另一份需求》v2.7，甲命中5条。",
+    "根据所提供的《没有提供的需求》v2.7，甲命中5条。",
+    "根据所提供的《v3.1》，甲命中5条。",
+    "根据所提供的《首版需求》v3.1，甲命中5条。",
+    "根据所提供的2025-08-10需求v2.7，甲命中5条。",
+])
+def test_bound_scope_rejects_absence_negation_questions_external_scope_and_cross_source_aliases(text):
+    assert not has_local_attribution(text, [SCOPED_SOURCE, OTHER_SCOPED_SOURCE])
+    assert not validate_claim(text, [SCOPED_SOURCE, OTHER_SCOPED_SOURCE])[0]
+
+
+def test_bound_metadata_uses_document_version_not_a_version_mentioned_in_body():
+    assert not has_local_attribution("根据所提供的需求v3.1，甲命中5条。", [SCOPED_SOURCE])
+    assert not has_local_attribution("根据所提供的需求v2.7，甲命中5条。", [{**SCOPED_SOURCE, "kind": "web"}])
+    assert validate_claim("根据所提供的需求v2.7，甲命中5条。", [SCOPED_SOURCE])[0]
+    assert not validate_claim("根据所提供的需求v2.7，乙比甲多命中3条。", [SCOPED_SOURCE])[0]
+
+
+async def test_scope_eligibility_preserves_every_semantic_target_and_rejects_external_generalization(runtime):
+    graph = ResearchGraph(runtime.settings, runtime.db, runtime.providers, runtime.vectors, runtime.documents)
+    texts = ["根据所提供的需求v2.7，甲命中5条。",
+             "根据所提供的需求v2.7，甲命中5条，而且所有真实系统均已验收上线。",
+             "根据所提供的需求v2.7，乙比甲多命中3条。"]
+    draft = ReportDraft.model_validate({"title": "资料范围", "sections": [{"heading": "记录", "claims": [
+        {"text": text, "source_ids": [SCOPED_SOURCE["id"]]} for text in texts
+    ]}]})
+    calls = []
+
+    async def structured(role, instruction, data, schema, run_id, **kwargs):
+        assert role == "validator" and schema is TargetVerification
+        calls.append(data)
+        assert [claim["text"] for claim in data["claims"]] == texts[:2]
+        assert data["sources"][SCOPED_SOURCE["id"]] == SCOPED_SOURCE
+        return TargetVerification.model_validate({"checks": [
+            {"index": claim["index"], "supported": claim["index"] == 0,
+             "reason": "资料内记录" if claim["index"] == 0 else "原文是虚构且尚未验收，不支持外部泛化",
+             "unsupported_parts": [] if claim["index"] == 0 else ["所有真实系统均已验收上线"],
+             "atomic_checks": [{"target_id": target["id"], "supported": claim["index"] == 0}
+                               for target in claim["targets"]]}
+            for claim in data["claims"]
+        ]})
+
+    runtime.providers.structured = structured
+    approved, checks = await graph.check_draft({"run_id": "scope-grammar"}, draft, {SCOPED_SOURCE["id"]: SCOPED_SOURCE})
+    assert approved == {0} and len(calls) == 1
+    assert {row["index"] for row in checks if not row["supported"]} == {1, 2}
+    assert [claim.text for claim in draft.sections[0].claims] == texts
 
 
 async def test_new_record_grammar_preserves_sources_and_full_semantic_targets(runtime):
