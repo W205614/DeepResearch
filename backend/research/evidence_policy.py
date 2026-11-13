@@ -68,6 +68,21 @@ LOCAL_LEGACY_ATTRIBUTION = re.compile(
 )
 
 
+def local_locator_pattern(locator: str) -> str:
+    literal = r"\s*".join(re.escape(c) for c in locator if not c.isspace())
+    fields = re.fullmatch(r"(.*?)\s*·\s*字符\s*(\d+)\s*[–-]\s*(\d+)", locator)
+    if fields is None:
+        return literal
+    heading, start, end = fields.groups()
+    heading = r"\s*".join(re.escape(c) for c in heading if not c.isspace())
+    start = r"\s*".join(re.escape(c) for c in start)
+    end = r"\s*".join(re.escape(c) for c in end)
+    span = rf"字\s*符\s*{start}\s*[–-]\s*{end}"
+    # These delimiters format the same bound heading and complete character range.
+    # They do not normalize numbers, units, or any part of the factual claim.
+    return heading + rf"\s*(?:·\s*{span}|（\s*{span}\s*）|\(\s*{span}\s*\))"
+
+
 def has_local_attribution(text: str, sources: list[dict]) -> bool:
     compact = re.sub(r"\s+", "", text)
     labels = [re.sub(r"\s+", "", source.get(field, ""))
@@ -139,13 +154,13 @@ def validate_claim(text: str, sources: list[dict]) -> tuple[bool, str]:
             if source.get("locator"):
                 # Only the cited source's exact locator is metadata. Formatting
                 # whitespace may differ, but invented ranges remain factual targets.
-                locator = r"\s*".join(re.escape(c) for c in source["locator"] if not c.isspace())
+                locator = local_locator_pattern(source["locator"])
                 located_label = title + rf"\s*[（(]\s*{locator}\s*[）)]"
                 numeric_text = re.sub(located_label, "", numeric_text)
                 # The same bound label may be written as an explicit citation
                 # field rather than parenthesized after a book-title label.
                 citation_field = (r"引用(?:位置)?\s*[:：]\s*" + re.escape(source["title"])
-                                  + rf"\s*[,，]\s*{locator}(?=$|[。；;，,\n])")
+                                  + rf"\s*[,，]\s*{locator}(?=$|[。；;，,：:\n])")
                 numeric_text = re.sub(citation_field, "", numeric_text)
                 label += rf"(?:\s*[（(]\s*{locator}\s*[）)])?"
             named_local_attribution |= bool(re.search(

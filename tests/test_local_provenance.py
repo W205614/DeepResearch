@@ -18,6 +18,8 @@ FINAL_ORIGINAL = "根据所提供的本地功能验收资料，工作空间成�
 FINAL_DELETION = "根据所提供的本地功能验收资料，删除资料后的检索预期是：被删除的资料不应在知识库检索结果中出现。原文：“删除资料后，不应在知识库检索结果中出现。”引用位置：lifecycle.txt，正文 · 字符 1–41。"
 ACTUAL_CITATION = "根据所提供的本地功能验收资料，工作空间成员权限在后端校验。引用：lifecycle.txt，正文·字符1–41，原文“工作空间成员权限在后端校验”。"
 ACTUAL_CITATION_DELETION = "根据所提供的本地功能验收资料，删除资料后的预期是：被删除的资料不应在知识库检索结果中出现。引用：lifecycle.txt，正文·字符1–41，原文“删除资料后，不应在知识库检索结果中出现”。"
+ACTUAL_PARENTHESIZED_CITATION = "根据所提供的本地功能验收资料，工作空间成员权限在后端校验。引用：lifecycle.txt，正文（字符1–41）：“工作空间成员权限在后端校验。”"
+ACTUAL_PARENTHESIZED_DELETION = "根据所提供的本地功能验收资料，删除资料后的检索预期是：被删除资料不应在知识库检索结果中出现。引用：lifecycle.txt，正文（字符1–41）：“删除资料后，不应在知识库检索结果中出现。”"
 REVIEW_SOURCE = {
     "id": "review-source", "kind": "local", "title": "review.md", "access": "document",
     "locator": "项目：补充试验 v0.4 · 字符 1–100",
@@ -26,7 +28,8 @@ REVIEW_SOURCE = {
 
 
 @pytest.mark.parametrize("text", [ORIGINAL, REPAIR, FINAL_ORIGINAL, FINAL_DELETION,
-                                  ACTUAL_CITATION, ACTUAL_CITATION_DELETION])
+                                  ACTUAL_CITATION, ACTUAL_CITATION_DELETION,
+                                  ACTUAL_PARENTHESIZED_CITATION, ACTUAL_PARENTHESIZED_DELETION])
 def test_actual_failed_claims_reach_semantic_validation(text):
     allowed, reason = validate_claim(text, [SOURCE])
     assert allowed, reason
@@ -61,6 +64,31 @@ def test_actual_failed_claims_reach_semantic_validation(text):
 ])
 def test_unbound_metadata_and_unattributed_facts_stay_blocked(text):
     assert not validate_claim(text, [SOURCE])[0]
+
+
+@pytest.mark.parametrize("locator", ["正文·字符1–41", "正文·字符1-41", "正文（字符1–41）",
+                                   "正文(字符1-41)", "正 文 （ 字 符 1 – 4 1 ）"])
+def test_bound_locator_fields_accept_only_presentation_changes(locator):
+    claim = ACTUAL_PARENTHESIZED_CITATION.replace("正文（字符1–41）", locator)
+    assert validate_claim(claim, [SOURCE])[0]
+
+
+@pytest.mark.parametrize("locator", ["正文（字符1–42）", "正文（字符1–410）", "正文（字符1–41.5）",
+                                   "正文（字符1–41万）", "正文（字符2–41）", "正文（字符01–41）",
+                                   "附录（字符1–41）", "正文（字符1–41)", "正文(字符1–41）"])
+def test_changed_locator_fields_and_unpaired_delimiters_stay_factual(locator):
+    claim = ACTUAL_PARENTHESIZED_CITATION.replace("正文（字符1–41）", locator)
+    assert not validate_claim(claim, [SOURCE])[0]
+
+
+@pytest.mark.parametrize("change", [
+    lambda text: text.replace("lifecycle.txt", "other.txt"),
+    lambda text: text + "校验耗时41毫秒。",
+    lambda text: text + "存在1项缺陷。",
+    lambda text: text.replace("根据所提供的本地功能验收资料，", ""),
+])
+def test_parenthesized_locator_never_substitutes_for_fact_or_attribution_checks(change):
+    assert not validate_claim(change(ACTUAL_PARENTHESIZED_CITATION), [SOURCE])[0]
 
 
 def test_document_title_year_is_metadata_only_inside_exact_source_label():
@@ -159,10 +187,11 @@ async def test_new_record_grammar_preserves_sources_and_full_semantic_targets(ru
 
 
 @pytest.mark.parametrize("citation_label", ["引用位置", "引用"])
-async def test_bound_provenance_keeps_full_claim_and_semantic_rejection(runtime, citation_label):
+@pytest.mark.parametrize("locator", ["正文 · 字符 1–41", "正文（字符1–41）"])
+async def test_bound_provenance_keeps_full_claim_and_semantic_rejection(runtime, citation_label, locator):
     graph = ResearchGraph(runtime.settings, runtime.db, runtime.providers, runtime.vectors, runtime.documents)
-    original = FINAL_ORIGINAL.replace("引用位置", citation_label)
-    deletion = FINAL_DELETION.replace("引用位置", citation_label)
+    original = FINAL_ORIGINAL.replace("引用位置", citation_label).replace(SOURCE["locator"], locator)
+    deletion = FINAL_DELETION.replace("引用位置", citation_label).replace(SOURCE["locator"], locator)
     contradiction = original.replace("后端", "前端")
     texts = [original, deletion, contradiction, original.replace("1–41", "1–42")]
     draft = ReportDraft.model_validate({"title": "验收", "sections": [{"heading": "权限", "claims": [
