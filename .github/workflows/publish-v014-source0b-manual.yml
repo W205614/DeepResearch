@@ -1,0 +1,43 @@
+name: Promote accepted v0.1.4 Source0b once
+
+on:
+  workflow_dispatch:
+
+permissions: { contents: read }
+concurrency:
+  group: application-package-publication
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions: { contents: read, packages: write }
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: 0b613f1386bcd7067cb54e236db6e29510c44b16
+          persist-credentials: false
+      - name: Download only the exact Source0b operator from its published version Release
+        shell: bash
+        run: |
+          mkdir -p .cache/operator-source0b
+          curl --fail --location --silent --show-error --connect-timeout 20 --max-time 180 --retry 2 --retry-all-errors --retry-max-time 180 --output .cache/operator-source0b/promote_v014_source0b.py https://github.com/W205614/DeepResearch/releases/download/v0.1.4/promote_v014_source0b.py
+          printf '%s  %s\n' "$ADAPTER_SHA256" .cache/operator-source0b/promote_v014_source0b.py | sha256sum --check --status
+        env:
+          ADAPTER_SHA256: 4606002c09cf99cae76f4dfd5c3ed2301f6b81ce920c7065adbb442dcb05cb31
+      - name: Promote only accepted archive bytes under the exact one-release CI waiver
+        run: python .cache/operator-source0b/promote_v014_source0b.py
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - uses: actions/upload-artifact@v6
+        if: always() && hashFiles('.cache/eval/application-publication-source0b/publication-manifest.json') != ''
+        with:
+          name: actual-v014-source0b-registry-publication-${{ github.run_id }}
+          path: |
+            .cache/eval/application-publication-source0b/publication.json
+            .cache/eval/application-publication-source0b/publication-manifest.json
+            .cache/eval/application-publication-source0b/acceptance.json
+            .cache/eval/application-publication-source0b/security-ready.json
+            .cache/eval/application-publication-source0b/ci-waiver-v014-source0b.json
+          if-no-files-found: error
