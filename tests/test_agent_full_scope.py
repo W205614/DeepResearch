@@ -119,7 +119,8 @@ def decide(inputs, *, scan_source="docker"):
 
 def test_exact_review_keeps_original_findings_and_is_not_raw_zero(reviewed_inputs):
     verdict = decide(reviewed_inputs)
-    expected_count = 88 if reviewed_inputs[3]['name'] == gate.PROFILE_NAME else 92
+    expected_count = (94 if reviewed_inputs[3]['name'] == gate.SOUP_PROFILE_NAME
+                      else 88 if reviewed_inputs[3]['name'] == gate.PROFILE_NAME else 92)
     assert verdict["passed"] and verdict["raw_findings"] == expected_count
     assert verdict["unresolved_applicable_findings"] == 0
     assert not verdict["raw_zero_claim"] and not verdict["risk_acceptance"]

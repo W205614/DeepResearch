@@ -11,13 +11,15 @@ from scripts import check_tempo_app_exact1 as tempo
 from scripts import grafana_image_disposition as grafana
 from scripts import image_disposition as minio
 from scripts import security_review_policy as policy
+from scripts.retained_source_review_20261112 import snapshot
 
 
 FUTURE = datetime(2099, 1, 1, tzinfo=timezone.utc)
 LOADERS = {
     'minio': lambda: minio.load_binding(now=FUTURE),
     'legacy-grafana': lambda: grafana.load_binding(now=FUTURE),
-    'current-grafana': lambda: candidate.load_request(now=FUTURE),
+    # exact28 is an immutable predecessor, not the current Go1.27.4 runtime.
+    'historical-exact28-grafana': lambda: candidate.load_request(snapshot(candidate.ROOT), now=FUTURE),
     'legacy-source2': lambda: fs.load_scope(fs.ROOT, fs.POLICY, FUTURE),
     'current-source2': lambda: source.load_review(source.ROOT, FUTURE),
     # The old selector controls changed when maintenance became active. Its exact

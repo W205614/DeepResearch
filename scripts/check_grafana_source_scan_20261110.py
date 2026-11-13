@@ -221,7 +221,7 @@ def assess_findings(root, profile, observed, compiled):
 
 def evaluate(scan, receipt, original_verdict, candidate_verdict, *, raw_sha256, original_sha256,
              source_commit, root=ROOT, now=None, tracked_clean=True, expected_targets=None,
-             prepare=False, profile=None, runtime_inventory=None):
+             prepare=False, profile=None, runtime_inventory=None, compiled_root=None):
     now = now or datetime.now(timezone.utc)
     profile = profile if prepare else build.load_profile(root)
     observed, counts, findings = source_facts(scan)
@@ -234,7 +234,9 @@ def evaluate(scan, receipt, original_verdict, candidate_verdict, *, raw_sha256, 
     require({k: v for k, v in candidate_verdict.items() if k != 'preserved_original_verdict_file_sha256'} == prior
             and candidate_verdict.get('preserved_original_verdict_file_sha256') == original_sha256,
             'Preserved original/candidate source verdicts differ from independent recomputation')
-    compiled = verify_compiled(root, profile)
+    # Scanner completion and current manifests still use root; only a caller's
+    # separately verified historical compilation may use its immutable source.
+    compiled = verify_compiled(root if compiled_root is None else compiled_root, profile)
     rows = observed['findings']
     result = {'passed': False, 'operational_collection': True, 'scan_completion_verified': True,
         'mode': 'source_build_preparation', 'profile': build.PROFILE, 'raw_counts': counts,

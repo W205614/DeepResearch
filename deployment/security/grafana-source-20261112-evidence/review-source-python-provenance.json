@@ -1,0 +1,41 @@
+{
+  "actor": "/root/release_prepare",
+  "actor_kind": "automated_independent_agent",
+  "observed_at_utc": "2026-11-13T12:31:23.759502+00:00",
+  "subject_sha256": "1e01a6a863f1e1c52dafa31a1013b18d7adb192492762c2cb83d4703fe706999",
+  "facts_passed": true,
+  "risk_acceptance": false,
+  "binary_redistribution_approved": false,
+  "reviewed_draft_sha256": "c52664269acc69403c240daffaac9488ac748cdbbf86c2486727cb6f952a1735",
+  "all_current_source_and_evidence_hashes_verified": 198,
+  "all_nonmetadata_profile_facts_identical": true,
+  "source_inputs_native14_runtime_trivy40_grype10_unchanged": true,
+  "actual_original_CI_raw73_sha256": "cec4e8878925d4c544efe90e86e76d57964c58b94067688283e8f5b818025822",
+  "original_raw_bytes_unchanged": true,
+  "complete_source_targets": 79,
+  "source_uv_lock_packages": 114,
+  "actual_runtime_packages": 125,
+  "actual_snapshot10_backend64_python_and1_contract_equal": true,
+  "new_exact_rows": [
+    {
+      "id": "CVE-2026-126190",
+      "target": "uv.lock",
+      "package": "soupsieve",
+      "version": "2.9.2",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-126192",
+      "target": "uv.lock",
+      "package": "soupsieve",
+      "version": "2.9.2",
+      "severity": "MEDIUM"
+    }
+  ],
+  "actual_function_replay": "python_source_scope accepted full original73; only its two exact returned identities removed from an in-memory deep copy, then unchanged 71 finding/Tomcat110 package/79target proof and original14 compiled graph adjudication replayed successfully. Original observation and raw untouched.",
+  "application_route_review": "Read current fetch_text/callers and exact RP2 proof: BeautifulSoup html.parser literal tag find/find_all/text paths use no CSS selector API. Known affected SoupSieve functions remain installed; no package-fixed or arbitrary CSS/pandas usage approval.",
+  "physical_boundary": "Static source/profile and saved original source-report adjudication only. No native compilation, image export, scan, model or repeated115tests. Existing 12ba native/runtime/raw observations inherited, new label identity separate.",
+  "old_peer_review_preserved": true,
+  "services_started": false,
+  "new_paid_calls": 0
+}

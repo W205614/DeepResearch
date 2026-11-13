@@ -1,0 +1,322 @@
+{
+  "schema": "agent-soupsieve-exact-current-path-review-v1",
+  "actor": "/root/review_provenance",
+  "actor_kind": "automated_technical_source_review",
+  "risk_acceptance": false,
+  "review_scope": "Two exact new SoupSieve findings; all92 prior findings/dispositions and source/native/runtime identities retained.",
+  "retained_profile": {
+    "path": "deployment/security/agent-local-attribution-profile-20261113.json",
+    "sha256": "b39a5f5ee18031c7e07fadd79a96a288de9c248d09865c73fce84cbd73e7b570"
+  },
+  "retained_review": {
+    "path": "deployment/security/agent-local-attribution-evidence-20261113.json",
+    "sha256": "76722a8e0e80ab335b17ab79fea1ad84d515a97fdd2366b1798db30482002b30"
+  },
+  "upstream_package_affected": true,
+  "package_fixed_claim": false,
+  "python_source_closure": {
+    "files": 5972,
+    "sha256": "65afcf37293fd4aca0086828680b4cdeeee91638c8e3787b02968335bc97af93"
+  },
+  "native_elf_closure": {
+    "files": 515,
+    "sha256": "7bde6d27b4fd6015f058da3f28d8c1e5dfb0155aadca77a61919225674d4f348"
+  },
+  "ci_pre_gate_scope": "Pure-Python CSS-path proof requires the complete5972 Python sources,22 wheel files and full94/125 raw finding/package tuples. Cold-built CPython ELF bytes are not a SoupSieve prerequisite. The independent SQLite/zlib native fixed-byte checks remain mandatory, and final packaged full-scope still requires the complete515 ELF closure.",
+  "raw_findings": 94,
+  "additional_evidence_files": [
+    {
+      "path": "deployment/security/agent-openssl-20261111-evidence/boundary-probe.json",
+      "sha256": "2faa9969ccc3eaeeeee334dc0dfc66e22cd1512de1522d879ae73ae086edaf15"
+    },
+    {
+      "path": "deployment/security/agent-openssl-20261111-evidence/cpython-source-selection.json",
+      "sha256": "e7109c05bcb0453a63172f9f5212e4e2af424de60ab66757b8217aaa399f1330"
+    },
+    {
+      "path": "deployment/security/agent-openssl-20261111-evidence/loaded-probe.json",
+      "sha256": "18de856291f7d904e9269b045a2bbdd340e1b616877100f2688bda67065d7446"
+    },
+    {
+      "path": "deployment/security/agent-openssl-20261111-evidence/native-route-inventory.json",
+      "sha256": "2d54ea3ecb123bd6f6b890f8342a8ec1192ab6866adf925e17b6fef5d2f46474"
+    },
+    {
+      "path": "deployment/security/agent-openssl-20261111-evidence/new-findings-source-review.json",
+      "sha256": "a784f012262a989b90d5a22e484ed817f02907fe7e953117d5da09b2759227be"
+    },
+    {
+      "path": "deployment/security/agent-openssl-20261111-evidence/primary-sources.json",
+      "sha256": "c192fb9b84eeb62105a092d689f6f819dcc116d18b2c129b9f30bc83861e5dc3"
+    },
+    {
+      "path": "deployment/security/agent-openssl-20261111-evidence/probe_high_level_boundaries.py",
+      "sha256": "b2bb2d879796ec44224c7c26f4c5c19c07caf6854b5c622af9a8b60e71ca5a91"
+    },
+    {
+      "path": "deployment/security/agent-openssl-20261111-evidence/probe_loaded_openssl.py",
+      "sha256": "c41bf6159529c97179c3f2cf517e4381dc784de2f1af2822368f15696590661e"
+    },
+    {
+      "path": "deployment/security/agent-openssl-20261111-evidence/python-route-inventory.json",
+      "sha256": "1a9d8973cbda82a73027a16feb69ba4cd7ed31d08e5d2f932c0e4d9be7850c88"
+    },
+    {
+      "path": "deployment/security/agent-openssl-20261111-evidence/reproduce.md",
+      "sha256": "2a5a1486b43979c2b5397e5744b9b2303a83986125beb2643d7ddf6b9ab9ebf7"
+    },
+    {
+      "path": "deployment/security/agent-full-scope-20261110.json",
+      "sha256": "ab92a7f1ade51ff150c9e48092a2dca898142b4541460f5b50b305c240ab09d3"
+    },
+    {
+      "path": "deployment/security/agent-full-scope-evidence-20261111.json",
+      "sha256": "89b958c3bfe703cb6ef48e28d28f991ca8dbf204e4625dedae93af9b7d997fe6"
+    },
+    {
+      "path": "deployment/security/agent-ordinary-query-20261112-evidence/evidence_policy-ec6c8e6.txt",
+      "sha256": "49d56ab18e9e6257ab37b050d9573970278da3a7667b9d1333cc71a55eaf2bdb"
+    },
+    {
+      "path": "deployment/security/agent-glibc-20261112-evidence/glibc-binary-package-mapping.json",
+      "sha256": "3c52b793ae33ad733e7e4bb09d2f3d65d5e2fcc6ea3632f85d9dee09f03533ea"
+    },
+    {
+      "path": "deployment/security/agent-glibc-20261112-evidence/independent-second-review.json",
+      "sha256": "3674379c79ac1dd5e9798a11697e06d93ec6cfc43b20bd5e9463500ae30d77d0"
+    },
+    {
+      "path": "deployment/security/agent-glibc-20261112-evidence/kerberos-binary-source-binding.json",
+      "sha256": "b156f2766303a436b37acfadf64bfa63a77b38f79ce6d2da8fd1a3beb61bdb71"
+    },
+    {
+      "path": "deployment/security/agent-glibc-20261112-evidence/native-route-inventory.json",
+      "sha256": "1fac6acfe53029ef7379ea2bb2d68cd2cec359a3b074c6ac9e237f342fc83043"
+    },
+    {
+      "path": "deployment/security/agent-glibc-20261112-evidence/primary-sources.json",
+      "sha256": "116050142ac7adf774ab4c240650e095cfe786d059252d58efb486209b5688f6"
+    },
+    {
+      "path": "deployment/security/agent-glibc-20261112-evidence/python-ffi-boundary.json",
+      "sha256": "a37405ab4db94d996b76c9f4c538aa2b7ce5f0c6808125d88faa6f855acd5b05"
+    },
+    {
+      "path": "deployment/security/agent-glibc-20261112-evidence/regex-entry-boundary.json",
+      "sha256": "8cbc99c61d6397c93136c054ec1a8b270a5aa8ad7c4c4f978c080adba71fef7f"
+    },
+    {
+      "path": "deployment/security/agent-glibc-20261112-evidence/regex-kerberos-review.json",
+      "sha256": "73a1136d876eb7b47106ad98e2162407af529cefc97e0609cb43818aff89dcc1"
+    },
+    {
+      "path": "deployment/security/agent-glibc-20261112-evidence/wide-scanf-review.json",
+      "sha256": "9ad4b71493023ecdf05d77cd05a8fb1c7da44db42758f9f6cb47f0ff0c420b09"
+    },
+    {
+      "path": "deployment/security/agent-ordinary-query-profile-20261112.json",
+      "sha256": "01ec992443377f574be444c8258f95addb7cba1a9d3906e3d0ffed5f1fbc7517"
+    },
+    {
+      "path": "deployment/security/agent-ordinary-query-evidence-20261112.json",
+      "sha256": "05be2ae9b54940b92e9e74f7c5b55c39afb3a5602b0bad8517809c8c347f574b"
+    },
+    {
+      "path": "deployment/security/agent-ordinary-query-20261113-evidence/backend-source-manifest.json",
+      "sha256": "8fb239159c5b0655e269b509e8d3ec8b087d8bb83ead59a797fa16e0e151a46c"
+    },
+    {
+      "path": "deployment/security/agent-ordinary-query-20261113-evidence/CVE-2026-107496.html.gz",
+      "sha256": "c1413a9752d057db496bb7ebf780db0d8ca3c5ec06b9f98e69bb4ab27992244f"
+    },
+    {
+      "path": "deployment/security/agent-ordinary-query-20261113-evidence/CVE-2026-88822.html.gz",
+      "sha256": "416a7a29d705b864faf339115e4b8c5b984ede2e9e262060330b82f98d9c1d0e"
+    },
+    {
+      "path": "deployment/security/agent-ordinary-query-20261113-evidence/CVE-2026-88823.html.gz",
+      "sha256": "35a040cf0677c632d0c46b3f5d9b8ded64dd1dc7b56138272a31dd38f6d0244d"
+    },
+    {
+      "path": "deployment/security/agent-ordinary-query-20261113-evidence/CVE-2026-95691.html.gz",
+      "sha256": "3ca302e656270fabbdb3b9a44066ab85adf5199cf45fa31b50bc36d8d76a6fb4"
+    },
+    {
+      "path": "deployment/security/agent-ordinary-query-20261113-evidence/CVE-2026-95692.html.gz",
+      "sha256": "433cac6f56fb641ab8819615bf2a27e342928b85b252429dca7a1d72e7064366"
+    },
+    {
+      "path": "deployment/security/agent-ordinary-query-20261113-evidence/evidence_policy.py.txt",
+      "sha256": "d11b7db356eb16476c0e51e750b4c2d7df71555ca69ed7765f89bf927102b51a"
+    },
+    {
+      "path": "deployment/security/agent-ordinary-query-20261113-evidence/old-python-manifest.json.gz",
+      "sha256": "6ad4d6652067f165ec9ae46324baf9adf466a95bb1752a742f5ecd85173f5add"
+    },
+    {
+      "path": "deployment/security/agent-ordinary-query-20261113-evidence/openssl-advisory-20261110.txt.gz",
+      "sha256": "6f211f34b6502278eec219e6160b5782129bcb7faf84c9fcad85216de0d15e2f"
+    },
+    {
+      "path": "deployment/security/agent-ordinary-query-20261113-evidence/primary-sources.json",
+      "sha256": "d54d03cbfe4bee039953ca59e4c2cc68b898088105b452975f80cb0f528c9afd"
+    },
+    {
+      "path": "deployment/security/agent-ordinary-query-20261113-evidence/providers.py.txt",
+      "sha256": "3027bc81dd633a67e8af432ad6f146191e097369a373f370dbf5b0f6864c67ef"
+    },
+    {
+      "path": "deployment/security/agent-ordinary-query-20261113-evidence/runtime-inventory.stdout.json.gz",
+      "sha256": "db0a43034c8e0d701fe3fad121b993b3dbea41e6a6c0bf850fcd2a642a754ee8"
+    },
+    {
+      "path": "deployment/security/agent-ordinary-query-20261113-evidence/severity-migration.json",
+      "sha256": "7e6a4a59c9e7cda48829584a81bd1a80d6224678e958898bf5853e60f48fddd8"
+    },
+    {
+      "path": "deployment/security/agent-ordinary-query-20261113-evidence/source-native-comparison.json",
+      "sha256": "bc12c392f497ab766006edef15cb42e9cb44909c65e79c93e65e7684a579bc8d"
+    },
+    {
+      "path": "deployment/security/agent-ordinary-query-profile-20261113.json",
+      "sha256": "b8b08682948a9abeed85ff951e4296462a35b5ffedfb2fb4cc70b680ac124996"
+    },
+    {
+      "path": "deployment/security/agent-ordinary-query-evidence-20261113.json",
+      "sha256": "0344c089e34a6db7d5af8cfc6305c1ff4c500d03553c99503340db9782c92109"
+    },
+    {
+      "path": "deployment/security/agent-reference-locator-20261113-evidence/backend-source-manifest.json",
+      "sha256": "9003515922855883f564c6b7ca09cd1961d044732b12bb963edb9f893ab42ad1"
+    },
+    {
+      "path": "deployment/security/agent-reference-locator-20261113-evidence/evidence_policy.py.txt",
+      "sha256": "196384a4bf6519b8b23832125aea5d6fe1da09bc4d2ef16ef015ff5d4bcd0f2f"
+    },
+    {
+      "path": "deployment/security/agent-reference-locator-20261113-evidence/runtime-inventory.stdout.json.gz",
+      "sha256": "e6c9d9307bd85235ea01b6cebb6c1efe4b5bfae02baf74d63ac63a604b537197"
+    },
+    {
+      "path": "deployment/security/agent-reference-locator-20261113-evidence/runtime_inventory_only.py.txt",
+      "sha256": "d4e426600c94268ab2a77edf2e7838a6bb0bc74ae95f2280f8c8b5a921de2c0b"
+    },
+    {
+      "path": "deployment/security/agent-reference-locator-20261113-evidence/source-native-comparison.json",
+      "sha256": "9c94d42812f79170975008b92aabc91825fc4b3daccab42453b5a1d1102ff71b"
+    },
+    {
+      "path": "deployment/security/agent-reference-locator-profile-20261113.json",
+      "sha256": "2a300cac09bc6b9b0d4f4a5ddbcbccf809cc050b75ec27c2510ee64d871ebaa1"
+    },
+    {
+      "path": "deployment/security/agent-reference-locator-evidence-20261113.json",
+      "sha256": "c51a405a5db3a9979deed87375b544da9357c8ddf318175a12e1dd782bf3f7a0"
+    },
+    {
+      "path": "deployment/security/agent-structured-locator-20261113-evidence/backend-source-manifest.json",
+      "sha256": "e296f218a2822d097dff7e8aa38d4fbaa34e7ee0bbc2b4c74de66f1e1a155b7d"
+    },
+    {
+      "path": "deployment/security/agent-structured-locator-20261113-evidence/evidence_policy.py.txt",
+      "sha256": "fc6e217fe91c6a775068f47eb560c5c67181a03a604d636bcaf380d77daf040c"
+    },
+    {
+      "path": "deployment/security/agent-structured-locator-20261113-evidence/runtime-inventory.stdout.json.gz",
+      "sha256": "2541a83721bc37796a59441cf15947f9b4b843eda7166f40f1a6c3024fbc04b4"
+    },
+    {
+      "path": "deployment/security/agent-structured-locator-20261113-evidence/runtime_inventory_only.py.txt",
+      "sha256": "d4e426600c94268ab2a77edf2e7838a6bb0bc74ae95f2280f8c8b5a921de2c0b"
+    },
+    {
+      "path": "deployment/security/agent-structured-locator-20261113-evidence/source-native-comparison.json",
+      "sha256": "5188273f78b3be8e531c51d7bdfaaad34a144bfe8445ebf3d27ecc4f863b5b54"
+    },
+    {
+      "path": "deployment/security/agent-structured-locator-profile-20261113.json",
+      "sha256": "450112b53fd94278d33bb2603d5a0dd2fa012c3d4fad48140db9fcbfae56bb65"
+    },
+    {
+      "path": "deployment/security/agent-structured-locator-evidence-20261113.json",
+      "sha256": "3ac20cb00235abfb6d84703801a530bedab2b7713c0719b7f9898f57e6e6cdac"
+    },
+    {
+      "path": "deployment/security/agent-local-attribution-20261113-evidence/backend-source-manifest.json",
+      "sha256": "00e619f72e7c0ea783c144d255aae5b63f29142cfe293325534f8ae5c5484e11"
+    },
+    {
+      "path": "deployment/security/agent-local-attribution-20261113-evidence/evidence_policy.py.txt",
+      "sha256": "9f9c9e3fccbdf06886f4f200ed3ae69345af1c273797fffd30abed8a657ff447"
+    },
+    {
+      "path": "deployment/security/agent-local-attribution-20261113-evidence/runtime-inventory.stdout.json.gz",
+      "sha256": "d13ee519cb353e151f4a6ac5cec033dbfb21bd082351d23045b2bdca437c9782"
+    },
+    {
+      "path": "deployment/security/agent-local-attribution-20261113-evidence/runtime_inventory_only.py.txt",
+      "sha256": "d4e426600c94268ab2a77edf2e7838a6bb0bc74ae95f2280f8c8b5a921de2c0b"
+    },
+    {
+      "path": "deployment/security/agent-local-attribution-20261113-evidence/source-native-comparison.json",
+      "sha256": "29ff8ed0a70e88a46ec42d3e67a9d9961218594d0b8083379d3a6f5240847827"
+    },
+    {
+      "path": "deployment/security/agent-local-attribution-profile-20261113.json",
+      "sha256": "b39a5f5ee18031c7e07fadd79a96a288de9c248d09865c73fce84cbd73e7b570"
+    },
+    {
+      "path": "deployment/security/agent-local-attribution-evidence-20261113.json",
+      "sha256": "76722a8e0e80ab335b17ab79fea1ad84d515a97fdd2366b1798db30482002b30"
+    },
+    {
+      "path": "deployment/security/agent-soupsieve-paths-20261113-evidence/actual-source-import-scope.json",
+      "sha256": "d79549662b069559d287d9d2e564750e5e72dd2a48252f5dc0b2ff437f11345e"
+    },
+    {
+      "path": "deployment/security/agent-soupsieve-paths-20261113-evidence/application-path-review.json",
+      "sha256": "aaf84140866eb35cd32517397ed67bfcb6caa0f38b4e6d336e24190eebeb1368"
+    },
+    {
+      "path": "deployment/security/agent-soupsieve-paths-20261113-evidence/fresh-scan-delta.json",
+      "sha256": "7d08c91cc770d902047e46eca6872677176ff6be3dfcd8bd579e2ccd13545a55"
+    },
+    {
+      "path": "deployment/security/agent-soupsieve-paths-20261113-evidence/normal-html-probe.json",
+      "sha256": "64b68a4ff919027d16de81be65e81978f62083f5d19b90ecef46d2d83c362e09"
+    },
+    {
+      "path": "deployment/security/agent-soupsieve-paths-20261113-evidence/normal_html_probe.py.txt",
+      "sha256": "807e7ecec6fa7dcd0e786d4a7210d181086dfd3c0e38519c23b70a8cf8cddaaf"
+    },
+    {
+      "path": "deployment/security/agent-soupsieve-paths-20261113-evidence/primary-sources.json",
+      "sha256": "daaf77fa5f552e76aad376bd7eac31c1d8c87ecd8faf9f12120012b7230d668e"
+    },
+    {
+      "path": "deployment/security/agent-soupsieve-paths-20261113-evidence/wheel-source-bindings.json",
+      "sha256": "a0b20e40dda66891cdb5e1275368705e3f5a264945f9140a635c311c8b1d1cf7"
+    },
+    {
+      "path": "scripts/check_agent_native_packages.py",
+      "sha256": "fc99a1a4f7f57f9de2d7d31855d5b00663f543fd8c4773ba9b1f71f97a50abc3"
+    },
+    {
+      "path": "backend/core/security.py",
+      "sha256": "6ecc94ff30e4f115754dab554f85c34c389c92e2a89e8db12259e6f19245dfbe"
+    },
+    {
+      "path": "backend/research/graph.py",
+      "sha256": "b4bd11568b52059ac0420acedaad5ffb65e22ca6531c15783a5acf39b7d48ce9"
+    },
+    {
+      "path": "backend/api/source_rechecks.py",
+      "sha256": "09532b8abceb6e7b80102383e1974729dc357ecc0aeb8b81ecaed5dab3faeeab"
+    },
+    {
+      "path": "uv.lock",
+      "sha256": "ddeba33cd99792dc69bfd6d09253a85f0e56dc2807bcede2176e70b4e761bf6f"
+    }
+  ],
+  "independent_review": "Root and peer review required before publication; this generator does not grant binary redistribution approval."
+}

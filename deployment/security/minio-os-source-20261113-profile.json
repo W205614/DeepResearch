@@ -23,7 +23,7 @@
     "deployment/vendors/minio/legacy-part2024.msgp": "cca3483e758d59aa0fd0ad3cc0ccc0ecb1e2afcdc6ebf399c57d515e7c4598cb",
     "deployment/vendors/minio/legacy_part_compat.go": "2fcd20ee874cf8cd837651224135463925a98a1209fd1dd7f3a4298ae41a3792",
     "deployment/vendors/minio/legacy_part_compat_test.go": "a4d464887c7fbb89116ed3309f4cfa039c405755d9bfff55b51d01bc50008ad6",
-    "scripts/build_go_stdlib_security_20261112.py": "d860a5261625e0dc745e32969e426e77c8ca33b92e3412f33a884ab146222fe4",
+    "scripts/build_go_stdlib_security_20261112.py": "7febf7d4e546c693f0115cbf1a9fe80093d13a3b786b5b26352d3ef0debd6cbb",
     "scripts/build_minio_os_20261113.py": "28700eed440f39872674c80dfb55b7bbe298375be628ecd9c2eb2401a6178b54",
     "scripts/collect_minio_os_native_20261113.py": "1adfa20b2ca496dc19117808cfbb136051ec99e5aa74cb03e69da4bb0bad8076",
     "scripts/minio_rpm_facts_20261113.py": "23e7fd3ef3666e212bc1f3eb49704e9d6ee6b260e90b3b82e55d45162e293d3e",
@@ -229,7 +229,7 @@
     "deployment/security/minio-source-20261112-evidence/mcli-new-native.json": "e91c5fa4f494232baefe30d2faa36e989b808d8a5d0238c25031541e22ccfa09",
     "deployment/security/minio-source-20261112-evidence/silo-graph.json.gz": "050298733fde75da9526e72357465a6a4e40c110d4b10744080942b890e1d61e",
     "deployment/security/minio-source-20261112-evidence/silo-new-native.json": "17bc94f2892bdd5621d268ee3e238e1a31fba964208e0b39312bbe2d56338348",
-    "scripts/check_minio_os_20261113.py": "0fb0d9b914ff0e6195608ee096f2208e43c352d09e5c93218cbabfa08484e441",
+    "scripts/check_minio_os_20261113.py": "6423f6ed690c964d3c19bdbfd38d9c4d4e11b3d6ac545f0b9f8fdcb7323e1113",
     "scripts/check_native_jvm.py": "3081ed1f47765ac2fc60f64d1482099b312331f0fb7626ef7b1472ba2fcd0de6",
     "scripts/go_stdlib_rebuild_20261112.py": "4ab322a90cf12c68bb67fd8722eb5c9811ddbfd605f86083a25d891c7eafdc51",
     "scripts/prepare_minio_os_profile_20261113.py": "6d171a669ac4b1dc83057315340008cdc7c7c40209412d32a8f6b3cb493cab62",
@@ -240,11 +240,25 @@
     "deployment/security/minio-os-source-20261113-evidence/review-release-prepare.json": "8d91cfe463906148301c1f4a3af857d3fa28ed344d947a35e67cfcab1e11b6d9",
     "deployment/security/minio-os-source-20261113-evidence/support/sbom-layer-amendment-01/actual-three-sbom-bound-layer-replay.json": "bbc8f400eb15471c6a810f21dfe97a74194a9a461cd7071eb226f7abc63b90d1",
     "deployment/security/minio-os-source-20261113-evidence/review-layer-root.json": "1e6d8050811659d0ed6b5afbf3be2e2c247e9d9bcd692c4d208eaaf62592c5fd",
-    "deployment/security/minio-os-source-20261113-evidence/review-layer-provenance.json": "5a3acd96e61c480ce153f59142263f8a623ac7b8ee43cb833f68dcb0b1c5da70"
+    "deployment/security/minio-os-source-20261113-evidence/review-layer-provenance.json": "5a3acd96e61c480ce153f59142263f8a623ac7b8ee43cb833f68dcb0b1c5da70",
+    "deployment/security/minio-os-20261113-evidence/orchestration-prior-profile-20261113.json": "5c2aefdde2328612f12988fafa4c347a8277ea89018933c179335007f882ffb4",
+    "deployment/security/minio-os-20261113-evidence/orchestration-amendment-20261113.json": "0352d7934fcf35923b8aacea5a38aa6d3f0664a79eea8adf70e76bfbc74e3ca4",
+    "deployment/security/minio-os-20261113-evidence/trivy-advisory-20261113/before-raw24.json.gz": "d3bb9faacb3a4973975f681728af0acc9a1ae7f7b71a0e745f84f395e549d536",
+    "deployment/security/minio-os-20261113-evidence/trivy-advisory-20261113/after-actual228-raw21.json.gz": "c1eee76f03cb58530bf1eeee18910628fd48263414111837384dd98e950bf275",
+    "deployment/security/minio-os-20261113-evidence/trivy-advisory-20261113/ci-actual-raw21.json.gz": "2d3107941a604a752580094ab41436dfc6966c86f802597c2135890480f242fa",
+    "deployment/security/minio-os-20261113-evidence/trivy-advisory-20261113/ci-full-syft392.json.gz": "ce783a210c7169aad3829202425fd619aa81213d8438b79adbc8a285ea300082",
+    "deployment/security/minio-os-20261113-evidence/trivy-advisory-20261113/ci-build-receipt.json": "d440f4a8ef3828b6658e0531473c1e1cab8db83c78918a067f4dd880296729f0",
+    "deployment/security/minio-os-20261113-evidence/trivy-advisory-20261113/official-manifest.json": "9d570840823a4fbd0004ccdd251e89dd59d91aa093df55bc541d493eca406ad0",
+    "deployment/security/minio-os-20261113-evidence/trivy-advisory-20261113/actual-observation.json": "bb18c48b7fb985231a19505663adc105cf0472eeb649d128d034f56508e6995e",
+    "deployment/security/minio-os-20261113-evidence/trivy-advisory-20261113/migration.json": "257d229b15ee9b9322abe55e33accf3449274db24046233f989f52fc3dea5f67",
+    "deployment/security/minio-os-20261113-evidence/review-orchestration-root.json": "a42498595734475263cd489e5948c63a22061b18f6f27109b49d61605f4a2a94",
+    "deployment/security/minio-os-20261113-evidence/review-orchestration-provenance.json": "5c44a1d3043c1f61d4456b11aec72eac1342065d3d322e3fedefb924825939ca",
+    "deployment/security/minio-os-20261113-evidence/review-advisory-root.json": "90c7567f681de443311b119bd7341f68515dd335cafd4bbdc27c1a9a783f9d5b",
+    "deployment/security/minio-os-20261113-evidence/review-advisory-provenance.json": "7a8bf1d7f18776704b9938e4440acb960b980d46634495fa4305ce1cd331da00"
   },
   "independent_reviews": [
-    "deployment/security/minio-os-source-20261113-evidence/review-layer-root.json",
-    "deployment/security/minio-os-source-20261113-evidence/review-layer-provenance.json"
+    "deployment/security/minio-os-20261113-evidence/review-advisory-root.json",
+    "deployment/security/minio-os-20261113-evidence/review-advisory-provenance.json"
   ],
   "runtime_evidence": {
     "current": "deployment/security/minio-os-source-20261113-evidence/runtime-manifest.json.gz"
@@ -312,13 +326,6 @@
       },
       {
         "target": "os:redhat",
-        "id": "CVE-2026-122054",
-        "package": "glibc",
-        "version": "2.34-290.el9_9",
-        "severity": "MEDIUM"
-      },
-      {
-        "target": "os:redhat",
         "id": "CVE-2026-84243",
         "package": "glibc",
         "version": "2.34-290.el9_9",
@@ -333,13 +340,6 @@
       },
       {
         "target": "os:redhat",
-        "id": "CVE-2026-122054",
-        "package": "glibc-common",
-        "version": "2.34-290.el9_9",
-        "severity": "MEDIUM"
-      },
-      {
-        "target": "os:redhat",
         "id": "CVE-2026-84243",
         "package": "glibc-common",
         "version": "2.34-290.el9_9",
@@ -351,13 +351,6 @@
         "package": "glibc-common",
         "version": "2.34-290.el9_9",
         "severity": "LOW"
-      },
-      {
-        "target": "os:redhat",
-        "id": "CVE-2026-122054",
-        "package": "glibc-minimal-langpack",
-        "version": "2.34-290.el9_9",
-        "severity": "MEDIUM"
       },
       {
         "target": "os:redhat",
@@ -3711,7 +3704,7 @@
     "current_checks": "Actual compiler/settings/full linked modules and complete import closure; benign CSV/Parquet/legacy regressions",
     "scope": "New Thrift0.25 closure; previous binary approval is not inherited"
   },
-  "review_subject_sha256": "802d076e3e20d7650201b11c1460975b42d7f54108614a809f0285185397bc6c",
+  "review_subject_sha256": "812e1201ea30de8d72a9fa97bd1ee56c2e03b51a9103888801c978feba1eec53",
   "consumer_layer_identity_amendment": {
     "prior_profile_sha256": "62a3bc7653a7a27c72d96a669286c5a56d2db92bb76d4ca27b2cb7650c0229c1",
     "prior_subject_sha256": "0c1f264c7e86221618da3e9b4d0d2356ce2c9c500da7705fb6a74dfe968c1193",
@@ -3724,5 +3717,9 @@
       "deployment/security/minio-os-source-20261113-evidence/review-release-prepare.json": "8d91cfe463906148301c1f4a3af857d3fa28ed344d947a35e67cfcab1e11b6d9"
     },
     "scope": "Verify each of three exact Syft Location shapes against actual ordered image layers; preserve all other fields"
+  },
+  "trivy_advisory_migration": {
+    "path": "deployment/security/minio-os-20261113-evidence/trivy-advisory-20261113/migration.json",
+    "sha256": "257d229b15ee9b9322abe55e33accf3449274db24046233f989f52fc3dea5f67"
   }
 }

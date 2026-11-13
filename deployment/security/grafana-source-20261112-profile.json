@@ -97,7 +97,7 @@
     "deployment/vendors/grafana/main/go.work.sum": "66fd6bab1829660d3edbb463037193a66d1a2fe76c03228ec91b2aec5a154c42",
     "deployment/vendors/grafana/reviewed_backend_verifier.go": "021048a6577579118047211890f8b615e457ee428677f30d88285fb05a8144aa",
     "deployment/vendors/grafana/reviewed_backend_verifier_test.go": "a2af7375d16d90d3b7c749c9110bc2e439b1fcf1514c0d09beb83bb34b5d2c63",
-    "scripts/build_go_stdlib_security_20261112.py": "d860a5261625e0dc745e32969e426e77c8ca33b92e3412f33a884ab146222fe4",
+    "scripts/build_go_stdlib_security_20261112.py": "7febf7d4e546c693f0115cbf1a9fe80093d13a3b786b5b26352d3ef0debd6cbb",
     "scripts/prefetch_go_security_modules_20261112.py": "2b6864129c0f8e1d2b555cd135eef9f1aba90a0146af06f22bd7d21b15bad391",
     "scripts/retained_source_review_20261112.py": "b68baba611f1d5b74dd46e67bad736c9690c4af85c59ce9ef50cba02412ebcfc"
   },
@@ -656,8 +656,8 @@
     "current": "deployment/security/grafana-source-20261112-evidence/raw-trivy.json.gz"
   },
   "independent_reviews": [
-    "deployment/security/grafana-source-20261112-evidence/review-root.json",
-    "deployment/security/grafana-source-20261112-evidence/review-release-prepare.json"
+    "deployment/security/grafana-source-20261112-evidence/review-source-python-root.json",
+    "deployment/security/grafana-source-20261112-evidence/review-source-python-provenance.json"
   ],
   "evidence_sha256": {
     "deployment/security/go-stdlib-20261112-evidence/862185.patch": "719fb2a28c3f3984b3d6d9b5358d9d330ec4faa7ce3584c0b832f60c14cb8d79",
@@ -737,7 +737,7 @@
     "deployment/security/grafana-source-20261112-evidence/zipkin-native.json": "ceb99b79ffbda599c4f815daf8befa1b49bd1318624f2cced83912e94dda2762",
     "scripts/capture_go_native_20261112.py": "708c91b964058399e941bf77a654171e3265f1d48a3d87eab6830485028e5b47",
     "scripts/check_grafana_source_build_20261112.py": "fa6b6ad58ad49f2cba37337957ba4c5df2cc60969badd70621d174a43574eda2",
-    "scripts/check_grafana_source_scan_20261112.py": "35b93b2ab9f51d0a17e6c038357d677db1111508a0c0e79e13615a9ab9125b53",
+    "scripts/check_grafana_source_scan_20261112.py": "3e2b4fe925b75e051d1673df613242869040e00f4457c4f0cab6da7dca4b02c6",
     "scripts/go_native_database_transport_20261112.py": "d33bd4fe7dde4e0dd542d6ba228c5ddabd58f6d263efb41785dbfd573fb68ed8",
     "scripts/go_stdlib_rebuild_20261112.py": "4ab322a90cf12c68bb67fd8722eb5c9811ddbfd605f86083a25d891c7eafdc51",
     "scripts/prepare_go_stdlib_profiles_20261112.py": "2d242481b757d17883a5b9ede3bab19901931ae5854a30f2323a61f46a31d869",
@@ -745,7 +745,30 @@
     "scripts/scan_grafana_source_20261112.py": "37f6c09ad592d54007408080adb0bd51b009173b924c8f4ab417058b15edc4dd",
     "tests/test_go_stdlib_rebuild_20261112.py": "d31c4bfab2372500886cf2baecdcd5f7bdbc0cd54f88c83f338020de42fd24a1",
     "deployment/security/grafana-source-20261112-evidence/review-root.json": "a13957600b81512f9283ce7895557dfa6240c21a8533160fc202a1cb2f1ffb6d",
-    "deployment/security/grafana-source-20261112-evidence/review-release-prepare.json": "b0c8a254ee2c1151a9c0ea44ed636aecd700e9bdba570b92527d60d850af04fa"
+    "deployment/security/grafana-source-20261112-evidence/review-release-prepare.json": "b0c8a254ee2c1151a9c0ea44ed636aecd700e9bdba570b92527d60d850af04fa",
+    "scripts/check_grafana_source_scan_20261110.py": "675933ab658b016b65a4597a872a1a512f31c9c93f47c56efaa77a2aa8de7c2c",
+    "tests/test_grafana_historical_source_bridge.py": "18c98ef39a008da788fa7aca9dd4b609560d9f3d8988da5d073154f1f38bfee3",
+    "tests/test_grafana_fixed_20261107.py": "8e9f15e8acf3a78c5d1259eeff281baabf7b6290f3a6ab1a66ce118444725403",
+    "tests/test_security_review_policy_integration.py": "e765e923e772e27ea9f1109345adc2501bac3f3429ddc728771fba7e829b087b",
+    "deployment/security/grafana-source-20261112-evidence/historical-source-bridge-20261113.json": "144ae827c66236a369b7b7b7f64875f8698f8ecce0ccb08c1e9fb586b8aba877",
+    "deployment/security/grafana-source-20261112-evidence/historical-source-bridge-prior-profile.json": "1aa7e0633ba3ea41bc4d43b0fb055e0ba93c8ecb9a9b38e5d501356fe911ded9",
+    "deployment/security/grafana-source-20261112-evidence/review-historical-root.json": "0f178fd6c032dcc36a16a075f22b8d670205295b4d8834476e85d236aadbc2ef",
+    "deployment/security/grafana-source-20261112-evidence/review-historical-provenance.json": "142db06d7d055b4092bb6aae1b3ae7a678803545bd6bb464e7227b3fa5d9fd74",
+    "deployment/security/agent-soupsieve-paths-profile-20261113.json": "b4fb5109ddaaa15acd93ea9cbcd5c4003a6c4d95c3f478371cd928f2d7574e6b",
+    "deployment/security/agent-soupsieve-paths-20261113-evidence/normal_html_probe.py.txt": "807e7ecec6fa7dcd0e786d4a7210d181086dfd3c0e38519c23b70a8cf8cddaaf",
+    "deployment/security/grafana-source-20261112-evidence/source-ci6d-full73.json.gz": "5516c0696aa5a7adae5f54faef1c51cb5d0b0f363ae0253bc581f706117c3e3c",
+    "deployment/security/grafana-source-20261112-evidence/source-python-scope-20261113.json": "34acad929e59d408d97e5fc9686aa497a53936984655ef548e55001649f936f3",
+    "deployment/security/agent-soupsieve-paths-20261113-evidence/primary-sources.json": "daaf77fa5f552e76aad376bd7eac31c1d8c87ecd8faf9f12120012b7230d668e",
+    "deployment/security/agent-soupsieve-paths-20261113-evidence/wheel-source-bindings.json": "a0b20e40dda66891cdb5e1275368705e3f5a264945f9140a635c311c8b1d1cf7",
+    "deployment/security/agent-soupsieve-paths-20261113-evidence/actual-source-import-scope.json": "d79549662b069559d287d9d2e564750e5e72dd2a48252f5dc0b2ff437f11345e",
+    "deployment/security/agent-soupsieve-paths-20261113-evidence/fresh-scan-delta.json": "7d08c91cc770d902047e46eca6872677176ff6be3dfcd8bd579e2ccd13545a55",
+    "deployment/security/agent-soupsieve-paths-evidence-20261113.json": "2b2dd46f4d9ea2480ce627b83ae04202c67209e9a4f35ea697da0b4fb0d1e228",
+    "deployment/security/agent-soupsieve-paths-20261113-evidence/normal-html-probe.json": "64b68a4ff919027d16de81be65e81978f62083f5d19b90ecef46d2d83c362e09",
+    "deployment/security/grafana-source-20261112-evidence/source-python-prior-profile.json": "37553434fe3fcf5908ac293002863568263876fffc336c519871eb68e07fe0ba",
+    "tests/test_grafana_python_source_scope_20261113.py": "d718f9cc24fb11d86c44fe006f8bf439f6d664319651b41f6015aa295ef96e61",
+    "deployment/security/agent-soupsieve-paths-20261113-evidence/application-path-review.json": "aaf84140866eb35cd32517397ed67bfcb6caa0f38b4e6d336e24190eebeb1368",
+    "deployment/security/grafana-source-20261112-evidence/review-source-python-root.json": "67c0e73730a3ad240c468fdaafb23999505b934c1c9f9fb49512401fc698046b",
+    "deployment/security/grafana-source-20261112-evidence/review-source-python-provenance.json": "0a1fbfa289d989305a02eae702cc9859fea2379d9ef93174124a5432135320f7"
   },
   "migration_facts": {
     "usr/share/grafana/bin/grafana": {
@@ -2483,5 +2506,5 @@
     "unrelated_rows_unchanged": true,
     "raw_reports_modified": false
   },
-  "review_subject_sha256": "f85d4705a1c3ca54ed1858237d8f336beb913d69c1e93a243a015fcb504bb94b"
+  "review_subject_sha256": "1e01a6a863f1e1c52dafa31a1013b18d7adb192492762c2cb83d4703fe706999"
 }

@@ -1,0 +1,19 @@
+{
+  "actor": "/root/release_prepare",
+  "actor_kind": "automated_independent_agent",
+  "observed_at_utc": "2026-11-13T11:58:02.260213+00:00",
+  "subject_sha256": "742e08f32eff9c6c4049d012598875bb3df70b3249b8eaad0f9b87c3b63b6a09",
+  "facts_passed": true,
+  "risk_acceptance": false,
+  "binary_redistribution_approved": false,
+  "reviewed_draft_sha256": "4428db85316aad513cda336dadab35472e59a047bc0bb3111ccbcd18de4a0c3e",
+  "all_actual_source_and_evidence_hashes_verified": 225,
+  "only_changed_source_input": [
+    "scripts/build_go_stdlib_security_20261112.py"
+  ],
+  "all_nonmetadata_profile_fields_identical": true,
+  "shared_driver_all_existing_functions_except_grafana_prepare_contexts_ast_equal": true,
+  "actual_review": "Read exact driver and both source-scan consumer diffs. The sole new builder helper calls the original builder in the immutable historical source and preserves diagnostics; compiled_root changes only compiled historical proof, while current scan completion and inventories remain current. MinIO early-return/main/build AST unchanged. Exact old profiles and source files remain retained.",
+  "physical_evidence_boundary": "This is a source/orchestration metadata amendment review. Existing actual 12ba Grafana / 228 MinIO native, runtime, configuration and raw scan facts are reused. I did not repeat image export, compile, scan, or service startup. New input labels require separately built and verified derived images.",
+  "new_paid_calls": 0
+}

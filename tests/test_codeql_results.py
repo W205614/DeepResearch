@@ -155,7 +155,7 @@ def test_current_continuation_preserves_original_exact_identities_and_bound_byte
     prior_path = root / 'deployment/security/codeql-reviewed-findings-20261110.json'
     prior = json.loads(prior_path.read_bytes())
     current = json.loads(REVIEW.read_bytes())
-    assert REVIEW.name == 'codeql-reviewed-findings-20261113-search-timeouts.json'
+    assert REVIEW.name == 'codeql-reviewed-findings-20261113-current-native-gates.json'
     assert [row['identity'] for row in current['findings']] == [row['identity'] for row in prior['findings']]
     assert current['findings'][:2] == prior['findings'][:2]
     for name, expected in prior['findings'][2]['evidence_sha256'].items():
@@ -253,7 +253,46 @@ def test_current_continuation_preserves_original_exact_identities_and_bound_byte
     assert timeout_review['severity_threshold_unchanged'] == 7.0
     assert timeout_review['same_four_exact_identities'] is True
     assert timeout_review['new_codeql_scan_claimed'] is False
+    native_gates = current['current_native_gates_addendum']
+    previous_native_gates = root / native_gates['prior_profile']
+    assert hashlib.sha256(previous_native_gates.read_bytes()).hexdigest() == native_gates['prior_profile_sha256']
+    native_gates_path = root / native_gates['path']
+    assert hashlib.sha256(native_gates_path.read_bytes()).hexdigest() == native_gates['sha256']
+    gate_review = json.loads(native_gates_path.read_bytes())
+    assert set(gate_review['exact_bound_code_deltas']) == {
+        'scripts/build_go_stdlib_security_20261112.py',
+        'scripts/check_agent_native_packages.py', '.github/workflows/security.yml'}
+    assert current['findings'][:3] == json.loads(previous_native_gates.read_bytes())['findings'][:3]
+    assert gate_review['severity_threshold_unchanged'] == 7.0
+    assert gate_review['same_four_exact_identities'] is True
+    assert gate_review['new_findings_exempted'] is False
+    assert gate_review['new_codeql_scan_claimed'] is False
+    assert gate_review['raw_sarif_modified'] is False
     assert reviewed_findings([], REVIEW, root) == ([], [])
+
+
+@pytest.mark.parametrize('path', [
+    'scripts/check_agent_native_packages.py',
+    'scripts/check_keycloak_zlib_20261113.py',
+    'deployment/security/grafana-source-20261112-evidence/source-python-scope-20261113.json',
+    'deployment/security/codeql-current-native-gates-addendum-20261113.json',
+])
+def test_current_continuation_rejects_changed_native_gates_or_scope_proof(tmp_path, path):
+    root = Path(__file__).resolve().parents[1]
+    record = json.loads(REVIEW.read_bytes())
+    for row in record['findings']:
+        for name in row['evidence_sha256']:
+            target = tmp_path / name
+            if not target.exists():
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(root / name, target)
+    review_path = tmp_path / 'review.json'
+    review_path.write_bytes(REVIEW.read_bytes())
+    assert reviewed_findings([], review_path, tmp_path) == ([], [])
+    changed = tmp_path / path
+    changed.write_bytes(changed.read_bytes() + b'\n')
+    with pytest.raises(ValueError, match='reviewed source or proof changed'):
+        reviewed_findings([], review_path, tmp_path)
 
 
 @pytest.mark.parametrize('change', ['web-context', 'new-go-copy', 'proof', 'addendum', 'pom', 'tomcat-addendum',

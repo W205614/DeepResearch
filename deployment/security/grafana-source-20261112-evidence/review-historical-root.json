@@ -1,0 +1,21 @@
+{
+  "actor": "/root",
+  "actor_kind": "automated_independent_agent",
+  "observed_at_utc": "2026-11-13T11:41:07.697747+00:00",
+  "subject_sha256": "58fff477b036c549baee71a141c0e892def881d7e740c1190720c36186b120e5",
+  "facts_passed": true,
+  "risk_acceptance": false,
+  "binary_redistribution_approved": false,
+  "reviewed_draft_sha256": "76df8fcb94546f65fe3ffcb174f224b00625a680c30d07128883a0e507086432",
+  "all_actual_source_and_evidence_hashes_verified": 183,
+  "all_original_native_runtime_findings_migrations_and_thresholds_identical": true,
+  "old_source_inputs_preserved": true,
+  "changed_build_input": [
+    "scripts/build_go_stdlib_security_20261112.py"
+  ],
+  "reviewed_behavior": "Only historical compilation uses the immutable historical source root. Current scan completion, source/root inventories, fourteen target graphs and actual runtime checks remain current. Historical cold input builds now execute the original builder at that exact historical source. Diagnostics are copied without changing inputs.",
+  "artifact_boundary": "Existing 12ba runtime facts are inherited with original label/receipts preserved. New input hash requires an actual late-LABEL build; this review is not a new image execution or binary publication approval.",
+  "related_author_tests_passed": 115,
+  "repeated_tests_by_root": 0,
+  "new_paid_calls": 0
+}

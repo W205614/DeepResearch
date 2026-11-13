@@ -156,7 +156,36 @@ def collect(image, output, lock):
     return facts
 
 
-def evaluate(report, facts, lock, *, now=None, supplement=None):
+def verify_soupsieve_scope(report, facts, profile, runtime):
+    from scripts import check_agent_full_scope as scope
+
+    require(profile['name'] == scope.SOUP_PROFILE_NAME and profile['risk_acceptance'] is False,
+            'Exact current CSS-path profile required')
+    # This pure-Python route does not depend on cold-built CPython ELF bytes.
+    # Fixed SQLite/zlib checks below and packaged full-scope ELF checks stay strict.
+    require(report['Metadata']['ImageID'] == facts['image_id']
+            and runtime['uid'] == 10001
+            and runtime['python_source_closure'] == profile['python_source_closure'],
+            'Actual immutable image/full Python scope differs from CSS-path review')
+    findings = [scope.finding_tuple(result, row) for result in report['Results']
+                for row in result.get('Vulnerabilities', [])]
+    packages = [scope.package_tuple(result, row) for result in report['Results'] for row in result['Packages']]
+    require(Counter(map(scope.canonical, findings)) == Counter(scope.canonical(row['tuple']) for row in profile['findings'])
+            and Counter(map(scope.canonical, packages)) == Counter(map(scope.canonical, profile['packages'])),
+            'Complete current raw findings/packages changed; do not propagate a CSS-path exception')
+    reviewed = [row for row in profile['findings'] if row['tuple']['package'] == 'soupsieve']
+    require(len(reviewed) == 2 and {row['tuple']['id'] for row in reviewed} == {'CVE-2026-126190', 'CVE-2026-126192'}
+            and all(row['tuple']['version'] == '2.9.2'
+                    and row['disposition'] == 'NOT_AFFECTED_FUNCTION_NOT_IN_CURRENT_APPLICATION_PATH'
+                    and row['upstream_package_affected'] is True and row['binary_fixed_claim'] is False
+                    and row['risk_acceptance'] is False for row in reviewed),
+            'Only the two exact affected-but-unreached SoupSieve findings are reviewed')
+    return {'image_id': facts['image_id'], 'profile': profile['name'],
+            'profile_sha256': scope.profile_identity(profile['name'])[1],
+            'python_source_closure': runtime['python_source_closure'], 'findings': reviewed}
+
+
+def evaluate(report, facts, lock, *, now=None, supplement=None, python_selector_scope=None):
     supplemental_package = validate_supplement(supplement, lock) if supplement is not None else None
     require(report.get('SchemaVersion') == 2 and report.get('Trivy') == {'Version': '0.75.0'}
             and report.get('ArtifactType') == 'container_image', 'Complete supported Trivy report required')
@@ -172,7 +201,7 @@ def evaluate(report, facts, lock, *, now=None, supplement=None):
             and Counter((r.get('Class'), r.get('Type')) for r in records)
             == Counter({('os-pkgs', 'debian'): 1, ('lang-pkgs', 'python-pkg'): 1}),
             'Complete OS and Python package coverage required')
-    fixed, blocked, counts = [], [], Counter()
+    fixed, not_affected, blocked, counts = [], [], [], Counter()
     for record in [report, *records]:
         require(all(key not in record or (isinstance(record[key], list) and not record[key])
                     for key in ('Errors', 'ModifiedFindings', 'SuppressedFindings')),
@@ -198,6 +227,14 @@ def evaluate(report, facts, lock, *, now=None, supplement=None):
             counts[severity] += 1
             if severity not in {'HIGH', 'CRITICAL'}:
                 continue
+            if python_selector_scope is not None:
+                from scripts.check_agent_full_scope import finding_tuple
+                scoped = [row for row in python_selector_scope['findings']
+                          if row['tuple'] == finding_tuple(record, finding)]
+                if scoped:
+                    require(python_selector_scope['image_id'] == facts['image_id'], 'CSS-path proof belongs to another image')
+                    not_affected.extend(scoped)
+                    continue
             candidates = [p for p in lock['packages'] if record['Type'] == 'debian'
                           and finding['VulnerabilityID'] in p['fixed_advisories']
                           and finding['PkgName'] == p['name'] and finding['InstalledVersion'] == p['version']
@@ -235,6 +272,8 @@ def evaluate(report, facts, lock, *, now=None, supplement=None):
             'unresolved': blocked, 'raw_reports_modified': False,
             'threshold': 'HIGH,CRITICAL; all secrets block; UNKNOWN/LOW/MEDIUM preserved',
             'image_id': facts['image_id'], 'native_lock_sha256': LOCK_SHA256,
+            **({'verified_not_affected': not_affected, 'python_selector_scope': python_selector_scope}
+               if python_selector_scope is not None else {}),
             **({'native_fixed_code_supplement_sha256': SUPPLEMENT_SHA256} if supplement is not None else {})}
 
 
@@ -253,7 +292,16 @@ def main():
         supplement = load_supplement(lock)
         facts = collect(args.image, args.output_dir, lock)
         (args.output_dir / 'native-facts.json').write_text(json.dumps(facts, indent=2), encoding='utf-8')
-        result = evaluate(json.loads(args.scan.read_bytes()), facts, lock, supplement=supplement)
+        report = json.loads(args.scan.read_bytes())
+        python_scope = None
+        if any(row.get('VulnerabilityID') == 'CVE-2026-126190'
+               for record in report.get('Results', []) for row in record.get('Vulnerabilities', [])):
+            from scripts import check_agent_full_scope as scope
+            profile = scope.load_profile(scope.SOUP_PROFILE_NAME)
+            runtime = scope.probe_image(facts['image_id'], profile)
+            python_scope = verify_soupsieve_scope(report, facts, profile, runtime)
+            (args.output_dir / 'python-selector-runtime.json').write_text(json.dumps(runtime, indent=2) + '\n', encoding='utf-8')
+        result = evaluate(report, facts, lock, supplement=supplement, python_selector_scope=python_scope)
         result['raw_scan_sha256'] = digest(args.scan)
     except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as error:
         result = {'passed': False, 'error_type': type(error).__name__,

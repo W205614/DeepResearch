@@ -188,7 +188,7 @@
     {
       "path": "backend/infrastructure/providers.py",
       "symbol": "Providers.chat_payload",
-      "ast_sha256": "c36faa8dfae59685eb71da5267368008851b4d5f4b1163d92154c68f954c6137"
+      "ast_sha256": "6805fc6153557fcd92e92aa475c785726a76998d20933cd38cae647ff24992e7"
     },
     {
       "path": "backend/infrastructure/providers.py",
@@ -286,5 +286,25 @@
     "ci_provider_policy_sha256_unchanged": "f2b132056535401d3a9425b03a887722d234ce15e852744191681c66236021dd",
     "paid_workflow_or_cumulative_ledger_changed": false,
     "supplier_http_for_reaudit": 0
+  },
+  "source_reaudit_20261113": {
+    "previous_basis_sha256": "ac3c65780c88b453d7bf453d0e2b3610389ae7a9f256d698ffd03da0f7817664",
+    "source_change_commit": "89ba67b24b955a94015ff765fdb12b41e87052cc",
+    "changed_symbol": "backend/infrastructure/providers.py:Providers.chat_payload",
+    "previous_ast_sha256": "c36faa8dfae59685eb71da5267368008851b4d5f4b1163d92154c68f954c6137",
+    "current_ast_sha256": "6805fc6153557fcd92e92aa475c785726a76998d20933cd38cae647ff24992e7",
+    "reviewed_delta": "The OpenAI branch adds only payload.setdefault('service_tier', 'default'). Removing this exact statement yields the complete previous audited function AST.",
+    "proof_review": [
+      "This synchronous payload field default adds no HTTP, await, loop, retry, cached result or alternate execution path. Existing explicit service_tier values are preserved.",
+      "Providers.structured and Providers.post remain pinned to their original ASTs. Every successful structured result still requires the same awaited post; graph and external support/coverage grades are unchanged.",
+      "All other36 audited symbols, dependency/case fingerprints and the four paid workflow invocations are unchanged. The245 critical-path and296 pass-rate-refinement necessary lower bounds remain unchanged."
+    ],
+    "audited_symbols": 37,
+    "other_symbols_unchanged": 36,
+    "critical_path_lower_bound_unchanged": 245,
+    "pass_rate_refinement_lower_bound_unchanged": 296,
+    "supplier_http_requests": 0,
+    "policy_authorization_or_ledger_changed": false,
+    "boundary": "Static proof metadata re-audit only; no budget increase/reset/refund, gate relaxation, paid quality result or sufficient-budget claim."
   }
 }

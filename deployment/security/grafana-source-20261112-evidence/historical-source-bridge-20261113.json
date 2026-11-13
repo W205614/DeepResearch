@@ -1,0 +1,141 @@
+{
+  "schema": "grafana-historical-input-and-current-scan-bridge-v1",
+  "observed_at_utc": "2026-11-13T11:38:22.889280+00:00",
+  "prior_profile": {
+    "path": "deployment/security/grafana-source-20261112-evidence/historical-source-bridge-prior-profile.json",
+    "sha256": "1aa7e0633ba3ea41bc4d43b0fb055e0ba93c8ecb9a9b38e5d501356fe911ded9",
+    "subject_sha256": "f85d4705a1c3ca54ed1858237d8f336beb913d69c1e93a243a015fcb504bb94b"
+  },
+  "source_delta": {
+    "scripts/build_go_stdlib_security_20261112.py": {
+      "before": "d860a5261625e0dc745e32969e426e77c8ca33b92e3412f33a884ab146222fe4",
+      "after": "7febf7d4e546c693f0115cbf1a9fe80093d13a3b786b5b26352d3ef0debd6cbb"
+    }
+  },
+  "previous_bound_consumer_delta": {
+    "scripts/check_grafana_source_scan_20261112.py": {
+      "before": "35b93b2ab9f51d0a17e6c038357d677db1111508a0c0e79e13615a9ab9125b53",
+      "after": "84c68f563d951c3fb978ca09a5836b6ee707eab9e453796e827f05a908439d35"
+    }
+  },
+  "historical_source": "78a19df9dfa6f072af6ebe40ff99cf164d0c4ff8",
+  "historical_grafana10_profile_sha256": "fc0b1116a9b15fda329cd9d95788bc7c94942d08a039e7c8a8b3c753dff450d1",
+  "historical_c6_source": "c6acf98ca5d753b6981153f49108f43c62dbef0d",
+  "historical_c6_input_count": 51,
+  "historical_c6_ignore_sha256": "1d8e946efddff008720d2f3ce79cdbc24b281bd734778c479b580d36eb4e276c",
+  "current_ignore_sha256": "bf08274f1b2099859c085694e386a743072bc87d11772bb2cbc5d4487cef9261",
+  "historical_exact28_request_sha256": "7ab4c179c5224a4c7acde032640f71b84422120d92ae82ad251c506d37e8381d",
+  "historical_exact28_file_count": 191,
+  "only_changed_exact28_current_file": {
+    ".dockerignore": {
+      "before": "1d8e946efddff008720d2f3ce79cdbc24b281bd734778c479b580d36eb4e276c",
+      "after": "bf08274f1b2099859c085694e386a743072bc87d11772bb2cbc5d4487cef9261"
+    }
+  },
+  "actual_historical_compiled_profiles": {
+    "main": {
+      "target": "usr/share/grafana/bin/grafana",
+      "elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "package_count": 4200,
+      "module_count": 522
+    },
+    "loki": {
+      "target": "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+      "elf_sha256": "599f81b6cb18227c719074099c3f5f3dd0928d8a5b3d2a55ac8a02a0210fa10c",
+      "package_count": 1078,
+      "module_count": 204
+    },
+    "jaeger": {
+      "target": "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64",
+      "elf_sha256": "c7798b1bbea42ddad8a7259fd1c3c5846cdd8d89f7f1f8034858871e392de9e3",
+      "package_count": 590,
+      "module_count": 71
+    },
+    "mysql": {
+      "target": "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64",
+      "elf_sha256": "73db79edd48a44159ee66583ae4a646a0e52aaf0cbfa252aece9753273961aa1",
+      "package_count": 594,
+      "module_count": 73
+    },
+    "opentsdb": {
+      "target": "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64",
+      "elf_sha256": "019b92b07c3bd36176e28e2ee1693d69b423a129b6e6a9945e98adffa53c3ee1",
+      "package_count": 585,
+      "module_count": 69
+    },
+    "mssql": {
+      "target": "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+      "elf_sha256": "3343e2ff45c76058067bb945baf7c0fc341edf0b647b59d3c8e2a95211df73a4",
+      "package_count": 726,
+      "module_count": 91
+    },
+    "grafana-pyroscope-datasource": {
+      "target": "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64",
+      "elf_sha256": "d290d4840deb7e1edffaee453271ca87d02094f3f8ab0f3e27680605f1f5fd5a",
+      "package_count": 630,
+      "module_count": 84
+    },
+    "influxdb": {
+      "target": "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64",
+      "elf_sha256": "50ba9d95a58a20a52a9131a44d04313c955a20ccc199b02e29f474b70af6fd3a",
+      "package_count": 627,
+      "module_count": 78
+    },
+    "grafana-postgresql-datasource": {
+      "target": "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64",
+      "elf_sha256": "e4abc533b0ed7cddea5d1753a2556971dd50e5d3c7b1d8cac1ace9d4ae018a8c",
+      "package_count": 618,
+      "module_count": 75
+    },
+    "elasticsearch": {
+      "target": "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+      "elf_sha256": "4bd3b2b5d547a73c02a231eb5fa1231f167b1c1a7e46a61687916440c6c0771a",
+      "package_count": 743,
+      "module_count": 104
+    },
+    "stackdriver": {
+      "target": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+      "elf_sha256": "c4ab7df53197950cd6bcb36235d72c7b5c268f00ecda2ee13b6962d34181394c",
+      "package_count": 676,
+      "module_count": 85
+    },
+    "prometheus": {
+      "target": "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64",
+      "elf_sha256": "5c3f2027bcb5d6b03e219230a9a90bf8e1511d46e7a1536b1efb991839da4157",
+      "package_count": 723,
+      "module_count": 104
+    },
+    "tempo": {
+      "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "elf_sha256": "58a9b276af17f22a5c9729ff1da2bd248f9e69add6e25e8a495df00065837c1d",
+      "package_count": 605,
+      "module_count": 75
+    },
+    "zipkin": {
+      "target": "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64",
+      "elf_sha256": "1ef41b794a8c882213ab5826d82bbe9a1d5d05b3a9068e86065e12190aef9865",
+      "package_count": 586,
+      "module_count": 71
+    }
+  },
+  "cold_input_orchestration": "Execute the original Grafana10 script in the exact78a19df historical checkout as an input-only stage. Its complete resulting non-Go payload/config must still equal the old profile before the new14 executable build. Keep original logs, including failures.",
+  "source_scan_boundary": "Current scan completion/raw package inventory/source revision and source manifests remain current. Only verification of the original14 compiled source closures uses the actual historical checkout; current14 native/graph migration, complete runtime, all severity tuples and secrets remain exact.",
+  "old_frozen_128_51_191_hashes_changed": false,
+  "docker_ignore_reverted_or_ignored": false,
+  "original_image_receipts_or_labels_rewritten": false,
+  "physical_observations_reused": "Existing12ba actual runtime/native/config exports and original complete raw scans; no new physical build/export/scan is claimed by this amendment.",
+  "normal_new_source_image_requires_new_exact_input_label": true,
+  "native_compiler_or_dockerfile_changed": false,
+  "expected_runtime_native_and_findings_unchanged": true,
+  "new_native_compilation_claimed": false,
+  "new_model_calls": 0,
+  "binary_redistribution_approved": false,
+  "code_sha256": {
+    "scripts/build_go_stdlib_security_20261112.py": "7febf7d4e546c693f0115cbf1a9fe80093d13a3b786b5b26352d3ef0debd6cbb",
+    "scripts/check_grafana_source_scan_20261110.py": "675933ab658b016b65a4597a872a1a512f31c9c93f47c56efaa77a2aa8de7c2c",
+    "scripts/check_grafana_source_scan_20261112.py": "84c68f563d951c3fb978ca09a5836b6ee707eab9e453796e827f05a908439d35",
+    "tests/test_grafana_historical_source_bridge.py": "18c98ef39a008da788fa7aca9dd4b609560d9f3d8988da5d073154f1f38bfee3",
+    "tests/test_grafana_fixed_20261107.py": "8e9f15e8acf3a78c5d1259eeff281baabf7b6290f3a6ab1a66ce118444725403",
+    "tests/test_security_review_policy_integration.py": "e765e923e772e27ea9f1109345adc2501bac3f3429ddc728771fba7e829b087b"
+  }
+}

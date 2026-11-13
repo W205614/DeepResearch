@@ -1,0 +1,92 @@
+{
+  "schema": "minio-trivy-exact-three-row-migration-20261113-v1",
+  "before": {
+    "path": "deployment/security/minio-os-20261113-evidence/trivy-advisory-20261113/before-raw24.json.gz",
+    "sha256": "d3bb9faacb3a4973975f681728af0acc9a1ae7f7b71a0e745f84f395e549d536"
+  },
+  "after": {
+    "path": "deployment/security/minio-os-20261113-evidence/trivy-advisory-20261113/after-actual228-raw21.json.gz",
+    "sha256": "c1eee76f03cb58530bf1eeee18910628fd48263414111837384dd98e950bf275"
+  },
+  "removed_exact_rows": [
+    {
+      "target": "os:redhat",
+      "id": "CVE-2026-122054",
+      "package": "glibc",
+      "version": "2.34-290.el9_9",
+      "severity": "MEDIUM"
+    },
+    {
+      "target": "os:redhat",
+      "id": "CVE-2026-122054",
+      "package": "glibc-common",
+      "version": "2.34-290.el9_9",
+      "severity": "MEDIUM"
+    },
+    {
+      "target": "os:redhat",
+      "id": "CVE-2026-122054",
+      "package": "glibc-minimal-langpack",
+      "version": "2.34-290.el9_9",
+      "severity": "MEDIUM"
+    }
+  ],
+  "before_count": 24,
+  "after_count": 21,
+  "official_database": {
+    "repository": "ghcr.io/aquasecurity/trivy-db:2",
+    "manifest": {
+      "path": "deployment/security/minio-os-20261113-evidence/trivy-advisory-20261113/official-manifest.json",
+      "sha256": "9d570840823a4fbd0004ccdd251e89dd59d91aa093df55bc541d493eca406ad0"
+    },
+    "layer_sha256": "fd406c50cad6892a16b258bef67be31ebfd4ddfb00da80ce869b461e73116d4f",
+    "layer_bytes": 139955633,
+    "metadata": {
+      "Version": 2,
+      "NextUpdate": "2026-11-14T07:00:07.938173677Z",
+      "UpdatedAt": "2026-11-13T07:00:07.938173847Z",
+      "DownloadedAt": "0001-01-01T00:00:00Z"
+    },
+    "archive_verified_complete": true
+  },
+  "supporting_files": {
+    "before-raw24.json.gz": {
+      "path": "deployment/security/minio-os-20261113-evidence/trivy-advisory-20261113/before-raw24.json.gz",
+      "sha256": "d3bb9faacb3a4973975f681728af0acc9a1ae7f7b71a0e745f84f395e549d536"
+    },
+    "after-actual228-raw21.json.gz": {
+      "path": "deployment/security/minio-os-20261113-evidence/trivy-advisory-20261113/after-actual228-raw21.json.gz",
+      "sha256": "c1eee76f03cb58530bf1eeee18910628fd48263414111837384dd98e950bf275"
+    },
+    "ci-actual-raw21.json.gz": {
+      "path": "deployment/security/minio-os-20261113-evidence/trivy-advisory-20261113/ci-actual-raw21.json.gz",
+      "sha256": "2d3107941a604a752580094ab41436dfc6966c86f802597c2135890480f242fa"
+    },
+    "ci-full-syft392.json.gz": {
+      "path": "deployment/security/minio-os-20261113-evidence/trivy-advisory-20261113/ci-full-syft392.json.gz",
+      "sha256": "ce783a210c7169aad3829202425fd619aa81213d8438b79adbc8a285ea300082"
+    },
+    "ci-build-receipt.json": {
+      "path": "deployment/security/minio-os-20261113-evidence/trivy-advisory-20261113/ci-build-receipt.json",
+      "sha256": "d440f4a8ef3828b6658e0531473c1e1cab8db83c78918a067f4dd880296729f0"
+    },
+    "official-manifest.json": {
+      "path": "deployment/security/minio-os-20261113-evidence/trivy-advisory-20261113/official-manifest.json",
+      "sha256": "9d570840823a4fbd0004ccdd251e89dd59d91aa093df55bc541d493eca406ad0"
+    },
+    "actual-observation.json": {
+      "path": "deployment/security/minio-os-20261113-evidence/trivy-advisory-20261113/actual-observation.json",
+      "sha256": "bb18c48b7fb985231a19505663adc105cf0472eeb649d128d034f56508e6995e"
+    }
+  },
+  "underlying_native_runtime_inventory_rpm_unchanged": true,
+  "source_fix_proofs_and_original34_dispositions_preserved": true,
+  "global_upstream_cve_withdrawal_claimed": false,
+  "new_native_compilation_claimed": false,
+  "scope": "Only these three glibc2.34-290 MEDIUM BIG5 tuples no longer match this exact fresh official Trivy database. Their original exact_component_not_affected disposition is unchanged: actual x86 payload lacks BIG5HKSCS.so and the old2.34 source already contains the upstream queue fix. This is not a new custom LANGUAGE patch claim or a global advisory withdrawal. All original34 rows/source fixes/ABI/normal regressions and original24 raw evidence remain. Current21 plus full inventory is still an exact strict gate; no other missing tuple is accepted.",
+  "superseded_orchestration_subject": "742e08f32eff9c6c4049d012598875bb3df70b3249b8eaad0f9b87c3b63b6a09",
+  "superseded_review_sha256": {
+    "deployment/security/minio-os-20261113-evidence/review-orchestration-root.json": "a42498595734475263cd489e5948c63a22061b18f6f27109b49d61605f4a2a94",
+    "deployment/security/minio-os-20261113-evidence/review-orchestration-provenance.json": "5c44a1d3043c1f61d4456b11aec72eac1342065d3d322e3fedefb924825939ca"
+  }
+}

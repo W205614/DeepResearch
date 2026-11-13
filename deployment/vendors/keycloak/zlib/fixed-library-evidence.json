@@ -1,0 +1,83 @@
+{
+  "schema": "keycloak-zlib-fixed-library-actual-observation-v1",
+  "official_sources": [
+    "https://access.redhat.com/security/cve/CVE-2026-76844",
+    "https://zlib.net/"
+  ],
+  "source_gzip_sha256": "02dd159783677a749c04adbdd02b55b8a2bcc7e054f51b76b549199a916ad584",
+  "source_gzip_bytes": 1507140,
+  "source_reset": "gzwrite.c gz_write ret==-1 branch sets avail_in=0 and next_in=state->in",
+  "actual_library_sha256": "41a206fc2715141be96b459b49403e1a94cd642c56b5b401283913573481d8ba",
+  "actual_rpm_version": "1.4-1.deepresearch.el9",
+  "builder_glibc": "2.34",
+  "actual_library_required_glibc_versions": [
+    "GLIBC_2.2.5",
+    "GLIBC_2.14"
+  ],
+  "runtime_image_id": "sha256:113e857c6862cc2a2c407daa610032c101c29936d3f815909776cfa2c40985cf",
+  "portable_config_digest": "sha256:9eaeb9272d5457f753f64cd6790f5f8c61a359203f8b3f735e00d6e6cf346215",
+  "ordered_diff_ids": [
+    "sha256:c793c4396fee6e82e53da7761e9d0417f662c03d1e7c61c46a1d1178226ab0eb"
+  ],
+  "normal_roundtrip_passed": true,
+  "java_version_probe": "21.0.13",
+  "keycloak_version_probe": "26.8.1",
+  "rpm_cli_runtime_probe": "unavailable in existing minimal image; real builder RPM transaction and actual Syft RPM inventory verified instead",
+  "actual_JRE_bytes": {
+    "verified_entries": 257,
+    "verified_regular_bytes": 165569769
+  },
+  "trivy_raw_counts": {
+    "MEDIUM": 26,
+    "LOW": 17
+  },
+  "trivy_secret_findings": 0,
+  "grype_full_raw_counts": {
+    "Low": 18,
+    "High": 1,
+    "Medium": 28
+  },
+  "exact_disposition": "FIXED_IN_EXACT_UBI9_BUILT_OFFICIAL_ZLIB_1_4",
+  "raw_zero_claim": false,
+  "all_lower_severity_findings_reviewed": false,
+  "original_native_passed": false,
+  "combined_exact_gate_passed": true,
+  "trivy_database": {
+    "repository": "ghcr.io/aquasecurity/trivy-db:2",
+    "manifest_sha256": "9d570840823a4fbd0004ccdd251e89dd59d91aa093df55bc541d493eca406ad0",
+    "layer_digest": "sha256:fd406c50cad6892a16b258bef67be31ebfd4ddfb00da80ce869b461e73116d4f",
+    "layer_bytes": 139955633,
+    "skip_db_update": true,
+    "metadata_bytes_modified": false,
+    "default_auto_update_claimed": false,
+    "copied_from_independently_verified_official_layer": true,
+    "files": {
+      "trivy.db": {
+        "bytes": 1766359040,
+        "sha256": "324ef75b4ba84ec45caf6e427bb3c7f57732beae1933afc6cbafd8fe1a85f441",
+        "post_scan_equals_retained_source": true
+      },
+      "metadata.json": {
+        "bytes": 143,
+        "sha256": "2da04722d28fa2dfd65fd62a6ea3b7480f48caa3affb43b4fc260b53a6dd7634",
+        "post_scan_equals_retained_source": true
+      }
+    },
+    "metadata": {
+      "Version": 2,
+      "NextUpdate": "2026-11-14T07:00:07.938173677Z",
+      "UpdatedAt": "2026-11-13T07:00:07.938173847Z",
+      "DownloadedAt": "0001-01-01T00:00:00Z"
+    }
+  },
+  "raw_report_sha256": {
+    "trivy": "776672bdca72ba20ac0b65b1b0cdd8e9bed96b175b56cf3091b407f817389043",
+    "native_grype": "196f27158244c5b6069a4f9434063868e845d249d66127a8b8c13cd8beca8a7d",
+    "full_grype": "cbda2eef2747f5e2e424275558eb4270d94978f26ce9cbef4913605a3a445aa0",
+    "full_sbom": "956f6c77f53d36ec040508cc20d2170fe64220aa04b77baf0967d7d0df0b2f53"
+  },
+  "normal_build_receipt_sha256": "327ce802a92e13ce00f5e0791e3d5186e4df6ae752713d84f8048834c85dbeb0",
+  "scope": "CI native security repair and retained local candidate; no application Package, release, or daily update performed.",
+  "exact_gate_source_sha256": "5963cc9ab15f11b3dfb1b96d42d1cb22dd6eef10d8dbc91b7ec1cffde3ff0b6b",
+  "exact_gate_verdict_sha256": "bf0c127ec921d2afd083d416dbe1bcc7b1315d0c0cc094093308f5af3544d322"
+}

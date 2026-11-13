@@ -40,9 +40,23 @@ def identity():
     return json.loads((ROOT / 'deployment/security/grafana-fixed-20261107-build-identity.json').read_bytes())
 
 
-def test_actual_c6_51_inputs_pass_without_changing_any_original_bytes(identity):
-    before = {n: hashlib.sha256((ROOT / n).read_bytes()).hexdigest() for n in identity['actual_build_input_sha256']}
-    result = build.verify_build_identity(ROOT, identity)
+@pytest.fixture
+def historical_inputs(identity, tmp_path):
+    historical = tmp_path / 'actual-c6-inputs'
+    for name, expected in identity['committed_input_sha256'].items():
+        source = FIXTURES / 'selectors-before/.dockerignore' if name == '.dockerignore' else ROOT / name
+        raw = source.read_bytes()
+        allowed = {expected, build.TEXT_RAW_SHA256} if name == build.TEXT_INPUT else {expected}
+        assert hashlib.sha256(raw).hexdigest() in allowed
+        path = historical / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(raw)
+    return historical
+
+
+def test_actual_c6_51_inputs_pass_without_changing_any_original_bytes(identity, historical_inputs):
+    before = {n: hashlib.sha256((historical_inputs / n).read_bytes()).hexdigest() for n in identity['actual_build_input_sha256']}
+    result = build.verify_build_identity(historical_inputs, identity)
     assert result['actual_input_count'] == 51 and not result['artifact_approved']
     assert result['exact_dual_identity_paths'] == ['scripts/oci_artifact.py']
     assert result['observed_input_sha256'] == before
@@ -65,11 +79,11 @@ def test_dual_identity_does_not_allow_another_source_or_unreviewed_clean_rule(id
         build.verify_build_identity(ROOT, value)
 
 
-def test_both_exact_reviewed_physical_forms_pass_but_other_byte_changes_do_not(identity, tmp_path):
+def test_both_exact_reviewed_physical_forms_pass_but_other_byte_changes_do_not(identity, tmp_path, historical_inputs):
     for name in identity['actual_build_input_sha256']:
         destination = tmp_path / name
         destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_bytes((ROOT / name).read_bytes())
+        destination.write_bytes((historical_inputs / name).read_bytes())
     text = tmp_path / build.TEXT_INPUT
     canonical = text.read_bytes().replace(b'\r\n', b'\n')
     assert hashlib.sha256(canonical).hexdigest() == build.TEXT_COMMITTED_SHA256
@@ -84,7 +98,7 @@ def test_actual_committed_input_bytes_survive_lf_checkout_and_default_windows_te
     repo = tmp_path / 'clean-git'
     repo.mkdir()
     for name, expected in identity['committed_input_sha256'].items():
-        data = subprocess.check_output(['git', 'cat-file', 'blob', 'HEAD:' + name], cwd=ROOT)
+        data = subprocess.check_output(['git', 'cat-file', 'blob', build.SOURCE_COMMIT + ':' + name], cwd=ROOT)
         assert hashlib.sha256(data).hexdigest() == expected
         path = repo / name
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -102,6 +116,12 @@ def test_actual_committed_input_bytes_survive_lf_checkout_and_default_windows_te
                    cwd=repo, check=True, capture_output=True)
     with pytest.raises(ValueError, match='clone --config core.autocrlf=false'):
         build.verify_build_identity(crlf, identity)
+
+
+def test_current_privacy_ignore_cannot_be_passed_off_as_original_c6_input(identity):
+    assert hashlib.sha256((ROOT / '.dockerignore').read_bytes()).hexdigest() != identity['committed_input_sha256']['.dockerignore']
+    with pytest.raises(ValueError, match=r'bytes changed: \.dockerignore'):
+        build.verify_build_identity(ROOT, identity)
 
 
 def test_missing_new_request_pin_fails_before_reading_any_authorization(monkeypatch):

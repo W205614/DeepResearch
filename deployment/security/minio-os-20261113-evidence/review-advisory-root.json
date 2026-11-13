@@ -1,0 +1,45 @@
+{
+  "actor": "/root",
+  "actor_kind": "automated_independent_agent",
+  "observed_at_utc": "2026-11-13T12:14:55.314417+00:00",
+  "subject_sha256": "812e1201ea30de8d72a9fa97bd1ee56c2e03b51a9103888801c978feba1eec53",
+  "facts_passed": true,
+  "risk_acceptance": false,
+  "binary_redistribution_approved": false,
+  "reviewed_draft_sha256": "5194ae69e5a05cfa00ef4894f9b4209ed457c4d04e444c5c86ae76363af67a45",
+  "actual_source_and_evidence_files_hash_verified": 235,
+  "current_CI_full_raw_and_inventory_recomputed_equal": true,
+  "raw_before": 24,
+  "raw_after": 21,
+  "removed_exact_rows": [
+    {
+      "id": "CVE-2026-122054",
+      "package": "glibc",
+      "severity": "MEDIUM",
+      "target": "os:redhat",
+      "version": "2.34-290.el9_9"
+    },
+    {
+      "id": "CVE-2026-122054",
+      "package": "glibc-common",
+      "severity": "MEDIUM",
+      "target": "os:redhat",
+      "version": "2.34-290.el9_9"
+    },
+    {
+      "id": "CVE-2026-122054",
+      "package": "glibc-minimal-langpack",
+      "severity": "MEDIUM",
+      "target": "os:redhat",
+      "version": "2.34-290.el9_9"
+    }
+  ],
+  "added_findings": 0,
+  "all_original34_matrix_and_patches_and_native_runtime_rpm_facts_identical": true,
+  "shared_driver_only_grafana_branch_change_previously_reviewed": true,
+  "no_global_cve_withdrawal_claim": true,
+  "no_raw_rewrite_or_new_native_build_claim": true,
+  "unknown_or_other_missing_tuples_still_blocked": true,
+  "related_tests_passed": 45,
+  "root_repeat_tests": 0
+}

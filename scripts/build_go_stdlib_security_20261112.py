@@ -5,6 +5,7 @@ import argparse
 from datetime import datetime, timezone
 import json
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import uuid
@@ -15,7 +16,7 @@ from scripts import check_grafana_source_build_20261110 as old  # noqa: E402
 from scripts import build_grafana_source_20261110 as old_builder  # noqa: E402
 from scripts.grafana_source_build_facts_20261110 import capture  # noqa: E402
 from scripts.image_disposition import load_binding as minio_binding  # noqa: E402
-from scripts.retained_source_review_20261112 import snapshot  # noqa: E402
+from scripts.retained_source_review_20261112 import SOURCE, snapshot  # noqa: E402
 
 CACHE = ROOT / '.cache/go-stdlib-security-20261112'
 
@@ -56,6 +57,26 @@ def consumer(artifact):
     else:
         from scripts import check_minio_source_build_20261112 as gate
     return gate
+
+
+def build_historical_grafana_input(output, historical):
+    retained_output = historical / '.cache' / ('retained-runtime-' + uuid.uuid4().hex[:12])
+    # This is an immutable historical BUILDINPUT, not a current runtime approval.
+    # Its c6 identity must inspect its actual source, including the old ignore file.
+    try:
+        logged([sys.executable, '-B', historical / 'scripts/build_grafana_source_20261110.py',
+                '--prepare', '--output-dir', retained_output], output, 'previous-runtime-build')
+    finally:
+        diagnostics = output / 'previous-runtime-build'
+        diagnostics.mkdir()
+        write(diagnostics / 'historical-source.json', {'source_commit': SOURCE, 'checkout': str(historical),
+              'output': str(retained_output), 'input_only': True, 'new_runtime_approved': False})
+        if retained_output.is_dir():
+            for path in retained_output.rglob('*'):
+                if path.is_file() and (path.suffix == '.log' or path.parent == retained_output and path.suffix == '.json'):
+                    destination = diagnostics / path.relative_to(retained_output)
+                    destination.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copyfile(path, destination)
 
 
 def image_facts(artifact, output, sources):
@@ -115,8 +136,7 @@ def prepare_contexts(args, output):
     old_image = 'deepresearch-grafana-source:20261110'
     if subprocess.run(['docker', 'image', 'inspect', old_image], stdout=subprocess.DEVNULL,
                       stderr=subprocess.DEVNULL).returncode:
-        logged([sys.executable, '-B', ROOT / 'scripts/build_grafana_source_20261110.py',
-                '--prepare', '--output-dir', output / 'previous-runtime-build'], output, 'previous-runtime-build')
+        build_historical_grafana_input(output, snapshot(ROOT))
     before = capture(old_image, output / 'previous-runtime-actual')
     if (before['runtime_manifest_sha256'] != baseline['expected']['runtime_manifest_sha256']
             or old.runtime_config(before['inspection']['Config']) != baseline['expected']['runtime_config']):

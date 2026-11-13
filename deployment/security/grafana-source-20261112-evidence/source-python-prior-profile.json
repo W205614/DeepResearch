@@ -1,0 +1,2495 @@
+{
+  "schema": "go-stdlib-source-profile-20261112-v1",
+  "status": "verified",
+  "profile": "grafana-source-20261112",
+  "image": "deepresearch-grafana-source:20261112",
+  "dockerfile": "deployment/docker/Dockerfile.grafana-20261112",
+  "context": ".",
+  "source_inputs": {
+    "deployment/docker/.gitattributes": "b41ad0a2a8a49dcc136954df8957c479eaad056f623d255d0da2eae9a89d99d6",
+    "deployment/docker/Dockerfile.grafana-20261110": "f0f2365aa5fd3624bc9ff5c53d6f448d3a4bc9c503d62b48116f5980a90c331e",
+    "deployment/docker/Dockerfile.grafana-20261110.dockerignore": "c2da2af78d20ac5746524327f5f42b0eb6dd65b0cf3ca82c388cf812f19b7e23",
+    "deployment/docker/Dockerfile.grafana-20261112": "4653c95547ca5f96b19db2cb52d74f0bbd98c35c05ad772ed7318fb0102845b9",
+    "deployment/docker/Dockerfile.grafana-20261112.dockerignore": "c2da2af78d20ac5746524327f5f42b0eb6dd65b0cf3ca82c388cf812f19b7e23",
+    "deployment/security/go-stdlib-20261112-evidence/Go-LICENSE": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+    "deployment/security/go-stdlib-20261112-evidence/source.lock.json": "20746730bbf420fce6ed6765e79bac882c02d237f5a51cf212581840ff019dbe",
+    "deployment/vendors/grafana-20261107/build_candidate_backends.py": "bb421ba30986038f1165d9ba03faf23707c513a8968c8c6405c1744e90d9f400",
+    "deployment/vendors/grafana-20261107/candidate_build_backends.py": "f8bb95e771306d6bf3c250985a7f996fee2e1719501cf61544045f32098cdff9",
+    "deployment/vendors/grafana-20261107/capture_graphs.py": "23d65fdae263353b74b3ca608300695c6041abccdfb98e71bed74206edbd83e3",
+    "deployment/vendors/grafana-20261107/main/go.mod": "199183753d1ab3e924e97570739bc5e54ccaf3c209b4f882688953d0dc9bb45d",
+    "deployment/vendors/grafana-20261107/main/go.sum": "1009eb2de092e89326907449451ba9ade97b38eb6f393d443f1cc14736d9ab26",
+    "deployment/vendors/grafana-20261107/plugin-modules.json": "63238edb60aadeb5d7607b4c6d31cb8a850392bb9fd87fd8e2148b6533a7b7fa",
+    "deployment/vendors/grafana-20261107/prepare_rebuild.py": "eb2f14321cbbc114b0ca08dc7a7b1c6b9122880f0d091645f3d6bda42d2dad33",
+    "deployment/vendors/grafana-20261107/verify_native_versions.py": "d9fe2108fff8df999587e06a2467336adc9703b4ef5d98191b3eea9b760d5161",
+    "deployment/vendors/grafana-20261107/verify_retained_assets.py": "267f7bfa4fb1ac6d5c029473131d6e568992a828cbe3c3f5383333080a9fb835",
+    "deployment/vendors/grafana-20261110/.gitattributes": "a79691a93b46e49ce460c26ef22afcc03d6eca1e63bf2edbc20e96159510f6c9",
+    "deployment/vendors/grafana-20261110/busybox/.gitignore": "3a4e5d348c53bfc29b908a15ef2e03398a31876b54b37b2609292a6fccd043f6",
+    "deployment/vendors/grafana-20261110/busybox/Dockerfile": "b57dd0f74f2dda5e26f0d8fcf8524dc30e050455d120ce58f9a6143b81e521b8",
+    "deployment/vendors/grafana-20261110/busybox/README.md": "146d0b34cf3b9cc28703382aa3a77ba059380a689118697bc5cb05fb860fc02b",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0001-awk-fix-handling-of-literal-backslashes-in-replaceme.patch": "522e48b25b320b854885419f3ee3a092bd58ad2ed111da87a57cafbc8420feae",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0001-blkdiscard-ship-link-to-sbin-instead-of-usr-bin.patch": "f490ce643412a33dfd3c92aaaeff501a10c0f78662172d1cf55e5d632b7f8033",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0001-hexdump-fix-regression-with-n4-e-u.patch": "c289b3ed7096557846069f6814e063226b2552e6d26a959c9e35116469dddf35",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0001-init-add-support-for-separate-reboot-action.patch": "df5b272582ebf19de062341469ade926b1c747278871190855ac0d16c079f519",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0001-mount-fix-parsing-proc-mounts-with-long-lines.patch": "5971026ad9e4b252370bf4be615f7da6ab146cccc58a7e5cb3f21b92c32ae50d",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0001-netstat-sanitize-process-names.patch": "daf4282120acbc4eb1d90721565d2e01c9ddc3eeeabed4c5f5faa04fe3d33dd3",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0001-tar-fix-16018-masking-of-potentially-malicious-tar-cpio-content.patch": "8b4262ffbaaa721d3c1d6a2b1deb84a794a99252b1b15e974ec76ccb9eb3c517",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0001-tar-fix-TOCTOU-symlink-race-condition.patch": "1a65d0870075fc83d58d75e91a2e518d1bee1898083086fb950281eb79b7d3a8",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0001-tunctl-fix-segfault-on-ioctl-failure.patch": "d8488651d7af4450310dce234bc62cf5737a473478f67e298a1ad50c6205a78c",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0001-wget-add-header-Accept.patch": "0edc53c34e0b7f82efb4010ac417c42c182890088f83944f1fb557ba5826968b",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0002-adduser-default-to-sbin-nologin-as-shell-for-system-.patch": "1f7d95849b0cda0a75d608afca994d782f0a67fe0f1cb47578424ebadeb266c7",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0003-ash-add-built-in-BB_ASH_VERSION-variable.patch": "9059fe07e7a872ed16e66f9cb711dbfcf4d5d28308f20dd9a6c36956326911c9",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0004-Avoid-redefined-warnings-when-buiding-with-utmps.patch": "8ac54787fe6bfeb42a6c13e49b39ac7c61e839c4cea243d273c71ba10f1b4a2c",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0005-libbb-sockaddr2str-ensure-only-printable-characters-.patch": "3d16e43c11fa3afeb441c64129071168ce9a7a9e584fc78ccc18bbae99feda87",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0006-modinfo-add-k-option-for-kernel-version.patch": "6832669fa413d9a236a22bb4d0519e6cc89771a0ef24abd723afd99ce52e900f",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0007-nologin-Install-applet-to-sbin-instead-of-usr-sbin.patch": "3bf06e5cdd1a0d4a0ad541c8a838004fd0c4e46e44ad3af6d146ad2f69967d3b",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0008-pgrep-add-support-for-matching-against-UID-and-RUID.patch": "c43b6ede059656adb473481aff2aa29239d232b998f735302e97a324650e77a3",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0009-properly-fix-wget-https-support.patch": "4be0a9d28acaa4c117c694a4816fad4a2d3f78e224676dfc2d1407d3ad0dc17a",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0010-fsck-resolve-LABEL-.-UUID-.-spec-to-device.patch": "f45615c7a985b30465da5d93a3535404636f45a83cbeefafbd0bcb6b0c86371f",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0011-nslookup-sanitize-all-printed-strings-with-printable.patch": "a1f28268047e9e268f9760f3f3c9bf53f41eb5a712e0922f105dd23b96c00dc7",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0012-ash-exec-busybox.static.patch": "813555bb69bc9b97ff3d7ec14569eb2763ec16bfd9650bba5f1f08ba5cd4226c",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0013-app-location-for-cpio-vi-and-lspci.patch": "7f083b5705dac1cfa80953e32e83aaa65e4234c41a59f1578bfc403a1abf4eed",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0014-udhcpc-set-default-discover-retries-to-5.patch": "3e306b052a2df4134de61012de907893aebeb9cd107e9410e81770d60608c41d",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0015-ping-make-ping-work-without-root-privileges.patch": "802827589eb1c04f634ba8f69158cf0ba87e41061935ba5047ccc8322bf20f41",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0016-fbsplash-support-console-switching.patch": "4db1b0fe9178c1a04f8ea63a9915db86159120398e8bd619c0231afa303472d4",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0017-fbsplash-support-image-and-bar-alignment-and-positio.patch": "d128fa633cfad0845d6bd5f0aee634ab9971b2edd6001ad91d99b3c1be8aee91",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0018-depmod-support-generating-kmod-binary-index-files.patch": "6817e14f68dae612a91aa7d75e76b1212a5bba8e9cfdff11336e606bdeed98eb",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0019-Add-flag-for-not-following-symlinks-when-recursing.patch": "a4f0e598874e0229071c6fe59380cd6c739d68ecbc74e1eef2de76e60ea49030",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0020-udhcpc-Don-t-background-if-n-is-given.patch": "3cc2b21429514b57d75e66a48b6e4c2068c931f91e993e8625a8f22d04daad4b",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0021-tests-fix-tarball-creation.patch": "dd4c10e0d2a1479d2367cf116e05bda09f0f2921636f65af99428d0cff542412",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0022-tests-musl-doesn-t-seem-to-recognize-UTC0-as-a-timez.patch": "ab1f225416915acf048a2cce3571dbbe942ecd7b114492401b9e0634567e633a",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0023-Hackfix-to-disable-HW-acceleration-for-MD5-SHA1-on-x.patch": "bb9858725f62c1aec9baeeace4a217a4a216ae8488a4a04e92fc225ef4f063c5",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0024-umount-Implement-O-option-to-unmount-by-mount-option.patch": "fe1b1ed4983c26960bf9d88062e52f6f1f2735a54d15234361d2b2c53eef14ce",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0025-find-fix-xdev-depth-and-delete.patch": "d88146dbec6996345b825805408a8c855e616decb4ad25555012b37d605c6b62",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0026-awk.c-fix-CVE-2023-42366-bug-15874.patch": "34a52455ba3866c43d53558047fa40edba5118218930a3f860d1d343dc7d09a8",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0027-awk-Mark-test-for-handling-of-start-of-word-pattern-.patch": "f478b2c38a12fad318b43839f4aa97c6116087d4c986ed6ce11320e19b8409c1",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0028-od-Skip-od-B-on-big-endian.patch": "83483a14589224a6f7e7c03883abd8b54d68dc46f00628be59a61ecc68d79067",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0029-ash-reject-unknown-long-options.patch": "4ed1b9592b75abb740878804dc8cc48cffc5e6da6cd6d4319a8c35082b6b1a77",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0030-hexdump-Skip-a-single-test-on-big-endian-systems.patch": "a03e66c5768d4fa5acb2778943019c1ccc96c9f7f5b8b56206df917c9d28967c",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0031-syslogd-fix-wrong-OPT_locallog-flag-detection.patch": "a4b8e95aefd53ac360bfc898f0f08ca7d86ef5178058a3499783a99e37247412",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0032-lineedit-fix-some-tab-completions-written-to-stdout.patch": "032a2e416980a21a6dca1b702543b29b675a8ef843998d9c24d31eacb7fc27cb",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0033-lineedit-use-stdout-for-shell-history-builtin.patch": "61265873d32d0d0b12c429a736de6c949f0dbcd434e1ead1765bf3fd19cfc084",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0034-adduser-remove-preconfigured-GECOS-full-name-field.patch": "b1b62318d5b4550c2a4ae6cad74330bbb9159dacdd8f0617759311d9d977dbbf",
+    "deployment/vendors/grafana-20261110/busybox/alpine-patches/0035-cpio-map-F-to-file-long-option.patch": "6a65af49b8497220eb8ef502167d76bf12a30f7cf1a12eb620041e1efd0747b5",
+    "deployment/vendors/grafana-20261110/busybox/archives.lock": "f45ba70466c4fa7ba4d19541302250bb6eea124343071375dcebfad0ea6faa6f",
+    "deployment/vendors/grafana-20261110/busybox/build.sh": "ceb31eeb1969375a22ccfa96e4a45135390bac4f1777254fe6797ab7f95474b0",
+    "deployment/vendors/grafana-20261110/busybox/busybox.config": "65b29f6085cd79ab5f032d7e4299534a86c3efad240e78c16186a19bf847fcca",
+    "deployment/vendors/grafana-20261110/busybox/files.sha256": "7bcc5ff1a29e1217591863b48ca2e01c6684f45dad739955a6518df844612eea",
+    "deployment/vendors/grafana-20261110/busybox/licenses/busybox-AUTHORS": "384fc3a9cfc7c435bdd9d169e5ec60a7d898d9ef9557ec859394d7f97b4b6f07",
+    "deployment/vendors/grafana-20261110/busybox/licenses/busybox-LICENSE": "bbfc9843646d483c334664f651c208b9839626891d8f17604db2146962f43548",
+    "deployment/vendors/grafana-20261110/busybox/licenses/skalibs-COPYING": "26bee3a3c78ae6a29c81c18832cadb1a4433cf8a786624312f11667d93fcce41",
+    "deployment/vendors/grafana-20261110/busybox/licenses/utmps-COPYING": "babe23e98a17858e1a8163a1f223848842f1cc2939ef69c91dbdec294f77ea6e",
+    "deployment/vendors/grafana-20261110/busybox/patch-order.txt": "83af8ef4debe60baaad8d5fb34396b7e95aa8be7858089bd141d4355408c4b21",
+    "deployment/vendors/grafana-20261110/busybox/regression.py": "829dd3f55d353af3e4ba55f46cc840fd77276c90419110bdb4b46821ff820591",
+    "deployment/vendors/grafana-20261110/busybox/skalibs-APKBUILD": "7878dd8832e4248e5ad535f7b8beabc9c962cdfc059b1c732d30742d57adc027",
+    "deployment/vendors/grafana-20261110/busybox/source.lock.json": "87cd1e1c527dc417b7c19fd4c687957218f4e4998a3e69ca0ae6c3d47cfb8814",
+    "deployment/vendors/grafana-20261110/busybox/upstream-APKBUILD": "98f019f62291aff63cb798f046fb59dfd43340885de63ca2f127651fc21d0450",
+    "deployment/vendors/grafana-20261110/busybox/utmps-APKBUILD": "40e59c8bf91709421c237776b427d95aed192ee8d7453ba31bde751230f06fa4",
+    "deployment/vendors/grafana-20261110/busybox/wget-http-request-boundary.patch": "2c0e1249492901997598679ad17f381b7ca8fb1c13c0ae3872abb9da6b6c2602",
+    "deployment/vendors/grafana-20261110/busybox/write_metadata.py": "1c0bf813198bf3acfaf9aff0259cacc6377c7d6863f51d38a130bc3e52966448",
+    "deployment/vendors/grafana-20261110/main/go.mod": "120976b75ce3f338b41c0c25f83cc2e5e0b5bff889210c8eec9d6677c526687d",
+    "deployment/vendors/grafana-20261110/main/go.sum": "5312fa2921123fdb8521abab2d384d63faa134789b9078dead39ce58f9aaea01",
+    "deployment/vendors/grafana-20261110/prefetch_source.py": "6678f46f54433e500c2acb78b959cd90903baa720226637a1818b89791495b50",
+    "deployment/vendors/grafana-20261110/prepare_stable_graphs_20261112.py": "9dd31a8d493309867e6ad6444f99b34ab45e913f1cef971ab192699714a84ddc",
+    "deployment/vendors/grafana-20261110/source.lock.json": "47d1bef759543fdac3c34136ef6e687e04ab80fbd1db05a8994a11b501eb9970",
+    "deployment/vendors/grafana/main/go.mod": "036450ffcf08f108f754fd2b048b828d70a571d7f6d4d4de0fb7de2c4f58ddda",
+    "deployment/vendors/grafana/main/go.sum": "9df9d3bc91c69dbea45632447c4d88190f5e8a18ee7a768be585dfa1780dd2b2",
+    "deployment/vendors/grafana/main/go.work": "9ef8c9464a5b3363da1855baeb12dc932391d6dbb1bf733df981f374c718ccf8",
+    "deployment/vendors/grafana/main/go.work.sum": "66fd6bab1829660d3edbb463037193a66d1a2fe76c03228ec91b2aec5a154c42",
+    "deployment/vendors/grafana/reviewed_backend_verifier.go": "021048a6577579118047211890f8b615e457ee428677f30d88285fb05a8144aa",
+    "deployment/vendors/grafana/reviewed_backend_verifier_test.go": "a2af7375d16d90d3b7c749c9110bc2e439b1fcf1514c0d09beb83bb34b5d2c63",
+    "scripts/build_go_stdlib_security_20261112.py": "7febf7d4e546c693f0115cbf1a9fe80093d13a3b786b5b26352d3ef0debd6cbb",
+    "scripts/prefetch_go_security_modules_20261112.py": "2b6864129c0f8e1d2b555cd135eef9f1aba90a0146af06f22bd7d21b15bad391",
+    "scripts/retained_source_review_20261112.py": "b68baba611f1d5b74dd46e67bad736c9690c4af85c59ce9ef50cba02412ebcfc"
+  },
+  "expected": {
+    "native_sha256": {
+      "usr/share/grafana/bin/grafana": "cb1d1fca4dd56395bdffe0cc821efef47565bd9066c47027fffa6c7fe45862d7",
+      "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64": "bd80bd856b3c2458bb6e32617d77b88f5576b3eac71ddbcaced5a237024da906",
+      "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64": "231282edb34a9d3b24ad8aba2b5744f6a99422ca1cf7e22dd8de5076367842f8",
+      "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64": "149274e5c520fcfda8be8f72efe08a1f87ef3366aa9e9b225bbd26860d3aa86a",
+      "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64": "f71438dd3abb9f515854d9cc980be9e00c6aaf961ceb21a2c8acf40d5470c569",
+      "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64": "f9ea7293a326d6411dd70d5ec96e89c93f84bc04fa32dcaef974200c7a7d658a",
+      "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64": "329b2c54d19b55ff4a26b14789c5658c40af4b41f980495740b7d548c5903675",
+      "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64": "47f5f8cba027b6467486ed688aa07bec9142d53a77cfa099fbe94cd55406008a",
+      "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64": "3a4a6577a4440a802e33e6a7502fb33c6ca382784d2de834c862d60db912c0fd",
+      "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64": "2dc571171f29315f89428d3d9b9ea3f2ba0f24f4b60986274e657937f62fc68c",
+      "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64": "718e3bfb4311386ccbd70052254d9c1c1514e007bda97d2e2f48777e10a4ec15",
+      "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64": "d5cae81931a343cfcd694dc523c05d3c39684af3ed155d7aa76c2c896f9932ad",
+      "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": "b6137332e24906f89238899a255fcad557a95b9045e4bd80bee5aeccdc91f168",
+      "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": "4157391c162f4e311a8f50b962d2c07dc68306eafd6442437677aad61834ca91"
+    },
+    "runtime_manifest_sha256": "506571107dda8b51362a5229f131df6d1d1c1446d79b4a4fd55a4e097da6d78d",
+    "runtime_config": {
+      "User": "472",
+      "Env": [
+        "PATH=/usr/share/grafana/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "GF_PATHS_CONFIG=/etc/grafana/grafana.ini",
+        "GF_PATHS_DATA=/var/lib/grafana",
+        "GF_PATHS_HOME=/usr/share/grafana",
+        "GF_PATHS_LOGS=/var/log/grafana",
+        "GF_PATHS_PLUGINS=/var/lib/grafana/plugins",
+        "GF_PATHS_PROVISIONING=/etc/grafana/provisioning"
+      ],
+      "Entrypoint": [
+        "/run.sh"
+      ],
+      "Cmd": null,
+      "WorkingDir": "/usr/share/grafana",
+      "ExposedPorts": {
+        "3000/tcp": {}
+      },
+      "Volumes": null,
+      "Healthcheck": null,
+      "StopSignal": null
+    },
+    "trivy_inventory_sha256": {
+      "alpine": "5a644889027c5bd290666962e7aac418628075c663a645f66bb16fa99b307711",
+      "Node.js": "0eb8b83302292f03a210f6dd641bc089fcc68bf6de07375208ebfcc5120107d9",
+      "usr/share/grafana/bin/grafana": "46af48a0f0db43511b15a9a462d74ea73fc32a2ba4bcf836786a355c158f2ec5",
+      "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64": "c06ceaaf3a2a957942590430b9e0e86f1989dd5072c9995a2df23622a3f81c76",
+      "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64": "0a9d142d24b2471376be40b7b5a95680c98f1e251a51a493928eb5b1013bc872",
+      "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64": "1860636f607c71bed2f4c345f43f4c48e67f32830096f7c8d35ba64e478c894b",
+      "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64": "b18ac1dbdbc0b11e6022a7655addd2bf304987dcafb5f0898d1e05adba3ebede",
+      "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64": "7e279a85a97501d376d7f59af252101c367d24f196fef98e982a12ed18cef136",
+      "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64": "ed3c930882b32bbce833cbd98f3bf864047041a73c684544d07e81cc8bb1d57c",
+      "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64": "661365bf5abce3f31a173403a5119a43af8237c3890c5350e06e78a0cd9994fb",
+      "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64": "1f4fc28c2e166b20fb932e641a22695a3860decc860bae47ac2328b14774fa19",
+      "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64": "eff22736e95212cc1cd8a72b1655b94b1fb4752cb79e143100843581fc39bfa0",
+      "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64": "9eb3c6d4c98535441fa0bedb6016c5bf11fbb0afd632248efeb38700158ef6a5",
+      "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64": "8543eb2dd53fe39a47aaced950d3208dcac6807ee23b94d6a5d74659fedec9a2",
+      "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": "ca7f4e8d0cf80c35486f01043f30d0f72a57f2a7776266e4daa7b7b9a62fcbfd",
+      "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": "910b6889ac648856c9f5b6803362f1248563c018ac1383f48f67c03c46d8ffee"
+    },
+    "syft_types": {
+      "npm": 4,
+      "apk": 33,
+      "go-module": 1720,
+      "binary": 1
+    }
+  },
+  "reviewed_findings": {
+    "Trivy": [
+      {
+        "id": "CVE-2018-15727",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "CRITICAL"
+      },
+      {
+        "id": "CVE-2023-3128",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "CRITICAL"
+      },
+      {
+        "id": "CVE-2020-12458",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "HIGH"
+      },
+      {
+        "id": "CVE-2021-39226",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "HIGH"
+      },
+      {
+        "id": "CVE-2022-35957",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "HIGH"
+      },
+      {
+        "id": "CVE-2022-39307",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "HIGH"
+      },
+      {
+        "id": "CVE-2023-2801",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "HIGH"
+      },
+      {
+        "id": "CVE-2025-6023",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "HIGH"
+      },
+      {
+        "id": "CVE-2026-42127",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "HIGH"
+      },
+      {
+        "id": "CVE-2026-42129",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "HIGH"
+      },
+      {
+        "id": "CVE-2026-9029",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "HIGH"
+      },
+      {
+        "id": "CVE-2018-1000816",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "CVE-2018-12099",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "CVE-2018-18623",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "CVE-2018-18624",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "CVE-2018-18625",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "CVE-2019-13068",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "CVE-2019-19499",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "CVE-2020-11110",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "CVE-2020-12245",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "CVE-2020-13430",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "CVE-2020-24303",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "CVE-2022-39229",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "CVE-2022-39324",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "CVE-2023-2183",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "CVE-2023-4822",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "CVE-2025-3415",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "CVE-2026-10601",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "CVE-2026-21724",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "CVE-2026-33380",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "CVE-2026-33381",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "CVE-2024-10452",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "LOW"
+      },
+      {
+        "id": "CVE-2026-21727",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "github.com/grafana/grafana",
+        "version": "v0.0.0-20261027113329-ce471d869a48+dirty",
+        "severity": "LOW"
+      },
+      {
+        "id": "GO-2026-5932",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "golang.org/x/crypto",
+        "version": "v0.58.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "GO-2026-5932",
+        "target": "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+        "package": "golang.org/x/crypto",
+        "version": "v0.58.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "GO-2026-5932",
+        "target": "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+        "package": "golang.org/x/crypto",
+        "version": "v0.58.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "GO-2026-5932",
+        "target": "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+        "package": "golang.org/x/crypto",
+        "version": "v0.58.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "GO-2026-5932",
+        "target": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+        "package": "golang.org/x/crypto",
+        "version": "v0.58.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "CVE-2026-21728",
+        "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+        "package": "github.com/grafana/tempo",
+        "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+        "severity": "HIGH"
+      },
+      {
+        "id": "CVE-2026-28377",
+        "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+        "package": "github.com/grafana/tempo",
+        "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+        "severity": "HIGH"
+      }
+    ],
+    "Grype": [
+      {
+        "id": "GHSA-p4r4-xvrq-gvmc",
+        "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+        "package": "github.com/grafana/tempo",
+        "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+        "severity": "HIGH"
+      },
+      {
+        "id": "CVE-2025-60876",
+        "target": "lib/apk/db/installed",
+        "package": "busybox",
+        "version": "1.37.0-r31",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "CVE-2025-60876",
+        "target": "lib/apk/db/installed",
+        "package": "busybox-binsh",
+        "version": "1.37.0-r31",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "CVE-2025-60876",
+        "target": "lib/apk/db/installed",
+        "package": "ssl_client",
+        "version": "1.37.0-r31",
+        "severity": "MEDIUM"
+      },
+      {
+        "id": "GHSA-ffqx-q65f-36jf",
+        "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+        "package": "github.com/grafana/tempo",
+        "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+        "severity": "HIGH"
+      },
+      {
+        "id": "GO-2026-5932",
+        "target": "usr/share/grafana/bin/grafana",
+        "package": "golang.org/x/crypto",
+        "version": "v0.58.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "GO-2026-5932",
+        "target": "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+        "package": "golang.org/x/crypto",
+        "version": "v0.58.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "GO-2026-5932",
+        "target": "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+        "package": "golang.org/x/crypto",
+        "version": "v0.58.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "GO-2026-5932",
+        "target": "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+        "package": "golang.org/x/crypto",
+        "version": "v0.58.0",
+        "severity": "UNKNOWN"
+      },
+      {
+        "id": "GO-2026-5932",
+        "target": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+        "package": "golang.org/x/crypto",
+        "version": "v0.58.0",
+        "severity": "UNKNOWN"
+      }
+    ]
+  },
+  "historical_review_source": "78a19df9dfa6f072af6ebe40ff99cf164d0c4ff8",
+  "old_binary_approval_inherited": false,
+  "binary_redistribution_approved": false,
+  "native_evidence": {
+    "usr/share/grafana/bin/grafana": {
+      "elf_sha256": "cb1d1fca4dd56395bdffe0cc821efef47565bd9066c47027fffa6c7fe45862d7",
+      "prior_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "native": "deployment/security/grafana-source-20261112-evidence/main-native.json",
+      "prior_native": "deployment/security/grafana-source-20261110-evidence/main/native-buildinfo.json",
+      "graph": "deployment/security/grafana-source-20261112-evidence/main-graph.json.gz",
+      "prior_graph": "deployment/security/grafana-source-20261110-evidence/main/main.json.gz"
+    },
+    "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64": {
+      "elf_sha256": "bd80bd856b3c2458bb6e32617d77b88f5576b3eac71ddbcaced5a237024da906",
+      "prior_elf_sha256": "599f81b6cb18227c719074099c3f5f3dd0928d8a5b3d2a55ac8a02a0210fa10c",
+      "native": "deployment/security/grafana-source-20261112-evidence/loki-native.json",
+      "prior_native": "deployment/security/grafana-fixed-20261107-evidence/native/loki-native-buildinfo.json",
+      "graph": "deployment/security/grafana-source-20261112-evidence/loki-graph.json.gz",
+      "prior_graph": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/loki.json.gz"
+    },
+    "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64": {
+      "elf_sha256": "231282edb34a9d3b24ad8aba2b5744f6a99422ca1cf7e22dd8de5076367842f8",
+      "prior_elf_sha256": "c7798b1bbea42ddad8a7259fd1c3c5846cdd8d89f7f1f8034858871e392de9e3",
+      "native": "deployment/security/grafana-source-20261112-evidence/jaeger-native.json",
+      "prior_native": "deployment/security/grafana-fixed-20261107-evidence/native/jaeger-native-buildinfo.json",
+      "graph": "deployment/security/grafana-source-20261112-evidence/jaeger-graph.json.gz",
+      "prior_graph": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/jaeger.json.gz"
+    },
+    "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64": {
+      "elf_sha256": "149274e5c520fcfda8be8f72efe08a1f87ef3366aa9e9b225bbd26860d3aa86a",
+      "prior_elf_sha256": "73db79edd48a44159ee66583ae4a646a0e52aaf0cbfa252aece9753273961aa1",
+      "native": "deployment/security/grafana-source-20261112-evidence/mysql-native.json",
+      "prior_native": "deployment/security/grafana-fixed-20261107-evidence/native/mysql-native-buildinfo.json",
+      "graph": "deployment/security/grafana-source-20261112-evidence/mysql-graph.json.gz",
+      "prior_graph": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mysql.json.gz"
+    },
+    "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64": {
+      "elf_sha256": "f71438dd3abb9f515854d9cc980be9e00c6aaf961ceb21a2c8acf40d5470c569",
+      "prior_elf_sha256": "019b92b07c3bd36176e28e2ee1693d69b423a129b6e6a9945e98adffa53c3ee1",
+      "native": "deployment/security/grafana-source-20261112-evidence/opentsdb-native.json",
+      "prior_native": "deployment/security/grafana-fixed-20261107-evidence/native/opentsdb-native-buildinfo.json",
+      "graph": "deployment/security/grafana-source-20261112-evidence/opentsdb-graph.json.gz",
+      "prior_graph": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/opentsdb.json.gz"
+    },
+    "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64": {
+      "elf_sha256": "f9ea7293a326d6411dd70d5ec96e89c93f84bc04fa32dcaef974200c7a7d658a",
+      "prior_elf_sha256": "3343e2ff45c76058067bb945baf7c0fc341edf0b647b59d3c8e2a95211df73a4",
+      "native": "deployment/security/grafana-source-20261112-evidence/mssql-native.json",
+      "prior_native": "deployment/security/grafana-fixed-20261107-evidence/native/mssql-native-buildinfo.json",
+      "graph": "deployment/security/grafana-source-20261112-evidence/mssql-graph.json.gz",
+      "prior_graph": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mssql.json.gz"
+    },
+    "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64": {
+      "elf_sha256": "329b2c54d19b55ff4a26b14789c5658c40af4b41f980495740b7d548c5903675",
+      "prior_elf_sha256": "d290d4840deb7e1edffaee453271ca87d02094f3f8ab0f3e27680605f1f5fd5a",
+      "native": "deployment/security/grafana-source-20261112-evidence/grafana-pyroscope-datasource-native.json",
+      "prior_native": "deployment/security/grafana-fixed-20261107-evidence/native/grafana-pyroscope-datasource-native-buildinfo.json",
+      "graph": "deployment/security/grafana-source-20261112-evidence/grafana-pyroscope-datasource-graph.json.gz",
+      "prior_graph": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/grafana-pyroscope-datasource.json.gz"
+    },
+    "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64": {
+      "elf_sha256": "47f5f8cba027b6467486ed688aa07bec9142d53a77cfa099fbe94cd55406008a",
+      "prior_elf_sha256": "50ba9d95a58a20a52a9131a44d04313c955a20ccc199b02e29f474b70af6fd3a",
+      "native": "deployment/security/grafana-source-20261112-evidence/influxdb-native.json",
+      "prior_native": "deployment/security/grafana-fixed-20261107-evidence/native/influxdb-native-buildinfo.json",
+      "graph": "deployment/security/grafana-source-20261112-evidence/influxdb-graph.json.gz",
+      "prior_graph": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/influxdb.json.gz"
+    },
+    "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64": {
+      "elf_sha256": "3a4a6577a4440a802e33e6a7502fb33c6ca382784d2de834c862d60db912c0fd",
+      "prior_elf_sha256": "e4abc533b0ed7cddea5d1753a2556971dd50e5d3c7b1d8cac1ace9d4ae018a8c",
+      "native": "deployment/security/grafana-source-20261112-evidence/grafana-postgresql-datasource-native.json",
+      "prior_native": "deployment/security/grafana-fixed-20261107-evidence/native/grafana-postgresql-datasource-native-buildinfo.json",
+      "graph": "deployment/security/grafana-source-20261112-evidence/grafana-postgresql-datasource-graph.json.gz",
+      "prior_graph": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/grafana-postgresql-datasource.json.gz"
+    },
+    "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64": {
+      "elf_sha256": "2dc571171f29315f89428d3d9b9ea3f2ba0f24f4b60986274e657937f62fc68c",
+      "prior_elf_sha256": "4bd3b2b5d547a73c02a231eb5fa1231f167b1c1a7e46a61687916440c6c0771a",
+      "native": "deployment/security/grafana-source-20261112-evidence/elasticsearch-native.json",
+      "prior_native": "deployment/security/grafana-fixed-20261107-evidence/native/elasticsearch-native-buildinfo.json",
+      "graph": "deployment/security/grafana-source-20261112-evidence/elasticsearch-graph.json.gz",
+      "prior_graph": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/elasticsearch.json.gz"
+    },
+    "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64": {
+      "elf_sha256": "718e3bfb4311386ccbd70052254d9c1c1514e007bda97d2e2f48777e10a4ec15",
+      "prior_elf_sha256": "c4ab7df53197950cd6bcb36235d72c7b5c268f00ecda2ee13b6962d34181394c",
+      "native": "deployment/security/grafana-source-20261112-evidence/stackdriver-native.json",
+      "prior_native": "deployment/security/grafana-fixed-20261107-evidence/native/stackdriver-native-buildinfo.json",
+      "graph": "deployment/security/grafana-source-20261112-evidence/stackdriver-graph.json.gz",
+      "prior_graph": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/stackdriver.json.gz"
+    },
+    "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64": {
+      "elf_sha256": "d5cae81931a343cfcd694dc523c05d3c39684af3ed155d7aa76c2c896f9932ad",
+      "prior_elf_sha256": "5c3f2027bcb5d6b03e219230a9a90bf8e1511d46e7a1536b1efb991839da4157",
+      "native": "deployment/security/grafana-source-20261112-evidence/prometheus-native.json",
+      "prior_native": "deployment/security/grafana-fixed-20261107-evidence/native/prometheus-native-buildinfo.json",
+      "graph": "deployment/security/grafana-source-20261112-evidence/prometheus-graph.json.gz",
+      "prior_graph": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/prometheus.json.gz"
+    },
+    "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": {
+      "elf_sha256": "b6137332e24906f89238899a255fcad557a95b9045e4bd80bee5aeccdc91f168",
+      "prior_elf_sha256": "58a9b276af17f22a5c9729ff1da2bd248f9e69add6e25e8a495df00065837c1d",
+      "native": "deployment/security/grafana-source-20261112-evidence/tempo-native.json",
+      "prior_native": "deployment/security/grafana-fixed-20261107-evidence/native/tempo-native-buildinfo.json",
+      "graph": "deployment/security/grafana-source-20261112-evidence/tempo-graph.json.gz",
+      "prior_graph": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/tempo.json.gz"
+    },
+    "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": {
+      "elf_sha256": "4157391c162f4e311a8f50b962d2c07dc68306eafd6442437677aad61834ca91",
+      "prior_elf_sha256": "1ef41b794a8c882213ab5826d82bbe9a1d5d05b3a9068e86065e12190aef9865",
+      "native": "deployment/security/grafana-source-20261112-evidence/zipkin-native.json",
+      "prior_native": "deployment/security/grafana-fixed-20261107-evidence/native/zipkin-native-buildinfo.json",
+      "graph": "deployment/security/grafana-source-20261112-evidence/zipkin-graph.json.gz",
+      "prior_graph": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/zipkin.json.gz"
+    }
+  },
+  "stdlib_fix": {
+    "advisory": "GO-2026-6859",
+    "cve": "CVE-2026-97054",
+    "fixed_version": "go1.27.4",
+    "official_fix": "https://go.dev/cl/862185"
+  },
+  "prior_runtime_manifest_sha256": "d0707a9f15c66427df74f6c39daa3836dc47d294cc9fdf971e976b7a7c360010",
+  "runtime_evidence": {
+    "prior": "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest-canonical.json.gz",
+    "current": "deployment/security/grafana-source-20261112-evidence/runtime-manifest.json.gz"
+  },
+  "scan_migration": {
+    "prior": "deployment/security/grafana-source-20261112-evidence/prior-raw-trivy.json.gz",
+    "current": "deployment/security/grafana-source-20261112-evidence/raw-trivy.json.gz"
+  },
+  "independent_reviews": [
+    "deployment/security/grafana-source-20261112-evidence/review-historical-root.json",
+    "deployment/security/grafana-source-20261112-evidence/review-historical-provenance.json"
+  ],
+  "evidence_sha256": {
+    "deployment/security/go-stdlib-20261112-evidence/862185.patch": "719fb2a28c3f3984b3d6d9b5358d9d330ec4faa7ce3584c0b832f60c14cb8d79",
+    "deployment/security/go-stdlib-20261112-evidence/GO-2026-6859.json": "9eb1590c57233fd8a63e8ad737d12cbdef5572eed86ffee05897291fff12a9ce",
+    "deployment/security/go-stdlib-20261112-evidence/Go-LICENSE": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+    "deployment/security/go-stdlib-20261112-evidence/source.lock.json": "20746730bbf420fce6ed6765e79bac882c02d237f5a51cf212581840ff019dbe",
+    "deployment/security/go-stdlib-20261112-evidence/stdlib-regression-result.json": "383c692313dac61e8df04cf0196bf23dd8449800fa107ede39c77de113ab5a3e",
+    "deployment/security/go-stdlib-20261112-evidence/stdlib-regression.log": "98d5f2f7ac8e6ba4d93e9472bcdb10d4c14649537078a8d4f248735372f7d61a",
+    "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/elasticsearch.json.gz": "99a5a52c8e913e733482d6e09ec42df739f480234f71847e6190c2926cd44228",
+    "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/grafana-postgresql-datasource.json.gz": "3e313173ce0d51dbc6aae7a2aab3c0ac3ce3ad3b2dc0cca87131eb899755d1dc",
+    "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/grafana-pyroscope-datasource.json.gz": "0e2a1d122a2c0ab7cfe03ab21d1184b3de0f0f45e378ada114bb09934f6b3329",
+    "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/influxdb.json.gz": "82781378193b7a689e566f9e6b72c75e915d57f8b12954aa9744e3665dbba9f0",
+    "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/jaeger.json.gz": "dc917e219614f8a6d39870d45de1950097999b0b24ab6651f88d904e4b13b325",
+    "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/loki.json.gz": "cdeba754b89a64bebbf5894bd65f3652799e9cb5abe7ee83791ff73628420de7",
+    "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mssql.json.gz": "ab617082ae1e59578560215bbec8056fc1066a23e8b97c0322114dc5a4ab8d8f",
+    "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/mysql.json.gz": "7a205bd3133e5cea147b9cfa331ef489805bdf841778b8a877c60c6622cb93af",
+    "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/opentsdb.json.gz": "86a9631f851f6ce2c1b0c710f9856a7947387afd5f7f7be2b99db256ec75392c",
+    "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/prometheus.json.gz": "fcce356bc923f768eaea295b68f898c79d1ef79a25efc36ff25f1d8ca216d252",
+    "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/stackdriver.json.gz": "60c846e2a94affa81aeada0176ff09392c59aa307661f6df760be78a798e4023",
+    "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/tempo.json.gz": "cd96fc281a436593d1c9f430f600cbdcf145f67717c54b0964609af48d0a4933",
+    "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/graphs/plugins/zipkin.json.gz": "18bedba9f9f0e7f10e04702b51c1d4ab528807f8d939ff7ffeb40fe2853a6ea7",
+    "deployment/security/grafana-fixed-20261107-evidence/native/elasticsearch-native-buildinfo.json": "b4b6e1ee5ed5fb0bf04b385f115add65e6ed4b91ba91bb6eb84a10a2ac334c08",
+    "deployment/security/grafana-fixed-20261107-evidence/native/grafana-postgresql-datasource-native-buildinfo.json": "162618bb20dba03b0a754837a2dd533622dc1277b2ed10f0c8e9f62b3b371085",
+    "deployment/security/grafana-fixed-20261107-evidence/native/grafana-pyroscope-datasource-native-buildinfo.json": "90ef0762426771bf0f9da60ebbd95a6acd251670a58b87a11dae5bb100f568a6",
+    "deployment/security/grafana-fixed-20261107-evidence/native/influxdb-native-buildinfo.json": "043b617615054c9f6d3403a8571c98b1b940d2cd7eae284504bdccaaab030001",
+    "deployment/security/grafana-fixed-20261107-evidence/native/jaeger-native-buildinfo.json": "6c78fda387df4a15c79cbc7b971dee18b577e7ef1fdc4e20cf92092961861d4e",
+    "deployment/security/grafana-fixed-20261107-evidence/native/loki-native-buildinfo.json": "7164f48fc3d47a00dab8f6488bd91e2d2a2a7e2b2464ea777547edd1dd801779",
+    "deployment/security/grafana-fixed-20261107-evidence/native/mssql-native-buildinfo.json": "cecc7606d25f86ea014d79d047727be9d997bf94d5c6db7032245d6a86aa293d",
+    "deployment/security/grafana-fixed-20261107-evidence/native/mysql-native-buildinfo.json": "85d267be40e060f41304a335a452c2a698a83da03e523cbde32514b467d1dd73",
+    "deployment/security/grafana-fixed-20261107-evidence/native/opentsdb-native-buildinfo.json": "9651ce62fb641644b4bfbecb8ec5410f6bf9a3596d7408f4a0a50df6ce14e014",
+    "deployment/security/grafana-fixed-20261107-evidence/native/prometheus-native-buildinfo.json": "c2733af7f3084eca149579c218fa790e682b4e72d097e21eed1a729e14291f5d",
+    "deployment/security/grafana-fixed-20261107-evidence/native/stackdriver-native-buildinfo.json": "efd70267c0cb186bcde1675cb4e392097ae37ff36a394bc4508c2499876bf6c0",
+    "deployment/security/grafana-fixed-20261107-evidence/native/tempo-native-buildinfo.json": "7602492711fd87c6d276b5bca07e1c3ff9938a96e7511933e16c6fef7b5ae699",
+    "deployment/security/grafana-fixed-20261107-evidence/native/zipkin-native-buildinfo.json": "8c2dfa770c762eb198d859b6a3ebdea6e7fec861dcd2b5008440e0e4702f9fad",
+    "deployment/security/grafana-source-20261110-evidence/main/main.json.gz": "6946d310e1b5d4a80abe0e143ad04a42b23040887744713fde9588e6aa2191ba",
+    "deployment/security/grafana-source-20261110-evidence/main/native-buildinfo.json": "ada217f20ccad22243cbb6ca9eddb97e5974ebcbe8196fdc0f7223b111a323af",
+    "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest-canonical.json.gz": "e7eac53d6007f52858ba1e8c8cdfa33bc4e387a8e2e500bfe8b4e394ff8d559a",
+    "deployment/security/grafana-source-20261110-profile.json": "fc0b1116a9b15fda329cd9d95788bc7c94942d08a039e7c8a8b3c753dff450d1",
+    "deployment/security/grafana-source-20261112-evidence/collector.json.gz": "6498553563c3cb720f93ed44ffaa4f91c84a3f2f206544843f50385a024cea0d",
+    "deployment/security/grafana-source-20261112-evidence/database-preparation.json.gz": "96739d43466daac0e5befecd1726a420e9f8a854ec9260bf397ab71a96436fdc",
+    "deployment/security/grafana-source-20261112-evidence/elasticsearch-graph.json.gz": "b97a43065dc19c01820c4764b6db527f6186cc8d88964d07aea7d781344f1cf8",
+    "deployment/security/grafana-source-20261112-evidence/elasticsearch-native.json": "f3e3203aee40253185017d0c8462926755d6e526dd0a18e7079a405bfb1c2df5",
+    "deployment/security/grafana-source-20261112-evidence/full-syft.json.gz": "6fae499990250f28ab556e30920b82452fc9e0dc260e7fe1ba34d21001a6be60",
+    "deployment/security/grafana-source-20261112-evidence/grafana-postgresql-datasource-graph.json.gz": "16c4ae0e805d2f4a67ae68602c2c8750e29557fad642c603f9393148c1302461",
+    "deployment/security/grafana-source-20261112-evidence/grafana-postgresql-datasource-native.json": "e2af948f6e23ece7ebedebb52211907a990a56e4925d969e9e27f98735b6730d",
+    "deployment/security/grafana-source-20261112-evidence/grafana-pyroscope-datasource-graph.json.gz": "c059c3659678cbbe2ce764e8240625b97b3102c176f15c8a3aa4cf66e899f4e1",
+    "deployment/security/grafana-source-20261112-evidence/grafana-pyroscope-datasource-native.json": "86da19e27a2138eafc9ca45eb4e8e8c60e9ccf430ff999c4be0c9111cf674642",
+    "deployment/security/grafana-source-20261112-evidence/influxdb-graph.json.gz": "d945b8305346c0a74a30a7257d04caaf2b99a495c393acfad1b9436dcfd789b1",
+    "deployment/security/grafana-source-20261112-evidence/influxdb-native.json": "a1acea2f3b21dcc033c0e69ba677eb8dc09e1650fa19770c4c9c1eb17ea38be0",
+    "deployment/security/grafana-source-20261112-evidence/jaeger-graph.json.gz": "bd1438492911da4ad733a742abd490a858410f15d0d488a1e6c66eb7cb8481f5",
+    "deployment/security/grafana-source-20261112-evidence/jaeger-native.json": "5d8b8a1d7550f6975307900e2fca0635970fd9e8106fc17df78f67e5538a7b27",
+    "deployment/security/grafana-source-20261112-evidence/license-directory-mode-proof-20261112.json": "9b9598fee2075f850b0fa31236c5452d41e4e044f69ef8b537e9873059365cc9",
+    "deployment/security/grafana-source-20261112-evidence/loki-graph.json.gz": "6f14be66054276787433819ef30731a9a232175c5f17fe4f92b29fc907cb6db2",
+    "deployment/security/grafana-source-20261112-evidence/loki-native.json": "e75b319a7a2f8ddf4e1538472aed32ef797e7ad4186c63a09e498f3fbcaa6cfd",
+    "deployment/security/grafana-source-20261112-evidence/main-graph.json.gz": "97dc5563e184c8760933ffdfe7a4f167218ad31671a9b2c8f1b47b97a2e125a2",
+    "deployment/security/grafana-source-20261112-evidence/main-native.json": "82d36f0e7a0a5a811d044067a28df73be27c394fec7ce0408f4c3726d0b05ade",
+    "deployment/security/grafana-source-20261112-evidence/mssql-graph.json.gz": "657f30fc96e64f1d2b915b5bfdf6c9a42b6d52789ba9760826c6229019dc34aa",
+    "deployment/security/grafana-source-20261112-evidence/mssql-native.json": "1a3e00019aca4b883c2cc846108c99413d77e5674cfc81ab2584fed4e94638ca",
+    "deployment/security/grafana-source-20261112-evidence/mysql-graph.json.gz": "a34c23b94c7018cfa359f56167ab6eff3cb0fbf74ef07b6ab93eb0ecc2fafc02",
+    "deployment/security/grafana-source-20261112-evidence/mysql-native.json": "3fe0a4d84462890cf4638a69c35c2dfed52c84ebf394b2e6cf7b1f7c7d98c538",
+    "deployment/security/grafana-source-20261112-evidence/opentsdb-graph.json.gz": "4578fcae84261c56893869c755987547b6c3c8b2a27e2f9de9084a85b6ee3674",
+    "deployment/security/grafana-source-20261112-evidence/opentsdb-native.json": "c6242b41006ac4dc095cfcb6273fd91a37af4d32b6e5eda2667e1272b91d19f9",
+    "deployment/security/grafana-source-20261112-evidence/prior-raw-trivy.json.gz": "3afbe0b2f052a2746a365a9f01784b55b943a612c1108b8176dbd3c7bd06885b",
+    "deployment/security/grafana-source-20261112-evidence/prometheus-graph.json.gz": "19f49a6fd5675f7081df0e1aeff2cb5df65db3666f3ea3a1331cac2778f04706",
+    "deployment/security/grafana-source-20261112-evidence/prometheus-native.json": "a308268c93e3ff45c0f4b3e36a92b21a6364b23fc8ce17eef544ddab0f89516a",
+    "deployment/security/grafana-source-20261112-evidence/publisher-snapshot.json.gz": "1560a2c9f1dd87315d04601ca18b1cad1214718e4636efd324dae80d0b5ff2c2",
+    "deployment/security/grafana-source-20261112-evidence/raw-grype.json.gz": "bc8b8ae7c411b11ade916fb2f18d5e532c77625021e5213a3147ade100942dcb",
+    "deployment/security/grafana-source-20261112-evidence/raw-trivy.json.gz": "15994a00651e36b2d72641fc13c1dce9dfd380601ed6a8e99df37d4f98444853",
+    "deployment/security/grafana-source-20261112-evidence/runtime-manifest.json.gz": "b934aef74fc8e4d6387e0879c5d6e1e95f1f2649b7e2ee21a1a5d0ddfc643a86",
+    "deployment/security/grafana-source-20261112-evidence/source-fs-tomcat27-review-20261112.json": "39aaec83119b9169548689c2f16f5fb4d2f21380fafc5e3df7ecf6f9d8589c09",
+    "deployment/security/grafana-source-20261112-evidence/stable-graph-producer-control-20261112.json": "722d3c3c4af8637a18b49db23fd74fce9815dd5d4561f65d669bbef3bcd76207",
+    "deployment/security/grafana-source-20261112-evidence/stackdriver-graph.json.gz": "5fce8742c085cb3be54963c001e6708aace623d0bddbb0eea97968f047b6b9f5",
+    "deployment/security/grafana-source-20261112-evidence/stackdriver-native.json": "229c2033d5d83cd588fa9077557ffc8357caae9ee62660153e9d791f368f3dfe",
+    "deployment/security/grafana-source-20261112-evidence/tempo-graph.json.gz": "d4c40671ca8e0a504f065e5b801ae290bad8ff1f0471b8c56070532cce7b8c9b",
+    "deployment/security/grafana-source-20261112-evidence/tempo-native.json": "f6bd3ce4979160cd31e8d3e18df15b5586fb6ba082ea77533c6118eb2ab8c8a3",
+    "deployment/security/grafana-source-20261112-evidence/zipkin-graph.json.gz": "2a528802494ac2a364d9a246507045e7581b701cbead490903ff2d5e48f14f70",
+    "deployment/security/grafana-source-20261112-evidence/zipkin-native.json": "ceb99b79ffbda599c4f815daf8befa1b49bd1318624f2cced83912e94dda2762",
+    "scripts/capture_go_native_20261112.py": "708c91b964058399e941bf77a654171e3265f1d48a3d87eab6830485028e5b47",
+    "scripts/check_grafana_source_build_20261112.py": "fa6b6ad58ad49f2cba37337957ba4c5df2cc60969badd70621d174a43574eda2",
+    "scripts/check_grafana_source_scan_20261112.py": "84c68f563d951c3fb978ca09a5836b6ee707eab9e453796e827f05a908439d35",
+    "scripts/go_native_database_transport_20261112.py": "d33bd4fe7dde4e0dd542d6ba228c5ddabd58f6d263efb41785dbfd573fb68ed8",
+    "scripts/go_stdlib_rebuild_20261112.py": "4ab322a90cf12c68bb67fd8722eb5c9811ddbfd605f86083a25d891c7eafdc51",
+    "scripts/prepare_go_stdlib_profiles_20261112.py": "2d242481b757d17883a5b9ede3bab19901931ae5854a30f2323a61f46a31d869",
+    "scripts/retained_source_review_20261112.py": "b68baba611f1d5b74dd46e67bad736c9690c4af85c59ce9ef50cba02412ebcfc",
+    "scripts/scan_grafana_source_20261112.py": "37f6c09ad592d54007408080adb0bd51b009173b924c8f4ab417058b15edc4dd",
+    "tests/test_go_stdlib_rebuild_20261112.py": "d31c4bfab2372500886cf2baecdcd5f7bdbc0cd54f88c83f338020de42fd24a1",
+    "deployment/security/grafana-source-20261112-evidence/review-root.json": "a13957600b81512f9283ce7895557dfa6240c21a8533160fc202a1cb2f1ffb6d",
+    "deployment/security/grafana-source-20261112-evidence/review-release-prepare.json": "b0c8a254ee2c1151a9c0ea44ed636aecd700e9bdba570b92527d60d850af04fa",
+    "scripts/check_grafana_source_scan_20261110.py": "675933ab658b016b65a4597a872a1a512f31c9c93f47c56efaa77a2aa8de7c2c",
+    "tests/test_grafana_historical_source_bridge.py": "18c98ef39a008da788fa7aca9dd4b609560d9f3d8988da5d073154f1f38bfee3",
+    "tests/test_grafana_fixed_20261107.py": "8e9f15e8acf3a78c5d1259eeff281baabf7b6290f3a6ab1a66ce118444725403",
+    "tests/test_security_review_policy_integration.py": "e765e923e772e27ea9f1109345adc2501bac3f3429ddc728771fba7e829b087b",
+    "deployment/security/grafana-source-20261112-evidence/historical-source-bridge-20261113.json": "144ae827c66236a369b7b7b7f64875f8698f8ecce0ccb08c1e9fb586b8aba877",
+    "deployment/security/grafana-source-20261112-evidence/historical-source-bridge-prior-profile.json": "1aa7e0633ba3ea41bc4d43b0fb055e0ba93c8ecb9a9b38e5d501356fe911ded9",
+    "deployment/security/grafana-source-20261112-evidence/review-historical-root.json": "0f178fd6c032dcc36a16a075f22b8d670205295b4d8834476e85d236aadbc2ef",
+    "deployment/security/grafana-source-20261112-evidence/review-historical-provenance.json": "142db06d7d055b4092bb6aae1b3ae7a678803545bd6bb464e7227b3fa5d9fd74"
+  },
+  "migration_facts": {
+    "usr/share/grafana/bin/grafana": {
+      "elf_sha256": "cb1d1fca4dd56395bdffe0cc821efef47565bd9066c47027fffa6c7fe45862d7",
+      "prior_elf_sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+      "go_version": "go1.27.4",
+      "entry_package": "github.com/grafana/grafana/pkg/cmd/grafana",
+      "module_count": 522,
+      "nonstdlib_modules_sha256": "7bda283f6fdccd91aa32a323754ef94463df85cffeec0b6a595e5e19702b606a",
+      "nonstdlib_modules_identical": true,
+      "source_and_build_settings_preserved": true,
+      "complete_package_count": 4200,
+      "nonstdlib_package_count": 3923,
+      "nonstdlib_graph_sha256": "b2cbbb32458b6e979a21a89b04d48d83c810ea2cd4e85c18c3fbb1e74893e088",
+      "nonstdlib_graph_identical": true,
+      "complete_import_closure": true
+    },
+    "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64": {
+      "elf_sha256": "bd80bd856b3c2458bb6e32617d77b88f5576b3eac71ddbcaced5a237024da906",
+      "prior_elf_sha256": "599f81b6cb18227c719074099c3f5f3dd0928d8a5b3d2a55ac8a02a0210fa10c",
+      "go_version": "go1.27.4",
+      "entry_package": "github.com/grafana/grafana-loki-datasource/pkg",
+      "module_count": 204,
+      "nonstdlib_modules_sha256": "90c062369fab13eda471efbaaa773885b6506b415dabb79cc4146eb2159cf427",
+      "nonstdlib_modules_identical": true,
+      "source_and_build_settings_preserved": true,
+      "complete_package_count": 1078,
+      "nonstdlib_package_count": 819,
+      "nonstdlib_graph_sha256": "ae9063e45e9632426faa952af41d27c157f082f1fb0c35949af8ff31681a9f11",
+      "nonstdlib_graph_identical": true,
+      "complete_import_closure": true
+    },
+    "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64": {
+      "elf_sha256": "231282edb34a9d3b24ad8aba2b5744f6a99422ca1cf7e22dd8de5076367842f8",
+      "prior_elf_sha256": "c7798b1bbea42ddad8a7259fd1c3c5846cdd8d89f7f1f8034858871e392de9e3",
+      "go_version": "go1.27.4",
+      "entry_package": "github.com/grafana/grafana-jaeger-datasource/pkg",
+      "module_count": 71,
+      "nonstdlib_modules_sha256": "c4935f386d64814b2747fb2b7e55b16f48d062220f3c8a2f6d6d1fbd8e4de71b",
+      "nonstdlib_modules_identical": true,
+      "source_and_build_settings_preserved": true,
+      "complete_package_count": 590,
+      "nonstdlib_package_count": 350,
+      "nonstdlib_graph_sha256": "b75c33ecd866c888af8983c01ff23502010a62e36bb540dc5c8829c4b6b3177d",
+      "nonstdlib_graph_identical": true,
+      "complete_import_closure": true
+    },
+    "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64": {
+      "elf_sha256": "149274e5c520fcfda8be8f72efe08a1f87ef3366aa9e9b225bbd26860d3aa86a",
+      "prior_elf_sha256": "73db79edd48a44159ee66583ae4a646a0e52aaf0cbfa252aece9753273961aa1",
+      "go_version": "go1.27.4",
+      "entry_package": "github.com/grafana/grafana-mysql-datasource/pkg",
+      "module_count": 73,
+      "nonstdlib_modules_sha256": "f39c66d4f48bcc7858bab65d09439a19f9d6546cf27893beadac7905e0a46803",
+      "nonstdlib_modules_identical": true,
+      "source_and_build_settings_preserved": true,
+      "complete_package_count": 594,
+      "nonstdlib_package_count": 354,
+      "nonstdlib_graph_sha256": "1bd5c672fa103378653564887a769621118e2e65f55204fd03ccffac1cd8778a",
+      "nonstdlib_graph_identical": true,
+      "complete_import_closure": true
+    },
+    "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64": {
+      "elf_sha256": "f71438dd3abb9f515854d9cc980be9e00c6aaf961ceb21a2c8acf40d5470c569",
+      "prior_elf_sha256": "019b92b07c3bd36176e28e2ee1693d69b423a129b6e6a9945e98adffa53c3ee1",
+      "go_version": "go1.27.4",
+      "entry_package": "github.com/grafana/grafana-opentsdb-datasource/pkg",
+      "module_count": 69,
+      "nonstdlib_modules_sha256": "e2b1bdfd8ea4527625dd3dade7c272cc45ab26c5f4913b0cf212f049044873d0",
+      "nonstdlib_modules_identical": true,
+      "source_and_build_settings_preserved": true,
+      "complete_package_count": 585,
+      "nonstdlib_package_count": 345,
+      "nonstdlib_graph_sha256": "a34852a9c5f23c17b6204d42aaf19ab3146f293ef89259d015eb6826284c341f",
+      "nonstdlib_graph_identical": true,
+      "complete_import_closure": true
+    },
+    "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64": {
+      "elf_sha256": "f9ea7293a326d6411dd70d5ec96e89c93f84bc04fa32dcaef974200c7a7d658a",
+      "prior_elf_sha256": "3343e2ff45c76058067bb945baf7c0fc341edf0b647b59d3c8e2a95211df73a4",
+      "go_version": "go1.27.4",
+      "entry_package": "github.com/grafana/grafana-mssql-datasource/pkg",
+      "module_count": 91,
+      "nonstdlib_modules_sha256": "ddea28f413e9a33646b74055a0779f45470f0b1739de2be6561d24890e81df53",
+      "nonstdlib_modules_identical": true,
+      "source_and_build_settings_preserved": true,
+      "complete_package_count": 726,
+      "nonstdlib_package_count": 482,
+      "nonstdlib_graph_sha256": "e4e7a05b15cf479e607a9b1ac548e383cca89bde4fed7275b5b892b8aeb40f77",
+      "nonstdlib_graph_identical": true,
+      "complete_import_closure": true
+    },
+    "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64": {
+      "elf_sha256": "329b2c54d19b55ff4a26b14789c5658c40af4b41f980495740b7d548c5903675",
+      "prior_elf_sha256": "d290d4840deb7e1edffaee453271ca87d02094f3f8ab0f3e27680605f1f5fd5a",
+      "go_version": "go1.27.4",
+      "entry_package": "github.com/grafana/grafana-pyroscope-datasource/pkg",
+      "module_count": 84,
+      "nonstdlib_modules_sha256": "f6b4fca12913e75a3d446a8c3643f28ad4da25484f360c939ebc34137731257a",
+      "nonstdlib_modules_identical": true,
+      "source_and_build_settings_preserved": true,
+      "complete_package_count": 630,
+      "nonstdlib_package_count": 389,
+      "nonstdlib_graph_sha256": "bbe43552df3df124db841afb1c5f24e44ec6332b416d229e7c3028a003f2fe34",
+      "nonstdlib_graph_identical": true,
+      "complete_import_closure": true
+    },
+    "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64": {
+      "elf_sha256": "47f5f8cba027b6467486ed688aa07bec9142d53a77cfa099fbe94cd55406008a",
+      "prior_elf_sha256": "50ba9d95a58a20a52a9131a44d04313c955a20ccc199b02e29f474b70af6fd3a",
+      "go_version": "go1.27.4",
+      "entry_package": "github.com/grafana/grafana-influxdb-datasource/pkg",
+      "module_count": 78,
+      "nonstdlib_modules_sha256": "a31de326aecaa2ce8ae2d353e2ca444281c09f4b7ceb7ad648c66d29a80d81cf",
+      "nonstdlib_modules_identical": true,
+      "source_and_build_settings_preserved": true,
+      "complete_package_count": 627,
+      "nonstdlib_package_count": 385,
+      "nonstdlib_graph_sha256": "90ea77c1170f3325119dec8132285ec57a5beb24557548678d5b5cac1ca59351",
+      "nonstdlib_graph_identical": true,
+      "complete_import_closure": true
+    },
+    "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64": {
+      "elf_sha256": "3a4a6577a4440a802e33e6a7502fb33c6ca382784d2de834c862d60db912c0fd",
+      "prior_elf_sha256": "e4abc533b0ed7cddea5d1753a2556971dd50e5d3c7b1d8cac1ace9d4ae018a8c",
+      "go_version": "go1.27.4",
+      "entry_package": "github.com/grafana/grafana-postgresql-datasource/pkg",
+      "module_count": 75,
+      "nonstdlib_modules_sha256": "d69d7af2aadf7caffa5eb561a80655176d862bb410607ea5df88753c53d82ba4",
+      "nonstdlib_modules_identical": true,
+      "source_and_build_settings_preserved": true,
+      "complete_package_count": 618,
+      "nonstdlib_package_count": 375,
+      "nonstdlib_graph_sha256": "f77cbada8e79b4d1f6e27c6cd487a7e11f80fb585d84e42bb2ff319c62cdcebb",
+      "nonstdlib_graph_identical": true,
+      "complete_import_closure": true
+    },
+    "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64": {
+      "elf_sha256": "2dc571171f29315f89428d3d9b9ea3f2ba0f24f4b60986274e657937f62fc68c",
+      "prior_elf_sha256": "4bd3b2b5d547a73c02a231eb5fa1231f167b1c1a7e46a61687916440c6c0771a",
+      "go_version": "go1.27.4",
+      "entry_package": "github.com/grafana/grafana-elasticsearch-datasource/pkg",
+      "module_count": 104,
+      "nonstdlib_modules_sha256": "090d04a1ce4efaac072ad03c6489793cf61e5525da1cd37b6e6f9702e37878a2",
+      "nonstdlib_modules_identical": true,
+      "source_and_build_settings_preserved": true,
+      "complete_package_count": 743,
+      "nonstdlib_package_count": 498,
+      "nonstdlib_graph_sha256": "d67d6898f2242b0677a8a2a99b06ca9b01a31d41bd0d6d97f922306af4a4abbd",
+      "nonstdlib_graph_identical": true,
+      "complete_import_closure": true
+    },
+    "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64": {
+      "elf_sha256": "718e3bfb4311386ccbd70052254d9c1c1514e007bda97d2e2f48777e10a4ec15",
+      "prior_elf_sha256": "c4ab7df53197950cd6bcb36235d72c7b5c268f00ecda2ee13b6962d34181394c",
+      "go_version": "go1.27.4",
+      "entry_package": "github.com/grafana/grafana-cloudmonitoring-datasource/pkg",
+      "module_count": 85,
+      "nonstdlib_modules_sha256": "79fcbc3f27e3b8e1c1d0a9ef20a78ff2249137170c31a2a3e897ac58c908854f",
+      "nonstdlib_modules_identical": true,
+      "source_and_build_settings_preserved": true,
+      "complete_package_count": 676,
+      "nonstdlib_package_count": 436,
+      "nonstdlib_graph_sha256": "ad0b2fd5b621cdc74790bfaa3a205bb848e17f40bf9d1b3a4ead69c651eadc56",
+      "nonstdlib_graph_identical": true,
+      "complete_import_closure": true
+    },
+    "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64": {
+      "elf_sha256": "d5cae81931a343cfcd694dc523c05d3c39684af3ed155d7aa76c2c896f9932ad",
+      "prior_elf_sha256": "5c3f2027bcb5d6b03e219230a9a90bf8e1511d46e7a1536b1efb991839da4157",
+      "go_version": "go1.27.4",
+      "entry_package": "github.com/grafana/grafana-prometheus-datasource/pkg",
+      "module_count": 104,
+      "nonstdlib_modules_sha256": "0582df17a3880aba964efcc2d9611651b4f1b7521243743c9be0b318b1791e72",
+      "nonstdlib_modules_identical": true,
+      "source_and_build_settings_preserved": true,
+      "complete_package_count": 723,
+      "nonstdlib_package_count": 470,
+      "nonstdlib_graph_sha256": "267c26eac0b0e09c3b84167c6cdf3fdd317b52ce308e3a4a22f50c1386c2c5d4",
+      "nonstdlib_graph_identical": true,
+      "complete_import_closure": true
+    },
+    "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": {
+      "elf_sha256": "b6137332e24906f89238899a255fcad557a95b9045e4bd80bee5aeccdc91f168",
+      "prior_elf_sha256": "58a9b276af17f22a5c9729ff1da2bd248f9e69add6e25e8a495df00065837c1d",
+      "go_version": "go1.27.4",
+      "entry_package": "github.com/grafana/grafana-tempo-datasource/pkg",
+      "module_count": 75,
+      "nonstdlib_modules_sha256": "36b029d9c817777eda1112401188ef50e334695ff440ef25a4a2ad60a4d92c69",
+      "nonstdlib_modules_identical": true,
+      "source_and_build_settings_preserved": true,
+      "complete_package_count": 605,
+      "nonstdlib_package_count": 365,
+      "nonstdlib_graph_sha256": "8c177fffe56b095081aa7eb3068566e591534bafdffd942ada8d63d9299e8302",
+      "nonstdlib_graph_identical": true,
+      "complete_import_closure": true
+    },
+    "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": {
+      "elf_sha256": "4157391c162f4e311a8f50b962d2c07dc68306eafd6442437677aad61834ca91",
+      "prior_elf_sha256": "1ef41b794a8c882213ab5826d82bbe9a1d5d05b3a9068e86065e12190aef9865",
+      "go_version": "go1.27.4",
+      "entry_package": "github.com/grafana/grafana-zipkin-datasource/pkg",
+      "module_count": 71,
+      "nonstdlib_modules_sha256": "6f9dd550c20370b37c57ffd70de581f228cc2fe80106045fb30ebbfe44b30091",
+      "nonstdlib_modules_identical": true,
+      "source_and_build_settings_preserved": true,
+      "complete_package_count": 586,
+      "nonstdlib_package_count": 346,
+      "nonstdlib_graph_sha256": "176d3a2e5dec26bd566e1c3b3c50e618d07b6c5352033b659cd3ce43dc7851d9",
+      "nonstdlib_graph_identical": true,
+      "complete_import_closure": true
+    }
+  },
+  "runtime_changes": [
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/build-info/main.txt",
+      "before": {
+        "bytes": 49573,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/main.txt",
+        "sha256": "03df19765ce55e3be94d92ffe2bdbeda8cdcdaef51c2c8f16e4c8d64a13637e0",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 49573,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/main.txt",
+        "sha256": "7e63445ff4779e87739a73db45b1202d5faebd4b496d3463eecc0fd070727aa1",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/elasticsearch.txt",
+      "before": {
+        "bytes": 10471,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/elasticsearch.txt",
+        "sha256": "683f8288b6b86b08485d73445f0b38c803a29ad84634053b2b340778625fecb0",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 10471,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/elasticsearch.txt",
+        "sha256": "ae492f858cd3869881e44f762157120217a8d56d42777bbb6e7d6658cc91250f",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/grafana-postgresql-datasource.txt",
+      "before": {
+        "bytes": 7622,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/grafana-postgresql-datasource.txt",
+        "sha256": "48241302f158f77924c5e08acdc91c2acbe8cad704855980a7a92b0fd2eb229b",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 7622,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/grafana-postgresql-datasource.txt",
+        "sha256": "90e650b9504978f12423ef247fbd8f12c34bf9974053362fe3b193e1eef47b33",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/grafana-pyroscope-datasource.txt",
+      "before": {
+        "bytes": 8461,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/grafana-pyroscope-datasource.txt",
+        "sha256": "1940fa72ec18e86680d9abe3447f1930e4a8a05380be6a3c7fdd877529340898",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 8461,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/grafana-pyroscope-datasource.txt",
+        "sha256": "952934a211d8153e16f081fbe2c68aa39675d32eb63c6a46602c5a67a4448880",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/influxdb.txt",
+      "before": {
+        "bytes": 7916,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/influxdb.txt",
+        "sha256": "85e2ecf638e10d41b13b2aa4bb6eed2ff2687bbe5744da30233faebacf93febb",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 7916,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/influxdb.txt",
+        "sha256": "a51d64435aa1ac3a869a4e47789264ac9c69481eb11bc4482c0e3bd1bc6279d5",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/jaeger.txt",
+      "before": {
+        "bytes": 7185,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/jaeger.txt",
+        "sha256": "ccc2869f7e90805834b2d704969e970951614e1ac6cc43da60fe85e34dc4fe8d",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 7185,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/jaeger.txt",
+        "sha256": "576bbedee499d9500c1a935ddc205f011e432b78eb216aba29c36876386d309c",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/loki.txt",
+      "before": {
+        "bytes": 20174,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/loki.txt",
+        "sha256": "4652052350450244426e6a48cc8aa8c6ece16a2dfb8ce382c021361a714836ad",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 20174,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/loki.txt",
+        "sha256": "7c474bc1d0654e39e8e1093a7e7a28e13e954d19b58f0b50729d9d16f24110ce",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/mssql.txt",
+      "before": {
+        "bytes": 9144,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/mssql.txt",
+        "sha256": "6294d43b0540cbeff79c24b4f2fa601fada9303f97c7140008b3b31a46f1785e",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 9144,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/mssql.txt",
+        "sha256": "f907b8dccfc4a5d77687516f461137ea1f24e06150bbe30d2b3c942869a4b8a5",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/mysql.txt",
+      "before": {
+        "bytes": 7393,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/mysql.txt",
+        "sha256": "e24d8e945d49ebf159850be52e39e3f34900d381c95262d15c6b21d256eb22fc",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 7393,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/mysql.txt",
+        "sha256": "ba903261a1702b6c10ebfb0778149e9bdd13e2b85bb972e985c259077808884d",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/opentsdb.txt",
+      "before": {
+        "bytes": 7015,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/opentsdb.txt",
+        "sha256": "f548f34483e8c8d5e5b8743bd7859de0df7b1dbe652c1bb7a6ae57e79811406f",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 7015,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/opentsdb.txt",
+        "sha256": "23d16029672645501a4e8dbd127a5a5472ddaba24cc1230d3e3cbb2fe3aa8930",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/prometheus.txt",
+      "before": {
+        "bytes": 10423,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/prometheus.txt",
+        "sha256": "9f010beb630f50c9064f42a5b17c9b665fdab429813ed09574335d7614de252b",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 10423,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/prometheus.txt",
+        "sha256": "0c555cf3f59b7c6b81b56b373b763aed531645ee1897ba7ab7f9d397e77cc58e",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/stackdriver.txt",
+      "before": {
+        "bytes": 8612,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/stackdriver.txt",
+        "sha256": "6af6e480c53008d18100cecf0e3c036006d8dfea3c1b67f93129c4e7b537094f",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 8612,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/stackdriver.txt",
+        "sha256": "2d0f6af2fb245ed90d64e352e355dc225e4496587ca789e23fcd3a23dcbe5b52",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/tempo.txt",
+      "before": {
+        "bytes": 7701,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/tempo.txt",
+        "sha256": "94e5d10aad606e72fefeaf2e48dfbc344571fed91778a5abe25d7aabe4120db1",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 7701,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/tempo.txt",
+        "sha256": "58c5382efbd6dd6b28fff50d8791e32af46a75b52599dc5a6be2aff17faa29a0",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/zipkin.txt",
+      "before": {
+        "bytes": 7278,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/zipkin.txt",
+        "sha256": "d34a8e0d404849139c0bab1f4d5cab43d1c9d57957e8d0420e769396c05f29f8",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 7278,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/build-info/plugins/zipkin.txt",
+        "sha256": "c5b760253e5a88b59aac16585a40ae7e326007ca148a9c649929545de09fb572",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/go-stdlib",
+      "before": null,
+      "after": {
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/deepresearch/grafana-candidate/go-stdlib",
+        "type": "directory",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/go-stdlib/Go-LICENSE",
+      "before": null,
+      "after": {
+        "bytes": 1453,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/go-stdlib/Go-LICENSE",
+        "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/main/main.json.gz",
+      "before": {
+        "bytes": 8195744,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/main/main.json.gz",
+        "sha256": "6946d310e1b5d4a80abe0e143ad04a42b23040887744713fde9588e6aa2191ba",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 8159446,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/main/main.json.gz",
+        "sha256": "97dc5563e184c8760933ffdfe7a4f167218ad31671a9b2c8f1b47b97a2e125a2",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/main/main.receipt.json",
+      "before": {
+        "bytes": 1345,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/main/main.receipt.json",
+        "sha256": "0c687e50b142801905b286b1bedfa2a9c05dc7437e0c51066d10c3febcfba453",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 1345,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/main/main.receipt.json",
+        "sha256": "af05e87d0d80e286f7300ea9af0075a43c6b13987d7f7f36b8099b9571cd319b",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/elasticsearch.json.gz",
+      "before": {
+        "bytes": 197160,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/elasticsearch.json.gz",
+        "sha256": "99a5a52c8e913e733482d6e09ec42df739f480234f71847e6190c2926cd44228",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 195332,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/elasticsearch.json.gz",
+        "sha256": "b97a43065dc19c01820c4764b6db527f6186cc8d88964d07aea7d781344f1cf8",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/elasticsearch.receipt.json",
+      "before": {
+        "bytes": 1191,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/elasticsearch.receipt.json",
+        "sha256": "ae1fbf83718e88cd98389b230342358c889eaa7c2cb60660cfde98bac35cf1e5",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 1191,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/elasticsearch.receipt.json",
+        "sha256": "5ac355e4e00894f12da2a0268f6fccdbbdbc46705f3afc7fa771a9049e49616e",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/grafana-postgresql-datasource.json.gz",
+      "before": {
+        "bytes": 153449,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/grafana-postgresql-datasource.json.gz",
+        "sha256": "3e313173ce0d51dbc6aae7a2aab3c0ac3ce3ad3b2dc0cca87131eb899755d1dc",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 152492,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/grafana-postgresql-datasource.json.gz",
+        "sha256": "16c4ae0e805d2f4a67ae68602c2c8750e29557fad642c603f9393148c1302461",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/grafana-postgresql-datasource.receipt.json",
+      "before": {
+        "bytes": 1206,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/grafana-postgresql-datasource.receipt.json",
+        "sha256": "c3ce92f5b1723bba6ad41af4fd70d53f47f3b51af288239ac891c5d41e26c4f9",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 1206,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/grafana-postgresql-datasource.receipt.json",
+        "sha256": "8d2c64b4410aabb2be27e89ac95e0eef2361457e521987e97e0f378025e83fd8",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/grafana-pyroscope-datasource.json.gz",
+      "before": {
+        "bytes": 158232,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/grafana-pyroscope-datasource.json.gz",
+        "sha256": "0e2a1d122a2c0ab7cfe03ab21d1184b3de0f0f45e378ada114bb09934f6b3329",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 157245,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/grafana-pyroscope-datasource.json.gz",
+        "sha256": "c059c3659678cbbe2ce764e8240625b97b3102c176f15c8a3aa4cf66e899f4e1",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/grafana-pyroscope-datasource.receipt.json",
+      "before": {
+        "bytes": 1205,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/grafana-pyroscope-datasource.receipt.json",
+        "sha256": "bd08643e91a8cf9d55a7eeb5558c39e2785dd8211dcb50962becfceecd0d8187",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 1205,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/grafana-pyroscope-datasource.receipt.json",
+        "sha256": "51772872bc51fd4f912f7c3162ce090d890968cb242ff48dcc5721ba2f064357",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/influxdb.json.gz",
+      "before": {
+        "bytes": 160899,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/influxdb.json.gz",
+        "sha256": "82781378193b7a689e566f9e6b72c75e915d57f8b12954aa9744e3665dbba9f0",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 159836,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/influxdb.json.gz",
+        "sha256": "d945b8305346c0a74a30a7257d04caaf2b99a495c393acfad1b9436dcfd789b1",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/influxdb.receipt.json",
+      "before": {
+        "bytes": 1185,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/influxdb.receipt.json",
+        "sha256": "be95e26cf724f70f44ebbd6d92f024b9fe717bc18c9f1039376a15aa00155515",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 1185,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/influxdb.receipt.json",
+        "sha256": "afabada1ff570cd41fcf733ae26b3abc83ef1c8421784776cbee747c8a5ee3ba",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/jaeger.json.gz",
+      "before": {
+        "bytes": 142629,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/jaeger.json.gz",
+        "sha256": "dc917e219614f8a6d39870d45de1950097999b0b24ab6651f88d904e4b13b325",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 141750,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/jaeger.json.gz",
+        "sha256": "bd1438492911da4ad733a742abd490a858410f15d0d488a1e6c66eb7cb8481f5",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/jaeger.receipt.json",
+      "before": {
+        "bytes": 1183,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/jaeger.receipt.json",
+        "sha256": "65b2c245266305215a822de16cb7aab57b2b81f7902aabaaf190bce628396033",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 1183,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/jaeger.receipt.json",
+        "sha256": "bb174ae27727545470e5077d2cb8e7740738ff5340c397ae1f0baa09d7047047",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/loki.json.gz",
+      "before": {
+        "bytes": 353255,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/loki.json.gz",
+        "sha256": "cdeba754b89a64bebbf5894bd65f3652799e9cb5abe7ee83791ff73628420de7",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 348532,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/loki.json.gz",
+        "sha256": "6f14be66054276787433819ef30731a9a232175c5f17fe4f92b29fc907cb6db2",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/loki.receipt.json",
+      "before": {
+        "bytes": 1183,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/loki.receipt.json",
+        "sha256": "8accd55e614a4ed7ebc1bf8d6003bc9324d33a376d12032d16440dbd2f03297b",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 1183,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/loki.receipt.json",
+        "sha256": "546f9e6d7cdce33df8a7fec982cb6d0f5030a578b2ab05267499d75b5c35ad66",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/mssql.json.gz",
+      "before": {
+        "bytes": 181787,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/mssql.json.gz",
+        "sha256": "ab617082ae1e59578560215bbec8056fc1066a23e8b97c0322114dc5a4ab8d8f",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 180514,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/mssql.json.gz",
+        "sha256": "657f30fc96e64f1d2b915b5bfdf6c9a42b6d52789ba9760826c6229019dc34aa",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/mssql.receipt.json",
+      "before": {
+        "bytes": 1182,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/mssql.receipt.json",
+        "sha256": "e0fa7ba08ea46d26e85b2d930668a451f93a1ff76083d1204da1a03fda2157c6",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 1182,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/mssql.receipt.json",
+        "sha256": "633d2ad722072358837764d2acfdbcaee78fe33f8ed762631d2bb89911cfad2e",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/mysql.json.gz",
+      "before": {
+        "bytes": 145652,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/mysql.json.gz",
+        "sha256": "7a205bd3133e5cea147b9cfa331ef489805bdf841778b8a877c60c6622cb93af",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 144742,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/mysql.json.gz",
+        "sha256": "a34c23b94c7018cfa359f56167ab6eff3cb0fbf74ef07b6ab93eb0ecc2fafc02",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/mysql.receipt.json",
+      "before": {
+        "bytes": 1182,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/mysql.receipt.json",
+        "sha256": "4ebeb86457090fdb3294192b09168ecdceef12128a0e469ce5bb4c1df02e71e2",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 1182,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/mysql.receipt.json",
+        "sha256": "cd16b242d29cb150b3ba10ad4ad0fe59fc3742d057a810590672fb6305398bbd",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/opentsdb.json.gz",
+      "before": {
+        "bytes": 140184,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/opentsdb.json.gz",
+        "sha256": "86a9631f851f6ce2c1b0c710f9856a7947387afd5f7f7be2b99db256ec75392c",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 139373,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/opentsdb.json.gz",
+        "sha256": "4578fcae84261c56893869c755987547b6c3c8b2a27e2f9de9084a85b6ee3674",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/opentsdb.receipt.json",
+      "before": {
+        "bytes": 1185,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/opentsdb.receipt.json",
+        "sha256": "cdc4e7b4318917f0706ca72d52d4e23eac65720427e8cba36bcef60cce20915a",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 1185,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/opentsdb.receipt.json",
+        "sha256": "cef0e753eb99a6ce3485dc72fa87a0cf8e9839b6fd573ec5b8cd73a26fd55a8b",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/prometheus.json.gz",
+      "before": {
+        "bytes": 192757,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/prometheus.json.gz",
+        "sha256": "fcce356bc923f768eaea295b68f898c79d1ef79a25efc36ff25f1d8ca216d252",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 191203,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/prometheus.json.gz",
+        "sha256": "19f49a6fd5675f7081df0e1aeff2cb5df65db3666f3ea3a1331cac2778f04706",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/prometheus.receipt.json",
+      "before": {
+        "bytes": 1466,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/prometheus.receipt.json",
+        "sha256": "1ce64f01da4ad713bffde9025f609182bf449dc56660cc1656d25034fab0be71",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 1466,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/prometheus.receipt.json",
+        "sha256": "11281fae1e6378fc71759b6a56e1d2fb7b4877fea5ff55f5839be2b6e6bc03d3",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/stackdriver.json.gz",
+      "before": {
+        "bytes": 169952,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/stackdriver.json.gz",
+        "sha256": "60c846e2a94affa81aeada0176ff09392c59aa307661f6df760be78a798e4023",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 168610,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/stackdriver.json.gz",
+        "sha256": "5fce8742c085cb3be54963c001e6708aace623d0bddbb0eea97968f047b6b9f5",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/stackdriver.receipt.json",
+      "before": {
+        "bytes": 1188,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/stackdriver.receipt.json",
+        "sha256": "2835bd4b3c0cc5fc80833b18d4d59f08e96dae7be975a9a18ef3e7441907f0dc",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 1188,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/stackdriver.receipt.json",
+        "sha256": "51d8bc878a7efa632ec188e1c9852e3b556695a847bd2225170f63a25b72bcee",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/tempo.json.gz",
+      "before": {
+        "bytes": 154701,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/tempo.json.gz",
+        "sha256": "cd96fc281a436593d1c9f430f600cbdcf145f67717c54b0964609af48d0a4933",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 153568,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/tempo.json.gz",
+        "sha256": "d4c40671ca8e0a504f065e5b801ae290bad8ff1f0471b8c56070532cce7b8c9b",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/tempo.receipt.json",
+      "before": {
+        "bytes": 1182,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/tempo.receipt.json",
+        "sha256": "0e9568bec397b32fedbda7d826d34cb6322d088687bce4fc2e07b471287f7aaf",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 1182,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/tempo.receipt.json",
+        "sha256": "e27bd7a2de54b9bd308eab08829e36cd33b8e9bfdd767d596020a78449a1adb9",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/zipkin.json.gz",
+      "before": {
+        "bytes": 141536,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/zipkin.json.gz",
+        "sha256": "18bedba9f9f0e7f10e04702b51c1d4ab528807f8d939ff7ffeb40fe2853a6ea7",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 140498,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/zipkin.json.gz",
+        "sha256": "2a528802494ac2a364d9a246507045e7581b701cbead490903ff2d5e48f14f70",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/zipkin.receipt.json",
+      "before": {
+        "bytes": 1183,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/zipkin.receipt.json",
+        "sha256": "ffe9c63acc5b1dcf16689e5bd999adcf2d6b1d4aa566c3398a953343cb2d5d5d",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 1183,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/graphs/plugins/zipkin.receipt.json",
+        "sha256": "057d81ebfa283494257804990507d752fccf86bd2aca887e32ba15ef31054103",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/elasticsearch.json",
+      "before": {
+        "bytes": 650,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/elasticsearch.json",
+        "sha256": "e7b4d3ccb0c713f19f3ba589838ed06614035298bb3bddf155eb06e8afd1df8d",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 724,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/elasticsearch.json",
+        "sha256": "e4d97ba9ea0b67d30596576755a142c224f7fc270a7a572c8cc19494808dae99",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/grafana-postgresql-datasource.json",
+      "before": {
+        "bytes": 647,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/grafana-postgresql-datasource.json",
+        "sha256": "c8a691a35a78ab8e262fbd0061c3e2400292be7c459f72f682c8e9eea98c19a6",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 718,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/grafana-postgresql-datasource.json",
+        "sha256": "875d1ea7c471ca10f8c66de80e69778d73dc92db33759da35877897e867ed75f",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/grafana-pyroscope-datasource.json",
+      "before": {
+        "bytes": 646,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/grafana-pyroscope-datasource.json",
+        "sha256": "d6e0a1021482be59c2089295cadc7613e9e12139978c9a7b3bcd441f4dd19edd",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 716,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/grafana-pyroscope-datasource.json",
+        "sha256": "c65a77ca98ebbc0eb60a6d1de4ad849bedcef95907db349620bf13d657799686",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/influxdb.json",
+      "before": {
+        "bytes": 645,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/influxdb.json",
+        "sha256": "8b904e218709eddf4268a6e4cab9764624f072bfc54df187dfd5540542d0c9ca",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 714,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/influxdb.json",
+        "sha256": "392b82b680c3289473d485478f86c8056697c61f8c330cecbd5a2fec96602c7a",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/jaeger.json",
+      "before": {
+        "bytes": 643,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/jaeger.json",
+        "sha256": "6917eda5b2a982a9e8b9e7347371aabf365b1205cfe6fcc36bb635adac46466d",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 710,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/jaeger.json",
+        "sha256": "c14819e61fae99294edc9d328e127f39e2b66ff39382794c5cf42368f72460d9",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/loki.json",
+      "before": {
+        "bytes": 641,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/loki.json",
+        "sha256": "6ad55e29bb624028a35ea9807355e3bb7201911aef2474a623e0fa5febcccd46",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 706,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/loki.json",
+        "sha256": "6bf5b977e2eaa295e996ab7d04480185260e0adc964dd6f7caf83de2ff749d18",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/mssql.json",
+      "before": {
+        "bytes": 642,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/mssql.json",
+        "sha256": "0c3d27969f9cf9aab766e20db0a130134ab0770463538f824b20484b8b07d92f",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 708,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/mssql.json",
+        "sha256": "275181a0beeec81c07d5cb0d3942939e2ce713f5bc1578a7e3b344be2e28c0d0",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/mysql.json",
+      "before": {
+        "bytes": 642,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/mysql.json",
+        "sha256": "d7237570e156389d71491ce34e2e49d063b5eb716f4c42e82164f9962ea8bdc6",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 708,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/mysql.json",
+        "sha256": "81e780341a9bd46d5c08f7af117236b276f4fd8c43846dabc236a099c5842ca8",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/opentsdb.json",
+      "before": {
+        "bytes": 645,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/opentsdb.json",
+        "sha256": "c2b8f12d42902318bd90d5f22aa44e097ad4e43dcbe554224723c726536eb1eb",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 714,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/opentsdb.json",
+        "sha256": "d694ae825f75808627950ce9b74b50a3530b982be52ea8c2113e64743bcdee57",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/prometheus.json",
+      "before": {
+        "bytes": 737,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/prometheus.json",
+        "sha256": "9c6797d3f26830d9473efdde9a32ab807b48a9496c060d42cfde8470d840bd84",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 808,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/prometheus.json",
+        "sha256": "cc32129b360c77c3c5a0518a95c1390bcf88c04f36e6d56ed9d448347aaa397e",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/stackdriver.json",
+      "before": {
+        "bytes": 652,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/stackdriver.json",
+        "sha256": "32772469b4c3496d88c3d7bad9cd334a1d0d1e8774f80bcaad095f4e75d4e3de",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 728,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/stackdriver.json",
+        "sha256": "13ea298641e840ce1ff23846f1302986241a9b4ed0f7053406758108751dd6d5",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/tempo.json",
+      "before": {
+        "bytes": 642,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/tempo.json",
+        "sha256": "a83e1f9bdaeca4436830ded7be138c1e91a006ed032c2297f8d6edb2e5f27ffa",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 708,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/tempo.json",
+        "sha256": "d17eb204c32eaf1d40d17e8c4a2f5cf0aa1aadac0d72779c7da0639676d3a545",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/zipkin.json",
+      "before": {
+        "bytes": 643,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/zipkin.json",
+        "sha256": "c0363b98d7359abd490930c95d24176ca60f525637ab9e935fc5efe181c95be6",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 710,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/plugins/zipkin.json",
+        "sha256": "40cf0a5fe66695517c091871c7f37c812d7a1deeb7141b59fc2e6242e1664f05",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/provenance/rebuild-provenance.json",
+      "before": {
+        "bytes": 11217,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/rebuild-provenance.json",
+        "sha256": "5d10e150d76a7f0d4a6bd4118cc3a491ea128e8724ebd73844dd88d0b6f2a882",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 11217,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/provenance/rebuild-provenance.json",
+        "sha256": "468bf501c3c4982c7f025b4531eacc726c101c17fa423dbe0a2b8ab72a9a673c",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/deepresearch/grafana-candidate/source.lock.json",
+      "before": {
+        "bytes": 1886,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/source.lock.json",
+        "sha256": "47d1bef759543fdac3c34136ef6e687e04ab80fbd1db05a8994a11b501eb9970",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 1126,
+        "gid": 0,
+        "mode": 420,
+        "path": "usr/share/deepresearch/grafana-candidate/source.lock.json",
+        "sha256": "20746730bbf420fce6ed6765e79bac882c02d237f5a51cf212581840ff019dbe",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/grafana/bin/grafana",
+      "before": {
+        "bytes": 369352864,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/bin/grafana",
+        "sha256": "eff6b2a8ae6dc1eaff57a85526eb732bd2c3f8aa278e2c9c4b6c06b2a6276433",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 369356960,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/bin/grafana",
+        "sha256": "cb1d1fca4dd56395bdffe0cc821efef47565bd9066c47027fffa6c7fe45862d7",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+      "before": {
+        "bytes": 36311200,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+        "sha256": "4bd3b2b5d547a73c02a231eb5fa1231f167b1c1a7e46a61687916440c6c0771a",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 36311200,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+        "sha256": "2dc571171f29315f89428d3d9b9ea3f2ba0f24f4b60986274e657937f62fc68c",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64",
+      "before": {
+        "bytes": 31813792,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64",
+        "sha256": "e4abc533b0ed7cddea5d1753a2556971dd50e5d3c7b1d8cac1ace9d4ae018a8c",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 31817888,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64",
+        "sha256": "3a4a6577a4440a802e33e6a7502fb33c6ca382784d2de834c862d60db912c0fd",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64",
+      "before": {
+        "bytes": 32047264,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64",
+        "sha256": "d290d4840deb7e1edffaee453271ca87d02094f3f8ab0f3e27680605f1f5fd5a",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 32047264,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64",
+        "sha256": "329b2c54d19b55ff4a26b14789c5658c40af4b41f980495740b7d548c5903675",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64",
+      "before": {
+        "bytes": 31490208,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64",
+        "sha256": "50ba9d95a58a20a52a9131a44d04313c955a20ccc199b02e29f474b70af6fd3a",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 31490208,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64",
+        "sha256": "47f5f8cba027b6467486ed688aa07bec9142d53a77cfa099fbe94cd55406008a",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64",
+      "before": {
+        "bytes": 27967648,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64",
+        "sha256": "c7798b1bbea42ddad8a7259fd1c3c5846cdd8d89f7f1f8034858871e392de9e3",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 27967648,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64",
+        "sha256": "231282edb34a9d3b24ad8aba2b5744f6a99422ca1cf7e22dd8de5076367842f8",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+      "before": {
+        "bytes": 40460448,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+        "sha256": "599f81b6cb18227c719074099c3f5f3dd0928d8a5b3d2a55ac8a02a0210fa10c",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 40460448,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+        "sha256": "bd80bd856b3c2458bb6e32617d77b88f5576b3eac71ddbcaced5a237024da906",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+      "before": {
+        "bytes": 31858848,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+        "sha256": "3343e2ff45c76058067bb945baf7c0fc341edf0b647b59d3c8e2a95211df73a4",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 31858848,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+        "sha256": "f9ea7293a326d6411dd70d5ec96e89c93f84bc04fa32dcaef974200c7a7d658a",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64",
+      "before": {
+        "bytes": 28315808,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64",
+        "sha256": "73db79edd48a44159ee66583ae4a646a0e52aaf0cbfa252aece9753273961aa1",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 28319904,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64",
+        "sha256": "149274e5c520fcfda8be8f72efe08a1f87ef3366aa9e9b225bbd26860d3aa86a",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64",
+      "before": {
+        "bytes": 27689120,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64",
+        "sha256": "019b92b07c3bd36176e28e2ee1693d69b423a129b6e6a9945e98adffa53c3ee1",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 27693216,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64",
+        "sha256": "f71438dd3abb9f515854d9cc980be9e00c6aaf961ceb21a2c8acf40d5470c569",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64",
+      "before": {
+        "bytes": 33247392,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64",
+        "sha256": "5c3f2027bcb5d6b03e219230a9a90bf8e1511d46e7a1536b1efb991839da4157",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 33247392,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64",
+        "sha256": "d5cae81931a343cfcd694dc523c05d3c39684af3ed155d7aa76c2c896f9932ad",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+      "before": {
+        "bytes": 30204064,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+        "sha256": "c4ab7df53197950cd6bcb36235d72c7b5c268f00ecda2ee13b6962d34181394c",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 30204064,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+        "sha256": "718e3bfb4311386ccbd70052254d9c1c1514e007bda97d2e2f48777e10a4ec15",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "before": {
+        "bytes": 28795040,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+        "sha256": "58a9b276af17f22a5c9729ff1da2bd248f9e69add6e25e8a495df00065837c1d",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 28795040,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+        "sha256": "b6137332e24906f89238899a255fcad557a95b9045e4bd80bee5aeccdc91f168",
+        "type": "file",
+        "uid": 0
+      }
+    },
+    {
+      "path": "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64",
+      "before": {
+        "bytes": 27869344,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64",
+        "sha256": "1ef41b794a8c882213ab5826d82bbe9a1d5d05b3a9068e86065e12190aef9865",
+        "type": "file",
+        "uid": 0
+      },
+      "after": {
+        "bytes": 27873440,
+        "gid": 0,
+        "mode": 493,
+        "path": "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64",
+        "sha256": "4157391c162f4e311a8f50b962d2c07dc68306eafd6442437677aad61834ca91",
+        "type": "file",
+        "uid": 0
+      }
+    }
+  ],
+  "scan_migration_facts": {
+    "prior_count": 54,
+    "current_count": 40,
+    "fixed_stdlib_rows": 14,
+    "unrelated_rows_unchanged": true,
+    "raw_reports_modified": false
+  },
+  "review_subject_sha256": "58fff477b036c549baee71a141c0e892def881d7e740c1190720c36186b120e5"
+}

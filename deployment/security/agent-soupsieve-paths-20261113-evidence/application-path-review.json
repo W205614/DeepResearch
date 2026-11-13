@@ -1,0 +1,49 @@
+{
+  "schema": "agent-current-css-selector-path-review-v1",
+  "risk_acceptance": false,
+  "upstream_package_affected": true,
+  "binary_fixed_claim": false,
+  "application_source_bindings": {
+    "backend/core/security.py": "6ecc94ff30e4f115754dab554f85c34c389c92e2a89e8db12259e6f19245dfbe",
+    "backend/research/graph.py": "b4bd11568b52059ac0420acedaad5ffb65e22ca6531c15783a5acf39b7d48ce9",
+    "backend/api/source_rechecks.py": "09532b8abceb6e7b80102383e1974729dc357ecc0aeb8b81ecaed5dab3faeeab",
+    "uv.lock": "ddeba33cd99792dc69bfd6d09253a85f0e56dc2807bcede2176e70b4e761bf6f"
+  },
+  "entrypoint": "backend.core.security.fetch_text",
+  "callers": [
+    "backend.research.graph.ResearchGraph",
+    "backend.api.source_rechecks"
+  ],
+  "actual_reader": [
+    "BeautifulSoup(raw, html.parser)",
+    "Tag.__call__(literal tag-name list)",
+    "Tag.find(article/main)",
+    "Tag.strings",
+    "PageElement.find_parent(pre)",
+    "Tag.find_all(literal block-tag list)",
+    "Tag.get_text"
+  ],
+  "non_css_implementation": [
+    "Tag.__call__ and find delegate to find_all; find_all calls _find_all over descendants or children.",
+    "_find_all uses SoupStrainer/ElementFilter tag-name matching, not Soup Sieve. strings/get_text traverse NavigableString objects.",
+    "find_parent traverses parents through _find_all. replace_with/decompose/insert_before/after mutate the tree without CSS.",
+    "Tag.select/select_one/css and bs4.css.CSS delegate to Soup Sieve and are separate uncalled entry points."
+  ],
+  "affected_functions_in_installed_css_match": [
+    "CSSMatch.match_past_relations",
+    "CSSMatch.match_future_child",
+    "CSSMatch.match_future_relations",
+    "CSSMatch.match_relations"
+  ],
+  "other_installed_bs4_importers_not_hidden": {
+    "pandas/io/html.py": "Contains genuine CSS descendant select calls in read_html table extraction. The application imports/calls neither pandas nor read_html.",
+    "lxml/html/soupparser.py": "Optional BS4 tree conversion. No application call/import to this parser; application DOCX uses etree, not this HTML adapter."
+  },
+  "no_css_or_dynamic_selector_entry_in_application": true,
+  "closure_scope": "All actual5972 Python file hashes match the retained Snapshot10. Any changed application/dependency source fails the exact profile, requiring renewed review.",
+  "limitations": [
+    "Affected CSS code remains installed; arbitrary use of pandas.read_html or Soup Sieve is not approved.",
+    "Only the current application route is not affected. Other HTML parsing complexity or denial-of-service classes are not adjudicated here.",
+    "The normal406-byte shallow HTML probe is not a timing benchmark or malicious-input reproduction."
+  ]
+}

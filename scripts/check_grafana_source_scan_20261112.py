@@ -20,6 +20,35 @@ from scripts.retained_source_review_20261112 import SOURCE, snapshot  # noqa: E4
 
 SOURCE_REVIEW = 'deployment/security/grafana-source-20261112-evidence/source-fs-tomcat27-review-20261112.json'
 SOURCE_REVIEW_SHA256 = '39aaec83119b9169548689c2f16f5fb4d2f21380fafc5e3df7ecf6f9d8589c09'
+PYTHON_REVIEW = 'deployment/security/grafana-source-20261112-evidence/source-python-scope-20261113.json'
+PYTHON_REVIEW_SHA256 = '34acad929e59d408d97e5fc9686aa497a53936984655ef548e55001649f936f3'
+
+
+def python_source_scope(observed, root=ROOT):
+    proof_path = prior_build.checked(root, PYTHON_REVIEW)
+    current.require(current.digest(proof_path) == PYTHON_REVIEW_SHA256, 'Exact Python source-path proof changed')
+    proof = prior.old.json_loads(proof_path.read_bytes())
+    expected = [{'id': identifier, 'target': 'uv.lock', 'package': 'soupsieve', 'version': '2.9.2', 'severity': severity}
+                for identifier, severity in (('CVE-2026-126190', 'HIGH'), ('CVE-2026-126192', 'MEDIUM'))]
+    current.require(proof['schema'] == 'grafana-source-exact-two-python-caller-scope-v1'
+                    and proof['upstream_package_affected'] is True and proof['package_fixed_claim'] is False
+                    and proof['disposition'] == 'NOT_AFFECTED_FUNCTION_NOT_IN_CURRENT_APPLICATION_PATH'
+                    and Counter(map(prior_build.finding_key, proof['new_exact_findings']))
+                    == Counter(map(prior_build.finding_key, expected))
+                    and len(observed['findings']) == proof['all_source_finding_count'] == 73
+                    and observed['findings'] == proof['all_source_finding_identities']
+                    and observed['target_inventory_sha256']['uv.lock'] == proof['uv_lock_inventory_sha256']
+                    and current.digest(prior_build.checked(root, 'uv.lock')) == proof['uv_lock_sha256'],
+                    'Complete73 findings/unchanged uv-lock inventory differ from the two exact Python findings')
+    for name, expected_sha in proof['support_sha256'].items():
+        current.require(current.digest(prior_build.checked(root, name)) == expected_sha,
+                        'Current Python path/profile/support changed')
+    files = proof['current_application_files_sha256']
+    current.require({p.relative_to(root).as_posix() for p in (root / 'backend').rglob('*.py')
+                     if '__pycache__' not in p.parts} == {name for name in files if name.endswith('.py')}
+                    and all(current.digest(prior_build.checked(root, name)) == expected_sha
+                            for name, expected_sha in files.items()), 'Current application caller source changed')
+    return expected
 
 
 def reviewed_source_profile(scan, observed, historical, root=ROOT):
@@ -86,12 +115,17 @@ def evaluate(scan, receipt, original, candidate, inventory, *, raw_sha256, origi
     historical = prior_build.load_profile(snapshot(root))
     collection = prior.evaluate(scan, receipt, original, candidate, raw_sha256=raw_sha256,
         original_sha256=original_sha256, source_commit=source_commit, tracked_clean=tracked_clean,
-        root=root, prepare=True, profile=historical)
+        root=root, prepare=True, profile=historical, compiled_root=snapshot(root))
     # The scanner receipt and full inventories belong to the current commit.
     # The old compiled closure is explicitly historical: current's full native
     # and package-graph comparison above proves its non-stdlib facts still apply.
-    reviewed = reviewed_source_profile(scan, collection['observed'], historical, root)
-    prior.assess_findings(root, reviewed, collection['observed'], collection['observed']['compiled'])
+    python_rows = python_source_scope(collection['observed'], root)
+    retained_observed = deepcopy(collection['observed'])
+    python_keys = set(map(prior_build.finding_key, python_rows))
+    retained_observed['findings'] = [row for row in retained_observed['findings']
+                                   if prior_build.finding_key(row) not in python_keys]
+    reviewed = reviewed_source_profile(scan, retained_observed, historical, root)
+    prior.assess_findings(root, reviewed, retained_observed, retained_observed['compiled'])
     prior.verify_busybox(root, historical)
     from scripts import runtime_ci_inventory
     current.require(inventory == runtime_ci_inventory.build_record(root)
@@ -104,6 +138,8 @@ def evaluate(scan, receipt, original, candidate, inventory, *, raw_sha256, origi
         'historical_source': SOURCE, 'historical_compilation_is_current': False,
         'new_native_graph_migration_verified': True, 'new_native_sha256': profile['expected']['native_sha256'],
         'source_inventory_review': SOURCE_REVIEW, 'source_inventory_review_sha256': SOURCE_REVIEW_SHA256,
+        'python_source_review': PYTHON_REVIEW, 'python_source_review_sha256': PYTHON_REVIEW_SHA256,
+        'additional_exact_python_not_affected': python_rows,
         'binary_redistribution_approved': False,
         'preserved_original_failed_verdict': original, 'preserved_candidate_failed_verdict': candidate}
 

@@ -1,0 +1,48 @@
+{
+  "actor": "/root/release_prepare",
+  "actor_kind": "automated_independent_agent",
+  "observed_at_utc": "2026-11-13T12:13:41.005076+00:00",
+  "subject_sha256": "812e1201ea30de8d72a9fa97bd1ee56c2e03b51a9103888801c978feba1eec53",
+  "facts_passed": true,
+  "risk_acceptance": false,
+  "binary_redistribution_approved": false,
+  "reviewed_draft_sha256": "5194ae69e5a05cfa00ef4894f9b4209ed457c4d04e444c5c86ae76363af67a45",
+  "supporting_source_and_evidence_hashes_verified": 235,
+  "prior_orchestration_subject": "742e08f32eff9c6c4049d012598875bb3df70b3249b8eaad0f9b87c3b63b6a09",
+  "prior_orchestration_peer_review_preserved": true,
+  "exact_removed_rows": [
+    {
+      "id": "CVE-2026-122054",
+      "package": "glibc",
+      "severity": "MEDIUM",
+      "target": "os:redhat",
+      "version": "2.34-290.el9_9"
+    },
+    {
+      "id": "CVE-2026-122054",
+      "package": "glibc-common",
+      "severity": "MEDIUM",
+      "target": "os:redhat",
+      "version": "2.34-290.el9_9"
+    },
+    {
+      "id": "CVE-2026-122054",
+      "package": "glibc-minimal-langpack",
+      "severity": "MEDIUM",
+      "target": "os:redhat",
+      "version": "2.34-290.el9_9"
+    }
+  ],
+  "all_remaining21_local_and_ci_tuples_identical": true,
+  "complete_trivy_inventory_unchanged": true,
+  "ci_full_syft_package_count": 392,
+  "all_six_native_sha256_unchanged": true,
+  "stable_rpm_database_unchanged": true,
+  "original_all34_disposition_matrix_unchanged": true,
+  "removed_three_disposition": "BIG5 exact_component_not_affected, not LANGUAGE sourcefix; original proofs retained",
+  "all_other_profile_facts_identical_to_orchestration_draft": true,
+  "fresh_current_db": "Official manifest9d5708/layerfd406c 139955633B UpdatedAt2026-11-13T07:00:07.938173847Z; metadata unmodified; explicitly locked --skip-db-update scan, not a default auto-update download claim.",
+  "physical_scope": "Reviewed author actual228 scan and CI raw/native/SBOM files. I did not compile/export/re-scan any native payload or repeat tests. New source input label still requires separately verified derived image.",
+  "global_CVE_withdrawal_claimed": false,
+  "new_paid_calls": 0
+}

@@ -113,6 +113,48 @@ def validate_profile(profile, root=ROOT, *, reviewed=True):
     return profile
 
 
+def verify_trivy_advisory_migration(profile, root=ROOT):
+    migration = profile.get('trivy_advisory_migration')
+    if migration is None:
+        return []
+    path = migration['path']
+    common.require(profile['evidence_sha256'].get(path) == migration['sha256']
+                   == digest(shared.checked(root, path)), 'Exact Trivy advisory migration proof changed')
+    proof = read(shared.checked(root, path))
+    common.require(proof['schema'] == 'minio-trivy-exact-three-row-migration-20261113-v1',
+                   'Unknown Trivy advisory migration')
+    reports = []
+    for key in ('before', 'after'):
+        item = proof[key]
+        common.require(profile['evidence_sha256'].get(item['path']) == item['sha256']
+                       == digest(shared.checked(root, item['path'])), 'Original full Trivy migration report changed')
+        reports.append(trivy_rows(read_gzip(shared.checked(root, item['path']))))
+    (before, before_inventory), (after, after_inventory) = reports
+    exact = [{'id': 'CVE-2026-122054', 'package': name, 'severity': 'MEDIUM',
+              'target': 'os:redhat', 'version': '2.34-290.el9_9'}
+             for name in ('glibc', 'glibc-common', 'glibc-minimal-langpack')]
+    common.require(len(before) == 24 and len(after) == 21
+                   and before_inventory == after_inventory == profile['expected']['trivy_inventory_sha256']
+                   and row_counter(before) - row_counter(after) == row_counter(exact)
+                   and not row_counter(after) - row_counter(before)
+                   and row_counter(proof['removed_exact_rows']) == row_counter(exact)
+                   and row_counter(profile['reviewed_findings']['Trivy']) == row_counter(after),
+                   'Only the three exact old glibc rows may leave the complete reviewed inventory')
+    manifest_path = proof['official_database']['manifest']['path']
+    manifest_sha = proof['official_database']['manifest']['sha256']
+    common.require(profile['evidence_sha256'].get(manifest_path) == manifest_sha
+                   == digest(shared.checked(root, manifest_path))
+                   == '9d570840823a4fbd0004ccdd251e89dd59d91aa093df55bc541d493eca406ad0',
+                   'Official complete advisory database manifest changed')
+    layers = read(shared.checked(root, manifest_path))['layers']
+    common.require(len(layers) == 1 and layers[0]['digest'] ==
+                   'sha256:fd406c50cad6892a16b258bef67be31ebfd4ddfb00da80ce869b461e73116d4f'
+                   and layers[0]['size'] == 139955633
+                   and proof['official_database']['metadata']['UpdatedAt'] == '2026-11-13T07:00:07.938173847Z',
+                   'Reviewed official database layer/observation differs')
+    return exact
+
+
 def verify_os_matrix(profile, matrix, root=ROOT):
     original = read_gzip(shared.checked(root, matrix['primary_sources']['original_raw']['path']))
     expected = [{'original_target': result['Target'], 'original_finding': row}
@@ -124,6 +166,7 @@ def verify_os_matrix(profile, matrix, root=ROOT):
                    and len(row_counter(observed)) == len(observed),
                    'Exact original OS findings were replaced, duplicated or omitted')
     current = [row for row in profile['reviewed_findings']['Trivy'] if row['target'].startswith('os:')]
+    removed = verify_trivy_advisory_migration(profile, root)
     retained = []
     for row in profile['os_resolution']:
         old = row['original_finding']
@@ -131,6 +174,11 @@ def verify_os_matrix(profile, matrix, root=ROOT):
                    and value['package'] == old['PkgName']]
         if row['resolution'] == 'signed_vendor_update':
             common.require(not matches, 'A vendor-update finding remains in the current raw scan')
+        elif any(value['id'] == old['VulnerabilityID'] and value['package'] == old['PkgName']
+                 and value['version'] == row['current_installed_version'] and value['severity'] == old['Severity']
+                 for value in removed):
+            common.require(row['resolution'] == 'exact_component_not_affected' and not matches,
+                           'Only the three separately reviewed BIG5 scope rows may cease matching Trivy')
         else:
             common.require(len(matches) == 1 and matches[0]['severity'] == old['Severity']
                            and matches[0]['version'] == row['current_installed_version'],

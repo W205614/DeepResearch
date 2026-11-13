@@ -1,0 +1,32 @@
+{
+  "schema": "minio-shared-grafana-only-orchestration-amendment-v1",
+  "prior_profile": {
+    "path": "deployment/security/minio-os-20261113-evidence/orchestration-prior-profile-20261113.json",
+    "sha256": "5c2aefdde2328612f12988fafa4c347a8277ea89018933c179335007f882ffb4",
+    "subject_sha256": "802d076e3e20d7650201b11c1460975b42d7f54108614a809f0285185397bc6c"
+  },
+  "source_input_count": 24,
+  "only_changed_source_input": "scripts/build_go_stdlib_security_20261112.py",
+  "driver_before_sha256": "d860a5261625e0dc745e32969e426e77c8ca33b92e3412f33a884ab146222fe4",
+  "driver_after_sha256": "7febf7d4e546c693f0115cbf1a9fe80093d13a3b786b5b26352d3ef0debd6cbb",
+  "unchanged_driver_functions_ast": [
+    "write",
+    "logged",
+    "source_inputs",
+    "consumer",
+    "image_facts",
+    "main",
+    "build"
+  ],
+  "minio_early_return_path_ast_unchanged": true,
+  "new_grafana_only_helper_not_called_by_minio": true,
+  "scope": "Only the shared driver file identity changes for a Grafana-only historical BUILDINPUT orchestration fix. MinIO source/compiler/Dockerfile/regressions/actual six native ELFs, full runtime and RPM facts, OS34 matrix, Go evidence, all raw tuples and thresholds remain unchanged. Existing physical observations are reused; the old image receipt and label remain historical. A newly labelled exact image is required for the new input hash.",
+  "old_image_receipt_or_label_rewritten": false,
+  "new_native_compilation_claimed": false,
+  "native_runtime_rpm_raw_facts_unchanged": true,
+  "new_source_label_required": true,
+  "old_inputs_sha256": "e7c4c553d70ed727ed98e86aea9936c9c15d5a1fc01500434787ce42698977b0",
+  "new_inputs_sha256": "d9947d956469a41a766a0e0f753102082c9ad142fb535af49d582a7e2505fb56",
+  "binary_redistribution_approved": false,
+  "provider_calls": 0
+}

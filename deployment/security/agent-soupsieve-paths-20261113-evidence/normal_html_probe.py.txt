@@ -1,0 +1,79 @@
+"""Normal shallow HTML only; CSS tripwire, not a complexity/DoS reproduction."""
+import asyncio
+import hashlib
+import json
+import sys
+
+import bs4
+import httpx
+import soupsieve
+from backend.core import security
+
+html = ('<html><head><title>Normal article</title><style>p { color: black; }</style></head>'
+        '<body><nav>discard navigation</nav><article><h1>Ordinary example</h1>'
+        '<p>This ordinary article explains a small documented workflow and its limitations. '
+        'It is harmless sample material for an offline web-reader contract check.</p>'
+        '<pre>preserved  spacing\nsecond line</pre><footer>discard footer</footer>'
+        '</article></body></html>')
+guard_calls = []
+
+
+def forbidden(*args, **kwargs):
+    guard_calls.append('css-api-entered')
+    raise AssertionError('CSS selector execution is outside the reviewed reader path')
+
+
+module_methods = ('compile', 'select', 'select_one', 'iselect', 'match', 'closest', 'filter')
+compiled_methods = ('select', 'select_one', 'iselect', 'match', 'closest', 'filter')
+for name in module_methods:
+    assert callable(getattr(soupsieve, name))
+    setattr(soupsieve, name, forbidden)
+for name in compiled_methods:
+    assert callable(getattr(soupsieve.SoupSieve, name))
+    setattr(soupsieve.SoupSieve, name, forbidden)
+# A benign shallow selector confirms the guard actually intercepts BS4's CSS path.
+try:
+    bs4.BeautifulSoup(html, 'html.parser').select('article p')
+except AssertionError:
+    pass
+assert guard_calls == ['css-api-entered']
+guard_calls.clear()
+source_calls = []
+
+
+def trace(frame, event, arg):
+    if event == 'call' and '/soupsieve/' in frame.f_code.co_filename:
+        source_calls.append(frame.f_code.co_name)
+
+
+async def addresses(host, port):
+    return ['93.184.216.34']
+
+
+def handler(request):
+    return httpx.Response(200, headers={'content-type': 'text/html; charset=utf-8'}, content=html.encode())
+
+
+original_init = httpx.AsyncClient.__init__
+
+
+def initialize(client, *args, **kwargs):
+    kwargs['transport'] = httpx.MockTransport(handler)
+    original_init(client, *args, **kwargs)
+
+
+security.public_addresses = addresses
+httpx.AsyncClient.__init__ = initialize
+sys.setprofile(trace)
+text = asyncio.run(security.fetch_text('https://example.org/ordinary-article'))
+sys.setprofile(None)
+assert not guard_calls and not source_calls
+assert 'Ordinary example' in text and 'preserved  spacing' in text
+assert 'discard navigation' not in text and 'discard footer' not in text
+print(json.dumps({'passed': True, 'normal_shallow_html_only': True,
+    'external_network_requests': 0, 'model_requests': 0, 'html_bytes': len(html.encode()),
+    'benign_css_tripwire_canary_intercepted': True,
+    'guarded_module_methods': list(module_methods), 'guarded_compiled_methods': list(compiled_methods),
+    'css_calls_in_actual_fetch_text': len(guard_calls), 'soupsieve_function_calls_in_actual_fetch_text': len(source_calls),
+    'reader_preserved_text_and_removed_chrome': True,
+    'reader_output_sha256': hashlib.sha256(text.encode()).hexdigest()}))
