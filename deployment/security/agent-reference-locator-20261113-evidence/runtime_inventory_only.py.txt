@@ -1,0 +1,38 @@
+"""Read source/native identities only; never import the application or send requests."""
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+
+roots = ['/app', '/opt/venv/lib/python3.11/site-packages', '/usr/local/lib/python3.11']
+pattern = re.compile(rb'CMS_encrypt|PKCS7EnvelopeBuilder|AESGCMSIV|GCM[-_]SIV|OSSL_QUIC|SSL_set1_initial_peer_addr|SSL_new_stream|SSL_handle_events|SSL_poll|aioquic|http3|regcomp|regexec|re_comp|re_exec|re_compile_pattern|re_compile_fastmap|re_search|re_match|rpmatch|krb5_aname_to_localname|krb5_kuserok|gss_localname|gss_authorize_localname|wscanf|fwscanf|swscanf|ctypes|cffi|dlsym|dlopen', re.I)
+python, native, features = [], [], []
+for root in roots:
+    for directory, subdirs, files in os.walk(root, followlinks=False):
+        subdirs[:] = [name for name in subdirs if name != '__pycache__']
+        for name in files:
+            path = Path(directory) / name
+            if name.endswith('.py') and path.is_file() and not path.is_symlink():
+                raw = path.read_bytes()
+                row = {'path': str(path), 'sha256': hashlib.sha256(raw).hexdigest()}
+                python.append(row)
+                if pattern.search(raw):
+                    features.append({**row, 'terms': sorted(set(x.group().decode('ascii') for x in pattern.finditer(raw)))})
+for directory, subdirs, files in os.walk('/', followlinks=False):
+    if directory == '/':
+        subdirs[:] = [name for name in subdirs if name not in {'proc', 'sys', 'dev', 'tmp'}]
+    for name in files:
+        path = Path(directory) / name
+        if path.is_file() and not path.is_symlink():
+            with path.open('rb') as stream:
+                if stream.read(4) == b'\x7fELF':
+                    stream.seek(0)
+                    native.append({'path': str(path), 'sha256': hashlib.file_digest(stream, 'sha256').hexdigest()})
+python.sort(key=lambda x: x['path'])
+native.sort(key=lambda x: x['path'])
+def closure(rows):
+    return {'files': len(rows), 'sha256': hashlib.sha256(json.dumps(rows, sort_keys=True, separators=(',', ':')).encode()).hexdigest()}
+print(json.dumps({'python_files': python, 'native_files': native,
+                  'python_source_closure': closure(python), 'native_elf_closure': closure(native),
+                  'feature_matches': features, 'application_imported': False, 'network_requests': 0}))

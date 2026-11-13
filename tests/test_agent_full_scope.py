@@ -306,7 +306,7 @@ def test_current_profile_cannot_accept_old_or_unreviewed_metadata(reviewed_input
 
 
 def test_current_source_review_binds_complete_closure_and_two_source_snapshots():
-    profile = gate.load_profile(gate.CURRENT_PROFILE_NAME)
+    profile = gate.load_profile(gate.PROVIDER_PROFILE_NAME)
     review = json.loads((gate.ROOT / profile['source_review_evidence']['path']).read_bytes())
     assert review['inherited_native_and_ffi_review']['python_source_closure'] == profile['python_source_closure']
     assert review['inherited_native_and_ffi_review']['native_elf_closure'] == profile['native_elf_closure']
@@ -319,6 +319,34 @@ def test_current_source_review_binds_complete_closure_and_two_source_snapshots()
                       if item['path'].endswith(Path(path).name + '.txt'))
         assert source['sha256'] == delta['after']
         assert hashlib.sha256((gate.ROOT / source['path']).read_bytes()).hexdigest() == delta['after']
+
+
+def test_reference_locator_profile_preserves_all_retained_technical_facts():
+    previous = gate.load_profile(gate.PROVIDER_PROFILE_NAME)
+    current = gate.load_profile(gate.CURRENT_PROFILE_NAME)
+    expected = copy.deepcopy(previous)
+    for field in ('name', 'python_source_closure', 'source_review_evidence', 'review_scope', 'baseline_evidence_only'):
+        expected[field] = current[field]
+    assert current == expected
+    review = json.loads((gate.ROOT / current['source_review_evidence']['path']).read_bytes())
+    assert set(review['source_changes']) == {'/app/backend/research/evidence_policy.py'}
+    assert review['inherited_native_and_ffi_review']['unchanged_python_files'] == 5971
+    assert review['inherited_native_and_ffi_review']['complete_python_feature_matches_exact_equal'] is True
+    change = review['source_changes']['/app/backend/research/evidence_policy.py']
+    source = next(item for item in review['additional_evidence_files']
+                  if item['path'].startswith('deployment/security/agent-reference-locator-20261113-evidence/')
+                  and item['path'].endswith('evidence_policy.py.txt'))
+    assert source['sha256'] == change['after']
+    assert hashlib.sha256((gate.ROOT / source['path']).read_bytes()).hexdigest() == change['after']
+    assert current['python_source_closure']['files'] == previous['python_source_closure']['files'] == 5972
+    assert current['python_source_closure'] != previous['python_source_closure']
+
+
+@pytest.mark.parametrize('reviewed_inputs', [gate.CURRENT_PROFILE_NAME], indirect=True)
+def test_reference_locator_review_rejects_previous_python_closure(reviewed_inputs):
+    reviewed_inputs[2]['python_source_closure'] = gate.load_profile(gate.PROVIDER_PROFILE_NAME)['python_source_closure']
+    with pytest.raises(ValueError, match='Python source closure'):
+        decide(reviewed_inputs)
 
 
 def test_ordinary_profile_rejects_modified_historical_source_snapshot(monkeypatch):

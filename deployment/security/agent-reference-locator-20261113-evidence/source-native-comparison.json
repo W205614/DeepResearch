@@ -1,0 +1,66 @@
+{
+  "old_python_closure": {
+    "files": 5972,
+    "sha256": "f42f78c5c155a871b9fe8e2a09986f732f07747c86965705c928cd01d30d5aa8"
+  },
+  "new_python_closure": {
+    "files": 5972,
+    "sha256": "dfe8e53e3c7e35acb4db60bd17428b0a2b57ab27e05060b36a71edf5791f9baa"
+  },
+  "python_file_delta": {
+    "/app/backend/research/evidence_policy.py": {
+      "before": "d11b7db356eb16476c0e51e750b4c2d7df71555ca69ed7765f89bf927102b51a",
+      "after": "196384a4bf6519b8b23832125aea5d6fe1da09bc4d2ef16ef015ff5d4bcd0f2f"
+    }
+  },
+  "unchanged_python_files": 5971,
+  "native_elf_closure": {
+    "files": 515,
+    "sha256": "7bde6d27b4fd6015f058da3f28d8c1e5dfb0155aadca77a61919225674d4f348"
+  },
+  "all_515_native_files_exact_equal": true,
+  "complete_python_feature_matches_exact_equal": true,
+  "application_imported": false,
+  "network_requests": 0,
+  "exact_source_diff": "--- \n+++ \n@@ -144,7 +144,7 @@\n                 numeric_text = re.sub(located_label, \"\", numeric_text)\n                 # The same bound label may be written as an explicit citation\n                 # field rather than parenthesized after a book-title label.\n-                citation_field = (r\"引用位置\\s*[:：]\\s*\" + re.escape(source[\"title\"])\n+                citation_field = (r\"引用(?:位置)?\\s*[:：]\\s*\" + re.escape(source[\"title\"])\n                                   + rf\"\\s*[,，]\\s*{locator}(?=$|[。；;，,\\n])\")\n                 numeric_text = re.sub(citation_field, \"\", numeric_text)\n                 label += rf\"(?:\\s*[（(]\\s*{locator}\\s*[）)])?\"\n",
+  "all_92_complete_finding_tuples_exact_equal": true,
+  "complete_package_inventory_exact_equal": true,
+  "current_raw_sha256": "d1ea4cbbf744355b1ae1f867f75517fcadd509671dfa320a6138aac00247e956",
+  "current_scan_receipt": {
+    "command": [
+      "E:\\project\\DeepResearch\\.cache\\security-fix-20261105\\trivy.exe",
+      "image",
+      "--image-src",
+      "docker",
+      "--config",
+      "E:\\project\\DeepResearch\\.cache\\release-followup-20261113\\agent-profile-reference-locator-20261113\\trivy-08\\empty-trivy.yaml",
+      "--ignorefile",
+      "E:\\project\\DeepResearch\\.cache\\release-followup-20261113\\agent-profile-reference-locator-20261113\\trivy-08\\empty.ignore",
+      "--cache-dir",
+      "E:\\project\\DeepResearch\\.cache\\release-followup-20261113\\backend-busybox\\trivy-cache",
+      "--db-repository",
+      "ghcr.io/aquasecurity/trivy-db:2",
+      "--scanners",
+      "vuln,secret",
+      "--list-all-pkgs",
+      "--severity",
+      "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL",
+      "--ignore-unfixed=false",
+      "--exit-code",
+      "0",
+      "--timeout",
+      "10m",
+      "--format",
+      "json",
+      "--output",
+      "E:\\project\\DeepResearch\\.cache\\release-followup-20261113\\agent-profile-reference-locator-20261113\\trivy-08\\raw.private.json",
+      "sha256:5f67aa743ea70e15d3532f8cfff967f40a64cee8359629b0ab7e4d65e38cfb12"
+    ],
+    "started_epoch": 1794561438.0934675,
+    "no_paid_requests": true,
+    "skipped_db_updates": false,
+    "exit_code": 0,
+    "finished_epoch": 1794561448.6045823,
+    "raw_sha256": "d1ea4cbbf744355b1ae1f867f75517fcadd509671dfa320a6138aac00247e956"
+  }
+}
