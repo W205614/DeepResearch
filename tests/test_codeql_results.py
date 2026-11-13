@@ -155,7 +155,7 @@ def test_current_continuation_preserves_original_exact_identities_and_bound_byte
     prior_path = root / 'deployment/security/codeql-reviewed-findings-20261110.json'
     prior = json.loads(prior_path.read_bytes())
     current = json.loads(REVIEW.read_bytes())
-    assert REVIEW.name == 'codeql-reviewed-findings-20261113-native-defaults.json'
+    assert REVIEW.name == 'codeql-reviewed-findings-20261113-search-timeouts.json'
     assert [row['identity'] for row in current['findings']] == [row['identity'] for row in prior['findings']]
     assert current['findings'][:2] == prior['findings'][:2]
     for name, expected in prior['findings'][2]['evidence_sha256'].items():
@@ -242,6 +242,17 @@ def test_current_continuation_preserves_original_exact_identities_and_bound_byte
     assert native_review['severity_threshold_unchanged'] == 7.0
     assert native_review['same_four_exact_identities'] is True and native_review['new_findings_exempted'] is False
     assert native_review['new_codeql_scan_claimed'] is False
+    timeout = current['search_timeout_defaults_addendum']
+    assert hashlib.sha256((root / timeout['prior_profile']).read_bytes()).hexdigest() == timeout['prior_profile_sha256']
+    timeout_path = root / timeout['path']
+    assert hashlib.sha256(timeout_path.read_bytes()).hexdigest() == timeout['sha256']
+    timeout_review = json.loads(timeout_path.read_bytes())
+    assert timeout_review['all_other_parsed_compose_fields_equal'] is True
+    assert set(timeout_review['default_deltas']) == {'compose.yaml', '.env.example'}
+    assert all(row['only_two_timeout_default_numbers_changed'] for row in timeout_review['default_deltas'].values())
+    assert timeout_review['severity_threshold_unchanged'] == 7.0
+    assert timeout_review['same_four_exact_identities'] is True
+    assert timeout_review['new_codeql_scan_claimed'] is False
     assert reviewed_findings([], REVIEW, root) == ([], [])
 
 
@@ -251,7 +262,7 @@ def test_current_continuation_preserves_original_exact_identities_and_bound_byte
                                     'backend-recipe', 'backend-benign', 'backend-ignore', 'backend-addendum',
                                     'minio-native-recipe', 'minio-source-lock', 'minio-collector', 'minio-default-local',
                                     'minio-default-inventory', 'minio-workflow', 'cloud-build-overlay',
-                                    'cloud-preflight', 'native-defaults-addendum'])
+                                    'cloud-preflight', 'native-defaults-addendum', 'timeout-template', 'timeout-addendum'])
 def test_current_continuation_still_rejects_changed_compose_go_recipe_or_proof(tmp_path, change):
     root = Path(__file__).resolve().parents[1]
     record = json.loads(REVIEW.read_bytes())
@@ -315,7 +326,9 @@ def test_current_continuation_still_rejects_changed_compose_go_recipe_or_proof(t
                  'minio-workflow': '.github/workflows/security.yml',
                  'cloud-build-overlay': 'deployment/compose/compose.cloud.backend-build.yaml',
                  'cloud-preflight': 'scripts/check_production_config.py',
-                 'native-defaults-addendum': record['native_defaults_addendum']['path']}
+                 'native-defaults-addendum': record['native_defaults_addendum']['path'],
+                 'timeout-template': '.env.example',
+                 'timeout-addendum': record['search_timeout_defaults_addendum']['path']}
         changed = tmp_path / names[change]
         after = changed.read_bytes() + b'\n'
     changed.write_bytes(after)
