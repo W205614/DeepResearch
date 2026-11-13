@@ -111,6 +111,7 @@ class Providers:
                                    code="provider_configuration", retryable=False)
             payload.update(max_completion_tokens=output_tokens,
                            reasoning_effort=self.settings.llm_reasoning_effort, store=False)
+            payload.setdefault("service_tier", "default")
         else:
             payload["max_tokens"] = output_tokens
             if temperature is not None:
@@ -622,6 +623,7 @@ class Providers:
             self.require_official_openai()
             # One reserved search must not expand into uncounted hosted tool calls.
             payload["max_tool_calls"] = 1
+            payload["service_tier"] = "default"
             payload.update(reasoning={"effort": self.settings.llm_reasoning_effort},
                            include=["web_search_call.action.sources"], store=False)
         async with self.gate:

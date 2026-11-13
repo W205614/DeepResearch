@@ -48,6 +48,7 @@ async def test_openai_chat_omits_unsupported_sampling_and_accounts_all_output_to
         body = json.loads(request.content)
         assert request.url == 'https://api.openai.com/v1/chat/completions'
         assert body['max_completion_tokens'] == 8000 and body['reasoning_effort'] == 'low'
+        assert body['service_tier'] == 'default'
         assert body['store'] is False and body['response_format'] == {'type': 'json_object'}
         assert not {'max_tokens', 'thinking', 'temperature', 'top_p'} & body.keys()
         return httpx.Response(200, json={'choices': [{'message': {'content': '{"mode":"quick","reason":"ok"}'}}],
@@ -70,6 +71,7 @@ async def test_openai_vision_uses_same_supported_request_options(tmp_path):
         body = json.loads(request.content)
         assert body['model'] == 'gpt-6.1-sol'
         assert body['max_completion_tokens'] == 8000 and 'max_tokens' not in body
+        assert body['service_tier'] == 'default'
         return httpx.Response(200, json={'choices': [{'message': {'content': '{"readable":true,"text":"合成图"}'}}]})
     provider = official(await make_provider(tmp_path, respond))
     try:
@@ -85,6 +87,7 @@ async def test_openai_search_uses_native_sources_and_never_falls_back(tmp_path):
         body = json.loads(request.content)
         assert request.url.path == '/v1/responses'
         assert body['max_tool_calls'] == 1
+        assert body['service_tier'] == 'default'
         assert body['reasoning'] == {'effort': 'low'}
         assert body['include'] == ['web_search_call.action.sources'] and body['store'] is False
         return httpx.Response(200, json={'output': [{'type': 'web_search_call', 'action': {
