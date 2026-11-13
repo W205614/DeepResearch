@@ -16,6 +16,7 @@ import sys
 import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 LOCK = ROOT / 'deployment/security/agent-native-packages.json'
 LOCK_SHA256 = 'c8354130c02ef81c173bcc62cfb2af717ec7af8f5acf98b2fb3a2782d0260454'
 SUPPLEMENT_PATH = 'deployment/security/agent-native-fixed-code-supplement-20261107.json'

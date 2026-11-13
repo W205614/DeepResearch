@@ -62,6 +62,20 @@ def selected_workflow_root(request, tmp_path_factory):
 
 
 def command(steps, script, *, artifact=None):
+    cached_artifact = {'build_go_stdlib_security_20261112.py': 'grafana',
+                       'build_minio_os_20261113.py': 'minio'}.get(script)
+    if cached_artifact is not None:
+        cached = [(i, step) for i, step in enumerate(steps)
+                  if step.get('uses') == './.github/actions/reviewed-source-image'
+                  and step['with']['artifact'] == cached_artifact]
+        if cached:
+            assert len(cached) == 1
+            index, step = cached[0]
+            assert set(step['with']) == {'artifact', 'output-dir'} and 'run' not in step
+            args = {'--output-dir': step['with']['output-dir']}
+            if cached_artifact == 'grafana':
+                args = {'--artifact': 'grafana', **args}
+            return index, step, args
     found = [(index, step) for index, step in enumerate(steps) if 'scripts/' + script in step.get('run', '')
              and (artifact is None or '--artifact ' + artifact + ' ' in step.get('run', ''))]
     assert len(found) == 1, 'The source producer or required technical gate is missing or duplicated'
@@ -237,8 +251,7 @@ def test_source_built_grafana_keeps_full_native_all_severity_gate_before_accepta
     assert scan['with']['scanners'] == 'vuln,secret' and scan['with']['list-all-pkgs'] == 'true'
     assert scan['with']['exit-code'] == '0'
     receipt = BASE + 'grafana-source-build/build-receipt.json'
-    assert build_args == {'--artifact': '$ARTIFACT', '--output-dir': BASE + '$ARTIFACT-source-build'}
-    assert build['env']['ARTIFACT'] == '${{ matrix.artifact }}'
+    assert build_args == {'--artifact': 'grafana', '--output-dir': BASE + 'grafana-source-build'}
     assert native_args == {'--image': 'deepresearch-grafana-source:20261112',
                            '--build-receipt': receipt, '--output-dir': BASE + 'grafana-native'}
     assert gate_args == {'--build-receipt': receipt, '--scan': 'runtime-image.json',

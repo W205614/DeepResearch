@@ -1,0 +1,671 @@
+{
+  "schema": "grafana-source-exact-two-python-caller-scope-v1",
+  "source_scan_commit": "6d2368ea16c37a9b72e9554215613ac57181867b",
+  "source_scan_raw_sha256": "cec4e8878925d4c544efe90e86e76d57964c58b94067688283e8f5b818025822",
+  "all_source_finding_count": 73,
+  "all_source_finding_identities": [
+    {
+      "id": "CVE-2026-21728",
+      "target": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/main/main/go.mod",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260427112133-525d1bab07e0",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-28377",
+      "target": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/main/main/go.mod",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260427112133-525d1bab07e0",
+      "severity": "HIGH"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/main/main/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/elasticsearch/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/loki/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/mssql/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/stackdriver/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "CVE-2026-21728",
+      "target": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/tempo/go.mod",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-28377",
+      "target": "deployment/security/grafana-fixed-20261107-evidence/native/build-evidence/actual-locks/plugins/tempo/go.mod",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-21728",
+      "target": "deployment/security/grafana-source-20261110-evidence/main/locks/go.mod",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260427112133-525d1bab07e0",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-28377",
+      "target": "deployment/security/grafana-source-20261110-evidence/main/locks/go.mod",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260427112133-525d1bab07e0",
+      "severity": "HIGH"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/security/grafana-source-20261110-evidence/main/locks/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/alertmanager/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/etcd/modules/etcdctl/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/etcd/modules/etcdutl/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/etcd/modules/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/etcd/modules/server/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/etcd/modules/tests/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "CVE-2026-2303",
+      "target": "deployment/vendors/etcd/modules/tools/mod/go.mod",
+      "package": "go.mongodb.org/mongo-driver",
+      "version": "v1.5.4",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-21728",
+      "target": "deployment/vendors/grafana-20261107/main/go.mod",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260427112133-525d1bab07e0",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-28377",
+      "target": "deployment/vendors/grafana-20261107/main/go.mod",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260427112133-525d1bab07e0",
+      "severity": "HIGH"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/grafana-20261107/main/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/grafana-20261107/plugins/elasticsearch/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/grafana-20261107/plugins/loki/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/grafana-20261107/plugins/mssql/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/grafana-20261107/plugins/stackdriver/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "CVE-2026-21728",
+      "target": "deployment/vendors/grafana-20261107/plugins/tempo/go.mod",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-28377",
+      "target": "deployment/vendors/grafana-20261107/plugins/tempo/go.mod",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-21728",
+      "target": "deployment/vendors/grafana-20261110/main/go.mod",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260427112133-525d1bab07e0",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-28377",
+      "target": "deployment/vendors/grafana-20261110/main/go.mod",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260427112133-525d1bab07e0",
+      "severity": "HIGH"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/grafana-20261110/main/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "CVE-2026-21728",
+      "target": "deployment/vendors/grafana-security/main/go.mod",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260427112133-525d1bab07e0",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-28377",
+      "target": "deployment/vendors/grafana-security/main/go.mod",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260427112133-525d1bab07e0",
+      "severity": "HIGH"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/grafana-security/main/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/grafana-security/plugins/loki/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/grafana-security/plugins/mssql/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "CVE-2026-116587",
+      "target": "deployment/vendors/grafana/main/go.mod",
+      "package": "github.com/go-jose/go-jose/v4",
+      "version": "v4.1.4",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-116585",
+      "target": "deployment/vendors/grafana/main/go.mod",
+      "package": "github.com/go-jose/go-jose/v4",
+      "version": "v4.1.4",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-116586",
+      "target": "deployment/vendors/grafana/main/go.mod",
+      "package": "github.com/go-jose/go-jose/v4",
+      "version": "v4.1.4",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-21728",
+      "target": "deployment/vendors/grafana/main/go.mod",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260427112133-525d1bab07e0",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-28377",
+      "target": "deployment/vendors/grafana/main/go.mod",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260427112133-525d1bab07e0",
+      "severity": "HIGH"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/grafana/main/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.57.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "CVE-2026-78661",
+      "target": "deployment/vendors/grafana/main/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-97045",
+      "target": "deployment/vendors/grafana/main/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-78661",
+      "target": "deployment/vendors/grafana/plugins/grafana-postgresql-datasource/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-97045",
+      "target": "deployment/vendors/grafana/plugins/grafana-postgresql-datasource/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-78661",
+      "target": "deployment/vendors/grafana/plugins/grafana-pyroscope-datasource/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-97045",
+      "target": "deployment/vendors/grafana/plugins/grafana-pyroscope-datasource/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-78661",
+      "target": "deployment/vendors/grafana/plugins/influxdb/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-97045",
+      "target": "deployment/vendors/grafana/plugins/influxdb/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-78661",
+      "target": "deployment/vendors/grafana/plugins/jaeger/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-97045",
+      "target": "deployment/vendors/grafana/plugins/jaeger/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/grafana/plugins/loki/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.57.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "CVE-2026-78661",
+      "target": "deployment/vendors/grafana/plugins/loki/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-97045",
+      "target": "deployment/vendors/grafana/plugins/loki/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/grafana/plugins/mssql/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.57.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "CVE-2026-78661",
+      "target": "deployment/vendors/grafana/plugins/mssql/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-97045",
+      "target": "deployment/vendors/grafana/plugins/mssql/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-78661",
+      "target": "deployment/vendors/grafana/plugins/mysql/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-97045",
+      "target": "deployment/vendors/grafana/plugins/mysql/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CVE-2026-78661",
+      "target": "deployment/vendors/grafana/plugins/opentsdb/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-97045",
+      "target": "deployment/vendors/grafana/plugins/opentsdb/go.mod",
+      "package": "golang.org/x/net",
+      "version": "v0.60.0",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/loki/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/milvus/modules/examples/telemetry_demo/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/milvus/modules/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/milvus/modules/pkg/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/milvus/modules/tests/go_client/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/otel-collector/source/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/prometheus/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "deployment/vendors/tempo/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "GO-2026-5932",
+      "target": "scripts/storage-bootstrap/go.mod",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "id": "CVE-2026-126190",
+      "target": "uv.lock",
+      "package": "soupsieve",
+      "version": "2.9.2",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-126192",
+      "target": "uv.lock",
+      "package": "soupsieve",
+      "version": "2.9.2",
+      "severity": "MEDIUM"
+    }
+  ],
+  "new_exact_findings": [
+    {
+      "id": "CVE-2026-126190",
+      "target": "uv.lock",
+      "package": "soupsieve",
+      "version": "2.9.2",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CVE-2026-126192",
+      "target": "uv.lock",
+      "package": "soupsieve",
+      "version": "2.9.2",
+      "severity": "MEDIUM"
+    }
+  ],
+  "original71_preserved": true,
+  "source_uv_lock_package_count": 114,
+  "uv_lock_inventory_sha256": "201b42888591ff229b332356a605477d01a742a09e189cc5d5a7c94461770950",
+  "uv_lock_sha256": "ddeba33cd99792dc69bfd6d09253a85f0e56dc2807bcede2176e70b4e761bf6f",
+  "actual_runtime_package_count": 125,
+  "actual_python_source_closure": {
+    "files": 5972,
+    "sha256": "65afcf37293fd4aca0086828680b4cdeeee91638c8e3787b02968335bc97af93"
+  },
+  "actual_snapshot_engine_id": "sha256:2703be0627243f4a386e9bbd631bef66781059ccb7e77be5c9e05395a16aa225",
+  "current_application_files_sha256": {
+    "backend/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "backend/api/__init__.py": "ebfe099174dde8f24299f9abb9fb0c66899a31907da75970cda85c2b74e2ecb5",
+    "backend/api/app.py": "dc2dbbf80005cfdc577f3462292d814b6b4183351c4e643dbae53de0d7703725",
+    "backend/api/source_rechecks.py": "09532b8abceb6e7b80102383e1974729dc357ecc0aeb8b81ecaed5dab3faeeab",
+    "backend/api/usage.py": "785943602cc61e28fde865d008875889d032bad36f609f8552017657414ee984",
+    "backend/commands/__init__.py": "c1a5220d6d7fd256cc603b570187261f4003af87a646873430f60111e67940bf",
+    "backend/commands/cli.py": "a74391ba8ca06bb1a539d612bd1e67df6db9c00d2130dfa7f9698cf6fdf4ea7a",
+    "backend/core/__init__.py": "a0582f0276b21c290bcf566921bd2afd6d5f0f8d99fe5b935cc47511f3a2b13c",
+    "backend/core/alerts.py": "73237091d44b7cbebee19c15d351b8b4ef092b8665b3db24b0b99077747cf2c1",
+    "backend/core/attachments.py": "5f121972ee1ad86e9a2dfd4e6e3c121dcb389fa23354b9de67315b4bd6148a6e",
+    "backend/core/auth.py": "1424c1ae68d4712ce699591b6338ad95361a45cc6687e61870f8f88ca5735790",
+    "backend/core/checkpoints.py": "95e1324a25ab1fda841c40a08795eadec9006a7d19b4ba77a41c98bf42269f2a",
+    "backend/core/clamav.py": "6f1de18f96d14c2e1f1ff895e348a77b68e4dc74220b15ad88923b1b965035f6",
+    "backend/core/config.py": "805f00d6aaaf5154ad06845482de1cc2b63ea2f81b0d4e7102574de5e7c5106e",
+    "backend/core/consistency.py": "38aeb0f267b636bab3ccba8fd70e4bd6e9d5e54dc978e39b22c912fc93b9e6fc",
+    "backend/core/db.py": "5d6688ca25ebe7ed57fe8b4b65254dce7c99b8b9ef28f42bd208411472bf664a",
+    "backend/core/governance.py": "a1e8c2740dcc809041e3ca26df37403bd15488258b0e42dcfd8797c18ecbc6ce",
+    "backend/core/lifecycle_schema.py": "f6ee9486ea937b6ee35a0e6445142d51b7dd986e55caeeb7f9b1e7eeff79ebb8",
+    "backend/core/metrics.py": "dea168070d972113a61cee4378bb5e874d65aba85c8f0e25c808db10f4b20a01",
+    "backend/core/observability.py": "58f92129a613d25ab628ef33819e4c717eb53bbadff366e42c098deeba3829a7",
+    "backend/core/platform_schema.py": "d8f7fa340aaa4c609655ef931ea017939a88d4bb4d3d5ff1d59994335c89f90b",
+    "backend/core/postgres.py": "f7130b4a333a7cb737fad61465e1ed8b1ef4728ebd6cc7ebe7f6d152c2211688",
+    "backend/core/product_schema.py": "12ab6e1c5db847b56c85fdff994c5c42f80ba7528fcb501c3348a3c328d2886f",
+    "backend/core/queue.py": "caabdd8bb6e0aa29392f05f233ea98a140a58d512b9f7b79206ddd8796e908bd",
+    "backend/core/recovery_contract.py": "6bdf1451b03b58f52fe794f48c33d18dceb8515f83001f263bba0f56b1dacf35",
+    "backend/core/recovery_schema.py": "9fc163e14977c426d46c8e7089bf39362f25e5b92a6d3a9449c6310b0b68f0ef",
+    "backend/core/reliability.py": "c955afd5235a4fed48fa0d946eb888aa8189a53122f701ae306f98e770b9e2a7",
+    "backend/core/research_command_contract.json": "a9866fad7d1fd5cf2f97f0c45ff865152b4fad9fd1cc4a586e1b228bb176ae59",
+    "backend/core/run_views.py": "dc0d574a7254a2325297f03c77320a784dcf9f95c53bff9908a0cd6f05debbab",
+    "backend/core/security.py": "6ecc94ff30e4f115754dab554f85c34c389c92e2a89e8db12259e6f19245dfbe",
+    "backend/core/usage_governance.py": "b5f8e0edf911d4a5bf663f10b971b4b5583c13c750213446c091c97041a13605",
+    "backend/core/worker_health.py": "f0451c160737b689d9f6c86ba088785f8975a58c9b300bb1f9e8e8efdc3f8d62",
+    "backend/domain/__init__.py": "6ae8301df95a7a1e17134e3b7a745cb4da6a0e6d775ed3b3e0be0e3d7ee00e61",
+    "backend/domain/models.py": "01b367d50515532d056a3b9f50084d5cab95c50e35ab41b78e11c26d72cc2f76",
+    "backend/infrastructure/__init__.py": "a2a91bad1ffc50e15103a44ce754a11c9ab0603dc76455d5b8b7211a5fa42d1e",
+    "backend/infrastructure/demo.py": "be656044e848ad69ecf7b539e9eac280d328249ee073fc0905f3513045a8b2b5",
+    "backend/infrastructure/object_store.py": "3966c113e1981b7a38d1d64693282a8f1ceb7dae4ab58208cc3f8d6c63ff3c81",
+    "backend/infrastructure/providers.py": "3027bc81dd633a67e8af432ad6f146191e097369a373f370dbf5b0f6864c67ef",
+    "backend/infrastructure/reranker.py": "aec14379d15111641168bedacfab9364e96d6dd0be329db98df7da24f1dcc29a",
+    "backend/infrastructure/vectors.py": "5c8b78a9cc770202771b2e5693afab4866749116f823c4fde3885b503acc74fa",
+    "backend/quality_gate.py": "03fb64e6536755531614c22da8508f449f5939bb46d99588ed65957e058870b7",
+    "backend/research/__init__.py": "0836cde4bfa09dfa593a85a9082b438115ec9660c781d4013147aa8d84268e1b",
+    "backend/research/agents.py": "e1cfc4f48c72f2c5f744d4b7ae2850cb9d2d9ecd08de7561cbe7818722271713",
+    "backend/research/evidence_policy.py": "811aa5ebb4d39944410ec45c9153d41996a243fa3c418ce32ec196a456675e14",
+    "backend/research/graph.py": "b4bd11568b52059ac0420acedaad5ffb65e22ca6531c15783a5acf39b7d48ce9",
+    "backend/research/reporting.py": "748c048b68c4b2453bbaf7e0207434f57933c77ff664c473464546fdd19d4ef1",
+    "backend/research/routing.py": "6f0cb19873dd8789cd9c1d685930b993eaf1f02b4292491b37c683b399434e0a",
+    "backend/research/search_policy.py": "d681706b9d5048d20b20e893b870093ae27117a2d15b940fbabb9eff38b13f12",
+    "backend/research/source_validity.py": "52c553e523b50121f5b274268ea9877483c7f4673563470639f4ce531a48675c",
+    "backend/research/verification_contract.py": "e32e2ec8d55f84647aa5dd4802156e59891291ef02338ed466b05b4313791cc2",
+    "backend/services/__init__.py": "6a41496536737d2b76603cf1ed8064ced71e8205337498c8e029ae4c3e0869d3",
+    "backend/services/attachments.py": "1d07a48a1ee0e30cfe71917c379461dbb6a4793b4be341a8b33b72528c923f36",
+    "backend/services/document_access.py": "b1f6de433ac03020aac61226efd4781f010d15e5afa0b16c959264b4c516d06a",
+    "backend/services/document_parsing.py": "fe4b11ef4d6c1f984be807848a0ba06ea45c54c939ebc065630ecdd6d8afd0de",
+    "backend/services/documents.py": "114520b2ae4523ac458737af8540acd800c1f9bce297d7374bba27db8d8d94e8",
+    "backend/services/embedding_migration.py": "c5cee85082d3a496cdb70ef73cd86d8f1d8c3e65ebe1d2e48c5844cd19c1f323",
+    "backend/services/evidence_lifecycle.py": "de8b92a3b500282094b094ba105820225d5f89dea2d760e62e13ea8d09ba5260",
+    "backend/services/lexical_retrieval.py": "d2d893a9243a618c4b93832a0e1577deeff64c013ea1af2b8fc6db3fe20314ca",
+    "backend/services/parser_process.py": "bf25d80f4d028bf308d445642680b073520c30d25baea235cd2a0e298acd2196",
+    "backend/services/parser_worker.py": "5e529f32b91853d77223a3fc15be7dc9d5c12dbf6f1d7309ac47e50ac51b5f5e",
+    "backend/services/retention.py": "d0f76c01f9fa4328297dfa3ecbca7c519e778fea9eda447d2bf6be59341c7959",
+    "backend/services/retrieval_contract.py": "44db28cb9b148a545afbba147e369d69c16bfa6eafad2768c7b69b4752be68db",
+    "backend/services/run_cleanup.py": "8e24e9bcd52a71f0fd915ac40f121586028ba7239f67f8140f63e9736c1255c9",
+    "backend/services/runtime.py": "e07cc23c6fc08ee7ccb4fcbd6f18aaf21a8f49cd01e41b33ad63de1ad047e7cb",
+    "backend/worker.py": "e92214bdeb12e4dcd146431a7999d62b6aa9d083750f21966f5683ee5da85313"
+  },
+  "application_python_file_count": 64,
+  "application_contract_json_file_count": 1,
+  "support_sha256": {
+    "deployment/security/agent-soupsieve-paths-profile-20261113.json": "b4fb5109ddaaa15acd93ea9cbcd5c4003a6c4d95c3f478371cd928f2d7574e6b",
+    "deployment/security/agent-soupsieve-paths-evidence-20261113.json": "2b2dd46f4d9ea2480ce627b83ae04202c67209e9a4f35ea697da0b4fb0d1e228",
+    "deployment/security/agent-soupsieve-paths-20261113-evidence/actual-source-import-scope.json": "d79549662b069559d287d9d2e564750e5e72dd2a48252f5dc0b2ff437f11345e",
+    "deployment/security/agent-soupsieve-paths-20261113-evidence/application-path-review.json": "aaf84140866eb35cd32517397ed67bfcb6caa0f38b4e6d336e24190eebeb1368",
+    "deployment/security/agent-soupsieve-paths-20261113-evidence/fresh-scan-delta.json": "7d08c91cc770d902047e46eca6872677176ff6be3dfcd8bd579e2ccd13545a55",
+    "deployment/security/agent-soupsieve-paths-20261113-evidence/normal-html-probe.json": "64b68a4ff919027d16de81be65e81978f62083f5d19b90ecef46d2d83c362e09",
+    "deployment/security/agent-soupsieve-paths-20261113-evidence/normal_html_probe.py.txt": "807e7ecec6fa7dcd0e786d4a7210d181086dfd3c0e38519c23b70a8cf8cddaaf",
+    "deployment/security/agent-soupsieve-paths-20261113-evidence/primary-sources.json": "daaf77fa5f552e76aad376bd7eac31c1d8c87ecd8faf9f12120012b7230d668e",
+    "deployment/security/agent-soupsieve-paths-20261113-evidence/wheel-source-bindings.json": "a0b20e40dda66891cdb5e1275368705e3f5a264945f9140a635c311c8b1d1cf7",
+    "deployment/security/grafana-source-20261112-evidence/source-ci6d-full73.json.gz": "5516c0696aa5a7adae5f54faef1c51cb5d0b0f363ae0253bc581f706117c3e3c",
+    "deployment/security/grafana-source-20261112-evidence/source-policy811-prior-profile.json": "0ab21bb301a39d0739cadb161fcdc6aff7abd6f9269589192eeb6ca789be9d46",
+    "deployment/security/grafana-source-20261112-evidence/source-policy811-prior-policy.py.txt": "9f9c9e3fccbdf06886f4f200ed3ae69345af1c273797fffd30abed8a657ff447"
+  },
+  "upstream_package_affected": true,
+  "package_fixed_claim": false,
+  "disposition": "NOT_AFFECTED_FUNCTION_NOT_IN_CURRENT_APPLICATION_PATH",
+  "raw_report_modified": false,
+  "new_model_or_native_build_claimed": false,
+  "scope": "Only two exact uv.lock SoupSieve2.9.2 findings use the same independently reviewed current fetch_text non-CSS application path. Full73 source findings, complete114 uv-lock package inventory and all79 source targets remain exact;125 refers to the actual packaged OS+Python runtime, not the lockfile. Original71 proofs/Tomcat/native graphs remain unchanged. Any other missing/extra finding or source/caller/lock change fails.",
+  "current_source_amendment": {
+    "prior_profile": {
+      "path": "deployment/security/grafana-source-20261112-evidence/source-policy811-prior-profile.json",
+      "sha256": "0ab21bb301a39d0739cadb161fcdc6aff7abd6f9269589192eeb6ca789be9d46",
+      "subject_sha256": "1e01a6a863f1e1c52dafa31a1013b18d7adb192492762c2cb83d4703fe706999"
+    },
+    "prior_scope": {
+      "path": "deployment/security/grafana-source-20261112-evidence/source-python-scope-20261113.json",
+      "sha256": "34acad929e59d408d97e5fc9686aa497a53936984655ef548e55001649f936f3"
+    },
+    "policy": {
+      "path": "backend/research/evidence_policy.py",
+      "before_source": "deployment/security/grafana-source-20261112-evidence/source-policy811-prior-policy.py.txt",
+      "before_sha256": "9f9c9e3fccbdf06886f4f200ed3ae69345af1c273797fffd30abed8a657ff447",
+      "after_sha256": "811aa5ebb4d39944410ec45c9153d41996a243fa3c418ce32ec196a456675e14"
+    },
+    "only_changed_function": [
+      "bound_local_attribution"
+    ],
+    "all_other_module_ast_equal": true,
+    "unchanged_function_ast_sha256": {
+      "numeric_tokens": "d3723829f2ef484ed5903669d6004e806e22071a03931c563adacc7be3b2f355",
+      "local_locator_pattern": "2023a7286154bac134424ff55dd7de0d6ff533490ebf2a299b0fb67a79dfe9ba",
+      "has_local_attribution": "20e33391425f57a85a4f3323fb3e2e696d9b34c12b0363e523e30c265dc4a6f3",
+      "local_attribution_clauses": "7f7cc107980fe98d9f030fb2f7c8308a7da9aad48db7dab0d34731afe8b94ba8",
+      "requires_strong_evidence": "fcb4461bb84a7d4185f4c2625ff8a60143f9a9061f85d5a76de6ba3e33186016",
+      "validate_claim": "a836b8cba6991485f589054bbbf346ce17ac00fb39b8e69c951b0a98c43a3f61"
+    },
+    "only_one_of_complete65_application_files_changed": true,
+    "semantic_delta": "Only bound_local_attribution accepts additional source-scoped attribution strings (\u636e, metadata document/record nouns and \u5404\u81ea possessive forms). has_local_attribution, numeric/locator/validate_claim and every other function are AST-identical. No CSS, HTML parser, import, FFI or security.fetch_text route changed.",
+    "historical_support_boundary": "The existing Agent7 profile/review and Snapshot10 source/native/normal-HTML observations below are preserved historical source-path support, not a current Agent7 approval. Current65 binds policy811 explicitly; 64 other files and the actual fetch_text/BeautifulSoup caller path remain identical. The existing installed SoupSieve version stays affected; only the same two exact current non-CSS source tuples are NOT_AFFECTED. No old Agent profile is loaded to approve changed current bytes.",
+    "old_snapshot_engine_and_python_closure_are_historical": true,
+    "new_snapshot_or_native_or_scan_claimed": false,
+    "all_native_runtime_scans_original71_and_history_51_191_unchanged": true,
+    "risk_acceptance": false,
+    "binary_redistribution_approved": false
+  }
+}

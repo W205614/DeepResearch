@@ -2,7 +2,10 @@
 from copy import deepcopy
 from datetime import datetime, timezone, timedelta
 import json
+import os
 from pathlib import Path
+import subprocess
+import sys
 
 import pytest
 import yaml
@@ -11,6 +14,28 @@ from scripts import check_agent_native_packages as gate
 from scripts import check_agent_full_scope as full_scope
 
 NOW = datetime(2026, 11, 5, 8, tzinfo=timezone.utc)
+
+
+def test_isolated_script_entrypoint_can_reach_nested_scope_import_from_another_directory(tmp_path):
+    # Reach the actual nested import, then stop at its first data lookup. --help
+    # alone would never exercise the import that failed in the CI Soup path.
+    code = """import runpy,sys
+namespace=runpy.run_path(sys.argv[1],run_name='isolated_native_entrypoint')
+try:
+    namespace['verify_soupsieve_scope']({}, {}, {}, {})
+except KeyError as error:
+    assert error.args == ('name',)
+else:
+    raise AssertionError('Expected first data boundary after the nested import')
+print('nested-scope-import-ok')
+"""
+    environment = dict(os.environ)
+    environment.pop('PYTHONPATH', None)
+    environment.pop('PYTHONHOME', None)
+    result = subprocess.run([sys.executable, '-I', '-c', code, str(gate.ROOT / 'scripts/check_agent_native_packages.py')],
+        cwd=tmp_path, env=environment, capture_output=True, text=True, encoding='utf-8', timeout=30)
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == 'nested-scope-import-ok'
 
 
 @pytest.fixture

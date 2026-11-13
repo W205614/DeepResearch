@@ -107,7 +107,8 @@ def assert_workflow_contract(steps, *, security):
     if security:
         assert "matrix.artifact == 'grafana'" in collector['if']
     assert not collector.get('continue-on-error')
-    builders = [s for s in steps[:index] if 'scripts/build_go_stdlib_security_20261112.py' in s.get('run', '')]
+    builders = [s for s in steps[:index] if s.get('uses') == './.github/actions/reviewed-source-image'
+                and s.get('with', {}).get('artifact') == 'grafana']
     assert builders and all(not s.get('continue-on-error') for s in builders)
     uploads = [s for i, s in enumerate(steps) if i > index
                and '.cache/eval/grafana-source-build/diagnostic-graphs/*.json.gz'
@@ -133,7 +134,8 @@ def test_grafana_workflow_rejects_bypasses_or_unbounded_collection(mutation):
     elif mutation == 'wrong-image':
         collector['if'] = collector['if'].replace("matrix.artifact == 'grafana'", 'true')
     elif mutation == 'swallowed-build':
-        next(s for s in steps if 'scripts/build_go_stdlib_security_20261112.py' in s.get('run', ''))['continue-on-error'] = True
+        next(s for s in steps if s.get('uses') == './.github/actions/reviewed-source-image'
+             and s['with']['artifact'] == 'grafana')['continue-on-error'] = True
     else:
         next(s for s in steps if 'grafana-source-build/diagnostic-graphs/*.json.gz'
              in s.get('with', {}).get('path', ''))['if'] = 'success()'

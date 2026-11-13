@@ -12,7 +12,7 @@ import pytest
 from scripts import check_agent_full_scope as gate
 
 
-@pytest.fixture(params=gate.PROFILE_NAMES)
+@pytest.fixture(params=[name for name in gate.PROFILE_NAMES if name != gate.PREVIOUS_SOUP_PROFILE_NAME])
 def reviewed_inputs(request):
     profile = gate.load_profile(request.param)
     now = datetime(2026, 11, 10, 12, tzinfo=timezone.utc)
@@ -228,6 +228,27 @@ def test_profile_is_explicit_and_source_evidence_is_pinned(tmp_path, monkeypatch
     monkeypatch.setattr(gate, "PROFILE_PATH", changed)
     with pytest.raises(ValueError, match="profile changed"):
         gate.load_profile(gate.PROFILE_NAME)
+
+
+def test_retained_soupsieve_profile_rejects_changed_current_consumer():
+    assert hashlib.sha256(gate.PREVIOUS_SOUP_PROFILE_PATH.read_bytes()).hexdigest() == gate.PREVIOUS_SOUP_PROFILE_SHA256
+    historical = json.loads(gate.PREVIOUS_SOUP_PROFILE_PATH.read_bytes())
+    evidence = historical['source_review_evidence']
+    assert hashlib.sha256((gate.ROOT / evidence['path']).read_bytes()).hexdigest() == evidence['sha256']
+    with pytest.raises(ValueError, match='supporting source evidence changed'):
+        gate.load_profile(gate.PREVIOUS_SOUP_PROFILE_NAME)
+
+
+@pytest.mark.parametrize('reviewed_inputs', [gate.SOUP_PROFILE_NAME], indirect=True)
+def test_record_metadata_profile_preserves_security_scope_and_rejects_previous_python(reviewed_inputs):
+    current = reviewed_inputs[3]
+    historical = json.loads(gate.PREVIOUS_SOUP_PROFILE_PATH.read_bytes())
+    for field in ('findings', 'packages', 'native_elf_closure', 'runtime_config', 'official_glibc_payload', 'sqlite'):
+        assert current[field] == historical[field]
+    assert decide(reviewed_inputs)['passed']
+    reviewed_inputs[2]['python_source_closure'] = historical['python_source_closure']
+    with pytest.raises(ValueError, match='Python source closure'):
+        decide(reviewed_inputs)
 
 
 def test_ordinary_profile_preserves_findings_and_rejects_the_old_python_closure(reviewed_inputs):

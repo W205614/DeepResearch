@@ -1,0 +1,49 @@
+{
+  "schema": "agent-measured-source-continuation-v1",
+  "source_fix_commit": "73a37446c2da3747049035eca147272dec80495f",
+  "old_python_closure": {
+    "files": 5972,
+    "sha256": "65afcf37293fd4aca0086828680b4cdeeee91638c8e3787b02968335bc97af93"
+  },
+  "new_python_closure": {
+    "files": 5972,
+    "sha256": "aaf826edf77be8d5143b94d89ade3cd2d5a198fdbeb8510af2aeb61f576bcdfb"
+  },
+  "python_file_delta": {
+    "/app/backend/research/evidence_policy.py": {
+      "before": "9f9c9e3fccbdf06886f4f200ed3ae69345af1c273797fffd30abed8a657ff447",
+      "after": "811aa5ebb4d39944410ec45c9153d41996a243fa3c418ce32ec196a456675e14"
+    }
+  },
+  "unchanged_python_files": 5971,
+  "native_elf_closure": {
+    "files": 515,
+    "sha256": "7bde6d27b4fd6015f058da3f28d8c1e5dfb0155aadca77a61919225674d4f348"
+  },
+  "all515_native_files_exact_equal": true,
+  "all22_wheel_python_files_exact_equal": true,
+  "complete_python_feature_matches_exact_equal": true,
+  "unchanged_function_AST": [
+    "numeric_tokens",
+    "local_locator_pattern",
+    "requires_strong_evidence",
+    "validate_claim",
+    "has_local_attribution"
+  ],
+  "application_imported": false,
+  "network_requests": 0,
+  "exact_policy_diff": "--- \n+++ \n@@ -136,7 +136,9 @@\n         versions = {version for label in labels | declarations for version in re.findall(LOCAL_VERSION, label)}\n         dates = set(re.findall(r\"(?:^|[。；;\\n])\\s*记录日期\\s*[:：]\\s*(\\d{4}-\\d{2}-\\d{2})\", source.get(\"text\", \"\")))\n         documents.append((labels, versions, dates, body))\n-    nouns = re.compile(r\"资料|材料|文档|文件|需求|评审|纪要|试验|测试|清单|记录|结果|样本|项目|情境|说明|范围\")\n+    nouns = re.compile(r\"资料|材料|文档|文件|需求|评审|纪要|试验|测试|清单|记录|结果|样本|项目|情境|说明|声明|范围\")\n+    document_nouns = {\"资料\", \"材料\", \"文档\", \"文件\"}\n+    record_nouns = {\"记录\", \"结果\", \"说明\", \"声明\", \"纪要\"}\n \n     def bound_subject(subject):\n         provided = bool(re.match(r\"(?:所提供的?|这些|上述|该)\", subject))\n@@ -162,17 +164,22 @@\n             name = unquoted\n             name = re.sub(r\"\\d{4}-\\d{2}-\\d{2}|\" + LOCAL_VERSION, \"\", name)\n             name = re.sub(r\"记录日期|[（()），,）]\", \"\", name)\n-            name = re.sub(r\"所设定的|所描述的|所记录的|中的|的|中\", \"\", name)\n+            name = re.sub(r\"所设定的|所描述的|所记录的|各自的|各自|中的|的|中\", \"\", name)\n             scoped_name = re.sub(r\"合成演示|虚构\", \"\", name)\n+            record = re.fullmatch(r\"(.*?)(?:记录|结果|说明|声明|纪要)\", name)\n             if not any(\n                 name in labels or (quoted and not name) or (\n                     (provided or quoted or \"合成演示资料\" in part or \"虚构\" in part\n-                     or any(name and name in label for label in labels))\n+                     or any(name and name in label for label in labels)\n+                     or record and (record[1] in document_nouns\n+                                    or bool(record[1]) and any(record[1] in label for label in labels)\n+                                    or not record[1] and bool(versions)))\n                     and (matches := list(nouns.finditer(scoped_name))) and matches[-1].end() == len(scoped_name)\n                     and all(\n                         not fragment or fragment in body or fragment in \"\".join(labels)\n                         for fragment in nouns.split(scoped_name)\n-                    ) and all(noun.group() in body or noun.group() in \"\".join(labels)\n+                    ) and all(noun.group() in document_nouns | record_nouns\n+                              or noun.group() in body or noun.group() in \"\".join(labels)\n                               for noun in nouns.finditer(name))\n                     and (\"合成演示\" not in part or \"合成演示资料\" in body)\n                     and (\"虚构\" not in part or \"虚构\" in body)\n@@ -184,7 +191,7 @@\n     for clause in local_attribution_clauses(text, \"，,。；;：:\\r\\n\"):\n         if re.match(r\"(?:并非|不是|没有|未|不|是否|能否)\", clause):\n             continue\n-        according = re.match(r\"(?:根据|依据|对照|按照|按)(.+)$\", clause)\n+        according = re.match(r\"(?:根据|依据|对照|按照|按|据)(.+)$\", clause)\n         if according and bound_subject(according[1]):\n             return True\n         scope = re.match(r\"(?:仅针对|针对|仅就|就|在)(.+?)(?:范围内|而言|判断|中|内)?$\", clause)\n",
+  "native_consumer_delta": {
+    "before_sha256": "fc99a1a4f7f57f9de2d7d31855d5b00663f543fd8c4773ba9b1f71f97a50abc3",
+    "after_sha256": "f58993e9d958b39e8dad90883cd1af2ece225fcc2ee6f0f5d60ed8df92a04ac7",
+    "only_change": "sys.path.insert(0, str(ROOT)) after ROOT, before nested scripts import; all previous bytes restored by removing exactly this line."
+  },
+  "retained_scan": {
+    "image_id": "sha256:2703be0627243f4a386e9bbd631bef66781059ccb7e77be5c9e05395a16aa225",
+    "sha256": "baa04c34292d5e0a6720e8fcba0e6d38034be6d5641a1cce93b167df7fed4b87",
+    "findings": 94,
+    "packages": 125,
+    "snapshot11_scan_performed": false,
+    "boundary": "Historical Snapshot10 actual scan; not relabelled. The final packaged artifact requires its own complete identity-bound scan."
+  }
+}

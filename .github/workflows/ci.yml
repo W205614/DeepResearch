@@ -4,6 +4,13 @@ on:
   pull_request:
   push:
     branches: [main]
+    paths-ignore:
+      - README.md
+      - docs/images/**
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   real-components:
@@ -23,7 +30,8 @@ jobs:
       - name: Install locked Python dependencies for Go source preparation
         run: uv sync --frozen --no-dev
       - name: Build the reviewed Go-fixed storage source for the isolated component fixture
-        run: uv run --frozen --no-dev python scripts/build_minio_os_20261113.py --output-dir .cache/eval/minio-source-build
+        uses: ./.github/actions/reviewed-source-image
+        with: { artifact: minio, output-dir: .cache/eval/minio-source-build }
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - uses: actions/upload-artifact@v6
@@ -101,11 +109,13 @@ jobs:
       - name: Install locked Python dependencies for Go source preparation
         run: uv sync --frozen --no-dev
       - name: Build the reviewed Go-fixed storage source before Compose startup
-        run: uv run --frozen --no-dev python scripts/build_minio_os_20261113.py --output-dir .cache/eval/minio-source-build
+        uses: ./.github/actions/reviewed-source-image
+        with: { artifact: minio, output-dir: .cache/eval/minio-source-build }
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Build the exact reviewed Grafana source profile before Compose startup
-        run: uv run --frozen --no-dev python scripts/build_go_stdlib_security_20261112.py --artifact grafana --output-dir .cache/eval/grafana-source-build
+        uses: ./.github/actions/reviewed-source-image
+        with: { artifact: grafana, output-dir: .cache/eval/grafana-source-build }
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Retain only differing Grafana graph and provenance documents after a failed build gate

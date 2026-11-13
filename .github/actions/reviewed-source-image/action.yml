@@ -1,0 +1,42 @@
+name: Reuse exact reviewed source image
+description: Restore runtime bytes and always run the original current-profile verifier
+inputs:
+  artifact:
+    required: true
+    description: minio or grafana
+  output-dir:
+    required: true
+    description: New evidence directory for the original builder
+runs:
+  using: composite
+  steps:
+    - id: identity
+      shell: bash
+      run: uv run --frozen --no-dev python scripts/ci_reviewed_image_cache.py key --artifact "$ARTIFACT" --output-dir "$OUTPUT_DIR"
+      env:
+        ARTIFACT: ${{ inputs.artifact }}
+        OUTPUT_DIR: ${{ inputs.output-dir }}
+    - id: cache
+      uses: actions/cache/restore@v5
+      with:
+        path: ${{ steps.identity.outputs.archive }}
+        key: ${{ steps.identity.outputs.key }}
+    - name: Build or independently verify exact cached runtime bytes
+      shell: bash
+      run: uv run --frozen --no-dev python scripts/ci_reviewed_image_cache.py run --artifact "$ARTIFACT" --output-dir "$OUTPUT_DIR" --cache-hit "$CACHE_HIT"
+      env:
+        ARTIFACT: ${{ inputs.artifact }}
+        OUTPUT_DIR: ${{ inputs.output-dir }}
+        CACHE_HIT: ${{ steps.cache.outputs.cache-hit == 'true' && 'true' || 'false' }}
+    - name: Compress only the completed verified image archive
+      if: steps.cache.outputs.cache-hit != 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+      shell: bash
+      run: uv run --frozen --no-dev python scripts/ci_reviewed_image_cache.py pack --artifact "$ARTIFACT" --output-dir "$OUTPUT_DIR"
+      env:
+        ARTIFACT: ${{ inputs.artifact }}
+        OUTPUT_DIR: ${{ inputs.output-dir }}
+    - uses: actions/cache/save@v5
+      if: steps.cache.outputs.cache-hit != 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+      with:
+        path: ${{ steps.identity.outputs.archive }}
+        key: ${{ steps.identity.outputs.key }}

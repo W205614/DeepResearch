@@ -20,8 +20,8 @@ from scripts.retained_source_review_20261112 import SOURCE, snapshot  # noqa: E4
 
 SOURCE_REVIEW = 'deployment/security/grafana-source-20261112-evidence/source-fs-tomcat27-review-20261112.json'
 SOURCE_REVIEW_SHA256 = '39aaec83119b9169548689c2f16f5fb4d2f21380fafc5e3df7ecf6f9d8589c09'
-PYTHON_REVIEW = 'deployment/security/grafana-source-20261112-evidence/source-python-scope-20261113.json'
-PYTHON_REVIEW_SHA256 = '34acad929e59d408d97e5fc9686aa497a53936984655ef548e55001649f936f3'
+PYTHON_REVIEW = 'deployment/security/grafana-source-20261112-evidence/source-python-scope-policy811-20261113.json'
+PYTHON_REVIEW_SHA256 = '9e4d6abf958fde5e985b3fe99fffccfebbab5d8fb8193f5e3fe0d5b3a89e86cd'
 
 
 def python_source_scope(observed, root=ROOT):

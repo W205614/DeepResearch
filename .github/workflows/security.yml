@@ -4,7 +4,14 @@ on:
   pull_request:
   push:
     branches: [main]
+    paths-ignore:
+      - README.md
+      - docs/images/**
   schedule: [{ cron: "18 3 * * 1" }]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   dependency-and-image-scan:
@@ -128,13 +135,14 @@ jobs:
         run: uv sync --frozen --no-dev
       - name: Build the reviewed Go-fixed source without publishing a third-party image
         if: matrix.source_build_profile == 'grafana-source-20261112'
-        run: uv run --frozen --no-dev python scripts/build_go_stdlib_security_20261112.py --artifact "$ARTIFACT" --output-dir ".cache/eval/$ARTIFACT-source-build"
+        uses: ./.github/actions/reviewed-source-image
+        with: { artifact: grafana, output-dir: .cache/eval/grafana-source-build }
         env:
-          ARTIFACT: ${{ matrix.artifact }}
           GITHUB_TOKEN: ${{ github.token }}
       - name: Build the exact reviewed MinIO native repair without publishing a third-party image
         if: matrix.source_build_profile == 'minio-os-source-20261113'
-        run: uv run --frozen --no-dev python scripts/build_minio_os_20261113.py --output-dir .cache/eval/minio-source-build
+        uses: ./.github/actions/reviewed-source-image
+        with: { artifact: minio, output-dir: .cache/eval/minio-source-build }
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Retain only differing Grafana graph and provenance documents after a failed build gate

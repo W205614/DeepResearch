@@ -155,7 +155,7 @@ def test_current_continuation_preserves_original_exact_identities_and_bound_byte
     prior_path = root / 'deployment/security/codeql-reviewed-findings-20261110.json'
     prior = json.loads(prior_path.read_bytes())
     current = json.loads(REVIEW.read_bytes())
-    assert REVIEW.name == 'codeql-reviewed-findings-20261113-current-native-gates.json'
+    assert REVIEW.name == 'codeql-reviewed-findings-20261113-exact-image-cache.json'
     assert [row['identity'] for row in current['findings']] == [row['identity'] for row in prior['findings']]
     assert current['findings'][:2] == prior['findings'][:2]
     for name, expected in prior['findings'][2]['evidence_sha256'].items():
@@ -268,6 +268,20 @@ def test_current_continuation_preserves_original_exact_identities_and_bound_byte
     assert gate_review['new_findings_exempted'] is False
     assert gate_review['new_codeql_scan_claimed'] is False
     assert gate_review['raw_sarif_modified'] is False
+    cache = current['exact_image_cache_addendum']
+    cache_prior = root / cache['prior_profile']
+    assert hashlib.sha256(cache_prior.read_bytes()).hexdigest() == cache['prior_profile_sha256']
+    cache_path = root / cache['path']
+    assert hashlib.sha256(cache_path.read_bytes()).hexdigest() == cache['sha256']
+    cache_review = json.loads(cache_path.read_bytes())
+    assert current['findings'][:3] == json.loads(cache_prior.read_bytes())['findings'][:3]
+    assert cache_review['same_four_exact_identities'] is True
+    assert cache_review['severity_threshold_unchanged'] == 7.0
+    assert cache_review['new_findings_exempted'] is False
+    assert cache_review['new_codeql_scan_claimed'] is False
+    assert cache_review['raw_sarif_modified'] is False
+    assert {'scripts/ci_reviewed_image_cache.py', '.github/actions/reviewed-source-image/action.yml',
+            'deployment/security/agent-record-metadata-profile-20261113.json'}.issubset(cache_review['new_support_sha256'])
     assert reviewed_findings([], REVIEW, root) == ([], [])
 
 
