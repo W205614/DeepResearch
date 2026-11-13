@@ -35,3 +35,5 @@ README 和下载文档已在提交 `e8b1e372a5b90d83ed282d6f5de4bc30ac2f8006` �
 ## 可复核入口
 
 GitHub REST `GET /repos/W205614/DeepResearch/releases?per_page=100` 与 `GET /repos/W205614/DeepResearch/git/matching-refs/tags/` 可分别检查实际 Release 和 Tag；带注释的 Tag 还须解析到 commit。`python scripts/check_artifact_source_reuse.py --output .cache/artifact-source-reuse.json` 核对冻结第三方来源的原 Tag、祖先关系和 128 个文件身份，不发出模型请求、不更新日常环境。
+
+2026-11-13 的后续只读核对、53 个原资产目录、旧 loader 迁移阻断及下一版本准备见[辅助发布兼容边界](release-asset-migration-20261113.md)。该次实际库存为 9 Tag／9 Release／259 附件；未迁移、删除或新建发布，五个原兼容入口继续保留。

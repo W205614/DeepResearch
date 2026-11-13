@@ -1,0 +1,681 @@
+{
+  "schema": "deepresearch-legacy-source-assets-catalog-v1",
+  "repository": "W205614/DeepResearch",
+  "purpose": "Read-only inventory and future product-version source index; no publication or deletion authority.",
+  "snapshot_counts": {
+    "tags": 9,
+    "releases": 9,
+    "assets": 259,
+    "drafts": 0
+  },
+  "legacy_release_count": 5,
+  "legacy_asset_count": 53,
+  "legacy_archive_bytes": 3503526912,
+  "legacy_releases": [
+    {
+      "tag": "artifact-minio-fixed-20261026",
+      "release_id": 424228449,
+      "peeled_source_commit": "6bec3f00d883f0de0aac89b29d3a30cd7325fdf3",
+      "release_api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/424228449",
+      "release_url": "https://github.com/W205614/DeepResearch/releases/tag/artifact-minio-fixed-20261026",
+      "published_at": "2026-10-27T04:54:45Z",
+      "archive_bytes": 102110720,
+      "archive_sha256": "4b337cbfbe438d9ca24c67cdbf284c523e2d06ea52e94e866ea09b945d0bb389",
+      "ordered_assets": [
+        {
+          "index": 0,
+          "asset_id": 678114320,
+          "name": "approved-minio-151cd83d.oci.tar",
+          "bytes": 102110720,
+          "sha256": "4b337cbfbe438d9ca24c67cdbf284c523e2d06ea52e94e866ea09b945d0bb389",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/678114320",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-minio-fixed-20261026/approved-minio-151cd83d.oci.tar"
+        }
+      ],
+      "frozen_input_sha256": {
+        "deployment/security/minio-fixed-disposition.json": "46c99a0de3ffd4dae88560bdacb72c3570bed1cc079490de4799cf3811a508fe"
+      },
+      "legacy_publication_guard": {
+        "script": "scripts/fetch_approved_image.py",
+        "function": "verify_release_publication",
+        "requires_original_live_release_id_and_tag": true,
+        "checks_live_asset_membership": false,
+        "also_requires_original_git_tag": true
+      },
+      "retention": {
+        "status": "required_legacy_compatibility",
+        "original_release_deletion_allowed": false,
+        "original_tag_deletion_allowed": false,
+        "why_asset_ID_alone_is_insufficient": "Every loader also verifies its original live Release ID/Tag. The exact28, maintenance and fixed20261107 loaders additionally verify asset membership in that Release."
+      },
+      "future_product_mirror": {
+        "destination_release": null,
+        "new_asset_ids": null,
+        "required_content_identity": "Every ordered part and the whole archive must retain the original bytes/SHA; API asset IDs may differ.",
+        "legacy_release_still_required_after_mirroring": true,
+        "anonymous_full_byte_verification_performed": false
+      }
+    },
+    {
+      "tag": "artifact-grafana-reviewed-20261026",
+      "release_id": 424356978,
+      "peeled_source_commit": "6bec3f00d883f0de0aac89b29d3a30cd7325fdf3",
+      "release_api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/424356978",
+      "release_url": "https://github.com/W205614/DeepResearch/releases/tag/artifact-grafana-reviewed-20261026",
+      "published_at": "2026-10-27T04:54:47Z",
+      "archive_bytes": 849540608,
+      "archive_sha256": "02332c39f6daed922cd030fbcaa00e4949e07b1c157776a2ca60640327e4e59b",
+      "ordered_assets": [
+        {
+          "index": 0,
+          "asset_id": 678599875,
+          "name": "grafana-9a68d3a7.oci.tar.part-000",
+          "bytes": 67108864,
+          "sha256": "b3c99e504c020c0a09b31600a54bcfb12897c80f85f129c4c49cad15ef4e324b",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/678599875",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-reviewed-20261026/grafana-9a68d3a7.oci.tar.part-000"
+        },
+        {
+          "index": 1,
+          "asset_id": 678599894,
+          "name": "grafana-9a68d3a7.oci.tar.part-001",
+          "bytes": 67108864,
+          "sha256": "f157ce76453dbba60a2fa840bf73e230e5b5b79775c94e96f9f82284e23797cf",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/678599894",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-reviewed-20261026/grafana-9a68d3a7.oci.tar.part-001"
+        },
+        {
+          "index": 2,
+          "asset_id": 678599871,
+          "name": "grafana-9a68d3a7.oci.tar.part-002",
+          "bytes": 67108864,
+          "sha256": "345861d09ad8948b35043c9ce2138fdd6866a01dbbc558b296a95878bc77ca84",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/678599871",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-reviewed-20261026/grafana-9a68d3a7.oci.tar.part-002"
+        },
+        {
+          "index": 3,
+          "asset_id": 678625637,
+          "name": "grafana-9a68d3a7.oci.tar.part-003",
+          "bytes": 67108864,
+          "sha256": "e7d7afde0c893fcd09bb9d38de0bc230df48389def69a5a9af506025afa089fb",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/678625637",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-reviewed-20261026/grafana-9a68d3a7.oci.tar.part-003"
+        },
+        {
+          "index": 4,
+          "asset_id": 678627022,
+          "name": "grafana-9a68d3a7.oci.tar.part-004",
+          "bytes": 67108864,
+          "sha256": "ed6fa1cb67d9a8cc5d8b3b6e9f5bf3e11941fb478d49508e3e78bd848ab8cb1f",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/678627022",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-reviewed-20261026/grafana-9a68d3a7.oci.tar.part-004"
+        },
+        {
+          "index": 5,
+          "asset_id": 678628725,
+          "name": "grafana-9a68d3a7.oci.tar.part-005",
+          "bytes": 67108864,
+          "sha256": "17b1c3473586ecf7e661da92480c6bd637cb61e29c35636ccb943833a12502c2",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/678628725",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-reviewed-20261026/grafana-9a68d3a7.oci.tar.part-005"
+        },
+        {
+          "index": 6,
+          "asset_id": 678649205,
+          "name": "grafana-9a68d3a7.oci.tar.part-006",
+          "bytes": 67108864,
+          "sha256": "6cb7f4683860ecabb2f12e891b0e216bd7bf4f77050b29a6c4806046869db3eb",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/678649205",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-reviewed-20261026/grafana-9a68d3a7.oci.tar.part-006"
+        },
+        {
+          "index": 7,
+          "asset_id": 678654163,
+          "name": "grafana-9a68d3a7.oci.tar.part-007",
+          "bytes": 67108864,
+          "sha256": "05e2a5e65608ab93857d371a27b2fe010ab8aaa4aff3ba832eb8f2df82593447",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/678654163",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-reviewed-20261026/grafana-9a68d3a7.oci.tar.part-007"
+        },
+        {
+          "index": 8,
+          "asset_id": 678657412,
+          "name": "grafana-9a68d3a7.oci.tar.part-008",
+          "bytes": 67108864,
+          "sha256": "4b9e7d2a1b73779d16cc74fc1db4ed3172baee71d5a7e1ea1d0aa23e1e2db0a4",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/678657412",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-reviewed-20261026/grafana-9a68d3a7.oci.tar.part-008"
+        },
+        {
+          "index": 9,
+          "asset_id": 678677448,
+          "name": "grafana-9a68d3a7.oci.tar.part-009",
+          "bytes": 67108864,
+          "sha256": "8d8d89eeeb33016ffc904a8d1a0f41c27bad8ff1913a0b390e8440824c4c04ea",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/678677448",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-reviewed-20261026/grafana-9a68d3a7.oci.tar.part-009"
+        },
+        {
+          "index": 10,
+          "asset_id": 678683288,
+          "name": "grafana-9a68d3a7.oci.tar.part-010",
+          "bytes": 67108864,
+          "sha256": "5d68b2fcbaca1e829715804aa7908409b9f0c7df108a4db01c5903bfd920fa83",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/678683288",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-reviewed-20261026/grafana-9a68d3a7.oci.tar.part-010"
+        },
+        {
+          "index": 11,
+          "asset_id": 678691732,
+          "name": "grafana-9a68d3a7.oci.tar.part-011",
+          "bytes": 67108864,
+          "sha256": "bb1e72a03c9f643632ef2277cc272bf22037b457ac569641d0e0a44aa60033cf",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/678691732",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-reviewed-20261026/grafana-9a68d3a7.oci.tar.part-011"
+        },
+        {
+          "index": 12,
+          "asset_id": 678712930,
+          "name": "grafana-9a68d3a7.oci.tar.part-012",
+          "bytes": 44234240,
+          "sha256": "4b04b4e672de84f3dd5c065ef8c156516f1f85e1ee3ac0a64c64251bf8d49390",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/678712930",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-reviewed-20261026/grafana-9a68d3a7.oci.tar.part-012"
+        }
+      ],
+      "frozen_input_sha256": {
+        "deployment/security/grafana-reviewed-disposition.json": "b5d8a4db005e4dc18621b123f2176bf47c46d60701f0d64e5be0e0e7d65fe8b2"
+      },
+      "legacy_publication_guard": {
+        "script": "scripts/fetch_approved_image.py",
+        "function": "verify_release_publication",
+        "requires_original_live_release_id_and_tag": true,
+        "checks_live_asset_membership": false,
+        "also_requires_original_git_tag": true
+      },
+      "retention": {
+        "status": "required_legacy_compatibility",
+        "original_release_deletion_allowed": false,
+        "original_tag_deletion_allowed": false,
+        "why_asset_ID_alone_is_insufficient": "Every loader also verifies its original live Release ID/Tag. The exact28, maintenance and fixed20261107 loaders additionally verify asset membership in that Release."
+      },
+      "future_product_mirror": {
+        "destination_release": null,
+        "new_asset_ids": null,
+        "required_content_identity": "Every ordered part and the whole archive must retain the original bytes/SHA; API asset IDs may differ.",
+        "legacy_release_still_required_after_mirroring": true,
+        "anonymous_full_byte_verification_performed": false
+      }
+    },
+    {
+      "tag": "artifact-grafana-exact28-20261028",
+      "release_id": 426729499,
+      "peeled_source_commit": "ee370ae7841f7ae7cb85f7705d07dfb7ddd20d5e",
+      "release_api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/426729499",
+      "release_url": "https://github.com/W205614/DeepResearch/releases/tag/artifact-grafana-exact28-20261028",
+      "published_at": "2026-10-28T14:19:23Z",
+      "archive_bytes": 859353088,
+      "archive_sha256": "849d3d86c9d51c6bda4c78d3091f7d457ba93dbd37e66aefcc87ef57b25cda70",
+      "ordered_assets": [
+        {
+          "index": 0,
+          "asset_id": 685227177,
+          "name": "grafana-849d3d86.oci.tar.part-000",
+          "bytes": 67108864,
+          "sha256": "0c19d55d76c31958a512e818da68d4ba3a09ac00e14a3db458f8006d770eaf8a",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/685227177",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-exact28-20261028/grafana-849d3d86.oci.tar.part-000"
+        },
+        {
+          "index": 1,
+          "asset_id": 685227361,
+          "name": "grafana-849d3d86.oci.tar.part-001",
+          "bytes": 67108864,
+          "sha256": "eda6daf5b2bad1d28192cf76277ff357649a428a1b5a50e788e17a68a426e37e",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/685227361",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-exact28-20261028/grafana-849d3d86.oci.tar.part-001"
+        },
+        {
+          "index": 2,
+          "asset_id": 685227513,
+          "name": "grafana-849d3d86.oci.tar.part-002",
+          "bytes": 67108864,
+          "sha256": "6d8ef18ec67bc3ec44e12097807092159a83831ef55f9313b8c8ae409eaeea1b",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/685227513",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-exact28-20261028/grafana-849d3d86.oci.tar.part-002"
+        },
+        {
+          "index": 3,
+          "asset_id": 685227687,
+          "name": "grafana-849d3d86.oci.tar.part-003",
+          "bytes": 67108864,
+          "sha256": "b822b94605fb3b7a05af526dc79b951677574ea149ead61bacdad4e6b4ee0db9",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/685227687",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-exact28-20261028/grafana-849d3d86.oci.tar.part-003"
+        },
+        {
+          "index": 4,
+          "asset_id": 685227886,
+          "name": "grafana-849d3d86.oci.tar.part-004",
+          "bytes": 67108864,
+          "sha256": "0d423d208fbf383c6bbe2f0d270dec2a6aa139881c9a4a653bbb7e236738aba1",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/685227886",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-exact28-20261028/grafana-849d3d86.oci.tar.part-004"
+        },
+        {
+          "index": 5,
+          "asset_id": 685228030,
+          "name": "grafana-849d3d86.oci.tar.part-005",
+          "bytes": 67108864,
+          "sha256": "b41f232900e35ce9689b706aaac9390ab1dc357c900a5835d9787e62220cf963",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/685228030",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-exact28-20261028/grafana-849d3d86.oci.tar.part-005"
+        },
+        {
+          "index": 6,
+          "asset_id": 685228135,
+          "name": "grafana-849d3d86.oci.tar.part-006",
+          "bytes": 67108864,
+          "sha256": "2b12377ea431a62f7918f2c12492ce3a15763853da68b4961acb7b6eb84f6441",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/685228135",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-exact28-20261028/grafana-849d3d86.oci.tar.part-006"
+        },
+        {
+          "index": 7,
+          "asset_id": 685228373,
+          "name": "grafana-849d3d86.oci.tar.part-007",
+          "bytes": 67108864,
+          "sha256": "ff55f2835c413fac99e5582882632f078e449278a1f2fb5adf275a6311a04d78",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/685228373",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-exact28-20261028/grafana-849d3d86.oci.tar.part-007"
+        },
+        {
+          "index": 8,
+          "asset_id": 685228553,
+          "name": "grafana-849d3d86.oci.tar.part-008",
+          "bytes": 67108864,
+          "sha256": "a0c66907c4430477e64353dee807090dec5708bd6e7dd5895710c3509f488417",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/685228553",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-exact28-20261028/grafana-849d3d86.oci.tar.part-008"
+        },
+        {
+          "index": 9,
+          "asset_id": 685228674,
+          "name": "grafana-849d3d86.oci.tar.part-009",
+          "bytes": 67108864,
+          "sha256": "d5c484d2f60273a4f308504fd9c885cdb13eb385102a8d2bc05a7f6c6924136c",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/685228674",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-exact28-20261028/grafana-849d3d86.oci.tar.part-009"
+        },
+        {
+          "index": 10,
+          "asset_id": 685228794,
+          "name": "grafana-849d3d86.oci.tar.part-010",
+          "bytes": 67108864,
+          "sha256": "a2c90beb77e91603b428b9eb5722cddbb3d662f41e12549f77a28cea5562b4b7",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/685228794",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-exact28-20261028/grafana-849d3d86.oci.tar.part-010"
+        },
+        {
+          "index": 11,
+          "asset_id": 685228910,
+          "name": "grafana-849d3d86.oci.tar.part-011",
+          "bytes": 67108864,
+          "sha256": "2a5790524439d4330810b14db7c0be017fcb6791fd535dc8b270ceae9cc69ee0",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/685228910",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-exact28-20261028/grafana-849d3d86.oci.tar.part-011"
+        },
+        {
+          "index": 12,
+          "asset_id": 685229049,
+          "name": "grafana-849d3d86.oci.tar.part-012",
+          "bytes": 54046720,
+          "sha256": "73ad4b9bc6f03eaa05917ff276c4b509ef90794cd36fd63ec5cb2487a2b3b6c6",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/685229049",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-exact28-20261028/grafana-849d3d86.oci.tar.part-012"
+        }
+      ],
+      "frozen_input_sha256": {
+        "deployment/security/grafana-candidate-request.json": "7ab4c179c5224a4c7acde032640f71b84422120d92ae82ad251c506d37e8381d",
+        "deployment/security/grafana-candidate-transport.json": "e4376eb6e5e44059f0b029b1d8e2872a6b3dd6acdda405a012e16ab3017383c8"
+      },
+      "legacy_publication_guard": {
+        "script": "scripts/fetch_grafana_candidate.py",
+        "function": "verify_publication",
+        "requires_original_live_release_id_and_tag": true,
+        "checks_live_asset_membership": true,
+        "also_requires_original_git_tag": false
+      },
+      "retention": {
+        "status": "required_legacy_compatibility",
+        "original_release_deletion_allowed": false,
+        "original_tag_deletion_allowed": false,
+        "why_asset_ID_alone_is_insufficient": "Every loader also verifies its original live Release ID/Tag. The exact28, maintenance and fixed20261107 loaders additionally verify asset membership in that Release."
+      },
+      "future_product_mirror": {
+        "destination_release": null,
+        "new_asset_ids": null,
+        "required_content_identity": "Every ordered part and the whole archive must retain the original bytes/SHA; API asset IDs may differ.",
+        "legacy_release_still_required_after_mirroring": true,
+        "anonymous_full_byte_verification_performed": false
+      }
+    },
+    {
+      "tag": "artifact-grafana-maintenance-20261105",
+      "release_id": 434994246,
+      "peeled_source_commit": "0a18012496cfe591109d54ad7522c4a2330e97ba",
+      "release_api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/434994246",
+      "release_url": "https://github.com/W205614/DeepResearch/releases/tag/artifact-grafana-maintenance-20261105",
+      "published_at": "2026-11-05T10:05:15Z",
+      "archive_bytes": 776297984,
+      "archive_sha256": "408744f9d8d357a9b7dfd97ac802efbbdee662cb1177b80d8020bdc24c019e25",
+      "ordered_assets": [
+        {
+          "index": 0,
+          "asset_id": 712815760,
+          "name": "grafana-408744f9.oci.tar.part-000",
+          "bytes": 67108864,
+          "sha256": "ee3703b90d01f3ccc433de7b2183787773561b428da8e785142103f78cc6dd73",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/712815760",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-maintenance-20261105/grafana-408744f9.oci.tar.part-000"
+        },
+        {
+          "index": 1,
+          "asset_id": 712828407,
+          "name": "grafana-408744f9.oci.tar.part-001",
+          "bytes": 67108864,
+          "sha256": "78910628c8c061634a7e15b3c455ec2fe9c1a5aea9b499124475edfce3e7af6e",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/712828407",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-maintenance-20261105/grafana-408744f9.oci.tar.part-001"
+        },
+        {
+          "index": 2,
+          "asset_id": 712844789,
+          "name": "grafana-408744f9.oci.tar.part-002",
+          "bytes": 67108864,
+          "sha256": "54691105db71389fe4ea00f8e7befecdc56d9a86bcc61c7698a611b802123c62",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/712844789",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-maintenance-20261105/grafana-408744f9.oci.tar.part-002"
+        },
+        {
+          "index": 3,
+          "asset_id": 712883647,
+          "name": "grafana-408744f9.oci.tar.part-003",
+          "bytes": 67108864,
+          "sha256": "0c6fb355f553e044aae1bea875b118e76c7a36018d3e1b01085cdc13afc2793f",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/712883647",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-maintenance-20261105/grafana-408744f9.oci.tar.part-003"
+        },
+        {
+          "index": 4,
+          "asset_id": 712906917,
+          "name": "grafana-408744f9.oci.tar.part-004",
+          "bytes": 67108864,
+          "sha256": "86351d4cee7e8f52de2fb8e038085dc84a82620499325a47ce06291a4c10c124",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/712906917",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-maintenance-20261105/grafana-408744f9.oci.tar.part-004"
+        },
+        {
+          "index": 5,
+          "asset_id": 712925938,
+          "name": "grafana-408744f9.oci.tar.part-005",
+          "bytes": 67108864,
+          "sha256": "81c621aab8ced2433e39f3c257b4e5e58858b4d21f70a203b8cf79d8addccdb2",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/712925938",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-maintenance-20261105/grafana-408744f9.oci.tar.part-005"
+        },
+        {
+          "index": 6,
+          "asset_id": 712875816,
+          "name": "grafana-408744f9.oci.tar.part-006",
+          "bytes": 67108864,
+          "sha256": "051ca3a72cf91a41dd04f75e01af26fe3063894e8ca301574746bc75b46d0e0d",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/712875816",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-maintenance-20261105/grafana-408744f9.oci.tar.part-006"
+        },
+        {
+          "index": 7,
+          "asset_id": 712869286,
+          "name": "grafana-408744f9.oci.tar.part-007",
+          "bytes": 67108864,
+          "sha256": "29e847063b98b7801937a1f34ace2f8438bf50a555cc8c14313481d5deab4fae",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/712869286",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-maintenance-20261105/grafana-408744f9.oci.tar.part-007"
+        },
+        {
+          "index": 8,
+          "asset_id": 712860549,
+          "name": "grafana-408744f9.oci.tar.part-008",
+          "bytes": 67108864,
+          "sha256": "0b18f5d3792ed0b80791cc574fa8d5e09e48c99c7f0e147b75ae8efb44ec4b20",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/712860549",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-maintenance-20261105/grafana-408744f9.oci.tar.part-008"
+        },
+        {
+          "index": 9,
+          "asset_id": 712839056,
+          "name": "grafana-408744f9.oci.tar.part-009",
+          "bytes": 67108864,
+          "sha256": "67b45209ca42c0f8572f5be10846f916d5f944a9eb4607656475989d9ec6b091",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/712839056",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-maintenance-20261105/grafana-408744f9.oci.tar.part-009"
+        },
+        {
+          "index": 10,
+          "asset_id": 712838973,
+          "name": "grafana-408744f9.oci.tar.part-010",
+          "bytes": 67108864,
+          "sha256": "2703a8c228fb2f0fd34457597a5408955bf5d25c58682a3b1b8f140a4c6280dd",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/712838973",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-maintenance-20261105/grafana-408744f9.oci.tar.part-010"
+        },
+        {
+          "index": 11,
+          "asset_id": 712838985,
+          "name": "grafana-408744f9.oci.tar.part-011",
+          "bytes": 38100480,
+          "sha256": "ab5d9f692fdb35dd486136a7c2150051a5b43aedd6df1a15b9d1563a33d26d37",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/712838985",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-maintenance-20261105/grafana-408744f9.oci.tar.part-011"
+        }
+      ],
+      "frozen_input_sha256": {
+        "deployment/security/grafana-maintenance-request.json": "4e06f257a627bbbecaf3f2c3d867b8f0edbe5be7e32c317660b1296a1d8c7758",
+        "deployment/security/grafana-maintenance-transport.json": "e896a3685ba272f7dc52b02acc13ef1e259a25e2ebe3b084ee098778d31db5a1"
+      },
+      "legacy_publication_guard": {
+        "script": "scripts/fetch_grafana_candidate.py",
+        "function": "verify_publication",
+        "requires_original_live_release_id_and_tag": true,
+        "checks_live_asset_membership": true,
+        "also_requires_original_git_tag": false
+      },
+      "retention": {
+        "status": "required_legacy_compatibility",
+        "original_release_deletion_allowed": false,
+        "original_tag_deletion_allowed": false,
+        "why_asset_ID_alone_is_insufficient": "Every loader also verifies its original live Release ID/Tag. The exact28, maintenance and fixed20261107 loaders additionally verify asset membership in that Release."
+      },
+      "future_product_mirror": {
+        "destination_release": null,
+        "new_asset_ids": null,
+        "required_content_identity": "Every ordered part and the whole archive must retain the original bytes/SHA; API asset IDs may differ.",
+        "legacy_release_still_required_after_mirroring": true,
+        "anonymous_full_byte_verification_performed": false
+      }
+    },
+    {
+      "tag": "artifact-grafana-fixed-20261107",
+      "release_id": 437518277,
+      "peeled_source_commit": "c6acf98ca5d753b6981153f49108f43c62dbef0d",
+      "release_api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/437518277",
+      "release_url": "https://github.com/W205614/DeepResearch/releases/tag/artifact-grafana-fixed-20261107",
+      "published_at": "2026-11-07T11:37:42Z",
+      "archive_bytes": 916224512,
+      "archive_sha256": "83b436c99dce9568431c26bef58599f13aceca98e68f2fb7f0d1440e651f16c3",
+      "ordered_assets": [
+        {
+          "index": 0,
+          "asset_id": 720445985,
+          "name": "grafana-83b436c9.oci.tar.part-000",
+          "bytes": 67108864,
+          "sha256": "7510f3e05830d51d693d282810a53b104db652ea8f99bfb7ee8d40649cfe6ecb",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/720445985",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-fixed-20261107/grafana-83b436c9.oci.tar.part-000"
+        },
+        {
+          "index": 1,
+          "asset_id": 720452294,
+          "name": "grafana-83b436c9.oci.tar.part-001",
+          "bytes": 67108864,
+          "sha256": "575085e38b4d0712fe5f6984529cb6aae265ed7e51be22a283190c25cf96521f",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/720452294",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-fixed-20261107/grafana-83b436c9.oci.tar.part-001"
+        },
+        {
+          "index": 2,
+          "asset_id": 720458313,
+          "name": "grafana-83b436c9.oci.tar.part-002",
+          "bytes": 67108864,
+          "sha256": "d8f9cfc8c1726edbbbcefb63de75c3f403368011ba4f71df3ae6bcf5b9a08959",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/720458313",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-fixed-20261107/grafana-83b436c9.oci.tar.part-002"
+        },
+        {
+          "index": 3,
+          "asset_id": 720464179,
+          "name": "grafana-83b436c9.oci.tar.part-003",
+          "bytes": 67108864,
+          "sha256": "63645f6d4fa121b7d0a68e54b91fd9f985578702aa6ee6f4ecf095a3b5ec4202",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/720464179",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-fixed-20261107/grafana-83b436c9.oci.tar.part-003"
+        },
+        {
+          "index": 4,
+          "asset_id": 720469867,
+          "name": "grafana-83b436c9.oci.tar.part-004",
+          "bytes": 67108864,
+          "sha256": "64f46a00b2f3e0eba3d72aee30d63230b7ac41dab9a62c0d0386cda8d57c1880",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/720469867",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-fixed-20261107/grafana-83b436c9.oci.tar.part-004"
+        },
+        {
+          "index": 5,
+          "asset_id": 720475321,
+          "name": "grafana-83b436c9.oci.tar.part-005",
+          "bytes": 67108864,
+          "sha256": "e7d0bea9c240f702c1b04ed0e340eb74c7c753a1e1d987606b7fd19fb798d123",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/720475321",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-fixed-20261107/grafana-83b436c9.oci.tar.part-005"
+        },
+        {
+          "index": 6,
+          "asset_id": 720481479,
+          "name": "grafana-83b436c9.oci.tar.part-006",
+          "bytes": 67108864,
+          "sha256": "49bff9342523cf8e0cab2ca18ca2d2913d6ad2e90887c7d3fdb3a52e813a9947",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/720481479",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-fixed-20261107/grafana-83b436c9.oci.tar.part-006"
+        },
+        {
+          "index": 7,
+          "asset_id": 720486610,
+          "name": "grafana-83b436c9.oci.tar.part-007",
+          "bytes": 67108864,
+          "sha256": "f83796bf17f58d3cfe0f00f4f93340c0ae9ee6110cefaaf82053cf938856b721",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/720486610",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-fixed-20261107/grafana-83b436c9.oci.tar.part-007"
+        },
+        {
+          "index": 8,
+          "asset_id": 720491716,
+          "name": "grafana-83b436c9.oci.tar.part-008",
+          "bytes": 67108864,
+          "sha256": "55f941f9dcfc70eb1ae2bba6a110778974dcab3eb084b0fdc6fc681a7c769918",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/720491716",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-fixed-20261107/grafana-83b436c9.oci.tar.part-008"
+        },
+        {
+          "index": 9,
+          "asset_id": 720497279,
+          "name": "grafana-83b436c9.oci.tar.part-009",
+          "bytes": 67108864,
+          "sha256": "a096b11035c7c41d0301985de7fc9f20f07f5275f2bfaef55c88ec01bc8012bd",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/720497279",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-fixed-20261107/grafana-83b436c9.oci.tar.part-009"
+        },
+        {
+          "index": 10,
+          "asset_id": 720502689,
+          "name": "grafana-83b436c9.oci.tar.part-010",
+          "bytes": 67108864,
+          "sha256": "53baff8f292c21e52657bd6f472588c75f9d00623da46910847e4bea08668d0a",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/720502689",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-fixed-20261107/grafana-83b436c9.oci.tar.part-010"
+        },
+        {
+          "index": 11,
+          "asset_id": 720508607,
+          "name": "grafana-83b436c9.oci.tar.part-011",
+          "bytes": 67108864,
+          "sha256": "1fd67249f7b6e421d4be876e0d390241fa1fe89e580d5d8ea083fd1bc3b2adb0",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/720508607",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-fixed-20261107/grafana-83b436c9.oci.tar.part-011"
+        },
+        {
+          "index": 12,
+          "asset_id": 720515132,
+          "name": "grafana-83b436c9.oci.tar.part-012",
+          "bytes": 67108864,
+          "sha256": "5f8f43c0d498a135b8d8ddcbf346dfbe78fd592d38b8cd091d3da11a748e244f",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/720515132",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-fixed-20261107/grafana-83b436c9.oci.tar.part-012"
+        },
+        {
+          "index": 13,
+          "asset_id": 720520905,
+          "name": "grafana-83b436c9.oci.tar.part-013",
+          "bytes": 43809280,
+          "sha256": "7fed941a951060cee9b6e92e4cc4a346d5c8245b428d0712b3c52b21a786f964",
+          "api_url": "https://api.github.com/repos/W205614/DeepResearch/releases/assets/720520905",
+          "browser_download_url": "https://github.com/W205614/DeepResearch/releases/download/artifact-grafana-fixed-20261107/grafana-83b436c9.oci.tar.part-013"
+        }
+      ],
+      "frozen_input_sha256": {
+        "deployment/security/grafana-fixed-20261107-request.json": "d9d2403921ed8f683aa4996a6c4a74dc892e1eac5290f6a3543afaf33a0e8d96",
+        "deployment/security/grafana-fixed-20261107-transport.json": "784f80a9a359ee742e6003391071caf6990adf4b370d3a654fdd76208c204680"
+      },
+      "legacy_publication_guard": {
+        "script": "scripts/fetch_grafana_candidate.py",
+        "function": "verify_publication",
+        "requires_original_live_release_id_and_tag": true,
+        "checks_live_asset_membership": true,
+        "also_requires_original_git_tag": false
+      },
+      "retention": {
+        "status": "required_legacy_compatibility",
+        "original_release_deletion_allowed": false,
+        "original_tag_deletion_allowed": false,
+        "why_asset_ID_alone_is_insufficient": "Every loader also verifies its original live Release ID/Tag. The exact28, maintenance and fixed20261107 loaders additionally verify asset membership in that Release."
+      },
+      "future_product_mirror": {
+        "destination_release": null,
+        "new_asset_ids": null,
+        "required_content_identity": "Every ordered part and the whole archive must retain the original bytes/SHA; API asset IDs may differ.",
+        "legacy_release_still_required_after_mirroring": true,
+        "anonymous_full_byte_verification_performed": false
+      }
+    }
+  ],
+  "metadata_only": true,
+  "payload_downloaded_or_rebuilt": false,
+  "remote_mutations": 0,
+  "binary_redistribution_approved": false,
+  "unmodified_default_network_paths_require_all_five_original_publications": true,
+  "explicit_local_archive_mode": "Existing loaders support exact local archives separately; that does not prove the original default workflows work after a remote migration.",
+  "input_snapshot_sha256": {
+    "releases": "0a5bf9cd3ff190223af4b4e4978e8607eaa1129a18b383223b79e01d7743a880",
+    "resolved_tags": "3d14f4d4d0f1b06d1c63dc04350ef468e74e1f13312dfb39c9e2ca79a5c9e6f6"
+  }
+}
