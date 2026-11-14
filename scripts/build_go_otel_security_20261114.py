@@ -1,0 +1,192 @@
+"""Build or verify the separate local Grafana otel-v1.47.0 source subject."""
+from __future__ import annotations
+
+import argparse
+from datetime import datetime, timezone
+import json
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+import uuid
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from scripts import check_grafana_source_build_20261110 as old  # noqa: E402
+from scripts import build_grafana_source_20261110 as old_builder  # noqa: E402
+from scripts.grafana_source_build_facts_20261110 import capture  # noqa: E402
+from scripts.retained_source_review_20261112 import SOURCE, snapshot  # noqa: E402
+from scripts import go_otel_rebuild_20261114 as common  # noqa: E402
+
+CACHE = ROOT / '.cache/go-otel-security-20261114'
+
+
+def write(path, value):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes((json.dumps(value, indent=2) + '\n').encode())
+
+
+def logged(command, output, name):
+    write(output / (name + '.command.json'), [str(v) for v in command])
+    with (output / (name + '.log')).open('wb') as stream:
+        subprocess.run([str(v) for v in command], cwd=ROOT, stdout=stream,
+                       stderr=subprocess.STDOUT, check=True)
+
+
+def source_inputs(artifact, root=ROOT):
+    names = {'deployment/docker/Dockerfile.' + artifact + '-20261114',
+             'deployment/docker/Dockerfile.' + artifact + '-20261114.dockerignore',
+             'scripts/build_go_otel_security_20261114.py',
+             'scripts/prefetch_go_security_modules_20261112.py',
+             'scripts/go_otel_rebuild_20261114.py',
+             'scripts/check_grafana_source_build_20261114.py',
+             'deployment/security/go-stdlib-20261112-evidence/source.lock.json',
+             'deployment/security/go-stdlib-20261112-evidence/Go-LICENSE'}
+    if artifact == 'grafana':
+        names.update(old_builder.source_inputs(root))
+        names.add('deployment/vendors/grafana-20261107/candidate_build_backends.py')
+        names.add('scripts/retained_source_review_20261112.py')
+    else:
+        raise ValueError('otel rebuild only covers the Grafana source subject')
+    return {name: old.digest(old.checked(root, name)) for name in sorted(names)}
+
+
+def consumer(artifact):
+    if artifact == 'grafana':
+        from scripts import check_grafana_source_build_20261114 as gate
+    else:
+        raise ValueError('otel rebuild only covers the Grafana source subject')
+    return gate
+
+
+def build_historical_grafana_input(output, historical):
+    retained_output = historical / '.cache' / ('retained-runtime-' + uuid.uuid4().hex[:12])
+    # This is an immutable historical BUILDINPUT, not a current runtime approval.
+    # Its c6 identity must inspect its actual source, including the old ignore file.
+    try:
+        logged([sys.executable, '-B', historical / 'scripts/build_grafana_source_20261110.py',
+                '--prepare', '--output-dir', retained_output], output, 'previous-runtime-build')
+    finally:
+        diagnostics = output / 'previous-runtime-build'
+        diagnostics.mkdir()
+        write(diagnostics / 'historical-source.json', {'source_commit': SOURCE, 'checkout': str(historical),
+              'output': str(retained_output), 'input_only': True, 'new_runtime_approved': False})
+        if retained_output.is_dir():
+            for path in retained_output.rglob('*'):
+                if path.is_file() and (path.suffix == '.log' or path.parent == retained_output and path.suffix == '.json'):
+                    destination = diagnostics / path.relative_to(retained_output)
+                    destination.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copyfile(path, destination)
+
+
+def image_facts(artifact, output, sources):
+    image = 'deepresearch-' + artifact + '-source:20261114'
+    facts = capture(image, output / 'actual-payload', save_config=True)
+    expected = common.prior_profile(ROOT)['expected']['native_sha256']
+    files = {row['path']: row for row in facts['runtime_manifest']}
+    native = {name: files[name]['sha256'] for name in expected}
+    moved = {name for name in native if name not in common.UNCHANGED_TARGETS}
+    if any(native[name] == expected[name] for name in moved):
+        raise ValueError('Every otel-moved Go executable must actually change')
+    if any(native[name] != expected[name] for name in common.UNCHANGED_TARGETS):
+        raise ValueError('The two already-1.47.0 backends must rebuild byte-identically')
+    receipt = {'schema': 'go-otel-source-build-receipt-20261114-v1',
+        'profile': artifact + '-source-20261114', 'image': image, 'source_inputs': sources,
+        'native_sha256': native, 'runtime_manifest_sha256': facts['runtime_manifest_sha256'],
+        'runtime_config': old.runtime_config(facts['inspection']['Config']),
+        'image_id': facts['image_id'], 'diff_ids': facts['diff_ids'],
+        'config_digest': facts['config_digest'], 'built_at_utc': datetime.now(timezone.utc).isoformat(),
+        'binary_redistribution_approved': False}
+    write(output / 'image-inspect.json', facts['inspection'])
+    write(output / 'build-receipt.json', receipt)
+    return receipt
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--artifact', choices=('grafana',), required=True)
+    parser.add_argument('--output-dir', type=Path, default=CACHE / ('run-' + uuid.uuid4().hex[:12]))
+    parser.add_argument('--prepare', action='store_true')
+    parser.add_argument('--no-build', action='store_true')
+    for name in ('source-repository', 'module-transport', 'retained-module-transport', 'thrift-transport'):
+        parser.add_argument('--' + name, type=Path)
+    args = parser.parse_args(argv)
+    try:
+        receipt = build(args)
+    except (ValueError, KeyError, OSError, subprocess.SubprocessError) as error:
+        print(json.dumps({'passed': False, 'error_type': type(error).__name__,
+                          'error': str(error)[:240] if isinstance(error, ValueError) else 'Build failed; logs retained'}))
+        return 1
+    print(json.dumps({'passed': not args.prepare, 'operational_build': True,
+                      'preparation_only': args.prepare, 'image_id': receipt['image_id'],
+                      'binary_redistribution_approved': False}))
+    return 0
+
+
+def prepare_contexts(args, output):
+    transport = args.module_transport or CACHE / 'module-transport'
+    logged([sys.executable, '-B', ROOT / 'scripts/prefetch_go_security_modules_20261112.py',
+            '--output', transport, '--receipt', output / 'module-transport.json'], output, 'module-prefetch')
+    contexts = {'securitymodules': transport}
+    baseline = common.prior_profile(ROOT)
+    old_image = 'deepresearch-grafana-source:20261112'
+    if subprocess.run(['docker', 'image', 'inspect', old_image], stdout=subprocess.DEVNULL,
+                      stderr=subprocess.DEVNULL).returncode:
+        raise ValueError('The prior 20261112 source runtime must already be present; it is the retained base image')
+    before = capture(old_image, output / 'previous-runtime-actual')
+    if (before['runtime_manifest_sha256'] != baseline['expected']['runtime_manifest_sha256']
+            or old.runtime_config(before['inspection']['Config']) != baseline['expected']['runtime_config']):
+        raise ValueError('The retained 20261112 runtime differs from its complete verified payload')
+    write(output / 'previous-runtime-identity.json', {key: before[key] for key in
+          ('image_id', 'diff_ids', 'runtime_manifest_sha256')})
+    source = args.source_repository or CACHE / 'grafana-source.git'
+    logged([sys.executable, '-B', ROOT / 'deployment/vendors/grafana-20261110/prefetch_source.py',
+            '--output', source, '--evidence', output / 'source-transport'], output, 'source-prefetch')
+    empty = output / 'empty-module-transport'
+    empty.mkdir()
+    contexts.update(grafanasource=source, moduletransport=args.retained_module_transport or empty,
+                    thrifttransport=args.thrift_transport or empty)
+    return contexts
+
+
+def build(args):
+    if args.prepare and args.no_build:
+        raise ValueError('Preparation cannot authorize no-build startup')
+    output = args.output_dir.resolve()
+    if output.exists() or output.is_symlink() or not output.is_relative_to((ROOT / '.cache').resolve()):
+        raise ValueError('Use a new evidence directory under this checkout .cache')
+    output.mkdir(parents=True)
+    gate = consumer(args.artifact)
+    profile = None if args.prepare else gate.load_profile()
+    sources = source_inputs(args.artifact)
+    if profile is not None and profile['source_inputs'] != sources:
+        raise ValueError('Current build inputs differ from the exact reviewed source profile')
+    if not args.no_build:
+        contexts = prepare_contexts(args, output)
+        command = ['docker', 'buildx', 'build', '--progress', 'plain', '--load', '--pull=false',
+                   '--metadata-file', str(output / 'build-metadata.json')]
+        for name, path in contexts.items():
+            if not path.is_dir() or path.is_symlink():
+                raise ValueError('An explicit source transport is unavailable')
+            command += ['--build-context', name + '=' + str(path.resolve())]
+        revision = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT).decode().strip()
+        if args.prepare:
+            revision += '+uncommitted-validation-inputs'
+        command += ['--build-arg', 'PROJECT_SOURCE_REVISION=' + revision,
+                    '--build-arg', 'PROJECT_INPUTS_SHA256=' + old.manifest_hash(sources),
+                    '--tag', gate.IMAGE, '--file', gate.DOCKERFILE, '.']
+        logged(command, output, 'build')
+    if source_inputs(args.artifact) != sources:
+        raise ValueError('Build inputs changed during the build; no receipt was issued')
+    receipt = image_facts(args.artifact, output, sources)
+    receipt['preparation_only'] = args.prepare
+    write(output / 'build-receipt.json', receipt)
+    if profile is not None:
+        inspection, = json.loads(subprocess.check_output(['docker', 'image', 'inspect', gate.IMAGE]))
+        gate.verify_receipt(receipt, inspection, profile)
+        write(CACHE / args.artifact / 'build-receipt.json', receipt)
+    return receipt
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

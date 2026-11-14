@@ -59,7 +59,7 @@ jobs:
       - name: Enforce exact source findings against the current reviewed source profile
         if: always() && steps.source_scan.outcome == 'success'
         run: >-
-          python scripts/check_grafana_source_scan_20261112.py
+          python scripts/check_grafana_source_scan_20261114.py
           --scan .cache/eval/source-fs/raw.json
           --scan-receipt .cache/eval/source-fs/completion.json
           --original-verdict .cache/eval/source-fs-original-verdict.json
@@ -129,12 +129,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - uses: astral-sh/setup-uv@v7
-        if: matrix.source_build_profile == 'grafana-source-20261112' || matrix.source_build_profile == 'minio-os-source-20261113'
+        if: matrix.source_build_profile == 'grafana-source-20261114' || matrix.source_build_profile == 'minio-os-source-20261113'
       - name: Install locked Python dependencies for Go source preparation
-        if: matrix.source_build_profile == 'grafana-source-20261112' || matrix.source_build_profile == 'minio-os-source-20261113'
+        if: matrix.source_build_profile == 'grafana-source-20261114' || matrix.source_build_profile == 'minio-os-source-20261113'
         run: uv sync --frozen --no-dev
       - name: Build the reviewed Go-fixed source without publishing a third-party image
-        if: matrix.source_build_profile == 'grafana-source-20261112'
+        if: matrix.source_build_profile == 'grafana-source-20261114'
         uses: ./.github/actions/reviewed-source-image
         with: { artifact: grafana, output-dir: .cache/eval/grafana-source-build }
         env:
@@ -147,7 +147,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Retain only differing Grafana graph and provenance documents after a failed build gate
         if: always() && matrix.artifact == 'grafana' && failure() && hashFiles('.cache/eval/grafana-source-build/build-receipt.json') != '' && hashFiles('.cache/eval/grafana-source-build/actual-payload/runtime-manifest.json.gz') != '' && hashFiles('.cache/eval/grafana-source-build/actual-payload/rootfs.tar') != ''
-        run: uv run --frozen --no-dev python scripts/capture_go_graph_diagnostic_20261112.py --artifact grafana --build-dir .cache/eval/grafana-source-build
+        run: uv run --frozen --no-dev python scripts/capture_go_graph_diagnostic_20261114.py --artifact grafana --build-dir .cache/eval/grafana-source-build
       - name: Scan ordinary runtime image with unchanged HIGH gate
         if: matrix.approved_artifact != true && matrix.source_build_profile == ''
         uses: aquasecurity/trivy-action@v0.36.0
@@ -224,16 +224,16 @@ jobs:
           --scanner-exit-code 0 --grype-exit-code 0
           --output .cache/eval/grafana-ci-disposition.json
       - name: Collect complete native and full source-built Grafana reports
-        if: matrix.source_build_profile == 'grafana-source-20261112' && steps.approved_scan.outcome == 'success'
+        if: matrix.source_build_profile == 'grafana-source-20261114' && steps.approved_scan.outcome == 'success'
         run: >-
-          python scripts/scan_grafana_source_20261112.py
-          --image deepresearch-grafana-source:20261112
+          python scripts/scan_grafana_source_20261114.py
+          --image deepresearch-grafana-source:20261114
           --build-receipt .cache/eval/grafana-source-build/build-receipt.json
           --output-dir .cache/eval/grafana-native
       - name: Enforce all-severity findings against the actual source-built Grafana subject
-        if: matrix.source_build_profile == 'grafana-source-20261112' && steps.approved_scan.outcome == 'success'
+        if: matrix.source_build_profile == 'grafana-source-20261114' && steps.approved_scan.outcome == 'success'
         run: >-
-          python scripts/check_grafana_source_build_20261112.py
+          python scripts/check_grafana_source_build_20261114.py
           --build-receipt .cache/eval/grafana-source-build/build-receipt.json
           --scan runtime-image.json
           --grype-scan .cache/eval/grafana-native/full-grype.json

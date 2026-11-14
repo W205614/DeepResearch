@@ -14,10 +14,10 @@ from scripts import check_grafana_release_20261107 as candidate  # noqa: E402
 
 APPROVED_MINIO = "deepresearch-approved-minio:20261026"
 APPROVED_GRAFANA = candidate.APPROVED_TAG
-SOURCE_GRAFANA = 'deepresearch-grafana-source:20261112'
-SOURCE_PROFILE = 'grafana-source-20261112'
-SOURCE_DOCKERFILE = 'deployment/docker/Dockerfile.grafana-20261112'
-SOURCE_PROFILE_PATH = Path('deployment/security/grafana-source-20261112-profile.json')
+SOURCE_GRAFANA = 'deepresearch-grafana-source:20261114'
+SOURCE_PROFILE = 'grafana-source-20261114'
+SOURCE_DOCKERFILE = 'deployment/docker/Dockerfile.grafana-20261114'
+SOURCE_PROFILE_PATH = Path('deployment/security/grafana-source-20261114-profile.json')
 SOURCE_MINIO = 'deepresearch-minio-source:20261113'
 MINIO_PROFILE = 'minio-os-source-20261113'
 
@@ -33,7 +33,7 @@ def load_grafana_binding(root):
 
 
 def load_grafana_source_profile(root):
-    from scripts import check_grafana_source_build_20261112 as source_candidate
+    from scripts import check_grafana_source_build_20261114 as source_candidate
 
     profile = source_candidate.load_profile(root)
     if (profile['profile'] != SOURCE_PROFILE or profile['image'] != SOURCE_GRAFANA
@@ -46,7 +46,7 @@ def load_grafana_source_profile(root):
 def grafana_selection(root):
     load_grafana_source_profile(root)
     digest = candidate.file_hash(root / SOURCE_PROFILE_PATH)
-    return {'image': SOURCE_GRAFANA, 'profile': 'grafana-source-20261112',
+    return {'image': SOURCE_GRAFANA, 'profile': 'grafana-source-20261114',
             'profile_sha256': digest, 'mode': 'source_build', 'published': False,
             'subject': {'build_profile': SOURCE_PROFILE, 'profile_sha256': digest}}
 
