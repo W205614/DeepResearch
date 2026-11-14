@@ -2,11 +2,29 @@
 
 应用制品分成三个 Linux/amd64 包。Agent 包还用于 Worker、资料 Worker、迁移、数据库初始化、容量指标和告警中继；角色命令由原 Compose 服务配置决定。
 
-当前正式版本仍为 `v0.1.3`，下表和安装命令继续指向已发布制品。2026-11-12 的 main 候选没有创建 `v0.1.4` Tag／Release、推送候选公开镜像或更新本机日常环境。[候选验证目录](evidence/release-v014-20261112/README.md)不代表正式版本：第一轮 `607626a2…` 真实流程完成（累计 32 次请求，上界预留 3.547734 USD），最终封装 Agent／Go 修复 MinIO 的同题组合 `8e83be7f…` 仍为 `insufficient`（累计 40 次、4.534515 USD）。后续仅离线补齐资料归因和引用位置解析，未新增真实调用，不能宣布最终验收通过或发布。
+当前正式版本为 [`v0.1.4`](https://github.com/W205614/DeepResearch/releases/tag/v0.1.4)，工程与镜像分发来源固定为 `0b613f1386bcd7067cb54e236db6e29510c44b16`。main 的文档／CI 后续修订不改变已发布 Tag、镜像或原验收记录。2026-11-12 的候选失败见[历史材料](evidence/release-v014-20261112/README.md)，不能代替后续正式交付状态。
 
-main 的 Grafana 继续由 `scripts/build_go_stdlib_security_20261112.py --artifact grafana` 使用 Go 1.27.4 本地源码重建；MinIO 改由 `scripts/build_minio_os_20261113.py` 同时修补原生依赖、curl 与 Thrift，入口见[运行依赖](source-release.md#运行依赖如何获取)。原 16 条 stdlib 记录随实际修复消失。MinIO 原 34 条 LOW/MEDIUM 的 17 条签名更新、4 条源码修复、13 条精确不适用依据，以及完整扫描仍保留的记录见[新技术范围](minio-native-security-20261113.md)；Grafana Trivy 40／Grype 10 保持。它们不是零漏洞声明或新的第三方二进制分发批准。下面 `v0.1.3` 的身份、历史验证和旧依赖获取方式不因此改写。
+## 正式 v0.1.4
+
+[Packages 推广作业](https://github.com/W205614/DeepResearch/actions/runs/43457488665)已成功，复用同一批已核验归档，没有重新构建。发布时明确豁免 CI 门槛：[原 CI](https://github.com/W205614/DeepResearch/actions/runs/43437807833)失败／取消保留；[同提交 Security](https://github.com/W205614/DeepResearch/actions/runs/43437807857)22 项成功。这不是 CI 全通过或零漏洞声明。
+
+| 公开包（版本均为 `v0.1.4`） | Linux/amd64 平台 manifest digest | Portable config digest |
+| --- | --- | --- |
+| [Agent](https://github.com/users/W205614/packages/container/package/deepresearch-agent) | `sha256:298b2a25e3e22f8a482e6d00a6262717204570aecc6cbbc26a70d24b7dc0fadf` | `sha256:c22727159cfa4ebeda1a81c24f25caf1accfa426e7367bb6fe0a09d101ae8a9b` |
+| [Backend](https://github.com/users/W205614/packages/container/package/deepresearch-backend) | `sha256:ec7efa7d1207c848ba46cc35a91ae3bfc14df436570125093daaf0a7f6a786aa` | `sha256:fd19ebef10f0e7af26f105921a29979212459c236d41cb039f3289792bfe17bb` |
+| [Web](https://github.com/users/W205614/packages/container/package/deepresearch-web) | `sha256:013ba5daedc8d2d082f0b99ac88937781c8222c9321f28fdb8cd04ad253009e3` | `sha256:9ae657f7ba92e582275d1d472496d8e73009335dd645576ee752e774f5a84892` |
+
+Agent／Backend 版本 Tag 是 OCI index，完整 Tag digest 分别为 `sha256:fb5ee66cec06d55ce01e0f43243048f2104423fe9a4ed5cef9b1c2312f75fcd1` 和 `sha256:95174a3b42279aafa8530a6eabd9068c1cbabb42bdf7c4e93796f4eafa2844ba`，不同于上表平台 manifest。Web Tag 与平台 manifest 相同。不可变拉取地址使用 `ghcr.io/w205614/deepresearch-<service>@sha256:…` 平台摘要；config digest 不能作为镜像拉取地址。精确发布收据见版本附件 `actual-registry-publication.json`。
+
+发布阶段只完成匿名 manifest/config 与有序层身份核对，未完整拉取 Registry 镜像、运行日常迁移或业务／恢复验收；本机仅创建／替换后保持停止。`v0.1.3` 的拉取与运行结果不自动延伸至本版。后续独立验收必须另记实际日期、制品和范围，不能改写原发布结果。
+
+真实复杂资料案例的 26 条结论获支持、0 删除、回答标记 true，仍为 `partial` 并保留向量不可用后的关键词回退；联网整份比较报告未完成。详见[项目示例及边界](../README.md#两个研究示例)。Agent 原始扫描 94 条保留，精确已审查范围中适用未解决为 0，SoupSieve 库仍受影响；Backend／Web 本轮 Trivy 原始发现为 0。完整原始扫描与精确适用性见版本附件，不把有限审查说成所有依赖无漏洞。
+
+MinIO／Silo 使用 `scripts/build_minio_os_20261113.py` 的固定原生依赖／Go 修复入口，可选 Grafana 使用 `scripts/build_go_stdlib_security_20261112.py --artifact grafana`；这些本地第三方依赖没有新增公开二进制 Packages。具体方法见[运行依赖](source-release.md#运行依赖如何获取)。已发布 `v0.1.4` Compose overlay 的旧缺省值不可更改；检出该 Tag 时仍必须显式设置 `DEEPRESEARCH_PACKAGE_VERSION=v0.1.4`。后续 main 已将缺省值修正为 `v0.1.4`。
 
 ## 正式 v0.1.3
+
+以下保留历史版本记录，当前版本见上节。
 
 正式 [v0.1.3](https://github.com/W205614/DeepResearch/releases/tag/v0.1.3) 的源码与分发提交为 `78a19df9dfa6f072af6ebe40ff99cf164d0c4ff8`，[CI](https://github.com/W205614/DeepResearch/actions/runs/42968387539)全部 4 项、[Security](https://github.com/W205614/DeepResearch/actions/runs/42968387608)全部 22 项成功。[Packages 工作流](https://github.com/W205614/DeepResearch/actions/runs/42977626649)实际发布成功，三个原有 GHCR 目标保持公开，版本名和不可变 digest 均已实际匿名获取、拉取及运行核验。
 
@@ -50,18 +68,19 @@ Manifest digest 用于 `docker pull ghcr.io/w205614/deepresearch-<service>@sha25
 
 ## 获取与启动
 
-以下为新安装的 `v0.1.3` 核心栈路线。覆盖文件兼容旧默认值，必须显式设置 `DEEPRESEARCH_PACKAGE_VERSION=v0.1.3`；否则会选择旧 `v0.1.1`。已有日常部署继续沿用原项目、配置、端口／网络覆盖和不可变 digest overlay，不直接套用新安装命令。
+以下为新安装的 `v0.1.4` 核心栈路线。必须显式设置 `DEEPRESEARCH_PACKAGE_VERSION=v0.1.4`，使不可变源码 Tag 中的旧 overlay 缺省值也不会选择旧版本。已有日常部署继续沿用原项目、配置、端口／网络覆盖和不可变 digest overlay，不直接套用新安装命令。
 
-使用同一正式源码标签取得 Compose 覆盖和工具，需要 Git、Python 3.11+、Docker Linux/amd64 和 Compose v2。初始化后按[配置说明](source-release.md)填写私密凭据。固定 MinIO 镜像及第三方构建型服务仍须准备；下面 `build` 只选择第三方依赖，应用使用实际公开 Packages：
+使用同一正式源码标签取得 Compose 覆盖和工具，需要 Git、Python 3.11+、uv、Docker Linux/amd64 和 Compose v2。初始化后按[配置说明](source-release.md)填写私密凭据。固定 MinIO 镜像及第三方构建型服务仍须准备；下面 `build` 只选择第三方依赖，应用使用实际公开 Packages：
 
 ```powershell
-git clone --config core.autocrlf=false --branch v0.1.3 https://github.com/W205614/DeepResearch.git
+git clone --config core.autocrlf=false --branch v0.1.4 https://github.com/W205614/DeepResearch.git
 cd DeepResearch
 python scripts/local.py init
 # 填写本机 .env 的模型／嵌入凭据及可选重排配置后继续。
 python scripts/local.py check
-python scripts/fetch_approved_image.py
-$env:DEEPRESEARCH_PACKAGE_VERSION = 'v0.1.3'
+uv sync --frozen --no-dev
+uv run --frozen --no-dev python scripts/build_minio_os_20261113.py --output-dir .cache/minio-source-20261113-build
+$env:DEEPRESEARCH_PACKAGE_VERSION = 'v0.1.4'
 docker compose -f compose.yaml -f deployment/compose/compose.core.yaml -f deployment/compose/compose.packages.yaml config --quiet
 docker compose -f compose.yaml -f deployment/compose/compose.core.yaml -f deployment/compose/compose.packages.yaml build postgres keycloak-postgres etcd milvus keycloak storage-init
 docker compose -f compose.yaml -f deployment/compose/compose.core.yaml -f deployment/compose/compose.packages.yaml pull agent backend web
@@ -80,13 +99,17 @@ docker compose -f compose.yaml -f deployment/compose/compose.core.yaml -f deploy
 
 这些 PowerShell 命令在同一会话执行；其他 shell 使用其环境变量语法。后续 `ps`／`logs`／`stop` 也保持相同变量和 Compose 参数。首次安装并非一次 `pull` 即取得完整第三方栈；有 `build` 的依赖仍会按固定源码构建。可选完整观测栈还须使用[受控 Grafana 源码入口](source-release.md#运行依赖如何获取)，不把旧公开输入当作新构建完成。
 
-版本标签首次发布后不覆盖；正式部署可另加本机覆盖文件，将九个应用角色固定到上表三个 `ghcr.io/...@sha256:...`。不能仅凭版本名或 `latest` 判断字节身份。本轮三个既有公开包已用空 Docker 配置匿名拉取，不需要为获取它们增加个人令牌权限。
+版本标签首次发布后不覆盖；正式部署可另加本机覆盖文件，将九个应用角色固定到上表三个 `ghcr.io/...@sha256:...`。不能仅凭版本名或 `latest` 判断字节身份。三个既有公开包允许匿名获取，不需要增加个人令牌权限。完整拉取是否已验证须按对应版本的验收记录判断。
 
 ## 制品来源与许可材料
 
+当前 [v0.1.4 Release](https://github.com/W205614/DeepResearch/releases/tag/v0.1.4)提供 42 个附件，包括发布清单、原应用归档／对应源码、11 份 MinIO 来源输入、原始安全与模型边界、实际推广收据和补充说明。发布清单 SHA-256 为 `860ef31e44be39bfcc0941b125414e42a364c763c7bccd43fa7e2e58dca8715e`。依清单核验分片长度、SHA-256 和重组结果，遵循其对应源码索引；历史来源 Release 仍可能是固定输入，不能因已有新版本而删除。源码包准备期说明的更正见该版本补充 JSON，不能据旧阶段说明否认已发生的发布。
+
+以下保留 `v0.1.3` 及更早版本的材料身份，不能当作 `v0.1.4` 的清单或源码获取完成证明。
+
 镜像内 `/usr/share/deepresearch-distribution/` 提供原创 MIT LICENSE、第三方声明、实际依赖／许可清单、保留的版权与许可文本，以及对应源码的准确获取说明。整个镜像不统一改为 MIT；第三方组件保留自身许可。
 
-当前 [v0.1.3 Release](https://github.com/W205614/DeepResearch/releases/tag/v0.1.3) 的原 24 个附件继续保留：发布清单、验收摘要、17 个应用镜像分片和 5 个新对应源码分片；2026-11-12 另追加该阶段 CI 补充收据，合计 25 个附件。原发布清单 SHA-256 仍为 `a783597268a3d48f2154554e8517b8a2e9341d655822bdecc14fa117ec9e2ce8`。
+历史 [v0.1.3 Release](https://github.com/W205614/DeepResearch/releases/tag/v0.1.3) 的原 24 个附件继续保留：发布清单、验收摘要、17 个应用镜像分片和 5 个新对应源码分片；2026-11-12 另追加该阶段 CI 补充收据，合计 25 个附件。原发布清单 SHA-256 仍为 `a783597268a3d48f2154554e8517b8a2e9341d655822bdecc14fa117ec9e2ce8`。
 
 对应源码采用 reference-v3，**不是自包含包**。先按该清单长度／摘要合并五个 `sources.tar.gz.partNNN`，得到 `distribution-source-reference.tar.gz`（82,413,180 字节，SHA-256 `4ace5acbf322d7f152d3f22aebc8f2cb1ff6423cabfd711bed2cf8d23f92ed5b`），解包阅读索引；其中包括工程归档、准确 libxslt r4 完整源码补充和重建配方。还必须取得固定 [v0.1.2 Release](https://github.com/W205614/DeepResearch/releases/tag/v0.1.2) 的 74 个源码分片并按其清单合并：旧清单 SHA-256 `890685dde617ffe3b8afbade8aa3cab61eb77e4c731b98e467cc11fd409ce9fd`，完整源码归档 1,227,806,395 字节，SHA-256 `5f87eea184278c15d621971cec53774d4177a1ca60a128d148d04888f2bcd88a`。合并按分片编号排序，以二进制方式拼接，先验证每个分片，再验证整包与索引成员，不能用文本拼接。新五分片及旧七十四分片的实际匿名完整获取和成员验证均已完成，曾发生的下载断流和范围恢复记录保留。
 

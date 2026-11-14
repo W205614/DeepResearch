@@ -1,0 +1,69 @@
+{
+  "schema": "codeql-ci-disk-continuation-v1",
+  "reviewed_at": "2026-11-14",
+  "actor_kind": "automated_agent_technical_reviewer",
+  "prior_profile": {
+    "path": "deployment/security/codeql-reviewed-findings-20261113-exact-image-cache.json",
+    "sha256": "1648a79bd36430717a266da278afe733711d28ec183893335d01f140cc4bdb78",
+    "bytes_preserved": true
+  },
+  "baseline_source_sha": "33d5a374a51ca607ef9c90a395b023b975f38f80",
+  "exact_bound_code_deltas": {
+    ".github/workflows/ci.yml": {
+      "before": "43467cf0a238afaa9c631802d3c4686d592f364a51047994ff699c962fb33a4f",
+      "after": "6530e99aa0cde56aedc87b198faa135d90520c037179a277d83187a9f4acb416"
+    }
+  },
+  "all_other_existing_bound_files_verified": 334,
+  "new_support_sha256": {
+    "scripts/ci_compose_build.py": "5f8228753e251d3904ad493b3a46dcb0fd72ea980c2fd100d0ec0eac969783b2",
+    "tests/test_ci_compose_build.py": "47976b369ed37122b8abc513dd82e4d87692b0afe0ea3eb9b0de1430a33781fc",
+    "tests/test_fs_workflow_gate.py": "1669827155450abeeeb4a7a062f3c2b4a4f3431539c16a7a477510616afc44b2",
+    "scripts/build_codeql_ci_disk_review_20261114.py": "c3957cb702e9d93b1d0b276277c71d21b95266daa7bd7dab9acd4926879379a7",
+    ".gitattributes": "a72fd357b2a1e5a3a9836b6e39252d1d45493c7fe42c93ee4bd2773878a77f08"
+  },
+  "same_four_exact_identities": true,
+  "first_three_original_records_unchanged": true,
+  "severity_threshold_unchanged": 7.0,
+  "new_findings_exempted": false,
+  "workflow_delta": {
+    "all_other_parsed_workflow_fields_equal": true,
+    "reviewed_source_image_actions_unchanged": true,
+    "collector_validation_command_unchanged": true,
+    "startup_smoke_readiness_and_browser_gates_unchanged": true,
+    "failure_evidence_uploads_unchanged": true
+  },
+  "disk_failure": {
+    "job_url": "https://github.com/W205614/DeepResearch/actions/runs/43437807833/job/131960804640",
+    "observed": "63 MB free, then concurrent Loki, Prometheus and Tempo compiler ENOSPC before the old final prune.",
+    "original_failure_preserved": true
+  },
+  "helper_review": [
+    "GitHub Actions, github-hosted and Linux are all required before any Docker subprocess.",
+    "Resolved Compose build objects define recipe groups; every build service is kept, including all Python image aliases.",
+    "COMPOSE_BAKE=false and compose --parallel 1 serialize builds; aliases keep compiler cache until their whole group succeeds.",
+    "Only unused BuildKit cache is pruned; no image, system or volume pruning, filesystem deletion, or runtime startup occurs.",
+    "Failed builds propagate and do not trigger post-failure pruning; complete command output remains in Actions logs.",
+    "Resolved configuration is captured privately, never printed. The helper has no application serving route or HTML transformation."
+  ],
+  "html_boundary": "The original offline SQLite HTML, Docker COPY inputs, frontend/authentication implementations and exact finding identity remain byte-identical. Only CI build scheduling changes; no new route serves the evidence HTML.",
+  "validation": {
+    "focused_ci_tests": {
+      "passed": 70,
+      "failed": 0
+    },
+    "integrated_focused_tests": {
+      "passed": 132,
+      "failed": 0
+    },
+    "full_ruff": "passed",
+    "old_profile_rejection": "CodeQL reviewed source or proof changed; renewed review required: .github/workflows/ci.yml",
+    "full_pytest": "Interrupted after old-profile binding failures; not claimed passed.",
+    "hosted_build": "Pending; local mocked scheduling tests do not prove hosted disk capacity."
+  },
+  "new_codeql_scan_claimed": false,
+  "raw_sarif_modified": false,
+  "risk_acceptance": false,
+  "human_review_claimed": false,
+  "new_native_compilation_claimed": false
+}

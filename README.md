@@ -98,7 +98,7 @@ Java 管理公开接口、权限、任务准入、Outbox 和正式报告。Pytho
 | 从固定源码构建 | Tag `v0.1.4`，工程提交 `0b613f1386bcd7067cb54e236db6e29510c44b16`；使用下方命令及该 Tag 配方 | 同上；Java／Node 由 Docker 构建 |
 | 修改当前开发源码 | `main` + Python 容器热更新，或独立组件开发检查；[开发指南](CONTRIBUTING.md#开发环境) | 完整开发检查另需 Python／uv、JDK 21／Maven、Node.js 22／npm |
 
-三个应用镜像不包含完整依赖栈。`v0.1.4` 使用受控的 MinIO／Grafana 本地源码入口，并按该 Tag 配方获取或构建其他依赖；首次安装需要网络与构建时间，CI 缓存提速不代表首次安装无需编译。[依赖获取说明](docs/source-release.md#运行依赖如何获取)及[旧版镜像手册](docs/container-packages.md)保留各自版本边界。支持的平台为 Linux/amd64；Windows 使用 Docker Desktop 的 Linux 容器，未声称 arm64 已验收。网络下载、外部账号和模型调用额度由使用者准备。
+三个应用镜像不包含完整依赖栈。`v0.1.4` 使用受控的 MinIO／Grafana 本地源码入口，并按该 Tag 配方获取或构建其他依赖；首次安装需要网络与构建时间，CI 缓存提速不代表首次安装无需编译。[依赖获取说明](docs/source-release.md#运行依赖如何获取)及[镜像手册](docs/container-packages.md)保留各自版本边界。支持的平台为 Linux/amd64；Windows 使用 Docker Desktop 的 Linux 容器，未声称 arm64 已验收。网络下载、外部账号和模型调用额度由使用者准备。
 
 ### 新安装的配置
 

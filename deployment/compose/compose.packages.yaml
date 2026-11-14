@@ -2,20 +2,20 @@
 # services and all existing environment, volumes and service commands intact.
 services:
   agent:
-    image: ghcr.io/w205614/deepresearch-agent:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.1}
+    image: ghcr.io/w205614/deepresearch-agent:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.4}
   worker:
-    image: ghcr.io/w205614/deepresearch-agent:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.1}
+    image: ghcr.io/w205614/deepresearch-agent:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.4}
   document-worker:
-    image: ghcr.io/w205614/deepresearch-agent:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.1}
+    image: ghcr.io/w205614/deepresearch-agent:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.4}
   migrate:
-    image: ghcr.io/w205614/deepresearch-agent:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.1}
+    image: ghcr.io/w205614/deepresearch-agent:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.4}
   bootstrap-db:
-    image: ghcr.io/w205614/deepresearch-agent:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.1}
+    image: ghcr.io/w205614/deepresearch-agent:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.4}
   ops-exporter:
-    image: ghcr.io/w205614/deepresearch-agent:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.1}
+    image: ghcr.io/w205614/deepresearch-agent:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.4}
   alert-relay:
-    image: ghcr.io/w205614/deepresearch-agent:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.1}
+    image: ghcr.io/w205614/deepresearch-agent:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.4}
   backend:
-    image: ghcr.io/w205614/deepresearch-backend:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.1}
+    image: ghcr.io/w205614/deepresearch-backend:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.4}
   web:
-    image: ghcr.io/w205614/deepresearch-web:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.1}
+    image: ghcr.io/w205614/deepresearch-web:${DEEPRESEARCH_PACKAGE_VERSION:-v0.1.4}

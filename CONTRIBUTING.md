@@ -26,7 +26,7 @@ python scripts/local.py stop --project-name deepresearch-dev --compose-file depl
 
 覆盖文件只把 Python `backend/` 只读挂入 Agent／Worker，并让 Agent 使用 `--reload`；Java 和 Web 仍按正常 Docker 配方构建。新项目名不能避免宿主端口冲突，端口覆盖需显式追加，启动与停止保持同一顺序。
 
-需要观测组件时，启动和停止都追加 `--observability`。当前工程入口会先调用固定 Grafana 源码 builder，得到本地 `deepresearch-grafana-source:20261110`；`--no-build` 仍要校验已有镜像和构建收据，不能用下载旧输入代替更新成功。新 Grafana 没有作为公开第三方 Packages 分发，具体依赖与命令见[源码启动](docs/source-release.md#运行依赖如何获取)。
+需要观测组件时，启动和停止都追加 `--observability`。当前工程入口会先准备 MinIO，观测栈再调用固定 Grafana 源码 builder，得到本地 `deepresearch-grafana-source:20261112`；`--no-build` 仍要校验已有镜像和构建收据，不能用下载旧输入代替更新成功。新 Grafana 没有作为公开第三方 Packages 分发，具体依赖与命令见[源码启动](docs/source-release.md#运行依赖如何获取)。
 
 宿主 Python、Maven 和 npm 可独立运行下节检查。完整服务的宿主混合启动没有一键编排入口：迁移、OIDC、角色账号、Redis、Milvus、对象存储、ClamAV 及网络端点都需按源码契约准备。当前 Vite `/api` 代理直接指向 Python `127.0.0.1:8000`，不能把 `npm run dev` 当作完整 Java 业务入口的已验收替代；需要完整权限与审核流程时使用上述编排。不要让开发进程指向日常数据库。
 
@@ -50,7 +50,9 @@ npm run build --prefix frontend
 
 完整自动检查由 [CI](.github/workflows/ci.yml)、[Security](.github/workflows/security.yml) 和[告警规则工作流](.github/workflows/observability.yml)执行。提交后检查对应提交的结果，记录条件跳过和仍需目标环境验证的项目。
 
-正式 `v0.1.3` 工程提交 `78a19df9dfa6f072af6ebe40ff99cf164d0c4ff8` 的 [CI](https://github.com/W205614/DeepResearch/actions/runs/42968387539)4 项与 [Security](https://github.com/W205614/DeepResearch/actions/runs/42968387608)22 项成功，[三个 Packages](https://github.com/W205614/DeepResearch/actions/runs/42977626649)发布、实际匿名拉取和日常验收均完成。四个隔离浏览器用例及资料研究引用检查通过，模型使用固定夹具；其 Windows TCP relay 与日常普通端口验收分别记录。另复用 2026-11-10 从同一未变化 Agent 制品执行的两次官方 API 契约探针（JSON、3072 维嵌入，0 重试、原预算上限 1 USD）；本次没有追加调用，不为文档或重测重置账本。版本与组件来源见[镜像说明](docs/container-packages.md)。
+历史正式 `v0.1.3` 工程提交 `78a19df9dfa6f072af6ebe40ff99cf164d0c4ff8` 的 [CI](https://github.com/W205614/DeepResearch/actions/runs/42968387539)4 项与 [Security](https://github.com/W205614/DeepResearch/actions/runs/42968387608)22 项成功，[三个 Packages](https://github.com/W205614/DeepResearch/actions/runs/42977626649)发布、实际匿名拉取和日常验收均完成。四个隔离浏览器用例及资料研究引用检查通过，模型使用固定夹具；其 Windows TCP relay 与日常普通端口验收分别记录。另复用 2026-11-10 从同一未变化 Agent 制品执行的两次官方 API 契约探针（JSON、3072 维嵌入，0 重试、原预算上限 1 USD）；本次没有追加调用，不为文档或重测重置账本。版本与组件来源见[镜像说明](docs/container-packages.md)。
+
+当前正式 `v0.1.4` 的来源、发布时 CI 豁免及未完成拉取／运行验收边界见[镜像说明](docs/container-packages.md#正式-v014)。后续 CI 修复结果必须绑定其实际新提交，不改写旧版本的失败。
 
 真实模型、嵌入、搜索和重排评测有单独的付费入口与累计账本。执行前确定调用类别、次数和预算；已有账本及失败记录随结果保留。常规回归使用受控替身，详见[模型验证](docs/production-readiness.md#openai-配置与四次真实验证)。
 

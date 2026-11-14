@@ -155,7 +155,7 @@ def test_current_continuation_preserves_original_exact_identities_and_bound_byte
     prior_path = root / 'deployment/security/codeql-reviewed-findings-20261110.json'
     prior = json.loads(prior_path.read_bytes())
     current = json.loads(REVIEW.read_bytes())
-    assert REVIEW.name == 'codeql-reviewed-findings-20261113-exact-image-cache.json'
+    assert REVIEW.name == 'codeql-reviewed-findings-20261114-ci-disk.json'
     assert [row['identity'] for row in current['findings']] == [row['identity'] for row in prior['findings']]
     assert current['findings'][:2] == prior['findings'][:2]
     for name, expected in prior['findings'][2]['evidence_sha256'].items():
@@ -307,6 +307,45 @@ def test_current_continuation_rejects_changed_native_gates_or_scope_proof(tmp_pa
     changed.write_bytes(changed.read_bytes() + b'\n')
     with pytest.raises(ValueError, match='reviewed source or proof changed'):
         reviewed_findings([], review_path, tmp_path)
+
+
+def test_ci_disk_continuation_preserves_prior_profile_and_only_reviewed_delta():
+    from scripts import build_codeql_ci_disk_review_20261114 as renewal
+    import yaml
+    root = Path(__file__).resolve().parents[1]
+    prior_bytes = (root / renewal.PRIOR).read_bytes()
+    prior = json.loads(prior_bytes)
+    current = json.loads(REVIEW.read_bytes())
+    proof = json.loads((root / renewal.PROOF).read_bytes())
+    assert current['findings'][:3] == prior['findings'][:3]
+    assert [r['identity'] for r in current['findings']] == [r['identity'] for r in prior['findings']]
+    assert current['ci_disk_addendum']['prior_profile_sha256'] == hashlib.sha256(prior_bytes).hexdigest()
+    assert proof['severity_threshold_unchanged'] == 7.0
+    assert proof['new_codeql_scan_claimed'] is proof['raw_sarif_modified'] is proof['new_findings_exempted'] is False
+    assert set(proof['exact_bound_code_deltas']) == {renewal.WORKFLOW}
+    for name, expected in prior['findings'][3]['evidence_sha256'].items():
+        if name != renewal.WORKFLOW:
+            assert current['findings'][3]['evidence_sha256'][name] == expected
+    with pytest.raises(ValueError, match='renewed review required: .github/workflows/ci.yml'):
+        reviewed_findings([], root / renewal.PRIOR, root)
+    # Reconstruct the exact baseline from git for the semantic delta check.
+    old = subprocess.run(['git', 'show', renewal.BASE + ':' + renewal.WORKFLOW],
+                         cwd=root, check=True, capture_output=True).stdout
+    new = yaml.safe_load((root / renewal.WORKFLOW).read_bytes())
+    renewal.workflow_delta(yaml.safe_load(old), new)
+    new['jobs']['enterprise-compose-smoke']['steps'].append({'run': 'echo unreviewed'})
+    with pytest.raises(ValueError, match='exceed the exact reviewed'):
+        renewal.workflow_delta(yaml.safe_load(old), new)
+
+
+@pytest.mark.parametrize('path', [
+    '.github/workflows/ci.yml', 'scripts/ci_compose_build.py',
+    'tests/test_ci_compose_build.py', 'scripts/build_codeql_ci_disk_review_20261114.py',
+    'deployment/security/codeql-ci-disk-addendum-20261114.json',
+    'deployment/security/codeql-reviewed-findings-20261113-exact-image-cache.json',
+])
+def test_ci_disk_continuation_rejects_modified_helper_or_proof(tmp_path, path):
+    test_current_continuation_rejects_changed_native_gates_or_scope_proof(tmp_path, path)
 
 
 @pytest.mark.parametrize('change', ['web-context', 'new-go-copy', 'proof', 'addendum', 'pom', 'tomcat-addendum',

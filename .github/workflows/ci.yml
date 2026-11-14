@@ -113,6 +113,9 @@ jobs:
         with: { artifact: minio, output-dir: .cache/eval/minio-source-build }
         env:
           GITHUB_TOKEN: ${{ github.token }}
+      - name: Release completed storage compiler cache before the next source build
+        if: runner.environment == 'github-hosted'
+        run: python scripts/ci_compose_build.py --prune-only
       - name: Build the exact reviewed Grafana source profile before Compose startup
         uses: ./.github/actions/reviewed-source-image
         with: { artifact: grafana, output-dir: .cache/eval/grafana-source-build }
@@ -145,25 +148,16 @@ jobs:
             .cache/eval/grafana-source-build/image-inspect.json
             .cache/eval/grafana-source-build/actual-payload/runtime-manifest.json.gz
           if-no-files-found: error
+      # Run 43437807833 exhausted disk while Loki, Prometheus, Tempo, Milvus
+      # and Python compiled concurrently, before the old final prune could run.
+      - name: Build enterprise recipes sequentially with bounded compiler cache
+        run: python scripts/ci_compose_build.py
       - name: Validate the maintained collector with the current complete telemetry configuration
         run: |
-          docker compose build otel-collector
           docker run --rm --network none --read-only --cap-drop ALL \
             -v "$PWD/observability/otel-collector.yaml:/etc/otelcol-contrib/config.yaml:ro" \
             deepresearch-otel-collector:0.163.2-security-20261028 \
             validate --config=/etc/otelcol-contrib/config.yaml
-      - name: Build the remaining enterprise images before telemetry startup
-        run: docker compose build
-      # Unused compiler caches share the hosted runner's filesystem with Loki's
-      # WAL, whose disk guard rejected writes at 96.09% usage in the prior run.
-      - name: Release unused build cache on this ephemeral hosted runner
-        if: runner.environment == 'github-hosted'
-        run: |
-          df -h .
-          docker system df
-          docker builder prune --all --force
-          docker system df
-          df -h .
       - name: Start the built enterprise images without rebuilding compiler caches
         run: docker compose up -d --no-build --force-recreate --wait --wait-timeout 300
       - run: python scripts/smoke-enterprise.py
