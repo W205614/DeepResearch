@@ -85,10 +85,10 @@
   "application_source_changes": false,
   "version_metadata": "Real upstream tag and commit; buildvcs=true; actual patched dependency closure remains dirty; runtime CLI release version retained.",
   "files": {
-    "go.mod": "8941b81787970cbd4c3344ecdae625a240487a495ccac2e421658e3fdf828944",
-    "go.sum": "abad3fdbeec10d717e9c72c93d6feee205a44939eaf694c208444c6238438b1f",
-    "push/go.mod": "596e84e0e0bef987e22f3a1060c731b0f67c7b7952f54ed11a77d6b2903a46bc",
-    "push/go.sum": "925acb4f95642975e8a2ccef3d2554ed147e05d4673525fbd9ad08ea8f71e820",
+    "go.mod": "35d021300d9feb6d69504b95e90d9a14d696a9d9ab7225f6dc99398786d587e3",
+    "go.sum": "265785ca6c912e17e7daf140caec68efad16700852097f3982b23bc367fb9c77",
+    "push/go.mod": "9e5688092ae688cd0eb0027b67f028157d82bdca6a3437b62cc3b3910573aeed",
+    "push/go.sum": "e6bc9bbd27de1169a8dd495ffae394940247bbe3f3d8ea3eac0e63e995e2de96",
     "push/LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
     "push/push-rf1.pb.go": "ba136cb569f99c5cd69541e4633722f2ee6f863d19d29a3d12b47dc540a05ba3",
     "push/push-rf1.proto": "94d3844b64d621455955bc2226fb8465be94c3451294243b9e786cef3c7bcc99",
@@ -127,5 +127,15 @@
       }
     ],
     "generator": "Go1.27.3 go get specified existing targets; no -u and no tidy checksum deletions."
+  },
+  "dependency_security_refresh_20261114": {
+    "reason": "CVE-2026-128085 is fixed in otel v1.47.0; the root module and the nested push module were regenerated with go get on the pinned upstream loki v3.7.9 module source and rebuilt with go build -mod=readonly -tags=netgo.",
+    "otel": "v1.47.0",
+    "files": {
+      "go.mod": "35d021300d9feb6d69504b95e90d9a14d696a9d9ab7225f6dc99398786d587e3",
+      "go.sum": "265785ca6c912e17e7daf140caec68efad16700852097f3982b23bc367fb9c77",
+      "push/go.mod": "9e5688092ae688cd0eb0027b67f028157d82bdca6a3437b62cc3b3910573aeed",
+      "push/go.sum": "e6bc9bbd27de1169a8dd495ffae394940247bbe3f3d8ea3eac0e63e995e2de96"
+    }
   }
 }

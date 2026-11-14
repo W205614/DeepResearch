@@ -13,12 +13,20 @@
     "golang.org/x/net": "v0.62.0"
   },
   "locks": {
-    "go.mod": "b7780da539145adabcc30d5f0368bc25593467a30f0ffca8f51d4835aa5329e0",
-    "go.sum": "7d22fba88476234196910d713e2d1d079fcf14f12b1249f73e6a68febff1c55d"
+    "go.mod": "85525b3a42b923adbffe595a226de52d4fa7d30f8ef5ca4d3d4274de4dbe5683",
+    "go.sum": "4486bdc5a13337a570c5b5b592d113ad87f7f81974ac31280954559e67460a83"
   },
   "runtime_boundary": "Upstream 2.10.10 runtime, user, entrypoint and storage configuration retained; only the actual Go executable is rebuilt from the locked source graph. New image scan and compatibility checks remain required.",
   "source_transport": "Official Git remote; Git-verified object graph; exact annotated tag object and peeled commit are checked before checkout.",
   "tag_object": "bbe3be0e055f387b13a3ce45ecbecb0a9c997ae2",
   "recipe_path": "deployment/docker/Dockerfile.tempo",
-  "recipe_sha256": "ade7511f2d323833c23be26be9c9f9a05007c0f89096cca625dc2595f4e9e8b5"
+  "recipe_sha256": "ade7511f2d323833c23be26be9c9f9a05007c0f89096cca625dc2595f4e9e8b5",
+  "dependency_security_refresh_20261114": {
+    "reason": "CVE-2026-128085 (go.opentelemetry.io/otel/trace, sdk, sdk/log) is fixed in v1.47.0; the otel module family was regenerated with go get against the pinned upstream source and rebuilt with go build -mod=readonly.",
+    "otel": "v1.47.0",
+    "files": {
+      "go.mod": "85525b3a42b923adbffe595a226de52d4fa7d30f8ef5ca4d3d4274de4dbe5683",
+      "go.sum": "4486bdc5a13337a570c5b5b592d113ad87f7f81974ac31280954559e67460a83"
+    }
+  }
 }

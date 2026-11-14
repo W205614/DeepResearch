@@ -74,16 +74,16 @@
     "licenses/storage-LICENSE": "e84a8c820447b38a9b2c7e7b2988f8557b87acbabc39839fc74c9a3547dabc24",
     "modules/client/go.mod": "3747aed71c48e5b7fcbdd69ff3e78b981c2149fd7588a04686897bc644ff2491",
     "modules/client/go.sum": "249eea0730bf64761eb1a10ecd737cda0ca0a1f1b2ab8d3e4e1c8ff48c7e82d8",
-    "modules/examples/telemetry_demo/go.mod": "9666f472fecd7eaacfa32fa5df9b0994726011146809ee397e3330b4211d09bc",
-    "modules/examples/telemetry_demo/go.sum": "10c1f1347016579574fba28f39702c935b6fb54739740bfaf97f6a6add20826f",
+    "modules/examples/telemetry_demo/go.mod": "768566161064465ed8a26d5b7976fb27cbdc8e03828a5f94fb5463fe16f77904",
+    "modules/examples/telemetry_demo/go.sum": "3860b21e6d8176d093d8ddebf818fa2a98db61334cb7f4ad532697667e1e3f35",
     "modules/examples/telemetry_e2e_test/go.mod": "922a7953b933e97b4410e1e198751c912b6b11241627a8a39c3d28baac2fda0d",
     "modules/examples/telemetry_e2e_test/go.sum": "d1beb166990ff0f8e4ab9b5b9d4ea8cffe1c4a322d6beee6d4435d639821751c",
-    "modules/go.mod": "10008b93ef0b11c547689b9bdf2c8f7cbf5d0744cd1436f9318a57bc3551d9e7",
-    "modules/go.sum": "028ee266d44fe9685b39af757ae606826e42b730a4370c9bcf8014819be86348",
-    "modules/pkg/go.mod": "37f00a2ab8e365c4eed70b492c05173ddb47c4a08ddd9833e92b10e60babfb89",
-    "modules/pkg/go.sum": "ae7f76cf5c330e81ec1790d1e8ff5b3dadbb49cce794e1b5de032eaa22b16d99",
-    "modules/tests/go_client/go.mod": "62df09c4e62e8230e901d34df5bc91cfdb3180651472d313591ce6f7e71e74d0",
-    "modules/tests/go_client/go.sum": "8e3ef5277421e126e832cd49fde01c81ec34e1267c968222a4507d1f642fbe7a",
+    "modules/go.mod": "58d85ffe1316680c85004229968eb1cbd87bb7290171a1fc79efb59ab789d458",
+    "modules/go.sum": "b453b2e2020a0c9a757989d4df9133c6fdeeeaa36c9879cdb96b0c220892ea90",
+    "modules/pkg/go.mod": "89c99d5dca00983ba998dc4583308e639a8f2c8e3a0b00804c3b80992a8c8e32",
+    "modules/pkg/go.sum": "0a2b07f417ba491dfaed29625dfd300bade940a265221efb5d71c0971cf2af13",
+    "modules/tests/go_client/go.mod": "dfb66c842390ac4d129b5c3b173f8ef83eb2d4565a987c8f0c1a40aae628d861",
+    "modules/tests/go_client/go.sum": "9cee8a6512e8383e9aee8d30249e6b9d46ae8e9afa125025996d55406e6119da",
     "rdkafka_mock.h": "2d4d52168b669257fbe936554af6af543fa0fa4f2cccc5a201a2c7d301dad500",
     "patches/internal-tls-fail-closed.patch": "a9c29644f45aee2afdaf475269c275f75eefdd17fd6e6e09221d43dc59d5644e",
     "tests/internal_tls_fail_closed_test.go": "b1d20d11c07364980f2b825cc2a3083cad19bb8a6a456fce5947f7303a6f0542",
@@ -799,5 +799,19 @@
         "current": "10c1f1347016579574fba28f39702c935b6fb54739740bfaf97f6a6add20826f"
       }
     ]
+  },
+  "dependency_security_refresh_20261114": {
+    "reason": "CVE-2026-128085 (go.opentelemetry.io/otel/trace, sdk, sdk/log) is fixed in v1.47.0; the otel module family was regenerated with go get against the pinned upstream source and rebuilt with go build -mod=readonly.",
+    "otel": "v1.47.0",
+    "files": {
+      "modules/examples/telemetry_demo/go.mod": "768566161064465ed8a26d5b7976fb27cbdc8e03828a5f94fb5463fe16f77904",
+      "modules/examples/telemetry_demo/go.sum": "3860b21e6d8176d093d8ddebf818fa2a98db61334cb7f4ad532697667e1e3f35",
+      "modules/go.mod": "58d85ffe1316680c85004229968eb1cbd87bb7290171a1fc79efb59ab789d458",
+      "modules/go.sum": "b453b2e2020a0c9a757989d4df9133c6fdeeeaa36c9879cdb96b0c220892ea90",
+      "modules/pkg/go.mod": "89c99d5dca00983ba998dc4583308e639a8f2c8e3a0b00804c3b80992a8c8e32",
+      "modules/pkg/go.sum": "0a2b07f417ba491dfaed29625dfd300bade940a265221efb5d71c0971cf2af13",
+      "modules/tests/go_client/go.mod": "dfb66c842390ac4d129b5c3b173f8ef83eb2d4565a987c8f0c1a40aae628d861",
+      "modules/tests/go_client/go.sum": "9cee8a6512e8383e9aee8d30249e6b9d46ae8e9afa125025996d55406e6119da"
+    }
   }
 }

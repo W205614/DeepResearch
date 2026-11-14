@@ -15,8 +15,8 @@
   "application_source_changes": false,
   "version_metadata": "Real upstream tag and commit; buildvcs=true; actual patched dependency closure remains dirty; runtime CLI release version retained.",
   "files": {
-    "go.mod": "6e2dfa8d25b5cd3da5513334134e63549aff7e70915958f98893893c825d609e",
-    "go.sum": "cc38ed0a8b5d051d3fd1af7c1c1ed6b4615fb6d3532cd11615f86cd34546dd13"
+    "go.mod": "9913c8f3516875d942c94026721694fa5c5a2bedc5fbc931ee5137a925a167aa",
+    "go.sum": "b72409f76d365e14dc3a50227076050d3e5d8f59c2e78080cba4cc71ca765c27"
   },
   "production_readonly_completion_20261030": {
     "reason": "Generate checksums and minimum required MVS alignment from the actual production entrypoints, not only standalone override go.mod files.",
@@ -30,5 +30,13 @@
       }
     ],
     "generator": "Go1.27.3 go get specified existing targets; no -u and no tidy checksum deletions."
+  },
+  "dependency_security_refresh_20261114": {
+    "reason": "CVE-2026-128085 is fixed in otel v1.47.0; the lock was regenerated with go get on the pinned upstream prometheus v0.315.1 module source and rebuilt with go build -mod=readonly -tags=netgo.",
+    "otel": "v1.47.0",
+    "files": {
+      "go.mod": "9913c8f3516875d942c94026721694fa5c5a2bedc5fbc931ee5137a925a167aa",
+      "go.sum": "b72409f76d365e14dc3a50227076050d3e5d8f59c2e78080cba4cc71ca765c27"
+    }
   }
 }
