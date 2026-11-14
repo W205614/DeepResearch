@@ -9,7 +9,9 @@
   "reviewed_dependency_overrides": {
     "golang.org/x/net": "v0.62.0",
     "google.golang.org/grpc": "v1.83.2",
-    "go.opentelemetry.io/otel/sdk": "v1.45.0"
+    "go.opentelemetry.io/otel/sdk": "v1.47.0",
+    "go.opentelemetry.io/otel/trace": "v1.47.0",
+    "go.opentelemetry.io/otel": "v1.47.0"
   },
   "runtime": "official prom/alertmanager:v0.34.1 pinned by digest; both Go binaries replaced; upstream assets, configuration, CA roots and non-root user retained",
   "dependency_security_refresh_20261030": {
@@ -20,6 +22,17 @@
     "files": {
       "go.mod": "5adcd8759cc127c8bf658cd5955dcfeb11a10724ca63894380fb68fc8f08402e",
       "go.sum": "699d9318426a7634a593e460c6c8f3de00b9f2fff8fd2ffdc6baa0b6ac55d3dc"
+    }
+  },
+  "dependency_security_refresh_20261114": {
+    "reason": "CVE-2026-128085 (go.opentelemetry.io/otel/trace, sdk, sdk/log) is fixed in v1.47.0; the whole otel module family is raised so the compiled binary carries no pre-1.47.0 telemetry code.",
+    "otel": "v1.47.0",
+    "x_net": "v0.62.0",
+    "toolchain": "Go1.27.3 (image); otel v1.47.0 requires go >= 1.26.0",
+    "verification": "go build -mod=readonly of the pinned upstream alertmanager v0.34.1 source; image build-info.txt reports otel/trace v1.47.0",
+    "files": {
+      "go.mod": "f22bef44b325639abe89f8650e4064b53ed4d6985f36ff32d152d81a524b68f1",
+      "go.sum": "48315f97c6c99aff6da2fcfee6c4607d65b1edce6bee01e0c9c5d0a3b007ba1a"
     }
   }
 }
