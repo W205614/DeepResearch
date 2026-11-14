@@ -635,8 +635,8 @@ services:
   grafana:
     <<: *service-defaults
     # Prepared by the profile-bound build entry before startup; not a published image.
-    image: deepresearch-grafana-source:20261112
-    x-deepresearch-source-build: grafana-source-20261112
+    image: deepresearch-grafana-source:20261114
+    x-deepresearch-source-build: grafana-source-20261114
     pull_policy: never
     environment:
       GF_SECURITY_ADMIN_PASSWORD: "${GRAFANA_ADMIN_PASSWORD:?Set GRAFANA_ADMIN_PASSWORD in .env}"

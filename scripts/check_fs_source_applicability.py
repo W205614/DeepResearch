@@ -19,8 +19,8 @@ from scripts.image_disposition import DispositionError, canonical, checked_file,
 from scripts.security_review_policy import validate_review_policy  # noqa: E402
 
 POLICY = 'deployment/security/grafana-source2-technical-scope.json'
-EXPECTED_SCOPE_SHA256 = '12dd01ca6c46961ebc89adfb6a4b9c263047410ec9c51229de90a1239945e051'
-TECHNICAL_REVIEW_SHA256 = 'f5ade0c49161d5e60a21fd0834d6abf7582ee33d8fb91d51da1129b550015c68'
+EXPECTED_SCOPE_SHA256 = '2ea5280f59b6a47d7ff5773e3a5cdd5df2a7c392ed3c48037ac4465365d99c39'
+TECHNICAL_REVIEW_SHA256 = '31d8bf24a7a3f9e107d5762e2c96426a156765672713e9b839684c0398111cbe'
 TECHNICAL_DISPOSITION = 'NOT_APPLICABLE_TO_EXACT_BOUND_MAIN_BUILD'
 MAX_REPORT_BYTES = 128 * 1024**2
 MAX_SCAN_AGE_SECONDS = 7200

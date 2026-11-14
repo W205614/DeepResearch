@@ -17,7 +17,7 @@ from scripts.oci_artifact import verify_oci_archive  # noqa: E402
 from scripts.security_review_policy import validate_review_policy  # noqa: E402
 
 POLICY = Path("deployment/security/grafana-reviewed-disposition.json")
-APPROVED_BINDING_SHA256 = "7e0ae656477b23d4cd3692987360ada987c40aa6f4c13e37dbb6655495b3e35d"
+APPROVED_BINDING_SHA256 = "86bbe628190ce82c875a95192a1154cf5d0ebb953359e7dd4d92f74d21448e25"
 MAX_ARCHIVE_BYTES = 2 * 1024**3
 EVIDENCE = Path("deployment/security/grafana-fixed-evidence")
 

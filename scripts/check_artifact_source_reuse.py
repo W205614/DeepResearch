@@ -1,4 +1,11 @@
-"""Bind unchanged approved artifacts to an ancestor of the consuming app commit."""
+"""Bind unchanged approved artifacts to an ancestor of the consuming app commit.
+
+Grafana left the reusable approved-artifact namespace in v0.1.5 (otel 1.47.0,
+CVE-2026-128085) and is now rebuilt from source under its own profile-bound
+gate chain (check_grafana_source_scan_20261114.py -> check_grafana_source_build_20261114.py).
+Only MinIO remains an unchanged, reusable approved artifact, so only its frozen
+source/evidence inventory is bound here.
+"""
 from __future__ import annotations
 
 import argparse
@@ -10,11 +17,10 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from scripts import grafana_image_disposition as grafana  # noqa: E402
 from scripts import image_disposition as minio  # noqa: E402
 
 ARTIFACT_PUBLICATION_SOURCE = '6bec3f00d883f0de0aac89b29d3a30cd7325fdf3'
-RELEASE_TAGS = ('artifact-minio-fixed-20261026', 'artifact-grafana-reviewed-20261026')
+RELEASE_TAGS = ('artifact-minio-fixed-20261026',)
 
 
 def git(root, *args):
@@ -61,15 +67,15 @@ def main():
     parser.add_argument('--output', required=True, type=Path)
     args = parser.parse_args()
     try:
-        bindings = [minio.load_binding(), grafana.load_binding()]
+        bindings = [minio.load_binding()]
         expected = {}
         for binding in bindings:
             for name, digest in {**binding['recipe_files'], **binding['evidence_files']}.items():
                 if name in expected and expected[name] != digest:
                     raise minio.DispositionError('Artifact source bindings disagree')
                 expected[name] = digest
-        if len(expected) != 128:
-            raise minio.DispositionError('Frozen artifact inventory differs')
+        if len(expected) != 21:
+            raise minio.DispositionError('Frozen MinIO artifact inventory differs')
         report = verify_snapshot(ROOT, expected)
     except (OSError, ValueError, subprocess.SubprocessError):
         report = {'passed': False, 'mode': 'failed_closed', 'error': 'Artifact ancestor/source reuse proof failed'}
