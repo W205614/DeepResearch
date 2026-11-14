@@ -535,7 +535,7 @@ verified = 0
 rows_seen = 0
 for name in client.list_collections():
     client.load_collection(name)
-    rows = client.query(collection_name=name, filter='id != ""', output_fields=['id','vector','user_id'], limit=1)
+    rows = client.query(collection_name=name, filter='', output_fields=['id','vector','user_id'], limit=1)
     if not rows:
         continue
     row = rows[0]
