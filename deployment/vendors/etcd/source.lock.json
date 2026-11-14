@@ -16,20 +16,20 @@
     "modules/client/v2/go.sum": "01dc4c3d74d032ea6d87c5a9fc85ffbad4252f7f2d5dd75c0689a7110a71da35",
     "modules/client/v3/go.mod": "b2950fc5adc6c8fd281c21ab47b8328057a184128b9548393f09f5151d2ce9f2",
     "modules/client/v3/go.sum": "5755292d69d779ce82d7b36e3990eacfbcddf161d65f34fa014d21714e8739be",
-    "modules/etcdctl/go.mod": "e14d6c8643096f49ce579321bf0a99b7009b4e0e7388fdd2a9326e665402b823",
-    "modules/etcdctl/go.sum": "b0f42a3ef8c9ac0898ae026ea4f573d05b3f5553c0b7cd64f5fde17fbf8212b6",
-    "modules/etcdutl/go.mod": "8b58c91f8aa167f3580f3cf17b7f1695c37ebcf9a2e9e9e0864005e36cc3df83",
-    "modules/etcdutl/go.sum": "3607f2b54e212637c63a59acc82d92ca4438e29e4660bf7c636d29006d6c49f0",
-    "modules/go.mod": "7736cde984ac615e0801dee4baae1e0adc63605cbfbb6543d3c3618a4ce13195",
-    "modules/go.sum": "06c60a25d82d31e4fe8e1dfd043352490a78bebb285685f2e2f9f0c578491bba",
+    "modules/etcdctl/go.mod": "3991a46beaa88d4f5875386ea28c648b3985e73b95dc3e07f8470a5661353bbd",
+    "modules/etcdctl/go.sum": "57f49becda16cdbc234390b5fda07b205e15eb31225fdc104e4c6d73118b2a19",
+    "modules/etcdutl/go.mod": "f116e43f886813153b900d16c5b2b074f40d55d6ee64bf1ef76c1b6a5c32e0ad",
+    "modules/etcdutl/go.sum": "492e728436708234e956dea4fca650768679b485db199cf1ad6f0b5b6eb580cd",
+    "modules/go.mod": "39bc76a84769ce12e4be68d4f87bbdd294182e4a7fe5df371776973592a1c7ba",
+    "modules/go.sum": "462fc6a1c3409a43ebaca265cffe3c39481cabcaa3290fbdd3ebe2ead7b01950",
     "modules/pkg/go.mod": "0f0d1c90e1660c282c47e03d43892e9b49961f2b3d2d6c0a4d02febe53c20320",
     "modules/pkg/go.sum": "f8b3a2f9642b8ff56eea5733ad935b8bfa14d850bff40aa6700ed9b3810827bc",
     "modules/raft/go.mod": "089247a6557eeb928b41f4cf526b7d376ef5b478b61cf106057ea9e30e60cd38",
     "modules/raft/go.sum": "38f9d084c00dc4e7dfd2d42fa6be0a332c33c6de6a1a75fea1260e84f58f6807",
-    "modules/server/go.mod": "3498592e659669027ac7d9142d1a3b370b2babdb80f2f6dc3680f7b917ef1d36",
-    "modules/server/go.sum": "9e9c2d1c0c12fe1a6c7374c2f7d8b74844454d824d4f1e7a87536cd2d0377204",
-    "modules/tests/go.mod": "89fed8c63d48c6333ec8083874fb4ff2c6f33d243d09fd88a114a5b845dc32ef",
-    "modules/tests/go.sum": "ed07090873f34285be974427248e0ecbcdb56d8e98cbef4a9f7b08ce86887704",
+    "modules/server/go.mod": "53f0a08dd39167adf9ada52797fbb6354d2f3c4ff5f1f6fbc60d1b7ecb2bea16",
+    "modules/server/go.sum": "11a3effc2320151f198b1e62479f7961d86dfe27aa4c7ecbc1468834ec44b180",
+    "modules/tests/go.mod": "1a25b6463c45b745a3a9631200a3eb01460bc4c25d40d4150991e1da91d19798",
+    "modules/tests/go.sum": "50c09012cb640546b6c163c68ce4ebbc828a049c8c0c2d707af50fd18b5be47f",
     "modules/tools/mod/go.mod": "666d2260d5a8a8c50cfdcb877f7e69d7fa1a759b89404abebe81f1f377a41d3b",
     "modules/tools/mod/go.sum": "221cfe6df7fd0b429cb04d337609e20bd298d3934e3a437ecdcc5d7d354f4652"
   },
@@ -272,5 +272,21 @@
     "new_runtime_index": "sha256:18f4cc26c9ffa7f20a359298be7deadac5c607c8e03a02b8119f1a5fc2f82c99",
     "inspection": "Actual baseline three ELFs checked with Go debug/elf; final newly rebuilt ELFs must pass the same check, CLI health and full image scan before deployment.",
     "historical_cc_base_repair": "runtime_package_repair_20261027 retained unchanged as historical evidence"
+  },
+  "dependency_security_refresh_20261114": {
+    "reason": "CVE-2026-128085 (go.opentelemetry.io/otel/trace, sdk, sdk/log) is fixed in v1.47.0; the five etcd modules that carry telemetry were regenerated with go get against the pinned upstream etcd v3.5.34 source tree and rebuilt with go build -mod=readonly.",
+    "otel": "v1.47.0",
+    "files": {
+      "modules/etcdctl/go.mod": "3991a46beaa88d4f5875386ea28c648b3985e73b95dc3e07f8470a5661353bbd",
+      "modules/etcdctl/go.sum": "57f49becda16cdbc234390b5fda07b205e15eb31225fdc104e4c6d73118b2a19",
+      "modules/etcdutl/go.mod": "f116e43f886813153b900d16c5b2b074f40d55d6ee64bf1ef76c1b6a5c32e0ad",
+      "modules/etcdutl/go.sum": "492e728436708234e956dea4fca650768679b485db199cf1ad6f0b5b6eb580cd",
+      "modules/go.mod": "39bc76a84769ce12e4be68d4f87bbdd294182e4a7fe5df371776973592a1c7ba",
+      "modules/go.sum": "462fc6a1c3409a43ebaca265cffe3c39481cabcaa3290fbdd3ebe2ead7b01950",
+      "modules/server/go.mod": "53f0a08dd39167adf9ada52797fbb6354d2f3c4ff5f1f6fbc60d1b7ecb2bea16",
+      "modules/server/go.sum": "11a3effc2320151f198b1e62479f7961d86dfe27aa4c7ecbc1468834ec44b180",
+      "modules/tests/go.mod": "1a25b6463c45b745a3a9631200a3eb01460bc4c25d40d4150991e1da91d19798",
+      "modules/tests/go.sum": "50c09012cb640546b6c163c68ce4ebbc828a049c8c0c2d707af50fd18b5be47f"
+    }
   }
 }
