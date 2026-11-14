@@ -15,7 +15,6 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts import check_grafana_source_build_20261110 as old  # noqa: E402
 from scripts import go_otel_rebuild_20261114 as common  # noqa: E402
-from scripts.retained_source_review_20261112 import snapshot  # noqa: E402
 from scripts.check_image_secrets import assess as assess_secrets  # noqa: E402
 from scripts.check_native_jvm import NativeGateError, validate_source  # noqa: E402
 

@@ -15,7 +15,7 @@ sys.path.insert(0, str(ROOT))
 from scripts import check_grafana_source_build_20261110 as old  # noqa: E402
 from scripts import build_grafana_source_20261110 as old_builder  # noqa: E402
 from scripts.grafana_source_build_facts_20261110 import capture  # noqa: E402
-from scripts.retained_source_review_20261112 import SOURCE, snapshot  # noqa: E402
+from scripts.retained_source_review_20261112 import SOURCE  # noqa: E402
 from scripts import go_otel_rebuild_20261114 as common  # noqa: E402
 
 CACHE = ROOT / '.cache/go-otel-security-20261114'

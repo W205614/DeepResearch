@@ -6,7 +6,7 @@ import gzip
 from pathlib import Path
 
 from scripts import check_grafana_source_build_20261110 as shared
-from scripts.retained_source_review_20261112 import SOURCE, snapshot
+from scripts.retained_source_review_20261112 import SOURCE
 
 # CVE-2026-128085: go.opentelemetry.io/otel trace/sdk/sdk/log, fixed in v1.47.0.
 # The affected modules and their prior (20261112) versions, all resolved to v1.47.0.

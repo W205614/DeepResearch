@@ -2,12 +2,9 @@
 from __future__ import annotations
 
 import argparse
-from collections import Counter
 import gzip
-import hashlib
 import json
 from pathlib import Path
-import shutil
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,7 +13,6 @@ from scripts import check_grafana_source_build_20261112 as old  # noqa: E402
 from scripts import check_grafana_source_build_20261114 as current  # noqa: E402
 from scripts.check_grafana_source_build_20261110 import checked  # noqa: E402
 from scripts import go_otel_rebuild_20261114 as common  # noqa: E402
-from scripts.retained_source_review_20261112 import snapshot  # noqa: E402
 
 EVIDENCE = 'deployment/security/grafana-source-20261114-evidence/'
 MODULES = 'deployment/vendors/grafana-20261107/plugin-modules.json'
@@ -62,11 +58,9 @@ def native_evidence_map():
 
 
 def build_profile(prior, native_evidence):
-    prior_expected = prior['expected']['native_sha256']
     native = {t: r['elf_sha256'] for t, r in native_evidence.items()}
     # runtime manifest
     runtime_current = json.loads(gzip.decompress((ROOT / (EVIDENCE + 'runtime-manifest.json.gz')).read_bytes()))
-    runtime_prior = json.loads(gzip.decompress((ROOT / prior['runtime_evidence']['current']).read_bytes()))
     runtime_manifest_sha256 = old.manifest_hash(runtime_current)
     runtime_config = prior['expected']['runtime_config']
 
