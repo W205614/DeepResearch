@@ -118,24 +118,32 @@ def test_workflow_keeps_current_source_verifiers_and_full_smoke_gates():
 
 
 def test_review_bytes_survive_autocrlf_checkout_and_missing_rules_fail(tmp_path):
-    from scripts import build_codeql_ci_disk_review_20261114 as renewal
+    from scripts import build_codeql_ci_attributes_review_20261114 as renewal
     root = Path(__file__).resolve().parents[1]
     renewal.verify_attributes(root)
     subprocess.run(['git', 'init', '-q', str(tmp_path)], check=True)
     subprocess.run(['git', '-C', str(tmp_path), 'config', 'core.autocrlf', 'true'], check=True)
     (tmp_path / '.gitattributes').write_bytes((root / '.gitattributes').read_bytes())
-    paths = [line.split()[0] for line in renewal.ATTRIBUTE_RULES]
+    for name in renewal.RULES:
+        target = tmp_path / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes((root / name).read_bytes())
+    paths = [str(Path(name).parent / line.split()[0].lstrip('/'))
+             for name, lines in renewal.RULES.items() for line in lines]
     for name in paths:
         target = tmp_path / name
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes((root / name).read_bytes())
-    subprocess.run(['git', '-C', str(tmp_path), 'add', '.gitattributes', *paths], check=True)
+    renewal.verify_attributes(tmp_path)
+    target = tmp_path / 'tests/.gitattributes'
+    rules = target.read_text()
+    rule = renewal.RULES['tests/.gitattributes'][-1]
+    for changed in (rules.replace(rule, ''), rules.replace(rule, rule.replace('eol=lf', 'eol=crlf'))):
+        target.write_text(changed)
+        with pytest.raises(ValueError, match='missing or changed'):
+            renewal.verify_attributes(tmp_path)
+    target.write_bytes((root / 'tests/.gitattributes').read_bytes())
+    subprocess.run(['git', '-C', str(tmp_path), 'add', '.gitattributes', *renewal.RULES, *paths], check=True)
     subprocess.run(['git', '-C', str(tmp_path), 'checkout-index', '--all', '--force'], check=True)
     for name in paths:
         assert (tmp_path / name).read_bytes() == (root / name).read_bytes()
-    rules = (tmp_path / '.gitattributes').read_text()
-    for changed in (rules.replace(renewal.ATTRIBUTE_RULES[-1], ''),
-                    rules.replace(renewal.ATTRIBUTE_RULES[-1], 'tests/test_fs_workflow_gate.py text eol=crlf')):
-        (tmp_path / '.gitattributes').write_text(changed)
-        with pytest.raises(ValueError, match='missing or changed'):
-            renewal.verify_attributes(tmp_path)

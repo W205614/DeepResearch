@@ -155,7 +155,7 @@ def test_current_continuation_preserves_original_exact_identities_and_bound_byte
     prior_path = root / 'deployment/security/codeql-reviewed-findings-20261110.json'
     prior = json.loads(prior_path.read_bytes())
     current = json.loads(REVIEW.read_bytes())
-    assert REVIEW.name == 'codeql-reviewed-findings-20261114-ci-disk.json'
+    assert REVIEW.name == 'codeql-reviewed-findings-20261114-ci-attributes.json'
     assert [row['identity'] for row in current['findings']] == [row['identity'] for row in prior['findings']]
     assert current['findings'][:2] == prior['findings'][:2]
     for name, expected in prior['findings'][2]['evidence_sha256'].items():
@@ -345,6 +345,38 @@ def test_ci_disk_continuation_preserves_prior_profile_and_only_reviewed_delta():
     'deployment/security/codeql-reviewed-findings-20261113-exact-image-cache.json',
 ])
 def test_ci_disk_continuation_rejects_modified_helper_or_proof(tmp_path, path):
+    test_current_continuation_rejects_changed_native_gates_or_scope_proof(tmp_path, path)
+
+
+def test_nested_attributes_restore_history_without_changing_effective_rules():
+    from scripts import build_codeql_ci_attributes_review_20261114 as renewal
+    root = Path(__file__).resolve().parents[1]
+    renewal.verify_attributes(root)
+    result = renewal.compare_tracked_attributes(root)
+    assert result['tracked_path_count'] == 2701
+    assert result['all_effective_attributes_identical'] is True
+    prior = json.loads((root / renewal.PRIOR).read_bytes())
+    current = json.loads(REVIEW.read_bytes())
+    assert current['findings'][:3] == prior['findings'][:3]
+    assert [r['identity'] for r in current['findings']] == [r['identity'] for r in prior['findings']]
+    assert current['ci_attributes_addendum']['prior_profile_sha256'] == hashlib.sha256(
+        (root / renewal.PRIOR).read_bytes()).hexdigest()
+    proof = json.loads((root / renewal.PROOF).read_bytes())
+    assert proof['attribute_equivalence'] == result
+    assert set(proof['exact_bound_code_deltas']) == {'.gitattributes', 'tests/test_ci_compose_build.py'}
+    for name, value in prior['findings'][3]['evidence_sha256'].items():
+        if name not in proof['exact_bound_code_deltas']:
+            assert current['findings'][3]['evidence_sha256'][name] == value
+    with pytest.raises(ValueError, match='reviewed source or proof changed'):
+        reviewed_findings([], root / renewal.PRIOR, root)
+
+
+@pytest.mark.parametrize('path', [
+    'scripts/.gitattributes', 'tests/.gitattributes', 'deployment/security/.gitattributes',
+    'deployment/security/codeql-ci-attributes-addendum-20261114.json',
+    'scripts/build_codeql_ci_attributes_review_20261114.py',
+])
+def test_nested_attribute_proofs_reject_modified_bytes(tmp_path, path):
     test_current_continuation_rejects_changed_native_gates_or_scope_proof(tmp_path, path)
 
 

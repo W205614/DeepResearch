@@ -1,0 +1,49 @@
+{
+  "schema": "codeql-ci-nested-attributes-continuation-v1",
+  "reviewed_at": "2026-11-14",
+  "actor_kind": "automated_agent_technical_reviewer",
+  "prior_profile": {
+    "path": "deployment/security/codeql-reviewed-findings-20261114-ci-disk.json",
+    "sha256": "afdc7960af1af47d50390b65ea5860fd30f6f0203e8e8a240155df1d7fd79afb",
+    "bytes_preserved": true
+  },
+  "exact_bound_code_deltas": {
+    "tests/test_ci_compose_build.py": {
+      "before": "47976b369ed37122b8abc513dd82e4d87692b0afe0ea3eb9b0de1430a33781fc",
+      "after": "dc96a983abc76413413ba0ae92e2bb66e2ed37622cbf71884e6fb87dd5860981"
+    },
+    ".gitattributes": {
+      "before": "a72fd357b2a1e5a3a9836b6e39252d1d45493c7fe42c93ee4bd2773878a77f08",
+      "after": "8c56e4e34c5f5bcbb038f42ac9a1186381b1bc1b9f5e2040ff1ab76180609e54"
+    }
+  },
+  "new_support_sha256": {
+    "scripts/.gitattributes": "238f0ffc3d21ae0b5a05ddef18819484dafd7cc2293b40e0be7ae04257f0b189",
+    "tests/.gitattributes": "cc09f613bc048ffd16da755eeba35cc6ef958afc20bcc6de5db26898a82c9197",
+    "deployment/security/.gitattributes": "30344bfaae2eafb8ab966f4406804c17a1bda256e44ad823d9aa1aa36c06d4d3",
+    "scripts/build_codeql_ci_attributes_review_20261114.py": "1d339124e56fd476d8858687768312d3a6230f1a5461e06c4450f0b966b91655"
+  },
+  "attribute_equivalence": {
+    "tracked_path_count": 2701,
+    "all_effective_attributes_identical": true,
+    "attribute_output_sha256": "0bad1b50e0099d173db2ccb8259c27b6d110113fe0494c708744ee49890e12d9"
+  },
+  "historical_root_restored_from": "33d5a374a51ca607ef9c90a395b023b975f38f80",
+  "historical_root_sha256": "8c56e4e34c5f5bcbb038f42ac9a1186381b1bc1b9f5e2040ff1ab76180609e54",
+  "existing_nested_file_bytes_preserved_as_prefixes": true,
+  "review_rationale": [
+    "The old Grafana c6 fixture correctly requires its original root .gitattributes bytes; restoring them fixes the two setup errors without changing that fixture or its verifier.",
+    "The same six CI support preservation rules move into anchored nested paths; three additional rules protect only the successor generator/proof/profile.",
+    "All previously tracked paths have identical effective git attributes; current recipe, runtime COPY, source checks and CI scheduling are unchanged.",
+    "The CI portability test now copies the full nested attribute hierarchy into a temporary autocrlf=true repository and still rejects missing or tampered rules.",
+    "All previous findings, evidence, source labels and raw failures remain; this does not address the independently discovered new vulnerability inventory."
+  ],
+  "same_four_exact_identities": true,
+  "first_three_original_records_unchanged": true,
+  "severity_threshold_unchanged": 7.0,
+  "new_findings_exempted": false,
+  "new_codeql_scan_claimed": false,
+  "raw_sarif_modified": false,
+  "human_review_claimed": false,
+  "risk_acceptance": false
+}
