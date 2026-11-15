@@ -246,15 +246,16 @@ def collect(scan, receipt, original, candidate, *, raw_sha256, original_sha256,
     packages = prior.old.inventory(target['Packages'])
     scope['source_inventory_count'] = len(packages)
     scope['source_inventory_sha256'] = hashlib.sha256(prior.old.canonical(packages)).hexdigest()
+    expected_targets = prior.old.committed_manifest_targets(root, source_commit)
     prior.old.validate_completion(scan, receipt, raw_sha256, scope, source_commit,
-        tracked_clean, findings, now,
-        expected_targets=prior.old.committed_manifest_targets(root, source_commit))
+        tracked_clean, findings, now, expected_targets=expected_targets)
     recomputed = prior.old.evaluate(scan, receipt, raw_sha256=raw_sha256,
-        source_commit=source_commit, tracked_clean=tracked_clean, root=root, now=now)
+        source_commit=source_commit, tracked_clean=tracked_clean, root=root, now=now,
+        expected_targets=expected_targets)
     current.require(recomputed == original, 'Original failed verdict differs from recomputation')
     recomputed_candidate = prior.candidate.evaluate(scan, receipt, original,
         raw_sha256=raw_sha256, source_commit=source_commit, tracked_clean=tracked_clean,
-        root=root, now=now)
+        root=root, now=now, expected_targets=expected_targets)
     current.require({k: v for k, v in candidate.items()
                      if k != 'preserved_original_verdict_file_sha256'} == recomputed_candidate
                     and candidate['preserved_original_verdict_file_sha256'] == original_sha256,
