@@ -127,6 +127,21 @@ def assemble(args):
     return profile
 
 
+def refresh_checker(args):
+    profile = gate.prior.read(ROOT / gate.PROFILE_PATH)
+    if profile['source_inputs'] != gate.builder.source_inputs():
+        raise ValueError('Metadata refresh cannot change the reviewed compilation inputs')
+    for name in ('scripts/check_minio_otel_20261115.py', 'scripts/prepare_minio_otel_profile_20261115.py',
+                 'tests/test_minio_otel_20261115.py'):
+        profile['evidence_sha256'][name] = gate.digest(ROOT / name)
+    for name in profile['independent_reviews']:
+        profile['evidence_sha256'].pop(name, None)
+    profile['status'] = 'prepared'
+    profile['subject_sha256'] = gate.review_subject(profile)
+    write(args.output, profile)
+    return profile
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='operation', required=True)
@@ -135,8 +150,11 @@ def main():
         draft.add_argument('--' + name, type=Path, required=True)
     final = sub.add_parser('assemble-reviewed')
     final.add_argument('--draft', type=Path, required=True)
+    refresh = sub.add_parser('refresh-checker-evidence')
+    refresh.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
-    profile = {'create': create, 'assemble-reviewed': assemble}[args.operation](args)
+    profile = {'create': create, 'assemble-reviewed': assemble,
+               'refresh-checker-evidence': refresh_checker}[args.operation](args)
     print(json.dumps({'subject_sha256': profile['subject_sha256'], 'status': profile['status']}))
 
 

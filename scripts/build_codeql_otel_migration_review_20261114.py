@@ -116,6 +116,7 @@ def generate(root=ROOT):
         'human_review_claimed': False,
         'review_rationale': [
             'The otel-v1.47.0 migration (CVE-2026-128085) retires Grafana from the reusable-artifact freeze and re-routes the reviewed-source-image cache to the 20261114 builder; compose.yaml, ci.yml, security.yml, runtime_ci_inventory.py and ci_reviewed_image_cache.py changed only within that reviewed routing delta.',
+            'The CI follow-up verifies all 106 unchanged locked MinIO native inputs using complete official HTTPS GETs, then passes the verified directory through the existing builder input option. Exact size and SHA checks, the retained native builder, runtime payload checks and scanner gates remain required; this transport repair grants no finding exemption.',
             'uv.lock changes are the reviewed soupsieve 4.1 upgrade (CVE-2026-126190), already bound by the agent source scope review.',
             'The XSS-through-DOM finding identity (js/xss-through-dom on the offline SQLite release note) and its source/proof bytes are unchanged. Historical tests now replay the exact original input bytes instead of the changed live locks; current production checks remain strict.',
             'No CodeQL scan is re-run and no SARIF is modified; the four original finding identities and severity threshold are preserved.',

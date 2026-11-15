@@ -45,6 +45,13 @@ def test_failed_cache_load_does_not_fall_back_to_a_cold_build(tmp_path, monkeypa
     assert len(calls) == 1 and calls[0][:3] == ['docker', 'image', 'load']
 
 
+def test_explicit_verified_native_inputs_reach_only_minio_original_builder(tmp_path, monkeypatch):
+    monkeypatch.setenv('MINIO_NATIVE_INPUT_DIR', str(tmp_path))
+    command = cache.builder_command('minio', tmp_path / 'build', hit=False)
+    assert command[-2:] == ['--input-dir', str(tmp_path)]
+    assert '--input-dir' not in cache.builder_command('grafana', tmp_path / 'build', hit=False)
+
+
 def test_hit_runs_current_builder_before_accepting_receipt_and_preserves_old_source_label(tmp_path, monkeypatch):
     archive = tmp_path / 'image.tar.gz'
     archive.write_bytes(b'restored-archive')

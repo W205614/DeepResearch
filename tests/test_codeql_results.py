@@ -337,7 +337,12 @@ def test_ci_disk_continuation_preserves_prior_profile_and_only_reviewed_delta():
     # Reconstruct the exact baseline from git for the semantic delta check.
     old = subprocess.run(['git', 'show', renewal.BASE + ':' + renewal.WORKFLOW],
                          cwd=root, check=True, capture_output=True).stdout
-    new = yaml.safe_load((root / renewal.WORKFLOW).read_bytes())
+    # Replay the committed workflow before the later MinIO transport repair;
+    # the disk continuation intentionally approves only its historical delta.
+    workflow_before_transport = subprocess.run([
+        'git', 'show', '23ae437caed3578ff74732cfa4c5e68227961f7e:' + renewal.WORKFLOW],
+        cwd=root, check=True, capture_output=True).stdout
+    new = yaml.safe_load(workflow_before_transport)
     # The later otel migration upgraded the diagnostic helper 20261112 -> 20261114;
     # unwind that single byte-level change so workflow_delta verifies only the
     # ci-disk scheduling delta it was written to review.

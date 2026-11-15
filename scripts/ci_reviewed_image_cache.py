@@ -41,6 +41,8 @@ def builder_command(artifact, output, *, hit):
     command += ['--output-dir', str(output)]
     if hit:
         command.append('--no-build')
+    if artifact == 'minio' and os.environ.get('MINIO_NATIVE_INPUT_DIR'):
+        command += ['--input-dir', os.environ['MINIO_NATIVE_INPUT_DIR']]
     return command
 
 

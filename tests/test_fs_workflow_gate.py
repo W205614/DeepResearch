@@ -76,6 +76,8 @@ def command(steps, script, *, artifact=None):
             args = {'--output-dir': step['with']['output-dir']}
             if cached_artifact == 'grafana':
                 args = {'--artifact': 'grafana', **args}
+            elif step.get('env', {}).get('MINIO_NATIVE_INPUT_DIR'):
+                args['--input-dir'] = step['env']['MINIO_NATIVE_INPUT_DIR']
             return index, step, args
     found = [(index, step) for index, step in enumerate(steps) if 'scripts/' + script in step.get('run', '')
              and (artifact is None or '--artifact ' + artifact + ' ' in step.get('run', ''))]
@@ -283,6 +285,7 @@ def test_minio_native_repair_requires_new_producer_complete_scans_and_strict_con
     document = yaml.safe_load((ROOT / '.github/workflows/security.yml').read_text(encoding='utf-8'))
     steps = document['jobs']['runtime-image-scan']['steps']
     build_index, build, build_args = command(steps, 'build_minio_otel_20261115.py')
+    prefetch_index, prefetch, prefetch_args = command(steps, 'prefetch_minio_verified_20261115.py')
     native_index, native, native_args = command(steps, 'collect_minio_os_native_20261113.py')
     gate_index, gate, gate_args = command(steps, 'check_minio_otel_20261115.py')
     scan_index = next(i for i, step in enumerate(steps) if step.get('id') == 'approved_scan')
@@ -290,8 +293,12 @@ def test_minio_native_repair_requires_new_producer_complete_scans_and_strict_con
     condition = "matrix.source_build_profile == 'minio-otel-source-20261115'"
     assert build['if'] == condition
     assert native['if'] == gate['if'] == condition + " && steps.approved_scan.outcome == 'success'"
-    assert build_index < scan_index < secret_index < native_index < gate_index
-    assert build_args == {'--output-dir': BASE + 'minio-source-build'}
+    assert prefetch_index < build_index < scan_index < secret_index < native_index < gate_index
+    assert prefetch['if'] == condition
+    assert prefetch_args == {'--directory': BASE + 'minio-native-inputs',
+                             '--evidence-dir': BASE + 'minio-fullget-receipts'}
+    assert build_args == {'--output-dir': BASE + 'minio-source-build',
+                          '--input-dir': BASE + 'minio-native-inputs'}
     assert native_args == {'--image': 'deepresearch-minio-source:20261115',
         '--build-receipt': BASE + 'minio-source-build/build-receipt.json',
         '--output-dir': BASE + 'minio-native', '--db-cache': BASE + 'minio-grype-db'}

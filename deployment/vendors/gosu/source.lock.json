@@ -3,7 +3,7 @@
   "release": "1.19",
   "commit": "6456aaa0f3c854d199d0f037f068eb97515b7513",
   "source_archive_sha256": "33d7537d588ea49458b9509bcf4554bdf5ceacc66da71e5caa1058ea3b689c3b",
-  "compiler": "golang1.27.3 pinned Dockerfile.postgres",
+  "compiler": "golang1.27.4 pinned Dockerfile.postgres",
   "source_changes": true,
   "version_metadata": "exact upstream Dockerfile normalizes version.go1.19 to Go semverv1.19.0 with pinned upstream fake-git helper; no invented application version; do not strip govulncheck symbols",
   "metadata_tool_commit": "aaa875961611764a86a21cf80c250929a7786179",
@@ -37,5 +37,14 @@
       "go.mod": "ae1ddde8ee44bccffcc7df1ac03ccfed4ac75776ad20b370b7b9c37298ea9bfa",
       "go.sum": "c5e9371c88ff9fe7e8b8047cd9fb01409bce591409ed21e858f5c368bc471e63"
     }
+  },
+  "compiler_security_refresh_20261115": {
+    "reason": "CVE-2026-97054/GO-2026-6859: rebuild the actual gosu helper with the fixed Go standard library; no finding or severity exemption.",
+    "official_advisory": "https://vuln.go.dev/ID/GO-2026-6859.json",
+    "from": "golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c",
+    "to": "golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf",
+    "upstream_application_source_unchanged": true,
+    "module_locks_unchanged": true,
+    "historical_compiler_records_preserved": true
   }
 }

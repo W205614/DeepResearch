@@ -64,6 +64,33 @@ def test_actual_preparation_is_not_normal_build_approval(actual_preparation):
         gate.verify_build(*actual_preparation)
 
 
+def test_actual_receipt_accepts_only_equivalent_unspecified_docker_user(actual_preparation):
+    facts, receipt, original_profile = actual_preparation
+    profile = copy.deepcopy(original_profile)
+    facts['inspection']['Config']['User'] = ''
+    receipt['runtime_config']['User'] = ''
+    gate.verify_build(facts, receipt, profile, allow_preparation=True)
+
+
+@pytest.mark.parametrize('change', ['explicit-user', 'entrypoint', 'environment', 'native-sha'])
+def test_cross_engine_user_equivalence_preserves_all_other_runtime_constraints(actual_preparation, change):
+    facts, receipt, original_profile = actual_preparation
+    profile = copy.deepcopy(original_profile)
+    facts['inspection']['Config']['User'] = ''
+    receipt['runtime_config']['User'] = ''
+    if change == 'explicit-user':
+        facts['inspection']['Config']['User'] = '1000'
+        receipt['runtime_config']['User'] = '1000'
+    elif change == 'native-sha':
+        receipt['native_sha256']['silo'] = '0' * 64
+    else:
+        key = 'Entrypoint' if change == 'entrypoint' else 'Env'
+        facts['inspection']['Config'][key] = ['UNREVIEWED']
+        receipt['runtime_config'][key] = ['UNREVIEWED']
+    with pytest.raises(ValueError):
+        gate.verify_build(facts, receipt, profile, allow_preparation=True)
+
+
 @pytest.mark.parametrize('change', ['runtime-config', 'input-label', 'source-label', 'preparation',
                                    'receipt-raw-manifest', 'unrelated-runtime-file', 'missing-runtime-file'])
 def test_build_labels_preparation_config_and_complete_payload_are_bound(actual_preparation, change):

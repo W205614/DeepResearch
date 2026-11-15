@@ -1,84 +1,28 @@
 {
-  "schema": "minio-otel-independent-technical-review-20261115-v1",
-  "actor": "/root/milvus_build",
+  "actor": "/root/runtime_scan",
   "actor_kind": "automated_independent_agent",
-  "subject_sha256": "d39d8a8f01ff434fe23a11ffc07b43c25d800a697103999ff5744efc94f4a27e",
+  "subject_sha256": "1179850943c3a7e2b60e53477cc33d00335be786c1e8b00dc74b88c250fac52c",
+  "status": "verified",
   "facts_passed": true,
   "risk_acceptance": false,
   "binary_redistribution_approved": false,
-  "image_id": "sha256:5997e7c364d2af8fe1b99da4fe2b9ca659e28ef42f56f900aebead25e08a0c5e",
-  "portable_config_digest": "sha256:c2c63c6d09edb24eb5e8d778a26b3e8153f7271e1f03a433c8fb929d4fbf1612",
-  "source_inputs_all_rehashed": 29,
-  "evidence_files_all_rehashed": 16,
-  "actual_image_reexported": true,
-  "actual_two_elfs_independently_copied_and_parsed": true,
-  "production_graph_modules_sums_replacements_equal_actual_elf": true,
-  "production_reachability_complete": true,
-  "openpgp_and_html_affected_imports_absent": true,
-  "silo_otel_modules_migrated": [
-    "go.opentelemetry.io/otel",
-    "go.opentelemetry.io/otel/log",
-    "go.opentelemetry.io/otel/metric",
-    "go.opentelemetry.io/otel/sdk",
-    "go.opentelemetry.io/otel/sdk/metric",
-    "go.opentelemetry.io/otel/trace"
-  ],
-  "mcli_module_changes": {},
-  "complete_runtime_difference_paths": [
-    "usr/bin/silo",
-    "usr/share/deepresearch-build/silo-buildinfo.txt",
-    "usr/share/deepresearch-build/silo-graph.json",
-    "usr/share/deepresearch-build/silo-native.json",
-    "var/lib/rpm/rpmdb.sqlite"
-  ],
-  "rpm_normalization": "Original existing exact four-NEVRA INSTALLTIME/INSTALLTID rules; every schema/table/row/header byte otherwise bound",
-  "rpm_database_stable_sha256": "7da3ee237e5d8c33dcd537650cc526304ff8653d1ac674b54d4e7cf9398f4cc9",
-  "scanner_counts": {
-    "Trivy": 21,
-    "Grype": 20
+  "review_type": "Actual incremental checker and original enterprise artifact replay",
+  "parent_subject_sha256": "d39d8a8f01ff434fe23a11ffc07b43c25d800a697103999ff5744efc94f4a27e",
+  "actual_CI_job_id": 132745133233,
+  "actual_runtime_config_delta": {
+    "User": [
+      "",
+      null
+    ]
   },
-  "grype_removed_exact_old_glibc_rows": [
-    {
-      "id": "CVE-2026-122054",
-      "locations": [
-        "/var/lib/rpm/rpmdb.sqlite"
-      ],
-      "namespace": "redhat:distro:redhat:9",
-      "package": "glibc",
-      "severity": "Medium",
-      "type": "rpm",
-      "version": "2.34-290.el9_9"
-    },
-    {
-      "id": "CVE-2026-122054",
-      "locations": [
-        "/var/lib/rpm/rpmdb.sqlite"
-      ],
-      "namespace": "redhat:distro:redhat:9",
-      "package": "glibc-common",
-      "severity": "Medium",
-      "type": "rpm",
-      "version": "2.34-290.el9_9"
-    },
-    {
-      "id": "CVE-2026-122054",
-      "locations": [
-        "/var/lib/rpm/rpmdb.sqlite"
-      ],
-      "namespace": "redhat:distro:redhat:9",
-      "package": "glibc-minimal-langpack",
-      "severity": "Medium",
-      "type": "rpm",
-      "version": "2.34-290.el9_9"
-    }
+  "actual_29_source_inputs_exact": true,
+  "actual_native_sha256_exact": true,
+  "actual_914_runtime_manifest_replayed": true,
+  "all_original_subject_runtime_module_scan_fields_exact": true,
+  "scope": "Only unspecified Docker User null/empty equivalence using the existing strict common helper. All explicit users, other runtime settings, native hashes and complete payload constraints remain exact.",
+  "limitations": [
+    "No new independent ELF export, portable raw config rehash, RPM database capture or scanner execution is claimed by this incremental review.",
+    "Original runtime/native/scanner/regression facts remain the unchanged independently reviewed parent subject."
   ],
-  "original_trivy_big5_migration_reverified": true,
-  "actual_benign_regressions_rechecked": [
-    "TestNormalThrift025ParquetRoundTrip",
-    "TestNormalNativeRepairPreservesValidCSV",
-    "TestPinnedLegacyPart2024PreservesCompleteMetadata"
-  ],
-  "service_started": false,
-  "paid_model_calls": 0,
-  "local_evidence_directory": ".cache/release-v015-20261115/runtime/independent-minio-review-milvus-02"
+  "evidence_rehashed": 16
 }

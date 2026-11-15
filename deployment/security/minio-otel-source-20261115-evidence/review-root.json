@@ -1,17 +1,32 @@
 {
   "actor": "/root",
   "actor_kind": "automated_independent_agent",
-  "recorded_at_utc": "2026-11-15T03:25:46.281532+00:00",
-  "subject_sha256": "d39d8a8f01ff434fe23a11ffc07b43c25d800a697103999ff5744efc94f4a27e",
+  "recorded_at_utc": "2026-11-15T08:31:37.891005+00:00",
+  "subject_sha256": "1179850943c3a7e2b60e53477cc33d00335be786c1e8b00dc74b88c250fac52c",
   "facts_passed": true,
   "risk_acceptance": false,
   "binary_redistribution_approved": false,
-  "evidence_sha256_verified": 16,
-  "actual_runtime_reexported": true,
-  "actual_elf_native_reparsed": true,
-  "current_complete_graphs_bound_to_actual_elf": true,
-  "rpm_logical_and_header_contract_verified": true,
-  "all_severity_trivy_and_grype_verified": true,
-  "final_ci_not_claimed": true,
-  "boundary": "Technical local dependency review only; preserved native OS repairs and exact old findings. Go closure changes are the explicitly bounded OpenTelemetry upgrade; no new binary redistribution approval."
+  "review_type": "Independent checker-only continuation and actual failed-CI receipt replay",
+  "parent_subject_sha256": "d39d8a8f01ff434fe23a11ffc07b43c25d800a697103999ff5744efc94f4a27e",
+  "parent_root_review_sha256": "4060884037279ad0ca22a6bbde69e06c76a8a83881ff71e157e2c8681614e99d",
+  "source_inputs_rehashed": 29,
+  "evidence_rehashed": 16,
+  "all_other_profile_fields_preserved": true,
+  "actual_ci_job_id": 132745133233,
+  "actual_runtime_user": "",
+  "reviewed_runtime_user": null,
+  "actual_ci_complete_manifest_replayed_paths": 914,
+  "unreviewed_changes_rejected": [
+    "explicit-root",
+    "explicit-uid",
+    "environment",
+    "entrypoint",
+    "native-sha",
+    "missing-file"
+  ],
+  "limitations": [
+    "No fresh image export, ELF reparse, RPM database normalization or scanner collection is claimed by this incremental review; the parent reviewed facts and bound raw evidence are unchanged.",
+    "The CI artifact contains no raw portable image config for independent digest rehash; the receipt replay is not a replacement for final full image scans and runtime acceptance.",
+    "Only unspecified Docker User null/empty equivalence is admitted; explicit users and every other runtime/native/payload constraint remain required."
+  ]
 }

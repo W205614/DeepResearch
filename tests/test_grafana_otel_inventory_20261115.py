@@ -15,7 +15,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 @pytest.fixture(scope='module')
 def materials():
-    native, prior = candidate.native_evidence_map()
+    native = candidate.current.load_profile(ROOT)['native_evidence']
+    prior = candidate.common.prior_profile(ROOT)
     profile = candidate.build_profile(prior, native)
     profile['source_inputs'] = candidate.source_inputs_for_20261114(prior)
     directory = ROOT / candidate.INVENTORY_EVIDENCE

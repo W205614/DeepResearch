@@ -14,7 +14,7 @@
     },
     ".github/workflows/ci.yml": {
       "before": "6530e99aa0cde56aedc87b198faa135d90520c037179a277d83187a9f4acb416",
-      "after": "cd79f588f1d3d081f50f24a485465caf6f251ad88c2348cd1f1501efb2f9e592"
+      "after": "d24ef9a5ca82ccc0e58276e58b9e4a55c0754cd00917586d42f989b3083d6eab"
     },
     ".github/workflows/rag-quality.yml": {
       "before": "db3d560767df291db6d5b56b641c70bb1513e2a8805e70c9cdfe4a94ac2472d3",
@@ -22,7 +22,7 @@
     },
     ".github/workflows/security.yml": {
       "before": "3d04f60ab0617e7e4b8e6dd84943866eb70da59123bb2f86050118ec3b10f8ce",
-      "after": "5062068492a72efbc5730304c1fdac330c5b7369159a81a775fc8134c41d4a57"
+      "after": "a4de0be35dee3630f963b2c821cd8c88339b2f2f797b6cbb089f4187169a7a2c"
     },
     "deployment/compose/compose.verify.yaml": {
       "before": "6ca4847c9511db88198d2b60c07d703848cc695745678bbf3ddcfe40420d7fa8",
@@ -46,7 +46,7 @@
     },
     "scripts/ci_reviewed_image_cache.py": {
       "before": "d9a623b697ea0d585153e15671cddc84528a4f41f18cb3959c28ed2c877d987f",
-      "after": "533c363900cf3299c03c625b111e00456e1fd4ba5975c9eedde1bdec8a9eeedc"
+      "after": "979e20981b7c784ce535d5b7ec7522c6d68acb529f62992ad9d758f3de3b27fb"
     },
     "tests/test_grafana_fixed_20261107.py": {
       "before": "8e9f15e8acf3a78c5d1259eeff281baabf7b6290f3a6ab1a66ce118444725403",
@@ -62,7 +62,7 @@
     },
     "tests/test_fs_workflow_gate.py": {
       "before": "1669827155450abeeeb4a7a062f3c2b4a4f3431539c16a7a477510616afc44b2",
-      "after": "b44dd51678568d13d1bfae2b4bf8140f28458dcb09acd8287b1941db72b0eb9d"
+      "after": "94967067171a94d287bd8220f6e42bafd060ea0bef24bb2c444ea4f9740b9b0c"
     },
     "scripts/.gitattributes": {
       "before": "238f0ffc3d21ae0b5a05ddef18819484dafd7cc2293b40e0be7ae04257f0b189",
@@ -82,7 +82,7 @@
     "all_effective_attributes_identical": true,
     "attribute_output_sha256": "0bad1b50e0099d173db2ccb8259c27b6d110113fe0494c708744ee49890e12d9"
   },
-  "generator_source_sha256": "dbdd3784675a88e04dc8324f44da5d85c6dceb72963d318c66051184202932c0",
+  "generator_source_sha256": "2ce1d90b19d79673cbe12fd13382cb27068fdb4b063f1475a1248fd92c27d14c",
   "all_other_existing_bound_sha256": {
     "deployment/security/codeql-finding-review-20261110.md": "7585522420e6a8cb160ef2b173460762833e8128790a259ed0a4b779d8824948",
     "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java": "9729af95b2760eb00fdc36f8e86f8abaa7f0f4deb999f976a9342d7a93365aea",
@@ -426,6 +426,7 @@
   "human_review_claimed": false,
   "review_rationale": [
     "The otel-v1.47.0 migration (CVE-2026-128085) retires Grafana from the reusable-artifact freeze and re-routes the reviewed-source-image cache to the 20261114 builder; compose.yaml, ci.yml, security.yml, runtime_ci_inventory.py and ci_reviewed_image_cache.py changed only within that reviewed routing delta.",
+    "The CI follow-up verifies all 106 unchanged locked MinIO native inputs using complete official HTTPS GETs, then passes the verified directory through the existing builder input option. Exact size and SHA checks, the retained native builder, runtime payload checks and scanner gates remain required; this transport repair grants no finding exemption.",
     "uv.lock changes are the reviewed soupsieve 4.1 upgrade (CVE-2026-126190), already bound by the agent source scope review.",
     "The XSS-through-DOM finding identity (js/xss-through-dom on the offline SQLite release note) and its source/proof bytes are unchanged. Historical tests now replay the exact original input bytes instead of the changed live locks; current production checks remain strict.",
     "No CodeQL scan is re-run and no SARIF is modified; the four original finding identities and severity threshold are preserved."

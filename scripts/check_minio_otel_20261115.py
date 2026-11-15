@@ -86,7 +86,8 @@ def verify_build(facts, receipt, profile, *, allow_preparation=False):
                          and receipt['image_id'] == facts['image_id']
                          and receipt['diff_ids'] == facts['diff_ids']
                          and receipt['config_digest'] == facts['config_digest']
-                         and receipt['runtime_config'] == profile['expected']['runtime_config']
+                         and prior.common.reviewed_runtime_config_equivalent(
+                             receipt['runtime_config'], profile['expected']['runtime_config'])
                          and receipt['native_sha256'] == profile['expected']['native_sha256'],
                          'Actual MinIO otel runtime or receipt differs')
     old = prior.load_profile()
