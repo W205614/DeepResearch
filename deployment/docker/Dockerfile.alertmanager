@@ -14,7 +14,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     git reset --mixed 73c6bfe7393929211294c1954f30d8ed78e4d0ad
 FROM source AS build
 # The generated UI is an official stable-release asset, absent from the Go module.
-RUN curl --fail --location --connect-timeout 20 --max-time 180 --retry 2 --retry-max-time 180 --retry-all-errors --header 'Accept: application/octet-stream' https://api.github.com/repos/prometheus/alertmanager/releases/assets/569769814 --output /tmp/ui.tar.gz \
+RUN curl --fail --location --connect-timeout 20 --max-time 180 --retry 2 --retry-max-time 180 --retry-all-errors --header 'Accept: application/octet-stream' https://github.com/prometheus/alertmanager/releases/download/v0.34.1/alertmanager-web-ui-0.34.1.tar.gz --output /tmp/ui.tar.gz \
     && echo '881fe0f7beb9573f35be47dd233af6220e72c8db72c03bcd1780402eb8dc1307  /tmp/ui.tar.gz' | sha256sum -c -
 RUN tar -xzf /tmp/ui.tar.gz -C /src/ui/app
 COPY deployment/vendors/alertmanager/go.mod deployment/vendors/alertmanager/go.sum ./

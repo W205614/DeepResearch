@@ -13,7 +13,7 @@ from scripts import check_grafana_source_build_20261110 as build
 from scripts import check_grafana_source_build_20261114 as current
 
 REVIEW = 'deployment/security/source-dependency-migration-20261115.json'
-REVIEW_SHA256 = '4eb87032f88777dc87001905e072eea8072f3ef1cc0355da6844e0fb2f61181a'
+REVIEW_SHA256 = '9bcca5f1af0be74f55f4b157b55edd4d32e21ca524d64bae01d47161e259d90d'
 CONTEXTS = 'deployment/security/source-contexts-20261115/contexts.json'
 MINIO_TARGET = 'deployment/vendors/minio-otel-20261115/go.mod'
 MINIO_FINDINGS = frozenset({
@@ -21,7 +21,7 @@ MINIO_FINDINGS = frozenset({
     ('CVE-2026-78661', MINIO_TARGET, 'golang.org/x/net', 'v0.61.0', 'HIGH'),
     ('CVE-2026-97045', MINIO_TARGET, 'golang.org/x/net', 'v0.61.0', 'MEDIUM'),
 })
-CONTEXTS_SHA256 = '9a56d48c0060387361f35fce544f4a073ce853dd9510c9c2a752001c9feb5554'
+CONTEXTS_SHA256 = '981d48aa8491fd03d582347742299e3adb17b70eaef903c42b8b0fa6866576ad'
 
 
 def checked_review(root):

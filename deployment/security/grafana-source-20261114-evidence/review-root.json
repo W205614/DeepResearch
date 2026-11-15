@@ -1,8 +1,8 @@
 {
   "actor": "/root",
   "actor_kind": "automated_independent_agent",
-  "observed_at_utc": "2026-11-15T08:48:21.295718+00:00",
-  "subject_sha256": "76870107af2119af2c4d54dab4da1c9308901ae941c6d17712d91700c8561fb2",
+  "observed_at_utc": "2026-11-15T10:35:32.744649+00:00",
+  "subject_sha256": "59da09c701373c5a3809329e781b71612eaa66df631092e611ee29e0f59138d5",
   "facts_passed": true,
   "risk_acceptance": false,
   "binary_redistribution_approved": false,
@@ -141,15 +141,9 @@
     "Archived preparation evidence unchanged; the existing normal full-main receipt is reused by unchanged exact source inputs and actual runtime/native identity. Only the three source-provenance evidence hashes changed. No new image export, compilation or scanner collection is claimed by this incremental review. A real clean-source workflow gate remains required after commit.",
     "Source diagnostic is dirty evidence, not a final clean-commit scan or CI success.",
     "Raw Trivy40/Grype10 findings retained; no general library exemption or third-party binary redistribution approval.",
-    "Original 016 CI raw inventory was independently verified against the new review, but its failed verdict is preserved. A successful complete clean-commit CLI chain and final same-SHA CI are still required."
+    "The Alertmanager change uses an already-locked official UI URL with identical archive bytes. Actual cause of the API403 is unknown; two producer-collected graph objects are unchanged, while their serialization and input receipts were regenerated. Final clean-source CLI and same-SHA CI remain required."
   ],
-  "incremental_evidence_changes": [
-    "deployment/security/source-contexts-20261115/contexts.json",
-    "deployment/security/source-dependency-migration-20261115.json",
-    "scripts/source_dependency_migration_20261115.py"
-  ],
-  "peer_authored_minio_context_metadata_independently_audited_by_root": true,
-  "actual_original_016_ci_raw_sha256_independently_verified": "7ed313f31ebc8d823176d564d946ca8d26f57807681a5239e115a7a2a93b273b",
-  "actual_016_failed_verdict_preserved": true,
-  "source_context_audit_sha256": "8d175af776b044499722abd862deda1b0a362dba31a4c7138adce66230831bf1"
+  "peer_authored_AM_transport_and_context_change_independently_audited_by_root": true,
+  "AM_source_audit_sha256": "54feff587d3122631ae53ecd3ff01601903e332c32f80c39588af51c53ab4287",
+  "AM_actual_full_gate_verdict_sha256": "7ab0341f3d794ad89f492fc7794a37a459515f2f10c52f5f009d0a24cc18af80"
 }
