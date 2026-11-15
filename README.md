@@ -51,9 +51,13 @@
 
 [正式审核画面](docs/images/report-review.png)、[手机工作台](docs/images/workspace-mobile.png)及[原工作台截图](docs/images/workspace.png)展示其他操作。这些旧截图使用固定资料和合成账号，不是本轮新模型验收；来源见[素材说明](docs/images/README.md)。
 
-正式版本为 [`v0.1.4`](https://github.com/W205614/DeepResearch/releases/tag/v0.1.4)，工程与镜像分发来源为 `0b613f1386bcd7067cb54e236db6e29510c44b16`。三个应用 Packages 的镜像身份、许可与安全材料见版本附件；本轮完成匿名 manifest/config 身份核对，按约定未重复完整 Registry 拉取或日常启动验收。本机容器替换后保持停止。
+正式版本为 [`v0.1.5`](https://github.com/W205614/DeepResearch/releases/tag/v0.1.5)，工程与镜像分发来源为 `e6799f73b00144b9ef16b71dedac2759a5cf54af`。同提交 CI 的 4 项检查、Security 的 22 项检查及 Packages 发布均成功。三个应用镜像已实际匿名完整拉取，核对 manifest、config、各层及实际 Docker 拉取身份；29 份公开附件完整下载核验通过。
 
-本地复杂案例完整回答验收通过；常规问法复用此前同一正向处理路径的真实结果，保留原源码及镜像身份；联网完整验收未完成，未记为通过。累计保守费用预留为 24.694389 USD / 169 次请求，包含失败和结果未知的历史记录，不是实际账单。按已确认的额度与交付范围停止付费后发布。
+2026-11-16 本机日常环境更新 21 个角色、保留另 4 个角色的身份与配置；整套启动、只读健康与权限检查、5 个运行角色的源码指纹核对通过。14 张业务表共 572 行的逐行摘要一致，16 个卷及 9 个网络引用保持，验收后 25 个容器全部停止。此范围不代替异机恢复、生产高可用或完整第三方基础栈二进制分发验收。
+
+本版真实本地资料案例回答原问题，实际 Milvus 检索得到 16 个有效候选，28 条结论获得支持、1 条移除，报告仍为 `partial`。真实联网 quick 案例正常完成，保留 `original_request_answered=false`：9 条支持、2 条移除、2 个官方来源；页面明确展示 6 个网页读取失败、资料缺口和未回答问题，只读页面核验通过。未完整覆盖不自动表示执行失败；本轮没有实测深度补搜路径，也不将该案例称为完整比较。上方两张图片继续保留 `v0.1.4` 的历史结果。
+
+本轮新增 46 次供应商请求均为 HTTP 200，保守费用上界为 **1.374595 USD / 25 USD**；包含未完整答题的测试费用，不是实际账单。历史 169 次请求与 24.694389 USD 保留，账本累计 215 次，不重置旧预留。
 
 [`v0.1.3` 的拉取与日常验收](https://github.com/W205614/DeepResearch/releases/tag/v0.1.3)、[首次真实流程检查](docs/evidence/release-20261112/README.md)和[此前候选失败](docs/evidence/followup-20261113/README.md)保留各自时间与范围。恢复与组件负载证据见[2026-11-08 验收](docs/evidence/daily-20261108/README.md)及[证据索引](docs/evidence/production-20261107/README.md)；不同阶段结果不合并为一次全套通过。
 
@@ -94,11 +98,11 @@ Java 管理公开接口、权限、任务准入、Outbox 和正式报告。Pytho
 
 | 目的 | 来源与入口 | 需要的工具 |
 | --- | --- | --- |
-| 获取预构建应用镜像 | 公开 `v0.1.4`，三个 Packages；[本版镜像、digest 与步骤](https://github.com/W205614/DeepResearch/releases/tag/v0.1.4) | Git、Python 3.11+、Docker Linux/amd64、Compose v2 |
-| 从固定源码构建 | Tag `v0.1.4`，工程提交 `0b613f1386bcd7067cb54e236db6e29510c44b16`；使用下方命令及该 Tag 配方 | 同上；Java／Node 由 Docker 构建 |
+| 获取预构建应用镜像 | 公开 `v0.1.5`，三个 Packages；[本版镜像、digest 与步骤](https://github.com/W205614/DeepResearch/releases/tag/v0.1.5) | Git、Python 3.11+、Docker Linux/amd64、Compose v2 |
+| 从固定源码构建 | Tag `v0.1.5`，工程提交 `e6799f73b00144b9ef16b71dedac2759a5cf54af`；使用下方命令及该 Tag 配方 | 同上；Java／Node 由 Docker 构建 |
 | 修改当前开发源码 | `main` + Python 容器热更新，或独立组件开发检查；[开发指南](CONTRIBUTING.md#开发环境) | 完整开发检查另需 Python／uv、JDK 21／Maven、Node.js 22／npm |
 
-三个应用镜像不包含完整依赖栈。`v0.1.4` 使用受控的 MinIO／Grafana 本地源码入口，并按该 Tag 配方获取或构建其他依赖；首次安装需要网络与构建时间，CI 缓存提速不代表首次安装无需编译。[依赖获取说明](docs/source-release.md#运行依赖如何获取)及[镜像手册](docs/container-packages.md)保留各自版本边界。支持的平台为 Linux/amd64；Windows 使用 Docker Desktop 的 Linux 容器，未声称 arm64 已验收。网络下载、外部账号和模型调用额度由使用者准备。
+三个应用镜像不包含完整依赖栈。`v0.1.5` 使用受控的 MinIO／Grafana 本地源码入口，并按该 Tag 配方获取或构建其他依赖；首次安装需要网络与构建时间，CI 缓存提速不代表首次安装无需编译。对应源码为引用补充包，仍需既有固定输入，不是完全离线安装包。[依赖获取说明](docs/source-release.md#运行依赖如何获取)及[镜像手册](docs/container-packages.md)保留各自版本边界。支持的平台为 Linux/amd64；Windows 使用 Docker Desktop 的 Linux 容器，未声称 arm64 已验收。网络下载、外部账号和模型调用额度由使用者准备。
 
 ### 新安装的配置
 
@@ -130,7 +134,9 @@ Java 管理公开接口、权限、任务准入、Outbox 和正式报告。Pytho
 
 | 对象 | 固定来源 | 获取与对应材料 |
 | --- | --- | --- |
-| 正式 `v0.1.4` | 源码与镜像分发来源 `0b613f1386bcd7067cb54e236db6e29510c44b16` | [Release 与精确 digest](https://github.com/W205614/DeepResearch/releases/tag/v0.1.4) · [Security：22 项成功](https://github.com/W205614/DeepResearch/actions/runs/43437807857)；本次按用户要求豁免 CI，历史失败及取消保留 |
+| 正式 `v0.1.5` | 源码与镜像分发来源 `e6799f73b00144b9ef16b71dedac2759a5cf54af` | [Release 与精确 digest](https://github.com/W205614/DeepResearch/releases/tag/v0.1.5) · [CI：4 项成功](https://github.com/W205614/DeepResearch/actions/runs/43718297000) · [Security：22 项成功](https://github.com/W205614/DeepResearch/actions/runs/43718297049) · [Packages 发布成功](https://github.com/W205614/DeepResearch/actions/runs/43731414135) |
+| 三个 `v0.1.5` Packages | Agent 更新研究提示词及 SoupSieve 4.1；Backend／Web 保留已验收应用运行字节，更新分发材料与源码指纹 | 完整匿名拉取通过；Agent 原始扫描 92 条、Backend 完整 Grype 3 条 MEDIUM、Web 原始 0，精确门禁通过；不称所有依赖零漏洞，见本版附件 |
+| 历史 `v0.1.4` | 源码与镜像分发来源 `0b613f1386bcd7067cb54e236db6e29510c44b16` | [Release 与精确 digest](https://github.com/W205614/DeepResearch/releases/tag/v0.1.4) · [Security：22 项成功](https://github.com/W205614/DeepResearch/actions/runs/43437807857)；当时按用户要求豁免 CI，历史失败及取消保留 |
 | 三个 `v0.1.4` Packages | Agent 修复自然资料归因；Backend 包含原生安全修补；Web 复用已验收内容 | [Agent](https://github.com/users/W205614/packages/container/package/deepresearch-agent) · [Backend](https://github.com/users/W205614/packages/container/package/deepresearch-backend) · [Web](https://github.com/users/W205614/packages/container/package/deepresearch-web)；实际镜像与本地停止替换分别记录 |
 | 历史 `v0.1.3` | 源码与分发提交 `78a19df9dfa6f072af6ebe40ff99cf164d0c4ff8` | [Release](https://github.com/W205614/DeepResearch/releases/tag/v0.1.3) · [CI：4 项成功](https://github.com/W205614/DeepResearch/actions/runs/42968387539) · [Security：22 项成功](https://github.com/W205614/DeepResearch/actions/runs/42968387608) · [Packages 发布成功](https://github.com/W205614/DeepResearch/actions/runs/42977626649) |
 | 三个 `v0.1.3` Packages | Agent／Backend 保留已验收的 `v0.1.2` 完整 config、层与标签；Web 包含新的 libxslt 修复与法律材料 | [Agent](https://github.com/users/W205614/packages/container/package/deepresearch-agent) · [Backend](https://github.com/users/W205614/packages/container/package/deepresearch-backend) · [Web](https://github.com/users/W205614/packages/container/package/deepresearch-web) · [精确身份与来源](docs/container-packages.md) |
