@@ -1,0 +1,1097 @@
+{
+  "schema": "ci-budget-audited-source-v1",
+  "adversarial_cases": 3,
+  "positive_success_min_http": 8,
+  "refusal_success_min_http": 2,
+  "proof_conditions": [
+    "fresh isolated case databases; unchanged four workflow invocations; real model (demo false)",
+    "positive success requires a cited visible claim; escaped non-claim headings/limitations and excluded reference-list lines cannot create one",
+    "first approved claim requires first planner,judge,analyst,writer,validator,coverage asks plus separate support/coverage grading",
+    "critical cases must all pass; stability uses require_all; no noncritical-success assumption is used in the critical-path threshold"
+  ],
+  "symbols": [
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.build",
+      "ast_sha256": "5d6961371e795c74fab8c1d664e667b5233aed53a46c2efedf13611d1fb81524"
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.instrument",
+      "ast_sha256": "38ffd92797c8878fb1094e84693f3d24bfb19f921502ac7a3fd7892552448af3"
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.ask",
+      "ast_sha256": "b31d380bbe644ac9089e320c19de39b3fce8b20fc6691f196c9fd4665d931153"
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.router",
+      "ast_sha256": "fdfe2f4186023f2b9ec7b1d2c8df4db5fdfcc88209e3b0d06861e6fcfd18ef70"
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.planner",
+      "ast_sha256": "230a99a8cdf6a36c417c12e1f8b9718460c25fb6b40d6d68ee154121c8ce7847"
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.judge",
+      "ast_sha256": "4602608a2abf7a886c83c344b8d1e3df99b727cebb768fba628a3c97f068ef59"
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.analyst",
+      "ast_sha256": "62f3e283fc3b40e011267cbf280f008a720a0c015b9930bc4336308c43ad997c"
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.writer",
+      "ast_sha256": "f3b6861c0989877015d6712d396b8e5fe7ad293b3c27203b89b5de7a2b876dee"
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.check_draft",
+      "ast_sha256": "a5ecef40bb1d46a480ee622a1e15db6fe7b7cdfdf3d76a57ae6f20e003073000"
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "ResearchGraph.validator",
+      "ast_sha256": "9b53916189f19d17c9340783e200ae5c8340ff012ef21bde870422fb78d6a9bf"
+    },
+    {
+      "path": "backend/research/graph.py",
+      "symbol": "md_text",
+      "ast_sha256": "5480a9472c4aff1f3cb2c2a99f97a87cecaa8ac960f9967a8ae02815ae6f5243"
+    },
+    {
+      "path": "backend/research/reporting.py",
+      "symbol": "assemble_report",
+      "ast_sha256": "c55b508ff70dbb3215e845b028c49b96464adfb9961420a41e9dab851652fc65"
+    },
+    {
+      "path": "backend/domain/models.py",
+      "symbol": "Plan",
+      "ast_sha256": "f0c78c52efeec29c8b359d59f56f103a62dcd02e489be348f366f0c473e27ed3"
+    },
+    {
+      "path": "backend/domain/models.py",
+      "symbol": "Claim",
+      "ast_sha256": "8a6b6e1bb117f4547b38587f4273da8ca2ce37eb5854d199f45cb0023b8e243e"
+    },
+    {
+      "path": "backend/domain/models.py",
+      "symbol": "ReportDraft",
+      "ast_sha256": "7914003e345013f37a0581eda6855a59168bf9dc80145b19150c86415cd083da"
+    },
+    {
+      "path": "backend/domain/models.py",
+      "symbol": "ReportSection",
+      "ast_sha256": "4845b58b72574c3bd13be584a2ca40a985250a9d2b752a246da0a17dbc41b605"
+    },
+    {
+      "path": "backend/services/runtime.py",
+      "symbol": "Runtime.execute_run",
+      "ast_sha256": "e6f8ab0ba4474ae253396f56df1da0dfec26ebbd6f1ef4c8a05f2308a81282d4"
+    },
+    {
+      "path": "backend/infrastructure/providers.py",
+      "symbol": "Providers.structured",
+      "ast_sha256": "068026d778a3070f3898f6286ca958878770999c435f2fbaa7e872ad07aaf37e"
+    },
+    {
+      "path": "backend/infrastructure/providers.py",
+      "symbol": "Providers.post",
+      "ast_sha256": "fd7a53e6ae5d825c1136f37f722d7c2ca272e125b66272e93dc888dec4a10e38"
+    },
+    {
+      "path": "backend/quality_gate.py",
+      "symbol": "assess_support",
+      "ast_sha256": "a30ffd97d416a956493140daeeda0720e457557cae38a5e37270fbfd90f0c40c"
+    },
+    {
+      "path": "backend/quality_gate.py",
+      "symbol": "evaluate_draft",
+      "ast_sha256": "80636fc05009397a1e556e2d0c83c8a6f10101c2dd9f61ddddef8737fb4fe2ac"
+    },
+    {
+      "path": "backend/quality_gate.py",
+      "symbol": "summarize",
+      "ast_sha256": "c65270e87a41c897b79caf35b62e8d8dbaaa73d8170c2831efb5c86f8070ad13"
+    },
+    {
+      "path": "scripts/evaluate_answers.py",
+      "symbol": "main_async",
+      "ast_sha256": "8fd14b71d2a7d48eed3b04e38aea57d677890f79c1e6bad81750ee4e68f777c0"
+    },
+    {
+      "path": "scripts/evaluate_research.py",
+      "symbol": "assess_report_support",
+      "ast_sha256": "7c53d11985a00b65694e1f918f3413b192497f40f9d4e25aac64ffc3f762ea40"
+    },
+    {
+      "path": "scripts/evaluate_research.py",
+      "symbol": "evaluate",
+      "ast_sha256": "e3b9205cacb684d6867c102ef13a66661f16d62a1c62ed2ae5743d0ccf6eeec0"
+    },
+    {
+      "path": "scripts/evaluate_research.py",
+      "symbol": "summarize_research",
+      "ast_sha256": "01ad6c9b557628c7829929bd5ba5286db6ee1323922722c67eb14fccc04dd285"
+    },
+    {
+      "path": "scripts/evaluate_research.py",
+      "symbol": "summarize_repetitions",
+      "ast_sha256": "c82303ded704f125b8bf82ce54ad4af9d81edcef4bd936498dd9f67089dd47ff"
+    },
+    {
+      "path": "scripts/evaluate_research.py",
+      "symbol": "main",
+      "ast_sha256": "2325bf89d990e28df56b1b8414a5cd79bc299c705564524ce9c887b4c8586c10"
+    },
+    {
+      "path": "scripts/evaluation_scope.py",
+      "symbol": "scoped_evaluation",
+      "ast_sha256": "a6a358812c41d3e15d281d2b2b3957e9516a29f1ac08810b07583cd3ed3a6202"
+    },
+    {
+      "path": "scripts/bounded_evaluation.py",
+      "symbol": "main",
+      "ast_sha256": "c67e6fdc18ec7176389bc859ce659981c16b7201d446cc478a5fd80fb71bf935"
+    },
+    {
+      "path": "scripts/bounded_evaluation.py",
+      "symbol": "Budget.install",
+      "ast_sha256": "7d72d3bf99a55fda45603b5f994964658d74c939795d8f5fb3303a9856d4ebd1"
+    },
+    {
+      "path": "scripts/bounded_evaluation.py",
+      "symbol": "Budget.reserve",
+      "ast_sha256": "52c0d9108fb515b99014edec434e929e37f6b817e258dcab2dd66320c4cc4b10"
+    },
+    {
+      "path": "scripts/bounded_evaluation.py",
+      "symbol": "Budget.__init__",
+      "ast_sha256": "b9cd57027177bcdb95a369c939602c9fd5e6c727cf8d61d88c8530caea901c89"
+    },
+    {
+      "path": "scripts/evaluation_scope.py",
+      "symbol": "configure_evaluator_limits",
+      "ast_sha256": "30ca3662002d01d4b8c06c7739ad2016af3f229e4f97de3cc3f7b064f3dd8ef5"
+    },
+    {
+      "path": "backend/services/runtime.py",
+      "symbol": "Runtime.claim_run",
+      "ast_sha256": "5b67edf0c3038f68d9bdd5f741ccfc0d24e065199b6820dfa0f97c3a6c2c551f"
+    },
+    {
+      "path": "backend/infrastructure/providers.py",
+      "symbol": "Providers.chat_payload",
+      "ast_sha256": "6805fc6153557fcd92e92aa475c785726a76998d20933cd38cae647ff24992e7"
+    },
+    {
+      "path": "backend/infrastructure/providers.py",
+      "symbol": "Providers.require_official_openai",
+      "ast_sha256": "80851fb04d745ac0e03485e7cf203b04d3a2da36d879f0b2e97c1981649e5329"
+    }
+  ],
+  "case_fingerprints": {
+    "eval/answer_quality_cases.json": "e6772a2c2c201e04666efed0388c740b0eb5e7e61db9a51baa37f37aa3186b0e",
+    "eval/research_quality_cases.json": "c23662922168f5ce04e3b2e0e9cf9b11fc1bee81a3bc8edc25b18e39b74f239f",
+    "eval/research_quality_extensions.json": "8e81a432a18f5360e169266d9ff584b30d43b897e34bad5bffc023aab4f50f50",
+    "pyproject.toml": "e4e01ce355f7de93d2ecff61a8b8c7677d6cad6c51dae9ff5441ebd698a76a6a",
+    "uv.lock": "5320e9772d9c50008ec152c23fdd406fa9a739cdb5feca42e68649a898b53bc1"
+  },
+  "fresh_invocations": [
+    "- run: uv run python scripts/run_ci_evaluation.py paid --label answers scripts/evaluate_answers.py --output .cache/eval/answer-quality.json",
+    "- run: uv run python scripts/run_ci_evaluation.py paid --label research scripts/evaluate_research.py --debug-fixed-failures --output .cache/eval/research-quality.json",
+    "- run: uv run python scripts/run_ci_evaluation.py paid --label stability scripts/evaluate_research.py --only conflict-1,compare-3,single-5 --repetitions 3 --require-all --debug-fixed-failures --output .cache/eval/research-stability.json",
+    "- run: uv run python scripts/run_ci_evaluation.py paid --label extensions scripts/evaluate_research.py --cases eval/research_quality_extensions.json --output .cache/eval/research-quality-extensions.json"
+  ],
+  "dependency_reaudit_20261030": {
+    "reason": "Security-only dependency refresh; unchanged audited application/evaluator ASTs, cases and four fresh workflow commands.",
+    "reviewed_scope": "ResearchGraph.build still requires planner, judge, analyst, writer and validator in the successful positive path; application validator/coverage and external support/coverage calls remain separately required. No new graph cache or provider call bypass is enabled. Checkpoint namespace and trace parsing fixes do not change that application call graph.",
+    "selected_versions": {
+      "langgraph": "1.2.18",
+      "langgraph-checkpoint": "4.3.1",
+      "langgraph-checkpoint-postgres": "3.2.0",
+      "langgraph-checkpoint-sqlite": "3.1.2",
+      "langgraph-sdk": "0.4.10",
+      "mako": "1.4.3",
+      "opentelemetry-api": "1.45.2",
+      "opentelemetry-sdk": "1.45.2"
+    },
+    "previous_dependency_fingerprints": {
+      "pyproject.toml": "62e5c3936b6c6e2e94c7dcc60c659f6f90a5381c74e13a10c9ce1dff9c28deb4",
+      "uv.lock": "d63ecb8cb8c56a301e92bbd2de405dabc351bcb5cfd51cd4d5bc5b0674af9dc0"
+    },
+    "unchanged_bounds": {
+      "critical_path_lower_bound": 245,
+      "pass_rate_refinement_lower_bound": 296
+    },
+    "authorization_boundary": "No paid evaluation executed; no policy, authorization, ledger, budget limit, case or success threshold changed. This static necessary bound is not a model quality result or sufficient quota claim."
+  },
+  "dependency_reaudit_20261031": {
+    "reason": "Upgrade only pypdf 6.21.2 to 6.21.4 and its minimum requirement for newly reported security fixes.",
+    "previous_dependency_fingerprints": {
+      "pyproject.toml": "c69ce885ab35a0d94e835c2ebb6bab828097b67c064d4200e0b0ebeb431cb3b2",
+      "uv.lock": "e4b21d08172940e08e47bf60330f80a239808fb07303ec7cc64cc617b1c78d19"
+    },
+    "all_other_dependency_package_records_unchanged": true,
+    "audited_application_evaluator_symbols_verified": 34,
+    "case_fingerprints_and_four_paid_commands_unchanged": true,
+    "reviewed_scope": "The fixed answer/research cases use frozen text evidence. PDF parsing updates do not change graph/provider/evaluator call control flow or the required planner, judge, analyst, writer, validator, coverage and external grading calls. All audited AST fingerprints and evaluation invocations remain identical.",
+    "unchanged_bounds": {
+      "critical_path_lower_bound": 245,
+      "pass_rate_refinement_lower_bound": 296
+    },
+    "authorization_boundary": "Static proof re-audit only. No supplier HTTP, paid quality result, authorization change, budget increase, ledger reset, threshold change or claim that this necessary bound is sufficient."
+  },
+  "production_reaudit_20261107": {
+    "reason": "Production account/admission fencing and OpenAI request dialect; re-audit the static necessary-call proof, not historical model quality.",
+    "previous_symbol_fingerprints": {
+      "backend/services/runtime.py:Runtime.execute_run": "2fb34718ec87fa94bce7409ef01b3a70c510bc2ddd27e566a4b02ade62725e06",
+      "backend/infrastructure/providers.py:Providers.structured": "252379880bd00138c44d6922b8f939b96f099a6fa44cd2532ca1091052973953",
+      "scripts/bounded_evaluation.py:Budget.reserve": "0a8b3540e2b1a108d2e65a22786c876f92c7d653bd0378082d2bb32cb09f65bb"
+    },
+    "reviewed_scope": [
+      "Runtime.claim_run extracts eligibility/attempt claim and adds global/workspace/account/migration checks. Rejected admissions do not run a graph or yield a successful graded report. Fresh eligible case execution still invokes the same ResearchGraph with fresh case/checkpoint state; no successful-result cache or alternate graph path was added.",
+      "Runtime.execute_run still awaits the graph and existing source/claim verification before writing a successful report; the new active-account SQL predicate can only reject publication, not manufacture a passing case.",
+      "Providers.structured changes payload construction only. For demo_mode=false, every successful structured result still requires at least one awaited Providers.post. chat_payload and official-endpoint validation perform no HTTP and no cached/model result bypass; both helpers are newly pinned.",
+      "Budget.reserve adds max_completion_tokens to output reservation, including reasoning output. It does not decrease request counts or bypass before-HTTP reservation; settlement still uses supplier completion/output totals without double-counting reasoning details.",
+      "All graph/formatter/grader case ASTs, input/dependency fingerprints and four paid invocations remain unchanged. Admission failures cannot satisfy the critical success/refusal gates."
+    ],
+    "unchanged_bounds": {
+      "critical_path_lower_bound": 245,
+      "pass_rate_refinement_lower_bound": 296
+    },
+    "authorization_boundary": "Zero supplier HTTP. No quality evaluation, policy/authorization amendment, cumulative ledger mutation/reset, budget increase, success-threshold change, or claim that this necessary bound is sufficient. OpenAI quality still requires separate authorization."
+  },
+  "daily_reaudit_20261108": {
+    "previous_basis_sha256": "811e729f0c89ad393e5d12e72d6a662829ed73faf495a5ebcbdd912f2a04f71c",
+    "changed_symbols": [
+      "backend/research/graph.py:ResearchGraph.check_draft",
+      "backend/research/graph.py:ResearchGraph.validator",
+      "scripts/evaluate_research.py:assess_report_support"
+    ],
+    "changed_case": "no-evidence-refusal accepts both evidence and material terminology; must_refuse, explanation, source requirements and all thresholds remain unchanged",
+    "proof_review": [
+      "A positive result still requires planner, judge, analyst, writer, model validator and model question coverage plus separate model support and coverage grading. Context selection does not authorize claims or skip model verification.",
+      "Refusal still requires no visible factual claims and an explanation; answer case count, critical flags, source requirements and three adversarial grades are unchanged.",
+      "One oversized source uses bounded complete-paragraph excerpts. Independent support still calls the model for every nonempty leaf group; recursive group splitting remains inside the existing 2C-1 upper envelope."
+    ],
+    "critical_path_lower_bound_unchanged": 245,
+    "pass_rate_refinement_lower_bound_unchanged": 296,
+    "ci_provider_policy_sha256_unchanged": "f2b132056535401d3a9425b03a887722d234ce15e852744191681c66236021dd",
+    "paid_workflow_or_cumulative_ledger_changed": false,
+    "supplier_http_for_reaudit": 0
+  },
+  "source_reaudit_20261113": {
+    "previous_basis_sha256": "ac3c65780c88b453d7bf453d0e2b3610389ae7a9f256d698ffd03da0f7817664",
+    "source_change_commit": "89ba67b24b955a94015ff765fdb12b41e87052cc",
+    "changed_symbol": "backend/infrastructure/providers.py:Providers.chat_payload",
+    "previous_ast_sha256": "c36faa8dfae59685eb71da5267368008851b4d5f4b1163d92154c68f954c6137",
+    "current_ast_sha256": "6805fc6153557fcd92e92aa475c785726a76998d20933cd38cae647ff24992e7",
+    "reviewed_delta": "The OpenAI branch adds only payload.setdefault('service_tier', 'default'). Removing this exact statement yields the complete previous audited function AST.",
+    "proof_review": [
+      "This synchronous payload field default adds no HTTP, await, loop, retry, cached result or alternate execution path. Existing explicit service_tier values are preserved.",
+      "Providers.structured and Providers.post remain pinned to their original ASTs. Every successful structured result still requires the same awaited post; graph and external support/coverage grades are unchanged.",
+      "All other36 audited symbols, dependency/case fingerprints and the four paid workflow invocations are unchanged. The245 critical-path and296 pass-rate-refinement necessary lower bounds remain unchanged."
+    ],
+    "audited_symbols": 37,
+    "other_symbols_unchanged": 36,
+    "critical_path_lower_bound_unchanged": 245,
+    "pass_rate_refinement_lower_bound_unchanged": 296,
+    "supplier_http_requests": 0,
+    "policy_authorization_or_ledger_changed": false,
+    "boundary": "Static proof metadata re-audit only; no budget increase/reset/refund, gate relaxation, paid quality result or sufficient-budget claim."
+  },
+  "source_reaudit_20261115": {
+    "prior_basis": {
+      "path": "eval/ci-budget-source-basis.json",
+      "sha256": "59365dee158df5e9696e3c600d7769fd0863099bc049a9f358079e77ff6b73f3",
+      "source_commit": "3a3b502c2b3a95ad59b69b1279591c08c8d2022e",
+      "bytes_preserved": true
+    },
+    "actor_kind": "automated_static_technical_reaudit",
+    "producer": {
+      "path": "scripts/build_ci_budget_basis_20261115.py",
+      "sha256": "7edf740f151a62bf57e0d4e88b7b11446911e9878152827524e925c4c1367546"
+    },
+    "dependency_delta": {
+      "files": {
+        "pyproject.toml": {
+          "prior_sha256": "00ffcbae13033be9cd2a7a6010f43eef486433517b6fc2911ce8adea4c5dd213",
+          "current_sha256": "e4e01ce355f7de93d2ecff61a8b8c7677d6cad6c51dae9ff5441ebd698a76a6a"
+        },
+        "uv.lock": {
+          "prior_sha256": "ddeba33cd99792dc69bfd6d09253a85f0e56dc2807bcede2176e70b4e761bf6f",
+          "current_sha256": "5320e9772d9c50008ec152c23fdd406fa9a739cdb5feca42e68649a898b53bc1"
+        }
+      },
+      "soupsieve": {
+        "prior": {
+          "name": "soupsieve",
+          "version": "2.9.2",
+          "source": {
+            "registry": "https://pypi.org/simple"
+          },
+          "sdist": {
+            "url": "https://files.pythonhosted.org/packages/69/99/a6ca3beb3ccacb41fb3321d8a60e5566f9e6467601ef8eba6a17e1b89778/soupsieve-2.9.2.tar.gz",
+            "hash": "sha256:4a55d8cf158a9c2e587fa4922f1bbb91d68ac829e2d6f25403a85747c71daf74",
+            "size": 122445,
+            "upload-time": "2026-08-07T00:57:24.801Z"
+          },
+          "wheels": [
+            {
+              "url": "https://files.pythonhosted.org/packages/eb/dc/ad025c1ee131eba60c69f4dd5779b18fcf1e6b21a343e2162a84d5d133c7/soupsieve-2.9.2-py3-none-any.whl",
+              "hash": "sha256:8089a26fd974ca7a1f30276d3d8492ab266ab15af581642dfe8aa162e0c1c823",
+              "size": 37370,
+              "upload-time": "2026-08-07T00:57:23.524Z"
+            }
+          ]
+        },
+        "current": {
+          "name": "soupsieve",
+          "version": "4.1",
+          "source": {
+            "registry": "https://pypi.org/simple"
+          },
+          "sdist": {
+            "url": "https://files.pythonhosted.org/packages/95/48/21a393ff731b8f928fa4f8176f9a7ceba2252ee60a5149f25b45c292aa5c/soupsieve-4.1.tar.gz",
+            "hash": "sha256:ca9abf7126667010d8f6e9b39bfc1bc3b23c8aed9bcb0f54a754dde969bb8aab",
+            "size": 161955,
+            "upload-time": "2026-11-10T01:59:50.399Z"
+          },
+          "wheels": [
+            {
+              "url": "https://files.pythonhosted.org/packages/88/73/6a2087c72975cfc07394623bca8d17654342ea4055ae368deafe5a81a542/soupsieve-4.1-py3-none-any.whl",
+              "hash": "sha256:e4d667b3974ce6e038e7390486b8093369854a1d345ffdd4c121dfc4a782e809",
+              "size": 52302,
+              "upload-time": "2026-11-10T01:59:48.571Z"
+            }
+          ]
+        }
+      },
+      "python_floor": {
+        "prior": ">=3.11,<3.14",
+        "current": ">=3.11.5,<3.14"
+      },
+      "removed_dependency": {
+        "package": {
+          "name": "async-timeout",
+          "version": "5.0.1",
+          "source": {
+            "registry": "https://pypi.org/simple"
+          },
+          "sdist": {
+            "url": "https://files.pythonhosted.org/packages/a5/ae/136395dfbfe00dfc94da3f3e136d0b13f394cba8f4841120e34226265780/async_timeout-5.0.1.tar.gz",
+            "hash": "sha256:d9321a7a3d5a6a5e187e824d2fa0793ce379a202935782d555d6e9d2735677d3",
+            "size": 9274,
+            "upload-time": "2024-11-06T16:41:39.6Z"
+          },
+          "wheels": [
+            {
+              "url": "https://files.pythonhosted.org/packages/fe/ba/e2081de779ca30d473f21f5b30e0e737c438205440784c7dfc81efc2b029/async_timeout-5.0.1-py3-none-any.whl",
+              "hash": "sha256:39e3809566ff85354557ec2398b55e096c8364bacac9405a7a1fa429e77fe76c",
+              "size": 6233,
+              "upload-time": "2024-11-06T16:41:37.9Z"
+            }
+          ]
+        },
+        "sole_edge": {
+          "name": "async-timeout",
+          "marker": "python_full_version < '3.11.3'"
+        },
+        "reason": "Its marker is false throughout the new supported Python range (>=3.11.5)."
+      },
+      "other_package_records_identical_after_resolution_marker_order_normalization": 111,
+      "resolution_marker_order_only_is_ignored": true
+    },
+    "official_soupsieve_source_review": {
+      "official_sdist": {
+        "url": "https://files.pythonhosted.org/packages/95/48/21a393ff731b8f928fa4f8176f9a7ceba2252ee60a5149f25b45c292aa5c/soupsieve-4.1.tar.gz",
+        "hash": "sha256:ca9abf7126667010d8f6e9b39bfc1bc3b23c8aed9bcb0f54a754dde969bb8aab",
+        "size": 161955,
+        "upload-time": "2026-11-10T01:59:50.399Z"
+      },
+      "official_wheel": {
+        "url": "https://files.pythonhosted.org/packages/88/73/6a2087c72975cfc07394623bca8d17654342ea4055ae368deafe5a81a542/soupsieve-4.1-py3-none-any.whl",
+        "hash": "sha256:e4d667b3974ce6e038e7390486b8093369854a1d345ffdd4c121dfc4a782e809",
+        "size": 52302,
+        "upload-time": "2026-11-10T01:59:48.571Z"
+      },
+      "official_source_and_locked_wheel_package_file_bytes_identical": {
+        "soupsieve/__init__.py": "62769d4e6151f5c6ffcbc5a3f9890eb86f3ac5c2c894527c1106af427d5e56ef",
+        "soupsieve/__meta__.py": "b661bce3ebad9b9ab39ea304c63ad2035cd86e20c3f699ddb329e4fd623fd9f2",
+        "soupsieve/bidi.py": "09da6b778c57b24d8dd3ff76e3d296193610aaed34d9ce2bc8865bf4a7d98ecb",
+        "soupsieve/css_match.py": "a3af32be6a195c9e2b756051c4b5063ac367a6877eaf995c0485386722989484",
+        "soupsieve/css_parser.py": "1e0d256d1c576345a77255eedcc9f6e69552acaa16de5f21cf619b71a8319754",
+        "soupsieve/css_types.py": "d55dcd265d7822b69ed68970a20bc1a3d93bd8e9b72acc5e7daaa26bb3936764",
+        "soupsieve/pretty.py": "89233e34a0b3aee2500b012b8904fbd8bac5e2c971b226fb4c1e79d87d9bb2a0",
+        "soupsieve/py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "soupsieve/util.py": "44cf2dc35de17be66ae9d560601a93c5f2e9522fd7ec0f4a2c89043735b0df28"
+      },
+      "external_import_roots_by_python_file": {
+        "soupsieve/__init__.py": [
+          "__future__",
+          "bs4",
+          "typing"
+        ],
+        "soupsieve/__meta__.py": [
+          "__future__",
+          "collections",
+          "re"
+        ],
+        "soupsieve/bidi.py": [],
+        "soupsieve/css_match.py": [
+          "__future__",
+          "bisect",
+          "bs4",
+          "collections",
+          "datetime",
+          "math",
+          "re",
+          "typing"
+        ],
+        "soupsieve/css_parser.py": [
+          "__future__",
+          "collections",
+          "dataclasses",
+          "functools",
+          "re",
+          "threading",
+          "typing",
+          "warnings"
+        ],
+        "soupsieve/css_types.py": [
+          "__future__",
+          "copyreg",
+          "enum",
+          "typing"
+        ],
+        "soupsieve/pretty.py": [
+          "__future__",
+          "re",
+          "typing"
+        ],
+        "soupsieve/util.py": [
+          "__future__",
+          "functools",
+          "re",
+          "typing",
+          "warnings"
+        ]
+      },
+      "dynamic_eval_exec_or_import_calls": [],
+      "license_sha256": "76a0acdb98c3a63681e20b6f096699ef8cad5fb35d56eef8387e0fa71d797a9a",
+      "network_imports_or_supplier_http_entry_added": false,
+      "scope": "All eight official SoupSieve Python source files import only the listed standard-library roots and unchanged bs4. No HTTP/socket/client import or dynamic eval/exec/import entry exists. This is a static package/path review, not a new paid quality result."
+    },
+    "unchanged_audited_symbols": [
+      {
+        "path": "backend/research/graph.py",
+        "symbol": "ResearchGraph.build",
+        "line": 248,
+        "ast_sha256": "5d6961371e795c74fab8c1d664e667b5233aed53a46c2efedf13611d1fb81524",
+        "audited": true
+      },
+      {
+        "path": "backend/research/graph.py",
+        "symbol": "ResearchGraph.instrument",
+        "line": 270,
+        "ast_sha256": "38ffd92797c8878fb1094e84693f3d24bfb19f921502ac7a3fd7892552448af3",
+        "audited": true
+      },
+      {
+        "path": "backend/research/graph.py",
+        "symbol": "ResearchGraph.ask",
+        "line": 308,
+        "ast_sha256": "b31d380bbe644ac9089e320c19de39b3fce8b20fc6691f196c9fd4665d931153",
+        "audited": true
+      },
+      {
+        "path": "backend/research/graph.py",
+        "symbol": "ResearchGraph.router",
+        "line": 384,
+        "ast_sha256": "fdfe2f4186023f2b9ec7b1d2c8df4db5fdfcc88209e3b0d06861e6fcfd18ef70",
+        "audited": true
+      },
+      {
+        "path": "backend/research/graph.py",
+        "symbol": "ResearchGraph.planner",
+        "line": 487,
+        "ast_sha256": "230a99a8cdf6a36c417c12e1f8b9718460c25fb6b40d6d68ee154121c8ce7847",
+        "audited": true
+      },
+      {
+        "path": "backend/research/graph.py",
+        "symbol": "ResearchGraph.judge",
+        "line": 636,
+        "ast_sha256": "4602608a2abf7a886c83c344b8d1e3df99b727cebb768fba628a3c97f068ef59",
+        "audited": true
+      },
+      {
+        "path": "backend/research/graph.py",
+        "symbol": "ResearchGraph.analyst",
+        "line": 701,
+        "ast_sha256": "d69fea12e4c2e9ec40911eed002697b7f47173f3f57ad19f4d1018e98d8689c1",
+        "audited": true
+      },
+      {
+        "path": "backend/research/graph.py",
+        "symbol": "ResearchGraph.writer",
+        "line": 789,
+        "ast_sha256": "f3b6861c0989877015d6712d396b8e5fe7ad293b3c27203b89b5de7a2b876dee",
+        "audited": true
+      },
+      {
+        "path": "backend/research/graph.py",
+        "symbol": "ResearchGraph.check_draft",
+        "line": 812,
+        "ast_sha256": "a5ecef40bb1d46a480ee622a1e15db6fe7b7cdfdf3d76a57ae6f20e003073000",
+        "audited": true
+      },
+      {
+        "path": "backend/research/graph.py",
+        "symbol": "ResearchGraph.validator",
+        "line": 896,
+        "ast_sha256": "dcdf0338bebd628ac36d797d2eb0de8bc0f263ca3049cf5e3be1b77bde6a895c",
+        "audited": true
+      },
+      {
+        "path": "backend/research/graph.py",
+        "symbol": "md_text",
+        "line": 172,
+        "ast_sha256": "5480a9472c4aff1f3cb2c2a99f97a87cecaa8ac960f9967a8ae02815ae6f5243",
+        "audited": true
+      },
+      {
+        "path": "backend/research/reporting.py",
+        "symbol": "assemble_report",
+        "line": 32,
+        "ast_sha256": "c55b508ff70dbb3215e845b028c49b96464adfb9961420a41e9dab851652fc65",
+        "audited": true
+      },
+      {
+        "path": "backend/domain/models.py",
+        "symbol": "Plan",
+        "line": 77,
+        "ast_sha256": "f0c78c52efeec29c8b359d59f56f103a62dcd02e489be348f366f0c473e27ed3",
+        "audited": true
+      },
+      {
+        "path": "backend/domain/models.py",
+        "symbol": "Claim",
+        "line": 111,
+        "ast_sha256": "8a6b6e1bb117f4547b38587f4273da8ca2ce37eb5854d199f45cb0023b8e243e",
+        "audited": true
+      },
+      {
+        "path": "backend/domain/models.py",
+        "symbol": "ReportDraft",
+        "line": 163,
+        "ast_sha256": "7914003e345013f37a0581eda6855a59168bf9dc80145b19150c86415cd083da",
+        "audited": true
+      },
+      {
+        "path": "backend/domain/models.py",
+        "symbol": "ReportSection",
+        "line": 158,
+        "ast_sha256": "4845b58b72574c3bd13be584a2ca40a985250a9d2b752a246da0a17dbc41b605",
+        "audited": true
+      },
+      {
+        "path": "backend/services/runtime.py",
+        "symbol": "Runtime.execute_run",
+        "line": 525,
+        "ast_sha256": "e6f8ab0ba4474ae253396f56df1da0dfec26ebbd6f1ef4c8a05f2308a81282d4",
+        "audited": true
+      },
+      {
+        "path": "backend/infrastructure/providers.py",
+        "symbol": "Providers.structured",
+        "line": 230,
+        "ast_sha256": "068026d778a3070f3898f6286ca958878770999c435f2fbaa7e872ad07aaf37e",
+        "audited": true
+      },
+      {
+        "path": "backend/infrastructure/providers.py",
+        "symbol": "Providers.post",
+        "line": 144,
+        "ast_sha256": "fd7a53e6ae5d825c1136f37f722d7c2ca272e125b66272e93dc888dec4a10e38",
+        "audited": true
+      },
+      {
+        "path": "backend/quality_gate.py",
+        "symbol": "assess_support",
+        "line": 18,
+        "ast_sha256": "a30ffd97d416a956493140daeeda0720e457557cae38a5e37270fbfd90f0c40c",
+        "audited": true
+      },
+      {
+        "path": "backend/quality_gate.py",
+        "symbol": "evaluate_draft",
+        "line": 39,
+        "ast_sha256": "80636fc05009397a1e556e2d0c83c8a6f10101c2dd9f61ddddef8737fb4fe2ac",
+        "audited": true
+      },
+      {
+        "path": "backend/quality_gate.py",
+        "symbol": "summarize",
+        "line": 78,
+        "ast_sha256": "c65270e87a41c897b79caf35b62e8d8dbaaa73d8170c2831efb5c86f8070ad13",
+        "audited": true
+      },
+      {
+        "path": "scripts/evaluate_answers.py",
+        "symbol": "main_async",
+        "line": 18,
+        "ast_sha256": "8fd14b71d2a7d48eed3b04e38aea57d677890f79c1e6bad81750ee4e68f777c0",
+        "audited": true
+      },
+      {
+        "path": "scripts/evaluate_research.py",
+        "symbol": "assess_report_support",
+        "line": 33,
+        "ast_sha256": "7c53d11985a00b65694e1f918f3413b192497f40f9d4e25aac64ffc3f762ea40",
+        "audited": true
+      },
+      {
+        "path": "scripts/evaluate_research.py",
+        "symbol": "evaluate",
+        "line": 93,
+        "ast_sha256": "e3b9205cacb684d6867c102ef13a66661f16d62a1c62ed2ae5743d0ccf6eeec0",
+        "audited": true
+      },
+      {
+        "path": "scripts/evaluate_research.py",
+        "symbol": "summarize_research",
+        "line": 63,
+        "ast_sha256": "01ad6c9b557628c7829929bd5ba5286db6ee1323922722c67eb14fccc04dd285",
+        "audited": true
+      },
+      {
+        "path": "scripts/evaluate_research.py",
+        "symbol": "summarize_repetitions",
+        "line": 76,
+        "ast_sha256": "c82303ded704f125b8bf82ce54ad4af9d81edcef4bd936498dd9f67089dd47ff",
+        "audited": true
+      },
+      {
+        "path": "scripts/evaluate_research.py",
+        "symbol": "main",
+        "line": 197,
+        "ast_sha256": "2325bf89d990e28df56b1b8414a5cd79bc299c705564524ce9c887b4c8586c10",
+        "audited": true
+      },
+      {
+        "path": "scripts/evaluation_scope.py",
+        "symbol": "scoped_evaluation",
+        "line": 7,
+        "ast_sha256": "a6a358812c41d3e15d281d2b2b3957e9516a29f1ac08810b07583cd3ed3a6202",
+        "audited": true
+      },
+      {
+        "path": "scripts/bounded_evaluation.py",
+        "symbol": "main",
+        "line": 177,
+        "ast_sha256": "c67e6fdc18ec7176389bc859ce659981c16b7201d446cc478a5fd80fb71bf935",
+        "audited": true
+      },
+      {
+        "path": "scripts/bounded_evaluation.py",
+        "symbol": "Budget.install",
+        "line": 141,
+        "ast_sha256": "7d72d3bf99a55fda45603b5f994964658d74c939795d8f5fb3303a9856d4ebd1",
+        "audited": true
+      },
+      {
+        "path": "scripts/bounded_evaluation.py",
+        "symbol": "Budget.reserve",
+        "line": 49,
+        "ast_sha256": "52c0d9108fb515b99014edec434e929e37f6b817e258dcab2dd66320c4cc4b10",
+        "audited": true
+      },
+      {
+        "path": "scripts/bounded_evaluation.py",
+        "symbol": "Budget.__init__",
+        "line": 23,
+        "ast_sha256": "b9cd57027177bcdb95a369c939602c9fd5e6c727cf8d61d88c8530caea901c89",
+        "audited": true
+      },
+      {
+        "path": "scripts/evaluation_scope.py",
+        "symbol": "configure_evaluator_limits",
+        "line": 15,
+        "ast_sha256": "30ca3662002d01d4b8c06c7739ad2016af3f229e4f97de3cc3f7b064f3dd8ef5",
+        "audited": true
+      },
+      {
+        "path": "backend/services/runtime.py",
+        "symbol": "Runtime.claim_run",
+        "line": 475,
+        "ast_sha256": "5b67edf0c3038f68d9bdd5f741ccfc0d24e065199b6820dfa0f97c3a6c2c551f",
+        "audited": true
+      },
+      {
+        "path": "backend/infrastructure/providers.py",
+        "symbol": "Providers.chat_payload",
+        "line": 104,
+        "ast_sha256": "6805fc6153557fcd92e92aa475c785726a76998d20933cd38cae647ff24992e7",
+        "audited": true
+      },
+      {
+        "path": "backend/infrastructure/providers.py",
+        "symbol": "Providers.require_official_openai",
+        "line": 123,
+        "ast_sha256": "80851fb04d745ac0e03485e7cf203b04d3a2da36d879f0b2e97c1981649e5329",
+        "audited": true
+      }
+    ],
+    "unchanged_fresh_invocations": [
+      "- run: uv run python scripts/run_ci_evaluation.py paid --label answers scripts/evaluate_answers.py --output .cache/eval/answer-quality.json",
+      "- run: uv run python scripts/run_ci_evaluation.py paid --label research scripts/evaluate_research.py --debug-fixed-failures --output .cache/eval/research-quality.json",
+      "- run: uv run python scripts/run_ci_evaluation.py paid --label stability scripts/evaluate_research.py --only conflict-1,compare-3,single-5 --repetitions 3 --require-all --debug-fixed-failures --output .cache/eval/research-stability.json",
+      "- run: uv run python scripts/run_ci_evaluation.py paid --label extensions scripts/evaluate_research.py --cases eval/research_quality_extensions.json --output .cache/eval/research-quality-extensions.json"
+    ],
+    "proof_review": [
+      "All 37 audited graph/provider/grading/runner symbols and all four paid workflow invocations retain their exact audited AST/command identities. All three case datasets retain their exact bytes and therefore case/critical/source/refusal flags.",
+      "The Python support floor alone increases to3.11.5; the removed async-timeout edge had marker<3.11.3 and is unreachable throughout this supported range. Other dependency records/artifact identities remain exact except the fixed official SoupSieve4.1 update and irrelevant marker ordering.",
+      "All eight official SoupSieve Python files and py.typed exactly match the locked official wheel; imports have no network/client module and no dynamic eval/exec/import entry. bs4 and every provider, HTTP dispatch, retry, model validation and external support/coverage symbol remain exact.",
+      "A passing positive case still needs the same mandatory planner/judge/analyst/writer/validator/coverage and independent support/coverage grading HTTP calls. No dataset count, required success threshold or refusal condition changes. The original checker recomputes the necessary bounds; this does not establish a sufficient budget or a paid-quality pass."
+    ],
+    "supplier_http_requests": 0,
+    "policy_authorization_or_ledger_changed": false,
+    "production_default_changed_by_generator": false,
+    "original_checker_recomputed": {
+      "proof_verified": true,
+      "critical_path_lower_bound": 245,
+      "pass_rate_refinement_lower_bound": 296,
+      "required_lower_bound": 296,
+      "supplier_http_requests": 0
+    }
+  },
+  "source_prompt_continuation_20261115": {
+    "schema": "ci-budget-exact-prompt-continuation-20261115-v1",
+    "prior_basis": {
+      "path": "eval/ci-budget-source-basis-20261115.json",
+      "sha256": "8224ce26296d493b32a2797424e81e2f06514d32d7dd626468c228a79a70f53b",
+      "source_commit": "9ca6b7a57b850d0da06312ba8749297515897833",
+      "bytes_preserved": true
+    },
+    "producer": {
+      "path": "scripts/build_ci_budget_prompt_basis_20261115.py",
+      "sha256": "7ae0f9bc50b3e0b9f6b4523b3c2001360b3d35129c2c12d56cdb4816b05e3fa4"
+    },
+    "graph": {
+      "path": "backend/research/graph.py",
+      "before_sha256": "b4bd11568b52059ac0420acedaad5ffb65e22ca6531c15783a5acf39b7d48ce9",
+      "after_sha256": "71910af11b4e932b5a2d70d739cf71ec3ec433979b2bfbd3bdb341207f1c5994"
+    },
+    "exact_prompt_deltas": {
+      "ResearchGraph.analyst": {
+        "stage": "analyst",
+        "before_prompt_sha256": "3ed47dbc0f3acbaf7dedb6286ed72f45ea558224d2ed1e8553b0f3c136659e2a",
+        "after_prompt_sha256": "0d850e154776c2a4041a90ec0de480010af1f47267f5ea3d37d0ca85069e1a7d"
+      },
+      "ResearchGraph.validator": {
+        "stage": "coverage",
+        "before_prompt_sha256": "c8c2f8cef2ee645e18fb183064b2e7d3903252889f5b88c570ee6a4b9367165b",
+        "after_prompt_sha256": "714475bf9c818447661d60c175a47390551115c09b9f12115bb67bbcd204ffc2"
+      }
+    },
+    "entire_other_module_ast_identical": true,
+    "all_37_audited_symbols": [
+      {
+        "path": "backend/research/graph.py",
+        "symbol": "ResearchGraph.build",
+        "line": 248,
+        "ast_sha256": "5d6961371e795c74fab8c1d664e667b5233aed53a46c2efedf13611d1fb81524",
+        "audited": true
+      },
+      {
+        "path": "backend/research/graph.py",
+        "symbol": "ResearchGraph.instrument",
+        "line": 270,
+        "ast_sha256": "38ffd92797c8878fb1094e84693f3d24bfb19f921502ac7a3fd7892552448af3",
+        "audited": true
+      },
+      {
+        "path": "backend/research/graph.py",
+        "symbol": "ResearchGraph.ask",
+        "line": 308,
+        "ast_sha256": "b31d380bbe644ac9089e320c19de39b3fce8b20fc6691f196c9fd4665d931153",
+        "audited": true
+      },
+      {
+        "path": "backend/research/graph.py",
+        "symbol": "ResearchGraph.router",
+        "line": 384,
+        "ast_sha256": "fdfe2f4186023f2b9ec7b1d2c8df4db5fdfcc88209e3b0d06861e6fcfd18ef70",
+        "audited": true
+      },
+      {
+        "path": "backend/research/graph.py",
+        "symbol": "ResearchGraph.planner",
+        "line": 487,
+        "ast_sha256": "230a99a8cdf6a36c417c12e1f8b9718460c25fb6b40d6d68ee154121c8ce7847",
+        "audited": true
+      },
+      {
+        "path": "backend/research/graph.py",
+        "symbol": "ResearchGraph.judge",
+        "line": 636,
+        "ast_sha256": "4602608a2abf7a886c83c344b8d1e3df99b727cebb768fba628a3c97f068ef59",
+        "audited": true
+      },
+      {
+        "path": "backend/research/graph.py",
+        "symbol": "ResearchGraph.analyst",
+        "line": 701,
+        "ast_sha256": "62f3e283fc3b40e011267cbf280f008a720a0c015b9930bc4336308c43ad997c",
+        "audited": true
+      },
+      {
+        "path": "backend/research/graph.py",
+        "symbol": "ResearchGraph.writer",
+        "line": 792,
+        "ast_sha256": "f3b6861c0989877015d6712d396b8e5fe7ad293b3c27203b89b5de7a2b876dee",
+        "audited": true
+      },
+      {
+        "path": "backend/research/graph.py",
+        "symbol": "ResearchGraph.check_draft",
+        "line": 815,
+        "ast_sha256": "a5ecef40bb1d46a480ee622a1e15db6fe7b7cdfdf3d76a57ae6f20e003073000",
+        "audited": true
+      },
+      {
+        "path": "backend/research/graph.py",
+        "symbol": "ResearchGraph.validator",
+        "line": 899,
+        "ast_sha256": "9b53916189f19d17c9340783e200ae5c8340ff012ef21bde870422fb78d6a9bf",
+        "audited": true
+      },
+      {
+        "path": "backend/research/graph.py",
+        "symbol": "md_text",
+        "line": 172,
+        "ast_sha256": "5480a9472c4aff1f3cb2c2a99f97a87cecaa8ac960f9967a8ae02815ae6f5243",
+        "audited": true
+      },
+      {
+        "path": "backend/research/reporting.py",
+        "symbol": "assemble_report",
+        "line": 32,
+        "ast_sha256": "c55b508ff70dbb3215e845b028c49b96464adfb9961420a41e9dab851652fc65",
+        "audited": true
+      },
+      {
+        "path": "backend/domain/models.py",
+        "symbol": "Plan",
+        "line": 77,
+        "ast_sha256": "f0c78c52efeec29c8b359d59f56f103a62dcd02e489be348f366f0c473e27ed3",
+        "audited": true
+      },
+      {
+        "path": "backend/domain/models.py",
+        "symbol": "Claim",
+        "line": 111,
+        "ast_sha256": "8a6b6e1bb117f4547b38587f4273da8ca2ce37eb5854d199f45cb0023b8e243e",
+        "audited": true
+      },
+      {
+        "path": "backend/domain/models.py",
+        "symbol": "ReportDraft",
+        "line": 163,
+        "ast_sha256": "7914003e345013f37a0581eda6855a59168bf9dc80145b19150c86415cd083da",
+        "audited": true
+      },
+      {
+        "path": "backend/domain/models.py",
+        "symbol": "ReportSection",
+        "line": 158,
+        "ast_sha256": "4845b58b72574c3bd13be584a2ca40a985250a9d2b752a246da0a17dbc41b605",
+        "audited": true
+      },
+      {
+        "path": "backend/services/runtime.py",
+        "symbol": "Runtime.execute_run",
+        "line": 525,
+        "ast_sha256": "e6f8ab0ba4474ae253396f56df1da0dfec26ebbd6f1ef4c8a05f2308a81282d4",
+        "audited": true
+      },
+      {
+        "path": "backend/infrastructure/providers.py",
+        "symbol": "Providers.structured",
+        "line": 230,
+        "ast_sha256": "068026d778a3070f3898f6286ca958878770999c435f2fbaa7e872ad07aaf37e",
+        "audited": true
+      },
+      {
+        "path": "backend/infrastructure/providers.py",
+        "symbol": "Providers.post",
+        "line": 144,
+        "ast_sha256": "fd7a53e6ae5d825c1136f37f722d7c2ca272e125b66272e93dc888dec4a10e38",
+        "audited": true
+      },
+      {
+        "path": "backend/quality_gate.py",
+        "symbol": "assess_support",
+        "line": 18,
+        "ast_sha256": "a30ffd97d416a956493140daeeda0720e457557cae38a5e37270fbfd90f0c40c",
+        "audited": true
+      },
+      {
+        "path": "backend/quality_gate.py",
+        "symbol": "evaluate_draft",
+        "line": 39,
+        "ast_sha256": "80636fc05009397a1e556e2d0c83c8a6f10101c2dd9f61ddddef8737fb4fe2ac",
+        "audited": true
+      },
+      {
+        "path": "backend/quality_gate.py",
+        "symbol": "summarize",
+        "line": 78,
+        "ast_sha256": "c65270e87a41c897b79caf35b62e8d8dbaaa73d8170c2831efb5c86f8070ad13",
+        "audited": true
+      },
+      {
+        "path": "scripts/evaluate_answers.py",
+        "symbol": "main_async",
+        "line": 18,
+        "ast_sha256": "8fd14b71d2a7d48eed3b04e38aea57d677890f79c1e6bad81750ee4e68f777c0",
+        "audited": true
+      },
+      {
+        "path": "scripts/evaluate_research.py",
+        "symbol": "assess_report_support",
+        "line": 33,
+        "ast_sha256": "7c53d11985a00b65694e1f918f3413b192497f40f9d4e25aac64ffc3f762ea40",
+        "audited": true
+      },
+      {
+        "path": "scripts/evaluate_research.py",
+        "symbol": "evaluate",
+        "line": 93,
+        "ast_sha256": "e3b9205cacb684d6867c102ef13a66661f16d62a1c62ed2ae5743d0ccf6eeec0",
+        "audited": true
+      },
+      {
+        "path": "scripts/evaluate_research.py",
+        "symbol": "summarize_research",
+        "line": 63,
+        "ast_sha256": "01ad6c9b557628c7829929bd5ba5286db6ee1323922722c67eb14fccc04dd285",
+        "audited": true
+      },
+      {
+        "path": "scripts/evaluate_research.py",
+        "symbol": "summarize_repetitions",
+        "line": 76,
+        "ast_sha256": "c82303ded704f125b8bf82ce54ad4af9d81edcef4bd936498dd9f67089dd47ff",
+        "audited": true
+      },
+      {
+        "path": "scripts/evaluate_research.py",
+        "symbol": "main",
+        "line": 197,
+        "ast_sha256": "2325bf89d990e28df56b1b8414a5cd79bc299c705564524ce9c887b4c8586c10",
+        "audited": true
+      },
+      {
+        "path": "scripts/evaluation_scope.py",
+        "symbol": "scoped_evaluation",
+        "line": 7,
+        "ast_sha256": "a6a358812c41d3e15d281d2b2b3957e9516a29f1ac08810b07583cd3ed3a6202",
+        "audited": true
+      },
+      {
+        "path": "scripts/bounded_evaluation.py",
+        "symbol": "main",
+        "line": 177,
+        "ast_sha256": "c67e6fdc18ec7176389bc859ce659981c16b7201d446cc478a5fd80fb71bf935",
+        "audited": true
+      },
+      {
+        "path": "scripts/bounded_evaluation.py",
+        "symbol": "Budget.install",
+        "line": 141,
+        "ast_sha256": "7d72d3bf99a55fda45603b5f994964658d74c939795d8f5fb3303a9856d4ebd1",
+        "audited": true
+      },
+      {
+        "path": "scripts/bounded_evaluation.py",
+        "symbol": "Budget.reserve",
+        "line": 49,
+        "ast_sha256": "52c0d9108fb515b99014edec434e929e37f6b817e258dcab2dd66320c4cc4b10",
+        "audited": true
+      },
+      {
+        "path": "scripts/bounded_evaluation.py",
+        "symbol": "Budget.__init__",
+        "line": 23,
+        "ast_sha256": "b9cd57027177bcdb95a369c939602c9fd5e6c727cf8d61d88c8530caea901c89",
+        "audited": true
+      },
+      {
+        "path": "scripts/evaluation_scope.py",
+        "symbol": "configure_evaluator_limits",
+        "line": 15,
+        "ast_sha256": "30ca3662002d01d4b8c06c7739ad2016af3f229e4f97de3cc3f7b064f3dd8ef5",
+        "audited": true
+      },
+      {
+        "path": "backend/services/runtime.py",
+        "symbol": "Runtime.claim_run",
+        "line": 475,
+        "ast_sha256": "5b67edf0c3038f68d9bdd5f741ccfc0d24e065199b6820dfa0f97c3a6c2c551f",
+        "audited": true
+      },
+      {
+        "path": "backend/infrastructure/providers.py",
+        "symbol": "Providers.chat_payload",
+        "line": 104,
+        "ast_sha256": "6805fc6153557fcd92e92aa475c785726a76998d20933cd38cae647ff24992e7",
+        "audited": true
+      },
+      {
+        "path": "backend/infrastructure/providers.py",
+        "symbol": "Providers.require_official_openai",
+        "line": 123,
+        "ast_sha256": "80851fb04d745ac0e03485e7cf203b04d3a2da36d879f0b2e97c1981649e5329",
+        "audited": true
+      }
+    ],
+    "four_fresh_invocations_unchanged": [
+      "- run: uv run python scripts/run_ci_evaluation.py paid --label answers scripts/evaluate_answers.py --output .cache/eval/answer-quality.json",
+      "- run: uv run python scripts/run_ci_evaluation.py paid --label research scripts/evaluate_research.py --debug-fixed-failures --output .cache/eval/research-quality.json",
+      "- run: uv run python scripts/run_ci_evaluation.py paid --label stability scripts/evaluate_research.py --only conflict-1,compare-3,single-5 --repetitions 3 --require-all --debug-fixed-failures --output .cache/eval/research-stability.json",
+      "- run: uv run python scripts/run_ci_evaluation.py paid --label extensions scripts/evaluate_research.py --cases eval/research_quality_extensions.json --output .cache/eval/research-quality-extensions.json"
+    ],
+    "all_case_and_dependency_fingerprints_unchanged": {
+      "eval/answer_quality_cases.json": "e6772a2c2c201e04666efed0388c740b0eb5e7e61db9a51baa37f37aa3186b0e",
+      "eval/research_quality_cases.json": "c23662922168f5ce04e3b2e0e9cf9b11fc1bee81a3bc8edc25b18e39b74f239f",
+      "eval/research_quality_extensions.json": "8e81a432a18f5360e169266d9ff584b30d43b897e34bad5bffc023aab4f50f50",
+      "pyproject.toml": "e4e01ce355f7de93d2ecff61a8b8c7677d6cad6c51dae9ff5441ebd698a76a6a",
+      "uv.lock": "5320e9772d9c50008ec152c23fdd406fa9a739cdb5feca42e68649a898b53bc1"
+    },
+    "policy_authorization_or_ledger_changed": false,
+    "supplier_http_requests": 0,
+    "paid_quality_pass_claimed": false,
+    "rationale": [
+      "Explicit source statements that an item is pending may be extracted as scoped cited facts when the user asks for pending evidence. Unproven absence from a fragment remains only a gap.",
+      "Coverage follows the original request: identifying evidence gaps does not require completing those tests. Missing requested concrete values remain unanswered; gaps and deleted claims cannot independently establish coverage.",
+      "Only two exact prompt constants change. All branches, calls, model schemas, independent claim checks, grading rules, success thresholds and HTTP/retry paths remain unchanged."
+    ],
+    "original_checker_recomputed": {
+      "proof_verified": true,
+      "critical_path_lower_bound": 245,
+      "pass_rate_refinement_lower_bound": 296,
+      "required_lower_bound": 296,
+      "supplier_http_requests": 0,
+      "precheck_status": "necessary_bound_not_violated"
+    }
+  }
+}

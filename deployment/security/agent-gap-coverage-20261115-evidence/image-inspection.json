@@ -1,0 +1,95 @@
+{
+  "Id": "sha256:124b3fef7ee5558caccf9d3a15b8f730d15c620e59e7d2839591fa86857bf762",
+  "RepoTags": [
+    "dr-v015-agent-gap-coverage:20261115-02"
+  ],
+  "RepoDigests": [
+    "dr-v015-agent-gap-coverage@sha256:124b3fef7ee5558caccf9d3a15b8f730d15c620e59e7d2839591fa86857bf762"
+  ],
+  "Comment": "buildkit.dockerfile.v0",
+  "Created": "2026-11-15T12:51:11.766069139Z",
+  "Config": {
+    "User": "10001:10001",
+    "ExposedPorts": {
+      "8000/tcp": {}
+    },
+    "Env": [
+      "PATH=/opt/venv/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "PYTHONUNBUFFERED=1",
+      "UV_PROJECT_ENVIRONMENT=/opt/venv",
+      "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt",
+      "LD_LIBRARY_PATH=/usr/local/lib",
+      "DATA_DIR=/data"
+    ],
+    "Cmd": [
+      "uvicorn",
+      "backend.api.app:create_app",
+      "--factory",
+      "--host",
+      "0.0.0.0",
+      "--port",
+      "8000",
+      "--workers",
+      "1",
+      "--no-access-log"
+    ],
+    "WorkingDir": "/app",
+    "Labels": {
+      "org.deepresearch.distribution.revision": "0b613f1386bcd7067cb54e236db6e29510c44b16",
+      "org.deepresearch.distribution.runtime-image": "sha256:f0f89f7cf4ffe452d3fde0e5164bbf23c02a181a298de6ba6e165cfbb0955396",
+      "org.deepresearch.distribution.source-materials-sha256": "5f47826c3e913f73fe76318c4480bba752c52673f6d92da41610abae9518aea6",
+      "org.deepresearch.project.source_revision": "working-tree-sha256:71910af11b4e932b5a2d70d739cf71ec3ec433979b2bfbd3bdb341207f1c5994",
+      "org.deepresearch.runtime.snapshot-kind": "local-scratch-flattening-probe-not-publication",
+      "org.deepresearch.runtime.snapshot-sha256": "ed792857afbf0ee020a6090de7cebaa987397804637cff44fe745a5447950052",
+      "org.deepresearch.runtime.source-fingerprint-sha256": "0a07c4bdff3d9eb4197c3580e99d6a8eccd1465ac7b46803b3b516ac99e1058e",
+      "org.deepresearch.runtime.source-state": "working-tree-prompt-only-not-publication",
+      "org.opencontainers.image.documentation": "https://github.com/W205614/DeepResearch/blob/main/docs/container-packages.md",
+      "org.opencontainers.image.revision": "0b613f1386bcd7067cb54e236db6e29510c44b16",
+      "org.opencontainers.image.source": "https://github.com/W205614/DeepResearch",
+      "org.opencontainers.image.version": "v0.1.4"
+    },
+    "ArgsEscaped": true,
+    "Healthcheck": {
+      "Test": [
+        "CMD",
+        "python",
+        "-c",
+        "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=3)"
+      ],
+      "Interval": 15000000000,
+      "Timeout": 5000000000,
+      "StartPeriod": 20000000000,
+      "Retries": 5
+    }
+  },
+  "Architecture": "amd64",
+  "Os": "linux",
+  "Size": 547792498,
+  "RootFS": {
+    "Type": "layers",
+    "Layers": [
+      "sha256:051fd7d73f629a8fd007a968a23f4803c7713fc67cee25b37db3d900ab3eb77e",
+      "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+      "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+      "sha256:6b64aca73ace584d582d1f13a2df2f1407f370bcb5e38feb0f45265a1070a062",
+      "sha256:47db8145025b0d5fc5a750f9d77f9e499b290f6f2352d3d4822c11f789ccdca3"
+    ]
+  },
+  "Metadata": {
+    "LastTagTime": "2026-11-15T12:52:20.214301913Z"
+  },
+  "Descriptor": {
+    "mediaType": "application/vnd.oci.image.index.v1+json",
+    "digest": "sha256:124b3fef7ee5558caccf9d3a15b8f730d15c620e59e7d2839591fa86857bf762",
+    "size": 856
+  },
+  "Identity": {
+    "Build": [
+      {
+        "Ref": "qlperg934sg073esskifj5m6w",
+        "CreatedAt": "2026-11-15T12:52:20.223446186Z"
+      }
+    ]
+  }
+}

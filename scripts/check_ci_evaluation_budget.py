@@ -107,7 +107,7 @@ def stage(name, cases, *, repetitions=1, require_all=False):
 
 def assess(root=ROOT, *, policy_path=None, ledger_path=None, basis_path=None):
     policy_path = policy_path or root/'eval/ci-provider-budget.json'
-    basis_path = basis_path or root/'eval/ci-budget-source-basis-20261115.json'
+    basis_path = basis_path or root/'eval/ci-budget-source-basis-20261115-prompts.json'
     policy = json.loads(policy_path.read_bytes())
     basis = json.loads(basis_path.read_bytes())
     failures, references = source_basis(root, basis)
@@ -173,7 +173,8 @@ def assess(root=ROOT, *, policy_path=None, ledger_path=None, basis_path=None):
     protected = {item['path'] for item in basis['symbols']} | set(basis['case_fingerprints']) | {
         'backend/core/config.py', '.github/workflows/answer-quality.yml', 'scripts/bounded_evaluation.py',
         'scripts/reuse_quality_evidence.py', 'scripts/check_ci_evaluation_budget.py',
-        'eval/ci-budget-source-basis.json', 'eval/ci-budget-source-basis-20261115.json'}
+        'eval/ci-budget-source-basis.json', 'eval/ci-budget-source-basis-20261115.json',
+        'eval/ci-budget-source-basis-20261115-prompts.json', 'scripts/build_ci_budget_prompt_basis_20261115.py'}
     model = os.environ.get('LLM_MODEL_ID', 'gpt-6.1-sol')
     base = os.environ.get('LLM_BASE_URL', 'https://api.openai.com/v1')
     extra = os.environ.get('LLM_EXTRA_BODY', '{}')

@@ -38,6 +38,93 @@ def retained_agent_record_root(tmp_path_factory):
     return root
 
 
+@pytest.fixture(scope='session')
+def retained_agent_prompt_parent_root(tmp_path_factory):
+    """Read the old exact Agent review inputs from their real pre-prompt Git revision."""
+    import io
+    import json
+    from pathlib import Path, PurePosixPath
+    import subprocess
+    import tarfile
+    from scripts import check_agent_full_scope as scope
+
+    repository = Path(__file__).resolve().parents[1]
+    revision = '9ca6b7a57b850d0da06312ba8749297515897833'
+    old_names = {
+        'agent-full-scope-20261110', 'agent-ordinary-query-20261112',
+        'agent-ordinary-query-20261113', 'agent-reference-locator-20261113',
+        'agent-structured-locator-20261113', 'agent-local-attribution-20261113',
+        'agent-soupsieve-paths-20261113', 'agent-record-metadata-20261113',
+        'agent-soupsieve41-20261115',
+    }
+    names = set()
+    for name in old_names:
+        profile_path, _ = scope.profile_identity(name)
+        relative = profile_path.relative_to(repository).as_posix()
+        profile = json.loads(subprocess.check_output(['git', 'show', revision + ':' + relative], cwd=repository))
+        evidence = profile['source_review_evidence']['path']
+        review = json.loads(subprocess.check_output(['git', 'show', revision + ':' + evidence], cwd=repository))
+        names.update({relative, evidence, *(r['path'] for r in review['additional_evidence_files'])})
+    raw = subprocess.check_output(['git', 'archive', revision, '--', *sorted(names)], cwd=repository)
+    root = tmp_path_factory.mktemp('retained-agent-before-prompt')
+    with tarfile.open(fileobj=io.BytesIO(raw)) as archive:
+        for member in archive:
+            if member.isdir():
+                continue
+            assert member.isfile() and member.name in names
+            path = PurePosixPath(member.name)
+            assert not path.is_absolute() and '..' not in path.parts
+            destination = root / member.name
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes(archive.extractfile(member).read())
+    return root
+
+
+@pytest.fixture(autouse=True)
+def retained_agent_prompt_tests(request, monkeypatch):
+    """Historical named cases retain old inputs; the current GAP profile uses this checkout."""
+    if request.module.__name__.rsplit('.', 1)[-1] != 'test_agent_full_scope':
+        return
+    from scripts import check_agent_full_scope as scope
+
+    old_parameters = {
+        'agent-full-scope-20261110', 'agent-ordinary-query-20261112',
+        'agent-ordinary-query-20261113', 'agent-reference-locator-20261113',
+        'agent-structured-locator-20261113', 'agent-local-attribution-20261113',
+        'agent-soupsieve41-20261115',
+    }
+    standalone = {
+        'test_ordinary_profile_source_snapshot_matches_historical_runtime_manifest',
+        'test_current_profile_preserves_exact_five_observed_severity_transitions',
+        'test_current_source_review_binds_complete_closure_and_two_source_snapshots',
+        'test_reference_locator_profile_preserves_all_retained_technical_facts',
+        'test_structured_locator_profile_retains_exact_technical_facts_and_bounds',
+        'test_local_attribution_profile_keeps_all_prior_technical_facts',
+        'test_ordinary_profile_rejects_modified_historical_source_snapshot',
+        'test_ordinary_profile_does_not_pin_the_moving_checkout_as_old_runtime_evidence',
+        'test_new_openssl_review_and_supporting_evidence_are_pinned',
+    }
+    parameter = getattr(request.node, 'callspec', None)
+    selected = parameter.params.get('reviewed_inputs') if parameter else None
+    name = request.node.originalname
+    if selected in old_parameters or (selected is None and name in standalone):
+        monkeypatch.setattr(scope, 'ROOT', request.getfixturevalue('retained_agent_prompt_parent_root'))
+    elif selected == scope.GAP_PROFILE_NAME and name == 'test_ordinary_profile_preserves_findings_and_rejects_the_old_python_closure':
+        # This current-profile case explicitly compares two historical profiles.
+        # Only those two loads use historical inputs; the current load stays real.
+        load = scope.load_profile
+        parent = request.getfixturevalue('retained_agent_prompt_parent_root')
+
+        def historical_comparison(profile_name):
+            if profile_name not in {scope.ORDINARY_PROFILE_NAME, scope.PROFILE_NAME}:
+                return load(profile_name)
+            with monkeypatch.context() as scoped:
+                scoped.setattr(scope, 'ROOT', parent)
+                return load(profile_name)
+
+        monkeypatch.setattr(scope, 'load_profile', historical_comparison)
+
+
 @pytest.fixture
 def settings(tmp_path):
     return Settings(_env_file=None, demo_mode=True, auth_mode="development", queue_backend="local",

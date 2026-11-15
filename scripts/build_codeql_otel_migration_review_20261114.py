@@ -33,6 +33,7 @@ DELTA_FILES = [
     '.github/workflows/rag-quality.yml',
     'scripts/runtime_ci_inventory.py',
     'scripts/check_agent_full_scope.py',
+    'backend/research/graph.py',
     'uv.lock',
     'scripts/ci_reviewed_image_cache.py',
     'business-backend/Dockerfile',
@@ -50,6 +51,27 @@ BACKEND_TRANSPORT_SUPPORT = [
     'deployment/security/backend-busybox-20261115-transport-profile.json',
     'scripts/prepare_backend_busybox_transport_20261115.py',
     'tests/test_backend_busybox_transport_20261115.py',
+]
+
+PROMPT_CONTINUATION_SUPPORT = [
+    'scripts/prepare_agent_gap_coverage_20261115.py',
+    'deployment/security/agent-gap-coverage-20261115-profile.json',
+    'deployment/security/agent-gap-coverage-20261115-review.json',
+    'tests/test_agent_gap_coverage_continuation.py',
+    'tests/test_research_gap_coverage.py',
+    'tests/conftest.py',
+    'scripts/check_ci_evaluation_budget.py',
+    'scripts/build_ci_budget_prompt_basis_20261115.py',
+    'eval/ci-budget-source-basis-20261115-prompts.json',
+    'tests/test_ci_budget_prompt_basis_20261115.py',
+    'tests/test_codeql_prompt_continuation_20261115.py',
+    *['deployment/security/agent-gap-coverage-20261115-evidence/' + name for name in [
+        'candidate-receipt.json', 'filesystem-delta.json', 'base-image-config.raw.json',
+        'image-config.raw.json', 'image-inspection.json', 'base-runtime-inventory.json.gz',
+        'runtime-inventory.json.gz', 'runtime-probe.json', 'preparation-verdict.json',
+        'scan-raw.json.gz', 'scan-scan-receipt.json',
+        'base-filesystem-runtime-manifest.json.gz', 'candidate-filesystem-runtime-manifest.json.gz',
+    ]],
 ]
 
 ATTRIBUTE_SUFFIXES = {
@@ -106,6 +128,8 @@ def generate(root=ROOT):
         raise ValueError('Exact otel-migration delta set differs')
     transport_support = {name: digest((root / name).read_bytes())
                          for name in BACKEND_TRANSPORT_SUPPORT}
+    prompt_support = {name: digest((root / name).read_bytes())
+                      for name in PROMPT_CONTINUATION_SUPPORT}
 
     proof = {
         'schema': 'codeql-otel-migration-continuation-v1',
@@ -117,6 +141,7 @@ def generate(root=ROOT):
         'generator_source_sha256': digest(Path(__file__).read_bytes()),
         'all_other_existing_bound_sha256': unchanged,
         'backend_transport_support_sha256': transport_support,
+        'prompt_continuation_support_sha256': prompt_support,
         'same_four_exact_identities': True,
         'first_three_original_records_unchanged': True,
         'severity_threshold_unchanged': 7.0,
@@ -131,6 +156,9 @@ def generate(root=ROOT):
             'The default local source-build entry uses that same verified-input preparation and existing builder option; --no-build retains its no-download behavior. The originally locked public-key bytes are vendored to avoid mutable keyserver armor-header ordering; the other 105 inputs retain their locked HTTPS retrieval and complete checksum checks.',
             'The Backend recipe replaces four GitHub API asset URLs with the exact official Temurin release browser URLs. The original JRE, SBOM, signature SHA-256 and PGP verification gates remain unchanged; the separate exact transport continuation verifies both complete historical and new corresponding-source closures without exempting any additional finding.',
             'uv.lock changes are the reviewed soupsieve 4.1 upgrade (CVE-2026-126190), already bound by the agent source scope review.',
+            'The graph continuation changes exactly one string constant in each of ResearchGraph.analyst and ResearchGraph.validator; all other complete-module AST remains identical. It preserves claim validation, quality/partial decisions and the distinction between source-stated uncompleted facts and unsupported missing information. Actual response quality is a separate acceptance requirement; the prior answered=false result remains unchanged.',
+            'The new exact Agent continuation retains all515 native ELF bytes and all5973 Python files except graph.py, regenerates the actual97-file fingerprint, and preserves the complete92 finding tuples and125-package inventory. The current profile and its full measured evidence are pinned, while old Soup4.1 profiles and raw reports remain historical inputs. Named historical tests use exact Git9ca support; the current profile still uses the current checkout and rejects source-byte tampering.',
+            'The budget continuation accepts only those two graph prompt-string AST changes, retains all37 audited symbols and four workflow commands, and recomputes the unchanged245/296 necessary bounds. It changes neither budget authorization nor the provider ledger. The new producer, default/checker, basis and regression sources are pinned; this is no paid quality or new CodeQL scan claim.',
             'The XSS-through-DOM finding identity (js/xss-through-dom on the offline SQLite release note) and its source/proof bytes are unchanged. Historical tests now replay the exact original input bytes instead of the changed live locks; current production checks remain strict.',
             'No CodeQL scan is re-run and no SARIF is modified; the four original finding identities and severity threshold are preserved.',
         ],
@@ -146,6 +174,7 @@ def generate(root=ROOT):
     binding[PROOF] = digest(proof_bytes)
     binding['scripts/build_codeql_otel_migration_review_20261114.py'] = digest(Path(__file__).read_bytes())
     binding.update(transport_support)
+    binding.update(prompt_support)
     current['findings'][3]['justification'] += (
         ' The otel-1.47.0 migration continuation re-binds the exact CI routing, lock'
         ' and historical test-fixture changes; the flagged offline SQLite'
@@ -156,6 +185,10 @@ def generate(root=ROOT):
         'path': PROOF,
         'sha256': digest(proof_bytes),
     }
+    if current['findings'][:3] != prior['findings'][:3]:
+        raise ValueError('The original first three CodeQL records must remain byte-equivalent')
+    if [r['identity'] for r in current['findings']] != [r['identity'] for r in prior['findings']]:
+        raise ValueError('The original four exact CodeQL finding identities must remain unchanged')
     (root / PROOF).write_bytes(proof_bytes)
     (root / PROFILE).write_bytes((json.dumps(current, indent=2, sort_keys=False) + '\n').encode())
 

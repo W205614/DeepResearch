@@ -40,9 +40,13 @@
       "before": "534e99f44d7660496021c175502381b33373c5b41ffa2c6ed2bf882554368b24",
       "after": "adec3e09c92847d87af9b541fa36e782360c9955214ef3958bca8ac7887b9401"
     },
+    "backend/research/graph.py": {
+      "before": "b4bd11568b52059ac0420acedaad5ffb65e22ca6531c15783a5acf39b7d48ce9",
+      "after": "71910af11b4e932b5a2d70d739cf71ec3ec433979b2bfbd3bdb341207f1c5994"
+    },
     "scripts/check_agent_full_scope.py": {
       "before": "32256f0c7b67665884c020fe179b7018a4264492909a61c83bd1f99434d7f54d",
-      "after": "2d15bfbbdfc6856d3154117feaba0e24f16ab5d92986a384b62bfbef2e6cf7d8"
+      "after": "dcdaa8a6dac585af60635fbf0942fd47cc459371076ef99fd337516a43eb27ac"
     },
     "uv.lock": {
       "before": "ddeba33cd99792dc69bfd6d09253a85f0e56dc2807bcede2176e70b4e761bf6f",
@@ -86,7 +90,7 @@
     "all_effective_attributes_identical": true,
     "attribute_output_sha256": "0bad1b50e0099d173db2ccb8259c27b6d110113fe0494c708744ee49890e12d9"
   },
-  "generator_source_sha256": "79c2e2ba80c43c1ea9eb3be845f89307df31fc890645ee9f25f2513237b4e291",
+  "generator_source_sha256": "8dba9f3d91bc06112de52b52c8b91f398ea7d993dedc44ca4bb730c730e7b9fd",
   "all_other_existing_bound_sha256": {
     "deployment/security/codeql-finding-review-20261110.md": "7585522420e6a8cb160ef2b173460762833e8128790a259ed0a4b779d8824948",
     "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java": "9729af95b2760eb00fdc36f8e86f8abaa7f0f4deb999f976a9342d7a93365aea",
@@ -216,7 +220,6 @@
     "deployment/security/grafana-source-20261112-evidence/review-source-python-root.json": "67c0e73730a3ad240c468fdaafb23999505b934c1c9f9fb49512401fc698046b",
     "deployment/security/grafana-source-20261112-evidence/review-source-python-provenance.json": "0a1fbfa289d989305a02eae702cc9859fea2379d9ef93174124a5432135320f7",
     "deployment/vendors/keycloak/zlib/source.lock.json": "9d29ef22e0467c8a8b8fd2df9f4c33ebe6bba110809f91745027105637999558",
-    "backend/research/graph.py": "b4bd11568b52059ac0420acedaad5ffb65e22ca6531c15783a5acf39b7d48ce9",
     "deployment/security/agent-soupsieve-paths-20261113-evidence/application-path-review.json": "aaf84140866eb35cd32517397ed67bfcb6caa0f38b4e6d336e24190eebeb1368",
     "backend/api/source_rechecks.py": "09532b8abceb6e7b80102383e1974729dc357ecc0aeb8b81ecaed5dab3faeeab",
     "deployment/vendors/keycloak/zlib/normal_roundtrip.c": "e9e10511efa936bbcfde310c03e2f2f7de09653abb5c9d29c9754745fa8fb09e",
@@ -425,6 +428,32 @@
     "scripts/prepare_backend_busybox_transport_20261115.py": "406ce9051e7949195a737e0fb37b45928ec44e815369899b7b2a5e73c51de7d7",
     "tests/test_backend_busybox_transport_20261115.py": "800386cf028e4aebb2c07904b2c343133047ab480a1abc9c4da157b311ec5947"
   },
+  "prompt_continuation_support_sha256": {
+    "scripts/prepare_agent_gap_coverage_20261115.py": "3430fcff96e9b6a278f5a7ad698bc7eda6b8e6f7d98eb8809fdb2b1a8968c00c",
+    "deployment/security/agent-gap-coverage-20261115-profile.json": "022d9d00981867e926fd6212eb6b59277c0a0147c78b05f4adf7080960b3098c",
+    "deployment/security/agent-gap-coverage-20261115-review.json": "aae1fae2fd66dfc2418e5163eab7e0e4501cc0409317ca0ef69c1943a08c01cf",
+    "tests/test_agent_gap_coverage_continuation.py": "de64cc4ba19740788b278597db076a7e275a0bcaabf185bf6f2870841f426b54",
+    "tests/test_research_gap_coverage.py": "568b4a1cc198e23da4129f99a296410c08511f6217e788f80a23e3308dc68fff",
+    "tests/conftest.py": "40494928fc58987696f99f49f353796810222250dc13aa4bd66812e151085648",
+    "scripts/check_ci_evaluation_budget.py": "2196747cbc4fd914d5db977049cd5ed7031c29f42e26f45667489da3c9478211",
+    "scripts/build_ci_budget_prompt_basis_20261115.py": "7ae0f9bc50b3e0b9f6b4523b3c2001360b3d35129c2c12d56cdb4816b05e3fa4",
+    "eval/ci-budget-source-basis-20261115-prompts.json": "438dfd060b64266cb9106f5476261c1ec4f9bda81f21c1f298c841d6a20e3a00",
+    "tests/test_ci_budget_prompt_basis_20261115.py": "7d3534bd70ff82ff19f4abdce4b3124e45e529fe0a8f0de5a3f55b31bd00f0fc",
+    "tests/test_codeql_prompt_continuation_20261115.py": "6baa0e45a09d310ff13b84c7e53308bfca286b4ef2618e61dd0ab23eda299347",
+    "deployment/security/agent-gap-coverage-20261115-evidence/candidate-receipt.json": "adb5d4370687b096d88ff77a0ace85ef0f0030a356bbe1d705170c2963c44a95",
+    "deployment/security/agent-gap-coverage-20261115-evidence/filesystem-delta.json": "b48c9ee4aa99eb01de6258b5f4335163d9101134295a09430b3856e1829e7c69",
+    "deployment/security/agent-gap-coverage-20261115-evidence/base-image-config.raw.json": "02f79004b132d195ac2fb376086156e6495fa24c7dfa6730ff657a1e66858c74",
+    "deployment/security/agent-gap-coverage-20261115-evidence/image-config.raw.json": "4027c51faf4dacfe3ed7f1b40a6114ee8cc51ee910a796928bd2271ab81558be",
+    "deployment/security/agent-gap-coverage-20261115-evidence/image-inspection.json": "7e1fe79dab1f5b3dbf4fbd04f36d0073d3f6625eeb950e34d6447e138722794c",
+    "deployment/security/agent-gap-coverage-20261115-evidence/base-runtime-inventory.json.gz": "28131e1738c93d19b5da2e037f155afd204d3069a86c0fe875221aa1672e5e4e",
+    "deployment/security/agent-gap-coverage-20261115-evidence/runtime-inventory.json.gz": "4cfa7682bc3c50736a78827cb92a854a1da3536da8f706c6cd33440e6f563a91",
+    "deployment/security/agent-gap-coverage-20261115-evidence/runtime-probe.json": "b0ba19fa4b1992bc9376ccc35100dcf661961fd70a3e40ff236036dbf49e3354",
+    "deployment/security/agent-gap-coverage-20261115-evidence/preparation-verdict.json": "3345edad09fbac91c12cbfe31eee55238fc43038b8378931aca4be6846f7469a",
+    "deployment/security/agent-gap-coverage-20261115-evidence/scan-raw.json.gz": "158557e309c856b307bf6201f6f84d1bac007a0f38d9689410ee811634f5e696",
+    "deployment/security/agent-gap-coverage-20261115-evidence/scan-scan-receipt.json": "d76a8cfee43d6c9a7f5c213e4f58882a9b00fc12b2121bc21b830ae3038ac18d",
+    "deployment/security/agent-gap-coverage-20261115-evidence/base-filesystem-runtime-manifest.json.gz": "d5fcbab0e0df61c45b511454942ceec3ba6b1bdcc15715ff7915bbf19deb5256",
+    "deployment/security/agent-gap-coverage-20261115-evidence/candidate-filesystem-runtime-manifest.json.gz": "7a80d7f7867bac91aab4e5272cfba59ca04639b344c8d3062e94c1c37683e988"
+  },
   "same_four_exact_identities": true,
   "first_three_original_records_unchanged": true,
   "severity_threshold_unchanged": 7.0,
@@ -439,6 +468,9 @@
     "The default local source-build entry uses that same verified-input preparation and existing builder option; --no-build retains its no-download behavior. The originally locked public-key bytes are vendored to avoid mutable keyserver armor-header ordering; the other 105 inputs retain their locked HTTPS retrieval and complete checksum checks.",
     "The Backend recipe replaces four GitHub API asset URLs with the exact official Temurin release browser URLs. The original JRE, SBOM, signature SHA-256 and PGP verification gates remain unchanged; the separate exact transport continuation verifies both complete historical and new corresponding-source closures without exempting any additional finding.",
     "uv.lock changes are the reviewed soupsieve 4.1 upgrade (CVE-2026-126190), already bound by the agent source scope review.",
+    "The graph continuation changes exactly one string constant in each of ResearchGraph.analyst and ResearchGraph.validator; all other complete-module AST remains identical. It preserves claim validation, quality/partial decisions and the distinction between source-stated uncompleted facts and unsupported missing information. Actual response quality is a separate acceptance requirement; the prior answered=false result remains unchanged.",
+    "The new exact Agent continuation retains all515 native ELF bytes and all5973 Python files except graph.py, regenerates the actual97-file fingerprint, and preserves the complete92 finding tuples and125-package inventory. The current profile and its full measured evidence are pinned, while old Soup4.1 profiles and raw reports remain historical inputs. Named historical tests use exact Git9ca support; the current profile still uses the current checkout and rejects source-byte tampering.",
+    "The budget continuation accepts only those two graph prompt-string AST changes, retains all37 audited symbols and four workflow commands, and recomputes the unchanged245/296 necessary bounds. It changes neither budget authorization nor the provider ledger. The new producer, default/checker, basis and regression sources are pinned; this is no paid quality or new CodeQL scan claim.",
     "The XSS-through-DOM finding identity (js/xss-through-dom on the offline SQLite release note) and its source/proof bytes are unchanged. Historical tests now replay the exact original input bytes instead of the changed live locks; current production checks remain strict.",
     "No CodeQL scan is re-run and no SARIF is modified; the four original finding identities and severity threshold are preserved."
   ]

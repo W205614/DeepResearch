@@ -1,0 +1,52 @@
+{
+  "schema": "agent-working-tree-two-prompt-candidate-v1",
+  "base_engine_id": "sha256:7000327fd7058098d44e559827835ab7248ac9b62165725745537ad63bf03dfb",
+  "base_config_digest": "sha256:02f79004b132d195ac2fb376086156e6495fa24c7dfa6730ff657a1e66858c74",
+  "base_profile": {
+    "path": "deployment/security/agent-soupsieve41-20261115-profile.json",
+    "sha256": "deda4e1f56fc89070525c18e3ad0e433314ea986f8980f0cce24c1a8be99b399"
+  },
+  "engine_id": "sha256:124b3fef7ee5558caccf9d3a15b8f730d15c620e59e7d2839591fa86857bf762",
+  "portable_config_digest": "sha256:4027c51faf4dacfe3ed7f1b40a6114ee8cc51ee910a796928bd2271ab81558be",
+  "source_state": "working-tree-not-final-source-commit",
+  "parent_git_head": "9ca6b7a57b850d0da06312ba8749297515897833",
+  "graph_sha256": "71910af11b4e932b5a2d70d739cf71ec3ec433979b2bfbd3bdb341207f1c5994",
+  "test_sha256": "568b4a1cc198e23da4129f99a296410c08511f6217e788f80a23e3308dc68fff",
+  "prompt_ast_delta": {
+    "changed_methods": [
+      "analyst",
+      "validator"
+    ],
+    "one_string_constant_each": true,
+    "all_other_complete_module_ast_identical": true
+  },
+  "native_files": 515,
+  "native_elf_closure": {
+    "files": 515,
+    "sha256": "7bde6d27b4fd6015f058da3f28d8c1e5dfb0155aadca77a61919225674d4f348"
+  },
+  "python_source_closure": {
+    "files": 5973,
+    "sha256": "f61de84661b0479a9059fef8a2975c089352c660e0099ce44321029bf8468097"
+  },
+  "python_file_delta": {
+    "/app/backend/research/graph.py": {
+      "before": "b4bd11568b52059ac0420acedaad5ffb65e22ca6531c15783a5acf39b7d48ce9",
+      "after": "71910af11b4e932b5a2d70d739cf71ec3ec433979b2bfbd3bdb341207f1c5994"
+    }
+  },
+  "all_other_merged_filesystem_bytes_and_metadata_equal": true,
+  "only_filesystem_delta": [
+    "app/backend/research/graph.py",
+    "app/source-fingerprint.json"
+  ],
+  "all97_fingerprint_entries_equal_actual_files": true,
+  "source_inputs": {
+    "backend/research/graph.py": "71910af11b4e932b5a2d70d739cf71ec3ec433979b2bfbd3bdb341207f1c5994",
+    "tests/test_research_gap_coverage.py": "568b4a1cc198e23da4129f99a296410c08511f6217e788f80a23e3308dc68fff",
+    "scripts/prepare_agent_gap_coverage_20261115.py": "3430fcff96e9b6a278f5a7ad698bc7eda6b8e6f7d98eb8809fdb2b1a8968c00c"
+  },
+  "provider_http": 0,
+  "published": false,
+  "runtime_configuration_except_labels_unchanged": true
+}
