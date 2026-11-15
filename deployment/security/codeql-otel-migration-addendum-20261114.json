@@ -12,6 +12,10 @@
       "before": "4d7580dad582b3e0b0acf5ad2d48b7f61d763d93d858df9486a1eb054568ccaa",
       "after": "dfe025c1ddb797d7dd6811a7dada6be063218fe06abf57f969c8b147a8f1eaa4"
     },
+    "business-backend/Dockerfile": {
+      "before": "e8bf35e9cd32249ea9497a0a499bce36303a10c0e38cb84a42456b7cf02a78ea",
+      "after": "32a08a3e307cd58884aacaa4219ed7eafcbc7febf79edd7b9798161fd015c42b"
+    },
     ".github/workflows/ci.yml": {
       "before": "6530e99aa0cde56aedc87b198faa135d90520c037179a277d83187a9f4acb416",
       "after": "d24ef9a5ca82ccc0e58276e58b9e4a55c0754cd00917586d42f989b3083d6eab"
@@ -82,7 +86,7 @@
     "all_effective_attributes_identical": true,
     "attribute_output_sha256": "0bad1b50e0099d173db2ccb8259c27b6d110113fe0494c708744ee49890e12d9"
   },
-  "generator_source_sha256": "f0b9142c66b18dbfe873f5b55d11c29c623822e1f1388f7e6cc879c7d04dc15d",
+  "generator_source_sha256": "79c2e2ba80c43c1ea9eb3be845f89307df31fc890645ee9f25f2513237b4e291",
   "all_other_existing_bound_sha256": {
     "deployment/security/codeql-finding-review-20261110.md": "7585522420e6a8cb160ef2b173460762833e8128790a259ed0a4b779d8824948",
     "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java": "9729af95b2760eb00fdc36f8e86f8abaa7f0f4deb999f976a9342d7a93365aea",
@@ -115,7 +119,6 @@
     "deployment/security/go-stdlib-20261112-evidence/source.lock.json": "20746730bbf420fce6ed6765e79bac882c02d237f5a51cf212581840ff019dbe",
     "deployment/security/codeql-grafana-license-directory-addendum-20261112.json": "98387c241d54ca8d180e2331b6c50c63d429d0489b2f74e1760997da31aadb0d",
     ".dockerignore": "bf08274f1b2099859c085694e386a743072bc87d11772bb2cbc5d4487cef9261",
-    "business-backend/Dockerfile": "e8bf35e9cd32249ea9497a0a499bce36303a10c0e38cb84a42456b7cf02a78ea",
     "business-backend/runtime/backend_busybox_benign.py": "056c23944daff0ebbc8048e9e8c63ae8b56c0c3bca5a36d021cd7780874787fd",
     "deployment/vendors/grafana-20261110/busybox/.gitignore": "3a4e5d348c53bfc29b908a15ef2e03398a31876b54b37b2609292a6fccd043f6",
     "deployment/vendors/grafana-20261110/busybox/Dockerfile": "b57dd0f74f2dda5e26f0d8fcf8524dc30e050455d120ce58f9a6143b81e521b8",
@@ -416,6 +419,12 @@
     "deployment/security/codeql-reviewed-findings-20261114-ci-disk.json": "afdc7960af1af47d50390b65ea5860fd30f6f0203e8e8a240155df1d7fd79afb",
     "deployment/security/codeql-ci-attributes-addendum-20261114.json": "088699bab3b799a6dc4ed54dee0d66af38811b7c156512f8dffd826392b6c07e"
   },
+  "backend_transport_support_sha256": {
+    "scripts/check_backend_busybox_20261113.py": "04e5efe052da65da5f929a88fed6995f200a254f39d5d9c4b59fe3976d9271db",
+    "deployment/security/backend-busybox-20261115-transport-profile.json": "e841d620d2d7792c9862d8acb40f11607e195024434ac79c4eb554de0a98448a",
+    "scripts/prepare_backend_busybox_transport_20261115.py": "406ce9051e7949195a737e0fb37b45928ec44e815369899b7b2a5e73c51de7d7",
+    "tests/test_backend_busybox_transport_20261115.py": "800386cf028e4aebb2c07904b2c343133047ab480a1abc9c4da157b311ec5947"
+  },
   "same_four_exact_identities": true,
   "first_three_original_records_unchanged": true,
   "severity_threshold_unchanged": 7.0,
@@ -428,6 +437,7 @@
     "The otel-v1.47.0 migration (CVE-2026-128085) retires Grafana from the reusable-artifact freeze and re-routes the reviewed-source-image cache to the 20261114 builder; compose.yaml, ci.yml, security.yml, runtime_ci_inventory.py and ci_reviewed_image_cache.py changed only within that reviewed routing delta.",
     "The CI follow-up verifies all 106 unchanged locked MinIO native inputs, then passes the verified directory through the existing builder input option. Every downloaded input uses a complete official HTTPS GET. Exact size and SHA checks, the retained native builder, runtime payload checks and scanner gates remain required; this transport repair grants no finding exemption.",
     "The default local source-build entry uses that same verified-input preparation and existing builder option; --no-build retains its no-download behavior. The originally locked public-key bytes are vendored to avoid mutable keyserver armor-header ordering; the other 105 inputs retain their locked HTTPS retrieval and complete checksum checks.",
+    "The Backend recipe replaces four GitHub API asset URLs with the exact official Temurin release browser URLs. The original JRE, SBOM, signature SHA-256 and PGP verification gates remain unchanged; the separate exact transport continuation verifies both complete historical and new corresponding-source closures without exempting any additional finding.",
     "uv.lock changes are the reviewed soupsieve 4.1 upgrade (CVE-2026-126190), already bound by the agent source scope review.",
     "The XSS-through-DOM finding identity (js/xss-through-dom on the offline SQLite release note) and its source/proof bytes are unchanged. Historical tests now replay the exact original input bytes instead of the changed live locks; current production checks remain strict.",
     "No CodeQL scan is re-run and no SARIF is modified; the four original finding identities and severity threshold are preserved."

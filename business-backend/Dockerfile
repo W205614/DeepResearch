@@ -25,11 +25,11 @@ RUN for attempt in 1 2 3; do \
     done; exit 1
 COPY business-backend/runtime/adoptium-public.asc /tmp/adoptium-public.asc
 # Exact Temurin21.0.13+9 musl JRE/SBOM assets; their original SHA and PGP gates remain.
-RUN curl --fail --location --connect-timeout 20 --max-time 180 --retry 2 --retry-max-time 180 --retry-all-errors --header 'Accept: application/octet-stream' https://api.github.com/repos/adoptium/temurin21-binaries/releases/assets/665302157 --output /tmp/jre.tar.gz
-RUN curl --fail --location --connect-timeout 20 --max-time 180 --retry 2 --retry-max-time 180 --retry-all-errors --header 'Accept: application/octet-stream' https://api.github.com/repos/adoptium/temurin21-binaries/releases/assets/665302362 --output /tmp/jre.tar.gz.sig \
+RUN curl --fail --location --connect-timeout 20 --max-time 180 --retry 2 --retry-max-time 180 --retry-all-errors --header 'Accept: application/octet-stream' https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.13%2B9/OpenJDK21U-jre_x64_alpine-linux_hotspot_21.0.13_9.tar.gz --output /tmp/jre.tar.gz
+RUN curl --fail --location --connect-timeout 20 --max-time 180 --retry 2 --retry-max-time 180 --retry-all-errors --header 'Accept: application/octet-stream' https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.13%2B9/OpenJDK21U-jre_x64_alpine-linux_hotspot_21.0.13_9.tar.gz.sig --output /tmp/jre.tar.gz.sig \
     && echo '585cec46495c43103a397e07829a1a8026d0fdc6c63647ba44ac9c5d6b1f5d9c  /tmp/jre.tar.gz.sig' | sha256sum -c -
-RUN curl --fail --location --connect-timeout 20 --max-time 180 --retry 2 --retry-max-time 180 --retry-all-errors --header 'Accept: application/octet-stream' https://api.github.com/repos/adoptium/temurin21-binaries/releases/assets/665302375 --output /tmp/temurin-sbom.json
-RUN curl --fail --location --connect-timeout 20 --max-time 180 --retry 2 --retry-max-time 180 --retry-all-errors --header 'Accept: application/octet-stream' https://api.github.com/repos/adoptium/temurin21-binaries/releases/assets/665299889 --output /tmp/temurin-sbom.json.sig \
+RUN curl --fail --location --connect-timeout 20 --max-time 180 --retry 2 --retry-max-time 180 --retry-all-errors --header 'Accept: application/octet-stream' https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.13%2B9/OpenJDK21U-sbom_x64_alpine-linux_hotspot_21.0.13_9.json --output /tmp/temurin-sbom.json
+RUN curl --fail --location --connect-timeout 20 --max-time 180 --retry 2 --retry-max-time 180 --retry-all-errors --header 'Accept: application/octet-stream' https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.13%2B9/OpenJDK21U-sbom_x64_alpine-linux_hotspot_21.0.13_9.json.sig --output /tmp/temurin-sbom.json.sig \
     && echo '719a53f61fe6e3565388b34cf3cdb31fa0c9fef9446379cf080e7b5bda96a998  /tmp/temurin-sbom.json.sig' | sha256sum -c -
 RUN set -eu; \
     echo 'a46d5d3ab75c3c86dddf1bfd2957a067a24b1c6b2d2ed2bc69294bf970c5160b  /tmp/adoptium-public.asc' | sha256sum -c -; \

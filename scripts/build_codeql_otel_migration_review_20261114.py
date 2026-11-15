@@ -35,6 +35,7 @@ DELTA_FILES = [
     'scripts/check_agent_full_scope.py',
     'uv.lock',
     'scripts/ci_reviewed_image_cache.py',
+    'business-backend/Dockerfile',
     'tests/test_grafana_fixed_20261107.py',
     'tests/test_security_review_policy_integration.py',
     'tests/test_fs_workflow_gate.py',
@@ -42,6 +43,13 @@ DELTA_FILES = [
     'scripts/.gitattributes',
     'tests/.gitattributes',
     'deployment/security/.gitattributes',
+]
+
+BACKEND_TRANSPORT_SUPPORT = [
+    'scripts/check_backend_busybox_20261113.py',
+    'deployment/security/backend-busybox-20261115-transport-profile.json',
+    'scripts/prepare_backend_busybox_transport_20261115.py',
+    'tests/test_backend_busybox_transport_20261115.py',
 ]
 
 ATTRIBUTE_SUFFIXES = {
@@ -96,6 +104,8 @@ def generate(root=ROOT):
                 unchanged[name] = expected
     if set(deltas) != set(DELTA_FILES):
         raise ValueError('Exact otel-migration delta set differs')
+    transport_support = {name: digest((root / name).read_bytes())
+                         for name in BACKEND_TRANSPORT_SUPPORT}
 
     proof = {
         'schema': 'codeql-otel-migration-continuation-v1',
@@ -106,6 +116,7 @@ def generate(root=ROOT):
         'historical_attribute_equivalence': attributes,
         'generator_source_sha256': digest(Path(__file__).read_bytes()),
         'all_other_existing_bound_sha256': unchanged,
+        'backend_transport_support_sha256': transport_support,
         'same_four_exact_identities': True,
         'first_three_original_records_unchanged': True,
         'severity_threshold_unchanged': 7.0,
@@ -118,6 +129,7 @@ def generate(root=ROOT):
             'The otel-v1.47.0 migration (CVE-2026-128085) retires Grafana from the reusable-artifact freeze and re-routes the reviewed-source-image cache to the 20261114 builder; compose.yaml, ci.yml, security.yml, runtime_ci_inventory.py and ci_reviewed_image_cache.py changed only within that reviewed routing delta.',
             'The CI follow-up verifies all 106 unchanged locked MinIO native inputs, then passes the verified directory through the existing builder input option. Every downloaded input uses a complete official HTTPS GET. Exact size and SHA checks, the retained native builder, runtime payload checks and scanner gates remain required; this transport repair grants no finding exemption.',
             'The default local source-build entry uses that same verified-input preparation and existing builder option; --no-build retains its no-download behavior. The originally locked public-key bytes are vendored to avoid mutable keyserver armor-header ordering; the other 105 inputs retain their locked HTTPS retrieval and complete checksum checks.',
+            'The Backend recipe replaces four GitHub API asset URLs with the exact official Temurin release browser URLs. The original JRE, SBOM, signature SHA-256 and PGP verification gates remain unchanged; the separate exact transport continuation verifies both complete historical and new corresponding-source closures without exempting any additional finding.',
             'uv.lock changes are the reviewed soupsieve 4.1 upgrade (CVE-2026-126190), already bound by the agent source scope review.',
             'The XSS-through-DOM finding identity (js/xss-through-dom on the offline SQLite release note) and its source/proof bytes are unchanged. Historical tests now replay the exact original input bytes instead of the changed live locks; current production checks remain strict.',
             'No CodeQL scan is re-run and no SARIF is modified; the four original finding identities and severity threshold are preserved.',
@@ -133,6 +145,7 @@ def generate(root=ROOT):
     binding[PRIOR] = digest(prior_bytes)
     binding[PROOF] = digest(proof_bytes)
     binding['scripts/build_codeql_otel_migration_review_20261114.py'] = digest(Path(__file__).read_bytes())
+    binding.update(transport_support)
     current['findings'][3]['justification'] += (
         ' The otel-1.47.0 migration continuation re-binds the exact CI routing, lock'
         ' and historical test-fixture changes; the flagged offline SQLite'
