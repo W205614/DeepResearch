@@ -1,0 +1,74 @@
+{
+  "prepared_local_candidate": true,
+  "published": false,
+  "binary_redistribution_approved": false,
+  "layered_snapshot_requires_final_flattening": true,
+  "source_sha": "507461afa04c656e15dbf3a180cedaa9cb7e5f62",
+  "source_inputs": {
+    "pyproject.toml": "e4e01ce355f7de93d2ecff61a8b8c7677d6cad6c51dae9ff5441ebd698a76a6a",
+    "uv.lock": "5320e9772d9c50008ec152c23fdd406fa9a739cdb5feca42e68649a898b53bc1",
+    "Dockerfile": "66d6ffccb8f8f7416f98c62081562f81f9cc76c95747ec176125b28964eea508",
+    "scripts/prepare_agent_soupsieve_20261115.py": "b74c059613c56884b6a6c9bebe1fe25925ac817eef1d325ec305dddcd0f7374b"
+  },
+  "image": "dr-v015-agent-soup41:20261115",
+  "engine_id": "sha256:e7cbfff3c15bb23cee99d954277bd6380fdfd1149ced3a8ff62b4a3670680df2",
+  "portable_config_digest": "sha256:b53ae1732a40884ba03704284e1f2339d3701d8d6643c8362d8eae086a76396a",
+  "diff_ids": [
+    "sha256:fd1775095fcefeefcfa37c509797fce3e1664691d79d817f4c1dd02af1aa2f6d",
+    "sha256:7b1632a2da050fd74295110d8350f0873563f38d103d36f16940fb5c1efd8696",
+    "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+    "sha256:cda202f94463fc0b72e3b47e18a08a8776d5f4bfcaf791e79438c221fc2ba4a8",
+    "sha256:3b0efe5299c3f866ae121b1e4a45bec3cf5d438dc4c2b7c81c67266fbb5401e5",
+    "sha256:e5f3d7a99c5636bb87ef31a11b519409a9b6b1e2d6a7db05265f63ba0309943f",
+    "sha256:29e941cb7a8db068f3d821f4fd016f254b019b4a36d397791e14d1ae17eab4a3"
+  ],
+  "base_engine_id": "sha256:fb5ee66cec06d55ce01e0f43243048f2104423fe9a4ed5cef9b1c2312f75fcd1",
+  "base_portable_config_digest": "sha256:c22727159cfa4ebeda1a81c24f25caf1accfa426e7367bb6fe0a09d101ae8a9b",
+  "old_profile": {
+    "path": "deployment/security/agent-record-metadata-profile-20261113.json",
+    "sha256": "737170a810dabc61edb9bcedfd02b949f9f447b746051cb828f4ab439170dd6b"
+  },
+  "all515_native_files_byte_identical": true,
+  "native_elf_closure": {
+    "files": 515,
+    "sha256": "7bde6d27b4fd6015f058da3f28d8c1e5dfb0155aadca77a61919225674d4f348"
+  },
+  "python_source_closure": {
+    "files": 5973,
+    "sha256": "2f1ba8be9beb9753a6c1417336841a9d9967657adf5d26e0c3c983330badff87"
+  },
+  "python_file_delta": {
+    "/opt/venv/lib/python3.11/site-packages/soupsieve/css_parser.py": {
+      "before": "92ac01283cc5831c479ffa6b77ddc3f284dac34d12911b717547fb8c8b5345ab",
+      "after": "1e0d256d1c576345a77255eedcc9f6e69552acaa16de5f21cf619b71a8319754"
+    },
+    "/opt/venv/lib/python3.11/site-packages/soupsieve/__init__.py": {
+      "before": "155e0e97615195dcbbac6f789d01cd1e82536487506d425d6641a15e4237b621",
+      "after": "62769d4e6151f5c6ffcbc5a3f9890eb86f3ac5c2c894527c1106af427d5e56ef"
+    },
+    "/opt/venv/lib/python3.11/site-packages/soupsieve/css_match.py": {
+      "before": "526087fe5b5a9165480f2c9f281b3ad7db6da72c3d9c035b35576497767ae533",
+      "after": "a3af32be6a195c9e2b756051c4b5063ac367a6877eaf995c0485386722989484"
+    },
+    "/opt/venv/lib/python3.11/site-packages/soupsieve/css_types.py": {
+      "before": "3b14ecd69d9b64ae27bcf8c9bbe4d580f615acc5e743043b446ab471fcd9c02d",
+      "after": "d55dcd265d7822b69ed68970a20bc1a3d93bd8e9b72acc5e7daaa26bb3936764"
+    },
+    "/opt/venv/lib/python3.11/site-packages/soupsieve/__meta__.py": {
+      "before": "1963634ae3a8537af6defe83d4fdfcb44b3ea5abe73a3895a6a13239f0ec3019",
+      "after": "b661bce3ebad9b9ab39ea304c63ad2035cd86e20c3f699ddb329e4fd623fd9f2"
+    },
+    "/opt/venv/lib/python3.11/site-packages/soupsieve/util.py": {
+      "before": "4343151fbedc5015ccb4a5740f67fc4b27fdd2b7a63ded047cba9eebe9ac01e2",
+      "after": "44cf2dc35de17be66ae9d560601a93c5f2e9522fd7ec0f4a2c89043735b0df28"
+    },
+    "/opt/venv/lib/python3.11/site-packages/soupsieve/bidi.py": {
+      "before": null,
+      "after": "09da6b778c57b24d8dd3ff76e3d296193610aaed34d9ce2bc8865bf4a7d98ecb"
+    }
+  },
+  "complete_filesystem_expected_delta_only": true,
+  "runtime_config_except_labels_identical": true,
+  "wheel_sha256": "e4d667b3974ce6e038e7390486b8093369854a1d345ffdd4c121dfc4a782e809",
+  "paid_requests": 0
+}

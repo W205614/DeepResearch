@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PREFIX = 'usr/share/deepresearch/grafana-candidate/'
 GRAPH = PREFIX + 'graphs/main/main.json.gz'
 PROVENANCE = PREFIX + 'provenance/plugins/mysql.json'
-SCRIPT = 'scripts/capture_go_graph_diagnostic_20261112.py'
+SCRIPT = 'scripts/capture_go_graph_diagnostic_20261114.py'
 
 
 def row(path, raw):

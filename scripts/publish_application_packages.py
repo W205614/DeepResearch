@@ -24,7 +24,12 @@ from scripts import check_agent_full_scope  # noqa: E402
 
 REPOSITORY = "W205614/DeepResearch"
 SERVICES = {"agent", "backend", "web"}
-MANIFEST_ACCEPT = "application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json"
+MANIFEST_ACCEPT = ", ".join([
+    "application/vnd.docker.distribution.manifest.v2+json",
+    "application/vnd.oci.image.manifest.v1+json",
+    "application/vnd.docker.distribution.manifest.list.v2+json",
+    "application/vnd.oci.image.index.v1+json",
+])
 SEVERITIES = ("UNKNOWN", "LOW", "MEDIUM", "HIGH", "CRITICAL")
 
 
@@ -302,20 +307,53 @@ def registry_manifest(repository: str, version: str) -> dict | None:
     query = urlencode({"service": "ghcr.io", "scope": "repository:" + name + ":pull,push"})
     with urlopen(Request("https://ghcr.io/token?" + query, headers={"Authorization": "Basic " + auth}), timeout=45) as response:
         token = json.load(response)["token"]
-    request = Request("https://ghcr.io/v2/" + name + "/manifests/" + version,
-                      headers={"Authorization": "Bearer " + token, "Accept": MANIFEST_ACCEPT})
-    try:
+    def fetch(reference):
+        request = Request("https://ghcr.io/v2/" + name + "/manifests/" + reference,
+                          headers={"Authorization": "Bearer " + token, "Accept": MANIFEST_ACCEPT})
         with urlopen(request, timeout=45) as response:
-            raw = response.read()
-            manifest = json.loads(raw)
+            raw = response.read(1024 * 1024 + 1)
             digest = response.headers["Docker-Content-Digest"]
+        if (len(raw) > 1024 * 1024 or digest != "sha256:" + hashlib.sha256(raw).hexdigest()
+                or reference.startswith("sha256:") and reference != digest):
+            raise ValueError("Registry manifest content digest differs")
+        return raw, json.loads(raw), digest
+
+    try:
+        _, manifest, tag_digest = fetch(version)
     except HTTPError as error:
         if error.code == 404:
             return None
         raise
-    if digest != "sha256:" + hashlib.sha256(raw).hexdigest() or "config" not in manifest:
+    digest = tag_digest
+    if "manifests" in manifest:
+        if (manifest.get("schemaVersion") != 2 or manifest.get("mediaType") not in {
+                "application/vnd.oci.image.index.v1+json", "application/vnd.docker.distribution.manifest.list.v2+json"}):
+            raise ValueError("Application index must contain exactly one linux/amd64 image")
+        children = [row for row in manifest["manifests"]
+                    if row.get("platform") == {"os": "linux", "architecture": "amd64"}]
+        if len(children) != 1:
+            raise ValueError("Application index must contain exactly one linux/amd64 image")
+        child, = children
+        if not re.fullmatch(r"sha256:[a-f0-9]{64}", child.get("digest", "")):
+            raise ValueError("Application index platform or child digest differs")
+        # BuildKit also emits an attestation descriptor. It is not a runnable
+        # platform or security approval; only accept it bound to this child.
+        for row in manifest["manifests"]:
+            if row is child:
+                continue
+            if (row.get("platform") != {"os": "unknown", "architecture": "unknown"}
+                    or row.get("mediaType") != "application/vnd.oci.image.manifest.v1+json"
+                    or row.get("annotations", {}).get("vnd.docker.reference.type") != "attestation-manifest"
+                    or row.get("annotations", {}).get("vnd.docker.reference.digest") != child["digest"]
+                    or not re.fullmatch(r"sha256:[a-f0-9]{64}", row.get("digest", ""))):
+                raise ValueError("Application index contains an unsupported platform or unbound attestation")
+        raw, manifest, digest = fetch(child["digest"])
+        if len(raw) != child["size"] or manifest.get("mediaType") != child["mediaType"]:
+            raise ValueError("Application platform manifest descriptor differs")
+    if (manifest.get("schemaVersion") != 2 or "config" not in manifest
+            or not re.fullmatch(r"sha256:[a-f0-9]{64}", manifest["config"].get("digest", ""))):
         raise ValueError("Registry did not return a verified single-platform image manifest")
-    return {"digest": digest, "image_id": manifest["config"]["digest"]}
+    return {"digest": digest, "tag_manifest_digest": tag_digest, "image_id": manifest["config"]["digest"]}
 
 
 def main() -> None:
@@ -379,7 +417,8 @@ def main() -> None:
         if not actual or actual["image_id"] != image["image_id"]:
             raise ValueError("Published package config does not match the accepted local image")
         published.append({"service": image["service"], "reference": target, "image_id": image["image_id"],
-                          "digest": actual["digest"], "immutable_reference": image["repository"] + "@" + actual["digest"]})
+                          "digest": actual["digest"], "tag_manifest_digest": actual["tag_manifest_digest"],
+                          "immutable_reference": image["repository"] + "@" + actual["digest"]})
         (args.output / "publication.json").write_text(json.dumps({"source_sha": sha, "version": data["version"],
             "artifact_release": args.release_tag, "manifest_sha256": args.manifest_sha256, "images": published}, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"source_sha": sha, "images": published, "visibility": "Verify or set package visibility separately; no anonymous-access claim yet"}))

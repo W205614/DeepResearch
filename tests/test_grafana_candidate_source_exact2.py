@@ -115,8 +115,8 @@ def test_existing_output_is_never_overwritten(tmp_path, monkeypatch):
     assert error.value.code == 1 and output.read_bytes() == b'ORIGINAL RAW OR VERDICT'
 
 
-def test_real_pinned_candidate_graph_and_independently_extracted_native_are_consistent():
-    review = gate.load_review(gate.ROOT, datetime(2026, 10, 28, tzinfo=timezone.utc))
+def test_real_pinned_candidate_graph_and_independently_extracted_native_are_consistent(historical_grafana_candidate_source_root):
+    review = gate.load_review(historical_grafana_candidate_source_root, datetime(2026, 10, 28, tzinfo=timezone.utc))
     assert review['graph']['verified_facts']['packages'] == 4200
     assert review['graph']['verified_facts']['modules'] == 522
     assert review['source']['path'] == gate.SOURCE and not review['artifact_approved']
@@ -127,5 +127,10 @@ def test_json_duplicate_fields_are_not_allowed():
         gate.old.json_loads('{"human_risk_acceptance":true,"human_risk_acceptance":false}')
 
 
-def test_exact_review_stays_valid_after_historical_calendar_expiry():
-    assert gate.load_review(gate.ROOT, datetime(2099, 1, 1, tzinfo=timezone.utc))['facts_passed']
+def test_exact_review_stays_valid_after_historical_calendar_expiry(historical_grafana_candidate_source_root):
+    assert gate.load_review(historical_grafana_candidate_source_root, datetime(2099, 1, 1, tzinfo=timezone.utc))['facts_passed']
+
+
+def test_historical_review_rejects_current_upgraded_source_inputs():
+    with pytest.raises(ValueError, match='actual build input changed'):
+        gate.load_review(gate.ROOT, datetime(2099, 1, 1, tzinfo=timezone.utc))

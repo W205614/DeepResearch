@@ -15,10 +15,13 @@ sys.path.insert(0, str(ROOT))
 from scripts import check_grafana_source_build_20261110 as old  # noqa: E402
 from scripts import build_grafana_source_20261110 as old_builder  # noqa: E402
 from scripts.grafana_source_build_facts_20261110 import capture  # noqa: E402
-from scripts.retained_source_review_20261112 import SOURCE  # noqa: E402
 from scripts import go_otel_rebuild_20261114 as common  # noqa: E402
 
 CACHE = ROOT / '.cache/go-otel-security-20261114'
+
+# This ancestor matches every frozen 20261112 source input and includes its
+# historical 20261110 cold-build fix. Current otel locks cannot rebuild that base.
+RETAINED_20261112_SOURCE = '0b613f1386bcd7067cb54e236db6e29510c44b16'
 
 
 def write(path, value):
@@ -40,6 +43,7 @@ def source_inputs(artifact, root=ROOT):
              'scripts/prefetch_go_security_modules_20261112.py',
              'scripts/go_otel_rebuild_20261114.py',
              'scripts/check_grafana_source_build_20261114.py',
+             'scripts/grafana_inventory_20261115.py',
              'deployment/security/go-stdlib-20261112-evidence/source.lock.json',
              'deployment/security/go-stdlib-20261112-evidence/Go-LICENSE'}
     if artifact == 'grafana':
@@ -59,22 +63,39 @@ def consumer(artifact):
     return gate
 
 
-def build_historical_grafana_input(output, historical):
-    retained_output = historical / '.cache' / ('retained-runtime-' + uuid.uuid4().hex[:12])
-    # This is an immutable historical BUILDINPUT, not a current runtime approval.
-    # Its c6 identity must inspect its actual source, including the old ignore file.
+def rebuild_retained_20261112_base(output):
+    checkout = ROOT / '.cache/retained-20261112-build-source'
+    if checkout.is_symlink() or not checkout.resolve().is_relative_to((ROOT / '.cache').resolve()):
+        raise ValueError('Retained build source must stay in this checkout cache')
+    subprocess.run(['git', 'merge-base', '--is-ancestor', RETAINED_20261112_SOURCE, 'HEAD'], cwd=ROOT, check=True)
+    checkout.parent.mkdir(parents=True, exist_ok=True)
+    if not checkout.exists():
+        result = subprocess.run(['git', '-c', 'core.hooksPath=/dev/null', 'worktree', 'add',
+                                 '--detach', str(checkout), RETAINED_20261112_SOURCE],
+                                cwd=ROOT, capture_output=True, check=True)
+        (checkout.parent / 'retained-20261112-checkout.log').write_bytes(result.stdout + result.stderr)
+    observed = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=checkout).decode().strip()
+    changed = subprocess.check_output(['git', 'status', '--porcelain=v1', '--untracked-files=no'], cwd=checkout)
+    if observed != RETAINED_20261112_SOURCE or changed.strip():
+        raise ValueError('The retained 20261112 build checkout changed from its frozen revision')
+    for name, expected in common.prior_profile(ROOT)['source_inputs'].items():
+        if old.digest(old.checked(checkout, name)) != expected:
+            raise ValueError('Retained base source does not match the frozen input: ' + name)
+    base_output = checkout / '.cache' / ('retained-base-' + uuid.uuid4().hex[:12])
     try:
-        logged([sys.executable, '-B', historical / 'scripts/build_grafana_source_20261110.py',
-                '--prepare', '--output-dir', retained_output], output, 'previous-runtime-build')
+        logged([sys.executable, '-B', checkout / 'scripts/build_go_stdlib_security_20261112.py',
+                '--artifact', 'grafana', '--prepare', '--output-dir', base_output],
+               output, 'retained-20261112-build')
     finally:
-        diagnostics = output / 'previous-runtime-build'
+        diagnostics = output / 'retained-20261112-build'
         diagnostics.mkdir()
-        write(diagnostics / 'historical-source.json', {'source_commit': SOURCE, 'checkout': str(historical),
-              'output': str(retained_output), 'input_only': True, 'new_runtime_approved': False})
-        if retained_output.is_dir():
-            for path in retained_output.rglob('*'):
-                if path.is_file() and (path.suffix == '.log' or path.parent == retained_output and path.suffix == '.json'):
-                    destination = diagnostics / path.relative_to(retained_output)
+        write(diagnostics / 'historical-source.json', {'source_commit': RETAINED_20261112_SOURCE,
+              'checkout': str(checkout), 'output': str(base_output), 'input_only': True,
+              'new_runtime_approved': False})
+        if base_output.is_dir():
+            for path in base_output.rglob('*'):
+                if path.is_file() and (path.suffix == '.log' or path.parent == base_output and path.suffix == '.json'):
+                    destination = diagnostics / path.relative_to(base_output)
                     destination.parent.mkdir(parents=True, exist_ok=True)
                     shutil.copyfile(path, destination)
 
@@ -132,7 +153,10 @@ def prepare_contexts(args, output):
     old_image = 'deepresearch-grafana-source:20261112'
     if subprocess.run(['docker', 'image', 'inspect', old_image], stdout=subprocess.DEVNULL,
                       stderr=subprocess.DEVNULL).returncode:
-        raise ValueError('The prior 20261112 source runtime must already be present; it is the retained base image')
+        rebuild_retained_20261112_base(output)
+        if subprocess.run(['docker', 'image', 'inspect', old_image], stdout=subprocess.DEVNULL,
+                          stderr=subprocess.DEVNULL).returncode:
+            raise ValueError('The retained 20261112 base image could not be rebuilt from its frozen historical revision')
     before = capture(old_image, output / 'previous-runtime-actual')
     if (before['runtime_manifest_sha256'] != baseline['expected']['runtime_manifest_sha256']
             or old.runtime_config(before['inspection']['Config']) != baseline['expected']['runtime_config']):

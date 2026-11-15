@@ -26,8 +26,8 @@ def test_cold_and_hit_always_use_the_same_original_strict_builder(artifact, tmp_
     hit = cache.builder_command(artifact, tmp_path, hit=True)
     assert hit == cold + ['--no-build']
     assert cold[0] == cache.sys.executable and '--prepare' not in cold
-    assert Path(cold[2]).name == ('build_minio_os_20261113.py' if artifact == 'minio'
-                                  else 'build_go_stdlib_security_20261112.py')
+    assert Path(cold[2]).name == ('build_minio_otel_20261115.py' if artifact == 'minio'
+                                  else 'build_go_otel_security_20261114.py')
 
 
 def test_failed_cache_load_does_not_fall_back_to_a_cold_build(tmp_path, monkeypatch):

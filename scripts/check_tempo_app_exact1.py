@@ -21,7 +21,7 @@ sys.path.insert(0, str(ROOT))
 from scripts.security_review_policy import validate_review_policy  # noqa: E402
 
 REVIEW_PATH = Path('deployment/security/tempo-app1-technical-review.json')
-REVIEW_SHA256 = 'b5b2e58748d4083750d71438fc81de2c2ec62ac1271a59b652f3b3d07575d434'
+REVIEW_SHA256 = '62b34be6f674bcf6ff3ae608fadd821d2f8649995b26d6bd2f7b1a0a2eaa9343'
 EVIDENCE = Path('deployment/security/tempo-app1-evidence/data-refresh-20261030')
 TAG = 'deepresearch-scan-tempo:ci'
 TARGET = 'tempo'
@@ -128,13 +128,14 @@ def verify_materials(directory, review, go='go'):
     text = paths['native-buildinfo.txt'].read_bytes()
     actual_text = subprocess.check_output([go, 'version', '-m', str(elf)],
                                           stderr=subprocess.PIPE, timeout=60)
-    require(text.split(b'\n', 1)[0].endswith(b': go1.27.3')
+    go_version = subject.get('go_version', 'go1.27.3')
+    require(text.split(b'\n', 1)[0].endswith(b': ' + go_version.encode())
             and text.split(b'\n', 1)[1] == actual_text.split(b'\n', 1)[1]
             and hashlib.sha256(text.split(b'\n', 1)[1]).hexdigest()
             == subject['native_text_body_sha256'], 'Native text inventory differs from actual ELF')
     require(file_hash(paths['runtime-version.txt']) == material['runtime_version_sha256']
             == subject['runtime_version_sha256'], 'Actual isolated runtime -version differs')
-    require(native['GoVersion'] == 'go1.27.3'
+    require(native['GoVersion'] == go_version
             and native['Path'] == PACKAGE + '/cmd/tempo'
             and native['Main'] == {'Path': PACKAGE, 'Version': VERSION}
             and len(native['Deps']) == subject['native_dependency_count'],

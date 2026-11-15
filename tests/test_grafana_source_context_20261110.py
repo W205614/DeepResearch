@@ -10,8 +10,17 @@ from scripts import grafana_source_context_20261110 as gate
 ROOT = Path(__file__).resolve().parents[1]
 
 
+@pytest.fixture(scope='module', autouse=True)
+def retained_source_root(retained_grafana_context_root):
+    global ROOT
+    original = ROOT
+    ROOT = retained_grafana_context_root
+    yield
+    ROOT = original
+
+
 @pytest.fixture(scope='module')
-def contexts():
+def contexts(retained_source_root):
     base = ROOT / gate.BASE
     review = json.loads((ROOT / gate.REVIEW).read_bytes())
     continuity = json.loads((ROOT / gate.CONTINUITY).read_bytes())
@@ -55,6 +64,25 @@ def test_every_retained_external_context_reparses_its_actual_graph_native_and_so
     profile, review = contexts
     row = raw_tuple(review, target)
     gate.external_graph(ROOT, profile, row, external_proof(review, row))
+
+
+def test_retained_external_proof_does_not_authorize_the_upgraded_current_source(contexts):
+    profile, review = contexts
+    row = raw_tuple(review, 'deployment/vendors/alertmanager/go.mod')
+    repository = Path(__file__).resolve().parents[1]
+    with pytest.raises(ValueError, match='hash-bound|source target'):
+        gate.external_graph(repository, profile, row, external_proof(review, row))
+
+
+def test_retired_python_scope_does_not_authorize_the_upgraded_current_lock():
+    import gzip
+    from scripts import check_grafana_source_scan_20261112 as scope
+
+    repository = Path(__file__).resolve().parents[1]
+    raw = repository / 'deployment/security/grafana-source-20261112-evidence/source-ci6d-full73.json.gz'
+    findings = scope.prior.source_facts(json.loads(gzip.decompress(raw.read_bytes())))[0]
+    with pytest.raises(ValueError, match='Complete73'):
+        scope.python_source_scope(findings, root=repository)
 
 
 @pytest.mark.parametrize('target', ['deployment/vendors/etcd/modules/go.mod',

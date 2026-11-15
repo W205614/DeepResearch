@@ -1,9 +1,11 @@
 """Actual legacy-publication metadata, exact catalog identities and migration counterexamples."""
 from copy import deepcopy
 import gzip
+import hashlib
 from io import BytesIO
 import json
 from pathlib import Path
+import subprocess
 from urllib.error import HTTPError
 
 import pytest
@@ -44,7 +46,16 @@ def test_generated_public_catalog_matches_every_actual_legacy_fixture_identity(m
     releases, tags = metadata
     observed = catalog.prepare_catalog(releases, tags, contracts)
     public = catalog.read(ROOT / 'deployment/security/legacy-source-assets-catalog-20261113.json')
-    assert public['legacy_releases'] == observed['legacy_releases']
+    for frozen, current in zip(public['legacy_releases'], observed['legacy_releases'], strict=True):
+        # Remote asset identity is immutable. The source catalog also retains
+        # the policy bytes used when it was recorded, before later reviews.
+        assert {k: v for k, v in frozen.items() if k != 'frozen_input_sha256'} == {
+            k: v for k, v in current.items() if k != 'frozen_input_sha256'}
+        for name, expected in frozen['frozen_input_sha256'].items():
+            original = subprocess.check_output(['git', 'show',
+                'e59cc5214e42a944c1d0314cf7a1be2d5e5f7d55:' + name], cwd=ROOT)
+            assert hashlib.sha256(original).hexdigest() == expected
+            assert catalog.digest(ROOT / name) == current['frozen_input_sha256'][name]
     assert public['legacy_asset_count'] == 53 and public['metadata_only']
     assert public['remote_mutations'] == 0 and not public['binary_redistribution_approved']
 

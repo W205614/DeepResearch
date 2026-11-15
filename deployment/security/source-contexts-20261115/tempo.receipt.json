@@ -1,0 +1,47 @@
+{
+  "profile": "tempo",
+  "source_inputs": {
+    "deployment/vendors/tempo/go.mod": "1e6a4bd94d20ca216fc20abdcafddc9563b045ecff9a35c63c02a3ec80cfacdb",
+    "deployment/vendors/tempo/go.sum": "ba94f4b4dc52cf25c26bbea16e2ec0218e2099e87532073a1771cc355012b182",
+    "deployment/vendors/tempo/source.lock.json": "11c00eb72468c637fd5e8b3261a21d36a0a21fe149cc7e2ccccd95149edb72a1",
+    "deployment/docker/Dockerfile.tempo": "f10da2fd5b857bf9891151e07a4bec6d8c34d3ae78aea97df1b6b0c6d8beed29"
+  },
+  "source_provenance": {
+    "Path": "github.com/grafana/tempo",
+    "Version": "v1.5.1-0.20261021135948-f317720e7e51",
+    "Sum": "h1:+sAuKS0IadtUpDTSOYbdADCwPcfDsVolfp/qQWM9K34=",
+    "GoModSum": "h1:/D9uPV5lW5RlvoPRhwjwYa9NHQKIyk1u0jV66cvXYAY=",
+    "Origin": {
+      "VCS": "git",
+      "URL": "https://github.com/grafana/tempo",
+      "Hash": "f317720e7e5191a7f282e8f7d6fe5387ae6015b4"
+    }
+  },
+  "command": [
+    "go",
+    "list",
+    "-deps",
+    "-json",
+    "-mod=readonly",
+    "-buildvcs=false",
+    "./cmd/tempo"
+  ],
+  "environment": {
+    "GOOS": "linux",
+    "GOARCH": "amd64",
+    "GOAMD64": "v1",
+    "CGO_ENABLED": "0",
+    "GOWORK": "off",
+    "GOTOOLCHAIN": "go1.27.4"
+  },
+  "compiler": "go version go1.27.4 windows/amd64",
+  "exit_code": 0,
+  "raw_sha256": "044ee945ae5459e729fa2ec766268ff2033baa3be54e2878316845ae7b1759d4",
+  "raw_bytes": 15376211,
+  "projection_sha256": "e81ae6000ec20b78e3abb06d7b88e37c7a23a2646490686c5446bff5af136356",
+  "projection_raw_sha256": "1e4e5531daf3927564bfd09fd4dcfe32b00a2e236c1be6d5b3cbeecc8e58e021",
+  "package_count": 2077,
+  "raw_graph_modified": false,
+  "projection_preserves_all_packages_imports_and_module_identities": true,
+  "projection_entry_metadata_preserved": true
+}

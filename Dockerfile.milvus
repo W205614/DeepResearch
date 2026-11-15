@@ -1,4 +1,4 @@
-FROM golang@sha256:d1f3216ef30257c850cc136ba42a359ccd9d3e75f19b2c276e520c0b4ef327ce AS go
+FROM golang:1.26.11-bookworm@sha256:79ecd0a7157c7a4cf3b281ced8465350591bf54fedab540e75374a003e1fde7e AS go
 FROM milvusdb/milvus@sha256:812cb91ad04e847e5ebb4d19593c69f2e207593073063ede0fd604bbba5fddf1 AS runtime-base
 FROM runtime-base AS build
 USER root
@@ -31,11 +31,39 @@ COPY deployment/vendors/milvus/rdkafka_mock.h /source/c-api-headers/librdkafka/r
 RUN echo '2d4d52168b669257fbe936554af6af543fa0fa4f2cccc5a201a2c7d301dad500  /source/c-api-headers/librdkafka/rdkafka_mock.h' | sha256sum -c -
 ENV PKG_CONFIG_PATH=/source/pkgconfig LIBRARY_PATH=/milvus/lib LD_LIBRARY_PATH=/milvus/lib
 RUN --mount=type=cache,target=/go/pkg/mod,id=dr-vendor-go-mod-20261026 --mount=type=cache,target=/root/.cache/go-build,id=dr-vendor-go-build-20261026 go test -v -p=2 -mod=readonly -tags=dynamic,sonic,with_jemalloc,bytedance_tango -ldflags='-checklinkname=0 -r /milvus/lib' ./internal/distributed/utils -run '^TestInternalTLSCredentials' -count=1
-RUN --mount=type=cache,target=/go/pkg/mod,id=dr-vendor-go-mod-20261026 --mount=type=cache,target=/root/.cache/go-build,id=dr-vendor-go-build-20261026 go build -p=2 -mod=readonly -buildvcs=false -pgo=/source/configs/pgo/default.pgo -tags=dynamic,sonic,with_jemalloc,bytedance_tango -ldflags='-checklinkname=0 -r /milvus/lib -X github.com/milvus-io/milvus/cmd/milvus.GitCommit=328df0cd2f323c2d3c50cef91bfc9f2c412bcb09-security-rebuild -X github.com/milvus-io/milvus/cmd/milvus.GoVersion=go1.26.10 -X github.com/milvus-io/milvus/cmd/milvus.MilvusVersion=3.0.3' -o /out/milvus ./cmd/main.go
+RUN --mount=type=cache,target=/go/pkg/mod,id=dr-vendor-go-mod-20261026 --mount=type=cache,target=/root/.cache/go-build,id=dr-vendor-go-build-20261026 go build -p=2 -mod=readonly -buildvcs=false -pgo=/source/configs/pgo/default.pgo -tags=dynamic,sonic,with_jemalloc,bytedance_tango -ldflags='-checklinkname=0 -r /milvus/lib -X github.com/milvus-io/milvus/cmd/milvus.GitCommit=328df0cd2f323c2d3c50cef91bfc9f2c412bcb09-security-rebuild -X github.com/milvus-io/milvus/cmd/milvus.GoVersion=go1.26.11 -X github.com/milvus-io/milvus/cmd/milvus.MilvusVersion=3.0.3' -o /out/milvus ./cmd/main.go
+# Keep the 2.6.1 C ABI while replacing its vulnerable embedded Cyrus plugin
+# with the system SASL core; the system DIGEST-MD5 plugin is absent.
+FROM build AS rdkafka-build
+ENV SOURCE_DATE_EPOCH=1731675754
+RUN apt-get -o Acquire::Retries=0 -o Acquire::http::Timeout=30 update \
+ && apt-get -o Acquire::Retries=0 -o Acquire::http::Timeout=30 install -y --no-install-recommends make libsasl2-dev=2.1.27+dfsg2-3ubuntu1.2 libzstd-dev
+WORKDIR /rdkafka-source
+COPY deployment/vendors/milvus/rdkafka-20261115/librdkafka-v2.6.1.tar.gz /tmp/librdkafka-v2.6.1.tar.gz
+RUN echo '677bf1c148b54a406267aec726e0f71d6e06f9a41052017172ca1693ee8cd111  /tmp/librdkafka-v2.6.1.tar.gz' | sha256sum -c - \
+ && tar -xzf /tmp/librdkafka-v2.6.1.tar.gz --strip-components=1 \
+ && echo '981210446c732d19e1de1feced64899fbef8daaf881c2bc7e2c1ac67953da970  src/rdkafka.h' | sha256sum -c -
+COPY deployment/vendors/milvus/rdkafka-20261115/probe.c /rdkafka-source/probe.c
+COPY deployment/vendors/milvus/rdkafka-20261115/preserve-no-plugins.patch /tmp/rdkafka-preserve-no-plugins.patch
+RUN echo '1b66350e6fabcdeef6450345876f4c8ad540e53975d2be5edf0d7b46e5fa2716  configure.self' | sha256sum -c - \
+ && echo 'd75cd427b55a30d9962a2cd6b5d0d16dd7adc65b1878afec74002ad3e6e3da3e  /tmp/rdkafka-preserve-no-plugins.patch' | sha256sum -c - \
+ && patch --batch --forward --fuzz=0 -p1 < /tmp/rdkafka-preserve-no-plugins.patch \
+ && echo '21a97450c8d66eab9add67de7cd4fdfff2230390b57127318bd6aeb4c68c9d67  configure.self' | sha256sum -c -
+# Match the original library's features. Its HTTP/OIDC and gzip features were
+# absent; enabling curl here would add an unrelated TLS dependency chain.
+RUN ./configure --prefix=/out/rdkafka --enable-gssapi --enable-ssl --enable-zstd \
+      --disable-curl --disable-zlib --disable-lz4-ext \
+ && make -C src -j2 \
+ && mkdir -p /out/rdkafka/lib \
+ && cp src/librdkafka.so.1 /out/rdkafka/lib/librdkafka.so.1 \
+ && ln -s librdkafka.so.1 /out/rdkafka/lib/librdkafka.so \
+ && gcc probe.c -Isrc -L/out/rdkafka/lib -Wl,-rpath,/milvus/lib -lrdkafka -o /out/rdkafka-probe \
+ && LD_LIBRARY_PATH=/out/rdkafka/lib:/milvus/lib /out/rdkafka-probe \
+ && CI=true LD_LIBRARY_PATH=/out/rdkafka/lib:/milvus/lib /out/rdkafka-probe --unit
 FROM runtime-base AS runtime-security
 USER root
 RUN apt-get -o Acquire::Retries=0 -o Acquire::http::Timeout=30 update \
- && apt-get -o Acquire::Retries=0 -o Acquire::http::Timeout=30 install -y --no-install-recommends --only-upgrade apt=2.4.15ubuntu0.1 libapt-pkg6.0=2.4.15ubuntu0.1 libbrotli1=1.0.9-2ubuntu0.1 curl=7.81.0-1ubuntu1.30 libcurl4=7.81.0-1ubuntu1.30 \
+ && apt-get -o Acquire::Retries=0 -o Acquire::http::Timeout=30 install -y --no-install-recommends --only-upgrade apt=2.4.15ubuntu0.1 libapt-pkg6.0=2.4.15ubuntu0.1 libbrotli1=1.0.9-2ubuntu0.1 curl=7.81.0-1ubuntu1.30 libcurl4=7.81.0-1ubuntu1.30 libc-bin=2.35-0ubuntu3.18 libc6=2.35-0ubuntu3.18 libpcre2-8-0=10.39-3ubuntu0.2 perl-base=5.34.0-3ubuntu1.10 \
  && rm -rf /var/lib/apt/lists/*
 FROM runtime-security AS runtime-package
 USER root
@@ -45,10 +73,48 @@ COPY --from=runtime-security / /runtime-root/
 RUN test -d /runtime-root/milvus/configs/cert && test ! -L /runtime-root/milvus/configs/cert \
  && rm -r -- /runtime-root/milvus/configs/cert \
  && test ! -e /runtime-root/milvus/configs/cert && test -f /runtime-root/milvus/configs/milvus.yaml
+# Keep the existing verified Bash as the POSIX /bin/sh implementation and
+# remove the original dash executable containing its unpatched printf path.
+RUN test "$(readlink /runtime-root/bin)" = usr/bin \
+ && test "$(readlink /runtime-root/usr/bin/sh)" = dash \
+ && echo '4f291296e89b784cd35479fca606f228126e3641f5bcaee68dee36583d7c9483  /runtime-root/usr/bin/dash' | sha256sum -c - \
+ && echo '59474588a312b6b6e73e5a42a59bf71e62b55416b6c9d5e4a6e1c630c2a9ecd4  /runtime-root/usr/bin/bash' | sha256sum -c - \
+ && ln -sfn bash /runtime-root/usr/bin/sh \
+ && rm -- /runtime-root/usr/bin/dash \
+ && test ! -e /runtime-root/usr/bin/dash
+# Backup and recovery use their own fixed helper image; the server does not
+# provide GNU tar extraction or interactive GECOS account changes.
+RUN echo 'fd0d62eed19efd3e115aa1be44160f89d777cd1e6d6d8eb0ce7c8bdc879f59e2  /runtime-root/usr/bin/tar' | sha256sum -c - \
+ && echo 'b6c6ba2303b85eb2ade7791bed1b8cef09561b9af9e99bdb972fbe72ad76f210  /runtime-root/usr/bin/chfn' | sha256sum -c - \
+ && rm -- /runtime-root/usr/bin/tar /runtime-root/usr/bin/chfn \
+ && test ! -e /runtime-root/usr/bin/tar && test ! -e /runtime-root/usr/bin/chfn
+# The terminfo compiler and its three ELF consumers are not server tools.
+# Preserve libtinfo, which the existing Bash needs for terminal reads.
+RUN echo '1865533aebc1883ae86d4385307e538188ebf7ff2e430f002ebd93fdd594f40e  /runtime-root/usr/bin/tic' | sha256sum -c - \
+ && echo '8193aca52e35dfcd3a69f8e393509015a645c8ecbc340877d05eb951e352fe69  /runtime-root/usr/bin/infocmp' | sha256sum -c - \
+ && echo '7e6fbc73f9d183a35128cb0d15fb20909102206d213949ad4cb17d1ad6e18296  /runtime-root/usr/bin/toe' | sha256sum -c - \
+ && echo 'c8830fb769e24c870bc0ee9fe82df8af007b5a999df408bcff86e5ba4f2736a7  /runtime-root/usr/lib/x86_64-linux-gnu/libtic.so.6.3' | sha256sum -c - \
+ && test "$(readlink /runtime-root/usr/bin/captoinfo)" = tic \
+ && test "$(readlink /runtime-root/usr/bin/infotocap)" = tic \
+ && test "$(readlink /runtime-root/usr/lib/x86_64-linux-gnu/libtic.so.6)" = libtic.so.6.3 \
+ && rm -- /runtime-root/usr/bin/tic /runtime-root/usr/bin/infocmp /runtime-root/usr/bin/toe \
+    /runtime-root/usr/bin/captoinfo /runtime-root/usr/bin/infotocap \
+    /runtime-root/usr/lib/x86_64-linux-gnu/libtic.so.6 /runtime-root/usr/lib/x86_64-linux-gnu/libtic.so.6.3
 FROM scratch
 COPY --from=runtime-package /runtime-root/ /
 COPY --chmod=0755 --from=build /out/libmilvus-planparser.so /milvus/lib/libmilvus-planparser.so
 COPY --from=build /out/milvus /milvus/bin/milvus
+COPY --from=rdkafka-build /out/rdkafka/lib/librdkafka.so.1 /milvus/lib/librdkafka.so
+COPY --from=rdkafka-build /out/rdkafka/lib/librdkafka.so.1 /milvus/lib/librdkafka.so.1
+COPY --chmod=0644 deployment/vendors/milvus/rdkafka-20261115/librdkafka-v2.6.1.tar.gz \
+    deployment/vendors/milvus/rdkafka-20261115/LICENSES.txt \
+    deployment/vendors/milvus/rdkafka-20261115/source.lock.json \
+    deployment/vendors/milvus/rdkafka-20261115/probe.c \
+    deployment/vendors/milvus/rdkafka-20261115/preserve-no-plugins.patch \
+    deployment/vendors/milvus/rdkafka-20261115/tag.api-response.json \
+    deployment/vendors/milvus/rdkafka-20261115/commit.api-response.json \
+    /usr/share/deepresearch/milvus-rdkafka/
+RUN chmod 0755 /usr/share/deepresearch /usr/share/deepresearch/milvus-rdkafka
 ENV PATH=/milvus/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     LD_LIBRARY_PATH=/milvus/lib::/usr/lib \
     LD_PRELOAD=:/milvus/lib/libjemalloc.so \

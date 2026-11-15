@@ -19,7 +19,7 @@ SCHEMA = 'reviewed-source-image-v1'
 
 def source_inputs(artifact):
     if artifact == 'minio':
-        from scripts.build_minio_os_20261113 import source_inputs as inputs
+        from scripts.build_minio_otel_20261115 import source_inputs as inputs
         return inputs()
     from scripts.build_go_otel_security_20261114 import source_inputs as inputs
     return inputs('grafana')
@@ -34,7 +34,7 @@ def cache_key(artifact, inputs, helper_bytes, action_bytes):
 
 
 def builder_command(artifact, output, *, hit):
-    command = [sys.executable, '-B', str(ROOT / ('scripts/build_minio_os_20261113.py' if artifact == 'minio'
+    command = [sys.executable, '-B', str(ROOT / ('scripts/build_minio_otel_20261115.py' if artifact == 'minio'
                else 'scripts/build_go_otel_security_20261114.py'))]
     if artifact == 'grafana':
         command += ['--artifact', 'grafana']

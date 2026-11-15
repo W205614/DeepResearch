@@ -378,15 +378,15 @@ def test_minio_inventory_selects_only_the_new_native_consumer_and_exact_recipe(t
     import scripts
     from types import SimpleNamespace
 
-    path = 'deployment/docker/Dockerfile.minio-20261113'
+    path = 'deployment/docker/Dockerfile.minio-otel-20261115'
     recipe = tmp_path / path
     recipe.parent.mkdir(parents=True)
     recipe.write_text('FROM scratch\n')
-    profile = {'profile': 'minio-os-source-20261113', 'image': 'deepresearch-minio-source:20261113',
+    profile = {'profile': 'minio-otel-source-20261115', 'image': 'deepresearch-minio-source:20261115',
                'context': '.', 'dockerfile': path,
                'source_inputs': {path: inventory.candidate.file_hash(recipe)}}
     calls = []
-    monkeypatch.setattr(scripts, 'check_minio_os_20261113', SimpleNamespace(
+    monkeypatch.setattr(scripts, 'check_minio_otel_20261115', SimpleNamespace(
         DOCKERFILE=path, load_profile=lambda root: calls.append(root) or profile), raising=False)
     monkeypatch.setattr(scripts, 'check_minio_source_build_20261112', SimpleNamespace(
         load_profile=lambda *_: pytest.fail('old Go-only consumer must not validate new native subject')), raising=False)
@@ -396,8 +396,9 @@ def test_minio_inventory_selects_only_the_new_native_consumer_and_exact_recipe(t
         inventory.load_minio_source_profile(tmp_path)
 
 
-def test_new_default_inventory_does_not_treat_the_old_go_only_namespace_as_native_review(tmp_path):
-    config = {'services': {'minio': {'image': 'deepresearch-minio-source:20261112'}}}
+@pytest.mark.parametrize('version', ['20261112', '20261113'])
+def test_new_default_inventory_does_not_treat_the_old_go_only_namespace_as_native_review(tmp_path, version):
+    config = {'services': {'minio': {'image': 'deepresearch-minio-source:' + version}}}
     with pytest.raises(ValueError, match='exact artifact or reviewed source profile'):
         inventory.matrices(config, tmp_path)
 
@@ -415,7 +416,7 @@ def test_source_grafana_inventory_binds_selected_recipe_and_does_not_claim_old_a
     profile = {'profile': inventory.SOURCE_PROFILE, 'image': inventory.SOURCE_GRAFANA,
                'context': '.', 'dockerfile': inventory.SOURCE_DOCKERFILE,
                'source_inputs': {inventory.SOURCE_DOCKERFILE: inventory.candidate.file_hash(dockerfile)}}
-    monkeypatch.setattr(scripts, 'check_grafana_source_build_20261112',
+    monkeypatch.setattr(scripts, 'check_grafana_source_build_20261114',
                         SimpleNamespace(load_profile=lambda root: profile), raising=False)
     selection = inventory.grafana_selection(tmp_path)
     assert selection['profile'] == inventory.SOURCE_PROFILE and selection['mode'] == 'source_build'

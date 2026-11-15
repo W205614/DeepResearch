@@ -15,6 +15,52 @@ from scripts import publish_application_packages as publication
 from scripts.publish_application_packages import archive_image_id, publication_scan_verdict, validate_manifest
 
 
+@pytest.mark.parametrize('failure', [None, 'size', 'digest', 'platform', 'duplicate', 'attestation', 'unbound-attestation'])
+def test_registry_index_binds_exact_platform_child_bytes(monkeypatch, failure):
+    manifest = {'schemaVersion': 2, 'mediaType': 'application/vnd.oci.image.manifest.v1+json',
+                'config': {'digest': 'sha256:' + 'a' * 64}, 'layers': []}
+    child_raw = json.dumps(manifest).encode()
+    child_digest = 'sha256:' + hashlib.sha256(child_raw).hexdigest()
+    descriptor = {'digest': child_digest, 'size': len(child_raw), 'mediaType': manifest['mediaType'],
+                  'platform': {'os': 'linux', 'architecture': 'amd64'}}
+    if failure == 'size':
+        descriptor['size'] += 1
+    if failure == 'digest':
+        descriptor['digest'] = 'sha256:' + 'b' * 64
+    if failure == 'platform':
+        descriptor['platform']['architecture'] = 'arm64'
+    index = {'schemaVersion': 2, 'mediaType': 'application/vnd.oci.image.index.v1+json',
+             'manifests': [descriptor] * (2 if failure == 'duplicate' else 1)}
+    if failure in {'attestation', 'unbound-attestation'}:
+        index['manifests'].append({'mediaType': manifest['mediaType'], 'digest': 'sha256:' + 'c' * 64,
+            'platform': {'os': 'unknown', 'architecture': 'unknown'}, 'annotations': {
+                'vnd.docker.reference.type': 'attestation-manifest',
+                'vnd.docker.reference.digest': child_digest if failure == 'attestation' else 'sha256:' + 'd' * 64}})
+    index_raw = json.dumps(index).encode()
+    tag_digest = 'sha256:' + hashlib.sha256(index_raw).hexdigest()
+    requests = []
+
+    def external(request, **kwargs):
+        requests.append(request.full_url)
+        if '/token?' in request.full_url:
+            return io.BytesIO(b'{"token":"fixture-token"}')
+        raw = index_raw if request.full_url.endswith('/v0.1.5') else child_raw
+        response = io.BytesIO(raw)
+        response.headers = {'Docker-Content-Digest': 'sha256:' + hashlib.sha256(raw).hexdigest()}
+        return response
+
+    monkeypatch.setattr(publication, 'urlopen', external)
+    monkeypatch.setenv('GITHUB_ACTOR', 'fixture')
+    monkeypatch.setenv('GITHUB_TOKEN', 'fixture')
+    if failure and failure != 'attestation':
+        with pytest.raises(ValueError):
+            publication.registry_manifest('ghcr.io/fixture/application', 'v0.1.5')
+    else:
+        assert publication.registry_manifest('ghcr.io/fixture/application', 'v0.1.5') == {
+            'digest': child_digest, 'tag_manifest_digest': tag_digest, 'image_id': 'sha256:' + 'a' * 64}
+        assert requests[-1].endswith('/manifests/' + child_digest)
+
+
 def test_archive_identity_uses_actual_config_bytes_for_both_docker_stores(tmp_path):
     raw = b'{"architecture":"amd64","os":"linux","config":{"Cmd":["true"]}}'
     digest = hashlib.sha256(raw).hexdigest()

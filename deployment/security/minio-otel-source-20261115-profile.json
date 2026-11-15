@@ -1,0 +1,230 @@
+{
+  "schema": "minio-otel-source-profile-20261115-v1",
+  "status": "verified",
+  "profile": "minio-otel-source-20261115",
+  "image": "deepresearch-minio-source:20261115",
+  "context": ".",
+  "dockerfile": "deployment/docker/Dockerfile.minio-otel-20261115",
+  "source_inputs": {
+    "deployment/docker/Dockerfile.minio-20261112": "aa37214feaadb223f727c83bbf42726a887800ce37f89e5e5f741877c1f36635",
+    "deployment/docker/Dockerfile.minio-20261112.dockerignore": "c2da2af78d20ac5746524327f5f42b0eb6dd65b0cf3ca82c388cf812f19b7e23",
+    "deployment/docker/Dockerfile.minio-20261113": "dbc788dfd0b39351781b09926f886c28c5eb1401beed677e4b2521bc5f41af7f",
+    "deployment/docker/Dockerfile.minio-20261113.dockerignore": "e7924e20ac76f6d27c40d9abb4cd05141f59d58b7e4fe5d44d659fda30337d6d",
+    "deployment/docker/Dockerfile.minio-otel-20261115": "93c274b9aecb5382c4cb85bd99c82b2c76cbb536c2f3d348ad065406fa49589d",
+    "deployment/docker/Dockerfile.minio-otel-20261115.dockerignore": "46cc461202df268a7336814910d498c99a083a466ea833a5c14ab00ba15de63c",
+    "deployment/security/go-stdlib-20261112-evidence/Go-LICENSE": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+    "deployment/security/go-stdlib-20261112-evidence/source.lock.json": "20746730bbf420fce6ed6765e79bac882c02d237f5a51cf212581840ff019dbe",
+    "deployment/security/minio-os-20261113/patches/glibc-LANGUAGE.patch": "795bf9c17379d1e22266a471668724c19c2931171410b4c20568bcfac39a3513",
+    "deployment/security/minio-os-20261113/patches/ncurses-save-string.patch": "4ac6a608a4ca021076316189f46f7fe9417dc6bcb1a87e6f2313d54594da4e46",
+    "deployment/security/minio-os-20261113/regression/normal_csv_test.go": "d4b19a06700b8eeb7334143dc8bc36e13f684a1ea2f26db48f593e0d7722e98a",
+    "deployment/security/minio-os-20261113/regression/normal_parquet_test.go": "14b30e9fd5a40ddfafcaef09bc43b6875cc5749faa8d75a42a505fb57709eaee",
+    "deployment/security/minio-os-20261113/source.lock.json": "f7c3711efef5db02fb3e53d3fe3e67e8f1ab84e9ed9516cb71541572097dc424",
+    "deployment/security/minio-source-20261112-profile.json": "9ad8ca661eb547fbd8d1666e493fa4a85bfb7d278845f4e31866807fc270c3bd",
+    "deployment/vendors/minio-otel-20261115/go.mod": "e7ae702a57f022c98b2a6afd825bf2edfc1035760b684b2ee2f0655fe40b2fe4",
+    "deployment/vendors/minio-otel-20261115/go.sum": "bd9797d3580cfbf731483bb2af3c82092d7808f5736fc62f872e3a29d5a24fbf",
+    "deployment/vendors/minio/csv_record_bound_test.go": "cb51ba37bc33b66764b64c8ed214d372a1db4f945093f6d0c5103a5d16bacf16",
+    "deployment/vendors/minio/legacy-part-compat.patch": "d7ce090041a4353cf35ca58168cff11a47a17ee0bf9355a6c44c16a7352f2320",
+    "deployment/vendors/minio/legacy-part2024.msgp": "cca3483e758d59aa0fd0ad3cc0ccc0ecb1e2afcdc6ebf399c57d515e7c4598cb",
+    "deployment/vendors/minio/legacy_part_compat.go": "2fcd20ee874cf8cd837651224135463925a98a1209fd1dd7f3a4298ae41a3792",
+    "deployment/vendors/minio/legacy_part_compat_test.go": "a4d464887c7fbb89116ed3309f4cfa039c405755d9bfff55b51d01bc50008ad6",
+    "scripts/build_go_stdlib_security_20261112.py": "7febf7d4e546c693f0115cbf1a9fe80093d13a3b786b5b26352d3ef0debd6cbb",
+    "scripts/build_minio_os_20261113.py": "28700eed440f39872674c80dfb55b7bbe298375be628ecd9c2eb2401a6178b54",
+    "scripts/build_minio_otel_20261115.py": "0b8a14c674d0cebfe27d0d837612004da94474ea3ba3795bba7901b8c5c3518a",
+    "scripts/collect_minio_os_native_20261113.py": "1adfa20b2ca496dc19117808cfbb136051ec99e5aa74cb03e69da4bb0bad8076",
+    "scripts/minio_rpm_facts_20261113.py": "23e7fd3ef3666e212bc1f3eb49704e9d6ee6b260e90b3b82e55d45162e293d3e",
+    "scripts/prefetch_go_security_modules_20261112.py": "2b6864129c0f8e1d2b555cd135eef9f1aba90a0146af06f22bd7d21b15bad391",
+    "scripts/prefetch_minio_os_inputs_20261113.py": "2cb68b0a148f496c37aa42cd066d9e62702ebfff1d5d3a4daad33c6e6d6fac34",
+    "scripts/prefetch_minio_source_20261112.py": "97f8de995d1fb62e8210b778193b9571c2bf5f86a9011640959531676e4b859b"
+  },
+  "binary_redistribution_approved": false,
+  "prior_profile": "deployment/security/minio-os-source-20261113-profile.json",
+  "prior_profile_sha256": "91eb135d5d78dfa9e32b5a0a65a6a4b0c1e015d61d92699d5ec2fbc8316383b1",
+  "runtime_evidence": "deployment/security/minio-otel-source-20261115-evidence/runtime-manifest.json.gz",
+  "independent_reviews": [
+    "deployment/security/minio-otel-source-20261115-evidence/review-runtime.json",
+    "deployment/security/minio-otel-source-20261115-evidence/review-root.json"
+  ],
+  "evidence_sha256": {
+    "deployment/security/minio-otel-source-20261115-evidence/build-receipt.json": "101a7e83c6c9d93a3b83714c6594c0b46145975c7b9a077b10703dccdd2b9cbd",
+    "deployment/security/minio-otel-source-20261115-evidence/image-inspect.json": "6a4fa7de2597dfbfc8e2638790fbfec33f079503c3eb9730c8ef1aee2ee6ae3c",
+    "deployment/security/minio-otel-source-20261115-evidence/runtime-manifest.json.gz": "d304ad874b225dcf725fba4f63d44fd8522ce605911e274071f27650c4f9dfe9",
+    "deployment/security/minio-otel-source-20261115-evidence/raw-trivy.json.gz": "82da46071c2221f778ea6d3c2d9db1eb60d1c8170e1a3dff45a7fb728d68a636",
+    "deployment/security/minio-otel-source-20261115-evidence/raw-grype.json.gz": "8ddcb9a9d5d9908359fcf7f4ae0c5843f687fe4f8550bd5a81d957f1d2402f97",
+    "deployment/security/minio-otel-source-20261115-evidence/full-syft.json.gz": "f779e44f847e0391e6be2974e3a4203e3f04e5ebe2859c54e1e00a93dd1f0b15",
+    "deployment/security/minio-otel-source-20261115-evidence/collector.json": "b39742ca07aaa416a5bb3b800e142490b2a75564b6439c5c0fbe3863205da45b",
+    "deployment/security/minio-otel-source-20261115-evidence/database-preparation.json": "7670df75bb652ef622e717193d20c82dce4376673e756fe4b5c8be29d88c865a",
+    "deployment/security/minio-otel-source-20261115-evidence/publisher-snapshot.json": "55713fa83db38dc2eaf3b343c673945ed89dffd987c90900f531a9876aa7f6bf",
+    "deployment/security/minio-otel-source-20261115-evidence/build.log": "542dad3831da8f367f987d43b8ac211417b2d115daf0e1311ba5005741ba107c",
+    "deployment/security/minio-otel-source-20261115-evidence/normal-regressions.log": "7b0c044303964c8835e16d7a9b2547337d4972573d8cdf3effc25d37a4358d84",
+    "deployment/security/minio-otel-source-20261115-evidence/silo-native.json": "fd973ee0f60573a6507949017d0a63cfc011586518e3db7fe2cbc0710b5dafbf",
+    "deployment/security/minio-otel-source-20261115-evidence/mcli-native.json": "32ae2b4c92715c4715d8e849538525bc5fe365696506629463d78e6b4a206c48",
+    "scripts/check_minio_otel_20261115.py": "9640dcb50fa14eaf4f6a6668b6f1fd85c2a4700f3b87e2d7285967d5704143e2",
+    "scripts/prepare_minio_otel_profile_20261115.py": "078e0c9761ddafa52718b7a366a4770345f3785a6031d507360d9a5e95ead771",
+    "tests/test_minio_otel_20261115.py": "c2fa33e9190862b6eec7efed7baf0e37808278bbdc0b95f88414b27a3606dd13",
+    "deployment/security/minio-otel-source-20261115-evidence/review-runtime.json": "ae458e8f3c1158b72a953427400a473f98f6e926bb62bc5e924e5b2206e33269",
+    "deployment/security/minio-otel-source-20261115-evidence/review-root.json": "4060884037279ad0ca22a6bbde69e06c76a8a83881ff71e157e2c8681614e99d"
+  },
+  "expected": {
+    "native_sha256": {
+      "usr/bin/mcli": "a1e263c8b0cadf9b6a19cc9729a7bb6d1eb0329152347955cb4326ca0ebb6845",
+      "usr/bin/silo": "a726827ff5530ebfab52477cb9b67d3d33c2dc3f0a5356cb3188d35c4d574448"
+    },
+    "runtime_config": {
+      "User": null,
+      "Env": [
+        "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "MINIO_ACCESS_KEY_FILE=access_key",
+        "MINIO_SECRET_KEY_FILE=secret_key",
+        "MINIO_ROOT_USER_FILE=access_key",
+        "MINIO_ROOT_PASSWORD_FILE=secret_key",
+        "MINIO_KMS_SECRET_KEY_FILE=kms_master_key",
+        "MINIO_CONFIG_ENV_FILE=config.env",
+        "HOME=/tmp",
+        "MC_CONFIG_DIR=/tmp/.mc"
+      ],
+      "Entrypoint": [
+        "/usr/bin/docker-entrypoint.sh"
+      ],
+      "Cmd": [
+        "silo"
+      ],
+      "WorkingDir": "/",
+      "ExposedPorts": {
+        "9000/tcp": {},
+        "9001/tcp": {}
+      },
+      "Volumes": {
+        "/data": {}
+      },
+      "Healthcheck": null,
+      "StopSignal": null
+    },
+    "runtime_manifest_sha256": "10426825064131310ed19a6b59e437497e7463d0442a5589645a6ae080dc7e90"
+  },
+  "regression_log": "deployment/security/minio-otel-source-20261115-evidence/normal-regressions.log",
+  "native_sha256": {
+    "silo": "acfba47299c8e84474699b435a6b66a0a6131867a8d24b54f1b524a293b7d6cb",
+    "mcli": "3af9b1e5df53a0668e5e05c06cddcb23e1be5a3647b4584f5d5dff4a12956bac"
+  },
+  "native_module_migration": {
+    "silo": {
+      "go.opentelemetry.io/otel": {
+        "before": {
+          "Path": "go.opentelemetry.io/otel",
+          "Version": "v1.45.0",
+          "Sum": "h1:pdrWmLHofpubmArBv1LgFSv1Z0Ie/ppdZzu+kUN5EeU="
+        },
+        "after": {
+          "Path": "go.opentelemetry.io/otel",
+          "Version": "v1.47.0",
+          "Sum": "h1:j7ALJ/zgkS7Z6aeJW09p8VC9804bC+PpeTfCD4XPnOM="
+        }
+      },
+      "go.opentelemetry.io/otel/log": {
+        "before": null,
+        "after": {
+          "Path": "go.opentelemetry.io/otel/log",
+          "Version": "v1.47.0",
+          "Sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+        }
+      },
+      "go.opentelemetry.io/otel/metric": {
+        "before": {
+          "Path": "go.opentelemetry.io/otel/metric",
+          "Version": "v1.45.0",
+          "Sum": "h1:7Eg1uH7CJ5cXv9is6tnBe1FI6rj1nwUdbFypRm3br/M="
+        },
+        "after": {
+          "Path": "go.opentelemetry.io/otel/metric",
+          "Version": "v1.47.0",
+          "Sum": "h1:4PptaldXx3Eat1XjMZ68pPJEs5wrhlemctZE9a3UdWY="
+        }
+      },
+      "go.opentelemetry.io/otel/sdk": {
+        "before": {
+          "Path": "go.opentelemetry.io/otel/sdk",
+          "Version": "v1.45.0",
+          "Sum": "h1:4VVSMgQ83dUgW2aoX5f6JgLvHwIvzcuLnF9lUdCSpCw="
+        },
+        "after": {
+          "Path": "go.opentelemetry.io/otel/sdk",
+          "Version": "v1.47.0",
+          "Sum": "h1:zWXEr4j2lFefG87TU6Yg8a7ngfohIKFZHKp0Hf5hC6I="
+        }
+      },
+      "go.opentelemetry.io/otel/sdk/metric": {
+        "before": {
+          "Path": "go.opentelemetry.io/otel/sdk/metric",
+          "Version": "v1.45.0",
+          "Sum": "h1:oVFszMfyj1Am6s24Vtc7wBb8BKLcwepJjNEYILuiE3o="
+        },
+        "after": {
+          "Path": "go.opentelemetry.io/otel/sdk/metric",
+          "Version": "v1.47.0",
+          "Sum": "h1:lfISg2j93VT6yqdk9OfUaZmw/GfcZqCCV3jdXtsPnKw="
+        }
+      },
+      "go.opentelemetry.io/otel/trace": {
+        "before": {
+          "Path": "go.opentelemetry.io/otel/trace",
+          "Version": "v1.45.0",
+          "Sum": "h1:l/mP6Uv7oNO7/TblbhpbgMidxhq1uO/rPsikOyVhxag="
+        },
+        "after": {
+          "Path": "go.opentelemetry.io/otel/trace",
+          "Version": "v1.47.0",
+          "Sum": "h1:JOjX/Oci8K94QHddo+bbfya/Ai/nf6/dt9ZfrFNWSrM="
+        }
+      }
+    },
+    "mcli": {}
+  },
+  "scan_expected": {
+    "trivy_inventory_sha256": {
+      "os:redhat": "39658504445071be43b0b2e4754f77f27888096fd9f56e43e2449669a794a875",
+      "usr/bin/mcli": "57d24a0efc0f3f3426ec6dba0a11e7baa97c43f319025424a152a86bcb126338",
+      "usr/bin/silo": "40be6d93fdc0adffb8f1aec9d4a82b0c1b55175542497df9c43deb456303040d"
+    },
+    "syft_inventory_sha256": "e3e68c85b14060949f606c1f22c98c531ddf751761ad95b567d1d8a60a19876c"
+  },
+  "grype_advisory_migration": {
+    "raw_reports_modified": false,
+    "reason": "The current official Grype database removes the same three glibc BIG5 rows already independently reviewed by the retained exact Trivy migration proof; package/runtime inputs remain unchanged.",
+    "removed_exact_rows": [
+      {
+        "id": "CVE-2026-122054",
+        "package": "glibc",
+        "version": "2.34-290.el9_9",
+        "severity": "Medium",
+        "type": "rpm",
+        "namespace": "redhat:distro:redhat:9",
+        "locations": [
+          "/var/lib/rpm/rpmdb.sqlite"
+        ]
+      },
+      {
+        "id": "CVE-2026-122054",
+        "package": "glibc-common",
+        "version": "2.34-290.el9_9",
+        "severity": "Medium",
+        "type": "rpm",
+        "namespace": "redhat:distro:redhat:9",
+        "locations": [
+          "/var/lib/rpm/rpmdb.sqlite"
+        ]
+      },
+      {
+        "id": "CVE-2026-122054",
+        "package": "glibc-minimal-langpack",
+        "version": "2.34-290.el9_9",
+        "severity": "Medium",
+        "type": "rpm",
+        "namespace": "redhat:distro:redhat:9",
+        "locations": [
+          "/var/lib/rpm/rpmdb.sqlite"
+        ]
+      }
+    ]
+  },
+  "subject_sha256": "d39d8a8f01ff434fe23a11ffc07b43c25d800a697103999ff5744efc94f4a27e"
+}

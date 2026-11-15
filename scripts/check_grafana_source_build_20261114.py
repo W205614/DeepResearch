@@ -66,7 +66,14 @@ def validate_profile(profile, root=ROOT):
     for name in ('alpine', 'Node.js'):
         require(profile['expected']['trivy_inventory_sha256'][name]
                 == prior['expected']['trivy_inventory_sha256'][name], 'Retained OS/JavaScript inventory changed')
-    require(profile['expected']['syft_types'] == prior['expected']['syft_types'], 'Native package coverage changed')
+    from scripts.grafana_inventory_20261115 import INVENTORY_EVIDENCE, INVENTORY_REPORTS, verify_inventory
+    require({'scripts/grafana_inventory_20261115.py',
+             *(INVENTORY_EVIDENCE + name for name in INVENTORY_REPORTS.values())}
+            <= profile['evidence_sha256'].keys(), 'Complete shared inventory verifier and reports must be bound')
+    expected, facts = verify_inventory(profile, prior, profile['native_evidence'], root / INVENTORY_EVIDENCE, root=root)
+    require(all(profile['expected'][name] == value for name, value in expected.items())
+            and profile.get('inventory_migration_facts') == facts,
+            'Complete native/SBOM/Trivy migration differs from its actual bound evidence')
     for scanner in ('Trivy', 'Grype'):
         require(Counter(old.finding_key(row) for row in profile['reviewed_findings'][scanner])
                 == Counter(old.finding_key(row) for row in prior['reviewed_findings'][scanner]),

@@ -8,7 +8,7 @@
   "module_sum": "h1:ZXaNKyUO5szJhhw7gKiP6b2jpx1QkS0S3CI1R1bPqIA=",
   "ui_url": "https://github.com/prometheus/prometheus/releases/download/v3.15.1/prometheus-web-ui-3.15.1.tar.gz",
   "ui_sha256": "adf30f35abf0d23ffd25616afe75d1966a7ceb18ddad4161fe8ad76e28f2b48f",
-  "compiler": "Go1.27.3 pinned builder",
+  "compiler": "golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf",
   "dependency_override": {
     "golang.org/x/net": "v0.62.0"
   },
@@ -38,5 +38,14 @@
       "go.mod": "9913c8f3516875d942c94026721694fa5c5a2bedc5fbc931ee5137a925a167aa",
       "go.sum": "b72409f76d365e14dc3a50227076050d3e5d8f59c2e78080cba4cc71ca765c27"
     }
+  },
+  "stdlib_security_refresh_20261115": {
+    "advisory": "GO-2026-6859",
+    "cve": "CVE-2026-97054",
+    "previous_compiler": "Go1.27.3 pinned builder",
+    "compiler_image": "golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf",
+    "fixed_go_version": "1.27.4",
+    "application_locks_unchanged": true,
+    "validation": "Actual image compilation and complete scan are required; not claimed by this source pin."
   }
 }

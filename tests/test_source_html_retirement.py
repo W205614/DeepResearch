@@ -42,7 +42,7 @@ def test_real_fourteen_high_rows_are_recomputed_without_filtering_or_rewriting_o
     assert hashlib.sha256(inspect.getsource(gate.apply_retirement).encode()).hexdigest() == review['reviewed_ci']['old_five_row_function_sha256']
 
 
-def test_historical_ci_completion_and_both_failed_verdicts_recompute_from_the_real_commit_tree(context, historical_grafana_maintenance_root):
+def test_historical_ci_completion_and_both_failed_verdicts_recompute_from_the_real_commit_tree(context, historical_grafana_maintenance_root, historical_grafana_source_pins):
     review, scan = context[1], context[2]
     tree = json.loads((ROOT / review['reviewed_ci']['historical_source_tree']).read_bytes())
     assert tree['sha'] == review['reviewed_ci']['commit_tree_sha'] and tree['truncated'] is False

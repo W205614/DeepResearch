@@ -13,7 +13,7 @@
       "--skip-get-modules"
     ]
   },
-  "compiler_image": "golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c",
+  "compiler_image": "golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf",
   "runtime_image": "otel/opentelemetry-collector-contrib:0.163.2@sha256:989669581ee1f89184f3fd9dd5adfc6615ed6c9692c026aaea89e07a20dfb177",
   "components": {
     "receivers": [
@@ -66,5 +66,14 @@
       "source/go.mod": "75d4acf9ae30a1cde37dbcb292ec60e1efd7ddb6dbe6fdbf68034751da190011",
       "source/go.sum": "52de4a0bf486073189a183482b6ff5f861dee3f8b73c69c9d2bd2d4df5ec29d5"
     }
+  },
+  "stdlib_security_refresh_20261115": {
+    "advisory": "GO-2026-6859",
+    "cve": "CVE-2026-97054",
+    "previous_compiler": "golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c",
+    "compiler_image": "golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf",
+    "fixed_go_version": "1.27.4",
+    "application_locks_unchanged": true,
+    "validation": "Actual image compilation and complete scan are required; not claimed by this source pin."
   }
 }

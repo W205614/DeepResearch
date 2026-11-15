@@ -155,7 +155,7 @@ def test_current_continuation_preserves_original_exact_identities_and_bound_byte
     prior_path = root / 'deployment/security/codeql-reviewed-findings-20261110.json'
     prior = json.loads(prior_path.read_bytes())
     current = json.loads(REVIEW.read_bytes())
-    assert REVIEW.name == 'codeql-reviewed-findings-20261114-ci-attributes.json'
+    assert REVIEW.name == 'codeql-reviewed-findings-20261114-otel-migration.json'
     assert [row['identity'] for row in current['findings']] == [row['identity'] for row in prior['findings']]
     assert current['findings'][:2] == prior['findings'][:2]
     for name, expected in prior['findings'][2]['evidence_sha256'].items():
@@ -311,6 +311,7 @@ def test_current_continuation_rejects_changed_native_gates_or_scope_proof(tmp_pa
 
 def test_ci_disk_continuation_preserves_prior_profile_and_only_reviewed_delta():
     from scripts import build_codeql_ci_disk_review_20261114 as renewal
+    from scripts import build_codeql_otel_migration_review_20261114 as otel
     import yaml
     root = Path(__file__).resolve().parents[1]
     prior_bytes = (root / renewal.PRIOR).read_bytes()
@@ -323,15 +324,27 @@ def test_ci_disk_continuation_preserves_prior_profile_and_only_reviewed_delta():
     assert proof['severity_threshold_unchanged'] == 7.0
     assert proof['new_codeql_scan_claimed'] is proof['raw_sarif_modified'] is proof['new_findings_exempted'] is False
     assert set(proof['exact_bound_code_deltas']) == {renewal.WORKFLOW}
+    # The later otel-1.47.0 migration continuation re-binds six CI routing and lock
+    # files on top of this chain; those are the only additional bytes allowed to differ.
+    later_deltas = set(otel.DELTA_FILES) - {renewal.WORKFLOW}
     for name, expected in prior['findings'][3]['evidence_sha256'].items():
-        if name != renewal.WORKFLOW:
+        if name != renewal.WORKFLOW and name not in later_deltas:
             assert current['findings'][3]['evidence_sha256'][name] == expected
-    with pytest.raises(ValueError, match='renewed review required: .github/workflows/ci.yml'):
+    # The ci-disk prior now fail-closes on any of the later-changed bytes (ci.yml
+    # plus the otel-migration files), so assert only the stable message prefix.
+    with pytest.raises(ValueError, match='renewed review required:'):
         reviewed_findings([], root / renewal.PRIOR, root)
     # Reconstruct the exact baseline from git for the semantic delta check.
     old = subprocess.run(['git', 'show', renewal.BASE + ':' + renewal.WORKFLOW],
                          cwd=root, check=True, capture_output=True).stdout
     new = yaml.safe_load((root / renewal.WORKFLOW).read_bytes())
+    # The later otel migration upgraded the diagnostic helper 20261112 -> 20261114;
+    # unwind that single byte-level change so workflow_delta verifies only the
+    # ci-disk scheduling delta it was written to review.
+    for step in new['jobs']['enterprise-compose-smoke']['steps']:
+        if 'capture_go_graph_diagnostic_20261114.py' in step.get('run', ''):
+            step['run'] = step['run'].replace('capture_go_graph_diagnostic_20261114.py',
+                                              'capture_go_graph_diagnostic_20261112.py')
     renewal.workflow_delta(yaml.safe_load(old), new)
     new['jobs']['enterprise-compose-smoke']['steps'].append({'run': 'echo unreviewed'})
     with pytest.raises(ValueError, match='exceed the exact reviewed'):
@@ -348,10 +361,20 @@ def test_ci_disk_continuation_rejects_modified_helper_or_proof(tmp_path, path):
     test_current_continuation_rejects_changed_native_gates_or_scope_proof(tmp_path, path)
 
 
-def test_nested_attributes_restore_history_without_changing_effective_rules():
+def test_nested_attributes_restore_history_without_changing_effective_rules(tmp_path):
     from scripts import build_codeql_ci_attributes_review_20261114 as renewal
+    from scripts import build_codeql_otel_migration_review_20261114 as otel
     root = Path(__file__).resolve().parents[1]
-    renewal.verify_attributes(root)
+    historical = tmp_path / 'original-attribute-continuation'
+    historical.mkdir()
+    (historical / '.gitattributes').write_bytes(renewal.blob(root, renewal.original.BASE, '.gitattributes'))
+    for name, rules in renewal.RULES.items():
+        prefix = b'' if name == 'tests/.gitattributes' else renewal.blob(root, renewal.BASE, name)
+        path = historical / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(prefix + b'\n' + ('\n'.join(rules) + '\n').encode())
+    renewal.verify_attributes(historical)
+    assert otel.verify_attribute_continuation(root)['all_effective_attributes_identical']
     result = renewal.compare_tracked_attributes(root)
     assert result['tracked_path_count'] == 2701
     assert result['all_effective_attributes_identical'] is True
@@ -364,8 +387,11 @@ def test_nested_attributes_restore_history_without_changing_effective_rules():
     proof = json.loads((root / renewal.PROOF).read_bytes())
     assert proof['attribute_equivalence'] == result
     assert set(proof['exact_bound_code_deltas']) == {'.gitattributes', 'tests/test_ci_compose_build.py'}
+    # The later otel-1.47.0 migration continuation re-binds six CI routing and lock
+    # files on top of this chain; those are the only additional bytes allowed to differ.
+    later_deltas = set(otel.DELTA_FILES)
     for name, value in prior['findings'][3]['evidence_sha256'].items():
-        if name not in proof['exact_bound_code_deltas']:
+        if name not in proof['exact_bound_code_deltas'] and name not in later_deltas:
             assert current['findings'][3]['evidence_sha256'][name] == value
     with pytest.raises(ValueError, match='reviewed source or proof changed'):
         reviewed_findings([], root / renewal.PRIOR, root)

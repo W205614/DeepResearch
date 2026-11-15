@@ -1,0 +1,57 @@
+{
+  "profile": "loki",
+  "source_inputs": {
+    "deployment/vendors/loki/go.mod": "ca576dcf98bf2c1916660fc17e89046121ef45c52ca481529250d51ebe3429fc",
+    "deployment/vendors/loki/go.sum": "ce161b1504a67ff2ee5b604750113458029520522db8781692518330a6336a22",
+    "deployment/vendors/loki/push/go.mod": "9e5688092ae688cd0eb0027b67f028157d82bdca6a3437b62cc3b3910573aeed",
+    "deployment/vendors/loki/push/go.sum": "e6bc9bbd27de1169a8dd495ffae394940247bbe3f3d8ea3eac0e63e995e2de96",
+    "deployment/vendors/loki/push/LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "deployment/vendors/loki/push/push-rf1.pb.go": "ba136cb569f99c5cd69541e4633722f2ee6f863d19d29a3d12b47dc540a05ba3",
+    "deployment/vendors/loki/push/push-rf1.proto": "94d3844b64d621455955bc2226fb8465be94c3451294243b9e786cef3c7bcc99",
+    "deployment/vendors/loki/push/push.pb.go": "5f76c7efa437059c558e2f5cf949b39bb0bfe2b7e3e7be08c3ba548b3490bf33",
+    "deployment/vendors/loki/push/push.proto": "0ca32209c1b4a7cdca8d70716729cfb487791cc6f39b685df5aaa6aff1a7886b",
+    "deployment/vendors/loki/push/timestamp.go": "3a67cd936f2a0f04e99af003c3c44339e4ee59e16428fce79d554756e62f0b00",
+    "deployment/vendors/loki/push/types.go": "5ef465cd18ee0b660e4079a2974fcfb27e0610c17a539065ce431abb138dd0bd",
+    "deployment/vendors/loki/push/types_test.go": "f15acd27c1518c9bfd8f9051bab2b291444222996c77c8d3e9791ea41eb188b6",
+    "deployment/vendors/loki/source.lock.json": "07ad5481c62634845cb6d6783978c593749e22cc2659d247ff04b9be91939026",
+    "deployment/docker/Dockerfile.loki": "ec491d3ac404d04cc8f2980343891be040c52614e240061693a47351cc981552"
+  },
+  "source_provenance": {
+    "Path": "github.com/grafana/loki/v3",
+    "Version": "v3.7.9",
+    "Sum": "h1:AI9auwgBKmh43/U3U1TUOZmlPgtxP7mgNCAXb5DSs8I=",
+    "GoModSum": "h1:ooKss0LALQ36juqhiimYBhWZ0ZpGrfUP7UmYRTVhU6g=",
+    "Origin": {
+      "VCS": "git",
+      "Hash": "d3b4a2f76bfc5625abee7ceb00b8896fa3c31549"
+    }
+  },
+  "command": [
+    "go",
+    "list",
+    "-deps",
+    "-json",
+    "-mod=readonly",
+    "-buildvcs=false",
+    "-tags=netgo",
+    "./cmd/loki"
+  ],
+  "environment": {
+    "GOOS": "linux",
+    "GOARCH": "amd64",
+    "GOAMD64": "v1",
+    "CGO_ENABLED": "0",
+    "GOWORK": "off",
+    "GOTOOLCHAIN": "go1.27.4"
+  },
+  "compiler": "go version go1.27.4 windows/amd64",
+  "exit_code": 0,
+  "raw_sha256": "18946febf3467b6a191d1fe0ed20405d57f547681abec21e1129a2aa8439cd00",
+  "raw_bytes": 21308487,
+  "projection_sha256": "8b54cb0e813d3ef332011dd50b3da24eb717e9a542b24e782340812aa5f25bf1",
+  "projection_raw_sha256": "35d8ed33c235dd260483e8a49cde9ec629e624d2c55143b621b901860490c737",
+  "package_count": 2180,
+  "raw_graph_modified": false,
+  "projection_preserves_all_packages_imports_and_module_identities": true,
+  "projection_entry_metadata_preserved": true
+}

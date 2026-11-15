@@ -1,0 +1,35 @@
+# Candidate Go stdlib security rebuild; no prior artifact approval is inherited.
+# syntax=docker/dockerfile:1.7
+FROM golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf AS source
+ARG GOPROXY=https://proxy.golang.org
+ENV GOPROXY=${GOPROXY} GOTOOLCHAIN=local GOMAXPROCS=2 GOFLAGS=-p=2 GOMEMLIMIT=768MiB
+RUN apk add --no-cache git
+# Maintained fork, immutable release commit. Keep real VCS/module metadata so
+# complete image scans can still attribute inherited MinIO advisories honestly.
+COPY --from=miniosource / /prefetched-minio.git/
+RUN git clone --no-hardlinks /prefetched-minio.git /src && cd /src && git checkout --detach 0cd388c666f8211f552604ae73448a066e9c25ce \
+    && git remote set-url origin https://github.com/pgsty/silo.git && git config core.hooksPath /dev/null && git fsck --full
+WORKDIR /src
+COPY --from=securitymodules / /prefetched-proxy/
+ENV GOPROXY=file:///prefetched-proxy,https://proxy.golang.org
+RUN test "$(git rev-parse HEAD)" = 0cd388c666f8211f552604ae73448a066e9c25ce
+COPY deployment/vendors/minio/legacy_part_compat.go cmd/legacy_part_compat.go
+COPY deployment/vendors/minio/legacy-part-compat.patch /tmp/legacy-part-compat.patch
+RUN git apply --check /tmp/legacy-part-compat.patch && git apply /tmp/legacy-part-compat.patch
+FROM source AS otel-updated
+COPY deployment/vendors/minio-otel-20261115/go.mod deployment/vendors/minio-otel-20261115/go.sum /src/
+RUN mkdir -p /out
+COPY deployment/security/minio-os-20261113/regression/normal_parquet_test.go internal/s3select/parquet/pinned_normal_test.go
+COPY deployment/security/minio-os-20261113/regression/normal_csv_test.go internal/s3select/csv/pinned_normal_test.go
+COPY deployment/vendors/minio/legacy_part_compat_test.go cmd/legacy_part_compat_test.go
+COPY deployment/vendors/minio/legacy-part2024.msgp cmd/testdata/deepresearch-legacy-part2024.msgp
+RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build set -o pipefail; go test -mod=readonly ./internal/s3select/parquet -run '^TestNormalThrift025ParquetRoundTrip$' -count=1 -v 2>&1 | tee /out/normal-parquet.txt && go test -mod=readonly ./internal/s3select/csv -run '^TestNormalNativeRepairPreservesValidCSV$' -count=1 -v 2>&1 | tee /out/normal-csv.txt && go test -mod=readonly ./cmd -run '^TestPinnedLegacyPart2024PreservesCompleteMetadata$' -count=1 -v 2>&1 | tee /out/normal-legacy-multipart.txt
+FROM otel-updated AS go-repair-build
+RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build CGO_ENABLED=0 go build -mod=readonly -buildvcs=true -tags kqueue -trimpath -ldflags="$(MINIO_RELEASE=RELEASE go run buildscripts/gen-ldflags.go 2026-10-18T00:00:00Z)" -o /out/silo . && CGO_ENABLED=0 go build -mod=readonly -trimpath -ldflags='-s -w -X github.com/minio/mc/cmd.Version=2026-10-18T00:00:00Z -X github.com/minio/mc/cmd.ReleaseTag=RELEASE.2026-10-18T00-00-00Z -X github.com/minio/mc/cmd.CommitID=fa3b8bf72458b9b5480c4da0ce63a4f224e058c8' -o /out/mcli github.com/minio/mc && go version -m /out/silo > /out/silo-buildinfo.txt && go version -m /out/mcli > /out/mcli-buildinfo.txt && go version -m -json /out/silo > /out/silo-native.json && go version -m -json /out/mcli > /out/mcli-native.json && go mod download -json github.com/coreos/go-systemd/v22@v22.6.0 > /out/coreos-download.json && CGO_ENABLED=0 go list -mod=readonly -tags=kqueue -deps -json . > /out/silo-graph.json && CGO_ENABLED=0 go list -mod=readonly -deps -json github.com/minio/mc > /out/mcli-graph.json
+FROM deepresearch-minio-source:20261113
+ARG PROJECT_SOURCE_REVISION
+ARG PROJECT_INPUTS_SHA256
+COPY --from=go-repair-build /out/silo /usr/bin/silo
+COPY --from=go-repair-build /out/mcli /usr/bin/mcli
+COPY --from=go-repair-build /out/silo-buildinfo.txt /out/mcli-buildinfo.txt /out/silo-native.json /out/mcli-native.json /out/silo-graph.json /out/mcli-graph.json /usr/share/deepresearch-build/
+LABEL org.opencontainers.image.revision=$PROJECT_SOURCE_REVISION org.deepresearch.project.inputs_sha256=$PROJECT_INPUTS_SHA256

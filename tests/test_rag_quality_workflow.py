@@ -29,7 +29,7 @@ def test_rag_loads_approved_storage_before_starting_retrieval_services():
     )
     commands = [step.get('run', '') for step in workflow['jobs']['live-reranker-evaluation']['steps']]
     proof = next(i for i, command in enumerate(commands) if 'scripts/check_artifact_source_reuse.py' in command)
-    load = next(i for i, command in enumerate(commands) if 'scripts/build_minio_os_20261113.py' in command)
+    load = next(i for i, command in enumerate(commands) if 'scripts/build_minio_otel_20261115.py' in command)
     start = next(i for i, command in enumerate(commands) if ' up ' in command)
     steps = workflow['jobs']['live-reranker-evaluation']['steps']
     setup = next(i for i, step in enumerate(steps) if step.get('uses', '').startswith('astral-sh/setup-uv@'))

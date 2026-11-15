@@ -1,0 +1,39 @@
+{
+  "profile": "storage-bootstrap",
+  "source_inputs": {
+    "scripts/storage-bootstrap/go.mod": "81a233f51d93d186b77fc6bbf965416723c019e2bbd9a8c31621bd41cf973e52",
+    "scripts/storage-bootstrap/go.sum": "279bd2d20999c7ccdd77a63e49eea138c9d1a7b7d9a09a9f3b9fe82ef48499c7",
+    "scripts/storage-bootstrap/main.go": "7bc60cbdbd4f9e63fb9b57223d1b0e83349a2db3a0d44558580e2c5bc41e7d6f",
+    "deployment/docker/Dockerfile.storage-init": "eb1e48c36c9a3711879e2bfb5c6e6c149fd8e9f279fa78f9e453bd52eaf5e948"
+  },
+  "source_provenance": {
+    "kind": "repository_tracked_program"
+  },
+  "command": [
+    "go",
+    "list",
+    "-deps",
+    "-json",
+    "-mod=readonly",
+    "-buildvcs=false",
+    "."
+  ],
+  "environment": {
+    "GOOS": "linux",
+    "GOARCH": "amd64",
+    "GOAMD64": "v1",
+    "CGO_ENABLED": "0",
+    "GOWORK": "off",
+    "GOTOOLCHAIN": "go1.27.4"
+  },
+  "compiler": "go version go1.27.4 windows/amd64",
+  "exit_code": 0,
+  "raw_sha256": "a33f56facb19d5ea4412aeead7eb2edb3c9ff63846acbc98c33dbb84e0624e8e",
+  "raw_bytes": 963193,
+  "projection_sha256": "69253135a9176b2438e4ffffe32a2cace771eeab17af62720a722db4e0216c71",
+  "projection_raw_sha256": "4cfb09cbd58034a7c61da08390ef3f24f5d28f9648a1aacf5d55355d6736e333",
+  "package_count": 337,
+  "raw_graph_modified": false,
+  "projection_preserves_all_packages_imports_and_module_identities": true,
+  "projection_entry_metadata_preserved": true
+}

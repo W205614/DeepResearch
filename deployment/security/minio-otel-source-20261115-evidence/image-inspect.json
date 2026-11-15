@@ -1,0 +1,74 @@
+{
+  "Id": "sha256:5997e7c364d2af8fe1b99da4fe2b9ca659e28ef42f56f900aebead25e08a0c5e",
+  "RepoTags": [
+    "deepresearch-minio-source:20261115"
+  ],
+  "RepoDigests": [
+    "deepresearch-minio-source@sha256:5997e7c364d2af8fe1b99da4fe2b9ca659e28ef42f56f900aebead25e08a0c5e"
+  ],
+  "Comment": "buildkit.dockerfile.v0",
+  "Created": "2026-11-15T02:58:23.088067077Z",
+  "Config": {
+    "ExposedPorts": {
+      "9000/tcp": {},
+      "9001/tcp": {}
+    },
+    "Env": [
+      "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "MINIO_ACCESS_KEY_FILE=access_key",
+      "MINIO_SECRET_KEY_FILE=secret_key",
+      "MINIO_ROOT_USER_FILE=access_key",
+      "MINIO_ROOT_PASSWORD_FILE=secret_key",
+      "MINIO_KMS_SECRET_KEY_FILE=kms_master_key",
+      "MINIO_CONFIG_ENV_FILE=config.env",
+      "HOME=/tmp",
+      "MC_CONFIG_DIR=/tmp/.mc"
+    ],
+    "Entrypoint": [
+      "/usr/bin/docker-entrypoint.sh"
+    ],
+    "Cmd": [
+      "silo"
+    ],
+    "Volumes": {
+      "/data": {}
+    },
+    "WorkingDir": "/",
+    "Labels": {
+      "org.deepresearch.binary-redistribution-approved": "false",
+      "org.deepresearch.project.inputs_sha256": "29f7a246c47b0203ae97c19dbac3a336ca71b30f598b7da8a6b04416b0cc9431",
+      "org.deepresearch.project.source_revision": "0b613f1386bcd7067cb54e236db6e29510c44b16",
+      "org.opencontainers.image.revision": "507461afa04c656e15dbf3a180cedaa9cb7e5f62+uncommitted-validation-inputs",
+      "org.opencontainers.image.source": "https://github.com/W205614/DeepResearch"
+    },
+    "ArgsEscaped": true
+  },
+  "Architecture": "amd64",
+  "Os": "linux",
+  "Size": 431582274,
+  "RootFS": {
+    "Type": "layers",
+    "Layers": [
+      "sha256:488abf51dd2226f9d0a08cfaac3d0de77ef45a8a5f9607978e90a2984e768c64",
+      "sha256:b248d4096c36be74dd5b9e376be5763e1522ecc617e376b06cfd8ea6ac88ee6b",
+      "sha256:77563d08ff828f023a529d396f1afdc828957d586fcf1f956f8f70fbc4a63645",
+      "sha256:b643d671263b35ce15d97a941131edf7b25fa48881bdaf8f9fabb60ff1b0ca2b"
+    ]
+  },
+  "Metadata": {
+    "LastTagTime": "2026-11-15T03:09:35.792842286Z"
+  },
+  "Descriptor": {
+    "mediaType": "application/vnd.oci.image.index.v1+json",
+    "digest": "sha256:5997e7c364d2af8fe1b99da4fe2b9ca659e28ef42f56f900aebead25e08a0c5e",
+    "size": 856
+  },
+  "Identity": {
+    "Build": [
+      {
+        "Ref": "r9bvaajde38uefo2v6bhw6kjt",
+        "CreatedAt": "2026-11-15T03:09:35.861471931Z"
+      }
+    ]
+  }
+}

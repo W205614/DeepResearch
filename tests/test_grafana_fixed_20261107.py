@@ -47,7 +47,9 @@ def historical_inputs(identity, tmp_path):
         source = FIXTURES / 'selectors-before/.dockerignore' if name == '.dockerignore' else ROOT / name
         raw = source.read_bytes()
         allowed = {expected, build.TEXT_RAW_SHA256} if name == build.TEXT_INPUT else {expected}
-        assert hashlib.sha256(raw).hexdigest() in allowed
+        if hashlib.sha256(raw).hexdigest() not in allowed:
+            raw = subprocess.check_output(['git', 'cat-file', 'blob', build.SOURCE_COMMIT + ':' + name], cwd=ROOT)
+        assert hashlib.sha256(raw).hexdigest() in allowed, name
         path = historical / name
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(raw)

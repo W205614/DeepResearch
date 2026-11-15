@@ -1,6 +1,6 @@
-FROM golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c AS build
+FROM golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf AS build
 ENV CGO_ENABLED=0 GOTOOLCHAIN=local GOWORK=off GOMAXPROCS=2 GOMEMLIMIT=1024MiB
-RUN test "$(go env GOVERSION)" = go1.27.3
+RUN test "$(go env GOVERSION)" = go1.27.4
 RUN apk add --no-cache git
 WORKDIR /source
 RUN git init && git remote add origin https://github.com/grafana/tempo.git \
@@ -11,7 +11,8 @@ RUN git init && git remote add origin https://github.com/grafana/tempo.git \
 COPY deployment/vendors/tempo/go.mod deployment/vendors/tempo/go.sum /source/
 RUN --mount=type=cache,target=/go/pkg/mod,id=dr-telemetry-go-mod-20261028 \
     --mount=type=cache,target=/root/.cache/go-build,id=dr-telemetry-go-build-20261028 \
-    go build -p=2 -mod=readonly -buildvcs=true -trimpath \
+    go test -p=2 -mod=readonly ./tempodb/backend/s3 -run '^TestSSEConfigEncryptionKeyRedacted$' -count=1 -v \
+    && go build -p=2 -mod=readonly -buildvcs=true -trimpath \
       -ldflags='-s -w -X main.Branch=v2.10.10-security -X main.Revision=f317720e -X main.Version=2.10.10' \
       -o /out/tempo ./cmd/tempo \
     && go version -m /out/tempo | tee /out/buildinfo.txt \

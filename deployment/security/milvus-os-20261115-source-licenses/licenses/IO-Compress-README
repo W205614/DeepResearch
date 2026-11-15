@@ -1,0 +1,126 @@
+
+                            IO-Compress
+
+                           Version 2.219
+
+                            9 March 2026
+
+        Copyright (c) 1995-2026 Paul Marquess. All rights reserved.
+          This program is free software; you can redistribute it
+           and/or modify it under the same terms as Perl itself.
+
+DESCRIPTION
+-----------
+
+This distribution provides a Perl interface to allow reading and writing of
+compressed data created with the zlib and bzip2.
+
+IO-Compress supports reading and writing of the following compressed data formats
+  * bzip2
+  * RFC 1950
+  * RFC 1951
+  * RFC 1952 (i.e. gzip)
+  * zip
+
+There are a number of companion modules for IO-Compress that extend
+the suite of compression formats available.
+
+ * IO-Compress-Zstd
+   Adds support for zstd (Zstandard).
+ * IO-Compress-Lzma
+   Adds support for lzma, xz and lzip.
+ * IO-Compress-Lzf
+   Adds support for lzf.
+ * IO-Compress-Lzop
+   Adds support for lzop.
+
+Note that the following modules used to be distributed separately, but are now
+included with the IO-Compress distribution.
+
+    Compress-Zlib
+    IO-Compress-Zlib
+    IO-Compress-Bzip2
+    IO-Compress-Base
+
+PREREQUISITES
+-------------
+
+Before you can build IO-Compress you need to have the following
+installed on your system:
+
+    * Perl 5.006 or better.
+    * Compress::Raw::Zlib
+    * Compress::Raw::Bzip2
+
+BUILDING THE MODULE
+-------------------
+
+Assuming you have met all the prerequisites, the module can now be built
+using this sequence of commands:
+
+    perl Makefile.PL
+    make
+    make test
+
+INSTALLATION
+------------
+
+To install IO-Compress, run the command below:
+
+    make install
+
+TROUBLESHOOTING
+---------------
+
+SUPPORT
+-------
+
+General feedback/questions/bug reports should be sent to
+https://github.com/pmqs/IO-Compress/issues
+
+FEEDBACK
+--------
+
+How to report a problem with IO-Compress.
+
+To help me help you, I need all of the following information:
+
+ 1. The Versions of everything relevant.
+    This includes:
+
+     a. The *complete* output from running this
+
+            perl -V
+
+        Do not edit the output in any way.
+        Note, I want you to run "perl -V" and NOT "perl -v".
+
+        If your perl does not understand the "-V" option it is too
+        old. This module needs Perl version 5.004 or better.
+
+     b. The version of IO-Compress you have.
+        If you have successfully installed IO-Compress, this one-liner
+        will tell you:
+
+           perl -MIO::Compress::Gzip -e 'print qq[ver $IO::Compress::Gzip::VERSION\n]'
+
+        If you are  running windows use this
+
+           perl -MIO::Compress::Gzip -e "print qq[ver $IO::Compress::Gzip::VERSION\n]"
+
+        If you haven't installed IO-Compress then search IO::Compress::Gzip.pm
+        for a line like this:
+
+          $VERSION = "2.219" ;
+
+ 2. If you are having problems building IO-Compress, send me a
+    complete log of what happened. Start by unpacking the IO-Compress
+    module into a fresh directory and keep a log of all the steps, including
+    the setting of configuration environment variables (if applicable).
+
+        [edit config.in or set environment variables, if necessary]
+        perl Makefile.PL
+        make
+        make test TEST_VERBOSE=1
+
+Paul Marquess <pmqs@cpan.org>

@@ -5,7 +5,7 @@
   "module_sum": "h1:qtIIP4s20duq2fbafHIti5NYJGaZNh7irXKbJwe/W/E=",
   "official_ui_url": "https://github.com/prometheus/alertmanager/releases/download/v0.34.1/alertmanager-web-ui-0.34.1.tar.gz",
   "official_ui_sha256": "881fe0f7beb9573f35be47dd233af6220e72c8db72c03bcd1780402eb8dc1307",
-  "toolchain": "Go1.27.3",
+  "toolchain": "golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf",
   "reviewed_dependency_overrides": {
     "golang.org/x/net": "v0.62.0",
     "google.golang.org/grpc": "v1.83.2",
@@ -34,5 +34,14 @@
       "go.mod": "f22bef44b325639abe89f8650e4064b53ed4d6985f36ff32d152d81a524b68f1",
       "go.sum": "48315f97c6c99aff6da2fcfee6c4607d65b1edce6bee01e0c9c5d0a3b007ba1a"
     }
+  },
+  "stdlib_security_refresh_20261115": {
+    "advisory": "GO-2026-6859",
+    "cve": "CVE-2026-97054",
+    "previous_compiler": "Go1.27.3",
+    "compiler_image": "golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf",
+    "fixed_go_version": "1.27.4",
+    "application_locks_unchanged": true,
+    "validation": "Actual image compilation and complete scan are required; not claimed by this source pin."
   }
 }

@@ -13,6 +13,10 @@ from scripts import check_grafana_source_build_20261112 as old  # noqa: E402
 from scripts import check_grafana_source_build_20261114 as current  # noqa: E402
 from scripts.check_grafana_source_build_20261110 import checked  # noqa: E402
 from scripts import go_otel_rebuild_20261114 as common  # noqa: E402
+from scripts.grafana_inventory_20261115 import (  # noqa: E402
+    INVENTORY_EVIDENCE, INVENTORY_REPORTS, inventory_bytes,
+    verify_inventory,
+)
 
 EVIDENCE = 'deployment/security/grafana-source-20261114-evidence/'
 MODULES = 'deployment/vendors/grafana-20261107/plugin-modules.json'
@@ -76,8 +80,8 @@ def build_profile(prior, native_evidence):
             'native_sha256': native,
             'runtime_manifest_sha256': runtime_manifest_sha256,
             'runtime_config': runtime_config,
-            'trivy_inventory_sha256': prior['expected']['trivy_inventory_sha256'],
-            'syft_types': prior['expected']['syft_types'],
+            'trivy_inventory_sha256': {},
+            'syft_types': {},
         },
         'reviewed_findings': prior['reviewed_findings'],
         'historical_review_source': common.SOURCE,
@@ -91,10 +95,8 @@ def build_profile(prior, native_evidence):
             'current': EVIDENCE + 'runtime-manifest.json.gz',
         },
         'scan_migration': {
-            # The otel-v1.47.0 rebuild does not change the image-level Trivy scan:
-            # otel is statically linked into the compiled binaries and never appears
-            # as an image-scan row. So the 20261114 image scan must equal the
-            # already-fixed (Go 1.27.4) 20261112 image scan byte-for-byte.
+            # Remaining vulnerability tuples are unchanged. The altered package
+            # inventories are separately proved against all actual native modules.
             'prior': 'deployment/security/grafana-source-20261112-evidence/raw-trivy.json.gz',
             'current': EVIDENCE + 'raw-trivy.json.gz',
         },
@@ -118,6 +120,7 @@ def source_inputs_for_20261114(prior):
     names['scripts/build_go_otel_security_20261114.py'] = old.digest(ROOT / 'scripts/build_go_otel_security_20261114.py')
     names['scripts/go_otel_rebuild_20261114.py'] = old.digest(ROOT / 'scripts/go_otel_rebuild_20261114.py')
     names['scripts/check_grafana_source_build_20261114.py'] = old.digest(ROOT / 'scripts/check_grafana_source_build_20261114.py')
+    names['scripts/grafana_inventory_20261115.py'] = old.digest(ROOT / 'scripts/grafana_inventory_20261115.py')
     # Re-hash all current files (the changed go.mod/go.sum and .gitattributes get their new bytes).
     result = {}
     for name in sorted(names):
@@ -125,10 +128,36 @@ def source_inputs_for_20261114(prior):
     return result
 
 
+def archive_inventory_inputs(directory):
+    destination = ROOT / INVENTORY_EVIDENCE
+    destination.mkdir(parents=True, exist_ok=True)
+    for name, archived in INVENTORY_REPORTS.items():
+        raw = inventory_bytes(directory, name)
+        path = destination / archived
+        if path.exists():
+            common.require(gzip.decompress(path.read_bytes()) == raw,
+                           'Previously archived raw inventory evidence must remain unchanged')
+        else:
+            path.write_bytes(gzip.compress(raw, mtime=0))
+
+
+def derive_inventory(profile, prior, native_evidence, directory):
+    expected, facts = verify_inventory(profile, prior, native_evidence, directory, root=ROOT)
+    profile['expected'].update(expected)
+    # Preparation must use genuinely fresh scans. Loading their immutable
+    # technical facts later does not reinterpret the archived reports as fresh.
+    current.assess_scans(*[json.loads(inventory_bytes(directory, name)) for name in
+        ('raw-trivy.private.json', 'full-grype.json', 'full-syft.json', 'image-inspect.json', 'build-receipt.json')],
+        profile, trivy_exit_code=0, grype_exit_code=0)
+    return facts
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--draft', type=Path, required=True)
     parser.add_argument('--assemble-reviewed', action='store_true')
+    parser.add_argument('--inventory-dir', type=Path,
+                        help='Original full reports/receipt/inspection; checked before immutable archival')
     args = parser.parse_args(argv)
 
     native_evidence, prior = native_evidence_map()
@@ -136,6 +165,9 @@ def main(argv=None):
     profile['source_inputs'] = source_inputs_for_20261114(prior)
 
     if not args.assemble_reviewed:
+        directory = args.inventory_dir or ROOT / INVENTORY_EVIDENCE
+        profile['inventory_migration_facts'] = derive_inventory(profile, prior, native_evidence, directory)
+        archive_inventory_inputs(directory)
         # Compute migration facts, runtime changes, scan migration facts.
         facts = {}
         for target, row in native_evidence.items():
@@ -162,6 +194,12 @@ def main(argv=None):
         files.update({'scripts/go_otel_rebuild_20261114.py', 'scripts/check_grafana_source_build_20261114.py',
                       'scripts/check_grafana_source_scan_20261114.py', 'scripts/scan_grafana_source_20261114.py',
                       'scripts/prepare_go_otel_profiles_20261114.py',
+                      'scripts/grafana_inventory_20261115.py',
+                      'scripts/source_dependency_migration_20261115.py',
+                      'scripts/prepare_source_dependency_migration_20261115.py',
+                      'deployment/security/source-dependency-migration-20261115.json',
+                      'scripts/collect_source_contexts_20261115.py',
+                      'deployment/security/source-contexts-20261115/contexts.json',
                       'deployment/security/grafana-source-20261112-profile.json',
                       'scripts/retained_source_review_20261112.py'})
         profile['evidence_sha256'] = {name: old.digest(checked(ROOT, name)) for name in sorted(files)}

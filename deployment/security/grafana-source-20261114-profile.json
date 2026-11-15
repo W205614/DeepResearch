@@ -6,7 +6,7 @@
   "dockerfile": "deployment/docker/Dockerfile.grafana-20261114",
   "context": ".",
   "source_inputs": {
-    "deployment/docker/.gitattributes": "73cd266c5ac1c94ab0ebec99dae6cd3970a638677469024eb24e0b8985a13554",
+    "deployment/docker/.gitattributes": "a74a70133ff9702af8e54ba16840a489a7eae44f35b4edf27340be40b8ef9f60",
     "deployment/docker/Dockerfile.grafana-20261110": "f0f2365aa5fd3624bc9ff5c53d6f448d3a4bc9c503d62b48116f5980a90c331e",
     "deployment/docker/Dockerfile.grafana-20261110.dockerignore": "c2da2af78d20ac5746524327f5f42b0eb6dd65b0cf3ca82c388cf812f19b7e23",
     "deployment/docker/Dockerfile.grafana-20261114": "fbd28015c8d18674b2553203e8a037c85361816a385d2e50b61a9bdb8168f5af",
@@ -97,9 +97,10 @@
     "deployment/vendors/grafana/main/go.work.sum": "66fd6bab1829660d3edbb463037193a66d1a2fe76c03228ec91b2aec5a154c42",
     "deployment/vendors/grafana/reviewed_backend_verifier.go": "021048a6577579118047211890f8b615e457ee428677f30d88285fb05a8144aa",
     "deployment/vendors/grafana/reviewed_backend_verifier_test.go": "a2af7375d16d90d3b7c749c9110bc2e439b1fcf1514c0d09beb83bb34b5d2c63",
-    "scripts/build_go_otel_security_20261114.py": "51b6a082d49962ce0e442c5df0b9abd8e390e622254fef9cb645639fb967f9ed",
-    "scripts/check_grafana_source_build_20261114.py": "49ac7675f556af539c12471ec032944feb947a018fba5d78b91569a121b6adde",
+    "scripts/build_go_otel_security_20261114.py": "b2da7c2d6343dd3d5095b979345ac3bb8ae45e4017dd57aeff8a5e8ddc7a5afd",
+    "scripts/check_grafana_source_build_20261114.py": "9890021ba00c7f19f0e95c94217131d74130b7f6f45734cf13d0bdfcadc778db",
     "scripts/go_otel_rebuild_20261114.py": "457039335959c5f06ed5d116f0d19515789c9448cbbbbb74c4ae3e77e3cc31f4",
+    "scripts/grafana_inventory_20261115.py": "ffc52bf480ecf343e69f4b14b108e07c44513b6353c7cfd312844ad6613ac12d",
     "scripts/prefetch_go_security_modules_20261112.py": "2b6864129c0f8e1d2b555cd135eef9f1aba90a0146af06f22bd7d21b15bad391",
     "scripts/retained_source_review_20261112.py": "b68baba611f1d5b74dd46e67bad736c9690c4af85c59ce9ef50cba02412ebcfc"
   },
@@ -147,25 +148,25 @@
     "trivy_inventory_sha256": {
       "alpine": "5a644889027c5bd290666962e7aac418628075c663a645f66bb16fa99b307711",
       "Node.js": "0eb8b83302292f03a210f6dd641bc089fcc68bf6de07375208ebfcc5120107d9",
-      "usr/share/grafana/bin/grafana": "46af48a0f0db43511b15a9a462d74ea73fc32a2ba4bcf836786a355c158f2ec5",
+      "usr/share/grafana/bin/grafana": "10f1cb086fd9ddcc0d88a97d93cfb5a2f9a978de9bb24dcb6969f7f85ae269b7",
       "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64": "c06ceaaf3a2a957942590430b9e0e86f1989dd5072c9995a2df23622a3f81c76",
-      "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64": "0a9d142d24b2471376be40b7b5a95680c98f1e251a51a493928eb5b1013bc872",
-      "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64": "1860636f607c71bed2f4c345f43f4c48e67f32830096f7c8d35ba64e478c894b",
-      "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64": "b18ac1dbdbc0b11e6022a7655addd2bf304987dcafb5f0898d1e05adba3ebede",
-      "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64": "7e279a85a97501d376d7f59af252101c367d24f196fef98e982a12ed18cef136",
-      "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64": "ed3c930882b32bbce833cbd98f3bf864047041a73c684544d07e81cc8bb1d57c",
-      "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64": "661365bf5abce3f31a173403a5119a43af8237c3890c5350e06e78a0cd9994fb",
-      "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64": "1f4fc28c2e166b20fb932e641a22695a3860decc860bae47ac2328b14774fa19",
-      "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64": "eff22736e95212cc1cd8a72b1655b94b1fb4752cb79e143100843581fc39bfa0",
+      "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64": "ee1ae1a0c6780c43b1bda3a70a3322862da1a1e8121be45507855e452aed4c4b",
+      "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64": "591eb7695b9783b898d740a1dea691bcaf6235f3597b6fff2ef8125b71353a6c",
+      "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64": "cf4a2a1b04a0024dafca04258c4c34dfd0614094474c63108e1a9499878b9141",
+      "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64": "00dcf5ae7b64fd3ba2b06d681b2088c1fc8cb05055bfb003f0852818258d0c84",
+      "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64": "82a8af2ab827fa33227c4871fa4c9334fe7d0025f669ad4f7017c8f0caf23b3d",
+      "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64": "1c6b0c963f5a545fb04c480681529db6a88f3916d440e2e7e4f6ad8e2d209fd2",
+      "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64": "b561fa1b1d1066463a6dbe76af1390b9bdf3f79157163b9f8e94b8142ff23fb4",
+      "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64": "d791c25b703e1f7af208690ce93bedcb5140634f4e55ba054595e79a3b1500c1",
       "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64": "9eb3c6d4c98535441fa0bedb6016c5bf11fbb0afd632248efeb38700158ef6a5",
-      "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64": "8543eb2dd53fe39a47aaced950d3208dcac6807ee23b94d6a5d74659fedec9a2",
-      "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": "ca7f4e8d0cf80c35486f01043f30d0f72a57f2a7776266e4daa7b7b9a62fcbfd",
-      "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": "910b6889ac648856c9f5b6803362f1248563c018ac1383f48f67c03c46d8ffee"
+      "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64": "f7a9667a9c22099f304aab5f7fc6cccb6bc830341b919505738795f38b8ca371",
+      "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": "4e22ae498534d23927ef0ecfc8f1de732cb501bbde06b56293103c51d0c21dc6",
+      "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": "68f9005b2a527e04bedc71fc02c8e79347532a4b4a109c0eab328b1420e0a6f1"
     },
     "syft_types": {
       "npm": 4,
       "apk": 33,
-      "go-module": 1720,
+      "go-module": 1730,
       "binary": 1
     }
   },
@@ -669,6 +670,102 @@
     "deployment/security/grafana-source-20261114-evidence/review-root.json",
     "deployment/security/grafana-source-20261114-evidence/review-otel-provenance.json"
   ],
+  "inventory_migration_facts": {
+    "prior_go_modules": 1720,
+    "current_go_modules": 1730,
+    "newly_linked_modules": [
+      {
+        "target": "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64",
+        "module": "go.opentelemetry.io/otel/log",
+        "version": "v1.47.0",
+        "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+      },
+      {
+        "target": "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64",
+        "module": "go.opentelemetry.io/otel/log",
+        "version": "v1.47.0",
+        "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+      },
+      {
+        "target": "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64",
+        "module": "go.opentelemetry.io/otel/log",
+        "version": "v1.47.0",
+        "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+      },
+      {
+        "target": "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64",
+        "module": "go.opentelemetry.io/otel/log",
+        "version": "v1.47.0",
+        "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+      },
+      {
+        "target": "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+        "module": "go.opentelemetry.io/otel/log",
+        "version": "v1.47.0",
+        "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+      },
+      {
+        "target": "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64",
+        "module": "go.opentelemetry.io/otel/log",
+        "version": "v1.47.0",
+        "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+      },
+      {
+        "target": "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64",
+        "module": "go.opentelemetry.io/otel/log",
+        "version": "v1.47.0",
+        "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+      },
+      {
+        "target": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+        "module": "go.opentelemetry.io/otel/log",
+        "version": "v1.47.0",
+        "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+      },
+      {
+        "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+        "module": "go.opentelemetry.io/otel/log",
+        "version": "v1.47.0",
+        "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+      },
+      {
+        "target": "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64",
+        "module": "go.opentelemetry.io/otel/log",
+        "version": "v1.47.0",
+        "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+      }
+    ],
+    "non_go_inventory_unchanged": true,
+    "native_module_identity_and_h1_coverage_verified": true,
+    "trivy_changed_inventory_targets": [
+      "usr/share/grafana/bin/grafana",
+      "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64",
+      "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64",
+      "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64",
+      "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64",
+      "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+      "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+      "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64",
+      "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64",
+      "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+      "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64"
+    ],
+    "report_sha256": {
+      "raw-trivy.private.json": "c78b0aa47de42d335e28b4cb8d1bf1f655e8cca221224b143767b50b17f1b67e",
+      "full-syft.json": "88199d7d61ff5e8d599ba42429d3f21873c6fb00930d38061ef766a10646d877",
+      "full-grype.json": "5e0d4a310b1bf69010175be777c19d38d5e0ee307aa5b5d6757fc9a140e31146",
+      "build-receipt.json": "447fe9a67097a495ab88e244009c90b2b017d799fe7513cafbcdaf99340217f8",
+      "image-inspect.json": "e6303c842e2bcd112eedd66badb6ef60df9e939ee9ee5cf75f94a9ffcea5bd83",
+      "collector.json": "67377c5bf378c9fdbf557af867eb9e060681977bbbaa9eb6889596da6f4c3b3b"
+    },
+    "collection_preparation_only": true,
+    "all_severity_findings": {
+      "Trivy": 40,
+      "Grype": 10
+    },
+    "raw_reports_modified": false
+  },
   "migration_facts": {
     "usr/share/grafana/bin/grafana": {
       "elf_sha256": "b7fac92270fb5b75aec28d470f20555ff341776dd8e1c07802257eb9b2cb694a",
@@ -3001,7 +3098,7 @@
     }
   ],
   "evidence_sha256": {
-    "deployment/docker/.gitattributes": "73cd266c5ac1c94ab0ebec99dae6cd3970a638677469024eb24e0b8985a13554",
+    "deployment/docker/.gitattributes": "a74a70133ff9702af8e54ba16840a489a7eae44f35b4edf27340be40b8ef9f60",
     "deployment/docker/Dockerfile.grafana-20261110": "f0f2365aa5fd3624bc9ff5c53d6f448d3a4bc9c503d62b48116f5980a90c331e",
     "deployment/docker/Dockerfile.grafana-20261110.dockerignore": "c2da2af78d20ac5746524327f5f42b0eb6dd65b0cf3ca82c388cf812f19b7e23",
     "deployment/docker/Dockerfile.grafana-20261114": "fbd28015c8d18674b2553203e8a037c85361816a385d2e50b61a9bdb8168f5af",
@@ -3057,6 +3154,18 @@
     "deployment/security/grafana-source-20261114-evidence/mssql-native.json": "6359de887c4f7182e475e8f9fc707e9554afa81ad48719d02d0c8e7b467b2e67",
     "deployment/security/grafana-source-20261114-evidence/mysql-graph.json.gz": "1ed456e1f7ac72ab4fc23e0fd8279f854787a3321c9d350f51704ce37916edde",
     "deployment/security/grafana-source-20261114-evidence/mysql-native.json": "fc230b7e60f915edceecaedc16c41fda960ec9cefd4ee80260755a8a116a6d84",
+    "deployment/security/grafana-source-20261114-evidence/normal-scans-20261115-02/build-receipt.json.gz": "cdd33e0d344ea0b7f1c13e6d0bbe301b2cdb892b5e8712550a4b999c66de7ceb",
+    "deployment/security/grafana-source-20261114-evidence/normal-scans-20261115-02/collector.json.gz": "0b1bb5a156f7da6a36d8be9a83660cf2e6c4bef88d81c52706273c6c7e016122",
+    "deployment/security/grafana-source-20261114-evidence/normal-scans-20261115-02/full-grype.json.gz": "c87647740033865a65720c5d2aa5ce8ff40b029775b0fcc11ea8fa8d6eaf8dc7",
+    "deployment/security/grafana-source-20261114-evidence/normal-scans-20261115-02/full-syft.json.gz": "dcad7fbeb97db70660597e61a35a50f4a861460c3a70b3ba6b251678ef7caf36",
+    "deployment/security/grafana-source-20261114-evidence/normal-scans-20261115-02/image-inspect.json.gz": "aa7d21ab7c1abe0754146b2e30734aeada88f4497478942f720c864541a864d1",
+    "deployment/security/grafana-source-20261114-evidence/normal-scans-20261115-02/raw-trivy.json.gz": "4fe52731c124b641da97a3079e3f7452f0cf5ad78768626639d31e23e20fbf1a",
+    "deployment/security/grafana-source-20261114-evidence/normal-scans-20261115/build-receipt.json.gz": "25a27d818e6290cde5403654108f55e47c0972112fd08becfc2712fc89131420",
+    "deployment/security/grafana-source-20261114-evidence/normal-scans-20261115/collector.json.gz": "424def1802a6d50d41048376a18da39d8c8c7a14dda3a28bb4600c74dd40d333",
+    "deployment/security/grafana-source-20261114-evidence/normal-scans-20261115/full-grype.json.gz": "977d0b645abd75b66f5f715ea877726eb4bbd57ec275519515801d13a422cc36",
+    "deployment/security/grafana-source-20261114-evidence/normal-scans-20261115/full-syft.json.gz": "6f7b9f3bac507c3c3181eb067a61252ef9dd1b4bee6de2f0749955fb384ce428",
+    "deployment/security/grafana-source-20261114-evidence/normal-scans-20261115/image-inspect.json.gz": "ac010e51204de9df70ad93da1ec58e1a6e15d6c2d49b84f7d841cf3ed096869c",
+    "deployment/security/grafana-source-20261114-evidence/normal-scans-20261115/raw-trivy.json.gz": "68a035b35920c9b4e7f05c9632865eee9f65a0c49a1c97e4107e1a263b099633",
     "deployment/security/grafana-source-20261114-evidence/opentsdb-graph.json.gz": "32c11826cae771489112e30eaec52708b6ad7e15cdfe8c9bfd53498905ebdf9f",
     "deployment/security/grafana-source-20261114-evidence/opentsdb-native.json": "defd6731d3c5632845b2799a8b9c0fcd586c58199be86aa3aba437a67629297a",
     "deployment/security/grafana-source-20261114-evidence/prometheus-graph.json.gz": "19f49a6fd5675f7081df0e1aeff2cb5df65db3666f3ea3a1331cac2778f04706",
@@ -3069,6 +3178,8 @@
     "deployment/security/grafana-source-20261114-evidence/tempo-native.json": "d201ca508d5c21ec6eb012b76c09486bbe7dd25e699bf803bbf4a943477397ce",
     "deployment/security/grafana-source-20261114-evidence/zipkin-graph.json.gz": "3f312e3f8522410370776d12cdd9833468b6b4addc456535e6898c15281ec03c",
     "deployment/security/grafana-source-20261114-evidence/zipkin-native.json": "36a8f5aa50383d29d20a6398d226741b5c8bc76aa0264c5c34cef50e6518685b",
+    "deployment/security/source-contexts-20261115/contexts.json": "7e7f9090fc6644f761d2e391dd7f80dd806e8edd52e3a135a76e7299f6dece68",
+    "deployment/security/source-dependency-migration-20261115.json": "e174943a37081bb4da6b596f83ae35b5a83d6d65017c0bfa2cec3d416a911692",
     "deployment/vendors/grafana-20261107/build_candidate_backends.py": "bb421ba30986038f1165d9ba03faf23707c513a8968c8c6405c1744e90d9f400",
     "deployment/vendors/grafana-20261107/candidate_build_backends.py": "f8bb95e771306d6bf3c250985a7f996fee2e1719501cf61544045f32098cdff9",
     "deployment/vendors/grafana-20261107/capture_graphs.py": "23d65fdae263353b74b3ca608300695c6041abccdfb98e71bed74206edbd83e3",
@@ -3153,16 +3264,20 @@
     "deployment/vendors/grafana/main/go.work.sum": "66fd6bab1829660d3edbb463037193a66d1a2fe76c03228ec91b2aec5a154c42",
     "deployment/vendors/grafana/reviewed_backend_verifier.go": "021048a6577579118047211890f8b615e457ee428677f30d88285fb05a8144aa",
     "deployment/vendors/grafana/reviewed_backend_verifier_test.go": "a2af7375d16d90d3b7c749c9110bc2e439b1fcf1514c0d09beb83bb34b5d2c63",
-    "scripts/build_go_otel_security_20261114.py": "51b6a082d49962ce0e442c5df0b9abd8e390e622254fef9cb645639fb967f9ed",
-    "scripts/check_grafana_source_build_20261114.py": "49ac7675f556af539c12471ec032944feb947a018fba5d78b91569a121b6adde",
-    "scripts/check_grafana_source_scan_20261114.py": "9c080179139152f9698293b4288f4650d7912f914f6e94b7acda07d10ae51b86",
+    "scripts/build_go_otel_security_20261114.py": "b2da7c2d6343dd3d5095b979345ac3bb8ae45e4017dd57aeff8a5e8ddc7a5afd",
+    "scripts/check_grafana_source_build_20261114.py": "9890021ba00c7f19f0e95c94217131d74130b7f6f45734cf13d0bdfcadc778db",
+    "scripts/check_grafana_source_scan_20261114.py": "ce56daf35fc61fba1a82065b0539eaa6ba670c4616d2e57cb6411df0cecd565d",
+    "scripts/collect_source_contexts_20261115.py": "d9effc43d9a0c5acf651d7bfe6cc1db505248a627f0b7ffe1e0a91a757eedad3",
     "scripts/go_otel_rebuild_20261114.py": "457039335959c5f06ed5d116f0d19515789c9448cbbbbb74c4ae3e77e3cc31f4",
+    "scripts/grafana_inventory_20261115.py": "ffc52bf480ecf343e69f4b14b108e07c44513b6353c7cfd312844ad6613ac12d",
     "scripts/prefetch_go_security_modules_20261112.py": "2b6864129c0f8e1d2b555cd135eef9f1aba90a0146af06f22bd7d21b15bad391",
-    "scripts/prepare_go_otel_profiles_20261114.py": "ba6c993c0c509cd909d683d2787a130c3918d04e1d7418103734271f42637f6b",
+    "scripts/prepare_go_otel_profiles_20261114.py": "d9073a1023d4eb4e42b8c380f752fa5fc5949c797b64adab2134336d221942cf",
+    "scripts/prepare_source_dependency_migration_20261115.py": "af51f7a5b4ab9db584540f23a35f92156e4af55d9a9543d411fc3683cd43b34a",
     "scripts/retained_source_review_20261112.py": "b68baba611f1d5b74dd46e67bad736c9690c4af85c59ce9ef50cba02412ebcfc",
     "scripts/scan_grafana_source_20261114.py": "fabc5b4504f3a28af05087d89084f1288651c1495f524b698264dda2f38e4c2f",
-    "deployment/security/grafana-source-20261114-evidence/review-root.json": "72ed55b1ac7ee126d671d5ecbe2776dcd5ffc4df82ec60456621bf79511d5d0f",
-    "deployment/security/grafana-source-20261114-evidence/review-otel-provenance.json": "bd9da2909f5331938e3c338c008bb4bf673d5b75bf7d2cf0e0be28aaf8ba027c"
+    "scripts/source_dependency_migration_20261115.py": "f1925fed17d4fd3ccf5e547b9786c6aa1307eabee8e53ac9a152a9b1d458b883",
+    "deployment/security/grafana-source-20261114-evidence/review-root.json": "a30d7bf8ff86d32ebfd66fb0d32bc25d6a742f71fc98e432bb4002a0fc95e3e1",
+    "deployment/security/grafana-source-20261114-evidence/review-otel-provenance.json": "e9874bdc7146805159bdadc9f41752513f8e1ce79ed58e8e5543f8014d212bb5"
   },
   "scan_migration_facts": {
     "prior_count": 40,
@@ -3170,5 +3285,5 @@
     "image_scan_rows_unchanged": true,
     "raw_reports_modified": false
   },
-  "review_subject_sha256": "88be5212734567660d043c608f572aa396fbcf695f291968855f2685713af25a"
+  "review_subject_sha256": "a3ee5abd9643c4a2a2ddde1ab14aa8c81465c763b97fddc06866d794b7334e6d"
 }

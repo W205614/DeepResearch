@@ -1,0 +1,42 @@
+{
+  "schema": "milvus-librdkafka-sasl-source-20261115-v1",
+  "upstream_tag": "v2.6.1",
+  "upstream_commit": "cb8c19c43011b66c4b08b25e5150455a247e1ff3",
+  "source_url": "https://codeload.github.com/confluentinc/librdkafka/tar.gz/cb8c19c43011b66c4b08b25e5150455a247e1ff3",
+  "source_sha256": "677bf1c148b54a406267aec726e0f71d6e06f9a41052017172ca1693ee8cd111",
+  "source_bytes": 4746024,
+  "header_sha256": "981210446c732d19e1de1feced64899fbef8daaf881c2bc7e2c1ac67953da970",
+  "original_runtime_image": "milvusdb/milvus@sha256:812cb91ad04e847e5ebb4d19593c69f2e207593073063ede0fd604bbba5fddf1",
+  "original_librdkafka_sha256": "a6ce7e88ec18acb9a66a365ef184c763e61532cb1483d76f97221516d8af168a",
+  "original_cpp_wrapper_sha256": "aa4e0ee4e17f6f7717c19f5fca9c48c341b1e6f292b4b0f04e54f6e926f159fc",
+  "original_features": [
+    "snappy",
+    "ssl",
+    "sasl",
+    "regex",
+    "lz4",
+    "sasl_gssapi",
+    "sasl_plain",
+    "sasl_scram",
+    "zstd",
+    "sasl_oauthbearer"
+  ],
+  "security_change": "Remove the actual statically embedded vulnerable Cyrus DIGEST-MD5 implementation; dynamically link the existing system Cyrus core whose DIGEST plugin is absent. Retain same librdkafka C API/SONAME and actual feature set. Candidate requires independent native/ABI/security verification.",
+  "risk_acceptance": false,
+  "binary_redistribution_approved": false,
+  "source_evidence_sha256": {
+    "librdkafka-v2.6.1.tar.gz": "677bf1c148b54a406267aec726e0f71d6e06f9a41052017172ca1693ee8cd111",
+    "LICENSES.txt": "b9e4616bb9dd0c9ce3fa52e81c7bfc596e60b8855a1df5dce5fa50732b1ccdec",
+    "tag.api-response.json": "68ccee94f731813adbd90ae98eec196ed4bda08fb87b55a833dd3e607802672d",
+    "commit.api-response.json": "35aa9b18572d8e88377a763c953380042224369b94308ab11031cae97675c575",
+    "probe.c": "29a74f13e875b95d7d342bb4c89e113b41dae8c7ebc8de103f7d9519ca7c7b00",
+    "preserve-no-plugins.patch": "d75cd427b55a30d9962a2cd6b5d0d16dd7adc65b1878afec74002ad3e6e3da3e"
+  },
+  "build_adjustment": {
+    "file": "preserve-no-plugins.patch",
+    "reason": "The original actual library had no plugins feature. The upstream configure generator auto-enables it on Linux libdl. Preserve original CMake-equivalent WITH_PLUGINS=0 by changing the generator, never editing generated config.h.",
+    "input_configure_sha256": "1b66350e6fabcdeef6450345876f4c8ad540e53975d2be5edf0d7b46e5fa2716",
+    "output_configure_sha256": "21a97450c8d66eab9add67de7cd4fdfff2230390b57127318bd6aeb4c68c9d67",
+    "patch_sha256": "d75cd427b55a30d9962a2cd6b5d0d16dd7adc65b1878afec74002ad3e6e3da3e"
+  }
+}

@@ -2,8 +2,8 @@
   "upstream": "https://github.com/grafana/tempo",
   "tag": "v2.10.10",
   "commit": "f317720e7e5191a7f282e8f7d6fe5387ae6015b4",
-  "go_version": "1.27.3",
-  "compiler_image": "golang:1.27.3-alpine@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c",
+  "go_version": "1.27.4",
+  "compiler_image": "golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf",
   "original_runtime_image": "grafana/tempo:2.10.10@sha256:12b0820f13ffa10ce956b6e9acc3b03f3cffded99109be6cc09d106fe56e5d38",
   "advisories": [
     "https://github.com/go-jose/go-jose/security/advisories/GHSA-mgcc-cww5-fp2q"
@@ -13,20 +13,24 @@
     "golang.org/x/net": "v0.62.0"
   },
   "locks": {
-    "go.mod": "85525b3a42b923adbffe595a226de52d4fa7d30f8ef5ca4d3d4274de4dbe5683",
-    "go.sum": "4486bdc5a13337a570c5b5b592d113ad87f7f81974ac31280954559e67460a83"
+    "go.mod": "1e6a4bd94d20ca216fc20abdcafddc9563b045ecff9a35c63c02a3ec80cfacdb",
+    "go.sum": "ba94f4b4dc52cf25c26bbea16e2ec0218e2099e87532073a1771cc355012b182"
   },
   "runtime_boundary": "Upstream 2.10.10 runtime, user, entrypoint and storage configuration retained; only the actual Go executable is rebuilt from the locked source graph. New image scan and compatibility checks remain required.",
   "source_transport": "Official Git remote; Git-verified object graph; exact annotated tag object and peeled commit are checked before checkout.",
   "tag_object": "bbe3be0e055f387b13a3ce45ecbecb0a9c997ae2",
   "recipe_path": "deployment/docker/Dockerfile.tempo",
-  "recipe_sha256": "ade7511f2d323833c23be26be9c9f9a05007c0f89096cca625dc2595f4e9e8b5",
+  "recipe_sha256": "f10da2fd5b857bf9891151e07a4bec6d8c34d3ae78aea97df1b6b0c6d8beed29",
   "dependency_security_refresh_20261114": {
     "reason": "CVE-2026-128085 (go.opentelemetry.io/otel/trace, sdk, sdk/log) is fixed in v1.47.0; the otel module family was regenerated with go get against the pinned upstream source and rebuilt with go build -mod=readonly.",
     "otel": "v1.47.0",
     "files": {
-      "go.mod": "85525b3a42b923adbffe595a226de52d4fa7d30f8ef5ca4d3d4274de4dbe5683",
-      "go.sum": "4486bdc5a13337a570c5b5b592d113ad87f7f81974ac31280954559e67460a83"
+      "go.mod": "1e6a4bd94d20ca216fc20abdcafddc9563b045ecff9a35c63c02a3ec80cfacdb",
+      "go.sum": "ba94f4b4dc52cf25c26bbea16e2ec0218e2099e87532073a1771cc355012b182"
     }
+  },
+  "compiler_security_refresh_20261115": {
+    "reason": "CVE-2026-97054 fixed by the pinned Go 1.27.4 compiler; actual native/scan and SSE redaction regression are required",
+    "go_version": "1.27.4"
   }
 }

@@ -117,23 +117,36 @@ def test_workflow_keeps_current_source_verifiers_and_full_smoke_gates():
     assert 'curl --fail --retry 15 --retry-connrefused http://127.0.0.1:8080/readyz' in runs
 
 
+def _autocrlf_checkout(directory, files, root):
+    subprocess.run(['git', 'init', '-q', str(directory)], check=True)
+    subprocess.run(['git', '-C', str(directory), 'config', 'core.autocrlf', 'true'], check=True)
+    # The real continuation compares every old tracked path's attributes. Local
+    # read-only object lookup supplies that history without a fetch or copying it.
+    objects = subprocess.check_output(['git', 'rev-parse', '--git-path', 'objects'], cwd=root).decode().strip()
+    objects = (root / objects).resolve()
+    alternate = directory / '.git/objects/info/alternates'
+    alternate.parent.mkdir(parents=True, exist_ok=True)
+    alternate.write_text(objects.as_posix() + '\n', encoding='utf-8', newline='\n')
+    for name, body in files.items():
+        target = directory / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(body)
+    subprocess.run(['git', '-C', str(directory), 'add', '--pathspec-from-file=-', '--pathspec-file-nul'],
+                   input=b'\0'.join(name.encode('utf-8') for name in sorted(files)) + b'\0', check=True)
+    subprocess.run(['git', '-C', str(directory), 'checkout-index', '--all', '--force'], check=True)
+    for name, body in files.items():
+        assert (directory / name).read_bytes() == body
+
+
 def test_review_bytes_survive_autocrlf_checkout_and_missing_rules_fail(tmp_path):
     from scripts import build_codeql_ci_attributes_review_20261114 as renewal
     root = Path(__file__).resolve().parents[1]
-    renewal.verify_attributes(root)
-    subprocess.run(['git', 'init', '-q', str(tmp_path)], check=True)
-    subprocess.run(['git', '-C', str(tmp_path), 'config', 'core.autocrlf', 'true'], check=True)
-    (tmp_path / '.gitattributes').write_bytes((root / '.gitattributes').read_bytes())
-    for name in renewal.RULES:
-        target = tmp_path / name
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes((root / name).read_bytes())
-    paths = [str(Path(name).parent / line.split()[0].lstrip('/'))
+    historical = '507461afa04c656e15dbf3a180cedaa9cb7e5f62'
+    paths = [(Path(name).parent / line.split()[0].lstrip('/')).as_posix()
              for name, lines in renewal.RULES.items() for line in lines]
-    for name in paths:
-        target = tmp_path / name
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes((root / name).read_bytes())
+    files = {name: renewal.blob(root, historical, name)
+             for name in ['.gitattributes', *renewal.RULES, *paths]}
+    _autocrlf_checkout(tmp_path, files, root)
     renewal.verify_attributes(tmp_path)
     target = tmp_path / 'tests/.gitattributes'
     rules = target.read_text()
@@ -142,8 +155,33 @@ def test_review_bytes_survive_autocrlf_checkout_and_missing_rules_fail(tmp_path)
         target.write_text(changed)
         with pytest.raises(ValueError, match='missing or changed'):
             renewal.verify_attributes(tmp_path)
-    target.write_bytes((root / 'tests/.gitattributes').read_bytes())
-    subprocess.run(['git', '-C', str(tmp_path), 'add', '.gitattributes', *renewal.RULES, *paths], check=True)
-    subprocess.run(['git', '-C', str(tmp_path), 'checkout-index', '--all', '--force'], check=True)
-    for name in paths:
-        assert (tmp_path / name).read_bytes() == (root / name).read_bytes()
+    target.write_bytes(files['tests/.gitattributes'])
+
+
+def test_current_attribute_continuation_survives_autocrlf_and_rejects_changed_new_rules(tmp_path):
+    from scripts import build_codeql_ci_attributes_review_20261114 as historical
+    from scripts import build_codeql_otel_migration_review_20261114 as current
+    root = Path(__file__).resolve().parents[1]
+    current.verify_attribute_continuation(root)
+    names = subprocess.check_output(['git', 'ls-files', '--cached', '--others', '--exclude-standard', '-z',
+                                     '--', '.gitattributes', ':(glob)**/.gitattributes'], cwd=root)
+    files = {name: (root / name).read_bytes() for name in names.decode().strip('\0').split('\0')}
+    rules = {name: [*historical.RULES[name], *current.ATTRIBUTE_SUFFIXES[name]] for name in historical.RULES}
+    for name, lines in rules.items():
+        directory = root / Path(name).parent
+        for rule in lines:
+            pattern = rule.split()[0].lstrip('/')
+            if pattern.endswith('/**'):
+                pattern += '/*'
+            matched = [path for path in directory.glob(pattern) if path.is_file()]
+            assert matched, rule
+            files.update({path.relative_to(root).as_posix(): path.read_bytes() for path in matched})
+    _autocrlf_checkout(tmp_path, files, root)
+    assert current.verify_attribute_continuation(tmp_path)['all_effective_attributes_identical']
+    target = tmp_path / 'scripts/.gitattributes'
+    original = target.read_text(encoding='utf-8')
+    rule = current.ATTRIBUTE_SUFFIXES['scripts/.gitattributes'][0]
+    for changed in (original.replace(rule, ''), original.replace(rule, rule.replace('eol=lf', 'eol=crlf'))):
+        target.write_text(changed, encoding='utf-8')
+        with pytest.raises(ValueError, match='exceed the exact'):
+            current.verify_attribute_continuation(tmp_path)

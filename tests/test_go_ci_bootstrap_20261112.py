@@ -6,7 +6,7 @@ import pytest
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPTS = ('scripts/build_go_stdlib_security_20261112.py', 'scripts/build_minio_os_20261113.py')
+SCRIPTS = ('scripts/build_go_otel_security_20261114.py', 'scripts/build_minio_otel_20261115.py')
 CACHE_ACTION = './.github/actions/reviewed-source-image'
 JOBS = [('ci.yml', 'real-components'), ('ci.yml', 'enterprise-compose-smoke'),
         ('security.yml', 'runtime-image-scan'), ('rag-quality.yml', 'live-reranker-evaluation')]
@@ -42,10 +42,10 @@ def assert_locked_bootstrap(steps):
         assert setup[0][0] < sync[0][0] < index
         assert setup[0][1].get('if') == sync[0][1].get('if')
         if builder.get('if'):
-            assert builder['if'] in {"matrix.source_build_profile == 'grafana-source-20261112'",
-                                     "matrix.source_build_profile == 'minio-os-source-20261113'"}
-            assert setup[0][1]['if'] == ("matrix.source_build_profile == 'grafana-source-20261112'"
-                                        " || matrix.source_build_profile == 'minio-os-source-20261113'")
+            assert builder['if'] in {"matrix.source_build_profile == 'grafana-source-20261114'",
+                                     "matrix.source_build_profile == 'minio-otel-source-20261115'"}
+            assert setup[0][1]['if'] == ("matrix.source_build_profile == 'grafana-source-20261114'"
+                                        " || matrix.source_build_profile == 'minio-otel-source-20261115'")
         else:
             assert setup[0][1].get('if') is None
         uploads = [step for i, step in enumerate(steps) if i > index

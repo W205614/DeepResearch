@@ -1,0 +1,84 @@
+{
+  "schema": "minio-otel-source-build-receipt-20261115-v1",
+  "profile": "minio-otel-source-20261115",
+  "image": "deepresearch-minio-source:20261115",
+  "image_id": "sha256:5997e7c364d2af8fe1b99da4fe2b9ca659e28ef42f56f900aebead25e08a0c5e",
+  "config_digest": "sha256:c2c63c6d09edb24eb5e8d778a26b3e8153f7271e1f03a433c8fb929d4fbf1612",
+  "diff_ids": [
+    "sha256:488abf51dd2226f9d0a08cfaac3d0de77ef45a8a5f9607978e90a2984e768c64",
+    "sha256:b248d4096c36be74dd5b9e376be5763e1522ecc617e376b06cfd8ea6ac88ee6b",
+    "sha256:77563d08ff828f023a529d396f1afdc828957d586fcf1f956f8f70fbc4a63645",
+    "sha256:b643d671263b35ce15d97a941131edf7b25fa48881bdaf8f9fabb60ff1b0ca2b"
+  ],
+  "source_inputs": {
+    "deployment/docker/Dockerfile.minio-20261112": "aa37214feaadb223f727c83bbf42726a887800ce37f89e5e5f741877c1f36635",
+    "deployment/docker/Dockerfile.minio-20261112.dockerignore": "c2da2af78d20ac5746524327f5f42b0eb6dd65b0cf3ca82c388cf812f19b7e23",
+    "deployment/docker/Dockerfile.minio-20261113": "dbc788dfd0b39351781b09926f886c28c5eb1401beed677e4b2521bc5f41af7f",
+    "deployment/docker/Dockerfile.minio-20261113.dockerignore": "e7924e20ac76f6d27c40d9abb4cd05141f59d58b7e4fe5d44d659fda30337d6d",
+    "deployment/docker/Dockerfile.minio-otel-20261115": "93c274b9aecb5382c4cb85bd99c82b2c76cbb536c2f3d348ad065406fa49589d",
+    "deployment/docker/Dockerfile.minio-otel-20261115.dockerignore": "46cc461202df268a7336814910d498c99a083a466ea833a5c14ab00ba15de63c",
+    "deployment/security/go-stdlib-20261112-evidence/Go-LICENSE": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+    "deployment/security/go-stdlib-20261112-evidence/source.lock.json": "20746730bbf420fce6ed6765e79bac882c02d237f5a51cf212581840ff019dbe",
+    "deployment/security/minio-os-20261113/patches/glibc-LANGUAGE.patch": "795bf9c17379d1e22266a471668724c19c2931171410b4c20568bcfac39a3513",
+    "deployment/security/minio-os-20261113/patches/ncurses-save-string.patch": "4ac6a608a4ca021076316189f46f7fe9417dc6bcb1a87e6f2313d54594da4e46",
+    "deployment/security/minio-os-20261113/regression/normal_csv_test.go": "d4b19a06700b8eeb7334143dc8bc36e13f684a1ea2f26db48f593e0d7722e98a",
+    "deployment/security/minio-os-20261113/regression/normal_parquet_test.go": "14b30e9fd5a40ddfafcaef09bc43b6875cc5749faa8d75a42a505fb57709eaee",
+    "deployment/security/minio-os-20261113/source.lock.json": "f7c3711efef5db02fb3e53d3fe3e67e8f1ab84e9ed9516cb71541572097dc424",
+    "deployment/security/minio-source-20261112-profile.json": "9ad8ca661eb547fbd8d1666e493fa4a85bfb7d278845f4e31866807fc270c3bd",
+    "deployment/vendors/minio-otel-20261115/go.mod": "e7ae702a57f022c98b2a6afd825bf2edfc1035760b684b2ee2f0655fe40b2fe4",
+    "deployment/vendors/minio-otel-20261115/go.sum": "bd9797d3580cfbf731483bb2af3c82092d7808f5736fc62f872e3a29d5a24fbf",
+    "deployment/vendors/minio/csv_record_bound_test.go": "cb51ba37bc33b66764b64c8ed214d372a1db4f945093f6d0c5103a5d16bacf16",
+    "deployment/vendors/minio/legacy-part-compat.patch": "d7ce090041a4353cf35ca58168cff11a47a17ee0bf9355a6c44c16a7352f2320",
+    "deployment/vendors/minio/legacy-part2024.msgp": "cca3483e758d59aa0fd0ad3cc0ccc0ecb1e2afcdc6ebf399c57d515e7c4598cb",
+    "deployment/vendors/minio/legacy_part_compat.go": "2fcd20ee874cf8cd837651224135463925a98a1209fd1dd7f3a4298ae41a3792",
+    "deployment/vendors/minio/legacy_part_compat_test.go": "a4d464887c7fbb89116ed3309f4cfa039c405755d9bfff55b51d01bc50008ad6",
+    "scripts/build_go_stdlib_security_20261112.py": "7febf7d4e546c693f0115cbf1a9fe80093d13a3b786b5b26352d3ef0debd6cbb",
+    "scripts/build_minio_os_20261113.py": "28700eed440f39872674c80dfb55b7bbe298375be628ecd9c2eb2401a6178b54",
+    "scripts/build_minio_otel_20261115.py": "0b8a14c674d0cebfe27d0d837612004da94474ea3ba3795bba7901b8c5c3518a",
+    "scripts/collect_minio_os_native_20261113.py": "1adfa20b2ca496dc19117808cfbb136051ec99e5aa74cb03e69da4bb0bad8076",
+    "scripts/minio_rpm_facts_20261113.py": "23e7fd3ef3666e212bc1f3eb49704e9d6ee6b260e90b3b82e55d45162e293d3e",
+    "scripts/prefetch_go_security_modules_20261112.py": "2b6864129c0f8e1d2b555cd135eef9f1aba90a0146af06f22bd7d21b15bad391",
+    "scripts/prefetch_minio_os_inputs_20261113.py": "2cb68b0a148f496c37aa42cd066d9e62702ebfff1d5d3a4daad33c6e6d6fac34",
+    "scripts/prefetch_minio_source_20261112.py": "97f8de995d1fb62e8210b778193b9571c2bf5f86a9011640959531676e4b859b"
+  },
+  "runtime_manifest_sha256": "10426825064131310ed19a6b59e437497e7463d0442a5589645a6ae080dc7e90",
+  "runtime_config": {
+    "User": null,
+    "Env": [
+      "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "MINIO_ACCESS_KEY_FILE=access_key",
+      "MINIO_SECRET_KEY_FILE=secret_key",
+      "MINIO_ROOT_USER_FILE=access_key",
+      "MINIO_ROOT_PASSWORD_FILE=secret_key",
+      "MINIO_KMS_SECRET_KEY_FILE=kms_master_key",
+      "MINIO_CONFIG_ENV_FILE=config.env",
+      "HOME=/tmp",
+      "MC_CONFIG_DIR=/tmp/.mc"
+    ],
+    "Entrypoint": [
+      "/usr/bin/docker-entrypoint.sh"
+    ],
+    "Cmd": [
+      "silo"
+    ],
+    "WorkingDir": "/",
+    "ExposedPorts": {
+      "9000/tcp": {},
+      "9001/tcp": {}
+    },
+    "Volumes": {
+      "/data": {}
+    },
+    "Healthcheck": null,
+    "StopSignal": null
+  },
+  "native_sha256": {
+    "usr/bin/mcli": "a1e263c8b0cadf9b6a19cc9729a7bb6d1eb0329152347955cb4326ca0ebb6845",
+    "usr/bin/silo": "a726827ff5530ebfab52477cb9b67d3d33c2dc3f0a5356cb3188d35c4d574448"
+  },
+  "built_at_utc": "2026-11-15T03:10:14.018710+00:00",
+  "preparation_only": true,
+  "binary_redistribution_approved": false,
+  "project_source_revision": "507461afa04c656e15dbf3a180cedaa9cb7e5f62+uncommitted-validation-inputs",
+  "source_inputs_sha256": "29f7a246c47b0203ae97c19dbac3a336ca71b30f598b7da8a6b04416b0cc9431"
+}

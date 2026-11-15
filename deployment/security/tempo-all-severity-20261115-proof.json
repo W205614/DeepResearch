@@ -1,0 +1,121 @@
+{
+  "schema": "tempo-all-severity-fixed-source-proof-20261115-v1",
+  "status": "verified",
+  "actor": "/root",
+  "actor_kind": "automated_independent_agent",
+  "facts_passed": true,
+  "risk_acceptance": false,
+  "binary_redistribution_approved": false,
+  "current_source_commit": "f317720e7e5191a7f282e8f7d6fe5387ae6015b4",
+  "stable_backport": "b481ae9693f99785691197915066e6306950fa09",
+  "actual_elf_sha256": "a666c55eda757403fe5705288af2fa31c38f6cb3056490c57df1e61f14c78c3b",
+  "actual_module_version": "v0.0.0-20261021135948-f317720e7e51+dirty",
+  "go_version": "go1.27.4",
+  "original_high_review_sha256": "62b34be6f674bcf6ff3ae608fadd821d2f8649995b26d6bd2f7b1a0a2eaa9343",
+  "medium_finding": {
+    "target": "tempo",
+    "id": "CVE-2026-27878",
+    "package": "github.com/grafana/tempo",
+    "version": "v0.0.0-20261021135948-f317720e7e51+dirty",
+    "severity": "MEDIUM",
+    "fixed_version": "1.5.1-0.20260303204923-b13f74291d48"
+  },
+  "ancestry": {
+    "path": "deployment/security/tempo-all-severity-20261115-evidence/backport-ancestry.api-response.json.gz",
+    "ahead_by": 85,
+    "behind_by": 0
+  },
+  "compiled_files_context": {
+    "path": "deployment/security/tempo-all-severity-20261115-evidence/complete-tempo-go-context.json.gz",
+    "raw_sha256": "044ee945ae5459e729fa2ec766268ff2033baa3be54e2878316845ae7b1759d4",
+    "raw_bytes": 15376211
+  },
+  "fixed_complete_source_asts": {
+    "modules/frontend/metrics_query_range_handler.go": {
+      "compiled_package": "github.com/grafana/tempo/modules/frontend",
+      "versions": {
+        "b481ae9693f99785691197915066e6306950fa09": {
+          "path": "deployment/security/tempo-all-severity-20261115-evidence/b481ae9693f99785691197915066e6306950fa09/modules/frontend/metrics_query_range_handler.go.gz",
+          "git_blob": "ff9aa1ba535d0d0b172e3dc338c8f6ac64c9db0c",
+          "sha256": "05e8662e6777980a04c56a9860d7557e99e9a363ab92cf3c1e5cfcd4ffbe5d9b"
+        },
+        "f317720e7e5191a7f282e8f7d6fe5387ae6015b4": {
+          "path": "deployment/security/tempo-all-severity-20261115-evidence/f317720e7e5191a7f282e8f7d6fe5387ae6015b4/modules/frontend/metrics_query_range_handler.go.gz",
+          "git_blob": "839b0d11828a8c8050033cdc77571d6d85439aa6",
+          "sha256": "3948205392801862f56a213aa718efa03d2b7e2a1bcd1a84fd75c1b86ae4cff8"
+        }
+      },
+      "normalized_ast_sha256": "6cbba03fc34c06b2448c2f7a68d783d1f5d26aa3e6bf7d8aafa9f95ae94833ee"
+    },
+    "modules/frontend/metrics_query_range_sharder.go": {
+      "compiled_package": "github.com/grafana/tempo/modules/frontend",
+      "versions": {
+        "b481ae9693f99785691197915066e6306950fa09": {
+          "path": "deployment/security/tempo-all-severity-20261115-evidence/b481ae9693f99785691197915066e6306950fa09/modules/frontend/metrics_query_range_sharder.go.gz",
+          "git_blob": "26b3f164e26733fe82b99f8e39ca91387563a81b",
+          "sha256": "c5f22a54d4d9de00d6934e37b0ce40e802a17ceb4bf1b528ed75012bff4aacca"
+        },
+        "f317720e7e5191a7f282e8f7d6fe5387ae6015b4": {
+          "path": "deployment/security/tempo-all-severity-20261115-evidence/f317720e7e5191a7f282e8f7d6fe5387ae6015b4/modules/frontend/metrics_query_range_sharder.go.gz",
+          "git_blob": "26b3f164e26733fe82b99f8e39ca91387563a81b",
+          "sha256": "c5f22a54d4d9de00d6934e37b0ce40e802a17ceb4bf1b528ed75012bff4aacca"
+        }
+      },
+      "normalized_ast_sha256": "ed669144c285db2867a25c2ba98b445d4fea88435e85c8c3d3ff56d8cc7af432"
+    },
+    "pkg/traceql/engine_metrics.go": {
+      "compiled_package": "github.com/grafana/tempo/pkg/traceql",
+      "versions": {
+        "b481ae9693f99785691197915066e6306950fa09": {
+          "path": "deployment/security/tempo-all-severity-20261115-evidence/b481ae9693f99785691197915066e6306950fa09/pkg/traceql/engine_metrics.go.gz",
+          "git_blob": "51c2dfb6c9ef50c5cd07f357b747694e516142a0",
+          "sha256": "d8e550e84d4c4ac8b29e58939e5ac03a1f645c57b330fb0c3f8e38b5c7600485"
+        },
+        "f317720e7e5191a7f282e8f7d6fe5387ae6015b4": {
+          "path": "deployment/security/tempo-all-severity-20261115-evidence/f317720e7e5191a7f282e8f7d6fe5387ae6015b4/pkg/traceql/engine_metrics.go.gz",
+          "git_blob": "0c921efda92354cb09c29e916021093a12516f39",
+          "sha256": "6fd13d4ab3f4b1bb51ce7b11bbe36227930a16feb72dae3f05ba391e96af0b99"
+        }
+      },
+      "normalized_ast_sha256": "93e0300e1e8d5d7569d30148471de2d4464a99de72c32b5f3d3a97ff93c49ea7"
+    }
+  },
+  "bounded_regressions": {
+    "path": "deployment/security/tempo-all-severity-20261115-evidence/bounded-exemplar-regressions.log.gz",
+    "tests": [
+      "TestCompileMetricsQueryRangeExemplarsSafetyCap",
+      "TestCompileMetricsQueryRangeNonRawExemplarsSafetyCap",
+      "TestNormalizeRequestExemplars",
+      "TestQueryRangeHandlerExemplarNormalization"
+    ]
+  },
+  "ast_comparison": "Official Go parser, comments preserved; token offsets become presence booleans and syntactic ParenExpr wrappers are removed. All other node kinds and fields remain exact.",
+  "official_advisory": "https://grafana.com/security/security-advisories/cve-2026-27878/",
+  "evidence_sha256": {
+    "deployment/security/tempo-all-severity-20261115-evidence/backport-ancestry.api-response.json.gz": "359130e34de496b8301412593c3e7e0314d328c85f1657826f9a5ac492608aa6",
+    "deployment/security/tempo-all-severity-20261115-evidence/complete-tempo-go-context.json.gz": "95eeb2df5426bfef12e4497128f1c3314b0049aefc590971905e40b7ff94d319",
+    "deployment/security/tempo-all-severity-20261115-evidence/CVE-2026-27878.cna.json": "24837a7d73326ab27d3b444513b95bd0bf74fd462d9273fce7701247519bf4e3",
+    "deployment/security/tempo-all-severity-20261115-evidence/fix-commits/b481ae9693f99785691197915066e6306950fa09.api-response.json.gz": "531c23bd2add86ad3bd0cc6c94f01273cdf6264b09a27844da171999c5a8a2a2",
+    "deployment/security/tempo-all-severity-20261115-evidence/fix-commits/b13f74291d489672601a10297f8fbcbf7dd19192.api-response.json.gz": "675690ecf24007205287043c3f7c78f1b172ad9ff02a2529ce15db0a552397ee",
+    "deployment/security/tempo-all-severity-20261115-evidence/fix-commits/3d7c78d438890991df594c20ae2031f8934aba3b.api-response.json.gz": "28986e17ce3ba89bb689750fe591fc90e74a76fa3fc4157c1949f28d2219fe22",
+    "deployment/security/tempo-all-severity-20261115-evidence/fix-commits/e2d51b786aff94de3319c07994c6a5539b121eb5.api-response.json.gz": "c9229c396cc80667f9298ad7f47df1a350a51461f9a7b7b63266300349d9310a",
+    "deployment/security/tempo-all-severity-20261115-evidence/compare_go_ast.go": "07bfa062ca9250ad7fbf8a27bafae94053702e79ba492439b0e3fdd864edf730",
+    "deployment/security/tempo-all-severity-20261115-evidence/b481ae9693f99785691197915066e6306950fa09/modules/frontend/metrics_query_range_handler.go.gz": "91ce0013b136860b2eab6b164bf3f7aecb44b159923ef1e91194fe2a13b249e9",
+    "deployment/security/tempo-all-severity-20261115-evidence/b481ae9693f99785691197915066e6306950fa09/modules/frontend/metrics_query_range_handler.go.api-response.json.gz": "377958ad6c16e530baf7bc025648c00a266ab0ad625a46b85c0a5c4cc652e774",
+    "deployment/security/tempo-all-severity-20261115-evidence/f317720e7e5191a7f282e8f7d6fe5387ae6015b4/modules/frontend/metrics_query_range_handler.go.gz": "e80042645684f463d39ebe3c779b6998d341eef223d3f3f5e2094295035d55e1",
+    "deployment/security/tempo-all-severity-20261115-evidence/f317720e7e5191a7f282e8f7d6fe5387ae6015b4/modules/frontend/metrics_query_range_handler.go.api-response.json.gz": "c2bf6dd1ba239c053e6adb999d0089cf28b0b57fa364bcf8683ab95ec2770495",
+    "deployment/security/tempo-all-severity-20261115-evidence/b481ae9693f99785691197915066e6306950fa09/modules/frontend/metrics_query_range_sharder.go.gz": "a8f20f4ea65a323753626a1c61f6374a17fc2af172e6893cead48c1afa2aab71",
+    "deployment/security/tempo-all-severity-20261115-evidence/b481ae9693f99785691197915066e6306950fa09/modules/frontend/metrics_query_range_sharder.go.api-response.json.gz": "4d14f384f55a9def92390b25e828f777572c8878186fbf93031774c86f293f93",
+    "deployment/security/tempo-all-severity-20261115-evidence/f317720e7e5191a7f282e8f7d6fe5387ae6015b4/modules/frontend/metrics_query_range_sharder.go.gz": "a8f20f4ea65a323753626a1c61f6374a17fc2af172e6893cead48c1afa2aab71",
+    "deployment/security/tempo-all-severity-20261115-evidence/f317720e7e5191a7f282e8f7d6fe5387ae6015b4/modules/frontend/metrics_query_range_sharder.go.api-response.json.gz": "6bc25e9d5b1d4e15fa53fef496817a711768b70d27acc069ad64767faab9bc80",
+    "deployment/security/tempo-all-severity-20261115-evidence/b481ae9693f99785691197915066e6306950fa09/pkg/traceql/engine_metrics.go.gz": "d1c91301f5704d4f8eda1bd6c3291c09ef7b2fa820318f218abb3fa112ea5e03",
+    "deployment/security/tempo-all-severity-20261115-evidence/b481ae9693f99785691197915066e6306950fa09/pkg/traceql/engine_metrics.go.api-response.json.gz": "0e41dd6ee44e791a06a90d748b795159be1c9008f7af0e7db3c597a3b684f0fb",
+    "deployment/security/tempo-all-severity-20261115-evidence/f317720e7e5191a7f282e8f7d6fe5387ae6015b4/pkg/traceql/engine_metrics.go.gz": "64f845e0ce8b7a48b522df302e03538c80a0f5e1e01ded4342d849f0e8a1adf7",
+    "deployment/security/tempo-all-severity-20261115-evidence/f317720e7e5191a7f282e8f7d6fe5387ae6015b4/pkg/traceql/engine_metrics.go.api-response.json.gz": "f9df863c5bc82e1b9a7f3df4c98435322755222827f24dc65711ea7460d21dfc",
+    "deployment/security/tempo-all-severity-20261115-evidence/bounded-exemplar-regressions.log.gz": "8b6ce84db916d8f6848d434e61fc98fc023507a7463d01c7aa23c9e9a7d7261f",
+    "deployment/security/tempo-all-severity-20261115-evidence/prepare_source.py": "1d790f90de963e71541445579fc2953e172a8807967ab17a02f94aedadec0cd1"
+  },
+  "raw_reports_modified": false,
+  "observed_at_utc": "2026-11-15T04:27:58.592516+00:00",
+  "technical_conclusion": "The exact bound Go1.27.4 Tempo ELF retains the upstream stable exemplar normalization and safety-cap fix. Independently rebuilt official-parser AST comparison of three complete compiled files, all official Git blob payloads, original full readonly context, strict backport ancestry and four real upstream regression passes verified. No version-only approval or raw rewriting."
+}

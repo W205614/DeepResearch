@@ -1,0 +1,61 @@
+{
+  "profile": "maintained-telemetry",
+  "source_inputs": {
+    "deployment/vendors/milvus/modules/client/go.mod": "3747aed71c48e5b7fcbdd69ff3e78b981c2149fd7588a04686897bc644ff2491",
+    "deployment/vendors/milvus/modules/client/go.sum": "249eea0730bf64761eb1a10ecd737cda0ca0a1f1b2ab8d3e4e1c8ff48c7e82d8",
+    "deployment/vendors/milvus/modules/pkg/go.mod": "a8566db8dcef5824b08ae080cb4c8ea91f01ac056cafe4e1925382b5582bdad9",
+    "deployment/vendors/milvus/modules/pkg/go.sum": "f7a7c0003b933e63e8cc193fced8e0cc9937499797725210402f2c686f2c8f46",
+    "deployment/vendors/milvus/modules/examples/telemetry_demo/go.mod": "768566161064465ed8a26d5b7976fb27cbdc8e03828a5f94fb5463fe16f77904",
+    "deployment/vendors/milvus/modules/examples/telemetry_demo/go.sum": "3860b21e6d8176d093d8ddebf818fa2a98db61334cb7f4ad532697667e1e3f35",
+    "tests/fixtures/milvus-telemetry-example-20261110/main.go.txt": "3e27f310f3b6671146013f6d972870af164100745f4c78b4e138d02f7cc78df1",
+    "tests/fixtures/milvus-telemetry-example-20261110/multi_database_demo.go.txt": "976343bf9cf4e83b14a65be9eb2daf103715e530ea3df3fbeda167c086b3de6c",
+    "tests/fixtures/milvus-telemetry-example-20261110/webui_demo.go.txt": "e6057592d415e0e5bda76f2b618a89afbc2d5a0f145aa3a00a1cb0670d75f7af",
+    "deployment/security/code-scanning-review-20261110-evidence/telemetry-example/telemetry-maintained.patch": "baf52637959b5d14ea110a0d63df38e8b1e75ce0ff5ca94eb08f9f7682a31620",
+    "deployment/vendors/milvus/source.lock.json": "5df4a28e4d707f525ccf2376648f1a774079909bc133024caaf4228c96391660",
+    "deployment/security/source-contexts-20261115/telemetry-maintained-current.patch": "6d168c6b4a9acab6db8e072f4c75cb349463573fc859bc52cd53fdd4a6153f98"
+  },
+  "source_provenance": {
+    "source_commit": "328df0cd2f323c2d3c50cef91bfc9f2c412bcb09",
+    "source_archive_sha256": "1dd3a0ff960af532f04172b2aebdb9716b1244cad2fb81781b27641f67216cf9",
+    "maintained_go_source_sha256": {
+      "main.go": "233c11c75b0aebba23072c687af53c8a6f35ff484dcec63c13984ea81babcae1",
+      "multi_database_demo.go": "9f9e48392cd7e92db9c0b8b7ff0ee6e076c14ded4a73f8f09ce0eb3bcefb6886",
+      "webui_demo.go": "9ad1f57e63d0614035604d400300525df5016587cc603187be12445d8e6dc418"
+    },
+    "applied_go_only_patch_sha256": "baf52637959b5d14ea110a0d63df38e8b1e75ce0ff5ca94eb08f9f7682a31620",
+    "current_maintained_patch": {
+      "path": "deployment/security/source-contexts-20261115/telemetry-maintained-current.patch",
+      "sha256": "6d168c6b4a9acab6db8e072f4c75cb349463573fc859bc52cd53fdd4a6153f98",
+      "applies_to_current_original_snapshots": true,
+      "exact_output_matches_actual_current_graph_and_three_built_examples": true
+    }
+  },
+  "command": [
+    "go",
+    "list",
+    "-deps",
+    "-json",
+    "-mod=readonly",
+    "-buildvcs=false",
+    "-test",
+    "./..."
+  ],
+  "environment": {
+    "GOOS": "linux",
+    "GOARCH": "amd64",
+    "GOAMD64": "v1",
+    "CGO_ENABLED": "0",
+    "GOWORK": "off",
+    "GOTOOLCHAIN": "local"
+  },
+  "compiler": "go version go1.26.11 windows/amd64",
+  "exit_code": 0,
+  "raw_sha256": "9f372501fea887c146bd1293d7f026cb8ae6727d9a82607eeaf8d86796564012",
+  "raw_bytes": 1396147,
+  "projection_sha256": "3c56e632dc3b4684949a07c3d44b0a59831a25841f0619357dda9bfecd264af9",
+  "projection_raw_sha256": "68e45641ef24ff671dbeae8d32312119956e72e8ddf210921bb9070ab4071e1f",
+  "package_count": 418,
+  "raw_graph_modified": false,
+  "projection_preserves_all_packages_imports_and_module_identities": true,
+  "projection_entry_metadata_preserved": true
+}

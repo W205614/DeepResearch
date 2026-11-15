@@ -1,15 +1,145 @@
 {
   "actor": "/root",
   "actor_kind": "automated_independent_agent",
-  "observed_at_utc": "2026-11-14T15:23:55Z",
-  "subject_sha256": "88be5212734567660d043c608f572aa396fbcf695f291968855f2685713af25a",
+  "observed_at_utc": "2026-11-15T06:51:12.814943+00:00",
+  "subject_sha256": "a3ee5abd9643c4a2a2ddde1ab14aa8c81465c763b97fddc06866d794b7334e6d",
   "facts_passed": true,
   "risk_acceptance": false,
   "binary_redistribution_approved": false,
-  "evidence_sha256_verified": 160,
-  "migration_facts_verified": 14,
-  "otel_moved_targets": 12,
-  "otel_unchanged_targets": 2,
-  "image_scan_rows_unchanged": true,
-  "boundary": "独立核对：14 个 ELF 的 otel-v1.47.0 迁移语义（12 变/2 未变）、镜像扫描 40 行不变、evidence_sha256 全部一致。"
+  "actual_new_image_independently_exported": "sha256:a54c4c15485f299c63406cb39d69606a99e4ba809a36ec5cb33d998fa09ae466",
+  "actual_portable_config_digest": "sha256:9cdc0bb50a13f66b07fcfc4ec3427af7e193be7a551909d41a0371b1ca2f7f4f",
+  "complete_actual_runtime_manifest_equal_earlier_independent_export": true,
+  "actual14_ELF_SHA_equal_previously_independently_reparsed": true,
+  "source_and_evidence_hashes_verified": 178,
+  "current_context_package_counts": {
+    "alertmanager": 742,
+    "amtool": 708,
+    "etcd": 572,
+    "etcdctl": 496,
+    "etcdutl": 480,
+    "loki": 2180,
+    "maintained-telemetry": 418,
+    "milvus_main": 2151,
+    "milvus_parser": 821,
+    "otel": 871,
+    "prometheus": 1521,
+    "promtool": 1371,
+    "standalone-14": 605,
+    "standalone-22": 671,
+    "standalone-23": 466,
+    "standalone-48": 612,
+    "storage-bootstrap": 337,
+    "tempo": 2077,
+    "minio_silo": 1413,
+    "minio_mcli": 616
+  },
+  "complete_inventory_migration_verified": {
+    "prior_go_modules": 1720,
+    "current_go_modules": 1730,
+    "newly_linked_modules": [
+      {
+        "target": "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64",
+        "module": "go.opentelemetry.io/otel/log",
+        "version": "v1.47.0",
+        "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+      },
+      {
+        "target": "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64",
+        "module": "go.opentelemetry.io/otel/log",
+        "version": "v1.47.0",
+        "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+      },
+      {
+        "target": "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64",
+        "module": "go.opentelemetry.io/otel/log",
+        "version": "v1.47.0",
+        "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+      },
+      {
+        "target": "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64",
+        "module": "go.opentelemetry.io/otel/log",
+        "version": "v1.47.0",
+        "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+      },
+      {
+        "target": "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+        "module": "go.opentelemetry.io/otel/log",
+        "version": "v1.47.0",
+        "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+      },
+      {
+        "target": "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64",
+        "module": "go.opentelemetry.io/otel/log",
+        "version": "v1.47.0",
+        "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+      },
+      {
+        "target": "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64",
+        "module": "go.opentelemetry.io/otel/log",
+        "version": "v1.47.0",
+        "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+      },
+      {
+        "target": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+        "module": "go.opentelemetry.io/otel/log",
+        "version": "v1.47.0",
+        "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+      },
+      {
+        "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+        "module": "go.opentelemetry.io/otel/log",
+        "version": "v1.47.0",
+        "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+      },
+      {
+        "target": "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64",
+        "module": "go.opentelemetry.io/otel/log",
+        "version": "v1.47.0",
+        "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+      }
+    ],
+    "non_go_inventory_unchanged": true,
+    "native_module_identity_and_h1_coverage_verified": true,
+    "trivy_changed_inventory_targets": [
+      "usr/share/grafana/bin/grafana",
+      "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64",
+      "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64",
+      "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64",
+      "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64",
+      "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+      "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+      "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64",
+      "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64",
+      "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+      "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64"
+    ],
+    "report_sha256": {
+      "raw-trivy.private.json": "c78b0aa47de42d335e28b4cb8d1bf1f655e8cca221224b143767b50b17f1b67e",
+      "full-syft.json": "88199d7d61ff5e8d599ba42429d3f21873c6fb00930d38061ef766a10646d877",
+      "full-grype.json": "5e0d4a310b1bf69010175be777c19d38d5e0ee307aa5b5d6757fc9a140e31146",
+      "build-receipt.json": "447fe9a67097a495ab88e244009c90b2b017d799fe7513cafbcdaf99340217f8",
+      "image-inspect.json": "e6303c842e2bcd112eedd66badb6ef60df9e939ee9ee5cf75f94a9ffcea5bd83",
+      "collector.json": "67377c5bf378c9fdbf557af867eb9e060681977bbbaa9eb6889596da6f4c3b3b"
+    },
+    "collection_preparation_only": true,
+    "all_severity_findings": {
+      "Trivy": 40,
+      "Grype": 10
+    },
+    "raw_reports_modified": false
+  },
+  "full_current_validate_profile_and_fresh_assess_scans_passed": true,
+  "current_source_findings": 103,
+  "source_targets": 80,
+  "current_proofs": 71,
+  "historical_otel_source_findings": 29,
+  "minio_additional_source_findings": 3,
+  "actual_runtime_changes_from_original": 97,
+  "native_migrations": 14,
+  "limitations": [
+    "Facts were collected with preparation_only:true; normal approved build/fresh scans/full main still must pass.",
+    "Source diagnostic is dirty evidence, not a final clean-commit scan or CI success.",
+    "Raw Trivy40/Grype10 findings retained; no general library exemption or third-party binary redistribution approval."
+  ]
 }

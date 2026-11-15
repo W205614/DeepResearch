@@ -115,10 +115,10 @@ def test_observability_prepares_source_profile_before_start_and_never_reuses_old
         arguments.append('--no-build')
     assert local.main(arguments) == 0
     assert len(calls) == 3
-    assert calls[0][:2] == [local.sys.executable, str(local.ROOT / 'scripts/build_minio_os_20261113.py')]
+    assert calls[0][:2] == [local.sys.executable, str(local.ROOT / 'scripts/build_minio_otel_20261115.py')]
     assert ('--no-build' in calls[0]) is no_build
     assert '--prepare' not in calls[0] and '--artifact' not in calls[0]
-    assert calls[1][:4] == [local.sys.executable, str(local.ROOT / 'scripts/build_go_stdlib_security_20261112.py'),
+    assert calls[1][:4] == [local.sys.executable, str(local.ROOT / 'scripts/build_go_otel_security_20261114.py'),
                             '--artifact', 'grafana']
     assert ('--no-build' in calls[1]) is no_build
     assert calls[2][:2] == ['docker', 'compose'] and 'up' in calls[2]
@@ -141,7 +141,7 @@ def test_missing_or_changed_source_image_blocks_local_start_without_old_artifact
 
     def run(command, **kwargs):
         calls.append(command)
-        if str(local.ROOT / 'scripts/build_go_stdlib_security_20261112.py') in command and 'grafana' in command:
+        if str(local.ROOT / 'scripts/build_go_otel_security_20261114.py') in command and 'grafana' in command:
             raise subprocess.CalledProcessError(1, command)
 
     monkeypatch.setattr(local.subprocess, 'run', run)
@@ -157,7 +157,7 @@ def test_minio_native_profile_failure_blocks_default_start_without_old_go_fallba
 
     def run(command, **kwargs):
         calls.append(command)
-        assert command[:2] == [local.sys.executable, str(local.ROOT / 'scripts/build_minio_os_20261113.py')]
+        assert command[:2] == [local.sys.executable, str(local.ROOT / 'scripts/build_minio_otel_20261115.py')]
         assert ('--no-build' in command) is no_build
         assert '--prepare' not in command and kwargs['check'] is True
         raise subprocess.CalledProcessError(1, command)

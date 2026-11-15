@@ -28,12 +28,24 @@ def test_final_image_copies_filtered_runtime_without_inheriting_sample_key_layer
     assert 'test -f /runtime-root/milvus/configs/milvus.yaml' in prune
     final = lines[lines.index('FROM scratch') + 1:]
     copies = [line for line in final if line.startswith('COPY ')]
-    assert copies == [
+    assert copies[:5] == [
         'COPY --from=runtime-package /runtime-root/ /',
         'COPY --chmod=0755 --from=build /out/libmilvus-planparser.so /milvus/lib/libmilvus-planparser.so',
         'COPY --from=build /out/milvus /milvus/bin/milvus',
+        'COPY --from=rdkafka-build /out/rdkafka/lib/librdkafka.so.1 /milvus/lib/librdkafka.so',
+        'COPY --from=rdkafka-build /out/rdkafka/lib/librdkafka.so.1 /milvus/lib/librdkafka.so.1',
     ]
-    assert not any(line.startswith(('ADD ', 'RUN ')) for line in final)
+    assert len(copies) == 6
+    assert shlex.split(copies[5]) == [
+        'COPY', '--chmod=0644',
+        *['deployment/vendors/milvus/rdkafka-20261115/' + name for name in (
+            'librdkafka-v2.6.1.tar.gz', 'LICENSES.txt', 'source.lock.json', 'probe.c',
+            'preserve-no-plugins.patch', 'tag.api-response.json', 'commit.api-response.json')],
+        '/usr/share/deepresearch/milvus-rdkafka/',
+    ]
+    assert not any(line.startswith('ADD ') for line in final)
+    assert [line for line in final if line.startswith('RUN ')] == [
+        'RUN chmod 0755 /usr/share/deepresearch /usr/share/deepresearch/milvus-rdkafka']
 
 
 def test_repackaged_runtime_retains_exact_fixed_image_startup_contract():

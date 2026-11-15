@@ -1,0 +1,67 @@
+{
+  "old_profile": "deployment/security/agent-record-metadata-profile-20261113.json",
+  "old_profile_sha256": "737170a810dabc61edb9bcedfd02b949f9f447b746051cb828f4ab439170dd6b",
+  "old_findings": 94,
+  "new_findings": 92,
+  "removed_exact_old_soupsieve_rows": [
+    {
+      "class": "lang-pkgs",
+      "data_source": {
+        "ID": "ghsa",
+        "Name": "GitHub Security Advisory pip",
+        "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Apip"
+      },
+      "id": "CVE-2026-126190",
+      "package": "soupsieve",
+      "package_id": null,
+      "purl": "pkg:pypi/soupsieve@2.9.2",
+      "severity": "HIGH",
+      "status": "fixed",
+      "type": "python-pkg",
+      "version": "2.9.2"
+    },
+    {
+      "class": "lang-pkgs",
+      "data_source": {
+        "ID": "ghsa",
+        "Name": "GitHub Security Advisory pip",
+        "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Apip"
+      },
+      "id": "CVE-2026-126192",
+      "package": "soupsieve",
+      "package_id": null,
+      "purl": "pkg:pypi/soupsieve@2.9.2",
+      "severity": "MEDIUM",
+      "status": "fixed",
+      "type": "python-pkg",
+      "version": "2.9.2"
+    }
+  ],
+  "new_unreviewed_rows": [],
+  "other92_complete_tuples_retained": true,
+  "removed_package": {
+    "architecture": null,
+    "class": "lang-pkgs",
+    "file_path": "opt/venv/lib/python3.11/site-packages/soupsieve-2.9.2.dist-info/METADATA",
+    "name": "soupsieve",
+    "purl": "pkg:pypi/soupsieve@2.9.2",
+    "source": null,
+    "source_version": null,
+    "type": "python-pkg",
+    "version": "2.9.2"
+  },
+  "added_package": {
+    "architecture": null,
+    "class": "lang-pkgs",
+    "file_path": "opt/venv/lib/python3.11/site-packages/soupsieve-4.1.dist-info/METADATA",
+    "name": "soupsieve",
+    "purl": "pkg:pypi/soupsieve@4.1",
+    "source": null,
+    "source_version": null,
+    "type": "python-pkg",
+    "version": "4.1"
+  },
+  "raw_scan_sha256": "2523d72dca39578187c7c7ce7ae74105d12cd60cadb77f611c8c1c6a14a466f9",
+  "raw_report_modified": false,
+  "scanner_secrets": 0
+}

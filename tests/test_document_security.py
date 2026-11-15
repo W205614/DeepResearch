@@ -11,13 +11,14 @@ from backend.services.runtime import Runtime
 
 
 async def wait_for_status(client, document_id, expected):
+    row = None
     for _ in range(80):
         rows = (await client.get("/api/documents")).json()
         row = next((item for item in rows if item["id"] == document_id), None)
         if row and row["status"] == expected:
             return row
         await asyncio.sleep(0.02)
-    raise AssertionError(f"document {document_id} did not reach {expected}")
+    raise AssertionError(f"document {document_id} did not reach {expected}; last state: {row}")
 
 
 async def test_clean_upload_moves_out_of_quarantine_and_is_indexed(api_client, monkeypatch):
@@ -89,13 +90,19 @@ def test_long_unpunctuated_text_keeps_its_tail_in_the_index():
 
 
 async def test_image_upload_uses_vision_extraction_before_indexing(api_client):
-    _, client = api_client
+    app, client = api_client
     from PIL import Image
     image_file = io.BytesIO()
     Image.new("RGB", (32, 32), "white").save(image_file, format="PNG")
     image = image_file.getvalue()
     response = await client.post("/api/documents", files={"file": ("chart.png", image, "image/png")})
     assert response.status_code == 202, response.text
+    uploaded = response.json()
+    key = f"document:{uploaded['id']}:{uploaded['index_version']}"
+    # Native-parser startup follows recovery's deadline; finished jobs are removed.
+    task = app.state.runtime.tasks.get(key)
+    if task is not None:
+        await asyncio.wait_for(task, 20)
     document = await wait_for_status(client, response.json()["id"], "ready")
     chunks = (await client.get(f"/api/documents/{document['id']}/chunks")).json()
     assert chunks and "图片解析" in chunks[0]["text"]

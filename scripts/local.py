@@ -91,9 +91,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.action == "check":
         print("Local configuration and Compose validated; no provider request sent.")
         return 0
-    builders = [[sys.executable, str(ROOT / 'scripts/build_minio_os_20261113.py')]]
+    builders = [[sys.executable, str(ROOT / 'scripts/build_minio_otel_20261115.py')]]
     if args.observability:
-        builders.append([sys.executable, str(ROOT / 'scripts/build_go_stdlib_security_20261112.py'),
+        builders.append([sys.executable, str(ROOT / 'scripts/build_go_otel_security_20261114.py'),
                          '--artifact', 'grafana'])
     for candidate in builders:
         if args.no_build:

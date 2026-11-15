@@ -18,8 +18,8 @@ SOURCE_GRAFANA = 'deepresearch-grafana-source:20261114'
 SOURCE_PROFILE = 'grafana-source-20261114'
 SOURCE_DOCKERFILE = 'deployment/docker/Dockerfile.grafana-20261114'
 SOURCE_PROFILE_PATH = Path('deployment/security/grafana-source-20261114-profile.json')
-SOURCE_MINIO = 'deepresearch-minio-source:20261113'
-MINIO_PROFILE = 'minio-os-source-20261113'
+SOURCE_MINIO = 'deepresearch-minio-source:20261115'
+MINIO_PROFILE = 'minio-otel-source-20261115'
 
 
 def load_grafana_binding(root):
@@ -52,7 +52,7 @@ def grafana_selection(root):
 
 
 def load_minio_source_profile(root):
-    from scripts import check_minio_os_20261113 as source
+    from scripts import check_minio_otel_20261115 as source
     profile = source.load_profile(root)
     if (profile['profile'] != MINIO_PROFILE or profile['image'] != SOURCE_MINIO
             or profile['context'] != '.' or profile['dockerfile'] != source.DOCKERFILE

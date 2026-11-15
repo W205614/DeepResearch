@@ -1,0 +1,63 @@
+{
+  "profile": "standalone-22",
+  "source_inputs": {
+    "deployment/vendors/etcd/modules/go.mod": "39bc76a84769ce12e4be68d4f87bbdd294182e4a7fe5df371776973592a1c7ba",
+    "deployment/vendors/etcd/modules/go.sum": "8e2e990bcf84d06cb7cdfbd282ac68d0bbe293050131e7865f03a63399ccb7d1",
+    "deployment/vendors/etcd/modules/api/go.mod": "f1ae87158486bceb31739eaae6845adc2a882068d0ad5356772e9e81d17935d1",
+    "deployment/vendors/etcd/modules/api/go.sum": "a83b4c5c0aa44198f98a162b1d2321e90e146425430c2d726056fe2e3f354919",
+    "deployment/vendors/etcd/modules/client/pkg/go.mod": "fd971a142620db6515d05f72b9412f189e76eba58db1c6d4b5abef3eca796fb9",
+    "deployment/vendors/etcd/modules/client/pkg/go.sum": "d10cf8b0c605f5d007b0f11dd84b402f1bb319a6fb6487a5bd64d40af02a4bc5",
+    "deployment/vendors/etcd/modules/client/v2/go.mod": "c36da6df7e88e01542f8fbb6a78c857dcd9e2d2158cab9140175f6a125aefbb2",
+    "deployment/vendors/etcd/modules/client/v2/go.sum": "01dc4c3d74d032ea6d87c5a9fc85ffbad4252f7f2d5dd75c0689a7110a71da35",
+    "deployment/vendors/etcd/modules/client/v3/go.mod": "b2950fc5adc6c8fd281c21ab47b8328057a184128b9548393f09f5151d2ce9f2",
+    "deployment/vendors/etcd/modules/client/v3/go.sum": "5755292d69d779ce82d7b36e3990eacfbcddf161d65f34fa014d21714e8739be",
+    "deployment/vendors/etcd/modules/etcdctl/go.mod": "3991a46beaa88d4f5875386ea28c648b3985e73b95dc3e07f8470a5661353bbd",
+    "deployment/vendors/etcd/modules/etcdctl/go.sum": "57f49becda16cdbc234390b5fda07b205e15eb31225fdc104e4c6d73118b2a19",
+    "deployment/vendors/etcd/modules/etcdutl/go.mod": "f116e43f886813153b900d16c5b2b074f40d55d6ee64bf1ef76c1b6a5c32e0ad",
+    "deployment/vendors/etcd/modules/etcdutl/go.sum": "492e728436708234e956dea4fca650768679b485db199cf1ad6f0b5b6eb580cd",
+    "deployment/vendors/etcd/modules/pkg/go.mod": "0f0d1c90e1660c282c47e03d43892e9b49961f2b3d2d6c0a4d02febe53c20320",
+    "deployment/vendors/etcd/modules/pkg/go.sum": "f8b3a2f9642b8ff56eea5733ad935b8bfa14d850bff40aa6700ed9b3810827bc",
+    "deployment/vendors/etcd/modules/raft/go.mod": "089247a6557eeb928b41f4cf526b7d376ef5b478b61cf106057ea9e30e60cd38",
+    "deployment/vendors/etcd/modules/raft/go.sum": "38f9d084c00dc4e7dfd2d42fa6be0a332c33c6de6a1a75fea1260e84f58f6807",
+    "deployment/vendors/etcd/modules/server/go.mod": "53f0a08dd39167adf9ada52797fbb6354d2f3c4ff5f1f6fbc60d1b7ecb2bea16",
+    "deployment/vendors/etcd/modules/server/go.sum": "11a3effc2320151f198b1e62479f7961d86dfe27aa4c7ecbc1468834ec44b180",
+    "deployment/vendors/etcd/modules/tests/go.mod": "4f2010b036cc105220b7a6fc287aa3cf5ea8c5027b9972014d22dab04f507127",
+    "deployment/vendors/etcd/modules/tests/go.sum": "e19f45c118a5cb8c7bec13028de70978fd12e09ce2fb492c583924fb83ff99f1",
+    "deployment/vendors/etcd/modules/tools/mod/go.mod": "666d2260d5a8a8c50cfdcb877f7e69d7fa1a759b89404abebe81f1f377a41d3b",
+    "deployment/vendors/etcd/modules/tools/mod/go.sum": "3b0e20d17bf2b30c4f89ac54df373c5b2170998970155be9259fdf80164cda1a",
+    "deployment/vendors/etcd/source.lock.json": "57a9a7bf50f9116951c2de2c6aab4b12ef4ed6fcd200cb0c062db3d25c850cc6",
+    "deployment/docker/Dockerfile.etcd": "cd2010d16afc04b87cbc54929a638a53613cb96caf08d05571e438b8f19fdc54"
+  },
+  "source_provenance": {
+    "archive_sha256": "6d575a3fbeece5230290314d74f5c93dbb53ee3bcb564465b63cbea673740805",
+    "commit": "38e57443c51fc9a3cc6a943fa8ed10381f66ce5c"
+  },
+  "command": [
+    "go",
+    "list",
+    "-deps",
+    "-json",
+    "-mod=readonly",
+    "-buildvcs=false",
+    "-test",
+    "./..."
+  ],
+  "environment": {
+    "GOOS": "linux",
+    "GOARCH": "amd64",
+    "GOAMD64": "v1",
+    "CGO_ENABLED": "0",
+    "GOWORK": "off",
+    "GOTOOLCHAIN": "go1.27.4"
+  },
+  "compiler": "go version go1.27.4 windows/amd64",
+  "exit_code": 0,
+  "raw_sha256": "bb395f6276a7743bf76e02d30e066304076d4e05186a6c921745ab076691c565",
+  "raw_bytes": 3856594,
+  "projection_sha256": "e4a5a815414aa1c4669fca0038f461c283c1901625c2033c1de81b3254e4f762",
+  "projection_raw_sha256": "0bbc209fa14618cafd8ff37751a82d8ed66176cbd0195cd67fece9da28b2bf47",
+  "package_count": 671,
+  "raw_graph_modified": false,
+  "projection_preserves_all_packages_imports_and_module_identities": true,
+  "projection_entry_metadata_preserved": true
+}

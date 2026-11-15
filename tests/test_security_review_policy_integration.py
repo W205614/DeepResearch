@@ -32,15 +32,25 @@ LOADERS = {
 
 
 @pytest.mark.parametrize('consumer', LOADERS)
-def test_unchanged_real_subject_does_not_expire_by_date(consumer):
-    assert LOADERS[consumer]()
+def test_unchanged_real_subject_does_not_expire_by_date(consumer, historical_grafana_candidate_source_root):
+    if consumer == 'current-source2':
+        assert source.load_review(historical_grafana_candidate_source_root, FUTURE)
+    elif consumer == 'historical-exact28-grafana':
+        assert candidate.load_request(historical_grafana_candidate_source_root, now=FUTURE)
+    else:
+        assert LOADERS[consumer]()
 
 
 @pytest.mark.parametrize('consumer', LOADERS)
-def test_real_consumer_requires_the_exact_human_amendment(consumer, monkeypatch):
+def test_real_consumer_requires_the_exact_human_amendment(consumer, monkeypatch, historical_grafana_candidate_source_root):
     monkeypatch.setattr(policy, 'POLICY_SHA256', 'f' * 64)
     with pytest.raises(ValueError, match='review policy bytes changed'):
-        LOADERS[consumer]()
+        if consumer == 'current-source2':
+            source.load_review(historical_grafana_candidate_source_root, FUTURE)
+        elif consumer == 'historical-exact28-grafana':
+            candidate.load_request(historical_grafana_candidate_source_root, now=FUTURE)
+        else:
+            LOADERS[consumer]()
 
 
 def test_legacy_selection_cannot_inherit_the_new_maintenance_controls():

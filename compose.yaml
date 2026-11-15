@@ -272,8 +272,8 @@ services:
   minio:
     <<: *service-defaults
     platform: linux/amd64
-    image: deepresearch-minio-source:20261113
-    x-deepresearch-source-build: minio-os-source-20261113
+    image: deepresearch-minio-source:20261115
+    x-deepresearch-source-build: minio-otel-source-20261115
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-deepresearch}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in .env}
@@ -291,7 +291,7 @@ services:
     networks: [index-store, retrieval]
   milvus:
     <<: *service-defaults
-    image: dr-vendor-milvus:3.0.3-go1.26.10-jose4.1.6-apt2.4.15-20261105
+    image: dr-vendor-milvus:3.0.3-go1.26.11-sasl-dynamic-os-20261115
     platform: linux/amd64
     build:
       context: .
@@ -316,7 +316,7 @@ services:
       storage-init:
         condition: service_completed_successfully
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      test: ["CMD", "curl", "--noproxy", "*", "-f", "http://localhost:9091/healthz"]
       interval: 15s
       timeout: 10s
       start_period: 90s

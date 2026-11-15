@@ -18,18 +18,18 @@ services:
     healthcheck: {test: [CMD, etcdctl, endpoint, health], interval: 3s, timeout: 3s, retries: 30}
   minio:
     platform: linux/amd64
-    image: deepresearch-minio-source:20261113
+    image: deepresearch-minio-source:20261115
     environment: {MINIO_ROOT_USER: deepresearch, MINIO_ROOT_PASSWORD: verification-only}
     command: [silo, server, /data]
     healthcheck: {test: [CMD, silo, healthcheck, --url, 'http://localhost:9000', --timeout, 3s, live], interval: 3s, timeout: 5s, retries: 30}
   milvus:
-    image: dr-vendor-milvus:3.0.3-go1.26.10-jose4.1.6-apt2.4.15-20261105
+    image: dr-vendor-milvus:3.0.3-go1.26.11-sasl-dynamic-os-20261115
     platform: linux/amd64
     build: {context: ., dockerfile: Dockerfile.milvus}
     command: [milvus, run, standalone]
     environment: {ETCD_ENDPOINTS: 'etcd:2379', MINIO_ADDRESS: 'minio:9000', MINIO_REGION: us-east-1, MINIO_ACCESS_KEY_ID: deepresearch, MINIO_SECRET_ACCESS_KEY: verification-only}
     depends_on: {etcd: {condition: service_healthy}, minio: {condition: service_healthy}}
-    healthcheck: {test: [CMD, curl, -f, http://localhost:9091/healthz], interval: 5s, timeout: 5s, retries: 40, start_period: 30s}
+    healthcheck: {test: [CMD, curl, --noproxy, '*', -f, http://localhost:9091/healthz], interval: 5s, timeout: 5s, retries: 40, start_period: 30s}
   clamav:
     image: clamav/clamav:1.4.6_base@sha256:e73991068f2037e10cf15669dd3b48c24345658f5488430746b414c0f761270f
     platform: linux/amd64

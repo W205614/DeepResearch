@@ -1,0 +1,48 @@
+{
+  "profile": "prometheus",
+  "source_inputs": {
+    "deployment/vendors/prometheus/go.mod": "9913c8f3516875d942c94026721694fa5c5a2bedc5fbc931ee5137a925a167aa",
+    "deployment/vendors/prometheus/go.sum": "b72409f76d365e14dc3a50227076050d3e5d8f59c2e78080cba4cc71ca765c27",
+    "deployment/vendors/prometheus/source.lock.json": "ed6580cfb10971b80ecb05252dff4a91ffadb91334baadfb046235972bec7aaf",
+    "deployment/docker/Dockerfile.prometheus": "f20e36c26de4cf64116d7c3bd59454897d7bb059a8d88ace59bf5f9c373e6064"
+  },
+  "source_provenance": {
+    "Path": "github.com/prometheus/prometheus",
+    "Version": "v0.315.1",
+    "Sum": "h1:ZXaNKyUO5szJhhw7gKiP6b2jpx1QkS0S3CI1R1bPqIA=",
+    "GoModSum": "h1:6ISUXTjRxj9U2d8ssng8khR1b2dDJ+MpftZD190149I=",
+    "Origin": {
+      "VCS": "git",
+      "Hash": "bae3eced0a5369e050e83ea73bc381d7c4b1a719"
+    },
+    "ui_sha256": "adf30f35abf0d23ffd25616afe75d1966a7ceb18ddad4161fe8ad76e28f2b48f"
+  },
+  "command": [
+    "go",
+    "list",
+    "-deps",
+    "-json",
+    "-mod=readonly",
+    "-buildvcs=false",
+    "-tags=netgo,builtinassets",
+    "./cmd/prometheus"
+  ],
+  "environment": {
+    "GOOS": "linux",
+    "GOARCH": "amd64",
+    "GOAMD64": "v1",
+    "CGO_ENABLED": "0",
+    "GOWORK": "off",
+    "GOTOOLCHAIN": "go1.27.4"
+  },
+  "compiler": "go version go1.27.4 windows/amd64",
+  "exit_code": 0,
+  "raw_sha256": "31cd93286017f3dc821383265c9e85b9b9c532afb532b3cfd7a060b1872f10f7",
+  "raw_bytes": 9496545,
+  "projection_sha256": "5e5421be8780918d7a51f971aa85d7e2dd0970c22a760b97cba4d3da7793197e",
+  "projection_raw_sha256": "1999e64ab2861b1a870415878cab33067e94683a9f0da24bf4c2a8ba57a7a1db",
+  "package_count": 1521,
+  "raw_graph_modified": false,
+  "projection_preserves_all_packages_imports_and_module_identities": true,
+  "projection_entry_metadata_preserved": true
+}

@@ -13,7 +13,9 @@ from scripts import check_agent_full_scope as gate
 
 
 @pytest.fixture(params=[name for name in gate.PROFILE_NAMES if name != gate.PREVIOUS_SOUP_PROFILE_NAME])
-def reviewed_inputs(request):
+def reviewed_inputs(request, monkeypatch, retained_agent_record_root):
+    if request.param == gate.SOUP_PROFILE_NAME:
+        monkeypatch.setattr(gate, 'ROOT', retained_agent_record_root)
     profile = gate.load_profile(request.param)
     now = datetime(2026, 11, 10, 12, tzinfo=timezone.utc)
     config = copy.deepcopy(profile["runtime_config"])

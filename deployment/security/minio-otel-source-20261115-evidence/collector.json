@@ -1,0 +1,124 @@
+{
+  "operational_collection": true,
+  "security_gate_claim": false,
+  "binary_redistribution_approved": false,
+  "database": {
+    "stage": "after-complete-minio-native-scan",
+    "identity": "immutable-archive-controlled-import",
+    "distribution": {
+      "url": "https://grype.anchore.io/databases/v6/latest.json",
+      "response_sha256": "55713fa83db38dc2eaf3b343c673945ed89dffd987c90900f531a9876aa7f6bf",
+      "selected_archive": "https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-11-14T00:20:33Z_1794637165.tar.zst?checksum=sha256%3A762b01ba9c79e6a250bd73f11ef62fbf44539ee8e08e043d80df4aaad3afc2aa"
+    },
+    "snapshot": {
+      "url": "https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-11-14T00:20:33Z_1794637165.tar.zst?checksum=sha256%3A762b01ba9c79e6a250bd73f11ef62fbf44539ee8e08e043d80df4aaad3afc2aa",
+      "archive_sha256": "762b01ba9c79e6a250bd73f11ef62fbf44539ee8e08e043d80df4aaad3afc2aa",
+      "schema": "v6.1.10",
+      "built": "2026-11-14T06:19:25Z",
+      "max_snapshot_age_days": 7
+    },
+    "historical_hydrated_reference": {
+      "sha256": "1d0367b7e969624d3c6a66f9f39118a99b5dbd99622a85a97f3c928c31e588a4",
+      "bytes": 3344613376,
+      "role": "historical observation, not the derived-byte gate"
+    },
+    "import_tool": {
+      "path": "E:\\project\\DeepResearch\\.cache\\native-jvm\\tools\\grype.exe",
+      "sha256": "4f366a6f8ed46f97280e14ded6acb8711ac49744f99c09214f5e676f34a16ecb"
+    },
+    "fresh_cache": "E:\\project\\DeepResearch\\.cache\\release-followup-20261113\\security-minio\\grype-own-db\\verified-import-9q61dl28",
+    "preexisting_database_reused": false,
+    "archive": {
+      "identity_url": "https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-11-14T00:20:33Z_1794637165.tar.zst?checksum=sha256%3A762b01ba9c79e6a250bd73f11ef62fbf44539ee8e08e043d80df4aaad3afc2aa",
+      "transport_url": "https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-11-14T00:20:33Z_1794637165.tar.zst",
+      "expected_sha256": "762b01ba9c79e6a250bd73f11ef62fbf44539ee8e08e043d80df4aaad3afc2aa",
+      "max_bytes": 4294967296,
+      "request_headers": {
+        "User-Agent": "grype/0.121.0",
+        "Accept-Encoding": "identity"
+      },
+      "content_length": 201046840,
+      "verified": true,
+      "actual_bytes": 201046840,
+      "actual_sha256": "762b01ba9c79e6a250bd73f11ef62fbf44539ee8e08e043d80df4aaad3afc2aa"
+    },
+    "operations": [
+      {
+        "stage": "local-import",
+        "argv": [
+          "E:\\project\\DeepResearch\\.cache\\native-jvm\\tools\\grype.exe",
+          "--config",
+          "E:\\project\\DeepResearch\\.cache\\release-v015-20261115\\runtime\\minio-native-01\\database-config.json",
+          "db",
+          "import",
+          "E:\\project\\DeepResearch\\.cache\\release-v015-20261115\\runtime\\minio-native-01\\pinned-advisory-db.tar.zst"
+        ],
+        "exit_code": 0,
+        "stdout_tail": "",
+        "stderr_tail": ""
+      },
+      {
+        "stage": "validate-status",
+        "argv": [
+          "E:\\project\\DeepResearch\\.cache\\native-jvm\\tools\\grype.exe",
+          "--config",
+          "E:\\project\\DeepResearch\\.cache\\release-v015-20261115\\runtime\\minio-native-01\\database-config.json",
+          "db",
+          "status",
+          "-o",
+          "json"
+        ],
+        "exit_code": 0,
+        "stdout_tail": "{\n \"schemaVersion\": \"v6.1.10\",\n \"from\": \"manual import\",\n \"built\": \"2026-11-14T06:19:25Z\",\n \"path\": \"E:\\\\project\\\\DeepResearch\\\\.cache\\\\release-followup-20261113\\\\security-minio\\\\grype-own-db\\\\verified-import-9q61dl28\\\\6\\\\vulnerability.db\",\n \"valid\": true\n}\n",
+        "stderr_tail": ""
+      }
+    ],
+    "import_metadata": {
+      "digest": "xxh64:656f1e1d29c1c1db",
+      "source": "manual import",
+      "client_version": "v6.1.10"
+    },
+    "derived_database": {
+      "path": "E:\\project\\DeepResearch\\.cache\\release-followup-20261113\\security-minio\\grype-own-db\\verified-import-9q61dl28\\6\\vulnerability.db",
+      "bytes": 3438088192,
+      "sha256": "6f2a064f9443e4f0b896eeeeb3ca8cb15b74d13792b84e147b68c00b426e187c"
+    },
+    "import_metadata_sha256": "330996c3e354af59ebf00350e285f0e5d008c582ac3772832a704911b3b76bb6",
+    "validated_status": {
+      "schemaVersion": "v6.1.10",
+      "from": "manual import",
+      "built": "2026-11-14T06:19:25Z",
+      "path": "E:\\project\\DeepResearch\\.cache\\release-followup-20261113\\security-minio\\grype-own-db\\verified-import-9q61dl28\\6\\vulnerability.db",
+      "valid": true
+    },
+    "derived_integrity_checks": [
+      {
+        "stage": "after-status",
+        "bytes": 3438088192,
+        "sha256": "6f2a064f9443e4f0b896eeeeb3ca8cb15b74d13792b84e147b68c00b426e187c"
+      },
+      {
+        "stage": "after-complete-minio-native-scan",
+        "bytes": 3438088192,
+        "sha256": "6f2a064f9443e4f0b896eeeeb3ca8cb15b74d13792b84e147b68c00b426e187c"
+      }
+    ]
+  },
+  "image_id": "sha256:5997e7c364d2af8fe1b99da4fe2b9ca659e28ef42f56f900aebead25e08a0c5e",
+  "config_digest": "sha256:c2c63c6d09edb24eb5e8d778a26b3e8153f7271e1f03a433c8fb929d4fbf1612",
+  "syft_exit_code": 0,
+  "grype_exit_code": 0,
+  "sbom_sha256": "b4a3344fcb5616ae97b8805f4bbe27f2180b3173d5332f5162dd03555e0f4fbf",
+  "report_sha256": "86adac8c5ff230692e14eb479dda12251fb6b473414d299d1d436ff54bcd1849",
+  "raw_counts": {
+    "Low": 9,
+    "High": 2,
+    "Medium": 7,
+    "Unknown": 2
+  },
+  "package_types": {
+    "go-module": 370,
+    "rpm": 22,
+    "binary": 1
+  }
+}

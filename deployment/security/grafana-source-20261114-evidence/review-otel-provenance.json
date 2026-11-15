@@ -1,21 +1,298 @@
 {
-  "actor": "/root/otel_provenance",
+  "schema": "independent-grafana-otel-source-review-v1",
+  "actor": "/root/milvus_build",
   "actor_kind": "automated_independent_agent",
-  "observed_at_utc": "2026-11-14T15:23:55Z",
-  "subject_sha256": "88be5212734567660d043c608f572aa396fbcf695f291968855f2685713af25a",
+  "subject_sha256": "a3ee5abd9643c4a2a2ddde1ab14aa8c81465c763b97fddc06866d794b7334e6d",
   "facts_passed": true,
   "risk_acceptance": false,
   "binary_redistribution_approved": false,
-  "otel_modules_migrated": 7,
-  "otel_targets_moved": 12,
-  "otel_targets_unchanged": 2,
-  "prior_otel_versions": [
-    "v1.45.0",
-    "v1.46.0",
-    "v0.21.0",
-    "v0.22.0"
-  ],
-  "target_otel_version": "v1.47.0",
-  "only_otel_packages_changed_in_graph": true,
-  "boundary": "独立核对溯源：7 个 otel 模块统一迁移到 v1.47.0，12 个 ELF 迁移/2 个逐字节不变，graph 仅 otel 前缀包变化。"
+  "reviewed_at_utc": "2026-11-15T06:47:00.107592+00:00",
+  "facts": {
+    "source_and_evidence_files_rehashed": 178,
+    "source_manifest_inputs_rehashed": 157,
+    "current_contexts": {
+      "alertmanager": {
+        "packages": 742,
+        "compiler": "go version go1.27.4 windows/amd64",
+        "raw_sha256": "a4b887fc26ecd32516430fa36bae9d024db1898252c29584e3e3136fe3e68047"
+      },
+      "amtool": {
+        "packages": 708,
+        "compiler": "go version go1.27.4 windows/amd64",
+        "raw_sha256": "f7e9668a7ea326a4a28ef02b6dd232c9eb2c23963774b517d6c669bab1a22bb1"
+      },
+      "etcd": {
+        "packages": 572,
+        "compiler": "go version go1.27.4 windows/amd64",
+        "raw_sha256": "352d197c0cca39e65b293b54132348a0bece95e1f8d4c34b3aa0da70c04bec75"
+      },
+      "etcdctl": {
+        "packages": 496,
+        "compiler": "go version go1.27.4 windows/amd64",
+        "raw_sha256": "ce5152d3fbbd0f69a8c679b06d932c30dff9e94b81604a1ae3d4d442f7a66741"
+      },
+      "etcdutl": {
+        "packages": 480,
+        "compiler": "go version go1.27.4 windows/amd64",
+        "raw_sha256": "6867b0225318efef1dbd041474838d605c839fc8541497cb4c4c3f61514294dd"
+      },
+      "loki": {
+        "packages": 2180,
+        "compiler": "go version go1.27.4 windows/amd64",
+        "raw_sha256": "18946febf3467b6a191d1fe0ed20405d57f547681abec21e1129a2aa8439cd00"
+      },
+      "maintained-telemetry": {
+        "packages": 418,
+        "compiler": "go version go1.26.11 windows/amd64",
+        "raw_sha256": "9f372501fea887c146bd1293d7f026cb8ae6727d9a82607eeaf8d86796564012"
+      },
+      "milvus_main": {
+        "packages": 2151,
+        "compiler": "go version go1.26.11 windows/amd64",
+        "raw_sha256": "8b2973863d55efc376dbb8d1429a8ee856ba40c24e88df4663a8901eab5ef6e4"
+      },
+      "milvus_parser": {
+        "packages": 821,
+        "compiler": "go version go1.26.11 windows/amd64",
+        "raw_sha256": "c10bc8d5868180ce732b722e50df792e7806710575221ec5916cc1bfc21302db"
+      },
+      "otel": {
+        "packages": 871,
+        "compiler": "go version go1.27.4 windows/amd64",
+        "raw_sha256": "337138620c1ec613d95efe64dd2e0199a88a49b5141e4bfa7dba0a486b3f2a94"
+      },
+      "prometheus": {
+        "packages": 1521,
+        "compiler": "go version go1.27.4 windows/amd64",
+        "raw_sha256": "31cd93286017f3dc821383265c9e85b9b9c532afb532b3cfd7a060b1872f10f7"
+      },
+      "promtool": {
+        "packages": 1371,
+        "compiler": "go version go1.27.4 windows/amd64",
+        "raw_sha256": "75437f565e3493d6fff803665b132ecbfc2355058aeb49904f5a8f0c8ac4dc45"
+      },
+      "standalone-14": {
+        "packages": 605,
+        "compiler": "go version go1.27.4 windows/amd64",
+        "raw_sha256": "05e012331acb861fa039997c8d504c2e46249330d5ffb253c642ffe2e0cf16aa"
+      },
+      "standalone-22": {
+        "packages": 671,
+        "compiler": "go version go1.27.4 windows/amd64",
+        "raw_sha256": "bb395f6276a7743bf76e02d30e066304076d4e05186a6c921745ab076691c565"
+      },
+      "standalone-23": {
+        "packages": 466,
+        "compiler": "go version go1.27.4 windows/amd64",
+        "raw_sha256": "0f7a4668babcde4f5e1033406baf5844bab2fff47a6acdaf6e7d323f8cfd1f1d"
+      },
+      "standalone-48": {
+        "packages": 612,
+        "compiler": "go version go1.26.11 windows/amd64",
+        "raw_sha256": "d586dd129dfe83d0330e3f5a8770f15ed12c223496b65476c35b166ffc938fe1"
+      },
+      "storage-bootstrap": {
+        "packages": 337,
+        "compiler": "go version go1.27.4 windows/amd64",
+        "raw_sha256": "a33f56facb19d5ea4412aeead7eb2edb3c9ff63846acbc98c33dbb84e0624e8e"
+      },
+      "tempo": {
+        "packages": 2077,
+        "compiler": "go version go1.27.4 windows/amd64",
+        "raw_sha256": "044ee945ae5459e729fa2ec766268ff2033baa3be54e2878316845ae7b1759d4"
+      },
+      "minio_silo": {
+        "packages": 1413,
+        "compiler": "go version go1.27.4 linux/amd64",
+        "raw_sha256": "b9c14d18150cd1c6d45b2eb65d3e4dc2f7d29b18eae2bd5ab2d36b4c0fad3669"
+      },
+      "minio_mcli": {
+        "packages": 616,
+        "compiler": "go version go1.27.4 linux/amd64",
+        "raw_sha256": "61b98438da7c3ef4fcdadb7a15faec37ecaea76bc6d3fd20ef5ad8447cf428dc"
+      }
+    },
+    "source_targets": 80,
+    "source_findings": 103,
+    "retained_exact_current_proofs": 71,
+    "historical_otel_source_findings": 29,
+    "additional_minio_findings": 3,
+    "official_advisories_independently_refetched": 3,
+    "current_minio_import_absence": [
+      {
+        "context": "minio_silo",
+        "packages": 1413,
+        "current_affected_html_or_openpgp_packages": [],
+        "libraries_upgraded_claimed": false
+      },
+      {
+        "context": "minio_mcli",
+        "packages": 616,
+        "current_affected_html_or_openpgp_packages": [],
+        "libraries_upgraded_claimed": false
+      }
+    ],
+    "libraries_upgraded_claimed_for_minio_source_advisories": false,
+    "native_migration_count": 14,
+    "native_graph_package_counts": {
+      "usr/share/grafana/bin/grafana": 4201,
+      "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64": 743,
+      "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64": 621,
+      "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64": 633,
+      "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64": 630,
+      "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64": 593,
+      "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64": 1079,
+      "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64": 729,
+      "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64": 597,
+      "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64": 588,
+      "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64": 723,
+      "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64": 679,
+      "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": 608,
+      "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": 589
+    },
+    "actual_image_id": "sha256:a54c4c15485f299c63406cb39d69606a99e4ba809a36ec5cb33d998fa09ae466",
+    "actual_config_digest": "sha256:9cdc0bb50a13f66b07fcfc4ec3427af7e193be7a551909d41a0371b1ca2f7f4f",
+    "actual_full_runtime_manifest_sha256": "9586e6ce9023a84389c2ff3e2fc4f8a556ef25ec1189a58a25798e62e8154539",
+    "actual_runtime_reexported_and_matched": "prior independent export unchanged; incremental review",
+    "actual_14_elf_recopied_and_pinned_go_reparsed": "prior independent parse unchanged",
+    "fresh_full_scanner_inventory_independently_recomputed": {
+      "prior_go_modules": 1720,
+      "current_go_modules": 1730,
+      "newly_linked_modules": [
+        {
+          "target": "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64",
+          "module": "go.opentelemetry.io/otel/log",
+          "version": "v1.47.0",
+          "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+        },
+        {
+          "target": "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64",
+          "module": "go.opentelemetry.io/otel/log",
+          "version": "v1.47.0",
+          "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+        },
+        {
+          "target": "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64",
+          "module": "go.opentelemetry.io/otel/log",
+          "version": "v1.47.0",
+          "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+        },
+        {
+          "target": "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64",
+          "module": "go.opentelemetry.io/otel/log",
+          "version": "v1.47.0",
+          "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+        },
+        {
+          "target": "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+          "module": "go.opentelemetry.io/otel/log",
+          "version": "v1.47.0",
+          "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+        },
+        {
+          "target": "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64",
+          "module": "go.opentelemetry.io/otel/log",
+          "version": "v1.47.0",
+          "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+        },
+        {
+          "target": "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64",
+          "module": "go.opentelemetry.io/otel/log",
+          "version": "v1.47.0",
+          "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+        },
+        {
+          "target": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+          "module": "go.opentelemetry.io/otel/log",
+          "version": "v1.47.0",
+          "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+        },
+        {
+          "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+          "module": "go.opentelemetry.io/otel/log",
+          "version": "v1.47.0",
+          "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+        },
+        {
+          "target": "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64",
+          "module": "go.opentelemetry.io/otel/log",
+          "version": "v1.47.0",
+          "sum": "h1:cOTS1CcLbSQeZKanGJ+0JpF/+t4PELi3O3bbl2lqCcI="
+        }
+      ],
+      "non_go_inventory_unchanged": true,
+      "native_module_identity_and_h1_coverage_verified": true,
+      "trivy_changed_inventory_targets": [
+        "usr/share/grafana/bin/grafana",
+        "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64",
+        "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64",
+        "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64",
+        "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64",
+        "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+        "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+        "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64",
+        "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64",
+        "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+        "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+        "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64"
+      ],
+      "report_sha256": {
+        "raw-trivy.private.json": "c78b0aa47de42d335e28b4cb8d1bf1f655e8cca221224b143767b50b17f1b67e",
+        "full-syft.json": "88199d7d61ff5e8d599ba42429d3f21873c6fb00930d38061ef766a10646d877",
+        "full-grype.json": "5e0d4a310b1bf69010175be777c19d38d5e0ee307aa5b5d6757fc9a140e31146",
+        "build-receipt.json": "447fe9a67097a495ab88e244009c90b2b017d799fe7513cafbcdaf99340217f8",
+        "image-inspect.json": "e6303c842e2bcd112eedd66badb6ef60df9e939ee9ee5cf75f94a9ffcea5bd83",
+        "collector.json": "67377c5bf378c9fdbf557af867eb9e060681977bbbaa9eb6889596da6f4c3b3b"
+      },
+      "collection_preparation_only": true,
+      "all_severity_findings": {
+        "Trivy": 40,
+        "Grype": 10
+      },
+      "raw_reports_modified": false
+    },
+    "complete_current_profile_validator_executed_passed": true,
+    "fresh_full_scanner_assessment": {
+      "passed": true,
+      "profile": "grafana-source-20261114",
+      "unresolved_count": 0,
+      "trivy_identity_kind": "engine_image_id",
+      "verified_all_severity_findings": {
+        "Trivy": 40,
+        "Grype": 10
+      },
+      "raw_counts": {
+        "Trivy": {
+          "CRITICAL": 2,
+          "HIGH": 11,
+          "MEDIUM": 20,
+          "LOW": 2,
+          "UNKNOWN": 5
+        },
+        "Grype": {
+          "HIGH": 2,
+          "MEDIUM": 3,
+          "UNKNOWN": 5
+        }
+      },
+      "raw_reports_modified": false,
+      "binary_redistribution_approved": false,
+      "scope": "Exactly reviewed locally built runtime; original OCI approval and historical scans unchanged."
+    },
+    "normal_postreview_gate_executed": false,
+    "actual_runtime_config_preserved": true,
+    "runtime_changes_count": 97,
+    "image_raw_scan_migration": {
+      "prior_count": 40,
+      "current_count": 40,
+      "image_scan_rows_unchanged": true,
+      "raw_reports_modified": false
+    },
+    "source_raw_diagnostic_only_not_clean_completion": true,
+    "raw_reports_modified": false
+  },
+  "limitations": [
+    "Source diagnostic is dirty-working-tree evidence; final clean commit scan/CI still required.",
+    "Exact technical source applicability review does not grant third-party binary redistribution approval."
+  ]
 }

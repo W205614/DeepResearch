@@ -1,0 +1,140 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.minio-otel-20261115
+#1 transferring dockerfile: 4.81kB 0.0s done
+#1 DONE 0.1s
+
+#2 [context miniosource] load .dockerignore
+#2 transferring miniosource: 2B 0.0s done
+#2 DONE 0.1s
+
+#3 [context securitymodules] load .dockerignore
+#3 transferring securitymodules: 2B 0.0s done
+#3 DONE 0.2s
+
+#4 [internal] load metadata for docker.io/library/golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf
+#4 ...
+
+#5 [internal] load metadata for docker.io/library/deepresearch-minio-source:20261113
+#5 DONE 0.2s
+
+#4 [internal] load metadata for docker.io/library/golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf
+#4 ...
+
+#6 [auth] library/golang:pull token for registry-1.docker.io
+#6 DONE 0.0s
+
+#4 [internal] load metadata for docker.io/library/golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf
+#4 DONE 4.7s
+
+#7 [source  1/10] FROM docker.io/library/golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf
+#7 resolve docker.io/library/golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf 0.0s done
+#7 DONE 0.0s
+
+#8 [context miniosource] load from client
+#8 transferring miniosource: 1.61kB 0.0s done
+#8 DONE 0.1s
+
+#9 [internal] load build context
+#9 transferring context: 916B 0.1s done
+#9 DONE 0.1s
+
+#10 [context securitymodules] load from client
+#10 ...
+
+#11 [stage-3 1/4] FROM docker.io/library/deepresearch-minio-source:20261113@sha256:f681fa817d0f3bc4927b414176019b2973387ab1eab1132a2c83b8bcc8c1cc57
+#11 resolve docker.io/library/deepresearch-minio-source:20261113@sha256:f681fa817d0f3bc4927b414176019b2973387ab1eab1132a2c83b8bcc8c1cc57 0.1s done
+#11 CACHED
+
+#10 [context securitymodules] load from client
+#10 transferring securitymodules: 365.99kB 0.2s
+#10 transferring securitymodules: 14.56MB 5.6s
+#10 transferring securitymodules: 32.13MB 10.6s
+#10 transferring securitymodules: 46.70MB 13.2s done
+#10 DONE 13.2s
+
+#12 [source  2/10] RUN apk add --no-cache git
+#12 CACHED
+
+#13 [source  3/10] COPY --from=miniosource / /prefetched-minio.git/
+#13 CACHED
+
+#14 [source  4/10] RUN git clone --no-hardlinks /prefetched-minio.git /src && cd /src && git checkout --detach 0cd388c666f8211f552604ae73448a066e9c25ce     && git remote set-url origin https://github.com/pgsty/silo.git && git config core.hooksPath /dev/null && git fsck --full
+#14 CACHED
+
+#15 [source  5/10] WORKDIR /src
+#15 CACHED
+
+#16 [source  6/10] COPY --from=securitymodules / /prefetched-proxy/
+#16 DONE 0.4s
+
+#17 [source  7/10] RUN test "$(git rev-parse HEAD)" = 0cd388c666f8211f552604ae73448a066e9c25ce
+#17 DONE 0.4s
+
+#18 [source  8/10] COPY deployment/vendors/minio/legacy_part_compat.go cmd/legacy_part_compat.go
+#18 DONE 0.2s
+
+#19 [source  9/10] COPY deployment/vendors/minio/legacy-part-compat.patch /tmp/legacy-part-compat.patch
+#19 DONE 0.2s
+
+#20 [source 10/10] RUN git apply --check /tmp/legacy-part-compat.patch && git apply /tmp/legacy-part-compat.patch
+#20 DONE 0.9s
+
+#21 [otel-updated 1/7] COPY deployment/vendors/minio-otel-20261115/go.mod deployment/vendors/minio-otel-20261115/go.sum /src/
+#21 DONE 0.4s
+
+#22 [otel-updated 2/7] RUN mkdir -p /out
+#22 DONE 0.7s
+
+#23 [otel-updated 3/7] COPY deployment/security/minio-os-20261113/regression/normal_parquet_test.go internal/s3select/parquet/pinned_normal_test.go
+#23 DONE 0.1s
+
+#24 [otel-updated 4/7] COPY deployment/security/minio-os-20261113/regression/normal_csv_test.go internal/s3select/csv/pinned_normal_test.go
+#24 DONE 0.1s
+
+#25 [otel-updated 5/7] COPY deployment/vendors/minio/legacy_part_compat_test.go cmd/legacy_part_compat_test.go
+#25 DONE 0.1s
+
+#26 [otel-updated 6/7] COPY deployment/vendors/minio/legacy-part2024.msgp cmd/testdata/deepresearch-legacy-part2024.msgp
+#26 DONE 0.1s
+
+#27 [otel-updated 7/7] RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build set -o pipefail; go test -mod=readonly ./internal/s3select/parquet -run '^TestNormalThrift025ParquetRoundTrip$' -count=1 -v 2>&1 | tee /out/normal-parquet.txt && go test -mod=readonly ./internal/s3select/csv -run '^TestNormalNativeRepairPreservesValidCSV$' -count=1 -v 2>&1 | tee /out/normal-csv.txt && go test -mod=readonly ./cmd -run '^TestPinnedLegacyPart2024PreservesCompleteMetadata$' -count=1 -v 2>&1 | tee /out/normal-legacy-multipart.txt
+#27 1.976 === RUN   TestNormalThrift025ParquetRoundTrip
+#27 1.976 --- PASS: TestNormalThrift025ParquetRoundTrip (0.00s)
+#27 1.976 PASS
+#27 1.978 ok  	github.com/minio/minio/internal/s3select/parquet	0.013s
+#27 2.511 === RUN   TestNormalNativeRepairPreservesValidCSV
+#27 2.511 --- PASS: TestNormalNativeRepairPreservesValidCSV (0.00s)
+#27 2.511 PASS
+#27 2.512 ok  	github.com/minio/minio/internal/s3select/csv	0.006s
+#27 123.2 === RUN   TestPinnedLegacyPart2024PreservesCompleteMetadata
+#27 123.2 --- PASS: TestPinnedLegacyPart2024PreservesCompleteMetadata (0.00s)
+#27 123.2 PASS
+#27 123.2 ok  	github.com/minio/minio/cmd	0.211s
+#27 DONE 123.6s
+
+#28 [go-repair-build 1/1] RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build CGO_ENABLED=0 go build -mod=readonly -buildvcs=true -tags kqueue -trimpath -ldflags="$(MINIO_RELEASE=RELEASE go run buildscripts/gen-ldflags.go 2026-10-18T00:00:00Z)" -o /out/silo . && CGO_ENABLED=0 go build -mod=readonly -trimpath -ldflags='-s -w -X github.com/minio/mc/cmd.Version=2026-10-18T00:00:00Z -X github.com/minio/mc/cmd.ReleaseTag=RELEASE.2026-10-18T00-00-00Z -X github.com/minio/mc/cmd.CommitID=fa3b8bf72458b9b5480c4da0ce63a4f224e058c8' -o /out/mcli github.com/minio/mc && go version -m /out/silo > /out/silo-buildinfo.txt && go version -m /out/mcli > /out/mcli-buildinfo.txt && go version -m -json /out/silo > /out/silo-native.json && go version -m -json /out/mcli > /out/mcli-native.json && go mod download -json github.com/coreos/go-systemd/v22@v22.6.0 > /out/coreos-download.json && CGO_ENABLED=0 go list -mod=readonly -tags=kqueue -deps -json . > /out/silo-graph.json && CGO_ENABLED=0 go list -mod=readonly -deps -json github.com/minio/mc > /out/mcli-graph.json
+#28 DONE 147.4s
+
+#29 [stage-3 2/4] COPY --from=go-repair-build /out/silo /usr/bin/silo
+#29 DONE 0.1s
+
+#30 [stage-3 3/4] COPY --from=go-repair-build /out/mcli /usr/bin/mcli
+#30 DONE 0.1s
+
+#31 [stage-3 4/4] COPY --from=go-repair-build /out/silo-buildinfo.txt /out/mcli-buildinfo.txt /out/silo-native.json /out/mcli-native.json /out/silo-graph.json /out/mcli-graph.json /usr/share/deepresearch-build/
+#31 DONE 0.1s
+
+#32 exporting to image
+#32 exporting layers
+#32 exporting layers 3.3s done
+#32 exporting manifest sha256:578dd038fe64ceaabc6cbde2c51b59c3109ba8349f50091ce1c6cc19b9b42570 0.0s done
+#32 exporting config sha256:6b2277e28f7f28a92c1100bedc0f7ab4d5d301daba6196fc894f7ad2fed81ba3 0.0s done
+#32 exporting attestation manifest sha256:859554376a73670da1ff8b572add9d4ef05dbe6a3e55f1eacf730e11ce76c976 0.0s done
+#32 exporting manifest list sha256:5ee3bdc0cabc032bde9005dbf0dc8db2b720bec6c9c3eb8d4a58f8b615daffc4 0.0s done
+#32 naming to docker.io/library/deepresearch-minio-source:20261115 done
+#32 unpacking to docker.io/library/deepresearch-minio-source:20261115
+#32 unpacking to docker.io/library/deepresearch-minio-source:20261115 0.5s done
+#32 DONE 3.9s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/sapwxfp7i9v2rbv4vup2fzer1

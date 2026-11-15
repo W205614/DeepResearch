@@ -78,7 +78,7 @@
       "source": "https://raw.githubusercontent.com/grafana/loki/d3b4a2f76bfc5625abee7ceb00b8896fa3c31549/pkg/push/types_test.go"
     }
   ],
-  "compiler": "Go1.27.3 pinned builder",
+  "compiler": "golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf",
   "dependency_override": {
     "golang.org/x/net": "v0.62.0"
   },
@@ -137,5 +137,14 @@
       "push/go.mod": "9e5688092ae688cd0eb0027b67f028157d82bdca6a3437b62cc3b3910573aeed",
       "push/go.sum": "e6bc9bbd27de1169a8dd495ffae394940247bbe3f3d8ea3eac0e63e995e2de96"
     }
+  },
+  "stdlib_security_refresh_20261115": {
+    "advisory": "GO-2026-6859",
+    "cve": "CVE-2026-97054",
+    "previous_compiler": "Go1.27.3 pinned builder",
+    "compiler_image": "golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf",
+    "fixed_go_version": "1.27.4",
+    "application_locks_unchanged": true,
+    "validation": "Actual image compilation and complete scan are required; not claimed by this source pin."
   }
 }

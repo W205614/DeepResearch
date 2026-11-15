@@ -1,0 +1,84 @@
+{
+  "schema": "minio-otel-independent-technical-review-20261115-v1",
+  "actor": "/root/milvus_build",
+  "actor_kind": "automated_independent_agent",
+  "subject_sha256": "d39d8a8f01ff434fe23a11ffc07b43c25d800a697103999ff5744efc94f4a27e",
+  "facts_passed": true,
+  "risk_acceptance": false,
+  "binary_redistribution_approved": false,
+  "image_id": "sha256:5997e7c364d2af8fe1b99da4fe2b9ca659e28ef42f56f900aebead25e08a0c5e",
+  "portable_config_digest": "sha256:c2c63c6d09edb24eb5e8d778a26b3e8153f7271e1f03a433c8fb929d4fbf1612",
+  "source_inputs_all_rehashed": 29,
+  "evidence_files_all_rehashed": 16,
+  "actual_image_reexported": true,
+  "actual_two_elfs_independently_copied_and_parsed": true,
+  "production_graph_modules_sums_replacements_equal_actual_elf": true,
+  "production_reachability_complete": true,
+  "openpgp_and_html_affected_imports_absent": true,
+  "silo_otel_modules_migrated": [
+    "go.opentelemetry.io/otel",
+    "go.opentelemetry.io/otel/log",
+    "go.opentelemetry.io/otel/metric",
+    "go.opentelemetry.io/otel/sdk",
+    "go.opentelemetry.io/otel/sdk/metric",
+    "go.opentelemetry.io/otel/trace"
+  ],
+  "mcli_module_changes": {},
+  "complete_runtime_difference_paths": [
+    "usr/bin/silo",
+    "usr/share/deepresearch-build/silo-buildinfo.txt",
+    "usr/share/deepresearch-build/silo-graph.json",
+    "usr/share/deepresearch-build/silo-native.json",
+    "var/lib/rpm/rpmdb.sqlite"
+  ],
+  "rpm_normalization": "Original existing exact four-NEVRA INSTALLTIME/INSTALLTID rules; every schema/table/row/header byte otherwise bound",
+  "rpm_database_stable_sha256": "7da3ee237e5d8c33dcd537650cc526304ff8653d1ac674b54d4e7cf9398f4cc9",
+  "scanner_counts": {
+    "Trivy": 21,
+    "Grype": 20
+  },
+  "grype_removed_exact_old_glibc_rows": [
+    {
+      "id": "CVE-2026-122054",
+      "locations": [
+        "/var/lib/rpm/rpmdb.sqlite"
+      ],
+      "namespace": "redhat:distro:redhat:9",
+      "package": "glibc",
+      "severity": "Medium",
+      "type": "rpm",
+      "version": "2.34-290.el9_9"
+    },
+    {
+      "id": "CVE-2026-122054",
+      "locations": [
+        "/var/lib/rpm/rpmdb.sqlite"
+      ],
+      "namespace": "redhat:distro:redhat:9",
+      "package": "glibc-common",
+      "severity": "Medium",
+      "type": "rpm",
+      "version": "2.34-290.el9_9"
+    },
+    {
+      "id": "CVE-2026-122054",
+      "locations": [
+        "/var/lib/rpm/rpmdb.sqlite"
+      ],
+      "namespace": "redhat:distro:redhat:9",
+      "package": "glibc-minimal-langpack",
+      "severity": "Medium",
+      "type": "rpm",
+      "version": "2.34-290.el9_9"
+    }
+  ],
+  "original_trivy_big5_migration_reverified": true,
+  "actual_benign_regressions_rechecked": [
+    "TestNormalThrift025ParquetRoundTrip",
+    "TestNormalNativeRepairPreservesValidCSV",
+    "TestPinnedLegacyPart2024PreservesCompleteMetadata"
+  ],
+  "service_started": false,
+  "paid_model_calls": 0,
+  "local_evidence_directory": ".cache/release-v015-20261115/runtime/independent-minio-review-milvus-02"
+}

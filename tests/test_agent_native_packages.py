@@ -64,7 +64,8 @@ def inputs():
 
 
 @pytest.fixture
-def soupsieve_inputs():
+def soupsieve_inputs(monkeypatch, retained_agent_record_root):
+    monkeypatch.setattr(full_scope, 'ROOT', retained_agent_record_root)
     profile = full_scope.load_profile(full_scope.SOUP_PROFILE_NAME)
     lock = gate.load_lock()
     facts = {'image_id': 'sha256:' + 'a' * 64, 'diff_ids': ['sha256:' + 'b' * 64],

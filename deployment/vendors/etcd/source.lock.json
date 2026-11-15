@@ -4,7 +4,7 @@
   "commit": "38e57443c51fc9a3cc6a943fa8ed10381f66ce5c",
   "source_archive_sha256": "6d575a3fbeece5230290314d74f5c93dbb53ee3bcb564465b63cbea673740805",
   "runtime_amd64_manifest": "sha256:20afe6a70f2565277b704cc17289cb557f353a3619f6350f52a2317106598df4",
-  "compiler": "Go1.27.3 pinned Dockerfile.etcd",
+  "compiler": "golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf",
   "source_changes": "locked dependency graph x/net0.62, OTel1.45 and their required Go module dependencies; no API or storage code changes",
   "main_version_provenance": "real official server/etcdctl/etcdutl tags fetched and commit checked; Go buildvcs=true retains3.5.34+dirty for actual patched source instead of devel",
   "files": {
@@ -21,17 +21,17 @@
     "modules/etcdutl/go.mod": "f116e43f886813153b900d16c5b2b074f40d55d6ee64bf1ef76c1b6a5c32e0ad",
     "modules/etcdutl/go.sum": "492e728436708234e956dea4fca650768679b485db199cf1ad6f0b5b6eb580cd",
     "modules/go.mod": "39bc76a84769ce12e4be68d4f87bbdd294182e4a7fe5df371776973592a1c7ba",
-    "modules/go.sum": "462fc6a1c3409a43ebaca265cffe3c39481cabcaa3290fbdd3ebe2ead7b01950",
+    "modules/go.sum": "8e2e990bcf84d06cb7cdfbd282ac68d0bbe293050131e7865f03a63399ccb7d1",
     "modules/pkg/go.mod": "0f0d1c90e1660c282c47e03d43892e9b49961f2b3d2d6c0a4d02febe53c20320",
     "modules/pkg/go.sum": "f8b3a2f9642b8ff56eea5733ad935b8bfa14d850bff40aa6700ed9b3810827bc",
     "modules/raft/go.mod": "089247a6557eeb928b41f4cf526b7d376ef5b478b61cf106057ea9e30e60cd38",
     "modules/raft/go.sum": "38f9d084c00dc4e7dfd2d42fa6be0a332c33c6de6a1a75fea1260e84f58f6807",
     "modules/server/go.mod": "53f0a08dd39167adf9ada52797fbb6354d2f3c4ff5f1f6fbc60d1b7ecb2bea16",
     "modules/server/go.sum": "11a3effc2320151f198b1e62479f7961d86dfe27aa4c7ecbc1468834ec44b180",
-    "modules/tests/go.mod": "1a25b6463c45b745a3a9631200a3eb01460bc4c25d40d4150991e1da91d19798",
-    "modules/tests/go.sum": "50c09012cb640546b6c163c68ce4ebbc828a049c8c0c2d707af50fd18b5be47f",
+    "modules/tests/go.mod": "4f2010b036cc105220b7a6fc287aa3cf5ea8c5027b9972014d22dab04f507127",
+    "modules/tests/go.sum": "e19f45c118a5cb8c7bec13028de70978fd12e09ce2fb492c583924fb83ff99f1",
     "modules/tools/mod/go.mod": "666d2260d5a8a8c50cfdcb877f7e69d7fa1a759b89404abebe81f1f377a41d3b",
-    "modules/tools/mod/go.sum": "221cfe6df7fd0b429cb04d337609e20bd298d3934e3a437ecdcc5d7d354f4652"
+    "modules/tools/mod/go.sum": "3b0e20d17bf2b30c4f89ac54df373c5b2170998970155be9259fdf80164cda1a"
   },
   "nonruntime_module_dependency_update_20261027": {
     "basis": "Exact6bec source FS scan,30 HIGH/CRITICAL finding rows across these three independent modules; repair dependencies rather than waive source findings.",
@@ -287,6 +287,35 @@
       "modules/server/go.sum": "11a3effc2320151f198b1e62479f7961d86dfe27aa4c7ecbc1468834ec44b180",
       "modules/tests/go.mod": "1a25b6463c45b745a3a9631200a3eb01460bc4c25d40d4150991e1da91d19798",
       "modules/tests/go.sum": "50c09012cb640546b6c163c68ce4ebbc828a049c8c0c2d707af50fd18b5be47f"
+    }
+  },
+  "stdlib_security_refresh_20261115": {
+    "advisory": "GO-2026-6859",
+    "cve": "CVE-2026-97054",
+    "previous_compiler": "Go1.27.3 pinned Dockerfile.etcd",
+    "compiler_image": "golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf",
+    "fixed_go_version": "1.27.4",
+    "application_locks_unchanged": true,
+    "validation": "Actual image compilation and complete scan are required; not claimed by this source pin."
+  },
+  "source_test_context_completion_20261115": {
+    "reason": "The current root test graph imports crypto/bcrypt through tests/v3/integration. Real Go1.27.4 go list -deps -test -json -mod=mod ./... added its missing checksum; go.mod versions remain unchanged. The tests module also required the already-selected go.yaml.in/yaml/v3 indirect requirement; root, tests and tools checksums are completed without upgrading existing requirements.",
+    "compiler": "go1.27.4 windows/amd64 cross-target linux/amd64",
+    "files": {
+      "modules/go.sum": "8e2e990bcf84d06cb7cdfbd282ac68d0bbe293050131e7865f03a63399ccb7d1",
+      "modules/tests/go.mod": "4f2010b036cc105220b7a6fc287aa3cf5ea8c5027b9972014d22dab04f507127",
+      "modules/tests/go.sum": "e19f45c118a5cb8c7bec13028de70978fd12e09ce2fb492c583924fb83ff99f1",
+      "modules/tools/mod/go.sum": "3b0e20d17bf2b30c4f89ac54df373c5b2170998970155be9259fdf80164cda1a"
+    },
+    "raw_graph_sha256": "05e012331acb861fa039997c8d504c2e46249330d5ffb253c642ffe2e0cf16aa",
+    "exit_code": 0,
+    "additional_contexts": {
+      "22": "go list -deps -test -json -mod=mod -buildvcs=false ./...",
+      "23": "Exact original tools entry packages with go list -deps -test -json -mod=mod -buildvcs=false"
+    },
+    "additional_exit_codes": {
+      "22": 0,
+      "23": 0
     }
   }
 }

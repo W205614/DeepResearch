@@ -129,9 +129,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - uses: astral-sh/setup-uv@v7
-        if: matrix.source_build_profile == 'grafana-source-20261114' || matrix.source_build_profile == 'minio-os-source-20261113'
+        if: matrix.source_build_profile == 'grafana-source-20261114' || matrix.source_build_profile == 'minio-otel-source-20261115'
       - name: Install locked Python dependencies for Go source preparation
-        if: matrix.source_build_profile == 'grafana-source-20261114' || matrix.source_build_profile == 'minio-os-source-20261113'
+        if: matrix.source_build_profile == 'grafana-source-20261114' || matrix.source_build_profile == 'minio-otel-source-20261115'
         run: uv sync --frozen --no-dev
       - name: Build the reviewed Go-fixed source without publishing a third-party image
         if: matrix.source_build_profile == 'grafana-source-20261114'
@@ -140,7 +140,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Build the exact reviewed MinIO native repair without publishing a third-party image
-        if: matrix.source_build_profile == 'minio-os-source-20261113'
+        if: matrix.source_build_profile == 'minio-otel-source-20261115'
         uses: ./.github/actions/reviewed-source-image
         with: { artifact: minio, output-dir: .cache/eval/minio-source-build }
         env:
@@ -191,17 +191,17 @@ jobs:
           --exact2-output .cache/eval/minio-openpgp2-disposition.json
           --output .cache/eval/minio-ci-disposition.json
       - name: Collect complete native and full MinIO repair reports
-        if: matrix.source_build_profile == 'minio-os-source-20261113' && steps.approved_scan.outcome == 'success'
+        if: matrix.source_build_profile == 'minio-otel-source-20261115' && steps.approved_scan.outcome == 'success'
         run: >-
           python scripts/collect_minio_os_native_20261113.py
-          --image deepresearch-minio-source:20261113
+          --image deepresearch-minio-source:20261115
           --build-receipt .cache/eval/minio-source-build/build-receipt.json
           --output-dir .cache/eval/minio-native
           --db-cache .cache/eval/minio-grype-db
       - name: Enforce all-severity findings against the exact MinIO native repair subject
-        if: matrix.source_build_profile == 'minio-os-source-20261113' && steps.approved_scan.outcome == 'success'
+        if: matrix.source_build_profile == 'minio-otel-source-20261115' && steps.approved_scan.outcome == 'success'
         run: >-
-          python scripts/check_minio_os_20261113.py
+          python scripts/check_minio_otel_20261115.py
           --build-receipt .cache/eval/minio-source-build/build-receipt.json
           --scan runtime-image.json
           --grype-scan .cache/eval/minio-native/full-grype.json
@@ -298,18 +298,20 @@ jobs:
         run: >-
           python scripts/collect_tempo_evidence.py --image deepresearch-scan-tempo:ci
           --output-dir .cache/eval/tempo-native
-      - uses: aquasecurity/trivy-action@v0.36.0
-        if: matrix.name != 'tempo' && matrix.name != 'agent' && matrix.name != 'keycloak'
-        with:
-          image-ref: deepresearch-scan-${{ matrix.name }}:ci
-          severity: HIGH,CRITICAL
-          exit-code: '1'
-          version: v0.75.0
-          format: json
-          output: application-image.json
       - uses: aquasecurity/setup-trivy@3fb12ec12f41e471780db15c232d5dd185dcb514
-        if: matrix.name == 'tempo' || matrix.name == 'agent' || matrix.name == 'keycloak'
         with: { version: v0.75.0, cache: true }
+      - name: Verify complete Go image findings against the actual native and source closure
+        if: contains(fromJSON('["alertmanager","etcd","loki","prometheus","otel-collector","milvus","storage-init"]'), matrix.name)
+        run: >-
+          python scripts/check_go_runtime_20261115.py --component "${{ matrix.name }}"
+          --image deepresearch-scan-${{ matrix.name }}:ci
+          --output-dir .cache/eval/go-runtime
+      - name: Require complete zero-finding scans for other unscoped images
+        if: matrix.name != 'tempo' && matrix.name != 'agent' && matrix.name != 'keycloak' && !contains(fromJSON('["alertmanager","etcd","loki","prometheus","otel-collector","milvus","storage-init"]'), matrix.name)
+        run: >-
+          trivy image --scanners vuln,secret --list-all-pkgs
+          --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --exit-code 1 --timeout 10m
+          --format json --output application-image.json deepresearch-scan-${{ matrix.name }}:ci
       - name: Preserve complete fresh agent scan before checking fixed native bytes
         if: matrix.name == 'agent'
         run: >-
@@ -333,6 +335,12 @@ jobs:
           python scripts/check_tempo_app_exact1.py --scan application-image.json
           --materials-dir .cache/eval/tempo-native --scanner-exit-code 0
           --output .cache/eval/tempo-app1-disposition.json
+      - name: Verify supplementary all-severity Tempo findings against exact source and native closure
+        if: matrix.name == 'tempo'
+        run: >-
+          python scripts/check_go_runtime_20261115.py --component tempo
+          --image deepresearch-scan-tempo:ci
+          --output-dir .cache/eval/go-runtime
       - name: Preserve complete Keycloak findings before verifying the actual fixed zlib
         if: matrix.name == 'keycloak'
         run: >-
@@ -364,6 +372,13 @@ jobs:
             .cache/eval/tempo-app1-disposition.json
             .cache/eval/agent-native/
             .cache/eval/keycloak-zlib/
+            .cache/eval/go-runtime/raw.json
+            .cache/eval/go-runtime/verdict.json
+            .cache/eval/go-runtime/scan-completion.json
+            .cache/eval/go-runtime/scanner-version.log
+            .cache/eval/go-runtime/native/*.json
+            .cache/eval/go-runtime/actual-payload/runtime-manifest.json.gz
+            .cache/eval/go-runtime/actual-payload/image-config.json
   source-analysis:
     runs-on: ubuntu-latest
     permissions: { contents: read, security-events: write }

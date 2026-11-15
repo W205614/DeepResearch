@@ -50,7 +50,7 @@ def test_full_fresh_eighteen_rows_preserve_both_real_failed_routes_and_unknown_v
     assert builds['main']['tempo_packages'] == [] and len(builds['tempo']['tempo_packages']) == 4
 
 
-def test_historical_ci_replay_uses_full_62_manifest_coverage_and_preserves_raw_verdict_files(context, historical_grafana_maintenance_root, monkeypatch):
+def test_historical_ci_replay_uses_full_62_manifest_coverage_and_preserves_raw_verdict_files(context, historical_grafana_maintenance_root, monkeypatch, historical_grafana_source_pins):
     scan, receipt, original, candidate, inventory, _, _, _, _, _ = context
     # Only the historical CI Git/environment inventory boundary is supplied from its
     # original artifact; the temporary Git tree independently retains those62
@@ -163,7 +163,7 @@ def test_changed_independent_review_and_old_function_rewrites_cannot_pass(tmp_pa
         assert hashlib.sha256(inspect.getsource(function).encode()).hexdigest() == original_hashes[function.__name__]
 
 
-def test_exact_review_metadata_survive_actual_git_index_and_clean_lf_checkout(tmp_path):
+def test_exact_review_metadata_survive_actual_git_index_and_clean_lf_checkout(tmp_path, historical_grafana_maintenance_root):
     review = json.loads((ROOT / addon.REVIEW_PATH).read_bytes())
     exact_binary_text = [addon.REVIEW_PATH,
         'deployment/security/grafana-source-candidate4-evidence-20261107/actual-validation-image-elf-binding.json',
@@ -186,7 +186,7 @@ def test_exact_review_metadata_survive_actual_git_index_and_clean_lf_checkout(tm
     for name in names:
         path = repo / name
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_bytes((ROOT / name).read_bytes())
+        path.write_bytes((historical_grafana_maintenance_root / name).read_bytes())
         assert hashlib.sha256(path.read_bytes()).hexdigest() == expected[name]
     control = repo / 'deployment/security/unrelated-proof.json'
     control.write_bytes(b'control\r\n')

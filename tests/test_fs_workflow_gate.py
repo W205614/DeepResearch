@@ -14,6 +14,7 @@ PROFILE_CONTRACTS = {
     'fixed20261107': ('check_grafana_source_fixed_20261107.py', {}, 'check_grafana_release_20261107'),
     'grafana-source-20261110': ('check_grafana_source_scan_20261110.py', {}, 'check_grafana_source_build_20261110'),
     'grafana-source-20261112': ('check_grafana_source_scan_20261112.py', {}, 'check_grafana_source_build_20261112'),
+    'grafana-source-20261114': ('check_grafana_source_scan_20261114.py', {}, 'check_grafana_source_build_20261114'),
 }
 BASE = '.cache/eval/'
 SOURCE_READY = "always() && steps.source_scan.outcome == 'success'"
@@ -39,7 +40,7 @@ def selected_profile(root):
                 for key, value in zip(node.keys, node.values) if isinstance(key, ast.Constant) and key.value == 'profile']
     assert len(profiles) == 1 and profiles[0] in PROFILE_CONTRACTS
     profile = profiles[0]
-    consumer_alias = 'source_candidate' if profile in {'grafana-source-20261110', 'grafana-source-20261112'} else 'candidate'
+    consumer_alias = 'source_candidate' if profile.startswith('grafana-source-') else 'candidate'
     consumers = [alias.name for node in ast.walk(tree) if isinstance(node, ast.ImportFrom) and node.module == 'scripts'
                  for alias in node.names if alias.asname == consumer_alias]
     assert consumers == [PROFILE_CONTRACTS[profile][2]], 'Inventory profile and its exact consumer must agree'
@@ -62,8 +63,8 @@ def selected_workflow_root(request, tmp_path_factory):
 
 
 def command(steps, script, *, artifact=None):
-    cached_artifact = {'build_go_stdlib_security_20261112.py': 'grafana',
-                       'build_minio_os_20261113.py': 'minio'}.get(script)
+    cached_artifact = {'build_go_otel_security_20261114.py': 'grafana',
+                       'build_minio_otel_20261115.py': 'minio'}.get(script)
     if cached_artifact is not None:
         cached = [(i, step) for i, step in enumerate(steps)
                   if step.get('uses') == './.github/actions/reviewed-source-image'
@@ -83,7 +84,7 @@ def command(steps, script, *, artifact=None):
     run = step['run']
     assert not any(token in run for token in ('||', '&&', ';', '|', '`'))
     tokens = shlex.split(run)
-    if script in {'build_go_stdlib_security_20261112.py', 'build_minio_os_20261113.py'}:
+    if script in {'build_go_otel_security_20261114.py', 'build_minio_otel_20261115.py'}:
         assert tokens[:4] == ['uv', 'run', '--frozen', '--no-dev']
         tokens = tokens[4:]
     assert tokens[:2] == ['python', 'scripts/' + script] and len(tokens[2:]) % 2 == 0
@@ -199,7 +200,15 @@ def test_existing_high_critical_threshold_and_exact_technical_route_are_explicit
     text = source.read_text(encoding='utf-8')
     assert 'original HIGH,CRITICAL source threshold' in text
     assert 'source16' not in text and 'runtime5' not in text
-    assert text.count('severity: HIGH,CRITICAL') == 2
+    assert text.count('severity: HIGH,CRITICAL') == 1
+    steps = yaml.safe_load(text)['jobs']['application-image-scan']['steps']
+    go = next(step for step in steps if 'scripts/check_go_runtime_20261115.py' in step.get('run', ''))
+    assert not go.get('continue-on-error')
+    for component in ('alertmanager', 'etcd', 'loki', 'prometheus', 'otel-collector', 'milvus', 'storage-init'):
+        assert '"' + component + '"' in go['if']
+    ordinary = next(step for step in steps if step.get('name') == 'Require complete zero-finding scans for other unscoped images')
+    assert '--severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --exit-code 1' in ordinary['run']
+    assert not ordinary.get('continue-on-error')
 
 
 @pytest.mark.parametrize('change', [{'if': False}, {'continue-on-error': True}])
@@ -234,13 +243,13 @@ def test_source_built_grafana_keeps_full_native_all_severity_gate_before_accepta
     job = document['jobs']['runtime-image-scan']
     assert job['strategy']['matrix'] == '${{ fromJSON(needs.inventory-runtime.outputs.matrix) }}'
     steps = job['steps']
-    build_index, build, build_args = command(steps, 'build_go_stdlib_security_20261112.py')
-    native_index, native, native_args = command(steps, 'scan_grafana_source_20261112.py')
-    gate_index, gate, gate_args = command(steps, 'check_grafana_source_build_20261112.py')
+    build_index, build, build_args = command(steps, 'build_go_otel_security_20261114.py')
+    native_index, native, native_args = command(steps, 'scan_grafana_source_20261114.py')
+    gate_index, gate, gate_args = command(steps, 'check_grafana_source_build_20261114.py')
     scan_index = next(i for i, step in enumerate(steps) if step.get('id') == 'approved_scan')
     secret_index, secret, _ = command(steps, 'check_image_secrets.py')
     scan = steps[scan_index]
-    condition = "matrix.source_build_profile == 'grafana-source-20261112'"
+    condition = "matrix.source_build_profile == 'grafana-source-20261114'"
     assert build_index < scan_index < secret_index < native_index < gate_index
     assert build['if'] == condition
     assert native['if'] == gate['if'] == condition + " && steps.approved_scan.outcome == 'success'"
@@ -252,7 +261,7 @@ def test_source_built_grafana_keeps_full_native_all_severity_gate_before_accepta
     assert scan['with']['exit-code'] == '0'
     receipt = BASE + 'grafana-source-build/build-receipt.json'
     assert build_args == {'--artifact': 'grafana', '--output-dir': BASE + 'grafana-source-build'}
-    assert native_args == {'--image': 'deepresearch-grafana-source:20261112',
+    assert native_args == {'--image': 'deepresearch-grafana-source:20261114',
                            '--build-receipt': receipt, '--output-dir': BASE + 'grafana-native'}
     assert gate_args == {'--build-receipt': receipt, '--scan': 'runtime-image.json',
                          '--grype-scan': BASE + 'grafana-native/full-grype.json',
@@ -273,17 +282,17 @@ def test_source_built_grafana_keeps_full_native_all_severity_gate_before_accepta
 def test_minio_native_repair_requires_new_producer_complete_scans_and_strict_consumer():
     document = yaml.safe_load((ROOT / '.github/workflows/security.yml').read_text(encoding='utf-8'))
     steps = document['jobs']['runtime-image-scan']['steps']
-    build_index, build, build_args = command(steps, 'build_minio_os_20261113.py')
+    build_index, build, build_args = command(steps, 'build_minio_otel_20261115.py')
     native_index, native, native_args = command(steps, 'collect_minio_os_native_20261113.py')
-    gate_index, gate, gate_args = command(steps, 'check_minio_os_20261113.py')
+    gate_index, gate, gate_args = command(steps, 'check_minio_otel_20261115.py')
     scan_index = next(i for i, step in enumerate(steps) if step.get('id') == 'approved_scan')
     secret_index, _, _ = command(steps, 'check_image_secrets.py')
-    condition = "matrix.source_build_profile == 'minio-os-source-20261113'"
+    condition = "matrix.source_build_profile == 'minio-otel-source-20261115'"
     assert build['if'] == condition
     assert native['if'] == gate['if'] == condition + " && steps.approved_scan.outcome == 'success'"
     assert build_index < scan_index < secret_index < native_index < gate_index
     assert build_args == {'--output-dir': BASE + 'minio-source-build'}
-    assert native_args == {'--image': 'deepresearch-minio-source:20261113',
+    assert native_args == {'--image': 'deepresearch-minio-source:20261115',
         '--build-receipt': BASE + 'minio-source-build/build-receipt.json',
         '--output-dir': BASE + 'minio-native', '--db-cache': BASE + 'minio-grype-db'}
     assert gate_args == {'--build-receipt': BASE + 'minio-source-build/build-receipt.json',
@@ -299,13 +308,13 @@ def test_minio_native_repair_requires_new_producer_complete_scans_and_strict_con
             BASE + 'minio-source-build/build-evidence/go-repair/*.json'}.issubset(upload['with']['path'].splitlines())
     for filename in ('compose.yaml', 'deployment/compose/compose.verify.yaml'):
         minio = yaml.safe_load((ROOT / filename).read_bytes())['services']['minio']
-        assert minio['image'] == 'deepresearch-minio-source:20261113' and 'build' not in minio
+        assert minio['image'] == 'deepresearch-minio-source:20261115' and 'build' not in minio
 
 
 def test_enterprise_and_compose_consume_source_image_without_a_second_uncontrolled_build():
     ci = yaml.safe_load((ROOT / '.github/workflows/ci.yml').read_text(encoding='utf-8'))
     steps = ci['jobs']['enterprise-compose-smoke']['steps']
-    build_index, build, args = command(steps, 'build_go_stdlib_security_20261112.py', artifact='grafana')
+    build_index, build, args = command(steps, 'build_go_otel_security_20261114.py', artifact='grafana')
     compile_index = next(i for i, step in enumerate(steps)
                          if step.get('run') == 'python scripts/ci_compose_build.py')
     cache_index = next(i for i, step in enumerate(steps)
@@ -330,5 +339,5 @@ def test_enterprise_and_compose_consume_source_image_without_a_second_uncontroll
         BASE + 'grafana-source-build/build-receipt.json', BASE + 'grafana-source-build/image-inspect.json',
         BASE + 'grafana-source-build/actual-payload/runtime-manifest.json.gz'}
     grafana = yaml.safe_load((ROOT / 'compose.yaml').read_text(encoding='utf-8'))['services']['grafana']
-    assert grafana['image'] == 'deepresearch-grafana-source:20261112' and 'build' not in grafana
-    assert grafana['x-deepresearch-source-build'] == 'grafana-source-20261112' and grafana['pull_policy'] == 'never'
+    assert grafana['image'] == 'deepresearch-grafana-source:20261114' and 'build' not in grafana
+    assert grafana['x-deepresearch-source-build'] == 'grafana-source-20261114' and grafana['pull_policy'] == 'never'

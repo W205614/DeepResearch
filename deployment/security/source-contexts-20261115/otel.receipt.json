@@ -1,0 +1,44 @@
+{
+  "profile": "otel",
+  "source_inputs": {
+    "deployment/vendors/otel-collector/source/components.go": "a566bb1ec54a371deada7ee420423709396b94fe612f22fcba6c63869c4c7139",
+    "deployment/vendors/otel-collector/source/go.mod": "75d4acf9ae30a1cde37dbcb292ec60e1efd7ddb6dbe6fdbf68034751da190011",
+    "deployment/vendors/otel-collector/source/go.sum": "52de4a0bf486073189a183482b6ff5f861dee3f8b73c69c9d2bd2d4df5ec29d5",
+    "deployment/vendors/otel-collector/source/main.go": "e6f7833ff71b03da33efd2e5493ea4d17ab25792edff466f0566e1a6b1dfcdf6",
+    "deployment/vendors/otel-collector/source/main_others.go": "0cd81e903710b93f8d16d205678aaeed914f334aaf63a2fda77eae845c7e5bd7",
+    "deployment/vendors/otel-collector/source/main_windows.go": "1e941b0fb681f58969660b0fc85d905f3c15a735e1212a25c76c336b604ade2c",
+    "deployment/vendors/otel-collector/source.lock.json": "9367d0d95443289076cc13e39f5ec18e2648fa5ab9c88f06a67c06794479ff9b",
+    "deployment/docker/Dockerfile.otel-collector": "5be0df7cd4371ccaed7411492ef783136feeb0d7f07eb23cc45313769e7f340b"
+  },
+  "source_provenance": {
+    "kind": "entirely_tracked_generated_distribution"
+  },
+  "command": [
+    "go",
+    "list",
+    "-deps",
+    "-json",
+    "-mod=readonly",
+    "-buildvcs=false",
+    "-tags=grpcnotrace",
+    "."
+  ],
+  "environment": {
+    "GOOS": "linux",
+    "GOARCH": "amd64",
+    "GOAMD64": "v1",
+    "CGO_ENABLED": "0",
+    "GOWORK": "off",
+    "GOTOOLCHAIN": "go1.27.4"
+  },
+  "compiler": "go version go1.27.4 windows/amd64",
+  "exit_code": 0,
+  "raw_sha256": "337138620c1ec613d95efe64dd2e0199a88a49b5141e4bfa7dba0a486b3f2a94",
+  "raw_bytes": 4264669,
+  "projection_sha256": "aa62723f6ebf75aff4d5ee6408074a7b49716fe8ce6daa5788347c5f35d11376",
+  "projection_raw_sha256": "19268e028ad8d068d59c788e8ea5624d2b477dfade0ad9a885b5181994f516e1",
+  "package_count": 871,
+  "raw_graph_modified": false,
+  "projection_preserves_all_packages_imports_and_module_identities": true,
+  "projection_entry_metadata_preserved": true
+}

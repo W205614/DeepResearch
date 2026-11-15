@@ -11,9 +11,14 @@ import pytest
 from scripts import check_tempo_app_exact1 as gate
 
 
+def historical_review():
+    # These adversarial fixtures retain their original 20261030 ELF and reports.
+    return gate.strict_json((gate.ROOT / gate.EVIDENCE / 'technical-review.json').read_bytes())
+
+
 @pytest.fixture
 def facts():
-    review = gate.load_review()
+    review = historical_review()
     folder = gate.ROOT / gate.EVIDENCE
     report = gate.strict_json(gzip.decompress((folder / 'derived-high-only-unit-test-fixture.json.gz').read_bytes()))
     inspection = gate.strict_json((folder / 'image-inspect.unit-test-fixture.json').read_bytes())
@@ -261,7 +266,7 @@ def full_raw_facts():
     inspection = gate.strict_json((folder / 'image-inspect.unit-test-fixture.json').read_bytes())
     material = gate.strict_json((folder / 'materials.json').read_bytes())
     native = gate.strict_json((folder / 'native-buildinfo.json').read_bytes())
-    review = gate.load_review()
+    review = historical_review()
     assert material['elf_sha256'] == review['scope']['elf_sha256']
     assert material['native_buildinfo_sha256'] == review['fixed_subject']['native_buildinfo_sha256']
     return report, inspection, material, native, review
