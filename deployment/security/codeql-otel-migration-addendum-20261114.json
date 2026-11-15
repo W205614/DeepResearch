@@ -22,7 +22,7 @@
     },
     ".github/workflows/security.yml": {
       "before": "3d04f60ab0617e7e4b8e6dd84943866eb70da59123bb2f86050118ec3b10f8ce",
-      "after": "a4de0be35dee3630f963b2c821cd8c88339b2f2f797b6cbb089f4187169a7a2c"
+      "after": "5949731a549d5c6bbe8963e377c20820c603730dc80816edb4470da3f22d5999"
     },
     "deployment/compose/compose.verify.yaml": {
       "before": "6ca4847c9511db88198d2b60c07d703848cc695745678bbf3ddcfe40420d7fa8",
@@ -30,7 +30,7 @@
     },
     "scripts/local.py": {
       "before": "74c6663dd251473eee03a0c24df95091d017bf8599c9e3db6d5c1534cd7205cc",
-      "after": "df04bc3cd42167c06734e04df77950205e0afa9d16b67372cabeec0d68968768"
+      "after": "17c393f4a938578ad8cf1f9777d8728c2f3db06d09fb91cf680b4fd6e848f0a6"
     },
     "scripts/runtime_ci_inventory.py": {
       "before": "534e99f44d7660496021c175502381b33373c5b41ffa2c6ed2bf882554368b24",
@@ -62,7 +62,7 @@
     },
     "tests/test_fs_workflow_gate.py": {
       "before": "1669827155450abeeeb4a7a062f3c2b4a4f3431539c16a7a477510616afc44b2",
-      "after": "94967067171a94d287bd8220f6e42bafd060ea0bef24bb2c444ea4f9740b9b0c"
+      "after": "06c96f36e4fc5cd37a349287472ab18939828e7129fc94675119778085bbcec4"
     },
     "scripts/.gitattributes": {
       "before": "238f0ffc3d21ae0b5a05ddef18819484dafd7cc2293b40e0be7ae04257f0b189",
@@ -82,7 +82,7 @@
     "all_effective_attributes_identical": true,
     "attribute_output_sha256": "0bad1b50e0099d173db2ccb8259c27b6d110113fe0494c708744ee49890e12d9"
   },
-  "generator_source_sha256": "2ce1d90b19d79673cbe12fd13382cb27068fdb4b063f1475a1248fd92c27d14c",
+  "generator_source_sha256": "f0b9142c66b18dbfe873f5b55d11c29c623822e1f1388f7e6cc879c7d04dc15d",
   "all_other_existing_bound_sha256": {
     "deployment/security/codeql-finding-review-20261110.md": "7585522420e6a8cb160ef2b173460762833e8128790a259ed0a4b779d8824948",
     "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java": "9729af95b2760eb00fdc36f8e86f8abaa7f0f4deb999f976a9342d7a93365aea",
@@ -426,7 +426,8 @@
   "human_review_claimed": false,
   "review_rationale": [
     "The otel-v1.47.0 migration (CVE-2026-128085) retires Grafana from the reusable-artifact freeze and re-routes the reviewed-source-image cache to the 20261114 builder; compose.yaml, ci.yml, security.yml, runtime_ci_inventory.py and ci_reviewed_image_cache.py changed only within that reviewed routing delta.",
-    "The CI follow-up verifies all 106 unchanged locked MinIO native inputs using complete official HTTPS GETs, then passes the verified directory through the existing builder input option. Exact size and SHA checks, the retained native builder, runtime payload checks and scanner gates remain required; this transport repair grants no finding exemption.",
+    "The CI follow-up verifies all 106 unchanged locked MinIO native inputs, then passes the verified directory through the existing builder input option. Every downloaded input uses a complete official HTTPS GET. Exact size and SHA checks, the retained native builder, runtime payload checks and scanner gates remain required; this transport repair grants no finding exemption.",
+    "The default local source-build entry uses that same verified-input preparation and existing builder option; --no-build retains its no-download behavior. The originally locked public-key bytes are vendored to avoid mutable keyserver armor-header ordering; the other 105 inputs retain their locked HTTPS retrieval and complete checksum checks.",
     "uv.lock changes are the reviewed soupsieve 4.1 upgrade (CVE-2026-126190), already bound by the agent source scope review.",
     "The XSS-through-DOM finding identity (js/xss-through-dom on the offline SQLite release note) and its source/proof bytes are unchanged. Historical tests now replay the exact original input bytes instead of the changed live locks; current production checks remain strict.",
     "No CodeQL scan is re-run and no SARIF is modified; the four original finding identities and severity threshold are preserved."

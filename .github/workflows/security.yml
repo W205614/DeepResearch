@@ -202,6 +202,16 @@ jobs:
           --build-receipt .cache/eval/minio-source-build/build-receipt.json
           --output-dir .cache/eval/minio-native
           --db-cache .cache/eval/minio-grype-db
+      - name: Prepare the fixed Go parser for the MinIO native gate
+        if: matrix.source_build_profile == 'minio-otel-source-20261115' && steps.approved_scan.outcome == 'success'
+        run: |
+          python - <<'PY'
+          import subprocess
+          from scripts.go_stdlib_rebuild_20261112 import TOOLCHAIN
+          inspected = subprocess.run(['docker', 'image', 'inspect', TOOLCHAIN], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+          if inspected.returncode:
+              subprocess.run(['docker', 'pull', TOOLCHAIN], check=True)
+          PY
       - name: Enforce all-severity findings against the exact MinIO native repair subject
         if: matrix.source_build_profile == 'minio-otel-source-20261115' && steps.approved_scan.outcome == 'success'
         run: >-
@@ -278,6 +288,7 @@ jobs:
             .cache/eval/minio-source-build/build-evidence/**/*.txt
             .cache/eval/grafana-source-build/diagnostic-graphs/*.json
             .cache/eval/grafana-source-build/diagnostic-graphs/*.json.gz
+            .cache/eval/grafana-source-build/retained-20261112-build/**
             .cache/eval/grafana-source-build/build-receipt.json
             .cache/eval/grafana-source-build/image-inspect.json
             .cache/eval/grafana-source-build/actual-payload/runtime-manifest.json.gz

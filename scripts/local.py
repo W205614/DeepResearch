@@ -6,6 +6,7 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -92,6 +93,12 @@ def main(argv: list[str] | None = None) -> int:
         print("Local configuration and Compose validated; no provider request sent.")
         return 0
     builders = [[sys.executable, str(ROOT / 'scripts/build_minio_otel_20261115.py')]]
+    if not args.no_build:
+        native_inputs = ROOT / '.cache/local-minio-native-inputs'
+        evidence = ROOT / '.cache/local-minio-input-evidence' / uuid.uuid4().hex
+        subprocess.run([sys.executable, str(ROOT / 'scripts/prefetch_minio_verified_20261115.py'),
+                        '--directory', str(native_inputs), '--evidence-dir', str(evidence)], check=True)
+        builders[0] += ['--input-dir', str(native_inputs)]
     if args.observability:
         builders.append([sys.executable, str(ROOT / 'scripts/build_go_otel_security_20261114.py'),
                          '--artifact', 'grafana'])

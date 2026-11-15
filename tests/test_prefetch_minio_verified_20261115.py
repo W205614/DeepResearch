@@ -8,6 +8,33 @@ import pytest
 from scripts import prefetch_minio_verified_20261115 as transport
 
 
+def test_real_vendored_original_key_is_exact_and_never_downloaded(tmp_path, monkeypatch):
+    row = dict(transport.VENDORED_KEY)
+    monkeypatch.setattr(transport, 'urlopen', lambda *a, **k: pytest.fail('Vendored key must not use a mutable keyserver response'))
+    receipt = transport.fetch_one(row, tmp_path, tmp_path)
+    assert receipt['transport'] == 'vendored_exact_original_public_key'
+    assert receipt['HTTP_download_claimed'] is False
+    assert (tmp_path / row['name']).read_bytes() == transport.VENDORED_KEY_PATH.read_bytes()
+    assert transport.frozen.digest(tmp_path / row['name']) == row['sha256']
+
+
+def test_modified_vendored_key_is_rejected(tmp_path, monkeypatch):
+    changed = tmp_path / 'changed-key.asc'
+    body = transport.VENDORED_KEY_PATH.read_bytes()
+    changed.write_bytes(body[:-1] + bytes([body[-1] ^ 1]))
+    monkeypatch.setattr(transport, 'VENDORED_KEY_PATH', changed)
+    with pytest.raises(ValueError, match='original public key bytes differ'):
+        transport.fetch_one(dict(transport.VENDORED_KEY), tmp_path, tmp_path)
+
+
+@pytest.mark.parametrize('field,value', [('url', 'https://official.example/other-key'),
+                                        ('bytes', 6196), ('sha256', '0' * 64)])
+def test_vendored_key_rejects_changed_lock_tuple(tmp_path, field, value):
+    row = {**transport.VENDORED_KEY, field: value}
+    with pytest.raises(ValueError, match='exact unchanged name/URL/size/SHA lock tuple'):
+        transport.fetch_one(row, tmp_path, tmp_path)
+
+
 def source(body):
     return {'name': 'locked.source', 'url': 'https://official.example/locked.source',
             'bytes': len(body), 'sha256': hashlib.sha256(body).hexdigest()}

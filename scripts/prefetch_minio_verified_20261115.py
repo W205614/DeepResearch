@@ -18,9 +18,38 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts import prefetch_minio_os_inputs_20261113 as frozen  # noqa: E402
 
+VENDORED_KEY_PATH = ROOT / 'deployment/vendors/minio-os-inputs-20261115/daniel-stenberg.asc'
+VENDORED_KEY = {
+    'name': 'daniel-stenberg.asc',
+    'url': 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x27EDEAF22F3ABCEB50DB9A125CC908FDB71E12C2',
+    'bytes': 6197,
+    'sha256': 'a02c65495a46ce084162aa2143ebc588a136798ece5089ea85dce1d0691c87ef',
+}
+
 
 def fetch_one(row, directory, evidence):
     destination = directory / row['name']
+    if row['name'] == VENDORED_KEY['name']:
+        if row != VENDORED_KEY:
+            raise ValueError('Vendored public key requires the exact unchanged name/URL/size/SHA lock tuple')
+        if (VENDORED_KEY_PATH.is_symlink() or not VENDORED_KEY_PATH.is_file()
+                or VENDORED_KEY_PATH.stat().st_size != row['bytes']
+                or frozen.digest(VENDORED_KEY_PATH) != row['sha256']):
+            raise ValueError('Vendored original public key bytes differ from the unchanged lock')
+        if destination.exists():
+            if destination.stat().st_size != row['bytes'] or frozen.digest(destination) != row['sha256']:
+                raise ValueError('Existing native input differs: ' + row['name'])
+        else:
+            shutil.copyfile(VENDORED_KEY_PATH, destination)
+        receipt = {'name': row['name'], 'transport': 'vendored_exact_original_public_key',
+                   'original_keyserver_url': row['url'],
+                   'repository_source': 'deployment/vendors/minio-os-inputs-20261115/daniel-stenberg.asc',
+                   'bytes': row['bytes'], 'sha256': row['sha256'],
+                   'HTTP_download_claimed': False,
+                   'reason': 'Keyserver ASCII armor metadata-header order varies; retain the exact originally locked public key bytes. Original Dockerfile signature verification remains mandatory.'}
+        (evidence / (row['name'] + '.vendored.json')).write_text(
+            json.dumps(receipt, indent=2) + '\n', encoding='utf-8')
+        return receipt
     if destination.exists():
         if destination.stat().st_size != row['bytes'] or frozen.digest(destination) != row['sha256']:
             raise ValueError('Existing native input differs: ' + row['name'])

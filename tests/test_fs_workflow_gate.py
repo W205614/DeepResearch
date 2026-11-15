@@ -291,9 +291,18 @@ def test_minio_native_repair_requires_new_producer_complete_scans_and_strict_con
     scan_index = next(i for i, step in enumerate(steps) if step.get('id') == 'approved_scan')
     secret_index, _, _ = command(steps, 'check_image_secrets.py')
     condition = "matrix.source_build_profile == 'minio-otel-source-20261115'"
+    parser_index = next(i for i, step in enumerate(steps)
+                        if step.get('name') == 'Prepare the fixed Go parser for the MinIO native gate')
+    parser = steps[parser_index]
     assert build['if'] == condition
     assert native['if'] == gate['if'] == condition + " && steps.approved_scan.outcome == 'success'"
-    assert prefetch_index < build_index < scan_index < secret_index < native_index < gate_index
+    assert prefetch_index < build_index < scan_index < secret_index < native_index < parser_index < gate_index
+    assert parser['if'] == condition + " && steps.approved_scan.outcome == 'success'"
+    assert parser['run'] == ("python - <<'PY'\nimport subprocess\n"
+        "from scripts.go_stdlib_rebuild_20261112 import TOOLCHAIN\n"
+        "inspected = subprocess.run(['docker', 'image', 'inspect', TOOLCHAIN], "
+        "stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)\n"
+        "if inspected.returncode:\n    subprocess.run(['docker', 'pull', TOOLCHAIN], check=True)\nPY\n")
     assert prefetch['if'] == condition
     assert prefetch_args == {'--directory': BASE + 'minio-native-inputs',
                              '--evidence-dir': BASE + 'minio-fullget-receipts'}
@@ -306,7 +315,7 @@ def test_minio_native_repair_requires_new_producer_complete_scans_and_strict_con
         '--scan': 'runtime-image.json', '--inspect': BASE + 'minio-source-build/image-inspect.json',
         '--grype-scan': BASE + 'minio-native/full-grype.json', '--sbom': BASE + 'minio-native/full-syft.json',
         '--scanner-exit-code': '0', '--grype-exit-code': '0', '--output': BASE + 'minio-ci-disposition.json'}
-    assert not any(step.get('continue-on-error') for step in (build, native, gate))
+    assert not any(step.get('continue-on-error') for step in (build, native, parser, gate))
     assert not any('scripts/check_minio_source_build_20261112.py' in step.get('run', '') for step in steps)
     upload = next(step for step in steps if step.get('uses', '').startswith('actions/upload-artifact@'))
     assert upload['if'] == 'always()'

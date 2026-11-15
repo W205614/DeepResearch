@@ -2,11 +2,11 @@
   "schema": "independent-grafana-otel-source-review-v1",
   "actor": "/root/milvus_build",
   "actor_kind": "automated_independent_agent",
-  "subject_sha256": "7eb1d21096d3fa479f51c9e0b1e4e3c0761526595dc08c34a6a4d32f2824b5dc",
+  "subject_sha256": "76870107af2119af2c4d54dab4da1c9308901ae941c6d17712d91700c8561fb2",
   "facts_passed": true,
   "risk_acceptance": false,
   "binary_redistribution_approved": false,
-  "reviewed_at_utc": "2026-11-15T07:46:13.866793+00:00",
+  "reviewed_at_utc": "2026-11-15T08:48:03.131464+00:00",
   "facts": {
     "source_and_evidence_files_rehashed": 178,
     "source_manifest_inputs_rehashed": 157,
@@ -117,7 +117,7 @@
     "retained_exact_current_proofs": 71,
     "historical_otel_source_findings": 29,
     "additional_minio_findings": 3,
-    "official_advisories_independently_refetched": 3,
+    "official_advisories_retained_original_independent_fetch_bytes_rehashed": 3,
     "current_minio_import_absence": [
       {
         "context": "minio_silo",
@@ -288,11 +288,14 @@
       "image_scan_rows_unchanged": true,
       "raw_reports_modified": false
     },
-    "source_raw_diagnostic_only_not_clean_completion": true,
+    "source_raw_retained_clean_ci_source": "016ee7d43c0045324a1dcbb467a8dca9f9f7603b",
+    "final_fixed_commit_clean_completion_claimed": false,
+    "review_scope": "Independent Grafana native/runtime/scanner binding review; MinIO context rederivation was authored by this actor and requires the root reviewer independent verification.",
     "raw_reports_modified": false
   },
   "limitations": [
-    "Source diagnostic is dirty-working-tree evidence; final clean commit scan/CI still required.",
+    "Retained CI raw is from 016ee7d; final fixed commit clean scan and CI remain required.",
+    "This actor produced the refreshed MinIO receipts/index and SourceMigration bindings; their independent producer audit belongs to the separate root review. Grafana producer/native/runtime/scanner facts are independently recomputed here.",
     "Exact technical source applicability review does not grant third-party binary redistribution approval."
   ]
 }

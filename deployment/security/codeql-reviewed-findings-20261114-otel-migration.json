@@ -169,7 +169,7 @@
         "deployment/security/codeql-backend-busybox-addendum-20261113.json": "ca5e0acfd4223d764f934be226a5e5de8e6ebb36efaae3cdafd1a087e3ffa396",
         ".github/workflows/ci.yml": "d24ef9a5ca82ccc0e58276e58b9e4a55c0754cd00917586d42f989b3083d6eab",
         ".github/workflows/rag-quality.yml": "a47c59fa754678f62e6c95496627e82de6ea6aafa949d3462f9463e51b33e13d",
-        ".github/workflows/security.yml": "a4de0be35dee3630f963b2c821cd8c88339b2f2f797b6cbb089f4187169a7a2c",
+        ".github/workflows/security.yml": "5949731a549d5c6bbe8963e377c20820c603730dc80816edb4470da3f22d5999",
         "deployment/compose/compose.cloud.backend-build.yaml": "712ddd2d0a6c7d7e719e5f1ebfba99cec1d0d6250eaadde6aef9bf250ada5a9e",
         "deployment/compose/compose.cloud.yaml": "3212fded2d09598aba9562a31efbfb63d8919ee9401d7f01872f83c9b137b2c9",
         "deployment/compose/compose.verify.yaml": "bf05201e626ad99ae5053b7e43cdda6386dee9621886abc9d0bcfa13b8e2b552",
@@ -192,7 +192,7 @@
         "scripts/build_minio_os_20261113.py": "28700eed440f39872674c80dfb55b7bbe298375be628ecd9c2eb2401a6178b54",
         "scripts/check_production_config.py": "e1fdae7f8f2719ba7232f134f1d5eb5c1c3a07a9e4a2ab194da948602064ff41",
         "scripts/collect_minio_os_native_20261113.py": "1adfa20b2ca496dc19117808cfbb136051ec99e5aa74cb03e69da4bb0bad8076",
-        "scripts/local.py": "df04bc3cd42167c06734e04df77950205e0afa9d16b67372cabeec0d68968768",
+        "scripts/local.py": "17c393f4a938578ad8cf1f9777d8728c2f3db06d09fb91cf680b4fd6e848f0a6",
         "scripts/minio_rpm_facts_20261113.py": "23e7fd3ef3666e212bc1f3eb49704e9d6ee6b260e90b3b82e55d45162e293d3e",
         "scripts/prefetch_go_security_modules_20261112.py": "2b6864129c0f8e1d2b555cd135eef9f1aba90a0146af06f22bd7d21b15bad391",
         "scripts/prefetch_minio_os_inputs_20261113.py": "2cb68b0a148f496c37aa42cd066d9e62702ebfff1d5d3a4daad33c6e6d6fac34",
@@ -406,7 +406,7 @@
         "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest-canonical.json.gz": "e7eac53d6007f52858ba1e8c8cdfa33bc4e387a8e2e500bfe8b4e394ff8d559a",
         "scripts/ci_compose_build.py": "5f8228753e251d3904ad493b3a46dcb0fd72ea980c2fd100d0ec0eac969783b2",
         "tests/test_ci_compose_build.py": "0ad5dfc21a4474b43262203c7787b90f3fe4b0c72f0eee4cf4c36500e8175304",
-        "tests/test_fs_workflow_gate.py": "94967067171a94d287bd8220f6e42bafd060ea0bef24bb2c444ea4f9740b9b0c",
+        "tests/test_fs_workflow_gate.py": "06c96f36e4fc5cd37a349287472ab18939828e7129fc94675119778085bbcec4",
         "scripts/build_codeql_ci_disk_review_20261114.py": "c3957cb702e9d93b1d0b276277c71d21b95266daa7bd7dab9acd4926879379a7",
         ".gitattributes": "8c56e4e34c5f5bcbb038f42ac9a1186381b1bc1b9f5e2040ff1ab76180609e54",
         "deployment/security/codeql-reviewed-findings-20261113-exact-image-cache.json": "1648a79bd36430717a266da278afe733711d28ec183893335d01f140cc4bdb78",
@@ -418,8 +418,8 @@
         "deployment/security/codeql-reviewed-findings-20261114-ci-disk.json": "afdc7960af1af47d50390b65ea5860fd30f6f0203e8e8a240155df1d7fd79afb",
         "deployment/security/codeql-ci-attributes-addendum-20261114.json": "088699bab3b799a6dc4ed54dee0d66af38811b7c156512f8dffd826392b6c07e",
         "deployment/security/codeql-reviewed-findings-20261114-ci-attributes.json": "491236926de989cb7f1adfc3e70e24b022a05e2ea65d25d0e80c9e1c03d79040",
-        "deployment/security/codeql-otel-migration-addendum-20261114.json": "4af0aaa0fb6e44c1d17f732f6c1ffc04e10967e3ae4a1e5007228ebb5251ed4f",
-        "scripts/build_codeql_otel_migration_review_20261114.py": "2ce1d90b19d79673cbe12fd13382cb27068fdb4b063f1475a1248fd92c27d14c"
+        "deployment/security/codeql-otel-migration-addendum-20261114.json": "7f0133fb8d4abe58cebeeefdaecc7ba753d79ef89dc7338d5d237955e0cc2b4a",
+        "scripts/build_codeql_otel_migration_review_20261114.py": "f0b9142c66b18dbfe873f5b55d11c29c623822e1f1388f7e6cc879c7d04dc15d"
       }
     }
   ],
@@ -510,6 +510,6 @@
     "prior_profile": "deployment/security/codeql-reviewed-findings-20261114-ci-attributes.json",
     "prior_profile_sha256": "491236926de989cb7f1adfc3e70e24b022a05e2ea65d25d0e80c9e1c03d79040",
     "path": "deployment/security/codeql-otel-migration-addendum-20261114.json",
-    "sha256": "4af0aaa0fb6e44c1d17f732f6c1ffc04e10967e3ae4a1e5007228ebb5251ed4f"
+    "sha256": "7f0133fb8d4abe58cebeeefdaecc7ba753d79ef89dc7338d5d237955e0cc2b4a"
   }
 }

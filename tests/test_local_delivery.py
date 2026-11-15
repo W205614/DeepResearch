@@ -114,6 +114,11 @@ def test_observability_prepares_source_profile_before_start_and_never_reuses_old
     if no_build:
         arguments.append('--no-build')
     assert local.main(arguments) == 0
+    if not no_build:
+        prefetch, *calls = calls
+        assert prefetch[:2] == [local.sys.executable, str(local.ROOT / 'scripts/prefetch_minio_verified_20261115.py')]
+        assert prefetch[2:4] == ['--directory', str(local.ROOT / '.cache/local-minio-native-inputs')]
+        assert calls[0][-2:] == ['--input-dir', prefetch[3]]
     assert len(calls) == 3
     assert calls[0][:2] == [local.sys.executable, str(local.ROOT / 'scripts/build_minio_otel_20261115.py')]
     assert ('--no-build' in calls[0]) is no_build
@@ -157,6 +162,9 @@ def test_minio_native_profile_failure_blocks_default_start_without_old_go_fallba
 
     def run(command, **kwargs):
         calls.append(command)
+        if str(local.ROOT / 'scripts/prefetch_minio_verified_20261115.py') in command:
+            assert no_build is False and kwargs['check'] is True
+            return
         assert command[:2] == [local.sys.executable, str(local.ROOT / 'scripts/build_minio_otel_20261115.py')]
         assert ('--no-build' in command) is no_build
         assert '--prepare' not in command and kwargs['check'] is True
@@ -165,7 +173,23 @@ def test_minio_native_profile_failure_blocks_default_start_without_old_go_fallba
     monkeypatch.setattr(local.subprocess, 'run', run)
     with pytest.raises(subprocess.CalledProcessError):
         local.main(['start', '--env-file', str(tmp_path / '.env'), *(['--no-build'] if no_build else [])])
-    assert len(calls) == 1 and 'up' not in calls[0]
+    assert len(calls) == (1 if no_build else 2) and all('up' not in call for call in calls)
+
+
+def test_native_input_verification_failure_blocks_source_build_and_start(tmp_path, monkeypatch):
+    calls = []
+    monkeypatch.setattr(local, 'preflight', lambda *_args: None)
+
+    def run(command, **kwargs):
+        calls.append(command)
+        assert command[:2] == [local.sys.executable, str(local.ROOT / 'scripts/prefetch_minio_verified_20261115.py')]
+        assert kwargs['check'] is True
+        raise subprocess.CalledProcessError(1, command)
+
+    monkeypatch.setattr(local.subprocess, 'run', run)
+    with pytest.raises(subprocess.CalledProcessError):
+        local.main(['start', '--env-file', str(tmp_path / '.env')])
+    assert len(calls) == 1
 
 
 def source_repository(tmp_path):
