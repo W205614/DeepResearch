@@ -139,9 +139,9 @@ jobs:
         with: { artifact: grafana, output-dir: .cache/eval/grafana-source-build }
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      - name: Verify complete locked MinIO native inputs over official HTTPS
+      - uses: ./.github/actions/minio-native-inputs
         if: matrix.source_build_profile == 'minio-otel-source-20261115'
-        run: python scripts/prefetch_minio_verified_20261115.py --directory .cache/eval/minio-native-inputs --evidence-dir .cache/eval/minio-fullget-receipts
+        with: { output-dir: .cache/eval/minio-source-build }
       - name: Build the exact reviewed MinIO native repair without publishing a third-party image
         if: matrix.source_build_profile == 'minio-otel-source-20261115'
         uses: ./.github/actions/reviewed-source-image
@@ -269,8 +269,9 @@ jobs:
             runtime-image.json
             .cache/eval/approved-*-load*.json
             .cache/eval/minio-ci-disposition.json
-            .cache/eval/minio-fullget-receipts/*.json
-            .cache/eval/minio-fullget-receipts/*.failed.body
+            .cache/eval/minio-fullget-receipts/**/*.json
+            .cache/eval/minio-fullget-receipts/**/*.failed.body
+            .cache/eval/minio-source-build-cache.json
             .cache/eval/minio-original-disposition.json
             .cache/eval/minio-openpgp2-disposition.json
             .cache/eval/grafana-ci-disposition.json

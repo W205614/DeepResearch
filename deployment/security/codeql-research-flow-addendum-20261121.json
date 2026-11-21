@@ -64,7 +64,8 @@
     "The backend Compose health check additionally calls the existing Java Actuator health endpoint. It requires Redis readiness before startup is complete and does not change authorization or routing.",
     "The base image and package updates preserve the Web recipe COPY scope. The existing workflow invokes the same CodeQL languages.",
     "The Agent source-build fix preserves Web COPY instructions, routing and the CodeQL analysis matrix.",
-    "The source dependency gate reassesses seven exact declarations against compiled imports. It does not change the CodeQL languages, frontend context or offline SQLite proof serving boundary."
+    "The source dependency gate reassesses seven exact declarations against compiled imports. It does not change the CodeQL languages, frontend context or offline SQLite proof serving boundary.",
+    "The CI cache lookup only decides whether to fetch the locked MinIO inputs before the original verified producer. CodeQL language selection, Web build scope and serving boundaries remain byte-identical in their owning files."
   ],
   "changed_bindings": {
     "java/spring-disabled-csrf-protection": {
@@ -92,7 +93,7 @@
       },
       ".github/workflows/security.yml": {
         "before": "5949731a549d5c6bbe8963e377c20820c603730dc80816edb4470da3f22d5999",
-        "after": "71452f30a71e27e8eccbfc3dac7a9fee5c32217020f1c9453c8895fd414d0fe5"
+        "after": "f0270564e6b684fe4e04db250fb39560930a4f40ff0e84d1ba8121aa0a9cff09"
       },
       "deployment/compose/compose.cloud.yaml": {
         "before": "3212fded2d09598aba9562a31efbfb63d8919ee9401d7f01872f83c9b137b2c9",
@@ -132,7 +133,11 @@
       },
       "tests/test_fs_workflow_gate.py": {
         "before": "06c96f36e4fc5cd37a349287472ab18939828e7129fc94675119778085bbcec4",
-        "after": "a5e297bc98f8632c66ebc8d6b1f04f49eebac7be0ff23c03002589f37ee8110d"
+        "after": "ffcbe69121c1eb7c34157bcc81b0ce933b6d2eba85836fc48460a57b5b54719a"
+      },
+      ".github/workflows/ci.yml": {
+        "before": "d24ef9a5ca82ccc0e58276e58b9e4a55c0754cd00917586d42f989b3083d6eab",
+        "after": "a50e1d5ec3b9ace9a9e9388fb4e60cc4502de7f26ca576e24a5272daa914d3dd"
       }
     }
   }

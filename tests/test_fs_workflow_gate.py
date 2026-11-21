@@ -285,7 +285,8 @@ def test_minio_native_repair_requires_new_producer_complete_scans_and_strict_con
     document = yaml.safe_load((ROOT / '.github/workflows/security.yml').read_text(encoding='utf-8'))
     steps = document['jobs']['runtime-image-scan']['steps']
     build_index, build, build_args = command(steps, 'build_minio_otel_20261115.py')
-    prefetch_index, prefetch, prefetch_args = command(steps, 'prefetch_minio_verified_20261115.py')
+    prefetch_index, prefetch = next((i, step) for i, step in enumerate(steps)
+                                    if step.get('uses') == './.github/actions/minio-native-inputs')
     native_index, native, native_args = command(steps, 'collect_minio_os_native_20261113.py')
     gate_index, gate, gate_args = command(steps, 'check_minio_otel_20261115.py')
     scan_index = next(i for i, step in enumerate(steps) if step.get('id') == 'approved_scan')
@@ -304,6 +305,15 @@ def test_minio_native_repair_requires_new_producer_complete_scans_and_strict_con
         "stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)\n"
         "if inspected.returncode:\n    subprocess.run(['docker', 'pull', TOOLCHAIN], check=True)\nPY\n")
     assert prefetch['if'] == condition
+    assert prefetch['with'] == {'output-dir': build['with']['output-dir']}
+    preflight = yaml.safe_load((ROOT / '.github/actions/minio-native-inputs/action.yml').read_bytes())['runs']['steps']
+    key, lookup, download = preflight
+    assert 'scripts/ci_reviewed_image_cache.py key --artifact minio' in key['run']
+    assert lookup['uses'] == 'actions/cache/restore@v5'
+    assert lookup['with'] == {'path': '${{ steps.identity.outputs.archive }}',
+                              'key': '${{ steps.identity.outputs.key }}', 'lookup-only': True}
+    assert download['if'] == "steps.archive.outputs.cache-hit != 'true'"
+    _, _, prefetch_args = command(preflight, 'prefetch_minio_verified_20261115.py')
     assert prefetch_args == {'--directory': BASE + 'minio-native-inputs',
                              '--evidence-dir': BASE + 'minio-fullget-receipts'}
     assert build_args == {'--output-dir': BASE + 'minio-source-build',

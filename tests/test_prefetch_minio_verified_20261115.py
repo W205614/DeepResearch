@@ -2,6 +2,7 @@ import hashlib
 from http.client import IncompleteRead
 import io
 import json
+from urllib.error import HTTPError
 
 import pytest
 
@@ -104,3 +105,38 @@ def test_unapproved_transport_is_not_retried(tmp_path, monkeypatch, kind):
     with pytest.raises(ValueError):
         transport.fetch_one(source(b'good'), tmp_path, tmp_path)
     assert len(calls) == 1
+
+
+def test_only_locked_alpine_apk_can_use_official_mirror_after_404(tmp_path, monkeypatch):
+    name = 'libssl3-3.5.9-r0.apk'
+    tail = transport.ALPINE_APK_PATH + name
+    origin = 'https://dl-cdn.alpinelinux.org/alpine' + tail
+    mirror_url = transport.ALPINE_ARCHIVE_MIRRORS[0] + tail
+    payload = b'locked-apk'
+    row = {**source(payload), 'name': name, 'url': origin}
+    lock = tmp_path / 'lock.json'
+    lock.write_text(json.dumps({'inputs': [row]}), encoding='utf-8')
+    monkeypatch.setattr(transport.frozen, 'LOCK', lock)
+    calls = []
+
+    def open_response(request, timeout):
+        calls.append(request.full_url)
+        if request.full_url == origin:
+            raise HTTPError(origin, 404, 'Not Found', {}, None)
+        response = Response(payload)
+        response.geturl = lambda: mirror_url
+        return response
+
+    monkeypatch.setattr(transport, 'urlopen', open_response)
+    rejected = tmp_path / 'rejected'
+    rejected.mkdir()
+    with pytest.raises(HTTPError, match='404'):
+        transport.fetch_one({**row, 'sha256': '0' * 64}, rejected, rejected)
+    assert calls == [origin]
+
+    result = transport.fetch_one(row, tmp_path, tmp_path)
+    primary_receipt = tmp_path / f'{name}.attempt-1.json'
+    assert json.loads(primary_receipt.read_bytes())['http_status'] == 404
+    assert calls == [origin, origin, mirror_url]
+    assert result['locked_url'] == origin and result['final_url'] == mirror_url
+    assert (tmp_path / name).read_bytes() == payload

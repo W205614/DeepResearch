@@ -1,0 +1,24 @@
+name: Resolve locked MinIO inputs when a build is needed
+description: Check for the exact reviewed archive before fetching native inputs
+inputs:
+  output-dir:
+    required: true
+    description: Output directory passed to the reviewed source image action
+runs:
+  using: composite
+  steps:
+    - id: identity
+      shell: bash
+      run: uv run --frozen --no-dev python scripts/ci_reviewed_image_cache.py key --artifact minio --output-dir "$OUTPUT_DIR"
+      env:
+        OUTPUT_DIR: ${{ inputs.output-dir }}
+    - id: archive
+      uses: actions/cache/restore@v5
+      with:
+        path: ${{ steps.identity.outputs.archive }}
+        key: ${{ steps.identity.outputs.key }}
+        lookup-only: true
+    - name: Verify complete locked MinIO native inputs over official HTTPS
+      if: steps.archive.outputs.cache-hit != 'true'
+      shell: bash
+      run: python scripts/prefetch_minio_verified_20261115.py --directory .cache/eval/minio-native-inputs --evidence-dir .cache/eval/minio-fullget-receipts
