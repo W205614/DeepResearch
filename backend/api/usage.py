@@ -55,12 +55,16 @@ def register_usage(app, rt, identity):
             "period_end": start + settings.usage_period_seconds,
             "period_basis": "UTC epoch intervals",
             "scopes": output,
-            "run_limits": {"calls": settings.max_run_call_attempts,
-                           "reserved_tokens": settings.max_run_reserved_tokens,
-                           "searches": settings.max_search_calls,
-                           "seconds": settings.max_run_total_seconds},
-            "processing": {"internal_model_allowed": settings.allow_internal_model_processing,
-                           "reranker_enabled": settings.reranker_enabled,
-                           "demo_mode": settings.demo_mode},
+            "run_limits": {
+                "calls": settings.max_run_call_attempts,
+                "reserved_tokens": settings.max_run_reserved_tokens,
+                "searches": settings.max_search_calls,
+                "seconds": settings.max_run_total_seconds,
+            },
+            "processing": {
+                "internal_model_allowed": settings.allow_internal_model_processing,
+                "reranker_enabled": settings.reranker_enabled,
+                "demo_mode": settings.demo_mode,
+            },
             "meaning": "累计预留不是账单；已知Token、待结算和未知消耗分别记录，不推算金额",
         }
