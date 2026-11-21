@@ -14,7 +14,7 @@ PROFILE_CONTRACTS = {
     'fixed20261107': ('check_grafana_source_fixed_20261107.py', {}, 'check_grafana_release_20261107'),
     'grafana-source-20261110': ('check_grafana_source_scan_20261110.py', {}, 'check_grafana_source_build_20261110'),
     'grafana-source-20261112': ('check_grafana_source_scan_20261112.py', {}, 'check_grafana_source_build_20261112'),
-    'grafana-source-20261114': ('check_grafana_source_scan_20261114.py', {}, 'check_grafana_source_build_20261114'),
+    'grafana-source-20261114': ('check_grafana_source_scan_20261121.py', {}, 'check_grafana_source_build_20261114'),
 }
 BASE = '.cache/eval/'
 SOURCE_READY = "always() && steps.source_scan.outcome == 'success'"

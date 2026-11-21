@@ -63,7 +63,8 @@
     "ReportReader still receives text sanitized by the existing App.vue DOMPurify boundary. The new report controls and evidence card do not make the offline SQLite file a Web asset.",
     "The backend Compose health check additionally calls the existing Java Actuator health endpoint. It requires Redis readiness before startup is complete and does not change authorization or routing.",
     "The base image and package updates preserve the Web recipe COPY scope. The existing workflow invokes the same CodeQL languages.",
-    "The Agent source-build fix preserves Web COPY instructions, routing and the CodeQL analysis matrix."
+    "The Agent source-build fix preserves Web COPY instructions, routing and the CodeQL analysis matrix.",
+    "The source dependency gate reassesses seven exact declarations against compiled imports. It does not change the CodeQL languages, frontend context or offline SQLite proof serving boundary."
   ],
   "changed_bindings": {
     "java/spring-disabled-csrf-protection": {
@@ -91,7 +92,7 @@
       },
       ".github/workflows/security.yml": {
         "before": "5949731a549d5c6bbe8963e377c20820c603730dc80816edb4470da3f22d5999",
-        "after": "c5509164c9e514a7775a79a684ca77b27af3ba2e21ba1dfd6f091b553eab2304"
+        "after": "71452f30a71e27e8eccbfc3dac7a9fee5c32217020f1c9453c8895fd414d0fe5"
       },
       "deployment/compose/compose.cloud.yaml": {
         "before": "3212fded2d09598aba9562a31efbfb63d8919ee9401d7f01872f83c9b137b2c9",
@@ -128,6 +129,10 @@
       "tests/test_codeql_prompt_continuation_20261115.py": {
         "before": "6baa0e45a09d310ff13b84c7e53308bfca286b4ef2618e61dd0ab23eda299347",
         "after": "8c1eea05ae67ff7fc47c3af0a109915f596df9bce51ce8c8c9f3b93e84a25cc3"
+      },
+      "tests/test_fs_workflow_gate.py": {
+        "before": "06c96f36e4fc5cd37a349287472ab18939828e7129fc94675119778085bbcec4",
+        "after": "a5e297bc98f8632c66ebc8d6b1f04f49eebac7be0ff23c03002589f37ee8110d"
       }
     }
   }

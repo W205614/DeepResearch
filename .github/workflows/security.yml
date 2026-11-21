@@ -59,7 +59,7 @@ jobs:
       - name: Enforce exact source findings against the current reviewed source profile
         if: always() && steps.source_scan.outcome == 'success'
         run: >-
-          python scripts/check_grafana_source_scan_20261114.py
+          python scripts/check_grafana_source_scan_20261121.py
           --scan .cache/eval/source-fs/raw.json
           --scan-receipt .cache/eval/source-fs/completion.json
           --original-verdict .cache/eval/source-fs-original-verdict.json

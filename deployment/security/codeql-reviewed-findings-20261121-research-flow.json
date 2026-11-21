@@ -1,6 +1,6 @@
 {
   "schema": "codeql-exact-reviewed-findings-v1",
-  "reviewed_at": "2026-11-15",
+  "reviewed_at": "2026-11-21",
   "baseline_source_sha": "0005df53b742cdc2b79ef9196208cf0d00f8a0b8",
   "scope": "Four technically verified false positives only. Preserve all raw SARIF. New locations/messages, changed bound source/proof bytes, or additional findings require review; no risk acceptance or category/path exclusion. TLS test alert 133 is fixed in code and deliberately has no exception.",
   "findings": [
@@ -66,7 +66,7 @@
         "business-backend/pom.xml": "c5947abb575ffe01db6615726427363ad08ff5c4ec375bbb8abb7417d55be46f",
         "deployment/security/codeql-tomcat27-addendum-20261112.json": "643dbfeaf98a6c9ccb64e6c5906cfb9613fc0a411c78df8db8b22fc7967ac2f3",
         "deployment/security/codeql-reviewed-findings-20261114-otel-migration.json": "2aa338ccbb610b12d4763b3efc9b7b77f3eed6ae02c48c2e210ebad9751abd1e",
-        "deployment/security/codeql-research-flow-addendum-20261121.json": "44bc14e34a03d8bb3edc14154907223e0fc3a5c5a0ddf50c9d9bc46fe2158602"
+        "deployment/security/codeql-research-flow-addendum-20261121.json": "76a98fc98a13f57bc5baf23e213f6901362bb2d2312b5c9a4e331a5c2ab60ce9"
       }
     },
     {
@@ -171,7 +171,7 @@
         "deployment/security/codeql-backend-busybox-addendum-20261113.json": "ca5e0acfd4223d764f934be226a5e5de8e6ebb36efaae3cdafd1a087e3ffa396",
         ".github/workflows/ci.yml": "d24ef9a5ca82ccc0e58276e58b9e4a55c0754cd00917586d42f989b3083d6eab",
         ".github/workflows/rag-quality.yml": "a47c59fa754678f62e6c95496627e82de6ea6aafa949d3462f9463e51b33e13d",
-        ".github/workflows/security.yml": "c5509164c9e514a7775a79a684ca77b27af3ba2e21ba1dfd6f091b553eab2304",
+        ".github/workflows/security.yml": "71452f30a71e27e8eccbfc3dac7a9fee5c32217020f1c9453c8895fd414d0fe5",
         "deployment/compose/compose.cloud.backend-build.yaml": "712ddd2d0a6c7d7e719e5f1ebfba99cec1d0d6250eaadde6aef9bf250ada5a9e",
         "deployment/compose/compose.cloud.yaml": "b00d271dc87df0691c78affc43ba5b74600c385ba4e09ec7afc6caec210a6601",
         "deployment/compose/compose.verify.yaml": "db31b6a2a1cebe3055e7b828e769c9e1b57a72d67de23a31877791937680061c",
@@ -408,7 +408,7 @@
         "deployment/security/grafana-source-20261110-evidence/runtime/runtime-manifest-canonical.json.gz": "e7eac53d6007f52858ba1e8c8cdfa33bc4e387a8e2e500bfe8b4e394ff8d559a",
         "scripts/ci_compose_build.py": "5f8228753e251d3904ad493b3a46dcb0fd72ea980c2fd100d0ec0eac969783b2",
         "tests/test_ci_compose_build.py": "0ad5dfc21a4474b43262203c7787b90f3fe4b0c72f0eee4cf4c36500e8175304",
-        "tests/test_fs_workflow_gate.py": "06c96f36e4fc5cd37a349287472ab18939828e7129fc94675119778085bbcec4",
+        "tests/test_fs_workflow_gate.py": "a5e297bc98f8632c66ebc8d6b1f04f49eebac7be0ff23c03002589f37ee8110d",
         "scripts/build_codeql_ci_disk_review_20261114.py": "c3957cb702e9d93b1d0b276277c71d21b95266daa7bd7dab9acd4926879379a7",
         ".gitattributes": "8c56e4e34c5f5bcbb038f42ac9a1186381b1bc1b9f5e2040ff1ab76180609e54",
         "deployment/security/codeql-reviewed-findings-20261113-exact-image-cache.json": "1648a79bd36430717a266da278afe733711d28ec183893335d01f140cc4bdb78",
@@ -454,7 +454,7 @@
         "frontend/src/App.vue": "1c105e5d9553a74a8670c6a76d29e0b4f5cc5514d2fe76d66c8d582aa6654442",
         "frontend/src/ReportReader.vue": "cf87c51621db52980b7a74657a84d1796317ab8452625c1f1a71fc7cb359cdb7",
         "frontend/src/EvidenceExcerpt.vue": "1437b085c4fb429cde01f816b35a4c06f82d408f742e117bf16c9efd4d62ba86",
-        "deployment/security/codeql-research-flow-addendum-20261121.json": "44bc14e34a03d8bb3edc14154907223e0fc3a5c5a0ddf50c9d9bc46fe2158602"
+        "deployment/security/codeql-research-flow-addendum-20261121.json": "76a98fc98a13f57bc5baf23e213f6901362bb2d2312b5c9a4e331a5c2ab60ce9"
       }
     }
   ],
