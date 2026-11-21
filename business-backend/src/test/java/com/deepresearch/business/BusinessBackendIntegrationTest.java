@@ -107,6 +107,70 @@ class BusinessBackendIntegrationTest {
     }
 
     @Test
+    void targetedSupplementChecksParentPermissionsAndReplaysWithoutSecondOutboxMessage() throws Exception {
+        workspace("research-space", "author", "admin", 2);
+        workspace("other-space", "reader", "admin", 2);
+        String seed = """
+            {"topic":"请基于官方资料比较 PostgreSQL 全文检索加 pgvector 与 Milvus 两条路线，说明各自情况。","mode":"quick","data_policy":"public","client_request_id":"research-seed"}
+            """;
+        MvcResult initial = mvc.perform(post("/api/research/runs")
+                .with(jwt().jwt(value -> value.subject("author"))).header("X-Workspace-ID", "research-space")
+                .contentType("application/json").content(seed))
+            .andExpect(status().isAccepted()).andReturn();
+        String base = String.valueOf(mapper.readValue(initial.getResponse().getContentAsString(), MAP).get("id"));
+        String requirement = "012345678901234567890123";
+        jdbc.update("UPDATE runs SET status='completed',validation=? WHERE id=?", """
+            {"requirements":[{"id":"012345678901234567890123","status":"insufficient","text":"比较两条路线按项目筛选和删除过期笔记的能力组合。"}]}
+            """, base);
+        String preview = "/api/research/runs/" + base + "/supplement-query";
+        String defaultQuery = "PostgreSQL 全文检索加 pgvector 与 Milvus 比较两条路线按项目筛选和删除过期笔记的能力组合。";
+        mvc.perform(get(preview).param("requirementId", requirement).with(jwt().jwt(value -> value.subject("reader")))
+                .header("X-Workspace-ID", "other-space"))
+            .andExpect(status().isNotFound());
+        mvc.perform(get(preview).param("requirementId", requirement).with(jwt().jwt(value -> value.subject("author")))
+                .header("X-Workspace-ID", "research-space"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.query").value(defaultQuery));
+        String endpoint = "/api/research/runs/" + base + "/supplements";
+        String payload = """
+            {"client_request_id":"supplement-01","requirement_id":"012345678901234567890123","query":"Milvus  Filtered Search"}
+            """;
+        mvc.perform(post(endpoint).with(jwt().jwt(value -> value.subject("reader")))
+                .header("X-Workspace-ID", "other-space").contentType("application/json").content(payload))
+            .andExpect(status().isNotFound());
+        MvcResult created = mvc.perform(post(endpoint).with(jwt().jwt(value -> value.subject("author")))
+                .header("X-Workspace-ID", "research-space").contentType("application/json").content(payload))
+            .andExpect(status().isAccepted()).andExpect(jsonPath("$.related_run_id").value(base))
+            .andExpect(jsonPath("$.data_policy").value("public")).andReturn();
+        String child = String.valueOf(mapper.readValue(created.getResponse().getContentAsString(), MAP).get("id"));
+        mvc.perform(post(endpoint).with(jwt().jwt(value -> value.subject("author")))
+                .header("X-Workspace-ID", "research-space").contentType("application/json").content(payload))
+            .andExpect(status().isAccepted()).andExpect(jsonPath("$.id").value(child));
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM business_outbox WHERE aggregate_id=?", Integer.class, child))
+            .isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT supplement_requirement_id FROM runs WHERE id=?", String.class, child))
+            .isEqualTo(requirement);
+        assertThat(jdbc.queryForObject("SELECT supplement_query FROM runs WHERE id=?", String.class, child))
+            .isEqualTo("Milvus Filtered Search");
+        mvc.perform(post(endpoint).with(jwt().jwt(value -> value.subject("author")))
+                .header("X-Workspace-ID", "research-space").contentType("application/json")
+                .content(payload.replace("Milvus  Filtered Search", "PostgreSQL WHERE DELETE")))
+            .andExpect(status().isConflict());
+        mvc.perform(post(endpoint).with(jwt().jwt(value -> value.subject("author")))
+                .header("X-Workspace-ID", "research-space").contentType("application/json")
+                .content(payload.replace("Milvus  Filtered Search", "  ")))
+            .andExpect(status().isBadRequest());
+        jdbc.update("UPDATE runs SET status='completed' WHERE id=?", child);
+        String legacyPayload = payload.replace("supplement-01", "supplement-02")
+            .replace(",\"query\":\"Milvus  Filtered Search\"", "");
+        MvcResult legacy = mvc.perform(post(endpoint).with(jwt().jwt(value -> value.subject("author")))
+                .header("X-Workspace-ID", "research-space").contentType("application/json").content(legacyPayload))
+            .andExpect(status().isAccepted()).andReturn();
+        String legacyId = String.valueOf(mapper.readValue(legacy.getResponse().getContentAsString(), MAP).get("id"));
+        assertThat(jdbc.queryForObject("SELECT supplement_query FROM runs WHERE id=?", String.class, legacyId))
+            .isEqualTo(defaultQuery);
+    }
+
+    @Test
     void publicApiRequiresJwt() throws Exception {
         mvc.perform(get("/api/workspaces")).andExpect(status().isUnauthorized());
     }

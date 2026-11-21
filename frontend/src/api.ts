@@ -1,9 +1,20 @@
 import { accessToken, expireSession } from './auth'
 
 export type EventItem = { id: number; type: string; created_at: string; data: Record<string, any> }
-export type Source = { id: string; kind: 'web'|'local'|'attachment'; attachment_id?:string; title: string; url: string; text: string; access: string; locator: string; published_at: string; retrieved_at: string; domain?: string; evidence_level?: string; trust_label?: string; original_available?: boolean|null }
-export type Publication = { id:string; source_run_id:string; topic:string; author_subject:string; report_markdown:string; sources:Source[]; validation:Record<string,any>; quality?:string; content_sha256:string; status:'pending'|'published'|'rejected'|'withdrawn'; submitted_at:string; reviewed_by:string; reviewed_at:string; review_reason:string; withdrawn_by:string; withdrawn_at:string; withdrawal_reason:string; series_id?:string; parent_report_id?:string|null; revision_no?:number; corpus_revision?:number; current_corpus_revision?:number; evidence_status?:string; is_current?:boolean; artifacts?:{requirements?:string[];claims?:{id:string;text:string}[]} }
-export type Run = { created_by?:string; report_submitted?:boolean; publication?: {id:string;status:string;review_reason?:string;withdrawal_reason?:string}|null; can_resume?: boolean; error_info?: {code:string;retryable:boolean;action:string}; recovery?: {auto_recoveries:number;deadline_at:number;call_attempts:number;reserved_tokens:number}; attachments?: {id:string;name:string;media_type:string;size:number}[]; id: string; thread_id: string; topic: string; status: string; report: string; sources: Source[]; error: string; created_at: string; validation: Record<string, any>; usage: Record<string, number> }
+export type CoverageItem = { id:string; text:string; status:'answered'|'partial'|'insufficient'; claim_ids:string[]; gap:string }
+export type ClaimLink = { id:string; text:string; source_ids:string[]; comparison:boolean }
+export type Coverage = {
+  requirements?: CoverageItem[]
+  claim_links?: ClaimLink[]
+  unanswered_questions?: string[]
+  supplement?: { target_id:string; merged:boolean; previous_status?:CoverageItem['status']; added_source_ids?:string[];
+    retained_claim_ids?:string[]; added_claim_ids?:string[] }
+}
+export type ScopeFields = { time:string; region:string; object:string; deliverable:string }
+export type ScopeDraft = { id:string; topic:string; expires_at:number; data_policy?:string; answers_json?:string; suggestions?:ScopeFields }
+export type Source = { id: string; kind: 'web'|'local'|'attachment'; attachment_id?:string; index_version?:number; title: string; url: string; text: string; access: string; locator: string; published_at: string; retrieved_at: string; domain?: string; evidence_level?: string; trust_label?: string; original_available?: boolean|null }
+export type Publication = { id:string; source_run_id:string; data_policy?:string; topic:string; author_subject:string; report_markdown:string; sources:Source[]; validation:Record<string,any>; quality?:string; content_sha256:string; status:'pending'|'published'|'rejected'|'withdrawn'; submitted_at:string; reviewed_by:string; reviewed_at:string; review_reason:string; withdrawn_by:string; withdrawn_at:string; withdrawal_reason:string; series_id?:string; parent_report_id?:string|null; revision_no?:number; corpus_revision?:number; current_corpus_revision?:number; evidence_status?:string; is_current?:boolean; artifacts?:{requirements?:string[];claims?:{id:string;text:string;source_ids?:string[]}[]} }
+export type Run = { related_run_id?:string|null; supplement_requirement_id?:string|null; data_policy?:string; created_by?:string; report_submitted?:boolean; publication?: {id:string;status:string;review_reason?:string;withdrawal_reason?:string}|null; can_resume?: boolean; error_info?: {code:string;retryable:boolean;action:string}; recovery?: {auto_recoveries:number;deadline_at:number;call_attempts:number;reserved_tokens:number}; attachments?: {id:string;name:string;media_type:string;size:number}[]; id: string; thread_id: string; topic: string; status: string; report: string; sources: Source[]; error: string; created_at: string; validation: Record<string, any>; usage: Record<string, number> }
 export const terminal = (status: string) => ['completed','insufficient','failed','cancelled','interrupted'].includes(status)
 export function headers(): Record<string,string> {
   const h: Record<string,string> = {}

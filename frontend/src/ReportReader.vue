@@ -3,8 +3,10 @@ import { computed, onMounted, onUnmounted, ref, useId, watch } from 'vue'
 
 // The parent supplies the existing sanitized report. Only reading aids are added;
 // report text, citations and the exported Markdown remain untouched.
-const props = defineProps<{ html: string }>()
-const emit = defineEmits<{ inspect: [event: MouseEvent] }>()
+import type { ClaimLink } from './api'
+
+const props = defineProps<{ html: string; claims?:ClaimLink[] }>()
+const emit = defineEmits<{ inspect: [event: MouseEvent]; claim: [id:string] }>()
 const prefix = useId().replace(/[^a-zA-Z0-9-]/g, '')
 const contents = ref<HTMLDetailsElement | null>(null)
 const reader = ref<HTMLElement | null>(null)
@@ -17,6 +19,20 @@ const documentView = computed(() => {
     heading.setAttribute('tabindex', '-1')
     return { id: heading.id, text: heading.textContent || '', nested: heading.tagName === 'H3' }
   })
+  const claims = new Map(props.claims?.map(claim => [claim.text.replace(/\s+/g, ' ').trim(), claim.id]))
+  for (const paragraph of template.content.querySelectorAll('p')) {
+    const text = (paragraph.textContent || '').replace(/(?:\s*\[[WLI]-[^\]]+\])+\s*$/, '').replace(/\s+/g, ' ').trim()
+    const id = claims.get(text)
+    if (!id) continue
+    paragraph.dataset.verifiedClaim = id
+    paragraph.tabIndex = -1
+    const button = document.createElement('button')
+    button.className = 'text-button claim-source-button'
+    button.type = 'button'
+    button.dataset.claimSource = id
+    button.textContent = '核对这条结论'
+    paragraph.append(' ', button)
+  }
   template.content.querySelectorAll('table').forEach(table => {
     const wrapper = document.createElement('div')
     wrapper.className = 'report-table'
@@ -46,6 +62,22 @@ onMounted(() => {
 watch(documentView, markWideTables, { flush: 'post' })
 onUnmounted(() => resizeObserver?.disconnect())
 
+function focusClaim(id:string) {
+  const paragraph = Array.from(reader.value?.querySelectorAll<HTMLElement>('[data-verified-claim]') || [])
+    .find(element => element.dataset.verifiedClaim === id)
+  if (!paragraph) return false
+  paragraph.focus({ preventScroll: true })
+  paragraph.scrollIntoView({ block: 'center' })
+  return true
+}
+defineExpose({ focusClaim })
+
+function inspect(event:MouseEvent) {
+  const button = (event.target as HTMLElement).closest<HTMLElement>('button[data-claim-source]')
+  if (button?.dataset.claimSource) emit('claim', button.dataset.claimSource)
+  else emit('inspect', event)
+}
+
 function jump(index: number) {
   // Scope by position so pre-existing or repeated author IDs cannot send the
   // reader to a different report. Preserve author IDs for existing report links.
@@ -66,6 +98,6 @@ function jump(index: number) {
           :class="{ nested: heading.nested }" @click.prevent="jump(index)">{{ heading.text }}</a>
       </nav>
     </details>
-    <div class="markdown" v-html="documentView.html" @click="emit('inspect', $event)"></div>
+    <div class="markdown" v-html="documentView.html" @click="inspect"></div>
   </div>
 </template>

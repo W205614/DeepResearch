@@ -122,6 +122,10 @@ public class ReportPublicationService {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "当前正式版本已变化，请从最新版本修订");
             revisionNo = jdbc.queryForObject("SELECT COALESCE(MAX(revision_no),0)+1 FROM report_publications WHERE series_id=?", Integer.class, seriesId);
         } else {
+            if (run.get("supplement_requirement_id") != null && !jdbc.queryForList(
+                    "SELECT id FROM report_publications WHERE workspace_id=? AND source_run_id=?",
+                    identity.workspaceId(), run.get("related_run_id")).isEmpty())
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "原报告已进入审核，请从当前正式版本发起补查");
             jdbc.update("INSERT INTO report_series(id,workspace_id,created_at,updated_at) VALUES(?,?,?,?)",
                 seriesId, identity.workspaceId(), now(), now());
         }
@@ -329,7 +333,8 @@ public class ReportPublicationService {
             Map<String, Object> job = previous.getFirst();
             if (!reportId.equals(job.get("source_report_id"))
                 || !request.expected_content_sha256().equals(job.get("source_content_sha256"))
-                || request.expected_corpus_revision() != number(job.get("target_corpus_revision")))
+                || request.expected_corpus_revision() != number(job.get("target_corpus_revision"))
+                || !sameRevisionSupplement(identity, source, job, request))
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "同一个请求编号不能修订不同内容");
             return revisionResult(job);
         }
@@ -355,8 +360,16 @@ public class ReportPublicationService {
         // The revision job owns replay identity; reserve a fresh run request key so a
         // normal research request cannot preoccupy a predictable internal namespace.
         run.setClientRequestId("revision-" + uid());
-        ResearchIntakePolicy.authorizeRevision(jdbc,mapper,identity,run);
-        Map<String, Object> created = commands.create(identity, run);
+        Map<String, Object> created;
+        if (request.requirement_id() == null) {
+            if (request.source_url() != null || request.query() != null)
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "请先选择要补查的未答项");
+            ResearchIntakePolicy.authorizeRevision(jdbc,mapper,identity,run);
+            created = commands.create(identity, run);
+        } else {
+            created = commands.createSupplement(identity, String.valueOf(source.get("source_run_id")), request.requirement_id(),
+                request.source_url(), request.query(), run.getClientRequestId());
+        }
         String id = uid();
         jdbc.update("""
             INSERT INTO report_revision_jobs(id,workspace_id,source_report_id,target_run_id,idempotency_key,
@@ -365,6 +378,20 @@ public class ReportPublicationService {
             request.client_request_id(), identity.subject(), corpus, source.get("content_sha256"), now(), now());
         access.audit(identity, "report.revise", "report", reportId);
         return Map.of("revision_job_id", id, "run_id", created.get("id"), "status", "queued");
+    }
+
+    private boolean sameRevisionSupplement(WorkspaceIdentity identity, Map<String, Object> source,
+                                           Map<String, Object> job, Requests.ReportRevision request) {
+        var run = jdbc.queryForMap("SELECT data_policy,supplement_requirement_id,supplement_url,supplement_query FROM runs WHERE id=?",
+            job.get("target_run_id"));
+        if (!Objects.equals(request.requirement_id(), run.get("supplement_requirement_id"))
+            || !Objects.equals(ResearchCommandService.supplementUrl(request.source_url(), run.get("data_policy")), run.get("supplement_url")))
+            return false;
+        Object storedQuery = run.get("supplement_query");
+        if (request.query() != null) return Objects.equals(storedQuery, SupplementQuery.edited(request.query()));
+        if (storedQuery == null) return true;
+        return Objects.equals(storedQuery, commands.supplementQuery(identity,
+            String.valueOf(source.get("source_run_id")), request.requirement_id()));
     }
 
     public Map<String, Object> series(WorkspaceIdentity identity, String seriesId) {

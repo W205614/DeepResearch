@@ -134,11 +134,22 @@ async def test_deepseek_search_request_is_forced_and_usage_is_recorded(tmp_path)
     await p.close()
 
 
-async def test_deepseek_no_native_citation_is_rejected(tmp_path):
-    p = await make_provider(tmp_path, lambda request: httpx.Response(200, json={"output_text": "answer without evidence"}))
-    with pytest.raises(ServiceError, match="来源 URL"):
-        await p.search("query", "search-run")
-    await p.close()
+async def test_hosted_search_without_native_citations_returns_cached_empty_results(tmp_path):
+    calls = []
+    def respond(request):
+        calls.append(request.url.path)
+        return httpx.Response(200, json={"status": "completed", "output": [
+            {"type": "message", "content": [{"type": "output_text", "text": "https://invented.test/", "annotations": []}]}]})
+    p = await make_provider(tmp_path, respond)
+    p.settings.web_search_provider = "auto"
+    try:
+        assert await p.search("query", "search-run") == []
+        assert await p.search("query", "search-run") == []
+        assert calls == ["/responses"]
+        counter = await p.db.one("SELECT search_calls FROM counters WHERE run_id='search-run'")
+        assert counter["search_calls"] == 1
+    finally:
+        await p.close()
 
 
 async def test_vision_request_uses_the_configured_model_and_same_provider_credentials(tmp_path):

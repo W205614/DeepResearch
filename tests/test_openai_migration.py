@@ -102,12 +102,14 @@ async def test_openai_search_uses_native_sources_and_never_falls_back(tmp_path):
         await provider.close()
 
 
-async def test_openai_search_failure_does_not_send_a_bocha_request(tmp_path):
+@pytest.mark.parametrize("failure", [(503, {}), (200, {"status": "failed", "output": []})])
+async def test_openai_search_failure_does_not_send_a_bocha_request(tmp_path, failure):
     from pydantic import SecretStr
     calls = []
     def respond(request):
         calls.append(request)
-        return httpx.Response(503, json={})
+        status, body = failure
+        return httpx.Response(status, json=body)
     provider = official(await make_provider(tmp_path, respond))
     provider.settings.bocha_api_key = SecretStr('other-provider-key')
     try:

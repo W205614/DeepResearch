@@ -15,6 +15,7 @@ from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from psycopg.errors import UniqueViolation
 from arq.jobs import Job
 
+from .research_supplements import merge_supplement, supplement_context
 from ..core.config import Settings
 from ..core.db import Database, now, uid
 from ..core.postgres import PostgresDatabase
@@ -543,7 +544,9 @@ class Runtime:
                 await self.db.event(run_id, "running", {"resumed": resume})
                 config = {"configurable": {"thread_id": run_id}, "recursion_limit": 80}
                 async with asyncio.timeout(min(self.settings.max_run_seconds, max(0.01, run["deadline_at"] - time.time()))):
-                    revision_plan = await self.documents.lifecycle.revision_context(run)
+                    formal_revision = await self.documents.lifecycle.revision_context(run)
+                    supplement = await supplement_context(self.db, run, check_sources=not self.settings.demo_mode)
+                    revision_plan = formal_revision if supplement is None else None
                     saved_artifact = await self.db.one("SELECT corpus_revision FROM run_artifacts WHERE run_id=?", (run_id,))
                     corpus_revision = saved_artifact["corpus_revision"] if saved_artifact else await self.documents.lifecycle.revision(run["user_id"])
                     if run.get("data_policy") == "public":
@@ -568,14 +571,23 @@ class Runtime:
                                    "owner_subject": run.get("created_by") or run["user_id"],
                                    "topic": run["topic"], "requested_mode": run["mode"],
                                    "attachment_ids": [item["id"] for item in await self.attachments.for_run(run_id)],
-                                   "context": await self.context(run), "corpus_revision": corpus_revision,
+                                   "context": "" if supplement else await self.context(run), "corpus_revision": corpus_revision,
                                    "revision_plan": revision_plan or {}}
+                        if supplement:
+                            initial["topic"] = supplement["target"]["text"]
+                            initial["requested_mode"] = "deep"
+                            initial["supplement_scope"] = supplement["topic"]
+                            initial["supplement_query"] = supplement["query"]
+                            if supplement["url"]:
+                                initial["supplement_url"] = supplement["url"]
                         if revision_plan:
                             initial["context"] += "\n修订要求（旧结论不是证据，须重新取证；检查原始问题全部要求）：" + json.dumps(revision_plan,ensure_ascii=False)
                     result = await self.graph.ainvoke(initial, config)
                     await execution.get().check()
                     if not self.settings.demo_mode:
                         await validate_sources(self.db, run["user_id"], result.get("evidence", []))
+                    if supplement:
+                        result = merge_supplement(supplement, result)
                     report = result.get("report", "")
                     validation = result.get("validation", {})
                     carries_claims = bool(result.get("final_claims") or result.get("claims")
@@ -597,13 +609,15 @@ class Runtime:
                     status = "failed" if validation.get("retrieval_failed") else "insufficient" if validation.get("insufficient") else "completed"
                     messages = {"invalid_records": "部分检索字段无效，已剔除并使用有效证据", "vector_unavailable": "向量检索不可用，已降级为关键词检索", "empty": "部分检索未找到结果", "error": "部分检索服务发生故障", "search_limit_reached": "本轮研究已达到检索上限，可继续发起研究",
                                 "insufficient_evidence": "证据不足，请补充资料或调整问题", "image_unreadable": "图片无法清晰识别，请补充清晰图片"}
-                    if reasons:
+                    if reasons and (not supplement or validation["supplement"]["merged"]):
                         report += "\n\n> " + "；".join(messages[key] for key in validation["reasons"] if key in messages)
                     async with self.db.guard("workspace:" + run["user_id"]), self.db.guard("documents:" + run["user_id"]), self.db.guard("execution:" + run_id):
                         await execution.get().check()
                         if corpus_revision >= 0 and corpus_revision != await self.documents.lifecycle.revision(run["user_id"]):
                             raise ReliabilityError("研究期间资料范围发生变化，请重新研究",code="source_changed",retryable=False)
                         await self.documents.lifecycle.revision_context(run)
+                        if supplement:
+                            await supplement_context(self.db, run, check_sources=not self.settings.demo_mode)
                         artifact = self.documents.lifecycle.artifact(run,result,corpus_revision)
                         if not self.settings.demo_mode:
                             await validate_sources(self.db, run["user_id"], result.get("evidence", []))

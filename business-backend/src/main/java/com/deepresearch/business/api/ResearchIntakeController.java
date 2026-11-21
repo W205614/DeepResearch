@@ -43,11 +43,19 @@ public class ResearchIntakeController {
             id,i.workspaceId(),i.subject(),mapper.writeValueAsString(request),Instant.now().getEpochSecond()+3600,WorkspaceAccess.now(),WorkspaceAccess.now());
         var row=owned(i,id);var stored=mapper.readValue(String.valueOf(row.get("request_json")),Requests.Run.class);
         if(!ResearchIntakePolicy.sameRequest(stored,request))throw new ResponseStatusException(HttpStatus.CONFLICT,"同一个请求编号不能确认不同研究内容");
-        return Map.of("required",true,"id",id,"status",row.get("status"),"expires_at",row.get("expires_at"),"topic",stored.normalizedTopic());
+        return Map.of("required",true,"id",id,"status",row.get("status"),"expires_at",row.get("expires_at"),
+            "topic",stored.normalizedTopic(),"data_policy",stored.getDataPolicy(),"suggestions",ResearchIntakePolicy.scopeSuggestions(stored));
     }
     @GetMapping("/api/research/intakes")
     List<Map<String,Object>> pending(@AuthenticationPrincipal Jwt jwt,@RequestHeader(value="X-Workspace-ID",required=false)String workspace){
-        var i=identity(jwt,workspace);return jdbc.queryForList("SELECT id,request_json,answers_json,status,expires_at FROM research_intakes WHERE workspace_id=? AND subject=? AND status IN ('pending','confirmed') AND expires_at>? ORDER BY created_at DESC LIMIT 20",i.workspaceId(),i.subject(),Instant.now().getEpochSecond());
+        var i=identity(jwt,workspace);
+        var rows=jdbc.queryForList("SELECT id,request_json,answers_json,status,expires_at FROM research_intakes WHERE workspace_id=? AND subject=? AND status IN ('pending','confirmed') AND expires_at>? ORDER BY created_at DESC LIMIT 20",i.workspaceId(),i.subject(),Instant.now().getEpochSecond());
+        for (var row : rows) {
+            var request=mapper.readValue(String.valueOf(row.get("request_json")),Requests.Run.class);
+            row.put("data_policy", request.getDataPolicy());
+            row.put("suggestions",ResearchIntakePolicy.scopeSuggestions(request));
+        }
+        return rows;
     }
     @PutMapping("/api/research/intakes/{id}") @Transactional
     Map<String,Boolean> edit(@AuthenticationPrincipal Jwt jwt,@RequestHeader(value="X-Workspace-ID",required=false)String workspace,@PathVariable String id,@Valid @RequestBody Scope body){

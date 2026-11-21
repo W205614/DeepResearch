@@ -88,6 +88,12 @@ CREATE TABLE run_artifacts(run_id TEXT PRIMARY KEY,workspace_id TEXT NOT NULL,at
     corpus_revision INTEGER NOT NULL,requirements_json TEXT NOT NULL,claims_json TEXT NOT NULL,created_at TEXT NOT NULL);
 CREATE TABLE report_series(id TEXT PRIMARY KEY,workspace_id TEXT NOT NULL,current_report_id TEXT,
     created_at TEXT NOT NULL,updated_at TEXT NOT NULL);
+ALTER TABLE runs ADD COLUMN related_run_id TEXT;
+ALTER TABLE runs ADD COLUMN supplement_requirement_id TEXT;
+ALTER TABLE runs ADD COLUMN supplement_url TEXT;
+ALTER TABLE runs ADD COLUMN supplement_basis TEXT;
+ALTER TABLE runs ADD COLUMN supplement_query TEXT;
+
 CREATE TABLE report_revision_jobs(id TEXT PRIMARY KEY,workspace_id TEXT NOT NULL,source_report_id TEXT NOT NULL,
     target_run_id TEXT NOT NULL UNIQUE,idempotency_key TEXT NOT NULL,requested_by TEXT NOT NULL,
     target_corpus_revision INTEGER NOT NULL,source_content_sha256 TEXT NOT NULL,status TEXT NOT NULL,

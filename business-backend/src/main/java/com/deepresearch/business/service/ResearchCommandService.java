@@ -4,6 +4,11 @@ import static com.deepresearch.business.security.WorkspaceAccess.now;
 import static com.deepresearch.business.security.WorkspaceAccess.uid;
 
 import java.time.Instant;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -44,18 +49,23 @@ public class ResearchCommandService {
 
     @Transactional
     public Map<String, Object> create(WorkspaceIdentity identity, Requests.Run request) {
+        return create(identity, request, null);
+    }
+
+    private Map<String, Object> create(WorkspaceIdentity identity, Requests.Run request, SupplementBasis basis) {
         platform.lockCurrent(identity.subject(), identity.issuedAt());
         access.require(identity, "admin", "researcher");
         lockQueueAdmission(identity.workspaceId());
+        if (request.getRelatedRunId() != null) views.visibleRun(request.getRelatedRunId(), identity);
         List<Map<String, Object>> previous = jdbc.queryForList(
             "SELECT * FROM runs WHERE user_id=? AND client_request_id=?", identity.workspaceId(), request.getClientRequestId());
         if (!previous.isEmpty()) {
             if (!identity.subject().equals(previous.getFirst().get("created_by")))
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "请求编号已被其他成员使用");
-            verifyReplay(identity, request, previous.getFirst());
+            verifyReplay(identity, request, previous.getFirst(), basis);
             return views.visibleRun(String.valueOf(previous.getFirst().get("id")), identity);
         }
-        ResearchIntakePolicy.requireConfirmed(jdbc, mapper, identity, request);
+        if (basis == null) ResearchIntakePolicy.requireConfirmed(jdbc, mapper, identity, request);
         if ("restricted".equals(request.getDataPolicy()) ||
             ("internal".equals(request.getDataPolicy()) && !properties.isAllowInternalModelProcessing())) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
@@ -75,10 +85,13 @@ public class ResearchCommandService {
         String stamp = now();
         jdbc.update("""
             INSERT INTO runs(
-            id,user_id,thread_id,topic,mode,status,created_at,updated_at,client_request_id,created_by,data_policy,deadline_at)
-            VALUES(?,?,?,?,?,'queued',?,?,?,?,?,?)""", runId, identity.workspaceId(), threadId, request.normalizedTopic(),
+            id,user_id,thread_id,topic,mode,status,created_at,updated_at,client_request_id,created_by,data_policy,deadline_at,
+            related_run_id,supplement_requirement_id,supplement_url,supplement_basis,supplement_query)
+            VALUES(?,?,?,?,?,'queued',?,?,?,?,?,?,?,?,?,?,?)""", runId, identity.workspaceId(), threadId, request.normalizedTopic(),
             request.getMode(), stamp, stamp, request.getClientRequestId(), identity.subject(), request.getDataPolicy(),
-            Instant.now().getEpochSecond() + properties.getMaxRunTotalSeconds());
+            Instant.now().getEpochSecond() + properties.getMaxRunTotalSeconds(), request.getRelatedRunId(),
+            basis == null ? null : basis.requirementId(), basis == null ? null : basis.url(),
+            basis == null ? null : basis.fingerprint(), basis == null ? null : basis.query());
         for (int index = 0; index < request.getAttachmentIds().size(); index++) {
             jdbc.update("UPDATE attachments SET run_id=?,position=? WHERE id=? AND run_id=''", runId, index,
                 request.getAttachmentIds().get(index));
@@ -88,6 +101,88 @@ public class ResearchCommandService {
         access.audit(identity, "research.create", "run", runId);
         return views.visibleRun(runId, identity);
     }
+
+    @Transactional
+    public Map<String, Object> supplement(WorkspaceIdentity identity, String parentId, Requests.Supplement request) {
+        lockIntakeAdmission(identity);
+        Map<String, Object> parent = views.visibleRun(parentId, identity);
+        if (parent.get("publication") != null && jdbc.queryForList(
+                "SELECT id FROM runs WHERE user_id=? AND client_request_id=? AND related_run_id=? AND supplement_requirement_id IS NOT NULL",
+                identity.workspaceId(), request.client_request_id(), parentId).isEmpty())
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "请从当前正式版本的对应未答项发起补查");
+        return createSupplement(identity, parent, request.requirement_id(), request.source_url(),
+            request.query(), request.client_request_id());
+    }
+
+    public String supplementQuery(WorkspaceIdentity identity, String parentId, String requirementId) {
+        access.require(identity, "admin", "researcher");
+        var parent = views.visibleRun(parentId, identity);
+        return SupplementQuery.suggest(String.valueOf(parent.get("topic")), supplementTarget(parent, requirementId));
+    }
+
+    Map<String, Object> createSupplement(WorkspaceIdentity identity, String parentId, String requirementId,
+                                        String sourceUrl, String query, String clientRequestId) {
+        return createSupplement(identity, views.visibleRun(parentId, identity), requirementId, sourceUrl, query, clientRequestId);
+    }
+
+    private static String supplementTarget(Map<String, Object> parent, String requirementId) {
+        if (!List.of("completed", "insufficient").contains(parent.get("status")))
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "研究生成结果后才能补查");
+        Map<?, ?> validation = (Map<?, ?>) parent.get("validation");
+        if (validation.get("requirements") instanceof List<?> items) {
+            for (Object item : items) {
+                if (item instanceof Map<?, ?> row && requirementId.equals(row.get("id"))
+                    && !"answered".equals(row.get("status")) && row.get("text") instanceof String text) {
+                    return text;
+                }
+            }
+        }
+        throw new ResponseStatusException(HttpStatus.CONFLICT, "该未答项已变更，请刷新报告后再试");
+    }
+
+    private Map<String, Object> createSupplement(WorkspaceIdentity identity, Map<String, Object> parent, String requirementId,
+                                        String sourceUrl, String query, String clientRequestId) {
+        String target = supplementTarget(parent, requirementId);
+        String edited = SupplementQuery.edited(query);
+        String chosen = edited == null ? SupplementQuery.suggest(String.valueOf(parent.get("topic")), target) : edited;
+        String url = supplementUrl(sourceUrl, parent.get("data_policy"));
+        String parentId = String.valueOf(parent.get("id"));
+        var stored = jdbc.queryForMap("SELECT report,sources,validation FROM runs WHERE id=? AND user_id=?",
+            parentId, identity.workspaceId());
+        String basis = sha256(stored.get("report") + "\n" + stored.get("sources") + "\n" + stored.get("validation"));
+        var request = new Requests.Run();
+        request.setRelatedRunId(parentId);
+        request.setThreadId(String.valueOf(parent.get("thread_id")));
+        request.setClientRequestId(clientRequestId);
+        request.setTopic(String.valueOf(parent.get("topic")));
+        request.setDataPolicy(String.valueOf(parent.get("data_policy")));
+        request.setMode("deep");
+        return create(identity, request, new SupplementBasis(requirementId, url, basis, chosen, edited == null));
+    }
+
+    static String supplementUrl(String value, Object policy) {
+        if (value == null || value.isBlank()) return null;
+        if (!"public".equals(policy)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "内部研究只能使用资料库");
+        URI uri;
+        try { uri = URI.create(value.strip()); }
+        catch (IllegalArgumentException invalid) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "请输入有效的公开来源 URL");
+        }
+        if (!List.of("http", "https").contains(Objects.toString(uri.getScheme(), "")) ||
+            uri.getHost() == null || uri.getRawUserInfo() != null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "请输入有效的公开来源 URL");
+        return uri.toString();
+    }
+
+    private static String sha256(String value) {
+        try {
+            return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(value.getBytes(StandardCharsets.UTF_8)));
+        } catch (NoSuchAlgorithmException error) {
+            throw new IllegalStateException(error);
+        }
+    }
+
+    private record SupplementBasis(String requirementId, String url, String fingerprint, String query, boolean defaultQuery) {}
 
     @Transactional
     public Map<String, Object> cancel(WorkspaceIdentity identity, String runId) {
@@ -157,7 +252,7 @@ public class ResearchCommandService {
         return thread;
     }
 
-    private void verifyReplay(WorkspaceIdentity identity, Requests.Run request, Map<String, Object> previous) {
+    private void verifyReplay(WorkspaceIdentity identity, Requests.Run request, Map<String, Object> previous, SupplementBasis basis) {
         List<String> attachments = jdbc.queryForList(
             "SELECT id FROM attachments WHERE run_id=? AND status='ready' ORDER BY position", String.class, previous.get("id"));
         boolean threadMatches = true;
@@ -167,9 +262,18 @@ public class ResearchCommandService {
         if (!Objects.equals(previous.get("topic"), request.normalizedTopic())
             || !Objects.equals(previous.get("mode"), request.getMode())
             || !Objects.equals(previous.get("data_policy"), request.getDataPolicy())
+            || !Objects.equals(previous.get("related_run_id"), request.getRelatedRunId())
+            || !Objects.equals(previous.get("supplement_requirement_id"), basis == null ? null : basis.requirementId())
+            || !Objects.equals(previous.get("supplement_url"), basis == null ? null : basis.url())
+            || !sameSupplementQuery(previous.get("supplement_query"), basis)
             || !attachments.equals(request.getAttachmentIds()) || !threadMatches) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "同一个请求编号不能提交不同内容");
         }
+    }
+
+    private static boolean sameSupplementQuery(Object stored, SupplementBasis basis) {
+        return basis == null ? stored == null
+            : Objects.equals(stored, basis.query()) || stored == null && basis.defaultQuery();
     }
 
     private void validateAttachments(WorkspaceIdentity identity, List<String> attachmentIds) {

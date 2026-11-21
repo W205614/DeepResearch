@@ -631,7 +631,8 @@ class Providers:
                 self.settings.llm_api_key.get_secret_value(), payload, label + " 联网搜索", retries=0)
         usage = result.get("usage") or {}
         await self.db.usage(run_id, int(usage.get("input_tokens", 0)), int(usage.get("output_tokens", 0)))
-        citations = self._deepseek_citations(result)
-        if not citations:
-            raise ServiceError(label + " 联网搜索未返回可验证的来源 URL；为避免生成不可核查报告，本次未采用其摘要")
-        return citations[:self.settings.web_results_per_query]
+        if result.get("error") or result.get("status") in ("failed", "cancelled"):
+            raise ServiceError(f"{label} 联网搜索返回执行失败", code="provider_unavailable")
+        if not isinstance(result.get("output"), list):
+            raise ServiceError(f"{label} 联网搜索返回格式不兼容")
+        return self._deepseek_citations(result)[:self.settings.web_results_per_query]

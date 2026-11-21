@@ -3,11 +3,14 @@ import { computed, onMounted, onUnmounted, ref, nextTick, watch } from 'vue'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import { ArrowUp, ArrowUpRight, BookOpen, Brain, Check, ChevronRight, Compass, Download, FileText, FolderOpen, Layers3, LoaderCircle, Menu, MessageSquare, Plus, RefreshCw, Search, Settings2, ShieldCheck, LogIn, LogOut, UserPlus, Sparkles, Square, Trash2, X } from 'lucide-vue-next'
-import { api, apiPage, authenticatedFetch, subscribe, terminal, type Run, type Source, type EventItem, type Publication } from './api'
+import { api, apiPage, authenticatedFetch, subscribe, terminal, type Run, type Source, type EventItem, type Publication, type ScopeDraft, type ClaimLink } from './api'
 import { completeLogin, configureAuth, currentUser, login, logout, register, type AuthConfig } from './auth'
 
 import ImageAttachments from './ImageAttachments.vue'
 import ReportReader from './ReportReader.vue'
+import ReportCoverage from './ReportCoverage.vue'
+import ResearchPreflight from './ResearchPreflight.vue'
+import EvidenceExcerpt from './EvidenceExcerpt.vue'
 import AttachmentImage from './AttachmentImage.vue'
 import DocumentVersions from './DocumentVersions.vue'
 import ReportLifecycle from './ReportLifecycle.vue'
@@ -22,7 +25,11 @@ import { reviewBlocked, evidenceLabel, verificationContract } from './lifecycle'
 const attachmentIds=ref<string[]>([]), attachmentBusy=ref(false), imagePicker=ref<InstanceType<typeof ImageAttachments>|null>(null)
 const serviceCapabilities=ref<{reasons:string[];submit_research:boolean;read_only?:boolean;new_writes?:boolean}|null>(null)
 const dataPolicy=ref("internal")
-const scopeDraft=ref<{id:string;topic:string;expires_at:number}|null>(null)
+const scopeDraft=ref<ScopeDraft|null>(null)
+const relatedRun = ref('')
+const supplementBusy = ref(false)
+const documentReturn = ref<{id:string; requirementId:string; formal:boolean}|null>(null)
+let pendingSupplement: {fingerprint:string; id:string}|null = null
 const qualityLabel=(value:string)=>({complete:"完整研究结果（模型核验）",partial:"部分结果：仍有未回答或未核验内容",insufficient:"证据不足",unverified:"未经研究证据核验",unknown:"历史结果：核验信息不完整"}[value]||"核验信息不完整")
 const pendingRequest=ref<{fingerprint:string;id:string}|null>(null)
 const reasonLabel=(key:string)=>({invalid_records:'部分检索字段无效，已剔除',vector_unavailable:'向量检索不可用，已使用关键词检索',reranker_unavailable:'重排服务不可用，已回退融合排序',ok:'检索完成',empty:'部分检索未找到结果',error:'检索服务发生故障',budget_exhausted:'本轮研究已达到检索上限',search_limit_reached:'本轮研究已达到检索上限，可继续研究',insufficient_evidence:'证据不足，请补充资料或调整问题',image_unreadable:'请上传清晰图片',policy_blocked:'资料策略禁止此检索路径',queue_unavailable:'任务队列暂不可用',object_store_unavailable:'资料存储暂不可用',scanner_unavailable:'安全扫描暂不可用',circuit_open:'模型服务暂时熔断',provider_blocked:'模型配置需要管理员处理'}[key]||key)
@@ -39,6 +46,29 @@ const topic = ref(''), mode = ref('auto'), error = ref(''), busy = ref(false)
 const status = ref<any>(null), memories = ref<any[]>([]), metrics = ref<any>(null)
 const preference = ref(''), editingMemory = ref(''), source = ref<Source|null>(null)
 const sourceDrawer = ref<HTMLElement|null>(null)
+const evidenceGroup = ref<Source[]>([])
+const evidenceClaim = ref<ClaimLink|null>(null)
+const draftReader = ref<InstanceType<typeof ReportReader>|null>(null)
+const formalReader = ref<InstanceType<typeof ReportReader>|null>(null)
+function showSource(item:Source) {
+  evidenceGroup.value = []
+  evidenceClaim.value = null
+  source.value = item
+}
+function showClaim(id:string, formal = false) {
+  const report = formal ? selectedPublication.value : selected.value
+  const claim = (report?.validation.claim_links as ClaimLink[]|undefined)?.find(row => row.id === id)
+    || (formal ? selectedPublication.value?.artifacts?.claims?.find(row => row.id === id) : undefined)
+  if (!claim || !report || !claim.source_ids) return
+  const matches = report.sources.filter(item => claim.source_ids!.includes(item.id))
+  if (!matches.length) return
+  evidenceGroup.value = matches
+  evidenceClaim.value = { ...claim, source_ids:claim.source_ids, comparison:'comparison' in claim && claim.comparison === true }
+  source.value = matches[0]!
+}
+function jumpClaim(id:string, formal = false) {
+  if (!(formal ? formalReader.value : draftReader.value)?.focusClaim(id)) showClaim(id, formal)
+}
 let sourceTrigger: HTMLElement|null = null
 watch(source, async (next, previous) => {
   if (next && !previous) sourceTrigger = document.activeElement instanceof HTMLElement ? document.activeElement : null
@@ -113,7 +143,7 @@ const localSourceCount = computed(()=>selected.value?.sources.filter(item=>item.
 const plan = computed(()=>events.value.find(e=>e.type==='plan')?.data)
 const nodes = [ ['vision','图片理解'], ['router','协调路由 Agent'], ['planner','研究规划 Agent'], ['web_scout','网络调研 Agent'], ['local_scout','本地资料 Agent'], ['judge','证据裁决 Agent'], ['analyst','分析 Agent'], ['reflect','补搜决策 Agent'], ['writer','报告撰写 Agent'], ['validator','引用核验 Agent'] ]
 const nodeName = (key: string)=>nodes.find(n=>n[0]===key)?.[1] || key
-const stateLabel = (state: string)=>({queued:'等待执行',running:'研究中',completed:'已完成',insufficient:'证据不足',failed:'执行失败',cancelled:'已取消',interrupted:'已中断'}[state] || state)
+const stateLabel = (state: string)=>({queued:'等待执行',running:'研究中',completed:'执行完成',insufficient:'证据不足',failed:'执行失败',cancelled:'已取消',interrupted:'已中断'}[state] || state)
 function nodeState(key: string) {
   const matches = events.value.filter(e=>e.data.node===key)
   const latest = matches[matches.length-1]
@@ -263,6 +293,7 @@ async function copyAccountId(){
   await safely(async()=>{await navigator.clipboard.writeText(id);memberNotice.value='账号 ID 已复制。'})
 }
 async function switchWorkspace(event:Event){
+  relatedRun.value='';documentReturn.value=null;scopeDraft.value=null;source.value=null
   const id=(event.target as HTMLSelectElement).value
   const target=workspaces.value.find(item=>item.id===id)
   if(!target||target.id===workspace.value?.id)return
@@ -294,24 +325,83 @@ async function openThread(id: string) {
   runsCursor.value=page.next;runs.value=loaded
   if(loaded.length)await selectRun(loaded[loaded.length-1])
 }
-function newResearch(){runsCursor.value='';attachmentIds.value=[];pendingRequest.value=null;controller?.abort();generation++;threadId.value='';threadSwitchId.value='';localStorage.removeItem('dr-thread');runs.value=[];selected.value=null;events.value=[];view.value='research';navOpen.value=false;topic.value='';error.value=''}
+function newResearch(){relatedRun.value='';scopeDraft.value=null;runsCursor.value='';attachmentIds.value=[];pendingRequest.value=null;controller?.abort();generation++;threadId.value='';threadSwitchId.value='';localStorage.removeItem('dr-thread');runs.value=[];selected.value=null;events.value=[];view.value='research';navOpen.value=false;topic.value='';error.value=''}
 async function send() {
   if(!canWrite.value||(!topic.value.trim()&&!attachmentIds.value.length)||attachmentBusy.value||busy.value||active.value)return
   busy.value=true
   await safely(async()=>{
-    const payload={data_policy:dataPolicy.value,topic:topic.value.trim(),mode:mode.value,thread_id:threadId.value||null,attachment_ids:[...attachmentIds.value]}
+    const payload={data_policy:dataPolicy.value,topic:topic.value.trim(),mode:mode.value,thread_id:threadId.value||null,attachment_ids:[...attachmentIds.value],
+      ...(relatedRun.value ? {related_run_id:relatedRun.value} : {})}
     const fingerprint=JSON.stringify(payload)
     if(pendingRequest.value?.fingerprint!==fingerprint)pendingRequest.value={fingerprint,id:crypto.randomUUID()}
     const request={...payload,client_request_id:pendingRequest.value!.id}
-    const preflight=await api<{required:boolean;id:string;topic:string;expires_at:number}>('/api/research/intakes',{method:'POST',body:JSON.stringify(request)})
+    const preflight=await api<ScopeDraft & {required:boolean}>('/api/research/intakes',{method:'POST',body:JSON.stringify(request)})
     if(preflight.required){scopeDraft.value=preflight;return}
     await acceptCreatedRun(await api<Run>('/api/research/runs',{method:'POST',body:JSON.stringify(request)}))
   });busy.value=false
 }
 async function acceptCreatedRun(run:Run){
- attachmentIds.value=[];pendingRequest.value=null;scopeDraft.value=null
- threadId.value=run.thread_id;localStorage.setItem('dr-thread',run.thread_id);runs.value.push(run);topic.value=''
+ attachmentIds.value=[];pendingRequest.value=null;scopeDraft.value=null;relatedRun.value=''
+ threadId.value=run.thread_id;localStorage.setItem('dr-thread',run.thread_id)
+ if(!runs.value.some(item=>item.id===run.id))runs.value.push(run)
+ topic.value=''
  await refreshThreads();threadSwitchId.value=threads.value.find(thread=>thread.id===run.thread_id)?.thread_key||run.thread_id;await selectRun(run)
+}
+async function supplement(requirementId:string, query:string, url?:string, formal = false) {
+  const base = formal ? selectedPublication.value : selected.value
+  if (!base || supplementBusy.value) return
+  const workspaceId = workspace.value?.id
+  const fingerprint = JSON.stringify([workspaceId, base.id, requirementId, query, url])
+  if (pendingSupplement?.fingerprint !== fingerprint) pendingSupplement = { fingerprint, id:crypto.randomUUID() }
+  const payload = { client_request_id:pendingSupplement.id, requirement_id:requirementId, query, source_url:url }
+  supplementBusy.value = true
+  try {
+    await safely(async () => {
+      if (formal && 'content_sha256' in base) {
+        const job = await api<{run_id:string}>(`/api/reports/${encodeURIComponent(base.id)}/revisions`, {method:'POST',
+          body:JSON.stringify({...payload, expected_content_sha256:base.content_sha256,
+            expected_corpus_revision:base.current_corpus_revision})})
+        if (workspaceId === workspace.value?.id) await openRevisionRun(job.run_id)
+      } else {
+        const run = await api<Run>(`/api/research/runs/${encodeURIComponent(base.id)}/supplements`, {method:'POST', body:JSON.stringify(payload)})
+        if (workspaceId === workspace.value?.id) await acceptCreatedRun(run)
+      }
+      pendingSupplement = null
+    })
+  } finally { supplementBusy.value = false }
+}
+async function adjustScope(formal = false) {
+  const report = formal ? selectedPublication.value : selected.value
+  if (!report) return
+  const policy = report.data_policy || (formal && selectedPublication.value?.corpus_revision === -1 ? 'public' : 'internal')
+  newResearch()
+  relatedRun.value = 'source_run_id' in report ? report.source_run_id : report.id
+  dataPolicy.value = policy
+  mode.value = 'deep'
+  topic.value = report.topic.split('\n用户确认口径：')[0] || report.topic
+  await send()
+  await nextTick()
+  document.querySelector<HTMLElement>('.research-scope')?.scrollIntoView({block:'start'})
+}
+async function openSupplementDocuments(requirementId:string, formal = false) {
+  const report = formal ? selectedPublication.value : selected.value
+  if (!report) return
+  documentReturn.value = {id:report.id, requirementId, formal}
+  await navigate('documents')
+}
+async function returnToReport() {
+  const origin = documentReturn.value
+  if (!origin) return
+  documentReturn.value = null
+  if (origin.formal) {
+    await navigate('reports')
+    await safely(() => openPublication(origin.id))
+  } else await openRevisionRun(origin.id)
+  await nextTick()
+  const item = Array.from(document.querySelectorAll<HTMLElement>('[data-requirement]'))
+    .find(element => element.dataset.requirement === origin.requirementId)
+  item?.focus({ preventScroll:true })
+  item?.scrollIntoView({ block:'center' })
 }
 async function cancel(){if(selected.value)await safely(async()=>{selected.value=await api(`/api/research/runs/${selected.value!.id}/cancel`,{method:'POST'});await refreshRun(selected.value!.id,generation)})}
 async function recoverDeadLetter(item: any){
@@ -342,6 +432,11 @@ async function saveSettings(){await safely(async()=>{
 async function checkConnection(){checking.value=true;await safely(async()=>{connection.value=await api('/api/config/check',{method:'POST'})});checking.value=false}
 function downloadBlob(blob: Blob, filename: string){const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();window.setTimeout(()=>URL.revokeObjectURL(url),60_000)}
 async function saveMarkdown(path: string, filename: string){const response=await authenticatedFetch(path);if(!response.ok)throw new Error('下载失败');downloadBlob(await response.blob(),filename)}
+async function downloadDecision(id:string, formal:boolean) {
+  const key = encodeURIComponent(id)
+  const path = formal ? '/api/reports/' + key + '/download' : '/api/research/runs/' + key + '/report'
+  await safely(() => saveMarkdown(path + '?format=decision', 'decision-' + id.slice(0, 8) + '.md'))
+}
 async function downloadRun(run: Run){await safely(async()=>{await saveMarkdown(`/api/research/runs/${run.id}/report`,`research-${run.id.slice(0,8)}.md`)})}
 async function downloadConversation(){if(!threadId.value)return;await safely(async()=>{await saveMarkdown(`/api/threads/${threadId.value}/report`,`conversation-${threadId.value.slice(0,8)}.md`)})}
 async function saveRunMemory(){if(!selected.value)return;await safely(async()=>{await api(`/api/research/runs/${selected.value!.id}/memory`,{method:'POST'});memories.value=await api('/api/memories')})}
@@ -358,7 +453,7 @@ async function deleteThread(thread: any){
     await refreshThreads()
   })
 }
-function inspectCitation(event: MouseEvent){const target=event.target as HTMLElement;const text=target.textContent||'';const id=text.match(/\[(W-[a-f0-9]+|L-[a-f0-9]+|I-[a-f0-9]+)\]/)?.[1];if(id)source.value=selected.value?.sources.find(s=>s.id===id)||null}
+function inspectCitation(event: MouseEvent, sources = selected.value?.sources || []){const target=event.target as HTMLElement;const text=target.textContent||'';const id=text.match(/\[(W-[a-f0-9]+|L-[a-f0-9]+|I-[a-f0-9]+)\]/)?.[1];if(id){const item=sources.find(s=>s.id===id);if(item)showSource(item)}}
 onMounted(async()=>{
   window.addEventListener('deepresearch-auth-expired', handleAuthExpired)
   await safely(async()=>{
@@ -420,16 +515,24 @@ onUnmounted(()=>{controller?.abort();clearInterval(poll);window.removeEventListe
       <div v-if="status?.mode==='demo'" class="demo-banner">当前为固定数据测试模式，报告用于验证功能，不代表真实研究结论。</div>
 
       <section v-if="view==='research'" class="research-view" :class="{hasRun:selected}">
-        <ResearchScope v-if="authenticated&&canWrite" :key="workspace?.id" :draft="scopeDraft" @created="safely(()=>acceptCreatedRun($event))" @closed="scopeDraft=null"/>
+        <ResearchScope v-if="authenticated&&canWrite" :key="workspace?.id" :draft="scopeDraft" :policy="dataPolicy" @created="safely(()=>acceptCreatedRun($event))" @closed="scopeDraft=null"/>
         <template v-if="!selected">
           <div class="welcome"><h1>这次，想研究什么？</h1><p>写下问题，带着原文依据看结果。</p></div>
           <div class="start-area"><p v-if="!canWrite&&!serviceCapabilities?.read_only" class="inline-warning">当前为只读角色，请在正式报告中查看已发布内容。</p><p v-if="serviceCapabilities?.reasons.length" class="inline-warning">部分服务暂不可用：{{serviceCapabilities.reasons.map(reasonLabel).join("；")}}。已有报告仍可查看。</p>
-            <div class="composer" @paste="imagePicker?.paste($event)" @dragover.prevent @drop="imagePicker?.drop($event)"><div class="scope-bar"><label class="data-policy">资料范围<select v-model="dataPolicy" aria-label="资料范围" aria-describedby="scope-help"><option value="internal">内部资料（不联网）</option><option value="public">公开问题（联网检索）</option></select></label><p id="scope-help" class="scope-help" aria-live="polite"><template v-if="dataPolicy==='internal'">只查本地资料，不联网；可结合会话与研究记忆。<button class="text-button" @click="navigate('documents')">查看资料库 <ArrowUpRight :size="14"/></button></template><template v-else>联网查公开信息，不读取本地资料、私有历史与个人记忆。</template></p></div><textarea v-model="topic" aria-label="研究主题" maxlength="4000" placeholder="你想研究什么？试着描述主题、时间范围和你关心的问题…" @keydown.enter.exact.prevent="send"></textarea><ImageAttachments ref="imagePicker" v-model="attachmentIds" :disabled="!canWrite||busy||active" @busy="attachmentBusy=$event"/><div class="composer-footer"><div class="mode-picker"><Sparkles :size="15"/><select v-model="mode" aria-label="研究模式"><option value="auto">自动判断研究方式</option><option value="deep">深度研究</option><option value="quick">快速问答</option></select></div><span class="composer-hint">Enter 发送 · Shift + Enter 换行</span><button class="send-button" aria-label="开始研究" :disabled="!canWrite||busy||attachmentBusy||(!topic.trim()&&!attachmentIds.length)" @click="send"><LoaderCircle v-if="busy" class="spin" :size="20"/><ArrowUp v-else :size="18"/><span>开始研究</span></button></div></div>
+            <div class="composer" @paste="imagePicker?.paste($event)" @dragover.prevent @drop="imagePicker?.drop($event)"><div class="scope-bar"><label class="data-policy">资料范围<select v-model="dataPolicy" aria-label="资料范围" aria-describedby="scope-help"><option value="internal">内部资料（不联网）</option><option value="public">公开问题（联网检索）</option></select></label><p id="scope-help" class="scope-help" aria-live="polite"><template v-if="dataPolicy==='internal'">只查本地资料，不联网；可结合会话与研究记忆。<button class="text-button" @click="navigate('documents')">查看资料库 <ArrowUpRight :size="14"/></button></template><template v-else>联网查公开信息，不读取本地资料、私有历史与个人记忆。</template></p></div><textarea v-model="topic" aria-label="研究主题" maxlength="4000" placeholder="你想研究什么？试着描述主题、时间范围和你关心的问题…" @keydown.enter.exact.prevent="send"></textarea><ImageAttachments ref="imagePicker" v-model="attachmentIds" :disabled="!canWrite||busy||active" @busy="attachmentBusy=$event"/><ResearchPreflight v-if="canWrite" :key="workspace?.id" :policy="dataPolicy"/><div class="composer-footer"><div class="mode-picker"><Sparkles :size="15"/><select v-model="mode" aria-label="研究模式"><option value="auto">自动判断研究方式</option><option value="deep">深度研究</option><option value="quick">快速问答</option></select></div><span class="composer-hint">Enter 发送 · Shift + Enter 换行</span><button class="send-button" aria-label="开始研究" :disabled="!canWrite||busy||attachmentBusy||(!topic.trim()&&!attachmentIds.length)" @click="send"><LoaderCircle v-if="busy" class="spin" :size="20"/><ArrowUp v-else :size="18"/><span>开始研究</span></button></div></div>
             <div class="examples-title">试试这样问 <span>点击填入问题，资料范围保持当前选择</span></div>
             <div class="examples"><button @click="useExample('请对比线上课程和线下课程在学习时间、互动方式和适用人群上的差异，说明资料时间、依据和仍需确认的地方。')"><h3>比较两种选择<ArrowUpRight :size="16"/></h3><p>线上课还是线下课？比较差异与适用情况。</p><span>填入问题 <ArrowUpRight :size="13"/></span></button><button @click="useExample('请梳理远程办公常见的协作方式、适用场景与局限，注明资料时间和来源，区分事实与观点。')"><h3>了解一个话题<ArrowUpRight :size="16"/></h3><p>远程办公怎样协作，有哪些局限？</p><span>填入问题 <ArrowUpRight :size="13"/></span></button></div>
             <button class="document-entry" @click="navigate('documents')"><h3>读懂自己的资料<ArrowUpRight :size="16"/></h3><p>添加文件，再围绕内容提问。</p><span>打开资料库 <ArrowUpRight :size="13"/></span></button>
           </div>
         </template>
+
+        <article v-else-if="selected.report && selected.validation.supplement?.merged === false" class="report-card">
+          <ReportReader ref="draftReader" :html="reportHtml" @inspect="inspectCitation" @claim="showClaim"/>
+          <div class="report-actions">
+            <button v-if="selected.related_run_id" class="text-button" @click="openRevisionRun(selected.related_run_id)">查看原研究</button>
+            <button v-if="selected.can_resume" class="text-button" :disabled="serviceCapabilities?.read_only" @click="resume">从检查点继续</button>
+          </div>
+        </article>
 
         <template v-else>
           <div class="run-header"><div><h2>研究结果</h2><p v-if="conversationHistory.length" class="session-note">已保留 {{conversationHistory.length}} 条历史研究；继续提问会沿用当前会话。</p></div><button v-if="threadId" class="text-button" @click="downloadConversation"><Download :size="15"/>导出全部会话</button><button v-if="threadId" class="text-button" @click="newTitle=currentTitle;rename=true">重命名会话</button></div>
@@ -438,10 +541,19 @@ onUnmounted(()=>{controller?.abort();clearInterval(poll);window.removeEventListe
           <p v-if="terminal(selected.status)" class="result-quality" role="status">{{qualityLabel(selected.validation?.quality||"unknown")}}</p><p v-if="selected.error_info?.action" class="inline-warning">{{selected.error_info.action}}</p><p class="current-turn"><strong>研究问题</strong><span>{{selected.topic}}</span></p>
           <div class="attachment-previews"><AttachmentImage v-for="item in selected.attachments||[]" :key="item.id" :id="item.id" :name="item.name"/></div><p v-if="selected.validation?.reasons?.length" class="inline-warning">{{selected.validation.reasons.map(reasonLabel).join("；")}}</p><div class="run-layout"><div class="report-column">
             <div class="progress-card"><div class="progress-heading"><div><LoaderCircle v-if="!terminal(selected.status)" class="spin" :size="18"/><Check v-else-if="selected.status==='completed'" :size="18"/><Compass v-else :size="18"/><strong>{{stateLabel(selected.status)}}</strong></div><button v-if="!terminal(selected.status)" class="text-button" @click="cancel" :disabled="serviceCapabilities?.read_only"><Square :size="12"/>停止</button><button v-else-if="selected.can_resume" class="text-button" @click="resume" :disabled="serviceCapabilities?.read_only">从检查点继续</button><button class="text-button" :aria-expanded="logOpen" @click="logOpen=!logOpen">{{logOpen?'收起研究过程':'展开研究过程'}}</button></div><div v-if="logOpen" class="node-track"><div v-for="node in nodes" :key="node[0]" :class="['node',nodeState(node[0])]"><i><Check v-if="nodeState(node[0])==='done'" :size="11"/><LoaderCircle v-else-if="nodeState(node[0])==='running'" class="spin" :size="11"/></i>{{node[1]}}</div></div><div v-if="plan&&!selected.report" class="plan-summary"><strong>{{plan.title}}</strong><p>{{plan.scope}}</p><ol><li v-for="question in plan.questions" :key="question">{{question}}</li></ol></div><div v-if="logOpen" class="event-log"><div v-for="event in events" :key="event.id"><time>{{new Date(event.created_at).toLocaleTimeString()}}</time><span v-if="event.type==='agent_start'">{{event.data.label}}启动 · 工具：{{event.data.tools.join('、')}}</span><span v-else-if="event.type==='agent_handoff'">{{nodeName(event.data.from)}}交接给{{event.data.to.map(nodeName).join('、')||'完成'}}</span><span v-else-if="event.type==='node_start'">{{nodeName(event.data.node)}}开始</span><span v-else-if="event.type==='node_end'">{{nodeName(event.data.node)}}完成 · {{event.data.duration_ms}} ms</span><span v-else-if="event.type==='retrieval_status'">{{event.data.message||reasonLabel(event.data.outcome)}}</span><span v-else-if="event.type==='vision_result'">图片理解完成 · 可读 {{event.data.readable}} / {{event.data.count}} 张</span><span v-else-if="event.type==='reflection'">补搜：{{event.data.reason}}</span><span v-else-if="event.type==='sources_found'">{{event.data.kind==='web'?'网络':'本地'}}取得 {{event.data.count}} 条来源</span><span v-else>{{event.data.message||event.type}}</span></div></div></div>
-            <div v-if="selected.error" class="inline-warning">{{selected.error}}</div><div v-if="selected.sources.some(item=>item.kind==='web'&&item.access==='summary')" class="inline-warning">此历史报告含未取得可读正文的候选链接，可能已失效、需要登录或需要付费。请重新运行后再将结论用于决策。</div><details v-if="warnings.length" class="warnings"><summary>{{warnings.length}} 条研究提示</summary><p v-for="warning in warnings" :key="warning">{{warning}}</p></details>
-            <article v-if="selected.report" class="report-card"><div class="report-toolbar"><span><FileText :size="16"/>研究报告 · {{selected.publication?.status==='published'?'已发布':selected.publication?.status==='pending'?'待人工审核':selected.publication?.status==='rejected'?'已驳回':selected.publication?.status==='withdrawn'?'已撤回':selected.report_submitted?'审核记录已清理':'未提交审核'}}</span><button class="text-button" @click="revealDetails($event, '.report-metrics')">核验与用量 <ChevronRight :size="14"/></button></div><ReportReader :html="reportHtml" @inspect="inspectCitation"/><div class="report-actions"><button v-if="selected.status==='completed'" class="text-button" @click="saveRunMemory"><Brain :size="15"/>保存到研究记忆</button><button v-if="!selected.report_submitted&&!selected.publication" class="text-button review-submit" :disabled="serviceCapabilities?.read_only||(!!reviewSubmissionReason)" @click="submitPublication">提交人工审核</button><button v-if="selected.publication" class="text-button" @click="safely(()=>openPublication(selected!.publication!.id).then(()=>{view='reports'}))">查看审核记录</button><button class="text-button" @click="downloadRun(selected)"><Download :size="15"/>导出 Markdown</button></div><p v-if="reviewSubmissionReason" class="review-guidance">{{reviewSubmissionReason}}</p><p v-else-if="selected.validation?.quality==='partial'&&!selected.report_submitted&&!selected.publication" class="review-guidance">这是一份部分结果。可以送人工审核，但未回答的问题及删除的结论会保留在正式快照中，管理员批准时须说明发布范围。</p><p v-if="selected.publication?.review_reason" class="review-guidance">{{selected.publication.status==='published'?'批准说明':'驳回原因'}}：{{selected.publication.review_reason}}</p><p v-if="selected.publication?.withdrawal_reason" class="review-guidance">撤回原因：{{selected.publication.withdrawal_reason}}</p><details class="technical-details report-metrics"><summary>核验与用量（引用、来源、调用次数）</summary><div class="metrics-grid"><span>引用检查 {{selected.validation.supported_claims||0}} / {{selected.validation.checked_claims||0}} 条结论</span><span>来源 {{selected.validation.evidence_metrics?.source_count||0}} · 域名 {{selected.validation.evidence_metrics?.unique_web_domains||0}}</span><span>模型调用 {{selected.usage.llm_calls||0}} 次</span><span>搜索 {{selected.usage.search_calls||0}} 次</span></div></details></article>
+            <div v-if="selected.error" class="inline-warning" role="alert">{{selected.error}}</div>
+            <div v-if="selected.related_run_id" class="coverage-actions">
+              <button class="text-button" @click="openRevisionRun(selected.related_run_id)">查看原研究</button>
+              <span v-if="selected.supplement_requirement_id && selected.status === 'failed'">原结果仍可查看。该项尚未完成补查。</span>
+            </div><div v-if="selected.sources.some(item=>item.kind==='web'&&item.access==='summary')" class="inline-warning">此历史报告含未取得可读正文的候选链接，可能已失效、需要登录或需要付费。请重新运行后再将结论用于决策。</div><details v-if="warnings.length" class="warnings"><summary>{{warnings.length}} 条研究提示</summary><p v-for="warning in warnings" :key="warning">{{warning}}</p></details>
+            <article v-if="selected.report" class="report-card"><div class="report-toolbar"><span><FileText :size="16"/>研究报告 · {{selected.publication?.status==='published'?'已发布':selected.publication?.status==='pending'?'待人工审核':selected.publication?.status==='rejected'?'已驳回':selected.publication?.status==='withdrawn'?'已撤回':selected.report_submitted?'审核记录已清理':'未提交审核'}}</span><button class="text-button" @click="revealDetails($event, '.report-metrics')">核验与用量 <ChevronRight :size="14"/></button></div><ReportCoverage :key="selected.id" :run-id="selected.id" :coverage="selected.validation" :policy="selected.data_policy"
+                :can-work="canWrite && !active && !supplementBusy && !selected.publication && !selected.validation.kind && selected.validation.supplement?.merged !== false"
+                @claim="jumpClaim" @supplement="supplement" @documents="openSupplementDocuments" @adjust="adjustScope(false)"/>
+              <ReportReader ref="draftReader" :html="reportHtml" :claims="selected.validation.claim_links"
+                @inspect="inspectCitation" @claim="showClaim"/><div class="report-actions"><button v-if="selected.status==='completed'" class="text-button" @click="saveRunMemory"><Brain :size="15"/>保存到研究记忆</button><button v-if="!selected.report_submitted&&!selected.publication" class="text-button review-submit" :disabled="serviceCapabilities?.read_only||(!!reviewSubmissionReason)" @click="submitPublication">提交人工审核</button><button v-if="selected.publication" class="text-button" @click="safely(()=>openPublication(selected!.publication!.id).then(()=>{view='reports'}))">查看审核记录</button><button class="text-button" @click="downloadRun(selected)"><Download :size="15"/>导出 Markdown</button>
+              <button v-if="selected.validation.claim_links?.length" class="text-button" @click="downloadDecision(selected.id, false)">下载决策摘要</button></div><p v-if="reviewSubmissionReason" class="review-guidance">{{reviewSubmissionReason}}</p><p v-else-if="selected.validation?.quality==='partial'&&!selected.report_submitted&&!selected.publication" class="review-guidance">这是一份部分结果。可以送人工审核，但未回答的问题及删除的结论会保留在正式快照中，管理员批准时须说明发布范围。</p><p v-if="selected.publication?.review_reason" class="review-guidance">{{selected.publication.status==='published'?'批准说明':'驳回原因'}}：{{selected.publication.review_reason}}</p><p v-if="selected.publication?.withdrawal_reason" class="review-guidance">撤回原因：{{selected.publication.withdrawal_reason}}</p><details class="technical-details report-metrics"><summary>核验与用量（引用、来源、调用次数）</summary><div class="metrics-grid"><span>引用检查 {{selected.validation.supported_claims||0}} / {{selected.validation.checked_claims||0}} 条结论</span><span>来源 {{selected.validation.evidence_metrics?.source_count||0}} · 域名 {{selected.validation.evidence_metrics?.unique_web_domains||0}}</span><span>模型调用 {{selected.usage.llm_calls||0}} 次</span><span>搜索 {{selected.usage.search_calls||0}} 次</span></div></details></article>
             <div v-if="!selected.report&&!terminal(selected.status)" class="working-placeholder"><div class="orb"><Search :size="26"/></div><h3>正在沿着证据展开研究</h3><p>检索、分析和核查需要一些时间。你可以离开页面，稍后继续查看。</p></div>
-          </div><aside class="evidence-panel"><div class="panel-heading"><BookOpen :size="17"/><strong>研究来源</strong><span v-if="localSourceCount">本地资料 {{localSourceCount}}</span><span>{{selected.sources.length}}</span></div><p v-if="!selected.sources.length" class="muted">报告完成后，引用的资料将展示在这里。</p><button v-for="(item,index) in selected.sources" :key="item.id" class="source-card" @click="source=item"><small>{{index+1}} · {{item.kind==='attachment'?'本轮图片':item.kind==='web'?'网络资料':'本地资料库'}}</small><h4>{{item.title}}</h4><p>{{item.trust_label||item.domain||item.locator||(item.access==='summary'?'仅搜索摘要':'已读取正文')}}</p><span>查看证据片段 <ArrowUpRight :size="12"/></span></button><div class="source-note"><ShieldCheck :size="17"/><p>引用可追溯<br><span>重要结论需要正文与独立来源支持。</span></p></div></aside></div>
+          </div><aside class="evidence-panel"><div class="panel-heading"><BookOpen :size="17"/><strong>研究来源</strong><span v-if="localSourceCount">本地资料 {{localSourceCount}}</span><span>{{selected.sources.length}}</span></div><p v-if="!selected.sources.length" class="muted">报告完成后，引用的资料将展示在这里。</p><button v-for="(item,index) in selected.sources" :key="item.id" class="source-card" @click="showSource(item)"><small>{{index+1}} · {{item.kind==='attachment'?'本轮图片':item.kind==='web'?'网络资料':'本地资料库'}}</small><h4>{{item.title}}</h4><p>{{item.trust_label||item.domain||item.locator||(item.access==='summary'?'仅搜索摘要':'已读取正文')}}</p><span>查看证据片段 <ArrowUpRight :size="12"/></span></button><div class="source-note"><ShieldCheck :size="17"/><p>引用可追溯<br><span>重要结论需要正文与独立来源支持。</span></p></div></aside></div>
           <button v-if="runsCursor" class="text-button" :disabled="historyBusy" @click="loadOlderRuns">加载更早的研究记录</button>
           <details v-if="conversationHistory.length" class="conversation-history technical-details" aria-label="本会话的历史研究"><summary>查看本会话之前的 {{conversationHistory.length}} 次研究</summary>
             <article v-for="run in conversationHistory" :key="run.id" class="conversation-turn">
@@ -449,7 +561,7 @@ onUnmounted(()=>{controller?.abort();clearInterval(poll);window.removeEventListe
               <div class="attachment-previews"><AttachmentImage v-for="item in run.attachments||[]" :key="item.id" :id="item.id" :name="item.name"/></div><div class="conversation-response"><div class="conversation-response-heading"><FileText :size="15"/><strong>研究结果</strong><span>{{stateLabel(run.status)}}</span><button class="text-button" @click="selectRun(run)"><BookOpen :size="14"/>查看来源 {{run.sources.length}}</button><button v-if="run.report" class="text-button" @click="downloadRun(run)"><Download :size="14"/>导出</button></div><div v-if="run.report" class="conversation-markdown markdown" v-html="renderReport(run.report)"></div><p v-else class="muted">这次研究尚未生成可展示的报告。</p></div>
             </article>
           </details>
-          <div class="followup composer" @paste="imagePicker?.paste($event)" @dragover.prevent @drop="imagePicker?.drop($event)"><ImageAttachments ref="imagePicker" v-model="attachmentIds" :disabled="!canWrite||busy||active" @busy="attachmentBusy=$event"/><textarea v-model="topic" aria-label="继续追问" maxlength="4000" :placeholder="active?'研究进行中，完成后可继续追问…':'继续追问，或进一步限定研究范围…'" @keydown.enter.exact.prevent="send"></textarea><div class="composer-footer"><label class="data-policy">资料范围<select v-model="dataPolicy" aria-label="资料范围"><option value="internal">内部资料（不联网）</option><option value="public">公开问题（联网检索）</option></select></label><div class="mode-picker"><select v-model="mode" aria-label="追问模式"><option value="auto">自动判断研究方式</option><option value="deep">深度研究</option><option value="quick">快速问答</option></select></div><span class="composer-hint">{{dataPolicy==='internal'?'结合当前会话 · 重新核查证据':'仅用公开资料 · 不读取私有历史'}}</span><button class="send-button" aria-label="发送追问" :disabled="!canWrite||active||busy||attachmentBusy||(!topic.trim()&&!attachmentIds.length)" @click="send"><ArrowUp :size="20"/></button></div></div>
+          <div class="followup composer" @paste="imagePicker?.paste($event)" @dragover.prevent @drop="imagePicker?.drop($event)"><ImageAttachments ref="imagePicker" v-model="attachmentIds" :disabled="!canWrite||busy||active" @busy="attachmentBusy=$event"/><textarea v-model="topic" aria-label="继续追问" maxlength="4000" :placeholder="active?'研究进行中，完成后可继续追问…':'继续追问，或进一步限定研究范围…'" @keydown.enter.exact.prevent="send"></textarea><ResearchPreflight v-if="canWrite" :key="workspace?.id" :policy="dataPolicy"/><div class="composer-footer"><label class="data-policy">资料范围<select v-model="dataPolicy" aria-label="资料范围"><option value="internal">内部资料（不联网）</option><option value="public">公开问题（联网检索）</option></select></label><div class="mode-picker"><select v-model="mode" aria-label="追问模式"><option value="auto">自动判断研究方式</option><option value="deep">深度研究</option><option value="quick">快速问答</option></select></div><span class="composer-hint">{{dataPolicy==='internal'?'结合当前会话 · 重新核查证据':'仅用公开资料 · 不读取私有历史'}}</span><button class="send-button" aria-label="发送追问" :disabled="!canWrite||active||busy||attachmentBusy||(!topic.trim()&&!attachmentIds.length)" @click="send"><ArrowUp :size="20"/></button></div></div>
         </template>
       </section>
 
@@ -475,22 +587,36 @@ onUnmounted(()=>{controller?.abort();clearInterval(poll);window.removeEventListe
         <article v-if="selectedPublication" class="report-card publication-detail">
           <div class="report-toolbar"><strong>{{selectedPublication.topic}}</strong><span class="pill">{{selectedPublication.status==='published'?(selectedPublication.is_current===false?'历史正式版本':'正式版本'):selectedPublication.status==='pending'?'待审核':selectedPublication.status==='rejected'?'已驳回':'已撤回'}}{{selectedPublication.validation.quality==='partial'?' · 部分结果':''}}</span><button class="text-button" @click="revealDetails($event, '.publication-meta')">版本与审核 <ChevronRight :size="14"/></button></div>
 
-          <div v-if="selectedPublication.validation.quality==='partial'" class="publication-limits"><strong>限定范围报告：仍有未完整回答或未保留的结论。</strong><p>{{selectedPublication.validation.unanswered_questions?.length?'以下问题尚未完整回答，请留意报告的局限与审核说明。':'仍有未通过核验或未保留的内容，可用范围以现有证据与审核意见为准。'}}</p><details class="technical-details"><summary>查看核验数量</summary><p>已核验 {{selectedPublication.validation.supported_claims||0}} 条；未通过或删除 {{selectedPublication.validation.removed_claims||0}} 条。管理员批准时须说明可发布范围。</p></details><ul v-if="selectedPublication.validation.unanswered_questions?.length"><li v-for="question in selectedPublication.validation.unanswered_questions" :key="question">{{question}}</li></ul></div>
+          <ReportCoverage :key="selectedPublication.id" :run-id="selectedPublication.source_run_id" :coverage="selectedPublication.validation"
+            :policy="selectedPublication.corpus_revision === -1 ? 'public' : 'internal'"
+            :can-work="canWrite && !supplementBusy && selectedPublication.status === 'published' && selectedPublication.is_current !== false &&
+              (workspace?.role === 'admin' || selectedPublication.author_subject === currentUser()?.id)"
+            @claim="id=>jumpClaim(id, true)" @supplement="(id, query, url)=>supplement(id, query, url, true)"
+            @documents="id=>openSupplementDocuments(id, true)" @adjust="adjustScope(true)"/>
+          <div v-if="selectedPublication.validation.quality==='partial'" class="publication-limits"><strong>限定范围报告：仍有未完整回答或未保留的结论。</strong><p>{{selectedPublication.validation.unanswered_questions?.length?'以下问题尚未完整回答，请留意报告的局限与审核说明。':'仍有未通过核验或未保留的内容，可用范围以现有证据与审核意见为准。'}}</p><details class="technical-details"><summary>查看核验数量</summary><p>已核验 {{selectedPublication.validation.supported_claims||0}} 条；未通过或删除 {{selectedPublication.validation.removed_claims||0}} 条。管理员批准时须说明可发布范围。</p></details> </div>
           <p v-if="selectedPublication.review_reason" class="publication-review-note">{{selectedPublication.status==='published'?'批准说明':'驳回原因'}}：{{selectedPublication.review_reason}}</p>
           <p v-if="selectedPublication.withdrawal_reason" class="publication-review-note">撤回原因：{{selectedPublication.withdrawal_reason}}</p>
-          <ReportLifecycle :key="`${workspace?.id}:${selectedPublication.id}`" :report="selectedPublication" :role="serviceCapabilities?.read_only ? 'viewer' : workspace?.role || ''" :subject="currentUser()?.id" @open="id=>safely(()=>openPublication(id))" @run="openRevisionRun" @evidence="value=>{if(selectedPublication)selectedPublication.evidence_status=value}"/>
+          <ReportLifecycle :key="`${workspace?.id}:${selectedPublication.id}`" :report="selectedPublication" :role="serviceCapabilities?.read_only ? 'viewer' : workspace?.role || ''" :subject="currentUser()?.id" @open="id=>safely(()=>openPublication(id))" @run="openRevisionRun" @claim="id=>showClaim(id, true)" @evidence="value=>{if(selectedPublication)selectedPublication.evidence_status=value}"/>
           <p v-if="selectedPublication.status==='pending' && reviewBlocked(selectedPublication)" class="inline-warning">资料依据或核验规则已更新，请重新研究并提交审核；当前版本不能直接批准。</p>
-          <ReportReader :html="renderReport(selectedPublication.report_markdown)"/>
+          <ReportReader ref="formalReader" :html="renderReport(selectedPublication.report_markdown)"
+            :claims="selectedPublication.validation.claim_links"
+            @inspect="event=>inspectCitation(event, selectedPublication!.sources)" @claim="id=>showClaim(id, true)"/>
           <div class="publication-evidence"><h3>这份报告依据的原文</h3><div v-for="item in selectedPublication.sources" :key="item.id" class="debug-result"><strong>{{item.title}}</strong><small>{{item.locator||item.url||item.id}}<template v-if="item.original_available===false"> · 原文当前不可访问</template><template v-else-if="item.original_available===null"> · 外部网页未持续核验</template></small><p>{{item.text}}</p></div></div>
           <details class="publication-meta technical-details"><summary>版本与审核（作者、审核人、内容指纹）</summary><div>作者 {{selectedPublication.author_subject}} · 提交 {{new Date(selectedPublication.submitted_at).toLocaleString()}}<br>内容 SHA-256：<code>{{selectedPublication.content_sha256}}</code><template v-if="selectedPublication.reviewed_by"><br>审核人 {{selectedPublication.reviewed_by}} · {{new Date(selectedPublication.reviewed_at).toLocaleString()}}</template></div></details>
-          <SourceRechecks v-if="selectedPublication.sources.some(item=>item.kind==='web')" :report-id="selectedPublication.id" :can-write="canWrite" @changed="safely(()=>openPublication(selectedPublication!.id))"/>
-          <div class="review-actions"><button v-if="selectedPublication.status==='published'" class="text-button" @click="safely(()=>saveMarkdown(`/api/reports/${selectedPublication!.id}/download`,`report-${selectedPublication!.id.slice(0,8)}.md`))"><Download :size="15"/>下载正式版本</button><template v-if="workspace?.role==='admin'"><p v-if="selectedPublication.status==='pending'&&selectedPublication.author_subject===currentUser()?.id" class="inline-warning">报告作者不能审核自己的报告，请由另一位管理员处理。</p><label v-if="(selectedPublication.status==='pending'&&selectedPublication.author_subject!==currentUser()?.id)||selectedPublication.status==='published'">{{selectedPublication.status==='published'?'撤回原因':'审核意见（部分结果批准时必填）'}}<textarea v-model="reviewReason" maxlength="1000" placeholder="说明可发布范围、尚未回答的问题或驳回原因"></textarea></label><button v-if="selectedPublication.status==='pending'&&selectedPublication.author_subject!==currentUser()?.id" class="primary" :disabled="serviceCapabilities?.read_only||(reviewBlocked(selectedPublication)||(selectedPublication.validation.quality==='partial'&&!reviewReason.trim()))" @click="reviewPublication('approve')">批准发布</button><button v-if="selectedPublication.status==='pending'&&selectedPublication.author_subject!==currentUser()?.id" class="text-button" :disabled="serviceCapabilities?.read_only||(!reviewReason.trim())" @click="reviewPublication('reject')">驳回</button><button v-if="selectedPublication.status==='published'" class="text-button" :disabled="serviceCapabilities?.read_only||(!reviewReason.trim())" @click="reviewPublication('withdraw')">撤回正式版本</button><button v-if="['rejected','withdrawn'].includes(selectedPublication.status)" class="text-button" @click="deletePublication" :disabled="serviceCapabilities?.read_only">清理审核记录</button></template></div>
+          <SourceRechecks v-if="selectedPublication.sources.some(item=>item.kind==='web')" :report-id="selectedPublication.id" :can-write="canWrite" :sources="selectedPublication.sources"
+            :claims="selectedPublication.validation.claim_links" @claim="id=>showClaim(id, true)" @changed="safely(()=>openPublication(selectedPublication!.id))"/>
+          <div class="review-actions"><button v-if="selectedPublication.status==='published'" class="text-button" @click="safely(()=>saveMarkdown(`/api/reports/${selectedPublication!.id}/download`,`report-${selectedPublication!.id.slice(0,8)}.md`))"><Download :size="15"/>下载正式版本</button><button v-if="selectedPublication.status==='published'" class="text-button"
+            @click="downloadDecision(selectedPublication.id, true)">下载决策摘要</button><template v-if="workspace?.role==='admin'"><p v-if="selectedPublication.status==='pending'&&selectedPublication.author_subject===currentUser()?.id" class="inline-warning">报告作者不能审核自己的报告，请由另一位管理员处理。</p><label v-if="(selectedPublication.status==='pending'&&selectedPublication.author_subject!==currentUser()?.id)||selectedPublication.status==='published'">{{selectedPublication.status==='published'?'撤回原因':'审核意见（部分结果批准时必填）'}}<textarea v-model="reviewReason" maxlength="1000" placeholder="说明可发布范围、尚未回答的问题或驳回原因"></textarea></label><button v-if="selectedPublication.status==='pending'&&selectedPublication.author_subject!==currentUser()?.id" class="primary" :disabled="serviceCapabilities?.read_only||(reviewBlocked(selectedPublication)||(selectedPublication.validation.quality==='partial'&&!reviewReason.trim()))" @click="reviewPublication('approve')">批准发布</button><button v-if="selectedPublication.status==='pending'&&selectedPublication.author_subject!==currentUser()?.id" class="text-button" :disabled="serviceCapabilities?.read_only||(!reviewReason.trim())" @click="reviewPublication('reject')">驳回</button><button v-if="selectedPublication.status==='published'" class="text-button" :disabled="serviceCapabilities?.read_only||(!reviewReason.trim())" @click="reviewPublication('withdraw')">撤回正式版本</button><button v-if="['rejected','withdrawn'].includes(selectedPublication.status)" class="text-button" @click="deletePublication" :disabled="serviceCapabilities?.read_only">清理审核记录</button></template></div>
         </article>
       </section>
 
       <section v-if="view==='documents'" class="utility-view">
         <h1>把资料，变成研究的依据。</h1>
         <p class="intro">导入你的行业报告和笔记。选择“内部资料”研究时会检索这些资料，并保留原文位置。</p>
+        <div v-if="documentReturn" class="coverage-actions">
+          <p>资料显示「可检索」后，可返回报告补查原来的未答项。</p>
+          <button class="text-button" @click="returnToReport">返回待补查报告</button>
+        </div>
         <DocumentCapacity :key="`capacity:${workspace?.id}:${documents.length}`"/>
         <CollectionAccess v-if="authenticated" :key="workspace?.id" :admin="workspace?.role==='admin'" :documents="documents" @changed="safely(async()=>{documents=await api('/api/documents')})"/>
         <input ref="uploadInput" type="file" accept=".txt,.md,.pdf,.docx,.jpg,.jpeg,.png,.gif,.webp" multiple hidden @change="upload">
@@ -530,6 +656,19 @@ onUnmounted(()=>{controller?.abort();clearInterval(poll);window.removeEventListe
           <button v-else class="text-button" @click="safely(async()=>{await refreshWorkspace();memberNotice='工作空间列表已刷新；请在左侧切换到受邀的工作空间。'})">刷新工作空间列表</button>
         </div><div class="settings-card"><h3>服务连接</h3><dl><dt>对话模型</dt><dd>{{status?.llm_model}}</dd><dt>嵌入模型</dt><dd>{{status?.embedding_model}}</dd><dt>向量维度</dt><dd>{{status?.embedding_dimension}}</dd><dt>资料索引</dt><dd>{{status?.milvus==='ready'?'可用':'尚未连接'}}</dd></dl><p v-if="status?.missing?.length" class="inline-warning">待配置：{{status.missing.join('、')}}</p><button class="primary" :disabled="checking" @click="checkConnection"><LoaderCircle v-if="checking" class="spin" :size="15"/>{{checking?'正在检查…':'检查服务配置'}}</button><small class="block muted">静态检查不会发起供应商请求。真实探测仅限平台运维，并受额度和冷却限制。</small><pre v-if="connection" class="connection-result">{{JSON.stringify(connection,null,2)}}</pre></div><div class="settings-card"><h3>本地研究指标</h3><dl><dt>完成 / 资料不足</dt><dd>{{metrics?.completed||0}} / {{metrics?.insufficient||0}}</dd><dt>平均来源 / 域名</dt><dd>{{metrics?.avg_sources||0}} / {{metrics?.avg_web_domains||0}}</dd><dt>P50 / P95 节点时延</dt><dd>{{metrics?.node_latency_ms?.p50||0}} / {{metrics?.node_latency_ms?.p95||0}} ms</dd><dt>Token</dt><dd>{{(metrics?.prompt_tokens||0)+(metrics?.completion_tokens||0)}}</dd></dl></div><div v-if="authenticated && workspace?.role==='admin'" class="settings-card"><h3>死信任务治理</h3><p class="muted">管理员可查看失败及重试记录；仅未完成且已停止的任务可从检查点恢复。</p><p v-if="!deadLetters.length" class="muted">当前没有死信任务记录。</p><div v-for="item in deadLetters" :key="item.run_id" class="debug-result"><strong>{{item.category}}</strong><small>{{new Date(item.failed_at).toLocaleString()}}</small><p>{{item.message}}</p><p>{{item.recovery_status==='succeeded'?'重试成功':item.recovery_status==='insufficient'?'重试完成（证据不足）':item.recovery_status==='retrying'?'正在重试…':'待恢复'}}</p><button v-if="item.can_recover" class="text-button" @click="recoverDeadLetter(item)" :disabled="serviceCapabilities?.read_only">从检查点恢复</button></div></div><div class="settings-card"><h3>本地数据</h3><button class="primary" @click="exportData"><Download :size="15"/>导出工作空间</button><button class="text-button" @click="purgeData('reports')" :disabled="serviceCapabilities?.read_only">清理研究记录</button><button class="text-button" @click="purgeData('all')" :disabled="serviceCapabilities?.read_only">清理全部本地数据</button></div><div v-if="!authenticated" class="settings-card"><h3>演示工作空间</h3><p class="muted">User ID 用于隔离资料、记忆和会话；每个用户的新会话自动命名为 thread01、thread02。填入 Thread ID 可直接打开已有会话，留空则切换到新的研究页面。</p><label>User ID<input v-model.trim="userId" maxlength="64" placeholder="例如：user01"></label><label>Thread ID（可选）<input v-model.trim="threadSwitchId" maxlength="32" placeholder="例如：thread01"></label><p v-if="threadId" class="muted">当前 Thread ID：<code>{{threadSwitchId}}</code></p><button class="primary" @click="saveSettings">切换工作空间</button></div></section>
     </main>
-    <div v-if="source" class="drawer-backdrop" @click.self="source=null"><aside ref="sourceDrawer" class="source-drawer" role="dialog" aria-modal="true" :aria-label="source.title" @keydown="handleSourceKeys"><button class="icon-button close-drawer" aria-label="关闭来源" @click="source=null"><X :size="20"/></button><h2>{{source.title}}</h2><div class="source-meta"><span>{{source.kind==='attachment'?'本轮图片':source.kind==='local'?'本地资料库':source.access==='summary'?'仅搜索摘要':'已读取正文'}}</span></div><p v-if="source.locator">{{source.locator}}</p><p v-if="source.published_at" class="muted">发布时间：{{source.published_at}}</p><p class="muted">取得时间：{{new Date(source.retrieved_at).toLocaleString()}}</p><a v-if="source.url && source.access!=='summary'" :href="source.url" target="_blank" rel="noopener noreferrer" class="source-link">打开原始来源 <ArrowUpRight :size="15"/></a><p v-else-if="source.kind==='web'" class="inline-warning">该候选地址未取得可读正文，可能已失效、需要登录或需要付费。新版研究不会将它作为引用。</p><AttachmentImage v-if="source.attachment_id" :id="source.attachment_id" :name="source.title"/><h3>{{source.kind==='attachment'?'图片识别内容（未经外部核实）':'用于研究的原文片段'}}</h3><div class="source-excerpt">{{source.text}}</div><details class="technical-details source-technical"><summary>来源技术信息（标识、系统分类）</summary><p>来源 ID：<code>{{source.id}}</code></p><p>系统分类：{{source.evidence_level||'未记录'}}（不等于可信度保证）</p></details></aside></div>
+    <div v-if="source" class="drawer-backdrop" @click.self="source=null">
+      <aside ref="sourceDrawer" :class="['source-drawer', { 'comparison-drawer':evidenceGroup.length > 1 }]"
+        role="dialog" aria-modal="true" :aria-label="evidenceClaim ? '核对结论' : source.title" @keydown="handleSourceKeys">
+        <button class="icon-button close-drawer" aria-label="关闭来源" @click="source=null"><X :size="20"/></button>
+        <template v-if="evidenceClaim">
+          <h2>{{evidenceGroup.length > 1 ? '并排核对原文' : '核对结论'}}</h2>
+          <p>{{evidenceClaim.text}}</p><p v-if="evidenceClaim.comparison" class="inline-warning">已核验的口径差异</p>
+          <div :class="{ 'evidence-comparison': evidenceGroup.length > 1 }">
+            <EvidenceExcerpt v-for="item in evidenceGroup" :key="item.id" :source="item" compare/>
+          </div>
+        </template>
+        <template v-else><h2>{{source.title}}</h2><EvidenceExcerpt :source="source"/></template>
+      </aside>
+    </div>
   </div>
 </template>

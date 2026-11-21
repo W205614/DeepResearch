@@ -71,12 +71,16 @@ public class ReportPublicationController {
 
     @GetMapping("/api/reports/{reportId}/download")
     ResponseEntity<StreamingResponseBody> download(@PathVariable String reportId, @AuthenticationPrincipal Jwt jwt,
-            @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
+            @RequestHeader(value = "X-Workspace-ID", required = false) String requested,
+            @RequestParam(required = false) String format) {
         WorkspaceIdentity identity = identity(jwt, requested);
         Map<String, Object> report = publications.get(identity, reportId);
+        boolean decision = "decision".equals(format);
+        String markdown = decision ? DecisionSummary.markdown(report, true)
+            : String.valueOf(report.get("report_markdown"));
         return ResponseEntity.ok().contentType(MediaType.parseMediaType("text/markdown;charset=UTF-8"))
-            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"report-" + reportId + ".md\"")
-            .body(MarkdownDownload.stream(String.valueOf(report.get("report_markdown")), () -> platform.requireCurrent(jwt.getSubject(), jwt.getIssuedAt())));
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + (decision ? "decision" : "report") + "-" + reportId + ".md\"")
+            .body(MarkdownDownload.stream(markdown, () -> platform.requireCurrent(jwt.getSubject(), jwt.getIssuedAt())));
     }
 
     @GetMapping("/api/reports/{reportId}/impacts")

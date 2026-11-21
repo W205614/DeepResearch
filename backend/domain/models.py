@@ -145,7 +145,26 @@ class ReportOutline(BaseModel):
     sections: list[OutlineSection] = Field(min_length=1, max_length=8)
 
 
+class RequirementCoverage(BaseModel):
+    requirement: str = Field(min_length=1, max_length=4000)
+    status: Literal["answered", "partial", "insufficient"]
+    claim_indices: list[int] = Field(default_factory=list, max_length=40)
+    gap: str = Field(default="", max_length=500)
+
+
+class SupplementSelection(BaseModel):
+    claim_indices: list[int] = Field(default_factory=list, max_length=40)
+
+
+class SupplementCoverage(SupplementSelection):
+    status: Literal["answered", "partial", "insufficient"]
+    gap: str = Field(default="", max_length=500)
+    comparison_claim_indices: list[int] = Field(default_factory=list, max_length=40)
+
+
 class QuestionCoverage(BaseModel):
+    requirements: list[RequirementCoverage] = Field(default_factory=list, max_length=12)
+    comparison_claim_indices: list[int] = Field(default_factory=list, max_length=40)
     original_request_answered: bool = False
     answered_questions: list[int] = Field(default_factory=list, max_length=5)
 
@@ -244,6 +263,11 @@ class ResearchState(TypedDict, total=False):
     final_claims: list[dict]
     corpus_revision: int
     revision_plan: dict
+    supplement_url: str
+    supplement_scope: str
+    supplement_query: str
+    web_read_failures: int
+    web_read_reasons: list[str]
     recovered_claims: list[dict]
     analysis_input_hash: str
     gaps: list[str]

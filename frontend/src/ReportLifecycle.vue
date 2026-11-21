@@ -8,7 +8,7 @@ type ImpactResult = { current_corpus_revision:number; corpus_revision:number; ev
 type Series = { id:string; current_report_id:string|null; reports:Publication[] }
 type ReportDiff = { changes:{ kind:string; old?:{text?:string;statement?:string}|null; new?:{text?:string;statement?:string}|null }[]; before_report:string; after_report:string; legacy:boolean }
 const props = defineProps<{ report:Publication; role:string; subject?:string }>()
-const emit = defineEmits<{ open:[id:string]; run:[id:string]; evidence:[status:string] }>()
+const emit = defineEmits<{ open:[id:string]; run:[id:string]; evidence:[status:string]; claim:[id:string] }>()
 const impact = ref<ImpactResult|null>(null), series = ref<Series|null>(null), diff = ref<ReportDiff|null>(null)
 const against = ref(''), busy = ref(false), revising = ref(false), error = ref(''), job = ref<RevisionJob|null>(null)
 const pending = ref<{ fingerprint:string; id:string }|null>(null)
@@ -68,7 +68,7 @@ async function revise() {
       <article v-for="(item, index) in impact.impacts" :key="index" class="debug-result">
         <strong>资料范围 {{ item.target_revision }} · {{ evidenceLabel(item.status) }}</strong>
         <p v-for="reason in item.reasons" :key="reason">{{ impactReasonLabel(reason) }}</p>
-        <div v-if="item.affected_claims?.length"><strong>待复核结论</strong><ul><li v-for="id in item.affected_claims" :key="id">{{ report.artifacts?.claims?.find(claim=>claim.id===id)?.text || `结论 ${id}` }}</li></ul></div>
+        <div v-if="item.affected_claims?.length"><strong>待复核结论</strong><ul><li v-for="id in item.affected_claims" :key="id"><button class="text-button" @click="$emit('claim', id)">{{ report.artifacts?.claims?.find(claim=>claim.id===id)?.text || '查看结论依据' }}</button></li></ul></div>
         <div v-for="(change, changeIndex) in item.diff?.changes || []" :key="changeIndex" class="lifecycle-columns"><div v-if="change.old"><small>原证据 · {{ change.old.locator }}</small><p>{{ change.old.text }}</p></div><div v-if="change.new"><small>新证据 · {{ change.new.locator }}</small><p>{{ change.new.text }}</p></div></div>
         <details v-if="item.diff" class="technical-details"><summary>查看变化依据</summary><pre>{{ JSON.stringify(item.diff, null, 2) }}</pre></details>
       </article>

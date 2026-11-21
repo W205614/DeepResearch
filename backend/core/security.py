@@ -85,7 +85,7 @@ async def fetch_text(url: str, max_bytes: int = 1_500_000) -> str:
                         url = urljoin(url, response.headers.get("location", ""))
                         continue
                     if response.status_code != 200:
-                        raise ServiceError("来源正文不可访问")
+                        raise ServiceError(f"来源正文不可访问（HTTP {response.status_code}）")
                     if not any(kind in response.headers.get("content-type", "").lower() for kind in ["text/html", "text/plain", "application/xhtml"]):
                         raise ServiceError("来源不是支持的网页正文类型")
                     chunks, size = [], 0

@@ -72,12 +72,30 @@ public class ResearchController {
 
     @GetMapping("/api/research/runs/{runId}/report")
     ResponseEntity<StreamingResponseBody> report(@PathVariable String runId, @AuthenticationPrincipal Jwt jwt,
-                                  @RequestHeader(value = "X-Workspace-ID", required = false) String requested) {
+                                  @RequestHeader(value = "X-Workspace-ID", required = false) String requested,
+            @RequestParam(required = false) String format) {
         WorkspaceIdentity identity = access.resolve(jwt, requested);
         Map<String, Object> run = views.visibleRun(runId, identity);
+        boolean decision = "decision".equals(format);
+        String markdown = decision ? DecisionSummary.markdown(run, false)
+            : String.valueOf(run.get("report"));
         return ResponseEntity.ok().contentType(MediaType.parseMediaType("text/markdown;charset=UTF-8"))
-            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"research-" + runId + ".md\"")
-            .body(MarkdownDownload.stream(String.valueOf(run.get("report")), () -> platform.requireCurrent(jwt.getSubject(), jwt.getIssuedAt())));
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + (decision ? "decision" : "research") + "-" + runId + ".md\"")
+            .body(MarkdownDownload.stream(markdown, () -> platform.requireCurrent(jwt.getSubject(), jwt.getIssuedAt())));
+    }
+
+    @GetMapping("/api/research/runs/{runId}/supplement-query")
+    Map<String, String> supplementQuery(@PathVariable String runId, @AuthenticationPrincipal Jwt jwt,
+            @RequestHeader(value = "X-Workspace-ID", required = false) String requested,
+            @RequestParam String requirementId) {
+        return Map.of("query", commands.supplementQuery(access.resolve(jwt, requested), runId, requirementId));
+    }
+
+    @PostMapping("/api/research/runs/{runId}/supplements")
+    ResponseEntity<Map<String, Object>> supplement(@PathVariable String runId, @AuthenticationPrincipal Jwt jwt,
+            @RequestHeader(value = "X-Workspace-ID", required = false) String requested,
+            @Valid @RequestBody Requests.Supplement body) {
+        return ResponseEntity.accepted().body(commands.supplement(access.resolve(jwt, requested), runId, body));
     }
 
     @PostMapping("/api/research/runs/{runId}/cancel")

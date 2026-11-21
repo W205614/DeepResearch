@@ -11,13 +11,15 @@ from langgraph.graph import END, START, StateGraph
 from ..core.db import now
 from .evidence_policy import validate_claim
 from ..domain.models import (Analysis, ChatAnswer, Evidence, Judgment, Plan, Reflection, ReportDraft,
-                     ReportRepair, ReportOutline, QuestionCoverage, SourceFacts, ResearchState, Route, Verification,
+                     ReportRepair, ReportOutline, QuestionCoverage, SupplementCoverage, SupplementSelection,
+                     SourceFacts, ResearchState, Route, Verification,
                      TargetVerification)
 from ..core.metrics import NODE_SECONDS, RETRIEVAL_OUTCOMES
 from ..core.observability import error_category, get_task_logger, run_label, tracer
 from ..infrastructure.providers import ServiceError, StructuredResponseError
 from .reporting import assemble_report, quoted_facts
 from .routing import decide
+from .coverage import claim_links, coverage_items, text_id
 from .agents import AgentRuntime
 from ..core.reliability import check_execution, phase, fingerprint
 from ..core.checkpoints import FencedDatabase
@@ -485,6 +487,12 @@ class ResearchGraph:
                 "evidence": []}
 
     async def planner(self, state):
+        if scope := state.get("supplement_scope"):
+            target = state["topic"]
+            queries = normalize_queries([state.get("supplement_query") or target])
+            plan = Plan(title="定向补查", questions=[target], queries=queries, scope=scope[:1000]).model_dump()
+            await self.db.event(state["run_id"], "plan", plan)
+            return {"plan": plan, "queries": queries, "searched": [], "round": 0, "evidence": [], "limitations": []}
         plan = await self.ask("planner",
             "根据用户主题制定研究计划，结合上下文解析追问。明确时间和地区口径，未知范围写明假设。"
             "深度研究按实际需要拆解 1–5 个子问题，生成最多 4 个不同查询；单点事实题不为凑数量扩展问题。"
@@ -529,7 +537,7 @@ class ResearchGraph:
                     await self.retrieval_status(state, "web", outcome)
                     return rows
             except ServiceError as exc:
-                if exc.code in {"execution_lost", "permission_revoked", "budget_exhausted", "egress_denied"}:
+                if exc.code in {"execution_lost", "permission_revoked", "budget_exhausted", "usage_budget_exhausted", "egress_denied"}:
                     raise
                 outcomes.append({"source": "web", "outcome": "error"})
                 await self.retrieval_status(state, "web", "error")
@@ -537,10 +545,18 @@ class ResearchGraph:
                 return []
 
         # Keep query order for fair candidate selection; cancel siblings on failure.
-        async with asyncio.TaskGroup() as group:
-            searches = [group.create_task(search(query)) for query in queries]
+        stop = None
+        try:
+            async with asyncio.TaskGroup() as group:
+                searches = [group.create_task(search(query)) for query in queries]
+        except* ServiceError as failures:
+            stop = failures.exceptions[0]
+        if stop:
+            raise stop
         rows_by_query = [task.result() for task in searches]
         urls = select_web_candidates(rows_by_query, self.settings.max_web_candidates)
+        if url := state.get("supplement_url"):
+            urls = dict(list({url: {"name": url}, **urls}.items())[:self.settings.max_web_candidates])
 
         async def read(url, row):
             snippet = str(row.get("summary") or row.get("snippet") or "")[:4000]
@@ -567,14 +583,16 @@ class ResearchGraph:
         found = await asyncio.gather(*(read(url, row) for url, row in urls.items()))
         skipped = [row["_skipped"] for row in found if row and "_skipped" in row]
         evidence = [row for row in found if row and "_skipped" not in row]
-        if skipped:
-            reasons = "、".join(unique(skipped)[:2])
-            await self.warning(state, f"{len(skipped)} 条候选网页未取得可读正文（{reasons}），已排除，不作为报告引用。")
+        read_reasons = unique(skipped)[:2]
+        if read_reasons:
+            await self.warning(state,
+                f"{len(skipped)} 条候选网页未取得可读正文（{'、'.join(read_reasons)}），已排除，不作为报告引用。")
         self.logger.info("run=%s node=web_scout queries=%d candidates=%d readable=%d skipped=%d",
                          run_label(state["run_id"]), len(rows_by_query), len(urls), len(evidence), len(skipped))
         await self.db.event(state["run_id"], "sources_found", {"kind": "web", "count": len(evidence),
                             "candidates": len(urls), "queries": len(rows_by_query)})
-        return {"web_results": evidence, "web_outcomes": outcomes, "searched": normalize_queries(state.get("searched", []) + queries)}
+        return {"web_results": evidence, "web_outcomes": outcomes, "web_read_failures": len(skipped),
+                "web_read_reasons": read_reasons, "searched": normalize_queries(state.get("searched", []) + queries)}
 
     async def retrieval_status(self, state, source, outcome):
         RETRIEVAL_OUTCOMES.labels(source=source, outcome=outcome).inc()
@@ -593,15 +611,17 @@ class ResearchGraph:
         try:
             queries = normalize_queries(state["queries"])[:8]
             topic = str(state.get("topic", ""))[:4000]
-            topic_queries = normalize_queries([topic], searched=queries)
+            targeted = bool(state.get("supplement_scope"))
+            topic_queries = [] if targeted else normalize_queries([topic], searched=queries)
+            rerank_query = queries[0] if targeted else topic or queries[0]
             async def local_search(query_set):
                 return await self.search_local(state["user_id"], query_set, limit=6,
-                                               run_id=state["run_id"], rerank_query=topic or queries[0])
+                                               run_id=state["run_id"], rerank_query=rerank_query)
             fallback_used = False
             try:
                 hits = await local_search(queries)
             except ServiceError as exc:
-                if exc.code in {"execution_lost", "permission_revoked", "budget_exhausted", "egress_denied"} or not topic_queries:
+                if exc.code in {"execution_lost", "permission_revoked", "budget_exhausted", "usage_budget_exhausted", "egress_denied"} or not topic_queries:
                     raise
                 hits = await local_search(topic_queries)
                 fallback_used = True
@@ -623,7 +643,7 @@ class ResearchGraph:
                     chunk_id=hit["id"], index_version=hit.get("index_version", 0), document_hash=hit.get("document_hash", ""),
                     access="document", retrieved_at=now(), evidence_level="local").model_dump())
         except ServiceError as exc:
-            if exc.code in {"execution_lost", "permission_revoked", "budget_exhausted", "egress_denied"}:
+            if exc.code in {"execution_lost", "permission_revoked", "budget_exhausted", "usage_budget_exhausted", "egress_denied"}:
                 raise
             outcome = "error"
             await self.warning(state, str(exc))
@@ -706,12 +726,15 @@ class ResearchGraph:
                 "revision": {k:v for k,v in state.get("revision_plan", {}).items() if k not in {"seed_sources"}},
                 "evidence": evidence_context(state["evidence"], query=state.get("topic", "")),
                 "conflicts": state["conflicts"]}
+        if scope := state.get("supplement_scope"):
+            data["original_constraints"] = scope
         input_hash = digest(json.dumps(data, ensure_ascii=False, sort_keys=True))
         if state.get("analysis_input_hash") == input_hash:
             await self.db.event(state["run_id"], "analysis_reused", {"reason": "unchanged_evidence"})
             return {"claims": state["claims"], "gaps": state["gaps"]}
         analysis = await self.ask("analyst",
             "先回答 topic 中用户原始问题，再处理计划。计划增加的元数据问题不构成事实提取的前置条件。"
+            "如有 original_constraints，仅用它约束当前 topic；不把原始大问题扩为本轮研究任务。"
             "每条事实或推断必须关联 source_ids，kind 分别为 fact 或 inference。"
             "每条只表达一个可核验命题；同一规则的主体、否定、适用前提和并列必要条件必须完整保留。"
             "推断标明对照资料得出，说明原文支持的依据与适用条件，不可冒充各来源原话。"
@@ -759,6 +782,7 @@ class ResearchGraph:
         can_search = search_available and (counter or {}).get("search_calls", 0) < self.settings.max_search_calls
         has_local = bool(await self.db.one("SELECT id FROM documents WHERE user_id=? AND status IN ('ready','rebuilding') LIMIT 1", (state["user_id"],)))
         stop_reason = (
+            "targeted_supplement" if state.get("supplement_scope") else
             "quick_mode" if state["mode"] == "quick" else
             "no_gaps" if not state["gaps"] else
             "round_limit" if state["round"] >= self.settings.max_reflection_rounds else
@@ -766,6 +790,7 @@ class ResearchGraph:
         )
         if stop_reason:
             reasons = {
+                "targeted_supplement": "补查限定在选中的未答项。",
                 "quick_mode": "快速研究不追加补搜。",
                 "no_gaps": "当前分析未提出待补充的研究缺口。",
                 "round_limit": "已达到补搜轮数上限，按现有证据生成报告。",
@@ -798,6 +823,21 @@ class ResearchGraph:
                        if failed else "# 研究资料不足\n\n未取得足以支持结论的证据。请补充资料、上传清晰图片或调整问题范围后重试。")
             return {"draft": {}, "report": message + "\n\n" + "\n".join("- " + md_text(gap) for gap in state["gaps"]),
                     "validation": {"retrieval_failed": failed}}
+        if scope := state.get("supplement_scope"):
+            selection = await self.ask("writer",
+                "本任务只选择候选结论，不补写事实。只选能直接回答 selected_requirement 的结论或必要限定。"
+                "original_context 只用来识别比较对象和约束。其他原题要求、同名应用、通用背景或操作旁支均不得选中。"
+                "一个对象或一个子条件的有效证据可以保留，完全不相关则返回空 claim_indices。",
+                {"selected_requirement": state["topic"], "original_context": scope,
+                 "claims": [{"index": i, **claim} for i, claim in enumerate(state["claims"])]},
+                SupplementSelection, state["run_id"])
+            claims = [state["claims"][i] for i in dict.fromkeys(selection.claim_indices)
+                      if 0 <= i < len(state["claims"])]
+            if not claims:
+                return {"draft": {}, "claims": [], "report": "", "validation": {}}
+            outline = ReportOutline(sections=[{"question_index": 0, "claim_indices": list(range(len(claims)))}])
+            draft = assemble_report(state["topic"], [state["topic"]], claims, outline)
+            return {"draft": draft.model_dump(), "claims": claims}
         outline = await self.ask("writer",
             "仅组织已有事实的阅读顺序，不撰写或改写事实。sections 每节返回 question_index 和 claim_indices。"
             "question_index 对应 questions 的零起始序号；不属于某个问题时用 null。"
@@ -902,7 +942,11 @@ class ResearchGraph:
             return {"report": prefix + state["report"], "validation": {**state.get("validation", {}),
                     "verification_contract": VERIFICATION_CONTRACT,
                     "verification_wire": VERIFICATION_WIRE,
-                    "checked_claims": 0, "supported_claims": 0, "insufficient": True}}
+                    "checked_claims": 0, "supported_claims": 0, "insufficient": True,
+                    "original_request_answered": False,
+                    "unanswered_questions": state.get("plan", {}).get("questions") or [state["topic"]],
+                    "requirements": [] if state.get("supplement_scope") else coverage_items(
+                        state["topic"], state.get("plan", {}).get("questions", []), [], QuestionCoverage())}}
         sources = {source["id"]: source for source in state["evidence"]}
         if not self.settings.demo_mode:
             await validate_sources(self.db, state["user_id"], list(sources.values()))
@@ -966,6 +1010,31 @@ class ResearchGraph:
             checks = preserved_checks + repaired_checks + [
                 {"index": i, "supported": False, "reason": "修订删除或未提供唯一有效替换"}
                 for i in sorted(excluded)]
+        focused = None
+        focused_comparisons = []
+        if scope := state.get("supplement_scope"):
+            candidates = [(i, claim.model_dump()) for i, claim in enumerate(
+                c for section in draft.sections for c in section.claims) if i in approved]
+            decision = await self.ask("coverage",
+                "只核对 selected_requirement 这一项。original_context 仅用于识别对象和适用约束，"
+                "不得核对原题中的其他要求，也不得增加其他答题项。"
+                "claim_indices 只返回直接支撑这个选中项的 claims 中的零起始索引。"
+                "仅有部分对象或部分条件的证据时为 partial，全部选中项满足时才为 answered；"
+                "没有相关已核验证据时为 insufficient，claim_indices 为空。"
+                "gap 仅描述这个选中项还缺的证据，禁止写其他问题或复述无关结论。",
+                {"selected_requirement": state["topic"], "original_context": scope,
+                 "claims": [claim for _, claim in candidates]}, SupplementCoverage, state["run_id"]) if candidates else None
+            indices = set(decision.claim_indices) if decision and decision.status != "insufficient" else set()
+            retained = [(i, ordinal, claim) for ordinal, (i, claim) in enumerate(candidates) if ordinal in indices]
+            approved = {i for i, _, _ in retained}
+            if decision:
+                focused_comparisons = [i for i, (_, ordinal, _) in enumerate(retained)
+                                       if ordinal in decision.comparison_claim_indices]
+            focused = {"id": text_id(state["topic"]), "text": state["topic"],
+                       "status": decision.status if retained else "insufficient",
+                       "claim_ids": list(dict.fromkeys(text_id(claim["text"]) for _, _, claim in retained)),
+                       "gap": "" if retained and decision.status == "answered" else (
+                           decision.gap.strip() if decision and decision.gap.strip() else "未取得能支持所选问题的证据")}
         parts = ["# " + md_text(draft.title)]
         if self.settings.demo_mode:
             parts.append("> 测试模式：固定资料与模拟模型，不代表真实研究结果。")
@@ -1006,9 +1075,12 @@ class ResearchGraph:
                       "checked_claims": index, "supported_claims": len(approved), "removed_claims": index - len(approved),
                       "repaired": repaired, "insufficient": not bool(used), "checks": checks, "gaps": state.get("gaps", [])}
         questions = state.get("plan", {}).get("questions", [])
+        final_claims = [claim.model_dump() for i, claim in enumerate(
+            c for section in draft.sections for c in section.claims) if i in approved]
         covered = set()
         original_covered = False
-        if approved and questions:
+        coverage = QuestionCoverage()
+        if approved and questions and focused is None:
             coverage = await self.ask("coverage",
                 "只判断最终保留事实是否完整回答 questions 中各问题，返回零起始 answered_questions。"
                 "同时独立检查原始 topic 的全部要求，original_request_answered 为是否完整回答原始要求。"
@@ -1020,11 +1092,15 @@ class ResearchGraph:
                 "不要求先实际完成这些待验事项。若用户要求具体数值、结论或已验证结果而该事实仍缺失，"
                 "只披露未知、列待验计划或资料不足不算完整回答。"
                 "用户原本只问资料是否提供某信息时，明确说明资料范围和未知可以构成回答。"
-                "不得把计划新增的额外元数据要求当作原始 topic 完成的前提；原始要求有遗漏仍须判未答。",
+                "不得把计划新增的额外元数据要求当作原始 topic 完成的前提；原始要求有遗漏仍须判未答。"
+                "requirements 独立拆出原始用户要求（包括计划未列出的要求；不要抄入额外计划问题），"
+                "逐项返回 requirement 原意、status、零起始 claim_indices 和具体缺口 gap。"
+                "answered 表示完整回答，partial 表示至少有相关已核验结论但仍缺某项证据，"
+                "insufficient 表示没有可支撑该要求的结论。"
+                "comparison_claim_indices 仅列已核验且明确对照多份原文口径差异的结论序号。",
                 {"topic": state["topic"], "questions": questions,
                  "gaps": state.get("gaps", []),
-                 "claims": [claim.model_dump() for i, claim in enumerate(
-                     c for section in draft.sections for c in section.claims) if i in approved]},
+                 "claims": final_claims},
                 QuestionCoverage, state["run_id"])
             original_covered = coverage.original_request_answered
             covered = {i for i in coverage.answered_questions if 0 <= i < len(questions)}
@@ -1032,11 +1108,24 @@ class ResearchGraph:
         validation["original_request_answered"] = original_covered
         if not original_covered and state["topic"] not in validation["unanswered_questions"]:
             validation["unanswered_questions"].append(state["topic"])
+        validation["limitations"] = limitations
+        validation["requirements"] = [focused] if focused else coverage_items(state["topic"], questions, final_claims, coverage)
+        validation["claim_links"] = claim_links(final_claims, focused_comparisons if focused else coverage.comparison_claim_indices)
+        if focused:
+            original_covered = focused["status"] == "answered"
+            validation["gaps"] = [focused["gap"]] if focused["gap"] else []
+            validation["limitations"] = list(validation["gaps"])
+            if count := state.get("web_read_failures", 0):
+                validation["limitations"].append(f"{count} 个候选网页未取得可读正文，未用于核验。")
+        if focused or coverage.requirements:
+            validation["unanswered_questions"] = [item["text"] for item in validation["requirements"]
+                                                   if item["status"] != "answered"]
+            validation["original_request_answered"] = original_covered and not validation["unanswered_questions"]
         validation["checks"] = [check for check in checks if "index" in check]
         if validation["unanswered_questions"]:
             parts.append("## 尚未确认完整回答的问题\n\n" + "\n".join("- " + md_text(q) for q in validation["unanswered_questions"]))
         validation["evidence_metrics"] = evidence_metrics([sources[key] for key in used])
         await self.db.event(state["run_id"], "validation", validation)
         return {"report": "\n\n".join(parts), "validation": validation,
-                "final_claims": [claim.model_dump() for i, claim in enumerate(c for section in draft.sections for c in section.claims) if i in approved],
+                "final_claims": final_claims,
                 "evidence": [source for key, source in sources.items() if key in used]}

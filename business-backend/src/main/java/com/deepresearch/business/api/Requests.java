@@ -28,6 +28,8 @@ public final class Requests {
         private String clientRequestId;
         @Size(max=80)
         private String clarificationId;
+        @Size(max = 80)
+        private String relatedRunId;
 
         @AssertTrue(message = "请输入文字或上传图片")
         public boolean isInputPresent() { return topic != null && !topic.isBlank() || attachmentIds != null && !attachmentIds.isEmpty(); }
@@ -51,6 +53,8 @@ public final class Requests {
         public void setMode(String value) { this.mode = value; }
         public String getClientRequestId() { return clientRequestId; }
         public void setClientRequestId(String value) { this.clientRequestId = value; }
+        public String getRelatedRunId() { return relatedRunId; }
+        public void setRelatedRunId(String value) { this.relatedRunId = value; }
         public String getClarificationId() { return clarificationId; }
         public void setClarificationId(String value) { this.clarificationId = value; }
     }
@@ -63,9 +67,21 @@ public final class Requests {
     public record WorkspaceLimit(@Min(1) @Max(20) int concurrentRunLimit) {}
     public record Memory(@NotBlank @Size(max = 1000) String content) {}
     public record ReviewReason(@NotBlank @Size(max = 1000) String reason) {}
+    public record Supplement(
+        @NotBlank @Size(min = 8, max = 80) @Pattern(regexp = "^[a-zA-Z0-9_-]+$") String client_request_id,
+        @NotBlank @Pattern(regexp = "^[a-f0-9]{24}$") String requirement_id,
+        @Size(max = 2048) String source_url,
+        @Size(max = 1000) String query) {}
     public record ReportRevision(
         @NotBlank @Size(min = 8, max = 80) @Pattern(regexp = "^[a-zA-Z0-9_-]+$")
         String client_request_id,
         @NotBlank @Pattern(regexp = "^[a-f0-9]{64}$") String expected_content_sha256,
-        @Min(-1) long expected_corpus_revision) {}
+        @Min(-1) long expected_corpus_revision,
+        @Pattern(regexp = "^[a-f0-9]{24}$") String requirement_id,
+        @Size(max = 2048) String source_url,
+        @Size(max = 1000) String query) {
+        public ReportRevision(String requestId, String digest, long revision) {
+            this(requestId, digest, revision, null, null, null);
+        }
+    }
 }

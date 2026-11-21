@@ -120,6 +120,21 @@ async def test_long_web_source_keeps_relevant_paragraphs_within_download_limit(m
     assert len(context[0]['text'].encode()) <= 1500
 
 
+async def test_web_reader_explains_http_404_without_using_its_body(monkeypatch):
+    import httpx
+
+    original_client = httpx.AsyncClient
+    transport = httpx.MockTransport(lambda request: httpx.Response(404, text="missing"))
+    async def addresses(*args):
+        return ["8.8.8.8"]
+
+    monkeypatch.setattr(security, "public_addresses", addresses)
+    monkeypatch.setattr(security.httpx, "AsyncClient",
+                        lambda **kwargs: original_client(transport=transport, **kwargs))
+    with pytest.raises(ServiceError, match="来源正文不可访问（HTTP 404）"):
+        await security.fetch_text("https://example.com/missing")
+
+
 async def test_web_reader_refreshes_legacy_prefix_cache_once(runtime, monkeypatch):
     from unittest.mock import AsyncMock
     from backend.core.db import now

@@ -85,6 +85,29 @@ async def test_failed_query_does_not_discard_other_search_results(runtime):
     assert await runtime.db.one("SELECT id FROM events WHERE run_id=? AND type='warning'", ("partial-search",))
 
 
+@pytest.mark.parametrize("code", ["budget_exhausted", "usage_budget_exhausted"])
+async def test_fatal_budget_error_keeps_domain_reason_and_cancels_search_sibling(runtime, code):
+    graph = graph_for(runtime, web_search_concurrency=2)
+    started = asyncio.Event()
+    cancelled = asyncio.Event()
+
+    async def search(query, run_id):
+        if query == "budget":
+            await started.wait()
+            raise ServiceError("预算已耗尽", code=code, retryable=False)
+        started.set()
+        try:
+            await asyncio.Event().wait()
+        finally:
+            cancelled.set()
+
+    graph.search_web = search
+    with pytest.raises(ServiceError) as error:
+        await graph.web_scout({"run_id": "budget-search", "queries": ["budget", "in-flight"]})
+    assert error.value.code == code and not error.value.retryable
+    assert cancelled.is_set()
+
+
 async def test_cancelled_scout_leaves_no_background_searches(runtime):
     graph = graph_for(runtime, web_search_concurrency=2)
     active = 0

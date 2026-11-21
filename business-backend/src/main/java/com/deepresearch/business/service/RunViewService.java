@@ -93,6 +93,7 @@ public class RunViewService {
                                       Map<String, Map<String, Object>> usage, Map<String, List<Map<String, Object>>> attachments) {
         Map<String, Object> row = new LinkedHashMap<>(source);
         String runId = String.valueOf(row.get("id"));
+        row.remove("supplement_basis");
         row.put("sources", jsonList(row.get("sources")));
         Map<String, Object> validation = jsonMap(row.get("validation"));
         validation.putIfAbsent("quality", "unknown");

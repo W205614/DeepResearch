@@ -110,7 +110,9 @@ class Database:
             from .reliability import SCHEMA as RELIABILITY_SCHEMA, RUN_COLUMNS
             await conn.executescript(RELIABILITY_SCHEMA)
             existing_runs = {row[1] for row in await (await conn.execute("PRAGMA table_info(runs)")).fetchall()}
-            for name, definition in RUN_COLUMNS.items():
+            related_columns = dict.fromkeys(
+                ("related_run_id", "supplement_requirement_id", "supplement_url", "supplement_basis", "supplement_query"), "TEXT")
+            for name, definition in (RUN_COLUMNS | related_columns).items():
                 if name not in existing_runs:
                     await conn.execute(f"ALTER TABLE runs ADD COLUMN {name} {definition}")
             await conn.execute("UPDATE workspace_limits SET daily_search_limit=0,daily_token_limit=0")
