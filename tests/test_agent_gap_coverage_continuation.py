@@ -40,7 +40,8 @@ def test_prompt_continuation_rejects_any_unreviewed_ast_delta(changed):
         audit_prompt_delta(BEFORE, changed)
 
 
-def test_current_prompt_profile_keeps_all_prior_native_and_scanner_facts():
+def test_current_prompt_profile_keeps_all_prior_native_and_scanner_facts(released_v015_root, monkeypatch):
+    monkeypatch.setattr(scope, 'ROOT', released_v015_root)
     current = scope.load_profile(scope.GAP_PROFILE_NAME)
     prior = json.loads(scope.SOUP41_PROFILE_PATH.read_bytes())
     assert current['python_source_closure']['files'] == prior['python_source_closure']['files'] == 5973
@@ -49,7 +50,8 @@ def test_current_prompt_profile_keeps_all_prior_native_and_scanner_facts():
         assert current[key] == prior[key]
 
 
-def test_current_prompt_profile_reads_actual_checkout_and_rejects_changed_graph(monkeypatch):
+def test_released_prompt_profile_rejects_changed_graph(released_v015_root, monkeypatch):
+    monkeypatch.setattr(scope, 'ROOT', released_v015_root)
     current = scope.load_profile(scope.GAP_PROFILE_NAME)
     review = json.loads((scope.ROOT / current['source_review_evidence']['path']).read_bytes())
     graph = scope.ROOT / 'backend/research/graph.py'
@@ -68,3 +70,5 @@ def test_current_prompt_profile_reads_actual_checkout_and_rejects_changed_graph(
 def test_old_prompt_profile_cannot_approve_current_graph():
     with pytest.raises(ValueError, match='supporting source evidence changed'):
         scope.load_profile(scope.SOUP41_PROFILE_NAME)
+    with pytest.raises(ValueError, match='supporting source evidence changed'):
+        scope.load_profile(scope.GAP_PROFILE_NAME)

@@ -1,0 +1,134 @@
+{
+  "schema": "codeql-exact-research-flow-continuation-20261121-v1",
+  "prior_review": {
+    "path": "deployment/security/codeql-reviewed-findings-20261114-otel-migration.json",
+    "sha256": "2aa338ccbb610b12d4763b3efc9b7b77f3eed6ae02c48c2e210ebad9751abd1e"
+  },
+  "scan": {
+    "commit": "5fc98bc7c9c37af0850765083056ddddf4aaa2c1",
+    "run_id": 44899185112,
+    "artifact_id": 14705072887,
+    "sarif_sha256": {
+      "java.sarif": "918cf2321a6562b6eb454556535075a260c7890f8362db0a0f6291319d8e660f",
+      "javascript.sarif": "d2a9ce853817b9f52d56c55397fda9031698437ce22a0dd8985e8b46839be8d7",
+      "python.sarif": "54699cb5bf221cba25cddfb73529fc422eee04e2c02eda35f9614f4090e99a67"
+    },
+    "blocking_identities": [
+      {
+        "rule_id": "java/spring-disabled-csrf-protection",
+        "path": "business-backend/src/main/java/com/deepresearch/business/config/SecurityConfig.java",
+        "start_line": 34,
+        "end_line": 34,
+        "start_column": 27,
+        "end_column": 41,
+        "message": "CSRF vulnerability due to protection being disabled."
+      },
+      {
+        "rule_id": "java/ssrf",
+        "path": "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java",
+        "start_line": 95,
+        "end_line": 95,
+        "start_column": 62,
+        "end_column": 114,
+        "message": "Potential server-side request forgery due to a [user-provided value](1)."
+      },
+      {
+        "rule_id": "java/ssrf",
+        "path": "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java",
+        "start_line": 144,
+        "end_line": 144,
+        "start_column": 57,
+        "end_column": 64,
+        "message": "Potential server-side request forgery due to a [user-provided value](1)."
+      },
+      {
+        "rule_id": "js/xss-through-dom",
+        "path": "deployment/security/agent-native-evidence/supplement-20261107/sqlite-release-3_54_1.html",
+        "start_line": 97,
+        "end_line": 97,
+        "start_column": 45,
+        "end_column": 72,
+        "message": "[DOM text](1) is reinterpreted as HTML without escaping meta-characters."
+      }
+    ]
+  },
+  "severity_threshold": 7.0,
+  "new_findings_exempted": false,
+  "raw_sarif_modified": false,
+  "risk_acceptance": false,
+  "technical_facts": [
+    "The SARIF contains the same four exact blocking identities with the same primary positions and messages.",
+    "TypeScript api.ts changes erase to identical ES2022 executable output. Bearer credential transport, Java JWT-only configuration and its security regression files did not change.",
+    "The upstream SQLite HTML is unchanged. It remains outside the Web context and document root. COPY, template routing and the isolated source-evidence checks do not serve this file.",
+    "ReportReader still receives text sanitized by the existing App.vue DOMPurify boundary. The new report controls and evidence card do not make the offline SQLite file a Web asset.",
+    "The backend Compose health check additionally calls the existing Java Actuator health endpoint. It requires Redis readiness before startup is complete and does not change authorization or routing.",
+    "The base image and package updates preserve the Web recipe COPY scope. The existing workflow invokes the same CodeQL languages.",
+    "The Agent source-build fix preserves Web COPY instructions, routing and the CodeQL analysis matrix."
+  ],
+  "changed_bindings": {
+    "java/spring-disabled-csrf-protection": {
+      "frontend/src/api.ts": {
+        "before": "b2fa83c547576f376a59d572cb689a882a3d52d0d509dfa5ae78e88a462f0e52",
+        "after": "da36634db7afbaad5850a2b779423dc6778049ea5355ba0bad12077fe5ef13d4"
+      }
+    },
+    "js/xss-through-dom": {
+      "compose.yaml": {
+        "before": "dfe025c1ddb797d7dd6811a7dada6be063218fe06abf57f969c8b147a8f1eaa4",
+        "after": "401e1160a9fdbd6fa33d166a2addf290e213b990710e2097a8e396e08a8778a7"
+      },
+      "frontend/Dockerfile": {
+        "before": "9b100c4df9ef23ed29b73e5f944772dd5b4d96986a797f46611dbf872c2f01c1",
+        "after": "22c337bb6cae6e2c07b6d176f13dffe5318c4b54eadae09cdbc46a0ff7c30d37"
+      },
+      "Dockerfile": {
+        "before": "66d6ffccb8f8f7416f98c62081562f81f9cc76c95747ec176125b28964eea508",
+        "after": "b2cd03d87ceb0be83cc7834a37380e52b6eb8818685795957cccf66ceb074ea1"
+      },
+      "business-backend/Dockerfile": {
+        "before": "32a08a3e307cd58884aacaa4219ed7eafcbc7febf79edd7b9798161fd015c42b",
+        "after": "1cae42e4df69024bd80d08ce22caa1330f426d370591e6820689bf7512acb50f"
+      },
+      ".github/workflows/security.yml": {
+        "before": "5949731a549d5c6bbe8963e377c20820c603730dc80816edb4470da3f22d5999",
+        "after": "c5509164c9e514a7775a79a684ca77b27af3ba2e21ba1dfd6f091b553eab2304"
+      },
+      "deployment/compose/compose.cloud.yaml": {
+        "before": "3212fded2d09598aba9562a31efbfb63d8919ee9401d7f01872f83c9b137b2c9",
+        "after": "b00d271dc87df0691c78affc43ba5b74600c385ba4e09ec7afc6caec210a6601"
+      },
+      "deployment/compose/compose.verify.yaml": {
+        "before": "bf05201e626ad99ae5053b7e43cdda6386dee9621886abc9d0bcfa13b8e2b552",
+        "after": "db31b6a2a1cebe3055e7b828e769c9e1b57a72d67de23a31877791937680061c"
+      },
+      "backend/research/graph.py": {
+        "before": "71910af11b4e932b5a2d70d739cf71ec3ec433979b2bfbd3bdb341207f1c5994",
+        "after": "41598ec1462bf7f31dc1111c9888c7a099475dd83c9cf11f91cc0b3051c5e038"
+      },
+      "backend/core/security.py": {
+        "before": "6ecc94ff30e4f115754dab554f85c34c389c92e2a89e8db12259e6f19245dfbe",
+        "after": "18c056ae07ff41fcc6e8fcee1c5e8872f9d20e94fc5ca8637ad56307ed79a38c"
+      },
+      "tests/test_backend_busybox_transport_20261115.py": {
+        "before": "800386cf028e4aebb2c07904b2c343133047ab480a1abc9c4da157b311ec5947",
+        "after": "23fb8f391e985adc1ef15bd94d0914f9c9cd5e8b66b2ca2f8a47031c87c7a9ba"
+      },
+      "tests/test_agent_gap_coverage_continuation.py": {
+        "before": "de64cc4ba19740788b278597db076a7e275a0bcaabf185bf6f2870841f426b54",
+        "after": "b8e5180346008467c38e147ed3a64759c1ae85055a67f68d26009703fa609839"
+      },
+      "tests/conftest.py": {
+        "before": "40494928fc58987696f99f49f353796810222250dc13aa4bd66812e151085648",
+        "after": "ab3ca1f43a2b09278334cb8a37138dfe71b19390e26d144107c9d455700eb19c"
+      },
+      "tests/test_ci_budget_prompt_basis_20261115.py": {
+        "before": "7d3534bd70ff82ff19f4abdce4b3124e45e529fe0a8f0de5a3f55b31bd00f0fc",
+        "after": "b63733713b12b90c4e1db8403f6cd690ee495bd9f97a1e4d30020c3d3300cc9c"
+      },
+      "tests/test_codeql_prompt_continuation_20261115.py": {
+        "before": "6baa0e45a09d310ff13b84c7e53308bfca286b4ef2618e61dd0ab23eda299347",
+        "after": "8c1eea05ae67ff7fc47c3af0a109915f596df9bce51ce8c8c9f3b93e84a25cc3"
+      }
+    }
+  }
+}

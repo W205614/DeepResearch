@@ -8,6 +8,47 @@ from backend.services.runtime import Runtime
 
 
 @pytest.fixture(scope='session')
+def released_v015_root(tmp_path_factory):
+    """Replay v0.1.5-bound proofs without applying them to a different checkout."""
+    from pathlib import Path
+    import subprocess
+    import tarfile
+
+    repository = Path(__file__).resolve().parents[1]
+    root = tmp_path_factory.mktemp('released-v015')
+    revision = 'e6799f73b00144b9ef16b71dedac2759a5cf54af'
+    with subprocess.Popen(['git', 'archive', revision], cwd=repository, stdout=subprocess.PIPE) as process:
+        with tarfile.open(fileobj=process.stdout, mode='r|') as archive:
+            for member in archive:
+                path = (root / member.name).resolve()
+                assert path.is_relative_to(root)
+                assert member.isdir() or member.isfile()
+                if member.isfile():
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    path.write_bytes(archive.extractfile(member).read())
+        process.stdout.read()
+        assert process.wait() == 0
+    return root
+
+
+@pytest.fixture(scope='session')
+def released_v015_git(released_v015_root):
+    """Give the archived tree its own Git configuration, index, and refs."""
+    from pathlib import Path
+    import subprocess
+
+    repository = Path(__file__).resolve().parents[1]
+    objects = subprocess.check_output(
+        ['git', 'rev-parse', '--path-format=absolute', '--git-path', 'objects'], cwd=repository, text=True).strip()
+    subprocess.run(['git', 'init', '-q', str(released_v015_root)], check=True)
+    alternates = released_v015_root / '.git/objects/info/alternates'
+    alternates.write_bytes(objects.encode('utf-8') + b'\n')
+    subprocess.run(['git', 'update-ref', 'HEAD', 'e6799f73b00144b9ef16b71dedac2759a5cf54af'],
+                   cwd=released_v015_root, check=True)
+    return released_v015_root
+
+
+@pytest.fixture(scope='session')
 def retained_agent_record_root(tmp_path_factory):
     """Replay the retired SoupSieve scope against its actual published inputs."""
     import io
@@ -82,7 +123,7 @@ def retained_agent_prompt_parent_root(tmp_path_factory):
 
 @pytest.fixture(autouse=True)
 def retained_agent_prompt_tests(request, monkeypatch):
-    """Historical named cases retain old inputs; the current GAP profile uses this checkout."""
+    """Replay each Agent profile against the release it actually reviewed."""
     if request.module.__name__.rsplit('.', 1)[-1] != 'test_agent_full_scope':
         return
     from scripts import check_agent_full_scope as scope
@@ -109,9 +150,11 @@ def retained_agent_prompt_tests(request, monkeypatch):
     name = request.node.originalname
     if selected in old_parameters or (selected is None and name in standalone):
         monkeypatch.setattr(scope, 'ROOT', request.getfixturevalue('retained_agent_prompt_parent_root'))
-    elif selected == scope.GAP_PROFILE_NAME and name == 'test_ordinary_profile_preserves_findings_and_rejects_the_old_python_closure':
-        # This current-profile case explicitly compares two historical profiles.
-        # Only those two loads use historical inputs; the current load stays real.
+    elif selected == scope.GAP_PROFILE_NAME:
+        monkeypatch.setattr(scope, 'ROOT', request.getfixturevalue('released_v015_root'))
+        if name != 'test_ordinary_profile_preserves_findings_and_rejects_the_old_python_closure':
+            return
+        # The comparison also needs the two pre-v0.1.5 profiles on their own source.
         load = scope.load_profile
         parent = request.getfixturevalue('retained_agent_prompt_parent_root')
 

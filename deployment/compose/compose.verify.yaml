@@ -31,7 +31,7 @@ services:
     depends_on: {etcd: {condition: service_healthy}, minio: {condition: service_healthy}}
     healthcheck: {test: [CMD, curl, --noproxy, '*', -f, http://localhost:9091/healthz], interval: 5s, timeout: 5s, retries: 40, start_period: 30s}
   clamav:
-    image: clamav/clamav:1.4.6_base@sha256:e73991068f2037e10cf15669dd3b48c24345658f5488430746b414c0f761270f
+    build: {context: ., dockerfile: deployment/docker/Dockerfile.clamav}
     platform: linux/amd64
     healthcheck:
       test: [CMD-SHELL, "printf 'PING\\n' | nc -w 2 127.0.0.1 3310 | grep -q PONG"]

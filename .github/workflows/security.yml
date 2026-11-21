@@ -335,10 +335,10 @@ jobs:
           trivy image --scanners vuln,secret --list-all-pkgs
           --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --exit-code 0 --timeout 10m
           --format json --output application-image.json deepresearch-scan-agent:ci
-      - name: Keep the HIGH gate and verify the exact fixed SQLite and zlib libraries
+      - name: Keep the HIGH gate and verify loaded SQLite, zlib and OpenSSL libraries
         if: matrix.name == 'agent'
         run: >-
-          python scripts/check_agent_native_packages.py --image deepresearch-scan-agent:ci
+          python scripts/check_agent_openssl_20261121.py --image deepresearch-scan-agent:ci
           --scan application-image.json --scanner-exit-code 0 --output-dir .cache/eval/agent-native
       - name: Preserve complete fresh Tempo findings for exact technical review
         if: matrix.name == 'tempo'

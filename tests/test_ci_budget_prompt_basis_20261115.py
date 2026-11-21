@@ -10,9 +10,9 @@ from scripts import check_ci_evaluation_budget as precheck
 
 
 @pytest.fixture
-def graphs():
+def graphs(released_v015_root):
     before = subprocess.check_output(['git', 'show', producer.BASE + ':' + producer.GRAPH], cwd=producer.ROOT)
-    return before, (producer.ROOT / producer.GRAPH).read_bytes()
+    return before, (released_v015_root / producer.GRAPH).read_bytes()
 
 
 def test_complete_real_module_has_only_the_two_exact_reviewed_prompt_changes(graphs):
@@ -45,18 +45,18 @@ def test_even_an_extra_prompt_instruction_requires_its_own_reaudit(graphs, metho
         producer.verify_prompt_only(before, ast.unparse(tree).encode())
 
 
-def test_real_generator_and_original_checker_keep_37_symbols_and_245_296_bounds(tmp_path):
-    policy = producer.ROOT / 'eval/ci-provider-budget.json'
+def test_real_generator_and_original_checker_keep_37_symbols_and_245_296_bounds(tmp_path, released_v015_git):
+    policy = released_v015_git / 'eval/ci-provider-budget.json'
     original_policy = policy.read_bytes()
     output = tmp_path / 'prompt-basis.json'
-    proof = producer.generate(output=output)
+    proof = producer.generate(root=released_v015_git, output=output)
     assert len(proof['all_37_audited_symbols']) == 37
     assert len(proof['four_fresh_invocations_unchanged']) == 4
     assert proof['original_checker_recomputed']['critical_path_lower_bound'] == 245
     assert proof['original_checker_recomputed']['pass_rate_refinement_lower_bound'] == 296
     assert proof['supplier_http_requests'] == 0 and not proof['policy_authorization_or_ledger_changed']
-    failures, references = precheck.source_basis(producer.ROOT, json.loads(output.read_bytes()))
+    failures, references = precheck.source_basis(released_v015_git, json.loads(output.read_bytes()))
     assert failures == [] and all(row['audited'] for row in references)
     assert policy.read_bytes() == original_policy
     with pytest.raises(ValueError, match='Preserve prior outputs'):
-        producer.generate(output=output)
+        producer.generate(root=released_v015_git, output=output)

@@ -135,12 +135,12 @@ def test_backend_inventory_selects_root_context_and_preserves_native_profile():
         inventory.matrices(configuration, gate.ROOT)
 
 
-def test_cloud_build_overlay_changes_only_backend_build_and_keeps_frozen_template():
+def test_cloud_build_overlay_changes_only_backend_build_and_keeps_frozen_template(released_v015_root):
     import yaml
 
     overlay = yaml.safe_load((gate.ROOT / 'deployment/compose/compose.cloud.backend-build.yaml').read_bytes())
     assert overlay == {'services': {'backend': {'build': {
         'context': '.', 'dockerfile': 'business-backend/Dockerfile',
     }}}}
-    assert gate.sha((gate.ROOT / 'deployment/compose/compose.cloud.yaml').read_bytes()) == (
+    assert gate.sha((released_v015_root / 'deployment/compose/compose.cloud.yaml').read_bytes()) == (
         '3212fded2d09598aba9562a31efbfb63d8919ee9401d7f01872f83c9b137b2c9')

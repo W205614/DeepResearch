@@ -1,5 +1,20 @@
 FROM ghcr.io/astral-sh/uv:0.13.6@sha256:af22a52f5eafef3d78e551599d405c02df61919d18028f0cea8eda93bc9986d0 AS uv
 FROM gcr.io/distroless/cc-debian13:nonroot@sha256:e792ab3d241a468a4fd7519ddbbebe66b49b5f365771716ea688ad40b6c6f1c2 AS runtime-base
+FROM debian:trixie-slim@sha256:38a76d01668772e381ad2826d876627c89e7133e2f8a0f5d567306798b0f2a16 AS openssl-security
+# Debian 13 has no fixed package for CVE-2026-124709. Use the upstream 3.5 fix.
+ADD --checksum=sha256:e0fb736a48c483b655997d3c4c18a8c9991da03923af1ea4abd4ee883d93c59b https://codeload.github.com/openssl/openssl/legacy.tar.gz/f3acb0a3328046741479482c51cec815839e1b05 /tmp/openssl.tar.gz
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential perl && rm -rf /var/lib/apt/lists/*
+WORKDIR /src
+RUN tar -xzf /tmp/openssl.tar.gz --strip-components=1 \
+    && ./Configure linux-x86_64 shared no-tests --prefix=/usr --libdir=lib/x86_64-linux-gnu --openssldir=/usr/lib/ssl \
+    && SOURCE_DATE_EPOCH=1794873600 make -j2 build_libs \
+    && strip --strip-unneeded libcrypto.so.3 libssl.so.3 \
+    && install -m 0644 -D libcrypto.so.3 /out/usr/lib/x86_64-linux-gnu/libcrypto.so.3 \
+    && install -m 0644 -D libssl.so.3 /out/usr/lib/x86_64-linux-gnu/libssl.so.3 \
+    && install -m 0644 -D LICENSE.txt /out/usr/share/licenses/openssl-source/LICENSE.txt \
+    && mkdir -p /out/usr/share/deepresearch \
+    && printf '%s\n' f3acb0a3328046741479482c51cec815839e1b05 > /out/usr/share/deepresearch/openssl-revision \
+    && cd /out && sha256sum usr/lib/x86_64-linux-gnu/libcrypto.so.3 usr/lib/x86_64-linux-gnu/libssl.so.3 > usr/share/deepresearch/openssl-libraries.sha256
 # DockerHub3.11.18 tags were not published at verification time. Build the
 # official signed CPython release using its pinned upstream slim recipe.
 FROM debian:trixie-slim@sha256:38a76d01668772e381ad2826d876627c89e7133e2f8a0f5d567306798b0f2a16 AS python-security
@@ -40,6 +55,7 @@ RUN python /tmp/prepare_python_runtime.py && rm /usr/local/bin/uv
 
 FROM builder AS runtime-package
 COPY --from=runtime-base / /runtime-root/
+COPY --from=openssl-security /out/ /runtime-root/
 # The Debian 13 base still carries affected glibc 2.41. Keep the compiler and
 # build environment unchanged; stage the complete matched official runtime.
 ADD --checksum=sha256:5c71715c51103beb4fbba9fe9f8dff604af6610dfa71c70bff342f54a7860803 https://deb.debian.org/debian/pool/main/g/glibc/libc6_2.43-7_amd64.deb /tmp/glibc/libc6_2.43-7_amd64.deb

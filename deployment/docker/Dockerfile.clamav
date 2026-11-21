@@ -1,0 +1,6 @@
+FROM scratch AS verified-input
+ADD --checksum=sha256:8b37229c4761cf0eef5089045283526ef43bf335073050515010d34a313186ed https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/libxml2-2.13.9-r3.apk /libxml2.apk
+
+FROM clamav/clamav:1.4.7_base@sha256:21622d96b8a7080af7974d99ca60a9e061eff5ff831ed6986d00953fc19ff67f
+RUN --mount=type=bind,from=verified-input,source=/libxml2.apk,target=/tmp/libxml2.apk \
+    apk add --no-network /tmp/libxml2.apk

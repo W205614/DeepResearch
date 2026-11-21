@@ -11,6 +11,15 @@ import pytest
 from scripts.check_codeql_results import REVIEW, blocking_findings, finding_identity, reviewed_findings
 
 RULE = {'id': 'java/ssrf', 'properties': {'security-severity': '9.1', 'tags': ['security']}}
+RELEASED_REVIEW = Path('deployment/security/codeql-reviewed-findings-20261114-otel-migration.json')
+
+
+def test_current_review_keeps_the_four_exact_findings_and_matches_checkout():
+    root = Path(__file__).resolve().parents[1]
+    current = json.loads(REVIEW.read_bytes())
+    released = json.loads((root / RELEASED_REVIEW).read_bytes())
+    assert [row['identity'] for row in current['findings']] == [row['identity'] for row in released['findings']]
+    assert reviewed_findings([], REVIEW, root) == ([], [])
 
 
 def sarif(extension=True, severity='9.1'):
@@ -150,12 +159,11 @@ def test_review_rejects_changed_source_proof_or_unjustified_exception(tmp_path, 
         reviewed_findings(findings, path, tmp_path)
 
 
-def test_current_continuation_preserves_original_exact_identities_and_bound_bytes():
-    root = Path(__file__).resolve().parents[1]
+def test_released_continuation_preserves_original_exact_identities_and_bound_bytes(released_v015_root):
+    root = released_v015_root
     prior_path = root / 'deployment/security/codeql-reviewed-findings-20261110.json'
     prior = json.loads(prior_path.read_bytes())
-    current = json.loads(REVIEW.read_bytes())
-    assert REVIEW.name == 'codeql-reviewed-findings-20261114-otel-migration.json'
+    current = json.loads((root / RELEASED_REVIEW).read_bytes())
     assert [row['identity'] for row in current['findings']] == [row['identity'] for row in prior['findings']]
     assert current['findings'][:2] == prior['findings'][:2]
     for name, expected in prior['findings'][2]['evidence_sha256'].items():
@@ -282,7 +290,7 @@ def test_current_continuation_preserves_original_exact_identities_and_bound_byte
     assert cache_review['raw_sarif_modified'] is False
     assert {'scripts/ci_reviewed_image_cache.py', '.github/actions/reviewed-source-image/action.yml',
             'deployment/security/agent-record-metadata-profile-20261113.json'}.issubset(cache_review['new_support_sha256'])
-    assert reviewed_findings([], REVIEW, root) == ([], [])
+    assert reviewed_findings([], root / RELEASED_REVIEW, root) == ([], [])
 
 
 @pytest.mark.parametrize('path', [
@@ -291,9 +299,10 @@ def test_current_continuation_preserves_original_exact_identities_and_bound_byte
     'deployment/security/grafana-source-20261112-evidence/source-python-scope-20261113.json',
     'deployment/security/codeql-current-native-gates-addendum-20261113.json',
 ])
-def test_current_continuation_rejects_changed_native_gates_or_scope_proof(tmp_path, path):
-    root = Path(__file__).resolve().parents[1]
-    record = json.loads(REVIEW.read_bytes())
+def test_released_continuation_rejects_changed_native_gates_or_scope_proof(tmp_path, path, released_v015_root):
+    root = released_v015_root
+    review_bytes = (root / RELEASED_REVIEW).read_bytes()
+    record = json.loads(review_bytes)
     for row in record['findings']:
         for name in row['evidence_sha256']:
             target = tmp_path / name
@@ -301,7 +310,7 @@ def test_current_continuation_rejects_changed_native_gates_or_scope_proof(tmp_pa
                 target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(root / name, target)
     review_path = tmp_path / 'review.json'
-    review_path.write_bytes(REVIEW.read_bytes())
+    review_path.write_bytes(review_bytes)
     assert reviewed_findings([], review_path, tmp_path) == ([], [])
     changed = tmp_path / path
     changed.write_bytes(changed.read_bytes() + b'\n')
@@ -309,14 +318,14 @@ def test_current_continuation_rejects_changed_native_gates_or_scope_proof(tmp_pa
         reviewed_findings([], review_path, tmp_path)
 
 
-def test_ci_disk_continuation_preserves_prior_profile_and_only_reviewed_delta():
+def test_ci_disk_continuation_preserves_prior_profile_and_only_reviewed_delta(released_v015_git):
     from scripts import build_codeql_ci_disk_review_20261114 as renewal
     from scripts import build_codeql_otel_migration_review_20261114 as otel
     import yaml
-    root = Path(__file__).resolve().parents[1]
+    root = released_v015_git
     prior_bytes = (root / renewal.PRIOR).read_bytes()
     prior = json.loads(prior_bytes)
-    current = json.loads(REVIEW.read_bytes())
+    current = json.loads((root / RELEASED_REVIEW).read_bytes())
     proof = json.loads((root / renewal.PROOF).read_bytes())
     assert current['findings'][:3] == prior['findings'][:3]
     assert [r['identity'] for r in current['findings']] == [r['identity'] for r in prior['findings']]
@@ -362,14 +371,14 @@ def test_ci_disk_continuation_preserves_prior_profile_and_only_reviewed_delta():
     'deployment/security/codeql-ci-disk-addendum-20261114.json',
     'deployment/security/codeql-reviewed-findings-20261113-exact-image-cache.json',
 ])
-def test_ci_disk_continuation_rejects_modified_helper_or_proof(tmp_path, path):
-    test_current_continuation_rejects_changed_native_gates_or_scope_proof(tmp_path, path)
+def test_ci_disk_continuation_rejects_modified_helper_or_proof(tmp_path, path, released_v015_root):
+    test_released_continuation_rejects_changed_native_gates_or_scope_proof(tmp_path, path, released_v015_root)
 
 
-def test_nested_attributes_restore_history_without_changing_effective_rules(tmp_path):
+def test_nested_attributes_restore_history_without_changing_effective_rules(tmp_path, released_v015_git):
     from scripts import build_codeql_ci_attributes_review_20261114 as renewal
     from scripts import build_codeql_otel_migration_review_20261114 as otel
-    root = Path(__file__).resolve().parents[1]
+    root = released_v015_git
     historical = tmp_path / 'original-attribute-continuation'
     historical.mkdir()
     (historical / '.gitattributes').write_bytes(renewal.blob(root, renewal.original.BASE, '.gitattributes'))
@@ -384,7 +393,7 @@ def test_nested_attributes_restore_history_without_changing_effective_rules(tmp_
     assert result['tracked_path_count'] == 2701
     assert result['all_effective_attributes_identical'] is True
     prior = json.loads((root / renewal.PRIOR).read_bytes())
-    current = json.loads(REVIEW.read_bytes())
+    current = json.loads((root / RELEASED_REVIEW).read_bytes())
     assert current['findings'][:3] == prior['findings'][:3]
     assert [r['identity'] for r in current['findings']] == [r['identity'] for r in prior['findings']]
     assert current['ci_attributes_addendum']['prior_profile_sha256'] == hashlib.sha256(
@@ -407,8 +416,8 @@ def test_nested_attributes_restore_history_without_changing_effective_rules(tmp_
     'deployment/security/codeql-ci-attributes-addendum-20261114.json',
     'scripts/build_codeql_ci_attributes_review_20261114.py',
 ])
-def test_nested_attribute_proofs_reject_modified_bytes(tmp_path, path):
-    test_current_continuation_rejects_changed_native_gates_or_scope_proof(tmp_path, path)
+def test_nested_attribute_proofs_reject_modified_bytes(tmp_path, path, released_v015_root):
+    test_released_continuation_rejects_changed_native_gates_or_scope_proof(tmp_path, path, released_v015_root)
 
 
 @pytest.mark.parametrize('change', ['web-context', 'new-go-copy', 'proof', 'addendum', 'pom', 'tomcat-addendum',
@@ -420,9 +429,10 @@ def test_nested_attribute_proofs_reject_modified_bytes(tmp_path, path):
                                     'minio-native-recipe', 'minio-source-lock', 'minio-collector', 'minio-default-local',
                                     'minio-default-inventory', 'minio-workflow', 'cloud-build-overlay',
                                     'cloud-preflight', 'native-defaults-addendum', 'timeout-template', 'timeout-addendum'])
-def test_current_continuation_still_rejects_changed_compose_go_recipe_or_proof(tmp_path, change):
-    root = Path(__file__).resolve().parents[1]
-    record = json.loads(REVIEW.read_bytes())
+def test_current_continuation_still_rejects_changed_compose_go_recipe_or_proof(tmp_path, change, released_v015_root):
+    root = released_v015_root
+    review_bytes = (root / RELEASED_REVIEW).read_bytes()
+    record = json.loads(review_bytes)
     for row in record['findings']:
         for name in row['evidence_sha256']:
             target = tmp_path / name
@@ -430,7 +440,7 @@ def test_current_continuation_still_rejects_changed_compose_go_recipe_or_proof(t
                 target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(root / name, target)
     review_path = tmp_path / 'current-review.json'
-    review_path.write_bytes(REVIEW.read_bytes())
+    review_path.write_bytes(review_bytes)
     assert reviewed_findings([], review_path, tmp_path) == ([], [])
     if change == 'web-context':
         changed = tmp_path / 'compose.yaml'

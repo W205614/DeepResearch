@@ -9,13 +9,13 @@ from scripts import check_backend_busybox_20261113 as gate
 
 
 @pytest.fixture
-def current_root(tmp_path):
-    profile = json.loads((gate.ROOT / gate.TRANSPORT_PROFILE).read_bytes())
+def current_root(tmp_path, released_v015_root):
+    profile = json.loads((released_v015_root / gate.TRANSPORT_PROFILE).read_bytes())
     names = set(profile['source_inputs']) | set(profile['evidence_sha256']) | {gate.TRANSPORT_PROFILE.as_posix()}
     for name in names:
         target = tmp_path / name
         target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(gate.ROOT / name, target)
+        shutil.copyfile(released_v015_root / name, target)
     return tmp_path
 
 

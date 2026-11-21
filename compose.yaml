@@ -240,7 +240,7 @@ services:
     restart: unless-stopped
     stop_grace_period: 30s
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080/readyz"]
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080/readyz && wget -q -O /dev/null http://127.0.0.1:8080/health"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -497,7 +497,10 @@ services:
     networks: [database]
   clamav:
     <<: *service-defaults
-    image: clamav/clamav:1.4.6_base@sha256:e73991068f2037e10cf15669dd3b48c24345658f5488430746b414c0f761270f
+    image: deepresearch-clamav:1.4.7-libxml2
+    build:
+      context: .
+      dockerfile: deployment/docker/Dockerfile.clamav
     platform: linux/amd64
     healthcheck:
       test: ["CMD-SHELL", "printf 'PING\\n' | nc -w 2 127.0.0.1 3310 | grep -q PONG"]

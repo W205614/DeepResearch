@@ -12,7 +12,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from scripts.check_ci_evaluation_budget import ROOT, assess, main
+from scripts.check_ci_evaluation_budget import ROOT, assess
 from scripts import check_ci_evaluation_budget as precheck
 
 
@@ -33,7 +33,7 @@ def test_paid_evaluation_requires_dispatch_and_automatic_ci_keeps_offline_regres
     assert not any('scripts/run_ci_evaluation.py paid' in command for command in commands)
 
 
-def test_isolated_absolute_script_entrypoint_reports_budget_failure_from_another_directory(tmp_path):
+def test_isolated_absolute_script_entrypoint_reports_budget_failure_from_another_directory(tmp_path, released_v015_git):
     workdir=tmp_path/'elsewhere'
     workdir.mkdir()
     output=tmp_path/'precheck.json'
@@ -41,7 +41,7 @@ def test_isolated_absolute_script_entrypoint_reports_budget_failure_from_another
     environment=dict(os.environ)
     environment.pop('PYTHONPATH',None)
     environment.pop('PYTHONHOME',None)
-    result=subprocess.run([sys.executable,'-I',str(ROOT/'scripts/check_ci_evaluation_budget.py'),
+    result=subprocess.run([sys.executable,'-I',str(released_v015_git/'scripts/check_ci_evaluation_budget.py'),
                            '--ledger',str(ledger),'--output',str(output)],
                           cwd=workdir,env=environment,capture_output=True,text=True,encoding='utf-8',timeout=30)
     assert result.returncode==1,result.stderr
@@ -90,7 +90,7 @@ def test_unverified_proof_fails_closed_without_inventing_shortage_or_spending(tm
 
 
 @pytest.mark.parametrize('cap,code',[(57,1),(245,1),(296,0),(500,0)])
-def test_precheck_uses_proved_bound_without_network_or_new_ledger(tmp_path,monkeypatch,cap,code):
+def test_precheck_uses_proved_bound_without_network_or_new_ledger(tmp_path,monkeypatch,cap,code,released_v015_root):
     def forbidden(*args,**kwargs):
         raise AssertionError('Static budget precheck attempted network access')
     monkeypatch.setattr(socket,'create_connection',forbidden)
@@ -99,9 +99,9 @@ def test_precheck_uses_proved_bound_without_network_or_new_ledger(tmp_path,monke
     policy.update(model_http=cap,llm_http=cap,total_http=cap)
     fixture_policy=tmp_path/'policy.json'
     fixture_policy.write_text(json.dumps(policy),encoding='utf-8')
-    output,ledger=tmp_path/'report.json',tmp_path/'not-created.sqlite3'
-    assert main(['--policy',str(fixture_policy),'--ledger',str(ledger),'--output',str(output)])==code
-    result=json.loads(output.read_text(encoding='utf-8'))
+    ledger=tmp_path/'not-created.sqlite3'
+    result=assess(released_v015_root,policy_path=fixture_policy,ledger_path=ledger)
+    assert result['exit_code']==code
     assert result['proof_verified'] and result['critical_path_lower_bound']==245
     assert result['pass_rate_refinement_lower_bound']==296
     assert result['required_lower_bound']==296
@@ -116,7 +116,7 @@ def test_precheck_uses_proved_bound_without_network_or_new_ledger(tmp_path,monke
         assert result['precheck_status']=='necessary_bound_not_violated'  # No sufficiency guarantee.
 
 
-def test_existing_ledger_is_read_only_and_all_requests_reduce_remaining_budget(tmp_path):
+def test_existing_ledger_is_read_only_and_all_requests_reduce_remaining_budget(tmp_path, released_v015_root):
     ledger=tmp_path/'ledger.sqlite3'
     with sqlite3.connect(ledger) as db:
         db.execute('CREATE TABLE requests(kind TEXT)')
@@ -127,11 +127,20 @@ def test_existing_ledger_is_read_only_and_all_requests_reduce_remaining_budget(t
     policy.update(model_http=57,llm_http=57,total_http=57)
     path=tmp_path/'policy.json'
     path.write_text(json.dumps(policy))
-    result=assess(ledger_path=ledger,policy_path=path)
+    result=assess(released_v015_root,ledger_path=ledger,policy_path=path)
     assert result['ledger']['http_requests']==4 and result['ledger']['model_requests']==3
     assert result['available_model_and_total_http']==53
     assert result['additional_http_below_critical_bound']==192
     assert ledger.read_bytes()==before
+
+
+def test_current_graph_does_not_inherit_the_released_paid_bound(tmp_path):
+    ledger=tmp_path/'not-created.sqlite3'
+    result=assess(ledger_path=ledger)
+    assert result['exit_code']==1 and not result['proof_verified']
+    assert any(path.startswith('backend/research/graph.py:') for path in result['proof_drift'])
+    assert result['required_lower_bound'] is None
+    assert result['supplier_http_requests']==0 and not ledger.exists()
 
 
 def test_fresh_workflow_retains_four_original_commands_and_uploads_failure_report():
