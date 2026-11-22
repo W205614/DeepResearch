@@ -66,7 +66,8 @@
     "The Agent source-build fix preserves Web COPY instructions, routing and the CodeQL analysis matrix.",
     "The source dependency gate reassesses seven exact declarations against compiled imports. It does not change the CodeQL languages, frontend context or offline SQLite proof serving boundary.",
     "The CI cache lookup only decides whether to fetch the locked MinIO inputs before the original verified producer. CodeQL language selection, Web build scope and serving boundaries remain byte-identical in their owning files.",
-    "Keycloak uses the vendor release download for the same pinned Temurin archive. The fetched 52181297 bytes match the existing a535a1df9c6284d9618872984e026ae0352d1f7e9e0605425c0e6114f47351dd SHA-256. The Web serving boundary remains unchanged."
+    "Keycloak uses the vendor release download for the same pinned Temurin archive. The fetched 52181297 bytes match the existing a535a1df9c6284d9618872984e026ae0352d1f7e9e0605425c0e6114f47351dd SHA-256. The Web serving boundary remains unchanged.",
+    "The Backend keeps the existing Temurin runtime and BusyBox payload with its signed CA bundle. The Dockerfile removes OS-native tooling from the final runtime stage. Web serving and authentication sources remain byte-identical."
   ],
   "changed_bindings": {
     "java/spring-disabled-csrf-protection": {
@@ -90,11 +91,11 @@
       },
       "business-backend/Dockerfile": {
         "before": "32a08a3e307cd58884aacaa4219ed7eafcbc7febf79edd7b9798161fd015c42b",
-        "after": "1cae42e4df69024bd80d08ce22caa1330f426d370591e6820689bf7512acb50f"
+        "after": "4af1746eb0f8f116dbdc5631dc132294f6fb0421d68240d93c834c59ab55f336"
       },
       ".github/workflows/security.yml": {
         "before": "5949731a549d5c6bbe8963e377c20820c603730dc80816edb4470da3f22d5999",
-        "after": "f0270564e6b684fe4e04db250fb39560930a4f40ff0e84d1ba8121aa0a9cff09"
+        "after": "3ca0e3d019e1b028a2a972b91993badcf1e308f8bc8b35879c043d9af58249e0"
       },
       "deployment/compose/compose.cloud.yaml": {
         "before": "3212fded2d09598aba9562a31efbfb63d8919ee9401d7f01872f83c9b137b2c9",

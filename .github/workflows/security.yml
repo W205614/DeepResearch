@@ -365,12 +365,9 @@ jobs:
           trivy image --scanners vuln,secret --list-all-pkgs
           --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --exit-code 0 --timeout 10m
           --format json --output application-image.json deepresearch-scan-keycloak:ci
-      - name: Verify actual native JVM bytes and native/full advisory coverage
-        if: matrix.native_jvm_profile != '' && matrix.name != 'keycloak'
-        run: python scripts/check_native_jvm.py --image "$SCAN_IMAGE" --profile "$JVM_PROFILE" --output-dir .cache/eval/native-jvm
-        env:
-          SCAN_IMAGE: deepresearch-scan-${{ matrix.name }}:ci
-          JVM_PROFILE: ${{ matrix.native_jvm_profile }}
+      - name: Verify the actual Backend JRE, BusyBox and minimal Alpine runtime
+        if: matrix.name == 'backend'
+        run: python scripts/check_backend_runtime_20261121.py --image deepresearch-scan-backend:ci --output-dir .cache/eval/native-jvm
       - name: Keep original Keycloak JVM checks and assess only the exact source-fixed zlib
         if: matrix.name == 'keycloak'
         run: |

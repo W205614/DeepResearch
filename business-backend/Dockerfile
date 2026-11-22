@@ -44,10 +44,11 @@ RUN set -eu; \
     /opt/verified-java/bin/java --version
 
 FROM eclipse-temurin:21-jre-alpine@sha256:b48e02e0ea88d7bfb305335df94923bdef394905f4147dccd52e873cf17b1088
-# Refresh the affected OS library even when the upstream JRE image still ships it.
+# Java uses JSSE. Keep the signed CA bundle without native TLS and package-management tools.
 RUN apk add --no-cache --upgrade 'libexpat>=2.10.0-r0' 'brotli-libs>=1.2.1-r0' 'zlib=1.4-r0' \
-      'libcrypto3>=3.5.9-r1' 'libssl3>=3.5.9-r1' 'openssl>=3.5.9-r1' 'libfontenc>=1.1.10-r0' \
-    && apk del --no-network gnupg coreutils \
+      'libfontenc>=1.1.10-r0' ca-certificates-bundle \
+    && apk del --no-network gnupg coreutils apk-tools ssl_client openssl libapk libssl3 libcrypto3 ca-certificates \
+    && test -r /etc/ssl/certs/ca-certificates.crt \
     && rm -rf /opt/java/openjdk \
     && addgroup -S app && adduser -S -G app app
 COPY --from=jre-security-update /opt/verified-java /opt/java/openjdk
