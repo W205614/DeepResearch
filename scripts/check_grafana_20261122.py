@@ -22,7 +22,7 @@ EVIDENCE = ROOT / 'deployment/security/grafana-1326-20261122-security.json'
 BUSYBOX_SHA256 = '68dba7ae251db2ecca77e6ef405bf781111dc41f87c93c30205745fdbe2c697e'
 OPENPGP = 'golang.org/x/crypto/openpgp'
 MAIN_NATIVE_SHA256 = '878f83f1804e86697a86233cb086011b4b43f9b291a3f46e92488bfb8381efb0'
-MAIN_GRAPH_SHA256 = 'c86881d5c0042c3e32daf54d2d60f9a324bc6823bcc4b8e219cec5f397730a08'
+MAIN_GRAPH_CONTENT_SHA256 = '8410fecd85b65ee53dcd743fee18c7e58846fe6d9acce53a19782efa7f3b5b65'
 
 
 def verify_native(build_dir, receipt, findings, proof):
@@ -36,11 +36,16 @@ def verify_native(build_dir, receipt, findings, proof):
         require(hashlib.sha256(busybox).hexdigest() == BUSYBOX_SHA256, 'Fixed Grafana BusyBox bytes differ')
         native = archive.extractfile(runtime.EVIDENCE_PATH + 'native.json').read()
         main_graph = archive.extractfile(runtime.EVIDENCE_PATH + 'main-graph.json').read()
+        packages = scans.common.decode_graph(main_graph)
+        # Go reports cache staleness separately from the production package metadata.
+        recorded = {name: {key: value for key, value in info.items() if key not in {'Stale', 'StaleReason'}}
+                    for name, info in packages.items()}
+        content = json.dumps(recorded, sort_keys=True, separators=(',', ':')).encode()
         require(hashlib.sha256(native).hexdigest() == MAIN_NATIVE_SHA256
-                and hashlib.sha256(main_graph).hexdigest() == MAIN_GRAPH_SHA256
+                and hashlib.sha256(content).hexdigest() == MAIN_GRAPH_CONTENT_SHA256
                 and json.loads(native)['GoVersion'] == 'go1.27.4',
                 'Grafana new main Go version or complete source graph differs')
-    graphs = {runtime.MAIN: scans.common.decode_graph(main_graph)}
+    graphs = {runtime.MAIN: packages}
     for row in findings:
         target = row['target'].lstrip('/')
         if row['id'] == 'GO-2026-5932':
@@ -59,6 +64,7 @@ def verify_native(build_dir, receipt, findings, proof):
                     and comparison['comparison_url'] == 'https://github.com/grafana/tempo/compare/'
                     + comparison['commit'] + '...' + proof['tempo_commit'],
                     'Grafana Tempo backend no longer includes the exact upstream fixes')
+    return hashlib.sha256(main_graph).hexdigest()
 
 
 def assess(args):
@@ -97,10 +103,10 @@ def assess(args):
     require({row['id'] for row in grype_rows if row['package'] == 'github.com/grafana/tempo'}
             == {fix['ghsa'] for fix in proof['tempo_fixes'].values()},
             'The Tempo advisory aliases differ from the upstream fix evidence')
-    verify_native(args.build_dir, receipt, trivy_rows, proof)
+    graph_sha256 = verify_native(args.build_dir, receipt, trivy_rows, proof)
     return {'passed': True, 'actual_image_id': receipt['image_id'],
             'raw_findings': {'Trivy': len(trivy_rows), 'Grype': len(grype_rows)},
-            'unresolved': 0, 'raw_reports_modified': False}
+            'main_graph_raw_sha256': graph_sha256, 'unresolved': 0, 'raw_reports_modified': False}
 
 
 def main():
