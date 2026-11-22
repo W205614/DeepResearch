@@ -5,7 +5,7 @@
   "additional_evidence_files": [
     {
       "path": "Dockerfile",
-      "sha256": "86fa3542dcbe2c48a562364d0ad2560214650c8d6706dcd3cd3827f51a8141de"
+      "sha256": "89ab1f27d5c68c9f67f9eb4e76c05c1343922bb58ada724eba0a5a05a9ebbb84"
     },
     {
       "path": "deployment/vendors/agent-native-20261122/source.lock.json",
@@ -53,7 +53,7 @@
     },
     {
       "path": "deployment/vendors/python311/source-lock.json",
-      "sha256": "9e25aeb47f367aba07b502f258695987306369396c8a7c6fd5d24eab555f85ce"
+      "sha256": "a43caad4115939b3ed05a54d595cadb72a31c7cb4cdaad0dddd014904e2c45dc"
     },
     {
       "path": "scripts/prepare_python_runtime.py",
@@ -72,15 +72,15 @@
     "glibc": "Debian 2.43-7 via dpkg-source, which applies the full Debian patch set. Replace exactly the compiled libc, loader and four gconv modules. The remainder of the 290-entry official glibc payload is byte/mode/symlink identical.",
     "libstdcxx": "GCC 14.2.0 source from pinned Debian archives, building the C++ runtime with POSIX threads. GNU floating from_chars remains absent from current ELF consumers. The static header advisories involve code not in the application; rebuilding libstdc++ does not rebuild those consumers.",
     "openssl": "OpenSSL 3.5 development source at the fixed branch commit. Official 3.5 fix commits are ancestors of this source revision. The package recipe applies two pending maintainer fixes and the merged 3.5 production backport for CVE-2026-121482. The OpenSSL CNA lists only 4.0 and 4.1 as affected by CVE-2026-121481. The Debian package version remains the original scanner inventory identity.",
-    "cpython": "Keep the exact signed CPython 3.11.18 source and link-time optimization. Omit profile-guided training after the local and GitHub ELF closures differed with the seeded build timestamp. The source files and package inventory matched exactly, including the 290-entry glibc payload.",
+    "cpython": "Keep the exact signed CPython 3.11.18 source and link-time optimization. After omitting profile-guided training, the local and GitHub ELF inventory differed only in python.o, an object for linking an interpreter. Remove that development object after the runtime build. All 514 actual shipped ELF files match the independently measured GitHub file bytes.",
     "prior_application_evidence": "Previous exact Agent review is retained for unchanged dispositions. Current application delta changes research supplements, coverage, budget tracking and SQL migrations. It introduces no FFI, affected C++ call route, optional locale tree or zipfile extension. SQLite payload and runtime behavior are independently checked."
   },
   "build": {
     "platform": "linux/amd64",
-    "engine_image": "sha256:587d0488fa15dc7a304220df82c8627e33c35bee52914eccce3c680dc65c8b19"
+    "engine_image": "sha256:696eba8ef838cfc9a2b18c3f04c2234089a068354b23c177bb55aae81f0deb5e"
   },
   "raw_scan": {
-    "sha256": "ead037433fe8d5dee03ac96eeb4e6f4a2218cdac3867c93089724732e9566584",
+    "sha256": "611270fba51c6f4ec4f2efd691218cd405103069d62e583c36f0837d18d6e1ea",
     "raw_findings": 83,
     "packages": 125,
     "previous_findings": 109,
@@ -241,7 +241,7 @@
   },
   "compatibility": {
     "native": {
-      "image": "sha256:587d0488fa15dc7a304220df82c8627e33c35bee52914eccce3c680dc65c8b19",
+      "image": "sha256:696eba8ef838cfc9a2b18c3f04c2234089a068354b23c177bb55aae81f0deb5e",
       "normal-libc": {
         "normal_glob": true,
         "encoder_roundtrips": 4
@@ -274,7 +274,7 @@
       }
     },
     "http": {
-      "image": "sha256:587d0488fa15dc7a304220df82c8627e33c35bee52914eccce3c680dc65c8b19",
+      "image": "sha256:696eba8ef838cfc9a2b18c3f04c2234089a068354b23c177bb55aae81f0deb5e",
       "default_application_command": true,
       "ready": true,
       "anonymous_workspace_status": 401,
@@ -282,11 +282,13 @@
       "authenticated_capabilities": true
     },
     "whole_elf_delta": {
-      "image": "sha256:587d0488fa15dc7a304220df82c8627e33c35bee52914eccce3c680dc65c8b19",
+      "image": "sha256:696eba8ef838cfc9a2b18c3f04c2234089a068354b23c177bb55aae81f0deb5e",
       "baseline_image": "deepresearch-repaired-agent:20261121",
       "before_elfs": 515,
-      "after_elfs": 515,
-      "removed": [],
+      "after_elfs": 514,
+      "removed": [
+        "usr/local/lib/python3.11/config-3.11-x86_64-linux-gnu/python.o"
+      ],
       "added": [],
       "changed": [
         "usr/lib/x86_64-linux-gnu/gconv/IBM1390.so",
@@ -300,7 +302,6 @@
         "usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33",
         "usr/local/bin/python3.11",
         "usr/local/lib/libpython3.11.so.1.0",
-        "usr/local/lib/python3.11/config-3.11-x86_64-linux-gnu/python.o",
         "usr/local/lib/python3.11/lib-dynload/_asyncio.cpython-311-x86_64-linux-gnu.so",
         "usr/local/lib/python3.11/lib-dynload/_bisect.cpython-311-x86_64-linux-gnu.so",
         "usr/local/lib/python3.11/lib-dynload/_blake2.cpython-311-x86_64-linux-gnu.so",
@@ -381,6 +382,25 @@
     },
     "local_previous_pgo_closure_sha256": "811f06f29de9d109e6cb7807d816ba0a740ed47745c6d03c1d2f5a0b2b65407a",
     "github_previous_pgo_closure_sha256": "ea0ecbc8d44041598e6782273ddf7818943e6fe3362862cce647eee8f3519da8",
+    "github_runtime_only_precedent": {
+      "artifact": "https://github.com/W205614/DeepResearch/actions/runs/44992832456/artifacts/14742593678",
+      "runtime_report_sha256": "4d28c29727303b1232aacce95782ef3c78bf681d47146e08a417d6a7ff3d3621",
+      "matched_elf_files": 514,
+      "removed_development_object": "/usr/local/lib/python3.11/config-3.11-x86_64-linux-gnu/python.o",
+      "local_before_sha256": "65f7c7c2ef5bc48826638907e498f7d1d8e3c34da1c4c36426766a23d338ccc1",
+      "github_before_sha256": "ad6f053103f0e16afe41703915be414f6174fc99b96ce080eddc536fcee8c6cb"
+    },
+    "independent_local_build": {
+      "image": "sha256:fd5f75601707143856e3f2aa0461165faa348d4db565cc5e27556519b181c9a5",
+      "different_development_files": [
+        "/usr/local/lib/python3.11/config-3.11-x86_64-linux-gnu/python.o"
+      ],
+      "matched_runtime_files": 514,
+      "source_closure": {
+        "files": 5977,
+        "sha256": "5c92df59092959e05c5773306092a9b479b1f00427ebc354229c75e2011ec004"
+      }
+    },
     "exported_symbol_and_soname_comparison": {
       "libc.so.6": {
         "before_symbols": 3168,

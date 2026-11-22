@@ -114,7 +114,9 @@ RUN uv sync --frozen --no-dev --no-install-project --no-python-downloads --link-
 COPY deployment/vendors/python311/source-lock.json /usr/local/share/deepresearch-python-source.json
 COPY scripts/prepare_python_runtime.py /tmp/prepare_python_runtime.py
 COPY scripts/prepare_runtime_trust.py /tmp/prepare_runtime_trust.py
-RUN python /tmp/prepare_python_runtime.py && rm /usr/local/bin/uv
+# The interpreter is already linked. Its development startup object stays out of the runtime.
+RUN python /tmp/prepare_python_runtime.py \
+    && rm /usr/local/bin/uv /usr/local/lib/python3.11/config-*/python.o
 
 FROM builder AS runtime-package
 COPY --from=runtime-base / /runtime-root/
