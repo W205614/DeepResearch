@@ -8,6 +8,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+from urllib.error import HTTPError
 import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -34,6 +35,27 @@ GRAPH_SHA256 = {
 }
 
 
+def fetch_curl_input(row, directory, evidence):
+    try:
+        return transport.fetch_one(row, directory, evidence)
+    except HTTPError as error:
+        name = row['name']
+        alpine_url = 'https://dl-cdn.alpinelinux.org/alpine' + transport.ALPINE_APK_PATH + name
+        if error.code != 404 or row['url'] != alpine_url or not name.endswith('.apk'):
+            raise ValueError(f'Locked curl input failed: {name} (HTTP {error.code})') from error
+
+    for index, mirror in enumerate(transport.ALPINE_ARCHIVE_MIRRORS, start=1):
+        mirror_evidence = evidence / f'alpine-mirror-{index}'
+        mirror_evidence.mkdir(exist_ok=True)
+        try:
+            return transport.fetch_url(row, mirror + transport.ALPINE_APK_PATH + name,
+                                       directory / name, mirror_evidence)
+        except HTTPError as error:
+            if error.code != 404 or index == len(transport.ALPINE_ARCHIVE_MIRRORS):
+                raise ValueError(f'Locked Alpine curl input failed: {name} (HTTP {error.code})') from error
+    raise AssertionError('No official Alpine mirrors configured')
+
+
 def prepare_curl_inputs(output, input_dir):
     directory, evidence = output / 'curl-inputs', output / 'curl-input-receipts'
     directory.mkdir()
@@ -51,7 +73,7 @@ def prepare_curl_inputs(output, input_dir):
             if source.is_file():
                 shutil.copyfile(source, directory / source.name)
     with ThreadPoolExecutor(max_workers=4) as pool:
-        list(pool.map(lambda row: transport.fetch_one(row, directory, evidence), rows))
+        list(pool.map(lambda row: fetch_curl_input(row, directory, evidence), rows))
     transport.frozen.verify(directory, {'inputs': rows})
     return directory
 

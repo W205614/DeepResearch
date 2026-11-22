@@ -115,12 +115,14 @@ def test_observability_prepares_source_profile_before_start_and_never_reuses_old
         arguments.append('--no-build')
     assert local.main(arguments) == 0
     if not no_build:
-        prefetch, *calls = calls
+        prefetch, donor, *calls = calls
         assert prefetch[:2] == [local.sys.executable, str(local.ROOT / 'scripts/prefetch_minio_verified_20261115.py')]
         assert prefetch[2:4] == ['--directory', str(local.ROOT / '.cache/local-minio-native-inputs')]
-        assert calls[0][-2:] == ['--input-dir', prefetch[3]]
+        assert donor == [local.sys.executable, str(local.ROOT / 'scripts/build_minio_otel_20261115.py'),
+                         '--input-dir', prefetch[3]]
+        assert calls[0][-2:] == ['--curl-input-dir', prefetch[3]]
     assert len(calls) == 3
-    assert calls[0][:2] == [local.sys.executable, str(local.ROOT / 'scripts/build_minio_otel_20261115.py')]
+    assert calls[0][:2] == [local.sys.executable, str(local.ROOT / 'scripts/build_minio_alpine_20261121.py')]
     assert ('--no-build' in calls[0]) is no_build
     assert '--prepare' not in calls[0] and '--artifact' not in calls[0]
     assert calls[1][:4] == [local.sys.executable, str(local.ROOT / 'scripts/build_go_otel_security_20261114.py'),
@@ -165,7 +167,10 @@ def test_minio_native_profile_failure_blocks_default_start_without_old_go_fallba
         if str(local.ROOT / 'scripts/prefetch_minio_verified_20261115.py') in command:
             assert no_build is False and kwargs['check'] is True
             return
-        assert command[:2] == [local.sys.executable, str(local.ROOT / 'scripts/build_minio_otel_20261115.py')]
+        if str(local.ROOT / 'scripts/build_minio_otel_20261115.py') in command:
+            assert no_build is False and kwargs['check'] is True
+            return
+        assert command[:2] == [local.sys.executable, str(local.ROOT / 'scripts/build_minio_alpine_20261121.py')]
         assert ('--no-build' in command) is no_build
         assert '--prepare' not in command and kwargs['check'] is True
         raise subprocess.CalledProcessError(1, command)
@@ -173,7 +178,7 @@ def test_minio_native_profile_failure_blocks_default_start_without_old_go_fallba
     monkeypatch.setattr(local.subprocess, 'run', run)
     with pytest.raises(subprocess.CalledProcessError):
         local.main(['start', '--env-file', str(tmp_path / '.env'), *(['--no-build'] if no_build else [])])
-    assert len(calls) == (1 if no_build else 2) and all('up' not in call for call in calls)
+    assert len(calls) == (1 if no_build else 3) and all('up' not in call for call in calls)
 
 
 def test_native_input_verification_failure_blocks_source_build_and_start(tmp_path, monkeypatch):

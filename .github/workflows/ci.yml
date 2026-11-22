@@ -47,6 +47,7 @@ jobs:
           name: component-go-source-build-logs-${{ github.sha }}
           path: |
             .cache/eval/minio-fullget-receipts/**/*.json
+            .cache/eval/minio-alpine-build/curl-input-receipts/**/*.json
             .cache/eval/minio-fullget-receipts/**/*.failed.body
             .cache/eval/minio-source-build-cache.json
             .cache/eval/*-source-build/*.log
@@ -145,6 +146,7 @@ jobs:
           name: enterprise-go-source-build-logs-${{ github.sha }}
           path: |
             .cache/eval/minio-fullget-receipts/**/*.json
+            .cache/eval/minio-alpine-build/curl-input-receipts/**/*.json
             .cache/eval/minio-fullget-receipts/**/*.failed.body
             .cache/eval/minio-source-build-cache.json
             .cache/eval/*-source-build/*.log
