@@ -3709,7 +3709,11 @@
     }
   ],
   "review_scope": "Exact rebuilt Linux/amd64 Agent with the fixed libc, libstdc++ and OpenSSL payloads; Debian scanner metadata retained verbatim.",
-  "baseline_evidence_only": "The previous profile remains historical. Current full inventory, source closure and patched payload are measured independently.",
+  "baseline_evidence_only": {
+    "engine_id": "sha256:9e8ba470675910210d6bd479beb3ee39e04bdac3b8fbeb9e9a7a4879fa2f1e8e",
+    "portable_config_digest": "sha256:df90e165442b400a104d9e74ba10f2b76c2a99f905b65fe81f39e28b20489852",
+    "purpose": "Local build reference. Every new image must bind its own original complete scan."
+  },
   "packages": [
     {
       "class": "os-pkgs",
