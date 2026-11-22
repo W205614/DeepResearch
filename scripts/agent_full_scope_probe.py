@@ -94,6 +94,7 @@ def main():
         json.dumps(
             {
                 "native_elf_closure": {"files": len(native), "sha256": canonical_digest(native)},
+                "native_elf_files": native,
                 "python_source_closure": {"files": len(python), "sha256": canonical_digest(python)},
                 "official_glibc_items": len(expected["official_glibc_payload"]),
                 "official_glibc_mismatches": payload_mismatches,

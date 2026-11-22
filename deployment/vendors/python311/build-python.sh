@@ -55,7 +55,6 @@ set -eux; \
 	./configure \
 		--build="$gnuArch" \
 		--enable-loadable-sqlite-extensions \
-		--enable-optimizations \
 		--enable-option-checking=fatal \
 		--enable-shared \
 		$(test "${gnuArch%%-*}" != 'riscv64' && echo '--with-lto') \

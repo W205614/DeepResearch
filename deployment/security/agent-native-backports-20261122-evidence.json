@@ -49,15 +49,19 @@
     },
     {
       "path": "deployment/vendors/python311/build-python.sh",
-      "sha256": "f7c0dd5450e406913daced1da4bdb500f721aef319898f9960886199f51e0c7e"
+      "sha256": "a84f9770bdaab24dbc922eeb33438cbf135d5ef00828b294b1b10b3e75b10c2c"
     },
     {
       "path": "deployment/vendors/python311/source-lock.json",
-      "sha256": "9c2fea799842505a909262e7420b9554a8509875f69826add131e5583c3bda0e"
+      "sha256": "9e25aeb47f367aba07b502f258695987306369396c8a7c6fd5d24eab555f85ce"
     },
     {
       "path": "scripts/prepare_python_runtime.py",
       "sha256": "08a44b72f09e03e7ef3bd3b1fd571a9361bd81a7abf8814a980866d54caa7e80"
+    },
+    {
+      "path": "scripts/agent_full_scope_probe.py",
+      "sha256": "ae725f53ec1d962b12197c2aef160be253f7b1fe6b4ea2a79dc6b0e7b5bc2aec"
     },
     {
       "path": "uv.lock",
@@ -68,14 +72,15 @@
     "glibc": "Debian 2.43-7 via dpkg-source, which applies the full Debian patch set. Replace exactly the compiled libc, loader and four gconv modules. The remainder of the 290-entry official glibc payload is byte/mode/symlink identical.",
     "libstdcxx": "GCC 14.2.0 source from pinned Debian archives, building the C++ runtime with POSIX threads. GNU floating from_chars remains absent from current ELF consumers. The static header advisories involve code not in the application; rebuilding libstdc++ does not rebuild those consumers.",
     "openssl": "OpenSSL 3.5 development source at the fixed branch commit. Official 3.5 fix commits are ancestors of this source revision. The package recipe applies two pending maintainer fixes and the merged 3.5 production backport for CVE-2026-121482. The OpenSSL CNA lists only 4.0 and 4.1 as affected by CVE-2026-121481. The Debian package version remains the original scanner inventory identity.",
+    "cpython": "Keep the exact signed CPython 3.11.18 source and link-time optimization. Omit profile-guided training after the local and GitHub ELF closures differed with the seeded build timestamp. The source files and package inventory matched exactly, including the 290-entry glibc payload.",
     "prior_application_evidence": "Previous exact Agent review is retained for unchanged dispositions. Current application delta changes research supplements, coverage, budget tracking and SQL migrations. It introduces no FFI, affected C++ call route, optional locale tree or zipfile extension. SQLite payload and runtime behavior are independently checked."
   },
   "build": {
     "platform": "linux/amd64",
-    "engine_image": "sha256:506ed0903a0fdfd4e8c2585c5ced0036316c33498ac9bfcf1775f594251b83d8"
+    "engine_image": "sha256:587d0488fa15dc7a304220df82c8627e33c35bee52914eccce3c680dc65c8b19"
   },
   "raw_scan": {
-    "sha256": "9d4d5fe72bba67c3a6b3e39b716a25c7560de08f83a840b688dd3a91b5515008",
+    "sha256": "ead037433fe8d5dee03ac96eeb4e6f4a2218cdac3867c93089724732e9566584",
     "raw_findings": 83,
     "packages": 125,
     "previous_findings": 109,
@@ -236,7 +241,7 @@
   },
   "compatibility": {
     "native": {
-      "image": "sha256:506ed0903a0fdfd4e8c2585c5ced0036316c33498ac9bfcf1775f594251b83d8",
+      "image": "sha256:587d0488fa15dc7a304220df82c8627e33c35bee52914eccce3c680dc65c8b19",
       "normal-libc": {
         "normal_glob": true,
         "encoder_roundtrips": 4
@@ -269,7 +274,7 @@
       }
     },
     "http": {
-      "image": "sha256:506ed0903a0fdfd4e8c2585c5ced0036316c33498ac9bfcf1775f594251b83d8",
+      "image": "sha256:587d0488fa15dc7a304220df82c8627e33c35bee52914eccce3c680dc65c8b19",
       "default_application_command": true,
       "ready": true,
       "anonymous_workspace_status": 401,
@@ -277,7 +282,7 @@
       "authenticated_capabilities": true
     },
     "whole_elf_delta": {
-      "image": "sha256:506ed0903a0fdfd4e8c2585c5ced0036316c33498ac9bfcf1775f594251b83d8",
+      "image": "sha256:587d0488fa15dc7a304220df82c8627e33c35bee52914eccce3c680dc65c8b19",
       "baseline_image": "deepresearch-repaired-agent:20261121",
       "before_elfs": 515,
       "after_elfs": 515,
@@ -293,25 +298,89 @@
         "usr/lib/x86_64-linux-gnu/libcrypto.so.3",
         "usr/lib/x86_64-linux-gnu/libssl.so.3",
         "usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33",
+        "usr/local/bin/python3.11",
         "usr/local/lib/libpython3.11.so.1.0",
         "usr/local/lib/python3.11/config-3.11-x86_64-linux-gnu/python.o",
+        "usr/local/lib/python3.11/lib-dynload/_asyncio.cpython-311-x86_64-linux-gnu.so",
         "usr/local/lib/python3.11/lib-dynload/_bisect.cpython-311-x86_64-linux-gnu.so",
         "usr/local/lib/python3.11/lib-dynload/_blake2.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_bz2.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_codecs_cn.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_codecs_hk.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_codecs_iso2022.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_codecs_jp.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_codecs_kr.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_codecs_tw.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_contextvars.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_crypt.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_csv.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_ctypes.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_ctypes_test.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_datetime.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_dbm.cpython-311-x86_64-linux-gnu.so",
         "usr/local/lib/python3.11/lib-dynload/_decimal.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_elementtree.cpython-311-x86_64-linux-gnu.so",
         "usr/local/lib/python3.11/lib-dynload/_gdbm.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_hashlib.cpython-311-x86_64-linux-gnu.so",
         "usr/local/lib/python3.11/lib-dynload/_heapq.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_json.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_lsprof.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_lzma.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_md5.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_multibytecodec.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_multiprocessing.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_opcode.cpython-311-x86_64-linux-gnu.so",
         "usr/local/lib/python3.11/lib-dynload/_pickle.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_posixshmem.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_posixsubprocess.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_queue.cpython-311-x86_64-linux-gnu.so",
         "usr/local/lib/python3.11/lib-dynload/_random.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_sha1.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_sha256.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_sha3.cpython-311-x86_64-linux-gnu.so",
         "usr/local/lib/python3.11/lib-dynload/_sha512.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_socket.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_sqlite3.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_ssl.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_statistics.cpython-311-x86_64-linux-gnu.so",
         "usr/local/lib/python3.11/lib-dynload/_struct.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_testbuffer.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_testcapi.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_testclinic.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_testimportmultiple.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_testinternalcapi.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_testmultiphase.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_typing.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_xxsubinterpreters.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_xxtestfuzz.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_zoneinfo.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/array.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/audioop.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/binascii.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/cmath.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/fcntl.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/grp.cpython-311-x86_64-linux-gnu.so",
         "usr/local/lib/python3.11/lib-dynload/math.cpython-311-x86_64-linux-gnu.so",
-        "usr/local/lib/python3.11/lib-dynload/pyexpat.cpython-311-x86_64-linux-gnu.so"
+        "usr/local/lib/python3.11/lib-dynload/mmap.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/ossaudiodev.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/pyexpat.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/resource.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/select.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/spwd.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/syslog.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/termios.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/unicodedata.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/xxlimited.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/xxlimited_35.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/zlib.cpython-311-x86_64-linux-gnu.so"
       ],
       "gnu_floating_from_chars_consumers": [],
       "libstdcxx_imports_posix_memalign": true,
       "libstdcxx_imports_aligned_alloc": false,
       "compatible": true
     },
+    "local_previous_pgo_closure_sha256": "811f06f29de9d109e6cb7807d816ba0a740ed47745c6d03c1d2f5a0b2b65407a",
+    "github_previous_pgo_closure_sha256": "ea0ecbc8d44041598e6782273ddf7818943e6fe3362862cce647eee8f3519da8",
     "exported_symbol_and_soname_comparison": {
       "libc.so.6": {
         "before_symbols": 3168,
