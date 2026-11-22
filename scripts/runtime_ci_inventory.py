@@ -20,6 +20,10 @@ SOURCE_DOCKERFILE = 'deployment/docker/Dockerfile.grafana-20261114'
 SOURCE_PROFILE_PATH = Path('deployment/security/grafana-source-20261114-profile.json')
 SOURCE_MINIO = 'deepresearch-minio-source:20261115'
 MINIO_PROFILE = 'minio-otel-source-20261115'
+ALPINE_MINIO = 'deepresearch-minio-alpine:20261121'
+ALPINE_MINIO_PROFILE = 'minio-alpine-source-20261121'
+MINIO_IMAGES = {APPROVED_MINIO, SOURCE_MINIO, ALPINE_MINIO}
+SOURCE_PROFILES = {SOURCE_GRAFANA: SOURCE_PROFILE, SOURCE_MINIO: MINIO_PROFILE, ALPINE_MINIO: ALPINE_MINIO_PROFILE}
 
 
 def load_grafana_binding(root):
@@ -66,8 +70,14 @@ def matrices(configuration, root):
     minio = configuration.get("services", {}).get("minio", {})
     if minio.get('build'):
         raise ValueError('MinIO source builds must use the profile-bound build entry')
-    if minio.get('image') == SOURCE_MINIO:
+    if minio.get('image') in {SOURCE_MINIO, ALPINE_MINIO}:
         load_minio_source_profile(root)
+        if minio.get('image') == ALPINE_MINIO:
+            from scripts import build_minio_alpine_20261121 as alpine
+
+            if (alpine.PROFILE != ALPINE_MINIO_PROFILE or alpine.IMAGE != ALPINE_MINIO
+                    or not (root / alpine.DOCKERFILE).is_file()):
+                raise ValueError('Alpine MinIO must bind its exact build entry')
     elif minio.get('image') == APPROVED_MINIO:
         load_binding(root)
     else:
@@ -87,7 +97,7 @@ def matrices(configuration, root):
         reference = definition.get("image")
         if reference and "@" in reference and not re.fullmatch(r"[^@\s]+@sha256:[0-9a-f]{64}", reference):
             raise ValueError("Runtime image digest must be a complete SHA256 descriptor")
-        if ((reference in {APPROVED_MINIO, SOURCE_MINIO} and name != "minio")
+        if ((reference in MINIO_IMAGES and name != "minio")
                 or (reference in {APPROVED_GRAFANA, SOURCE_GRAFANA} and name != "grafana")):
             raise ValueError("Approved or source-profile namespaces cannot spread to another service")
         if definition.get("build"):
@@ -107,8 +117,8 @@ def matrices(configuration, root):
         by_reference.setdefault(reference, []).append(name)
     matrix = {"include": [{"name": "-".join(services), "image": image, "services": ",".join(services),
                             "approved_artifact": image in {APPROVED_MINIO, APPROVED_GRAFANA},
-                            "artifact": "minio" if image in {APPROVED_MINIO, SOURCE_MINIO} else "grafana" if image in {APPROVED_GRAFANA, SOURCE_GRAFANA} else "",
-                            "source_build_profile": SOURCE_PROFILE if image == SOURCE_GRAFANA else MINIO_PROFILE if image == SOURCE_MINIO else "",
+                            "artifact": "minio" if image in MINIO_IMAGES else "grafana" if image in {APPROVED_GRAFANA, SOURCE_GRAFANA} else "",
+                            "source_build_profile": SOURCE_PROFILES.get(image, ""),
                             "native_jvm_profile": "keycloak" if "keycloak" in services else ""}
                            for image, services in sorted(by_reference.items())]}
     custom_matrix = {"include": [{"name": services[0], "context": key[0], "dockerfile": key[1], "services": ",".join(services),

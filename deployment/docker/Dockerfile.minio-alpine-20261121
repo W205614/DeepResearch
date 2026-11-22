@@ -1,0 +1,65 @@
+# syntax=docker/dockerfile:1.7
+ARG REVIEWED_MINIO_IMAGE=deepresearch-minio-source:20261115
+FROM ${REVIEWED_MINIO_IMAGE} AS reviewed
+
+FROM golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf AS curl-build
+COPY --from=curl-inputs /*.apk /evidence/signed-apks/
+RUN apk verify /evidence/signed-apks/*.apk > /evidence/apk-signatures.txt \
+    && apk add --no-network --upgrade /evidence/signed-apks/*.apk > /evidence/apk-install.txt \
+    && sha256sum /evidence/signed-apks/*.apk > /evidence/apk-sha256.txt \
+    && apk info -v | sort > /evidence/build-packages.txt
+COPY --from=curl-inputs /curl-8.23.0.tar.xz /curl-8.23.0.tar.xz.asc /daniel-stenberg.asc /curl-source/
+RUN mkdir -p /build/curl \
+    && gpg --batch --no-autostart --dearmor --output /curl-keyring.gpg /curl-source/daniel-stenberg.asc \
+    && gpgv --keyring /curl-keyring.gpg --status-fd 1 /curl-source/curl-8.23.0.tar.xz.asc /curl-source/curl-8.23.0.tar.xz > /evidence/curl-signature.txt 2>&1 \
+    && grep -F 'VALIDSIG 27EDEAF22F3ABCEB50DB9A125CC908FDB71E12C2' /evidence/curl-signature.txt \
+    && echo '8dadd7d2536a314f982ad05a651b713f426bf7d02cc2c76cffb9796f2218e6c5  /curl-source/curl-8.23.0.tar.xz' | sha256sum -c - \
+    && tar -xJf /curl-source/curl-8.23.0.tar.xz -C /build/curl --strip-components=1
+WORKDIR /build/curl
+RUN PKG_CONFIG="pkg-config --static" LDFLAGS="-static" ./configure --disable-shared --enable-static \
+       --with-openssl --with-libssh2 --with-nghttp2 --with-brotli --with-zstd --with-libidn2 --with-libpsl \
+       --with-ca-bundle=/etc/ssl/certs/ca-certificates.crt --without-ca-path --disable-ldap --disable-ldaps \
+    && make -j4 LDFLAGS="-all-static" >/evidence/curl-build.txt 2>&1 \
+    && strip src/curl \
+    && readelf -l -d src/curl > /evidence/curl-elf.txt \
+    && ! grep -E 'INTERP|NEEDED' /evidence/curl-elf.txt
+
+FROM alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a AS fixed-shell
+COPY deployment/vendors/grafana-20261110/busybox/ /recipe/
+RUN sh /recipe/build.sh
+
+FROM scratch AS verified-tzdata
+ADD --checksum=sha256:f41a4a5913372a3694f157825f5133fe32743e679ed8476f258c984e13113602 https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/tzdata-2026f-r0.apk /tzdata-2026f-r0.apk
+
+FROM alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a AS runtime
+RUN --mount=type=bind,from=verified-tzdata,target=/signed,readonly \
+    apk add --no-cache ca-certificates-bundle=20261020-r0 setpriv=2.42.3-r1 /signed/tzdata-2026f-r0.apk \
+    && apk del --no-network apk-tools libapk ssl_client libssl3 libcrypto3 \
+    && test -r /etc/ssl/certs/ca-certificates.crt \
+    && test ! -e /usr/lib/libcrypto.so.3 && test ! -e /usr/lib/libssl.so.3
+
+COPY --from=reviewed /usr/bin/silo /usr/bin/mcli /usr/bin/docker-entrypoint.sh /usr/bin/
+COPY --from=curl-build /build/curl/src/curl /usr/bin/curl
+COPY --from=curl-build /build/curl/COPYING /evidence/build-packages.txt /evidence/apk-sha256.txt /evidence/curl-signature.txt /licenses/curl/
+COPY --from=reviewed /usr/share/deepresearch-build/ /usr/share/deepresearch-build/
+COPY --from=fixed-shell /out/busybox /bin/busybox
+COPY --from=fixed-shell /out/licenses/ /usr/share/deepresearch/minio-busybox/licenses/
+COPY --from=fixed-shell /out/corresponding-source/ /usr/share/deepresearch/minio-busybox/corresponding-source/
+# The upstream chroot target is the current root. setpriv keeps the legacy UID/GID drop without Alpine's coreutils/OpenSSL multicall binary.
+RUN test "$(grep -c 'exec chroot --userspec=' /usr/bin/docker-entrypoint.sh)" = 2 \
+    && sed -i \
+        -e '/>>\/etc\/group/s/:x:1000"/:x:1000:"/' \
+        -e 's|exec chroot --userspec="${MINIO_UID}:${MINIO_GID}" /|exec setpriv --reuid "${MINIO_UID}" --regid "${MINIO_GID}" --clear-groups --|' \
+        -e 's|exec chroot --userspec="${MINIO_USERNAME}:${MINIO_GROUPNAME}" /|exec setpriv --reuid "${MINIO_USERNAME}" --regid "${MINIO_GROUPNAME}" --init-groups --|' \
+        /usr/bin/docker-entrypoint.sh \
+    && test "$(grep -c 'exec setpriv --reuid' /usr/bin/docker-entrypoint.sh)" = 2
+
+FROM scratch
+COPY --from=runtime / /
+ENV MINIO_ACCESS_KEY_FILE=access_key MINIO_SECRET_KEY_FILE=secret_key MINIO_ROOT_USER_FILE=access_key MINIO_ROOT_PASSWORD_FILE=secret_key MINIO_KMS_SECRET_KEY_FILE=kms_master_key MINIO_CONFIG_ENV_FILE=config.env HOME=/tmp MC_CONFIG_DIR=/tmp/.mc
+WORKDIR /
+EXPOSE 9000 9001
+VOLUME ["/data"]
+ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
+CMD ["silo"]
+LABEL org.opencontainers.image.source="https://github.com/W205614/DeepResearch" org.deepresearch.binary-redistribution-approved="false"

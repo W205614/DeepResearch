@@ -37,6 +37,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           MINIO_NATIVE_INPUT_DIR: .cache/eval/minio-native-inputs
+      - name: Build and exercise the Alpine MinIO runtime
+        run: |
+          uv run --frozen --no-dev python scripts/build_minio_alpine_20261121.py --output-dir .cache/eval/minio-alpine-build --curl-input-dir .cache/eval/minio-native-inputs
+          uv run --frozen --no-dev python scripts/verify_minio_alpine_20261121.py
       - uses: actions/upload-artifact@v6
         if: always()
         with:
@@ -122,6 +126,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           MINIO_NATIVE_INPUT_DIR: .cache/eval/minio-native-inputs
+      - name: Build the Alpine MinIO runtime for enterprise Compose
+        run: uv run --frozen --no-dev python scripts/build_minio_alpine_20261121.py --output-dir .cache/eval/minio-alpine-build --curl-input-dir .cache/eval/minio-native-inputs
       - name: Release completed storage compiler cache before the next source build
         if: runner.environment == 'github-hosted'
         run: python scripts/ci_compose_build.py --prune-only

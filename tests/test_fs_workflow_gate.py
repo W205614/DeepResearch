@@ -287,7 +287,10 @@ def test_minio_native_repair_requires_new_producer_complete_scans_and_strict_con
     build_index, build, build_args = command(steps, 'build_minio_otel_20261115.py')
     prefetch_index, prefetch = next((i, step) for i, step in enumerate(steps)
                                     if step.get('uses') == './.github/actions/minio-native-inputs')
-    native_index, native, native_args = command(steps, 'collect_minio_os_native_20261113.py')
+    historic_steps = [step for step in steps if "matrix.source_build_profile == 'minio-alpine-source-20261121'"
+                      not in step.get('if', '')]
+    _, native, native_args = command(historic_steps, 'collect_minio_os_native_20261113.py')
+    native_index = steps.index(native)
     gate_index, gate, gate_args = command(steps, 'check_minio_otel_20261115.py')
     scan_index = next(i for i, step in enumerate(steps) if step.get('id') == 'approved_scan')
     secret_index, _, _ = command(steps, 'check_image_secrets.py')
@@ -295,7 +298,7 @@ def test_minio_native_repair_requires_new_producer_complete_scans_and_strict_con
     parser_index = next(i for i, step in enumerate(steps)
                         if step.get('name') == 'Prepare the fixed Go parser for the MinIO native gate')
     parser = steps[parser_index]
-    assert build['if'] == condition
+    assert build['if'] == "matrix.artifact == 'minio' && matrix.source_build_profile != ''"
     assert native['if'] == gate['if'] == condition + " && steps.approved_scan.outcome == 'success'"
     assert prefetch_index < build_index < scan_index < secret_index < native_index < parser_index < gate_index
     assert parser['if'] == condition + " && steps.approved_scan.outcome == 'success'"
@@ -304,7 +307,7 @@ def test_minio_native_repair_requires_new_producer_complete_scans_and_strict_con
         "inspected = subprocess.run(['docker', 'image', 'inspect', TOOLCHAIN], "
         "stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)\n"
         "if inspected.returncode:\n    subprocess.run(['docker', 'pull', TOOLCHAIN], check=True)\nPY\n")
-    assert prefetch['if'] == condition
+    assert prefetch['if'] == build['if']
     assert prefetch['with'] == {'output-dir': build['with']['output-dir']}
     preflight = yaml.safe_load((ROOT / '.github/actions/minio-native-inputs/action.yml').read_bytes())['runs']['steps']
     key, lookup, download = preflight
@@ -332,9 +335,35 @@ def test_minio_native_repair_requires_new_producer_complete_scans_and_strict_con
     assert {BASE + 'minio-native/*.json', BASE + 'minio-source-build/build-receipt.json',
             BASE + 'minio-source-build/image-inspect.json', BASE + 'minio-ci-disposition.json',
             BASE + 'minio-source-build/build-evidence/go-repair/*.json'}.issubset(upload['with']['path'].splitlines())
+
+
+def test_default_minio_alpine_requires_both_raw_scans_and_the_exact_gate():
     for filename in ('compose.yaml', 'deployment/compose/compose.verify.yaml'):
         minio = yaml.safe_load((ROOT / filename).read_bytes())['services']['minio']
-        assert minio['image'] == 'deepresearch-minio-source:20261115' and 'build' not in minio
+        assert minio['image'] == 'deepresearch-minio-alpine:20261121' and 'build' not in minio
+    workflows = ROOT / '.github/workflows'
+    ci = yaml.safe_load((workflows / 'ci.yml').read_bytes())['jobs']
+    for job_name in ('real-components', 'enterprise-compose-smoke'):
+        assert any('scripts/build_minio_alpine_20261121.py' in step.get('run', '') for step in ci[job_name]['steps'])
+    assert any('scripts/verify_minio_alpine_20261121.py' in step.get('run', '')
+               for step in ci['real-components']['steps'])
+    steps = yaml.safe_load((workflows / 'security.yml').read_bytes())['jobs']['runtime-image-scan']['steps']
+    condition = "matrix.source_build_profile == 'minio-alpine-source-20261121'"
+    build = next(step for step in steps if 'scripts/build_minio_alpine_20261121.py' in step.get('run', ''))
+    scan = next(step for step in steps if step.get('id') == 'approved_scan')
+    entry_steps = [step for step in steps if step.get('if', '').startswith(condition)]
+    _, native, native_args = command(entry_steps, 'collect_minio_os_native_20261113.py')
+    _, gate, gate_args = command(entry_steps, 'check_minio_alpine_20261121.py')
+    assert steps.index(build) < steps.index(scan) < steps.index(native) < steps.index(gate)
+    assert build['if'] == condition
+    assert native['if'] == gate['if'] == condition + " && steps.approved_scan.outcome == 'success'"
+    assert native_args == {'--image': 'deepresearch-minio-alpine:20261121',
+        '--build-receipt': BASE + 'minio-alpine-build/build-receipt.json',
+        '--output-dir': BASE + 'minio-native', '--db-cache': BASE + 'minio-grype-db'}
+    assert gate_args == {'--build-dir': BASE + 'minio-alpine-build', '--trivy': 'runtime-image.json',
+        '--grype': BASE + 'minio-native/full-grype.json', '--sbom': BASE + 'minio-native/full-syft.json',
+        '--output': BASE + 'minio-ci-disposition.json'}
+    assert not any(step.get('continue-on-error') for step in (build, scan, native, gate))
 
 
 def test_enterprise_and_compose_consume_source_image_without_a_second_uncontrolled_build():

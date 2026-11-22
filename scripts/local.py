@@ -92,13 +92,18 @@ def main(argv: list[str] | None = None) -> int:
     if args.action == "check":
         print("Local configuration and Compose validated; no provider request sent.")
         return 0
-    builders = [[sys.executable, str(ROOT / 'scripts/build_minio_otel_20261115.py')]]
+    builders = []
     if not args.no_build:
         native_inputs = ROOT / '.cache/local-minio-native-inputs'
         evidence = ROOT / '.cache/local-minio-input-evidence' / uuid.uuid4().hex
         subprocess.run([sys.executable, str(ROOT / 'scripts/prefetch_minio_verified_20261115.py'),
                         '--directory', str(native_inputs), '--evidence-dir', str(evidence)], check=True)
-        builders[0] += ['--input-dir', str(native_inputs)]
+        builders.append([sys.executable, str(ROOT / 'scripts/build_minio_otel_20261115.py'),
+                         '--input-dir', str(native_inputs)])
+    minio = [sys.executable, str(ROOT / 'scripts/build_minio_alpine_20261121.py')]
+    if not args.no_build:
+        minio += ['--curl-input-dir', str(native_inputs)]
+    builders.append(minio)
     if args.observability:
         builders.append([sys.executable, str(ROOT / 'scripts/build_go_otel_security_20261114.py'),
                          '--artifact', 'grafana'])

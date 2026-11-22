@@ -112,6 +112,8 @@ Java 管理公开接口、权限、任务准入、Outbox 和正式报告。Pytho
 
 三个应用镜像不包含完整依赖栈。`v0.1.5` 使用受控的 MinIO／Grafana 本地源码入口，并按该 Tag 配方获取或构建其他依赖；首次安装需要网络与构建时间，CI 缓存提速不代表首次安装无需编译。对应源码为引用补充包，仍需既有固定输入，不是完全离线安装包。[依赖获取说明](docs/source-release.md#运行依赖如何获取)及[镜像手册](docs/container-packages.md)保留各自版本边界。支持的平台为 Linux/amd64；Windows 使用 Docker Desktop 的 Linux 容器，未声称 arm64 已验收。网络下载、外部账号和模型调用额度由使用者准备。
 
+从 `main` 构建时，`scripts/local.py start` 会先准备固定的 Silo 和 mcli，再构建 Alpine 存储镜像。日常 Compose 沿用 `/minio_data` 挂载，隔离组件测试使用 `/data`。构建结果供本地运行与 CI 使用，公开应用镜像仍按各版本页提供。
+
 ### 新安装的配置
 
 从上表所选版本克隆后，在仓库根目录执行 `python scripts/local.py init`。它只在 `.env` 不存在时初始化，生成独立服务凭据；已有 `.env` 原样保留。不要将第一次安装的配置和项目名用于覆盖已有日常环境。
