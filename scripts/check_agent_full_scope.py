@@ -50,7 +50,7 @@ GAP_PROFILE_PATH = ROOT / "deployment/security/agent-gap-coverage-20261115-profi
 GAP_PROFILE_SHA256 = "022d9d00981867e926fd6212eb6b59277c0a0147c78b05f4adf7080960b3098c"
 NATIVE_BACKPORT_PROFILE_NAME = "agent-native-backports-20261122"
 NATIVE_BACKPORT_PROFILE_PATH = ROOT / "deployment/security/agent-native-backports-20261122-profile.json"
-NATIVE_BACKPORT_PROFILE_SHA256 = "f213fa81b7f1b77b91872bc3bf0ecdd1d66c53fc861fd7fcea13b8987dd67d95"
+NATIVE_BACKPORT_PROFILE_SHA256 = "f705309e418182a0422764272bf56db4e2c67fd43eb478127ce2a60979cd9345"
 PROFILE_NAMES = (
     PROFILE_NAME, ORDINARY_PROFILE_NAME, PROVIDER_PROFILE_NAME, REFERENCE_PROFILE_NAME,
     STRUCTURED_PROFILE_NAME, CURRENT_PROFILE_NAME, PREVIOUS_SOUP_PROFILE_NAME, SOUP_PROFILE_NAME,
@@ -422,6 +422,7 @@ def main():
         ).stdout
     )
     runtime = probe_image(inspection["Id"], profile)
+    args.output.with_suffix(".runtime.json").write_text(json.dumps(runtime, indent=2) + "\n", encoding="utf-8")
     actual_config_raw = capture_actual_config(inspection)
     args.output.with_suffix(".image-config.raw.json").write_bytes(actual_config_raw)
     after = json.loads(

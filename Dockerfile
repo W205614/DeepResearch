@@ -56,17 +56,18 @@ RUN echo '7db1e202cce66617e9134a662c877a3a773de5b612fd52179815877e0ecfb847  /inp
     && install -D -m 0644 /src/COPYING.RUNTIME /out/usr/share/licenses/gcc-source/COPYING.RUNTIME
 
 FROM debian:trixie-slim@sha256:38a76d01668772e381ad2826d876627c89e7133e2f8a0f5d567306798b0f2a16 AS openssl-security
-# Keep the upstream 3.5 fixes and apply the two pending production backports.
+# Keep the upstream 3.5 fixes and apply the additional production backports.
 COPY --from=agent-native-sources /openssl.tar.gz /tmp/openssl.tar.gz
-COPY deployment/vendors/agent-native-20261122/CVE-2026-84786.patch deployment/vendors/agent-native-20261122/CVE-2026-95690.patch /patches/
+COPY deployment/vendors/agent-native-20261122/CVE-2026-*.patch /patches/
 RUN apt-get update && apt-get install -y --no-install-recommends build-essential perl && rm -rf /var/lib/apt/lists/*
 WORKDIR /src
 RUN echo 'e0fb736a48c483b655997d3c4c18a8c9991da03923af1ea4abd4ee883d93c59b  /tmp/openssl.tar.gz' | sha256sum -c - \
     && tar -xzf /tmp/openssl.tar.gz --strip-components=1 \
     && patch -p1 --fuzz=0 < /patches/CVE-2026-84786.patch \
     && patch -p1 --fuzz=0 < /patches/CVE-2026-95690.patch \
+    && patch -p1 --fuzz=0 < /patches/CVE-2026-121482.patch \
     && ./Configure linux-x86_64 shared no-tests --prefix=/usr --libdir=lib/x86_64-linux-gnu --openssldir=/usr/lib/ssl \
-    && SOURCE_DATE_EPOCH=1794873600 make -j2 build_libs \
+    && SOURCE_DATE_EPOCH=1794873600 make -j4 build_libs \
     && strip --strip-unneeded libcrypto.so.3 libssl.so.3 \
     && install -m 0644 -D libcrypto.so.3 /out/usr/lib/x86_64-linux-gnu/libcrypto.so.3 \
     && install -m 0644 -D libssl.so.3 /out/usr/lib/x86_64-linux-gnu/libssl.so.3 \

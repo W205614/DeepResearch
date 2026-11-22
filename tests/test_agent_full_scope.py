@@ -124,7 +124,7 @@ def test_exact_review_keeps_original_findings_and_is_not_raw_zero(reviewed_input
     expected_count = {
         gate.SOUP_PROFILE_NAME: 94,
         gate.PROFILE_NAME: 88,
-        gate.NATIVE_BACKPORT_PROFILE_NAME: 109,
+        gate.NATIVE_BACKPORT_PROFILE_NAME: 83,
     }.get(reviewed_inputs[3]['name'], 92)
     assert verdict["passed"] and verdict["raw_findings"] == expected_count
     assert verdict["unresolved_applicable_findings"] == 0

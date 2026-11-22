@@ -5,11 +5,15 @@
   "additional_evidence_files": [
     {
       "path": "Dockerfile",
-      "sha256": "38eb405b88107886ba8e6c9191f25e3f7a5bd525a2f5906bbbc6fd03dea5f6a6"
+      "sha256": "86fa3542dcbe2c48a562364d0ad2560214650c8d6706dcd3cd3827f51a8141de"
     },
     {
       "path": "deployment/vendors/agent-native-20261122/source.lock.json",
-      "sha256": "c7dd6d4df3ef3fdc9d8ecc5c2b54313098031e60faa8a369419be2bc92237f50"
+      "sha256": "9f8b8df4d16b2683deb5de219c0e3645f78630598a5f73726519ccd8d29cdadf"
+    },
+    {
+      "path": "deployment/vendors/agent-native-20261122/CVE-2026-121482.patch",
+      "sha256": "7651cd82b10cc9f883a64ea62c9af0a6cf5b9bd38d4a103877052bf5e1bb5571"
     },
     {
       "path": "deployment/vendors/agent-native-20261122/CVE-2026-84786.patch",
@@ -63,18 +67,133 @@
   "source_review": {
     "glibc": "Debian 2.43-7 via dpkg-source, which applies the full Debian patch set. Replace exactly the compiled libc, loader and four gconv modules. The remainder of the 290-entry official glibc payload is byte/mode/symlink identical.",
     "libstdcxx": "GCC 14.2.0 source from pinned Debian archives, building the C++ runtime with POSIX threads. GNU floating from_chars remains absent from current ELF consumers. The static header advisories involve code not in the application; rebuilding libstdc++ does not rebuild those consumers.",
-    "openssl": "OpenSSL 3.5 development source at the fixed branch commit. Official 3.5 fix commits are ancestors of this source revision. Two pending maintainer fixes are applied as exact production-only backports. The distroless Debian package version remains the original scanner inventory identity.",
+    "openssl": "OpenSSL 3.5 development source at the fixed branch commit. Official 3.5 fix commits are ancestors of this source revision. The package recipe applies two pending maintainer fixes and the merged 3.5 production backport for CVE-2026-121482. The OpenSSL CNA lists only 4.0 and 4.1 as affected by CVE-2026-121481. The Debian package version remains the original scanner inventory identity.",
     "prior_application_evidence": "Previous exact Agent review is retained for unchanged dispositions. Current application delta changes research supplements, coverage, budget tracking and SQL migrations. It introduces no FFI, affected C++ call route, optional locale tree or zipfile extension. SQLite payload and runtime behavior are independently checked."
   },
   "build": {
     "platform": "linux/amd64",
-    "engine_image": "sha256:9e8ba470675910210d6bd479beb3ee39e04bdac3b8fbeb9e9a7a4879fa2f1e8e"
+    "engine_image": "sha256:506ed0903a0fdfd4e8c2585c5ced0036316c33498ac9bfcf1775f594251b83d8"
   },
   "raw_scan": {
-    "sha256": "e1f33ebb977762efe7ad36cf1bd5927ed02c350e0e5b8635d70056d41ebdac8e",
-    "raw_findings": 109,
+    "sha256": "9d4d5fe72bba67c3a6b3e39b716a25c7560de08f83a840b688dd3a91b5515008",
+    "raw_findings": 83,
     "packages": 125,
-    "previous_findings": 92,
+    "previous_findings": 109,
+    "remote_reference_report_sha256": "0842a3dcf63dcaf6393042cfef965298f6d4153e084cb6a026522f768e80544b",
+    "obsolete_glibc_records_absent_in_fresh_db": [
+      {
+        "id": "CVE-2026-18374",
+        "package": "libc-gconv-modules-extra"
+      },
+      {
+        "id": "CVE-2026-18374",
+        "package": "libc6"
+      },
+      {
+        "id": "CVE-2026-19499",
+        "package": "libc-gconv-modules-extra"
+      },
+      {
+        "id": "CVE-2026-19499",
+        "package": "libc6"
+      },
+      {
+        "id": "CVE-2026-19542",
+        "package": "libc-gconv-modules-extra"
+      },
+      {
+        "id": "CVE-2026-19542",
+        "package": "libc6"
+      },
+      {
+        "id": "CVE-2026-5435",
+        "package": "libc-gconv-modules-extra"
+      },
+      {
+        "id": "CVE-2026-5435",
+        "package": "libc6"
+      },
+      {
+        "id": "CVE-2026-6238",
+        "package": "libc-gconv-modules-extra"
+      },
+      {
+        "id": "CVE-2026-6238",
+        "package": "libc6"
+      },
+      {
+        "id": "CVE-2026-6368",
+        "package": "libc-gconv-modules-extra"
+      },
+      {
+        "id": "CVE-2026-6368",
+        "package": "libc6"
+      },
+      {
+        "id": "CVE-2026-6791",
+        "package": "libc-gconv-modules-extra"
+      },
+      {
+        "id": "CVE-2026-6791",
+        "package": "libc6"
+      },
+      {
+        "id": "CVE-2026-77117",
+        "package": "libc-gconv-modules-extra"
+      },
+      {
+        "id": "CVE-2026-77117",
+        "package": "libc6"
+      },
+      {
+        "id": "CVE-2026-80489",
+        "package": "libc-gconv-modules-extra"
+      },
+      {
+        "id": "CVE-2026-80489",
+        "package": "libc6"
+      },
+      {
+        "id": "CVE-2026-8674",
+        "package": "libc-gconv-modules-extra"
+      },
+      {
+        "id": "CVE-2026-8674",
+        "package": "libc6"
+      },
+      {
+        "id": "CVE-2026-86805",
+        "package": "libc-gconv-modules-extra"
+      },
+      {
+        "id": "CVE-2026-86805",
+        "package": "libc6"
+      },
+      {
+        "id": "CVE-2026-89092",
+        "package": "libc-gconv-modules-extra"
+      },
+      {
+        "id": "CVE-2026-89092",
+        "package": "libc6"
+      },
+      {
+        "id": "CVE-2026-95818",
+        "package": "libc-gconv-modules-extra"
+      },
+      {
+        "id": "CVE-2026-95818",
+        "package": "libc6"
+      },
+      {
+        "id": "CVE-2026-97399",
+        "package": "libc-gconv-modules-extra"
+      },
+      {
+        "id": "CVE-2026-97399",
+        "package": "libc6"
+      }
+    ],
     "severity_transitions": [
       [
         "CVE-2026-100290",
@@ -117,7 +236,7 @@
   },
   "compatibility": {
     "native": {
-      "image": "sha256:9e8ba470675910210d6bd479beb3ee39e04bdac3b8fbeb9e9a7a4879fa2f1e8e",
+      "image": "sha256:506ed0903a0fdfd4e8c2585c5ced0036316c33498ac9bfcf1775f594251b83d8",
       "normal-libc": {
         "normal_glob": true,
         "encoder_roundtrips": 4
@@ -136,10 +255,21 @@
           "/usr/lib/x86_64-linux-gnu/libssl.so.3"
         ],
         "openssl": "OpenSSL 3.5.10-dev "
+      },
+      "tls_with_crl": {
+        "versions": [
+          "TLSv1.2",
+          "TLSv1.3"
+        ],
+        "loaded_libraries": [
+          "/usr/lib/x86_64-linux-gnu/libcrypto.so.3",
+          "/usr/lib/x86_64-linux-gnu/libssl.so.3"
+        ],
+        "openssl": "OpenSSL 3.5.10-dev "
       }
     },
     "http": {
-      "image": "sha256:9e8ba470675910210d6bd479beb3ee39e04bdac3b8fbeb9e9a7a4879fa2f1e8e",
+      "image": "sha256:506ed0903a0fdfd4e8c2585c5ced0036316c33498ac9bfcf1775f594251b83d8",
       "default_application_command": true,
       "ready": true,
       "anonymous_workspace_status": 401,
@@ -147,7 +277,7 @@
       "authenticated_capabilities": true
     },
     "whole_elf_delta": {
-      "image": "sha256:9e8ba470675910210d6bd479beb3ee39e04bdac3b8fbeb9e9a7a4879fa2f1e8e",
+      "image": "sha256:506ed0903a0fdfd4e8c2585c5ced0036316c33498ac9bfcf1775f594251b83d8",
       "baseline_image": "deepresearch-repaired-agent:20261121",
       "before_elfs": 515,
       "after_elfs": 515,
@@ -282,7 +412,7 @@
           "libcrypto.so.3"
         ],
         "before_sha256": "6a94ca2354f32b1164713566608161eaa60e185bf4de2bc0210af721cb656953",
-        "after_sha256": "02431ad2f71173b0ad5d89865f052e7daa4600c18d98b7d0d2294ea09b91d34a"
+        "after_sha256": "e393f7847dbe8c5a2009d5c98364c3e950ab993f44c9f006846109430466e655"
       }
     }
   }
