@@ -1,12 +1,17 @@
 # syntax=docker/dockerfile:1.7
 FROM deepresearch-grafana-source:20261114 AS reviewed
 FROM grafana/grafana@sha256:1dd8c8bcad8e1e1993f13b2f2e172276a26d6aa51e725326bb43707339193944 AS upstream-release
+FROM python:3.13.18-slim-bookworm@sha256:f3dac913ab53b78c64f26d5518fcd7043d5a1a46522d6a493b598c3ed12f62a6 AS python-tools
+FROM python-tools AS source-archive
+COPY --from=grafana-source /source.tar.gz /tmp/source.tar.gz
+COPY scripts/verify_grafana_source_archive_20261122.py /tmp/verify-source.py
+RUN python3 /tmp/verify-source.py /tmp/source.tar.gz
+
 FROM golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf AS source
 ENV CGO_ENABLED=0 GOTOOLCHAIN=local GOMAXPROCS=2 GOFLAGS=-p=2 GOMEMLIMIT=768MiB
 WORKDIR /source
-COPY --from=grafana-source /source.tar.gz /tmp/source.tar.gz
-RUN echo '619c2c6e37ec80dd8fa0bcb4452e06161adc76da211413805f5f9210a058623a  /tmp/source.tar.gz' | sha256sum -c - \
-    && tar -xzf /tmp/source.tar.gz --strip-components=1
+COPY --from=source-archive /tmp/source.tar.gz /tmp/source.tar.gz
+RUN tar -xzf /tmp/source.tar.gz --strip-components=1
 RUN go mod edit -go=1.27.3 -require=github.com/apache/thrift@v0.25.0 \
       -require=go.opentelemetry.io/otel@v1.47.0 -require=go.opentelemetry.io/otel/log@v1.47.0 \
       -require=go.opentelemetry.io/otel/metric@v1.47.0 -require=go.opentelemetry.io/otel/sdk@v1.47.0 \
@@ -14,7 +19,7 @@ RUN go mod edit -go=1.27.3 -require=github.com/apache/thrift@v0.25.0 \
       -require=go.opentelemetry.io/otel/trace@v1.47.0 \
     && go work edit -go=1.27.3
 
-FROM python:3.13.18-slim-bookworm@sha256:f3dac913ab53b78c64f26d5518fcd7043d5a1a46522d6a493b598c3ed12f62a6 AS plugin-verification
+FROM python-tools AS plugin-verification
 COPY --from=reviewed /usr/share/grafana/data/plugins-bundled/ /reviewed-plugins/
 COPY --from=source /source/pkg/plugins/manager/signature/manifest.go /upstream/manifest.go
 COPY deployment/vendors/grafana-20261107/plugin-modules.json deployment/vendors/grafana-20261107/verify_retained_assets.py deployment/vendors/grafana-20261107/prepare_rebuild.py /tools/

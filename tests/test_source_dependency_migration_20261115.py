@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 
 from scripts import source_dependency_migration_20261115 as migration
+from scripts.go_lock_upgrade_20261122 import previous_source
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -131,8 +132,8 @@ def test_duplicate_frozen_finding_cannot_become_a_new_baseline(review):
         migration.verify_observed(review, review)
 
 
-def test_actual_minio_source_rows_bind_current_complete_graphs_and_official_packages(review):
-    result = migration.verify_minio_findings(ROOT, review['additional_minio_findings'], review)
+def test_actual_minio_source_rows_bind_retained_complete_graphs_and_official_packages(review):
+    result = migration.verify_minio_findings(previous_source(ROOT), review['additional_minio_findings'], review)
     assert {row['context'] for row in result} == {'minio_silo', 'minio_mcli'}
     assert all(row['current_affected_html_or_openpgp_packages'] == []
                and row['libraries_upgraded_claimed'] is False for row in result)

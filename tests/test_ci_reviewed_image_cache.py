@@ -103,5 +103,5 @@ def test_action_has_exact_restore_and_only_successful_main_push_cache_writes():
     calls = [s for name in ('ci.yml', 'security.yml')
              for job in yaml.safe_load((root / '.github/workflows' / name).read_bytes())['jobs'].values()
              for s in job['steps'] if s.get('uses') == './.github/actions/reviewed-source-image']
-    assert [s['with']['artifact'] for s in calls].count('minio') == 3
+    assert [s['with']['artifact'] for s in calls].count('minio') == 1
     assert [s['with']['artifact'] for s in calls].count('grafana') == 2

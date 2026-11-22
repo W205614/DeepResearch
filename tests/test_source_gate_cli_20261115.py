@@ -6,13 +6,14 @@ import json
 from pathlib import Path
 
 from scripts import source_dependency_migration_20261115 as migration
+from scripts.go_lock_upgrade_20261122 import previous_source
 from scripts.retained_source_review_20261112 import snapshot
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = ROOT / 'tests/fixtures/source-gate-20261115'
 
 
-def test_current_manifest_coverage_matches_both_preserved_cli_verdicts(monkeypatch):
+def test_retained_manifest_coverage_matches_both_preserved_cli_verdicts(monkeypatch):
     metadata = json.loads((FIXTURE / 'metadata.json').read_bytes())
     original_bytes = {}
     for name, identity in metadata['files'].items():
@@ -44,6 +45,6 @@ def test_current_manifest_coverage_matches_both_preserved_cli_verdicts(monkeypat
                                raw_sha256=args['raw_sha256'],
                                original_sha256=metadata['files']['verdict.json']['sha256'],
                                source_commit=source, tracked_clean=True,
-                               historical=historical, historical_root=historical_root, root=ROOT)
+                               historical=historical, historical_root=historical_root, root=previous_source(ROOT))
     assert result['passed'] is True and result['unresolved_count'] == 0
     assert result['verified_all_severity_findings'] == metadata['raw_findings'] == 103

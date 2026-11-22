@@ -23,8 +23,12 @@ RUN PKG_CONFIG="pkg-config --static" LDFLAGS="-static" ./configure --disable-sha
     && readelf -l -d src/curl > /evidence/curl-elf.txt \
     && ! grep -E 'INTERP|NEEDED' /evidence/curl-elf.txt
 
+FROM scratch AS verified-skalibs
+ADD --checksum=sha256:7fde96e8afb4191593a15328883e9c7726c96891cf071222146821e8c87f8007 https://distfiles.alpinelinux.org/distfiles/v3.24/skalibs-2.15.0.0.tar.gz /skalibs-2.15.0.0.tar.gz
+
 FROM alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a AS fixed-shell
 COPY deployment/vendors/grafana-20261110/busybox/ /recipe/
+COPY --from=verified-skalibs /skalibs-2.15.0.0.tar.gz /recipe/inputs/
 RUN sh /recipe/build.sh
 
 FROM scratch AS verified-tzdata

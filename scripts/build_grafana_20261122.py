@@ -15,20 +15,15 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts import check_grafana_source_build_20261114 as retained  # noqa: E402
 from scripts.grafana_source_build_facts_20261110 import capture  # noqa: E402
-from scripts.prefetch_minio_verified_20261115 import fetch_url  # noqa: E402
 from scripts.go_stdlib_rebuild_20261112 import require  # noqa: E402
+from scripts.verify_grafana_source_archive_20261122 import verify as verify_source  # noqa: E402
 
 IMAGE = 'deepresearch-grafana-source:20261122'
 PROFILE = 'grafana-source-20261122'
 DOCKERFILE = 'deployment/docker/Dockerfile.grafana-20261122'
 VERSION = '13.2.6'
 COMMIT = '45abbd2943cd6767cca037a5c554a6ec9c3fbf5e'
-SOURCE = {
-    'name': 'source.tar.gz',
-    'url': 'https://codeload.github.com/grafana/grafana/tar.gz/refs/tags/v13.2.6',
-    'bytes': 49065463,
-    'sha256': '619c2c6e37ec80dd8fa0bcb4452e06161adc76da211413805f5f9210a058623a',
-}
+SOURCE_URL = 'https://codeload.github.com/grafana/grafana/tar.gz/' + COMMIT
 MODULES = {
     'github.com/!azure/azure-sdk-for-go': 'v68.0.0+incompatible',
     'github.com/blevesearch/geo': 'v0.2.5',
@@ -56,15 +51,17 @@ def fetch_module(context, item):
 def prepare(output, source_archive, module_transport):
     directory = output / 'source-input'
     directory.mkdir()
-    path = directory / SOURCE['name']
+    evidence = output / 'source-receipts'
+    evidence.mkdir()
+    path = directory / 'source.tar.gz'
     if source_archive is not None:
         shutil.copyfile(source_archive, path)
     else:
-        evidence = output / 'source-receipts'
-        evidence.mkdir()
-        fetch_url(SOURCE, SOURCE['url'], path, evidence)
-    require(path.stat().st_size == SOURCE['bytes'] and retained.digest(path) == SOURCE['sha256'],
-            'The complete official Grafana source archive changed')
+        subprocess.run(['curl', '--fail', '--location', '--proto', '=https', '--proto-redir', '=https',
+                        '--retry', '2', '--retry-all-errors', '--max-time', '180', '--max-filesize', '62914560',
+                        '--silent', '--show-error', SOURCE_URL, '--output', str(path)], check=True)
+    receipt = {'official_source_url': SOURCE_URL, 'upstream_commit': COMMIT, **verify_source(path)}
+    (evidence / 'source.json').write_text(json.dumps(receipt, indent=2) + '\n', encoding='utf-8')
     if module_transport is None:
         module_transport = output / 'module-transport'
         module_transport.mkdir()

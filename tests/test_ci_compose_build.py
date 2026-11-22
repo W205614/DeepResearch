@@ -97,8 +97,9 @@ def test_workflow_keeps_current_source_verifiers_and_full_smoke_gates():
     root = Path(__file__).resolve().parents[1]
     workflow = yaml.safe_load((root / '.github/workflows/ci.yml').read_bytes())
     steps = workflow['jobs']['enterprise-compose-smoke']['steps']
-    source = [i for i, step in enumerate(steps)
-              if step.get('uses') == './.github/actions/reviewed-source-image']
+    minio = next(i for i, step in enumerate(steps) if 'scripts/build_minio_alpine_20261121.py' in step.get('run', ''))
+    donor = next(i for i, step in enumerate(steps) if step.get('id') == 'reviewed_grafana')
+    grafana = next(i for i, step in enumerate(steps) if 'scripts/build_grafana_20261122.py' in step.get('run', ''))
     prune = next(i for i, step in enumerate(steps)
                  if step.get('run') == 'python scripts/ci_compose_build.py --prune-only')
     build = next(i for i, step in enumerate(steps)
@@ -107,7 +108,7 @@ def test_workflow_keeps_current_source_verifiers_and_full_smoke_gates():
                      if 'validate --config=' in step.get('run', ''))
     startup = next(i for i, step in enumerate(steps)
                    if step.get('run') == 'docker compose up -d --no-build --force-recreate --wait --wait-timeout 300')
-    assert source[0] < prune < source[1] < build < collector < startup
+    assert minio < prune < donor < grafana < build < collector < startup
     assert steps[prune]['if'] == "runner.environment == 'github-hosted'"
     assert not any(step.get('continue-on-error') for step in steps)
     runs = [step.get('run') for step in steps]

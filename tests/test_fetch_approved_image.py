@@ -410,6 +410,8 @@ def test_source_grafana_inventory_binds_selected_recipe_and_does_not_claim_old_a
     dockerfile = tmp_path / inventory.SOURCE_DOCKERFILE
     dockerfile.parent.mkdir(parents=True)
     dockerfile.write_text('FROM scratch\n')
+    active_dockerfile = tmp_path / inventory.GRAFANA_1326_DOCKERFILE
+    active_dockerfile.write_text('FROM checked-donor\n')
     profile_path = tmp_path / inventory.SOURCE_PROFILE_PATH
     profile_path.parent.mkdir(parents=True)
     profile_path.write_text('synthetic exact profile\n')
@@ -419,10 +421,12 @@ def test_source_grafana_inventory_binds_selected_recipe_and_does_not_claim_old_a
     monkeypatch.setattr(scripts, 'check_grafana_source_build_20261114',
                         SimpleNamespace(load_profile=lambda root: profile), raising=False)
     selection = inventory.grafana_selection(tmp_path)
-    assert selection['profile'] == inventory.SOURCE_PROFILE and selection['mode'] == 'source_build'
+    assert selection['profile'] == inventory.GRAFANA_1326_PROFILE and selection['mode'] == 'source_build'
     assert selection['published'] is False and 'authorization_verified' not in selection
-    assert selection['subject'] == {'build_profile': inventory.SOURCE_PROFILE,
-                                     'profile_sha256': inventory.candidate.file_hash(profile_path)}
+    assert selection['recipe_sha256'] == inventory.candidate.file_hash(active_dockerfile)
+    assert selection['subject'] == {'build_profile': inventory.GRAFANA_1326_PROFILE}
+    assert selection['retained_backend_source'] == {'build_profile': inventory.SOURCE_PROFILE,
+                                                   'profile_sha256': inventory.candidate.file_hash(profile_path)}
     dockerfile.write_text('FROM changed-recipe\n')
     with pytest.raises(ValueError, match='exact current build entry'):
         inventory.load_grafana_source_profile(tmp_path)

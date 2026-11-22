@@ -1,10 +1,12 @@
 """The new runtime must retain a complete graph bound to the actual ELF closure."""
 import copy
+from functools import partial
 import gzip
 
 import pytest
 
 from scripts import check_minio_otel_20261115 as gate
+from scripts.go_lock_upgrade_20261122 import previous_source
 
 
 @pytest.fixture(scope='module')
@@ -43,7 +45,9 @@ def test_wrong_entry_module_or_incomplete_closure_is_rejected(actual_prior_graph
 
 
 @pytest.fixture
-def actual_preparation():
+def actual_preparation(monkeypatch):
+    reviewed_source = previous_source(gate.ROOT)
+    monkeypatch.setattr(gate.builder, 'source_inputs', partial(gate.builder.source_inputs, root=reviewed_source))
     evidence = gate.ROOT / 'deployment/security/minio-otel-source-20261115-evidence'
     receipt = gate.prior.read(evidence / 'build-receipt.json')
     inspection = gate.prior.read(evidence / 'image-inspect.json')
