@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import argparse
-from collections import Counter
 from copy import deepcopy
 from datetime import datetime, timezone
 import hashlib
@@ -17,10 +16,11 @@ from scripts import check_grafana_source_scan_20261110 as prior  # noqa: E402
 from scripts import check_grafana_source_build_20261110 as prior_build  # noqa: E402
 from scripts import check_grafana_source_build_20261114 as current  # noqa: E402
 from scripts.retained_source_review_20261112 import snapshot  # noqa: E402
+from scripts import go_lock_upgrade_20261122 as lock_upgrade  # noqa: E402
 
 
 from scripts.source_dependency_migration_20261115 import (  # noqa: E402
-    CONTEXTS_SHA256, MINIO_TARGET, REVIEW, REVIEW_SHA256, checked_review, load_current_context,
+    CONTEXTS_SHA256, MINIO_TARGET, REVIEW, REVIEW_SHA256, checked_review,
     verify_current_proofs, verify_minio_findings, verify_observed,
 )
 
@@ -35,34 +35,19 @@ SOURCE_ONLY_FINDINGS = {
 }
 
 
-def verify_source_only_findings(findings, root):
-    contexts = {}
-    for row in findings:
-        key = prior_build.finding_key(row)
-        module = row['package']
-        for context in SOURCE_ONLY_FINDINGS[key]:
-            if context not in contexts:
-                _, contexts[context] = load_current_context(context, root)
-            for name, package in contexts[context].items():
-                identity = package.get('Module') or {}
-                replacement = identity.get('Replace') or {}
-                current.require(name != module and not name.startswith(module + '/')
-                                and identity.get('Path') != module and replacement.get('Path') != module,
-                                'A source-only advisory module is present in the complete production import graph')
-    return [{'finding': row, 'contexts': list(SOURCE_ONLY_FINDINGS[prior_build.finding_key(row)]),
-             'disposition': 'AFFECTED_MODULE_NOT_COMPILED'} for row in findings]
-
-
 def collect(scan, receipt, original, candidate, *, raw_sha256, original_sha256,
             source_commit, tracked_clean, historical, historical_root, root):
-    review = checked_review(root)
+    lock_upgrade.verify_locks(root)
+    previous_root = lock_upgrade.previous_source(root)
+    review = checked_review(previous_root)
     current.require(review['contexts_sha256'] == CONTEXTS_SHA256, 'Source finding and context reviews differ')
     observed, counts, findings = prior.source_facts(scan)
-    source_only = [row for row in observed['findings'] if prior_build.finding_key(row) in SOURCE_ONLY_FINDINGS]
-    current.require(Counter(map(prior_build.finding_key, source_only)) == {key: 1 for key in SOURCE_ONLY_FINDINGS},
-                    'The source-only findings are incomplete or duplicate')
-    legacy_findings = [row for row in observed['findings'] if prior_build.finding_key(row) not in SOURCE_ONLY_FINDINGS]
-    verify_observed({**observed, 'findings': legacy_findings}, review)
+    current.require(not any(prior_build.finding_key(row) in SOURCE_ONLY_FINDINGS for row in observed['findings']),
+                    'An upgraded Go source dependency still reports its original alert')
+    expected = {**review, 'target_inventory_sha256': review['target_inventory_sha256'] | lock_upgrade.SCAN_INVENTORIES,
+                'findings': [row for row in review['findings']
+                             if prior_build.finding_key(row) not in SOURCE_ONLY_FINDINGS]}
+    verify_observed(observed, expected)
     now = datetime.now(timezone.utc)
     _, scope, _ = prior.old.load_scope(root, prior.old.POLICY, now)
     scope = deepcopy(scope)
@@ -96,15 +81,15 @@ def collect(scan, receipt, original, candidate, *, raw_sha256, original_sha256,
     # current scan and its full inventories above are never rewritten.
     prior.assess_findings(historical_root, historical, retained, compiled)
     prior.verify_busybox(historical_root, historical)
-    new = [row for row in legacy_findings if prior_build.finding_key(row) not in retained_keys]
+    new = [row for row in observed['findings'] if prior_build.finding_key(row) not in retained_keys]
     minio_rows = [row for row in new if row['target'] == MINIO_TARGET]
     new = [row for row in new if row['target'] != MINIO_TARGET]
     current.require(new == review['additional_historical_otel_findings']
                     and minio_rows == review['additional_minio_findings'],
                     'Additional source findings exceed the exact reviewed migration scope')
-    minio_proofs = verify_minio_findings(root, minio_rows, review)
+    minio_proofs = verify_minio_findings(previous_root, minio_rows, review)
     profile = current.load_profile(root)
-    current_proofs = verify_current_proofs(root, historical, profile)
+    current_proofs = verify_current_proofs(previous_root, historical, profile)
     for row in new:
         current.require(row['id'] == 'CVE-2026-128085' and row['severity'] == 'MEDIUM'
                         and row['target'].startswith('deployment/security/')
@@ -129,7 +114,7 @@ def collect(scan, receipt, original, candidate, *, raw_sha256, original_sha256,
             'additional_historical_otel_findings': new,
             'current_retained_proofs': current_proofs,
             'additional_minio_findings': minio_rows, 'current_minio_source_proofs': minio_proofs,
-            'additional_source_only_proofs': verify_source_only_findings(source_only, root),
+            'upgraded_source_dependency_alerts_absent': list(SOURCE_ONLY_FINDINGS),
             'raw_report_modified': False, 'historical_compilation_is_current': False,
             'source_dependency_review': REVIEW, 'source_dependency_review_sha256': REVIEW_SHA256,
             'preserved_original_failed_verdict': original,
@@ -147,8 +132,9 @@ def evaluate(scan, receipt, original, candidate, inventory, *, raw_sha256, origi
         source_commit=source_commit, tracked_clean=tracked_clean,
         historical=historical, historical_root=historical_root, root=root)
     current.require(inventory == runtime_ci_inventory.build_record(root)
-                    and inventory['grafana_selection']['profile'] == current.PROFILE
-                    and inventory['grafana_selection']['mode'] == 'source_build',
+                    and inventory['grafana_selection']['profile'] == runtime_ci_inventory.GRAFANA_1326_PROFILE
+                    and inventory['grafana_selection']['mode'] == 'source_build'
+                    and inventory['grafana_selection']['retained_backend_source']['build_profile'] == current.PROFILE,
                     'Actual current Compose/CI selection differs from the new source subject')
     return result
 

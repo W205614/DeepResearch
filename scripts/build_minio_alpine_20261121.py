@@ -14,13 +14,16 @@ import uuid
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts import check_backend_busybox_20261113 as busybox  # noqa: E402
+from scripts import build_minio_otel_20261115 as go_recipe  # noqa: E402
 from scripts import check_minio_otel_20261115 as minio  # noqa: E402
+from scripts import go_lock_upgrade_20261122 as go_locks  # noqa: E402
 from scripts import prefetch_minio_verified_20261115 as transport  # noqa: E402
 from scripts.grafana_source_build_facts_20261110 import capture  # noqa: E402
 
 IMAGE = 'deepresearch-minio-alpine:20261121'
 PROFILE = 'minio-alpine-source-20261121'
 DOCKERFILE = 'deployment/docker/Dockerfile.minio-alpine-20261121'
+GO_IMAGE = 'deepresearch-minio-go-build:20261122'
 ENTRYPOINT_SHA256 = '77bebe7e478412a9f54b1e02fa605764b8cb4e33818ec2efe82fee6c73f61fc0'
 CURL_SHA256 = 'c62ec1b00124a398682a1c246f0406ac520fc79c01e26a1b78bd3f17510f69ea'
 CURL_OPENSSL_APKS = {
@@ -30,8 +33,14 @@ CURL_OPENSSL_APKS = {
     'openssl-libs-static-3.5.9-r1.apk': (14271920, '0bfd81f8b0623d80afd5aa8f0ced1e36c4537bc42eaf376565f703477789cbd6'),
 }
 GRAPH_SHA256 = {
-    'silo': 'b9c14d18150cd1c6d45b2eb65d3e4dc2f7d29b18eae2bd5ab2d36b4c0fad3669',
+    'silo': 'e32020693e8a657dae911b136274bdf1abd84d732ac0d16ce04261e69532804a',
     'mcli': '61b98438da7c3ef4fcdadb7a15faec37ecaea76bc6d3fd20ef5ad8447cf428dc',
+}
+GO_PAYLOAD_SHA256 = {
+    'usr/bin/silo': '9b44f9df38fa388aaacce0be22e6273e70e77d5dced3180a230b65398be64b78',
+    'usr/bin/mcli': 'a1e263c8b0cadf9b6a19cc9729a7bb6d1eb0329152347955cb4326ca0ebb6845',
+    'usr/share/deepresearch-build/silo-native.json': '87ed3a45cc1a1099fcea0c25d13e2c367e000bf1aadbd7f98483d67107dc0994',
+    'usr/share/deepresearch-build/mcli-native.json': '32ae2b4c92715c4715d8e849538525bc5fe365696506629463d78e6b4a206c48',
 }
 
 
@@ -78,13 +87,24 @@ def prepare_curl_inputs(output, input_dir):
     return directory
 
 
+def build_go_programs(args):
+    transport_args = argparse.Namespace(artifact='minio', module_transport=args.module_transport,
+                                        source_repository=args.source_repository)
+    inputs = go_recipe.retained.baseline.prepare_contexts(transport_args, args.output_dir / 'go-source-inputs')
+    build = ['docker', 'build', '--platform', 'linux/amd64', '--file', go_recipe.DOCKERFILE,
+             '--target', 'go-repair-build', '--tag', GO_IMAGE]
+    for name, path in inputs.items():
+        build += ['--build-context', f'{name}={path.resolve()}']
+    subprocess.run([*build, '.'], cwd=ROOT, check=True)
+
+
 def receipt(output):
-    otel = minio.prior.read(ROOT / minio.PROFILE_PATH)
+    go_locks.verify_locks(ROOT)
     busybox_profile = (ROOT / busybox.PROFILE).read_bytes()
     busybox.require(busybox.sha(busybox_profile) == busybox.RETAINED_PROFILE_SHA256,
                     'Original reviewed BusyBox proof differs')
     fixed_shell = json.loads(busybox_profile)['payload']['/bin/busybox']['sha256']
-    expected = {**otel['expected']['native_sha256'],
+    expected = {**GO_PAYLOAD_SHA256,
                 'usr/bin/curl': CURL_SHA256,
                 'bin/busybox': fixed_shell, 'usr/bin/docker-entrypoint.sh': ENTRYPOINT_SHA256,
                 'licenses/curl/COPYING': '82f2f4427d6545ee5aaac4f0b80428da6cc8ba41c2cf5da3a03680ec327b9681',
@@ -124,10 +144,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output-dir', type=Path, default=ROOT / '.cache/eval' / ('minio-alpine-' + uuid.uuid4().hex))
     parser.add_argument('--curl-input-dir', type=Path)
+    parser.add_argument('--module-transport', type=Path)
+    parser.add_argument('--source-repository', type=Path)
     parser.add_argument('--no-build', action='store_true')
     args = parser.parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=False)
     if not args.no_build:
+        go_locks.verify_locks(ROOT)
+        build_go_programs(args)
         curl_inputs = prepare_curl_inputs(args.output_dir, args.curl_input_dir)
         subprocess.run(['docker', 'build', '--platform', 'linux/amd64', '--build-context',
                         f'curl-inputs={curl_inputs.resolve()}', '--file', DOCKERFILE, '--tag', IMAGE, '.'],

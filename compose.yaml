@@ -291,11 +291,11 @@ services:
     networks: [index-store, retrieval]
   milvus:
     <<: *service-defaults
-    image: dr-vendor-milvus:3.0.3-go1.26.11-sasl-dynamic-os-20261115
+    image: dr-vendor-milvus:3.0.3-go1.26.11-noble-20261122
     platform: linux/amd64
     build:
       context: .
-      dockerfile: Dockerfile.milvus
+      dockerfile: deployment/docker/Dockerfile.milvus-noble-20261122
     command: ["milvus", "run", "standalone"]
     environment:
       ETCD_ENDPOINTS: etcd:2379
@@ -610,7 +610,7 @@ services:
     image: dr-vendor-prometheus:3.15.1-security-20261030
     build:
       context: .
-      dockerfile: deployment/docker/Dockerfile.prometheus
+      dockerfile: deployment/docker/Dockerfile.prometheus-direct-20261122
     command: ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.path=/prometheus", "--storage.tsdb.retention.time=15d", "--storage.tsdb.retention.size=2GB"]
     volumes: [./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro, ./observability/alerts.yml:/etc/prometheus/alerts.yml:ro, prometheus-data:/prometheus]
     restart: unless-stopped
@@ -638,8 +638,8 @@ services:
   grafana:
     <<: *service-defaults
     # Prepared by the profile-bound build entry before startup; not a published image.
-    image: deepresearch-grafana-source:20261114
-    x-deepresearch-source-build: grafana-source-20261114
+    image: deepresearch-grafana-source:20261122
+    x-deepresearch-source-build: grafana-source-20261122
     pull_policy: never
     environment:
       GF_SECURITY_ADMIN_PASSWORD: "${GRAFANA_ADMIN_PASSWORD:?Set GRAFANA_ADMIN_PASSWORD in .env}"

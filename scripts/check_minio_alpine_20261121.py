@@ -26,27 +26,28 @@ APK_PACKAGES = {
 TRIVY_INVENTORY = {
     'os:alpine': '75d052acb4fa9eae4cfea802e456dbd73740b48956986fc0de77e399ec6a83d9',
     'usr/bin/mcli': '57d24a0efc0f3f3426ec6dba0a11e7baa97c43f319025424a152a86bcb126338',
-    'usr/bin/silo': '40be6d93fdc0adffb8f1aec9d4a82b0c1b55175542497df9c43deb456303040d',
+    'usr/bin/silo': '6323eb4d0916f652be82a12f723ceaa3ff45043fe25ba56ddbf8316d02841ef0',
 }
 
 
 def verify_graphs(archive):
-    profile = minio.load_profile()
     with tarfile.open(archive) as exported:
         for binary, expected in runtime.GRAPH_SHA256.items():
             prefix = f'usr/share/deepresearch-build/{binary}'
             raw = exported.extractfile(prefix + '-graph.json').read()
             prior.common.require(hashlib.sha256(raw).hexdigest() == expected, 'MinIO compiled graph changed')
             graph = prior.common.decode_graph(raw)
-            native = json.load(exported.extractfile(prefix + '-native.json'))
-            prior.common.require(native['GoVersion'] == 'go1.27.4'
-                                 and prior.shared.manifest_hash(native) == profile['native_sha256'][binary],
+            native_path = prefix + '-native.json'
+            native_raw = exported.extractfile(native_path).read()
+            native = json.loads(native_raw)
+            prior.common.require(native['GoVersion'] == 'go1.27.4' and
+                                 hashlib.sha256(native_raw).hexdigest() == runtime.GO_PAYLOAD_SHA256[native_path],
                                  'MinIO native Go module closure changed')
             minio.verify_graph_native(graph, native)
-            affected = ('golang.org/x/net/html', 'golang.org/x/crypto/openpgp')
+            affected = ('golang.org/x/net/html', 'golang.org/x/crypto/openpgp', 'github.com/nats-io/nats-server/v2')
             prior.common.require(not any(p == name or p.startswith(name + '/')
                                          for p in graph for name in affected),
-                                 'MinIO compiled graph contains an affected parser or OpenPGP package')
+                                 'MinIO compiled graph contains an excluded parser, OpenPGP package or NATS Server')
             if binary == 'silo':
                 prior.common.require('reader.go' in graph['github.com/minio/minio/internal/s3select/csv']['GoFiles'],
                                      'The reviewed source-fixed CSV reader is absent from the executable')

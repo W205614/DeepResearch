@@ -1,0 +1,55 @@
+# syntax=docker/dockerfile:1.7
+FROM deepresearch-milvus-legacy:20261122 AS legacy-milvus
+FROM deepresearch-minio-alpine:20261121 AS health-client
+FROM ubuntu:24.04@sha256:9a04f13b3f80ef056361e30868593b1cfd2279fe19e4081cb93a90bf56819d6a AS kerberos
+ADD --checksum=sha256:fe90af8441ad9fa9b064b8e53077cefb782a96f8a68276b031dc54af1789ff0b https://kerberos.org/dist/krb5/1.22/krb5-1.22.3.tar.gz /tmp/krb5-1.22.3.tar.gz
+COPY deployment/vendors/milvus/kerberos-20261122/mit-signing-public-key.asc deployment/vendors/milvus/kerberos-20261122/krb5-1.22.3.tar.gz.asc /tmp/
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends build-essential bison flex pkg-config libssl-dev gpg gpgv \
+    && gpg --batch --no-autostart --dearmor --output /tmp/mit-release-keyring.gpg /tmp/mit-signing-public-key.asc \
+    && gpgv --keyring /tmp/mit-release-keyring.gpg --status-fd 1 /tmp/krb5-1.22.3.tar.gz.asc /tmp/krb5-1.22.3.tar.gz > /tmp/kerberos-signature.txt \
+    && grep -F 'VALIDSIG C4493CB739F4A89F9852CBC20CBA08575F8372DF ' /tmp/kerberos-signature.txt \
+    && mkdir /build && tar -xzf /tmp/krb5-1.22.3.tar.gz -C /build --strip-components=1
+WORKDIR /build/src
+RUN ./configure --prefix=/opt/milvus-krb5 --without-system-verto --disable-static --without-libedit --without-ldap \
+    && make -j4 && make install DESTDIR=/out \
+    && mkdir /runtime \
+    && cp -a /out/opt/milvus-krb5/lib/libgssapi_krb5.so.2* /out/opt/milvus-krb5/lib/libkrb5.so.3* \
+      /out/opt/milvus-krb5/lib/libk5crypto.so.3* /out/opt/milvus-krb5/lib/libkrb5support.so.0* \
+      /out/opt/milvus-krb5/lib/libcom_err.so.3* /runtime/ \
+    && cp /build/NOTICE /tmp/kerberos-signature.txt /runtime/
+
+FROM ubuntu:24.04@sha256:9a04f13b3f80ef056361e30868593b1cfd2279fe19e4081cb93a90bf56819d6a AS noble-runtime
+SHELL ["/bin/bash", "-e", "-c"]
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates libstdc++6 libgcc-s1 libgomp1 libatomic1 \
+      libaio1t64 libsasl2-2 libzstd1 liblzma5 libssl3t64 perl-base \
+    && apt-get install -y --only-upgrade libc6=2.39-0ubuntu8.12 libc-bin=2.39-0ubuntu8.12 \
+    && groupadd -g 999 milvus && useradd -M -u 999 -g 999 -d /milvus -s /usr/sbin/nologin milvus \
+    && apt-get purge -y --allow-remove-essential apt gpgv bsdutils login passwd mount util-linux e2fsprogs \
+      libblkid1 libmount1 libsmartcols1 libuuid1 libsystemd0 libudev1 libgnutls30t64 \
+    && ln -sfn bash /usr/bin/sh \
+    && rm /usr/bin/dash /usr/bin/tar \
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -s libaio.so.1t64 /usr/lib/x86_64-linux-gnu/libaio.so.1
+RUN rm /usr/sbin/rmt-tar /etc/rmt
+COPY --from=legacy-milvus /milvus/ /milvus/
+COPY --from=legacy-milvus /tini /tini
+COPY --from=legacy-milvus /usr/share/deepresearch/milvus-rdkafka/ /usr/share/deepresearch/milvus-rdkafka/
+COPY --from=kerberos /runtime/ /opt/milvus-krb5/lib/
+COPY --from=health-client /usr/bin/curl /usr/bin/curl
+COPY --from=health-client /licenses/curl/ /licenses/curl/
+RUN echo 'c62ec1b00124a398682a1c246f0406ac520fc79c01e26a1b78bd3f17510f69ea  /usr/bin/curl' | sha256sum -c - \
+    && install -d -o 999 -g 999 -m 0755 /var/lib/milvus
+
+FROM scratch
+COPY --from=noble-runtime / /
+ENV PATH=/milvus/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+    LD_LIBRARY_PATH=/opt/milvus-krb5/lib:/milvus/lib:/usr/lib \
+    LD_PRELOAD=:/milvus/lib/libjemalloc.so MALLOC_CONF=background_thread:true \
+    OPENSSL_MODULES=/milvus/lib/ossl-modules ASAN_OPTIONS=detect_leaks=1:detect_container_overflow=0
+LABEL org.opencontainers.image.ref.name=ubuntu org.opencontainers.image.version=24.04 \
+    org.deepresearch.binary-redistribution-approved=false
+USER milvus:milvus
+ENTRYPOINT ["/tini", "--"]
+WORKDIR /milvus/

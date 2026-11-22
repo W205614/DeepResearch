@@ -114,6 +114,10 @@ Java 管理公开接口、权限、任务准入、Outbox 和正式报告。Pytho
 
 从 `main` 构建时，`scripts/local.py start` 会先准备固定的 Silo 和 mcli，再构建 Alpine 存储镜像。日常 Compose 沿用 `/minio_data` 挂载，隔离组件测试使用 `/data`。构建结果供本地运行与 CI 使用，公开应用镜像仍按各版本页提供。
 
+同一启动入口为 Milvus 准备固定的 Go 和 Kafka 组件，再构建 Ubuntu 24.04 运行层。加上 `--observability` 会构建 Grafana 13.2.6 与仓库已核验的 13 个内置后端。已有部署可继续通过原 Compose 覆盖文件固定各服务的镜像摘要。
+
+`main` 的 MinIO 源码锁使用 NATS Server `v2.12.15`，Loki 源码锁使用 containerd `v2.2.10`。NATS Server 和 containerd 均未编入这两个服务的运行程序。
+
 ### 新安装的配置
 
 从上表所选版本克隆后，在仓库根目录执行 `python scripts/local.py init`。它只在 `.env` 不存在时初始化，生成独立服务凭据；已有 `.env` 原样保留。不要将第一次安装的配置和项目名用于覆盖已有日常环境。

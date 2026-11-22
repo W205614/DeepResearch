@@ -18,12 +18,17 @@ SOURCE_GRAFANA = 'deepresearch-grafana-source:20261114'
 SOURCE_PROFILE = 'grafana-source-20261114'
 SOURCE_DOCKERFILE = 'deployment/docker/Dockerfile.grafana-20261114'
 SOURCE_PROFILE_PATH = Path('deployment/security/grafana-source-20261114-profile.json')
+GRAFANA_1326 = 'deepresearch-grafana-source:20261122'
+GRAFANA_1326_PROFILE = 'grafana-source-20261122'
+GRAFANA_1326_DOCKERFILE = 'deployment/docker/Dockerfile.grafana-20261122'
+GRAFANA_IMAGES = {APPROVED_GRAFANA, SOURCE_GRAFANA, GRAFANA_1326}
 SOURCE_MINIO = 'deepresearch-minio-source:20261115'
 MINIO_PROFILE = 'minio-otel-source-20261115'
 ALPINE_MINIO = 'deepresearch-minio-alpine:20261121'
 ALPINE_MINIO_PROFILE = 'minio-alpine-source-20261121'
 MINIO_IMAGES = {APPROVED_MINIO, SOURCE_MINIO, ALPINE_MINIO}
-SOURCE_PROFILES = {SOURCE_GRAFANA: SOURCE_PROFILE, SOURCE_MINIO: MINIO_PROFILE, ALPINE_MINIO: ALPINE_MINIO_PROFILE}
+SOURCE_PROFILES = {SOURCE_GRAFANA: SOURCE_PROFILE, GRAFANA_1326: GRAFANA_1326_PROFILE,
+                   SOURCE_MINIO: MINIO_PROFILE, ALPINE_MINIO: ALPINE_MINIO_PROFILE}
 
 
 def load_grafana_binding(root):
@@ -50,9 +55,11 @@ def load_grafana_source_profile(root):
 def grafana_selection(root):
     load_grafana_source_profile(root)
     digest = candidate.file_hash(root / SOURCE_PROFILE_PATH)
-    return {'image': SOURCE_GRAFANA, 'profile': 'grafana-source-20261114',
-            'profile_sha256': digest, 'mode': 'source_build', 'published': False,
-            'subject': {'build_profile': SOURCE_PROFILE, 'profile_sha256': digest}}
+    return {'image': GRAFANA_1326, 'profile': 'grafana-source-20261122',
+            'recipe_sha256': candidate.file_hash(root / GRAFANA_1326_DOCKERFILE),
+            'mode': 'source_build', 'published': False,
+            'subject': {'build_profile': GRAFANA_1326_PROFILE},
+            'retained_backend_source': {'build_profile': SOURCE_PROFILE, 'profile_sha256': digest}}
 
 
 def load_minio_source_profile(root):
@@ -70,14 +77,16 @@ def matrices(configuration, root):
     minio = configuration.get("services", {}).get("minio", {})
     if minio.get('build'):
         raise ValueError('MinIO source builds must use the profile-bound build entry')
-    if minio.get('image') in {SOURCE_MINIO, ALPINE_MINIO}:
+    if minio.get('image') == SOURCE_MINIO:
         load_minio_source_profile(root)
-        if minio.get('image') == ALPINE_MINIO:
-            from scripts import build_minio_alpine_20261121 as alpine
+    elif minio.get('image') == ALPINE_MINIO:
+        from scripts import build_minio_alpine_20261121 as alpine
+        from scripts.go_lock_upgrade_20261122 import verify_locks
 
-            if (alpine.PROFILE != ALPINE_MINIO_PROFILE or alpine.IMAGE != ALPINE_MINIO
-                    or not (root / alpine.DOCKERFILE).is_file()):
-                raise ValueError('Alpine MinIO must bind its exact build entry')
+        verify_locks(root)
+        if (alpine.PROFILE != ALPINE_MINIO_PROFILE or alpine.IMAGE != ALPINE_MINIO
+                or not (root / alpine.DOCKERFILE).is_file()):
+            raise ValueError('Alpine MinIO must bind its exact build entry')
     elif minio.get('image') == APPROVED_MINIO:
         load_binding(root)
     else:
@@ -86,8 +95,10 @@ def matrices(configuration, root):
         grafana = configuration["services"]["grafana"]
         if grafana.get("build"):
             raise ValueError('Grafana source builds must use the profile-bound build entry')
-        if grafana.get('image') == SOURCE_GRAFANA:
+        if grafana.get('image') in {SOURCE_GRAFANA, GRAFANA_1326}:
             load_grafana_source_profile(root)
+            if grafana.get('image') == GRAFANA_1326 and not (root / GRAFANA_1326_DOCKERFILE).is_file():
+                raise ValueError('Grafana 13.2.6 must bind its exact current build entry')
         elif grafana.get('image') == APPROVED_GRAFANA:
             load_grafana_binding(root)
         else:
@@ -98,7 +109,7 @@ def matrices(configuration, root):
         if reference and "@" in reference and not re.fullmatch(r"[^@\s]+@sha256:[0-9a-f]{64}", reference):
             raise ValueError("Runtime image digest must be a complete SHA256 descriptor")
         if ((reference in MINIO_IMAGES and name != "minio")
-                or (reference in {APPROVED_GRAFANA, SOURCE_GRAFANA} and name != "grafana")):
+                or (reference in GRAFANA_IMAGES and name != "grafana")):
             raise ValueError("Approved or source-profile namespaces cannot spread to another service")
         if definition.get("build"):
             build = definition["build"]
@@ -117,7 +128,7 @@ def matrices(configuration, root):
         by_reference.setdefault(reference, []).append(name)
     matrix = {"include": [{"name": "-".join(services), "image": image, "services": ",".join(services),
                             "approved_artifact": image in {APPROVED_MINIO, APPROVED_GRAFANA},
-                            "artifact": "minio" if image in MINIO_IMAGES else "grafana" if image in {APPROVED_GRAFANA, SOURCE_GRAFANA} else "",
+                            "artifact": "minio" if image in MINIO_IMAGES else "grafana" if image in GRAFANA_IMAGES else "",
                             "source_build_profile": SOURCE_PROFILES.get(image, ""),
                             "native_jvm_profile": "keycloak" if "keycloak" in services else ""}
                            for image, services in sorted(by_reference.items())]}
@@ -145,6 +156,8 @@ def resolve_configuration(root):
 
 def build_record(root=ROOT):
     configuration = resolve_configuration(root)
+    if configuration['services']['grafana']['image'] != GRAFANA_1326:
+        raise ValueError('The current runtime must select the reviewed Grafana 13.2.6 build')
     matrix, custom_matrix = matrices(configuration, root)
     head = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=root, capture_output=True, text=True, check=True).stdout.strip()
     workflow_files = sorted(p.relative_to(root).as_posix() for p in (root / '.github/workflows').iterdir()

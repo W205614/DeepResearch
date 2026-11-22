@@ -7,7 +7,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = ('scripts/build_go_otel_security_20261114.py', 'scripts/build_minio_otel_20261115.py',
-           'scripts/build_minio_alpine_20261121.py')
+           'scripts/build_minio_alpine_20261121.py', 'scripts/build_grafana_20261122.py')
 CACHE_ACTION = './.github/actions/reviewed-source-image'
 JOBS = [('ci.yml', 'real-components'), ('ci.yml', 'enterprise-compose-smoke'),
         ('security.yml', 'runtime-image-scan'), ('rag-quality.yml', 'live-reranker-evaluation')]
@@ -44,8 +44,10 @@ def assert_locked_bootstrap(steps):
         assert setup[0][1].get('if') == sync[0][1].get('if')
         if builder.get('if'):
             assert builder['if'] in {"matrix.source_build_profile == 'grafana-source-20261114'",
+                                     "matrix.source_build_profile == 'grafana-source-20261122'",
+                                     "matrix.artifact == 'grafana' && matrix.source_build_profile != ''",
                                      "matrix.source_build_profile == 'minio-alpine-source-20261121'",
-                                     "matrix.artifact == 'minio' && matrix.source_build_profile != ''"}
+                                     "matrix.source_build_profile == 'minio-otel-source-20261115'"}
             assert setup[0][1]['if'] == "matrix.source_build_profile != ''"
         else:
             assert setup[0][1].get('if') is None
@@ -65,7 +67,7 @@ def test_every_go_source_job_bootstraps_locked_python_before_the_actual_builder(
 @pytest.mark.parametrize('mutation', ['missing-setup', 'late-sync', 'unlocked-sync', 'bare-python', 'no-failed-logs'])
 def test_missing_or_unlocked_bootstrap_and_discarded_failure_logs_are_rejected(mutation):
     steps = deepcopy(steps_for('ci.yml', 'real-components'))
-    builder = next(step for step in steps if step.get('uses') == CACHE_ACTION)
+    builder = next(step for step in steps if 'scripts/build_minio_alpine_20261121.py' in step.get('run', ''))
     setup = next(step for step in steps if step.get('uses', '').startswith('astral-sh/setup-uv@'))
     sync = next(step for step in steps if step.get('run') == 'uv sync --frozen --no-dev')
     if mutation == 'missing-setup':
@@ -76,7 +78,7 @@ def test_missing_or_unlocked_bootstrap_and_discarded_failure_logs_are_rejected(m
     elif mutation == 'unlocked-sync':
         sync['run'] = 'uv sync --no-dev'
     elif mutation == 'bare-python':
-        builder['run'] = 'python scripts/ci_reviewed_image_cache.py run'
+        builder['run'] = builder['run'].removeprefix('uv run --frozen --no-dev ')
     else:
         for step in steps:
             if '*.log' in step.get('with', {}).get('path', ''):

@@ -6,7 +6,6 @@ from pathlib import Path
 import re
 import subprocess
 import sys
-import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -92,21 +91,15 @@ def main(argv: list[str] | None = None) -> int:
     if args.action == "check":
         print("Local configuration and Compose validated; no provider request sent.")
         return 0
-    builders = []
+    builders = [[sys.executable, str(ROOT / 'scripts/build_minio_alpine_20261121.py')]]
     if not args.no_build:
-        native_inputs = ROOT / '.cache/local-minio-native-inputs'
-        evidence = ROOT / '.cache/local-minio-input-evidence' / uuid.uuid4().hex
-        subprocess.run([sys.executable, str(ROOT / 'scripts/prefetch_minio_verified_20261115.py'),
-                        '--directory', str(native_inputs), '--evidence-dir', str(evidence)], check=True)
-        builders.append([sys.executable, str(ROOT / 'scripts/build_minio_otel_20261115.py'),
-                         '--input-dir', str(native_inputs)])
-    minio = [sys.executable, str(ROOT / 'scripts/build_minio_alpine_20261121.py')]
-    if not args.no_build:
-        minio += ['--curl-input-dir', str(native_inputs)]
-    builders.append(minio)
+        builders.append(['docker', 'build', '--platform', 'linux/amd64', '-f', str(ROOT / 'Dockerfile.milvus'),
+                         '-t', 'deepresearch-milvus-legacy:20261122', str(ROOT)])
     if args.observability:
-        builders.append([sys.executable, str(ROOT / 'scripts/build_go_otel_security_20261114.py'),
-                         '--artifact', 'grafana'])
+        if not args.no_build:
+            builders.append([sys.executable, str(ROOT / 'scripts/build_go_otel_security_20261114.py'),
+                             '--artifact', 'grafana'])
+        builders.append([sys.executable, str(ROOT / 'scripts/build_grafana_20261122.py')])
     for candidate in builders:
         if args.no_build:
             candidate.append('--no-build')

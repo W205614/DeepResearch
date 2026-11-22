@@ -1,6 +1,7 @@
 """Exercise the MinIO Alpine entrypoint and an isolated S3 round trip."""
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 import subprocess
@@ -10,7 +11,6 @@ import uuid
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.build_minio_alpine_20261121 import IMAGE  # noqa: E402
-from scripts.build_minio_otel_20261115 import IMAGE as SOURCE_IMAGE  # noqa: E402
 
 
 def docker(*args, data=None, check=True):
@@ -18,11 +18,13 @@ def docker(*args, data=None, check=True):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--legacy-image')
+    args = parser.parse_args()
     name = 'dr-minio-alpine-test-' + uuid.uuid4().hex[:12]
     image = docker('image', 'inspect', '--format', '{{.Id}}', IMAGE).stdout.decode().strip()
-    source_image = docker('image', 'inspect', '--format', '{{.Id}}', SOURCE_IMAGE).stdout.decode().strip()
     key, secret = 'isolated-fixture-admin', 'isolated-fixture-secret'
-    result = {'image_id': image, 'source_image_id': source_image}
+    result = {'image_id': image}
     docker('volume', 'create', name)
     try:
         def ready():
@@ -40,16 +42,22 @@ def main():
             ready()
             docker('exec', name, 'mcli', 'alias', 'set', 'fixture', 'http://127.0.0.1:9000', key, secret)
 
+        if args.legacy_image:
+            source_image = docker('image', 'inspect', '--format', '{{.Id}}', args.legacy_image).stdout.decode().strip()
+            result['source_image_id'] = source_image
+        else:
+            source_image = image
         start(source_image)
         docker('exec', name, 'mcli', 'mb', 'fixture/acceptance')
-        legacy = b'object written by the previous MinIO runtime\n'
-        legacy_name = 'fixture/acceptance/preexisting'
-        docker('exec', '-i', name, 'mcli', 'pipe', legacy_name, data=legacy)
-        docker('rm', '-f', name)
-        start(image)
-        if docker('exec', name, 'mcli', 'cat', legacy_name).stdout != legacy:
-            raise RuntimeError('MinIO could not read the existing S3 object')
-        result['legacy_volume_read'] = True
+        if args.legacy_image:
+            legacy = b'object written by the previous MinIO runtime\n'
+            legacy_name = 'fixture/acceptance/preexisting'
+            docker('exec', '-i', name, 'mcli', 'pipe', legacy_name, data=legacy)
+            docker('rm', '-f', name)
+            start(image)
+            if docker('exec', name, 'mcli', 'cat', legacy_name).stdout != legacy:
+                raise RuntimeError('MinIO could not read the existing S3 object')
+            result['legacy_volume_read'] = True
 
         payload = b'deepresearch isolated storage round trip\n'
         object_name = 'fixture/acceptance/payload'

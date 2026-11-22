@@ -115,18 +115,16 @@ def test_observability_prepares_source_profile_before_start_and_never_reuses_old
         arguments.append('--no-build')
     assert local.main(arguments) == 0
     if not no_build:
-        prefetch, donor, *calls = calls
-        assert prefetch[:2] == [local.sys.executable, str(local.ROOT / 'scripts/prefetch_minio_verified_20261115.py')]
-        assert prefetch[2:4] == ['--directory', str(local.ROOT / '.cache/local-minio-native-inputs')]
-        assert donor == [local.sys.executable, str(local.ROOT / 'scripts/build_minio_otel_20261115.py'),
-                         '--input-dir', prefetch[3]]
-        assert calls[0][-2:] == ['--curl-input-dir', prefetch[3]]
+        assert calls[1] == ['docker', 'build', '--platform', 'linux/amd64', '-f', str(local.ROOT / 'Dockerfile.milvus'),
+                            '-t', 'deepresearch-milvus-legacy:20261122', str(local.ROOT)]
+        assert calls[2] == [local.sys.executable, str(local.ROOT / 'scripts/build_go_otel_security_20261114.py'),
+                            '--artifact', 'grafana']
+        calls = [calls[0], *calls[3:]]
     assert len(calls) == 3
     assert calls[0][:2] == [local.sys.executable, str(local.ROOT / 'scripts/build_minio_alpine_20261121.py')]
     assert ('--no-build' in calls[0]) is no_build
     assert '--prepare' not in calls[0] and '--artifact' not in calls[0]
-    assert calls[1][:4] == [local.sys.executable, str(local.ROOT / 'scripts/build_go_otel_security_20261114.py'),
-                            '--artifact', 'grafana']
+    assert calls[1][:2] == [local.sys.executable, str(local.ROOT / 'scripts/build_grafana_20261122.py')]
     assert ('--no-build' in calls[1]) is no_build
     assert calls[2][:2] == ['docker', 'compose'] and 'up' in calls[2]
     assert calls[2][calls[2].index('-p') + 1] == 'isolated-fixture'
@@ -148,7 +146,7 @@ def test_missing_or_changed_source_image_blocks_local_start_without_old_artifact
 
     def run(command, **kwargs):
         calls.append(command)
-        if str(local.ROOT / 'scripts/build_go_otel_security_20261114.py') in command and 'grafana' in command:
+        if str(local.ROOT / 'scripts/build_grafana_20261122.py') in command:
             raise subprocess.CalledProcessError(1, command)
 
     monkeypatch.setattr(local.subprocess, 'run', run)
@@ -164,12 +162,6 @@ def test_minio_native_profile_failure_blocks_default_start_without_old_go_fallba
 
     def run(command, **kwargs):
         calls.append(command)
-        if str(local.ROOT / 'scripts/prefetch_minio_verified_20261115.py') in command:
-            assert no_build is False and kwargs['check'] is True
-            return
-        if str(local.ROOT / 'scripts/build_minio_otel_20261115.py') in command:
-            assert no_build is False and kwargs['check'] is True
-            return
         assert command[:2] == [local.sys.executable, str(local.ROOT / 'scripts/build_minio_alpine_20261121.py')]
         assert ('--no-build' in command) is no_build
         assert '--prepare' not in command and kwargs['check'] is True
@@ -178,23 +170,21 @@ def test_minio_native_profile_failure_blocks_default_start_without_old_go_fallba
     monkeypatch.setattr(local.subprocess, 'run', run)
     with pytest.raises(subprocess.CalledProcessError):
         local.main(['start', '--env-file', str(tmp_path / '.env'), *(['--no-build'] if no_build else [])])
-    assert len(calls) == (1 if no_build else 3) and all('up' not in call for call in calls)
+    assert len(calls) == 1 and all('up' not in call for call in calls)
 
 
-def test_native_input_verification_failure_blocks_source_build_and_start(tmp_path, monkeypatch):
-    calls = []
-    monkeypatch.setattr(local, 'preflight', lambda *_args: None)
+def test_curl_input_verification_failure_blocks_minio_runtime_build(tmp_path, monkeypatch):
+    from scripts import build_minio_alpine_20261121 as alpine
 
-    def run(command, **kwargs):
-        calls.append(command)
-        assert command[:2] == [local.sys.executable, str(local.ROOT / 'scripts/prefetch_minio_verified_20261115.py')]
-        assert kwargs['check'] is True
-        raise subprocess.CalledProcessError(1, command)
+    def fail(_output, _inputs):
+        raise ValueError('Locked curl input fixture differs')
 
-    monkeypatch.setattr(local.subprocess, 'run', run)
-    with pytest.raises(subprocess.CalledProcessError):
-        local.main(['start', '--env-file', str(tmp_path / '.env')])
-    assert len(calls) == 1
+    monkeypatch.setattr(alpine.sys, 'argv', ['build', '--output-dir', str(tmp_path / 'candidate')])
+    monkeypatch.setattr(alpine, 'build_go_programs', lambda _args: None)
+    monkeypatch.setattr(alpine, 'prepare_curl_inputs', fail)
+    monkeypatch.setattr(alpine.subprocess, 'run', lambda *_args, **_kwargs: pytest.fail('Runtime build reached Docker'))
+    with pytest.raises(ValueError, match='Locked curl input'):
+        alpine.main()
 
 
 def source_repository(tmp_path):

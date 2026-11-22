@@ -1,0 +1,190 @@
+{
+  "schema": "grafana-1326-exact-security-v1",
+  "trivy_inventory_sha256": {
+    "os:alpine": "e2acc29a1b1f1c85d336a76a956572ba3aee14ba8b984b2ba2023766d2663b67",
+    "Node.js": "05ea15560181e03335fd7fc67a5b5fc568a3d3bddab17458d6488a5881f8f17c",
+    "usr/share/grafana/bin/grafana": "1c33282b7638d2bdf520c51d9363762b728a396f75deb6518894c576df729951",
+    "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64": "c06ceaaf3a2a957942590430b9e0e86f1989dd5072c9995a2df23622a3f81c76",
+    "usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64": "ee1ae1a0c6780c43b1bda3a70a3322862da1a1e8121be45507855e452aed4c4b",
+    "usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64": "591eb7695b9783b898d740a1dea691bcaf6235f3597b6fff2ef8125b71353a6c",
+    "usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64": "cf4a2a1b04a0024dafca04258c4c34dfd0614094474c63108e1a9499878b9141",
+    "usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64": "00dcf5ae7b64fd3ba2b06d681b2088c1fc8cb05055bfb003f0852818258d0c84",
+    "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64": "82a8af2ab827fa33227c4871fa4c9334fe7d0025f669ad4f7017c8f0caf23b3d",
+    "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64": "1c6b0c963f5a545fb04c480681529db6a88f3916d440e2e7e4f6ad8e2d209fd2",
+    "usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64": "b561fa1b1d1066463a6dbe76af1390b9bdf3f79157163b9f8e94b8142ff23fb4",
+    "usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64": "d791c25b703e1f7af208690ce93bedcb5140634f4e55ba054595e79a3b1500c1",
+    "usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64": "9eb3c6d4c98535441fa0bedb6016c5bf11fbb0afd632248efeb38700158ef6a5",
+    "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64": "f7a9667a9c22099f304aab5f7fc6cccb6bc830341b919505738795f38b8ca371",
+    "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64": "4e22ae498534d23927ef0ecfc8f1de732cb501bbde06b56293103c51d0c21dc6",
+    "usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64": "68f9005b2a527e04bedc71fc02c8e79347532a4b4a109c0eab328b1420e0a6f1"
+  },
+  "trivy_findings": [
+    {
+      "target": "usr/share/grafana/bin/grafana",
+      "id": "GO-2026-5932",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "target": "usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64",
+      "id": "GO-2026-5932",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "target": "usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64",
+      "id": "GO-2026-5932",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "target": "usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64",
+      "id": "GO-2026-5932",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "target": "usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64",
+      "id": "GO-2026-5932",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "severity": "UNKNOWN"
+    },
+    {
+      "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "id": "CVE-2026-21728",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+      "severity": "HIGH"
+    },
+    {
+      "target": "usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64",
+      "id": "CVE-2026-28377",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+      "severity": "HIGH"
+    }
+  ],
+  "grype_findings": [
+    {
+      "id": "GHSA-p4r4-xvrq-gvmc",
+      "namespace": "github:language:go",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+      "type": "go-module",
+      "severity": "High",
+      "locations": [
+        "/usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64"
+      ]
+    },
+    {
+      "id": "CVE-2025-60876",
+      "namespace": "nvd:cpe",
+      "package": "busybox",
+      "version": "1.37.0-r31",
+      "type": "apk",
+      "severity": "Medium",
+      "locations": [
+        "/lib/apk/db/installed"
+      ]
+    },
+    {
+      "id": "CVE-2025-60876",
+      "namespace": "nvd:cpe",
+      "package": "busybox-binsh",
+      "version": "1.37.0-r31",
+      "type": "apk",
+      "severity": "Medium",
+      "locations": [
+        "/lib/apk/db/installed"
+      ]
+    },
+    {
+      "id": "GHSA-ffqx-q65f-36jf",
+      "namespace": "github:language:go",
+      "package": "github.com/grafana/tempo",
+      "version": "v1.5.1-0.20260910130453-bcfe9f230c1d",
+      "type": "go-module",
+      "severity": "High",
+      "locations": [
+        "/usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64"
+      ]
+    },
+    {
+      "id": "GO-2026-5932",
+      "namespace": "govulndb:language:go",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "type": "go-module",
+      "severity": "Unknown",
+      "locations": [
+        "/usr/share/grafana/bin/grafana"
+      ]
+    },
+    {
+      "id": "GO-2026-5932",
+      "namespace": "govulndb:language:go",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "type": "go-module",
+      "severity": "Unknown",
+      "locations": [
+        "/usr/share/grafana/data/plugins-bundled/elasticsearch/gpx_grafana_elasticsearch_datasource_linux_amd64"
+      ]
+    },
+    {
+      "id": "GO-2026-5932",
+      "namespace": "govulndb:language:go",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "type": "go-module",
+      "severity": "Unknown",
+      "locations": [
+        "/usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64"
+      ]
+    },
+    {
+      "id": "GO-2026-5932",
+      "namespace": "govulndb:language:go",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "type": "go-module",
+      "severity": "Unknown",
+      "locations": [
+        "/usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64"
+      ]
+    },
+    {
+      "id": "GO-2026-5932",
+      "namespace": "govulndb:language:go",
+      "package": "golang.org/x/crypto",
+      "version": "v0.58.0",
+      "type": "go-module",
+      "severity": "Unknown",
+      "locations": [
+        "/usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64"
+      ]
+    }
+  ],
+  "tempo_commit": "bcfe9f230c1de0f79cfd2110b38062e0f41c81e9",
+  "tempo_fixes": {
+    "CVE-2026-28377": {
+      "ghsa": "GHSA-ffqx-q65f-36jf",
+      "commit": "bb8ca663db34a0980c9758b40d918fda3b4dbec3",
+      "ahead": 597,
+      "behind": 0,
+      "comparison_url": "https://github.com/grafana/tempo/compare/bb8ca663db34a0980c9758b40d918fda3b4dbec3...bcfe9f230c1de0f79cfd2110b38062e0f41c81e9"
+    },
+    "CVE-2026-21728": {
+      "ghsa": "GHSA-p4r4-xvrq-gvmc",
+      "commit": "650eb1985a0776789c8564122990f588a742356f",
+      "ahead": 716,
+      "behind": 0,
+      "comparison_url": "https://github.com/grafana/tempo/compare/650eb1985a0776789c8564122990f588a742356f...bcfe9f230c1de0f79cfd2110b38062e0f41c81e9"
+    }
+  }
+}

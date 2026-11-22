@@ -245,6 +245,14 @@ def run(args):
     created = datetime.fromisoformat(scan['CreatedAt'].replace('Z', '+00:00'))
     require(start <= created <= finish and scan['Trivy'] == {'Version': '0.75.0'},
             'Image scan does not belong to this invocation')
+    if args.component == 'prometheus':
+        recipes = ROOT / 'deployment/docker'
+        legacy = (recipes / 'Dockerfile.prometheus').read_bytes()
+        api = b"--header 'Accept: application/octet-stream' https://api.github.com/repos/prometheus/prometheus/releases/assets/662704548"
+        release = b'https://github.com/prometheus/prometheus/releases/download/v3.15.1/prometheus-web-ui-3.15.1.tar.gz'
+        require(legacy.count(api) == 1 and (recipes / 'Dockerfile.prometheus-direct-20261122').read_bytes()
+                == legacy.replace(api, release, 1),
+                'Prometheus UI transport must preserve the original source, build and asset checksum')
     facts = capture(args.image, out / 'actual-payload', save_config=True)
     verify_trivy_source(scan, facts['inspection'], {
         **facts, 'runtime_config': shared.runtime_config(facts['inspection']['Config'])})
@@ -256,8 +264,14 @@ def run(args):
         subprocess.run(['docker', 'pull', TOOLCHAIN], check=True)
     native = capture_native(facts['image_id'], expected, out / 'native')
     graphs = {}
+    context_root = ROOT
+    if args.component == 'loki':
+        from scripts import go_lock_upgrade_20261122 as lock_upgrade
+
+        lock_upgrade.verify_locks(ROOT)
+        context_root = lock_upgrade.previous_source(ROOT)
     for target, profile in targets.items():
-        receipt, packages = load_current_context(profile)
+        receipt, packages = load_current_context(profile, context_root)
         actual = native[target]['native']
         verify_graph(actual, receipt, packages)
         graphs[target] = packages, actual
@@ -276,8 +290,11 @@ def run(args):
                 'Current Tempo compiled-file context differs from the supplementary source proof')
     milvus_os_scope = None
     if args.component == 'milvus':
-        from scripts import check_milvus_os_20261115
-        milvus_os_scope = check_milvus_os_20261115.verify(facts, scan, out / 'actual-payload/rootfs.tar')
+        if scan['Metadata']['OS'] == {'Family': 'ubuntu', 'Name': '24.04'}:
+            from scripts import check_milvus_noble_20261122 as milvus_os
+        else:
+            from scripts import check_milvus_os_20261115 as milvus_os
+        milvus_os_scope = milvus_os.verify(facts, scan, out / 'actual-payload/rootfs.tar')
     verdict = evaluate_findings(scan, graphs, tempo_proof, milvus_os_scope)
     verdict.update(component=args.component, image_id=facts['image_id'],
                    config_digest=facts['config_digest'], diff_ids=facts['diff_ids'],

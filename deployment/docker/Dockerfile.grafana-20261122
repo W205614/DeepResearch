@@ -1,0 +1,68 @@
+# syntax=docker/dockerfile:1.7
+FROM deepresearch-grafana-source:20261114 AS reviewed
+FROM grafana/grafana@sha256:1dd8c8bcad8e1e1993f13b2f2e172276a26d6aa51e725326bb43707339193944 AS upstream-release
+FROM golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf AS source
+ENV CGO_ENABLED=0 GOTOOLCHAIN=local GOMAXPROCS=2 GOFLAGS=-p=2 GOMEMLIMIT=768MiB
+WORKDIR /source
+COPY --from=grafana-source /source.tar.gz /tmp/source.tar.gz
+RUN echo '619c2c6e37ec80dd8fa0bcb4452e06161adc76da211413805f5f9210a058623a  /tmp/source.tar.gz' | sha256sum -c - \
+    && tar -xzf /tmp/source.tar.gz --strip-components=1
+RUN go mod edit -go=1.27.3 -require=github.com/apache/thrift@v0.25.0 \
+      -require=go.opentelemetry.io/otel@v1.47.0 -require=go.opentelemetry.io/otel/log@v1.47.0 \
+      -require=go.opentelemetry.io/otel/metric@v1.47.0 -require=go.opentelemetry.io/otel/sdk@v1.47.0 \
+      -require=go.opentelemetry.io/otel/sdk/log@v1.47.0 -require=go.opentelemetry.io/otel/sdk/metric@v1.47.0 \
+      -require=go.opentelemetry.io/otel/trace@v1.47.0 \
+    && go work edit -go=1.27.3
+
+FROM python:3.13.18-slim-bookworm@sha256:f3dac913ab53b78c64f26d5518fcd7043d5a1a46522d6a493b598c3ed12f62a6 AS plugin-verification
+COPY --from=reviewed /usr/share/grafana/data/plugins-bundled/ /reviewed-plugins/
+COPY --from=source /source/pkg/plugins/manager/signature/manifest.go /upstream/manifest.go
+COPY deployment/vendors/grafana-20261107/plugin-modules.json deployment/vendors/grafana-20261107/verify_retained_assets.py deployment/vendors/grafana-20261107/prepare_rebuild.py /tools/
+RUN python3 /tools/verify_retained_assets.py \
+    && python3 /tools/prepare_rebuild.py --inventory /tools/plugin-modules.json --upstream /reviewed-plugins \
+      --rebuilt /reviewed-plugins --source /upstream/manifest.go --output /generated
+
+FROM source AS build
+COPY --from=plugin-verification /generated/ /generated/
+RUN cp /generated/*.go /source/pkg/plugins/manager/signature/
+COPY deployment/vendors/grafana/reviewed_backend_verifier.go deployment/vendors/grafana/reviewed_backend_verifier_test.go /source/pkg/plugins/manager/signature/
+RUN gofmt -w /source/pkg/plugins/manager/signature/reviewed_backend*.go
+COPY --from=grafana-module-transport / /module-transport/
+ENV GOPROXY=file:///module-transport,https://proxy.golang.org
+RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
+    go mod download github.com/apache/thrift@v0.25.0 go.opentelemetry.io/otel@v1.47.0 go.opentelemetry.io/otel/log@v1.47.0 \
+      go.opentelemetry.io/otel/metric@v1.47.0 go.opentelemetry.io/otel/sdk@v1.47.0 go.opentelemetry.io/otel/sdk/log@v1.47.0 \
+      go.opentelemetry.io/otel/sdk/metric@v1.47.0 go.opentelemetry.io/otel/trace@v1.47.0 \
+    && go test -mod=readonly ./pkg/plugins/manager/signature -run TestMaintainerReviewedBackendIntegrity -count=1 \
+    && go build -mod=readonly -buildvcs=false -trimpath \
+      -ldflags='-s -w -X main.version=13.2.6 -X main.commit=45abbd2943cd6767cca037a5c554a6ec9c3fbf5e -X main.buildBranch=maintainer-security-20261121' \
+      -o /out/grafana ./pkg/cmd/grafana \
+    && go version -m -json /out/grafana > /out/native.json \
+    && go list -mod=readonly -deps -json ./pkg/cmd/grafana > /out/main-graph.json \
+    && cp go.mod go.sum go.work go.work.sum /out/
+
+FROM reviewed AS runtime
+USER 0
+RUN apk add --no-network ca-certificates-bundle \
+    && apk del --no-network curl apk-tools ssl_client libapk libssl3 libcrypto3 ca-certificates \
+    && test -r /etc/ssl/certs/ca-certificates.crt \
+    && test -d /usr/share/grafana/public && rm -rf /usr/share/grafana/public
+COPY --from=upstream-release /usr/share/grafana/public/ /usr/share/grafana/public/
+COPY --from=upstream-release /usr/share/grafana/conf/defaults.ini /usr/share/grafana/conf/defaults.ini
+COPY --from=build /out/grafana /usr/share/grafana/bin/grafana
+COPY --from=build /out/native.json /out/main-graph.json /out/go.mod /out/go.sum /out/go.work /out/go.work.sum /generated/rebuild-provenance.json /usr/share/deepresearch/grafana-13.2.6-candidate/
+
+FROM scratch
+COPY --from=runtime / /
+ENV PATH=/usr/share/grafana/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+    GF_PATHS_CONFIG=/etc/grafana/grafana.ini GF_PATHS_DATA=/var/lib/grafana GF_PATHS_HOME=/usr/share/grafana \
+    GF_PATHS_LOGS=/var/log/grafana GF_PATHS_PLUGINS=/var/lib/grafana/plugins \
+    GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+LABEL org.opencontainers.image.source="https://github.com/grafana/grafana" \
+    org.opencontainers.image.version="13.2.6-source-maintenance-20261122" \
+    org.deepresearch.upstream.grafana_revision="45abbd2943cd6767cca037a5c554a6ec9c3fbf5e" \
+    org.deepresearch.binary-redistribution-approved="false"
+USER 472
+WORKDIR /usr/share/grafana
+EXPOSE 3000
+ENTRYPOINT ["/run.sh"]

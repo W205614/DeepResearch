@@ -1,6 +1,5 @@
 # syntax=docker/dockerfile:1.7
-ARG REVIEWED_MINIO_IMAGE=deepresearch-minio-source:20261115
-FROM ${REVIEWED_MINIO_IMAGE} AS reviewed
+FROM deepresearch-minio-go-build:20261122 AS minio-go
 
 FROM golang:1.27.4-alpine@sha256:0a5f7fe796599ff487605987432e7619ae45beeb2fba4c2ce0b907879932aebf AS curl-build
 COPY --from=curl-inputs /*.apk /evidence/signed-apks/
@@ -38,10 +37,12 @@ RUN --mount=type=bind,from=verified-tzdata,target=/signed,readonly \
     && test -r /etc/ssl/certs/ca-certificates.crt \
     && test ! -e /usr/lib/libcrypto.so.3 && test ! -e /usr/lib/libssl.so.3
 
-COPY --from=reviewed /usr/bin/silo /usr/bin/mcli /usr/bin/docker-entrypoint.sh /usr/bin/
+COPY --from=minio-go /out/silo /out/mcli /usr/bin/
+COPY --chmod=0755 --from=minio-go /src/dockerscripts/docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
 COPY --from=curl-build /build/curl/src/curl /usr/bin/curl
 COPY --from=curl-build /build/curl/COPYING /evidence/build-packages.txt /evidence/apk-sha256.txt /evidence/curl-signature.txt /licenses/curl/
-COPY --from=reviewed /usr/share/deepresearch-build/ /usr/share/deepresearch-build/
+COPY --from=minio-go /src/LICENSE /src/NOTICE /src/CREDITS /licenses/silo/
+COPY --from=minio-go /out/silo-buildinfo.txt /out/mcli-buildinfo.txt /out/silo-native.json /out/mcli-native.json /out/silo-graph.json /out/mcli-graph.json /usr/share/deepresearch-build/
 COPY --from=fixed-shell /out/busybox /bin/busybox
 COPY --from=fixed-shell /out/licenses/ /usr/share/deepresearch/minio-busybox/licenses/
 COPY --from=fixed-shell /out/corresponding-source/ /usr/share/deepresearch/minio-busybox/corresponding-source/

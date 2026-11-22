@@ -29,17 +29,9 @@ jobs:
       - uses: astral-sh/setup-uv@v7
       - name: Install locked Python dependencies for Go source preparation
         run: uv sync --frozen --no-dev
-      - uses: ./.github/actions/minio-native-inputs
-        with: { output-dir: .cache/eval/minio-source-build }
-      - name: Build the reviewed Go-fixed storage source for the isolated component fixture
-        uses: ./.github/actions/reviewed-source-image
-        with: { artifact: minio, output-dir: .cache/eval/minio-source-build }
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          MINIO_NATIVE_INPUT_DIR: .cache/eval/minio-native-inputs
       - name: Build and exercise the Alpine MinIO runtime
         run: |
-          uv run --frozen --no-dev python scripts/build_minio_alpine_20261121.py --output-dir .cache/eval/minio-alpine-build --curl-input-dir .cache/eval/minio-native-inputs
+          uv run --frozen --no-dev python scripts/build_minio_alpine_20261121.py --output-dir .cache/eval/minio-alpine-build
           uv run --frozen --no-dev python scripts/verify_minio_alpine_20261121.py
       - uses: actions/upload-artifact@v6
         if: always()
@@ -119,27 +111,13 @@ jobs:
       - uses: astral-sh/setup-uv@v7
       - name: Install locked Python dependencies for Go source preparation
         run: uv sync --frozen --no-dev
-      - uses: ./.github/actions/minio-native-inputs
-        with: { output-dir: .cache/eval/minio-source-build }
-      - name: Build the reviewed Go-fixed storage source before Compose startup
-        uses: ./.github/actions/reviewed-source-image
-        with: { artifact: minio, output-dir: .cache/eval/minio-source-build }
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          MINIO_NATIVE_INPUT_DIR: .cache/eval/minio-native-inputs
       - name: Build the Alpine MinIO runtime for enterprise Compose
-        run: uv run --frozen --no-dev python scripts/build_minio_alpine_20261121.py --output-dir .cache/eval/minio-alpine-build --curl-input-dir .cache/eval/minio-native-inputs
+        run: uv run --frozen --no-dev python scripts/build_minio_alpine_20261121.py --output-dir .cache/eval/minio-alpine-build
       - name: Release completed storage compiler cache before the next source build
         if: runner.environment == 'github-hosted'
         run: python scripts/ci_compose_build.py --prune-only
-      - name: Build the exact reviewed Grafana source profile before Compose startup
-        uses: ./.github/actions/reviewed-source-image
-        with: { artifact: grafana, output-dir: .cache/eval/grafana-source-build }
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-      - name: Retain only differing Grafana graph and provenance documents after a failed build gate
-        if: always() && failure() && hashFiles('.cache/eval/grafana-source-build/build-receipt.json') != '' && hashFiles('.cache/eval/grafana-source-build/actual-payload/runtime-manifest.json.gz') != '' && hashFiles('.cache/eval/grafana-source-build/actual-payload/rootfs.tar') != ''
-        run: uv run --frozen --no-dev python scripts/capture_go_graph_diagnostic_20261114.py --artifact grafana --build-dir .cache/eval/grafana-source-build
+      - name: Build Grafana 13.2.6 for enterprise Compose
+        run: uv run --frozen --no-dev python scripts/build_grafana_20261122.py --output-dir .cache/eval/grafana-1326-build
       - uses: actions/upload-artifact@v6
         if: always()
         with:
@@ -156,20 +134,21 @@ jobs:
             .cache/eval/*-source-build/actual-payload/runtime-manifest.json.gz
             .cache/eval/minio-source-build/build-evidence/go-repair/*.json
             .cache/eval/minio-source-build/build-evidence/**/*.txt
-            .cache/eval/grafana-source-build/diagnostic-graphs/*.json
-            .cache/eval/grafana-source-build/diagnostic-graphs/*.json.gz
+            .cache/eval/grafana-1326-build/source-receipts/*.json
           if-no-files-found: warn
       - uses: actions/upload-artifact@v6
-        if: always() && hashFiles('.cache/eval/grafana-source-build/build-receipt.json') != ''
+        if: always() && hashFiles('.cache/eval/grafana-1326-build/build-receipt.json') != ''
         with:
           name: enterprise-grafana-source-${{ github.sha }}
           path: |
-            .cache/eval/grafana-source-build/build-receipt.json
-            .cache/eval/grafana-source-build/image-inspect.json
-            .cache/eval/grafana-source-build/actual-payload/runtime-manifest.json.gz
+            .cache/eval/grafana-1326-build/build-receipt.json
+            .cache/eval/grafana-1326-build/image-inspect.json
+            .cache/eval/grafana-1326-build/actual-payload/runtime-manifest.json.gz
           if-no-files-found: error
       # Run 43437807833 exhausted disk while Loki, Prometheus, Tempo, Milvus
       # and Python compiled concurrently, before the old final prune could run.
+      - name: Build the existing Milvus Go and Kafka source
+        run: docker build --platform linux/amd64 -f Dockerfile.milvus -t deepresearch-milvus-legacy:20261122 .
       - name: Build enterprise recipes sequentially with bounded compiler cache
         run: python scripts/ci_compose_build.py
       - name: Validate the maintained collector with the current complete telemetry configuration

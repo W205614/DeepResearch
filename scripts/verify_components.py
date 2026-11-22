@@ -30,6 +30,8 @@ def main(args):
     result = {}
     try:
         if not args.reuse:
+            run(['docker', 'build', '--platform', 'linux/amd64', '-f', 'Dockerfile.milvus',
+                 '-t', 'deepresearch-milvus-legacy:20261122', '.'])
             run(['docker', 'build', '-t', 'deepresearch-verify-base', '.'])
             run(['docker', 'build', '-f', 'deployment/docker/Dockerfile.verify', '-t', 'deepresearch-verify', '.'])
             run(COMPOSE + ['up', '-d', '--wait', '--wait-timeout', '600'])
