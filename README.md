@@ -6,9 +6,40 @@
 
 正式交付状态、镜像和最终验收以[最新版本页](https://github.com/W205614/DeepResearch/releases/latest)为准。下文带日期的验证段落保留提交时的阶段记录；后续版本不会改写旧失败或旧截图。
 
-- 部署：[选择启动方式](#选择启动方式) · [容器 Packages](docs/container-packages.md) · [源码启动](docs/source-release.md)。
+- 部署：[v0.1.6 快速上手](#v016-快速上手) · [选择启动方式](#选择启动方式) · [历史镜像与部署说明](docs/container-packages.md)。
 - 理解项目：[架构与目录](#架构与目录) · [源码调用路径](docs/project-structure.md) · [Java／Python 职责](docs/java-python-ownership.md)。
 - 维护：[贡献指南](CONTRIBUTING.md) · [升级与恢复](docs/deployment-security-operations.md) · [安全报告](SECURITY.md)。
+
+## v0.1.6 快速上手
+
+以下 PowerShell 示例使用 [v0.1.6](https://github.com/W205614/DeepResearch/releases/tag/v0.1.6) 的三个公开应用镜像和核心服务。准备 Git、Python 3.11.5 至 3.13、uv、Docker Linux/amd64 和 Compose v2。Windows 使用 Docker Desktop 的 Linux 容器。首次安装要联网下载镜像和源码，并编译 Milvus、MinIO 等配套依赖。已有部署请沿用原项目名和覆盖文件，先核对[升级与恢复条件](docs/deployment-security-operations.md#现有数据升级)。
+
+1. 检出发布标签并初始化本机配置。
+
+   ```powershell
+   git clone --config core.autocrlf=false --branch v0.1.6 https://github.com/W205614/DeepResearch.git
+   cd DeepResearch
+   python scripts/local.py init
+   ```
+
+2. 在 `.env` 中填写 `LLM_API_KEY` 和 `EMBEDDING_API_KEY`。使用重排时填写 `RERANKER_API_KEY`，否则设置 `RERANKER_ENABLED=false`。初始化会生成其余服务凭据。
+
+3. 在同一 PowerShell 会话逐条执行以下命令。首次启动时 ClamAV 还会下载病毒特征库。
+
+   ```powershell
+   $env:DEEPRESEARCH_PACKAGE_VERSION = 'v0.1.6'
+   $composeFiles = @('-f', 'compose.yaml', '-f', 'deployment/compose/compose.core.yaml', '-f', 'deployment/compose/compose.packages.yaml')
+   python scripts/local.py check --compose-file deployment/compose/compose.packages.yaml
+   uv run --frozen --no-dev python scripts/build_minio_alpine_20261121.py
+   docker build --platform linux/amd64 -f Dockerfile.milvus -t deepresearch-milvus-legacy:20261122 .
+   docker compose --parallel 1 @composeFiles build postgres keycloak-postgres etcd milvus keycloak storage-init clamav
+   docker compose @composeFiles pull agent backend web
+   docker compose @composeFiles up -d --no-build --wait --wait-timeout 600
+   ```
+
+4. 打开 `http://localhost:8080`，注册或登录业务账号，创建个人空间并[发起第一条研究](#启动后的第一条研究)。检查状态用 `docker compose @composeFiles ps`，暂停用 `docker compose @composeFiles stop --timeout 60`，配置和数据卷会保留。
+
+三个应用镜像的固定摘要见 [v0.1.6 发布页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.6)。要从源码重建应用，完成前两步后运行 `uv run --frozen --no-dev python scripts/local.py start`，由启动器准备依赖并构建核心栈。
 
 ## 可以做什么
 
@@ -106,8 +137,8 @@ Java 管理公开接口、权限、任务准入、Outbox 和正式报告。Pytho
 
 | 目的 | 来源与入口 | 需要的工具 |
 | --- | --- | --- |
-| 获取预构建应用镜像 | 在[最新版本页](https://github.com/W205614/DeepResearch/releases/latest)核对三个 Packages 的 digest，并将 `DEEPRESEARCH_PACKAGE_VERSION` 显式设为所选 Tag | Git、Python 3.11+、Docker Linux/amd64、Compose v2 |
-| 从固定源码构建 | 检出所选的 [Release Tag](https://github.com/W205614/DeepResearch/releases)，使用该 Tag 的构建配方和下方命令 | 同上，Java 和 Node 由 Docker 构建 |
+| 获取预构建应用镜像 | [v0.1.6 快速上手](#v016-快速上手)，应用镜像的身份见[发布页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.6) | Git、Python 3.11.5 至 3.13、uv、Docker Linux/amd64、Compose v2 |
+| 从固定源码构建 | 检出 `v0.1.6` 并使用[快速上手](#v016-快速上手)末尾的源码启动命令 | 同上，Java 和 Node 由 Docker 构建 |
 | 修改当前开发源码 | `main` + Python 容器热更新，或独立组件开发检查；[开发指南](CONTRIBUTING.md#开发环境) | 完整开发检查另需 Python／uv、JDK 21／Maven、Node.js 22／npm |
 
 三个应用镜像不包含完整依赖栈。`v0.1.5` 使用受控的 MinIO／Grafana 本地源码入口，并按该 Tag 配方获取或构建其他依赖；首次安装需要网络与构建时间，CI 缓存提速不代表首次安装无需编译。对应源码为引用补充包，仍需既有固定输入，不是完全离线安装包。[依赖获取说明](docs/source-release.md#运行依赖如何获取)及[镜像手册](docs/container-packages.md)保留各自版本边界。支持的平台为 Linux/amd64；Windows 使用 Docker Desktop 的 Linux 容器，未声称 arm64 已验收。网络下载、外部账号和模型调用额度由使用者准备。
@@ -148,7 +179,8 @@ Java 管理公开接口、权限、任务准入、Outbox 和正式报告。Pytho
 
 | 对象 | 固定来源 | 获取与对应材料 |
 | --- | --- | --- |
-| 正式 `v0.1.5` | 源码与镜像分发来源 `e6799f73b00144b9ef16b71dedac2759a5cf54af` | [Release 与精确 digest](https://github.com/W205614/DeepResearch/releases/tag/v0.1.5) · [CI：4 项成功](https://github.com/W205614/DeepResearch/actions/runs/43718297000) · [Security：22 项成功](https://github.com/W205614/DeepResearch/actions/runs/43718297049) · [Packages 发布成功](https://github.com/W205614/DeepResearch/actions/runs/43731414135) |
+| 正式 `v0.1.6` | 源码与镜像分发来源 `758b48f0a6e1111d6703a86f7dd206d6f07261ba` | [Release 与精确 digest](https://github.com/W205614/DeepResearch/releases/tag/v0.1.6) · [CI 4 项成功](https://github.com/W205614/DeepResearch/actions/runs/44994158344) · [Security 22 项成功](https://github.com/W205614/DeepResearch/actions/runs/44994158254) · [Packages 发布成功](https://github.com/W205614/DeepResearch/actions/runs/45000289391) |
+| 历史 `v0.1.5` | 源码与镜像分发来源 `e6799f73b00144b9ef16b71dedac2759a5cf54af` | [Release 与精确 digest](https://github.com/W205614/DeepResearch/releases/tag/v0.1.5) · [CI：4 项成功](https://github.com/W205614/DeepResearch/actions/runs/43718297000) · [Security：22 项成功](https://github.com/W205614/DeepResearch/actions/runs/43718297049) · [Packages 发布成功](https://github.com/W205614/DeepResearch/actions/runs/43731414135) |
 | 三个 `v0.1.5` Packages | Agent 更新研究提示词及 SoupSieve 4.1；Backend／Web 保留已验收应用运行字节，更新分发材料与源码指纹 | 完整匿名拉取通过；Agent 原始扫描 92 条、Backend 完整 Grype 3 条 MEDIUM、Web 原始 0，精确门禁通过；不称所有依赖零漏洞，见本版附件 |
 | 历史 `v0.1.4` | 源码与镜像分发来源 `0b613f1386bcd7067cb54e236db6e29510c44b16` | [Release 与精确 digest](https://github.com/W205614/DeepResearch/releases/tag/v0.1.4) · [Security：22 项成功](https://github.com/W205614/DeepResearch/actions/runs/43437807857)；当时按用户要求豁免 CI，历史失败及取消保留 |
 | 三个 `v0.1.4` Packages | Agent 修复自然资料归因；Backend 包含原生安全修补；Web 复用已验收内容 | [Agent](https://github.com/users/W205614/packages/container/package/deepresearch-agent) · [Backend](https://github.com/users/W205614/packages/container/package/deepresearch-backend) · [Web](https://github.com/users/W205614/packages/container/package/deepresearch-web)；实际镜像与本地停止替换分别记录 |
