@@ -1,0 +1,52 @@
+--- a/posix/glob.c
++++ b/posix/glob.c
+@@ -1260,13 +1260,10 @@
+     {
+       size_t eltlen = strlen (array[i]) + 1;
+       char *new = malloc (dirlen + 1 + eltlen);
+       if (new == NULL)
+-        {
+-          while (i > 0)
+-            free (array[--i]);
+-          return 1;
+-        }
++        /* The caller releases every entry in the result vector.  */
++        return 1;
+ 
+       {
+         char *endp = mempcpy (new, dirname, dirlen);
+         *endp++ = dirsep_char;
+--- a/iconvdata/ibm1364.c
++++ b/iconvdata/ibm1364.c
+@@ -245,9 +245,9 @@
+     const struct combine *cmbp = UCS4_COMB_TO_DB;			      \
+     while (cmbp->res1 < ch)						      \
+       ++cmbp;								      \
+     /* XXX if last char is beginning of combining store in state */	      \
+-    if (cmbp->res1 == ch && inptr + 4 < inend)				      \
++    if (cmbp->res1 == ch && inend - inptr >= 8)				      \
+       {									      \
+ 	/* See if input is part of a combined character.  */		      \
+ 	uint32_t ch_next = get32 (inptr + 4);				      \
+ 	while (cmbp->res2 != ch_next)					      \
+--- a/iconvdata/uhc.c
++++ b/iconvdata/uhc.c
+@@ -3132,15 +3132,17 @@
+ 	    inptr += 2;							      \
+ 	  }								      \
+ 	else								      \
+ 	  {								      \
+-	    ch = ksc5601_to_ucs4 (&inptr, 2, 0x80);			      \
++	    const unsigned char *next = inptr;			      \
++	    ch = ksc5601_to_ucs4 (&next, 2, 0x80);			      \
+ 	    if (__builtin_expect (ch == __UNKNOWN_10646_CHAR, 0)	      \
+ 		|| __builtin_expect (ch == 0x327e, 0))			      \
+ 	      {								      \
+ 		/* Illegal.  */						      \
+ 		STANDARD_FROM_LOOP_ERR_HANDLER (2);			      \
+ 	      }								      \
++	    inptr = next;					      \
+ 	  }								      \
+       }									      \
+ 									      \
+     put32 (outptr, ch);							      \

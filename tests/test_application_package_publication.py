@@ -256,18 +256,17 @@ def test_backend_native_gate_binds_the_same_loaded_archive_and_propagates_failur
 
     def native(command, **kwargs):
         calls.append(command)
-        assert command[:2] == [sys.executable, str(publication.ROOT / 'scripts/check_native_jvm.py')]
+        assert command[:2] == [sys.executable, str(publication.ROOT / 'scripts/check_backend_runtime_20261121.py')]
         assert command[command.index('--image') + 1] == image['archive_tag']
-        assert command[command.index('--profile') + 1] == 'business-java'
         assert kwargs['env'] == {'FIXTURE': 'no-secret'} and 'shell' not in kwargs
         if failure == 'timeout':
             raise subprocess.TimeoutExpired(command, 1200, output=b'partial stdout', stderr=b'partial stderr')
         directory = Path(command[command.index('--output-dir') + 1])
         directory.mkdir()
-        summary = {'passed': True, 'actual_image_id': inspection['Id'],
-                   'backend_busybox': {'passed': True, 'all_severity_technical_clear': True}}
+        summary = {'passed': True, 'actual_image_id': inspection['Id'], 'raw_report_modified': False,
+                   'runtime': {'raw_findings': 2, 'verified_fixed': 2, 'unresolved': 0}}
         if failure == 'missing-busybox':
-            summary.pop('backend_busybox')
+            summary.pop('runtime')
         if failure == 'different-image':
             summary['actual_image_id'] = 'sha256:' + 'c' * 64
         (directory / 'summary.json').write_text(json.dumps(summary))

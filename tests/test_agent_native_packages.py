@@ -231,10 +231,11 @@ def test_required_agent_workflow_keeps_complete_scan_and_final_gate():
     path = Path(__file__).parents[1] / '.github/workflows/security.yml'
     steps = yaml.safe_load(path.read_text(encoding='utf-8'))['jobs']['application-image-scan']['steps']
     full = [s for s in steps if 'trivy image' in s.get('run', '') and s.get('if') == "matrix.name == 'agent'"]
-    final = [s for s in steps if 'scripts/check_agent_openssl_20261121.py' in s.get('run', '')]
+    final = [s for s in steps if 'scripts/check_agent_full_scope.py' in s.get('run', '')]
     assert len(full) == len(final) == 1 and steps.index(full[0]) < steps.index(final[0])
     assert '--list-all-pkgs' in full[0]['run'] and '--scanners vuln,secret' in full[0]['run']
     assert '--severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL' in full[0]['run']
     assert final[0].get('if') == "matrix.name == 'agent'" and not final[0].get('continue-on-error')
+    assert '--review-profile agent-native-backports-20261122' in final[0]['run']
     assert not any(s.get('continue-on-error') for s in full)
     json.dumps(gate.load_lock())

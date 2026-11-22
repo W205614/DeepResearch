@@ -104,10 +104,10 @@ def verify_backend_native(image: dict, output: Path, environment: dict) -> dict:
     if 'sha256:' + hashlib.sha256(actual_config).hexdigest() != image['image_id']:
         raise ValueError('Loaded Backend differs from the accepted portable archive config')
     directory = output / 'native-backend'
-    command = [sys.executable, str(ROOT / 'scripts/check_native_jvm.py'), '--image', image['archive_tag'],
-               '--profile', 'business-java', '--output-dir', str(directory)]
+    verifier = ROOT / 'scripts/check_backend_runtime_20261121.py'
+    command = [sys.executable, str(verifier), '--image', image['archive_tag'], '--output-dir', str(directory)]
     receipt = {'passed': False, 'command': command, 'accepted_image_id': image['image_id'],
-               'actual_engine_id': inspection['Id'], 'native_consumer_sha256': file_hash(ROOT / 'scripts/check_native_jvm.py')}
+               'actual_engine_id': inspection['Id'], 'native_consumer_sha256': file_hash(verifier)}
     path = output / 'native-backend-evidence.json'
     path.write_text(json.dumps(receipt, indent=2) + '\n', encoding='utf-8')
     try:
@@ -123,9 +123,11 @@ def verify_backend_native(image: dict, output: Path, environment: dict) -> dict:
         if process.returncode != 0:
             raise ValueError('Backend native/full gate failed; no publication is authorized')
         summary = json.loads((directory / 'summary.json').read_bytes())
+        runtime = summary.get('runtime', {})
         if (summary.get('passed') is not True or summary.get('actual_image_id') != inspection['Id']
-                or summary.get('backend_busybox', {}).get('passed') is not True
-                or summary['backend_busybox'].get('all_severity_technical_clear') is not True):
+                or runtime.get('unresolved') != 0 or 'raw_findings' not in runtime
+                or runtime.get('verified_fixed') != runtime['raw_findings']
+                or summary.get('raw_report_modified') is not False):
             raise ValueError('Backend native/full evidence is incomplete or belongs to another image')
         after, = json.loads(subprocess.check_output(['docker', 'image', 'inspect', image['archive_tag']]))
         if any(after[key] != inspection[key] for key in ('Id', 'RootFS', 'Config')):

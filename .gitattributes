@@ -20,6 +20,8 @@ deployment/security/jre-manifests/*.json -text whitespace=cr-at-eol
 deployment/vendors/keycloak/*.json -text whitespace=cr-at-eol
 deployment/vendors/keycloak/*.sig -text
 deployment/vendors/milvus/kerberos-20261122/*.asc -text -whitespace
+deployment/vendors/agent-native-20261122/*.patch text eol=lf -whitespace
+deployment/vendors/agent-native-20261122/source.lock.json text eol=lf
 
 # Original independent Grafana authorization and factual evidence bytes are immutable.
 deployment/security/grafana-fixed-evidence/** -text whitespace=cr-at-eol

@@ -48,10 +48,13 @@ SOUP41_PROFILE_SHA256 = "deda4e1f56fc89070525c18e3ad0e433314ea986f8980f0cce24c1a
 GAP_PROFILE_NAME = "agent-gap-coverage-20261115"
 GAP_PROFILE_PATH = ROOT / "deployment/security/agent-gap-coverage-20261115-profile.json"
 GAP_PROFILE_SHA256 = "022d9d00981867e926fd6212eb6b59277c0a0147c78b05f4adf7080960b3098c"
+NATIVE_BACKPORT_PROFILE_NAME = "agent-native-backports-20261122"
+NATIVE_BACKPORT_PROFILE_PATH = ROOT / "deployment/security/agent-native-backports-20261122-profile.json"
+NATIVE_BACKPORT_PROFILE_SHA256 = "d92b952134304ced844d23051efcfae5299aa2f3b9e3dc172a7aca6324cf3cde"
 PROFILE_NAMES = (
     PROFILE_NAME, ORDINARY_PROFILE_NAME, PROVIDER_PROFILE_NAME, REFERENCE_PROFILE_NAME,
     STRUCTURED_PROFILE_NAME, CURRENT_PROFILE_NAME, PREVIOUS_SOUP_PROFILE_NAME, SOUP_PROFILE_NAME,
-    SOUP41_PROFILE_NAME, GAP_PROFILE_NAME,
+    SOUP41_PROFILE_NAME, GAP_PROFILE_NAME, NATIVE_BACKPORT_PROFILE_NAME,
 )
 
 
@@ -81,6 +84,8 @@ def profile_identity(name):
         return SOUP41_PROFILE_PATH, SOUP41_PROFILE_SHA256
     if name == GAP_PROFILE_NAME:
         return GAP_PROFILE_PATH, GAP_PROFILE_SHA256
+    if name == NATIVE_BACKPORT_PROFILE_NAME:
+        return NATIVE_BACKPORT_PROFILE_PATH, NATIVE_BACKPORT_PROFILE_SHA256
     if name == PREVIOUS_SOUP_PROFILE_NAME:
         return PREVIOUS_SOUP_PROFILE_PATH, PREVIOUS_SOUP_PROFILE_SHA256
     require(name == CURRENT_PROFILE_NAME, "Unknown exact technical review profile")
@@ -293,7 +298,7 @@ def adjudicate(report, inspection, runtime, profile, *, actual_config_raw, scan_
     require(
         runtime["official_glibc_items"] == len(profile["official_glibc_payload"])
         and not runtime["official_glibc_mismatches"],
-        "Official fixed libc/gconv payload mismatch",
+        "The reviewed libc/gconv payload differs",
     )
     require(
         not runtime["locale_trees"] and runtime["lc_messages"] in {"C", "POSIX"},
@@ -406,6 +411,7 @@ def main():
     parser.add_argument("--scan-source", choices=["docker", "archive"], default="docker")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    args.output.parent.mkdir(parents=True, exist_ok=True)
     profile = load_profile(args.review_profile)
     inspection = json.loads(
         subprocess.run(

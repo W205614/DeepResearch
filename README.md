@@ -59,7 +59,7 @@
 
 [正式审核画面](docs/images/report-review.png)、[手机工作台](docs/images/workspace-mobile.png)及[原工作台截图](docs/images/workspace.png)展示其他操作。这些旧截图使用固定资料和合成账号，不是本轮新模型验收；来源见[素材说明](docs/images/README.md)。
 
-正式版本为 [`v0.1.5`](https://github.com/W205614/DeepResearch/releases/tag/v0.1.5)，工程与镜像分发来源为 `e6799f73b00144b9ef16b71dedac2759a5cf54af`。同提交 CI 的 4 项检查、Security 的 22 项检查及 Packages 发布均成功。三个应用镜像已实际匿名完整拉取，核对 manifest、config、各层及实际 Docker 拉取身份；29 份公开附件完整下载核验通过。
+[`v0.1.5` 的交付记录](https://github.com/W205614/DeepResearch/releases/tag/v0.1.5)绑定工程与镜像分发提交 `e6799f73b00144b9ef16b71dedac2759a5cf54af`。同提交 CI 的 4 项检查、Security 的 22 项检查及 Packages 发布均成功。三个应用镜像已实际匿名完整拉取，核对 manifest、config、各层及实际 Docker 拉取身份。29 份公开附件完整下载核验通过。
 
 2026-11-16 本机日常环境更新 21 个角色、保留另 4 个角色的身份与配置；整套启动、只读健康与权限检查、5 个运行角色的源码指纹核对通过。14 张业务表共 572 行的逐行摘要一致，16 个卷及 9 个网络引用保持，验收后 25 个容器全部停止。此范围不代替异机恢复、生产高可用或完整第三方基础栈二进制分发验收。
 
@@ -106,13 +106,13 @@ Java 管理公开接口、权限、任务准入、Outbox 和正式报告。Pytho
 
 | 目的 | 来源与入口 | 需要的工具 |
 | --- | --- | --- |
-| 获取预构建应用镜像 | 公开 `v0.1.5`，三个 Packages；[本版镜像、digest 与步骤](https://github.com/W205614/DeepResearch/releases/tag/v0.1.5) | Git、Python 3.11+、Docker Linux/amd64、Compose v2 |
-| 从固定源码构建 | Tag `v0.1.5`，工程提交 `e6799f73b00144b9ef16b71dedac2759a5cf54af`；使用下方命令及该 Tag 配方 | 同上；Java／Node 由 Docker 构建 |
+| 获取预构建应用镜像 | 在[最新版本页](https://github.com/W205614/DeepResearch/releases/latest)核对三个 Packages 的 digest，并将 `DEEPRESEARCH_PACKAGE_VERSION` 显式设为所选 Tag | Git、Python 3.11+、Docker Linux/amd64、Compose v2 |
+| 从固定源码构建 | 检出所选的 [Release Tag](https://github.com/W205614/DeepResearch/releases)，使用该 Tag 的构建配方和下方命令 | 同上，Java 和 Node 由 Docker 构建 |
 | 修改当前开发源码 | `main` + Python 容器热更新，或独立组件开发检查；[开发指南](CONTRIBUTING.md#开发环境) | 完整开发检查另需 Python／uv、JDK 21／Maven、Node.js 22／npm |
 
 三个应用镜像不包含完整依赖栈。`v0.1.5` 使用受控的 MinIO／Grafana 本地源码入口，并按该 Tag 配方获取或构建其他依赖；首次安装需要网络与构建时间，CI 缓存提速不代表首次安装无需编译。对应源码为引用补充包，仍需既有固定输入，不是完全离线安装包。[依赖获取说明](docs/source-release.md#运行依赖如何获取)及[镜像手册](docs/container-packages.md)保留各自版本边界。支持的平台为 Linux/amd64；Windows 使用 Docker Desktop 的 Linux 容器，未声称 arm64 已验收。网络下载、外部账号和模型调用额度由使用者准备。
 
-从 `main` 构建时，`scripts/local.py start` 会先准备固定的 Silo 和 mcli，再构建 Alpine 存储镜像。日常 Compose 沿用 `/minio_data` 挂载，隔离组件测试使用 `/data`。构建结果供本地运行与 CI 使用，公开应用镜像仍按各版本页提供。
+从 `main` 构建时，`scripts/local.py start` 会先准备固定的 Silo 和 mcli，再构建 Alpine 存储镜像。日常 Compose 沿用 `/minio_data` 挂载，隔离组件测试使用 `/data`。Agent 从固定输入重新编译 glibc、libstdc++ 和 OpenSSL，[源码锁](deployment/vendors/agent-native-20261122/source.lock.json)记录归档摘要和补丁来源。Security 会用原始扫描的全部严重级别检查实际运行镜像。公开应用镜像按各版本页提供。
 
 同一启动入口为 Milvus 准备固定的 Go 和 Kafka 组件，再构建 Ubuntu 24.04 运行层。加上 `--observability` 会构建 Grafana 13.2.6 与仓库已核验的 13 个内置后端。已有部署可继续通过原 Compose 覆盖文件固定各服务的镜像摘要。
 
@@ -177,7 +177,7 @@ mvn -B test -f business-backend/pom.xml
 npm test --prefix frontend -- --run
 ```
 
-集成测试使用隔离依赖，真实供应商评测按独立预算和账本执行。本次发布按用户要求跳过 CI 门槛，保留失败和取消记录；正常后续提交的常规 CI 包括 Python、Java、前端、真实组件恢复演练与编排浏览器测试；跳过项不算通过，不用历史计数替代当前结果。
+集成测试使用隔离依赖，真实供应商评测按独立预算和账本执行。常规 CI 包括 Python、Java、前端、真实组件恢复演练与编排浏览器测试。各版实际结果见对应版本页和工作流，失败、取消和跳过状态按原记录保留。
 
 | 现象 | 先检查 |
 | --- | --- |

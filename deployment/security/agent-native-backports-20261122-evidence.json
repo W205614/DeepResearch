@@ -1,0 +1,289 @@
+{
+  "schema": "deepresearch-agent-native-backports-review-v1",
+  "date": "2026-11-22",
+  "risk_acceptance": false,
+  "additional_evidence_files": [
+    {
+      "path": "Dockerfile",
+      "sha256": "38eb405b88107886ba8e6c9191f25e3f7a5bd525a2f5906bbbc6fd03dea5f6a6"
+    },
+    {
+      "path": "deployment/vendors/agent-native-20261122/source.lock.json",
+      "sha256": "c7dd6d4df3ef3fdc9d8ecc5c2b54313098031e60faa8a369419be2bc92237f50"
+    },
+    {
+      "path": "deployment/vendors/agent-native-20261122/CVE-2026-84786.patch",
+      "sha256": "9c0a23afa0b674a2507cd8f4ff8e6dd3bc5f6d53649cf636c6a56e17af485c37"
+    },
+    {
+      "path": "deployment/vendors/agent-native-20261122/CVE-2026-95690.patch",
+      "sha256": "132ed8a61a5e9d2c6f16c2a0c6bcf6d0da53d3859dd82d3642ffa591cca61503"
+    },
+    {
+      "path": "deployment/vendors/agent-native-20261122/gcc-filebuf-production-only.patch",
+      "sha256": "47823358764d185e0627d6c310184cf0770756a2263cbdcc2c044a82a0d38e84"
+    },
+    {
+      "path": "deployment/vendors/agent-native-20261122/glibc-iso2022-production-only.patch",
+      "sha256": "6b0cde363ccf8dfb51d3fe75bafaef8cdb002df8d2a7adf7e70adc48aeb59748"
+    },
+    {
+      "path": "deployment/vendors/agent-native-20261122/glibc-local-production-only.patch",
+      "sha256": "f6ec85f16fdf638b61830b9b0da8fc5b8393124e571740e9a4a920db6536b93d"
+    },
+    {
+      "path": "deployment/security/agent-gap-coverage-20261115-profile.json",
+      "sha256": "022d9d00981867e926fd6212eb6b59277c0a0147c78b05f4adf7080960b3098c"
+    },
+    {
+      "path": "deployment/security/agent-gap-coverage-20261115-review.json",
+      "sha256": "aae1fae2fd66dfc2418e5163eab7e0e4501cc0409317ca0ef69c1943a08c01cf"
+    },
+    {
+      "path": "deployment/security/agent-glibc-runtime-20261110.json",
+      "sha256": "96eb6108bab0e1e270bec93655ff600f7ac198d852093b2b5af2448a643eea2e"
+    },
+    {
+      "path": "deployment/vendors/python311/build-python.sh",
+      "sha256": "f7c0dd5450e406913daced1da4bdb500f721aef319898f9960886199f51e0c7e"
+    },
+    {
+      "path": "deployment/vendors/python311/source-lock.json",
+      "sha256": "9c2fea799842505a909262e7420b9554a8509875f69826add131e5583c3bda0e"
+    },
+    {
+      "path": "scripts/prepare_python_runtime.py",
+      "sha256": "08a44b72f09e03e7ef3bd3b1fd571a9361bd81a7abf8814a980866d54caa7e80"
+    },
+    {
+      "path": "uv.lock",
+      "sha256": "5320e9772d9c50008ec152c23fdd406fa9a739cdb5feca42e68649a898b53bc1"
+    }
+  ],
+  "source_review": {
+    "glibc": "Debian 2.43-7 via dpkg-source, which applies the full Debian patch set. Replace exactly the compiled libc, loader and four gconv modules. The remainder of the 290-entry official glibc payload is byte/mode/symlink identical.",
+    "libstdcxx": "GCC 14.2.0 source from pinned Debian archives, building the C++ runtime with POSIX threads. GNU floating from_chars remains absent from current ELF consumers. The static header advisories involve code not in the application; rebuilding libstdc++ does not rebuild those consumers.",
+    "openssl": "OpenSSL 3.5 development source at the fixed branch commit. Official 3.5 fix commits are ancestors of this source revision. Two pending maintainer fixes are applied as exact production-only backports. The distroless Debian package version remains the original scanner inventory identity.",
+    "prior_application_evidence": "Previous exact Agent review is retained for unchanged dispositions. Current application delta changes research supplements, coverage, budget tracking and SQL migrations. It introduces no FFI, affected C++ call route, optional locale tree or zipfile extension. SQLite payload and runtime behavior are independently checked."
+  },
+  "build": {
+    "platform": "linux/amd64",
+    "engine_image": "sha256:9e8ba470675910210d6bd479beb3ee39e04bdac3b8fbeb9e9a7a4879fa2f1e8e"
+  },
+  "raw_scan": {
+    "sha256": "e1f33ebb977762efe7ad36cf1bd5927ed02c350e0e5b8635d70056d41ebdac8e",
+    "raw_findings": 109,
+    "packages": 125,
+    "previous_findings": 92,
+    "severity_transitions": [
+      [
+        "CVE-2026-100290",
+        "libc-gconv-modules-extra",
+        "UNKNOWN",
+        "LOW"
+      ],
+      [
+        "CVE-2026-100290",
+        "libc6",
+        "UNKNOWN",
+        "LOW"
+      ],
+      [
+        "CVE-2026-115819",
+        "libc-gconv-modules-extra",
+        "UNKNOWN",
+        "MEDIUM"
+      ],
+      [
+        "CVE-2026-115819",
+        "libc6",
+        "UNKNOWN",
+        "MEDIUM"
+      ],
+      [
+        "CVE-2026-88822",
+        "libssl3t64",
+        "MEDIUM",
+        "LOW"
+      ],
+      [
+        "CVE-2026-88823",
+        "libssl3t64",
+        "MEDIUM",
+        "LOW"
+      ]
+    ],
+    "raw_report_modified": false
+  },
+  "compatibility": {
+    "native": {
+      "image": "sha256:9e8ba470675910210d6bd479beb3ee39e04bdac3b8fbeb9e9a7a4879fa2f1e8e",
+      "normal-libc": {
+        "normal_glob": true,
+        "encoder_roundtrips": 4
+      },
+      "normal-libstdcxx": {
+        "narrow_stream": true,
+        "wide_stream": true
+      },
+      "tls": {
+        "versions": [
+          "TLSv1.2",
+          "TLSv1.3"
+        ],
+        "loaded_libraries": [
+          "/usr/lib/x86_64-linux-gnu/libcrypto.so.3",
+          "/usr/lib/x86_64-linux-gnu/libssl.so.3"
+        ],
+        "openssl": "OpenSSL 3.5.10-dev "
+      }
+    },
+    "http": {
+      "image": "sha256:9e8ba470675910210d6bd479beb3ee39e04bdac3b8fbeb9e9a7a4879fa2f1e8e",
+      "default_application_command": true,
+      "ready": true,
+      "anonymous_workspace_status": 401,
+      "authenticated_workspace_create_and_list": true,
+      "authenticated_capabilities": true
+    },
+    "whole_elf_delta": {
+      "image": "sha256:9e8ba470675910210d6bd479beb3ee39e04bdac3b8fbeb9e9a7a4879fa2f1e8e",
+      "baseline_image": "deepresearch-repaired-agent:20261121",
+      "before_elfs": 515,
+      "after_elfs": 515,
+      "removed": [],
+      "added": [],
+      "changed": [
+        "usr/lib/x86_64-linux-gnu/gconv/IBM1390.so",
+        "usr/lib/x86_64-linux-gnu/gconv/IBM1399.so",
+        "usr/lib/x86_64-linux-gnu/gconv/ISO-2022-CN-EXT.so",
+        "usr/lib/x86_64-linux-gnu/gconv/UHC.so",
+        "usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+        "usr/lib/x86_64-linux-gnu/libc.so.6",
+        "usr/lib/x86_64-linux-gnu/libcrypto.so.3",
+        "usr/lib/x86_64-linux-gnu/libssl.so.3",
+        "usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33",
+        "usr/local/lib/libpython3.11.so.1.0",
+        "usr/local/lib/python3.11/config-3.11-x86_64-linux-gnu/python.o",
+        "usr/local/lib/python3.11/lib-dynload/_bisect.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_blake2.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_decimal.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_gdbm.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_heapq.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_pickle.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_random.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_sha512.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/_struct.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/math.cpython-311-x86_64-linux-gnu.so",
+        "usr/local/lib/python3.11/lib-dynload/pyexpat.cpython-311-x86_64-linux-gnu.so"
+      ],
+      "gnu_floating_from_chars_consumers": [],
+      "libstdcxx_imports_posix_memalign": true,
+      "libstdcxx_imports_aligned_alloc": false,
+      "compatible": true
+    },
+    "exported_symbol_and_soname_comparison": {
+      "libc.so.6": {
+        "before_symbols": 3168,
+        "after_symbols": 3168,
+        "missing": [],
+        "soname_before": [
+          "libc.so.6"
+        ],
+        "soname_after": [
+          "libc.so.6"
+        ],
+        "before_sha256": "47178713f5bda59f2ea8240a56971de4dc0b3a6cb71e996e2782d9a59746bfef",
+        "after_sha256": "c48ea13d37e53b53b8438a534d24b7f8ffab4812f714a895f38238140e2dbd95"
+      },
+      "ld-linux-x86-64.so.2": {
+        "before_symbols": 38,
+        "after_symbols": 38,
+        "missing": [],
+        "soname_before": [
+          "ld-linux-x86-64.so.2"
+        ],
+        "soname_after": [
+          "ld-linux-x86-64.so.2"
+        ],
+        "before_sha256": "ecf6714e474183ea3ab6789ff1dfbe7edccc03bdb1f5eeb188bc1d6f74aec6c7",
+        "after_sha256": "7b7cb03071de14f514d16b7e5a381326e844c3c22f9c4f48e43cfa72ea3cadbd"
+      },
+      "gconv/UHC.so": {
+        "before_symbols": 2,
+        "after_symbols": 2,
+        "missing": [],
+        "soname_before": [],
+        "soname_after": [],
+        "before_sha256": "f18450c97789f41a643b2b175a139446c616c1174ef650167133e7d6d56a27b0",
+        "after_sha256": "a70a9abb986d30b5f42838e2e47c9f1af81ebafee5bacabf73a96cfb80e4b636"
+      },
+      "gconv/ISO-2022-CN-EXT.so": {
+        "before_symbols": 2,
+        "after_symbols": 2,
+        "missing": [],
+        "soname_before": [],
+        "soname_after": [],
+        "before_sha256": "c834b8d98062a4c6c58b707f5e07e9b4e8363afc8ec5fc46cb9be950c2b7db02",
+        "after_sha256": "f8318ba8091e06fbbbef28254ac6dde21d0624349f8fb6b9157ba8138a840766"
+      },
+      "gconv/IBM1390.so": {
+        "before_symbols": 2,
+        "after_symbols": 2,
+        "missing": [],
+        "soname_before": [],
+        "soname_after": [],
+        "before_sha256": "76cf40fac042dfd0e62c90b21bb257c29c61924ddb2bd55b94728daadaa7175a",
+        "after_sha256": "8a90a98a951b26bc90cebe586ace28930816b5b3dd8865de438eab77ad892e14"
+      },
+      "gconv/IBM1399.so": {
+        "before_symbols": 2,
+        "after_symbols": 2,
+        "missing": [],
+        "soname_before": [],
+        "soname_after": [],
+        "before_sha256": "bda95c908e1689418f247976a56ac9ea28d325b3224d01b73093d18f798c03cb",
+        "after_sha256": "1786826eb811ff648bdd2d112509a811c5a77dbad318269c109df02480cb2219"
+      },
+      "libstdc++.so.6.0.33": {
+        "before_symbols": 6086,
+        "after_symbols": 6371,
+        "missing": [],
+        "soname_before": [
+          "libstdc++.so.6"
+        ],
+        "soname_after": [
+          "libstdc++.so.6"
+        ],
+        "before_sha256": "972bb2a18b71140dab0240f8a1f68ab3fb1d56bcd4c4f824a91b70888faf5a00",
+        "after_sha256": "194139bf3d4bb234cdbf8c391c15f424f774e441b8eb39e9f796ba9231671ca8"
+      },
+      "libssl.so.3": {
+        "before_symbols": 608,
+        "after_symbols": 608,
+        "missing": [],
+        "soname_before": [
+          "libssl.so.3"
+        ],
+        "soname_after": [
+          "libssl.so.3"
+        ],
+        "before_sha256": "22fbb52bacfd82079eaa8fe3dd586ebdbc97e816e8dc62a931237d3a29c712e3",
+        "after_sha256": "7cc53c439569122635a47a837ba8993531a8f36e99a57e7cb02c90459c108956"
+      },
+      "libcrypto.so.3": {
+        "before_symbols": 5882,
+        "after_symbols": 5882,
+        "missing": [],
+        "soname_before": [
+          "libcrypto.so.3"
+        ],
+        "soname_after": [
+          "libcrypto.so.3"
+        ],
+        "before_sha256": "6a94ca2354f32b1164713566608161eaa60e185bf4de2bc0210af721cb656953",
+        "after_sha256": "02431ad2f71173b0ad5d89865f052e7daa4600c18d98b7d0d2294ea09b91d34a"
+      }
+    }
+  }
+}

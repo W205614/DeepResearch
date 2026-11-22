@@ -1,0 +1,60 @@
+{
+  "schema": "deepresearch-agent-native-backports-v1",
+  "platform": "linux/amd64",
+  "glibc": {
+    "debian_version": "2.43-7",
+    "debian_source_lock": "deployment/security/agent-glibc-runtime-20261110.json",
+    "patches": [
+      {
+        "file": "glibc-iso2022-production-only.patch",
+        "sha256": "6b0cde363ccf8dfb51d3fe75bafaef8cdb002df8d2a7adf7e70adc48aeb59748",
+        "advisories": ["CVE-2026-121758"],
+        "upstream": "https://sourceware.org/git/?p=glibc.git;a=commit;h=170ee485fa89b95c3bb7d5606c9812c6c100c9be"
+      },
+      {
+        "file": "glibc-local-production-only.patch",
+        "sha256": "f6ec85f16fdf638b61830b9b0da8fc5b8393124e571740e9a4a920db6536b93d",
+        "advisories": ["CVE-2026-121757", "CVE-2026-124024", "CVE-2026-126765"],
+        "origin": "DeepResearch maintenance patches for the exact Debian source"
+      }
+    ]
+  },
+  "libstdcxx": {
+    "debian_version": "14.2.0-19",
+    "source_url": "https://ftp.debian.org/debian/pool/main/g/gcc-14/",
+    "source_archives_sha256": {
+      "gcc-14_14.2.0-19.dsc": "7db1e202cce66617e9134a662c877a3a773de5b612fd52179815877e0ecfb847",
+      "gcc-14_14.2.0.orig.tar.gz": "e162a5ef3f0077ecae598c6556908d2ab80841532df3398072a96a6df6e6aa29",
+      "gcc-14_14.2.0-19.debian.tar.xz": "31cbab4bafa48aa1c540497bd8098cbcf98e673778f927651ed944709f687781"
+    },
+    "patches": [
+      {
+        "file": "gcc-filebuf-production-only.patch",
+        "sha256": "47823358764d185e0627d6c310184cf0770756a2263cbdcc2c044a82a0d38e84",
+        "advisories": ["CVE-2026-125709"],
+        "upstream": "https://gcc.gnu.org/cgit/gcc/commit/?id=68b1b9056c70acb31f2964963b51c480ff820602"
+      }
+    ]
+  },
+  "openssl": {
+    "upstream_revision": "f3acb0a3328046741479482c51cec815839e1b05",
+    "source_url": "https://codeload.github.com/openssl/openssl/legacy.tar.gz/f3acb0a3328046741479482c51cec815839e1b05",
+    "source_sha256": "e0fb736a48c483b655997d3c4c18a8c9991da03923af1ea4abd4ee883d93c59b",
+    "patches": [
+      {
+        "file": "CVE-2026-84786.patch",
+        "sha256": "9c0a23afa0b674a2507cd8f4ff8e6dd3bc5f6d53649cf636c6a56e17af485c37",
+        "advisories": ["CVE-2026-84786"],
+        "upstream": "https://github.com/openssl/openssl/pull/33634",
+        "upstream_review_head": "d54155a80a4fa8d2ebc2a5a850e7ea8270818217"
+      },
+      {
+        "file": "CVE-2026-95690.patch",
+        "sha256": "132ed8a61a5e9d2c6f16c2a0c6bcf6d0da53d3859dd82d3642ffa591cca61503",
+        "advisories": ["CVE-2026-95690"],
+        "upstream": "https://github.com/openssl/openssl/pull/33729",
+        "upstream_review_head": "dc0efc6bda4fb374e2d19084924b8321e98643ee"
+      }
+    ]
+  }
+}

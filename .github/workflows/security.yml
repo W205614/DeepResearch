@@ -397,14 +397,16 @@ jobs:
       - name: Preserve complete fresh agent scan before checking fixed native bytes
         if: matrix.name == 'agent'
         run: >-
-          trivy image --scanners vuln,secret --list-all-pkgs
+          trivy image --image-src docker --ignorefile /dev/null --ignore-unfixed=false
+          --scanners vuln,secret --list-all-pkgs
           --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --exit-code 0 --timeout 10m
           --format json --output application-image.json deepresearch-scan-agent:ci
-      - name: Keep the HIGH gate and verify loaded SQLite, zlib and OpenSSL libraries
+      - name: Verify every Agent finding and the complete rebuilt runtime
         if: matrix.name == 'agent'
         run: >-
-          python scripts/check_agent_openssl_20261121.py --image deepresearch-scan-agent:ci
-          --scan application-image.json --scanner-exit-code 0 --output-dir .cache/eval/agent-native
+          python scripts/check_agent_full_scope.py --image deepresearch-scan-agent:ci
+          --report application-image.json --review-profile agent-native-backports-20261122
+          --output .cache/eval/agent-native/verdict.json
       - name: Preserve complete fresh Tempo findings for exact technical review
         if: matrix.name == 'tempo'
         run: >-
