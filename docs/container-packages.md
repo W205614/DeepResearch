@@ -2,7 +2,23 @@
 
 应用制品分成三个 Linux/amd64 包。Agent 包还用于 Worker、资料 Worker、迁移、数据库初始化、容量指标和告警中继；角色命令由原 Compose 服务配置决定。
 
-当前正式版本为 [`v0.1.4`](https://github.com/W205614/DeepResearch/releases/tag/v0.1.4)，工程与镜像分发来源固定为 `0b613f1386bcd7067cb54e236db6e29510c44b16`。main 的文档／CI 后续修订不改变已发布 Tag、镜像或原验收记录。2026-11-12 的候选失败见[历史材料](evidence/release-v014-20261112/README.md)，不能代替后续正式交付状态。
+## 正式 v0.1.6
+
+[发布页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.6)固定源码及应用镜像分发提交为 `758b48f0a6e1111d6703a86f7dd206d6f07261ba`。发布时三份 Linux/amd64 镜像均已匿名拉取并核对 OCI 配置与各层摘要，拉取后的镜像通过四项隔离浏览器测试，覆盖登录、权限、工作区导出和 Java 业务流程。
+
+| 公开应用 | 固定镜像引用 |
+| --- | --- |
+| [Agent](https://github.com/users/W205614/packages/container/package/deepresearch-agent) | `ghcr.io/w205614/deepresearch-agent@sha256:a72e03acbb5b10ab2453a53e46f364b55bb5552f17ceb3df42b89636a4a4285b` |
+| [Backend](https://github.com/users/W205614/packages/container/package/deepresearch-backend) | `ghcr.io/w205614/deepresearch-backend@sha256:e329231eca2d324a03f92ee8204680f199b7e6415bc94c20253815a96ebbe423` |
+| [Web](https://github.com/users/W205614/packages/container/package/deepresearch-web) | `ghcr.io/w205614/deepresearch-web@sha256:debae702274ea775a17673877282b1d97b7f5ed8ee5e9129ceb7cfe6b0a5d4d9` |
+
+### 2026-11-23 隔离回归
+
+在 Windows Docker Desktop 上使用上表三个固定镜像，配合已有依赖镜像和独立数据库运行核心栈。PostgreSQL 业务库的结构从 `0019_embedding_migrations` 迁移到 `0021_supplement_query`，一条合成旧研究和对应正式报告的原有字段、正文及引用通过升级前后摘要比对。
+
+[固定证据浏览器用例](../frontend/e2e/product-flow.e2e.ts)通过 1 项，验证了答题覆盖状态、引用查看、编辑检索词后定向补查、回看原研究、正式报告修订和独立审核。模型、嵌入和网页证据使用测试夹具，真实供应商请求为 0。真实模型、真实联网研究及从零构建整套依赖仍待单独验证。
+
+对应源码、许可与归档摘要见该版本附件 `source-receipt.json` 和 `publication-manifest.json`。以下版本段落保留各自的历史部署和验收事实。
 
 ## 正式 v0.1.4
 
@@ -24,7 +40,7 @@ MinIO／Silo 使用 `scripts/build_minio_os_20261113.py` 的固定原生依赖�
 
 ## 正式 v0.1.3
 
-以下保留历史版本记录，当前版本见上节。
+以下保留历史版本记录，当前版本见[正式 v0.1.6](#正式-v016)。
 
 正式 [v0.1.3](https://github.com/W205614/DeepResearch/releases/tag/v0.1.3) 的源码与分发提交为 `78a19df9dfa6f072af6ebe40ff99cf164d0c4ff8`，[CI](https://github.com/W205614/DeepResearch/actions/runs/42968387539)全部 4 项、[Security](https://github.com/W205614/DeepResearch/actions/runs/42968387608)全部 22 项成功。[Packages 工作流](https://github.com/W205614/DeepResearch/actions/runs/42977626649)实际发布成功，三个原有 GHCR 目标保持公开，版本名和不可变 digest 均已实际匿名获取、拉取及运行核验。
 
@@ -68,42 +84,13 @@ Manifest digest 用于 `docker pull ghcr.io/w205614/deepresearch-<service>@sha25
 
 ## 获取与启动
 
-以下为新安装的 `v0.1.4` 核心栈路线。必须显式设置 `DEEPRESEARCH_PACKAGE_VERSION=v0.1.4`，使不可变源码 Tag 中的旧 overlay 缺省值也不会选择旧版本。已有日常部署继续沿用原项目、配置、端口／网络覆盖和不可变 digest overlay，不直接套用新安装命令。
+首次安装按 [v0.1.6 快速上手](../README.md#v016-快速上手)执行。检出 `v0.1.6` 后，在同一终端显式设置 `DEEPRESEARCH_PACKAGE_VERSION=v0.1.6`，因为该标签的 Compose 镜像覆盖文件默认仍指向 `v0.1.4`。MinIO、Milvus 等依赖按[源码与运行依赖指引](source-release.md#运行依赖如何获取)准备。
 
-使用同一正式源码标签取得 Compose 覆盖和工具，需要 Git、Python 3.11+、uv、Docker Linux/amd64 和 Compose v2。初始化后按[配置说明](source-release.md)填写私密凭据。固定 MinIO 镜像及第三方构建型服务仍须准备；下面 `build` 只选择第三方依赖，应用使用实际公开 Packages：
-
-```powershell
-git clone --config core.autocrlf=false --branch v0.1.4 https://github.com/W205614/DeepResearch.git
-cd DeepResearch
-python scripts/local.py init
-# 填写本机 .env 的模型／嵌入凭据及可选重排配置后继续。
-python scripts/local.py check
-uv sync --frozen --no-dev
-uv run --frozen --no-dev python scripts/build_minio_os_20261113.py --output-dir .cache/minio-source-20261113-build
-$env:DEEPRESEARCH_PACKAGE_VERSION = 'v0.1.4'
-docker compose -f compose.yaml -f deployment/compose/compose.core.yaml -f deployment/compose/compose.packages.yaml config --quiet
-docker compose -f compose.yaml -f deployment/compose/compose.core.yaml -f deployment/compose/compose.packages.yaml build postgres keycloak-postgres etcd milvus keycloak storage-init
-docker compose -f compose.yaml -f deployment/compose/compose.core.yaml -f deployment/compose/compose.packages.yaml pull agent backend web
-docker compose -f compose.yaml -f deployment/compose/compose.core.yaml -f deployment/compose/compose.packages.yaml up -d --no-build --wait --wait-timeout 600
-```
-
-第三方构建型服务首次安装仍按原运行说明准备，不能用上述应用包替代。已有部署保留原项目名、`.env`、端口／网络覆盖文件、账号及业务卷；在原配置后追加应用包覆盖，核对已有迁移与恢复条件，不用新安装参数覆盖日常环境。日常暂停、状态和日志均使用同一套参数：
-
-```powershell
-docker compose -f compose.yaml -f deployment/compose/compose.core.yaml -f deployment/compose/compose.packages.yaml ps
-docker compose -f compose.yaml -f deployment/compose/compose.core.yaml -f deployment/compose/compose.packages.yaml logs --tail 100 agent backend web
-docker compose -f compose.yaml -f deployment/compose/compose.core.yaml -f deployment/compose/compose.packages.yaml stop --timeout 60
-```
-
-默认工作台 `http://localhost:8080`，Keycloak 管理台 `http://localhost:8180/admin`；首次操作见[首页研究流程](../README.md#启动后的第一条研究)。本机已有 25 容器的端口／网络覆盖和 digest overlay 属于私密部署配置，新安装不要复制或替换它。
-
-这些 PowerShell 命令在同一会话执行；其他 shell 使用其环境变量语法。后续 `ps`／`logs`／`stop` 也保持相同变量和 Compose 参数。首次安装并非一次 `pull` 即取得完整第三方栈；有 `build` 的依赖仍会按固定源码构建。可选完整观测栈还须使用[受控 Grafana 源码入口](source-release.md#运行依赖如何获取)，不把旧公开输入当作新构建完成。
-
-版本标签首次发布后不覆盖；正式部署可另加本机覆盖文件，将九个应用角色固定到上表三个 `ghcr.io/...@sha256:...`。不能仅凭版本名或 `latest` 判断字节身份。三个既有公开包允许匿名获取，不需要增加个人令牌权限。完整拉取是否已验证须按对应版本的验收记录判断。
+已有部署应保留项目名、`.env`、端口和网络覆盖、账号以及业务卷。升级前核对[现有数据升级与恢复条件](deployment-security-operations.md#现有数据升级)。如需固定部署，将对应应用角色绑定到[本版的镜像摘要](#正式-v016)，后续查看状态、日志或暂停时沿用启动时的 Compose 参数。
 
 ## 制品来源与许可材料
 
-当前 [v0.1.4 Release](https://github.com/W205614/DeepResearch/releases/tag/v0.1.4)提供 42 个附件，包括发布清单、原应用归档／对应源码、11 份 MinIO 来源输入、原始安全与模型边界、实际推广收据和补充说明。发布清单 SHA-256 为 `860ef31e44be39bfcc0941b125414e42a364c763c7bccd43fa7e2e58dca8715e`。依清单核验分片长度、SHA-256 和重组结果，遵循其对应源码索引；历史来源 Release 仍可能是固定输入，不能因已有新版本而删除。源码包准备期说明的更正见该版本补充 JSON，不能据旧阶段说明否认已发生的发布。
+历史 [v0.1.4 Release](https://github.com/W205614/DeepResearch/releases/tag/v0.1.4)提供 42 个附件，包括发布清单、原应用归档／对应源码、11 份 MinIO 来源输入、原始安全与模型边界、实际推广收据和补充说明。发布清单 SHA-256 为 `860ef31e44be39bfcc0941b125414e42a364c763c7bccd43fa7e2e58dca8715e`。依清单核验分片长度、SHA-256 和重组结果，遵循其对应源码索引；历史来源 Release 仍可能是固定输入，不能因已有新版本而删除。源码包准备期说明的更正见该版本补充 JSON，不能据旧阶段说明否认已发生的发布。
 
 以下保留 `v0.1.3` 及更早版本的材料身份，不能当作 `v0.1.4` 的清单或源码获取完成证明。
 
