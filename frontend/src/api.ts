@@ -51,13 +51,17 @@ export async function authenticatedFetch(path: string, init: RequestInit = {}): 
   }
   return response
 }
+export class ApiError extends Error {
+  constructor(message: string, readonly status: number) { super(message) }
+}
+
 export async function api<T=any>(path: string, init: RequestInit = {}): Promise<T> {
   const requestHeaders = new Headers(init.headers)
   if (!(init.body instanceof FormData) && !requestHeaders.has('Content-Type')) requestHeaders.set('Content-Type', 'application/json')
   const response = await authenticatedFetch(path, {...init, headers: requestHeaders})
   if(!response.ok) {
     const body = await response.json().catch(()=>({detail:'服务暂时不可用'}))
-    throw new Error(typeof body.detail === 'string' ? body.detail : typeof body.message === 'string' ? body.message : `请求参数无效（${response.status}）`)
+    throw new ApiError(typeof body.detail === 'string' ? body.detail : typeof body.message === 'string' ? body.message : `请求参数无效（${response.status}）`, response.status)
   }
   if(response.status===204)return undefined as T
   return response.json()

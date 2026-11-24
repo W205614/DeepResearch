@@ -153,7 +153,8 @@ public class ReportPublicationService {
         if (identity.subject().equals(row.get("author_subject")))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "报告作者不能审核自己的报告");
         requireStatus(row, "pending");
-        requireCurrentVerification(parseMap(row.get("validation_json")));
+        Map<String, Object> validation = parseMap(row.get("validation_json"));
+        requireCurrentVerification(validation);
         long corpus = corpusRevision(identity.workspaceId(), true);
         if (number(row.get("corpus_revision")) >= 0 && number(row.get("corpus_revision")) != corpus)
             throw new ResponseStatusException(HttpStatus.CONFLICT, "资料已变化，请修订后重新审核");
@@ -180,7 +181,7 @@ public class ReportPublicationService {
                 reportId, now(), row.get("series_id"));
         }
         String note = reason == null ? "" : reason.strip();
-        if (note.length() > 1000 || ("partial".equals(parseMap(row.get("validation_json")).get("quality")) && note.isBlank()))
+        if (note.length() > 1000 || ("partial".equals(validation.get("quality")) && note.isBlank()))
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "部分结果须填写批准范围与未回答问题的审核说明");
         jdbc.update("UPDATE report_publications SET status='published',reviewed_by=?,reviewed_at=?,review_reason=? WHERE id=?",
             identity.subject(), now(), note, reportId);
@@ -618,6 +619,9 @@ public class ReportPublicationService {
     private static void requireCurrentVerification(Map<String, Object> validation) {
         if (!VERIFICATION_CONTRACT.equals(validation.get("verification_contract")))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "该报告未通过当前原文核验合同，请新建研究后重新送审");
+        if ("complete".equals(validation.get("quality")) && (Boolean.FALSE.equals(validation.get("original_request_answered"))
+                || (validation.get("unanswered_questions") instanceof List<?> unanswered && !unanswered.isEmpty())))
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "报告的未答项与完整性标记不一致，请新建研究后重新送审");
     }
 
     private static void requireStatus(Map<String, Object> row, String status) {

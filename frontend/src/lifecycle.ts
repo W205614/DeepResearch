@@ -11,7 +11,12 @@ export function canRevise(report: Publication, role: string, subject?: string) {
   return Boolean(subject && report.status === 'published' && (role === 'admin' || role === 'researcher' && report.author_subject === subject))
 }
 export function revisionFingerprint(report: Publication, revision: number) { return `${report.id}:${report.content_sha256}:${revision}` }
+export function coverageMismatch(validation?: Record<string, unknown>) {
+  return validation?.quality === 'complete' && (validation.original_request_answered === false
+    || (Array.isArray(validation.unanswered_questions) && validation.unanswered_questions.length > 0))
+}
 export function reviewBlocked(report: Publication) {
   return Boolean(report.evidence_status && !['current', 'legacy'].includes(report.evidence_status)
-    || report.status === 'pending' && report.validation?.verification_contract !== verificationContract)
+    || report.status === 'pending' && (report.validation?.verification_contract !== verificationContract
+      || coverageMismatch(report.validation)))
 }

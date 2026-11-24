@@ -22,5 +22,8 @@ describe('report lifecycle UI guards', () => {
     expect(reviewBlocked(report)).toBe(false)
     expect(reviewBlocked({ ...report, status:'pending', evidence_status:'current', validation:{} })).toBe(true)
     expect(reviewBlocked({ ...report, status:'pending', evidence_status:'current', validation:{verification_contract:'verification-v3-claim-span'} })).toBe(false)
+    expect(reviewBlocked({ ...report, status:'pending', evidence_status:'current', validation:{
+      verification_contract:'verification-v3-claim-span', quality:'complete', original_request_answered:false,
+    } })).toBe(true)
   })
 })

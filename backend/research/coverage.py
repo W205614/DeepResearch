@@ -34,8 +34,11 @@ def coverage_items(topic: str, questions: list[str], claims: list[dict],
             elif not coverage.requirements:
                 result[text] = item(text, "answered")
     if not claims or not coverage.original_request_answered:
-        if (not claims or all(row["status"] == "answered" for row in result.values())) and topic not in result:
-            result[topic] = item(topic, "insufficient", gap="原始要求仍有遗漏，请明确需要补查的范围")
+        if (not claims and topic not in result) or all(row["status"] == "answered" for row in result.values()):
+            existing = result.get(topic)
+            claim_ids = existing["claim_ids"] if existing else []
+            result[topic] = item(topic, "partial" if claim_ids else "insufficient", claim_ids,
+                                 gap="原始要求仍有遗漏，请明确需要补查的范围")
     elif not result:
         result[topic] = item(topic, "answered")
     return list(result.values())

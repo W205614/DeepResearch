@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
+import com.deepresearch.business.security.PlatformAccess;
 import com.deepresearch.business.security.WorkspaceAccess;
 import com.deepresearch.business.security.WorkspaceIdentity;
 import com.deepresearch.business.service.AgentClient;
@@ -35,15 +36,17 @@ import java.io.OutputStreamWriter;
 @RestController
 public class ThreadController {
     private final JdbcTemplate jdbc;
+    private final PlatformAccess platform;
     private final WorkspaceAccess access;
     private final ResearchCommandService research;
     private final RunViewService views;
     private final AgentClient agent;
     private final ReportPublicationService publications;
 
-    public ThreadController(JdbcTemplate jdbc, WorkspaceAccess access, ResearchCommandService research,
+    public ThreadController(JdbcTemplate jdbc, PlatformAccess platform, WorkspaceAccess access, ResearchCommandService research,
                             RunViewService views, AgentClient agent, ReportPublicationService publications) {
         this.jdbc = jdbc;
+        this.platform = platform;
         this.access = access;
         this.research = research;
         this.views = views;
@@ -121,29 +124,38 @@ public class ThreadController {
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"conversation-" + thread.get("id") + ".md\"")
             .body(output -> {
                 OutputStreamWriter writer = new OutputStreamWriter(output, StandardCharsets.UTF_8);
-                writer.write("# " + (thread.get("title") == null ? "研究会话" : thread.get("title")) + "\n\n本文件包含该会话中的全部研究记录。\n");
+                Runnable requireCurrent = () -> platform.requireCurrent(identity.subject(), identity.issuedAt());
+                String heading = "# " + (thread.get("title") == null ? "研究会话" : thread.get("title"))
+                    + "\n\n本文件包含该会话中的全部研究记录。\n";
                 String previousTime = "", previousId = "";
                 int index = 0;
                 while (!upperId.isBlank()) {
                     List<Map<String, Object>> rows = jdbc.queryForList("""
-                        SELECT r.id,r.topic,r.status,r.created_at,r.report,m.role AS current_role FROM runs r
+                        SELECT r.id,r.created_at,m.role AS current_role FROM runs r
                         JOIN memberships m ON m.workspace_id=r.user_id AND m.subject=?
                         WHERE r.thread_id=? AND r.user_id=? AND (m.role='admin' OR r.created_by=m.subject)
                         AND (?='' OR (r.created_at,r.id)>(?,?)) AND (r.created_at,r.id)<=(?,?)
                         ORDER BY r.created_at,r.id LIMIT 1""",
                         identity.subject(), thread.get("id"), identity.workspaceId(), previousId, previousTime, previousId, upperTime, upperId);
                     if (rows.isEmpty()) break;
-                    Map<String, Object> run = rows.getFirst();
+                    Map<String, Object> row = rows.getFirst();
                     // Recheck source ACL for each streamed record; a thread title alone grants no source access.
-                    views.visibleRun(String.valueOf(run.get("id")),new WorkspaceIdentity(identity.workspaceId(),identity.subject(),String.valueOf(run.get("current_role")),identity.displayName(),identity.issuedAt()));
-                    writer.write("\n## " + (++index) + ". " + run.get("topic") + "\n\n- 状态：" + run.get("status") + "\n- 创建时间：" + run.get("created_at") + "\n\n");
+                    Map<String, Object> run = views.visibleRun(String.valueOf(row.get("id")), new WorkspaceIdentity(
+                        identity.workspaceId(), identity.subject(), String.valueOf(row.get("current_role")),
+                        identity.displayName(), identity.issuedAt()));
+                    if (index == 0) MarkdownDownload.writeChunks(writer, heading, requireCurrent);
+                    MarkdownDownload.writeChunks(writer, "\n## " + (++index) + ". " + run.get("topic")
+                        + "\n\n- 版本：研究草稿（正式版本在工作台的正式报告中查看）"
+                        + "\n- 执行状态：" + run.get("status")
+                        + "\n- 结果质量：" + MarkdownDownload.draftQuality((Map<?, ?>) run.get("validation"))
+                        + "\n- 创建时间：" + row.get("created_at") + "\n\n", requireCurrent);
                     String text = String.valueOf(run.get("report"));
-                    if (text.isBlank()) writer.write("_此研究尚未生成 Markdown 报告。_");
-                    for (int offset = 0; offset < text.length(); offset += 4096)
-                        writer.write(text, offset, Math.min(4096, text.length() - offset));
-                    writer.write('\n'); writer.flush();
-                    previousTime = String.valueOf(run.get("created_at")); previousId = String.valueOf(run.get("id"));
+                    MarkdownDownload.writeChunks(writer, text.isBlank() ? "_此研究尚未生成 Markdown 报告。_" : text, requireCurrent);
+                    MarkdownDownload.writeChunks(writer, "\n", requireCurrent);
+                    writer.flush();
+                    previousTime = String.valueOf(row.get("created_at")); previousId = String.valueOf(row.get("id"));
                 }
+                if (index == 0) MarkdownDownload.writeChunks(writer, heading, requireCurrent);
                 writer.flush();
             });
     }

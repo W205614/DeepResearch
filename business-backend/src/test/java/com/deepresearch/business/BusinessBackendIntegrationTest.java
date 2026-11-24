@@ -516,6 +516,21 @@ class BusinessBackendIntegrationTest {
         jdbc.update("INSERT INTO documents(id,user_id,status,hash,index_version) VALUES('doc-1','review-space','ready','hash-1',1)");
         jdbc.update("INSERT INTO document_policies(document_id,workspace_id,owner_subject) VALUES('doc-1','review-space','writer')");
         jdbc.update("INSERT INTO chunks(id,document_id,user_id,text) VALUES('chunk-1','doc-1','review-space','证据')");
+        String originalValidation = jdbc.queryForObject("SELECT validation FROM runs WHERE id='review-run'", String.class);
+        String contradictoryValidation = originalValidation.replace("\"quality\":\"complete\"",
+            "\"quality\":\"complete\",\"original_request_answered\":false");
+        jdbc.update("UPDATE runs SET validation=? WHERE id='review-run'", contradictoryValidation);
+        mvc.perform(post("/api/research/runs/review-run/publication")
+                .with(jwt().jwt(t -> t.subject("writer"))).header("X-Workspace-ID", "review-space"))
+            .andExpect(status().isUnprocessableEntity());
+        assertThat(count("report_publications")).isZero();
+        MvcResult draft = mvc.perform(get("/api/research/runs/review-run/report")
+                .with(jwt().jwt(t -> t.subject("writer"))).header("X-Workspace-ID", "review-space"))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.request().asyncStarted()).andReturn();
+        String draftMarkdown = mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch(draft))
+            .andExpect(status().isOk()).andReturn().getResponse().getContentAsString(java.nio.charset.StandardCharsets.UTF_8);
+        assertThat(draftMarkdown).contains("研究草稿", "执行状态：completed", "完整性标记与未答信息不一致", "# Original [L-1]");
+        jdbc.update("UPDATE runs SET validation=? WHERE id='review-run'", originalValidation);
 
         mvc.perform(get("/api/research/runs/review-run").with(jwt().jwt(t -> t.subject("reader")))
                 .header("X-Workspace-ID", "review-space"))
@@ -535,6 +550,13 @@ class BusinessBackendIntegrationTest {
             .andExpect(status().isCreated()).andExpect(jsonPath("$.sources[0].original_available").value(true))
             .andReturn();
         String id = String.valueOf(body(submitted).get("id"));
+        String storedValidation = jdbc.queryForObject("SELECT validation_json FROM report_publications WHERE id=?", String.class, id);
+        jdbc.update("UPDATE report_publications SET validation_json=? WHERE id=?", contradictoryValidation, id);
+        mvc.perform(post("/api/reports/" + id + "/approve").with(jwt().jwt(t -> t.subject("reviewer")))
+                .header("X-Workspace-ID", "review-space").contentType("application/json").content("{\"reason\":\"\"}"))
+            .andExpect(status().isUnprocessableEntity());
+        assertThat(jdbc.queryForObject("SELECT status FROM report_publications WHERE id=?", String.class, id)).isEqualTo("pending");
+        jdbc.update("UPDATE report_publications SET validation_json=? WHERE id=?", storedValidation, id);
         mvc.perform(post("/api/research/runs/review-run/publication")
                 .with(jwt().jwt(t -> t.subject("writer"))).header("X-Workspace-ID", "review-space"))
             .andExpect(status().isCreated()).andExpect(jsonPath("$.id").value(id));
@@ -968,7 +990,8 @@ class BusinessBackendIntegrationTest {
             .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.request().asyncStarted()).andReturn();
         String markdown = mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch(export))
             .andExpect(status().isOk()).andReturn().getResponse().getContentAsString(java.nio.charset.StandardCharsets.UTF_8);
-        assertThat(markdown).contains("报告 page-00 中文证据", "报告 page-21 中文证据", "## 22.");
+        assertThat(markdown).contains("报告 page-00 中文证据", "报告 page-21 中文证据", "## 22.",
+            "版本：研究草稿", "结果质量：历史结果：核验信息不完整");
     }
 
     @Test

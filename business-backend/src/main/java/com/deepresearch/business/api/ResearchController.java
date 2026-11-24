@@ -78,7 +78,9 @@ public class ResearchController {
         Map<String, Object> run = views.visibleRun(runId, identity);
         boolean decision = "decision".equals(format);
         String markdown = decision ? DecisionSummary.markdown(run, false)
-            : String.valueOf(run.get("report"));
+            : "> 研究草稿（正式版本在工作台的正式报告中查看）\n> 执行状态：" + run.get("status")
+                + "\n> 结果质量：" + MarkdownDownload.draftQuality((Map<?, ?>) run.get("validation"))
+                + "\n\n" + run.get("report");
         return ResponseEntity.ok().contentType(MediaType.parseMediaType("text/markdown;charset=UTF-8"))
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + (decision ? "decision" : "research") + "-" + runId + ".md\"")
             .body(MarkdownDownload.stream(markdown, () -> platform.requireCurrent(jwt.getSubject(), jwt.getIssuedAt())));
