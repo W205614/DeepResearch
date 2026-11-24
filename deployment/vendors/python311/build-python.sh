@@ -110,6 +110,7 @@ set -eux; \
 		--no-compile \
 		'setuptools==79.0.1' \
 		'wheel==0.46.3' \
+		'packaging==26.3' \
 	; \
 	pip3 --version
 set -eux; \

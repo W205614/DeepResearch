@@ -3,7 +3,7 @@ import { computed, onMounted, onUnmounted, ref, nextTick, watch } from 'vue'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import { ArrowUp, ArrowUpRight, BookOpen, Brain, Check, ChevronRight, Compass, Download, FileText, FolderOpen, Layers3, LoaderCircle, Menu, MessageSquare, Plus, RefreshCw, Search, Settings2, ShieldCheck, LogIn, LogOut, UserPlus, Sparkles, Square, Trash2, X } from 'lucide-vue-next'
-import { api, apiPage, ApiError, authenticatedFetch, subscribe, terminal, type Run, type Source, type EventItem, type Publication, type ScopeDraft, type ClaimLink } from './api'
+import { api, apiPage, authenticatedFetch, subscribe, terminal, type Run, type Source, type EventItem, type Publication, type ScopeDraft, type ClaimLink } from './api'
 import { completeLogin, configureAuth, currentUser, login, logout, register, type AuthConfig } from './auth'
 
 import ImageAttachments from './ImageAttachments.vue'
@@ -326,13 +326,17 @@ async function pollActiveRun(run: Run, epoch: number) {
   const key = `${epoch}:${run.id}`
   if(pendingRunPolls.has(key)) return
   pendingRunPolls.add(key)
-  try { await refreshRun(run.id, epoch) }
-  catch (failure) {
-    if(epoch===generation && run===runSnapshot(run.id) && failure instanceof ApiError && [403,404].includes(failure.status)) {
+  try {
+    const workspaceId = workspace.value?.id
+    const response = await authenticatedFetch(`/api/research/runs/${run.id}`, {headers: workspaceId ? {'X-Workspace-ID':workspaceId} : undefined})
+    const updated = response.ok ? await response.json() as Run : null
+    if(epoch!==generation || run!==runSnapshot(run.id))return
+    if(updated)updateRun(updated)
+    else if([403,404].includes(response.status)) {
       runs.value=runs.value.filter(item=>item.id!==run.id)
       if(selected.value?.id===run.id) {
         controller?.abort(); generation++; selected.value=null; events.value=[]; source.value=null
-        error.value=failure.message
+        error.value='当前研究已不可访问。'
       }
     }
   } finally { pendingRunPolls.delete(key) }
@@ -501,7 +505,7 @@ onMounted(async()=>{
     if(view.value==='documents'&&documents.value.some(d=>['indexing','rebuilding'].includes(d.status)))void safely(async()=>{documents.value=await api('/api/documents')})
     const activeRuns = runs.value.filter(run=>!terminal(run.status))
     if(selected.value&&!terminal(selected.value.status)&&!activeRuns.some(run=>run.id===selected.value?.id))activeRuns.push(selected.value)
-    for(const run of activeRuns)void pollActiveRun(run,generation)
+    for(const run of activeRuns)void pollActiveRun(run,generation).catch(()=>{})
   },2500)
 })
 onUnmounted(()=>{controller?.abort();generation++;clearInterval(poll);window.removeEventListener('deepresearch-auth-expired', handleAuthExpired)})

@@ -1,0 +1,40 @@
+{
+  "schema": "codeql-exact-closeout-continuation-v1",
+  "prior_review": {
+    "path": "deployment/security/codeql-reviewed-findings-20261121-research-flow.json",
+    "sha256": "9ef7ae09d30d1d002e9e5b3e914cbda430ab492ddcc370e7b929f935158bff03"
+  },
+  "compared_scan": {
+    "application_commit": "c4d36af7d0ec51f5aabab0173aeb35eb188b3dd7",
+    "workflow_run": 45382518391,
+    "artifact": 14914057906,
+    "sarif_sha256": {
+      "java.sarif": "3a4c49f89c80516d044c343d44c2dbfb3a66244770dc10a429f0ebaea2937546",
+      "javascript.sarif": "6800658fdda42ecf1b8e1d930c4b8de4fffc5cc854ad152376c48e233d1ecc5a",
+      "python.sarif": "48d4d9809fea47532666b8334624a2acaf35f960d62b5f262d1ccb5460815af6"
+    },
+    "observed_blocking_identities": [
+      {
+        "rule_id": "java/spring-disabled-csrf-protection",
+        "path": "business-backend/src/main/java/com/deepresearch/business/config/SecurityConfig.java",
+        "start_line": 34,
+        "end_line": 34,
+        "start_column": 27,
+        "end_column": 41,
+        "message": "CSRF vulnerability due to protection being disabled."
+      }
+    ]
+  },
+  "changed_bound_sources": {
+    "frontend/src/App.vue": {
+      "before": "1c105e5d9553a74a8670c6a76d29e0b4f5cc5514d2fe76d66c8d582aa6654442",
+      "after": "b231ab808faae431893899f021cf77cbff733df4946dad9cdcc75d1018fa80e7"
+    }
+  },
+  "technical_review": [
+    "HTTP requests use the existing authenticatedFetch implementation unchanged, with the workspace selected at the time a background refresh starts.",
+    "Background results are merged by run identity and selection epoch. An earlier conversation cannot update the current selection.",
+    "New labels render ordinary text. Reports and previews still use the existing DOMPurify boundary. Web Docker build context, document root, reverse-proxy routing and the offline SQLite proof bytes remain the same.",
+    "Previously reviewed exact identities and the scanner threshold remain unchanged. The comparison scan belongs to the earlier PR revision. CI must scan the final checkout independently."
+  ]
+}
