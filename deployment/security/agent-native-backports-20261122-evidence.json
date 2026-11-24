@@ -5,11 +5,11 @@
   "additional_evidence_files": [
     {
       "path": "Dockerfile",
-      "sha256": "89ab1f27d5c68c9f67f9eb4e76c05c1343922bb58ada724eba0a5a05a9ebbb84"
+      "sha256": "28a4dac3e6a7b3579af48bea7e22551601485d61ca48a2492aeb48506d5fd195"
     },
     {
       "path": "deployment/vendors/agent-native-20261122/source.lock.json",
-      "sha256": "9f8b8df4d16b2683deb5de219c0e3645f78630598a5f73726519ccd8d29cdadf"
+      "sha256": "40e5520df093a59a1e5826ee7caa4dddea58cccb33028b1b809e94cb45edb61d"
     },
     {
       "path": "deployment/vendors/agent-native-20261122/CVE-2026-121482.patch",
@@ -49,7 +49,7 @@
     },
     {
       "path": "deployment/vendors/python311/build-python.sh",
-      "sha256": "a84f9770bdaab24dbc922eeb33438cbf135d5ef00828b294b1b10b3e75b10c2c"
+      "sha256": "9362351cb2f5babe65e0622453abafa9ae9c9970c1bf5a37b3248e398202e42d"
     },
     {
       "path": "deployment/vendors/python311/source-lock.json",
@@ -66,6 +66,10 @@
     {
       "path": "uv.lock",
       "sha256": "5320e9772d9c50008ec152c23fdd406fa9a739cdb5feca42e68649a898b53bc1"
+    },
+    {
+      "path": "deployment/vendors/agent-native-20261122/CVE-2026-107494.patch",
+      "sha256": "c1726a50d589b2dc289727865c184382c2bd846733ddb139427062713ebeb5bd"
     }
   ],
   "source_review": {
@@ -504,5 +508,119 @@
         "after_sha256": "e393f7847dbe8c5a2009d5c98364c3e950ab993f44c9f006846109430466e655"
       }
     }
+  },
+  "closeout_20261124": {
+    "raw_ci_report": {
+      "run": 45392139403,
+      "artifact": 14919858152,
+      "raw_sha256": "d1a3b28789cc59268c724914ce5003b1625c6590e5ff1141b7500dda5c5c76a6"
+    },
+    "openssl_notice": "https://openssl-library.org/news/secadv/20261124.txt",
+    "openssl_upstream_fix": "https://github.com/openssl/openssl/commit/734c6cd7444bdbf589bfec917e47598c1b21ddd3",
+    "openssl_backport_applied_with_zero_fuzz": true,
+    "native_runtime": {
+      "native_elf_closure": {
+        "files": 514,
+        "sha256": "c209e362a865f22bbb753023f9b762602db2fdeca1dacd4c5c57bf8f35465b13"
+      },
+      "original_elf_closure": {
+        "files": 514,
+        "sha256": "bf6840848deb8305fa4ea44a6ede0a993e61c452ca66bc3b2c4c03f69f5dbe03"
+      },
+      "native_delta": [
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libssl.so.3",
+          "before": "7cc53c439569122635a47a837ba8993531a8f36e99a57e7cb02c90459c108956",
+          "after": "46e69b0baf3f7557258625cfa33ddbbac16f5bff9b964c044f61f42dae92f998"
+        }
+      ],
+      "source_closure": {
+        "files": 5977,
+        "sha256": "cac7ffd48a96533f383796df12d54e0847c80ff8e4c6fd5f305f04124931732a"
+      },
+      "loaded_tls_libraries": {
+        "revision": "f3acb0a3328046741479482c51cec815839e1b05",
+        "version": "OpenSSL 3.5.10-dev ",
+        "manifest": {
+          "usr/lib/x86_64-linux-gnu/libcrypto.so.3": "e393f7847dbe8c5a2009d5c98364c3e950ab993f44c9f006846109430466e655",
+          "usr/lib/x86_64-linux-gnu/libssl.so.3": "46e69b0baf3f7557258625cfa33ddbbac16f5bff9b964c044f61f42dae92f998"
+        },
+        "loaded": {
+          "usr/lib/x86_64-linux-gnu/libcrypto.so.3": "e393f7847dbe8c5a2009d5c98364c3e950ab993f44c9f006846109430466e655",
+          "usr/lib/x86_64-linux-gnu/libssl.so.3": "46e69b0baf3f7557258625cfa33ddbbac16f5bff9b964c044f61f42dae92f998"
+        }
+      }
+    },
+    "existing_glibc_scan_severity_updates": [
+      {
+        "before": {
+          "class": "os-pkgs",
+          "type": "debian",
+          "id": "CVE-2026-121757",
+          "package": "libc-gconv-modules-extra",
+          "version": "2.43-7",
+          "package_id": "libc-gconv-modules-extra@2.43-7",
+          "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+          "severity": "UNKNOWN",
+          "status": "affected",
+          "data_source": {
+            "ID": "debian",
+            "Name": "Debian Security Tracker",
+            "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+          }
+        },
+        "after": {
+          "class": "os-pkgs",
+          "type": "debian",
+          "id": "CVE-2026-121757",
+          "package": "libc-gconv-modules-extra",
+          "version": "2.43-7",
+          "package_id": "libc-gconv-modules-extra@2.43-7",
+          "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
+          "severity": "MEDIUM",
+          "status": "affected",
+          "data_source": {
+            "ID": "debian",
+            "Name": "Debian Security Tracker",
+            "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+          }
+        }
+      },
+      {
+        "before": {
+          "class": "os-pkgs",
+          "type": "debian",
+          "id": "CVE-2026-121757",
+          "package": "libc6",
+          "version": "2.43-7",
+          "package_id": "libc6@2.43-7",
+          "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+          "severity": "UNKNOWN",
+          "status": "affected",
+          "data_source": {
+            "ID": "debian",
+            "Name": "Debian Security Tracker",
+            "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+          }
+        },
+        "after": {
+          "class": "os-pkgs",
+          "type": "debian",
+          "id": "CVE-2026-121757",
+          "package": "libc6",
+          "version": "2.43-7",
+          "package_id": "libc6@2.43-7",
+          "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
+          "severity": "MEDIUM",
+          "status": "affected",
+          "data_source": {
+            "ID": "debian",
+            "Name": "Debian Security Tracker",
+            "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+          }
+        }
+      }
+    ],
+    "raw_scan_disposition_scope": "The exact Agent Linux/amd64 runtime. Trivy report and Debian priority are retained. A new full scan remains required for publication."
   }
 }

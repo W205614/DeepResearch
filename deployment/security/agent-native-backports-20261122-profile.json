@@ -7,15 +7,15 @@
   "scanner": "0.75.0",
   "source_review_evidence": {
     "path": "deployment/security/agent-native-backports-20261122-evidence.json",
-    "sha256": "71c5719bcd9920474806c8bbd3a4c04046f7b9a1dfac27e0926572e9ea7b8cb7"
+    "sha256": "1b29626ff7e0942f92ab68f1b62975c2e257f7469227c973f7d5e0d293cd82ce"
   },
   "native_elf_closure": {
     "files": 514,
-    "sha256": "bf6840848deb8305fa4ea44a6ede0a993e61c452ca66bc3b2c4c03f69f5dbe03"
+    "sha256": "c209e362a865f22bbb753023f9b762602db2fdeca1dacd4c5c57bf8f35465b13"
   },
   "python_source_closure": {
     "files": 5977,
-    "sha256": "5c92df59092959e05c5773306092a9b479b1f00427ebc354229c75e2011ec004"
+    "sha256": "cac7ffd48a96533f383796df12d54e0847c80ff8e4c6fd5f305f04124931732a"
   },
   "official_glibc_payload": [
     {
@@ -1928,7 +1928,7 @@
         "version": "2.43-7",
         "package_id": "libc-gconv-modules-extra@2.43-7",
         "purl": "pkg:deb/debian/libc-gconv-modules-extra@2.43-7?arch=amd64&distro=debian-13.7",
-        "severity": "UNKNOWN",
+        "severity": "MEDIUM",
         "status": "affected",
         "data_source": {
           "ID": "debian",
@@ -2242,7 +2242,7 @@
         "version": "2.43-7",
         "package_id": "libc6@2.43-7",
         "purl": "pkg:deb/debian/libc6@2.43-7?arch=amd64&distro=debian-13.7",
-        "severity": "UNKNOWN",
+        "severity": "MEDIUM",
         "status": "affected",
         "data_source": {
           "ID": "debian",
@@ -3216,6 +3216,27 @@
         }
       },
       "disposition": "NOT_AFFECTED_FUNCTION_NOT_IN_CURRENT_APPLICATION_PATH"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "type": "debian",
+        "id": "CVE-2026-107494",
+        "package": "libssl3t64",
+        "version": "3.5.7-1~deb13u3",
+        "package_id": "libssl3t64@3.5.7-1~deb13u3",
+        "purl": "pkg:deb/debian/libssl3t64@3.5.7-1~deb13u3?arch=amd64&distro=debian-13.7",
+        "severity": "HIGH",
+        "status": "affected",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        }
+      },
+      "disposition": "FIXED_IN_VERIFIED_SOURCE_BACKPORT",
+      "patch": "CVE-2026-107494.patch",
+      "affected_library": "libssl.so.3"
     }
   ],
   "review_scope": "Exact rebuilt Linux/amd64 Agent with the fixed libc, libstdc++ and OpenSSL payloads; Debian scanner metadata retained verbatim.",

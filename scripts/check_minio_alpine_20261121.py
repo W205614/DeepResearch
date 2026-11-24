@@ -26,7 +26,7 @@ APK_PACKAGES = {
 TRIVY_INVENTORY = {
     'os:alpine': '75d052acb4fa9eae4cfea802e456dbd73740b48956986fc0de77e399ec6a83d9',
     'usr/bin/mcli': '57d24a0efc0f3f3426ec6dba0a11e7baa97c43f319025424a152a86bcb126338',
-    'usr/bin/silo': '6323eb4d0916f652be82a12f723ceaa3ff45043fe25ba56ddbf8316d02841ef0',
+    'usr/bin/silo': 'badfc005bf3504a6c0beb341cabbabe30869d00e8a48f8928515d27d59cdc085',
 }
 
 

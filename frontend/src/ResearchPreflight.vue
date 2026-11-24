@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { api } from './api'
 
-defineProps<{ policy:string }>()
+defineProps<{ policy:string; documentLibrary?:boolean }>()
 type Quota = {
   scopes:{ scope:string; remaining_calls:number; remaining_token_exposure:number }[]
   run_limits?:{ calls:number; reserved_tokens:number; searches:number; seconds:number }
@@ -25,18 +25,18 @@ async function load() {
 onMounted(load)
 </script>
 <template>
+  <p class="muted" aria-live="polite">
+    <template v-if="policy === 'public'">研究问题、检索词与公开网页片段可能由配置的搜索或模型服务处理。图片附件可能由视觉模型处理。</template>
+    <template v-else-if="quota?.processing?.demo_mode">当前使用固定数据夹具。</template>
+    <template v-else-if="quota?.processing?.internal_model_allowed">
+      <template v-if="documentLibrary">扫描通过后，资料正文片段可能由配置的嵌入服务处理，扫描件也可能由视觉模型处理。</template>
+      <template v-else>不搜索公开网页。问题、匹配的内部片段、会话上下文和图片可能由配置的模型服务处理。查询与资料文本可能用于嵌入<template v-if="quota.processing.reranker_enabled">和重排</template>。</template>
+    </template>
+    <template v-else-if="quota?.processing">当前配置禁止外部模型处理内部资料。</template>
+    <template v-else>暂未确认外部模型处理权限。</template>
+  </p>
   <details class="research-preflight" @toggle="event => { if ((event.target as HTMLDetailsElement).open) load() }">
-    <summary>资料处理与额度<template v-if="personal"> · 个人剩余 {{personal.remaining_calls}} 次</template>
-      <template v-if="policy === 'internal' && quota?.processing?.internal_model_allowed && !quota.processing.demo_mode">
-        · 内部片段可能交给模型处理</template></summary>
-    <p v-if="policy === 'public'">研究问题、生成的检索词与公开网页片段可能由配置的搜索或模型服务处理。图片附件可能由配置的视觉模型处理。</p>
-    <p v-else-if="quota?.processing?.demo_mode">当前使用固定数据夹具。</p>
-    <p v-else-if="quota?.processing?.internal_model_allowed">
-      内部资料不做网页搜索。问题、匹配的内部片段、会话上下文和图片可能由配置的模型服务处理。
-      查询与资料文本可能用于嵌入<template v-if="quota.processing.reranker_enabled">和重排</template>。
-    </p>
-    <p v-else-if="quota?.processing">当前配置禁止由外部模型处理内部资料。</p>
-    <p v-else>内部资料不做网页搜索。外部模型处理权限待查询。</p>
+    <summary>资料处理与额度<template v-if="personal"> · 个人剩余 {{personal.remaining_calls}} 次</template></summary>
     <ul v-if="quota">
       <li v-for="scope in quota.scopes" :key="scope.scope">
         {{scope.scope === 'personal' ? '个人' : scope.scope === 'workspace' ? '工作空间' : '平台'}}

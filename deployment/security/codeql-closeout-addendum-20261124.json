@@ -1,0 +1,50 @@
+{
+  "schema": "codeql-exact-closeout-continuation-v1",
+  "prior_review": {
+    "path": "deployment/security/codeql-reviewed-findings-20261121-research-flow.json",
+    "sha256": "9ef7ae09d30d1d002e9e5b3e914cbda430ab492ddcc370e7b929f935158bff03"
+  },
+  "compared_scan": {
+    "application_commit": "078e409c0d9150c835ae63b5184c538e8090dace",
+    "scanned_merge_commit": "189203aa907262d6d71a07064447eb0ffaea6700",
+    "workflow_run": 45392139403,
+    "artifact": 14919831468,
+    "sarif_sha256": {
+      "java.sarif": "5810ca2e60b289f1b71346c2fd3a6ffac851df9bc39377f2ca289ca917fd848b",
+      "javascript.sarif": "a2ea680587a6a2792d62328a6c16dab26f732aa8325c8b704a23dbf644e39cbb",
+      "python.sarif": "a3c4c6ce1314cc88e0431f68442332b4016909f3b1c1bfa65f3b49507425ac5f"
+    },
+    "observed_blocking_identities": [
+      {
+        "rule_id": "java/spring-disabled-csrf-protection",
+        "path": "business-backend/src/main/java/com/deepresearch/business/config/SecurityConfig.java",
+        "start_line": 34,
+        "end_line": 34,
+        "start_column": 27,
+        "end_column": 41,
+        "message": "CSRF vulnerability due to protection being disabled."
+      }
+    ]
+  },
+  "changed_bound_sources": {
+    "Dockerfile": {
+      "before": "89ab1f27d5c68c9f67f9eb4e76c05c1343922bb58ada724eba0a5a05a9ebbb84",
+      "after": "28a4dac3e6a7b3579af48bea7e22551601485d61ca48a2492aeb48506d5fd195"
+    },
+    "scripts/check_agent_full_scope.py": {
+      "before": "595b12b78343f4b896b7e36a9f2c9a5df6a3569344f0c5ec4bfde63125d7789b",
+      "after": "c6d2947f1e14261d05796a277acf272025dcf9b98a8e91676ea5d530532cbdc7"
+    },
+    "frontend/src/App.vue": {
+      "before": "1c105e5d9553a74a8670c6a76d29e0b4f5cc5514d2fe76d66c8d582aa6654442",
+      "after": "b231ab808faae431893899f021cf77cbff733df4946dad9cdcc75d1018fa80e7"
+    }
+  },
+  "technical_review": [
+    "HTTP requests use the existing authenticatedFetch implementation unchanged, with the workspace selected at the time a background refresh starts.",
+    "Background results are merged by run identity and selection epoch. An earlier conversation cannot update the current selection.",
+    "New labels render ordinary text. Reports and previews still use the existing DOMPurify boundary. Web Docker build context, document root, reverse-proxy routing and the offline SQLite proof bytes remain the same.",
+    "Agent runtime evidence retains the same exact scanner and acceptance logic. The source binding changes cover the pinned bootstrap wheel, the two reviewed Python coverage files and the measured OpenSSL backport.",
+    "Previously reviewed exact identities and the scanner threshold remain unchanged. The comparison scan belongs to the earlier PR revision. CI must scan the final checkout independently."
+  ]
+}

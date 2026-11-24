@@ -33,13 +33,13 @@ CURL_OPENSSL_APKS = {
     'openssl-libs-static-3.5.9-r1.apk': (14271920, '0bfd81f8b0623d80afd5aa8f0ced1e36c4537bc42eaf376565f703477789cbd6'),
 }
 GRAPH_SHA256 = {
-    'silo': 'e32020693e8a657dae911b136274bdf1abd84d732ac0d16ce04261e69532804a',
+    'silo': 'b192f0120cd736936eec26aa698034fb8af33489254401877b0c98664c68ec80',
     'mcli': '61b98438da7c3ef4fcdadb7a15faec37ecaea76bc6d3fd20ef5ad8447cf428dc',
 }
 GO_PAYLOAD_SHA256 = {
-    'usr/bin/silo': '9b44f9df38fa388aaacce0be22e6273e70e77d5dced3180a230b65398be64b78',
+    'usr/bin/silo': 'a3f5880677574617c498c8f2c6000fb67f326282cc3971d8439b847122969a7e',
     'usr/bin/mcli': 'a1e263c8b0cadf9b6a19cc9729a7bb6d1eb0329152347955cb4326ca0ebb6845',
-    'usr/share/deepresearch-build/silo-native.json': '87ed3a45cc1a1099fcea0c25d13e2c367e000bf1aadbd7f98483d67107dc0994',
+    'usr/share/deepresearch-build/silo-native.json': '41bce4b62b4e7685bdaa6d8fcd6b54e0cfade01eced28018df962651a7700209',
     'usr/share/deepresearch-build/mcli-native.json': '32ae2b4c92715c4715d8e849538525bc5fe365696506629463d78e6b4a206c48',
 }
 

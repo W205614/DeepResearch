@@ -112,7 +112,10 @@ def quality(validation):
         return "partial" if validation.get("supported_claims") else "unverified"
     if not validation.get("checked_claims"):
         return "unknown"
-    return "partial" if validation.get("removed_claims") or validation.get("gaps") or validation.get("unanswered_questions") else "complete"
+    if (validation.get("original_request_answered") is False or validation.get("removed_claims")
+            or validation.get("gaps") or validation.get("unanswered_questions")):
+        return "partial"
+    return "complete"
 
 
 def enrich_run(row, settings=None):

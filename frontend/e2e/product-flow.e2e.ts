@@ -101,6 +101,17 @@ test('product flow public research, focused merge, retries and failure boundarie
   expect(supplements).toHaveLength(0)
   await proposals.getByRole('button', {name:'仅补查此项'}).click()
   await proposals.getByLabel('检索词').fill(editedQuery)
+  let holdBackgroundStatus = true
+  const detailRoute = /\/api\/research\/runs\/[^/?]+$/
+  await page.route(detailRoute, async route => {
+    if (!holdBackgroundStatus || route.request().method() !== 'GET' || route.request().url().endsWith('/' + first.id)) {
+      await route.continue()
+      return
+    }
+    const actual = await route.fetch()
+    if (!actual.ok()) { await route.fulfill({response:actual}); return }
+    await route.fulfill({response:actual, json:{...(await actual.json()),status:'running',report:'',sources:[],validation:{}}})
+  })
   const post = postResponse(page, '/supplements')
   await proposals.getByRole('button', {name:'开始补查', exact:true}).click()
   const submitted = await post
@@ -114,6 +125,20 @@ test('product flow public research, focused merge, retries and failure boundarie
   expect(combined.data_policy).toBe('public')
   expect(combined.sources.map((source:{kind:string}) => source.kind)).toEqual(['web','web'])
   expect(combined.validation.supplement).toMatchObject({merged:true, previous_status:'insufficient'})
+  const history = page.getByLabel('本会话的历史研究')
+  await history.locator('summary').click()
+  await expect(history.locator('.conversation-response-heading')).toContainText('部分结果')
+  await history.getByRole('button', {name:/查看来源/}).click()
+  await expect(page.locator('.current-turn')).toContainText(first.topic)
+  await page.getByLabel('继续追问').fill('确认后台状态同步')
+  await expect(page.getByRole('button', {name:'发送追问'})).toBeDisabled()
+  holdBackgroundStatus = false
+  await expect(page.getByRole('button', {name:'发送追问'})).toBeEnabled()
+  await expect(page.locator('.current-turn')).toContainText(first.topic)
+  await page.getByLabel('继续追问').clear()
+  await page.unroute(detailRoute)
+  if (await history.getAttribute('open') === null) await history.locator('summary').click()
+  await history.getByRole('button', {name:'查看来源 2'}).click()
   await expect(page.getByText(/补查已合入草稿/)).toBeVisible()
   await expect(coverage(page, pg)).toContainText('已回答')
   await expect(coverage(page, milvus)).toContainText('部分回答')
