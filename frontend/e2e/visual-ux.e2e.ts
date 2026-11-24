@@ -132,7 +132,7 @@ test('real account can use prompts, scope, memory and all navigation at three si
     await page.setViewportSize(size)
     await navigate(page, '新建研究')
     await page.getByLabel('资料范围').selectOption('internal')
-    await expect(page.locator('#scope-help')).toContainText('不联网')
+    await expect(page.locator('#scope-help')).toContainText('只检索本地资料')
     await page.getByRole('button', { name: /比较两种选择/ }).click()
     await expect(page.getByLabel('研究主题')).toHaveValue(/线上课程和线下课程/)
     await expect(page.getByLabel('资料范围')).toHaveValue('internal')
