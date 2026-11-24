@@ -6,18 +6,18 @@
 
 正式交付状态、镜像和最终验收以[最新版本页](https://github.com/W205614/DeepResearch/releases/latest)为准。下文带日期的验证段落保留提交时的阶段记录；后续版本不会改写旧失败或旧截图。
 
-- 部署：[v0.1.6 快速上手](#v016-快速上手) · [选择启动方式](#选择启动方式) · [镜像摘要与部署说明](docs/container-packages.md)。
+- 部署：[v0.1.7 快速上手](#v017-快速上手) · [选择启动方式](#选择启动方式) · [镜像摘要与部署说明](docs/container-packages.md)。
 - 理解项目：[架构与目录](#架构与目录) · [源码调用路径](docs/project-structure.md) · [Java／Python 职责](docs/java-python-ownership.md)。
 - 维护：[贡献指南](CONTRIBUTING.md) · [升级与恢复](docs/deployment-security-operations.md) · [安全报告](SECURITY.md)。
 
-## v0.1.6 快速上手
+## v0.1.7 快速上手
 
-以下 PowerShell 示例使用 [v0.1.6](https://github.com/W205614/DeepResearch/releases/tag/v0.1.6) 的三个公开应用镜像和核心服务。准备 Git、Python 3.11.5 至 3.13、uv、Docker Linux/amd64 和 Compose v2。Windows 使用 Docker Desktop 的 Linux 容器。首次安装要联网下载镜像和源码，并编译 Milvus、MinIO 等配套依赖。已有部署请沿用原项目名和覆盖文件，先核对[升级与恢复条件](docs/deployment-security-operations.md#现有数据升级)。
+以下 PowerShell 示例使用 [v0.1.7](https://github.com/W205614/DeepResearch/releases/tag/v0.1.7) 的三个公开应用镜像和核心服务。准备 Git、Python 3.11.5 至 3.13、uv、Docker Linux/amd64 和 Compose v2。Windows 使用 Docker Desktop 的 Linux 容器。首次安装要联网下载镜像和源码，并编译 Milvus、MinIO 等配套依赖。已有部署请沿用原项目名和覆盖文件，先核对[升级与恢复条件](docs/deployment-security-operations.md#现有数据升级)。
 
 1. 检出发布标签并初始化本机配置。
 
    ```powershell
-   git clone --config core.autocrlf=false --branch v0.1.6 https://github.com/W205614/DeepResearch.git
+   git clone --config core.autocrlf=false --branch v0.1.7 https://github.com/W205614/DeepResearch.git
    cd DeepResearch
    python scripts/local.py init
    ```
@@ -27,7 +27,7 @@
 3. 在同一 PowerShell 会话逐条执行以下命令。首次启动时 ClamAV 还会下载病毒特征库。
 
    ```powershell
-   $env:DEEPRESEARCH_PACKAGE_VERSION = 'v0.1.6'
+   $env:DEEPRESEARCH_PACKAGE_VERSION = 'v0.1.7'
    $composeFiles = @('-f', 'compose.yaml', '-f', 'deployment/compose/compose.core.yaml', '-f', 'deployment/compose/compose.packages.yaml')
    python scripts/local.py check --compose-file deployment/compose/compose.packages.yaml
    uv run --frozen --no-dev python scripts/build_minio_alpine_20261121.py
@@ -39,7 +39,7 @@
 
 4. 打开 `http://localhost:8080`，注册或登录业务账号，创建个人空间并[发起第一条研究](#启动后的第一条研究)。检查状态用 `docker compose @composeFiles ps`，暂停用 `docker compose @composeFiles stop --timeout 60`，配置和数据卷会保留。
 
-三个应用镜像的固定摘要见 [v0.1.6 发布页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.6)。要从源码重建应用，完成前两步后运行 `uv run --frozen --no-dev python scripts/local.py start`，由启动器准备依赖并构建核心栈。
+三个应用镜像的固定摘要见 [v0.1.7 发布页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.7)。要从源码重建应用，完成前两步后运行 `uv run --frozen --no-dev python scripts/local.py start`，由启动器准备依赖并构建核心栈。
 
 ## 可以做什么
 
@@ -52,13 +52,19 @@
 
 内部资料模式关闭公开搜索，配置的模型服务仍会处理资料。使用前确认数据处理范围，按[资料与报告生命周期](docs/evidence-lifecycle.md)管理授权。单文件上限 10 MB，每轮最多 4 张图片；任务调用与 Token 预算由持久化账本约束。
 
-### `v0.1.6` 的研究流程
+### 当前研究流程
 
-以下功能包含在 `v0.1.6` 源码和应用镜像中。
+以下功能可在当前应用镜像中使用。
 
 - 提交前检查所选资料范围的可用性。需要澄清时，可以修改建议的时间、地区、研究对象和交付要求。对已有报告继续追问时，新任务保留原研究的关联。
 - 在报告的「答题覆盖」中查看各项状态和证据。对缺口可选择「仅补查此项」，编辑联网查询或提供网页，内部模式也能在新资料完成索引后重查。只有通过核验并能补充所选项的结论才合入草稿，原报告仍可回看。
 - 并排核对原文片段，查看网页复查状态，在草稿或获准访问的正式报告中导出决策摘要。草稿的局限和正式版的审核边界继续可见。
+
+### v0.1.7 修复
+
+- 报告会保留已经核验的事实，并明确标记仍未回答的问题。送审和批准会检查完整性标记。
+- 会话 Markdown 下载会在写入时复核访问权限。草稿导出注明执行状态和核验质量。
+- 后台任务更新不会切换正在阅读的历史报告。研究范围会说明是否搜索公开网页，以及配置的模型和嵌入服务可能处理哪些输入。
 
 ## 两个研究示例
 
@@ -100,7 +106,9 @@
 
 [`v0.1.3` 的拉取与日常验收](https://github.com/W205614/DeepResearch/releases/tag/v0.1.3)、[首次真实流程检查](docs/evidence/release-20261112/README.md)和[此前候选失败](docs/evidence/followup-20261113/README.md)保留各自时间与范围。恢复与组件负载证据见[2026-11-08 验收](docs/evidence/daily-20261108/README.md)及[证据索引](docs/evidence/production-20261107/README.md)；不同阶段结果不合并为一次全套通过。
 
-2026-11-23 在 Windows Docker Desktop 上用 `v0.1.6` 固定镜像做了隔离回归。升级前后合成旧报告及引用一致，固定证据浏览器用例通过，覆盖引用查看、定向补查、回看原研究和正式报告修订。真实模型与联网研究仍待复验。见[回归范围与镜像摘要](docs/container-packages.md#2026-11-23-隔离回归)。
+2026-11-23 在 Windows Docker Desktop 上用 `v0.1.6` 固定镜像做了隔离回归。升级前后合成旧报告及引用一致，固定证据浏览器用例通过，覆盖引用查看、定向补查、回看原研究和正式报告修订。当时的范围是隔离功能回归。见[回归范围与镜像摘要](docs/container-packages.md#2026-11-23-隔离回归)。
+
+2026-11-24 使用 `v0.1.7` 候选组合验证了研究生命周期、权限、导出和历史页刷新。真实模型验收使用合成资料。明确归因的内部题完整通过，原始内部问法返回证据不足。联网题支持 7 条带引用事实，引用来自 3 份 PostgreSQL 官方文档，报告保留未回答项。发布后对三个镜像执行了 Linux/amd64 匿名拉取，并在本机日常环境核对了启动、权限入口和 14 张业务表。
 
 ## 架构与目录
 
@@ -139,8 +147,8 @@ Java 管理公开接口、权限、任务准入、Outbox 和正式报告。Pytho
 
 | 目的 | 来源与入口 | 需要的工具 |
 | --- | --- | --- |
-| 获取预构建应用镜像 | [v0.1.6 快速上手](#v016-快速上手)，应用镜像的身份见[发布页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.6) | Git、Python 3.11.5 至 3.13、uv、Docker Linux/amd64、Compose v2 |
-| 从固定源码构建 | 检出 `v0.1.6` 并使用[快速上手](#v016-快速上手)末尾的源码启动命令 | 同上，Java 和 Node 由 Docker 构建 |
+| 获取预构建应用镜像 | [v0.1.7 快速上手](#v017-快速上手)，应用镜像的身份见[发布页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.7) | Git、Python 3.11.5 至 3.13、uv、Docker Linux/amd64、Compose v2 |
+| 从固定源码构建 | 检出 `v0.1.7` 并使用[快速上手](#v017-快速上手)末尾的源码启动命令 | 同上，Java 和 Node 由 Docker 构建 |
 | 修改当前开发源码 | `main` + Python 容器热更新，或独立组件开发检查；[开发指南](CONTRIBUTING.md#开发环境) | 完整开发检查另需 Python／uv、JDK 21／Maven、Node.js 22／npm |
 
 三个应用镜像不包含完整依赖栈。`v0.1.5` 使用受控的 MinIO／Grafana 本地源码入口，并按该 Tag 配方获取或构建其他依赖；首次安装需要网络与构建时间，CI 缓存提速不代表首次安装无需编译。对应源码为引用补充包，仍需既有固定输入，不是完全离线安装包。[依赖获取说明](docs/source-release.md#运行依赖如何获取)及[镜像手册](docs/container-packages.md)保留各自版本边界。支持的平台为 Linux/amd64；Windows 使用 Docker Desktop 的 Linux 容器，未声称 arm64 已验收。网络下载、外部账号和模型调用额度由使用者准备。
@@ -181,7 +189,8 @@ Java 管理公开接口、权限、任务准入、Outbox 和正式报告。Pytho
 
 | 对象 | 固定来源 | 获取与对应材料 |
 | --- | --- | --- |
-| 正式 `v0.1.6` | 源码与镜像分发来源 `758b48f0a6e1111d6703a86f7dd206d6f07261ba` | [Release 与精确 digest](https://github.com/W205614/DeepResearch/releases/tag/v0.1.6) · [CI 4 项成功](https://github.com/W205614/DeepResearch/actions/runs/44994158344) · [Security 22 项成功](https://github.com/W205614/DeepResearch/actions/runs/44994158254) · [Packages 发布成功](https://github.com/W205614/DeepResearch/actions/runs/45000289391) |
+| 正式 `v0.1.7` | 源码与镜像分发来源 `28ae8767b18a4c4d8329cb5c38f3e0fa5d310e55` | [Release 与精确 digest](https://github.com/W205614/DeepResearch/releases/tag/v0.1.7) · [CI 4 项成功](https://github.com/W205614/DeepResearch/actions/runs/45408583120) · [Security 22 项成功](https://github.com/W205614/DeepResearch/actions/runs/45408583311) · [Packages 发布成功](https://github.com/W205614/DeepResearch/actions/runs/45421560733) |
+| 历史 `v0.1.6` | 源码与镜像分发来源 `758b48f0a6e1111d6703a86f7dd206d6f07261ba` | [Release 与精确 digest](https://github.com/W205614/DeepResearch/releases/tag/v0.1.6) · [CI 4 项成功](https://github.com/W205614/DeepResearch/actions/runs/44994158344) · [Security 22 项成功](https://github.com/W205614/DeepResearch/actions/runs/44994158254) · [Packages 发布成功](https://github.com/W205614/DeepResearch/actions/runs/45000289391) |
 | 历史 `v0.1.5` | 源码与镜像分发来源 `e6799f73b00144b9ef16b71dedac2759a5cf54af` | [Release 与精确 digest](https://github.com/W205614/DeepResearch/releases/tag/v0.1.5) · [CI：4 项成功](https://github.com/W205614/DeepResearch/actions/runs/43718297000) · [Security：22 项成功](https://github.com/W205614/DeepResearch/actions/runs/43718297049) · [Packages 发布成功](https://github.com/W205614/DeepResearch/actions/runs/43731414135) |
 | 三个 `v0.1.5` Packages | Agent 更新研究提示词及 SoupSieve 4.1；Backend／Web 保留已验收应用运行字节，更新分发材料与源码指纹 | 完整匿名拉取通过；Agent 原始扫描 92 条、Backend 完整 Grype 3 条 MEDIUM、Web 原始 0，精确门禁通过；不称所有依赖零漏洞，见本版附件 |
 | 历史 `v0.1.4` | 源码与镜像分发来源 `0b613f1386bcd7067cb54e236db6e29510c44b16` | [Release 与精确 digest](https://github.com/W205614/DeepResearch/releases/tag/v0.1.4) · [Security：22 项成功](https://github.com/W205614/DeepResearch/actions/runs/43437807857)；当时按用户要求豁免 CI，历史失败及取消保留 |
@@ -192,6 +201,8 @@ Java 管理公开接口、权限、任务准入、Outbox 和正式报告。Pytho
 | 历史源码 `v0.1.1` | `b2da9da7c390bd50944c2947afd1381613c37192` | [源码 Release](https://github.com/W205614/DeepResearch/releases/tag/v0.1.1) |
 | 历史应用镜像 `v0.1.1` | 打包提交 `0005df53b742cdc2b79ef9196208cf0d00f8a0b8`；保留 `b8d1500` 的应用运行字节 | [版本页内的应用制品、许可与对应源码](https://github.com/W205614/DeepResearch/releases/tag/v0.1.1) · [旧 digest 表](docs/container-packages.md#历史-v011-公开制品) |
 | 70 条源码告警修复 | `679f499f24d99a677b1c15d96fa664f36ecb21fb` | [CI](https://github.com/W205614/DeepResearch/actions/runs/42768644693) · [Security](https://github.com/W205614/DeepResearch/actions/runs/42768644680) · [逐项依据](docs/security-alert-review-20261110.md) |
+
+`v0.1.7` 为 MinIO 更新了 `gobwas/ws`，并为 Agent 应用了 OpenSSL 3.5 官方修复。三个应用镜像和对应源码均可从发布页获取。完整原始扫描和适用性核对见发布检查。
 
 2026-11-11 核对：默认分支 Code scanning 与 Secret scanning 活动项均为 0。原 70 条告警为 1 条实际 fixed、68 条有依据误报关闭、1 条维护补丁缓解；随后 6 条 Go 清单告警按真实编译图逐项关闭。本轮新增两条验收探针静态 IV 告警已通过随机密钥／nonce 实际修复，新扫描自动标记为 fixed，没有 dismiss。原始报告、失败和依据保留，无活动告警不等于零漏洞，详见[全级别复核](docs/application-security-status-20261110.md)。
 
