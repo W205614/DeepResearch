@@ -2,9 +2,21 @@
 
 应用制品分成三个 Linux/amd64 包。Agent 包还用于 Worker、资料 Worker、迁移、数据库初始化、容量指标和告警中继；角色命令由原 Compose 服务配置决定。
 
+## 当前正式版 v0.1.7
+
+[v0.1.7 发布页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.7)记录的源码与镜像分发提交为 `28ae8767b18a4c4d8329cb5c38f3e0fa5d310e55`。三个应用镜像均完成 Linux/amd64 匿名拉取，OCI 配置和有序镜像层摘要与发布清单一致。
+
+| 公开应用 | 固定镜像引用 |
+| --- | --- |
+| [Agent](https://github.com/users/W205614/packages/container/package/deepresearch-agent) | `ghcr.io/w205614/deepresearch-agent@sha256:71cfa7852f61029abd4219941f2d44b90ee6c76d5eaf644620a2592326dc6d2a` |
+| [Backend](https://github.com/users/W205614/packages/container/package/deepresearch-backend) | `ghcr.io/w205614/deepresearch-backend@sha256:b91f22243572d997d86edce553a344d02c69a0234a8c4b5db0b2ce2c2248c7c4` |
+| [Web](https://github.com/users/W205614/packages/container/package/deepresearch-web) | `ghcr.io/w205614/deepresearch-web@sha256:28dcaf46e8cb3c50f35e7f458267855c1b2c49a86b5b52e60bcf0eef507f9557` |
+
+首次安装见[获取与启动](#获取与启动)。精确制品身份、对应源码和验收范围见 [发布清单](https://github.com/W205614/DeepResearch/releases/download/v0.1.7/publication-manifest.json)、[源码收据](https://github.com/W205614/DeepResearch/releases/download/v0.1.7/source-receipt.json)和[验收记录](https://github.com/W205614/DeepResearch/releases/download/v0.1.7/acceptance-v017.json)。
+
 ## 正式 v0.1.6
 
-[发布页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.6)固定源码及应用镜像分发提交为 `758b48f0a6e1111d6703a86f7dd206d6f07261ba`。发布时三份 Linux/amd64 镜像均已匿名拉取并核对 OCI 配置与各层摘要，拉取后的镜像通过四项隔离浏览器测试，覆盖登录、权限、工作区导出和 Java 业务流程。
+本节记录 v0.1.6 的历史发布。[发布页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.6)固定源码及应用镜像分发提交为 `758b48f0a6e1111d6703a86f7dd206d6f07261ba`。发布时三份 Linux/amd64 镜像均已匿名拉取并核对 OCI 配置与各层摘要，拉取后的镜像通过四项隔离浏览器测试，覆盖登录、权限、工作区导出和 Java 业务流程。
 
 | 公开应用 | 固定镜像引用 |
 | --- | --- |
@@ -40,7 +52,7 @@ MinIO／Silo 使用 `scripts/build_minio_os_20261113.py` 的固定原生依赖�
 
 ## 正式 v0.1.3
 
-以下保留历史版本记录，当前版本见[正式 v0.1.6](#正式-v016)。
+本节记录历史版本。当前部署见 [v0.1.7 的镜像摘要](#当前正式版-v017)。
 
 正式 [v0.1.3](https://github.com/W205614/DeepResearch/releases/tag/v0.1.3) 的源码与分发提交为 `78a19df9dfa6f072af6ebe40ff99cf164d0c4ff8`，[CI](https://github.com/W205614/DeepResearch/actions/runs/42968387539)全部 4 项、[Security](https://github.com/W205614/DeepResearch/actions/runs/42968387608)全部 22 项成功。[Packages 工作流](https://github.com/W205614/DeepResearch/actions/runs/42977626649)实际发布成功，三个原有 GHCR 目标保持公开，版本名和不可变 digest 均已实际匿名获取、拉取及运行核验。
 
@@ -84,9 +96,9 @@ Manifest digest 用于 `docker pull ghcr.io/w205614/deepresearch-<service>@sha25
 
 ## 获取与启动
 
-首次安装按 [v0.1.6 快速上手](../README.md#v016-快速上手)执行。检出 `v0.1.6` 后，在同一终端显式设置 `DEEPRESEARCH_PACKAGE_VERSION=v0.1.6`，因为该标签的 Compose 镜像覆盖文件默认仍指向 `v0.1.4`。MinIO、Milvus 等依赖按[源码与运行依赖指引](source-release.md#运行依赖如何获取)准备。
+首次安装按 [v0.1.7 快速上手](../README.md#v017-快速上手)执行。检出 `v0.1.7` 后，在同一终端显式设置 `DEEPRESEARCH_PACKAGE_VERSION=v0.1.7`，覆盖发布标签内 Compose 文件的默认值 `v0.1.4`。MinIO、Milvus 等依赖按[源码与运行依赖指引](source-release.md#运行依赖如何获取)准备。
 
-已有部署应保留项目名、`.env`、端口和网络覆盖、账号以及业务卷。升级前核对[现有数据升级与恢复条件](deployment-security-operations.md#现有数据升级)。如需固定部署，将对应应用角色绑定到[本版的镜像摘要](#正式-v016)，后续查看状态、日志或暂停时沿用启动时的 Compose 参数。
+已有部署应保留项目名、`.env`、端口和网络覆盖、账号以及业务卷。升级前核对[现有数据升级与恢复条件](deployment-security-operations.md#现有数据升级)。如需固定部署，将对应应用角色绑定到 [v0.1.7 的镜像摘要](#当前正式版-v017)，后续查看状态、日志或暂停时沿用启动时的 Compose 参数。
 
 ## 制品来源与许可材料
 

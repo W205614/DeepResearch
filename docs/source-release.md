@@ -1,6 +1,6 @@
 # 源码发布与本地运行
 
-当前正式版本为 [`v0.1.6`](https://github.com/W205614/DeepResearch/releases/tag/v0.1.6)，源码标签和应用镜像的分发提交为 `758b48f0a6e1111d6703a86f7dd206d6f07261ba`。三个公开 Linux/amd64 镜像的固定引用和验收范围见[应用镜像说明](container-packages.md#正式-v016)。检出标签可获得对应的 Dockerfile、Compose 和构建脚本；main 可能包含后续文档更新。
+当前正式版本为 [`v0.1.7`](https://github.com/W205614/DeepResearch/releases/tag/v0.1.7)，源码标签和应用镜像的分发提交为 `28ae8767b18a4c4d8329cb5c38f3e0fa5d310e55`。三个公开 Linux/amd64 镜像的固定引用和验收范围见[应用镜像说明](container-packages.md#当前正式版-v017)。检出标签可获得对应的 Dockerfile、Compose 和构建脚本。`main` 可能包含后续文档更新。
 
 正常历史 `v0.1.2` 源码为 `488550ecb61e7f369dd4967c7fa35e4c64369e75`，其 93 个公开附件（含 74 个对应源码分片）继续为新引用式源码包提供完整旧材料；该版 Packages 作业在推送前被新漏洞库阻断。历史 [对应源码获取方式](container-packages.md#制品来源与许可材料)要求同时获取新补充包和固定旧材料，不是只下载小包即可自包含重建。
 
@@ -15,7 +15,7 @@
 需要 Git、Python 3.11.5 至 3.13、uv 和 Linux/amd64 Docker Engine（含 Compose v2）。Windows 使用 Docker Desktop 的 Linux 容器。Java、Node.js 与应用依赖由 Docker 构建；首次构建仍需下载上游镜像、源码和依赖，不能视为离线安装。
 
 ```powershell
-git clone --config core.autocrlf=false --branch v0.1.6 https://github.com/W205614/DeepResearch.git
+git clone --config core.autocrlf=false --branch v0.1.7 https://github.com/W205614/DeepResearch.git
 cd DeepResearch
 python scripts/local.py init
 ```
@@ -35,13 +35,13 @@ python scripts/local.py stop
 
 工作台默认 `http://localhost:8080`，Keycloak 管理台 `http://localhost:8180/admin`，管理员为 `admin`，密码从私密 `.env` 的 `KEYCLOAK_ADMIN_PASSWORD` 读取。工作台使用本地 IdP 注册的业务账号，不能拿 Keycloak 管理台账号直接当业务账号。
 
-完整观测栈使用 `start --observability`，停止时同样加 `--observability`；上面检出的 `v0.1.6` 会先准备 MinIO 和 Milvus 构建输入，观测模式再准备 Grafana，具体入口见下文。`--project-name`、`--env-file` 和重复的 `--compose-file` 用于明确指定项目与覆盖配置，启动和停止须使用同一套参数。已有日常部署继续保留原项目名、端口覆盖和 Compose 文件，不要把首次安装命令直接用于替换现有环境。
+完整观测栈使用 `start --observability`，停止时同样加 `--observability`。`v0.1.7` 会先准备 MinIO 和 Milvus，观测模式再准备 Grafana，具体入口见下文。`--project-name`、`--env-file` 和重复的 `--compose-file` 用于明确指定项目与覆盖配置，启动和停止须使用同一套参数。已有日常部署应沿用原项目名、端口覆盖和 Compose 文件。
 
 `check` 只核对必需配置、Docker 平台、Compose 解析及所选 profile，不验证 API Key 是否有效，也不发出模型请求或构建镜像。`start` 默认构建；`--no-build` 仅用于已有匹配镜像的环境，不代表本次重新构建过。完整观测栈的 `--no-build` 还会检查固定依赖的实际镜像和构建收据，缺失或不符时启动失败。
 
 ## 运行依赖如何获取
 
-`v0.1.6` 的源码启动器使用 `scripts/build_minio_alpine_20261121.py` 准备 `deepresearch-minio-alpine:20261121`，以 `Dockerfile.milvus` 构建 `deepresearch-milvus-legacy:20261122` 后，再由 Compose 构建服务。启用观测时，启动器还会准备 Grafana 的固定源码输入，并执行 `scripts/build_grafana_20261122.py`。使用公开应用镜像时，按[核心栈快速上手](../README.md#v016-快速上手)准备这些运行依赖。
+`v0.1.7` 的源码启动器使用 `scripts/build_minio_alpine_20261121.py` 准备 `deepresearch-minio-alpine:20261121`，以 `Dockerfile.milvus` 构建 `deepresearch-milvus-legacy:20261122` 后，再由 Compose 构建服务。启用观测时，启动器还会准备 Grafana 的固定源码输入，并执行 `scripts/build_grafana_20261122.py`。使用公开应用镜像时，按 [v0.1.7 核心栈快速上手](../README.md#v017-快速上手)准备运行依赖。
 
 ### v0.1.4 及更早版本的依赖记录
 

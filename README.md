@@ -6,7 +6,7 @@
 
 正式交付状态、镜像和最终验收以[最新版本页](https://github.com/W205614/DeepResearch/releases/latest)为准。下文带日期的验证段落保留提交时的阶段记录；后续版本不会改写旧失败或旧截图。
 
-- 部署：[v0.1.7 快速上手](#v017-快速上手) · [选择启动方式](#选择启动方式) · [镜像摘要与部署说明](docs/container-packages.md)。
+- 部署：[v0.1.7 快速上手](#v017-快速上手) · [选择启动方式](#选择启动方式) · [v0.1.7 镜像摘要与部署说明](docs/container-packages.md#当前正式版-v017)。
 - 理解项目：[架构与目录](#架构与目录) · [源码调用路径](docs/project-structure.md) · [Java／Python 职责](docs/java-python-ownership.md)。
 - 维护：[贡献指南](CONTRIBUTING.md) · [升级与恢复](docs/deployment-security-operations.md) · [安全报告](SECURITY.md)。
 
@@ -151,7 +151,7 @@ Java 管理公开接口、权限、任务准入、Outbox 和正式报告。Pytho
 | 从固定源码构建 | 检出 `v0.1.7` 并使用[快速上手](#v017-快速上手)末尾的源码启动命令 | 同上，Java 和 Node 由 Docker 构建 |
 | 修改当前开发源码 | `main` + Python 容器热更新，或独立组件开发检查；[开发指南](CONTRIBUTING.md#开发环境) | 完整开发检查另需 Python／uv、JDK 21／Maven、Node.js 22／npm |
 
-三个应用镜像不包含完整依赖栈。`v0.1.5` 使用受控的 MinIO／Grafana 本地源码入口，并按该 Tag 配方获取或构建其他依赖；首次安装需要网络与构建时间，CI 缓存提速不代表首次安装无需编译。对应源码为引用补充包，仍需既有固定输入，不是完全离线安装包。[依赖获取说明](docs/source-release.md#运行依赖如何获取)及[镜像手册](docs/container-packages.md)保留各自版本边界。支持的平台为 Linux/amd64；Windows 使用 Docker Desktop 的 Linux 容器，未声称 arm64 已验收。网络下载、外部账号和模型调用额度由使用者准备。
+使用 `v0.1.7` 的三个公开应用镜像时，首次安装仍需联网构建 MinIO 与 Milvus。完整观测栈另需准备 Grafana。依赖的固定输入和构建方式见[依赖获取说明](docs/source-release.md#运行依赖如何获取)。当前交付平台为 Linux/amd64，Windows 使用 Docker Desktop 的 Linux 容器。网络下载、外部账号和模型调用额度由使用者准备。
 
 从 `main` 构建时，`scripts/local.py start` 会先准备固定的 Silo 和 mcli，再构建 Alpine 存储镜像。日常 Compose 沿用 `/minio_data` 挂载，隔离组件测试使用 `/data`。Agent 从固定输入重新编译 glibc、libstdc++ 和 OpenSSL，[源码锁](deployment/vendors/agent-native-20261122/source.lock.json)记录归档摘要和补丁来源。Security 会用原始扫描的全部严重级别检查实际运行镜像。公开应用镜像按各版本页提供。
 
