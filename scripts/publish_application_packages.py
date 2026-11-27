@@ -264,10 +264,11 @@ def validate_manifest(data: dict, source_sha: str, release_tag: str) -> None:
         raise ValueError("Archive parts must have unique names")
 
 
-def github(path: str) -> dict:
-    request = Request("https://api.github.com/repos/" + REPOSITORY + path,
-                      headers={"Authorization": "Bearer " + os.environ["GITHUB_TOKEN"],
-                               "Accept": "application/vnd.github+json"})
+def github(path: str, *, anonymous: bool = False) -> dict:
+    headers = {"Accept": "application/vnd.github+json"}
+    if not anonymous:
+        headers["Authorization"] = "Bearer " + os.environ["GITHUB_TOKEN"]
+    request = Request("https://api.github.com/repos/" + REPOSITORY + path, headers=headers)
     with urlopen(request, timeout=45) as response:
         return json.load(response)
 
@@ -303,11 +304,16 @@ def assemble(spec: dict, assets: dict, directory: Path, name: str) -> Path:
     return destination
 
 
-def registry_manifest(repository: str, version: str) -> dict | None:
+def registry_manifest(repository: str, version: str, *, anonymous: bool = False) -> dict | None:
     name = repository.removeprefix("ghcr.io/")
-    auth = base64.b64encode((os.environ["GITHUB_ACTOR"] + ":" + os.environ["GITHUB_TOKEN"]).encode()).decode()
-    query = urlencode({"service": "ghcr.io", "scope": "repository:" + name + ":pull,push"})
-    with urlopen(Request("https://ghcr.io/token?" + query, headers={"Authorization": "Basic " + auth}), timeout=45) as response:
+    headers = {}
+    scope = "pull"
+    if not anonymous:
+        auth = base64.b64encode((os.environ["GITHUB_ACTOR"] + ":" + os.environ["GITHUB_TOKEN"]).encode()).decode()
+        headers["Authorization"] = "Basic " + auth
+        scope = "pull,push"
+    query = urlencode({"service": "ghcr.io", "scope": f"repository:{name}:{scope}"})
+    with urlopen(Request("https://ghcr.io/token?" + query, headers=headers), timeout=45) as response:
         token = json.load(response)["token"]
     def fetch(reference):
         request = Request("https://ghcr.io/v2/" + name + "/manifests/" + reference,

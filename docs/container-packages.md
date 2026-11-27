@@ -131,6 +131,6 @@ Manifest digest 用于 `docker pull ghcr.io/w205614/deepresearch-<service>@sha25
 
 等待该提交 CI／Security 成功后，显式运行 [Publish verified application packages](../.github/workflows/publish-application-packages.yml)，传入对应单一 Release 标签与已验收清单的 SHA-256。发布器在推送前对实际加载归档执行完整 Trivy 漏洞和秘密扫描，默认要求全部级别 raw zero；Agent 仅可显式采用已绑定字节、运行配置、515 ELF／5972 Python 文件／290 glibc 项及逐条 tuple 的固定技术门槛。新发现、证据或配置变化失败，不能凭历史绿色 CI 或 `security` 布尔值放行。原始失败、扫描与裁决保留，秘密值不放进公开附件。
 
-工作流使用仓库自己的 `GITHUB_TOKEN` 和 `packages: write`，不要求增加本机个人令牌权限；推送前检查命名空间及既有版本，拒绝覆盖不同字节的版本。
+正式版本的 Packages 工作流会再次核对 README、Compose 应用镜像与目标 Tag。工作流使用仓库自己的 `GITHUB_TOKEN` 和 `packages: write`，推送前检查命名空间及既有版本，拒绝覆盖不同字节的版本。
 
-发布后核对包可见性，按预期身份实际拉取 digest，验证 config ID 与候选一致，再更新约定日常环境、验收并恢复原启停状态。收尾后才清理已经结束使用的普通临时文件；许可和对应源码材料继续随制品保留。
+发布后用工作流的 `publication.json` 更新 Release 的三个应用镜像 digest，再运行 `python scripts/check_release_startup.py <版本标签> --published`。该检查以匿名方式核对 Release 列出的 digest 与 GHCR 版本标签对应的 Linux/amd64 镜像。随后按预期身份实际拉取 digest，验证 config ID 与候选一致，再更新约定日常环境、验收并恢复原启停状态。收尾后才清理已经结束使用的普通临时文件；许可和对应源码材料继续随制品保留。

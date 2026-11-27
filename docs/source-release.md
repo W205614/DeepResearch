@@ -88,6 +88,6 @@ Temurin JRE、签名／SBOM 和 Prometheus／Alertmanager UI 从固定官方 Rel
 2. 提交并推送；等待该提交的 CI、Security 和适用的观测规则检查完成。CI 的源码归档检查不等同于镜像许可检查。
 3. 从最终提交的干净副本执行 `init`、`check`、构建启动和核心回归，记录复用的 Docker 缓存、外部镜像和未运行项目。停止隔离测试栈；不要操作既有业务卷。
 4. 对最终提交运行 `python scripts/verify_source_release.py --ref HEAD --output .cache/source-release`。它核对 Git 归档内的必要文件、私密路径和符号链接，并输出源码逐文件摘要。另行检查内容中的真实凭据，路径检查不能代替秘密扫描。
-5. 确有需要交付的版本变更时，为最终提交准备语义化标签与 Release 草稿；核对目标、源码／镜像关系、变更、安装与限制后正式发布。不为同一版本的重测或文档更新新建标签，也不覆盖历史标签。源码归档使用 GitHub 自动生成入口；镜像、许可和对应源码按实际制品另行交付，`.cache/source-release` 只作本地核对材料。
+5. 为应用发布准备目标版本时，在最终提交执行 `python scripts/check_release_startup.py <版本标签>`，例如 `python scripts/check_release_startup.py v0.1.7`。检查通过后打 Tag 并准备 Release 草稿。该命令核对 README 的检出标签和显式镜像版本，并用文档列出的 Compose 文件解析应用服务的镜像。不为同一版本的重测或文档更新新建标签，也不覆盖历史标签。源码归档使用 GitHub 自动生成入口；镜像、许可和对应源码按实际制品另行交付，`.cache/source-release` 只作本地核对材料。
 
 现有常规 CI 只构建和验证，不因应用标签或 Release 自动推送镜像或部署生产。应用容器由[显式 Packages 工作流](../.github/workflows/publish-application-packages.yml)校验已验收制品后推送；Grafana 也保留独立手动工作流。Maven 用于源码编译与测试，不发布 Maven 应用包。纯文档或测试变更不要求重建镜像；构建输入改变时重新验证受影响制品，不能把旧镜像的来源标签改成新提交。
