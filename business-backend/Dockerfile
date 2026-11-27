@@ -12,6 +12,7 @@ RUN --mount=type=cache,target=/root/.m2 \
 
 FROM alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a AS backend-busybox-fix
 COPY deployment/vendors/grafana-20261110/busybox/ /recipe/
+COPY deployment/vendors/busybox-20261127/ /recipe/
 COPY business-backend/runtime/backend_busybox_benign.py /backend_busybox_benign.py
 RUN sh /recipe/build.sh
 RUN --network=none python3 /backend_busybox_benign.py > /out/metadata/backend-benign-regression.json

@@ -28,6 +28,7 @@ ADD --checksum=sha256:7fde96e8afb4191593a15328883e9c7726c96891cf071222146821e8c8
 
 FROM alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a AS fixed-shell
 COPY deployment/vendors/grafana-20261110/busybox/ /recipe/
+COPY deployment/vendors/busybox-20261127/ /recipe/
 COPY --from=verified-skalibs /skalibs-2.15.0.0.tar.gz /recipe/inputs/
 RUN sh /recipe/build.sh
 
