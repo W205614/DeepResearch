@@ -76,6 +76,10 @@
     "scripts/check_agent_full_scope.py": {
       "before": "c6d2947f1e14261d05796a277acf272025dcf9b98a8e91676ea5d530532cbdc7",
       "after": "73154464966ea41fe0d1a3d1c6f849879b939420f3dfe2a29d1c0d618c227efd"
+    },
+    "deployment/docker/Dockerfile.keycloak": {
+      "before": "b629c09dd2eac1ed3aba455b49226ff3768f999d1d3bf39a72f4180299112337",
+      "after": "8cf61cf438fd70a0fc8b00a0ec2ff6b25df8c9617f7bfc5cae5d979e1345f088"
     }
   },
   "supporting_evidence": {
@@ -90,5 +94,15 @@
     "Backend and Alpine MinIO overlay two refreshed build input locks. The rebuilt Backend stage retains exactly the reviewed BusyBox binary. All changed installed metadata files are explicitly bound. The Grafana donor retains its original independently reviewed source inputs and profile.",
     "The Agent adds an official production OpenSSL backport and rebinds the exact Debian package and measured native inventory. The scanner scope, finding equality, application Python closure and secret checks remain in force.",
     "The comparison uses the preceding source scans. The repair must pass a separate complete GitHub Actions source and image scan."
-  ]
+  ],
+  "keycloak_zlib_transport": {
+    "failed_job": 140301689727,
+    "original_url": "https://zlib.net/zlib-1.4.tar.gz",
+    "official_release_url": "https://github.com/madler/zlib/releases/download/v1.4/zlib-1.4.tar.gz",
+    "verified_bytes": 1507140,
+    "sha256": "02dd159783677a749c04adbdd02b55b8a2bcc7e054f51b76b549199a916ad584",
+    "recipe_changes": [
+      "archive URL"
+    ]
+  }
 }

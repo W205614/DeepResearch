@@ -13,7 +13,7 @@ ADD --checksum=sha256:b530942257fb935f8b2cfaa5f8eb5bd59c555fd8e8d01b8ce98912e077
 FROM quay.io/keycloak/keycloak@sha256:a78d6b79572168cb25886b80a8b5b8d4ed4390743e3eecb810538683e209dd6b AS original
 FROM registry.access.redhat.com/ubi9/ubi@sha256:3c3fa194551e503333f03a017bf418fc1f658545db1e2df1e58ccc67e203c324 AS zlib-fixed
 RUN dnf install -y gcc make rpm-build binutils && mkdir -p /build/rpmbuild/{SOURCES,SPECS} /out
-ADD --checksum=sha256:02dd159783677a749c04adbdd02b55b8a2bcc7e054f51b76b549199a916ad584 --chmod=0644 https://zlib.net/zlib-1.4.tar.gz /build/rpmbuild/SOURCES/zlib-1.4.tar.gz
+ADD --checksum=sha256:02dd159783677a749c04adbdd02b55b8a2bcc7e054f51b76b549199a916ad584 --chmod=0644 https://github.com/madler/zlib/releases/download/v1.4/zlib-1.4.tar.gz /build/rpmbuild/SOURCES/zlib-1.4.tar.gz
 COPY deployment/vendors/keycloak/zlib/zlib.spec /build/rpmbuild/SPECS/zlib.spec
 COPY deployment/vendors/keycloak/zlib/normal_roundtrip.c /build/normal_roundtrip.c
 RUN rpmbuild --define '_topdir /build/rpmbuild' -bb /build/rpmbuild/SPECS/zlib.spec \
