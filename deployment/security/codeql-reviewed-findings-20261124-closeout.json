@@ -1,6 +1,6 @@
 {
   "schema": "codeql-exact-reviewed-findings-v1",
-  "reviewed_at": "2026-11-24",
+  "reviewed_at": "2026-11-27",
   "baseline_source_sha": "0005df53b742cdc2b79ef9196208cf0d00f8a0b8",
   "scope": "Four technically verified false positives only. Preserve all raw SARIF. New locations/messages, changed bound source/proof bytes, or additional findings require review; no risk acceptance or category/path exclusion. TLS test alert 133 is fixed in code and deliberately has no exception.",
   "findings": [
@@ -87,9 +87,9 @@
         "deployment/security/agent-native-fixed-code-supplement-20261107.json": "f0960cbc117072656b5038706634e11f79281fe876f84642fa234953f25338df",
         "scripts/check_agent_native_packages.py": "f58993e9d958b39e8dad90883cd1af2ece225fcc2ee6f0f5d60ed8df92a04ac7",
         "compose.yaml": "4af73b6c123cbb1086ae42546bd45e8324b42ca20211e6e851d13fa8b553251f",
-        "frontend/Dockerfile": "22c337bb6cae6e2c07b6d176f13dffe5318c4b54eadae09cdbc46a0ff7c30d37",
+        "frontend/Dockerfile": "6e386b06cb007b591c014a3fb2e4a6123a0ceb9df9733fd87fa5e24e7d50066e",
         "frontend/nginx.conf": "9dfa67b7fe4d3159b2dabf772c51a82e625b3757de35ca37bd36db297c15ccb2",
-        "Dockerfile": "28a4dac3e6a7b3579af48bea7e22551601485d61ca48a2492aeb48506d5fd195",
+        "Dockerfile": "8f59ee3f6ded367ff8025668cb6abb2de8280e11b17d71a62f17db960c48ddf8",
         "deployment/security/codeql-continuation-review-20261111.json": "ab47a6c04b523a9f45396a04cc0199ddb83f21b07ad5677030ce1e4441488e4f",
         "deployment/security/codeql-continuation-review-20261112.json": "25a5f0bde760347ea4367d0dfaf0df3ebe1b53a12607d484a85e1a876121bb82",
         "deployment/docker/Dockerfile.minio-20261112": "aa37214feaadb223f727c83bbf42726a887800ce37f89e5e5f741877c1f36635",
@@ -152,7 +152,7 @@
         "deployment/vendors/grafana-20261110/busybox/alpine-patches/0033-lineedit-use-stdout-for-shell-history-builtin.patch": "61265873d32d0d0b12c429a736de6c949f0dbcd434e1ead1765bf3fd19cfc084",
         "deployment/vendors/grafana-20261110/busybox/alpine-patches/0034-adduser-remove-preconfigured-GECOS-full-name-field.patch": "b1b62318d5b4550c2a4ae6cad74330bbb9159dacdd8f0617759311d9d977dbbf",
         "deployment/vendors/grafana-20261110/busybox/alpine-patches/0035-cpio-map-F-to-file-long-option.patch": "6a65af49b8497220eb8ef502167d76bf12a30f7cf1a12eb620041e1efd0747b5",
-        "deployment/vendors/grafana-20261110/busybox/archives.lock": "f45ba70466c4fa7ba4d19541302250bb6eea124343071375dcebfad0ea6faa6f",
+        "deployment/vendors/grafana-20261110/busybox/archives.lock": "db96ee99d576fab4873dd9988b1d563861d95caa35df35c2ac7e28c33374c8f1",
         "deployment/vendors/grafana-20261110/busybox/build.sh": "ceb31eeb1969375a22ccfa96e4a45135390bac4f1777254fe6797ab7f95474b0",
         "deployment/vendors/grafana-20261110/busybox/busybox.config": "65b29f6085cd79ab5f032d7e4299534a86c3efad240e78c16186a19bf847fcca",
         "deployment/vendors/grafana-20261110/busybox/files.sha256": "7bcc5ff1a29e1217591863b48ca2e01c6684f45dad739955a6518df844612eea",
@@ -163,7 +163,7 @@
         "deployment/vendors/grafana-20261110/busybox/patch-order.txt": "83af8ef4debe60baaad8d5fb34396b7e95aa8be7858089bd141d4355408c4b21",
         "deployment/vendors/grafana-20261110/busybox/regression.py": "829dd3f55d353af3e4ba55f46cc840fd77276c90419110bdb4b46821ff820591",
         "deployment/vendors/grafana-20261110/busybox/skalibs-APKBUILD": "7878dd8832e4248e5ad535f7b8beabc9c962cdfc059b1c732d30742d57adc027",
-        "deployment/vendors/grafana-20261110/busybox/source.lock.json": "87cd1e1c527dc417b7c19fd4c687957218f4e4998a3e69ca0ae6c3d47cfb8814",
+        "deployment/vendors/grafana-20261110/busybox/source.lock.json": "179019e43a9123c20ee14546dd33cabca3644164537c23c58d4223d760ab62e6",
         "deployment/vendors/grafana-20261110/busybox/upstream-APKBUILD": "98f019f62291aff63cb798f046fb59dfd43340885de63ca2f127651fc21d0450",
         "deployment/vendors/grafana-20261110/busybox/utmps-APKBUILD": "40e59c8bf91709421c237776b427d95aed192ee8d7453ba31bde751230f06fa4",
         "deployment/vendors/grafana-20261110/busybox/wget-http-request-boundary.patch": "2c0e1249492901997598679ad17f381b7ca8fb1c13c0ae3872abb9da6b6c2602",
@@ -173,7 +173,7 @@
         ".github/workflows/rag-quality.yml": "2efe608d62d9e92606ce80da1ec02e7cb8bd4431426a7ba741bf77327a760d26",
         ".github/workflows/security.yml": "0464c68ad77241c0c68cd22d8117aeedf17dafe6224179db9b188b7101b70a98",
         "deployment/compose/compose.cloud.backend-build.yaml": "712ddd2d0a6c7d7e719e5f1ebfba99cec1d0d6250eaadde6aef9bf250ada5a9e",
-        "deployment/compose/compose.cloud.yaml": "b00d271dc87df0691c78affc43ba5b74600c385ba4e09ec7afc6caec210a6601",
+        "deployment/compose/compose.cloud.yaml": "76f9f4c359315287293ec85a40f65d97335eba1094fee7a682964ad43d460be8",
         "deployment/compose/compose.verify.yaml": "2c2110b5ad31677232deebd5fa9aebdca04745fae36015a0ac04cba366c7c532",
         "deployment/docker/Dockerfile.minio-20261112.dockerignore": "c2da2af78d20ac5746524327f5f42b0eb6dd65b0cf3ca82c388cf812f19b7e23",
         "deployment/docker/Dockerfile.minio-20261113": "dbc788dfd0b39351781b09926f886c28c5eb1401beed677e4b2521bc5f41af7f",
@@ -220,7 +220,7 @@
         "deployment/security/grafana-source-20261112-evidence/historical-source-bridge-20261113.json": "144ae827c66236a369b7b7b7f64875f8698f8ecce0ccb08c1e9fb586b8aba877",
         "deployment/security/grafana-source-20261112-evidence/source-python-scope-20261113.json": "34acad929e59d408d97e5fc9686aa497a53936984655ef548e55001649f936f3",
         "deployment/security/minio-os-20261113-evidence/review-advisory-provenance.json": "7a8bf1d7f18776704b9938e4440acb960b980d46634495fa4305ce1cd331da00",
-        "scripts/check_agent_full_scope.py": "c6d2947f1e14261d05796a277acf272025dcf9b98a8e91676ea5d530532cbdc7",
+        "scripts/check_agent_full_scope.py": "73154464966ea41fe0d1a3d1c6f849879b939420f3dfe2a29d1c0d618c227efd",
         "deployment/security/agent-soupsieve-paths-20261113-evidence/actual-source-import-scope.json": "d79549662b069559d287d9d2e564750e5e72dd2a48252f5dc0b2ff437f11345e",
         "deployment/security/agent-soupsieve-paths-evidence-20261113.json": "2b2dd46f4d9ea2480ce627b83ae04202c67209e9a4f35ea697da0b4fb0d1e228",
         "deployment/security/agent-soupsieve-paths-profile-20261113.json": "b4fb5109ddaaa15acd93ea9cbcd5c4003a6c4d95c3f478371cd928f2d7574e6b",
@@ -455,7 +455,10 @@
         "frontend/src/ReportReader.vue": "cf87c51621db52980b7a74657a84d1796317ab8452625c1f1a71fc7cb359cdb7",
         "frontend/src/EvidenceExcerpt.vue": "1437b085c4fb429cde01f816b35a4c06f82d408f742e117bf16c9efd4d62ba86",
         "deployment/security/codeql-research-flow-addendum-20261121.json": "9dd93d84e7980dab9f33d6f5c756bfa42675b3be65b16a1204cf5bb2d81e79da",
-        "deployment/security/codeql-closeout-addendum-20261124.json": "d00d291a4639e30ae5706aedaba044c8443ca9198c452b10054e034f5057c13d"
+        "deployment/security/codeql-closeout-addendum-20261124.json": "d00d291a4639e30ae5706aedaba044c8443ca9198c452b10054e034f5057c13d",
+        "deployment/security/codeql-build-input-addendum-20261127.json": "39fc4b546bd20b5d5b1fe4593c20a3fa51afe87efb341e07a3dd4ea4f148b1cd",
+        "deployment/security/backend-busybox-build-input-refresh-20261127.json": "bd3c4c12c050b281de3820d5b202558f07d6a95776e4101ee03d5d520765a93a",
+        "deployment/vendors/agent-native-20261122/CVE-2026-84785.patch": "7b6bdb5946612d7a0f6e6a920a92af3fab3ba625c91f205dacd55aa6e3233298"
       }
     }
   ],
@@ -555,5 +558,9 @@
   "closeout_addendum": {
     "path": "deployment/security/codeql-closeout-addendum-20261124.json",
     "sha256": "d00d291a4639e30ae5706aedaba044c8443ca9198c452b10054e034f5057c13d"
+  },
+  "build_input_addendum_20261127": {
+    "path": "deployment/security/codeql-build-input-addendum-20261127.json",
+    "sha256": "39fc4b546bd20b5d5b1fe4593c20a3fa51afe87efb341e07a3dd4ea4f148b1cd"
   }
 }

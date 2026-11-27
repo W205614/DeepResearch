@@ -67,6 +67,7 @@ RUN echo 'e0fb736a48c483b655997d3c4c18a8c9991da03923af1ea4abd4ee883d93c59b  /tmp
     && patch -p1 --fuzz=0 < /patches/CVE-2026-95690.patch \
     && patch -p1 --fuzz=0 < /patches/CVE-2026-121482.patch \
     && patch -p1 --fuzz=0 < /patches/CVE-2026-107494.patch \
+    && patch -p1 --fuzz=0 < /patches/CVE-2026-84785.patch \
     && ./Configure linux-x86_64 shared no-tests --prefix=/usr --libdir=lib/x86_64-linux-gnu --openssldir=/usr/lib/ssl \
     && SOURCE_DATE_EPOCH=1794873600 make -j4 build_libs \
     && strip --strip-unneeded libcrypto.so.3 libssl.so.3 \

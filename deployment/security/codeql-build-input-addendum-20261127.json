@@ -1,0 +1,96 @@
+{
+  "schema": "codeql-build-input-continuation-v1",
+  "prior_review": {
+    "commit": "7515007a814eeeb893b20f314e9ffa8f6358fdba",
+    "path": "deployment/security/codeql-reviewed-findings-20261124-closeout.json",
+    "sha256": "36e3c9f267b25e907ab1eb7fb577aac98e342d52f373b478eddf35732ea57c57"
+  },
+  "compared_scan": {
+    "workflow_run": 45931513243,
+    "artifacts": [
+      15168369600,
+      15168234464
+    ],
+    "sarif_sha256": {
+      "15168234464-go.sarif": "25031614370e0fe25c7fae36ebf0cfa726a90dfe2d668d679f51f89d49820dd8",
+      "15168369600-java.sarif": "f6c237ec5b9fb9e726c5914e35131248f2281d9fe2f249637a9d74812690d6fa",
+      "15168369600-javascript.sarif": "8eef9c1e13f687f35b910352b50d5f7b6ac9339f99a12a5fc94b104a5fab64aa",
+      "15168369600-python.sarif": "525141da0d729a63b461bbd7c25f83344c9d4d80526c52180fc4b42534b02cfb"
+    },
+    "observed_blocking_identities": [
+      {
+        "rule_id": "java/ssrf",
+        "path": "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java",
+        "start_line": 95,
+        "end_line": 95,
+        "start_column": 62,
+        "end_column": 114,
+        "message": "Potential server-side request forgery due to a [user-provided value](1)."
+      },
+      {
+        "rule_id": "java/ssrf",
+        "path": "business-backend/src/main/java/com/deepresearch/business/service/AgentClient.java",
+        "start_line": 144,
+        "end_line": 144,
+        "start_column": 57,
+        "end_column": 64,
+        "message": "Potential server-side request forgery due to a [user-provided value](1)."
+      },
+      {
+        "rule_id": "java/spring-disabled-csrf-protection",
+        "path": "business-backend/src/main/java/com/deepresearch/business/config/SecurityConfig.java",
+        "start_line": 34,
+        "end_line": 34,
+        "start_column": 27,
+        "end_column": 41,
+        "message": "CSRF vulnerability due to protection being disabled."
+      },
+      {
+        "rule_id": "js/xss-through-dom",
+        "path": "deployment/security/agent-native-evidence/supplement-20261107/sqlite-release-3_54_1.html",
+        "start_line": 97,
+        "end_line": 97,
+        "start_column": 45,
+        "end_column": 72,
+        "message": "[DOM text](1) is reinterpreted as HTML without escaping meta-characters."
+      }
+    ]
+  },
+  "changed_bound_sources": {
+    "frontend/Dockerfile": {
+      "before": "22c337bb6cae6e2c07b6d176f13dffe5318c4b54eadae09cdbc46a0ff7c30d37",
+      "after": "6e386b06cb007b591c014a3fb2e4a6123a0ceb9df9733fd87fa5e24e7d50066e"
+    },
+    "Dockerfile": {
+      "before": "28a4dac3e6a7b3579af48bea7e22551601485d61ca48a2492aeb48506d5fd195",
+      "after": "8f59ee3f6ded367ff8025668cb6abb2de8280e11b17d71a62f17db960c48ddf8"
+    },
+    "deployment/vendors/grafana-20261110/busybox/archives.lock": {
+      "before": "f45ba70466c4fa7ba4d19541302250bb6eea124343071375dcebfad0ea6faa6f",
+      "after": "db96ee99d576fab4873dd9988b1d563861d95caa35df35c2ac7e28c33374c8f1"
+    },
+    "deployment/vendors/grafana-20261110/busybox/source.lock.json": {
+      "before": "87cd1e1c527dc417b7c19fd4c687957218f4e4998a3e69ca0ae6c3d47cfb8814",
+      "after": "179019e43a9123c20ee14546dd33cabca3644164537c23c58d4223d760ab62e6"
+    },
+    "deployment/compose/compose.cloud.yaml": {
+      "before": "b00d271dc87df0691c78affc43ba5b74600c385ba4e09ec7afc6caec210a6601",
+      "after": "76f9f4c359315287293ec85a40f65d97335eba1094fee7a682964ad43d460be8"
+    },
+    "scripts/check_agent_full_scope.py": {
+      "before": "c6d2947f1e14261d05796a277acf272025dcf9b98a8e91676ea5d530532cbdc7",
+      "after": "73154464966ea41fe0d1a3d1c6f849879b939420f3dfe2a29d1c0d618c227efd"
+    }
+  },
+  "supporting_evidence": {
+    "deployment/security/backend-busybox-build-input-refresh-20261127.json": "bd3c4c12c050b281de3820d5b202558f07d6a95776e4101ee03d5d520765a93a",
+    "deployment/vendors/agent-native-20261122/CVE-2026-84785.patch": "7b6bdb5946612d7a0f6e6a920a92af3fab3ba625c91f205dacd55aa6e3233298"
+  },
+  "technical_review": [
+    "The reviewed Java request and authorization handlers, their tests, and the archived SQLite advisory HTML retain their exact source identities.",
+    "The Web Docker stage upgrades the pinned nginx image. The static-site build, document root, reverse-proxy directives and reviewed evidence path stay the same.",
+    "The refreshed BusyBox build uses signed Alpine inputs with fixed SHA-256 values. The rebuilt Backend stage retains exactly the reviewed BusyBox binary and all remaining installed source and license files.",
+    "The Agent adds an official production OpenSSL backport and rebinds the exact Debian package and measured native inventory. The scanner scope, finding equality, application Python closure and secret checks remain in force.",
+    "The comparison uses the preceding source scans. The repair must pass a separate complete GitHub Actions source and image scan."
+  ]
+}

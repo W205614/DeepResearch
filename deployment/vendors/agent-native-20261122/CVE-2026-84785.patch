@@ -1,0 +1,70 @@
+diff --git a/include/internal/quic_strm_reas.h b/include/internal/quic_strm_reas.h
+index c55a77600415a..30d37035125ae 100644
+--- a/include/internal/quic_strm_reas.h
++++ b/include/internal/quic_strm_reas.h
+@@ -17,6 +17,15 @@
+ #ifndef OPENSSL_NO_QUIC
+ #include "internal/ossl_rbtree.h"
+ 
++/*
++ * Maximum number of disjoint ranges buffered per stream. Flow control
++ * bounds only the highest offset a peer may send, so without this
++ * limit tiny fragments separated by gaps could make the receiver keep
++ * one range per fragment. A legitimate sender retransmits lost data
++ * and stays well below this limit.
++ */
++#define QUIC_SFRAME_SET_MAX_RANGES 1024
++
+ typedef struct sframe_set_t {
+     OSSL_RBT_HEAD(srange, sframe_set_t)
+     ranges;
+diff --git a/ssl/quic/quic_strm_reas.c b/ssl/quic/quic_strm_reas.c
+index 7d73fa00281a8..fe393dc37564b 100644
+--- a/ssl/quic/quic_strm_reas.c
++++ b/ssl/quic/quic_strm_reas.c
+@@ -63,6 +63,7 @@ struct stream_chunk_t {
+ struct quic_rstream_qparm_st {
+     size_t rsqp_pkt_overhead_treshold;
+     size_t rsqp_pkt_overhead_sz;
++    size_t rsqp_range_limit;
+     QUIC_CHANNEL *rsqp_ch;
+ };
+ 
+@@ -225,6 +226,19 @@ static int keep_schunk_data_on_packet(SFRAME_SET *fs, OSSL_QRX_PKT *pkt,
+     return 1;
+ }
+ 
++static int is_range_limit_exceeded(SFRAME_SET *fs)
++{
++    if (fs->stream_ranges >= fs->rsqp->rsqp_range_limit) {
++        ossl_quic_channel_raise_protocol_error(fs->rsqp->rsqp_ch,
++            OSSL_QUIC_ERR_FLOW_CONTROL_ERROR,
++            OSSL_QUIC_FRAME_TYPE_STREAM,
++            "too many gaps in stream data");
++        return 1;
++    }
++
++    return 0;
++}
++
+ static struct stream_chunk_t *new_schunk(SFRAME_SET *fs, OSSL_QRX_PKT *pkt,
+     UINT_RANGE *r, const unsigned char *data)
+ {
+@@ -973,6 +987,9 @@ int ossl_sframe_set_insert(SFRAME_SET *fs, UINT_RANGE *r, OSSL_QRX_PKT *pkt,
+     assert(r->start < r->end);
+ 
+     if ((sr = find_range(fs, &key_sr)) == NULL) {
++        if (is_range_limit_exceeded(fs))
++            return 0;
++
+         sc = new_schunk(fs, pkt, r, data);
+         if (sc == NULL)
+             goto err;
+@@ -1373,6 +1390,7 @@ QUIC_RSTREAM_QPARM *ossl_quic_rstream_qparm_new(QUIC_CHANNEL *ch)
+         rsqp->rsqp_pkt_overhead_treshold = PKT_BUFFER_OVERHEAD_TRESHOLD;
+         rsqp->rsqp_pkt_overhead_sz = 0;
+         rsqp->rsqp_ch = ch;
++        rsqp->rsqp_range_limit = QUIC_SFRAME_SET_MAX_RANGES;
+     }
+ 
+     return rsqp;

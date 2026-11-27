@@ -18,6 +18,22 @@ from scripts.go_native_database_transport_20261112 import prepare_database  # no
 
 REMOVED_PACKAGES = {'apk-tools', 'libapk', 'ssl_client', 'openssl', 'libcrypto3', 'libssl3', 'ca-certificates'}
 REMOVED_FILES = {'apk', 'ssl_client', 'openssl', 'libcrypto.so.3', 'libssl.so.3'}
+BUSYBOX_INPUT_REFRESH = ROOT / 'deployment/security/backend-busybox-build-input-refresh-20261127.json'
+BUSYBOX_INPUT_REFRESH_SHA256 = 'bd3c4c12c050b281de3820d5b202558f07d6a95776e4101ee03d5d520765a93a'
+
+
+def expected_busybox_legal_files(baseline):
+    raw = BUSYBOX_INPUT_REFRESH.read_bytes()
+    busybox.require(busybox.sha(raw) == BUSYBOX_INPUT_REFRESH_SHA256, 'BusyBox input refresh proof differs')
+    refresh = json.loads(raw)
+    busybox.require(refresh['busybox'] == baseline['payload']['/bin/busybox'], 'Reviewed BusyBox bytes differ')
+    expected = baseline['legal_source_files'].copy()
+    for path, change in refresh['changes'].items():
+        busybox.require(expected[path] == change['before'], 'Original BusyBox legal file differs: ' + path)
+        expected[path] = change['after']
+    recipe = (ROOT / busybox.RECIPE).read_bytes()
+    expected[busybox.LEGAL_RECIPE] = {'bytes': len(recipe), 'sha256': busybox.sha(recipe)}
+    return expected
 
 
 def verify_full_inventory(container, report, sbom, profile, output):
@@ -53,10 +69,7 @@ def verify_full_inventory(container, report, sbom, profile, output):
     busybox.require(busybox.link_target(shell) == '/bin/busybox', 'Backend shell does not use the fixed BusyBox')
     archive = native.run(['docker', 'cp', container + ':' + busybox.LEGAL_ROOT + '/.', '-'])
     (output / 'legal-source.tar').write_bytes(archive)
-    recipe = (ROOT / busybox.RECIPE).read_bytes()
-    expected = {**baseline['legal_source_files'], busybox.LEGAL_RECIPE: {
-        'bytes': len(recipe), 'sha256': busybox.sha(recipe),
-    }}
+    expected = expected_busybox_legal_files(baseline)
     busybox.require(busybox.archive_files(archive) == expected, 'Backend BusyBox legal and source closure differs')
 
     findings = Counter((row['vulnerability']['id'], row['artifact']['name'], row['artifact']['version'],

@@ -7,11 +7,11 @@
   "scanner": "0.75.0",
   "source_review_evidence": {
     "path": "deployment/security/agent-native-backports-20261122-evidence.json",
-    "sha256": "1b29626ff7e0942f92ab68f1b62975c2e257f7469227c973f7d5e0d293cd82ce"
+    "sha256": "c5dd998a8f84c8fdd7bed347884b96b9b80a3c37c9169d7225fb75e8e37fd7a6"
   },
   "native_elf_closure": {
     "files": 514,
-    "sha256": "c209e362a865f22bbb753023f9b762602db2fdeca1dacd4c5c57bf8f35465b13"
+    "sha256": "2dc2942890df315fc3043a6dfc82b7d65ea04bb66a8bd39c5fa0ca687595eeee"
   },
   "python_source_closure": {
     "files": 5977,
@@ -3237,6 +3237,27 @@
       "disposition": "FIXED_IN_VERIFIED_SOURCE_BACKPORT",
       "patch": "CVE-2026-107494.patch",
       "affected_library": "libssl.so.3"
+    },
+    {
+      "tuple": {
+        "class": "os-pkgs",
+        "data_source": {
+          "ID": "debian",
+          "Name": "Debian Security Tracker",
+          "URL": "https://salsa.debian.org/security-tracker-team/security-tracker"
+        },
+        "id": "CVE-2026-84785",
+        "package": "libssl3t64",
+        "package_id": "libssl3t64@3.5.7-1~deb13u3",
+        "purl": "pkg:deb/debian/libssl3t64@3.5.7-1~deb13u3?arch=amd64&distro=debian-13.7",
+        "severity": "MEDIUM",
+        "status": "affected",
+        "type": "debian",
+        "version": "3.5.7-1~deb13u3"
+      },
+      "disposition": "FIXED_IN_VERIFIED_SOURCE_BACKPORT",
+      "patch": "CVE-2026-84785.patch",
+      "affected_library": "libssl.so.3"
     }
   ],
   "review_scope": "Exact rebuilt Linux/amd64 Agent with the fixed libc, libstdc++ and OpenSSL payloads; Debian scanner metadata retained verbatim.",
@@ -3423,15 +3444,15 @@
       "file_path": null
     },
     {
-      "class": "os-pkgs",
-      "type": "debian",
-      "name": "libzstd1",
-      "version": "1.5.7+dfsg",
-      "purl": "pkg:deb/debian/libzstd1@1.5.7%2Bdfsg-1?arch=amd64&distro=debian-13.7",
       "architecture": "amd64",
+      "class": "os-pkgs",
+      "file_path": null,
+      "name": "libzstd1",
+      "purl": "pkg:deb/debian/libzstd1@1.5.7%2Bdfsg-1%2Bdeb13u1?arch=amd64&distro=debian-13.7",
       "source": "libzstd",
       "source_version": "1.5.7+dfsg",
-      "file_path": null
+      "type": "debian",
+      "version": "1.5.7+dfsg"
     },
     {
       "class": "os-pkgs",

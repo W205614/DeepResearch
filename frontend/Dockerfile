@@ -10,7 +10,7 @@ COPY . .
 RUN (sha256sum package.json package-lock.json index.html vite.config.ts tsconfig*.json nginx.conf; find src public -type f -print0 | sort -z | xargs -0 sha256sum) > /ui/source-fingerprint.txt
 RUN npm run build
 RUN find dist -type f -print0 | sort -z | xargs -0 sha256sum > /ui/dist-fingerprint.txt
-FROM nginx:1.30.7-alpine@sha256:caf4e1e032a20f9c3c5e28fc7f25ffd768ad8677b4975c54193075997b3a97e3
+FROM nginx:1.30.8-alpine@sha256:8eb04fe3b385090e9aa02961f77398ad09b6bf33ab07f6669a5bb7acce22c0d3
 RUN apk add --no-cache --upgrade 'brotli-libs>=1.2.1-r0' 'curl>=8.23.0-r0' 'libcurl>=8.23.0-r0' 'libexpat>=2.10.0-r0' 'libxslt>=1.1.43-r4' 'libcrypto3>=3.5.9-r1' 'libssl3>=3.5.9-r1'
 ENV OIDC_CONNECT_ORIGINS=http://localhost:8180 NGINX_DNS_RESOLVER=127.0.0.11 NGINX_ENVSUBST_FILTER=^(OIDC_CONNECT_ORIGINS|NGINX_DNS_RESOLVER)$
 COPY nginx.conf /etc/nginx/templates/default.conf.template
