@@ -195,7 +195,8 @@ Java 管理公开接口、权限、任务准入、Outbox 和正式报告。Pytho
 
 | 对象 | 固定来源 | 获取与对应材料 |
 | --- | --- | --- |
-| 正式 `v0.1.7` | 源码与镜像分发来源 `28ae8767b18a4c4d8329cb5c38f3e0fa5d310e55` | [Release 与精确 digest](https://github.com/W205614/DeepResearch/releases/tag/v0.1.7) · [CI 4 项成功](https://github.com/W205614/DeepResearch/actions/runs/45408583120) · [Security 22 项成功](https://github.com/W205614/DeepResearch/actions/runs/45408583311) · [Packages 发布成功](https://github.com/W205614/DeepResearch/actions/runs/45421560733) |
+| 当前 `v0.1.8` | 源码与镜像分发来源 `9ea416dbfdc03d02984351353d9349892c484510` | [Release 与精确 digest](https://github.com/W205614/DeepResearch/releases/tag/v0.1.8) · [CI 4 项成功](https://github.com/W205614/DeepResearch/actions/runs/45959319200) · [Security 22 项成功](https://github.com/W205614/DeepResearch/actions/runs/45959319211) · [Packages 发布成功](https://github.com/W205614/DeepResearch/actions/runs/45965471588) |
+| 历史 `v0.1.7` | 源码与镜像分发来源 `28ae8767b18a4c4d8329cb5c38f3e0fa5d310e55` | [Release 与精确 digest](https://github.com/W205614/DeepResearch/releases/tag/v0.1.7) · [CI 4 项成功](https://github.com/W205614/DeepResearch/actions/runs/45408583120) · [Security 22 项成功](https://github.com/W205614/DeepResearch/actions/runs/45408583311) · [Packages 发布成功](https://github.com/W205614/DeepResearch/actions/runs/45421560733) |
 | 历史 `v0.1.6` | 源码与镜像分发来源 `758b48f0a6e1111d6703a86f7dd206d6f07261ba` | [Release 与精确 digest](https://github.com/W205614/DeepResearch/releases/tag/v0.1.6) · [CI 4 项成功](https://github.com/W205614/DeepResearch/actions/runs/44994158344) · [Security 22 项成功](https://github.com/W205614/DeepResearch/actions/runs/44994158254) · [Packages 发布成功](https://github.com/W205614/DeepResearch/actions/runs/45000289391) |
 | 历史 `v0.1.5` | 源码与镜像分发来源 `e6799f73b00144b9ef16b71dedac2759a5cf54af` | [Release 与精确 digest](https://github.com/W205614/DeepResearch/releases/tag/v0.1.5) · [CI：4 项成功](https://github.com/W205614/DeepResearch/actions/runs/43718297000) · [Security：22 项成功](https://github.com/W205614/DeepResearch/actions/runs/43718297049) · [Packages 发布成功](https://github.com/W205614/DeepResearch/actions/runs/43731414135) |
 | 三个 `v0.1.5` Packages | Agent 更新研究提示词及 SoupSieve 4.1；Backend／Web 保留已验收应用运行字节，更新分发材料与源码指纹 | 完整匿名拉取通过；Agent 原始扫描 92 条、Backend 完整 Grype 3 条 MEDIUM、Web 原始 0，精确门禁通过；不称所有依赖零漏洞，见本版附件 |
@@ -208,7 +209,7 @@ Java 管理公开接口、权限、任务准入、Outbox 和正式报告。Pytho
 | 历史应用镜像 `v0.1.1` | 打包提交 `0005df53b742cdc2b79ef9196208cf0d00f8a0b8`；保留 `b8d1500` 的应用运行字节 | [版本页内的应用制品、许可与对应源码](https://github.com/W205614/DeepResearch/releases/tag/v0.1.1) · [旧 digest 表](docs/container-packages.md#历史-v011-公开制品) |
 | 70 条源码告警修复 | `679f499f24d99a677b1c15d96fa664f36ecb21fb` | [CI](https://github.com/W205614/DeepResearch/actions/runs/42768644693) · [Security](https://github.com/W205614/DeepResearch/actions/runs/42768644680) · [逐项依据](docs/security-alert-review-20261110.md) |
 
-`v0.1.7` 为 MinIO 更新了 `gobwas/ws`，并为 Agent 应用了 OpenSSL 3.5 官方修复。三个应用镜像和对应源码均可从发布页获取。完整原始扫描和适用性核对见发布检查。
+三个应用镜像、对应源码、完整原始扫描与适用性核对见各版本的发布检查。历史 `v0.1.7` 为 MinIO 更新了 `gobwas/ws`，并为 Agent 应用了 OpenSSL 3.5 官方修复。
 
 2026-11-11 核对：默认分支 Code scanning 与 Secret scanning 活动项均为 0。原 70 条告警为 1 条实际 fixed、68 条有依据误报关闭、1 条维护补丁缓解；随后 6 条 Go 清单告警按真实编译图逐项关闭。本轮新增两条验收探针静态 IV 告警已通过随机密钥／nonce 实际修复，新扫描自动标记为 fixed，没有 dismiss。原始报告、失败和依据保留，无活动告警不等于零漏洞，详见[全级别复核](docs/application-security-status-20261110.md)。
 
