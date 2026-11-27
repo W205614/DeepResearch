@@ -2,7 +2,11 @@
 
 应用制品分成三个 Linux/amd64 包。Agent 包还用于 Worker、资料 Worker、迁移、数据库初始化、容量指标和告警中继；角色命令由原 Compose 服务配置决定。
 
-## 当前正式版 v0.1.7
+## v0.1.8 启动入口
+
+按 [v0.1.8 快速上手](../README.md#v018-快速上手)启动。三个公开 Linux/amd64 应用镜像、不可变摘要与验收状态见 [v0.1.8 发布页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.8)。该版本的 Compose 默认值和快速上手的显式设置均为 v0.1.8。
+
+## 历史 v0.1.7
 
 [v0.1.7 发布页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.7)记录的源码与镜像分发提交为 `28ae8767b18a4c4d8329cb5c38f3e0fa5d310e55`。三个应用镜像均完成 Linux/amd64 匿名拉取，OCI 配置和有序镜像层摘要与发布清单一致。
 
@@ -52,7 +56,7 @@ MinIO／Silo 使用 `scripts/build_minio_os_20261113.py` 的固定原生依赖�
 
 ## 正式 v0.1.3
 
-本节记录历史版本。当前部署见 [v0.1.7 的镜像摘要](#当前正式版-v017)。
+本节记录历史版本。当前启动说明见 [v0.1.8 启动入口](#v018-启动入口)。
 
 正式 [v0.1.3](https://github.com/W205614/DeepResearch/releases/tag/v0.1.3) 的源码与分发提交为 `78a19df9dfa6f072af6ebe40ff99cf164d0c4ff8`，[CI](https://github.com/W205614/DeepResearch/actions/runs/42968387539)全部 4 项、[Security](https://github.com/W205614/DeepResearch/actions/runs/42968387608)全部 22 项成功。[Packages 工作流](https://github.com/W205614/DeepResearch/actions/runs/42977626649)实际发布成功，三个原有 GHCR 目标保持公开，版本名和不可变 digest 均已实际匿名获取、拉取及运行核验。
 
@@ -96,9 +100,9 @@ Manifest digest 用于 `docker pull ghcr.io/w205614/deepresearch-<service>@sha25
 
 ## 获取与启动
 
-首次安装按 [v0.1.7 快速上手](../README.md#v017-快速上手)执行。检出 `v0.1.7` 后，在同一终端显式设置 `DEEPRESEARCH_PACKAGE_VERSION=v0.1.7`，覆盖发布标签内 Compose 文件的默认值 `v0.1.4`。MinIO、Milvus 等依赖按[源码与运行依赖指引](source-release.md#运行依赖如何获取)准备。
+首次安装按 [v0.1.8 快速上手](../README.md#v018-快速上手)执行。检出 v0.1.8 后，在同一终端显式设置 `DEEPRESEARCH_PACKAGE_VERSION=v0.1.8`。MinIO、Milvus 等依赖按[源码与运行依赖指引](source-release.md#运行依赖如何获取)准备。
 
-已有部署应保留项目名、`.env`、端口和网络覆盖、账号以及业务卷。升级前核对[现有数据升级与恢复条件](deployment-security-operations.md#现有数据升级)。如需固定部署，将对应应用角色绑定到 [v0.1.7 的镜像摘要](#当前正式版-v017)，后续查看状态、日志或暂停时沿用启动时的 Compose 参数。
+已有部署应保留项目名、`.env`、端口和网络覆盖、账号以及业务卷。升级前核对[现有数据升级与恢复条件](deployment-security-operations.md#现有数据升级)。如需固定部署，将对应应用角色绑定到 [v0.1.8 发布页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.8)列出的镜像摘要，查看状态、日志或暂停时沿用启动时的 Compose 参数。
 
 ## 制品来源与许可材料
 

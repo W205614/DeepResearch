@@ -31,26 +31,28 @@ def check_startup(root: Path, version: str) -> None:
     compose_args = re.findall(r"'([^']+)'", compose_files[1])
 
     # Use the example configuration and synthetic credentials for rendering only.
-    env = dict(os.environ, DEEPRESEARCH_PACKAGE_VERSION=version)
+    env = dict(os.environ)
+    env.pop("DEEPRESEARCH_PACKAGE_VERSION", None)
     for key in (
         "OBJECT_STORE_SECRET_KEY", "POSTGRES_PASSWORD", "MIGRATOR_DB_PASSWORD", "JAVA_DB_PASSWORD",
         "PYTHON_DB_PASSWORD", "MONITOR_DB_PASSWORD", "KEYCLOAK_DB_PASSWORD", "KEYCLOAK_ADMIN_PASSWORD",
         "MINIO_ROOT_PASSWORD", "MILVUS_STORAGE_PASSWORD", "GRAFANA_ADMIN_PASSWORD",
     ):
         env[key] = "release-check"
-    rendered = subprocess.check_output(
-        ["docker", "compose", "--env-file", ".env.example", "--profile", "*", *compose_args,
-         "config", "--format", "json"], cwd=root, env=env, text=True, encoding="utf-8",
-    )
     roles = {"backend": "backend", "web": "web"}
     for role in ("agent", "worker", "document-worker", "migrate", "bootstrap-db", "ops-exporter", "alert-relay"):
         roles[role] = "agent"
-    services = json.loads(rendered)["services"]
-    for role, image in roles.items():
-        expected = f"ghcr.io/{REPOSITORY.split('/')[0].lower()}/deepresearch-{image}:{version}"
-        actual = services.get(role, {}).get("image")
-        if actual != expected:
-            raise ValueError(f"Compose service {role} resolves to {actual!r}, expected {expected}")
+    for mode, settings in (("default", env), ("explicit version", dict(env, DEEPRESEARCH_PACKAGE_VERSION=version))):
+        rendered = subprocess.check_output(
+            ["docker", "compose", "--env-file", ".env.example", "--profile", "*", *compose_args,
+             "config", "--format", "json"], cwd=root, env=settings, text=True, encoding="utf-8",
+        )
+        services = json.loads(rendered)["services"]
+        for role, image in roles.items():
+            expected = f"ghcr.io/{REPOSITORY.split('/')[0].lower()}/deepresearch-{image}:{version}"
+            actual = services.get(role, {}).get("image")
+            if actual != expected:
+                raise ValueError(f"Compose service {role} ({mode}) resolves to {actual!r}, expected {expected}")
 
 
 def check_published_digests(version: str) -> None:

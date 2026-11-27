@@ -6,18 +6,18 @@
 
 正式交付状态、镜像和最终验收以[最新版本页](https://github.com/W205614/DeepResearch/releases/latest)为准。下文带日期的验证段落保留提交时的阶段记录；后续版本不会改写旧失败或旧截图。
 
-- 部署：[v0.1.7 快速上手](#v017-快速上手) · [选择启动方式](#选择启动方式) · [v0.1.7 镜像摘要与部署说明](docs/container-packages.md#当前正式版-v017)。
+- 部署：[v0.1.8 快速上手](#v018-快速上手) · [选择启动方式](#选择启动方式) · [v0.1.8 镜像摘要与部署说明](docs/container-packages.md#v018-启动入口)。
 - 理解项目：[架构与目录](#架构与目录) · [源码调用路径](docs/project-structure.md) · [Java／Python 职责](docs/java-python-ownership.md)。
 - 维护：[贡献指南](CONTRIBUTING.md) · [升级与恢复](docs/deployment-security-operations.md) · [安全报告](SECURITY.md)。
 
-## v0.1.7 快速上手
+## v0.1.8 快速上手
 
-以下 PowerShell 示例使用 [v0.1.7](https://github.com/W205614/DeepResearch/releases/tag/v0.1.7) 的三个公开应用镜像和核心服务。准备 Git、Python 3.11.5 至 3.13、uv、Docker Linux/amd64 和 Compose v2。Windows 使用 Docker Desktop 的 Linux 容器。首次安装要联网下载镜像和源码，并编译 Milvus、MinIO 等配套依赖。已有部署请沿用原项目名和覆盖文件，先核对[升级与恢复条件](docs/deployment-security-operations.md#现有数据升级)。
+以下 PowerShell 示例使用 [v0.1.8](https://github.com/W205614/DeepResearch/releases/tag/v0.1.8) 的三个公开应用镜像和核心服务。准备 Git、Python 3.11.5 至 3.13、uv、Docker Linux/amd64 和 Compose v2。Windows 使用 Docker Desktop 的 Linux 容器。首次安装要联网下载镜像和源码，并编译 Milvus、MinIO 等配套依赖。已有部署请沿用原项目名和覆盖文件，先核对[升级与恢复条件](docs/deployment-security-operations.md#现有数据升级)。
 
 1. 检出发布标签并初始化本机配置。
 
    ```powershell
-   git clone --config core.autocrlf=false --branch v0.1.7 https://github.com/W205614/DeepResearch.git
+   git clone --config core.autocrlf=false --branch v0.1.8 https://github.com/W205614/DeepResearch.git
    cd DeepResearch
    python scripts/local.py init
    ```
@@ -27,7 +27,7 @@
 3. 在同一 PowerShell 会话逐条执行以下命令。首次启动时 ClamAV 还会下载病毒特征库。
 
    ```powershell
-   $env:DEEPRESEARCH_PACKAGE_VERSION = 'v0.1.7'
+   $env:DEEPRESEARCH_PACKAGE_VERSION = 'v0.1.8'
    $composeFiles = @('-f', 'compose.yaml', '-f', 'deployment/compose/compose.core.yaml', '-f', 'deployment/compose/compose.packages.yaml')
    python scripts/local.py check --compose-file deployment/compose/compose.packages.yaml
    uv run --frozen --no-dev python scripts/build_minio_alpine_20261121.py
@@ -39,7 +39,7 @@
 
 4. 打开 `http://localhost:8080`，注册或登录业务账号，创建个人空间并[发起第一条研究](#启动后的第一条研究)。检查状态用 `docker compose @composeFiles ps`，暂停用 `docker compose @composeFiles stop --timeout 60`，配置和数据卷会保留。
 
-三个应用镜像的固定摘要见 [v0.1.7 发布页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.7)。要从源码重建应用，完成前两步后运行 `uv run --frozen --no-dev python scripts/local.py start`，由启动器准备依赖并构建核心栈。
+三个应用镜像的固定摘要见 [v0.1.8 发布页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.8)。要从源码重建应用，完成前两步后运行 `uv run --frozen --no-dev python scripts/local.py start`，由启动器准备依赖并构建核心栈。
 
 ## 可以做什么
 
@@ -147,11 +147,11 @@ Java 管理公开接口、权限、任务准入、Outbox 和正式报告。Pytho
 
 | 目的 | 来源与入口 | 需要的工具 |
 | --- | --- | --- |
-| 获取预构建应用镜像 | [v0.1.7 快速上手](#v017-快速上手)，应用镜像的身份见[发布页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.7) | Git、Python 3.11.5 至 3.13、uv、Docker Linux/amd64、Compose v2 |
-| 从固定源码构建 | 检出 `v0.1.7` 并使用[快速上手](#v017-快速上手)末尾的源码启动命令 | 同上，Java 和 Node 由 Docker 构建 |
+| 获取预构建应用镜像 | [v0.1.8 快速上手](#v018-快速上手)，应用镜像的身份见[发布页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.8) | Git、Python 3.11.5 至 3.13、uv、Docker Linux/amd64、Compose v2 |
+| 从固定源码构建 | 检出 `v0.1.8` 并使用[快速上手](#v018-快速上手)末尾的源码启动命令 | 同上，Java 和 Node 由 Docker 构建 |
 | 修改当前开发源码 | `main` + Python 容器热更新，或独立组件开发检查；[开发指南](CONTRIBUTING.md#开发环境) | 完整开发检查另需 Python／uv、JDK 21／Maven、Node.js 22／npm |
 
-使用 `v0.1.7` 的三个公开应用镜像时，首次安装仍需联网构建 MinIO 与 Milvus。完整观测栈另需准备 Grafana。依赖的固定输入和构建方式见[依赖获取说明](docs/source-release.md#运行依赖如何获取)。当前交付平台为 Linux/amd64，Windows 使用 Docker Desktop 的 Linux 容器。网络下载、外部账号和模型调用额度由使用者准备。
+使用 `v0.1.8` 的三个公开应用镜像时，首次安装仍需联网构建 MinIO 与 Milvus。完整观测栈另需准备 Grafana。依赖的固定输入和构建方式见[依赖获取说明](docs/source-release.md#运行依赖如何获取)。当前交付平台为 Linux/amd64，Windows 使用 Docker Desktop 的 Linux 容器。网络下载、外部账号和模型调用额度由使用者准备。
 
 从 `main` 构建时，`scripts/local.py start` 会先准备固定的 Silo 和 mcli，再构建 Alpine 存储镜像。日常 Compose 沿用 `/minio_data` 挂载，隔离组件测试使用 `/data`。Agent 从固定输入重新编译 glibc、libstdc++ 和 OpenSSL，[源码锁](deployment/vendors/agent-native-20261122/source.lock.json)记录归档摘要和补丁来源。Security 会用原始扫描的全部严重级别检查实际运行镜像。公开应用镜像按各版本页提供。
 
