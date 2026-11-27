@@ -25,6 +25,8 @@ from scripts.source_dependency_migration_20261115 import (  # noqa: E402
 )
 
 
+BACKEND_INVENTORY_REVIEW = 'deployment/security/backend-tomcat-source-inventory-20261127.json'
+BACKEND_INVENTORY_REVIEW_SHA256 = 'aaf6c05f3af10ef61eb490e6b35368fcfeb6cdfab3be84f23ae9b994a2a93ace'
 SOURCE_ONLY_FINDINGS = {
     ('CVE-2026-95839', 'deployment/vendors/loki/go.mod', 'github.com/containerd/containerd/v2', 'v2.2.9', 'HIGH'):
         ('loki',),
@@ -44,7 +46,17 @@ def collect(scan, receipt, original, candidate, *, raw_sha256, original_sha256,
     observed, counts, findings = prior.source_facts(scan)
     current.require(not any(prior_build.finding_key(row) in SOURCE_ONLY_FINDINGS for row in observed['findings']),
                     'An upgraded Go source dependency still reports its original alert')
-    expected = {**review, 'target_inventory_sha256': review['target_inventory_sha256'] | lock_upgrade.SCAN_INVENTORIES,
+    backend_review = prior_build.checked(root, BACKEND_INVENTORY_REVIEW)
+    current.require(current.digest(backend_review) == BACKEND_INVENTORY_REVIEW_SHA256,
+                    'Reviewed Backend source inventory changed')
+    backend = prior.old.json_loads(backend_review.read_bytes())
+    inventories = review['target_inventory_sha256'] | lock_upgrade.SCAN_INVENTORIES
+    target = backend['target']
+    current.require(current.digest(prior_build.checked(root, target)) == backend['pom_sha256']
+                    and inventories[target] == backend['previous_inventory_sha256'],
+                    'The Backend POM or preceding exact inventory differs')
+    inventories[target] = backend['inventory_sha256']
+    expected = {**review, 'target_inventory_sha256': inventories,
                 'findings': [row for row in review['findings']
                              if prior_build.finding_key(row) not in SOURCE_ONLY_FINDINGS]}
     verify_observed(observed, expected)

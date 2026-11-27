@@ -80,13 +80,18 @@
     "deployment/docker/Dockerfile.keycloak": {
       "before": "b629c09dd2eac1ed3aba455b49226ff3768f999d1d3bf39a72f4180299112337",
       "after": "8cf61cf438fd70a0fc8b00a0ec2ff6b25df8c9617f7bfc5cae5d979e1345f088"
+    },
+    "business-backend/pom.xml": {
+      "before": "c5947abb575ffe01db6615726427363ad08ff5c4ec375bbb8abb7417d55be46f",
+      "after": "09c576ce544d3647e76ab5671082f87caf3241f3614c4b37b04892e8221f5169"
     }
   },
   "supporting_evidence": {
     "deployment/security/backend-busybox-build-input-refresh-20261127.json": "bd3c4c12c050b281de3820d5b202558f07d6a95776e4101ee03d5d520765a93a",
     "deployment/vendors/agent-native-20261122/CVE-2026-84785.patch": "7b6bdb5946612d7a0f6e6a920a92af3fab3ba625c91f205dacd55aa6e3233298",
     "deployment/vendors/busybox-20261127/archives.lock": "db96ee99d576fab4873dd9988b1d563861d95caa35df35c2ac7e28c33374c8f1",
-    "deployment/vendors/busybox-20261127/source.lock.json": "179019e43a9123c20ee14546dd33cabca3644164537c23c58d4223d760ab62e6"
+    "deployment/vendors/busybox-20261127/source.lock.json": "179019e43a9123c20ee14546dd33cabca3644164537c23c58d4223d760ab62e6",
+    "deployment/security/backend-tomcat-source-inventory-20261127.json": "aaf6c05f3af10ef61eb490e6b35368fcfeb6cdfab3be84f23ae9b994a2a93ace"
   },
   "technical_review": [
     "The reviewed Java request and authorization handlers, their tests, and the archived SQLite advisory HTML retain their exact source identities.",
@@ -104,5 +109,15 @@
     "recipe_changes": [
       "archive URL"
     ]
+  },
+  "backend_tomcat": {
+    "failed_job": 140302845952,
+    "previous_version": "11.0.27",
+    "fixed_version": "11.0.29",
+    "exact_source_inventory_proof": "deployment/security/backend-tomcat-source-inventory-20261127.json",
+    "source_inventory_checker": {
+      "path": "scripts/check_grafana_source_scan_20261121.py",
+      "sha256": "3a8542ae1ed0dca10f465c2ab5d5046e7ef370b0652a3d1f866dc640b738bc8a"
+    }
   }
 }
