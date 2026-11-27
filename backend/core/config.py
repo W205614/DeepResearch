@@ -94,6 +94,7 @@ class Settings(BaseSettings):
     max_run_call_attempts: int = Field(80, ge=1, le=500)
     max_run_reserved_tokens: int = Field(2000000, ge=1000, le=20000000)
     max_queued_runs: int = Field(20, ge=1, le=1000)
+    workspace_max_queued_runs: int = Field(5, ge=1, le=1000)
     llm_context_tokens: int = Field(128000, ge=4096)
     vision_context_tokens: int = Field(128000, ge=4096)
     vision_image_token_reserve: int = Field(16000, ge=1024)

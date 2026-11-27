@@ -4,11 +4,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
 @Component
 @ConfigurationProperties(prefix = "deepresearch")
+@Validated
 public class DeepResearchProperties {
     private String authMode = "oidc";
     private String oidcIssuer = "";
@@ -21,6 +25,8 @@ public class DeepResearchProperties {
     private boolean allowInternalModelProcessing;
     private int workspaceConcurrentRunLimit = 2;
     private int maxQueuedRuns = 20;
+    @Min(1) @Max(1000)
+    private int workspaceMaxQueuedRuns = 5;
     private int platformActiveRunLimit = 5;
     private String platformOperatorSubjects = "";
     private String deploymentId = "deepresearch";
@@ -80,6 +86,8 @@ public class DeepResearchProperties {
     public void setWorkspaceConcurrentRunLimit(int value) { this.workspaceConcurrentRunLimit = value; }
     public int getMaxQueuedRuns() { return maxQueuedRuns; }
     public void setMaxQueuedRuns(int value) { this.maxQueuedRuns = value; }
+    public int getWorkspaceMaxQueuedRuns() { return workspaceMaxQueuedRuns; }
+    public void setWorkspaceMaxQueuedRuns(int value) { this.workspaceMaxQueuedRuns = value; }
     public int getPlatformActiveRunLimit() { return platformActiveRunLimit; }
     public void setPlatformActiveRunLimit(int value) { this.platformActiveRunLimit = value; }
     public String getPlatformOperatorSubjects() { return platformOperatorSubjects; }

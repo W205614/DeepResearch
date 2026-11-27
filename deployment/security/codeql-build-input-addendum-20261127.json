@@ -71,7 +71,7 @@
     },
     "deployment/compose/compose.cloud.yaml": {
       "before": "b00d271dc87df0691c78affc43ba5b74600c385ba4e09ec7afc6caec210a6601",
-      "after": "76f9f4c359315287293ec85a40f65d97335eba1094fee7a682964ad43d460be8"
+      "after": "fe7e40d52ad9a73bfea5abb85b50f87ae2036124164eec38987316b1506e8707"
     },
     "scripts/check_agent_full_scope.py": {
       "before": "c6d2947f1e14261d05796a277acf272025dcf9b98a8e91676ea5d530532cbdc7",
@@ -84,6 +84,18 @@
     "business-backend/pom.xml": {
       "before": "c5947abb575ffe01db6615726427363ad08ff5c4ec375bbb8abb7417d55be46f",
       "after": "14fe17127e5447ac67d4a6ea644d5268aa41459a4bafe92621130b8096bc9afb"
+    },
+    "business-backend/src/main/java/com/deepresearch/business/config/DeepResearchProperties.java": {
+      "before": "94211bb68e6735e0200f9c660814a64bd87ac205b944f060eb5a6920ded15ad3",
+      "after": "e8ec6b1a76178b27d55ffde5e482c0f621d006fa6e48aa5dc40af2d66efa8677"
+    },
+    "compose.yaml": {
+      "before": "4af73b6c123cbb1086ae42546bd45e8324b42ca20211e6e851d13fa8b553251f",
+      "after": "e6c94831f913c6be702a58018c3dc5571729dfd1c119c4e233a4941d48283e8c"
+    },
+    ".env.example": {
+      "before": "874db78191e79713768fe12a8530589f612c801410ee6fa2b88fc07216eedb82",
+      "after": "10c36b88924dd6fe2b092ec3810e0d95a11cd6f41ebc3542e07436514032f42a"
     }
   },
   "supporting_evidence": {
@@ -98,7 +110,8 @@
     "The Web Docker stage upgrades the pinned nginx image. The static-site build, document root, reverse-proxy directives and reviewed evidence path stay the same.",
     "Backend and Alpine MinIO overlay two refreshed build input locks. The rebuilt Backend stage retains exactly the reviewed BusyBox binary. All changed installed metadata files are explicitly bound. The Grafana donor retains its original independently reviewed source inputs and profile.",
     "The Agent adds an official production OpenSSL backport and rebinds the exact Debian package and measured native inventory. The scanner scope, finding equality, application Python closure and secret checks remain in force.",
-    "The comparison uses the preceding source scans. The repair must pass a separate complete GitHub Actions source and image scan."
+    "The comparison uses the preceding source scans. The repair must pass a separate complete GitHub Actions source and image scan.",
+    "Multi-team queue admission adds a bounded workspace setting to Java, Compose and cloud Compose. OIDC, internal credential, and Agent destination settings are unchanged. The Python ZIP endpoint rechecks current administrator access before sending archive bytes."
   ],
   "keycloak_zlib_transport": {
     "failed_job": 140301689727,

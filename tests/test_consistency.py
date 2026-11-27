@@ -49,6 +49,36 @@ async def test_retry_at_capacity_and_thread_mismatch(runtime, monkeypatch):
         await runtime.create("alice", request.model_copy(update={"thread_id": other["id"]}))
 
 
+async def test_workspace_queue_limit_keeps_other_workspaces_admissible(runtime, monkeypatch):
+    async def hold(*args, **kwargs):
+        pass
+
+    monkeypatch.setattr(runtime, "schedule", hold)
+    runtime.settings.workspace_max_queued_runs = 1
+    runtime.settings.max_queued_runs = 2
+    runtime.settings.platform_active_run_limit = 2
+    for workspace in ("alice", "bob"):
+        await runtime.db.ensure_personal_workspace(workspace, workspace, (0, 1))
+
+    request = RunRequest(topic="A 的研究", client_request_id=uid())
+    first = await runtime.create("alice", request)
+    with pytest.raises(ServiceError) as workspace_rejection:
+        await runtime.create("alice", RunRequest(topic="A 的额外研究", client_request_id=uid()))
+    assert workspace_rejection.value.code == "workspace_queue_full"
+    assert (await runtime.create("alice", request))["id"] == first["id"]
+
+    second = await runtime.create("bob", RunRequest(topic="B 的研究", client_request_id=uid()))
+    assert second["status"] == "queued"
+    with pytest.raises(ServiceError) as platform_rejection:
+        await runtime.create("bob", RunRequest(topic="B 的额外研究", client_request_id=uid()))
+    assert platform_rejection.value.code == "queue_full"
+
+    assert (await runtime.claim_run(first["id"]))["status"] == "running"
+    waiting_a = await runtime.create("alice", RunRequest(topic="A 在已有运行任务时继续排队", client_request_id=uid()))
+    assert await runtime.claim_run(waiting_a["id"]) is None
+    assert (await runtime.claim_run(second["id"]))["status"] == "running"
+
+
 async def test_daily_usage_is_accounting_only_and_per_run_limit_is_atomic(runtime, monkeypatch):
     async def hold(*args, **kwargs):
         pass

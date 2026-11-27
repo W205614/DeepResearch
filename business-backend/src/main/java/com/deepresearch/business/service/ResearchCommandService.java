@@ -71,10 +71,7 @@ public class ResearchCommandService {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
                 "内部资料尚未获准由已配置模型处理；敏感资料禁止外发");
         }
-        int waiting = jdbc.queryForObject("SELECT COUNT(*) FROM runs WHERE status IN ('queued','interrupted')", Integer.class);
-        if (waiting >= properties.getMaxQueuedRuns()) {
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "待处理任务已满，请稍后提交");
-        }
+        requireQueueSlot(identity.workspaceId());
         validateAttachments(identity, request.getAttachmentIds());
         String threadId = request.getThreadId() == null || request.getThreadId().isBlank()
             ? createThread(identity, request.normalizedTopic()).get("id").toString()
@@ -210,11 +207,7 @@ public class ResearchCommandService {
         if (!Boolean.TRUE.equals(run.get("can_resume"))) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "该任务不可继续；请处理错误原因或缩小问题重新提交");
         }
-        int waiting = jdbc.queryForObject("SELECT COUNT(*) FROM runs WHERE status IN ('queued','interrupted')", Integer.class);
-        int alreadyWaiting = "interrupted".equals(run.get("status")) ? 1 : 0;
-        if (waiting - alreadyWaiting >= properties.getMaxQueuedRuns()) {
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "待处理任务已满，请稍后继续");
-        }
+        if (!"interrupted".equals(run.get("status"))) requireQueueSlot(identity.workspaceId());
         jdbc.update("UPDATE runs SET status='queued',updated_at=? WHERE id=? AND user_id=?", now(), runId, identity.workspaceId());
         event(runId, "queued", Map.of("message", "任务已提交恢复"));
         outbox.enqueue(runId, "research.resume", commandPayload(true, ((Number) run.get("attempt_count")).intValue()));
@@ -298,6 +291,21 @@ public class ResearchCommandService {
         jdbc.query("SELECT pg_advisory_xact_lock(?)", result -> null,
             PlatformAccess.lockId("research-global-queue-admission"));
         lockWorkspaceAdmission(workspaceId);
+    }
+
+    private void requireQueueSlot(String workspaceId) {
+        jdbc.query("""
+            SELECT COUNT(*) AS total, COUNT(*) FILTER (WHERE user_id=?) AS workspace_total
+            FROM runs WHERE status IN ('queued','interrupted')""", rows -> {
+            rows.next();
+            if (rows.getLong("total") >= properties.getMaxQueuedRuns()) {
+                throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "平台待处理任务已满，请稍后重试");
+            }
+            if (rows.getLong("workspace_total") >= properties.getWorkspaceMaxQueuedRuns()) {
+                throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "当前工作空间待处理任务已满，请稍后重试");
+            }
+            return null;
+        }, workspaceId);
     }
 
     public void lockIntakeAdmission(WorkspaceIdentity identity) {

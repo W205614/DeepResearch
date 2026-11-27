@@ -103,6 +103,7 @@ class BusinessBackendIntegrationTest {
         properties.setOutboxBaseDelaySeconds(1);
         properties.setOutboxMaxDelaySeconds(2);
         properties.setMaxQueuedRuns(20);
+        properties.setWorkspaceMaxQueuedRuns(5);
         when(agent.internal(anyString(), anyString())).thenReturn(accepted());
     }
 
@@ -293,6 +294,33 @@ class BusinessBackendIntegrationTest {
     }
 
     @Test
+    void busyWorkspaceCannotConsumeAnotherWorkspacesQueueSlots() throws Exception {
+        properties.setMaxQueuedRuns(3);
+        properties.setWorkspaceMaxQueuedRuns(1);
+        workspace("busy-a", "a-owner", "admin", 2);
+        workspace("busy-b", "b-owner", "admin", 2);
+        WorkspaceIdentity a = new WorkspaceIdentity("busy-a", "a-owner", "admin", "A");
+        WorkspaceIdentity b = new WorkspaceIdentity("busy-b", "b-owner", "admin", "B");
+        var request = request("a-original-queue", "A 的第一项研究");
+        var first = commands.create(a, request);
+
+        List<Object> results = concurrentResults(
+            () -> commands.create(a, request("a-over-capacity", "A 重复提交新研究")),
+            () -> commands.create(b, request("b-while-a-full", "B 同时提交研究")));
+
+        assertThat(results.stream().filter(ResponseStatusException.class::isInstance)
+            .map(ResponseStatusException.class::cast).map(e -> e.getStatusCode().value()).toList()).containsExactly(429);
+        assertThat(results.stream().filter(Map.class::isInstance).map(Map.class::cast)
+            .map(result -> result.get("user_id")).toList()).containsExactly("busy-b");
+        assertThat(commands.create(a, request).get("id")).isEqualTo(first.get("id"));
+        assertThat(count("runs")).isEqualTo(2);
+        assertThat(count("business_outbox")).isEqualTo(2);
+
+        commands.cancel(a, String.valueOf(first.get("id")));
+        assertThat(commands.create(a, request("a-after-cancel", "A 释放名额后提交")).get("status")).isEqualTo("queued");
+    }
+
+    @Test
     void outboxFailureRollsBackBusinessTransaction() {
         workspace("rollback", "owner", "admin", 2);
         jdbc.execute("DROP TABLE business_outbox");
@@ -345,6 +373,23 @@ class BusinessBackendIntegrationTest {
         assertThatThrownBy(() -> commands.resume(identity, "failed-run"))
             .isInstanceOf(ResponseStatusException.class)
             .satisfies(error -> assertThat(((ResponseStatusException) error).getStatusCode().value()).isEqualTo(503));
+    }
+
+    @Test
+    void interruptedRunCanResumeWithoutTakingAnAdditionalWorkspaceSlot() {
+        properties.setWorkspaceMaxQueuedRuns(1);
+        workspace("existing-backlog", "owner", "admin", 2);
+        run("old-interrupted", "existing-backlog");
+        run("old-queued", "existing-backlog");
+        run("old-failed", "existing-backlog");
+        jdbc.update("UPDATE runs SET status='interrupted' WHERE id='old-interrupted'");
+        jdbc.update("UPDATE runs SET status='failed' WHERE id='old-failed'");
+        WorkspaceIdentity identity = new WorkspaceIdentity("existing-backlog", "owner", "admin", "Owner");
+
+        assertThat(commands.resume(identity, "old-interrupted").get("status")).isEqualTo("queued");
+        assertThatThrownBy(() -> commands.resume(identity, "old-failed"))
+            .isInstanceOfSatisfying(ResponseStatusException.class,
+                error -> assertThat(error.getStatusCode().value()).isEqualTo(429));
     }
 
     @Test
@@ -1164,7 +1209,16 @@ class BusinessBackendIntegrationTest {
         String report=mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch(allowed))
             .andExpect(status().isOk()).andReturn().getResponse().getContentAsString(java.nio.charset.StandardCharsets.UTF_8);
         assertThat(report).contains("PRIVATE-REPORT");
-        jdbc.update("DELETE FROM collection_grants WHERE collection_id='private-collection' AND subject='writer'");
+        mvc.perform(get("/api/research/runs/acl-original").with(jwt().jwt(t->t.subject("writer")))
+                .header("X-Workspace-ID","lifecycle"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.sources[0].text").value("PRIVATE-EVIDENCE"));
+        mvc.perform(put("/api/collections/private-collection/grants").with(jwt().jwt(t->t.subject("reviewer")))
+                .header("X-Workspace-ID","lifecycle").contentType("application/json")
+                .content("{\"subject\":\"writer\",\"permission\":\"none\"}"))
+            .andExpect(status().isOk());
+        mvc.perform(get("/api/research/runs/acl-original").with(jwt().jwt(t->t.subject("writer")))
+                .header("X-Workspace-ID","lifecycle"))
+            .andExpect(status().isNotFound());
         MvcResult denied=mvc.perform(get("/api/threads/acl-original-thread/report")
             .with(jwt().jwt(t->t.subject("writer"))).header("X-Workspace-ID","lifecycle"))
             .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.request().asyncStarted()).andReturn();

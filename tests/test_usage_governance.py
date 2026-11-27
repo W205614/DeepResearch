@@ -83,6 +83,36 @@ async def test_each_cross_task_dimension_has_an_independent_hard_limit(tmp_path,
     assert len(await db.rows("SELECT * FROM usage_attempts")) == 1
 
 
+@pytest.mark.parametrize("workspace_limit,tokens", [("workspace_period_calls", 100), ("workspace_period_tokens", 1000)])
+@pytest.mark.parametrize("shared_limit", ["account_period_calls", "platform_period_calls"])
+async def test_workspace_budget_exhaustion_preserves_other_team_and_shared_limits(tmp_path, workspace_limit, tokens, shared_limit):
+    limit = 1 if workspace_limit == "workspace_period_calls" else tokens
+    db, _, governance = await ledger(tmp_path, **{workspace_limit: limit, shared_limit: 2})
+
+    with paid_scope("team-a", "a-writer", "evaluation"):
+        await governance.reserve("shared-account", "model", tokens)
+    with paid_scope("team-a", "a-other", "evaluation"), pytest.raises(ServiceError) as blocked_a:
+        await governance.reserve("shared-account", "model", tokens)
+    assert blocked_a.value.code == "usage_budget_exhausted"
+
+    with paid_scope("team-b", "b-writer", "evaluation"):
+        await governance.reserve("shared-account", "model", tokens)
+    with paid_scope("team-c", "c-writer", "evaluation"), pytest.raises(ServiceError) as blocked_c:
+        await governance.reserve("shared-account", "model", tokens)
+    assert blocked_c.value.code == "usage_budget_exhausted"
+
+    rows = {row["scope_key"]: (row["calls"], row["reserved_tokens"]) for row in await db.rows("SELECT * FROM usage_periods")}
+    assert rows == {
+        "platform": (2, 2 * tokens), "account:shared-account": (2, 2 * tokens),
+        "workspace:team-a": (1, tokens), "subject:a-writer": (1, tokens),
+        "workspace:team-b": (1, tokens), "subject:b-writer": (1, tokens),
+    }
+    assert await db.rows("SELECT workspace_id,subject FROM usage_attempts ORDER BY workspace_id") == [
+        {"workspace_id": "team-a", "subject": "a-writer"},
+        {"workspace_id": "team-b", "subject": "b-writer"},
+    ]
+
+
 async def test_probe_dedicated_budget_and_not_connected_release_only_tokens(tmp_path):
     db, settings, governance = await ledger(tmp_path, platform_operator_subjects="alice", probe_period_calls=1)
     with paid_scope("space", "alice", "probe"):

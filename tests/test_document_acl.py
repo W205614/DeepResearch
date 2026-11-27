@@ -1,6 +1,8 @@
 """Business counterexamples for current ACL over live and historical evidence."""
+import io
 import json
 from unittest.mock import AsyncMock
+import zipfile
 
 import pytest
 
@@ -95,6 +97,67 @@ async def test_revocation_blocks_run_report_bulk_download_and_historical_evidenc
         with pytest.raises(ServiceError) as error:
             await require_sources(rt.db, 'alice', [source])
         assert error.value.code == 'source_permission_denied'
+
+
+async def test_warm_hybrid_search_and_historical_citations_keep_current_workspace_access(api_client):
+    app, client = api_client
+    rt, private, source = await restricted_fixture(app, client)
+    with paid_scope('alice', 'operator'):
+        shared = await rt.documents.add('alice', 'shared.txt', b'shared evidence about a separate topic')
+        await rt.documents.ingest(shared['id'])
+    await rt.db.ensure_personal_workspace('carol', 'Team B', (0, 2))
+    run = await persisted_private_run(rt, source)
+    run_path = '/api/research/runs/' + run['id']
+    search_path = '/api/documents/search'
+    query = {'query': 'PRIVATE-ALPHA evidence'}
+    for _ in range(2):
+        warm = await client.post(search_path, json=query, headers=headers('bob'))
+        assert warm.status_code == 200
+        hit = next(item for item in warm.json() if item['document_id'] == private['id'])
+        assert hit['bm25_score'] > 0 and hit['vector_score'] > 0
+    assert (await client.get(run_path, headers=headers('bob'))).json()['sources'][0]['text'] == source['text']
+
+    await rt.db.execute("DELETE FROM collection_grants WHERE collection_id='restricted' AND subject='bob'")
+    denied = await client.post(search_path, json=query, headers=headers('bob'))
+    assert denied.status_code == 200 and 'PRIVATE-ALPHA' not in denied.text
+    assert {item['document_id'] for item in denied.json()} == {shared['id']}
+    assert (await client.get(run_path, headers=headers('bob'))).status_code == 404
+
+    still_authorized = await client.post(search_path, json=query, headers=headers('operator'))
+    assert still_authorized.status_code == 200 and 'PRIVATE-ALPHA' in still_authorized.text
+    assert 'FROZEN-PRIVATE-TEXT' in (await client.get(run_path, headers=headers('operator'))).text
+    assert (await client.post(search_path, json=query, headers=headers('carol'))).status_code == 403
+    outside = {'X-User-ID': 'carol', 'X-Workspace-ID': 'carol'}
+    assert (await client.post(search_path, json=query, headers=outside)).json() == []
+    assert (await client.get(run_path, headers=outside)).status_code == 404
+
+
+async def test_workspace_zip_rechecks_live_admin_membership_before_sending_bytes(api_client, monkeypatch):
+    app, client = api_client
+    rt, _, _ = await restricted_fixture(app, client)
+    await rt.db.ensure_personal_workspace('carol', 'Team B', (0, 2))
+    export_path = '/api/data/export'
+    original = await client.get(export_path, headers=headers('operator'))
+    assert original.status_code == 200
+    with zipfile.ZipFile(io.BytesIO(original.content)) as archive:
+        assert b'PRIVATE-ALPHA' in archive.read('uploads/restricted.txt')
+
+    read_object = rt.documents.store.get
+
+    async def revoke_during_read(*args, **kwargs):
+        content = await read_object(*args, **kwargs)
+        await rt.db.execute("UPDATE memberships SET role='researcher' WHERE workspace_id='alice' AND subject='operator'")
+        return content
+
+    monkeypatch.setattr(rt.documents.store, 'get', revoke_during_read)
+    denied = await client.get(export_path, headers=headers('operator'))
+    assert denied.status_code == 403 and 'content-disposition' not in denied.headers
+    assert 'PRIVATE-ALPHA' not in denied.text
+    assert (await client.get(export_path, headers=headers('carol'))).status_code == 403
+    outside = await client.get(export_path, headers={'X-User-ID': 'carol', 'X-Workspace-ID': 'carol'})
+    assert outside.status_code == 200
+    with zipfile.ZipFile(io.BytesIO(outside.content)) as archive:
+        assert 'uploads/restricted.txt' not in archive.namelist()
 
 
 async def test_sse_rechecks_acl_before_each_batch_after_collection_revocation(api_client, monkeypatch):

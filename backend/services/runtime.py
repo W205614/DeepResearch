@@ -283,6 +283,15 @@ class Runtime:
     async def cleanup_runs(self) -> CleanupResult:
         return await self.run_cleanup.reconcile(batch=self.settings.retention_cleanup_batch_size)
 
+    async def _require_queue_slot(self, workspace_id):
+        waiting = await self.db.one("""SELECT COUNT(*) AS total,
+            COUNT(*) FILTER (WHERE user_id=?) AS workspace_total
+            FROM runs WHERE status IN ('queued','interrupted')""", (workspace_id,))
+        if waiting["total"] >= self.settings.max_queued_runs:
+            raise ReliabilityError("平台待处理任务已满，请稍后重试", code="queue_full")
+        if waiting["workspace_total"] >= self.settings.workspace_max_queued_runs:
+            raise ReliabilityError("当前工作空间待处理任务已满，请稍后重试", code="workspace_queue_full")
+
     async def create(self, user, request, actor_subject: str | None = None):
         actor_subject = actor_subject or user
         async with self.lock, self.db.guard("research-global-queue-admission"), self.db.guard("workspace:" + user):
@@ -304,9 +313,7 @@ class Runtime:
                 from ..core.config import endpoint
                 await self.providers.provider_available(fingerprint([endpoint(self.settings.llm_base_url, "chat/completions"),
                     self.settings.llm_api_key.get_secret_value(), self.settings.llm_model_id]))
-            waiting = await self.db.one("SELECT COUNT(*) AS total FROM runs WHERE status IN ('queued','interrupted')")
-            if waiting["total"] >= self.settings.max_queued_runs:
-                raise ReliabilityError("待处理任务已满，请稍后提交", code="queue_full")
+            await self._require_queue_slot(user)
             await self.attachments.staged(request.attachment_ids, user, actor_subject)
             thread_id = request.thread_id
             if thread_id:
@@ -808,9 +815,8 @@ class Runtime:
                 raise ReliabilityError("该任务不可继续；请处理错误原因或缩小问题重新提交", code="resume_denied", retryable=False)
             if run_id in self.tasks:
                 raise ConflictError("任务尚未停止")
-            waiting = await self.db.one("SELECT COUNT(*) AS total FROM runs WHERE status IN ('queued','interrupted') AND id!=?", (run_id,))
-            if waiting["total"] >= self.settings.max_queued_runs:
-                raise ReliabilityError("待处理任务已满，请稍后继续", code="queue_full")
+            if run["status"] != "interrupted":
+                await self._require_queue_slot(user)
             try:
                 await self.db.execute("UPDATE runs SET status='queued',updated_at=? WHERE id=?", (now(), run_id))
             except (sqlite3.IntegrityError, asyncpg.UniqueViolationError):

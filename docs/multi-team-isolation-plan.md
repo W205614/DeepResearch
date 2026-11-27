@@ -6,7 +6,7 @@
 
 - 平台管理员可转交空间所有权、停用和恢复账号。转交保留历史作者，停用和恢复使旧令牌失效。资料检索和报告按工作空间、角色及当前资料授权判断。[治理集成测试](../business-backend/src/test/java/com/deepresearch/business/PlatformGovernanceIntegrationTest.java)
 - 已有测试覆盖资料撤权后旧任务、历史报告、事件流、批量报告下载及原始证据的读取边界。撤权控制后续读取，已下载的文件由组织另行管理。[资料授权测试](../tests/test_document_acl.py)
-- 已有工作空间执行并发上限及平台、空间、供应商账号的模型额度账本。当前待处理队列有全平台上限，仍需实测单个空间持续提交时其他空间的准入和等待行为。[调度准入](../business-backend/src/main/java/com/deepresearch/business/service/ResearchCommandService.java) · [额度测试](../tests/test_usage_governance.py)
+- 已有工作空间执行并发上限及平台、空间、供应商账号的模型额度账本。`v0.1.8` 增加每空间待处理上限，默认 `WORKSPACE_MAX_QUEUED_RUNS=5`，与平台 `MAX_QUEUED_RUNS=20` 一起生效。调整时应使单空间上限小于共享平台上限；已在队列中断的任务恢复时沿用原名额。[调度准入](../business-backend/src/main/java/com/deepresearch/business/service/ResearchCommandService.java) · [额度测试](../tests/test_usage_governance.py)
 
 ## 先验证撤权
 

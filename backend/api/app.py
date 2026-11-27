@@ -158,8 +158,11 @@ def create_app(settings: Settings | None = None):
 
     @app.exception_handler(ServiceError)
     async def service_error(request, exc):
+        status = 503 if exc.retryable else 422
+        if exc.code == "workspace_queue_full":
+            status = 429
         return JSONResponse(
-            {"detail": str(exc), "error": exc.detail()}, status_code=503 if exc.retryable else 422
+            {"detail": str(exc), "error": exc.detail()}, status_code=status
         )
 
     @app.exception_handler(ConflictError)
@@ -408,9 +411,16 @@ def create_app(settings: Settings | None = None):
 
     @app.get("/api/data/export")
     async def export_data(request: Request, runtime=Depends(rt), user=Depends(administrator)):
-        await runtime.db.audit(user, request.state.principal.subject, "data.export", "workspace", user)
+        principal = request.state.principal
+        await runtime.db.audit(user, principal.subject, "data.export", "workspace", user)
+        archive = await runtime.export_user(user, principal.subject)
+        # Reading objects can take time; recheck authority before sending any ZIP bytes.
+        await current_account(runtime, principal)
+        membership = await runtime.db.membership(user, principal.subject)
+        if not membership or membership["role"] != "admin":
+            raise HTTPException(403, "当前工作空间角色没有此权限")
         return Response(
-            await runtime.export_user(user, request.state.principal.subject),
+            archive,
             media_type="application/zip",
             headers={"Content-Disposition": "attachment; filename=deepresearch-export.zip"},
         )
