@@ -709,5 +709,33 @@
       }
     },
     "disposition": "The complete native and Python inventories, Debian scanner metadata and existing findings stay in scope. The new OpenSSL finding remains in the raw report and is tied to the measured patched libssl loaded by Python."
+  },
+  "workspace_queue_export_python_closure": {
+    "prior_source": "726ab11a81bcd9446dc48a8977622efd2af58c6d",
+    "reviewed_application_source": "9974279366d710e4a618286510406a604b2047e5",
+    "comparison": "complete Python closure from prior public image and the exact candidate archive image",
+    "previous": {
+      "files": 5977,
+      "sha256": "cac7ffd48a96533f383796df12d54e0847c80ff8e4c6fd5f305f04124931732a"
+    },
+    "current": {
+      "files": 5977,
+      "sha256": "ebd563dd9124423b3822d666453ac1f9830f895fcada3de69e8dd669fd164ee5"
+    },
+    "changed_files": {
+      "/app/backend/api/app.py": {
+        "before": "dc2dbbf80005cfdc577f3462292d814b6b4183351c4e643dbae53de0d7703725",
+        "after": "82978eb835aee2022da1921f4ba07f5e80cc12da02896b6b9b36608d56e3849e"
+      },
+      "/app/backend/core/config.py": {
+        "before": "805f00d6aaaf5154ad06845482de1cc2b63ea2f81b0d4e7102574de5e7c5106e",
+        "after": "24653ef267d45672e289446c2aee44be6e4095d8860b63b02983f0a123ce93a9"
+      },
+      "/app/backend/services/runtime.py": {
+        "before": "f623fdb03fad7e9aee8963ce5f74e47e77966a9255b38f2d299a4d9b7f6041a1",
+        "after": "0ec3745efa48af09261489e7ba1e122e01c12f3bb2cee707e2a4293e9be7645d"
+      }
+    },
+    "unchanged_python_files": 5974
   }
 }
