@@ -3,15 +3,12 @@ server:
   shutdown: graceful
   forward-headers-strategy: framework
   max-http-request-header-size: 32KB
-  tomcat:
-    mbeanregistry:
-      enabled: true
+  jetty:
     threads:
       max: ${SERVER_MAX_THREADS:64}
-      min-spare: ${SERVER_MIN_SPARE_THREADS:8}
-    accept-count: ${SERVER_ACCEPT_COUNT:100}
+      min: ${SERVER_MIN_SPARE_THREADS:8}
     max-connections: ${SERVER_MAX_CONNECTIONS:512}
-    connection-timeout: ${SERVER_CONNECTION_TIMEOUT:5s}
+    connection-idle-timeout: ${SERVER_CONNECTION_TIMEOUT:5s}
 
 spring:
   application:
@@ -54,6 +51,8 @@ management:
       show-details: never
 
 deepresearch:
+  server:
+    accept-count: ${SERVER_ACCEPT_COUNT:100}
   auth-mode: ${AUTH_MODE:oidc}
   oidc-issuer: ${OIDC_ISSUER:http://localhost:8180/realms/deepresearch}
   oidc-client-id: ${OIDC_CLIENT_ID:deepresearch-web}

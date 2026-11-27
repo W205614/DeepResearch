@@ -25,8 +25,8 @@ from scripts.source_dependency_migration_20261115 import (  # noqa: E402
 )
 
 
-BACKEND_INVENTORY_REVIEW = 'deployment/security/backend-tomcat-source-inventory-20261127.json'
-BACKEND_INVENTORY_REVIEW_SHA256 = 'aaf6c05f3af10ef61eb490e6b35368fcfeb6cdfab3be84f23ae9b994a2a93ace'
+BACKEND_INVENTORY_REVIEW = 'deployment/security/backend-jetty-source-inventory-20261127.json'
+BACKEND_INVENTORY_REVIEW_SHA256 = '568958dc206ba8065080cb38fb7c6721232d19ab8c4653c55afe6822dd0839d9'
 SOURCE_ONLY_FINDINGS = {
     ('CVE-2026-95839', 'deployment/vendors/loki/go.mod', 'github.com/containerd/containerd/v2', 'v2.2.9', 'HIGH'):
         ('loki',),

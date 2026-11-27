@@ -218,7 +218,7 @@ async def main(args):
         metrics = await client.get(METRICS + "/metrics")
         selected_metrics = [line for line in metrics.text.splitlines() if line.startswith((
             "deepresearch_business_agent_", "deepresearch_business_rate_limit_", "hikaricp_connections_",
-            "tomcat_threads_", "http_server_requests_seconds_"))]
+            "jetty_threads_", "tomcat_threads_", "http_server_requests_seconds_"))]
     result = {
         "scope": "isolated Docker stack; deterministic Agent/model/search fixtures",
         "baseline": baseline,
