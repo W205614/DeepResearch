@@ -161,9 +161,7 @@ def create_app(settings: Settings | None = None):
         status = 503 if exc.retryable else 422
         if exc.code == "workspace_queue_full":
             status = 429
-        return JSONResponse(
-            {"detail": str(exc), "error": exc.detail()}, status_code=status
-        )
+        return JSONResponse({"detail": str(exc), "error": exc.detail()}, status_code=status)
 
     @app.exception_handler(ConflictError)
     async def conflict_error(request, exc):
