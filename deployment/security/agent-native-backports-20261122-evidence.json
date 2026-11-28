@@ -737,5 +737,49 @@
       }
     },
     "unchanged_python_files": 5974
+  },
+  "debian_status_refresh_20261128": {
+    "reviewed_on": "2026-11-28",
+    "previous_profile_commit": "82fe15479b30c4e0fb350ae657a7b66264c11ae9",
+    "previous_profile_sha256": "5dd8910eb13c28c98bdded45d06556f40cfabbf6736e2f0a041cc1cd6f3617da",
+    "security_job": "https://github.com/W205614/DeepResearch/actions/runs/46127727426/job/140926160705",
+    "raw_scan_artifact": "https://github.com/W205614/DeepResearch/actions/runs/46127727426/artifacts/15257350260",
+    "raw_scan_sha256": "e3803ea86cdef311ef5c004d724f6a41f1915875f2eec92d2e44a42921d01a05",
+    "scanner": "0.75.0",
+    "debian_tracker_base_url": "https://security-tracker.debian.org/tracker/",
+    "trivy_db_debian_parser": "https://raw.githubusercontent.com/aquasecurity/trivy-db/6748d2315661109443d7b1eb20d616b5f303242a/pkg/vulnsrc/debian/debian.go",
+    "release": "trixie",
+    "source_package": "openssl",
+    "binary_package": "libssl3t64",
+    "installed_version": "3.5.7-1~deb13u3",
+    "debian_tracker_status": "postponed",
+    "previous_trivy_status": "affected",
+    "current_trivy_status": "fix_deferred",
+    "affected_cve_ids": [
+      "CVE-2026-107493",
+      "CVE-2026-107494",
+      "CVE-2026-107496",
+      "CVE-2026-121481",
+      "CVE-2026-121482",
+      "CVE-2026-124709",
+      "CVE-2026-35190",
+      "CVE-2026-84785",
+      "CVE-2026-84786",
+      "CVE-2026-88822",
+      "CVE-2026-88823",
+      "CVE-2026-95690",
+      "CVE-2026-95691",
+      "CVE-2026-95692"
+    ],
+    "full_scan_package_count": 125,
+    "full_scan_finding_count": 85,
+    "technical_disposition_counts": {
+      "FIXED_IN_VERIFIED_UPSTREAM_SOURCE": 8,
+      "FIXED_IN_VERIFIED_SOURCE_BACKPORT": 5,
+      "NOT_AFFECTED_UPSTREAM_VERSION_RANGE": 1
+    },
+    "deployed_agent_manifest": "sha256:43e4c27ba15925777e0956cac7e8af8d69a266aac1a3483725cfa416df580d77",
+    "comparison": "The Debian postponement concerns Debian's package. Only the Status field differs in the 14 complete tuples. The exact deployed Agent ELF and Python closures were measured in an isolated local probe and match the existing profile, including the independently reviewed OpenSSL branch and backports.",
+    "raw_report_modified": false
   }
 }

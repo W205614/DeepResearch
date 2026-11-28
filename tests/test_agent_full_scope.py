@@ -132,7 +132,7 @@ def test_exact_review_keeps_original_findings_and_is_not_raw_zero(reviewed_input
 
 
 @pytest.mark.parametrize(
-    "change", ["add-low", "remove-low", "severity", "package-version", "purl", "data-source"]
+    "change", ["add-low", "remove-low", "severity", "package-version", "purl", "data-source", "status"]
 )
 def test_every_new_or_changed_full_severity_tuple_blocks(reviewed_inputs, change):
     findings = reviewed_inputs[0]["Results"][0]["Vulnerabilities"]
@@ -147,6 +147,8 @@ def test_every_new_or_changed_full_severity_tuple_blocks(reviewed_inputs, change
         low["InstalledVersion"] = "unreviewed"
     elif change == "purl":
         low["PkgIdentifier"]["PURL"] = "pkg:generic/unreviewed"
+    elif change == "status":
+        low["Status"] = "fix_deferred" if low["Status"] != "fix_deferred" else "affected"
     else:
         low["DataSource"]["ID"] = "unreviewed"
     with pytest.raises(ValueError, match="finding tuple"):
