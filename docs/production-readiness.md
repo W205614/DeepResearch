@@ -2,7 +2,7 @@
 
 适用日期：2026-11-07。面向企业内部团队，单区域、多副本应用层；沿用 Spring Boot、LangGraph、Vue、PostgreSQL、Redis、Milvus 和 S3。容量目标：50 个账号、10 个在线用户、全平台 5 个执行研究任务、20 个等待任务，单空间最多 2 个执行任务、500 份资料及 5 万片段。
 
-当前代码基线 `b8153f5` 的[CI](https://github.com/W205614/DeepResearch/actions/runs/42370035398)、[Security 22个作业](https://github.com/W205614/DeepResearch/actions/runs/42370035403)和[告警规则](https://github.com/W205614/DeepResearch/actions/runs/42370035381)均通过。个人本地功能交付可进入按需维护阶段；目标云平台接入、完整新模型质量与异机恢复按本文分别验收。
+当前个人单机版的交付证据见 [v0.1.8 发布页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.8)。历史基线 `b8153f5` 的[CI](https://github.com/W205614/DeepResearch/actions/runs/42370035398)、[Security 22个作业](https://github.com/W205614/DeepResearch/actions/runs/42370035403)和[告警规则](https://github.com/W205614/DeepResearch/actions/runs/42370035381)均通过。个人本地功能交付可进入按需维护阶段；目标云平台接入、完整新模型质量与异机恢复按本文分别验收。
 
 ## 交付入口与证据
 

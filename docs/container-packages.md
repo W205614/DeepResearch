@@ -16,7 +16,7 @@
 | [Backend](https://github.com/users/W205614/packages/container/package/deepresearch-backend) | `ghcr.io/w205614/deepresearch-backend@sha256:b91f22243572d997d86edce553a344d02c69a0234a8c4b5db0b2ce2c2248c7c4` |
 | [Web](https://github.com/users/W205614/packages/container/package/deepresearch-web) | `ghcr.io/w205614/deepresearch-web@sha256:28dcaf46e8cb3c50f35e7f458267855c1b2c49a86b5b52e60bcf0eef507f9557` |
 
-首次安装见[获取与启动](#获取与启动)。精确制品身份、对应源码和验收范围见 [发布清单](https://github.com/W205614/DeepResearch/releases/download/v0.1.7/publication-manifest.json)、[源码收据](https://github.com/W205614/DeepResearch/releases/download/v0.1.7/source-receipt.json)和[验收记录](https://github.com/W205614/DeepResearch/releases/download/v0.1.7/acceptance-v017.json)。
+新安装请使用 [v0.1.8 启动入口](#v018-启动入口)。本节的 `v0.1.7` 制品身份、对应源码和验收范围见 [发布清单](https://github.com/W205614/DeepResearch/releases/download/v0.1.7/publication-manifest.json)、[源码收据](https://github.com/W205614/DeepResearch/releases/download/v0.1.7/source-receipt.json)和[验收记录](https://github.com/W205614/DeepResearch/releases/download/v0.1.7/acceptance-v017.json)。
 
 ## 正式 v0.1.6
 
@@ -52,7 +52,7 @@ Agent／Backend 版本 Tag 是 OCI index，完整 Tag digest 分别为 `sha256:f
 
 真实复杂资料案例的 26 条结论获支持、0 删除、回答标记 true，仍为 `partial` 并保留向量不可用后的关键词回退；联网整份比较报告未完成。详见[项目示例及边界](../README.md#两个研究示例)。Agent 原始扫描 94 条保留，精确已审查范围中适用未解决为 0，SoupSieve 库仍受影响；Backend／Web 本轮 Trivy 原始发现为 0。完整原始扫描与精确适用性见版本附件，不把有限审查说成所有依赖无漏洞。
 
-MinIO／Silo 使用 `scripts/build_minio_os_20261113.py` 的固定原生依赖／Go 修复入口，可选 Grafana 使用 `scripts/build_go_stdlib_security_20261112.py --artifact grafana`；这些本地第三方依赖没有新增公开二进制 Packages。具体方法见[运行依赖](source-release.md#运行依赖如何获取)。已发布 `v0.1.4` Compose overlay 的旧缺省值不可更改；检出该 Tag 时仍必须显式设置 `DEEPRESEARCH_PACKAGE_VERSION=v0.1.4`。后续 main 已将缺省值修正为 `v0.1.4`。
+MinIO／Silo 使用 `scripts/build_minio_os_20261113.py` 的固定原生依赖／Go 修复入口，可选 Grafana 使用 `scripts/build_go_stdlib_security_20261112.py --artifact grafana`；这些本地第三方依赖没有新增公开二进制 Packages。具体方法见[运行依赖](source-release.md#运行依赖如何获取)。已发布 `v0.1.4` Compose overlay 的旧缺省值不可更改；检出该 Tag 时仍必须显式设置 `DEEPRESEARCH_PACKAGE_VERSION=v0.1.4`。当前版本的启动说明见 [v0.1.8 启动入口](#v018-启动入口)。
 
 ## 正式 v0.1.3
 

@@ -1,5 +1,7 @@
 # 镜像归档加载与安全门禁
 
+本页记录旧版固定归档的获取和安全证据。首次安装请按 [v0.1.8 快速上手](../README.md#v018-快速上手)准备依赖。
+
 MinIO 与 Grafana 分别绑定自己的请求、授权、归档、发布记录和标签。归档加载验证内容身份，Security 工作流验证完整扫描及逐项判定；镜像或绑定输入变化后重新审查。
 
 ```powershell
@@ -8,9 +10,11 @@ python scripts/fetch_grafana_fixed_20261107.py
 # 离线加载使用对应命令的 --archive <归档路径>
 ```
 
-## 当前 Grafana
+<a id="当前-grafana"></a>
 
-Compose 与 CI 使用 `deepresearch-approved-grafana:20261107`，来自固定 Release `artifact-grafana-fixed-20261107`（ID `437518277`）。
+## 历史 Grafana 归档
+
+2026-11-07 的 Compose 与 CI 使用 `deepresearch-approved-grafana:20261107`，来自固定 Release `artifact-grafana-fixed-20261107`（ID `437518277`）。
 
 | 材料 | 内容 |
 | --- | --- |

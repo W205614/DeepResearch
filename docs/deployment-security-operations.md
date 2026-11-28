@@ -4,18 +4,22 @@
 
 ## 固定镜像与安全判定
 
-当前代码基线 `b8153f5` 的[CI](https://github.com/W205614/DeepResearch/actions/runs/42370035398)、[Security 22个作业](https://github.com/W205614/DeepResearch/actions/runs/42370035403)及[告警规则检查](https://github.com/W205614/DeepResearch/actions/runs/42370035381)均通过。运行镜像分别验证OS、应用依赖、解释器／JVM和原生组件。
+新安装按 [v0.1.8 快速上手](../README.md#v018-快速上手)操作。三个应用镜像的固定摘要和发布检查见 [v0.1.8 发布页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.8)。完整观测栈的依赖准备见[源码启动说明](source-release.md#运行依赖如何获取)。
+
+### 历史镜像基线
+
+历史基线 `b8153f5` 的[CI](https://github.com/W205614/DeepResearch/actions/runs/42370035398)、[Security 22个作业](https://github.com/W205614/DeepResearch/actions/runs/42370035403)及[告警规则检查](https://github.com/W205614/DeepResearch/actions/runs/42370035381)均通过。运行镜像分别验证OS、应用依赖、解释器／JVM和原生组件。
 
 Python采用签名CPython 3.11.18源码构建与锁定的SQLite、zlib运行库；Java采用经签名与实际文件核对的Temurin 21.0.13+9；前端构建使用固定摘要的Node.js 22.23.4。运行时信任数据、JVM和Milvus的维护说明分别见[运行层打包](runtime-trust-packaging.md)、[JVM门禁](native-jvm-security-gate.md)与[Milvus打包](milvus-image-packaging.md)。
 
-新安装先加载精确批准的归档：
+该历史基线使用以下归档加载命令。
 
 ```powershell
 python scripts/fetch_approved_image.py
 python scripts/fetch_grafana_fixed_20261107.py
 ```
 
-MinIO保留其独立请求与发布；Grafana当前标签为 `deepresearch-approved-grafana:20261107`，完整归档有14个分片，绑定14个ELF和13个重编插件。请求、授权、摘要、加载与更新步骤见[镜像归档手册](approved-image-artifacts.md)。core配置关闭可选观测栈，无需加载Grafana。
+MinIO 当时使用独立请求与发布。该阶段的 Grafana 标签为 `deepresearch-approved-grafana:20261107`，完整归档有14个分片，绑定14个ELF和13个重编插件。请求、授权、摘要、加载与更新步骤见[镜像归档手册](approved-image-artifacts.md)。当前核心配置也关闭可选观测栈。
 
 安全判定保留完整原始扫描、独立审查与逐项结论。现有精确授权按制品及绑定输入生效；镜像、源码、配方、扫描条目或严重级别变化后重新复核。历史日历修订和旧制品材料留在原路径，当前使用的标签由Compose及运行清单明确选择。
 

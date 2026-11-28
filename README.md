@@ -100,15 +100,19 @@
 
 ## 界面与验证范围
 
-[正式审核画面](docs/images/report-review.png)、[手机工作台](docs/images/workspace-mobile.png)及[原工作台截图](docs/images/workspace.png)展示其他操作。这些旧截图使用固定资料和合成账号，不是本轮新模型验收；来源见[素材说明](docs/images/README.md)。
+发布的 `v0.1.8` 三个应用镜像通过匿名拉取、隔离核心栈启动和 5 项浏览器测试。浏览器测试使用固定模型夹具。镜像摘要、源码提交和检查结果见 [v0.1.8 发布页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.8)。
+
+### 历史案例与验收
+
+[正式审核画面](docs/images/report-review.png)、[手机工作台](docs/images/workspace-mobile.png)及[原工作台截图](docs/images/workspace.png)展示其他操作。这些历史截图使用固定资料和合成账号。来源见[素材说明](docs/images/README.md)。
 
 [`v0.1.5` 的交付记录](https://github.com/W205614/DeepResearch/releases/tag/v0.1.5)绑定工程与镜像分发提交 `e6799f73b00144b9ef16b71dedac2759a5cf54af`。同提交 CI 的 4 项检查、Security 的 22 项检查及 Packages 发布均成功。三个应用镜像已实际匿名完整拉取，核对 manifest、config、各层及实际 Docker 拉取身份。29 份公开附件完整下载核验通过。
 
 2026-11-16 本机日常环境更新 21 个角色、保留另 4 个角色的身份与配置；整套启动、只读健康与权限检查、5 个运行角色的源码指纹核对通过。14 张业务表共 572 行的逐行摘要一致，16 个卷及 9 个网络引用保持，验收后 25 个容器全部停止。此范围不代替异机恢复、生产高可用或完整第三方基础栈二进制分发验收。
 
-本版真实本地资料案例回答原问题，实际 Milvus 检索得到 16 个有效候选，28 条结论获得支持、1 条移除，报告仍为 `partial`。真实联网 quick 案例正常完成，保留 `original_request_answered=false`：9 条支持、2 条移除、2 个官方来源；页面明确展示 6 个网页读取失败、资料缺口和未回答问题，只读页面核验通过。未完整覆盖不自动表示执行失败；本轮没有实测深度补搜路径，也不将该案例称为完整比较。上方两张图片继续保留 `v0.1.4` 的历史结果。
+`v0.1.5` 的真实本地资料案例回答原问题，实际 Milvus 检索得到 16 个有效候选，28 条结论获得支持、1 条移除，报告仍为 `partial`。真实联网 quick 案例正常完成，保留 `original_request_answered=false`：9 条支持、2 条移除、2 个官方来源；页面明确展示 6 个网页读取失败、资料缺口和未回答问题，只读页面核验通过。未完整覆盖不自动表示执行失败；该次验收没有实测深度补搜路径，也不将该案例称为完整比较。上方两张图片继续保留 `v0.1.4` 的历史结果。
 
-本轮新增 46 次供应商请求均为 HTTP 200，保守费用上界为 **1.374595 USD / 25 USD**；包含未完整答题的测试费用，不是实际账单。历史 169 次请求与 24.694389 USD 保留，账本累计 215 次，不重置旧预留。
+`v0.1.5` 验收新增 46 次供应商请求均为 HTTP 200，保守费用上界为 **1.374595 USD / 25 USD**；包含未完整答题的测试费用，不是实际账单。历史 169 次请求与 24.694389 USD 保留，账本累计 215 次，不重置旧预留。
 
 [`v0.1.3` 的拉取与日常验收](https://github.com/W205614/DeepResearch/releases/tag/v0.1.3)、[首次真实流程检查](docs/evidence/release-20261112/README.md)和[此前候选失败](docs/evidence/followup-20261113/README.md)保留各自时间与范围。恢复与组件负载证据见[2026-11-08 验收](docs/evidence/daily-20261108/README.md)及[证据索引](docs/evidence/production-20261107/README.md)；不同阶段结果不合并为一次全套通过。
 
@@ -217,7 +221,7 @@ Java 管理公开接口、权限、任务准入、Outbox 和正式报告。Pytho
 
 `v0.1.4` Agent 完整原始扫描保留 94 条（4 HIGH、63 MEDIUM、23 LOW、4 UNKNOWN），精确应用范围中适用未解决为 0；SoupSieve 及相关 glibc 受影响条件和失效边界继续保留，不声称原始发现为零或受影响库已全面修复，见[glibc 依据](deployment/security/agent-glibc-20261112-evidence/primary-sources.json)及本版安全附件。Backend/Web 的本轮 Trivy 原始发现为 0，Backend 原生完整库存与对应源码另行核验。
 
-历史 `v0.1.3` 的 Grafana 使用 `grafana-source-20261110` 本地源码入口；其与 PostgreSQL 的原运行验收保持历史边界。main 的固定 Go 1.27.4 重建已消除 16 条新增 stdlib 记录。MinIO 后续改用 `scripts/build_minio_os_20261113.py`：原 34 条 LOW/MEDIUM 中，17 条通过签名更新消除、4 条实际源码修复、13 条有精确不适用证据；另升级 curl／Thrift 消除补充扫描的 26 条记录。本轮 MinIO 制品仍保留 Trivy 21／Grype 23 条原始发现，静态 OpenSSL 仍受影响的条件单独说明，不声称 raw zero，见[MinIO 技术范围](docs/minio-native-security-20261113.md)。Grafana Trivy 40／Grype 10 保留。Backend 另实际修补 BusyBox，完整三条原始 Medium 按固定代码和独立 helper 逐项核对，见[Backend 修补范围](docs/backend-busybox-security-20261113.md)。这些安全证据不代替最终组合的真实模型复验，也没有新增公开第三方镜像。仍有输入、许可或对应源码职责的五个辅助发布有据保留，[迁移索引](docs/release-asset-migration-20261113.md)说明不能删除的具体原因；不移动历史 Tag 或覆盖镜像版本。`v0.1.4` 新增 11 份 MinIO 来源输入集中在本版附件；旧版对应源码的补充包与固定分片仍按[历史获取说明](docs/container-packages.md)保留。
+历史 `v0.1.3` 的 Grafana 使用 `grafana-source-20261110` 本地源码入口；其与 PostgreSQL 的原运行验收保持历史边界。`v0.1.4` 交付阶段的固定 Go 1.27.4 重建消除 16 条新增 stdlib 记录。MinIO 后续改用 `scripts/build_minio_os_20261113.py`：原 34 条 LOW/MEDIUM 中，17 条通过签名更新消除、4 条实际源码修复、13 条有精确不适用证据；另升级 curl／Thrift 消除补充扫描的 26 条记录。`v0.1.4` 交付阶段的 MinIO 制品保留 Trivy 21／Grype 23 条原始发现，静态 OpenSSL 仍受影响的条件单独说明，不声称 raw zero，见[MinIO 技术范围](docs/minio-native-security-20261113.md)。Grafana Trivy 40／Grype 10 保留。Backend 另实际修补 BusyBox，完整三条原始 Medium 按固定代码和独立 helper 逐项核对，见[Backend 修补范围](docs/backend-busybox-security-20261113.md)。这些安全证据不代替最终组合的真实模型复验，也没有新增公开第三方镜像。仍有输入、许可或对应源码职责的五个辅助发布有据保留，[迁移索引](docs/release-asset-migration-20261113.md)说明不能删除的具体原因；不移动历史 Tag 或覆盖镜像版本。`v0.1.4` 新增 11 份 MinIO 来源输入集中在本版附件；旧版对应源码的补充包与固定分片仍按[历史获取说明](docs/container-packages.md)保留。
 
 ## 开发、测试与排错
 

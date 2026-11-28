@@ -52,7 +52,7 @@ npm run build --prefix frontend
 
 历史正式 `v0.1.3` 工程提交 `78a19df9dfa6f072af6ebe40ff99cf164d0c4ff8` 的 [CI](https://github.com/W205614/DeepResearch/actions/runs/42968387539)4 项与 [Security](https://github.com/W205614/DeepResearch/actions/runs/42968387608)22 项成功，[三个 Packages](https://github.com/W205614/DeepResearch/actions/runs/42977626649)发布、实际匿名拉取和日常验收均完成。四个隔离浏览器用例及资料研究引用检查通过，模型使用固定夹具；其 Windows TCP relay 与日常普通端口验收分别记录。另复用 2026-11-10 从同一未变化 Agent 制品执行的两次官方 API 契约探针（JSON、3072 维嵌入，0 重试、原预算上限 1 USD）；本次没有追加调用，不为文档或重测重置账本。版本与组件来源见[镜像说明](docs/container-packages.md)。
 
-当前正式 `v0.1.4` 的来源、发布时 CI 豁免及未完成拉取／运行验收边界见[镜像说明](docs/container-packages.md#正式-v014)。后续 CI 修复结果必须绑定其实际新提交，不改写旧版本的失败。
+当前正式版为 `v0.1.8`。源码提交、三个公开镜像摘要及 CI、Security 和验收入口见 [v0.1.8 发布页](https://github.com/W205614/DeepResearch/releases/tag/v0.1.8)。`v0.1.4` 发布时的 CI 豁免及当时的验收范围见[历史镜像说明](docs/container-packages.md#正式-v014)。
 
 真实模型、嵌入、搜索和重排评测有单独的付费入口与累计账本。执行前确定调用类别、次数和预算；已有账本及失败记录随结果保留。常规回归使用受控替身，详见[模型验证](docs/production-readiness.md#openai-配置与四次真实验证)。
 
